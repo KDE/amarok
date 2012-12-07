@@ -34,65 +34,41 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
 {
     setupUi( this );
 
-    tokenPool->addToken( new Token( columnNames( Album ), iconNames[Album], Album ) );
+    // -- add tokens to the token pool
+    qint64 tokenValues[] = {
+        Album,
+        AlbumArtist,
+        Artist,
+        Bitrate,
+        Bpm,
+        Comment,
+        Composer,
+        Directory,
+        DiscNumber,
+        Divider,
+        Filename,
+        Filesize,
+        Genre,
+        GroupLength,
+        GroupTracks,
+        LastPlayed,
+        Labels,
+        Length,
+        Moodbar,
+        PlaceHolder,
+        PlayCount,
+        Rating,
+        SampleRate,
+        Score,
+        Source,
+        Title,
+        TitleWithTrackNum,
+        TrackNumber,
+        Type,
+        Year };
 
-    tokenPool->addToken( new Token( columnNames( AlbumArtist ), iconNames[AlbumArtist], AlbumArtist ) );
-
-    tokenPool->addToken( new Token( columnNames( Artist ), iconNames[Artist], Artist ) );
-
-    tokenPool->addToken( new Token( columnNames( Bitrate ), iconNames[Bitrate], Bitrate ) );
-
-    tokenPool->addToken( new Token( columnNames( Bpm ), iconNames[Bpm], Bpm ) );
-
-    tokenPool->addToken( new Token( columnNames( Comment ), iconNames[Comment], Comment ) );
-
-    tokenPool->addToken( new Token( columnNames( Composer ), iconNames[Composer], Composer ) );
-
-    tokenPool->addToken( new Token( columnNames( Directory ), iconNames[Directory], Directory ) );
-
-    tokenPool->addToken( new Token( columnNames( DiscNumber ), iconNames[DiscNumber], DiscNumber ) );
-
-    tokenPool->addToken( new Token( columnNames( Divider ), iconNames[Divider], Divider ) );
-
-    tokenPool->addToken( new Token( columnNames( Filename ), iconNames[Filename], Filename ) );
-
-    tokenPool->addToken( new Token( columnNames( Filesize ), iconNames[Filesize], Filesize ) );
-
-    tokenPool->addToken( new Token( columnNames( Genre ), iconNames[Genre], Genre ) );
-
-    tokenPool->addToken( new Token( columnNames( GroupLength ), iconNames[GroupLength], GroupLength ) );
-
-    tokenPool->addToken( new Token( columnNames( GroupTracks ), iconNames[GroupTracks], GroupTracks ) );
-
-    tokenPool->addToken( new Token( columnNames( LastPlayed ), iconNames[LastPlayed], LastPlayed ) );
-
-    tokenPool->addToken( new Token( columnNames( Labels ), iconNames[Labels], Labels ) );
-
-    tokenPool->addToken( new Token( columnNames( Length ), iconNames[Length], Length ) );
-
-    tokenPool->addToken( new Token( columnNames( Moodbar ), iconNames[Moodbar], Moodbar ) );
-
-    tokenPool->addToken( new Token( columnNames( PlaceHolder ), iconNames[PlaceHolder], PlaceHolder ) );
-
-    tokenPool->addToken( new Token( columnNames( PlayCount ), iconNames[PlayCount], PlayCount ) );
-
-    tokenPool->addToken( new Token( columnNames( Rating ), iconNames[Rating], Rating ) );
-
-    tokenPool->addToken( new Token( columnNames( SampleRate ), iconNames[SampleRate], SampleRate ) );
-
-    tokenPool->addToken( new Token( columnNames( Score ), iconNames[Score], Score ) );
-
-    tokenPool->addToken( new Token( columnNames( Source ), iconNames[Source], Source ) );
-
-    tokenPool->addToken( new Token( columnNames( Title ), iconNames[Title], Title ) );
-
-    tokenPool->addToken( new Token( columnNames( TitleWithTrackNum ), iconNames[TitleWithTrackNum], TitleWithTrackNum ) );
-
-    tokenPool->addToken( new Token( columnNames( TrackNumber ), iconNames[TrackNumber], TrackNumber ) );
-
-    tokenPool->addToken( new Token( columnNames( Type ), iconNames[Type], Type ) );
-
-    tokenPool->addToken( new Token( columnNames( Year ), iconNames[Year], Year ) );
+    for( uint i = 0; i < sizeof( tokenValues ) / sizeof( tokenValues[0] ); i++ )
+        tokenPool->addToken( new Token( columnNames( tokenValues[i] ), iconNames[tokenValues[i]], tokenValues[i] ) );
 
     m_firstActiveLayout = LayoutManager::instance()->activeLayoutName();
 

@@ -25,17 +25,24 @@
 #include <QPixmap>
 
 class Token;
+class QMimeData;
 
+/** The token factory is used by the TokenDropTarget to create suitable Token objects.
+    The TokenWithLayout class has it's own TokenFactory to be used with the EditFilterDialog.
+*/
 class TokenFactory
 {
 
 public:
     virtual ~TokenFactory() {}
-    virtual Token * createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 );
+    virtual Token* createToken( const QString &text, const QString &iconName, qint64 value, QWidget* parent = 0 ) const;
+    virtual Token* createTokenFromMime( const QMimeData* mimeData, QWidget* parent = 0 ) const;
 };
 
 /** A widget that is used in the FilenameLayoutWidget to display part of a filename
     It is drag&droppable in the TokenDropTarget from the TokenPool widget.
+
+    Note: A disabled token cannot be dragged. See setEnabled().
 */
 class Token : public QWidget
 {
@@ -56,27 +63,54 @@ class Token : public QWidget
         /** Return true if somebody has previously set the text color */
         bool hasCustomColor() const { return m_customColor; };
 
-        /** Marks the Token as inactive.
-            It will get a different colored frame. */
-        bool isActive() const { return m_active; }
-        void setActive( bool value ) { m_active = value; update(); }
+        /** Returns the mime data for this token.
+            Caller has to free the QMimeData object.
+        */
+        QMimeData* mimeData() const;
+
+        /** Returns the mime type for an amarok tag token */
+        static QString mimeType();
+
+        QSize sizeHint() const;
+        QSize minimumSizeHint() const;
 
     signals:
         void changed();
 
+        /** Emitted when the token get's the focus */
+        void gotFocus( Token* thisToken );
+
     protected:
-        virtual void paintEvent(QPaintEvent *pe);
+        /** overloaded to update the cursor in case the token is set to inactive */
+        void changeEvent( QEvent* event = 0 );
+
+        void focusInEvent( QFocusEvent* event );
+
+        void updateCursor();
+
+        /** Handles start of drag. */
+        void mousePressEvent( QMouseEvent* event );
+
+        /** Handles start of drag. */
+        void mouseMoveEvent( QMouseEvent* event );
+
+        void paintEvent(QPaintEvent *pe);
+
+        void performDrag();
 
     protected:
         QString     m_name;
         KIcon       m_icon;
         QString     m_iconName;
-        qint64      m_value;
+        qint64      m_value; // TODO: make this more typesave
         bool        m_customColor;
-        bool        m_active;
 
         QLabel      *m_iconContainer;
         QLabel      *m_label;
+
+        /** Position of the mouse press event
+            (used for drag and drop) */
+        QPoint      m_startPos;
 };
 
 #endif // AMAROK_TOKEN_H

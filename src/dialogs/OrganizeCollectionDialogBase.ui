@@ -22,10 +22,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="_3">
-     <property name="margin">
-      <number>5</number>
-     </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_1">
      <item>
       <widget class="QLabel" name="folderLabel">
        <property name="sizePolicy">

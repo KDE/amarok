@@ -30,7 +30,7 @@
 #include "core-impl/collections/umscollection/UmsCollectionLocation.h"
 #include "core-impl/collections/umscollection/UmsTranscodeCapability.h"
 #include "core-impl/meta/file/File.h"
-#include "dialogs/FilenameLayoutDialog.h"
+#include "dialogs/OrganizeCollectionDialog.h"
 #include "dialogs/TrackOrganizer.h" //TODO: move to core/utils
 #include "scanner/GenericScanManager.h"
 
@@ -612,15 +612,17 @@ UmsCollection::slotConfigure()
     //hide the unuse preset selector.
     //TODO: change the presets to concurrent presets for regular albums v.s. compilations
     // layoutWidget.setformatPresetVisible( false );
-
     layoutWidget.setScheme( m_musicFilenameScheme );
-    FilenameLayoutOptionWidget* optionsWidget = layoutWidget.m_optionsWidget;
-    optionsWidget->setVfatCompatible( m_vfatSafe );
-    optionsWidget->setAsciiOnly( m_asciiOnly );
-    optionsWidget->setIgnoreThe( m_ignoreThe );
-    optionsWidget->setReplaceSpaces( m_replaceSpaces );
-    optionsWidget->setRegexpText( m_regexText );
-    optionsWidget->setReplaceText( m_replaceText );
+
+    OrganizeCollectionOptionWidget optionsWidget;
+    optionsWidget.setVfatCompatible( m_vfatSafe );
+    optionsWidget.setAsciiOnly( m_asciiOnly );
+    optionsWidget.setIgnoreThe( m_ignoreThe );
+    optionsWidget.setReplaceSpaces( m_replaceSpaces );
+    optionsWidget.setRegexpText( m_regexText );
+    optionsWidget.setReplaceText( m_replaceText );
+
+    layout.addWidget( &optionsWidget );
 
     umsSettingsDialog.setButtons( KDialog::Ok | KDialog::Cancel );
     umsSettingsDialog.setMainWidget( settingsWidget );
@@ -652,12 +654,11 @@ UmsCollection::slotConfigure()
             //TODO: remove all tracks from the MemoryCollection.
         }
 
-        FilenameLayoutOptionWidget* optionsWidget = layoutWidget.m_optionsWidget;
-        m_asciiOnly = optionsWidget->asciiOnly();
-        m_ignoreThe = optionsWidget->ignoreThe();
-        m_replaceSpaces = optionsWidget->replaceSpaces();
-        m_regexText = optionsWidget->regexpText();
-        m_replaceText = optionsWidget->replaceText();
+        m_asciiOnly = optionsWidget.asciiOnly();
+        m_ignoreThe = optionsWidget.ignoreThe();
+        m_replaceSpaces = optionsWidget.replaceSpaces();
+        m_regexText = optionsWidget.regexpText();
+        m_replaceText = optionsWidget.replaceText();
         m_collectionName = settings->m_collectionName->text();
 
         if( settings->m_podcastCheckBox->isChecked() )

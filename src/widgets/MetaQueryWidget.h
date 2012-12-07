@@ -91,11 +91,14 @@ class MetaQueryWidget : public QWidget
         struct Filter
         {
             Filter()
-                  : field( 0 )
+                  : m_field( 0 )
                   , numValue( 0 )
                   , numValue2( 0 )
                   , condition( Contains )
             {}
+
+            qint64 field() const { return m_field; }
+            void setField( qint64 newField );
 
             /** Returns a textual representation of the field.
              */
@@ -107,12 +110,20 @@ class MetaQueryWidget : public QWidget
             QString toString( bool invert = false ) const;
 
             bool isNumeric() const
-            { return MetaQueryWidget::isNumeric(field); }
+            { return MetaQueryWidget::isNumeric( m_field ); }
 
             bool isDate() const
-            { return MetaQueryWidget::isDate(field); }
+            { return MetaQueryWidget::isDate( m_field ); }
 
-            qint64   field;
+            /** Returns the minimum allowed value for the field type */
+            static qint64 minimumValue( quint64 field );
+            static qint64 maximumValue( quint64 field );
+            static qint64 defaultValue( quint64 field );
+
+        private:
+            qint64 m_field;
+
+        public:
             QString  value;
             qint64   numValue;
             qint64   numValue2;
@@ -180,7 +191,7 @@ class MetaQueryWidget : public QWidget
         void makeMetaComboSelection( qint64 field );
 
         void makeFormatComboSelection();
-        void makeGenericNumberSelection( int min, int max, int def, const QString& unit = "" );
+        void makeGenericNumberSelection( qint64 field, const QString& unit = "" );
         void makePlaycountSelection();
         void makeRatingSelection();
         void makeLengthSelection();

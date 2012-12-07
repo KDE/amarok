@@ -43,35 +43,39 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     , m_ui( new Ui::EditFilterDialog )
     , m_curToken( 0 )
     , m_separator( " AND " )
+    , m_isUpdating()
 {
     setCaption( i18n( "Edit Filter" ) );
     setButtons( KDialog::Reset | KDialog::Ok | KDialog::Cancel );
 
     m_ui->setupUi( mainWidget() );
-    setMinimumSize( minimumSizeHint() );
 
-    m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", m_ui->dtTokens );
-    m_dropTarget->setRowLimit( 1 );
-
-    QVBoxLayout *l = new QVBoxLayout( m_ui->dtTokens );
-    l->setContentsMargins( 0, 0, 0, 0 );
-    l->addWidget( m_dropTarget );
+    m_ui->dropTarget->setRowLimit( 1 );
 
     initTokenPool();
-    parseTextFilter( text );
-    updateMetaQueryWidgetView();
+
+    m_ui->searchEdit->setText( text );
+    updateDropTarget( text );
+    updateAttributeEditor();
 
     connect( m_ui->mqwAttributeEditor, SIGNAL( changed( const MetaQueryWidget::Filter & ) ),
              SLOT( slotAttributeChanged( const MetaQueryWidget::Filter & ) ) );
     connect( this, SIGNAL( resetClicked() ), SLOT( slotReset() ) );
     connect( m_ui->cbInvert, SIGNAL( toggled( bool ) ),
              SLOT( slotInvert( bool ) ) );
-    connect( m_ui->cbAndOr, SIGNAL( currentIndexChanged( int ) ),
-             SLOT( slotSeparatorChange( int ) ) );
-    connect( m_dropTarget, SIGNAL( focusReceived( QWidget * ) ),
-             SLOT( slotTokenSelected( QWidget * ) ) );
-    connect( m_dropTarget, SIGNAL( changed() ),
-             SLOT( slotTokenDropTargetChanged() ) );
+    connect( m_ui->rbAnd, SIGNAL( toggled( bool ) ),
+             SLOT( slotSeparatorChange() ) );
+    connect( m_ui->rbOr, SIGNAL( toggled( bool ) ),
+             SLOT( slotSeparatorChange() ) );
+    connect( m_ui->tpTokenPool, SIGNAL( onDoubleClick( Token * ) ),
+             m_ui->dropTarget, SLOT( insertToken( Token* ) ) );
+    connect( m_ui->dropTarget, SIGNAL( tokenSelected( Token * ) ),
+             SLOT( slotTokenSelected( Token * ) ) );
+    connect( m_ui->dropTarget, SIGNAL( changed() ),
+             SLOT( updateSearchEdit() ) ); // in case someone dragged a token around.
+
+    connect( m_ui->searchEdit, SIGNAL( textEdited( QString ) ),
+             SLOT( slotSearchEditChanged( QString ) ) );
 }
 
 EditFilterDialog::~EditFilterDialog()
@@ -122,13 +126,64 @@ EditFilterDialog::tokenForField( const qint64 field )
     return new Token( text, icon, field );
 }
 
-void
-EditFilterDialog::slotAttributeChanged( const MetaQueryWidget::Filter &filter )
+EditFilterDialog::Filter &
+EditFilterDialog::filterForToken( Token *token )
 {
-    if( m_curToken )
-        m_filters[m_curToken].filter = filter;
+    // a new token!
+    if( !m_filters.contains( token ) ) {
+        Filter newFilter;
+        newFilter.filter.setField( token->value() );
+        newFilter.inverted = false;
 
-    m_ui->label->setText( this->filter() );
+        m_filters.insert( token, newFilter );
+        connect( token, SIGNAL(destroyed(QObject*)),
+                 this, SLOT(slotTokenDestroyed(QObject*)) );
+    }
+
+    return m_filters[token];
+}
+
+void
+EditFilterDialog::slotTokenSelected( Token *token )
+{
+    DEBUG_BLOCK;
+
+    if( m_curToken == token )
+        return; // nothing to do
+
+    m_curToken = token;
+
+    if( m_curToken && m_curToken->value() > Meta::valCustom )   // OR / AND tokens case
+        m_curToken = 0;
+
+    updateAttributeEditor();
+}
+
+void
+EditFilterDialog::slotTokenDestroyed( QObject *token )
+{
+    DEBUG_BLOCK
+
+    m_filters.take( qobject_cast<Token*>(token) );
+    if( m_curToken == token )
+    {
+        m_curToken = 0;
+        updateAttributeEditor();
+    }
+
+    updateSearchEdit();
+}
+
+
+void
+EditFilterDialog::slotAttributeChanged( const MetaQueryWidget::Filter &newFilter )
+{
+    DEBUG_BLOCK;
+
+    if( m_curToken )
+        m_filters[m_curToken].filter = newFilter;
+
+    updateSearchEdit();
 }
 
 void
@@ -137,31 +192,35 @@ EditFilterDialog::slotInvert( bool checked )
     if( m_curToken )
         m_filters[m_curToken].inverted = checked;
 
-    m_ui->label->setText( filter() );
+    updateSearchEdit();
 }
 
 void
-EditFilterDialog::slotSeparatorChange( int index )
+EditFilterDialog::slotSeparatorChange()
 {
-    // this depends on the order of combobox entries in EditFilterDialog.ui
-    // but fixes Bug 279559
-    if( index == 0 )
+    if( m_ui->rbAnd->isChecked() )
         m_separator = QString( " AND " );
     else
         m_separator = QString( " OR " );
 
-    m_ui->label->setText( filter() );
+    updateSearchEdit();
+}
+
+void
+EditFilterDialog::slotSearchEditChanged( const QString &filterText )
+{
+    updateDropTarget( filterText );
+    updateAttributeEditor();
 }
 
 void
 EditFilterDialog::slotReset()
 {
-    m_curToken = 0;
-    m_filters.clear();
-    m_dropTarget->clear();
-    m_ui->cbAndOr->setCurrentIndex( 0 );
+    m_ui->dropTarget->clear();
+    m_ui->rbAnd->setChecked( true );
 
-    updateMetaQueryWidgetView();
+    updateAttributeEditor();
+    updateSearchEdit();
 }
 
 void
@@ -172,113 +231,75 @@ EditFilterDialog::accept()
 }
 
 void
-EditFilterDialog::updateMetaQueryWidgetView()
+EditFilterDialog::updateAttributeEditor()
 {
+    DEBUG_BLOCK;
+
+    if( m_isUpdating )
+        return;
+    m_isUpdating = true;
+
     if( m_curToken )
     {
-        if( m_filters.contains( m_curToken ) )
-        {
-            m_ui->mqwAttributeEditor->setFilter( m_filters[m_curToken].filter );
-            m_ui->cbInvert->setChecked( m_filters[m_curToken].inverted );
-        }
-        else
-        {
-            m_ui->mqwAttributeEditor->setField( m_curToken->value() );
-            m_ui->cbInvert->setChecked( false );
-        }
-    }
-    else
-    {
-        m_ui->mqwAttributeEditor->setField( 0 );
-        m_ui->cbInvert->setChecked( false );
+        Filter &filter = filterForToken( m_curToken );
+
+        m_ui->mqwAttributeEditor->setFilter( filter.filter );
+        m_ui->cbInvert->setChecked( filter.inverted );
     }
 
     m_ui->mqwAttributeEditor->setEnabled( ( bool )m_curToken );
     m_ui->cbInvert->setEnabled( ( bool )m_curToken );
-    m_ui->label->setText( filter() );
+
+    m_isUpdating = false;
 }
 
 void
-EditFilterDialog::slotTokenSelected( QWidget *token )
+EditFilterDialog::updateSearchEdit()
 {
-    m_curToken = qobject_cast< Token *>( token );
+    DEBUG_BLOCK;
 
-    if( m_curToken && m_curToken->value() > Meta::valCustom )   // OR / AND tokens case
-        m_curToken = 0;
+    if( m_isUpdating )
+        return;
+    m_isUpdating = true;
 
-    updateMetaQueryWidgetView();
+    m_ui->searchEdit->setText( filter() );
+
+    m_isUpdating = false;
 }
 
 void
-EditFilterDialog::slotTokenDropTargetChanged()
+EditFilterDialog::updateDropTarget( const QString &text )
 {
-    m_curToken = 0;
-    updateMetaQueryWidgetView();
-}
+    DEBUG_BLOCK;
 
-QString
-EditFilterDialog::filter() const
-{
-    QString filterString;
+    if( m_isUpdating )
+        return;
+    m_isUpdating = true;
 
-    if( !m_dropTarget->count() )
-        return filterString;
+    m_ui->dropTarget->clear();
 
-    QList < Token *> tokens = m_dropTarget->drags();
-    bool join = false;
-    Filter filter;
-    foreach( Token *token, tokens )
-    {
-        if( token->value() == OR_TOKEN )
-        {
-            filterString.append( " OR " );
-            join = false;
-        }
-        else if( token->value() == AND_TOKEN )
-        {
-            filterString.append( " AND " );
-            join = false;
-        }
-        else if( m_filters.contains( token ) )
-        {
-            if( join )
-                filterString.append( m_separator );
-            filter = m_filters[token];
-            filterString.append( filter.filter.toString( filter.inverted ) );
-            join = true;
-        }
-    }
-
-    return filterString;
-}
-
-void
-EditFilterDialog::parseTextFilter( const QString &text )
-{
     // some code duplications, see Collections::semanticDateTimeParser
 
-    ParsedExpression parsed = ExpressionParser::parse ( text );
-    bool AND = false;
-    bool OR = false;
+    ParsedExpression parsed = ExpressionParser::parse( text );
+    bool AND = false; // need an AND token
+    bool OR = false; // need an OR token
     bool isDateAbsolute = false;
     foreach( const or_list &orList, parsed )
     {
-        if( AND )
-            m_dropTarget->insertToken( AND_TOKEN_CONSTRUCT );
-
-        OR = false;
-        foreach ( const expression_element &elem, orList )
+        foreach( const expression_element &elem, orList )
         {
-            if( OR )
-                m_dropTarget->insertToken( OR_TOKEN_CONSTRUCT );
+            if( AND )
+                m_ui->dropTarget->insertToken( AND_TOKEN_CONSTRUCT );
+            else if( OR )
+                m_ui->dropTarget->insertToken( OR_TOKEN_CONSTRUCT );
 
             Filter filter;
-            filter.filter.field = !elem.field.isEmpty() ? Meta::fieldForName( elem.field ) : 0;
-            if( filter.filter.field == Meta::valRating )
+            filter.filter.setField( !elem.field.isEmpty() ? Meta::fieldForName( elem.field ) : 0 );
+            if( filter.filter.field() == Meta::valRating )
             {
                 filter.filter.numValue = 2 * elem.text.toFloat();
             }
-            else if( m_ui->mqwAttributeEditor->isDate( filter.filter.field ) )
+            else if( filter.filter.isDate() )
             {
                 QString strTime = elem.text;
 
@@ -357,12 +378,12 @@ EditFilterDialog::parseTextFilter( const QString &text )
                     isDateAbsolute = false;
                 }
             }
-            else if( m_ui->mqwAttributeEditor->isNumeric( filter.filter.field ) )
+            else if( filter.filter.isNumeric() )
             {
                 filter.filter.numValue = elem.text.toInt();
             }
 
-            if( m_ui->mqwAttributeEditor->isDate( filter.filter.field ) )
+            if( filter.filter.isDate() )
             {
                 switch( elem.match )
                 {
@@ -382,7 +403,7 @@ EditFilterDialog::parseTextFilter( const QString &text )
                         filter.filter.condition = MetaQueryWidget::Equals;
                 }
             }
-            else if( m_ui->mqwAttributeEditor->isNumeric( filter.filter.field ) )
+            else if( filter.filter.isNumeric() )
             {
                 switch( elem.match )
                 {
@@ -413,17 +434,55 @@ EditFilterDialog::parseTextFilter( const QString &text )
 
             filter.inverted = elem.negate;
 
-            Token *nToken = filter.filter.field
-                            ? tokenForField( filter.filter.field )
+            Token *nToken = filter.filter.field()
+                            ? tokenForField( filter.filter.field() )
                             : SIMPLE_TEXT_CONSTRUCT;
-            m_dropTarget->insertToken( nToken );
             m_filters.insert( nToken, filter );
+            connect( nToken, SIGNAL(destroyed(QObject*)),
+                     this, SLOT(slotTokenDestroyed(QObject*)) );
+
+            m_ui->dropTarget->insertToken( nToken );
 
             OR = true;
         }
-
+        OR = false;
         AND = true;
     }
+
+    m_isUpdating = false;
+}
+
+
+QString
+EditFilterDialog::filter()
+{
+    QString filterString;
+
+    QList < Token *> tokens = m_ui->dropTarget->tokensAtRow();
+    bool join = false;
+    foreach( Token *token, tokens )
+    {
+        if( token->value() == OR_TOKEN )
+        {
+            filterString.append( " OR " );
+            join = false;
+        }
+        else if( token->value() == AND_TOKEN )
+        {
+            filterString.append( " AND " );
+            join = false;
+        }
+        else
+        {
+            if( join )
+                filterString.append( m_separator );
+            Filter &filter = filterForToken( token );
+            filterString.append( filter.filter.toString( filter.inverted ) );
+            join = true;
+        }
+    }
+
+    return filterString;
 }
 
 #include "EditFilterDialog.moc"

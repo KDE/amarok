@@ -21,7 +21,7 @@
 #define TAGGUESSERDIALOG_H
 
 #include "amarok_export.h"
-#include "FilenameLayoutDialog.h"
+#include "widgets/FilenameLayoutWidget.h"
 
 #include "ui_TagGuessOptions.h"
 
@@ -86,7 +86,7 @@ class AMAROK_EXPORT TagGuesserDialog : public KDialog
         virtual void onAccept();
 
     private slots:
-        /** Updates the result texts. */
+        /** Updates the result texts and the colored filename. */
         void updatePreview();
 
     private:
@@ -103,7 +103,7 @@ class AMAROK_EXPORT TagGuesserDialog : public KDialog
         /**
         *   @Returns a colored version of the filename
         */
-        QString coloredFileName();
+        QString coloredFileName( QMap<qint64,QString> tags );
 
         /**
          * @Returns color name for specified metadata field

@@ -956,7 +956,7 @@ Dynamic::DynamicModel::initPlaylists()
     part->appendBias( Dynamic::BiasPtr( new Dynamic::RandomBias() ) );
 
     MetaQueryWidget::Filter ratingFilter;
-    ratingFilter.field = Meta::valRating;
+    ratingFilter.setField( Meta::valRating );
     ratingFilter.numValue = 5;
     ratingFilter.condition = MetaQueryWidget::GreaterThan;
 

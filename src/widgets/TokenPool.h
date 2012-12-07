@@ -27,8 +27,7 @@
 class TokenPool : public KListWidget
 {
     Q_OBJECT
-    Q_PROPERTY(QString mimeType READ mimeType WRITE setMimeType)
-    
+
     public:
         TokenPool( QWidget *parent = 0 );
 
@@ -39,14 +38,17 @@ class TokenPool : public KListWidget
         */
         void addToken( Token * token );
 
-        QString mimeType() const;
-        void setMimeType( const QString& mimeType );
+        QSize sizeHint() const;
     protected:
         void mouseDoubleClickEvent( QMouseEvent *event );
+
+        /** Handles start of drag. */
         void mousePressEvent( QMouseEvent *event );
+
+        /** Handles start of drag. */
         void mouseMoveEvent( QMouseEvent *event );
         void dragEnterEvent( QDragEnterEvent *event );
-        void dragMoveEvent( QDragMoveEvent *event );
+        // void dragMoveEvent( QDragMoveEvent *event );
         void dropEvent( QDropEvent *event );
 
     signals:
@@ -56,9 +58,11 @@ class TokenPool : public KListWidget
         void onDoubleClick( Token *token );
 
     private:
-        void performDrag( QMouseEvent *event );
-        QPoint m_startPos;  //needed for starting the drag
-        QString m_mimeType;
+        void performDrag();
+
+        /** Position of the mouse press event
+            (used for drag and drop) */
+        QPoint m_startPos;
 
         QMap<QListWidgetItem*,Token*> m_itemTokenMap;
 };

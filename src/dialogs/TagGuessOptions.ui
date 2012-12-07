@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>TagGuessOptions</class>
  <widget class="QWidget" name="TagGuessOptions">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>374</width>
+    <height>238</height>
+   </rect>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
    <item>
     <widget class="KButtonGroup" name="optionsFrame">
@@ -139,7 +147,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="label_23">
         <property name="text">
          <string>Composer:</string>
@@ -149,7 +157,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="5" column="1">
        <widget class="QLabel" name="Composer_result">
         <property name="minimumSize">
          <size>
@@ -165,7 +173,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="7" column="0">
        <widget class="QLabel" name="label_24">
         <property name="text">
          <string>Year:</string>
@@ -175,7 +183,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="7" column="1">
        <widget class="QLabel" name="Year_result">
         <property name="minimumSize">
          <size>
@@ -191,17 +199,17 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="8" column="0">
        <widget class="QLabel" name="label_25">
         <property name="text">
-         <string>Track:</string>
+         <string> Track Number</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="8" column="1">
        <widget class="QLabel" name="Track_result">
         <property name="minimumSize">
          <size>
@@ -217,23 +225,7 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_29">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>18</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Album Artist</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
+      <item row="2" column="1">
        <widget class="QLabel" name="AlbumArtist_result">
         <property name="minimumSize">
          <size>
@@ -249,18 +241,8 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_26">
-        <property name="text">
-         <string>Album:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QLabel" name="Album_result">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_29">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -268,14 +250,14 @@
          </size>
         </property>
         <property name="text">
-         <string>&lt;empty&gt;</string>
+         <string>Album Artist</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="label_27">
         <property name="text">
          <string>Comment:</string>
@@ -285,7 +267,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="6" column="1">
        <widget class="QLabel" name="Comment_result">
         <property name="minimumSize">
          <size>
@@ -301,7 +283,33 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="0">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_26">
+        <property name="text">
+         <string>Album:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="Album_result">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>18</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>&lt;empty&gt;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
        <widget class="QLabel" name="label_28">
         <property name="text">
          <string>Genre:</string>
@@ -311,7 +319,7 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="1">
+      <item row="4" column="1">
        <widget class="QLabel" name="Genre_result">
         <property name="minimumSize">
          <size>

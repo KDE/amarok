@@ -31,8 +31,6 @@ namespace Ui
     class EditFilterDialog;
 }
 
-class TokenDropTarget;
-
 class EditFilterDialog : public KDialog
 {
     Q_OBJECT
@@ -41,25 +39,30 @@ class EditFilterDialog : public KDialog
         explicit EditFilterDialog( QWidget* parent, const QString &text = QString() );
         ~EditFilterDialog();
 
-        QString filter() const;
+        QString filter();
 
     signals:
         void filterChanged( const QString &filter );
 
     private slots:
-        void slotTokenSelected( QWidget *token );
-        void slotTokenDropTargetChanged();
+        void slotTokenSelected( Token *token );
+        void slotTokenDestroyed( QObject *token );
         void slotAttributeChanged( const MetaQueryWidget::Filter &filter );
         void slotInvert( bool checked );
-        void slotSeparatorChange( int index );
+        void slotSeparatorChange();
+        void slotSearchEditChanged( const QString &filterText );
         void slotReset();
         void accept();
+
+        void updateAttributeEditor();
+        void updateSearchEdit();
+
+        /** Parses the given text and set's the dropTarget accordingly. */
+        void updateDropTarget( const QString &filterText );
 
     private:
         void initTokenPool();
         Token *tokenForField( const qint64 field );
-        void parseTextFilter( const QString &text );
-        void updateMetaQueryWidgetView();
 
         struct Filter
         {
@@ -67,12 +70,17 @@ class EditFilterDialog : public KDialog
             bool inverted;
         };
 
+        Filter &filterForToken( Token *token );
+
         Ui::EditFilterDialog *m_ui;
-        TokenDropTarget *m_dropTarget;
         Token *m_curToken;
         QMap< Token *, Filter > m_filters;
 
         QString m_separator;
+
+        /** True if we are already updating the status.
+            This blocks recursive calls to updateWidgets or parsteTextFilters. */
+        bool m_isUpdating;
 };
 
 #endif /* AMAROK_EDITFILTERDIALOG_H */

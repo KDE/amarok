@@ -41,7 +41,7 @@ signals:
 class TokenWithLayoutFactory : public TokenFactory
 {
 public:
-    virtual Token * createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 );
+    virtual Token * createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 ) const;
 };
 
 /**

@@ -20,50 +20,26 @@
 #define FILENAMELAYOUTDIALOG_H
 
 #include "amarok_export.h"
-#include "ui_TagGuessOptions.h"
-#include "ui_FilenameLayoutOptions.h"
 
 #include <QWidget>
 
 class Token;
 class TokenPool;
 class TokenDropTarget;
+
 class QFileInfo;
 class QStackedWidget;
 class QLabel;
+class QFrame;
 class QComboBox;
 class QPushButton;
 class QVBoxLayout;
 class QHBoxLayout;
 
-/** A couple of options used in the filename layout dialog. */
-class AMAROK_EXPORT FilenameLayoutOptionWidget : public QGroupBox, public Ui::FilenameLayoutOptions
-{
-    Q_OBJECT
-
-    public:
-        FilenameLayoutOptionWidget( QWidget *parent = 0 );
-
-        bool asciiOnly() const { return asciiCheck->isChecked(); }
-        void setAsciiOnly( bool enable ) { asciiCheck->setChecked( enable ); }
-        bool vfatCompatible() const { return vfatCheck->isChecked(); }
-        void setVfatCompatible( bool enable ) { vfatCheck->setChecked( enable ); }
-        bool ignoreThe() const { return ignoreTheCheck->isChecked(); }
-        void setIgnoreThe( bool enable ) { ignoreTheCheck->setChecked( enable ); }
-        bool replaceSpaces() const { return spaceCheck->isChecked(); }
-        void setReplaceSpaces( bool enable ) { spaceCheck->setChecked( enable ); }
-        QString regexpText() const { return regexpEdit->text(); }
-        void setRegexpText( const QString &text ) { regexpEdit->setText( text ); }
-        QString replaceText() const { return replaceEdit->text(); }
-        void setReplaceText( const QString &text ) { replaceEdit->setText( text ); }
-
-    signals:
-        void optionsChanged();
-};
-
+class KLineEdit;
 
 //Holds the TokenLayoutWidget and TokenPool and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
-class AMAROK_EXPORT FilenameLayoutWidget : public QWidget //, protected Ui::FilenameLayoutDialog
+class AMAROK_EXPORT FilenameLayoutWidget : public QWidget
 {
     Q_OBJECT
 
@@ -73,7 +49,7 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget //, protected Ui::File
         {
               Unknown = 0
             , Ignore
-            , Track
+            , TrackNumber
             , Title
             , Artist
             , Composer
@@ -172,20 +148,6 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget //, protected Ui::File
 
         /** The name of the category used for storing the configuration */
         QString m_configCategory;
-};
-
-/** This dialog is used in the OrganizeCollection */
-class AMAROK_EXPORT OrganizeCollectionWidget : public FilenameLayoutWidget
-{
-    Q_OBJECT
-
-    public:
-        explicit OrganizeCollectionWidget( QWidget *parent = 0 );
-        virtual ~OrganizeCollectionWidget() {}
-
-        // void setformatPresetVisible( bool visible ) { formatPresetWidget->setVisible( visible ); }
-
-        FilenameLayoutOptionWidget* m_optionsWidget;
 };
 
 

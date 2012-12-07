@@ -10,12 +10,6 @@
     <height>473</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>350</width>
-    <height>100</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>USB Mass Storage device configuration</string>
   </property>

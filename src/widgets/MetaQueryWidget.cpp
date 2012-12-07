@@ -19,7 +19,6 @@
  ****************************************************************************************/
 
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
 #include "core/collections/MetaQueryMaker.h"
 #include "core/collections/QueryMaker.h"
 #include "widgets/MetaQueryWidget.h"
@@ -143,6 +142,100 @@ void TimeDistanceWidget::slotUpdateComboBoxLabels( int value )
     m_unitSelection->setItemText(6, i18np("year", "years", value));
 }
 
+void
+MetaQueryWidget::Filter::setField( qint64 newField )
+{
+    if( m_field == newField )
+        return;
+
+    // -- reset the value and the condition if the new filter has another type
+    if( MetaQueryWidget::isNumeric( m_field ) != MetaQueryWidget::isNumeric( newField ) )
+    {
+        value.clear();
+        if( MetaQueryWidget::isNumeric( newField ) )
+            condition = Equals;
+        else
+            condition = Contains;
+    }
+    if( !MetaQueryWidget::isDate( m_field ) && MetaQueryWidget::isDate( newField ) )
+    {
+        numValue = QDateTime::currentDateTime().toTime_t();
+        numValue2 = QDateTime::currentDateTime().toTime_t();
+    }
+    else
+    {
+        numValue = 0;
+        numValue2 = 0;
+    }
+
+    if (numValue < minimumValue( newField ) || numValue > maximumValue( newField ) )
+        numValue = defaultValue( newField );
+
+    if (numValue2 < minimumValue( newField ) || numValue2 > maximumValue( newField ) )
+        numValue2 = defaultValue( newField );
+
+    m_field = newField;
+}
+
+qint64
+MetaQueryWidget::Filter::minimumValue( quint64 field )
+{
+    switch( field )
+    {
+    case Meta::valYear: return 1900;
+    case Meta::valTrackNr: return 0;
+    case Meta::valDiscNr: return 0;
+    case Meta::valBpm: return 60;
+    case Meta::valBitrate: return 60;
+    case Meta::valSamplerate: return 8000;
+    case Meta::valFilesize: return 0;
+    case Meta::valScore: return 0;
+    case Meta::valPlaycount: return 0;
+    case Meta::valRating: return 0;
+    case Meta::valLength: return 0;
+    default: return 0;
+    }
+}
+
+qint64
+MetaQueryWidget::Filter::maximumValue( quint64 field )
+{
+    switch( field )
+    {
+    case Meta::valYear: return 2300;
+    case Meta::valTrackNr: return 100;
+    case Meta::valDiscNr: return 10;
+    case Meta::valBpm: return 200;
+    case Meta::valBitrate: return 2000;
+    case Meta::valSamplerate: return 48000;
+    case Meta::valFilesize: return 1000;
+    case Meta::valScore: return 100;
+    case Meta::valPlaycount: return 1000;
+    case Meta::valRating: return 10;
+    case Meta::valLength: return 60 * 60 + 59;
+    default: return 0;
+    }
+}
+
+qint64
+MetaQueryWidget::Filter::defaultValue( quint64 field )
+{
+    switch( field )
+    {
+    case Meta::valYear: return 1976;
+    case Meta::valTrackNr: return 0;
+    case Meta::valDiscNr: return 0;
+    case Meta::valBpm: return 80;
+    case Meta::valBitrate: return 160;
+    case Meta::valSamplerate: return 44100;
+    case Meta::valFilesize: return 10;
+    case Meta::valScore: return 0;
+    case Meta::valPlaycount: return 00;
+    case Meta::valRating: return 0;
+    case Meta::valLength: return 3 * 60 + 59;
+    default: return 0;
+    }
+}
 
 MetaQueryWidget::MetaQueryWidget( QWidget* parent, bool onlyNumeric, bool noCondition )
     : QWidget( parent )
@@ -169,14 +262,10 @@ MetaQueryWidget::MetaQueryWidget( QWidget* parent, bool onlyNumeric, bool noCond
     m_layoutValueValues = new QVBoxLayout();
     m_layoutValue->addLayout(m_layoutValueValues, 1);
 
-    if( m_onlyNumeric ) {
-        m_filter.field = Meta::valYear;
-        m_filter.condition = Equals;
-
-    } else {
-        m_filter.field = 0;
-        m_filter.condition = Contains;
-    }
+    if( m_onlyNumeric )
+        m_filter.setField( Meta::valYear );
+    else
+        m_filter.setField( 0 );
 
     setFilter(m_filter);
 }
@@ -204,7 +293,7 @@ MetaQueryWidget::setFilter( const MetaQueryWidget::Filter &value )
     m_settingFilter = true;
     m_filter = value;
 
-    int index = m_fieldSelection->findData( int(m_filter.field) );
+    int index = m_fieldSelection->findData( int(m_filter.field()) );
     m_fieldSelection->setCurrentIndex( index == -1 ? 0 : index );
 
     if( !m_noCondition )
@@ -278,30 +367,7 @@ MetaQueryWidget::fieldChanged( int i )
     else
         field = m_fieldSelection->itemData( i ).toInt();
 
-    if( m_filter.field == field )
-        return; // nothing to do
-
-    // -- reset the value and the condition if the new filter has another type
-    if( isNumeric( m_filter.field ) != isNumeric( field ) )
-    {
-        m_filter.value.clear();
-        if( isNumeric( field ) )
-            m_filter.condition = Equals;
-        else
-            m_filter.condition = Contains;
-    }
-    if( !isDate( m_filter.field ) && isDate( field ) )
-    {
-        m_filter.numValue = QDateTime::currentDateTime().toTime_t();
-        m_filter.numValue2 = QDateTime::currentDateTime().toTime_t();
-    }
-    else
-    {
-        m_filter.numValue = 0;
-        m_filter.numValue2 = 0;
-    }
-
-    m_filter.field = field;
+    m_filter.setField( field );
 
     // in the fieldChanged slot we assume that the field was really changed,
     // so we don't have a problem with throwing away all the old widgets
@@ -323,7 +389,7 @@ MetaQueryWidget::compareChanged( int index )
     if( m_filter.condition == condition )
         return; // nothing to do
 
-    if( isDate( m_filter.field) )
+    if( m_filter.isDate() )
     {
         if(  ( condition == OlderThan || condition == NewerThan )
             && m_filter.condition != OlderThan && m_filter.condition != NewerThan
@@ -539,7 +605,7 @@ MetaQueryWidget::makeCompareSelection()
     delete m_compareSelection;
     m_compareSelection = 0;
 
-    qint64 field = m_filter.field;
+    qint64 field = m_filter.field();
 
     if( field == Meta::valFormat )
         return; // the field is fixed
@@ -591,7 +657,7 @@ MetaQueryWidget::makeValueSelection()
     delete m_valueSelection2;
     m_valueSelection2 = 0;
 
-    qint64 field = m_filter.field;
+    qint64 field = m_filter.field();
     if( field == Meta::valUrl )
         makeFilenameSelection();
     else if( field == Meta::valTitle )
@@ -604,29 +670,29 @@ MetaQueryWidget::makeValueSelection()
         field == Meta::valComposer )
         makeMetaComboSelection( field );
     else if( field == Meta::valYear )
-        makeGenericNumberSelection( 1900, 2300, 1976 );
+        makeGenericNumberSelection( field );
     else if( field == Meta::valComment )
         makeGenericComboSelection( true, 0 );
     else if( field == Meta::valTrackNr )
-        makeGenericNumberSelection( 0, 100, 0 );
+        makeGenericNumberSelection( field );
     else if( field == Meta::valDiscNr )
-        makeGenericNumberSelection( 0, 10, 0 );
+        makeGenericNumberSelection( field );
     else if( field == Meta::valBpm )
-        makeGenericNumberSelection( 60, 200, 80 );
+        makeGenericNumberSelection( field );
     else if( field == Meta::valLength )
         makeLengthSelection();
     else if( field == Meta::valBitrate )
-        makeGenericNumberSelection( 60, 2000, 160, i18nc("Unit for data rate kilo bit per seconds", "kbps") );
+        makeGenericNumberSelection( field, i18nc("Unit for data rate kilo bit per seconds", "kbps") );
     else if( field == Meta::valSamplerate )
-        makeGenericNumberSelection( 8000, 48000, 44100, i18nc("Unit for sample rate", "Hz") );
+        makeGenericNumberSelection( field, i18nc("Unit for sample rate", "Hz") );
     else if( field == Meta::valFilesize )
-        makeGenericNumberSelection( 0, 1000, 10, i18nc("Unit for file size in mega byte", "MiB") );
+        makeGenericNumberSelection( field, i18nc("Unit for file size in mega byte", "MiB") );
     else if( field == Meta::valFormat )
         makeFormatComboSelection();
     else if( field == Meta::valCreateDate )
         makeDateTimeSelection();
     else if( field == Meta::valScore )
-        makeGenericNumberSelection( 0, 100, 0 );
+        makeGenericNumberSelection( field );
     else if( field == Meta::valRating )
         makeRatingSelection();
     else if( field == Meta::valFirstPlayed )
@@ -634,7 +700,7 @@ MetaQueryWidget::makeValueSelection()
     else if( field == Meta::valLastPlayed )
         makeDateTimeSelection();
     else if( field == Meta::valPlaycount )
-        makeGenericNumberSelection( 0, 1000, 0 );
+        makeGenericNumberSelection( field );
     else if( field == Meta::valLabel )
         makeGenericComboSelection( true, 0 );
     else if( field == Meta::valModified )
@@ -802,21 +868,14 @@ MetaQueryWidget::makeLengthSelection()
 }
 
 void
-MetaQueryWidget::makeGenericNumberSelection( int min, int max, int def, const QString& unit )
+MetaQueryWidget::makeGenericNumberSelection( qint64 field, const QString& unit )
 {
     KIntSpinBox* spin = new KIntSpinBox();
-    spin->setMinimum( min );
-    spin->setMaximum( max );
+    spin->setMinimum( Filter::minimumValue( field ) );
+    spin->setMaximum( Filter::maximumValue( field ) );
     if( !unit.isEmpty() )
         spin->setSuffix( " " + unit );
-    if( m_filter.condition == Contains ||
-        m_filter.numValue < min || m_filter.numValue > max )
-    {
-        spin->setValue( def );
-        numValueChanged( def );
-    }
-    else
-        spin->setValue( m_filter.numValue );
+    spin->setValue( m_filter.numValue );
 
     connect( spin, SIGNAL(valueChanged(int)),
             this, SLOT(numValueChanged(int)) );
@@ -828,18 +887,11 @@ MetaQueryWidget::makeGenericNumberSelection( int min, int max, int def, const QS
 
     // second spin box for the between selection
     KIntSpinBox* spin2 = new KIntSpinBox();
-    spin2->setMinimum( min );
-    spin2->setMaximum( max );
+    spin2->setMinimum( Filter::minimumValue( field ) );
+    spin2->setMaximum( Filter::maximumValue( field ) );
     if( !unit.isEmpty() )
         spin2->setSuffix( " " + unit );
-    if( m_filter.condition == Contains ||
-        m_filter.numValue2 < min || m_filter.numValue2 > max )
-    {
-        spin2->setValue( def );
-        numValue2Changed( def );
-    }
-    else
-        spin2->setValue( m_filter.numValue2 );
+    spin2->setValue( m_filter.numValue2 );
 
     connect( spin2, SIGNAL(valueChanged(int)),
             this, SLOT(numValue2Changed(int)) );
@@ -991,7 +1043,7 @@ MetaQueryWidget::conditionToString( FilterCondition condition, qint64 field )
 QString
 MetaQueryWidget::Filter::fieldToString() const
 {
-    return Meta::shortI18nForField( field );
+    return Meta::shortI18nForField( m_field );
 }
 
 QString MetaQueryWidget::Filter::toString( bool invert ) const
@@ -1000,16 +1052,16 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
     QString strValue1 = value;
     QString strValue2 = value;
 
-    if( field == Meta::valFormat )
+    if( m_field == Meta::valFormat )
     {
         strValue1 = Amarok::FileTypeSupport::toString( Amarok::FileType( numValue ));
     }
-    else if( field == Meta::valRating )
+    else if( m_field == Meta::valRating )
     {
         strValue1 = QString::number( (float)numValue / 2 );
         strValue2 = QString::number( (float)numValue2 / 2 );
     }
-    else if( MetaQueryWidget::isDate(field) )
+    else if( isDate() )
     {
         if( condition == OlderThan || condition == NewerThan )
         {
@@ -1024,21 +1076,21 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
             strValue2 = localizedDate2.formatDate( KLocale::ShortDate );
         }
     }
-    else if( MetaQueryWidget::isNumeric(field) )
+    else if( isNumeric() )
     {
         strValue1 = QString::number( numValue );
         strValue2 = QString::number( numValue2 );
     }
 
     QString result;
-    if( field )
+    if( m_field )
         result = fieldToString() + ':';
 
     switch( condition )
     {
     case Equals:
         {
-            if( MetaQueryWidget::isNumeric(field) )
+            if( isNumeric() )
                 result += strValue1;
             else
                 result += '=' + QString( "\"%1\"" ).arg( value );
@@ -1140,7 +1192,6 @@ MetaQueryWidget::setFieldSelectorHidden( const bool hidden )
 void
 MetaQueryWidget::setField( const qint64 field )
 {
-    m_filter = Filter();
     int index = m_fieldSelection->findData( field );
     m_fieldSelection->setCurrentIndex( index == -1 ? 0 : index );
 }

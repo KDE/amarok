@@ -701,7 +701,6 @@ set(amaroklib_LIB_SRCS
     dialogs/DiagnosticDialog.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/EqualizerDialog.cpp
-    dialogs/FilenameLayoutDialog.cpp
     dialogs/MusicBrainzTagger.cpp
     dialogs/OrganizeCollectionDialog.cpp
     dialogs/TrackOrganizer.cpp
@@ -743,6 +742,7 @@ set(amaroklib_LIB_SRCS
     widgets/EditDeleteComboBoxView.cpp
     widgets/EditDeleteDelegate.cpp
     widgets/ElidingButton.cpp
+    widgets/FilenameLayoutWidget.cpp
     widgets/FlowLayout.cpp
     widgets/HorizontalDivider.cpp
     widgets/IconButton.cpp
@@ -897,7 +897,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/MusicBrainzTagger.ui
     dialogs/TagDialogBase.ui
     dialogs/TagGuessOptions.ui
-    dialogs/FilenameLayoutOptions.ui
+    dialogs/OrganizeCollectionOptions.ui
     dialogs/OrganizeCollectionDialogBase.ui
     likeback/LikeBackBar.ui
     likeback/LikeBackDialog.ui

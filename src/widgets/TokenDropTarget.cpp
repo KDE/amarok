@@ -109,12 +109,21 @@ TokenDropTarget::count() const
 void
 TokenDropTarget::setRowLimit( uint r )
 {
+    // if we have more than one row we have a stretch at the end.
+    QBoxLayout *mainLayout = qobject_cast<QBoxLayout*>( layout() );
+    if( ( r == 1 ) && (m_rowLimit != 1 ) )
+        mainLayout->addStretch( 1 ); // the vertical stretch
+    else if( ( r != 1 ) && (m_rowLimit == 1 ) )
+        mainLayout->takeAt( mainLayout->count() - 1 );
+
     m_rowLimit = r;
 }
 
 void
 TokenDropTarget::deleteEmptyRows()
 {
+    DEBUG_BLOCK;
+
     for( int row = rows() - 1; row >= 0; --row )
     {
         QBoxLayout *box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
@@ -124,15 +133,17 @@ TokenDropTarget::deleteEmptyRows()
             m_rows--;
         }
     }
-
     update(); // this removes empty layouts somehow for deleted tokens. don't remove
 }
 
 QList< Token *>
 TokenDropTarget::tokensAtRow( int row )
 {
-    int lower = 0, upper = rows();
-    if ( row > -1 && row < rows() )
+    DEBUG_BLOCK;
+
+    int lower = 0;
+    int upper = (int)rows();
+    if( row > -1 && row < (int)rows() )
     {
         lower = row;
         upper = row + 1;
@@ -140,7 +151,7 @@ TokenDropTarget::tokensAtRow( int row )
 
     QList< Token *> list;
     Token *token;
-    for ( row = lower; row < upper; ++row )
+    for( row = lower; row < upper; ++row )
         if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
         {
             for( int col = 0; col < rowBox->count() - m_horizontalStretch; ++col )
@@ -148,18 +159,30 @@ TokenDropTarget::tokensAtRow( int row )
                     list << token;
         }
 
+    debug() << "Row:"<<row<<"items:"<<list.count();
+
     return list;
 }
 
 void
 TokenDropTarget::insertToken( Token *token, int row, int col )
 {
+    // - copy the token if it belongs to a token pool (fix BR 296136)
+    if( qobject_cast<TokenPool*>(token->parent() ) ) {
+        debug() << "Copying token" << token->name();
+        token = m_tokenFactory->createToken( token->name(),
+                                             token->iconName(),
+                                             token->value() );
+    }
+
+    token->setParent( this );
+
     // - validate row
-    if ( row < 0 && rowLimit() && rows() >= (int)rowLimit() )
+    if ( row < 0 && rowLimit() && rows() >= rowLimit() )
         row = rowLimit() - 1; // want to append, but we can't so use the last row instead
 
     QBoxLayout *box;
-    if( row < 0 || row >= rows() )
+    if( row < 0 || row >= (int)rows() )
         box = appendRow();
     else
         box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
@@ -168,9 +191,8 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
     if( col < 0 || col > box->count() - ( 1 + m_horizontalStretch ) )
         col = box->count() - m_horizontalStretch;
 
-    token->setParent( this );
-    token->show();
     box->insertWidget( col, token );
+    token->show();
 
     connect( token, SIGNAL(changed()), this, SIGNAL(changed()) );
     connect( token, SIGNAL(gotFocus(Token*)), this, SIGNAL(tokenSelected(Token*)) );
@@ -184,7 +206,7 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
 Token*
 TokenDropTarget::tokenAt( const QPoint &pos ) const
 {
-    for( int row = 0; row < rows(); ++row )
+    for( uint row = 0; row < rows(); ++row )
         if( QBoxLayout *rowBox = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() ) )
             for( int col = 0; col < rowBox->count(); ++col )
                 if( QWidget *kid = rowBox->itemAt( col )->widget() )
@@ -211,14 +233,20 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
 
     // unlayout in case of move
     if( QBoxLayout *box = rowBox( token ) )
+    {
         box->removeWidget( token );
+        deleteEmptyRows(); // a row could now be empty due to a move
+    }
 
     if( targetToken )
     {   // we hit a sibling, -> prepend
         QPoint idx;
         rowBox( targetToken, &idx );
 
-        if( pos.x() > targetToken->geometry().x() + targetToken->width() / 2 )
+        if( rowLimit() != 1 && rowLimit() < m_rows && idx.y() == (int)m_rows - 1 &&
+            pos.y() > targetToken->geometry().y() + ( targetToken->height() * 2 / 3 ) )
+            insertToken( token, idx.y() + 1, idx.x());
+        else if( pos.x() > targetToken->geometry().x() + targetToken->width() / 2 )
             insertToken( token, idx.y(), idx.x() + 1);
         else
             insertToken( token, idx.y(), idx.x() );
@@ -228,7 +256,6 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
         insertToken( token );
     }
 
-    deleteEmptyRows(); // a row could now be empty due to a move
     token->setFocus( Qt::OtherFocusReason ); // select the new token right away
 }
 
@@ -280,7 +307,7 @@ TokenDropTarget::paintEvent(QPaintEvent *pe)
 int
 TokenDropTarget::row( Token *token ) const
 {
-    for ( int row = 0; row <= rows(); ++row )
+    for( uint row = 0; row <= rows(); ++row )
     {
         QBoxLayout *box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
         if ( box && ( box->indexOf( token ) ) > -1 )
@@ -294,7 +321,7 @@ TokenDropTarget::rowBox( QWidget *w, QPoint *idx ) const
 {
     QBoxLayout *box = 0;
     int col;
-    for ( int row = 0; row < rows(); ++row )
+    for( uint row = 0; row < rows(); ++row )
     {
         box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
         if ( box && ( col = box->indexOf( w ) ) > -1 )
@@ -314,7 +341,7 @@ QBoxLayout *
 TokenDropTarget::rowBox( const QPoint &pt ) const
 {
     QBoxLayout *box = 0;
-    for ( int row = 0; row < rows(); ++row )
+    for( uint row = 0; row < rows(); ++row )
     {
         box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
         if ( !box )
