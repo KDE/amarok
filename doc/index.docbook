@@ -33,7 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2012-12-08T13:50:28Z</timestamp>-->
+<!--userbase <timestamp>2012-12-08T15:12:17Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -3740,17 +3740,17 @@
 </sect3>
 </sect2>
 <sect2 id="nepomuk-collection-in-amarok"><title>Nepomuk collection in Amarok</title> 
-<para>Nepomuk has been a great semantic framework in recent years with many applications like Dolphin using it for managing metadata associated with its files and resources. And now, even Amarok uses Nepomuk to fetch tracks in your computer. This collection doesn't use the SQLite backend to store statistics and metadata ( artist, album, year, genre, Labels etc ). It instead uses Nepomuk to store them and fetch them.
+<para>Nepomuk has been a great semantic framework in recent years with many applications like &dolphin; using it for managing metadata associated with its files and resources. And now, even &amarok; uses Nepomuk to fetch tracks in your computer. This collection doesn't use the SQLite backend to store statistics and metadata ( artist, album, year, genre, Labels etc ). It instead uses Nepomuk to store them and fetch them.
 </para>
 <para>For more details on Nepomuk, please visit <ulink url="http://nepomuk.kde.org">its official page</ulink>.
 </para>
 <sect3 id="why-use-the-nepomuk-collection-at-all"><title>Why use the Nepomuk Collection at all?</title> 
-<para>Nepomuk is a system wide backend with multiple applications already using it for search and metadata. So when you rate a track in Amarok, it reflects in Dolphin as well. When you burn your music tracks onto a disc, the ratings will be included too! You don't have to remember where you have stored your music tracks anymore. Nepomuk fetches tracks from all over your computer. You don't have to organize your music tracks into one single folder! Imagine the number of times you downloaded a track again just 'cos you couldn't find it in your computer -- not anymore.
+<para>Nepomuk is a system wide backend with multiple applications already using it for search and metadata. So when you rate a track in &amarok;, it reflects in &dolphin; as well. When you burn your music tracks onto a disc, the ratings will be included too! You don't have to remember where you have stored your music tracks anymore. Nepomuk fetches tracks from all over your computer. You don't have to organize your music tracks into one single folder! Imagine the number of times you downloaded a track again just 'cos you couldn't find it in your computer -- not anymore.
 </para>
 </sect3>
 <sect3 id="getting-started7"><title>Getting Started</title> 
 <sect4 id="indexing-files"><title>Indexing Files</title> 
-<para>For your tracks to show up in &amarok;, they need to be <guilabel>indexed</guilabel> by Nepomuk first. And Nepomuk does not index every file on the hard drive. Its default configuration in most &Linux; distributions excludes some common patterns for backup files and configuration directories and it only indexes certain directories in your home folder. 
+<para>For your tracks to show up in &amarok;, they need to be <emphasis>indexed</emphasis> by Nepomuk first. And Nepomuk does not index every file on the hard drive. Its default configuration in most &Linux; distributions excludes some common patterns for backup files and configuration directories and it only indexes certain directories in your home folder. 
 </para>
 <para>Beware: indexing files may take a lot of time depending upon the number of files that are to be indexed as well as on the amount of memory that is allowed to the desktop search for indexing. See also <ulink url="help:/kcontrol/nepomuk">Search Desktop</ulink>.
 </para>
@@ -3786,7 +3786,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>The <guilabel>Nepomuk Collection</guilabel> in Amarok is a plugin that can be enabled in <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Plugins</guimenuitem><guimenuitem>Enable Nepomuk Collection</guimenuitem></menuchoice>. After enabling, restart &amarok; for the plugin to load completely.
+<para>The <guilabel>Nepomuk Collection</guilabel> in &amarok; is a plugin that can be enabled in <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Plugins</guimenuitem><guimenuitem>Nepomuk Collection</guimenuitem></menuchoice>. After enabling, restart &amarok; for the plugin to load completely.
 </para>
 </sect4>
 </sect3>
@@ -3817,7 +3817,7 @@
 </para>
 </sect4>
 <sect4 id="playlists9"><title>Playlists</title> 
-<para>Every feature of <guilabel>Nepomuk</guilabel> can be used with created playlists too.
+<para>Every feature of Nepomuk can be used with created playlists too.
 </para>
 </sect4>
 </sect3>
