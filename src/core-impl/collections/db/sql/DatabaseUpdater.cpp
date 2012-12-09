@@ -75,95 +75,54 @@ DatabaseUpdater::update()
         createTables();
         QString query = QString( "INSERT INTO admin(component, version) VALUES ('DB_VERSION', %1);" ).arg( DB_VERSION );
         m_collection->sqlStorage()->query( query );
+        return true;
     }
-    else if( dbVersion < DB_VERSION )
+
+    if( dbVersion < DB_VERSION )
     {
         debug() << "Database out of date: database version is" << dbVersion << ", current version is" << DB_VERSION;
-        if ( dbVersion == 1 && dbVersion < DB_VERSION )
+        switch( dbVersion )
         {
-            upgradeVersion1to2();
-            dbVersion = 2;
+            case 1:
+                upgradeVersion1to2();
+            case 2:
+                upgradeVersion2to3();
+            case 3:
+                upgradeVersion3to4();
+            case 4:
+                upgradeVersion4to5();
+            case 5:
+                upgradeVersion5to6();
+            case 6:
+                upgradeVersion6to7();
+            case 7:
+                upgradeVersion7to8();
+            case 8:
+                //removes stray rows from albums that were caused by the initial full scan
+                upgradeVersion8to9();
+            case 9:
+                //removes stray rows from albums that were caused by the initial full scan
+                upgradeVersion9to10();
+            case 10:
+                upgradeVersion10to11();
+            case 11:
+                upgradeVersion11to12();
+            case 12:
+                upgradeVersion12to13();
+            case 13:
+                upgradeVersion13to14();
+                dbVersion = 14; // be sure to update this manually when introducing new version!
         }
-        if( dbVersion == 2 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion2to3();
-            dbVersion = 3;
-        }
-        if( dbVersion == 3 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion3to4();
-            dbVersion = 4;
-        }
-        if( dbVersion == 4 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion4to5();
-            dbVersion = 5;
-        }
-        if( dbVersion == 5 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion5to6();
-            dbVersion = 6;
-        }
-        if( dbVersion == 6 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion6to7();
-            dbVersion = 7;
-        }
-        if( dbVersion == 7 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion7to8();
-            dbVersion = 8;
-        }
-        if( dbVersion == 8 && dbVersion < DB_VERSION )
-        {
-            //removes stray rows from albums that were caused by the initial full scan
-            upgradeVersion8to9();
-            dbVersion = 9;
-        }
-        if( dbVersion == 9 && dbVersion < DB_VERSION )
-        {
-            //removes stray rows from albums that were caused by the initial full scan
-            upgradeVersion9to10();
-            dbVersion = 10;
-        }
-        if( dbVersion == 10 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion10to11();
-            dbVersion = 11;
-        }
-        if( dbVersion == 11 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion11to12();
-            dbVersion = 12;
-        }
-        if( dbVersion == 12 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion12to13();
-            dbVersion = 13;
-        }
-        if( dbVersion == 13 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion13to14();
-            dbVersion = 14;
-        }
-        /*
-        if( dbVersion == X && dbVersion < DB_VERSION )
-        {
-            upgradeVersionXtoY();
-            dbVersion = Y;
-        }
-        */
+
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->sqlStorage()->query( query );
 
         //NOTE: A rescan will be triggered automatically as a result of an upgrade.  Don't trigger it here, as the
         //collection isn't fully initialized and this will trigger a crash/assert.
+        return true;
     }
-    else if( dbVersion == DB_VERSION )
-    {
-        return false; // no update needed
-    }
-    else if( dbVersion > DB_VERSION )
+
+    if( dbVersion > DB_VERSION )
     {
         KMessageBox::error(0,
                 "<p>The Amarok collection database was created by a newer version of Amarok, "
@@ -174,7 +133,7 @@ DatabaseUpdater::update()
         exit(1);
     }
 
-    return true;
+    return false;
 }
 
 void
