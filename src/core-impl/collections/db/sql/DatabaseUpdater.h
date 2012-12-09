@@ -68,6 +68,7 @@ public:
     void upgradeVersion11to12();
     void upgradeVersion12to13();
     void upgradeVersion13to14();
+    void upgradeVersion14to15();
 
     /** Checks the given table for redundant entries.
      *  Table can be artist,album,genre,composer,urls or year

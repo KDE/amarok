@@ -44,6 +44,8 @@ VERSION 2.7-Beta 1
     * New optional dependency for Amazon downloads: clamz.
 
   BUGFIXES:
+    * Fix Dynamic Collection and other features not working if the database was
+      initially created by a very old Amaork version. (BR 302837)
     * Fix incorrect "Stop after current" indicator behaviour in some cases. (BR 253822)
     * Fix untranslatable texts in preset dynamic playlists. (BR 276023)
     * Better Last.fm scrobbling behaviour and error reporting due to rewrite,

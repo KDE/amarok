@@ -30,7 +30,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 14;
+static const int DB_VERSION = 15;
 
 int
 DatabaseUpdater::expectedDatabaseVersion()
@@ -111,7 +111,9 @@ DatabaseUpdater::update()
                 upgradeVersion12to13();
             case 13:
                 upgradeVersion13to14();
-                dbVersion = 14; // be sure to update this manually when introducing new version!
+            case 14:
+                upgradeVersion14to15();
+                dbVersion = 15; // be sure to update this manually when introducing new version!
         }
 
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
@@ -623,6 +625,111 @@ DatabaseUpdater::upgradeVersion13to14()
     storage->query( "ALTER TABLE lyrics ADD PRIMARY KEY(url)" );
 }
 
+void
+DatabaseUpdater::upgradeVersion14to15()
+{
+    /* This update solves bug 302837. In short, updates
+     * 4 -> 5, 5 -> 6, 6 -> 7 and 9 -> 10 ignored NULL status of some columns and replaced
+     * them with NOT NULL columns, causing various consequences, one of them is Dynamic
+     * Collection not working. Fix it back.
+     *
+     * A list of columns to fix was obtained by comparing a database created by
+     * Amarok 2.1.1 and then upgraded to current versin with a db freshly created by
+     * Amarok 2.6-git.
+     */
+    DEBUG_BLOCK
+    SqlStorage *storage = m_collection->sqlStorage();
+
+    // zero length = TEXT datatype
+    typedef QPair<QString, int> vcpair;
+    QMultiMap<QString, vcpair> columns;
+
+    columns.insert( "admin", vcpair( "component", 255 ) );
+    columns.insert( "devices", vcpair( "type", 255 ) );
+    columns.insert( "devices", vcpair( "label", 255 ) );
+    columns.insert( "devices", vcpair( "lastmountpoint", 255 ) );
+    columns.insert( "devices", vcpair( "uuid", 255 ) );
+    columns.insert( "devices", vcpair( "servername", 80 ) );
+    columns.insert( "devices", vcpair( "sharename", 240 ) );
+    columns.insert( "labels", vcpair( "label", 255 ) );
+    columns.insert( "lyrics", vcpair( "lyrics", 0 ) );
+    columns.insert( "playlists", vcpair( "name", 255 ) );
+    columns.insert( "playlists", vcpair( "description", 255 ) );
+    columns.insert( "playlists", vcpair( "urlid", 1000 ) );
+    columns.insert( "playlist_groups", vcpair( "name", 255 ) );
+    columns.insert( "playlist_groups", vcpair( "description", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "url", 1000 ) );
+    columns.insert( "playlist_tracks", vcpair( "title", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "album", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "artist", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "uniqueid", 128 ) );
+    columns.insert( "podcastchannels", vcpair( "url", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "title", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "weblink", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "image", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "description", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "copyright", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "directory", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "labels", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "subscribedate", 255 ) );
+    columns.insert( "podcastepisodes", vcpair( "url", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "localurl", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "guid", 1000 ) );
+    columns.insert( "podcastepisodes", vcpair( "title", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "subtitle", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "description", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "mimetype", 255 ) );
+    columns.insert( "podcastepisodes", vcpair( "pubdate", 255 ) );
+    columns.insert( "statistics_tag", vcpair( "name", 108 ) );
+    columns.insert( "statistics_tag", vcpair( "artist", 108 ) );
+    columns.insert( "statistics_tag", vcpair( "album", 108 ) );
+    columns.insert( "tracks", vcpair( "title", 255 ) );
+    columns.insert( "tracks", vcpair( "comment", 0 ) );
+    columns.insert( "urls", vcpair( "uniqueid", 128 ) );
+
+    QMapIterator<QString, vcpair> it( columns );
+    while( it.hasNext() )
+    {
+        it.next();
+        QString table = it.key();
+        QString column = it.value().first;
+        int length = it.value().second;
+
+        QString query;
+        if( length > 0 )
+            query = QString( "ALTER TABLE `%1` CHANGE `%2` `%2` VARCHAR(%3) CHARACTER SET utf8 "
+                    "COLLATE utf8_bin NULL DEFAULT NULL" ).arg( table, column ).arg( length );
+        else
+            query = QString( "ALTER TABLE `%1` CHANGE `%2` `%2` TEXT CHARACTER SET utf8 "
+                    "COLLATE utf8_bin" ).arg( table, column );
+        storage->query( query );
+    }
+
+    // there may be a stale unique index on the urls table, remove it if it is there:
+    QStringList results = storage->query( "SHOW INDEX FROM urls" );
+    bool oldIndexFound = false;
+    QStringListIterator resultsIt( results );
+    while( resultsIt.hasNext() )
+    {
+        resultsIt.next(); // Table
+        QString nonUnique = resultsIt.next(); // Non_unique
+        QString keyName = resultsIt.next(); // Key_name
+        resultsIt.next(); // Seq_in_index
+        resultsIt.next(); // Column_name
+        resultsIt.next(); // Collation
+        resultsIt.next(); // Cardinality
+        resultsIt.next(); // Sub_part
+        resultsIt.next(); // Packed
+        resultsIt.next(); // Null
+        resultsIt.next(); // Index_type
+        resultsIt.next(); // Comment
+
+        if( nonUnique == "0" && keyName == "uniqueid" )
+            oldIndexFound = true;
+    }
+    if( oldIndexFound )
+        storage->query( "DROP INDEX uniqueid ON urls" );
+}
 
 void
 DatabaseUpdater::cleanupDatabase()
