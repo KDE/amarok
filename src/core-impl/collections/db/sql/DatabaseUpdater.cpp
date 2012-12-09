@@ -706,29 +706,13 @@ DatabaseUpdater::upgradeVersion14to15()
     }
 
     // there may be a stale unique index on the urls table, remove it if it is there:
-    QStringList results = storage->query( "SHOW INDEX FROM urls" );
-    bool oldIndexFound = false;
-    QStringListIterator resultsIt( results );
-    while( resultsIt.hasNext() )
-    {
-        resultsIt.next(); // Table
-        QString nonUnique = resultsIt.next(); // Non_unique
-        QString keyName = resultsIt.next(); // Key_name
-        resultsIt.next(); // Seq_in_index
-        resultsIt.next(); // Column_name
-        resultsIt.next(); // Collation
-        resultsIt.next(); // Cardinality
-        resultsIt.next(); // Sub_part
-        resultsIt.next(); // Packed
-        resultsIt.next(); // Null
-        resultsIt.next(); // Index_type
-        resultsIt.next(); // Comment
-
-        if( nonUnique == "0" && keyName == "uniqueid" )
-            oldIndexFound = true;
-    }
+    QStringList results = storage->query( "SHOW CREATE TABLE urls" );
+    bool oldIndexFound = results.value( 1 ).contains( "UNIQUE KEY `uniqueid`" );
     if( oldIndexFound )
+    {
+        debug() << "dropping obsolete INDEX uniqueid on table urls";
         storage->query( "DROP INDEX uniqueid ON urls" );
+    }
 }
 
 void
