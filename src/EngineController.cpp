@@ -1109,12 +1109,10 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         // we calculate the volume change ourselves, because m_preamp.data()->setVolumeDecibel is
         // a little confused about minus signs
         m_preamp.data()->setVolume( qExp( gain * log10over20 ) );
-        m_preamp.data()->fadeTo( qExp( gain * log10over20 ), 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
     }
     else if( m_preamp )
     {
         m_preamp.data()->setVolume( 1.0 );
-        m_preamp.data()->fadeTo( 1.0, 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
     }
 
     if( m_currentTrack )
@@ -1293,8 +1291,6 @@ EngineController::resetFadeout()
     if( m_fader )
     {
         m_fader->setVolume( 1.0 );
-        m_fader->fadeTo( 1.0, 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
-
         m_fadeoutTimer->stop();
     }
 }
