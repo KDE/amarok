@@ -20,7 +20,7 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "NetworkAccessManagerProxy.h"
+#include "network/NetworkAccessManagerProxy.h"
 #include "ui_LastFmConfigWidget.h"
 
 #include <KMessageBox>

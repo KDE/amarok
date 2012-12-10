@@ -18,7 +18,7 @@
 #ifndef LASTFMSERVICECOLLECTION_H
 #define LASTFMSERVICECOLLECTION_H
 
-#include <ServiceCollection.h>
+#include "services/ServiceCollection.h"
 
 class QNetworkReply;
 

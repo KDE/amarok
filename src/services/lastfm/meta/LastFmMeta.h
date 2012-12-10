@@ -21,7 +21,7 @@
 
 #include "core/meta/Meta.h"
 #include "core/capabilities/Capability.h"
-#include "ServiceMetaBase.h" // for the SourceInfoProvider
+#include "services/ServiceMetaBase.h" // for the SourceInfoProvider
 
 namespace lastfm {
     class Track;
