@@ -36,6 +36,7 @@ Amarok/Manual/Organization/Collection
 Amarok/Manual/Organization/CollectionScanning
 Amarok/Manual/Organization/Collection/SearchInCollection
 Amarok/Manual/Organization/Collection/OrganizeCollection
+Amarok/Manual/Organization/Collection/SynchronizeCollectionLast.FM
 Amarok/Manual/Organization/Collection/NepomukCollection
 Amarok/Manual/Organization/Collection/RemoteCollections
 Amarok/Manual/Organization/Collection/RemoteCollections/Ampache
