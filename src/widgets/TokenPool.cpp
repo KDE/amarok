@@ -82,6 +82,8 @@ TokenPool::addToken( Token * token )
     item->setToolTip( "<font color=\"" + token->textColor().name() + "\">" + token->name() + "</font>" );
     addItem( item );
 
+    token->setParent( this );
+    token->hide();
     m_itemTokenMap.insert( item, token );
 }
 

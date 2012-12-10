@@ -44,8 +44,11 @@ class TokenPool : public KListWidget
         void dropEvent( QDropEvent *event );
 
     signals:
-        void onDoubleClick( Token *token );     //connects to TokenLayoutWidget::addToken( QString )
-    
+        /** Emitted if somebody double clicks a token.
+            The token parameter belongs to the token pool. Don't reparent it.
+        */
+        void onDoubleClick( Token *token );
+
     private:
         void performDrag( QMouseEvent *event );
         QPoint m_startPos;  //needed for starting the drag

@@ -18,6 +18,7 @@
 #include "TokenDropTarget.h"
 
 #include "Token.h"
+#include "TokenPool.h"
 
 #include <KLocale>
 
@@ -355,6 +356,13 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
     // - validate col
     if( col < 0 || col > box->count() - ( 1 + m_horizontalStretch ) )
         col = box->count() - m_horizontalStretch;
+
+    // - copy the token if it belongs to a token pool (fix BR 296136)
+    if( qobject_cast<TokenPool*>(token->parent() ) ) {
+        token = m_tokenFactory->createToken( token->name(),
+                                             token->iconName(),
+                                             token->value() );
+    }
 
     token->setParent( parentWidget() );
     box->insertWidget( col, token );
