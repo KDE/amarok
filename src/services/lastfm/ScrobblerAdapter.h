@@ -19,6 +19,7 @@
 #define LASTFMSCROBBLERADAPTER_H
 
 #include "core/meta/Meta.h"
+#include "services/lastfm/LastFmServiceConfig.h"
 #include "statsyncing/ScrobblingService.h"
 
 #include <QTimer>
@@ -33,7 +34,7 @@ class ScrobblerAdapter : public QObject, public StatSyncing::ScrobblingService
     Q_OBJECT
 
     public:
-        ScrobblerAdapter( const QString &clientId, const LastFmServiceConfig *config );
+        ScrobblerAdapter( const QString &clientId, const LastFmServiceConfigPtr &config );
         virtual ~ScrobblerAdapter();
 
     public:
@@ -64,7 +65,7 @@ class ScrobblerAdapter : public QObject, public StatSyncing::ScrobblingService
         void announceTrackCorrections( const lastfm::Track &track );
 
         lastfm::Audioscrobbler m_scrobbler;
-        QWeakPointer<const LastFmServiceConfig> m_config;
+        LastFmServiceConfigPtr m_config;
 };
 
 #endif // LASTFMSCROBBLERADAPTER_H

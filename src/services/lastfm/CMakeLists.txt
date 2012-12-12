@@ -6,10 +6,22 @@ add_subdirectory( images )
 
 ########### next target ###############
 
+set( amarok_service_lastfm_shared_SRCS
+    LastFmServiceConfig.cpp
+)
+kde4_add_library( amarok_service_lastfm_shared SHARED ${amarok_service_lastfm_shared_SRCS} )
+target_link_libraries( amarok_service_lastfm_shared
+    amarokcore
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
+)
+install( TARGETS amarok_service_lastfm_shared ${INSTALL_TARGETS_DEFAULT_ARGS} )
+
+########### next target ###############
+
 set( amarok_service_lastfm_PART_SRCS
     LastFmService.cpp
     LastFmServiceCollection.cpp
-    LastFmServiceConfig.cpp
     ScrobblerAdapter.cpp
     SynchronizationAdapter.cpp
     SynchronizationTrack.cpp
@@ -28,6 +40,7 @@ set( amarok_service_lastfm_PART_SRCS
 )
 kde4_add_plugin( amarok_service_lastfm ${amarok_service_lastfm_PART_SRCS} )
 target_link_libraries( amarok_service_lastfm
+    amarok_service_lastfm_shared
     amarokcore
     amaroklib
     amarokpud
@@ -45,11 +58,11 @@ install( TARGETS amarok_service_lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 set(kcm_amarok_service_lastfm_PART_SRCS
     LastFmServiceSettings.cpp
-    LastFmServiceConfig.cpp
 )
 kde4_add_ui_files( kcm_amarok_service_lastfm_PART_SRCS LastFmConfigWidget.ui )
 kde4_add_plugin( kcm_amarok_service_lastfm ${kcm_amarok_service_lastfm_PART_SRCS} )
 target_link_libraries( kcm_amarok_service_lastfm
+    amarok_service_lastfm_shared
     amarokcore
     amaroklib
     ${LIBLASTFM_LIBRARY}

@@ -22,28 +22,69 @@
 #include "App.h"
 #include "core/support/Debug.h"
 
-#include <KWallet/Wallet>
 #include <KDialog>
+#include <KWallet/Wallet>
+
 #include <QLabel>
+#include <QThread>
+
+QWeakPointer<LastFmServiceConfig> LastFmServiceConfig::s_instance;
+
+LastFmServiceConfigPtr
+LastFmServiceConfig::instance()
+{
+    Q_ASSERT( QThread::currentThread() == QCoreApplication::instance()->thread() );
+
+    LastFmServiceConfigPtr strongRef = s_instance.toStrongRef();
+    if( strongRef )
+        return strongRef;
+
+    LastFmServiceConfigPtr newStrongRef( new LastFmServiceConfig() );
+    s_instance = newStrongRef;
+    return newStrongRef;
+}
 
 LastFmServiceConfig::LastFmServiceConfig()
     : m_askDiag( 0 )
     , m_wallet( 0 )
 {
+    DEBUG_BLOCK
+
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
+    m_sessionKey = config.readEntry( "sessionKey", QString() );
+    m_scrobble = config.readEntry( "scrobble", defaultScrobble() );
+    m_fetchSimilar = config.readEntry( "fetchSimilar", defaultFetchSimilar() );
+    m_scrobbleComposer = config.readEntry( "scrobbleComposer", defaultScrobbleComposer() );
+    m_useFancyRatingTags = config.readEntry( "useFancyRatingTags", defaultUseFancyRatingTags() );
+    m_announceCorrections = config.readEntry( "announceCorrections", defaultAnnounceCorrections() );
 
-    // we only want to load the wallet if the user has enabled features that require a user/pass
-    bool scrobble = config.readEntry( "scrobble", false );
-    bool fetch_sim = config.readEntry( "fetchSimilar", false );
-
-    if( scrobble || fetch_sim ) // if either of these are true we need the wallet.
+    if( config.hasKey( "kWalletUsage" ) )
+        m_kWalletUsage = KWalletUsage( config.readEntry( "kWalletUsage", int( NoPasswordEnteredYet ) ) );
+    else
     {
-        // open wallet unless explicitly told not to
-        tryToOpenWallet();
+        // migrate from the old config that used "ignoreWallet" key set to yes/no
+        if( config.readEntry( "ignoreWallet", "" ) == "yes" )
+            m_kWalletUsage = PasswordInAscii;
+        else if( config.hasKey( "scrobble" ) )
+            // assume password was saved in KWallet if the config was once written
+            m_kWalletUsage = PasswodInKWallet;
+        else
+            m_kWalletUsage = NoPasswordEnteredYet; // config not yet saved, assume unused
     }
-    load();
-}
 
+    switch( m_kWalletUsage )
+    {
+        case NoPasswordEnteredYet:
+            break;
+        case PasswodInKWallet:
+            openWalletToRead();
+            break;
+        case PasswordInAscii:
+            m_username = config.readEntry( "username", QString() );
+            m_password = config.readEntry( "password", QString() );
+            break;
+    }
+}
 
 LastFmServiceConfig::~LastFmServiceConfig()
 {
@@ -55,47 +96,8 @@ LastFmServiceConfig::~LastFmServiceConfig()
         m_wallet->deleteLater();
 }
 
-
-void
-LastFmServiceConfig::load()
-{
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
-
-    if( m_wallet )
-    {
-        if( !m_wallet->hasFolder( "Amarok" ) )
-            m_wallet->createFolder( "Amarok" );
-        // do a one-time transfer
-        // can remove at some point in the future, post-2.2
-        m_wallet->setFolder( "Amarok" );
-
-        if( m_wallet->readPassword( "lastfm_password", m_password ) > 0 )
-            debug() << "Failed to read lastfm password from kwallet!";
-        QByteArray rawUsername;
-        if( m_wallet->readEntry( "lastfm_username", rawUsername ) > 0 )
-            debug() << "failed to read last.fm username from kwallet.. :(";
-        else
-            m_username = QString::fromUtf8( rawUsername );
-    }
-    else if( config.readEntry( "ignoreWallet", QString() ) != "no" )
-    {
-        m_username = config.readEntry( "username", QString() );
-        m_password = config.readEntry( "password", QString() );
-    }
-
-    m_sessionKey = config.readEntry( "sessionKey", QString() );
-    m_scrobble = config.readEntry( "scrobble", true );
-    m_fetchSimilar = config.readEntry( "fetchSimilar", true );
-    m_scrobbleComposer = config.readEntry( "scrobbleComposer", false );
-    m_useFancyRatingTags = config.readEntry( "useFancyRatingTags", true );
-    m_announceCorrections = config.readEntry( "announceCorrections", true );
-}
-
-
 void LastFmServiceConfig::save()
 {
-    debug() << "save config";
-
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     config.writeEntry( "sessionKey", m_sessionKey );
     config.writeEntry( "scrobble", m_scrobble );
@@ -103,49 +105,126 @@ void LastFmServiceConfig::save()
     config.writeEntry( "scrobbleComposer", m_scrobbleComposer );
     config.writeEntry( "useFancyRatingTags", m_useFancyRatingTags );
     config.writeEntry( "announceCorrections", m_announceCorrections );
+    config.writeEntry( "kWalletUsage", int( m_kWalletUsage ) );
+    config.deleteEntry( "ignoreWallet" ); // remove old settings
 
-    if ( !tryToOpenWallet() && config.readEntry( "ignoreWallet", QString() ) != "yes" )
-        askAboutMissingKWallet();
+    switch( m_kWalletUsage )
+    {
+        case NoPasswordEnteredYet:
+            if( m_username.isEmpty() && m_password.isEmpty() )
+                break; // stay in this state
+            // otherwise
+        case PasswodInKWallet:
+            openWalletToWrite();
+            config.deleteEntry( "username" ); // prevent possible stray credentials
+            config.deleteEntry( "password" );
+            break;
+        case PasswordInAscii:
+            config.writeEntry( "username", m_username );
+            config.writeEntry( "password", m_password );
+            break;
+    }
 
-    if( m_wallet )
-    {
-        m_wallet->setFolder( "Amarok" );
-        if( m_wallet->writePassword( "lastfm_password", m_password ) > 0 )
-            debug() << "Failed to save last.fm pw to kwallet!";
-        if( m_wallet->writeEntry( "lastfm_username", m_username.toUtf8() ) > 0 )
-            debug() << "Failed to save last.fm username to kwallet!";
-    }
-    else if( config.readEntry( "ignoreWallet", QString() ) == "yes" )
-    {
-        config.writeEntry( "username", m_username );
-        config.writeEntry( "password", m_password );
-    }
-    else
-    {
-        debug() << "Could not access the wallet to save the last.fm credentials";
-    }
     config.sync();
+    emit updated();
 }
 
 void
-LastFmServiceConfig::clearSessionKey()
+LastFmServiceConfig::openWalletToRead()
 {
-    setSessionKey( QString() );
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
-    config.writeEntry( "sessionKey", m_sessionKey );
+    if( m_wallet && m_wallet->isOpen() )
+    {
+        slotWalletOpenedToRead( true );
+        return;
+    }
+
+    if( m_wallet )
+        disconnect( m_wallet, 0, this, 0 );
+    else
+        openWalletAsync();
+    connect( m_wallet, SIGNAL(walletOpened(bool)), SLOT(slotWalletOpenedToRead(bool)) );
 }
 
-bool
-LastFmServiceConfig::tryToOpenWallet()
+void
+LastFmServiceConfig::openWalletToWrite()
 {
-    if( m_wallet )
-        return true;
-
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
-    if( !( config.readEntry( "ignoreWallet", QString() ) == "yes" ) ) {
-        m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
+    if( m_wallet && m_wallet->isOpen() )
+    {
+        slotWalletOpenedToWrite( true );
+        return;
     }
-    return m_wallet;
+
+    if( m_wallet )
+        disconnect( m_wallet, 0, this, 0 );
+    else
+        openWalletAsync();
+    connect( m_wallet, SIGNAL(walletOpened(bool)), SLOT(slotWalletOpenedToWrite(bool)) );
+}
+
+void
+LastFmServiceConfig::openWalletAsync()
+{
+    Q_ASSERT( !m_wallet );
+    using namespace KWallet;
+    m_wallet = Wallet::openWallet( Wallet::NetworkWallet(), 0, Wallet::Asynchronous );
+}
+
+void
+LastFmServiceConfig::prepareOpenedWallet()
+{
+    if( !m_wallet->hasFolder( "Amarok" ) )
+        m_wallet->createFolder( "Amarok" );
+    m_wallet->setFolder( "Amarok" );
+}
+
+void
+LastFmServiceConfig::slotWalletOpenedToRead( bool success )
+{
+    Q_ASSERT( m_wallet );
+    if( !success )
+    {
+        warning() << __PRETTY_FUNCTION__ << "failure to open wallet";
+        // TODO: KMessageBox with info once string freeze is lifted
+        m_wallet->deleteLater(); // no point in having invalid wallet around
+        m_wallet = 0;
+        return;
+    }
+
+    prepareOpenedWallet();
+
+    if( m_wallet->readPassword( "lastfm_password", m_password ) > 0 )
+        warning() << "Failed to read lastfm password from kwallet";
+    QByteArray rawUsername;
+    if( m_wallet->readEntry( "lastfm_username", rawUsername ) > 0 )
+        warning() << "Failed to read last.fm username from kwallet";
+    else
+        m_username = QString::fromUtf8( rawUsername );
+    emit updated();
+}
+
+void
+LastFmServiceConfig::slotWalletOpenedToWrite( bool success )
+{
+    Q_ASSERT( m_wallet );
+    if( !success )
+    {
+        askAboutMissingKWallet();
+        m_wallet->deleteLater(); // no point in having invalid wallet around
+        m_wallet = 0;
+        return;
+    }
+
+    prepareOpenedWallet();
+
+    if( m_wallet->writePassword( "lastfm_password", m_password ) > 0 )
+        warning() << "Failed to save last.fm password to kwallet";
+    if( m_wallet->writeEntry( "lastfm_username", m_username.toUtf8() ) > 0 )
+        warning() << "Failed to save last.fm username to kwallet";
+
+    m_kWalletUsage = PasswodInKWallet;
+    KConfigGroup config = KGlobal::config()->group( configSectionName() );
+    config.writeEntry( "kWalletUsage", int( m_kWalletUsage ) );
+    config.sync();
 }
 
 void
@@ -155,49 +234,20 @@ LastFmServiceConfig::askAboutMissingKWallet()
     {
         m_askDiag = new KDialog( 0 );
         m_askDiag->setCaption( i18n( "Last.fm credentials" ) );
-        m_askDiag->setMainWidget( new QLabel( i18n( "No running KWallet found. Would you like Amarok to save your Last.fm credentials in plaintext?" ), m_askDiag ) );
+        m_askDiag->setMainWidget( new QLabel( i18n( "No running KWallet found. Would you like Amarok to save your Last.fm credentials in plaintext?" ) ) );
         m_askDiag->setButtons( KDialog::Yes | KDialog::No );
-        m_askDiag->setModal( true );
 
-        connect( m_askDiag, SIGNAL( yesClicked() ), this, SLOT( textDialogYes() ) );
-        connect( m_askDiag, SIGNAL( noClicked() ), this, SLOT( textDialogNo() ) );
+        connect( m_askDiag, SIGNAL(yesClicked()), this, SLOT(slotStoreCredentialsInAscii()) );
+        // maybe connect SIGNAL(noClicked()) to a message informing the user the password will
+        // be forgotten on Amarok restart
     }
-    m_askDiag->exec();
+    m_askDiag->show();
 }
 
-
 void
-LastFmServiceConfig::reset()
-{
-    debug() << "reset config";
-    m_username = "";
-    m_password = "";
-    m_sessionKey = "";
-    m_scrobble = false;
-    m_fetchSimilar = false;
-    m_scrobbleComposer = false;
-    m_useFancyRatingTags = true;
-    m_announceCorrections = true;
-}
-
-
-void
-LastFmServiceConfig::textDialogYes() //SLOT
+LastFmServiceConfig::slotStoreCredentialsInAscii() //SLOT
 {
     DEBUG_BLOCK
-
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
-    config.writeEntry( "ignoreWallet", "yes" );
-    config.sync();
-}
-
-
-void
-LastFmServiceConfig::textDialogNo() //SLOT
-{
-    DEBUG_BLOCK
-
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
-    config.writeEntry( "ignoreWallet", "no" );
-    config.sync();
+    m_kWalletUsage = PasswordInAscii;
+    save();
 }

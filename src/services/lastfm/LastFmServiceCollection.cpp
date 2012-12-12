@@ -25,11 +25,10 @@
 
 using namespace Collections;
 
-LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
+LastFmServiceCollection::LastFmServiceCollection( const QString &userName )
     : ServiceCollection( 0, "last.fm", "last.fm" )
 {
-    m_userName = userName;
-
+    DEBUG_BLOCK
     Meta::ServiceGenre * userStreams = new Meta::ServiceGenre( i18n( "%1's Streams", userName ) );
     Meta::GenrePtr userStreamsPtr( userStreams );
     addGenre( userStreamsPtr );
@@ -89,21 +88,20 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     connect( m_jobs[ "user.getNeighbours" ], SIGNAL( finished() ), this, SLOT( slotAddNeighboursLoved() ) );
     //connect( m_jobs[ "user.getNeighbours" ], SIGNAL( finished() ), this, SLOT( slotAddNeighboursPersonal() ) );
     // TODO TMP HACK why do i get exceptions there...!?
-    
+
     params[ "method" ] = "user.getFriends";
     m_jobs[ "user.getFriends" ] = lastfm::ws::post( params );
 
     connect( m_jobs[ "user.getFriends" ], SIGNAL( finished() ), this, SLOT( slotAddFriendsLoved() ) );
     //connect( m_jobs[ "user.getFriends" ], SIGNAL( finished() ), this, SLOT( slotAddFriendsPersonal() ) );
-    
+
     //TODO Automatically add simmilar artist streams for the users favorite artists.
 }
 
-
 LastFmServiceCollection::~LastFmServiceCollection()
 {
+    DEBUG_BLOCK
 }
-
 
 bool
 LastFmServiceCollection::possiblyContainsTrack( const KUrl &url ) const

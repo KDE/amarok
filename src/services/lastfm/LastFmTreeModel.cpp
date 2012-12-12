@@ -35,7 +35,7 @@
 using namespace LastFm;
 
 LastFmTreeModel::LastFmTreeModel ( const QString &username, QObject *parent )
-        : QAbstractItemModel ( parent ), m_userName ( username ), m_user(), m_avatarSize( 32 )
+        : QAbstractItemModel ( parent ), m_userName ( username ), m_user()
 {
 //     rootData << "Title" << "Summary";
     m_rootItem = new LastFmTreeItem ( LastFm::Root, "Hello" );
@@ -267,7 +267,7 @@ LastFmTreeModel::onAvatarDownloaded( const QString &username, QPixmap avatar )
     //     DEBUG_BLOCK
     if( !avatar.isNull() && avatar.height() > 0 && avatar.width() > 0 )
     {
-        int m = m_avatarSize;
+        int m = avatarSize();
 
         if( username != m_userName )
         {
@@ -310,9 +310,9 @@ int LastFmTreeModel::columnCount ( const QModelIndex &parent ) const
     return 1;
 }
 
-int LastFmTreeModel::avatarSize () const
+int LastFmTreeModel::avatarSize ()
 {
-    return m_avatarSize;
+    return 32;
 }
 
 QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const

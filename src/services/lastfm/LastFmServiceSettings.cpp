@@ -43,13 +43,12 @@ QString md5( const QByteArray& src )
 
 LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantList &args )
     : KCModule( LastFmServiceSettingsFactory::componentData(), parent, args )
+    , m_config( LastFmServiceConfig::instance() )
 {
     m_configDialog = new Ui::LastFmConfigWidget;
     m_configDialog->setupUi( this );
 
-    // whenever this gets opened, we'll assume the user wants to change something,
-    // so blow away the saved session key
-    m_config.clearSessionKey();
+    connect( m_config.data(), SIGNAL(updated()), SLOT(onConfigUpdated()) );
 
     connect( m_configDialog->kcfg_ScrobblerUsername, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect( m_configDialog->kcfg_ScrobblerPassword, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
@@ -59,27 +58,30 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
     connect( m_configDialog->kcfg_UseFancyRatingTags, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
     connect( m_configDialog->kcfg_AnnounceCorrections, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
     connect( m_configDialog->testLogin, SIGNAL( clicked() ), this, SLOT( testLogin() ) );
-
-    load();
 }
-
 
 LastFmServiceSettings::~LastFmServiceSettings()
 {
 }
 
-
 void
 LastFmServiceSettings::save()
 {
-    m_config.setUsername( m_configDialog->kcfg_ScrobblerUsername->text() );
-    m_config.setPassword( m_configDialog->kcfg_ScrobblerPassword->text() );
-    m_config.setScrobble( m_configDialog->kcfg_SubmitPlayedSongs->isChecked() );
-    m_config.setFetchSimilar( m_configDialog->kcfg_RetrieveSimilarArtists->isChecked() );
-    m_config.setScrobbleComposer( m_configDialog->kcfg_ScrobbleComposer->isChecked() );
-    m_config.setUseFancyRatingTags( m_configDialog->kcfg_UseFancyRatingTags->isChecked() );
-    m_config.setAnnounceCorrections( m_configDialog->kcfg_AnnounceCorrections->isChecked() );
-    m_config.save();
+    QString dialogUser = m_configDialog->kcfg_ScrobblerUsername->text();
+    QString dialogPass = m_configDialog->kcfg_ScrobblerPassword->text();
+
+    // clear the session key if credentials changed
+    if( m_config->username() != dialogUser || m_config->password() != dialogPass )
+        m_config->setSessionKey( QString() );
+
+    m_config->setUsername( dialogUser );
+    m_config->setPassword( dialogPass );
+    m_config->setScrobble( m_configDialog->kcfg_SubmitPlayedSongs->isChecked() );
+    m_config->setFetchSimilar( m_configDialog->kcfg_RetrieveSimilarArtists->isChecked() );
+    m_config->setScrobbleComposer( m_configDialog->kcfg_ScrobbleComposer->isChecked() );
+    m_config->setUseFancyRatingTags( m_configDialog->kcfg_UseFancyRatingTags->isChecked() );
+    m_config->setAnnounceCorrections( m_configDialog->kcfg_AnnounceCorrections->isChecked() );
+    m_config->save();
 
     KCModule::save();
 }
@@ -87,14 +89,12 @@ LastFmServiceSettings::save()
 void
 LastFmServiceSettings::testLogin()
 {
-    DEBUG_BLOCK
-
     m_configDialog->testLogin->setEnabled( false );
     m_configDialog->testLogin->setText( i18n( "Testing..." ) );
     // set the global static Lastfm::Ws stuff
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = Amarok::lastfmApiSharedSecret();
-    lastfm::ws::Username = qstrdup( m_configDialog->kcfg_ScrobblerUsername->text().toLatin1().data() );
+    lastfm::ws::Username = m_configDialog->kcfg_ScrobblerUsername->text();
     if( lastfm::nam() != The::networkAccessManager() )
         lastfm::setNetworkAccessManager( The::networkAccessManager() );
 
@@ -117,8 +117,6 @@ LastFmServiceSettings::testLogin()
 void
 LastFmServiceSettings::onAuthenticated()
 {
-    DEBUG_BLOCK
-
     lastfm::XmlQuery lfm;
     lfm.parse( m_authQuery->readAll() );
 
@@ -156,8 +154,6 @@ LastFmServiceSettings::onAuthenticated()
 void
 LastFmServiceSettings::onError( QNetworkReply::NetworkError code )
 {
-    DEBUG_BLOCK
-
     if( code == QNetworkReply::NoError )
         return;
 
@@ -175,38 +171,38 @@ LastFmServiceSettings::onError( QNetworkReply::NetworkError code )
     m_authQuery->deleteLater();
 }
 
+void
+LastFmServiceSettings::onConfigUpdated()
+{
+    load();
+}
 
 void
 LastFmServiceSettings::load()
 {
-    m_config.load();
-    m_configDialog->kcfg_ScrobblerUsername->setText( m_config.username() );
-    m_configDialog->kcfg_ScrobblerPassword->setText( m_config.password() );
-    m_configDialog->kcfg_SubmitPlayedSongs->setChecked( m_config.scrobble() );
-    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( m_config.fetchSimilar() );
-    m_configDialog->kcfg_ScrobbleComposer->setChecked( m_config.scrobbleComposer() );
-    m_configDialog->kcfg_UseFancyRatingTags->setChecked( m_config.useFancyRatingTags() );
-    m_configDialog->kcfg_AnnounceCorrections->setChecked( m_config.announceCorrections() );
+    m_configDialog->kcfg_ScrobblerUsername->setText( m_config->username() );
+    m_configDialog->kcfg_ScrobblerPassword->setText( m_config->password() );
+    m_configDialog->kcfg_SubmitPlayedSongs->setChecked( m_config->scrobble() );
+    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( m_config->fetchSimilar() );
+    m_configDialog->kcfg_ScrobbleComposer->setChecked( m_config->scrobbleComposer() );
+    m_configDialog->kcfg_UseFancyRatingTags->setChecked( m_config->useFancyRatingTags() );
+    m_configDialog->kcfg_AnnounceCorrections->setChecked( m_config->announceCorrections() );
 
-    if( !m_config.username().isEmpty() && !m_config.password().isEmpty() )
+    if( !m_config->username().isEmpty() && !m_config->password().isEmpty() )
         m_configDialog->kcfg_SubmitPlayedSongs->setEnabled( true );
 
     KCModule::load();
 }
 
-
 void
 LastFmServiceSettings::defaults()
 {
-    m_config.reset();
-
-    m_configDialog->kcfg_SubmitPlayedSongs->setChecked( m_config.scrobble() );
-    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( m_config.fetchSimilar() );
-    m_configDialog->kcfg_ScrobbleComposer->setChecked( m_config.scrobbleComposer() );
-    m_configDialog->kcfg_UseFancyRatingTags->setChecked( m_config.useFancyRatingTags() );
-    m_configDialog->kcfg_AnnounceCorrections->setChecked( m_config.announceCorrections() );
+    m_configDialog->kcfg_SubmitPlayedSongs->setChecked( m_config->defaultScrobble() );
+    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( m_config->defaultFetchSimilar() );
+    m_configDialog->kcfg_ScrobbleComposer->setChecked( m_config->defaultScrobbleComposer() );
+    m_configDialog->kcfg_UseFancyRatingTags->setChecked( m_config->defaultUseFancyRatingTags() );
+    m_configDialog->kcfg_AnnounceCorrections->setChecked( m_config->defaultAnnounceCorrections() );
 }
-
 
 void
 LastFmServiceSettings::settingsChanged()

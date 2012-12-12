@@ -18,7 +18,6 @@
 
 #include "MetaValues.h"
 #include "core/support/Debug.h"
-#include "services/lastfm/LastFmServiceConfig.h"
 #include "services/lastfm/SynchronizationTrack.h"
 
 #include <KLocalizedString>
@@ -30,7 +29,7 @@
 
 const int SynchronizationAdapter::s_entriesPerQuery( 200 );
 
-SynchronizationAdapter::SynchronizationAdapter( const LastFmServiceConfig *config )
+SynchronizationAdapter::SynchronizationAdapter( const LastFmServiceConfigPtr &config )
     : m_config( config )
 {
     connect( this, SIGNAL(startArtistSearch(int)), SLOT(slotStartArtistSearch(int)) );
@@ -78,7 +77,7 @@ SynchronizationAdapter::reliableTrackMetaData() const
 qint64
 SynchronizationAdapter::writableTrackStatsData() const
 {
-    bool useRating = m_config ? m_config.data()->useFancyRatingTags() : false;
+    bool useRating = m_config->useFancyRatingTags();
     return ( useRating ? Meta::valRating : 0 ) | Meta::valLabel;
 }
 
@@ -134,7 +133,7 @@ SynchronizationAdapter::artistTracks( const QString &artistName )
 void
 SynchronizationAdapter::slotStartArtistSearch( int page )
 {
-    QString user = m_config ? m_config.data()->username() : QString();
+    QString user = m_config->username();
     QNetworkReply *reply = lastfm::Library::getArtists( user, s_entriesPerQuery, page );
     connect( reply, SIGNAL(finished()), SLOT(slotArtistsReceived()) );
 }
@@ -143,7 +142,7 @@ void
 SynchronizationAdapter::slotStartTrackSearch( QString artistName, int page )
 {
     lastfm::Artist artist( artistName );
-    QString user = m_config ? m_config.data()->username() : QString();
+    QString user = m_config->username();
     QNetworkReply *reply = lastfm::Library::getTracks( user, artist, s_entriesPerQuery, page );
     connect( reply, SIGNAL(finished()), SLOT(slotTracksReceived()) );
 }
@@ -255,7 +254,7 @@ SynchronizationAdapter::slotTracksReceived()
         QString artist = xq[ "artist" ][ "name" ].text();
         QString album = xq[ "album" ][ "name" ].text();
 
-        bool useRatings = m_config ? m_config.data()->useFancyRatingTags() : false;
+        bool useRatings = m_config->useFancyRatingTags();
         StatSyncing::TrackPtr track( new SynchronizationTrack( artist, album, name,
                                                                playCount, useRatings ) );
         m_tracks.append( track );

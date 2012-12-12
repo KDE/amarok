@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2007 Shane King <kde@dontletsstart.com>                                *
+ * Copyright (c) 2010 Téo Mrnjavac <teo@kde.org>                                        *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,44 +15,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef LASTFMSERVICESETTINGS_H
-#define LASTFMSERVICESETTINGS_H
+#ifndef AMAROK_LASTFM_SHARED_EXPORT_H
+#define AMAROK_LASTFM_SHARED_EXPORT_H
 
-#include "LastFmServiceConfig.h"
+/* needed for KDE_EXPORT and KDE_IMPORT macros */
+#include <kdemacros.h>
 
-#include <kcmodule.h>
+#ifndef AMAROK_LASTFM_SHARED_EXPORT
+# ifdef MAKE_AMAROK_SERVICE_LASTFM_SHARED_LIB
+   /* We are building this library */
+#  define AMAROK_LASTFM_SHARED_EXPORT KDE_EXPORT
 
-#include <QNetworkReply>
+# else
+   /* We are using this library */
+#  define AMAROK_LASTFM_SHARED_EXPORT KDE_IMPORT
 
-namespace Ui { class LastFmConfigWidget; }
+# endif // MAKE_AMAROK_SERVICE_LASTFM_SHARED_LIB
+#endif // AMAROK_LASTFM_SHARED_EXPORT
 
-class LastFmServiceSettings : public KCModule
-{
-    Q_OBJECT
-
-public:
-    explicit LastFmServiceSettings( QWidget *parent = 0, const QVariantList &args = QVariantList() );
-
-    virtual ~LastFmServiceSettings();
-
-    virtual void save();
-    virtual void load();
-    virtual void defaults();
-
-private slots:
-    void testLogin();
-    void onAuthenticated();
-    void onError( QNetworkReply::NetworkError code );
-    void onConfigUpdated();
-
-private:
-    Ui::LastFmConfigWidget *m_configDialog;
-    LastFmServiceConfigPtr m_config;
-
-    QNetworkReply* m_authQuery;
-
-private slots:
-    void settingsChanged();
-};
-
-#endif // LASTFMSERVICESETTINGS_H
+#endif //AMAROK_LASTFM_SHARED_EXPORT_H

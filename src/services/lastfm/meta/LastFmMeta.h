@@ -94,8 +94,8 @@ namespace LastFm
             KUrl internalUrl() const; // this returns the private temporary url to the .mp3, DO NOT USE,
                                    // if you are asking, it has already expired
             QString streamName() const; // A nice name for the stream..
+
         public slots:
-            void love();
             void ban();
 
         private slots:

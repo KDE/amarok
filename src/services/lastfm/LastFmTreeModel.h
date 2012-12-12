@@ -105,7 +105,7 @@ public:
     QModelIndex parent ( const QModelIndex &index ) const;
     int rowCount ( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount ( const QModelIndex &parent = QModelIndex() ) const;
-    int avatarSize () const;
+    static int avatarSize();
     void prepareAvatar ( QPixmap& avatar, int size );
 
     void sortTags ( WeightedStringList tagsToSort, Qt::SortOrder sortOrder );
@@ -138,7 +138,6 @@ private:
     WeightedStringList m_tags;
 
     QHash<QString, QIcon> m_avatars;
-    int m_avatarSize;
 
     QMap< QString, QNetworkReply* > m_jobs;
 

@@ -27,6 +27,8 @@ VERSION 2.7-Beta 1
     * Amazon store: We now ship a utility to handle downloads from Amazon.
 
   CHANGES:
+    * When configuring Last.fm plug-in, the changes are now applied immediately
+      in most places. (BR 311331)
     * If liblastfm is provided, it is strongly recommended to use version 1.0.3 or newer
       for fixes of bugs that otherwise prevent iPod scrobbling and synchronization.
     * Configure Amarok dialog gets new Metadata tab to grab some weight from the
@@ -44,6 +46,8 @@ VERSION 2.7-Beta 1
     * New optional dependency for Amazon downloads: clamz.
 
   BUGFIXES:
+    * Fix suboptimal KWallet usage in Last.fm plugin. (BR 292096)
+    * Fix crash in Last.fm plugin caused by sloppy KWallet usage. (BR 306134)
     * Fix WMA files interpret Album as Album Artist (BR 276015)
     * Fix after adding next slash previous one disappears in organize collection (BR 296136)
     * Fix Dynamic Collection and other features not working if the database was

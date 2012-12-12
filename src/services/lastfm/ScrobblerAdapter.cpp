@@ -26,7 +26,6 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "services/lastfm/LastFmServiceConfig.h"
 
 #include <KLocalizedString>
 
@@ -34,7 +33,7 @@
 
 #include <misc.h>
 
-ScrobblerAdapter::ScrobblerAdapter( const QString &clientId, const LastFmServiceConfig *config )
+ScrobblerAdapter::ScrobblerAdapter( const QString &clientId, const LastFmServiceConfigPtr &config )
     : m_scrobbler( clientId )
     , m_config( config )
 {
@@ -172,7 +171,7 @@ ScrobblerAdapter::slotScrobblesSubmitted( const QList<lastfm::Track> &tracks )
                           << "has Cached scrobble status, strange";
                 break;
             case lastfm::Track::Submitted:
-                if( track.corrected() && m_config && m_config.data()->announceCorrections() )
+                if( track.corrected() && m_config->announceCorrections() )
                     announceTrackCorrections( track );
                 break;
             case lastfm::Track::Error:
@@ -197,7 +196,7 @@ ScrobblerAdapter::copyTrackMetadata( lastfm::MutableTrack &to, const Meta::Track
 
     QString artistOrComposer;
     Meta::ComposerPtr composer = track->composer();
-    if( m_config && m_config.data()->scrobbleComposer() && composer )
+    if( m_config->scrobbleComposer() && composer )
         artistOrComposer = composer->name();
     Meta::ArtistPtr artist = track->artist();
     if( artistOrComposer.isEmpty() && artist )

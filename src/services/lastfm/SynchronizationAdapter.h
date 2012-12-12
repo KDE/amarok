@@ -17,6 +17,7 @@
 #ifndef SYNCHRONIZATIONADAPTER_H
 #define SYNCHRONIZATIONADAPTER_H
 
+#include "services/lastfm/LastFmServiceConfig.h"
 #include "statsyncing/Provider.h"
 
 #include <QSemaphore>
@@ -31,7 +32,7 @@ class SynchronizationAdapter : public StatSyncing::Provider
         /**
          * @param user Last.fm username
          */
-        SynchronizationAdapter( const LastFmServiceConfig *config );
+        SynchronizationAdapter( const LastFmServiceConfigPtr &config );
         virtual ~SynchronizationAdapter();
 
         virtual QString id() const;
@@ -62,7 +63,7 @@ class SynchronizationAdapter : public StatSyncing::Provider
         void slotTagsReceived();
 
     private:
-        QWeakPointer<const LastFmServiceConfig> m_config;
+        LastFmServiceConfigPtr m_config;
 
         /**
          * number of artist or track entries to request from Last.fm in earch webservice

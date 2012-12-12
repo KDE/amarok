@@ -22,8 +22,12 @@
 #include "services/lastfm/LastFmServiceConfig.h"
 #include "statsyncing/Provider.h"
 
+
 namespace Collections {
     class LastFmServiceCollection;
+}
+namespace Dynamic {
+    class AbstractBiasFactory;
 }
 class ScrobblerAdapter;
 class KLineEdit;
@@ -66,20 +70,20 @@ private slots:
     void playCustomStation();
     void updateEditHint( int index );
 
+    void slotReconfigure();
     void onAuthenticated();
     void onGetUserInfo();
     void onAvatarDownloaded( const QString& username, QPixmap avatar );
 
 private:
-    void init();
-
+    void continueReconfiguring();
     void playLastFmStation( const KUrl &url );
     void updateProfileInfo();
 
-    bool m_inited;
     QExplicitlySharedDataPointer<ScrobblerAdapter> m_scrobbler;
     StatSyncing::ProviderPtr m_synchronizationAdapter;
     Collections::LastFmServiceCollection *m_collection;
+    QList<Dynamic::AbstractBiasFactory *> m_biasFactories;
 
     bool m_polished;
     QWidget *m_profileBox;
@@ -99,8 +103,8 @@ private:
     QPixmap m_avatar;
     bool m_subscriber;
 
-    LastFmServiceConfig m_config;
-    QMap<QString, QNetworkReply*> m_jobs;
+    QNetworkReply *m_authenticateReply;
+    LastFmServiceConfigPtr m_config;
 };
 
 #endif // LASTFMSERVICE_H

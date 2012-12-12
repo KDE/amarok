@@ -346,15 +346,6 @@ Track::streamName() const
 }
 
 void
-Track::love()
-{
-    DEBUG_BLOCK
-
-    debug() << "info:" << d->lastFmTrack.artist() << d->lastFmTrack.title();
-    lastfm::MutableTrack( d->lastFmTrack ).love();
-}
-
-void
 Track::ban()
 {
     DEBUG_BLOCK
