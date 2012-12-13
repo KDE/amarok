@@ -39,7 +39,8 @@
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/view/listview/InlineEditorWidget.h"
-#include "widgets/kratingpainter.h"
+
+#include <KRatingPainter>
 
 #include <QFontMetricsF>
 #include <QPainter>
@@ -460,7 +461,7 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
                 else
                     ratingAlignment = Qt::AlignCenter;
 
-                Amarok::KRatingPainter::paintRating( painter, QRect( currentItemX, rowOffsetY, itemWidth, rowHeight ), ratingAlignment, rating, rating );
+                KRatingPainter::paintRating( painter, QRect( currentItemX, rowOffsetY, itemWidth, rowHeight ), ratingAlignment, rating, rating );
 
             }
             else if ( value == Divider )

@@ -376,7 +376,7 @@
             </widget>
            </item>
            <item row="2" column="3">
-            <widget class="Amarok::KRatingWidget" name="ratingWidget">
+            <widget class="KRatingWidget" name="ratingWidget">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -1231,15 +1231,14 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>KRatingWidget</class>
+   <extends>QFrame</extends>
+   <header>kratingwidget.h</header>
+  </customwidget>
+  <customwidget>
    <class>CoverLabel</class>
    <extends>QWidget</extends>
    <header>covermanager/CoverFetcher.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Amarok::KRatingWidget</class>
-   <extends>QFrame</extends>
-   <header>widgets/kratingwidget.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>ClearSpinBox</class>

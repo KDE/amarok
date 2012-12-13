@@ -19,11 +19,11 @@
 #include "MetaValues.h"
 #include "core/support/Debug.h"
 #include "statsyncing/models/CommonModel.h"
-#include "widgets/kratingpainter.h"
 
 #include <KGlobal>
 #include <KIcon>
 #include <KLocale>
+#include <KRatingPainter>
 
 #include <QApplication>
 #include <QPainter>
@@ -53,7 +53,7 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
         QPixmap starsPixmap( CommonModel::s_ratingSize );
         starsPixmap.fill( Qt::transparent );
         {
-            Amarok::KRatingPainter ratingPainter;
+            KRatingPainter ratingPainter;
             int rating = data.toInt();
             int hoverRating = -1;
             if( rating < 0 ) // unresolved conflict

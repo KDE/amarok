@@ -734,8 +734,6 @@ set(amaroklib_LIB_SRCS
     widgets/CoverLabel.cpp
     widgets/HintLineEdit.cpp
     widgets/kdatecombo.cpp
-    widgets/kratingpainter.cpp
-    widgets/kratingwidget.cpp
     widgets/TokenDropTarget.cpp
     widgets/EditDeleteComboBoxView.cpp
     widgets/EditDeleteDelegate.cpp

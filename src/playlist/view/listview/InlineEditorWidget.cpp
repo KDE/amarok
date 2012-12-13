@@ -24,9 +24,9 @@
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "PrettyItemDelegate.h"
 #include "SvgHandler.h"
-#include "widgets/kratingwidget.h"
 
 #include <KHBox>
+#include <KRatingWidget>
 #include <KVBox>
 
 #include <QEvent>
@@ -36,7 +36,6 @@
 #include <QPainter>
 #include <QPaintEvent>
 
-using namespace Amarok;
 using namespace Playlist;
 
 InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index,

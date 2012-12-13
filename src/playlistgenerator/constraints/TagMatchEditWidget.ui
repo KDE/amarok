@@ -486,6 +486,13 @@ p, li { white-space: pre-wrap; }
                   <property name="whatsThis">
                    <string>The time that the APG should try to match.</string>
                   </property>
+                  <property name="time">
+                   <time>
+                    <hour>0</hour>
+                    <minute>0</minute>
+                    <second>0</second>
+                   </time>
+                  </property>
                   <property name="minimumTime">
                    <time>
                     <hour>0</hour>
@@ -498,13 +505,6 @@ p, li { white-space: pre-wrap; }
                   </property>
                   <property name="displayFormat">
                    <string>h:mm:ss</string>
-                  </property>
-                  <property name="time">
-                   <time>
-                    <hour>0</hour>
-                    <minute>0</minute>
-                    <second>0</second>
-                   </time>
                   </property>
                  </widget>
                 </item>
@@ -619,7 +619,7 @@ p, li { white-space: pre-wrap; }
               <item row="0" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
-                 <widget class="Amarok::KRatingWidget" name="rating_RatingValue">
+                 <widget class="KRatingWidget" name="rating_RatingValue">
                   <property name="whatsThis">
                    <string>The rating that the APG should try to match.</string>
                   </property>
@@ -721,20 +721,19 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KIntSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>knuminput.h</header>
-  </customwidget>
-  <customwidget>
    <class>KDateWidget</class>
    <extends>QWidget</extends>
    <header>kdatewidget.h</header>
   </customwidget>
   <customwidget>
-   <class>Amarok::KRatingWidget</class>
+   <class>KIntSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>knuminput.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KRatingWidget</class>
    <extends>QFrame</extends>
-   <header>widgets/kratingwidget.h</header>
-   <container>1</container>
+   <header>kratingwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

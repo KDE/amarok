@@ -24,7 +24,6 @@
 #include "core/collections/QueryMaker.h"
 #include "widgets/MetaQueryWidget.h"
 #include "widgets/kdatecombo.h"
-#include "widgets/kratingwidget.h"
 #include "FileType.h"
 
 #include <typeinfo>
@@ -40,10 +39,10 @@
 
 #include <KComboBox>
 #include <KIcon>
-// #include <KDateTime> // for local time
+#include <KLocale>
 #include <klocalizeddate.h>
 #include <KNumInput>
-#include <klocale.h>
+#include <KRatingWidget>
 
 using namespace Amarok;
 
