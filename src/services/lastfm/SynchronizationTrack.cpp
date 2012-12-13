@@ -21,8 +21,8 @@
 #include <QCoreApplication>
 #include <QNetworkReply>
 
-#include <lastfm/Track.h>
-#include <lastfm/XmlQuery.h>
+#include <Track.h>
+#include <XmlQuery.h>
 
 SemaphoreReleaser::SemaphoreReleaser( QSemaphore *semaphore )
     : m_semaphore( semaphore )
