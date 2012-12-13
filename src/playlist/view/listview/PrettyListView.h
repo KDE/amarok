@@ -78,9 +78,9 @@ public slots:
     void downOneTrack();
     void upOneTrack();
 
-    // Workaround for BUG 222961 and BUG 229240: see implementation for more comments.
-    void setCurrentIndex( const QModelIndex &index );
-    void selectionModel_setCurrentIndex( const QModelIndex &index, QItemSelectionModel::SelectionFlags command );    // Never call selectionModel()->setCurrentIndex() directly!
+    // We used to have workarounds for BUG 222961 and BUG 229240 involving reimplementing
+    // setCurrentIndex() and selectionModel()->setCurrentIndex. I believe these are no
+    // longer needed with Qt >= 4.8, but keep reference to be on the safe side.
 
     void find( const QString & searchTerm, int fields, bool filter );
     void findNext( const QString & searchTerm, int fields  );
@@ -89,7 +89,7 @@ public slots:
     void showOnlyMatches( bool onlyMatches );
 
 protected:
-    void showEvent( QShowEvent* );
+    // we used to override showEvent() to workaround bug 184714, shouldn't be needed with Qt >= 4.8
     void contextMenuEvent( QContextMenuEvent* );
     void dragEnterEvent( QDragEnterEvent *event );
     void dragLeaveEvent( QDragLeaveEvent* );
@@ -112,7 +112,6 @@ private slots:
 
     void trackActivated( const QModelIndex& );
     void updateProxyTimeout();
-    void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
     void redrawActive();
     void playlistLayoutChanged();
     void findInSource();
