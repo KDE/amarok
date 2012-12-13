@@ -40,7 +40,7 @@
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/view/listview/InlineEditorWidget.h"
 
-#include <KRatingPainter>
+#include <kratingpainter.h>
 
 #include <QFontMetricsF>
 #include <QPainter>

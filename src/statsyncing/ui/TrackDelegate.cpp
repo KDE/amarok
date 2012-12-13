@@ -23,7 +23,7 @@
 #include <KGlobal>
 #include <KIcon>
 #include <KLocale>
-#include <KRatingPainter>
+#include <kratingpainter.h>
 
 #include <QApplication>
 #include <QPainter>
