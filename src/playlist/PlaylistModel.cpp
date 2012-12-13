@@ -1155,7 +1155,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
     }
 
     // We have 3 choices:
-    //   - Qt 4.6 'beginMoveRows()' / 'endMoveRows()'. Drawback: we'd need to do N of them, all causing resorts etc.
+    //   - Call 'beginMoveRows()' / 'endMoveRows()'. Drawback: we'd need to do N of them, all causing resorts etc.
     //   - Emit 'layoutAboutToChange' / 'layoutChanged'. Drawback: unspecific, 'changePersistentIndex()' complications.
     //   - Emit 'dataChanged'. Drawback: a bit inappropriate. But not wrong.
     emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );

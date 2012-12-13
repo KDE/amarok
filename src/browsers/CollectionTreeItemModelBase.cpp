@@ -1151,7 +1151,7 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
 
     if( !d->runningQueries.contains( item ) )
         return;
-    //replace this hack with QWeakPointer as soon as we depend on Qt 4.6
+    // TODO: replace this hack with QWeakPointer now than we depend on Qt >= 4.8
     foreach(Collections::QueryMaker *qm, d->runningQueries.values( item ))
     {
         d->childQueries.remove( qm );

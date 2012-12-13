@@ -516,8 +516,8 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
                 //TODO: get rid of passing TrackPtr as data, use custom role instead
                 Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
                 QString text = textIndex.data( Qt::DisplayRole ).toString();
-                QStringx prefix( element.prefix() );
-                QStringx suffix( element.suffix() );
+                Amarok::QStringx prefix( element.prefix() );
+                Amarok::QStringx suffix( element.suffix() );
                 text = prefix.namedOptArgs( trackArgs ) + text + suffix.namedOptArgs( trackArgs );
                 text = QFontMetricsF( font ).elidedText( text, Qt::ElideRight, itemWidth );
 

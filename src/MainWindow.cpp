@@ -304,20 +304,16 @@ MainWindow::init()
     The::amarokUrlHandler(); //Instantiate
     The::coverFetcher(); //Instantiate
 
-    // Runtime check for Qt 4.6 here.
     // We delete the layout file once, because of binary incompatibility with older Qt version.
+    // We now depend on Qt >= 4.8, no need to check its version at runtime. Still support
+    // users upgrading from ancient Qt versions.
     // @see: https://bugs.kde.org/show_bug.cgi?id=213990
-    const QChar major = qVersion()[0];
-    const QChar minor = qVersion()[2];
-    if( major.digitValue() >= 4 && minor.digitValue() > 5 )
+    KConfigGroup config = Amarok::config();
+    if( !config.readEntry( "LayoutFileDeleted", false ) )
     {
-        KConfigGroup config = Amarok::config();
-        if( !config.readEntry( "LayoutFileDeleted", false ) )
-        {
-            QFile::remove( Amarok::saveLocation() + "layout" );
-            config.writeEntry( "LayoutFileDeleted", true );
-            config.sync();
-        }
+        QFile::remove( Amarok::saveLocation() + "layout" );
+        config.writeEntry( "LayoutFileDeleted", true );
+        config.sync();
     }
 
     // we must filter ourself to get mouseevents on the "splitter" - what is us, but filtered by the layouter
