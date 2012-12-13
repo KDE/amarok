@@ -124,10 +124,12 @@ deviceIsRootIpodDevice( const Solid::Device &device )
 static bool
 deviceIsPMPIpodDevice( const Solid::Device &device )
 {
-    /* This should be the one and only way to identify iPod-likes, but as of KDE 4.7.2,
-     * solid does not attach PortableMediaPlayer to iPods at all and its
-     * PortableMediaPlayer implementations is just a stub. This would also need
-     * media-device-info package to be installed.
+    /* This should be the one and only way to identify iPod-likes, but as of KDE 4.9.4,
+     * solid attaches PortableMediaPlayer to a wrong device path like
+     * /org/kde/solid/udev/sys/devices/pci0000:00/0000:00:1a.0/usb1/1-1/1-1.1/1-1.1.4/1-1.1.4:1.0/host6/target6:0:0/6:0:0:0/block/sdc/sdc2,
+     * while it should attach is to UDIsks device /org/freedesktop/UDisks/devices/sdc2
+     *
+     * It works correctly for iPhones though.
      */
     const Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
     if( !pmp )
@@ -143,31 +145,29 @@ IpodCollectionFactory::identifySolidDevice( const QString &udi ) const
     DEBUG_BLOCK
     Solid::Device device( udi );
 
+    if( deviceIsPMPIpodDevice( device ) )
+    {
+        debug() << "Device" << device.udi() << "identified iPod-like using "
+                   "PortableMediaPlayer interface";
+        return true;
+    }
+
+    if( !device.is<Solid::StorageAccess>() )
+    {
+        debug() << "Device" << device.udi() << "doesn't have PortableMediaPlayer ipod"
+                << "interface or StorageAccess interface -> cannot be and iPod";
+        return false;
+    }
+
     /* Start with device to identify, opportunistically try to identify it as
      * iPod-compatible. If found not, try its parent. Repeat until parent device is
      * valid.
      *
-     * This method DOES return false positives for iPod-like devices which are itself
-     * storage drives, but not storage volumes (such as sdc). This is needed for
-     * iPhone-like devices that have extra code to mount them in IpodHandler. IpodHandler
-     * gracefully fails in case this is old-school iPod, so this shouldn't hurt, only side
-     * effect is that other connection assistant are not tried for these false-identified
-     * devices. It would be of course great if iPhone-like devices could be distinguished
-     * right here - KDE's Solid should be able to help us with it in future, but as of
-     * KDE 4.7.4 it tells us nothing.
-     *
-     * @see MediaDeviceCache::slotAddSolidDevice() for a quirk that is currently also
-     * needed for proper identification of iPhone-like devices. THIS IS CURRENTLY NOT
-     * NEEDED FOR IPOD COLLECTION REWRITE, BUT LEFT FOR REFERENCE.
+     * @see MediaDeviceCache::slotAddSolidDevice(), whose iPhone hack shouldn't be
+     * needed since iPod rewrite in Amarok 2.6.
      */
     while ( device.isValid() )
     {
-        if( deviceIsPMPIpodDevice( device ) )
-        {
-            debug() << "Device" << device.udi() << "identified iPod-like using "
-                       "PortableMediaPlayer interface";
-            return true;
-        }
         if( deviceIsRootIpodDevice( device ) )
         {
             debug() << "Device" << device.udi() << "identified iPod-like using "
@@ -234,20 +234,9 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
                 debug() << "Above device suports ipod/usbmux protocol/driver combo, good";
                 break;
             }
-            /* Following is a work-around for kdelibs 4.8.2 and earlier that return
-             * mtp protocol for AFC-capable iOS devices. It can be removed once Amarok
-             * depends on kdelibs >= 4.8.3 or kdelibs 4.9 */
-            if( pmp->supportedProtocols().contains( "mtp" ) &&
-                pmp->supportedDrivers().contains( "usb" ) )
-            {
-                uuid = pmp->driverHandle( "mtp" ).toString();
-                debug() << "Above device suports mtp/usb protocol/driver combo,"
-                        << "treating as iPhone (kdelibs <= 4.8.2 work-around)";
-                break;
-            }
 
-            debug() << "Ignoring above device as it doesn't support ipod/usbmux or mtp/usb"
-                    << "(kdelibs <= 4.8.2 work-around) PortableMediaPlayer protocol/driver combo";
+            debug() << "Ignoring above device as it doesn't support ipod/usbmux"
+                    << "PortableMediaPlayer protocol/driver combo";
             return;
         } while( false );
     }
