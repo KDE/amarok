@@ -48,6 +48,7 @@ MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
     if ( !Amarok::config( "Collection" ).readEntry( "DynamicCollection", true ) )
     {
         debug() << "Dynamic Collection deactivated in amarokrc, not loading plugins, not connecting signals";
+        m_ready = true;
         return;
     }
 
