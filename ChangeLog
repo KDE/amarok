@@ -27,6 +27,7 @@ VERSION 2.7-Beta 1
     * Amazon store: We now ship a utility to handle downloads from Amazon.
 
   CHANGES:
+    * Dependencies raised, Amarok now depends on Qt >= 4.8 and kdelibs >= 4.8.4.
     * When configuring Last.fm plug-in, the changes are now applied immediately
       in most places. (BR 311331)
     * If liblastfm is provided, it is strongly recommended to use version 1.0.3 or newer

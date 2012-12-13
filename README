@@ -35,14 +35,14 @@ that really makes playlist handling easy.
 ==============
 
 Required
-    * KDE-Libs 4.6 + KDE-Base-runtime 4.6(oxygen-icons) (or newer)
+    * KDE-Libs 4.8.4 (or newer) + KDE-Base-runtime 4.8 (oxygen-icons) (or newer)
       http://www.kde.org
 
     * Phonon backend, one of the following is strongly recommended
       * phonon-vlc 0.6.1 (or newer)
       * phonon-gstreamer 4.6.2 (or newer)
 
-    * Qt 4.6 (or newer)
+    * Qt 4.8 (or newer)
       http://qt.nokia.com/
 
     * TagLib 1.7 (or newer)
