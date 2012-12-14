@@ -27,14 +27,14 @@
    <item>
     <widget class="QLabel" name="cartValueLabel">
      <property name="text">
-      <string>Shopping cart value: </string>
+      <string notr="true">[placeholder] Shopping cart value: </string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLabel" name="cookieLabel">
      <property name="text">
-      <string>When clicking checkout you are being redirected to Amazon for the checkout process. To simplify that process please click this link to tell Amazon that you have a downloader application for their MP3s installed.</string>
+      <string notr="true">[placeholder] When clicking checkout you are being redirected to Amazon for the checkout process. To simplify that process please click this link to tell Amazon that you have a downloader application for their MP3s installed.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
