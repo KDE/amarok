@@ -18,7 +18,9 @@
  ****************************************************************************************/
 
 #include "ScanningState.h"
+
 #include <QBuffer>
+#include <QtDebug>
 
 using namespace CollectionScanner;
 
@@ -49,7 +51,9 @@ ScanningState::isValid() const
 
 QString
 ScanningState::lastDirectory() const
-{ return m_lastDirectory; }
+{
+    return m_lastDirectory;
+}
 
 void
 ScanningState::setLastDirectory( const QString &dir )
@@ -77,7 +81,9 @@ ScanningState::setDirectories( const QStringList &directories )
 
 QStringList
 ScanningState::badFiles() const
-{ return m_badFiles; }
+{
+    return m_badFiles;
+}
 
 void
 ScanningState::setBadFiles( const QStringList &badFiles )
@@ -91,7 +97,9 @@ ScanningState::setBadFiles( const QStringList &badFiles )
 
 QString
 ScanningState::lastFile() const
-{ return m_lastFile; }
+{
+    return m_lastFile;
+}
 
 void
 ScanningState::setLastFile( const QString &file )
@@ -117,6 +125,12 @@ ScanningState::setLastFile( const QString &file )
         char *to = (char*)m_sharedMemory->data();
         const char *from = buffer.data().data();
         memcpy(to + m_lastFilePos, from, size);
+    }
+    else
+    {
+        qDebug() << __PRETTY_FUNCTION__ << "QSharedMemory is too small to hold the data.";
+        qDebug() << "It is of size" << m_sharedMemory->size() << "bytes but we need more than"
+                 << size + m_lastFilePos << "bytes.";
     }
 
     m_sharedMemory->unlock();
@@ -168,6 +182,12 @@ ScanningState::writeFull()
         char *to = (char*)m_sharedMemory->data();
         const char *from = buffer.data().data();
         memcpy(to, from, size);
+    }
+    else
+    {
+        qDebug() << __PRETTY_FUNCTION__ << "QSharedMemory is too small to hold the data.";
+        qDebug() << "It is of size" << m_sharedMemory->size() << "bytes but we need more than"
+                 << size << "bytes.";
     }
 
     m_sharedMemory->unlock();

@@ -24,6 +24,12 @@
 #include <QString>
 #include <QStringList>
 
+#ifndef UTILITIES_BUILD
+    #include "amarok_export.h"
+#else
+    #define AMAROK_EXPORT
+#endif
+
 namespace CollectionScanner
 {
 
@@ -32,7 +38,7 @@ namespace CollectionScanner
     We are using a shared memory that the amarok process holds open until the scanning
     is finished to store the state.
  */
-class ScanningState
+class AMAROK_EXPORT ScanningState
 {
     public:
         ScanningState();

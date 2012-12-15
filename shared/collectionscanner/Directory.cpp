@@ -38,8 +38,6 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#ifdef UTILITIES_BUILD
-
 CollectionScanner::Directory::Directory( const QString &path,
                                          CollectionScanner::ScanningState *state,
                                          bool skip )
@@ -71,16 +69,16 @@ CollectionScanner::Directory::Directory( const QString &path,
     if( state->lastDirectory() == path )
     {
         badFiles << state->badFiles();
-        badFiles << state->lastFile();
-
-        state->setBadFiles( badFiles );
+        QString lastFile = state->lastFile();
+        if( !lastFile.isEmpty() )
+        {
+            badFiles << state->lastFile();
+            state->setBadFiles( badFiles );
+        }
     }
     else
-    {
         state->setLastDirectory( path );
-        state->setLastFile( QString() );
-        state->setBadFiles( badFiles );
-    }
+    state->setLastFile( QString() ); // reset so we don't add a leftover file
 
     dir.setFilter( QDir::NoDotAndDotDot | QDir::Files );
     QFileInfoList fileInfos = dir.entryInfoList();
@@ -120,9 +118,8 @@ CollectionScanner::Directory::Directory( const QString &path,
         }
     }
 }
-#endif // UTILITIES_BUILD
 
-    CollectionScanner::Directory::Directory( QXmlStreamReader *reader )
+CollectionScanner::Directory::Directory( QXmlStreamReader *reader )
     : m_mtime( 0 )
     , m_skipped( false )
     , m_ignored( false )

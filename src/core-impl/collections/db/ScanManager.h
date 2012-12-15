@@ -271,7 +271,6 @@ class ScannerJob : public ThreadWeaver::Job
         AmarokProcess *m_scanner;
         QString m_batchfilePath;
         QSharedMemory *m_scannerStateMemory; // a persistent storage of the current scanner state in case it needs to be restarted.
-        QString       m_sharedMemoryKey;
 
         QXmlStreamReader m_reader;
 

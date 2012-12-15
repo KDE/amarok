@@ -564,6 +564,7 @@ set( shared_SRCS
     ${CMAKE_SOURCE_DIR}/shared/collectionscanner/BatchFile.cpp
     ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Directory.cpp
     ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Playlist.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/ScanningState.cpp
     ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Track.cpp
 )
 

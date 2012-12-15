@@ -50,9 +50,11 @@ class ScanningState;
 class AMAROK_EXPORT Directory
 {
 public:
-#ifdef UTILITIES_BUILD
+    /**
+     * This contructor actually scans the directory and is supposed only to be
+     * called by CollectionScanner directly.
+     */
     Directory( const QString &path, ScanningState *state, bool skip );
-#endif // UTILITIES_BUILD
 
     /** Reads a directory from an xml stream.
      * @see toXml()

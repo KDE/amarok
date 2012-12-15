@@ -30,10 +30,10 @@
 #include "core/support/Debug.h"
 #include "sql/SqlCollection.h"
 
-
 // include files from the collection scanner utility
-#include <collectionscanner/BatchFile.h>
-#include <collectionscanner/Directory.h>
+#include "collectionscanner/BatchFile.h"
+#include "collectionscanner/Directory.h"
+#include "collectionscanner/ScanningState.h"
 
 #include <QFileInfo>
 #include <QSharedMemory>
@@ -50,7 +50,8 @@ static const int WATCH_INTERVAL = 60 * 1000; // = 60 seconds
 
 static const int DELAYED_SCAN_INTERVAL = 2 * 1000; // = 2 seconds
 
-static const int SHARED_MEMORY_SIZE = 1024 * 1024; // 1 MB shared memory
+// 32 kB for every restart attempt, ~ 1.2 MB for 40 restarts
+static const int SHARED_MEMORY_SIZE = MAX_RESTARTS * 32 * 1024;
 
 ScanManager::ScanManager( Collections::DatabaseCollection *collection, QObject *parent )
     : QObject( parent )
@@ -643,8 +644,8 @@ ScannerJob::createScannerProcess( bool restart )
     // -- create the shared memory
     if( !m_scannerStateMemory && !restart )
     {
-        m_sharedMemoryKey = "AmarokScannerMemory"+QDateTime::currentDateTime().toString();
-        m_scannerStateMemory = new QSharedMemory( m_sharedMemoryKey );
+        QString sharedMemoryKey = "AmarokScannerMemory"+QDateTime::currentDateTime().toString();
+        m_scannerStateMemory = new QSharedMemory( sharedMemoryKey );
         if( !m_scannerStateMemory->create( SHARED_MEMORY_SIZE ) )
         {
             warning() << "Unable to create shared memory for collection scanner";
@@ -671,7 +672,7 @@ ScannerJob::createScannerProcess( bool restart )
         *m_scanner << "-s";
 
     if( m_scannerStateMemory )
-        *m_scanner << "--sharedmemory" << m_sharedMemoryKey;
+        *m_scanner << "--sharedmemory" << m_scannerStateMemory->key();
 
     *m_scanner << "--batch" << m_batchfilePath;
 
@@ -687,14 +688,40 @@ ScannerJob::tryRestart()
         return false; // all shiny. no need to restart
 
     m_restartCount++;
-    debug() << "Collection scanner crashed, restart count is " << m_restartCount;
+    warning() << __PRETTY_FUNCTION__ << scannerPath().toLocal8Bit().data()
+              << "crashed, restart count is " << m_restartCount;
+
+    QStringList badFiles;
+    if( m_scannerStateMemory )
+    {
+        using namespace CollectionScanner;
+        ScanningState scanningState;
+        scanningState.setKey( m_scannerStateMemory->key() );
+        scanningState.readFull();
+
+        badFiles << scanningState.badFiles();
+        // yes, the last file is also bad, CollectionScanner only adds it after restart
+        badFiles << scanningState.lastFile();
+
+        debug() << __PRETTY_FUNCTION__ << "lastDirectory" << scanningState.lastDirectory();
+        debug() << __PRETTY_FUNCTION__ << "lastFile" << scanningState.lastFile();
+    }
+    else
+        debug() << __PRETTY_FUNCTION__ << "m_scannerStateMemory is null";
 
     delete m_scanner;
     m_scanner = 0;
 
     if( m_restartCount >= MAX_RESTARTS )
     {
-        requestAbort( i18n("The collection scan had to be aborted. Too many errors were encountered during the scan." ));
+        QString text = i18n( "The collection scan had to be aborted. Too many errors were encountered during the scan." );
+
+        // think about showing this somehow directly in UI, once string freeze is over
+        debug() << __PRETTY_FUNCTION__ << "Following files made amarokcollectionscanner (or TagLib) crash:";
+        foreach( const QString &file, badFiles )
+            debug() << __PRETTY_FUNCTION__ << file;
+
+        requestAbort( text );
         return false;
     }
     else
