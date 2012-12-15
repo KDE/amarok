@@ -293,28 +293,24 @@ SqlCollection::setMountPointManager( MountPointManager *mpm )
 void
 SqlCollection::blockUpdatedSignal()
 {
-    {
-        QMutexLocker locker( &m_mutex );
-        m_blockUpdatedSignalCount ++;
-    }
+    QMutexLocker locker( &m_mutex );
+    m_blockUpdatedSignalCount ++;
 }
 
 void
 SqlCollection::unblockUpdatedSignal()
 {
+    QMutexLocker locker( &m_mutex );
+
+    Q_ASSERT( m_blockUpdatedSignalCount > 0 );
+    m_blockUpdatedSignalCount --;
+
+    // check if meanwhile somebody had updated the collection
+    if( m_blockUpdatedSignalCount == 0 && m_updatedSignalRequested == true )
     {
-        QMutexLocker locker( &m_mutex );
-
-        Q_ASSERT( m_blockUpdatedSignalCount > 0 );
-        m_blockUpdatedSignalCount --;
-
-        // check if meanwhile somebody had updated the collection
-        if( m_blockUpdatedSignalCount == 0 && m_updatedSignalRequested == true )
-        {
-            m_updatedSignalRequested = false;
-            locker.unlock();
-            emit updated();
-        }
+        m_updatedSignalRequested = false;
+        locker.unlock();
+        emit updated();
     }
 }
 
