@@ -173,10 +173,9 @@ ServiceBase::itemActivated ( const QModelIndex & index )
 void
 ServiceBase::setModel( QAbstractItemModel * model )
 {
-    //m_filterModel->setSourceModel( model );
-    //m_contentView->setModel( m_filterModel );
-    m_contentView->setModel( model );
-    m_model  = model;
+    if( m_contentView )
+        m_contentView->setModel( model );
+    m_model = model;
 }
 
 QAbstractItemModel *
