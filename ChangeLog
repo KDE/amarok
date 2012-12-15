@@ -2,6 +2,10 @@ Amarok ChangeLog
 ================
 (C) 2002-2012 the Amarok authors.
 
+VERSION 2.7
+  BUGFIXES:
+    * Fix incorrect display of Last.fm tags and other items. (BR 244555)
+
 VERSION 2.7-Beta 1
   FEATURES:
     * Track dragging support in Unique Tracks tab of the Synchronize Statistics action;

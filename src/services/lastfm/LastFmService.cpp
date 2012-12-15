@@ -184,10 +184,10 @@ LastFmService::slotReconfigure()
         CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
     }
 
-    // create Model once the username is known
+    // create Model once the username is known, it depends on it implicitly
     if( !model() && m_serviceready )
     {
-        setModel( new LastFmTreeModel( m_config->username(), this ) );
+        setModel( new LastFmTreeModel( this ) );
     }
 
     // now authenticate w/ last.fm and get our session key if we don't have one

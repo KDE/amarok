@@ -20,7 +20,6 @@
 #define LASTFMTREEMODEL_H
 
 #include "core/meta/Meta.h"
-#include "WeightedStringList.h"
 
 #include <QAbstractItemModel>
 #include <QPixmap>
@@ -93,25 +92,20 @@ class LastFmTreeModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    explicit LastFmTreeModel ( const QString &username, QObject *parent = 0 );
+    explicit LastFmTreeModel( QObject *parent = 0 );
     ~LastFmTreeModel();
 
-    QVariant data ( const QModelIndex &index, int role ) const;
-    Qt::ItemFlags flags ( const QModelIndex &index ) const;
-    QVariant headerData ( int section, Qt::Orientation orientation,
-                          int role = Qt::DisplayRole ) const;
-    QModelIndex index ( int row, int column,
+    QVariant data( const QModelIndex &index, int role ) const;
+    Qt::ItemFlags flags( const QModelIndex &index ) const;
+    QModelIndex index( int row, int column,
                         const QModelIndex &parent = QModelIndex() ) const;
-    QModelIndex parent ( const QModelIndex &index ) const;
-    int rowCount ( const QModelIndex &parent = QModelIndex() ) const;
-    int columnCount ( const QModelIndex &parent = QModelIndex() ) const;
+    QModelIndex parent( const QModelIndex &index ) const;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
     static int avatarSize();
-    void prepareAvatar ( QPixmap& avatar, int size );
+    void prepareAvatar( QPixmap& avatar, int size );
 
-    void sortTags ( WeightedStringList tagsToSort, Qt::SortOrder sortOrder );
-    void sortTags ( Qt::SortOrder sortOrder );
-
-    virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
+    virtual QMimeData *mimeData( const QModelIndexList &indices ) const;
 
 private slots:
     void onAvatarDownloaded( const QString& username, QPixmap );
@@ -122,29 +116,20 @@ private slots:
 
 private:
     void setupModelData( LastFmTreeItem *parent );
-    void emitRowChanged( int parent, int child = -1 );
+
+    QIcon avatar( const QString &username, const KUrl &avatarUrl ) const;
+    QString mapTypeToUrl( LastFm::Type type, const QString &key = "" );
+
+    void appendUserStations( LastFmTreeItem* item, const QString& user );
+
+    lastfm::User m_user;
 
     LastFmTreeItem *m_rootItem;
     LastFmTreeItem *m_myTags;
     LastFmTreeItem *m_myFriends;
     LastFmTreeItem *m_myNeighbors;
     LastFmTreeItem *m_myTopArtists;
-
-    QString m_userName;
-    lastfm::User m_user;
-
-    QStringList m_friends;
-    QStringList m_neighbors;
-    WeightedStringList m_tags;
-
     QHash<QString, QIcon> m_avatars;
-
-    QMap< QString, QNetworkReply* > m_jobs;
-
-    QIcon avatar( const QString &username, const KUrl &avatarUrl ) const;
-    QString mapTypeToUrl ( LastFm::Type type, const QString &key = "" );
-
-    void appendUserStations ( LastFmTreeItem* item, const QString& user );
 };
 
 class LastFmTreeItem
@@ -160,7 +145,6 @@ public:
 
     LastFmTreeItem *child ( int row );
     int childCount() const;
-    int columnCount() const;
     QVariant data () const;
     int row() const;
     LastFmTreeItem *parent();
