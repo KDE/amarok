@@ -194,7 +194,7 @@ LastFmTreeModel::slotAddTopArtists()
 
     QMultiMap<int, QString> playcountArtists;
     lastfm::XmlQuery lfm;
-    if( lfm.parse( reply ) )
+    if( lfm.parse( reply->readAll() ) )
     {
         foreach( const lastfm::XmlQuery &e, lfm[ "topartists" ].children( "artist" ) )
         {
