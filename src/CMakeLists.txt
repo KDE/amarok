@@ -249,6 +249,7 @@ set(libmetaimpl_SRCS
     core-impl/capabilities/timecode/TimecodeWriteCapability.cpp
     core-impl/capabilities/multisource/MultiSourceCapabilityImpl.cpp
     core-impl/meta/file/File.cpp
+    core-impl/meta/file/FileTrackProvider.cpp
     core-impl/meta/multi/MultiTrack.cpp
     core-impl/meta/cue/CueFileSupport.cpp
     core-impl/meta/proxy/MetaProxy.cpp

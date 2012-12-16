@@ -48,13 +48,13 @@ class AMAROK_EXPORT CollectionManager : public QObject
                                 CollectionEnabled = CollectionViewable | CollectionQueryable //Collection viewable in the browser and queryable
         };
 
-        static CollectionManager * instance();
+        static CollectionManager *instance();
         static void destroy();
 
         /**
          * Returns a query maker that queries ALL the collections
          */
-        Collections::QueryMaker * queryMaker() const;
+        Collections::QueryMaker *queryMaker() const;
 
         /**
          * returns all viewable collections.
@@ -137,6 +137,13 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         void init( const QList<Plugins::PluginFactory*> &factories );
 
+        /**
+         * Return a pointer to CollectionManger's internal FileTrackProvider instance.
+         * valid as long as this CollectionManger is alive, CollectionManager remains
+         * owner of the pointer.
+         */
+        Collections::TrackProvider *fileTrackProvider();
+
     public slots:
         void startFullScan();
         void startIncrementalScan( const QString &directory = QString() );
@@ -170,9 +177,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
         CollectionManager();
         ~CollectionManager();
 
-        // Disable copy constructor and assignment
-        CollectionManager( const CollectionManager& );
-        CollectionManager& operator= ( const CollectionManager& );
+        Q_DISABLE_COPY( CollectionManager )
 
         //used for related artists query
         QSet<QString>    m_artistNameSet;
@@ -182,6 +187,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         bool             m_haveEmbeddedMysql;
         TimecodeTrackProvider *m_timecodeTrackProvider;
+        Collections::TrackProvider *m_fileTrackProvider; // special case
 
         struct Private;
         Private * const d;

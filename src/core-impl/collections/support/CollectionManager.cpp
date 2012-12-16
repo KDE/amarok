@@ -27,7 +27,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/SmartPointerList.h"
-#include "core-impl/meta/file/File.h"
+#include "core-impl/meta/file/FileTrackProvider.h"
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
 
@@ -85,7 +85,7 @@ struct CollectionManager::Private
     Collections::Collection *primaryCollection;
 };
 
-CollectionManager* CollectionManager::s_instance = 0;
+CollectionManager *CollectionManager::s_instance = 0;
 
 CollectionManager *
 CollectionManager::instance()
@@ -114,6 +114,9 @@ CollectionManager::CollectionManager()
     d->sqlStorageWrapper = new SqlStorageWrapper();
     s_instance = this;
     m_haveEmbeddedMysql = false;
+
+    // special-cased in trackForUrl(), don't add to d->trackProviders yet
+    m_fileTrackProvider = new FileTrackProvider();
 }
 
 CollectionManager::~CollectionManager()
@@ -124,6 +127,7 @@ CollectionManager::~CollectionManager()
     //Amarok really needs a proper state management...
     d->sqlStorageWrapper->setSqlStorage( 0 );
     delete m_timecodeTrackProvider;
+    delete m_fileTrackProvider;
     d->collections.clear();
     d->unmanagedCollections.clear();
     d->trackProviders.clear();
@@ -459,8 +463,14 @@ CollectionManager::trackForUrl( const KUrl &url )
         url.protocol() == QLatin1String("smb") )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
-    if( url.protocol() == QLatin1String("file") && MetaFile::Track::isTrack( url ) )
-        return Meta::TrackPtr( new MetaFile::Track( url ) );
+    /* TODO: add m_fileTrackProvider to normal providers once tested that the reorder
+     * doesn't change behaviour */
+    if( m_fileTrackProvider->possiblyContainsTrack( url ) )
+    {
+        Meta::TrackPtr track = m_fileTrackProvider->trackForUrl( url );
+        if( track )
+            return track;
+    }
 
     return Meta::TrackPtr( 0 );
 }
@@ -593,5 +603,8 @@ CollectionManager::removeTrackProvider( Collections::TrackProvider *provider )
     d->trackProviders.removeAll( provider );
 }
 
-#include "CollectionManager.moc"
-
+Collections::TrackProvider *
+CollectionManager::fileTrackProvider()
+{
+    return m_fileTrackProvider;
+}
