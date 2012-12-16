@@ -61,7 +61,7 @@ ServiceFactory::trackForUrl(const KUrl & url)
     {
         if( !service->serviceReady() ){
             debug() << "our service is not ready! queuing track and returning proxy";
-            MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), true );
+            MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), MetaProxy::Track::ManualLookup );
             MetaProxy::TrackPtr trackptr( ptrack );
             m_tracksToLocate.enqueue( trackptr );
             return Meta::TrackPtr::staticCast( trackptr );

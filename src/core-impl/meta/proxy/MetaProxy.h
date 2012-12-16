@@ -38,8 +38,37 @@ namespace MetaProxy
         public:
             class Private;
 
-            Track( const KUrl &url );
+            enum LookupType {
+                AutomaticLookup,
+                ManualLookup
+            };
+
+            /**
+             * Construct a lazy-loading proxying track. You must assign this track to a
+             * KSharedPtr right after constructing it.
+             *
+             * If @param lookupType is AutomaticLookup (the default), an asynchronous
+             * job employing CollectionManager to lookup the track in TrackProviders is
+             * enqueued and started right from this constructor.
+             *
+             * If @param lookupType is ManualLookup, lookup is not done automatically
+             * and you are responsible to call lookupTrack() once it is feasible. This way
+             * you can also optionally define which TrackProvider will be used.
+             */
+            Track( const KUrl &url, LookupType lookupType = AutomaticLookup );
             virtual ~Track();
+
+            /**
+             * Tell MetaProxy::Track to start looking up the real track. Only valid if
+             * this Track is constructed with lookupType = ManualLookup. This method
+             * returns quickly and the lookup happens asynchronously in a thread (in
+             * other words, @param provider, id supplied, must be thread-safe).
+             *
+             * If @param provider is null (the default), lookup happens in all
+             * registered providers by employing CollectionManager. Otherwise lookup
+             * only checks @param provider (still asynchronously).
+             */
+            void lookupTrack( Collections::TrackProvider *provider = 0 );
 
         // methods inherited from Meta::MetaCapability
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
@@ -109,24 +138,14 @@ namespace MetaProxy
             virtual void setLength( qint64 length );
 
             /**
-             * allows subclasses to create an instance of trackprovider which will only check the TrackProvider
-             * passed to lookupTrack(TrackProvider*) for the real track.
-             */
-            Track( const KUrl &url, bool awaitLookupNotification );
-
-            /**
-             * MetaProxy will check the given trackprovider if it can provide the track for the proxy's url.
-             */
-            void lookupTrack( Collections::TrackProvider *provider );
-
-            /**
              * MetaProxy will update the proxy with the track.
              */
             void updateTrack( Meta::TrackPtr track );
 
         private:
-            void init( const KUrl &url, bool awaitLookupNotification );
-            Private *const d;
+            Q_DISABLE_COPY( Track )
+
+            Private *const d;  // constant pointer to non-constant object
     };
 
 }

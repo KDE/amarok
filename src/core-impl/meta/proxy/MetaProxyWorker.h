@@ -26,7 +26,12 @@ class Worker : public Amarok::TrackForUrlWorker
 {
     Q_OBJECT
     public:
-        explicit Worker( const KUrl &url );
+        /**
+         * If @param provider is null (the default), all providers registered to
+         * CollectionManager are used and a watch for new providers is used.
+         * Otherwise the lookup happes just in @param provider and is one-shot.
+         */
+        explicit Worker( const KUrl &url, Collections::TrackProvider *provider = 0 );
 
         //TrackForUrlWorker virtual methods
         virtual void run();
@@ -35,6 +40,8 @@ class Worker : public Amarok::TrackForUrlWorker
         void slotNewTrackProvider( Collections::TrackProvider *newTrackProvider );
         void slotNewCollection( Collections::Collection *newCollection );
 
+    private:
+        Collections::TrackProvider *m_provider;
 };
 
 } // namespace MetaProxy

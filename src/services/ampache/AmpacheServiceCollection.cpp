@@ -74,7 +74,7 @@ AmpacheServiceCollection::slotAuthenticationNeeded()
 Meta::TrackPtr
 AmpacheServiceCollection::trackForUrl( const KUrl &url )
 {
-    MetaProxy::TrackPtr trackptr( new MetaProxy::Track( url.url(), true ) );
+    MetaProxy::TrackPtr trackptr( new MetaProxy::Track( url.url(), MetaProxy::Track::ManualLookup ) );
     AmpacheTrackForUrlWorker *worker = new AmpacheTrackForUrlWorker( url, trackptr,
         m_server, m_sessionId, service() );
     connect( worker, SIGNAL(authenticationNeeded()), SLOT(slotAuthenticationNeeded()) );

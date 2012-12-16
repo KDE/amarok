@@ -65,22 +65,9 @@ class EditCapabilityProxy : public Capabilities::EditCapability
         KSharedPtr<MetaProxy::Track> m_track;
 };
 
-MetaProxy::Track::Track( const KUrl &url )
+MetaProxy::Track::Track( const KUrl &url, LookupType lookupType )
     : Meta::Track()
     , d( new Private() )
-{
-    init( url, false );
-}
-
-MetaProxy::Track::Track( const KUrl &url, bool awaitLookupNotification )
-    : Meta::Track()
-    , d( new Private() )
-{
-    init( url, awaitLookupNotification );
-}
-
-void
-MetaProxy::Track::init( const KUrl &url, bool awaitLookupNotification )
 {
     d->url = url;
     d->proxy = this;
@@ -91,12 +78,11 @@ MetaProxy::Track::init( const KUrl &url, bool awaitLookupNotification )
     d->composerPtr = Meta::ComposerPtr( new ProxyComposer( d ) );
     d->yearPtr = Meta::YearPtr( new ProxyYear( d ) );
 
-    if( !awaitLookupNotification )
+    if( lookupType == AutomaticLookup )
     {
         Worker *worker = new Worker( d->url );
-        QObject::connect( worker, SIGNAL(finishedLookup( const Meta::TrackPtr & )),
-                d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
-
+        QObject::connect( worker, SIGNAL(finishedLookup(Meta::TrackPtr)),
+                          d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
         ThreadWeaver::Weaver::instance()->enqueue( worker );
     }
 }
@@ -104,6 +90,15 @@ MetaProxy::Track::init( const KUrl &url, bool awaitLookupNotification )
 MetaProxy::Track::~Track()
 {
     delete d;
+}
+
+void
+MetaProxy::Track::lookupTrack( Collections::TrackProvider *provider )
+{
+    Worker *worker = new Worker( d->url, provider );
+    QObject::connect( worker, SIGNAL(finishedLookup(Meta::TrackPtr)),
+                      d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
+    ThreadWeaver::Weaver::instance()->enqueue( worker );
 }
 
 QString
@@ -160,42 +155,37 @@ Track::fixedName() const
 KUrl
 MetaProxy::Track::playableUrl() const
 {
-    if( d->realTrack ) {
-        KUrl playableUrl = d->realTrack->playableUrl();
-        return playableUrl;
-    }
-    //return KUrl();
-    return d->url; // Maybe?
+    if( d->realTrack )
+        return d->realTrack->playableUrl();
+    else
+        return d->url;
 }
 
 QString
 MetaProxy::Track::prettyUrl() const
 {
-    if( d->realTrack ) {
-        QString prettyUrl = d->realTrack->prettyUrl();
-        return prettyUrl;
-    }
-    return d->url.url();
+    if( d->realTrack )
+        return d->realTrack->prettyUrl();
+    else
+        return d->url.url();
 }
 
 QString
 MetaProxy::Track::uidUrl() const
 {
-    if( d->realTrack ) {
-        QString uidUrl = d->realTrack->uidUrl();
-        return uidUrl;
-    }
-    return d->url.url();
+    if( d->realTrack )
+        return d->realTrack->uidUrl();
+    else
+        return d->url.url();
 }
 
 bool
 MetaProxy::Track::isPlayable() const
 {
-    if( d->realTrack ) {
-        bool isPlayable = d->realTrack->isPlayable();
-        return isPlayable;
-    }
-    return false;
+    if( d->realTrack )
+        return d->realTrack->isPlayable();
+    else
+        return false;
 }
 
 Meta::AlbumPtr
@@ -302,7 +292,8 @@ MetaProxy::Track::trackNumber() const
 {
     if( d->realTrack )
         return d->realTrack->trackNumber();
-    return d->cachedTrackNumber;
+    else
+        return d->cachedTrackNumber;
 }
 
 void
@@ -316,7 +307,8 @@ MetaProxy::Track::discNumber() const
 {
     if( d->realTrack )
         return d->realTrack->discNumber();
-    return d->cachedDiscNumber;
+    else
+        return d->cachedDiscNumber;
 }
 
 void
@@ -330,7 +322,8 @@ MetaProxy::Track::length() const
 {
     if( d->realTrack )
         return d->realTrack->length();
-    return d->cachedLength;
+    else
+        return d->cachedLength;
 }
 
 void
@@ -344,7 +337,8 @@ MetaProxy::Track::filesize() const
 {
     if( d->realTrack )
         return d->realTrack->filesize();
-    return 0;
+    else
+        return 0;
 }
 
 int
@@ -352,7 +346,8 @@ MetaProxy::Track::sampleRate() const
 {
     if( d->realTrack )
         return d->realTrack->sampleRate();
-    return 0;
+    else
+        return 0;
 }
 
 int
@@ -360,7 +355,8 @@ MetaProxy::Track::bitrate() const
 {
     if( d->realTrack )
         return d->realTrack->bitrate();
-    return 0;
+    else
+        return 0;
 }
 
 QDateTime
@@ -368,7 +364,8 @@ MetaProxy::Track::createDate() const
 {
     if( d->realTrack )
         return d->realTrack->createDate();
-    return Meta::Track::createDate();
+    else
+        return Meta::Track::createDate();
 }
 
 QDateTime
@@ -376,7 +373,8 @@ Track::modifyDate() const
 {
     if( d->realTrack )
         return d->realTrack->modifyDate();
-    return Meta::Track::modifyDate();
+    else
+        return Meta::Track::modifyDate();
 }
 
 qreal
@@ -384,7 +382,8 @@ Track::replayGain( Meta::ReplayGainTag mode ) const
 {
     if( d->realTrack )
         return d->realTrack->replayGain( mode );
-    return Meta::Track::replayGain( mode );
+    else
+        return Meta::Track::replayGain( mode );
 }
 
 QString
@@ -392,7 +391,9 @@ MetaProxy::Track::type() const
 {
     if( d->realTrack )
         return d->realTrack->type();
-    return QString();       //TODO cache type??
+    else
+        // just debugging, normal users shouldn't hit this
+        return QString( "MetaProxy::Track" );
 }
 
 void
@@ -414,7 +415,8 @@ MetaProxy::Track::inCollection() const
 {
     if( d->realTrack )
         return d->realTrack->inCollection();
-    return false;
+    else
+        return false;
 }
 
 Collections::Collection *
@@ -472,16 +474,6 @@ Track::removeLabel( const Meta::LabelPtr &label )
 }
 
 void
-MetaProxy::Track::lookupTrack( Collections::TrackProvider *provider )
-{
-    if( provider->possiblyContainsTrack( d->url ) )
-    {
-        Meta::TrackPtr track = provider->trackForUrl( d->url );
-        d->slotUpdateTrack( track );
-    }
-}
-
-void
 MetaProxy::Track::updateTrack( Meta::TrackPtr track )
 {
     d->slotUpdateTrack( track );
@@ -493,9 +485,11 @@ MetaProxy::Track::hasCapabilityInterface( Capabilities::Capability::Type type ) 
     if( d->realTrack )
         return d->realTrack->hasCapabilityInterface( type );
     else
+    {
         if( type == Capabilities::Capability::Editable )
             return true;
-    return false;
+        return false;
+    }
 }
 
 Capabilities::Capability *
@@ -504,9 +498,11 @@ MetaProxy::Track::createCapabilityInterface( Capabilities::Capability::Type type
     if( d->realTrack )
         return d->realTrack->createCapabilityInterface( type );
     else
+    {
         if( type == Capabilities::Capability::Editable )
             return new EditCapabilityProxy( this );
-    return 0;
+        return 0;
+    }
 }
 
 bool
@@ -526,5 +522,6 @@ Track::statistics()
 {
     if( d->realTrack )
         return d->realTrack->statistics();
-    return Meta::Track::statistics();
+    else
+        return Meta::Track::statistics();
 }

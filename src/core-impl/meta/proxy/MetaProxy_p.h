@@ -75,6 +75,15 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
             {
                 subscribeTo( track );
                 realTrack = track;
+
+                // clear memory of now-unused cached fields:
+                url.clear();
+                cachedArtist.clear();
+                cachedAlbum.clear();
+                cachedName.clear();
+                cachedGenre.clear();
+                cachedComposer.clear();
+
                 proxy->notifyObservers();
             }
         }

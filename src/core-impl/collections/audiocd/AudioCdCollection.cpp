@@ -561,7 +561,7 @@ AudioCdCollection::trackForUrl( const KUrl & url )
         }
         else
         {
-            MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), true );
+            MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), MetaProxy::Track::ManualLookup );
             m_proxyMap.insert( url, ptrack );
             return Meta::TrackPtr( ptrack );
         }

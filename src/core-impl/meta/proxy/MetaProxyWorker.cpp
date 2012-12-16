@@ -18,17 +18,24 @@
 
 #include "core-impl/collections/support/CollectionManager.h"
 
-namespace MetaProxy {
+using namespace MetaProxy;
 
-Worker::Worker( const KUrl &url )
+Worker::Worker( const KUrl &url, Collections::TrackProvider *provider )
     : Amarok::TrackForUrlWorker( url )
+    , m_provider( provider )
 {
-
 }
 
 void
 Worker::run()
 {
+    if( m_provider )
+    {
+        m_track = m_provider->trackForUrl( m_url );
+        return;
+        // Amarok::TrackForUrlWorker::completeJob() does the rest
+    }
+
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( m_url );
 
     //no TrackProvider has a track for us yet, query new ones that are added.
@@ -43,10 +50,14 @@ Worker::run()
                  SIGNAL(collectionAdded( Collections::Collection * )),
                  SLOT(slotNewCollection( Collections::Collection * )) );
 
+        /* FIXME: slotNewTrackProvider/slotNewCollection are IMO never called,
+         * because when run() returns, ThreadWeaver::Job emits done(), which is
+         * connected to Amarok::TrackForUrlWorker::completeJob(), which emits
+         * finishedLookup() and calls deleteLater() on this object. -- strohel */
         return;
     }
 
-    emit( finishedLookup( track ) );
+    emit finishedLookup( track );
 }
 
 void
@@ -60,7 +71,7 @@ Worker::slotNewTrackProvider( Collections::TrackProvider *newTrackProvider )
     if( newTrackProvider->possiblyContainsTrack( m_url ) )
     {
         Meta::TrackPtr track = newTrackProvider->trackForUrl( m_url );
-        emit( finishedLookup( track ) );
+        emit finishedLookup( track );
     }
 }
 
@@ -75,8 +86,6 @@ Worker::slotNewCollection( Collections::Collection *newCollection )
     if( newCollection->possiblyContainsTrack( m_url ) )
     {
         Meta::TrackPtr track = newCollection->trackForUrl( m_url );
-        emit( finishedLookup( track ) );
+        emit finishedLookup( track );
     }
 }
-
-} // namespace MetaProxy
