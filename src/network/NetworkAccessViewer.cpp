@@ -19,10 +19,11 @@
 
 #include "NetworkAccessViewer.h"
 
-#include <qdebug.h>
-#include <qnetworkrequest.h>
-#include <qnetworkreply.h>
-#include <qsignalmapper.h>
+#include "core/support/Debug.h"
+
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QSignalMapper>
 
 NetworkAccessViewer::NetworkAccessViewer( QWidget *parent )
     : QObject( parent )
@@ -104,12 +105,17 @@ void NetworkAccessViewer::clear()
 void NetworkAccessViewer::requestFinished( QObject *replyObject )
 {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>( replyObject );
-    if ( !reply ) {
-        qWarning() << "Failed to downcast reply";
+    if( !reply )
+    {
+        warning() << __PRETTY_FUNCTION__ << "Failed to downcast reply";
         return;
     }
-
-    QTreeWidgetItem *item = itemMap[reply];
+    QTreeWidgetItem *item = itemMap.value( reply );
+    if( !item )
+    {
+        warning() << __PRETTY_FUNCTION__ << "null item";
+        return;
+    }
 
     // Record the reply headers
     QList<QByteArray> headerValues;
