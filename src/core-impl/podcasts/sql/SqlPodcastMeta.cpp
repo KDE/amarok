@@ -24,8 +24,9 @@
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/meta/proxy/MetaProxy.h"
+#include "core-impl/podcasts/sql/SqlPodcastProvider.h"
 #include "core/support/Debug.h"
-#include "SqlPodcastProvider.h"
 
 #include <QDate>
 #include <QFile>
@@ -138,10 +139,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChann
 
     Q_ASSERT_X( iter == result.constEnd(), "SqlPodcastEpisode( PodcastCollection*, QStringList )", "number of expected fields did not match number of actual fields" );
 
-    if( !m_localUrl.isEmpty() && QFileInfo( m_localUrl.toLocalFile() ).exists() )
-    {
-        m_localFile = new MetaFile::Track( m_localUrl );
-    }
+    setupLocalFile();
 }
 
 //TODO: why do PodcastMetaCommon and PodcastEpisode not have an appropriate copy constructor?
@@ -185,11 +183,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( Podcasts::PodcastEpisodePtr episode )
 
     //commit to the database
     updateInDb();
-
-    if( !m_localUrl.isEmpty() && QFileInfo( m_localUrl.toLocalFile() ).exists() )
-    {
-        m_localFile = new MetaFile::Track( m_localUrl );
-    }
+    setupLocalFile();
 }
 
 SqlPodcastEpisode::SqlPodcastEpisode( PodcastChannelPtr channel, Podcasts::PodcastEpisodePtr episode )
@@ -232,11 +226,21 @@ SqlPodcastEpisode::SqlPodcastEpisode( PodcastChannelPtr channel, Podcasts::Podca
 
     //commit to the database
     updateInDb();
+    setupLocalFile();
+}
 
-    if( !m_localUrl.isEmpty() && QFileInfo( m_localUrl.toLocalFile() ).exists() )
-    {
-        m_localFile = new MetaFile::Track( m_localUrl );
-    }
+void
+SqlPodcastEpisode::setupLocalFile()
+{
+    if( m_localUrl.isEmpty() || !QFileInfo( m_localUrl.toLocalFile() ).exists() )
+        return;
+
+    MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( m_localUrl, MetaProxy::Track::ManualLookup ) );
+    m_localFile = Meta::TrackPtr( proxyTrack.data() ); // avoid static_cast
+    /* following won't write to actual file, because MetaProxy::Track hasn't yet looked
+     * up the underlying track. It will just set some cached values. */
+    writeTagsToFile();
+    proxyTrack->lookupTrack( CollectionManager::instance()->fileTrackProvider() );
 }
 
 SqlPodcastEpisode::~SqlPodcastEpisode()
@@ -332,10 +336,10 @@ SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type typ
 bool
 SqlPodcastEpisode::isEditable() const
 {
-     if( m_localFile.isNull() )
-         return false;
-
-     return m_localFile->isEditable();
+     using namespace Capabilities;
+     Meta::TrackPtr file = m_localFile; // prevent discarding const qualifier
+     QScopedPointer<EditCapability> ec( file ? file->create<EditCapability>() : 0 );
+     return ec && ec->isEditable();
 }
 
 void
@@ -368,12 +372,14 @@ SqlPodcastEpisode::prettyName() const
 void
 SqlPodcastEpisode::setTitle( const QString &title )
 {
-    if( !m_localFile.isNull() )
-    {
-        m_localFile->setTitle( title );
-    }
-
     m_title = title;
+
+    using namespace Capabilities;
+    QScopedPointer<EditCapability> ec( m_localFile ? m_localFile->create<EditCapability>() : 0 );
+    if( ec && ec->isEditable() )
+    {
+        ec->setTitle( title );
+    }
 }
 
 Meta::ArtistPtr
@@ -415,10 +421,11 @@ SqlPodcastEpisode::year() const
 bool
 SqlPodcastEpisode::writeTagsToFile()
 {
-    if( m_localFile.isNull() )
+    if( !m_localFile )
         return false;
 
-    QScopedPointer<Capabilities::EditCapability> ec( m_localFile->create<Capabilities::EditCapability>() );
+    using namespace Capabilities;
+    QScopedPointer<EditCapability> ec( m_localFile->create<EditCapability>() );
     if( !ec )
         return false;
 

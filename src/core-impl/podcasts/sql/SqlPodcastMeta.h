@@ -80,13 +80,18 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         void deleteFromDb();
 
     private:
+        /**
+         * Establishes m_localFile using MetaProxy::Track if m_localUrl is valid.
+         */
+        void setupLocalFile();
+
         bool m_batchUpdate;
 
         int m_dbId; //database ID
         bool m_isKeep; //Keep the download after purge or not?
         SqlPodcastChannelPtr m_channel; //the parent of this episode
 
-        MetaFile::TrackPtr m_localFile;
+        Meta::TrackPtr m_localFile;
 };
 
 class SqlPodcastChannel : public Podcasts::PodcastChannel

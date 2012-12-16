@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.7
   CHANGES:
+    * Podcast episodes are now loaded asynchronously on startup to reduce delays.
     * Removed alpha state and not really working spectrum analyzer applet.
 
   BUGFIXES:
