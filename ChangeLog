@@ -3,11 +3,13 @@ Amarok ChangeLog
 (C) 2002-2012 the Amarok authors.
 
 VERSION 2.7
+  CHANGES:
+    * Removed alpha state and not really working spectrum analyzer applet.
+
   BUGFIXES:
     * Prevent crash when using File Browser breadcrumbs. (BR 265626)
     * Prevent crash in ServiceBase::setModel triggered by Last.fm rewrite. (BR 311723)
     * Fix incorrect display of Last.fm tags and other items. (BR 244555)
-    * Removed alpha state and not working spectrum analyzer applet.
 
 VERSION 2.7-Beta 1
   FEATURES:

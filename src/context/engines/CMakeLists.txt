@@ -6,10 +6,6 @@ add_subdirectory( photos )
 add_subdirectory( labels )
 add_subdirectory( tabs )
 
-if( WITH_SPECTRUM_ANALYZER AND OPENGL_FOUND )
-    add_subdirectory( spectrumanalyzer )
-endif()
-
 #add_subdirectory( songkick )
 
 if(LIBLASTFM_FOUND)
