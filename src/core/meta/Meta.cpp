@@ -152,8 +152,9 @@ void
 Meta::Base::notifyObserversHelper( const T *self ) const
 {
     // observers ale allowed to remove themselves during metadataChanged() call. That's
-    // why the lock needs to be recursive.
-    QReadLocker locker( &m_observersLock );
+    // why the lock needs to be recursive AND the lock needs to be for writing, because
+    // a lock for reading cannot be recursively relocked for writing.
+    QWriteLocker locker( &m_observersLock );
     foreach( Observer *observer, m_observers )
     {
         // observers can potentially remove or even destory other observers during
