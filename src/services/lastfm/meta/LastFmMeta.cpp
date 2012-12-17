@@ -26,6 +26,9 @@
 #include <KIcon>
 #include <Solid/Networking>
 
+#include <QCoreApplication>
+#include <QThread>
+
 using namespace LastFm;
 
 Track::Track( const QString &lastFmUri )
@@ -75,17 +78,25 @@ void Track::init( int id /* = -1*/ )
     d->composerPtr = Meta::ComposerPtr( new LastFmComposer( d ) );
     d->yearPtr = Meta::YearPtr( new LastFmYear( d ) );
 
-    QAction * banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
+    QAction *banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
     connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );
     m_trackActions.append( banAction );
 
-    QAction * skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), QString( "Last.fm: &Skip" ), this ); // i18n after string freeze
+    QAction *skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), QString( "Last.fm: &Skip" ), this ); // i18n after string freeze
     skipAction->setShortcut( QString( "Ctrl+S" ) ); // i18n after string freeze
     skipAction->setStatusTip( QString( "Skip this track" ) ); // i18n after string freeze
     connect( skipAction, SIGNAL(triggered()), this, SIGNAL(skipTrack()) );
     m_trackActions.append( skipAction );
+
+    QThread *mainThread = QCoreApplication::instance()->thread();
+    bool foreignThread = QThread::currentThread() != mainThread;
+    if( foreignThread )
+    {
+        moveToThread( mainThread ); // the actions are children and are moved together with parent
+        d->moveToThread( mainThread );
+    }
 }
 
 QString
@@ -155,10 +166,17 @@ Track::uidUrl() const
 bool
 Track::isPlayable() const
 {
-    if( Solid::Networking::status() != Solid::Networking::Connected )
-        return false;
-
-    return !d->trackPath.isEmpty();
+    switch( Solid::Networking::status() )
+    {
+        case Solid::Networking::Unknown:
+        case Solid::Networking::Connected:
+            return true;
+        case Solid::Networking::Unconnected:
+        case Solid::Networking::Disconnecting:
+        case Solid::Networking::Connecting:
+            return false;
+    }
+    return true;
 }
 
 Meta::AlbumPtr

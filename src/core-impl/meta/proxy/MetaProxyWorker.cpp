@@ -21,9 +21,12 @@
 using namespace MetaProxy;
 
 Worker::Worker( const KUrl &url, Collections::TrackProvider *provider )
-    : Amarok::TrackForUrlWorker( url )
+    : m_url( url )
     , m_provider( provider )
+    , m_stepsDoneReceived( 0 )
 {
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(slotStepDone()) );
+    connect( this, SIGNAL(finishedLookup(Meta::TrackPtr)), SLOT(slotStepDone()) );
 }
 
 void
@@ -39,36 +42,33 @@ Worker::run()
     }
 
     track = CollectionManager::instance()->trackForUrl( m_url );
-
-    //no TrackProvider has a track for us yet, query new ones that are added.
-    if( track.isNull() )
+    if( track )
     {
-        //TODO: should only have to connecto to TrackProvider signals.
-        //Each Collection contains a TrackProvider
-        connect( CollectionManager::instance(),
-                 SIGNAL(trackProviderAdded( Collections::TrackProvider * )),
-                 SLOT(slotNewTrackProvider( Collections::TrackProvider * )) );
-        connect( CollectionManager::instance(),
-                 SIGNAL(collectionAdded( Collections::Collection * )),
-                 SLOT(slotNewCollection( Collections::Collection * )) );
-
-        /* FIXME: slotNewTrackProvider/slotNewCollection are IMO never called,
-         * because when run() returns, ThreadWeaver::Job emits done(), which is
-         * connected to Amarok::TrackForUrlWorker::completeJob(), which emits
-         * finishedLookup() and calls deleteLater() on this object. -- strohel */
+        emit finishedLookup( track );
         return;
     }
 
-    emit finishedLookup( track );
+    // no TrackProvider has a track for us yet, query new ones that are added.
+    if( !track )
+    {
+        connect( CollectionManager::instance(),
+                 SIGNAL(trackProviderAdded(Collections::TrackProvider*)),
+                 SLOT(slotNewTrackProvider( Collections::TrackProvider*)),
+                 Qt::DirectConnection ); // we may live in a thread w/out event loop
+        connect( CollectionManager::instance(),
+                 SIGNAL(collectionAdded(Collections::Collection*)),
+                 SLOT(slotNewTrackProvider(Collections::TrackProvider*)),
+                 Qt::DirectConnection ); // we may live in a thread w/out event loop
+        return;
+    }
+
 }
 
 void
 Worker::slotNewTrackProvider( Collections::TrackProvider *newTrackProvider )
 {
     if( !newTrackProvider )
-    {
         return;
-    }
 
     if( newTrackProvider->possiblyContainsTrack( m_url ) )
     {
@@ -78,16 +78,9 @@ Worker::slotNewTrackProvider( Collections::TrackProvider *newTrackProvider )
 }
 
 void
-Worker::slotNewCollection( Collections::Collection *newCollection )
+Worker::slotStepDone()
 {
-    if( !newCollection )
-    {
-        return;
-    }
-
-    if( newCollection->possiblyContainsTrack( m_url ) )
-    {
-        Meta::TrackPtr track = newCollection->trackForUrl( m_url );
-        emit finishedLookup( track );
-    }
+    m_stepsDoneReceived++;
+    if( m_stepsDoneReceived >= 2 )
+        deleteLater();
 }

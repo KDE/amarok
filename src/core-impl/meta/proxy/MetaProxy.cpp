@@ -14,21 +14,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core-impl/meta/proxy/MetaProxy.h"
-#include "core-impl/meta/proxy/MetaProxy_p.h"
-#include "core-impl/meta/proxy/MetaProxy_p.moc"
-#include "core-impl/meta/proxy/MetaProxyWorker.h"
+#include "MetaProxy.h"
 
 #include "core/meta/Statistics.h"
 #include "core/capabilities/EditCapability.h"
 #include "core-impl/collections/support/CollectionManager.h"
-
-#include <QObject>
-#include <QWeakPointer>
-#include <QTimer>
+#include "core-impl/meta/proxy/MetaProxy_p.h"
+#include "core-impl/meta/proxy/MetaProxy_p.moc"
+#include "core-impl/meta/proxy/MetaProxyWorker.h"
 
 #include <KSharedPtr>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/Weaver>
+
+#include <QCoreApplication>
+#include <QThread>
+#include <QTimer>
+#include <QWeakPointer>
 
 using namespace MetaProxy;
 
@@ -78,9 +79,17 @@ MetaProxy::Track::Track( const KUrl &url, LookupType lookupType )
     d->composerPtr = Meta::ComposerPtr( new ProxyComposer( d ) );
     d->yearPtr = Meta::YearPtr( new ProxyYear( d ) );
 
+    QThread *mainThread = QCoreApplication::instance()->thread();
+    bool foreignThread = QThread::currentThread() != mainThread;
+    if( foreignThread )
+        d->moveToThread( mainThread );
+
     if( lookupType == AutomaticLookup )
     {
         Worker *worker = new Worker( d->url );
+        if( foreignThread )
+            worker->moveToThread( mainThread );
+
         QObject::connect( worker, SIGNAL(finishedLookup(Meta::TrackPtr)),
                           d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
         ThreadWeaver::Weaver::instance()->enqueue( worker );
@@ -96,6 +105,10 @@ void
 MetaProxy::Track::lookupTrack( Collections::TrackProvider *provider )
 {
     Worker *worker = new Worker( d->url, provider );
+    QThread *mainThread = QCoreApplication::instance()->thread();
+    if( QThread::currentThread() != mainThread )
+        worker->moveToThread( mainThread );
+
     QObject::connect( worker, SIGNAL(finishedLookup(Meta::TrackPtr)),
                       d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
     ThreadWeaver::Weaver::instance()->enqueue( worker );

@@ -17,33 +17,43 @@
 #ifndef METAPROXY_METAPROXYWORKER_H
 #define METAPROXY_METAPROXYWORKER_H
 
-#include <core/collections/support/TrackForUrlWorker.h>
-#include <core/collections/Collection.h>
+#include "core/collections/Collection.h"
 
-namespace MetaProxy {
+#include <ThreadWeaver/Job>
 
-class Worker : public Amarok::TrackForUrlWorker
+namespace MetaProxy
 {
-    Q_OBJECT
-    public:
-        /**
-         * If @param provider is null (the default), all providers registered to
-         * CollectionManager are used and a watch for new providers is used.
-         * Otherwise the lookup happes just in @param provider and is one-shot.
-         */
-        explicit Worker( const KUrl &url, Collections::TrackProvider *provider = 0 );
+    /**
+     * Worker to get real track for MetaProxy::Track. Worker deletes itself somewhere
+     * after emitting finishedLookup().
+     */
+    class Worker : public ThreadWeaver::Job
+    {
+        Q_OBJECT
 
-        //TrackForUrlWorker virtual methods
-        virtual void run();
+        public:
+            /**
+             * If @param provider is null (the default), all providers registered to
+             * CollectionManager are used and a watch for new providers is used.
+             * Otherwise the lookup happes just in @param provider and is one-shot.
+             */
+            explicit Worker( const KUrl &url, Collections::TrackProvider *provider = 0 );
 
-    private slots:
-        void slotNewTrackProvider( Collections::TrackProvider *newTrackProvider );
-        void slotNewCollection( Collections::Collection *newCollection );
+            //TrackForUrlWorker virtual methods
+            virtual void run();
 
-    private:
-        Collections::TrackProvider *m_provider;
-};
+        signals:
+            void finishedLookup( Meta::TrackPtr track );
 
+        private slots:
+            void slotNewTrackProvider( Collections::TrackProvider *newTrackProvider );
+            void slotStepDone();
+
+        private:
+            KUrl m_url;
+            Collections::TrackProvider *m_provider;
+            int m_stepsDoneReceived;
+    };
 } // namespace MetaProxy
 
 #endif // METAPROXY_METAPROXYWORKER_H
