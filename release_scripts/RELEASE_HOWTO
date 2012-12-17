@@ -86,6 +86,7 @@ SECTION 4: The Release Day
 SECTION 5: After the Release
 
  * Update shared/Version.h to 2.6-git (if the release was 2.6.0)
+ * `git grep -ipn 'string freeze'` - now is the time to add/change strings
 
  If you must change anything about the tarball you need to email sysadmin@kde.org
  because otherwise they gets annoyed that the md5 has changed.
