@@ -29,14 +29,16 @@ Worker::Worker( const KUrl &url, Collections::TrackProvider *provider )
 void
 Worker::run()
 {
+    Meta::TrackPtr track;
+
     if( m_provider )
     {
-        m_track = m_provider->trackForUrl( m_url );
+        track = m_provider->trackForUrl( m_url );
+        emit finishedLookup( track );
         return;
-        // Amarok::TrackForUrlWorker::completeJob() does the rest
     }
 
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( m_url );
+    track = CollectionManager::instance()->trackForUrl( m_url );
 
     //no TrackProvider has a track for us yet, query new ones that are added.
     if( track.isNull() )
