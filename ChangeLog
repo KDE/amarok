@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.7
   CHANGES:
+    * Last.fm Skip button re-added after being removed in Beta by error. (BR 311733)
     * Podcast episodes are now loaded asynchronously on startup to reduce delays.
     * Removed alpha state and not really working spectrum analyzer applet.
 

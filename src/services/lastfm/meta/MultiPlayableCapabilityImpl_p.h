@@ -35,6 +35,7 @@
 class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability, public Meta::Observer
 {
     Q_OBJECT
+
     public:
         MultiPlayableCapabilityImpl( LastFm::Track *track )
             : Capabilities::MultiPlayableCapability()
@@ -44,6 +45,9 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
         {
             Meta::TrackPtr trackptr( track );
             subscribeTo( trackptr );
+
+            connect( track, SIGNAL(skipTrack()), this, SLOT(skip()) );
+            connect( The::mainWindow(), SIGNAL(skipTrack()), SLOT(skip()) );
         }
 
         virtual ~MultiPlayableCapabilityImpl() 
@@ -90,6 +94,18 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
                 m_currentTrack = m_tuner->takeNextTrack();
                 m_track->setTrackInfo( m_currentTrack );
             }
+        }
+
+        virtual void skip()
+        {
+            fetchNext();
+            /* fetchNext() calls m_track->setTrackInfo()
+             * Track::setTrackInfo() calls Track::Private::setTrackInfo()
+             * Track::Private::setTrackInfo() calls Meta::Base::notifyObservers()
+             * Meta::Base::notifyObservers() calls *OUR* metadataChanged()
+             * OUR metadataChanged() emits playableUrlFetched( url )
+             * playableUrlFetched( url ) is caught by EngineController.
+             */
         }
 
         void error( lastfm::ws::Error e )

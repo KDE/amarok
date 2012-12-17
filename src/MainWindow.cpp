@@ -894,6 +894,11 @@ MainWindow::createActions()
     //action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
     connect( action, SIGNAL( triggered() ), SLOT(slotBanTrack()) );
 
+    action = new KAction( QString( "Last.fm: Skip Current Track" ), this ); // i18n after string freeze
+    ac->addAction( "skipTrack", action );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_S ) );
+    connect( action, SIGNAL( triggered() ), SIGNAL(skipTrack()) );
+
     action = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
     ac->addAction( "queueTrack", action );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_D ) );

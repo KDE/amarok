@@ -83,6 +83,12 @@ void Track::init( int id /* = -1*/ )
     banAction->setStatusTip( i18n( "Ban this track" ) );
     connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );
     m_trackActions.append( banAction );
+
+    QAction * skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), QString( "Last.fm: &Skip" ), this ); // i18n after string freeze
+    skipAction->setShortcut( QString( "Ctrl+S" ) ); // i18n after string freeze
+    skipAction->setStatusTip( QString( "Skip this track" ) ); // i18n after string freeze
+    connect( skipAction, SIGNAL(triggered()), this, SIGNAL(skipTrack()) );
+    m_trackActions.append( skipAction );
 }
 
 QString
@@ -351,6 +357,8 @@ Track::ban()
     DEBUG_BLOCK
     d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).ban();
     connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
+    if( The::engineController()->currentTrack() == this )
+        emit skipTrack();
 }
 
 void Track::slotResultReady()
