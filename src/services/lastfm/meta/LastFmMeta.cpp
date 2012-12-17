@@ -84,9 +84,9 @@ void Track::init( int id /* = -1*/ )
     connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );
     m_trackActions.append( banAction );
 
-    QAction *skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), QString( "Last.fm: &Skip" ), this ); // i18n after string freeze
-    skipAction->setShortcut( QString( "Ctrl+S" ) ); // i18n after string freeze
-    skipAction->setStatusTip( QString( "Skip this track" ) ); // i18n after string freeze
+    QAction *skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
+    skipAction->setShortcut( i18n( "Ctrl+S" ) );
+    skipAction->setStatusTip( i18n( "Skip this track" ) );
     connect( skipAction, SIGNAL(triggered()), this, SIGNAL(skipTrack()) );
     m_trackActions.append( skipAction );
 

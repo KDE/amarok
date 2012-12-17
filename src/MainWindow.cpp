@@ -894,7 +894,7 @@ MainWindow::createActions()
     //action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
     connect( action, SIGNAL( triggered() ), SLOT(slotBanTrack()) );
 
-    action = new KAction( QString( "Last.fm: Skip Current Track" ), this ); // i18n after string freeze
+    action = new KAction( i18n( "Last.fm: Skip Current Track" ), this );
     ac->addAction( "skipTrack", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_S ) );
     connect( action, SIGNAL( triggered() ), SIGNAL(skipTrack()) );
