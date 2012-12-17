@@ -39,8 +39,8 @@ public:
     virtual QueryMaker* setQueryType( QueryType type );
 
     using DynamicServiceQueryMaker::addMatch;
-    virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
-    virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
+    virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
+    virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
 
     virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
     virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare );

@@ -53,8 +53,15 @@ QList< QAction * > Meta::AmpacheTrack::currentTrackActions()
 bool
 AmpacheTrack::isPlayable() const
 {
-    if( Solid::Networking::status() != Solid::Networking::Connected )
-        return true;
-
-    return false;
+    switch( Solid::Networking::status() )
+    {
+        case Solid::Networking::Unknown:
+        case Solid::Networking::Connected:
+            return true;
+        case Solid::Networking::Unconnected:
+        case Solid::Networking::Disconnecting:
+        case Solid::Networking::Connecting:
+            return false;
+    }
+    return true;
 }

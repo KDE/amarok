@@ -124,9 +124,11 @@ AmpacheServiceQueryMaker::setQueryType( QueryType type )
 }
 
 QueryMaker *
-AmpacheServiceQueryMaker::addMatch( const Meta::ArtistPtr & artist )
+AmpacheServiceQueryMaker::addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour )
 {
+    Q_UNUSED( behaviour )
     DEBUG_BLOCK
+
     if( m_parentAlbumId.isEmpty() )
     {
         const Meta::ServiceArtist * serviceArtist = dynamic_cast< const Meta::ServiceArtist * >( artist.data() );
