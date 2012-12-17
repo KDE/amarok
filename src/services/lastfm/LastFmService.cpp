@@ -173,21 +173,23 @@ void
 LastFmService::slotReconfigure()
 {
     lastfm::ws::Username = m_config->username();
-    setServiceReady( !m_config->username().isEmpty() ); // core features require just username
+    bool ready = !m_config->username().isEmpty(); // core features require just username
 
     /* create ServiceCollection only once the username is known (remember, getting
      * username from KWallet is async! */
-    if( !m_collection && serviceReady() )
+    if( !m_collection && ready )
     {
         m_collection = new Collections::LastFmServiceCollection( m_config->username() );
         CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
     }
 
     // create Model once the username is known, it depends on it implicitly
-    if( !model() && serviceReady() )
+    if( !model() && ready )
     {
         setModel( new LastFmTreeModel( this ) );
     }
+
+    setServiceReady( ready ); // emits ready(), which needs to be done *after* creating collection
 
     // now authenticate w/ last.fm and get our session key if we don't have one
     if( !m_config->sessionKey().isEmpty() )

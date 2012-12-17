@@ -36,7 +36,6 @@ Track::Track( const QString &lastFmUri )
     d->lastFmUri = QUrl( lastFmUri );
     d->t = this;
 
-
     init();
 }
 

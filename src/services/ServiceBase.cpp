@@ -64,11 +64,13 @@ ServiceFactory::trackForUrl( const KUrl &url )
             m_tracksToLocate.enqueue( trackptr );
             return Meta::TrackPtr::staticCast( trackptr );
         }
-        else if (  service->collection() )
+        else if( service->collection() )
         {
             debug() << "Service Ready. Collection is: " << service->collection();
             return service->collection()->trackForUrl( url );
         }
+        else
+            warning() << __PRETTY_FUNCTION__ << "service is ready, but service->collection() is null!";
     }
     return Meta::TrackPtr();
 }
@@ -83,8 +85,10 @@ void ServiceFactory::slotServiceReady()
     while( !m_tracksToLocate.isEmpty() )
     {
         MetaProxy::TrackPtr track = m_tracksToLocate.dequeue();
-        if( track ) 
-            track->lookupTrack( this );
+        if( !track )
+            continue;
+
+        track->lookupTrack( this );
     }
 }
 
