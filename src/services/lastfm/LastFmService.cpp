@@ -134,7 +134,7 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     The::globalCollectionActions()->addTrackAction( new LoveTrackAction( this ) );
 
     QAction *loveAction = new QAction( KIcon( "love-amarok" ), i18n( "Last.fm: Love" ), this );
-    connect( loveAction, SIGNAL( triggered() ), this, SLOT( love() ) );
+    connect( loveAction, SIGNAL(triggered()), this, SLOT(love()) );
     loveAction->setShortcut( i18n( "Ctrl+L" ) );
     The::globalCurrentTrackActions()->addAction( loveAction );
 
@@ -497,17 +497,6 @@ LastFmService::love( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
     m_scrobbler->loveTrack( track );
-}
-
-void
-LastFmService::ban()
-{
-    DEBUG_BLOCK
-
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
-    if( lastfmTrack )
-        lastfmTrack->ban();
 }
 
 void LastFmService::playCustomStation()

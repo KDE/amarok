@@ -65,7 +65,6 @@ public:
 
 private slots:
     void love();
-    void ban();
 
     void playCustomStation();
     void updateEditHint( int index );
