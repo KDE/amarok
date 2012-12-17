@@ -30,6 +30,7 @@ set( amarok_service_lastfm_PART_SRCS
     AvatarDownloader.cpp
 
     meta/LastFmMeta.cpp
+    meta/LastFmMultiPlayableCapability.cpp
     meta/LastFmStreamInfoCapability.cpp
 
     biases/LastFmBias.cpp

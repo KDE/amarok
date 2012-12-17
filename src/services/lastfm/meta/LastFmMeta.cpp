@@ -17,15 +17,13 @@
  ****************************************************************************************/
 
 #include "LastFmMeta.h"
-#include "LastFmMeta_p.h"
-#include "LastFmMeta_p.moc"
-#include "MultiPlayableCapabilityImpl_p.h"
-#include "MultiPlayableCapabilityImpl_p.moc"
-
-#include "LastFmStreamInfoCapability.h"
 
 #include "EngineController.h"
+#include "services/lastfm/meta/LastFmMeta_p.h"
+#include "services/lastfm/meta/LastFmMultiPlayableCapability.h"
+#include "services/lastfm/meta/LastFmStreamInfoCapability.h"
 
+#include <KIcon>
 #include <Solid/Networking>
 
 using namespace LastFm;
@@ -415,7 +413,7 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
     switch( type )
     {
         case Capabilities::Capability::MultiPlayable:
-            return new MultiPlayableCapabilityImpl( this );
+            return new LastFmMultiPlayableCapability( this );
         case Capabilities::Capability::SourceInfo:
             return new ServiceSourceInfoCapability( this );
         case Capabilities::Capability::Actions:
@@ -462,3 +460,4 @@ QString LastFm::Track::scalableEmblem()
 }
 
 #include "LastFmMeta.moc"
+#include "LastFmMeta_p.moc"
