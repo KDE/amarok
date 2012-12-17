@@ -66,7 +66,6 @@ AmazonServiceFactory::init()
 {
     DEBUG_BLOCK
     AmazonStore* service = new AmazonStore( this, "MP3 Music Store" );
-    m_activeServices << service;
     m_initialized = true;
     emit newService( service );
 }
@@ -112,7 +111,6 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     m_collection = new Collections::AmazonCollection( this, "amazon", "MP3 Music Store" );
     polish();
     setPlayableTracks( true );
-    m_serviceready = true;
 
     m_lastSearch = QString();
 
@@ -121,7 +119,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
 
     connect( m_searchWidget, SIGNAL( filterChanged( const QString ) ), this, SLOT( newSearchRequest( const QString ) ) );
 
-    emit( ready() );
+    setServiceReady( true );
     newSearchRequest( QLatin1String( "" ) ); // to get some default content
 }
 

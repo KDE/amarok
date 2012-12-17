@@ -48,9 +48,7 @@ void Mp3tunesServiceFactory::init()
     ServiceBase *service = createService();
     if( service )
     {
-        m_activeServices << service;
         m_initialized = true;
-        connect( service, SIGNAL( ready() ), this, SLOT( slotServiceReady() ) );
         emit newService( service );
     }
 }
@@ -278,9 +276,8 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         }
         Amarok::Components::logger()->longMessage( error );
 
-        m_serviceready = false;
+        setServiceReady( false );
         m_authenticationFailed = true;
-
     }
     else
     {
@@ -294,8 +291,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         levels << CategoryId::Artist << CategoryId::Album;
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
-        m_serviceready = true;
-        emit( ready() );
+        setServiceReady( true );
     }
     polish();
 }

@@ -55,7 +55,6 @@ GpodderServiceFactory::init()
     ServiceBase *service = createGpodderService();
     if( service )
     {
-        m_activeServices << service;
         m_initialized = true;
         emit newService( service );
     }
@@ -90,7 +89,6 @@ GpodderServiceFactory::slotCreateGpodderService()
         ServiceBase *service = createGpodderService();
         if( service )
         {
-            m_activeServices << service;
             m_initialized = true;
             emit newService( service );
         }
@@ -100,12 +98,11 @@ GpodderServiceFactory::slotCreateGpodderService()
 void
 GpodderServiceFactory::slotRemoveGpodderService()
 {
-    if( m_activeServices.size() == 0 )
+    if( activeServices().isEmpty() )
         return;
 
     m_initialized = false;
-    emit removeService( m_activeServices.first() );
-    m_activeServices.clear();
+    emit removeService( activeServices().first() );
 }
 
 ServiceBase *
@@ -188,7 +185,7 @@ GpodderService::init()
             m_apiRequest = new mygpo::ApiRequest( The::networkAccessManager() );
     }
 
-    m_serviceready = true;
+    setServiceReady( true );
     m_inited = true;
 }
 

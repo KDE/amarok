@@ -71,9 +71,8 @@ void
 LastFmServiceFactory::init()
 {
     ServiceBase *service = new LastFmService( this, "Last.fm" );
-    m_activeServices << service;
-    emit newService( service );
     m_initialized = true;
+    emit newService( service );
 }
 
 QString
@@ -174,18 +173,18 @@ void
 LastFmService::slotReconfigure()
 {
     lastfm::ws::Username = m_config->username();
-    m_serviceready = !m_config->username().isEmpty(); // core features require just username
+    setServiceReady( !m_config->username().isEmpty() ); // core features require just username
 
     /* create ServiceCollection only once the username is known (remember, getting
      * username from KWallet is async! */
-    if( !m_collection && m_serviceready )
+    if( !m_collection && serviceReady() )
     {
         m_collection = new Collections::LastFmServiceCollection( m_config->username() );
         CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
     }
 
     // create Model once the username is known, it depends on it implicitly
-    if( !model() && m_serviceready )
+    if( !model() && serviceReady() )
     {
         setModel( new LastFmTreeModel( this ) );
     }
@@ -233,7 +232,7 @@ LastFmService::continueReconfiguring()
 
     lastfm::ws::SessionKey = m_config->sessionKey();
     // we also check username, KWallet may deliver it really late, but we need it
-    bool authenticated = m_serviceready && !m_config->sessionKey().isEmpty();
+    bool authenticated = serviceReady() && !m_config->sessionKey().isEmpty();
 
     if( m_scrobbler && (!authenticated || !m_config->scrobble()) )
     {

@@ -36,6 +36,8 @@ ServiceFactory::ServiceFactory( QObject *parent, const QVariantList &args )
 {
     m_type = Plugins::PluginFactory::Service;
     CollectionManager::instance()->addTrackProvider( this );
+    connect( this, SIGNAL(newService(ServiceBase*)), SLOT(slotNewService(ServiceBase*)) );
+    connect( this, SIGNAL(removeService(ServiceBase*)), SLOT(slotRemoveService(ServiceBase*)) );
 }
 
 ServiceFactory::~ServiceFactory()
@@ -45,35 +47,30 @@ ServiceFactory::~ServiceFactory()
 
 
 Meta::TrackPtr
-ServiceFactory::trackForUrl(const KUrl & url)
+ServiceFactory::trackForUrl( const KUrl &url )
 {
     if ( m_activeServices.size() == 0 ) {
         debug() << "our service (" << name() << ") is needed for a url, so init it!";
         init();
     }
 
-    /*Meta::ServiceTrack * serviceTrack = new Meta::ServiceTrack();
-    serviceTrack->setUidUrl( url.url() );
-    Meta::TrackPtr track( serviceTrack );*/
-
-    Meta::TrackPtr track;
-    foreach( ServiceBase * service, m_activeServices )
+    foreach( ServiceBase *service, m_activeServices )
     {
-        if( !service->serviceReady() ){
+        if( !service->serviceReady() )
+        {
             debug() << "our service is not ready! queuing track and returning proxy";
-            MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), MetaProxy::Track::ManualLookup );
+            MetaProxy::Track *ptrack = new MetaProxy::Track( url, MetaProxy::Track::ManualLookup );
             MetaProxy::TrackPtr trackptr( ptrack );
             m_tracksToLocate.enqueue( trackptr );
             return Meta::TrackPtr::staticCast( trackptr );
-        } else if (  service->collection() ) {
-            debug() << "Service Ready. Collection is: " << service->collection();
-            track = service->collection()->trackForUrl( url );
         }
-
-        if ( track )
-            return track;
+        else if (  service->collection() )
+        {
+            debug() << "Service Ready. Collection is: " << service->collection();
+            return service->collection()->trackForUrl( url );
+        }
     }
-    return track;
+    return Meta::TrackPtr();
 }
 
 void ServiceFactory::clearActiveServices()
@@ -91,6 +88,22 @@ void ServiceFactory::slotServiceReady()
     }
 }
 
+void
+ServiceFactory::slotNewService( ServiceBase *newService )
+{
+    Q_ASSERT( newService );
+    connect( newService, SIGNAL(ready()), this, SLOT(slotServiceReady()) );
+    m_activeServices << newService;
+}
+
+void
+ServiceFactory::slotRemoveService( ServiceBase *service )
+{
+    Q_ASSERT( service );
+    m_activeServices.remove( service );
+    service->deleteLater();
+}
+
 ServiceBase *ServiceBase::s_instance = 0;
 
 ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView, const QString &prettyName )
@@ -98,10 +111,11 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     , m_contentView ( 0 )
     , m_parentFactory( parent )
     , m_polished( false )
-    , m_serviceready( false )
     , m_useCollectionTreeView( useCollectionTreeView )
     , m_infoParser( 0 )
+    , m_serviceready( false )
     , m_model( 0 )
+    , m_filterModel( 0 )
 {
     DEBUG_BLOCK
 
@@ -204,6 +218,17 @@ bool
 ServiceBase::serviceReady() const
 {
     return m_serviceready;
+}
+
+void
+ServiceBase::setServiceReady( bool newReady )
+{
+    if( newReady == m_serviceready )
+        return; // nothing to do
+
+    m_serviceready = newReady;
+    if( m_serviceready )
+        emit ready();
 }
 
 void

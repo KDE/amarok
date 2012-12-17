@@ -55,7 +55,6 @@ JamendoServiceFactory::JamendoServiceFactory( QObject *parent, const QVariantLis
 void JamendoServiceFactory::init()
 {
     ServiceBase* service = new JamendoService( this, "Jamendo.com" );
-    m_activeServices << service;
     m_initialized = true;
     emit newService( service );
 }
@@ -88,8 +87,7 @@ setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_jamendo.p
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new Collections::ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
-    m_serviceready = true;
-    emit( ready() );
+    setServiceReady( true );
 }
 
 JamendoService::~JamendoService()

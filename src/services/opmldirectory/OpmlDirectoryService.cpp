@@ -51,7 +51,6 @@ OpmlDirectoryServiceFactory::OpmlDirectoryServiceFactory( QObject *parent, const
 void OpmlDirectoryServiceFactory::init()
 {
     ServiceBase* service = new OpmlDirectoryService( this, "OpmlDirectory", i18n( "Podcast Directory" ) );
-    m_activeServices << service;
     m_initialized = true;
     emit newService( service );
 }
@@ -78,11 +77,10 @@ OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent,
 
     KIconLoader loader;
     setImagePath( loader.iconPath( "view-services-opml-amarok", -128, true ) );
-    
+
     The::amarokUrlHandler()->registerRunner( this, command() );
 
-    m_serviceready = true;
-    emit( ready() );
+    setServiceReady( true );
 }
 
 

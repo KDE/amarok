@@ -93,7 +93,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          */
         void clearActiveServices();
 
-        QList<ServiceBase *> activeServices() { return m_activeServices; }
+        QList<ServiceBase *> activeServices() { return m_activeServices.toList(); }
 
     public slots:
         /**
@@ -106,18 +106,22 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          * This signal is emitted whenever a new service has been loaded.
          * @param newService The service that has been loaded.
          */
-        void newService( class ServiceBase *newService );
+        void newService( ServiceBase *newService );
 
         /**
-         * This signal is emitted whenever a service is removed
+         * This signal is emitted whenever a service is removed. ServiceFactory deletes
+         * the service in next event loop iteration.
+         *
          * @param removedService The service that has been removed
          */
         void removeService( ServiceBase *newService );
 
-    protected:
-        QList<ServiceBase *> m_activeServices;
+    private slots:
+        void slotNewService( ServiceBase *newService );
+        void slotRemoveService( ServiceBase *service );
 
     private:
+        QSet<ServiceBase *> m_activeServices;
         QQueue<MetaProxy::TrackPtr> m_tracksToLocate;
 };
 
@@ -287,9 +291,10 @@ signals:
     void selectionChanged( CollectionTreeItem * );
 
     /**
-     * Signal emitted when the service is ready to be used.
+     * Signal emitted when the service is ready to be used. You don't need to emit this
+     * manually, just call setServiceReady() as appropriate.
      */
-     void ready();
+    void ready();
 
 protected slots:
     /**
@@ -312,6 +317,11 @@ protected:
      */
     virtual void generateWidgetInfo( const QString &html = QString() ) const;
 
+    /**
+     * sets serviceReady() and emits a signal ready() as appropriate.
+     */
+    void setServiceReady( bool ready );
+
     static ServiceBase *s_instance;
     QTreeView *m_contentView;
     ServiceFactory *m_parentFactory;
@@ -320,7 +330,6 @@ protected:
     KVBox       *m_bottomPanel;
     bool         m_polished;
 
-    bool m_serviceready;
     bool m_useCollectionTreeView;
 
     KUrl::List   m_urlsToInsert;
@@ -334,8 +343,10 @@ protected:
     //void addToPlaylist( CollectionTreeItem * item );
 
 private: // need to move stuff here
-    QAbstractItemModel * m_model;
-    QSortFilterProxyModel * m_filterModel;
+    bool m_serviceready;
+
+    QAbstractItemModel *m_model;
+    QSortFilterProxyModel *m_filterModel;
 };
 
 #define AMAROK_EXPORT_SERVICE_PLUGIN(libname, classname) \
