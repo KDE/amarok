@@ -496,8 +496,8 @@ LastFmService::love()
 void
 LastFmService::love( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-    m_scrobbler->loveTrack( track );
+    if( m_scrobbler )
+        m_scrobbler->loveTrack( track );
 }
 
 void LastFmService::playCustomStation()

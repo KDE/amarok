@@ -9,6 +9,7 @@ VERSION 2.7
     * Removed alpha state and not really working spectrum analyzer applet.
 
   BUGFIXES:
+    * Fix crash then doing Last.fm love with uninitialized Last.fm plugin. (BR 311857)
     * Fix Last.fm streams not being correctly recreated on startup. (BR 305576)
     * Fix Ampache albums & track not being shown, a recent regression. (BR 310862)
     * Fix crash in Network Requests Viewer. (BR 311760)
