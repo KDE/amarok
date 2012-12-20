@@ -548,14 +548,6 @@ FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers 
                            indices.count() );
     }
 
-    KDialog dialog;
-    dialog.setCaption( caption );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-    QLabel label( labelText, &dialog );
-    dialog.setMainWidget( &label );
-    if( dialog.exec() != QDialog::Accepted )
-        return;
-
     KUrl::List urls;
     QStringList filepaths;
     foreach( const QModelIndex& index, indices )
