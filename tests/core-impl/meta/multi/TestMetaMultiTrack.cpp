@@ -54,6 +54,10 @@ void TestMetaMultiTrack::initTestCase()
     m_playlist->triggerTrackLoad();
     QCOMPARE( m_playlist->name(), QString("test.pls") );
     QCOMPARE( m_playlist->trackCount(), 4 );
+
+    // now wait for all MetaProxy::Tracks to actually load their real tracks:
+    NotifyObserversWaiter wainter( m_playlist->tracks().toSet() );
+    QVERIFY( QTest::kWaitForSignal( &wainter, SIGNAL(done()), 5000 ) );
 }
 
 void TestMetaMultiTrack::init()
@@ -106,4 +110,20 @@ void TestMetaMultiTrack::testSetSourceCurrentNextUrl()
 void TestMetaMultiTrack::testHasCapabilityInterface()
 {
     QVERIFY( m_testMultiTrack->hasCapabilityInterface( Capabilities::Capability::MultiSource ) );
+}
+
+NotifyObserversWaiter::NotifyObserversWaiter( const QSet<Meta::TrackPtr> &tracks, QObject *parent )
+    : QObject( parent )
+    , m_tracks( tracks )
+{
+    foreach( const Meta::TrackPtr &track, m_tracks )
+        subscribeTo( track );
+}
+
+void
+NotifyObserversWaiter::metadataChanged( Meta::TrackPtr track )
+{
+    m_tracks.remove( track );
+    if( m_tracks.isEmpty() )
+        emit done();
 }
