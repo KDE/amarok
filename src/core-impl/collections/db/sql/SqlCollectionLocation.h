@@ -59,6 +59,7 @@ class TransferJob : public KCompositeJob
          */
         void slotJobFinished( KJob *job );
     protected slots:
+        void slotResult( KJob *job );
         void doWork();
         void propagateProcessedAmount( KJob *job, KJob::Unit unit, qulonglong amount);
     protected:

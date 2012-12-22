@@ -384,7 +384,7 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
     DEBUG_BLOCK
 
     Meta::TrackPtr track = m_jobs.value( job );
-    if( job->error() )
+    if( job->error()  && job->error() != KIO::ERR_FILE_ALREADY_EXIST )
     {
         //TODO: proper error handling
         warning() << "An error occurred when copying a file: " << job->errorString();
@@ -702,6 +702,15 @@ void TransferJob::emitInfo(const QString& message)
     emit infoMessage( this, message );
 }
 
+void TransferJob::slotResult( KJob *job )
+{
+    // When copying without overwriting some files might already be
+    // there and it is not a reason for stopping entire transfer.
+    if ( job->error() == KIO::ERR_FILE_ALREADY_EXIST )
+        removeSubjob( job );
+    else
+        KCompositeJob::slotResult( job );
+}
 
 void TransferJob::start()
 {
