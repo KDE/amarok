@@ -16,7 +16,7 @@
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
       </authorgroup>
 <legalnotice>&FDLNotice;</legalnotice>
-<date>2012-12-08</date>
+<date>2012-12-22</date>
       <releaseinfo>2.7.0</releaseinfo>
 <abstract>
 <para>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including &Linux;, &MacOS; and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.4.</para>
@@ -33,7 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2012-12-08T15:12:17Z</timestamp>-->
+<!--userbase <timestamp>2012-12-22T17:41:31Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -282,7 +282,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7configuredialogcollection.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialoglocalcollection2-7.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Configure Collection Dialog, as of version 2.7</phrase>
@@ -2297,7 +2297,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7settingsgeneral.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialoggeneral2-7.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -2382,13 +2382,13 @@
 <para>When you enable the <emphasis>Moodbar</emphasis>, be aware of the following requirements: the Moodbar will only display if your tracks have been tagged with moods. For more about the Moodbar, refer to: <link linkend="the-moodbar">Moodbar</link>.
 </para>
 </sect1>
-<sect1 id="collection4"><title>Collection</title> 
+<sect1 id="local-collection"><title>Local Collection</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="collection2.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialoglocalcollection2-7.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -2464,13 +2464,139 @@
 </para>
 </sect2>
 </sect1>
+<sect1 id="metadata"><title>Metadata</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="metadatadialog.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>This dialog will allow you to configure the settings for metadata handling. This is a separate page starting with Amarok 2.7
+</para>
+<para>Metadata options:
+</para>
+<para>
+<informaltable>
+  <tgroup cols="2">
+  <thead>
+  <row>
+    <entry>Option</entry>
+    <entry>Tooltip</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+    <entry>
+    <para><guilabel>Write statistics to file</guilabel></para>
+    </entry>
+    <entry>
+    <para>Check to write play-changing statistics as tags back to the audio files.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Write covers to file, maximum size...</guilabel></para>
+    </entry>
+    <entry>
+    <para>Check to write changed covers back to the audio files. This will replace existing embedded covers. Select a value from the drop-down list to set the maximum size of the cover.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Enable character set detection in ID3 tags</guilabel></para>
+    </entry>
+    <entry>
+    <para>If checked, Amarok will use Mozilla's Character Set Detector to attempt to automatically guess the character sets used in ID3 tags. If your tags are correct, it is more safe to leave this option turned off.</para></entry>
+  </row>
+  </tbody>
+  </tgroup>
+</informaltable>
+</para>
+<sect2 id="statistics-synchronization"><title>Statistics Synchronization</title> 
+<para>This dialog will allow you to 
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="metadatadialog.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>. Make sure to only check collections between which you want to synchronize metadata.
+</para>
+<para>Statistics Synchronization options:
+</para>
+<para>
+<informaltable>
+  <tgroup cols="2">
+  <thead>
+  <row>
+    <entry>Option</entry>
+    <entry>Tooltip</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+    <entry>
+    <para><guilabel>Synchronize Rating</guilabel></para>
+    </entry>
+    <entry>
+    <para>Check to synchronize ratings between collections.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Synchronize First Played</guilabel></para>
+    </entry>
+    <entry>
+    <para>Check to synchronize first played dates between collections.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Synchronize Last Played</guilabel></para>
+    </entry>
+    <entry>
+    <para>Check to synchronize last played dates between collections.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Synchronize Playcount</guilabel></para>
+    </entry>
+    <entry>
+    <para>Check to synchronize playcounts between collections.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Synchronize Labels</guilabel></para>
+    </entry>
+    <entry>
+    <para>Check to synchronize labels between collections.</para></entry>
+  </row>
+  </tbody>
+  </tgroup>
+</informaltable>
+</para>
+</sect2>
+</sect1>
 <sect1 id="playback"><title>Playback</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7settingsplayback.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7playback.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -2530,7 +2656,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="soundsystem.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7phonondevice.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -2547,7 +2673,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configspeakersetup.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7phononhardware.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -2564,7 +2690,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="backend.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7phononbackend.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -2587,7 +2713,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7settingsnotifications.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7notifications.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -2687,7 +2813,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7settingsdatabase.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7database.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -3101,19 +3227,18 @@
 <sect3 id="script-information"><title>Script Information</title> 
 <para>Learn more about a script using the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-dialog-information.png" format="PNG"/> </imageobject> </inlinemediaobject> button.
 </para>
+<para>A script can also be executed directly in the Amarok Script Console. This is activated by selecting the Script Console and confirm the selection by hitting either the <guilabel>OK</guilabel> or the <guilabel>Apply</guilabel> button. To deactivate the Script Console deselect it and confirm again.
+</para>
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_script_info.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7scriptconsole.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Amarok Script Info</phrase>
+      <phrase></phrase>
     </textobject>
-    <caption>
-      <para>Amarok Script Info</para>
-    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -3326,13 +3451,14 @@
 <listitem><para><link linkend="tag-editor">Tag Editor</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="transcoding">Transcoding</link>&nbsp;</para></listitem>
 </itemizedlist>
-<sect1 id="collection5"><title>Collection</title> 
+<sect1 id="collection4"><title>Collection</title> 
 <para>&amarok; organizes your music in the <emphasis>Collection</emphasis>.
 </para>
 <itemizedlist>
 <listitem><para><link linkend="collection-scanning">Collection Scanning</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="search-in-collection">Search in Collection</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="organize-collection">Organize Collection</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="statistics-synchronization">Statistics Synchronization Between Collections and with Last.fm</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="nepomuk-collection-in-amarok">Nepomuk Collection</link></para></listitem>
 <listitem><para><link linkend="remote-collections">Remote Collections</link>&nbsp;<itemizedlist>
 <listitem><para><link linkend="ampache">Ampache</link>&nbsp;</para></listitem>
@@ -3428,7 +3554,7 @@
 </para>
 <para>Look for <quote>compilation</quote> tags and tracks with different <quote>artist</quote> and <quote>albumartist</quote> tags.
 </para>
-<para>You can remove the <emphasis>compilation</emphasis> tag from mp3 files with the following command: <userinput>id3v2 -r TCMP <replaceable>your fileename here</replaceable></userinput>
+<para>You can remove the <emphasis>compilation</emphasis> tag from mp3 files with the following command: <userinput>id3v2 -r TCMP <replaceable>your filename here</replaceable></userinput>
 </para>
 </sect3>
 </sect2>
@@ -3454,7 +3580,7 @@
 <para>To search in a specific tag, type <varname>tag:value</varname> into the search bar. Operators like <quote>&gt;</quote> and <quote>&lt;</quote> can be used to create more general conditions. Several conditions can be used together by separating them by a space character. For time conditions, use the following abbreviations: d=day, w=week, m=month, y=year.
 </para>
 </sect3>
-<sect3 id="tags6"><title>Tags</title> 
+<sect3 id="tags5"><title>Tags</title> 
 <para>The following tags can be searched:
 </para>
 <itemizedlist>
@@ -3739,6 +3865,141 @@
 </para>
 </sect3>
 </sect2>
+<sect2 id="statistics-synchronization-between-collections-and-with-last-fm"><title>Statistics Synchronization Between Collections and with Last.fm</title> 
+<para>Beginning with version 2.7, &amarok; allows syncing the play-related metadata and statistics of the tracks (such as rating or play count) between any of your collections which show up in <menuchoice><guimenu>Media Sources</guimenu><guimenuitem>Local Music</guimenuitem></menuchoice> and with the Last.fm web service, if you choose to use Last.fm.
+</para>
+<sect3 id="manual-syncing"><title>Manual Syncing</title> 
+<para>At any time, you can start manual synchronization from <menuchoice><guimenu>Tools</guimenu><guimenuitem>Synchronize Statistics...</guimenuitem></menuchoice>
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok-statsyncing.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>From here, you can start a synchronization between the collections you select here, which will default to what you have configured in the &amarok; 
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok-statsyncing.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot> configuration.
+</para>
+<sect4 id="conflicts-and-syncing-statistics-dialog"><title>Conflicts and Syncing Statistics Dialog</title> 
+<para>When syncing, &amarok; will show a dialog window which states the conflicts and statistics of the syncing that has recently been in progress. In this window you will be able to see three tabs: <guilabel>Matched Tracks</guilabel>, <guilabel>Unique Tracks</guilabel> and <guilabel>Excluded Tracks</guilabel>.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="matchedtrackspage.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Matched Tracks</emphasis></term>
+    <listitem>
+    <para>This tab will show all the tracks that &amarok; has found in more than one collection, and reflects conflicts. When tracks are grouped, you can see two types of background: light green, and light red. A light green background indicates the new or updated field, whilst a light red background will indicate the old/overwritten field. You do not need to solve all conflicts listed here; the particular field of the listed tracks are not going to be synced if you do not resolve the conflict.</para>
+     </listitem>
+  </varlistentry>
+  <varlistentry><term><emphasis role="bold">Unique Tracks</emphasis></term>
+    <listitem>
+    <para>These are tracks found in only one collection. You can use it as a <emphasis>difference view</emphasis>. Track dragging is supported here.</para>
+     </listitem>
+  </varlistentry>
+  <varlistentry><term><emphasis role="bold">Excluded Tracks</emphasis></term>
+    <listitem>
+    <para>These are tracks that are not synced because of different reasons, such as identical metadata, so as not cause to disorder in the database.</para>
+     </listitem>
+  </varlistentry>
+</variablelist>
+</sect4>
+</sect3>
+<sect3 id="synchronizing-with-last-fm"><title>Synchronizing with Last.fm</title> 
+<para>If you have the Last.fm plugin enabled and configured correctly with your Last.fm account, you can choose to also synchronize your &amarok; play counts, ratings and labels with your Last.fm Library. The sync takes some time, but you may continue using &amarok; while it is syncing. Please note that Unattended Synchronization (which will be explained later on) is not possible with Last.fm, and synchronization from Last.fm to &amarok; needs to be initiated manually.
+</para>
+<sect4 id="spelling-auto-correction"><title>Spelling Auto-Correction</title> 
+<para>Last.fm enables by default a feature that will auto-correct common misspelling during the sync. It can happen that even if you scrobble many track plays, it does not show up in Matched Tracks as Last.fm knows the track under a slightly different name.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="last-fm-spelling-correction.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>You can disable this feature on the Last.fm site, and changes will be applied also to your past scrobbles. You have two options:
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Off</emphasis></term>
+    <listitem>
+    <para>Tracks are matched properly, but if you change your tags after some time, your play-count will be split in two tracks.</para>
+     </listitem>
+  </varlistentry>
+  <varlistentry><term><emphasis role="bold">On</emphasis></term>
+    <listitem>
+    <para>You can play-count the tracks even if tags are changed after some time, but you will have to use Last.fm preferred spelling.</para>
+     </listitem>
+  </varlistentry>
+</variablelist>
+</sect4>
+</sect3>
+<sect3 id="unattended-syncing"><title>Unattended Syncing</title> 
+<para><important><para>Please note the dialog will only appear in the case of iPods.</para></important>
+</para>
+<para>When you connect a device that is able to sync with your collections, a pop-up like this will appear.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="ipod-connected-dialog.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>For unattended syncing to start, you only need to click <guilabel>Yes</guilabel> in the pop-up. &amarok; will work  in the background, so the metadata in your device including ratings, first/last played times, play counts and labels will be synced with other collections 
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="ipod-connected-dialog.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>, and tracks recently played on the device will be scrobbled to Last.fm, if it is enabled. The process will not ask for user interaction unless any conflict is found in the middle.
+</para>
+</sect3>
+</sect2>
 <sect2 id="nepomuk-collection-in-amarok"><title>Nepomuk collection in Amarok</title> 
 <para>Nepomuk has been a great semantic framework in recent years with many applications like &dolphin; using it for managing metadata associated with its files and resources. And now, even &amarok; uses Nepomuk to fetch tracks in your computer. This collection doesn't use the SQLite backend to store statistics and metadata ( artist, album, year, genre, Labels etc ). It instead uses Nepomuk to store them and fetch them.
 </para>
@@ -3748,7 +4009,7 @@
 <para>Nepomuk is a system wide backend with multiple applications already using it for search and metadata. So when you rate a track in &amarok;, it reflects in &dolphin; as well. When you burn your music tracks onto a disc, the ratings will be included too! You don't have to remember where you have stored your music tracks anymore. Nepomuk fetches tracks from all over your computer. You don't have to organize your music tracks into one single folder! Imagine the number of times you downloaded a track again just 'cos you couldn't find it in your computer -- not anymore.
 </para>
 </sect3>
-<sect3 id="getting-started7"><title>Getting Started</title> 
+<sect3 id="getting-started6"><title>Getting Started</title> 
 <sect4 id="indexing-files"><title>Indexing Files</title> 
 <para>For your tracks to show up in &amarok;, they need to be <emphasis>indexed</emphasis> by Nepomuk first. And Nepomuk does not index every file on the hard drive. Its default configuration in most &Linux; distributions excludes some common patterns for backup files and configuration directories and it only indexes certain directories in your home folder. 
 </para>
@@ -3769,7 +4030,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>Directories that are to be indexed can be changed in <menuchoice><guimenu>System Settings</guimenu><guisubmenu>Desktop Search</guisubmenu><guimenuitem>Desktop Query</guimenuitem><guimenuitem>Customising index folders</guimenuitem></menuchoice>
+<para>Directories that are to be indexed can be changed in <menuchoice><guimenu>System Settings</guimenu><guisubmenu>Desktop Search</guisubmenu><guimenuitem>Desktop Query</guimenuitem><guimenuitem>Customizing index folders</guimenuitem></menuchoice>
 </para>
 </sect4>
 <sect4 id="enabling-nepomuk-collection-in-amarok"><title>Enabling Nepomuk Collection In Amarok</title> 
@@ -3790,7 +4051,7 @@
 </para>
 </sect4>
 </sect3>
-<sect3 id="collections8"><title>Collections</title> 
+<sect3 id="collections7"><title>Collections</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -3816,7 +4077,7 @@
 <para>Tracks shown in the <guilabel>Nepomuk Collection</guilabel> can be played even if they are moved out of their original location. They would  be usable also if you rename them.
 </para>
 </sect4>
-<sect4 id="playlists9"><title>Playlists</title> 
+<sect4 id="playlists8"><title>Playlists</title> 
 <para>Every feature of Nepomuk can be used with created playlists too.
 </para>
 </sect4>
@@ -3925,7 +4186,7 @@
 <para><guilabel>Samba</guilabel> is a free implementation of the <emphasis>SMB/CIFS</emphasis> protocol which is used to share files and printers in a network. Most modern file managers like &dolphin; and <guilabel>Nautilus</guilabel> support this protocol.
 </para>
 </sect3>
-<sect3 id="client10"><title>Client</title> 
+<sect3 id="client9"><title>Client</title> 
 <para>You need to mount the share to use it in &amarok;. To do this, you need to install the package <emphasis>smbfs</emphasis>. Use the command
 </para>
 <para><userinput>sudo mount -t cifs //<guilabel>host</guilabel>/<guilabel>share</guilabel> <guilabel>/mount-point/</guilabel></userinput>
@@ -3998,7 +4259,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>The folder should now be accessible to the network. To tell &amarok; to look for your <guilabel>Samba</guilabel> share, go to <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Plugins</guimenuitem><guimenuitem>Local Collection Backends</guimenuitem></menuchoice> and click the box. Your tracks will show up in <emphasis>Local Collection</emphasis>.
+<para>The folder should now be accessible to the network. To tell &amarok; to look for your <guilabel>Samba</guilabel> share, go to <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Plugins</guimenuitem><guimenuitem>Local Collection Backends</guimenuitem></menuchoice> and click the box. Your tracks will show up in <guilabel>Local Collection</guilabel>.
 </para>
 </sect3>
 <sect3 id="universal-plug-and-play-upnp---dlna"><title>Universal Plug and Play (UPnP) / DLNA</title> 
@@ -4353,7 +4614,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 <sect2 id="edit-tags-manually"><title>Edit Tags Manually</title> 
 <para>Change the proper line to the required value and click <guilabel>Save &amp; Close</guilabel>. Clicking <guilabel>Cancel</guilabel> discards all unsaved changes.
 </para>
-<sect3 id="tags11"><title>Tags</title> 
+<sect3 id="tags10"><title>Tags</title> 
 <para>Tags are metadata such as the track number or the artist of the track contained in the file. A very common kind of tag is the <emphasis>ID3 tag</emphasis>.
 </para>
 <para>Here is a list of tags supported by &amarok;:
@@ -4617,7 +4878,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </screenshot>
 </para>
 </sect3>
-<sect3 id="example12"><title>Example</title> 
+<sect3 id="example11"><title>Example</title> 
 <para>Filename: 03-social_distortion-dont_take_me_for_granted.mp3
 </para>
 <para>Tracknumber: 03
@@ -4643,7 +4904,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </sect2>
 </sect1>
 <sect1 id="transcoding"><title>Transcoding</title> 
-<para><emphasis>Transcoding</emphasis> is a new &amarok; feature as of version 2.4. It allows you to encode media files to a variety of formats while copying or moving them to a collection (<guilabel>Local Collection</guilabel>, USB <guilabel>Universal Mass Storage Collection</guilabel> and <guilabel>iPod, iPad &amp; iPhone Collection</guilabel> support transcoding as of &amarok; 2.6). A word of warning: be careful when you use this feature, as you are working with actual files on your hard drive. Have a backup!
+<para><emphasis>Transcoding</emphasis> allows you to encode media files to a variety of formats while copying or moving them to a collection (<guilabel>Local Collection</guilabel>, USB <guilabel>Universal Mass Storage Collection</guilabel> and <guilabel>iPod, iPad &amp; iPhone Collection</guilabel> support transcoding as of &amarok; 2.6). A word of warning: be careful when you use this feature, as you are working with actual files on your hard drive. Have a backup!
 </para>
 <sect2 id="interface"><title>Interface</title> 
 <para>Transcoding dialog will appear whenever you copy or move tracks to one of the collections that support transcoding. You can also transcode tracks within the <emphasis>Local Collection</emphasis> by using the <guilabel>Organize files</guilabel> functionality.
@@ -4786,7 +5047,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </para>
 </sect1>
 </chapter>
-<chapter id="playlist13"><title>Playlist</title> 
+<chapter id="playlist12"><title>Playlist</title> 
 <para>The <emphasis>Playlist</emphasis> is a powerful part of &amarok;. One can drag in some tracks, but there is a lot more available.
 </para>
 <itemizedlist>
@@ -4847,10 +5108,10 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
   </mediaobject>
 </screenshot>
 </para>
-<sect2 id="edit-box14"><title>Edit Box</title> 
+<sect2 id="edit-box13"><title>Edit Box</title> 
 <para>When you type something in the <guilabel>Search playlist</guilabel> field, &amarok; will search in your playlist and mark matching tracks, artists and so forth.
 </para>
-<sect3 id="examples15"><title>Examples</title> 
+<sect3 id="examples14"><title>Examples</title> 
 <para>The first track that matches the current search will be highlighted as in this example:
 </para>
 <para>
@@ -4988,7 +5249,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </para>
 <para>As you select or add songs to the Queue each of them takes a number. The number indicates the order in which songs will play.
 </para>
-<sect3 id="example16"><title>Example</title> 
+<sect3 id="example15"><title>Example</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5248,7 +5509,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 <para>Below that is the dropdown menu for loading saved playlists, the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-save.png" format="PNG"/> </imageobject> </inlinemediaobject> button to save playlists, and the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-edit-delete.png" format="PNG"/> </imageobject> </inlinemediaobject> button to delete them.
 </para>
 </sect2>
-<sect2 id="a-dynamic-playlist-in-use17"><title>A dynamic playlist in use</title> 
+<sect2 id="a-dynamic-playlist-in-use16"><title>A dynamic playlist in use</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5905,7 +6166,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para>As you already know, a normal Windows install doesn't use KDE, so if you want to install &amarok;, you can't just download the &amarok; package. You must install a compatible compiler first. Here is described how to download, install and run &amarok; in the Windows operating system.
 </para>
 <sect3 id="how-to-download"><title>How to download</title> 
-<para>If you run into any difficulties, please visit the <ulink url="http://amarok.kde.org/wiki/Download:Windows">Amarok on Windows wiki page</ulink> where the latest links will be kept updated. Otherwise, use the latest at the following links:
+<para>If you run into any difficulties, please visit the <ulink url="http://community.kde.org/Amarok/GettingStarted/Download/Windows">Amarok on Windows wiki page</ulink> where the latest links will be kept updated. Otherwise, use the latest at the following links:
 </para>
 </sect3>
 <sect3 id="how-to-install"><title>How to install</title> 
@@ -6023,7 +6284,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <para>The <varname>port</varname> command will fetch all the dependencies, compile, build and install them. This process may take quite some time, four to five hours in a recent install.
 </para>
 </sect3>
-<sect3 id="screenshots18"><title>Screenshots</title> 
+<sect3 id="screenshots17"><title>Screenshots</title> 
 <para>The following screenshot shows &amarok; running on the &MacOS; X:
 </para>
 <para>
@@ -6041,7 +6302,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </para>
 </sect3>
 <sect3 id="other-resources"><title>Other resources</title> 
-<para>If you run into difficulties, there is a <ulink url="http://amarok.kde.org/wiki/Amarok2_On_OS_X">troubleshooting page here</ulink>.
+<para>If you run into difficulties, there is a <ulink url="http://community.kde.org/Amarok/Development/OS_X">troubleshooting page here</ulink>.
 </para>
 </sect3>
 </sect2>
@@ -6087,7 +6348,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <sect3 id="corrupt-tags"><title>Corrupt tags</title> 
 <para>Some folks notice that &amarok; seems to be missing some files. One of the causes can be corrupt tags, which you can check using the tagging application <ulink url="http://kid3.sourceforge.net/">kid3</ulink>. More about tagging <link linkend="tag-editor">here</link>.
 </para>
-<para>To find the bad file(s), run <varname>amarokcollectionscanner</varname> from the console. Details <ulink url="http://amarok.kde.org/wiki/Batch_Mode">here</ulink>.
+<para>To find the bad file(s), run <varname>amarokcollectionscanner</varname> from the console. Details <ulink url="http://community.kde.org/Amarok/Development/BatchMode">here</ulink>.
 </para>
 </sect3>
 <sect3 id="inability-to-write-tags"><title>Inability to write tags</title> 
@@ -6142,7 +6403,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </sect2>
 <sect2 id="problems-with-collections-on-ipod-etc-"><title>Problems with collections on iPod &etc;</title> 
 <sect3 id="amarok-show-no-cover-images-or-images-are-lost-when-transferring-to-device"><title>Amarok show no cover-images or images are lost when transferring to device</title> 
-<para>Most likely the wrong version of libgpod4 is installed. On Debian and it's derivatives like Kubuntu the default is libgpod4-nogtk, which comes without support for covers. Simply install the variant libgpod4: <userinput>sudo apt-get install libgpod4</userinput>  The package libgpod4-nogtk can then be removed without problem. From Kubuntu Quantal on (to be released as 12.10) this package has been removed and the default is libgpod4.
+<para>Most likely the wrong version of libgpod4 is installed. On Debian and it's derivatives like Kubuntu the default is libgpod4-nogtk, which comes without support for covers. Simply install the variant libgpod4: <userinput>sudo apt-get install libgpod4</userinput>  The package libgpod4-nogtk can then be removed without problem. From Kubuntu Quantal Quetzal on (released as 12.10) this package has been removed and the default is libgpod4.
 </para>
 </sect3>
 </sect2>
@@ -6175,7 +6436,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <para>There are many more great features like advanced scripting, dynamic collections, usability improvements, improved media devices handling, a new podcast manager, support for more software platforms, and others.
 </para>
 </sect2>
-<sect2 id="installation19"><title>Installation</title> 
+<sect2 id="installation18"><title>Installation</title> 
 <sect3 id="can-i-use-amarok-without-kde"><title>Can I use Amarok without KDE?</title> 
 <para>&amarok; requires parts of KDE to be installed to run, but will run fine in Gnome or other desktop environments, including Windows and OS X. For &amarok; to run, kdelibs and kdebase-runtime need to be installed.
 </para>
@@ -6201,11 +6462,11 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </para>
 </sect3>
 <sect3 id="how-do-i-report-a-bug"><title>How do I report a bug?</title> 
-<para>If you find a bug in Amarok, please submit it to the <ulink url="https://bugs.kde.org">KDE bugzilla instance</ulink>. To make a complete bug report, please always include the following information:
+<para>If you find a bug in &amarok;, please submit it to the <ulink url="https://bugs.kde.org">KDE bugzilla instance</ulink>. To make a complete bug report, please always include the following information:
 </para>
 <itemizedlist>
-<listitem><para>The exact Amarok version (the version can be found in <menuchoice><guimenu>Help</guimenu><guimenuitem>About Amarok</guimenuitem></menuchoice>). You should not report bugs for Amarok versions older than the current stable release as we do not provide backport fixes.</para></listitem>
-<listitem><para>The exact KDE and Qt version, even if you do not run Amarok in KDE (<menuchoice><guimenu>Help</guimenu><guimenuitem>About KDE</guimenuitem></menuchoice>)</para></listitem>
+<listitem><para>The exact &amarok; version (the version can be found in <menuchoice><guimenu>Help</guimenu><guimenuitem>About Amarok</guimenuitem></menuchoice>). You should not report bugs for &amarok; versions older than the current stable release as we do not provide backport fixes.</para></listitem>
+<listitem><para>The exact KDE and Qt version, even if you do not run &amarok; in KDE (<menuchoice><guimenu>Help</guimenu><guimenuitem>About KDE</guimenuitem></menuchoice>)</para></listitem>
 <listitem><para>The exact Phonon backend. You can find this information in the Diagnostics (<menuchoice><guimenu>Help</guimenu><guimenuitem>Diagnostics</guimenuitem></menuchoice>)</para></listitem>
 <listitem><para>Whether the bug is reproducible. Please do not report bugs that you can not reproduce as these are almost impossible to fix.</para></listitem>
 <listitem><para>Exact steps how to reproduce the bug</para></listitem>
@@ -6246,15 +6507,15 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <sect3 id="what-is-phonon-what-are-phonon-backends"><title>What is Phonon? What are Phonon backends?</title> 
 <para><emphasis>Phonon</emphasis> is the multimedia framework of KDE 4. You can find more information <link linkend="playback">here</link>.
 </para>
-<para>Usually the VLC backend works better than the Xine one, although this is not always true. We also suggest you try the Gstreamer backend, although it is still in development. You can find more details on installing backends in the <ulink url="http://amarok.kde.org/wiki/Download">download page</ulink>.
+<para>We recommend both the Gstreamer and the VLC backend as both are actively maintained. Make sure you don not use any other backend as those are obsolete.
 </para>
 </sect3>
 <sect3 id="amarok-wont-play-mp3s-what-can-i-do"><title>Amarok won't play mp3s, what can I do?</title> 
-<para>Have a look at the <ulink url="http://amarok.kde.org/wiki/MP3">mp3 information page</ulink>. You probably lack the codecs required by your particular Phonon backend (VLC, Gstreamer, or Xine).
+<para>You probably lack the codecs required by your particular Phonon backend (Gstreamer, or VLC). Please report this to your distribution if you were not prompted to install them automatically when you started &amarok; for the first time.
 </para>
 </sect3>
 <sect3 id="i-have-the-codecs-but-amarok-still-wont-play-mp4s-and-mkas"><title>I have the codecs, but Amarok still won't play mp4s and mkas</title> 
-<para>When using some phonon backend, like the gstreamer one, &amarok; might refuse to play <filename>mp4</filename> and <filename>mka</filename> files. This is a known problem, see <ulink url="https://bugs.kde.org/show_bug.cgi?id=290168">bug #290168</ulink> for more technical information.
+<para>When using some phonon backend, like the gstreamer one, &amarok; might refuse to play <filename>mp4</filename> and <filename>mka</filename> files. This is a known problem, see  for more technical information.
 </para>
 <para>A very simple workaround is to change the file extension. Change <filename>mp4</filename> extension to <filename>m4a</filename> and for <filename>mka</filename> change it to <filename>mkv</filename>. Of course you must be sure the files contains audio only. You can use the ffprobe command to look at what data streams are present in the file. If the file has a video stream it must be stripped out. There are a lot of tools able to edit these formats and most of them are based on <filename>ffmpeg</filename>/<filename>libav</filename>, which you can use if you are familiar with them. If you prefer graphical tools one possible choice is <ulink url="http://www.avidemux.org/">avidemux</ulink>.
 </para>
@@ -6286,7 +6547,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 </sect3>
 <sect3 id="wheres-the-equalizer"><title>Where's the equalizer?</title> 
-<para>The equalizer is only available if you are using the phonon-backend-gstreamer. You can find the equalizer in the <guilabel>Tools</guilabel> menu. You can get more information about configuring Phonon backends in your distribution in the <ulink url="http://amarok.kde.org/wiki/Download">download page</ulink>.
+<para>The equalizer is only available if you are using the phonon-backend-gstreamer. You can find the equalizer in the <guilabel>Tools</guilabel> menu.
 </para>
 </sect3>
 <sect3 id="how-do-i-turn-on-visualizations"><title>How do I turn on visualizations?</title> 
@@ -6310,7 +6571,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 <para><userinput>touch <replaceable>folder</replaceable></userinput>
 </para>
-<para>where <replaceable>folder</replaceable> is the path to the folder that has the problem. Then select <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure Amarok</guimenuitem></menuchoice> in Amarok main window menu, open <guilabel>Collection</guilabel> page and click the <guilabel>Full Rescan</guilabel> button. Your folder should be visible again now.
+<para>where <replaceable>folder</replaceable> is the path to the folder that has the problem. Then select <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure Amarok</guimenuitem></menuchoice> in &amarok; main window menu, open <guilabel>Collection</guilabel> page and click the <guilabel>Full Rescan</guilabel> button. Your folder should be visible again now.
 </para>
 <para><warning><para> this will not work on Windows, as the touch command is specific to &Linux; and BSD-like systems.</para></warning>
 </para>
@@ -6332,7 +6593,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 </sect3>
 <sect3 id="can-i-use-amarok-1-4-scripts-in-amarok-2"><title>Can I use Amarok 1.4 scripts in Amarok 2?</title> 
-<para>No. A new and powerful scripting API has been created, which provides huge improvements but won't let you use your old scripts. The new scripting system is based on QtScript and will significantly reduce &amarok;'s dependencies, a huge problem for non-technical and cross-platform users, and will greatly reduce the amount of external processes launched at runtime.  Another advantage is that the new API will allow much deeper integration with &amarok; than the old scripting system. <ulink url="http://amarok.kde.org/wiki/Development/Script_API">Amarok Scripting API</ulink>.
+<para>No. A new and powerful scripting API has been created, which provides huge improvements but won't let you use your old scripts. The new scripting system is based on QtScript and will significantly reduce &amarok;'s dependencies, a huge problem for non-technical and cross-platform users, and will greatly reduce the amount of external processes launched at runtime.  Another advantage is that the new API will allow much deeper integration with &amarok; than the old scripting system. <ulink url="http://community.kde.org/Amarok/Development/Script_API">Amarok Scripting API</ulink>.
 </para>
 </sect3>
 <sect3 id="what-are-moodbars"><title>What are Moodbars?</title> 
@@ -6359,7 +6620,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
    end
 </screen>
 </para>
-<para>You can easily create your own script with your own algorithm. Look at the <ulink url="http://amarok.kde.org/wiki/Development/Scripting_HowTo_2.0">Script-Writing-Howto</ulink> for further information.
+<para>You can easily create your own script with your own algorithm. Look at the <ulink url="http://community.kde.org/Amarok/Development/Scripting_HowTo_2.0">Script-Writing-Howto</ulink> for further information.
 </para>
 </sect3>
 <sect3 id="how-do-i-manually-change-a-tracks-score"><title>How do I manually change a track's score?</title> 
@@ -6387,9 +6648,9 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 </sect3>
 </sect2>
-<sect2 id="troubleshooting20"><title>Troubleshooting</title> 
+<sect2 id="troubleshooting19"><title>Troubleshooting</title> 
 <sect3 id="how-can-i-obtain-a-backtrace"><title>How can I obtain a backtrace?</title> 
-<para>If &amarok; has crashed and you want to report it, visit the <ulink url="http://amarok.kde.org/wiki/Debugging_(documentation)">Debugging HowTo</ulink>. The bug report must be made in <ulink url="http://bugs.kde.org">bugs.kde.org</ulink> after verifying if it has not already been reported.
+<para>If &amarok; has crashed and you want to report it, visit the <ulink url="http://community.kde.org/Amarok/Development/DebuggingHowTo">Debugging HowTo</ulink>. The bug report must be made in <ulink url="http://bugs.kde.org">bugs.kde.org</ulink> after verifying if it has not already been reported.
 </para>
 </sect3>
 <sect3 id="amarok-just-freezes-how-can-i-help-get-this-fixed"><title>Amarok just freezes! How can I help get this fixed?</title> 
@@ -6398,7 +6659,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <para><userinput>$ gdb -p `pidof amarok` 
 (gdb) thread apply full bt all</userinput>  
 </para>
-<para>Then just post the backtrace to <ulink url="http://paste.kde.org/">PasteBin</ulink>, as described in the <ulink url="http://amarok.kde.org/wiki/Debugging_(documentation)">Debugging HowTo</ulink>.
+<para>Then just post the backtrace to <ulink url="http://paste.kde.org/">PasteBin</ulink>, as described in the <ulink url="http://community.kde.org/Amarok/Development/DebuggingHowTo">Debugging HowTo</ulink>.
 </para>
 </sect3>
 <sect3 id="amarok-takes-a-lot-of-time-to-start"><title>Amarok takes a lot of time to start</title> 
@@ -6410,7 +6671,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </sect2>
 <sect2 id="development-questions"><title>Development questions</title> 
 <sect3 id="how-do-i-get-a-git-version-of-amarok"><title>How do I get a GIT version of Amarok?</title> 
-<para><ulink url="http://techbase.kde.org/Getting_Started/Sources/KDE_git-tutorial">How to obtain and build &amarok; Git</ulink>. Check here for a local build: <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/">Building from Git Locally: Full Summary</ulink>
+<para>See the <ulink url="http://community.kde.org/Amarok/Development/Development_HowTo">Amarok Development build</ulink> instruction page. Check here for a local build: <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/">Building from Git Locally: Full Summary</ulink>
 </para>
 </sect3>
 <sect3 id="why-isnt-amarok-part-of-kde-multimedia"><title>Why isn't Amarok part of KDE Multimedia?</title> 
@@ -6531,7 +6792,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <para>Some of the common actions in &amarok; are here, mostly to control media playback.
 </para>
 </sect2>
-<sect2 id="contents21"><title>Contents</title> 
+<sect2 id="contents20"><title>Contents</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -7082,7 +7343,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="toolmenu.png" format="PNG"/>
+      <imagedata fileref="amarok2-7menutools.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>The Tools Menu</phrase>
@@ -7129,10 +7390,34 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
+    <para><guilabel>Network Request Viewer</guilabel></para>
+    </entry>
+    <entry>
+    <para>Shows the Network Requests Viewer.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
     <para><guilabel>Update Collection</guilabel></para>
     </entry>
     <entry>
-    <para>Checks the tracks in your collection.</para></entry>
+    <para>Checks the tracks in your collection and updates the database.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Synchronize Statistics..</guilabel></para>
+    </entry>
+    <entry>
+    <para>Opens the Statistics Synchronization dialog.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Free Music Charts Voting</guilabel></para>
+    </entry>
+    <entry>
+    <para>Opens an external webpage to vote on the Free Music Charts.</para></entry>
   </row>
   </tbody>
   </tgroup>
@@ -7200,7 +7485,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </informaltable>
 </para>
 </sect3>
-<sect3 id="cover-manager22"><title>Cover Manager</title>  
+<sect3 id="cover-manager21"><title>Cover Manager</title>  
 <para>Shows all albums in your collection. Here you can set custom album covers and fetch missing ones. More about the <link linkend="cover-manager">Cover Manager</link>, shown below.
 </para>
 <para>
@@ -7234,8 +7519,33 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </screenshot>
 </para>
 </sect3>
+<sect3 id="network-requests-viewer"><title>Network Requests Viewer</title> 
+<para>The <guilabel>Network Requests Viewer</guilabel> allows you to monitor the network requests made by &amarok;. Selecting this option will open this window:
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok2-7networkrequestsviewer.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect3>
 <sect3 id="update-collection"><title>Update Collection</title> 
 <para>Checks the files in the folders you defined as your collection. New files will be added and missing ones removed from the left pane.
+</para>
+</sect3>
+<sect3 id="synchronize-statistics"><title>Synchronize Statistics</title> 
+<para>This option allows you to synchronize statistics of your various collections. This is a new feature in &amarok; since version 2.7 For more information, see also <link linkend="statistics-synchronization">Statistics Synchronization Between Collections and with Last.fm</link> in the handbook.
+</para>
+</sect3>
+<sect3 id="free-music-charts-voting"><title>Free Music Charts Voting</title> 
+<para>Selecting this menu option will open the external <ulink url="http://www.darkerradio.com/free-music-charts/free-music-charts-voting/">Free Music Charts Voting</ulink> website that allows you to vote on the most recent Free Music charts. This options is new since <guilabel>Amarok 2.6</guilabel>
 </para>
 </sect3>
 </sect2>
@@ -7939,6 +8249,8 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <para>Geoffry Song (goffrie gmail.com)
 </para>
 <para>Jeff Mitchell (mitchell kde.org)
+</para>
+<para>José Antonio Rey (joseeantonior ubuntu.com)
 </para>
 <para>Lydia Pintscher (lydia kde.org)
 </para>
