@@ -27,7 +27,7 @@ public:
     ~TestSingleCollectionTreeItemModel();
 
 private slots:
-    void init();
+    void initTestCase();
 
     void testAddNewArtist();
     void testRemoveArtist();

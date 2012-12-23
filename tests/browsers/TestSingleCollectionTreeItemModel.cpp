@@ -130,16 +130,20 @@ TestSingleCollectionTreeItemModel::~TestSingleCollectionTreeItemModel()
 }
 
 void
-TestSingleCollectionTreeItemModel::init()
+TestSingleCollectionTreeItemModel::initTestCase()
 {
-
-
+    qRegisterMetaType<Meta::GenreList>();
+    qRegisterMetaType<Meta::ComposerList>();
+    qRegisterMetaType<Meta::YearList>();
+    qRegisterMetaType<Meta::LabelList>();
 }
 
-#define loadChildren( itemModel, idx ) { \
-    if( itemModel->canFetchMore( idx ) ) \
+#define loadChildren( itemModel, idx ) \
+{ \
+    if( itemModel->canFetchMore( idx ) ) { \
         itemModel->fetchMore( idx ); \
-    QTest::qWait( 30 ); \
+        QVERIFY( QTest::kWaitForSignal( itemModel, SIGNAL(allQueriesFinished()), 5000 ) ); \
+    } \
 }
 
 void
