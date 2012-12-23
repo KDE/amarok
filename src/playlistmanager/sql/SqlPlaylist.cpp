@@ -183,6 +183,7 @@ SqlPlaylist::saveTracks()
     {
         if( trackPtr )
         {
+            // keep this in sync with SqlTrack::updatePlaylistsToDb()!
             debug() << "saving track with url " << trackPtr->uidUrl();
             QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, "
                             "album, artist, length, uniqueid ) VALUES ( %1, %2, '%3', '%4', '%5', "

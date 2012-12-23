@@ -1057,26 +1057,30 @@ SqlTrack::updatePlaylistsToDb( const FieldHash &fields, const QString &oldUid )
         return; // nothing to do
 
     SqlStorage *storage = m_collection->sqlStorage();
-    QString tags;
+    QStringList tags;
 
+    // keep this in sync with SqlPlaylist::saveTracks()!
     if( fields.contains( Meta::valUrl ) )
-        tags += QString( ",url='%1'" ).arg( storage->escape( m_url.path() ) );
+        tags << QString( "url='%1'" ).arg( storage->escape( m_url.path() ) );
     if( fields.contains( Meta::valTitle ) )
-        tags += QString( ",title='%1'" ).arg( storage->escape( m_title ) );
-   if( fields.contains( Meta::valAlbum ) )
-        tags += QString( ",album='%1'" ).arg( m_album ? storage->escape( m_album->prettyName() ) : "" );
-   if( fields.contains( Meta::valArtist ) )
-        tags += QString( ",artist='%1'" ).arg( m_artist ? storage->escape( m_artist->prettyName() ) : "" );
+        tags << QString( "title='%1'" ).arg( storage->escape( m_title ) );
+    if( fields.contains( Meta::valAlbum ) )
+        tags << QString( "album='%1'" ).arg( m_album ? storage->escape( m_album->prettyName() ) : "" );
+    if( fields.contains( Meta::valArtist ) )
+        tags << QString( "artist='%1'" ).arg( m_artist ? storage->escape( m_artist->prettyName() ) : "" );
     if( fields.contains( Meta::valLength ) )
-        tags += QString(",length=%1").arg( QString::number( m_length ) );
+        tags << QString( "length=%1").arg( QString::number( m_length ) );
     if( fields.contains( Meta::valUniqueId ) )
-        tags += QString( ",uniqueid='%1'" ).arg( storage->escape( m_uid ) );
+    {
+        // SqlPlaylist mirrors uniqueid to url, update it too, bug 312128
+        tags << QString( "url='%1'" ).arg( storage->escape( m_uid ) );
+        tags << QString( "uniqueid='%1'" ).arg( storage->escape( m_uid ) );
+    }
 
     if( !tags.isEmpty() )
     {
-        tags = tags.remove(0, 1); // the first character is always a ','
         QString update = "UPDATE playlist_tracks SET %1 WHERE uniqueid = '%2';";
-        update = update.arg( tags, storage->escape( oldUid ) );
+        update = update.arg( tags.join( ", " ), storage->escape( oldUid ) );
         storage->query( update );
     }
 }

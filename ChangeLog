@@ -9,6 +9,7 @@ VERSION 2.7
     * Removed alpha state and not really working spectrum analyzer applet.
 
   BUGFIXES:
+    * Fix updating of Amarok database playlists then track uid changes. (BR 312128)
     * Fix hangs and inappropriate messages when trying to play a track from
       a saved playlist that has been deleted in the mean time. (BR 308371)
     * Fix existing files preventing complete transfer of tracks to collection. (BR 312001)
