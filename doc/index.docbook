@@ -33,7 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2012-12-22T17:41:31Z</timestamp>-->
+<!--userbase <timestamp>2012-12-23T10:58:57Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -2520,18 +2520,7 @@
 </informaltable>
 </para>
 <sect2 id="statistics-synchronization"><title>Statistics Synchronization</title> 
-<para>This dialog will allow you to 
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="metadatadialog.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>. Make sure to only check collections between which you want to synchronize metadata.
+<para>This dialog will allow you to <link linkend="statistics-synchronization">keep statistics of your collections synchronized</link>. Make sure to only check collections between which you want to synchronize metadata.
 </para>
 <para>Statistics Synchronization options:
 </para>
@@ -3884,18 +3873,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>From here, you can start a synchronization between the collections you select here, which will default to what you have configured in the &amarok; 
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok-statsyncing.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot> configuration.
+<para>From here, you can start a synchronization between the collections you select here, which will default to what you have configured in the &amarok; <link linkend="metadata">Metadata</link> configuration.
 </para>
 <sect4 id="conflicts-and-syncing-statistics-dialog"><title>Conflicts and Syncing Statistics Dialog</title> 
 <para>When syncing, &amarok; will show a dialog window which states the conflicts and statistics of the syncing that has recently been in progress. In this window you will be able to see three tabs: <guilabel>Matched Tracks</guilabel>, <guilabel>Unique Tracks</guilabel> and <guilabel>Excluded Tracks</guilabel>.
@@ -6515,7 +6493,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </para>
 </sect3>
 <sect3 id="i-have-the-codecs-but-amarok-still-wont-play-mp4s-and-mkas"><title>I have the codecs, but Amarok still won't play mp4s and mkas</title> 
-<para>When using some phonon backend, like the gstreamer one, &amarok; might refuse to play <filename>mp4</filename> and <filename>mka</filename> files. This is a known problem, see  for more technical information.
+<para>When using some phonon backend, like the gstreamer one, &amarok; might refuse to play <filename>mp4</filename> and <filename>mka</filename> files. This is a known problem, see <emphasis role="strikethrough"><ulink url="https://bugs.kde.org/show_bug.cgi?id=290168">bug #290168</ulink></emphasis> for more technical information.
 </para>
 <para>A very simple workaround is to change the file extension. Change <filename>mp4</filename> extension to <filename>m4a</filename> and for <filename>mka</filename> change it to <filename>mkv</filename>. Of course you must be sure the files contains audio only. You can use the ffprobe command to look at what data streams are present in the file. If the file has a video stream it must be stripped out. There are a lot of tools able to edit these formats and most of them are based on <filename>ffmpeg</filename>/<filename>libav</filename>, which you can use if you are familiar with them. If you prefer graphical tools one possible choice is <ulink url="http://www.avidemux.org/">avidemux</ulink>.
 </para>
