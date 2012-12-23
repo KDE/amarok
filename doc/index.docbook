@@ -33,7 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2012-12-23T10:58:57Z</timestamp>-->
+<!--userbase <timestamp>2012-12-23T12:57:51Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -3963,18 +3963,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>For unattended syncing to start, you only need to click <guilabel>Yes</guilabel> in the pop-up. &amarok; will work  in the background, so the metadata in your device including ratings, first/last played times, play counts and labels will be synced with other collections 
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="ipod-connected-dialog.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>, and tracks recently played on the device will be scrobbled to Last.fm, if it is enabled. The process will not ask for user interaction unless any conflict is found in the middle.
+<para>For unattended syncing to start, you only need to click <guilabel>Yes</guilabel> in the pop-up. &amarok; will work  in the background, so the metadata in your device including ratings, first/last played times, play counts and labels will be synced with other collections <link linkend="metadata">configured to participate in the synchronization</link>, and tracks recently played on the device will be scrobbled to Last.fm, if it is enabled. The process will not ask for user interaction unless any conflict is found in the middle.
 </para>
 </sect3>
 </sect2>
@@ -6485,7 +6474,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <sect3 id="what-is-phonon-what-are-phonon-backends"><title>What is Phonon? What are Phonon backends?</title> 
 <para><emphasis>Phonon</emphasis> is the multimedia framework of KDE 4. You can find more information <link linkend="playback">here</link>.
 </para>
-<para>We recommend both the Gstreamer and the VLC backend as both are actively maintained. Make sure you don not use any other backend as those are obsolete.
+<para>We recommend both the Gstreamer and the VLC backend as both are actively maintained. Make sure you do not use any other backend as those are obsolete.
 </para>
 </sect3>
 <sect3 id="amarok-wont-play-mp3s-what-can-i-do"><title>Amarok won't play mp3s, what can I do?</title> 
@@ -7523,7 +7512,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 </sect3>
 <sect3 id="free-music-charts-voting"><title>Free Music Charts Voting</title> 
-<para>Selecting this menu option will open the external <ulink url="http://www.darkerradio.com/free-music-charts/free-music-charts-voting/">Free Music Charts Voting</ulink> website that allows you to vote on the most recent Free Music charts. This options is new since <guilabel>Amarok 2.6</guilabel>
+<para>Selecting this menu option will open the external <ulink url="http://www.darkerradio.com/free-music-charts/free-music-charts-voting/">Free Music Charts Voting</ulink> website that allows you to vote on the most recent Free Music charts. This option is new since <guilabel>Amarok 2.6</guilabel>
 </para>
 </sect3>
 </sect2>
