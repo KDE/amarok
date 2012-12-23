@@ -1,7 +1,6 @@
 [Desktop Entry]
 Name=Vertical Context Containment
 Name[bg]=Вертикален контекст
-Name[bs]=Sadržalac za vertikalni kontekst
 Name[ca]=Contenidor vertical de context
 Name[ca@valencia]=Contenidor vertical de context
 Name[cs]=Svislý kontejner kontextu
@@ -49,7 +48,6 @@ Name[zh_CN]=垂直上下文容器
 Name[zh_TW]=垂直的內容容器
 Comment=A vertical containment for the Amarok Context
 Comment[bg]=Вертикален контекст на Amarok
-Comment[bs]=Vertikalni sadržalac za Amarokov kontekst
 Comment[ca]=Un contenidor vertical per a l'Amarok Context
 Comment[ca@valencia]=Un contenidor vertical per a l'Amarok Context
 Comment[cs]=Svislý kontejner pro kontext Amaroku

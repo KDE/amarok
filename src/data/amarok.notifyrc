@@ -2,7 +2,6 @@
 IconName=amarok
 Comment=Amarok
 Comment[bg]=Amarok
-Comment[bs]=Amarok
 Comment[ca]=Amarok
 Comment[ca@valencia]=Amarok
 Comment[cs]=Amarok
@@ -54,7 +53,6 @@ Comment[zh_TW]=Amarok 影音播放器
 [Event/trackChange]
 Name=Track Change
 Name[bg]=Прехвърляне запис
-Name[bs]=Promjena numere
 Name[ca]=Canvi de peça
 Name[ca@valencia]=Canvi de peça
 Name[cs]=Změna skladby
@@ -101,7 +99,6 @@ Name[zh_CN]=音轨更改
 Name[zh_TW]=曲目變更
 Comment=Amarok changed to a new track
 Comment[bg]=Amarok прехвърли към друг запис
-Comment[bs]=Amarok je prešao na novu numeru
 Comment[ca]=L'Amarok ha canviat a una peça nova
 Comment[ca@valencia]=L'Amarok ha canviat a una peça nova
 Comment[cs]=Amarok přešel na novou skladbu
