@@ -41,6 +41,7 @@ namespace Playlists {
 namespace PlaylistBrowserNS {
 
 class PlaylistBrowserModel;
+class PlaylistBrowserView;
 
 class PlaylistBrowserCategory : public BrowserCategory
 {
@@ -87,7 +88,7 @@ private:
     KActionMenu *m_providerMenu;
     QMap<const Playlists::PlaylistProvider *, QAction *> m_providerActions;
 
-    QTreeView *m_playlistView;
+    PlaylistBrowserView *m_playlistView;
 
     KAction *m_addFolderAction;
 
