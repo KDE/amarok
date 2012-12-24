@@ -10,6 +10,7 @@ X-KDE-ParentComponents=amarok_service_magnatunestore
 
 Name=MagnatuneStore Service Config
 Name[bg]=Настройване на услугата MagnatuneStore
+Name[bs]=Postava servisa Magnatune prodavnice
 Name[ca]=Configuració del servei MagnatuneStore
 Name[ca@valencia]=Configuració del servei MagnatuneStore
 Name[cs]=Nastavení služby MagnatuneStore
@@ -61,6 +62,7 @@ Name[zh_CN]=Magnatune 商店服务配置
 Name[zh_TW]=Magnatune商店服務設定
 Comment=Configure Magnatune store settings and memberships credentials
 Comment[bg]=Настройване на членството в Magnatune
+Comment[bs]=Postavke Magnatjunove prodavnice i članskih akreditiva
 Comment[ca]=Configura els paràmetres de la botiga Magnatune i les credencials de soci
 Comment[ca@valencia]=Configura els paràmetres de la botiga Magnatune i les credencials de soci
 Comment[cs]=Nastavit nastavení a členské údaje pro obchod Magnatune
