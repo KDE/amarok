@@ -344,6 +344,9 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
         removeRows( 0, childCount, groupIdx );
     }
     removeGroup( groupIdx );
+    //force a rebuild because groupHash might be incorrect
+    //TODO: make QtGroupingProxy adjust groupHash keys
+    buildTree();
 }
 
 QModelIndex
