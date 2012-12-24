@@ -37,6 +37,8 @@ class PlaylistsInFoldersProxy : public QtGroupingProxy
         QModelIndex createNewFolder( const QString &groupName );
 
         /* QtGroupingProxy methods */
+        //re-implemented to make folder name (== label) editable.
+        virtual Qt::ItemFlags flags(const QModelIndex &idx) const;
         virtual QVariant data( const QModelIndex &idx, int role ) const;
 
         /* QAbstractModel methods */

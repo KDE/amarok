@@ -358,4 +358,13 @@ PlaylistsInFoldersProxy::createNewFolder( const QString &groupName )
     return addEmptyGroup( data );
 }
 
+Qt::ItemFlags PlaylistsInFoldersProxy::flags(const QModelIndex &idx) const
+{
+    if( isGroup(idx) && idx.column() == 0)
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable |
+               Qt::ItemIsDropEnabled;
+
+    return QtGroupingProxy::flags(idx);
+}
+
 #include "PlaylistsInFoldersProxy.moc"
