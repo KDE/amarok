@@ -80,9 +80,7 @@ namespace Dynamic
         private slots:
             virtual void newQuery();
             virtual void newSimilarArtistQuery();
-            virtual void newArtistIdQuery( const QString &artist );
 
-            void artistIdQueryDone( KJob* );
             void similarArtistQueryDone( KJob* );
             virtual void updateFinished();
 
@@ -95,6 +93,10 @@ namespace Dynamic
             static QString nameForMatch( MatchType match );
             static MatchType matchForName( const QString &name );
 
+
+            /** Returns the key used for m_tracksMap */
+            static QString tracksMapKey( QStringList artists );
+
             /** The artist we are currently quering. */
             mutable QStringList m_currentArtists;
             mutable QMap< KIO::StoredTransferJob*, QString> m_artistNameQueries;
@@ -103,7 +105,6 @@ namespace Dynamic
             MatchType m_match;
 
             mutable QMutex m_mutex; // mutex protecting all of the below structures
-            mutable QMap< QString, QString > m_artistIds;
             mutable QMap< QString, QStringList> m_similarArtistMap;
             mutable QMap< QString, TrackSet> m_tracksMap;
 
