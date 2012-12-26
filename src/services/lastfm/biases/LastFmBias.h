@@ -76,6 +76,7 @@ namespace Dynamic
 
             void similarArtistQueryDone();
             void similarTrackQueryDone();
+            void queryFailed( const char *message );
 
             void selectionChanged( int );
 
@@ -95,8 +96,6 @@ namespace Dynamic
 
             mutable QString m_currentArtist;
             mutable QString m_currentTrack;
-            QNetworkReply* m_artistQuery;
-            QNetworkReply* m_trackQuery;
 
             MatchType m_match;
 

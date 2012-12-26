@@ -54,8 +54,6 @@ Dynamic::LastFmBiasFactory::createBias()
 
 Dynamic::LastFmBias::LastFmBias()
     : SimpleMatchBias()
-    , m_artistQuery( 0 )
-    , m_trackQuery( 0 )
     , m_match( SimilarArtist )
     , m_mutex( QMutex::Recursive )
 {
@@ -178,7 +176,7 @@ Dynamic::LastFmBias::matchingTracks( int position,
         {
             if( m_currentArtist.isEmpty() )
                 return Dynamic::TrackSet( universe, true );
-            if( m_tracksValid && m_tracksMap.contains( m_currentArtist ) )
+            if( m_tracksMap.contains( m_currentArtist ) )
                 return m_tracksMap.value( m_currentArtist );
         }
         else if( m_match == SimilarTrack )
@@ -186,7 +184,7 @@ Dynamic::LastFmBias::matchingTracks( int position,
             if( m_currentTrack.isEmpty() )
                 return Dynamic::TrackSet( universe, true );
             QString key = m_currentTrack + '|' + m_currentArtist;
-            if( m_tracksValid && m_tracksMap.contains( key ) )
+            if( m_tracksMap.contains( key ) )
                 return m_tracksMap.value( key );
         }
     }
@@ -216,7 +214,7 @@ Dynamic::LastFmBias::trackMatches( int position,
     QString lastTrackName = lastTrack->name();
     QString lastArtistName = lastArtist ? lastArtist->name() : QString();
 
-    Meta::TrackPtr currentTrack = playlist[position-1];
+    Meta::TrackPtr currentTrack = playlist[position];
     Meta::ArtistPtr currentArtist = currentTrack->artist();
     QString currentTrackName = currentTrack->name();
     QString currentArtistName = currentArtist ? currentArtist->name() : QString();
@@ -230,6 +228,8 @@ Dynamic::LastFmBias::trackMatches( int position,
                 return true;
             if( currentArtistName.isEmpty() )
                 return false;
+            if( lastArtistName == currentArtistName )
+                return true;
             if( m_similarArtistMap.contains( lastArtistName ) )
                 return m_similarArtistMap.value( lastArtistName ).contains( currentArtistName );
         }
@@ -239,6 +239,8 @@ Dynamic::LastFmBias::trackMatches( int position,
                 return true;
             if( currentTrackName.isEmpty() )
                 return false;
+            if( lastTrackName == currentTrackName )
+                return true;
             TitleArtistPair lastKey( lastTrackName, lastArtistName );
             TitleArtistPair currentKey( currentTrackName, currentArtistName );
             if( m_similarTrackMap.contains( lastKey ) )
@@ -246,7 +248,7 @@ Dynamic::LastFmBias::trackMatches( int position,
         }
     }
 
-    warning() << "didn't have a cached suggestions for track:" << lastTrackName;
+    debug() << "didn't have a cached suggestions for track:" << lastTrackName;
     return false;
 }
 
@@ -263,6 +265,7 @@ Dynamic::LastFmBias::newQuery()
 {
     DEBUG_BLOCK;
 
+    debug() << "similarArtists:"<<m_similarArtistMap.count() << "similarTracks:"<<m_similarTrackMap.count();
     // - get the similar things
     QStringList similarArtists;
     QList<TitleArtistPair> similarTracks;
@@ -273,7 +276,7 @@ Dynamic::LastFmBias::newQuery()
             if( m_similarArtistMap.contains( m_currentArtist ) )
             {
                 similarArtists = m_similarArtistMap.value( m_currentArtist );
-                debug() << "got similar artists:" << similarArtists.join(", ");
+                debug() << "for"<<m_currentArtist<<"got similar artists:" << similarArtists.join(", ");
             }
             else
             {
@@ -288,7 +291,7 @@ Dynamic::LastFmBias::newQuery()
             if( m_similarTrackMap.contains( key ) )
             {
                 similarTracks = m_similarTrackMap.value( key );
-                debug() << "got similar tracks:" << similarTracks.count();
+                debug() << "for"<<key<<"got similar tracks:" << similarTracks.count();
             }
             else
             {
@@ -346,8 +349,8 @@ void Dynamic::LastFmBias::newSimilarQuery()
     {
         params[ "method" ] = "artist.getSimilar";
         params[ "artist" ] = m_currentArtist;
-        m_artistQuery = lastfm::ws::get( params );
-        connect( m_artistQuery, SIGNAL( finished() ),
+        QNetworkReply* request = lastfm::ws::get( params );
+        connect( request, SIGNAL( finished() ),
                  this, SLOT( similarArtistQueryDone() ) );
     }
     else if( m_match == SimilarTrack )
@@ -357,8 +360,8 @@ void Dynamic::LastFmBias::newSimilarQuery()
         params[ "method" ] = "track.getSimilar";
         params[ "artist" ] = m_currentArtist;
         params[ "track" ] = m_currentTrack;
-        m_trackQuery = lastfm::ws::get( params );
-        connect( m_trackQuery, SIGNAL( finished() ),
+        QNetworkReply* request = lastfm::ws::get( params );
+        connect( request, SIGNAL( finished() ),
                  this, SLOT( similarTrackQueryDone() ) );
     }
 }
@@ -369,20 +372,21 @@ Dynamic::LastFmBias::similarArtistQueryDone() // slot
 {
     DEBUG_BLOCK
 
-    if( !m_artistQuery )
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+
+    if( !reply )
     {
-        debug() << "job was deleted from under us...wtf! blame the gerbils.";
+        queryFailed( "job was deleted from under us...wtf! blame the gerbils." );
         return;
     }
+    reply->deleteLater();
 
-    QMutexLocker locker( &m_mutex );
-
-    QByteArray data = m_artistQuery->readAll();
+    QByteArray data = reply->readAll();
 //     debug() << "artistQuery has data:" << data;
     QDomDocument d;
     if( !d.setContent( data ) )
     {
-        debug() << "Got invalid XML data from last.fm!";
+        queryFailed( "Got invalid XML data from last.fm!" );
         return;
     }
 
@@ -394,52 +398,42 @@ Dynamic::LastFmBias::similarArtistQueryDone() // slot
         //  n.firstChildElement( "match" ).text().toFloat() * 100,
         similarArtists.append( n.firstChildElement( "name" ).text() );
     }
-    m_artistQuery->deleteLater();
+
+    QMutexLocker locker( &m_mutex );
 
     m_similarArtistMap.insert( m_currentArtist, similarArtists );
 
+    saveDataToFile();
+
     // -- try again to do the query
     newQuery();
-
-    // clean up
-    m_artistQuery = 0;
 }
 
 void Dynamic::LastFmBias::similarTrackQueryDone()
 {
     DEBUG_BLOCK
 
-    if( !m_trackQuery )
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+
+    if( !reply )
     {
-        debug() << "track job was deleted from under us...wtf! blame the gerbils.";
+        queryFailed( "who send this...wtf! blame the gerbils." );
         return;
     }
-
-    QMutexLocker locker( &m_mutex );
+    reply->deleteLater();
 
     // double match value, qpair title - artist
     QMap< int, QPair<QString,QString> > similar;
-    QByteArray data = m_trackQuery->readAll();
+    QByteArray data = reply->readAll();
 //     debug() << "trackQuery has data:" << data;
     QDomDocument d;
     if( !d.setContent( data ) )
     {
-        debug() << "Got invalid XML data from last.fm!";
+        queryFailed( "Got invalid XML data from last.fm!" );
         return;
     }
-    QDomNodeList nodes = d.elementsByTagName( "track" );
-    /*
-    for( int i =0; i < nodes.size(); ++i )
-    {
-        QDomElement n = nodes.at( i ).toElement();
-//         debug() << "parsing track:" << n.text();
-//         debug() << "adding data:" << n.firstChildElement( "match" ).text().toDouble() << QPair< QString, QString >( n.firstChildElement( "name" ).text(), n.firstChildElement( "artist" ).firstChildElement( "name" ).text() );
-        similar.insert( n.firstChildElement( "match" ).text().toDouble(),
-                                             QPair< QString, QString >( n.firstChildElement( "name" ).text(),
-                                                                        n.firstChildElement( "artist" ).firstChildElement( "name" ).text() ) );
-    }
-    */
 
+    QDomNodeList nodes = d.elementsByTagName( "track" );
     QList<TitleArtistPair> similarTracks;
     for( int i =0; i < nodes.size(); ++i )
     {
@@ -449,7 +443,8 @@ void Dynamic::LastFmBias::similarTrackQueryDone()
                               n.firstChildElement( "artist" ).firstChildElement( "name" ).text() );
         similarTracks.append( pair );
     }
-    m_trackQuery->deleteLater();
+
+    QMutexLocker locker( &m_mutex );
 
     TitleArtistPair key( m_currentTrack, m_currentArtist );
     m_similarTrackMap.insert( key, similarTracks );
@@ -458,11 +453,18 @@ void Dynamic::LastFmBias::similarTrackQueryDone()
 
     // -- try again to do the query
     newQuery();
-
-    // clean up
-    m_trackQuery = 0;
 }
 
+
+void
+Dynamic::LastFmBias::queryFailed( const char *message )
+{
+    debug() << message;
+
+    m_tracks.reset( false );
+    emit resultReady( m_tracks );
+    return;
+}
 
 
 void

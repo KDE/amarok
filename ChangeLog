@@ -9,6 +9,7 @@ VERSION 2.7
     * Removed alpha state and not really working spectrum analyzer applet.
 
   BUGFIXES:
+    * Fix When i try to create a dynamic playlist by Last.fm similar songs creation takes a lot time (BR 301716)
     * Fix updating of Amarok database playlists then track uid changes. (BR 312128)
     * Fix hangs and inappropriate messages when trying to play a track from
       a saved playlist that has been deleted in the mean time. (BR 308371)
