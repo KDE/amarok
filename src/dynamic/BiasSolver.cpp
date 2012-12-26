@@ -118,6 +118,7 @@ BiasSolver::BiasSolver( int n, BiasPtr bias, Meta::TrackList context )
     , m_bias( bias )
     , m_context( context )
     , m_abortRequested( false )
+    , m_currentProgress( 0 )
 {
     debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId() << "to get"<<n<<"tracks with"<<context.count()<<"context";
 
@@ -133,6 +134,7 @@ BiasSolver::BiasSolver( int n, BiasPtr bias, Meta::TrackList context )
 BiasSolver::~BiasSolver()
 {
     debug() << "DESTROYING BiasSolver in thread:" << QThread::currentThreadId();
+    emit endProgressOperation( this );
 }
 
 
@@ -140,6 +142,7 @@ void
 BiasSolver::requestAbort()
 {
     m_abortRequested = true;
+    emit endProgressOperation( this );
 }
 
 bool
@@ -208,7 +211,7 @@ BiasSolver::run()
 
     if( playlist.energy() > epsilon() && !m_abortRequested ) // the playlist is only slightly wrong
     {
-        annealingOptimize( &playlist, SA_ITERATION_LIMIT, true );
+        annealingOptimize( &playlist, SA_ITERATION_LIMIT );
     }
     debug() << "Found solution with energy"<<playlist.energy();
 
@@ -227,6 +230,9 @@ BiasSolver::simpleOptimize( SolverList *list )
     // this prevents the part bias from first fullfilling the easy conditions
     for( int i = 0; i < m_n / 2; i++ )
     {
+        if( m_abortRequested )
+            return;
+
         // choose the mutation position
         int newPos = (KRandom::random() % (list->m_trackList.count() - list->m_contextCount))
             + list->m_contextCount;
@@ -238,12 +244,18 @@ BiasSolver::simpleOptimize( SolverList *list )
         Meta::TrackPtr newTrack;
         newTrack = getRandomTrack( set );
         if( newTrack )
+        {
             list->setTrack( newPos, newTrack );
+            updateProgress( list );
+        }
     }
 
     // now go through the complete list again and try to fullfill all
     for( int newPos = list->m_contextCount; newPos < list->m_trackList.count(); newPos++ )
     {
+        if( m_abortRequested )
+            return;
+
         TrackSet set = matchingTracks( newPos, list->m_trackList );
         if( !m_allowDuplicates )
             set = withoutDuplicate( newPos, list->m_trackList, set, true );
@@ -251,14 +263,16 @@ BiasSolver::simpleOptimize( SolverList *list )
         Meta::TrackPtr newTrack;
         newTrack = getRandomTrack( set );
         if( newTrack )
+        {
             list->setTrack( newPos, newTrack );
+            updateProgress( list );
+        }
     }
 }
 
 void
 BiasSolver::annealingOptimize( SolverList *list,
-                               int iterationLimit,
-                               bool updateStatus )
+                               int iterationLimit )
 {
     DEBUG_BLOCK;
 
@@ -281,7 +295,7 @@ BiasSolver::annealingOptimize( SolverList *list,
      * on the internet or your local library.
      */
 
-    double T = SA_INITIAL_TEMPERATURE;
+    double temperature = SA_INITIAL_TEMPERATURE;
     TrackSet universeSet( m_trackCollection, true );
 
     double oldEnergy = 0.0;
@@ -330,7 +344,7 @@ BiasSolver::annealingOptimize( SolverList *list,
         SolverList newList = *list;
         newList.setTrack( newPos, newTrack );
 
-        double p = 1.0 / ( 1.0 + exp( (newList.energy() - list->energy()) / list->m_trackList.count()  / T ) );
+        double p = 1.0 / ( 1.0 + exp( (newList.energy() - list->energy()) / list->m_trackList.count()  / temperature ) );
         double r = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
 
         // accept the mutation ?
@@ -338,14 +352,10 @@ BiasSolver::annealingOptimize( SolverList *list,
             *list = newList;
 
         // cool the temperature
-        T *= SA_COOLING_RATE;
+        temperature *= SA_COOLING_RATE;
 
-        if( updateStatus && iterationLimit % 100 == 0 )
-        {
-            debug() << "SA: E = " << list->energy();
-            int progress = (int)(100.0 * (1.0 - list->energy()));
-            emit statusUpdate( progress >= 0 ? progress : 0 );
-        }
+        debug() << "SA: E = " << list->energy();
+        updateProgress( list );
     }
 
     // -- use the original list if we made it worse
@@ -355,12 +365,10 @@ BiasSolver::annealingOptimize( SolverList *list,
 
 void
 BiasSolver::geneticOptimize( SolverList *list,
-                             int iterationLimit,
-                             bool updateStatus )
+                             int iterationLimit )
 {
     Q_UNUSED( list );
     Q_UNUSED( iterationLimit );
-    Q_UNUSED( updateStatus );
 
     /**
      * Here we attempt to produce an optimal playlist using a genetic algorithm.
@@ -537,30 +545,36 @@ BiasSolver::solution()
 SolverList
 BiasSolver::generateInitialPlaylist() const
 {
-    SolverList result( m_context, m_context.count(), m_bias );
+    SolverList list( m_context, m_context.count(), m_bias );
 
     // Empty collection
     if( m_trackCollection->count() == 0 )
     {
         debug() << "Empty collection when trying to generate initial playlist...";
-        return result;
+        return list;
     }
 
     // just create a simple playlist by adding random tracks to the end.
 
     TrackSet universeSet( m_trackCollection, true );
-    while( result.m_trackList.count() < m_context.count() + m_n )
+    while( list.m_trackList.count() < m_context.count() + m_n )
     {
+        if( m_abortRequested )
+            return list;
+
         Meta::TrackPtr newTrack;
         if( !m_allowDuplicates )
-            newTrack = getRandomTrack( withoutDuplicate( -1, result.m_trackList, universeSet, false ) );
+            newTrack = getRandomTrack( withoutDuplicate( -1, list.m_trackList, universeSet, false ) );
         else
             newTrack = getRandomTrack( universeSet );
-        result.appendTrack( newTrack );
+        list.appendTrack( newTrack );
+
+        const_cast<BiasSolver*>(this)->updateProgress( &list );
     }
 
-    debug() << "generated random playlist with"<<result.m_trackList.count()<<"tracks";
-    return result;
+
+    debug() << "generated random playlist with"<<list.m_trackList.count()<<"tracks";
+    return list;
 }
 
 Meta::TrackPtr
@@ -668,6 +682,19 @@ BiasSolver::getTrackCollection()
 
     qm->run();
 }
+
+void
+BiasSolver::updateProgress( const SolverList* list )
+{
+    int progress = (int)(100.0 * (1.0 - list->energy()));
+
+    while( m_currentProgress < progress )
+    {
+        m_currentProgress++;
+        emit incrementProgress();
+    }
+}
+
 
 }
 

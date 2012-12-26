@@ -57,10 +57,6 @@ namespace Dynamic
 
             BiasPtr bias() const;
 
-        signals:
-            void totalSteps( int );
-            void endProgressOperation( QObject * );
-
         public slots:
             virtual void repopulate();
             virtual void requestAbort();
@@ -69,8 +65,6 @@ namespace Dynamic
             void solverFinished();
             void biasChanged();
             void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
-            void updateStatus( int progress );
-
         private:
             /** Starts the BiasSolver (if not already running) and requests a couple of new tracks. */
             void startSolver();

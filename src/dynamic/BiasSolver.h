@@ -123,8 +123,16 @@ namespace Dynamic
             void run();
 
         signals:
-            /// A [0,100] value emitted occasionally to indicate progress being made.
-            void statusUpdate( int progress );
+            /** a job must implement the following signals for the progress bar
+                BiasedPlaylist set's us as progress sender in startSolver.
+            */
+
+            /** Sets the total steps for the progress bar (which is always 100 for the bias solver).
+                This signal is never emitted as the BiasedPlaylist already registers us with
+                100 steps. */
+            void totalSteps( int );
+            void incrementProgress();
+            void endProgressOperation( QObject * );
 
         private slots:
             void biasResultReady( const Dynamic::TrackSet &set );
@@ -158,18 +166,16 @@ namespace Dynamic
              *
              * @param initialPlaylist The starting playlist for the algorithm.
              * @param iterationLimit Maximum iterations allowed.
-             * @param updateStatus Enable/disable statusUpdate signals.
              */
-            void annealingOptimize( SolverList *list, int iterationLimit, bool updateStatus = true );
+            void annealingOptimize( SolverList *list, int iterationLimit );
 
             /**
              * Try to produce an optimal playlist using a genetic algorithm, and
              * return the best playlist produced.
              *
              * @param iterationLimit Maximum iterations allowed.
-             * @param updateStatus Enable/disable statusUpdate signals.
              */
-            void geneticOptimize( SolverList *list, int iterationLimit, bool updateStatus = true );
+            void geneticOptimize( SolverList *list, int iterationLimit );
 
             /** Returns a simple random playlist without caring about any bias */
             SolverList generateInitialPlaylist() const;
@@ -212,6 +218,9 @@ namespace Dynamic
                                               const Dynamic::TrackSet& oldSet,
                                               bool onlyBackwards = true );
 
+            /** Emits the required progress signals for the solver list energy */
+            void updateProgress( const SolverList* list );
+
             int m_n;                    //!< size of playlist to generate
             Dynamic::BiasPtr m_bias; // bias used to determine tracks. not owned by solver
             Meta::TrackList m_context;  //!< tracks that precede the playlist
@@ -233,6 +242,8 @@ namespace Dynamic
             TrackCollectionPtr m_trackCollection;
 
             bool m_allowDuplicates;
+
+            int m_currentProgress;
 
 
             // GENETIC ALGORITHM CONSTANTS

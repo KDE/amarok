@@ -137,8 +137,6 @@ Dynamic::BiasedPlaylist::startSolver()
                                                             i18n( "Generating playlist..." ), 100,
                                                             this, SLOT(requestAbort()) );
 
-        connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
-
         ThreadWeaver::Weaver::instance()->enqueue( m_solver );
         debug() << "called prepareToRun";
     }
@@ -189,13 +187,6 @@ Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPt
 
     if( oldBias ) // don't emit a changed during construction
         biasChanged();
-}
-
-
-void
-Dynamic::BiasedPlaylist::updateStatus( int progress )
-{
-    emit totalSteps( progress );
 }
 
 void
@@ -267,8 +258,6 @@ Dynamic::BiasedPlaylist::solverFinished()
 
     if( m_solver != sender() )
         return;
-
-    emit endProgressOperation( m_solver );
 
     bool success = m_solver->success();
     if( success )

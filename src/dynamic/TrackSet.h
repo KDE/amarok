@@ -76,25 +76,26 @@ namespace Dynamic
     class AMAROK_EXPORT TrackSet
     {
         public:
-            /** Creates a TrackSet that is outstanding */
+            /** Creates a TrackSet that is outstanding
+                @see isOutstanding() */
             TrackSet();
 
             TrackSet( const TrackSet& other );
 
             /** Creates a TrackSet that represents the whole universe.
-                All tracks are included.
+                @param value If true set is set to "full". Else to "empty".
             */
             TrackSet( const Dynamic::TrackCollectionPtr collection, bool value );
 
-            /** Sets all tracks to the set */
+            /** Includes or excludes all tracks in the set.
+                @param value If true set is set to "full". Else to "empty".
+            */
             void reset( bool value );
 
             /** Returns true if the results of this track set are not yet available */
             bool isOutstanding() const;
 
-            /**
-             * The number of songs contained in this trackSet
-             */
+            /** The number of songs contained in this trackSet */
             int trackCount() const;
 
             /** True if none of the tracks are included in the set. */
