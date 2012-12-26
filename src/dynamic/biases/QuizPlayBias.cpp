@@ -188,7 +188,7 @@ Dynamic::QuizPlayBias::matchingTracks( int position,
     // debug() << "QuizPlay: data for"<<lastTrack->name()<<"is"<<m_currentCharacter;
 
     // -- look if we already buffered it
-    if( m_tracksValid && m_characterTrackMap.contains( m_currentCharacter ) )
+    if( m_characterTrackMap.contains( m_currentCharacter ) )
         return m_characterTrackMap.value( m_currentCharacter );
 
     // -- start a new query
