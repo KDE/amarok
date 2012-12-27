@@ -6572,7 +6572,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 </sect3>
 <sect3 id="is-it-amarok-amarok-or-amarok"><title>Is it Amarok, AmaroK or amaroK?</title> 
-<para>It is &amarok;! The former spelling was <emphasis>amaroK</emphasis>, but it was changed due to its strange look over 6 years ago.
+<para>It is &amarok;! The former spelling was <emphasis>amaroK</emphasis>, but it was changed due to its strange look around 2005.
 </para>
 </sect3>
 <sect3 id="how-are-track-scores-determined"><title>How are track scores determined?</title> 
