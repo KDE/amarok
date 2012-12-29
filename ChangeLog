@@ -9,10 +9,12 @@ VERSION 2.7
     * Removed alpha state and not really working spectrum analyzer applet.
 
   BUGFIXES:
-    * Fix dynamic playlist progress bar
-    * Fix Last played bias is ignored or doesn't work (BR 311906)
-    * Fix amarok dynamic play list with biases EchoNest similar artist gives no results (BR 291162)
-    * Fix When i try to create a dynamic playlist by Last.fm similar songs creation takes a lot time (BR 301716)
+    * Fix dynamic playlist progress bar.
+    * Fix Last played bias is ignored or doesn't work. (BR 311906)
+    * Fix amarok dynamic play list with biases EchoNest similar artist gives no
+      results. (BR 291162)
+    * Fix When I try to create a dynamic playlist by Last.fm similar songs
+      creation takes a lot time. (BR 301716)
     * Fix updating of Amarok database playlists then track uid changes. (BR 312128)
     * Fix hangs and inappropriate messages when trying to play a track from
       a saved playlist that has been deleted in the mean time. (BR 308371)
