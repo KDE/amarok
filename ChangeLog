@@ -9,6 +9,7 @@ VERSION 2.7
     * Removed alpha state and not really working spectrum analyzer applet.
 
   BUGFIXES:
+    * Make track announcements via KDE Notifications instant. (BR 263952)
     * Fix dynamic playlist progress bar.
     * Fix Last played bias is ignored or doesn't work. (BR 311906)
     * Fix amarok dynamic play list with biases EchoNest similar artist gives no

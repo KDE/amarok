@@ -17,7 +17,12 @@
 #ifndef AMAROK_KNOTIFICATIONBACKEND_H
 #define AMAROK_KNOTIFICATIONBACKEND_H
 
-#include <KNotification>
+#include "core/meta/Meta.h"
+
+#include <QObject>
+#include <QPixmap>
+
+class KNotification;
 
 namespace Amarok {
 
@@ -29,10 +34,10 @@ class KNotificationBackend : public QObject
     Q_OBJECT
 
 public:
-    static KNotificationBackend* instance();
+    static KNotificationBackend *instance();
     static void destroy();
 
-    void setEnabled(bool enabled);
+    void setEnabled( bool enabled );
     bool isEnabled() const;
 
     /**
@@ -40,14 +45,11 @@ public:
      */
     bool isFullscreenWindowActive() const;
 
-public Q_SLOTS:
-    void show( const QString& title, const QString& body, const QPixmap& pixmap = QPixmap() );
+public slots:
+    void show( const QString &title, const QString &body, const QPixmap &pixmap = QPixmap() );
     void showCurrentTrack( bool force = false );
 
-protected:
-
 private slots:
-    void trackPlaying();
     void notificationClosed();
 
 private:
@@ -56,11 +58,8 @@ private:
 
     static KNotificationBackend *s_instance;
 
-    KNotification* m_notify;
-
     bool m_enabled;
-
-    QTimer *m_timer;
+    KNotification* m_notify;
 };
 
 }
