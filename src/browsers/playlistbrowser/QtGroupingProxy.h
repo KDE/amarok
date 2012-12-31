@@ -48,6 +48,7 @@ class QtGroupingProxy : public QAbstractProxyModel
         virtual QModelIndex index( int row, int column = 0,
                                    const QModelIndex& parent = QModelIndex() ) const;
         virtual Qt::ItemFlags flags( const QModelIndex &idx ) const;
+        virtual QModelIndex buddy( const QModelIndex &index ) const;
         virtual QModelIndex parent( const QModelIndex &idx ) const;
         virtual int rowCount( const QModelIndex &idx = QModelIndex() ) const;
         virtual int columnCount( const QModelIndex &idx ) const;

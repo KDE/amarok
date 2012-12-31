@@ -289,7 +289,6 @@ PlaylistBrowserCategory::createNewFolder()
     }
     QModelIndex idx = m_filterProxy->mapFromSource( m_byFolderProxy->createNewFolder( groupName ) );
     m_playlistView->setCurrentIndex( idx );
-    //edit will fail: https://bugreports.qt-project.org/browse/QTBUG-26838
     m_playlistView->edit( idx );
 }
 

@@ -649,6 +649,29 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
     return originalItemFlags;
 }
 
+QModelIndex
+QtGroupingProxy::buddy( const QModelIndex &index ) const
+{
+    /* We need to override this method in case of groups. Otherwise, at least editing
+     * of groups is prevented, following sequence occurs:
+     *
+     * #0  QtGroupingProxy::mapToSource (this=0x15ad8a0, index=...) at /home/strohel/projekty/amarok/src/browsers/playlistbrowser/QtGroupingProxy.cpp:492
+     * #1  0x00007ffff609d7b6 in QAbstractProxyModel::buddy (this=0x15ad8a0, index=...) at itemviews/qabstractproxymodel.cpp:306
+     * #2  0x00007ffff609ed25 in QSortFilterProxyModel::buddy (this=0x15ae730, index=...) at itemviews/qsortfilterproxymodel.cpp:2015
+     * #3  0x00007ffff6012a2c in QAbstractItemView::edit (this=0x15aec30, index=..., trigger=QAbstractItemView::AllEditTriggers, event=0x0) at itemviews/qabstractitemview.cpp:2569
+     * #4  0x00007ffff6f9aa9f in Amarok::PrettyTreeView::edit (this=0x15aec30, index=..., trigger=QAbstractItemView::AllEditTriggers, event=0x0)
+     *     at /home/strohel/projekty/amarok/src/widgets/PrettyTreeView.cpp:58
+     * #5  0x00007ffff6007f1e in QAbstractItemView::edit (this=0x15aec30, index=...) at itemviews/qabstractitemview.cpp:1138
+     * #6  0x00007ffff6dc86e4 in PlaylistBrowserNS::PlaylistBrowserCategory::createNewFolder (this=0x159bf90)
+     *     at /home/strohel/projekty/amarok/src/browsers/playlistbrowser/PlaylistBrowserCategory.cpp:298
+     *
+     * but we return invalid index in mapToSource() for group index.
+     */
+    if( index.isValid() && isGroup( index ) )
+        return index;
+    return QAbstractProxyModel::buddy( index );
+}
+
 QVariant
 QtGroupingProxy::headerData( int section, Qt::Orientation orientation, int role ) const
 {
