@@ -47,7 +47,6 @@ KNotificationBackend::destroy()
 
 KNotificationBackend::KNotificationBackend()
     : m_enabled( false )
-    , m_notify( 0 )
 {
     EngineController *engine = The::engineController();
     connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)), SLOT(showCurrentTrack()) );
@@ -61,7 +60,7 @@ KNotificationBackend::KNotificationBackend()
 KNotificationBackend::~KNotificationBackend()
 {
     if( m_notify )
-        m_notify->close();
+        m_notify.data()->close();
 }
 
 void
@@ -84,13 +83,6 @@ KNotificationBackend::isFullscreenWindowActive() const
 
     // Check if it is running in fullscreen mode.
     return activeWindowInfo.hasState( NET::FullScreen );
-}
-
-void
-KNotificationBackend::notificationClosed()
-{
-    if( sender() == m_notify )
-        m_notify = 0;
 }
 
 void
@@ -122,18 +114,20 @@ KNotificationBackend::showCurrentTrack( bool force )
         return;
     }
 
-    if( m_notify )
-        m_notify->close(); // Close old notification (when switching quickly between tracks)
-
-    m_notify = new KNotification( "trackChange" );
-    connect( m_notify, SIGNAL(closed()), SLOT(notificationClosed()) );
-
+    const QString title = i18n( "Now playing" );
+    const QString text = engine->prettyNowPlaying();
     Meta::AlbumPtr album = track->album();
-    if( album )
-        m_notify->setPixmap( The::svgHandler()->imageWithBorder( album, 80 ) );
+    const QPixmap pixmap = album ? The::svgHandler()->imageWithBorder( album, 80 ) : QPixmap();
 
-    m_notify->setTitle( i18n( "Now playing" ) );
+    KNotification *notify = m_notify.data();
+    if( !notify )
+        notify = new KNotification( "trackChange" );
+    notify->setTitle( title );
+    notify->setText( text );
+    notify->setPixmap( pixmap );
 
-    m_notify->setText( engine->prettyNowPlaying() );
-    m_notify->sendEvent();
+    if( m_notify ) // existing notification already shown
+        notify->update();
+    notify->sendEvent(); // (re)start timeout in both cases
+    m_notify = notify;
 }

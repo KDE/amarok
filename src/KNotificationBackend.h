@@ -49,9 +49,6 @@ public slots:
     void show( const QString &title, const QString &body, const QPixmap &pixmap = QPixmap() );
     void showCurrentTrack( bool force = false );
 
-private slots:
-    void notificationClosed();
-
 private:
     KNotificationBackend();
     ~KNotificationBackend();
@@ -59,7 +56,7 @@ private:
     static KNotificationBackend *s_instance;
 
     bool m_enabled;
-    KNotification* m_notify;
+    QWeakPointer<KNotification> m_notify;
 };
 
 }
