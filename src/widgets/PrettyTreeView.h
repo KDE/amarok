@@ -23,30 +23,34 @@
 
 namespace Amarok
 {
+    /**
+     * A utility QTreeView subcass that handles drawing nice, svg themed, rows and palette changes
+     *
+     * @author: Nikolaj Hald Nielsen <nhn@kde.org>
+     */
+    class AMAROK_EXPORT PrettyTreeView : public QTreeView
+    {
+        Q_OBJECT
 
-/**
-    A utility QTreeView subcass that handles drawing nice, svg themed, rows and palette changes
-    @author: Nikolaj Hald Nielsen <nhn@kde.org>
-*/
-class AMAROK_EXPORT PrettyTreeView : public QTreeView
-{
-    Q_OBJECT
+        public:
+            PrettyTreeView( QWidget *parent = 0 );
+            virtual ~PrettyTreeView();
 
-public:
-    PrettyTreeView( QWidget *parent = 0 );
-    virtual ~PrettyTreeView();
+        public slots:
+            /* There is a need to overload even this edit() variant, otherwise it hides
+             * QAbstactItemView's implementation. Note that it is NOT safe to do anything
+             * special in this method, as it is not virtual.
+             * bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event )
+             * IS virtual. */
+            void edit( const QModelIndex &index );
 
-public slots:
-    void edit( const QModelIndex &index ); // hides QTreeView::edit() to expand all parent items
-    bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event ); // silence compiler warning
+        protected:
+            bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event );
+            void drawRow( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
-protected:
-    virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-
-protected slots:
-    virtual void newPalette( const QPalette & palette );
-};
-
+        private slots:
+            virtual void newPalette( const QPalette &palette );
+    };
 }
 
 #endif
