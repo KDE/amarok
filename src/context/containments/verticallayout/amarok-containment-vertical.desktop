@@ -45,7 +45,7 @@ Name[tr]=Dikey İçerik Taşıyıcı
 Name[uk]=Вертикальний контейнер вмісту
 Name[wa]=Contneu d' astampé do contecse
 Name[x-test]=xxVertical Context Containmentxx
-Name[zh_CN]=垂直上下文容器
+Name[zh_CN]=垂直环境容器
 Name[zh_TW]=垂直的內容容器
 Comment=A vertical containment for the Amarok Context
 Comment[bg]=Вертикален контекст на Amarok
@@ -92,7 +92,7 @@ Comment[tr]=Amarok İçeriği için bir dikey taşıyıcı
 Comment[uk]=Вертикальний контейнер для контексту Amarok
 Comment[wa]=On contneu d' astampé po l' contecse d' Amarok
 Comment[x-test]=xxA vertical containment for the Amarok Contextxx
-Comment[zh_CN]=Amarok 垂直上下文容器
+Comment[zh_CN]=用于 Amarok 环境的一个垂直容器
 Comment[zh_TW]=提供給 Amarok 內容的垂直容器
 
 Icon=

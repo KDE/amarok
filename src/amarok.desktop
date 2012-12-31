@@ -179,7 +179,7 @@ Comment[ug]=Amarok - مۇزىكىلىرىڭىزنى قايتا بايقايسى�
 Comment[uk]=Amarok — відкрийте свою музику знову!
 Comment[wa]=Amarok - Ridiscovroz vosse muzike!
 Comment[x-test]=xxAmarok - Rediscover Your Music!xx
-Comment[zh_CN]=Amarok - 重新发现您的音乐！
+Comment[zh_CN]=Amarok - 重新探索您的音乐！
 Comment[zh_TW]=Amarok - 重新探索您的音樂世界！
 Icon=amarok
 # Add pure audio formats here, for other formats see amarok_*.desktop files
@@ -220,6 +220,7 @@ X-KDE-Keywords[sv]=musik,podsändning
 X-KDE-Keywords[tr]=müzik,podcast
 X-KDE-Keywords[uk]=music,podcast,музика,трансляція,подкаст
 X-KDE-Keywords[x-test]=xxmusic,podcastxx
+X-KDE-Keywords[zh_CN]=music,podcast,音乐,博客
 X-KDE-Keywords[zh_TW]=music,podcast
 X-KDE-Protocols=http
 Terminal=false
