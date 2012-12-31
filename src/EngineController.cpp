@@ -990,8 +990,10 @@ EngineController::slotFinished()
     if( m_currentTrack )
     {
         debug() << "Track finished completely, updating statistics";
+        unsubscribeFrom( m_currentTrack ); // don't bother with trackMetadataChanged()
         stampStreamTrackLength(); // update track length in stream for accurate scrobbling
         emit trackFinishedPlaying( m_currentTrack, 1.0 );
+        subscribeTo( m_currentTrack );
     }
 
     if( !m_multiPlayback && !m_multiSource )
