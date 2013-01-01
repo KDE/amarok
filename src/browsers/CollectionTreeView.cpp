@@ -434,6 +434,7 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
         event->accept();
         return;
     }
+
     Amarok::PrettyTreeView::mouseReleaseEvent( event );
 }
 

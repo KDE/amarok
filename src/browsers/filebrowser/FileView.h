@@ -20,6 +20,7 @@
 
 #include "core/collections/Collection.h"
 #include "core/meta/Meta.h"
+#include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
 #include <KFileItem>
@@ -61,8 +62,10 @@ class FileView : public Amarok::PrettyTreeView
 public:
     FileView( QWidget *parent );
 
-protected slots:
+signals:
+    void navigateToDirectory( const QModelIndex &index );
 
+protected slots:
     void slotAppendToPlaylist();
     void slotReplacePlaylist();
     void slotEditTracks();
@@ -72,19 +75,30 @@ protected slots:
     void slotCopyTracks( const Meta::TrackList &tracks );
     void slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
 
-
 protected:
-    QList<QAction *> actionsForIndices( const QModelIndexList &indices );
-    void addSelectionToPlaylist( bool replace );
-    
+    enum ActionType {
+        PlaylistAction = 1,
+        OrganizeAction = 2,
+        EditAction = 4,
+        AllActions = PlaylistAction | OrganizeAction | EditAction
+    };
+    QList<QAction *> actionsForIndices( const QModelIndexList &indices, ActionType type = AllActions );
+    void addSelectionToPlaylist( Playlist::AddOptions options );
+
+    /**
+     * Convenience.
+     */
+    void addIndexToPlaylist( const QModelIndex &idx, Playlist::AddOptions options );
+    void addIndicesToPlaylist( const QModelIndexList &indices, Playlist::AddOptions options );
+
     virtual void contextMenuEvent( QContextMenuEvent *e );
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
     virtual void startDrag( Qt::DropActions supportedActions );
     KFileItemList selectedItems() const;
-
-private slots:
-    void slotEditTriggered();
 
 private:
     Meta::TrackList tracksForEdit() const;
@@ -92,17 +106,14 @@ private:
     QAction *m_appendAction;
     QAction *m_loadAction;
     QAction *m_editAction;
-    QAction *m_separator1;
+    QAction *m_moveToTrashAction;
     QAction *m_deleteAction;
 
     PopupDropper *m_pd;
     QMutex m_dragMutex;
     bool m_ongoingDrag;
-    bool m_moveActivated;
-    bool m_copyActivated;
-    CollectionAction *m_moveAction;
-    CollectionAction *m_copyAction;
-    QPersistentModelIndex m_lastSelectedIndex;
+    QWeakPointer<Collections::Collection> m_moveDestinationCollection;
+    QWeakPointer<Collections::Collection> m_copyDestinationCollection;
 };
 
 #endif // end include guard

@@ -21,6 +21,7 @@
 
 #include <KUrl>
 
+class QAbstractItemView;
 class QModelIndex;
 
 class FileBrowser : public BrowserCategory
@@ -47,7 +48,7 @@ public:
     QString currentDir() const;
 
 protected slots:
-    void itemActivated( const QModelIndex &index );
+    void slotNavigateToDirectory( const QModelIndex &index );
 
     void addItemActivated( const QString &callback );
 
@@ -101,6 +102,24 @@ private:
     Private *const d;
 
     Q_PRIVATE_SLOT( d, void slotSaveHeaderState() )
+};
+
+/**
+ * Helper class that calls setCurrentIndex on a model view as soon as the model
+ * adds a row and then it auto-deletes itself.
+ */
+class DelayedActivator : public QObject
+{
+    Q_OBJECT
+
+    public:
+        explicit DelayedActivator( QAbstractItemView *view );
+
+    private slots:
+        void slotRowsInserted( const QModelIndex &parent, int start );
+
+    private:
+        QAbstractItemView *m_view;
 };
 
 #endif // FILEBROWSERMKII_H

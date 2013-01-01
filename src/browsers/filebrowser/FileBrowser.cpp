@@ -174,9 +174,9 @@ FileBrowser::FileBrowser( const char *name, QWidget *parent )
     : BrowserCategory( name, parent )
     , d( new FileBrowser::Private( this ) )
 {
-    setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, " \
-                        "regardless of whether these files are part of your local collection. " \
-                        "You can then add these files to the playlist as well as perform basic "\
+    setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, "
+                        "regardless of whether these files are part of your local collection. "
+                        "You can then add these files to the playlist as well as perform basic "
                         "file operations." )
                        );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
@@ -226,17 +226,11 @@ FileBrowser::initView()
         connect( action, SIGNAL(toggled(bool)), this, SLOT(toggleColumn(bool) ) );
     }
 
-    connect( d->fileView->header(), SIGNAL(geometriesChanged()), this, SLOT(slotSaveHeaderState()) );
-    connect( d->fileView, SIGNAL(activated( const QModelIndex & )),
-                          SLOT(itemActivated( const QModelIndex & )) );
-    if( !KGlobalSettings::singleClick() )
-    {
-        connect( d->fileView, SIGNAL(doubleClicked( const QModelIndex & )),
-                              SLOT(itemActivated( const QModelIndex & ))
-               );
-    }
-
-    connect( d->placesAction, SIGNAL(triggered( bool)), this, SLOT(showPlaces()) );
+    connect( d->fileView->header(), SIGNAL(geometriesChanged()),
+                                    SLOT(slotSaveHeaderState()) );
+    connect( d->fileView, SIGNAL(navigateToDirectory(QModelIndex)),
+                          SLOT(slotNavigateToDirectory(QModelIndex)) );
+    connect( d->placesAction, SIGNAL(triggered(bool)), SLOT(showPlaces()) );
 }
 
 FileBrowser::~FileBrowser()
@@ -275,7 +269,7 @@ FileBrowser::currentDir() const
 }
 
 void
-FileBrowser::itemActivated( const QModelIndex &index )
+FileBrowser::slotNavigateToDirectory( const QModelIndex &index )
 {
     if( d->showingPlaces )
     {
@@ -283,13 +277,6 @@ FileBrowser::itemActivated( const QModelIndex &index )
 
         if( !placesUrl.isEmpty() )
         {
-            d->fileView->setModel( d->mimeFilterProxyModel );
-            d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-            d->fileView->setDragEnabled( true );
-            d->fileView->header()->setVisible( true );
-            d->restoreHeaderState();
-            d->showingPlaces = false;
-
             //needed to make the home folder url look nice. We cannot just strip all
             //protocol headers as that will break remote, trash, ...
             if( placesUrl.startsWith( "file://" ) )
@@ -306,35 +293,20 @@ FileBrowser::itemActivated( const QModelIndex &index )
                 d->placesModel->requestSetup( index );
             }
             else
-            {
-                d->fileView->setModel( d->mimeFilterProxyModel );
-                d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-                d->fileView->header()->setVisible( true );
-                d->fileView->setDragEnabled( true );
-                d->restoreHeaderState();
-                d->showingPlaces = false;
-            }
+                warning() << __PRETTY_FUNCTION__ << "empty places url that doesn't need setup?";
         }
     }
     else
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-        KUrl filePath = file.url();
 
         if( file.isDir() )
         {
             d->backStack.push( d->currentPath );
-            setDir( filePath );
+            setDir( file.url() );
         }
         else
-        {
-            if( MetaFile::Track::isTrack( filePath ) )
-            {
-                QList<KUrl> urls;
-                urls << filePath;
-                The::playlistController()->insertOptioned( urls, Playlist::AppendAndPlay );
-            }
-        }
+            warning() << __PRETTY_FUNCTION__ << "called for non-directory";
     }
 }
 
@@ -345,12 +317,8 @@ FileBrowser::addItemActivated( const QString &callbackString )
     if( callbackString.isEmpty() )
         return;
 
-    d->kdirModel->dirLister()->openUrl( KUrl( callbackString ) );
     d->backStack.push( d->currentPath );
-    d->currentPath = KUrl(callbackString);
-    d->updateNavigateActions();
-    setupAddItems();
-    activate();
+    setDir( KUrl( callbackString ) );
 }
 
 void
@@ -423,11 +391,8 @@ FileBrowser::setupAddItems()
 void
 FileBrowser::reActivate()
 {
-    //go to root:
-    d->kdirModel->dirLister()->openUrl( KUrl( QDir::rootPath() ) );
-    d->currentPath = KUrl( QDir::rootPath() );
-    setupAddItems();
-    activate();
+    d->backStack.push( d->currentPath );
+    setDir( QDir::rootPath() );
 }
 
 QString
@@ -446,23 +411,26 @@ FileBrowser::setDir( const KUrl &dir )
         showPlaces();
     else
     {
-       //if we are currently showing "places" we need to remember to change the model
-       //back to the regular file model
-       if( d->showingPlaces )
-       {
-           d->fileView->setModel( d->mimeFilterProxyModel );
-           d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-           d->fileView->setDragEnabled( true );
-           d->fileView->header()->setVisible( true );
-           d->restoreHeaderState(); // read config so the header state is restored
-           d->showingPlaces = false;
-       }
+        // if we are currently showing "places" we need to remember to change the model
+        // back to the regular file model
+        if( d->showingPlaces )
+        {
+            d->fileView->setModel( d->mimeFilterProxyModel );
+            d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+            d->fileView->setDragEnabled( true );
+            d->fileView->header()->setVisible( true );
+            d->restoreHeaderState(); // read config so the header state is restored
+            d->showingPlaces = false;
+        }
 
-       d->kdirModel->dirLister()->openUrl( dir );
-       d->currentPath = dir;
-       d->updateNavigateActions();
-       setupAddItems();
-       activate();
+        d->kdirModel->dirLister()->openUrl( dir );
+        d->currentPath = dir;
+        d->updateNavigateActions();
+        setupAddItems();
+        activate();
+
+        // set the first item as current so that keyboard navigation works
+        new DelayedActivator( d->fileView );
     }
 }
 
@@ -505,6 +473,7 @@ FileBrowser::up()
 void
 FileBrowser::home()
 {
+    d->backStack.push( d->currentPath );
     setDir( KUrl( QDir::homePath() ) );
 }
 
@@ -515,21 +484,23 @@ FileBrowser::showPlaces()
     {
         d->placesModel = new FilePlacesModel( this );
         d->placesModel->setObjectName( "PLACESMODEL");
-        connect( d->placesModel, SIGNAL(setupDone( const QModelIndex &, bool )),
-                                 SLOT(setupDone( const QModelIndex &, bool )) );
+        connect( d->placesModel, SIGNAL(setupDone(QModelIndex,bool)),
+                                 SLOT(setupDone(QModelIndex,bool)) );
     }
 
     clearAdditionalItems();
 
     QStringList siblings;
     addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Places" ), siblings, QDir::homePath(),
-                                                  this )
-                     );
+                                                  this ) );
     d->showingPlaces = true;
     d->fileView->setModel( d->placesModel );
     d->fileView->setSelectionMode( QAbstractItemView::SingleSelection );
     d->fileView->header()->setVisible( false );
     d->fileView->setDragEnabled( false );
+
+    // set the first item as current so that keyboard navigation works
+    new DelayedActivator( d->fileView );
 }
 
 void
@@ -541,21 +512,52 @@ FileBrowser::setupDone( const QModelIndex & index, bool success )
 
         if( !placesUrl.isEmpty() )
         {
-            d->fileView->setModel( d->mimeFilterProxyModel );
-            d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-            d->fileView->header()->setVisible( true );
-            d->fileView->setDragEnabled( true );
-            d->restoreHeaderState();
-            d->showingPlaces = false;
-
-            //needed to make folder urls look nice. We cannot just strip all protocol headers
-            //as that will break remote, trash, ...
+            // needed to make folder urls look nice. We cannot just strip all protocol headers
+            // as that will break remote, trash, ...
             if( placesUrl.startsWith( "file://" ) )
                 placesUrl = placesUrl.replace( "file://", QString() );
 
+            d->backStack.push( d->currentPath );
             setDir( placesUrl );
         }
     }
+}
+
+DelayedActivator::DelayedActivator( QAbstractItemView *view )
+    : QObject( view )
+    , m_view( view )
+{
+    QAbstractItemModel *model = view->model();
+    if( !model )
+        deleteLater();
+
+    // short-cut for already-filled models
+    if( model->rowCount() > 0 )
+    {
+        slotRowsInserted( QModelIndex(), 0 );
+        return;
+    }
+
+    connect( model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+                    SLOT(slotRowsInserted(QModelIndex,int)) );
+
+    connect( model, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
+    connect( model, SIGNAL(layoutChanged()), SLOT(deleteLater()) );
+    connect( model, SIGNAL(modelReset()), SLOT(deleteLater()) );
+}
+
+void
+DelayedActivator::slotRowsInserted( const QModelIndex &parent, int start )
+{
+    QAbstractItemModel *model = m_view->model();
+    if( model )
+    {
+        // prevent duplicate calls, deleteLater() may fire REAL later
+        disconnect( model, 0, this, 0 );
+        QModelIndex idx = model->index( start, 0, parent );
+        m_view->selectionModel()->setCurrentIndex( idx, QItemSelectionModel::NoUpdate );
+    }
+    deleteLater();
 }
 
 #include "FileBrowser.moc"
