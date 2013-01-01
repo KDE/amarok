@@ -100,8 +100,8 @@ BreadcrumbItemSortButton::paintEvent( QPaintEvent *event )
             style()->drawPrimitive( QStyle::PE_IndicatorArrowUp, &option, &painter, this );
 
         QRect newPaintRect( 0, 0, buttonWidth - m_arrowWidth - padding, buttonHeight );
-        QPaintEvent *newEvent = new QPaintEvent( newPaintRect );
-        BreadcrumbItemButton::paintEvent( newEvent );
+        QPaintEvent newEvent( newPaintRect );
+        BreadcrumbItemButton::paintEvent( &newEvent );
     }
     else
         BreadcrumbItemButton::paintEvent( event );
