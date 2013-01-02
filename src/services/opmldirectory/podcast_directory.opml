@@ -2,7 +2,7 @@
 <opml version="2.0">
     <head/>
     <body>
-        <outline text="Amarok developer personal favorites" type="include" url="http://kollide.net/~stecchino/stecchinos_podcasts.opml"/>
-        <outline text="public podcast directories (warning: large!)" type="include" url="http://kollide.net/~stecchino/public_podcast_directories.opml"/>
+        <outline text="Amarok developer personal favorites" type="include" url="http://files.kde.org/amarok/podcast_directory/developer_podcasts.opml"/>
+        <outline text="public podcast directories (warning: large!)" type="include" url="http://files.kde.org/amarok/podcast_directory/public_podcast_directories.opml"/>
     </body>
 </opml>
