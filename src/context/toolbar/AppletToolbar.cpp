@@ -80,9 +80,8 @@ Context::AppletToolbar::containment() const
 }
 
 void
-Context::AppletToolbar::resizeEvent( QGraphicsSceneResizeEvent * event )
+Context::AppletToolbar::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
-    debug() << "setting layout to" << QRectF( QPointF( 0, 0 ), event->newSize() );
     m_appletLayout->setGeometry( QRectF( QPointF( 0, 0 ), event->newSize() ) );
 }
 

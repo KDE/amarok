@@ -106,7 +106,6 @@ Context::ToolbarView::resizeEvent( QResizeEvent *event )
 {
     Q_UNUSED( event )
 
-    debug() << size();
     setSceneRect( TOOLBAR_X_OFFSET, 0, size().width()-TOOLBAR_SCENE_PADDING,
                   size().height()-TOOLBAR_SCENE_PADDING );
 
