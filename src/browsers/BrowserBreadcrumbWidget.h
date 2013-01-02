@@ -57,17 +57,15 @@ public:
      * in the list are added to the items dropdown menu.
      * @param rootList the BrowserCategoryList representing the lowest level in the navigation hirachy
      */
-    void setRootList( BrowserCategoryList * rootList );
+    void setRootList( BrowserCategoryList *rootList );
 
 signals:
-    
     /**
      * Signal emitted when the root breadcrumb item is clicked.
      */
     void toHome();
-    
-public slots:
 
+public slots:
     /**
      * Rebuild the list of breadcrumb items corrosponding to the current location in the hirachy.
      * This also allows for categories that add additional breadcrumb items (such as the file browser) to update the
@@ -78,29 +76,40 @@ public slots:
 protected:
     virtual void resizeEvent( QResizeEvent * event );
 
+private slots:
+    /**
+     * Goes through all breadcrumb items and shows the most relevant ones based on
+     * available size. (always shows home icon and the last item)
+     */
+    void showAsNeeded();
+
 private:
-    
     /**
      * Remove all breadcrumb items
      */
     void clearCrumbs();
-    void hideAsNeeded( int width );
-    
+
     /**
      * Recursive function that traverses the tree of BrowserCategoryList's
      * and adds each one as a level in the breadcrumb.
      * @param level the root level BrowserCategoryList.
      */
-    void addLevel( BrowserCategoryList * list );
+    void addLevel( BrowserCategoryList *list );
+
+    /**
+     * Helper function for addLevel() that first hides BrowserBreadcrumbItem, adds it to
+     * to breadcrumb area.
+     */
+    void addBreadCrumbItem( BrowserBreadcrumbItem *item );
 
     //QStringList m_currentPath;
     BrowserCategoryList * m_rootList;
 
     QList<BrowserBreadcrumbItem *> m_items;
-    QWidget * m_spacer;
-    KHBox * m_breadcrumbArea;
-    
-    BreadcrumbItemMenuButton * m_childMenuButton;
+    QWidget *m_spacer;
+    KHBox *m_breadcrumbArea;
+
+    BreadcrumbItemMenuButton *m_childMenuButton;
 
 };
 

@@ -21,7 +21,6 @@
 #include "amarokurls/AmarokUrl.h"
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
-#include "core/support/Debug.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "MainWindow.h"
 #include "widgets/BreadcrumbItemButton.h"
@@ -85,24 +84,23 @@ BrowserBreadcrumbWidget::setRootList( BrowserCategoryList * rootList )
 void
 BrowserBreadcrumbWidget::updateBreadcrumbs()
 {
-    DEBUG_BLOCK
-
     if( !m_rootList )
         return;
 
     clearCrumbs();
     m_spacer->setParent( 0 );
+
     addLevel( m_rootList );
     m_spacer->setParent( m_breadcrumbArea );
+
+    showAsNeeded();
 }
 
 void
-BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
+BrowserBreadcrumbWidget::addLevel( BrowserCategoryList *list )
 {
-    DEBUG_BLOCK
     BrowserBreadcrumbItem *item = list->breadcrumb();
-    item->setParent( m_breadcrumbArea );
-    item->show();
+    addBreadCrumbItem( item );
     m_items.append( item );
 
     BrowserCategory *childCategory = list->activeCategory();
@@ -110,7 +108,7 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
     if( childCategory )
     {
         item->setActive( false );
-        
+
         //check if this is also a list
         BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( childCategory );
         if( childList )
@@ -119,10 +117,8 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
         }
         else
         {
-            BrowserBreadcrumbItem * leaf = childCategory->breadcrumb();
-            leaf->setParent( m_breadcrumbArea );
-            leaf->show();
-            
+            BrowserBreadcrumbItem *leaf = childCategory->breadcrumb();
+            addBreadCrumbItem( leaf );
             m_items.append( leaf );
 
             const QList<BrowserBreadcrumbItem*> additionalItems = childCategory->additionalItems();
@@ -130,9 +126,7 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
             foreach( BrowserBreadcrumbItem *addItem, additionalItems )
             {
                 //hack to ensure that we have not already added it to the front of the breadcrumb...
-                addItem->setParent( 0 );
-                addItem->setParent( m_breadcrumbArea );
-                addItem->show();
+                addBreadCrumbItem( addItem );
             }
 
             if( !additionalItems.isEmpty() )
@@ -178,45 +172,57 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
         }
         item->setActive( true );
     }
-
-    hideAsNeeded( width() );
 }
 
-void BrowserBreadcrumbWidget::resizeEvent( QResizeEvent * event )
+void
+BrowserBreadcrumbWidget::addBreadCrumbItem( BrowserBreadcrumbItem *item )
 {
-    hideAsNeeded( event->size().width() );
+    item->hide();
+    item->setParent( 0 ); // may be already shown, we want it to be last, so reparent
+    item->setParent( m_breadcrumbArea );
 }
 
-void BrowserBreadcrumbWidget::hideAsNeeded( int width )
+void BrowserBreadcrumbWidget::resizeEvent( QResizeEvent *event )
 {
-    // DEBUG_BLOCK
+    Q_UNUSED( event )
+    // we need to postpone the call, because hideAsNeeded() itself may trigger resizeEvent
+    QTimer::singleShot( 0 , this, SLOT(showAsNeeded()) );
+}
 
-    //we need to check if there is enough space for all items, if not, we start hiding items from the left (excluding the home item) until they fit (we never hide the rightmost item)
-    //we also add he hidden levels to the drop down menu of the last item so they are accessible.
-
+void BrowserBreadcrumbWidget::showAsNeeded()
+{
+    /* we need to check if there is enough space for all items, if not, we start hiding
+     * items from the left (excluding the home item) until they fit (we never hide the
+     * rightmost item) we also add the hidden levels to the drop down menu of the last
+     * item so they are accessible.
+     */
 
     //make a temp list that includes both regular items and add items
     QList<BrowserBreadcrumbItem *> allItems;
 
     allItems.append( m_items );
-    if( m_rootList->activeCategory() != 0 )
+    if( m_rootList->activeCategory() )
         allItems.append( m_rootList->activeCategory()->additionalItems() );
 
-    // debug() << "the active category is: " <<  m_rootList->activeCategoryName();
-    
+    // filter-out leftover items not parented to m_breadcrumbArea (bug 285712):
+    QMutableListIterator<BrowserBreadcrumbItem *> it( allItems );
+    while( it.hasNext() )
+    {
+        if( it.next()->parent() != m_breadcrumbArea )
+            it.remove();
+    }
 
     int sizeOfFirst = allItems.first()->nominalWidth();
     int sizeOfLast = allItems.last()->nominalWidth();
 
-    int spaceLeft = width - ( sizeOfFirst + sizeOfLast + 28 );
+    int spaceLeft = width() - ( sizeOfFirst + sizeOfLast + 28 );
+    allItems.first()->show();
+    allItems.last()->show();
 
     int numberOfItems = allItems.count();
-    // debug() << numberOfItems << " items.";
 
     for( int i = numberOfItems - 2; i > 0; i-- )
     {
-        // debug() << "item index " << i << " has width " << allItems.at( i )->nominalWidth() << " and space left is " << spaceLeft;
-        
         if( allItems.at( i )->nominalWidth() <= spaceLeft )
         {
             allItems.at( i )->show();

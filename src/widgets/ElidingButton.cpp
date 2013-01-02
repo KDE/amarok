@@ -54,7 +54,7 @@ void ElidingButton::init()
     if( !text().isEmpty() )
     {
         QFontMetrics fm( font() );
-        width += fm.width( text() ) / 2;
+        width += fm.width( QLatin1String( "XX" ) ) / 2;
     }
     setMinimumWidth( width );
 }
@@ -68,7 +68,7 @@ QSizePolicy ElidingButton::sizePolicy() const
     //cannot depend on this for making the button grow again...
     if( !m_isElided )
         return QSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
-    
+
     return QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 }
 
@@ -77,7 +77,7 @@ bool ElidingButton::isElided() const
     return m_isElided;
 }
 
-void ElidingButton::resizeEvent( QResizeEvent * event )
+void ElidingButton::resizeEvent( QResizeEvent *event )
 {
     elideText( event->size() );
     QPushButton::resizeEvent( event );
