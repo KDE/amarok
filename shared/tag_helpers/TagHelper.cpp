@@ -128,7 +128,10 @@ TagHelper::setTags( const Meta::FieldHash &changes )
 TagLib::ByteVector
 TagHelper::render() const
 {
-    return TagLib::ByteVector();
+    QByteArray byteArray;
+    QDataStream stream( &byteArray, QIODevice::WriteOnly );
+    stream << tags();
+    return TagLib::ByteVector( byteArray.constData(), byteArray.size() );
 }
 
 #ifndef UTILITIES_BUILD
