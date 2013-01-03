@@ -19,14 +19,13 @@
 #include "DirectoryLoader.h"
 
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core-impl/meta/file/File.h"
+#include "core-impl/meta/proxy/MetaProxy.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "playlist/PlaylistController.h"
-#include "playlistmanager/PlaylistManager.h"
 
-#include <kio/job.h> // KIO::listRecursive
-
+#include <KIO/Job>
 
 DirectoryLoader::DirectoryLoader()
     : QObject( 0 )
@@ -43,7 +42,7 @@ DirectoryLoader::insertAtRow( int row )
 {
     m_row = row;
     m_localConnection = true;
-    connect( this, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( doInsertAtRow() ) );
+    connect( this, SIGNAL(finished(Meta::TrackList)), SLOT(doInsertAtRow()) );
 }
 
 void
@@ -54,7 +53,7 @@ DirectoryLoader::doInsertAtRow()
 }
 
 void
-DirectoryLoader::init( const QList<QUrl>& qurls )
+DirectoryLoader::init( const QList<QUrl> &qurls )
 {
     QList<KUrl> kurls;
     foreach( const QUrl &qurl, qurls )
@@ -64,10 +63,9 @@ DirectoryLoader::init( const QList<QUrl>& qurls )
 }
 
 void
-DirectoryLoader::init( const QList<KUrl>& urls )
+DirectoryLoader::init( const QList<KUrl> &urls )
 {
     //drop from an external source or the file browser
-    debug() << "Drop from external source or file browser";
     QList<KIO::ListJob*> jobs;
 
     foreach( const KUrl &kurl, urls )
@@ -76,31 +74,13 @@ DirectoryLoader::init( const QList<KUrl>& urls )
         if( kitem.isDir() )
         {
             m_listOperations++;
-            KIO::ListJob* lister = KIO::listRecursive( kurl ); //kjob's delete themselves
-            connect( lister, SIGNAL( finished( KJob*) ),
-                     SLOT( listJobFinished( KJob*) ) );
-            connect( lister, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList& ) ),
-                     SLOT( directoryListResults( KIO::Job*, const KIO::UDSEntryList& ) ) );
+            KIO::ListJob* lister = KIO::listRecursive( kurl ); // KJobs delete themselves
+            connect( lister, SIGNAL(finished(KJob*)), SLOT(listJobFinished( KJob*)) );
+            connect( lister, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
+                             SLOT(directoryListResults(KIO::Job*,KIO::UDSEntryList)) );
         }
         else
-        {
-            if( Playlists::isPlaylist( kurl ) )
-            {
-                Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( kurl );
-                if( playlist )
-                {
-                    playlist->triggerTrackLoad(); //playlist track loading is on demand.
-                    m_tracks << playlist->tracks();
-                }
-            }
-            else
-            {
-                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( kurl );
-                if( track )
-                    m_tracks << track;
-            }
-        }
-        //else TODO: notify user if can't decode, see also MyDirLister::matchesFilter       
+            appendFile( kurl );
     }
     if( m_listOperations == 0 )
     {
@@ -136,14 +116,9 @@ DirectoryLoader::finishUrlList()
     if( !m_expanded.isEmpty() )
     {
         qStableSort( m_expanded.begin(), m_expanded.end(), DirectoryLoader::directorySensitiveLessThan );
-        foreach( const KFileItem& item, m_expanded )
+        foreach( const KFileItem &item, m_expanded )
         {
-            if( !item.isDir() )
-            {
-                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
-                if( track )
-                    m_tracks.append( track );
-            }
+            appendFile( item.url() );
         }
         qStableSort( m_tracks.begin(), m_tracks.end(), Meta::Track::lessThan );
     }
@@ -152,27 +127,36 @@ DirectoryLoader::finishUrlList()
         deleteLater();
 }
 
-bool
-DirectoryLoader::directorySensitiveLessThan( const KFileItem& item1, const KFileItem& item2 )
+void
+DirectoryLoader::appendFile( const KUrl &url )
 {
-    QString dir1 =  item1.url().directory();
-    QString dir2 =  item2.url().directory();
-
-    debug() << "dir1: " << dir1;
-    debug() << "dir2: " << dir2;
-    if(dir1 == dir2)
+    if( Playlists::isPlaylist( url ) )
     {
-        debug() << "dir1==dir2";
-        return item1.url().url() < item2.url().url();
+        Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
+        if( playlist )
+        {
+            playlist->triggerTrackLoad(); // playlist track loading is on demand.
+            m_tracks << playlist->tracks();
+        }
     }
-    else if( dir1 < dir2 )
+    else if( MetaFile::Track::isTrack( url ) )
     {
-        debug() << "dir1<dir2";
-        return true;
-    } else {
-        debug() << "dir1>dir2";
-        return false;
+        MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
+        proxyTrack->setName( url.fileName() ); // set temporary name
+        m_tracks << Meta::TrackPtr( proxyTrack.data() );
     }
 }
 
+bool
+DirectoryLoader::directorySensitiveLessThan( const KFileItem &item1, const KFileItem &item2 )
+{
+    QString dir1 = item1.url().directory();
+    QString dir2 = item2.url().directory();
 
+    if( dir1 == dir2 )
+        return item1.url().url() < item2.url().url();
+    else if( dir1 < dir2 )
+        return true;
+    else
+        return false;
+}

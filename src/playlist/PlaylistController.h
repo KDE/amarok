@@ -89,7 +89,7 @@ public slots:
     void insertOptioned( Meta::TrackList list, int options );
     void insertOptioned( Playlists::PlaylistPtr playlist, int options );
     void insertOptioned( Playlists::PlaylistList list, int options );
-    void insertOptioned( QList<KUrl>& urls, int options );
+    void insertOptioned( QList<KUrl> &urls, int options );
 
     /**
      * Handles the insertion of one or more tracks into the playlist on a specific row.
@@ -101,7 +101,6 @@ public slots:
     void insertTracks( int topModelRow, Meta::TrackList list );
     void insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist );
     void insertPlaylists( int topModelRow, Playlists::PlaylistList playlists );
-    void insertUrls( int topModelRow, const QList<KUrl>& urls );
 
     /**
      * Handles the removal of a single track from the playlist.
@@ -176,7 +175,7 @@ signals:
     void replacingPlaylist();
 
 private slots:
-    void slotFinishDirectoryLoader( const Meta::TrackList& );
+    void slotDirectoryLoaderFinished( const Meta::TrackList &tracks );
 
 private:
     Controller();

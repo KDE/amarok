@@ -236,12 +236,12 @@ Playlist::Controller::insertOptioned( Playlists::PlaylistList list, int options 
 }
 
 void
-Playlist::Controller::insertOptioned( QList<KUrl>& urls, int options )
+Playlist::Controller::insertOptioned( QList<KUrl> &urls, int options )
 {
-    DirectoryLoader* dl = new DirectoryLoader(); //dl handles memory management
+    DirectoryLoader *dl = new DirectoryLoader(); // dl handles memory management
     dl->setProperty( "options", QVariant( options ) );
-    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotFinishDirectoryLoader( const Meta::TrackList& ) ) );
-
+    connect( dl, SIGNAL(finished(Meta::TrackList)),
+                 SLOT(slotDirectoryLoaderFinished(Meta::TrackList)) );
     dl->init( urls );
 }
 
@@ -285,21 +285,6 @@ Playlist::Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList 
         tl += playlist->tracks();
     }
     insertTracks( topModelRow, tl );
-}
-
-void
-Playlist::Controller::insertUrls( int row, const QList<KUrl>& urls )
-{
-    Q_UNUSED( row );
-    DEBUG_BLOCK
-
-    // FIXME: figure out some way to have this insert at the appropriate row, rather than always at end
-    const int options = Append | DirectPlay;
-    DirectoryLoader* dl = new DirectoryLoader(); //dl handles memory management
-    dl->setProperty( "options", QVariant( options ) );
-    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotFinishDirectoryLoader( const Meta::TrackList& ) ) );
-
-    dl->init( urls );
 }
 
 void
@@ -528,13 +513,10 @@ Playlist::Controller::clear()
  **************************************************/
 
 void
-Playlist::Controller::slotFinishDirectoryLoader( const Meta::TrackList& tracks )
+Playlist::Controller::slotDirectoryLoaderFinished( const Meta::TrackList &tracks )
 {
-    DEBUG_BLOCK
     if( !tracks.isEmpty() )
-    {
         insertOptioned( tracks, sender()->property( "options" ).toInt() );
-    }
 }
 
 int
