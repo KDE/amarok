@@ -80,16 +80,13 @@ Mp3tunesServiceFactory::possiblyContainsTrack(const KUrl & url) const
     QRegExp rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
     int matches = rx.indexIn( url.url() );
     if( matches == -1 ) {
-        debug() << "not a track no match";
         return false; // not a mp3tunes url
     }
     QStringList list = rx.capturedTexts();
-    QString filekey = list[1]; // Because list[0] is the url itself.
+    QString filekey = list.value( 1 ); // Because list[0] is the url itself.
     if ( filekey.isEmpty() ) {
-        debug() << "not a track bad url";
         return false;
     }
-    debug() << "is a track!";
     return true; // for now: if it's a mp3tunes url.. it's likely the track is in the locker
 }
 
