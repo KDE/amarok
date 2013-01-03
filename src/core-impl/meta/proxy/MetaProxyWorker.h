@@ -47,6 +47,7 @@ namespace MetaProxy
 
         private slots:
             void slotNewTrackProvider( Collections::TrackProvider *newTrackProvider );
+            void slotNewCollection( Collections::Collection *newCollection );
             void slotStepDone();
 
         private:

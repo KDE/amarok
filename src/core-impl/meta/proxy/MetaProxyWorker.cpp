@@ -53,11 +53,11 @@ Worker::run()
     {
         connect( CollectionManager::instance(),
                  SIGNAL(trackProviderAdded(Collections::TrackProvider*)),
-                 SLOT(slotNewTrackProvider( Collections::TrackProvider*)),
+                 SLOT(slotNewTrackProvider(Collections::TrackProvider*)),
                  Qt::DirectConnection ); // we may live in a thread w/out event loop
         connect( CollectionManager::instance(),
                  SIGNAL(collectionAdded(Collections::Collection*)),
-                 SLOT(slotNewTrackProvider(Collections::TrackProvider*)),
+                 SLOT(slotNewCollection(Collections::Collection*)),
                  Qt::DirectConnection ); // we may live in a thread w/out event loop
         return;
     }
@@ -75,6 +75,12 @@ Worker::slotNewTrackProvider( Collections::TrackProvider *newTrackProvider )
         Meta::TrackPtr track = newTrackProvider->trackForUrl( m_url );
         emit finishedLookup( track );
     }
+}
+
+void
+Worker::slotNewCollection( Collections::Collection *newCollection )
+{
+    slotNewTrackProvider( newCollection );
 }
 
 void
