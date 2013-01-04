@@ -19,9 +19,22 @@
 
 #include <KHBox>
 
+#include <QIcon>
+
+class FileBrowser;
 class BrowserCategory;
 class BreadcrumbItemButton;
 class BreadcrumbItemMenuButton;
+
+struct BreadcrumbSibling {
+    BreadcrumbSibling( const QIcon &icon_, const QString &name_, const QString &callback_ )
+        : icon( icon_ ), name( name_ ), callback( callback_ ) {}
+
+    QIcon icon;
+    QString name;
+    QString callback;
+};
+typedef QList<BreadcrumbSibling> BreadcrumbSiblingList;
 
 /**
  *  A widget representing a single "breadcrumb" item
@@ -39,8 +52,9 @@ public:
     /**
      * Overloaded constructor for creating breadcrumb items not bound to a particular BrowserCategory
      */
-    BrowserBreadcrumbItem( const QString &name, const QStringList &childItems, const QString &callback, BrowserCategory * handler, QWidget* parent = 0 );
-
+    BrowserBreadcrumbItem( const QString &name, const QString &callback,
+                           const BreadcrumbSiblingList &childItems, FileBrowser *handler,
+                           QWidget *parent = 0 );
     ~BrowserBreadcrumbItem();
 
     void setActive( bool active );

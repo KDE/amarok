@@ -33,9 +33,6 @@ public:
     ~FileBrowser();
 
     virtual void setupAddItems();
-    virtual void polish();
-
-    virtual QString prettyName() const;
 
     /**
     * Navigate to a specific directory
@@ -80,11 +77,6 @@ protected slots:
      * Navigates to home directory
      */
     void home();
-
-    /**
-     * Navigates to "places"
-     */
-    void showPlaces();
 
     /**
      * Handle results of tryiong to setup an item in "places" that needed mouting or other

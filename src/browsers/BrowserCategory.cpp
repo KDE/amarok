@@ -48,7 +48,7 @@ BrowserCategory::name() const
 }
 
 void
-BrowserCategory::setPrettyName( const QString & prettyName )
+BrowserCategory::setPrettyName( const QString &prettyName )
 {
     m_prettyName = prettyName;
 }
@@ -136,7 +136,7 @@ void BrowserCategory::activate()
         parentList()->setActiveCategory( this );
 }
 
-BrowserBreadcrumbItem * BrowserCategory::breadcrumb()
+BrowserBreadcrumbItem *BrowserCategory::breadcrumb()
 {
     return new BrowserBreadcrumbItem( this );
 }

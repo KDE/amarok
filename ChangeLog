@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.7
   CHANGES:
+    * Files page has been made more intuitive by making Places the root view
+      and significantly improving breadcrumbs behaviour.
     * Make dropping large directories into playlist more responsive by reading
       track metadata asynchronously in a background thread.
     * Harmonize keyboard, mouse and context menu behaviour of the Files pane

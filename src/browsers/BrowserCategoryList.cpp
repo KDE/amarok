@@ -209,11 +209,12 @@ void BrowserCategoryList::setActiveCategory( BrowserCategory* category )
     if( m_widgetStack->indexOf( category ) == -1 )
         return; // no such category
 
-    if( !category )
+    if( !category || activeCategory() == category )
         return; // nothing to do
 
-    if( activeCategory() && (activeCategory() != category) )
+    if( activeCategory() )
         activeCategory()->clearAdditionalItems();
+    category->setupAddItems();
 
     m_widgetStack->setCurrentWidget( category );
 

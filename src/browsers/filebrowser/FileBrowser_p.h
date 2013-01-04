@@ -22,6 +22,8 @@
 
 #include "FileBrowser.h"
 
+#include "browsers/BrowserBreadcrumbItem.h"
+
 #include <KDirModel>
 #include <KFilePlacesModel>
 #include <KGlobalSettings>
@@ -29,12 +31,24 @@
 #include <QFontMetrics>
 #include <QStack>
 
+class QSortFilterProxyModel;
 class DirBrowserModel;
 class SearchWidget;
 class FileView;
 class KAction;
 class KFilePlacesModel;
 class DirPlaylistTrackFilterProxyModel;
+
+template<typename T>
+class UniqueStack : public QStack<T>
+{
+    public:
+        inline void push( const T &t )
+        {
+            if( QStack<T>::isEmpty() || t != QStack<T>::top() )
+                QStack<T>::push( t );
+        }
+};
 
 class FileBrowser::Private
 {
@@ -46,15 +60,16 @@ public:
     void writeConfig();
     void restoreHeaderState();
     void updateNavigateActions();
-    QStringList siblingsForDir( const QString &path );
+    BreadcrumbSiblingList siblingsForDir( const KUrl &path );
 
     void slotSaveHeaderState();
 
-    QList< QAction * > columnActions; //!< Maintains the mapping action<->column
+    QList<QAction *> columnActions; //!< Maintains the mapping action<->column
+
+    KFilePlacesModel *bottomPlacesModel;
+    QSortFilterProxyModel *placesModel;
 
     DirBrowserModel *kdirModel;
-    KFilePlacesModel *placesModel;
-
     DirPlaylistTrackFilterProxyModel *mimeFilterProxyModel;
 
     SearchWidget *searchWidget;
@@ -64,15 +79,12 @@ public:
 
     KAction *upAction;
     KAction *homeAction;
-    KAction *placesAction;
 
     KAction *backAction;
     KAction *forwardAction;
 
-    QStack<KUrl> backStack;
-    QStack<KUrl> forwardStack;
-
-    bool showingPlaces;
+    UniqueStack<KUrl> backStack;
+    UniqueStack<KUrl> forwardStack;
 
 private:
     FileBrowser *const q;

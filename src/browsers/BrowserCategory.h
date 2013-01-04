@@ -63,7 +63,7 @@ public:
      * @param prettyName The user visible name.
      */
     void setPrettyName( const QString &prettyName );
-    
+
     /**
      * Get the user visible name of this category.
      * @return The name of the service.

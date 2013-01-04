@@ -47,9 +47,11 @@
 
 #include <QHeaderView>
 
+static const QString placesString( "places://" );
+static const KUrl placesUrl( placesString );
+
 FileBrowser::Private::Private( FileBrowser *parent )
     : placesModel( 0 )
-    , showingPlaces( false )
     , q( parent )
 {
     KHBox *topHBox = new KHBox( q );
@@ -65,15 +67,11 @@ FileBrowser::Private::Private( FileBrowser *parent )
 
     upAction = KStandardAction::up( q, SLOT(up()), topHBox );
     homeAction = KStandardAction::home( q, SLOT(home()), topHBox );
-    placesAction = new KAction( KIcon( "folder-remote" ),
-                               i18nc( "Show Dolphin Places the user configured", "Places" ),
-                               topHBox );
 
     navigationToolbar->addAction( backAction );
     navigationToolbar->addAction( forwardAction );
     navigationToolbar->addAction( upAction );
     navigationToolbar->addAction( homeAction );
-    navigationToolbar->addAction( placesAction );
 
     searchWidget = new SearchWidget( topHBox, false );
     searchWidget->setClickMessage( i18n( "Filter Files" ) );
@@ -112,17 +110,30 @@ FileBrowser::Private::writeConfig()
     Amarok::config( "File Browser" ).writeEntry( "Current Directory", kdirModel->dirLister()->url() );
 }
 
-QStringList
-FileBrowser::Private::siblingsForDir( const QString &path )
+BreadcrumbSiblingList
+FileBrowser::Private::siblingsForDir( const KUrl &path )
 {
-    // includes the dir itself
-    QStringList siblings;
-    QDir dir( path );
-    if( !dir.isRoot() )
+    BreadcrumbSiblingList siblings;
+    if( path.protocol() == "places" )
     {
-        dir.cdUp();
-        siblings = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+        for( int i = 0; i < placesModel->rowCount(); i++ )
+        {
+            QModelIndex idx = placesModel->index( i, 0 );
+            siblings << BreadcrumbSibling( idx.data( Qt::DecorationRole ).value<QIcon>(),
+                    idx.data().toString(), idx.data( KFilePlacesModel::UrlRole ).toString() );
+        }
     }
+    else if( path.isLocalFile() )
+    {
+        QDir dir( path.toLocalFile() );
+        dir.cdUp();
+        foreach( const QString &item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+        {
+            siblings << BreadcrumbSibling( KIcon( "folder-amarok" ), item,
+                                           dir.absoluteFilePath( item ) );
+        }
+    }
+
     return siblings;
 }
 
@@ -131,7 +142,7 @@ FileBrowser::Private::updateNavigateActions()
 {
     backAction->setEnabled( !backStack.isEmpty() );
     forwardAction->setEnabled( !forwardStack.isEmpty() );
-    upAction->setEnabled( !showingPlaces && !QDir(currentPath.path()).isRoot() );
+    upAction->setEnabled( currentPath != placesUrl );
 }
 
 void
@@ -157,14 +168,14 @@ FileBrowser::Private::restoreHeaderState()
 void
 FileBrowser::Private::slotSaveHeaderState()
 {
-    if( !showingPlaces )
+    if( currentPath != placesUrl )
     {
         //save the state of the header (column size and order). Yay, another QByteArray thingie...
         KSaveFile file( Amarok::saveLocation() + "file_browser_layout" );
         if( file.open() )
             file.write( fileView->header()->saveState() );
         else
-            debug() << "unable to save header state";
+            warning() << "unable to save header state";
 
         file.finalize();
     }
@@ -185,14 +196,25 @@ FileBrowser::FileBrowser( const char *name, QWidget *parent )
     if( AmarokConfig::showBrowserBackgroundImage() )
         setBackgroundImage( imagePath() );
 
-    QTimer::singleShot( 0, this, SLOT(initView()) );
+    initView();
 }
 
 void
 FileBrowser::initView()
 {
-    d->kdirModel = new DirBrowserModel( this );
+    d->bottomPlacesModel = new FilePlacesModel( this );
+    connect( d->bottomPlacesModel, SIGNAL(setupDone(QModelIndex,bool)),
+                                   SLOT(setupDone(QModelIndex,bool)) );
+    d->placesModel = new QSortFilterProxyModel( this );
+    d->placesModel->setSourceModel( d->bottomPlacesModel );
+    d->placesModel->setSortRole( -1 );
+    d->placesModel->setDynamicSortFilter( true );
+    d->placesModel->setFilterRole( KFilePlacesModel::HiddenRole );
+    // HiddenRole is bool, but QVariant( false ).toString() gives "false"
+    d->placesModel->setFilterFixedString( "false" );
+    d->placesModel->setObjectName( "PLACESMODEL");
 
+    d->kdirModel = new DirBrowserModel( this );
     d->mimeFilterProxyModel = new DirPlaylistTrackFilterProxyModel( this );
     d->mimeFilterProxyModel->setSourceModel( d->kdirModel );
     d->mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
@@ -210,7 +232,7 @@ FileBrowser::initView()
     d->readConfig();
     d->restoreHeaderState();
 
-    d->kdirModel->dirLister()->openUrl( d->currentPath );
+    setDir( d->currentPath );
 
     for( int i = 0, columns = d->fileView->model()->columnCount(); i < columns ; ++i )
     {
@@ -230,7 +252,6 @@ FileBrowser::initView()
                                     SLOT(slotSaveHeaderState()) );
     connect( d->fileView, SIGNAL(navigateToDirectory(QModelIndex)),
                           SLOT(slotNavigateToDirectory(QModelIndex)) );
-    connect( d->placesAction, SIGNAL(triggered(bool)), SLOT(showPlaces()) );
 }
 
 FileBrowser::~FileBrowser()
@@ -251,18 +272,10 @@ FileBrowser::toggleColumn( bool toggled )
     }
 }
 
-void
-FileBrowser::polish()
-{
-    setupAddItems();
-}
-
 QString
 FileBrowser::currentDir() const
 {
-    if( d->showingPlaces )
-        return "places:";
-    else if( d->currentPath.isLocalFile() )
+    if( d->currentPath.isLocalFile() )
         return d->currentPath.toLocalFile();
     else
         return d->currentPath.url();
@@ -271,26 +284,22 @@ FileBrowser::currentDir() const
 void
 FileBrowser::slotNavigateToDirectory( const QModelIndex &index )
 {
-    if( d->showingPlaces )
+    if( d->currentPath == placesUrl )
     {
-        QString placesUrl = index.data( KFilePlacesModel::UrlRole ).value<QString>();
+        QString url = index.data( KFilePlacesModel::UrlRole ).value<QString>();
 
-        if( !placesUrl.isEmpty() )
+        if( !url.isEmpty() )
         {
-            //needed to make the home folder url look nice. We cannot just strip all
-            //protocol headers as that will break remote, trash, ...
-            if( placesUrl.startsWith( "file://" ) )
-                placesUrl = placesUrl.replace( "file://", QString() );
-
             d->backStack.push( d->currentPath );
-            setDir( KUrl( placesUrl ) );
+            d->forwardStack.clear(); // navigating resets forward stack
+            setDir( KUrl( url ) );
         }
         else
         {
             //check if this url needs setup/mounting
             if( index.data( KFilePlacesModel::SetupNeededRole ).value<bool>() )
             {
-                d->placesModel->requestSetup( index );
+                d->bottomPlacesModel->requestSetup( d->placesModel->mapToSource( index ) );
             }
             else
                 warning() << __PRETTY_FUNCTION__ << "empty places url that doesn't need setup?";
@@ -303,6 +312,7 @@ FileBrowser::slotNavigateToDirectory( const QModelIndex &index )
         if( file.isDir() )
         {
             d->backStack.push( d->currentPath );
+            d->forwardStack.clear(); // navigating resets forward stack
             setDir( file.url() );
         }
         else
@@ -317,8 +327,31 @@ FileBrowser::addItemActivated( const QString &callbackString )
     if( callbackString.isEmpty() )
         return;
 
+    KUrl newPath;
+    if( callbackString.startsWith( placesString ) )
+    {
+        QString name = callbackString.mid( placesString.length() );
+        for( int i = 0; i < d->placesModel->rowCount(); i++ )
+        {
+            QModelIndex idx = d->placesModel->index( i, 0 );
+            if( idx.data().toString() == name )
+            {
+                newPath = idx.data( KFilePlacesModel::UrlRole ).toString();
+                break;
+            }
+        }
+        if( newPath.isEmpty() )
+        {
+            warning() << __PRETTY_FUNCTION__ << "name" << name << "not found under Places";
+            return;
+        }
+    }
+    else
+        newPath = callbackString;
+
     d->backStack.push( d->currentPath );
-    setDir( KUrl( callbackString ) );
+    d->forwardStack.clear(); // navigating resets forward stack
+    setDir( KUrl( newPath ) );
 }
 
 void
@@ -326,112 +359,122 @@ FileBrowser::setupAddItems()
 {
     clearAdditionalItems();
 
-    if( d->currentPath.isLocalFile() )
+    if( d->currentPath == placesUrl )
+        return; // no more items to add
+
+    QString workingUrl = d->currentPath.prettyUrl( KUrl::RemoveTrailingSlash );
+    int currentPosition = 0;
+
+    QString name;
+    QString callback;
+    BreadcrumbSiblingList siblings;
+
+    // find QModelIndex of the NON-HIDDEN closestItem
+    QModelIndex placesIndex;
+    KUrl tempUrl = d->currentPath;
+    do
     {
-        const QString localPath = d->currentPath.toLocalFile();
-        QStringList parts;
-        QString partialPath;
+        placesIndex = d->bottomPlacesModel->closestItem( tempUrl );
+        if( !placesIndex.isValid() )
+            break; // no valid index even in the bottom model
+        placesIndex = d->placesModel->mapFromSource( placesIndex );
+        if( placesIndex.isValid() )
+            break; // found shown placesindex, good!
 
-        /*
-         * A URL like /home/user/Music/Prince is shown as [Home] > [Music] > [Prince]
-         */
-        if( localPath.startsWith( QDir::homePath() ) )
-        {
-            int idx = localPath.indexOf( QDir::homePath() ) + QDir::homePath().size();
-            // everything after the homedir e.g., Music/Prince
-            QString everything_else = localPath.mid( idx );
-            // replace parts with everything else
-            parts = everything_else.split( QDir::separator() ) ;
-            partialPath = QDir::homePath();
+        if( tempUrl.upUrl() == tempUrl )
+            break; // prevent infinite loop
+        tempUrl = tempUrl.upUrl();
+    } while( true );
 
-            // Add the [Home]
-            QStringList siblings = d->siblingsForDir( QDir::homePath() );
-            addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Home" ), siblings,
-                                                         QDir::homePath(), this )
-                             );
-        }
-        else
-        {
-            parts = localPath.split( QDir::separator() );
-        }
+    // special handling for the first additional item
+    if( placesIndex.isValid() )
+    {
+        name = d->placesModel->data( placesIndex, Qt::DisplayRole ).toString();
+        callback = placesString + name;
 
-        foreach( const QString& part, parts )
-        {
-            if( !part.isEmpty() )
-            {
-                partialPath += '/' + part;
-                QStringList siblings = d->siblingsForDir( partialPath );
-                addAdditionalItem( new BrowserBreadcrumbItem( part, siblings, partialPath, this ) );
-            }
-        }
+        KUrl currPlaceUrl = d->placesModel->data( placesIndex, KFilePlacesModel::UrlRole ).toUrl();
+        currentPosition = currPlaceUrl.url( KUrl::AddTrailingSlash ).length();
     }
     else
     {
-        // TODO: setup remote siblings in breadcrumb arrows
-        const QString proto = d->currentPath.protocol();
-        const QString authority = d->currentPath.authority();
-        const QString protoAuthority = QString( "%1://%2" ).arg( proto, authority );
-        addAdditionalItem( new BrowserBreadcrumbItem( proto + QLatin1Char(':'),
-                                                      QStringList(), proto + QLatin1String("://"),
-                                                      this )
-                         );
-        addAdditionalItem( new BrowserBreadcrumbItem( authority, QStringList(), protoAuthority,
-                                                     this )
-                         );
-        QStringList parts = d->currentPath.path().split( QLatin1Char('/'), QString::SkipEmptyParts );
-        QString partialPath = protoAuthority;
-        foreach( const QString &part, parts )
-        {
-            partialPath += QLatin1Char('/') + part;
-            addAdditionalItem( new BrowserBreadcrumbItem( part, QStringList(), partialPath, this ) );
-        }
+        QRegExp threeSlashes( "^[^/]*/[^/]*/[^/]*/" );
+        if( workingUrl.indexOf( threeSlashes ) == 0 )
+            currentPosition = threeSlashes.matchedLength();
+        else
+            currentPosition = workingUrl.length();
+
+        callback = workingUrl.left( currentPosition );
+        name = callback;
+        if( name == "file:///" )
+            name = "/"; // just niceness
+        else
+            name.remove( QRegExp( "/$" ) );
     }
+    /* always provide siblings for places, regardless of what first item is; this also
+     * work-arounds bug 312639, where creating KUrl with accented chars crashes */
+    siblings = d->siblingsForDir( placesUrl );
+    addAdditionalItem( new BrowserBreadcrumbItem( name, callback, siblings, this ) );
+
+    // other additional items
+    while( !workingUrl.midRef( currentPosition ).isEmpty() )
+    {
+        int nextPosition = workingUrl.indexOf( '/', currentPosition ) + 1;
+        if( nextPosition <= 0 )
+            nextPosition = workingUrl.length();
+
+        name = workingUrl.mid( currentPosition, nextPosition - currentPosition );
+        name.remove( QRegExp( "/$" ) );
+        callback = workingUrl.left( nextPosition );
+
+        siblings = d->siblingsForDir( callback );
+        addAdditionalItem( new BrowserBreadcrumbItem( name, callback, siblings, this ) );
+
+        currentPosition = nextPosition;
+    }
+
+    if( parentList() )
+        parentList()->childViewChanged(); // emits viewChanged() which causes breadCrumb update
 }
 
 void
 FileBrowser::reActivate()
 {
     d->backStack.push( d->currentPath );
-    setDir( QDir::rootPath() );
-}
-
-QString
-FileBrowser::prettyName() const
-{
-    if( parentList()->activeCategory() == this )
-        return QDir::rootPath();
-    else
-        return BrowserCategory::prettyName();
+    d->forwardStack.clear(); // navigating resets forward stack
+    setDir( placesUrl );
 }
 
 void
 FileBrowser::setDir( const KUrl &dir )
 {
-    if( dir == "places:" )
-        showPlaces();
+    if( dir == placesUrl )
+    {
+        d->fileView->setModel( d->placesModel );
+        d->fileView->setSelectionMode( QAbstractItemView::SingleSelection );
+        d->fileView->header()->setVisible( false );
+        d->fileView->setDragEnabled( false );
+    }
     else
     {
         // if we are currently showing "places" we need to remember to change the model
         // back to the regular file model
-        if( d->showingPlaces )
+        if( d->currentPath == placesUrl )
         {
             d->fileView->setModel( d->mimeFilterProxyModel );
             d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
             d->fileView->setDragEnabled( true );
             d->fileView->header()->setVisible( true );
             d->restoreHeaderState(); // read config so the header state is restored
-            d->showingPlaces = false;
         }
 
         d->kdirModel->dirLister()->openUrl( dir );
-        d->currentPath = dir;
-        d->updateNavigateActions();
-        setupAddItems();
-        activate();
-
-        // set the first item as current so that keyboard navigation works
-        new DelayedActivator( d->fileView );
     }
+
+    d->currentPath = dir;
+    d->updateNavigateActions();
+    setupAddItems();
+    // set the first item as current so that keyboard navigation works
+    new DelayedActivator( d->fileView );
 }
 
 void
@@ -451,56 +494,31 @@ FileBrowser::forward()
         return;
 
     d->backStack.push( d->currentPath );
+    // no clearing forward stack here!
     setDir( d->forwardStack.pop() );
 }
 
 void
 FileBrowser::up()
 {
-    if( d->showingPlaces )
-    {
-        //apparently, the root level of "places" counts as a valid dir. If we are here, make the
-        //up button simply go to "home"
-        home();
-    }
-    else
-    {
-        d->backStack.push( d->currentPath );
-        setDir( d->currentPath.upUrl() );
-    }
+    if( d->currentPath == placesUrl )
+        return; // nothing to do, we consider places as the root view
+
+    KUrl upUrl = d->currentPath.upUrl();
+    if( upUrl == d->currentPath ) // apparently, we cannot go up withn url
+        upUrl = placesUrl;
+
+    d->backStack.push( d->currentPath );
+    d->forwardStack.clear(); // navigating resets forward stack
+    setDir( upUrl );
 }
 
 void
 FileBrowser::home()
 {
     d->backStack.push( d->currentPath );
+    d->forwardStack.clear(); // navigating resets forward stack
     setDir( KUrl( QDir::homePath() ) );
-}
-
-void
-FileBrowser::showPlaces()
-{
-    if( !d->placesModel )
-    {
-        d->placesModel = new FilePlacesModel( this );
-        d->placesModel->setObjectName( "PLACESMODEL");
-        connect( d->placesModel, SIGNAL(setupDone(QModelIndex,bool)),
-                                 SLOT(setupDone(QModelIndex,bool)) );
-    }
-
-    clearAdditionalItems();
-
-    QStringList siblings;
-    addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Places" ), siblings, QDir::homePath(),
-                                                  this ) );
-    d->showingPlaces = true;
-    d->fileView->setModel( d->placesModel );
-    d->fileView->setSelectionMode( QAbstractItemView::SingleSelection );
-    d->fileView->header()->setVisible( false );
-    d->fileView->setDragEnabled( false );
-
-    // set the first item as current so that keyboard navigation works
-    new DelayedActivator( d->fileView );
 }
 
 void
@@ -508,17 +526,12 @@ FileBrowser::setupDone( const QModelIndex & index, bool success )
 {
     if( success )
     {
-        QString placesUrl = index.data( KFilePlacesModel::UrlRole  ).value<QString>();
-
-        if( !placesUrl.isEmpty() )
+        QString url = index.data( KFilePlacesModel::UrlRole  ).value<QString>();
+        if( !url.isEmpty() )
         {
-            // needed to make folder urls look nice. We cannot just strip all protocol headers
-            // as that will break remote, trash, ...
-            if( placesUrl.startsWith( "file://" ) )
-                placesUrl = placesUrl.replace( "file://", QString() );
-
             d->backStack.push( d->currentPath );
-            setDir( placesUrl );
+            d->forwardStack.clear(); // navigating resets forward stack
+            setDir( url );
         }
     }
 }
