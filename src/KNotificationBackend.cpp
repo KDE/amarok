@@ -97,7 +97,11 @@ KNotificationBackend::show( const QString &title, const QString &body, const QPi
     else
         icon = pixmap;
 
-    KNotification::event( KNotification::Notification , title, body, icon );
+    KNotification *notify = new KNotification( "message" );
+    notify->setTitle( title );
+    notify->setText( body );
+    notify->setPixmap( icon );
+    notify->sendEvent();
 }
 
 void

@@ -46,7 +46,16 @@ public:
     bool isFullscreenWindowActive() const;
 
 public slots:
+
+    /**
+     * Shows a message. Warning, this method doesn't check isEnabled(), you
+     * should do it yourself.
+     */
     void show( const QString &title, const QString &body, const QPixmap &pixmap = QPixmap() );
+
+    /**
+     * @param force - if true, isEnabled() is not checked, otherwise it is
+     */
     void showCurrentTrack( bool force = false );
 
 private:
