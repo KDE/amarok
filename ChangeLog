@@ -31,7 +31,7 @@ VERSION 2.7
     * Fix Last.fm streams not being correctly recreated on startup. (BR 305576)
     * Fix Ampache albums & track not being shown, a recent regression. (BR 310862)
     * Fix crash in Network Requests Viewer. (BR 311760)
-    * Prevent crash when using File Browser breadcrumbs. (BR 265626)
+    * Definitely prevent crash when using File Browser breadcrumbs. (BR 265626)
     * Prevent crash in ServiceBase::setModel triggered by Last.fm rewrite. (BR 311723)
     * Fix incorrect display of Last.fm tags and other items. (BR 244555)
 

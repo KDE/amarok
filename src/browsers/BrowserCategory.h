@@ -147,7 +147,11 @@ public:
     virtual void setFilter( const QString &filter ) { Q_UNUSED( filter ) };
     virtual void setLevels( const QList<CategoryId::CatMenuId> &levels ) { Q_UNUSED( levels ) };
 
-    void addAdditionalItem( BrowserBreadcrumbItem * item );
+    /**
+     * Add an additional category-specific item to breadcrumbs. This BrowserCategory
+     * takes ownership of the item.
+     */
+    void addAdditionalItem( BrowserBreadcrumbItem *item );
     void clearAdditionalItems();
 
     QList<BrowserBreadcrumbItem *> additionalItems();

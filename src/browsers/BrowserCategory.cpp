@@ -160,10 +160,13 @@ BrowserCategory::addAdditionalItem( BrowserBreadcrumbItem * item )
 void
 BrowserCategory::clearAdditionalItems()
 {
-    foreach( BrowserBreadcrumbItem * item, m_additionalItems )
+    foreach( BrowserBreadcrumbItem *item, m_additionalItems )
     {
         m_additionalItems.removeAll( item );
-        delete item;
+        /* deleting immediatelly isn't safe, this method may be called from an inner
+         * QEventLoop inside QMenu::exec() of another breadcrumb item, which could
+         * then leas to crash bug 265626 */
+        item->deleteLater();
     }
 }
 
