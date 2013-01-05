@@ -200,7 +200,7 @@ class UmsCollection : public Collection, public Meta::Observer
         static QString s_musicFilenameSchemeKey;
         static QString s_vfatSafeKey;
         static QString s_asciiOnlyKey;
-        static QString s_ignoreTheKey;
+        static QString s_postfixTheKey;
         static QString s_replaceSpacesKey;
         static QString s_regexTextKey;
         static QString s_replaceTextKey;
@@ -220,7 +220,7 @@ class UmsCollection : public Collection, public Meta::Observer
         QString m_musicFilenameScheme;
         bool m_vfatSafe;
         bool m_asciiOnly;
-        bool m_ignoreThe;
+        bool m_postfixThe;
         bool m_replaceSpaces;
         QString m_regexText;
         QString m_replaceText;

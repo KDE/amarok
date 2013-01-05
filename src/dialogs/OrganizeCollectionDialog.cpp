@@ -73,6 +73,7 @@ OrganizeCollectionWidget::OrganizeCollectionWidget( QWidget *parent )
     m_tokenPool->addToken( createToken( TrackNumber ) );
     m_tokenPool->addToken( createToken( DiscNumber ) );
 
+    m_tokenPool->addToken( createToken( Folder ) );
     m_tokenPool->addToken( createToken( FileType ) );
     m_tokenPool->addToken( createToken( Initial ) );
 
@@ -178,7 +179,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->verticalLayout->insertWidget( 2, m_optionsWidget );
 
     m_optionsWidget->setReplaceSpaces( AmarokConfig::replaceSpace() );
-    m_optionsWidget->setIgnoreThe( AmarokConfig::ignoreThe() );
+    m_optionsWidget->setPostfixThe( AmarokConfig::ignoreThe() );
     m_optionsWidget->setVfatCompatible( AmarokConfig::vfatCompatible() );
     m_optionsWidget->setAsciiOnly( AmarokConfig::asciiOnly() );
     m_optionsWidget->setRegexpText( AmarokConfig::replacementRegexp() );
@@ -234,7 +235,7 @@ OrganizeCollectionDialog::buildFormatString() const
 {
     if( m_organizeCollectionWidget->getParsableScheme().simplified().isEmpty() )
         return "";
-    return "%folder%/" + m_organizeCollectionWidget->getParsableScheme() + ".%filetype%";
+    return "%collectionroot%/" + m_organizeCollectionWidget->getParsableScheme() + ".%filetype%";
 }
 
 QString
@@ -294,7 +295,7 @@ OrganizeCollectionDialog::slotUpdatePreview()
     m_trackOrganizer->setFolderPrefix( ui->folderCombo->currentText() );
     m_trackOrganizer->setFormatString( formatString );
     m_trackOrganizer->setTargetFileExtension( m_targetFileExtension );
-    m_trackOrganizer->setIgnoreThe( m_optionsWidget->ignoreThe() );
+    m_trackOrganizer->setPostfixThe( m_optionsWidget->postfixThe() );
     m_trackOrganizer->setReplaceSpaces( m_optionsWidget->replaceSpaces() );
     m_trackOrganizer->setReplace( m_optionsWidget->regexpText(),
                                   m_optionsWidget->replaceText() );
@@ -372,7 +373,7 @@ OrganizeCollectionDialog::slotDialogAccepted()
 {
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
 
-    AmarokConfig::setIgnoreThe( m_optionsWidget->ignoreThe() );
+    AmarokConfig::setIgnoreThe( m_optionsWidget->postfixThe() );
     AmarokConfig::setReplaceSpace( m_optionsWidget->replaceSpaces() );
     AmarokConfig::setVfatCompatible( m_optionsWidget->vfatCompatible() );
     AmarokConfig::setAsciiOnly( m_optionsWidget->asciiOnly() );

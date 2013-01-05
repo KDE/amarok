@@ -30,7 +30,7 @@ TrackOrganizer::TrackOrganizer( const Meta::TrackList &tracks, QObject* parent )
     : QObject( parent )
     , m_allTracks( tracks )
     , m_trackOffset( 0 )
-    , m_IgnoreThe( false )
+    , m_postfixThe( false )
     , m_AsciiOnly( false )
     , m_UnderscoresNotSpaces( false )
     , m_vfatSafe( false )
@@ -40,66 +40,61 @@ TrackOrganizer::TrackOrganizer( const Meta::TrackList &tracks, QObject* parent )
 
 QString TrackOrganizer::buildDestination(const QString& format, const Meta::TrackPtr& track) const
 {
-    bool isCompilation = track->album() && track->album()->isCompilation();
+    // get hold of the shared pointers
+    Meta::AlbumPtr album = track->album();
+    Meta::ArtistPtr artist = track->artist();
+    Meta::ComposerPtr composer = track->composer();
+    Meta::ArtistPtr albumArtist = album ? album->albumArtist() : Meta::ArtistPtr();
+    Meta::GenrePtr genre = track->genre();
+    Meta::YearPtr year = track->year();
+
+    bool isCompilation = album && album->isCompilation();
 
     QMap<QString, QString> args;
-    QString artist = track->artist() ? track->artist()->name() : QString();
-    QString albumartist;
-    if( isCompilation )
-        albumartist = i18n( "Various Artists" );
-    else
+    QString strArtist = artist ? artist->name() : QString();
+    QString strAlbumArtist = isCompilation ? i18n( "Various Artists" ) :
+        ( albumArtist ? albumArtist->name() : strArtist );
+
+    args["theartist"] = strArtist;
+    args["thealbumartist"] = strAlbumArtist;
+
+    if( m_postfixThe )
     {
-        if( track->album() && track->album()->hasAlbumArtist() )
-            albumartist = track->album()->albumArtist()->name();
-        else
-            albumartist = artist;
+        Amarok::manipulateThe( strArtist, true );
+        Amarok::manipulateThe( strAlbumArtist, true );
     }
-    args["theartist"] = cleanPath( artist );
-    args["thealbumartist"] = cleanPath( albumartist );
-
-    if( m_IgnoreThe && artist.startsWith( "The ", Qt::CaseInsensitive ) )
-        Amarok::manipulateThe( artist, true );
-
-    artist = cleanPath( artist );
-
-    if( m_IgnoreThe && albumartist.startsWith( "The ", Qt::CaseInsensitive ) )
-        Amarok::manipulateThe( albumartist, true );
-
-    albumartist = cleanPath( albumartist );
-
-    //these additional columns from MetaBundle were used before but haven't
-    //been ported yet. Do they need to be?
-    //Bpm,Directory,Bitrate,SampleRate,Mood
-    args["folder"] = m_folderPrefix;
-    args["title"] = cleanPath( track->name() );
-    args["composer"] = track->composer() ? cleanPath( track->composer()->name() ) : QString();
-
-    // if year == 0 then we don't want include it
-    QString year = track->year() ? cleanPath( track->year()->name() ) : QString();
-    args["year"] = year.localeAwareCompare( "0" ) == 0 ? QString() : year;
-    args["album"] = track->album() ? cleanPath( track->album()->name() ) : QString();
-
-    if( track->discNumber() )
-        args["discnumber"] = QString::number( track->discNumber() );
-
-    args["genre"] = track->genre() ? cleanPath( track->genre()->name() ) : QString();
-    args["comment"] = cleanPath( track->comment() );
-    args["artist"] = artist;
-    args["albumartist"] = albumartist;
-    args["initial"] = albumartist.mid( 0, 1 ).toUpper();    //artists starting with The are already handled above
-    if( m_targetFileExtension == QString() )
-        args["filetype"] = track->type();
-    else
-        args["filetype"] = m_targetFileExtension;
-    args["rating"] = track->statistics()->rating();
-    args["filesize"] = track->filesize();
-    args["length"] = track->length() / 1000;
 
     if ( track->trackNumber() )
     {
         QString trackNum = QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
         args["track"] = trackNum;
     }
+    args["title"] = track->name();
+    args["artist"] = strArtist;
+    args["composer"] = composer ? composer->name() : QString();
+    // if year == 0 then we don't want include it
+    QString strYear = year ? year->name() : QString();
+    args["year"] = strYear.localeAwareCompare( "0" ) == 0 ? QString() : strYear;
+    args["album"] = track->album() ? track->album()->name() : QString();
+    args["albumartist"] = albumArtist;
+    args["comment"] = track->comment();
+    args["genre"] = genre ? genre->name() : QString();
+    if( m_targetFileExtension == QString() )
+        args["filetype"] = track->type();
+    else
+        args["filetype"] = m_targetFileExtension;
+    QString strFolder = QFileInfo( track->playableUrl().toLocalFile() ).path();
+    strFolder = strFolder.mid( commonPrefixLength( m_folderPrefix, strFolder ) );
+    args["folder"] = strFolder;
+    args["initial"] = strAlbumArtist.mid( 0, 1 ).toUpper(); //artists starting with The are already handled above
+    if( track->discNumber() )
+        args["discnumber"] = QString::number( track->discNumber() );
+    args["collectionroot"] = m_folderPrefix;
+
+    // some additional properties not supported by organize dialog.
+    args["rating"] = track->statistics()->rating();
+    args["filesize"] = track->filesize();
+    args["length"] = track->length() / 1000;
 
     // Fill up default empty values for StringX formater
     // TODO make this values changeable by user
@@ -114,6 +109,10 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
     args["default_genre"]           = i18n( "Unknown genre" );
     args["default_title"]           = i18n( "Unknown title" );
     args["default_year"]            = i18n( "Unknown year" );
+
+    foreach( const QString &key, args.keys() )
+        if( key != "collectionroot" && key != "folder" )
+            args[key] = cleanPath( args[key] );
 
     Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );
@@ -147,6 +146,15 @@ QString TrackOrganizer::cleanPath( const QString& component ) const
     result.replace( '/', '-' );
 
     return result;
+}
+
+int TrackOrganizer::commonPrefixLength( const QString &a, const QString &b )
+{
+    int prefix = 0;
+    while( prefix < a.length() && prefix < b.length() &&
+           a.at(prefix) == b.at(prefix) )
+        prefix++;
+    return prefix;
 }
 
 QMap< Meta::TrackPtr, QString > TrackOrganizer::getDestinations( unsigned int batchSize )
@@ -204,12 +212,12 @@ void TrackOrganizer::setAsciiOnly(bool flag)
     m_AsciiOnly = flag;
 }
 
-void TrackOrganizer::setIgnoreThe(bool flag)
+void TrackOrganizer::setPostfixThe(bool flag)
 {
-    if( m_IgnoreThe != flag )
+    if( m_postfixThe != flag )
         m_trackOffset = 0;
 
-    m_IgnoreThe = flag;
+    m_postfixThe = flag;
 }
 
 void TrackOrganizer::setReplaceSpaces(bool flag)

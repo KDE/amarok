@@ -182,6 +182,7 @@ namespace Amarok
     /* defined in browsers/CollectionTreeItemModel.cpp */
     /**
      * Small function aimed to convert Eagles, The -> The Eagles (and back again).
+     * If there is no "the" in the name then the string is not changed.
      * @param str the string to manipulate
      * @param reverse if true, The Eagles -> Eagles, The. If false, Eagles, The -> The Eagles
      */

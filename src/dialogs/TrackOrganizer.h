@@ -45,12 +45,13 @@ public:
      * @param prefix the folder prefix, e.g.,  /home/user/Music/
      */
     void setFolderPrefix( const QString &prefix );
+
     /**
-     * Sets whether to ignore the the in an artist name.
+     * Sets whether to move the the in an artist name to the end of the name.
      * Default value is false.
      * @param flag turns the option on
      */
-    void setIgnoreThe( bool flag );
+    void setPostfixThe( bool flag );
     /**
      * Sets whether to restrict filenames to ASCII
      * Default value is false.
@@ -99,13 +100,17 @@ private:
     QString buildDestination( const QString &format, const Meta::TrackPtr &track ) const;
     QString cleanPath( const QString &component ) const;
 
+    /** Returns the number of characters that are the same in both strings beginning. */
+    static int commonPrefixLength( const QString &a, const QString &b );
+
     Meta::TrackList m_allTracks;
+    /** The starting track that is to be processed. */
     int m_trackOffset;
 
     //options
     QString m_format;
     QString m_folderPrefix;
-    bool m_IgnoreThe;
+    bool m_postfixThe;
     bool m_AsciiOnly;
     bool m_UnderscoresNotSpaces;
     bool m_vfatSafe;

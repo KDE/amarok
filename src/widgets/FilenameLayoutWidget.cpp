@@ -61,7 +61,8 @@ static const QStringList typeElements = ( QStringList()
 << QLatin1String("/")
 << QLatin1String(".")
 << QLatin1String("-")
-<< QLatin1String("_") );
+<< QLatin1String("_")
+<< QLatin1String("%collectionroot%") );
 
 using namespace Meta;
 

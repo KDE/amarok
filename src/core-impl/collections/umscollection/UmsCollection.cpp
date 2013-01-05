@@ -204,7 +204,7 @@ QString UmsCollection::s_musicFolderKey( "audio_folder" );
 QString UmsCollection::s_musicFilenameSchemeKey( "music_filenamescheme" );
 QString UmsCollection::s_vfatSafeKey( "vfat_safe" );
 QString UmsCollection::s_asciiOnlyKey( "ascii_only" );
-QString UmsCollection::s_ignoreTheKey( "ignore_the" );
+QString UmsCollection::s_postfixTheKey( "ignore_the" );
 QString UmsCollection::s_replaceSpacesKey( "replace_spaces" );
 QString UmsCollection::s_regexTextKey( "regex_text" );
 QString UmsCollection::s_replaceTextKey( "replace_text" );
@@ -222,7 +222,7 @@ UmsCollection::UmsCollection( Solid::Device device )
     , m_musicFilenameScheme( "%artist%/%album%/%track% %title%" )
     , m_vfatSafe( true )
     , m_asciiOnly( false )
-    , m_ignoreThe( false )
+    , m_postfixThe( false )
     , m_replaceSpaces( false )
     , m_regexText( QString() )
     , m_replaceText( QString() )
@@ -293,7 +293,7 @@ UmsCollection::init()
     m_musicFilenameScheme = !scheme.isEmpty() ? scheme : m_musicFilenameScheme;
     m_vfatSafe = entries.readEntry( s_vfatSafeKey, m_vfatSafe );
     m_asciiOnly = entries.readEntry( s_asciiOnlyKey, m_asciiOnly );
-    m_ignoreThe = entries.readEntry( s_ignoreTheKey, m_ignoreThe );
+    m_postfixThe = entries.readEntry( s_postfixTheKey, m_postfixThe );
     m_replaceSpaces = entries.readEntry( s_replaceSpacesKey, m_replaceSpaces );
     m_regexText = entries.readEntry( s_regexTextKey, m_regexText );
     m_replaceText = entries.readEntry( s_replaceTextKey, m_replaceText );
@@ -489,7 +489,7 @@ UmsCollection::organizedUrl( Meta::TrackPtr track, const QString &fileExtension 
     trackOrganizer.setVfatSafe( m_vfatSafe );
     trackOrganizer.setAsciiOnly( m_asciiOnly );
     trackOrganizer.setFolderPrefix( m_musicPath.path() );
-    trackOrganizer.setIgnoreThe( m_ignoreThe );
+    trackOrganizer.setPostfixThe( m_postfixThe );
     trackOrganizer.setReplaceSpaces( m_replaceSpaces );
     trackOrganizer.setReplace( m_regexText, m_replaceText );
     if( !fileExtension.isEmpty() )
@@ -617,7 +617,7 @@ UmsCollection::slotConfigure()
     OrganizeCollectionOptionWidget optionsWidget;
     optionsWidget.setVfatCompatible( m_vfatSafe );
     optionsWidget.setAsciiOnly( m_asciiOnly );
-    optionsWidget.setIgnoreThe( m_ignoreThe );
+    optionsWidget.setPostfixThe( m_postfixThe );
     optionsWidget.setReplaceSpaces( m_replaceSpaces );
     optionsWidget.setRegexpText( m_regexText );
     optionsWidget.setReplaceText( m_replaceText );
@@ -655,7 +655,7 @@ UmsCollection::slotConfigure()
         }
 
         m_asciiOnly = optionsWidget.asciiOnly();
-        m_ignoreThe = optionsWidget.ignoreThe();
+        m_postfixThe = optionsWidget.postfixThe();
         m_replaceSpaces = optionsWidget.replaceSpaces();
         m_regexText = optionsWidget.regexpText();
         m_replaceText = optionsWidget.replaceText();
@@ -693,7 +693,7 @@ UmsCollection::slotConfigure()
         entries.writeEntry( s_musicFilenameSchemeKey, m_musicFilenameScheme );
         entries.writeEntry( s_vfatSafeKey, m_vfatSafe );
         entries.writeEntry( s_asciiOnlyKey, m_asciiOnly );
-        entries.writeEntry( s_ignoreTheKey, m_ignoreThe );
+        entries.writeEntry( s_postfixTheKey, m_postfixThe );
         entries.writeEntry( s_replaceSpacesKey, m_replaceSpaces );
         entries.writeEntry( s_regexTextKey, m_regexText );
         entries.writeEntry( s_replaceTextKey, m_replaceText );

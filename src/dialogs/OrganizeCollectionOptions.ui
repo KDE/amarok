@@ -51,13 +51,13 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>If checked, postfix artists' names starting with 'The' with ', The'.</string>
+      <string>If checked, prepend artists' names starting with 'The' with ', The'.</string>
      </property>
      <property name="whatsThis">
-      <string>If checked all artists that have the word &quot;The&quot; at the beginning will be treated as if the &quot;The&quot; was not there. Example, &quot;The Beatles&quot; would become &quot;Beatles, The&quot;</string>
+      <string>If checked all artists starting with &quot;The&quot; will have it moved to the end. Example, &quot;The Beatles&quot; would become &quot;Beatles, The&quot;</string>
      </property>
      <property name="text">
-      <string>I&amp;gnore 'The' in artist names</string>
+      <string>&amp;Prepend 'The' in artist names</string>
      </property>
     </widget>
    </item>

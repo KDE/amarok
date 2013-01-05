@@ -140,19 +140,9 @@
         <whatsthis>If set, Organize files will overwrite any existing destination.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Group By Filetype" type="Bool">
-        <label>Whether organize files will group directories according to their filetype.</label>
-        <whatsthis>If set, Organize files will group directories containing the same filetype.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Group Artists" type="Bool">
-        <label>Whether organize files will group artists whose names start with the same character.</label>
-        <whatsthis>If set, Organize files will group artists whose names start with the same character.</whatsthis>
-        <default>false</default>
-    </entry>
     <entry key="Ignore The" type="Bool">
-        <label>Whether organize files will ignore The in artist names.</label>
-        <whatsthis>If set, Organize files will ignore The in artist names.</whatsthis>
+        <label>Whether organize files will move The in artist names to the end.</label>
+        <whatsthis>If set, Organize files will move The in artist names to the end as in "Beatles, The".</whatsthis>
         <default>true</default>
     </entry>
     <entry key="Replace Space" type="Bool">

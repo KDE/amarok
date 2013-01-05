@@ -51,8 +51,8 @@ class AMAROK_EXPORT OrganizeCollectionOptionWidget : public QGroupBox, public Ui
         void setAsciiOnly( bool enable ) { asciiCheck->setChecked( enable ); }
         bool vfatCompatible() const { return vfatCheck->isChecked(); }
         void setVfatCompatible( bool enable ) { vfatCheck->setChecked( enable ); }
-        bool ignoreThe() const { return ignoreTheCheck->isChecked(); }
-        void setIgnoreThe( bool enable ) { ignoreTheCheck->setChecked( enable ); }
+        bool postfixThe() const { return ignoreTheCheck->isChecked(); }
+        void setPostfixThe( bool enable ) { ignoreTheCheck->setChecked( enable ); }
         bool replaceSpaces() const { return spaceCheck->isChecked(); }
         void setReplaceSpaces( bool enable ) { spaceCheck->setChecked( enable ); }
         QString regexpText() const { return regexpEdit->text(); }
