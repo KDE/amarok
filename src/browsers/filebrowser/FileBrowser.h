@@ -93,7 +93,7 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT( d, void slotSaveHeaderState() )
+    Q_PRIVATE_SLOT( d, void updateHeaderState() )
 };
 
 /**

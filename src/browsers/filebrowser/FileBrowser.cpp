@@ -146,39 +146,61 @@ FileBrowser::Private::updateNavigateActions()
 }
 
 void
+FileBrowser::Private::restoreDefaultHeaderState()
+{
+    fileView->hideColumn( 3 );
+    fileView->hideColumn( 4 );
+    fileView->hideColumn( 5 );
+    fileView->hideColumn( 6 );
+    fileView->sortByColumn( 0, Qt::AscendingOrder );
+}
+
+void
 FileBrowser::Private::restoreHeaderState()
 {
     QFile file( Amarok::saveLocation() + "file_browser_layout" );
-    if( file.open( QIODevice::ReadOnly ) )
+    if( !file.open( QIODevice::ReadOnly ) )
     {
-        fileView->header()->restoreState( file.readAll() );
-        file.close();
+        restoreDefaultHeaderState();
+        return;
     }
-    else
+    if( !fileView->header()->restoreState( file.readAll() ) )
     {
-        // default layout
-        fileView->hideColumn( 3 );
-        fileView->hideColumn( 4 );
-        fileView->hideColumn( 5 );
-        fileView->hideColumn( 6 );
-        fileView->sortByColumn( 0, Qt::AscendingOrder );
+        warning() << "invalid header state saved, unable to restore. Restoring defaults";
+        restoreDefaultHeaderState();
+        return;
     }
 }
 
 void
-FileBrowser::Private::slotSaveHeaderState()
+FileBrowser::Private::saveHeaderState()
 {
-    if( currentPath != placesUrl )
+    //save the state of the header (column size and order). Yay, another QByteArray thingie...
+    KSaveFile file( Amarok::saveLocation() + "file_browser_layout" );
+    if( !file.open( QIODevice::WriteOnly ) )
     {
-        //save the state of the header (column size and order). Yay, another QByteArray thingie...
-        KSaveFile file( Amarok::saveLocation() + "file_browser_layout" );
-        if( file.open() )
-            file.write( fileView->header()->saveState() );
-        else
-            warning() << "unable to save header state";
-
-        file.finalize();
+        warning() << "unable to save header state";
+        return;
     }
+    if( file.write( fileView->header()->saveState() ) < 0 )
+    {
+        warning() << "unable to save header state, writing failed";
+        return;
+    }
+    if( !file.finalize() )
+    {
+        warning() << "failed to write header state";
+        return;
+    }
+}
+
+void
+FileBrowser::Private::updateHeaderState()
+{
+    // this slot is triggered right after model change, when currentPath is not yet updated
+    if( fileView->model() == mimeFilterProxyModel && currentPath == placesUrl )
+        // we are transitioning from places to files
+        restoreHeaderState();
 }
 
 FileBrowser::FileBrowser( const char *name, QWidget *parent )
@@ -249,13 +271,15 @@ FileBrowser::initView()
     }
 
     connect( d->fileView->header(), SIGNAL(geometriesChanged()),
-                                    SLOT(slotSaveHeaderState()) );
+                                    SLOT(updateHeaderState()) );
     connect( d->fileView, SIGNAL(navigateToDirectory(QModelIndex)),
                           SLOT(slotNavigateToDirectory(QModelIndex)) );
 }
 
 FileBrowser::~FileBrowser()
 {
+    if( d->fileView->model() == d->mimeFilterProxyModel && d->currentPath != placesUrl )
+        d->saveHeaderState();
     delete d;
 }
 
@@ -449,10 +473,14 @@ FileBrowser::setDir( const KUrl &dir )
 {
     if( dir == placesUrl )
     {
-        d->fileView->setModel( d->placesModel );
-        d->fileView->setSelectionMode( QAbstractItemView::SingleSelection );
-        d->fileView->header()->setVisible( false );
-        d->fileView->setDragEnabled( false );
+        if( d->currentPath != placesUrl )
+        {
+            d->saveHeaderState();
+            d->fileView->setModel( d->placesModel );
+            d->fileView->setSelectionMode( QAbstractItemView::SingleSelection );
+            d->fileView->header()->setVisible( false );
+            d->fileView->setDragEnabled( false );
+        }
     }
     else
     {
@@ -464,7 +492,6 @@ FileBrowser::setDir( const KUrl &dir )
             d->fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
             d->fileView->setDragEnabled( true );
             d->fileView->header()->setVisible( true );
-            d->restoreHeaderState(); // read config so the header state is restored
         }
 
         d->kdirModel->dirLister()->openUrl( dir );

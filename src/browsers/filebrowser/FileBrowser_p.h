@@ -59,10 +59,12 @@ public:
     void readConfig();
     void writeConfig();
     void restoreHeaderState();
+    void saveHeaderState();
+
     void updateNavigateActions();
     BreadcrumbSiblingList siblingsForDir( const KUrl &path );
 
-    void slotSaveHeaderState();
+    void updateHeaderState();
 
     QList<QAction *> columnActions; //!< Maintains the mapping action<->column
 
@@ -87,6 +89,8 @@ public:
     UniqueStack<KUrl> forwardStack;
 
 private:
+    void restoreDefaultHeaderState();
+
     FileBrowser *const q;
 };
 
