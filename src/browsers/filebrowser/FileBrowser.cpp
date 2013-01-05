@@ -119,8 +119,14 @@ FileBrowser::Private::siblingsForDir( const KUrl &path )
         for( int i = 0; i < placesModel->rowCount(); i++ )
         {
             QModelIndex idx = placesModel->index( i, 0 );
+
+            QString name = idx.data( Qt::DisplayRole ).toString();
+            QString url = idx.data( KFilePlacesModel::UrlRole ).toString();
+            if( url.isEmpty() )
+                // the place perhaps needs mounting, use places url instead
+                url = placesString + name;
             siblings << BreadcrumbSibling( idx.data( Qt::DecorationRole ).value<QIcon>(),
-                    idx.data().toString(), idx.data( KFilePlacesModel::UrlRole ).toString() );
+                                           name, url );
         }
     }
     else if( path.isLocalFile() )
@@ -352,6 +358,8 @@ FileBrowser::addItemActivated( const QString &callbackString )
         return;
 
     KUrl newPath;
+    // we have been called with a places name, it means that we'll probably have to mount
+    // the place
     if( callbackString.startsWith( placesString ) )
     {
         QString name = callbackString.mid( placesString.length() );
@@ -360,6 +368,11 @@ FileBrowser::addItemActivated( const QString &callbackString )
             QModelIndex idx = d->placesModel->index( i, 0 );
             if( idx.data().toString() == name )
             {
+                if( idx.data( KFilePlacesModel::SetupNeededRole ).toBool() )
+                {
+                    d->bottomPlacesModel->requestSetup( d->placesModel->mapToSource( idx ) );
+                    return;
+                }
                 newPath = idx.data( KFilePlacesModel::UrlRole ).toString();
                 break;
             }
@@ -413,8 +426,8 @@ FileBrowser::setupAddItems()
     // special handling for the first additional item
     if( placesIndex.isValid() )
     {
-        name = d->placesModel->data( placesIndex, Qt::DisplayRole ).toString();
-        callback = placesString + name;
+        name = placesIndex.data( Qt::DisplayRole ).toString();
+        callback = placesIndex.data( KFilePlacesModel::UrlRole ).toString();
 
         KUrl currPlaceUrl = d->placesModel->data( placesIndex, KFilePlacesModel::UrlRole ).toUrl();
         currentPosition = currPlaceUrl.url( KUrl::AddTrailingSlash ).length();
@@ -549,7 +562,7 @@ FileBrowser::home()
 }
 
 void
-FileBrowser::setupDone( const QModelIndex & index, bool success )
+FileBrowser::setupDone( const QModelIndex &index, bool success )
 {
     if( success )
     {
