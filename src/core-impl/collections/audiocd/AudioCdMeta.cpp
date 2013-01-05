@@ -110,36 +110,6 @@ AudioCdTrack::year() const
     return YearPtr::staticCast( m_year );
 }
 
-void
-AudioCdTrack::setAlbum( const QString &newAlbum )
-{
-    Q_UNUSED( newAlbum )
-}
-
-void
-AudioCdTrack::setArtist( const QString &newArtist )
-{
-    Q_UNUSED( newArtist )
-}
-
-void
-AudioCdTrack::setComposer( const QString &newComposer )
-{
-    Q_UNUSED( newComposer )
-}
-
-void
-AudioCdTrack::setGenre( const QString &newGenre )
-{
-    Q_UNUSED( newGenre )
-}
-
-void
-AudioCdTrack::setYear( int newYear )
-{
-    Q_UNUSED( newYear )
-}
-
 qreal
 AudioCdTrack::bpm() const
 {

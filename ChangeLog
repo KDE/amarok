@@ -15,6 +15,7 @@ VERSION 2.7
     * Removed alpha state and not really working spectrum analyzer applet.
 
   BUGFIXES:
+    * Audio CD: fix crash due to no composer being set. (BR 293698)
     * Audio CD: fix track recreation on startup. (BR 312685)
     * Fix incorrect display of folder names containing & (ampersand) in File
       browser breadcrumbs. (BR 244817)

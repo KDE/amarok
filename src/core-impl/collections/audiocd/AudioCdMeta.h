@@ -62,12 +62,6 @@ class AudioCdTrack : public Meta::Track
         virtual ComposerPtr composer() const;
         virtual YearPtr year() const;
 
-        virtual void setAlbum ( const QString &newAlbum );
-        virtual void setArtist ( const QString &newArtist );
-        virtual void setGenre ( const QString &newGenre );
-        virtual void setComposer ( const QString &newComposer );
-        virtual void setYear ( int newYear );
-
         virtual void setTitle( const QString &newTitle );
 
         virtual qreal bpm() const;

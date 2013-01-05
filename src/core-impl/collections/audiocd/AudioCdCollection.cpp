@@ -199,6 +199,8 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
     Meta::AudioCdArtistPtr artistPtr = Meta::AudioCdArtistPtr( new  Meta::AudioCdArtist( artist ) );
     memoryCollection()->addArtist( Meta::ArtistPtr::staticCast( artistPtr ) );
+    Meta::AudioCdComposerPtr composerPtr = Meta::AudioCdComposerPtr( new Meta::AudioCdComposer( QString() ) );
+    memoryCollection()->addComposer( Meta::ComposerPtr::staticCast( composerPtr ) );
     Meta::AudioCdAlbumPtr albumPtr = Meta::AudioCdAlbumPtr( new Meta::AudioCdAlbum( album ) );
     albumPtr->setAlbumArtist( artistPtr );
     memoryCollection()->addAlbum( Meta::AlbumPtr::staticCast( albumPtr ) );
@@ -309,6 +311,9 @@ AudioCdCollection::infoFetchComplete( KJob *job )
                 trackArtistPtr->addTrack( trackPtr );
                 trackPtr->setArtist( trackArtistPtr );
             }
+
+            composerPtr->addTrack( trackPtr );
+            trackPtr->setComposer( composerPtr );
 
             albumPtr->addTrack( trackPtr );
             trackPtr->setAlbum( albumPtr );
@@ -463,6 +468,8 @@ AudioCdCollection::noInfoAvailable()
 
     Meta::AudioCdArtistPtr artistPtr = Meta::AudioCdArtistPtr( new Meta::AudioCdArtist( artist ) );
     memoryCollection()->addArtist( Meta::ArtistPtr::staticCast( artistPtr ) );
+    Meta::AudioCdComposerPtr composerPtr = Meta::AudioCdComposerPtr( new Meta::AudioCdComposer( QString() ) );
+    memoryCollection()->addComposer( Meta::ComposerPtr::staticCast( composerPtr ) );
     Meta::AudioCdAlbumPtr albumPtr = Meta::AudioCdAlbumPtr( new Meta::AudioCdAlbum( album ) );
     albumPtr->setAlbumArtist( artistPtr );
     memoryCollection()->addAlbum( Meta::AlbumPtr::staticCast( albumPtr ) );
@@ -492,6 +499,9 @@ AudioCdCollection::noInfoAvailable()
 
         artistPtr->addTrack( trackPtr );
         trackPtr->setArtist( artistPtr );
+
+        composerPtr->addTrack( trackPtr );
+        trackPtr->setComposer( composerPtr );
 
         albumPtr->addTrack( trackPtr );
         trackPtr->setAlbum( albumPtr );
