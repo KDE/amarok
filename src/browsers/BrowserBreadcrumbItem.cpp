@@ -106,7 +106,9 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
         int i = 0;
         foreach( const BreadcrumbSibling &sibling, childItems )
         {
-            QAction *action = menu->addAction( sibling.icon, sibling.name );
+            QString visibleName = sibling.name;
+            visibleName.replace( '&', "&&" ); // prevent bug 244817
+            QAction *action = menu->addAction( sibling.icon, visibleName );
             action->setProperty( "callback", sibling.callback );
 
             // the current action should be bolded
