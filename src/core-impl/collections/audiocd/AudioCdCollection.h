@@ -89,14 +89,14 @@ public:
     virtual void startFullScan(); //Override this one as I really don't want to move parsing to the handler atm.
     virtual void startFullScanDevice() { startFullScan(); }
 
-    bool isReady();
-
 public slots:
     virtual void eject();
 
 private slots:
     void audioCdEntries( KIO::Job *job, const KIO::UDSEntryList &list );
+    void slotEntriesJobDone( KJob *job );
     void infoFetchComplete( KJob *job );
+    void checkForStartPlayRequest();
 
 private:
     void readAudioCdSettings();
@@ -115,6 +115,8 @@ private:
 
     void updateProxyTracks();
 
+    QMap<int, KUrl> m_cddbTextFiles;
+
     QString m_cdName;
     QString m_discCddbId;
     QString m_udi;
@@ -125,8 +127,6 @@ private:
     QString m_albumNamePattern;
 
     QMap<KUrl, MetaProxy::Track*> m_proxyMap;
-
-    bool m_ready;
 };
 
 } //namespace Collections

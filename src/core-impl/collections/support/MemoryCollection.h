@@ -128,9 +128,14 @@ class MemoryCollection
             m_labelToTrackMap.insert( labelPtr, tracks );
         }
 
+        /**
+         * Return a pointer to MemoryCollection's internal lock. Useful to use
+         * QReadWriteLocker instead of acquireRead/WriteLock() and releaseLock()
+         */
+        QReadWriteLock *mapLock() const { return &m_readWriteLock; }
 
     protected:
-        QReadWriteLock m_readWriteLock;
+        mutable QReadWriteLock m_readWriteLock;
         TrackMap m_trackMap;
         ArtistMap m_artistMap;
         AlbumMap m_albumMap;

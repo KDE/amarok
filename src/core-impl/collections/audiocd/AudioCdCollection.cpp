@@ -54,6 +54,8 @@ using namespace Collections;
 
 AMAROK_EXPORT_COLLECTION( AudioCdCollectionFactory, audiocdcollection )
 
+static const QString unknownCddbId( "unknown" );
+
 AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVariantList &args )
     : MediaDeviceCollectionFactory<AudioCdCollection>( parent, args, new AudioCdConnectionAssistant() )
 {
@@ -63,9 +65,11 @@ AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVari
 AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
    : MediaDeviceCollection()
    , m_encodingFormat( OGG )
-   , m_ready( false )
 {
     DEBUG_BLOCK
+    // so that `amarok --cdplay` works:
+    connect( this, SIGNAL(collectionReady(Collections::Collection*)),
+                   SLOT(checkForStartPlayRequest()) );
 
     debug() << "Getting Audio CD info";
     AudioCdDeviceInfo *cdInfo = qobject_cast<AudioCdDeviceInfo *>( info );
@@ -104,34 +108,42 @@ AudioCdCollection::readCd()
     KIO::ListJob *listJob = KIO::listRecursive( audiocdUrl(), KIO::HideProgressInfo, false );
     connect( listJob, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
              this, SLOT(audioCdEntries(KIO::Job*,KIO::UDSEntryList)) );
+    connect( listJob, SIGNAL(result(KJob*)), SLOT(slotEntriesJobDone(KJob*)) );
 }
 
 void
 AudioCdCollection::audioCdEntries( KIO::Job *job, const KIO::UDSEntryList &list )
 {
+    DEBUG_BLOCK
+    Q_UNUSED( job )
+    for( KIO::UDSEntryList::ConstIterator it = list.begin(); it != list.end(); ++it )
+    {
+        const KIO::UDSEntry &entry = *it;
+        QString name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
+        if( name.endsWith( QLatin1String(".txt") ) )
+            m_cddbTextFiles.insert( entry.numberValue( KIO::UDSEntry::UDS_SIZE ), audiocdUrl( name ) );
+    }
+}
+
+void
+AudioCdCollection::slotEntriesJobDone( KJob *job )
+{
+    DEBUG_BLOCK
     if( job->error() )
+        warning() << __PRETTY_FUNCTION__ << job->errorString() << job->errorText();
+
+    if( m_cddbTextFiles.isEmpty() )
     {
-        error() << job->error();
-        job->deleteLater();
+        warning() << __PRETTY_FUNCTION__ << "haven't found .txt file under audiocd:/, but continuing";
+        noInfoAvailable();
+        return;
     }
-    else
-    {
-        KIO::UDSEntryList::ConstIterator it = list.begin();
-        const KIO::UDSEntryList::ConstIterator end = list.end();
-        for( ; it != end; ++it )
-        {
-            const KIO::UDSEntry &entry = *it;
-            QString name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
-            if( name.endsWith( QLatin1String(".txt") ) )
-            {
-                KUrl url =  audiocdUrl( name );
-                KIO::StoredTransferJob *tjob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-                connect( tjob, SIGNAL(result(KJob*)), SLOT(infoFetchComplete(KJob*)) );
-                job->deleteLater();
-                break;
-            }
-        }
-    }
+
+    int biggestTextFile = m_cddbTextFiles.keys().last();
+    KUrl url = m_cddbTextFiles.value( biggestTextFile );
+    m_cddbTextFiles.clear(); // save memory
+    KIO::StoredTransferJob *tjob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
+    connect( tjob, SIGNAL(result(KJob*)), SLOT(infoFetchComplete(KJob*)) );
 }
 
 void
@@ -140,187 +152,187 @@ AudioCdCollection::infoFetchComplete( KJob *job )
     DEBUG_BLOCK
     if( job->error() )
     {
-        error() << job->error();
+        error() << job->error() << job->errorString() << job->errorText();
         job->deleteLater();
         noInfoAvailable();
+        return;
     }
-    else
+
+    KIO::StoredTransferJob *tjob = static_cast<KIO::StoredTransferJob*>( job );
+    QString cddbInfo = tjob->data();
+
+    KEncodingProber prober;
+    KEncodingProber::ProberState result = prober.feed( tjob->data() );
+    if( result != KEncodingProber::NotMe )
+        cddbInfo = QTextCodec::codecForName( prober.encoding() )->toUnicode( tjob->data() );
+
+    debug() << "Encoding: " << prober.encoding();
+    debug() << "got cddb info: " << cddbInfo;
+    if (cddbInfo.length() == 0) {
+        job->deleteLater();
+        noInfoAvailable();
+        return;
+    }
+
+    int startIndex;
+    int endIndex;
+
+    QString artist;
+    QString album;
+    QString year;
+    QString genre;
+
+    startIndex = cddbInfo.indexOf( "DTITLE=", 0 );
+    if ( startIndex != -1 )
     {
-        KIO::StoredTransferJob *tjob = static_cast<KIO::StoredTransferJob*>( job );
-        QString cddbInfo = tjob->data();
+        startIndex += 7;
+        endIndex = cddbInfo.indexOf( "\n", startIndex );
+        QString compoundTitle = cddbInfo.mid( startIndex, endIndex - startIndex );
 
-        KEncodingProber prober;
-        KEncodingProber::ProberState result = prober.feed( tjob->data() );
-        if( result != KEncodingProber::NotMe )
-           cddbInfo = QTextCodec::codecForName( prober.encoding() )->toUnicode( tjob->data() );
+        debug() << "compoundTitle: " << compoundTitle;
 
-        debug() << "Encoding: " << prober.encoding();
-        debug() << "got cddb info: " << cddbInfo;
-        if (cddbInfo.length() == 0) {
-            job->deleteLater();
-            noInfoAvailable();
-            return;
-        }
+        QStringList compoundTitleList = compoundTitle.split( " / " );
 
-        int startIndex;
-        int endIndex;
+        artist = compoundTitleList.at( 0 );
+        album = compoundTitleList.at( 1 );
+    }
 
-        QString artist;
-        QString album;
-        QString year;
-        QString genre;
+    Meta::AudioCdArtistPtr artistPtr = Meta::AudioCdArtistPtr( new  Meta::AudioCdArtist( artist ) );
+    memoryCollection()->addArtist( Meta::ArtistPtr::staticCast( artistPtr ) );
+    Meta::AudioCdAlbumPtr albumPtr = Meta::AudioCdAlbumPtr( new Meta::AudioCdAlbum( album ) );
+    albumPtr->setAlbumArtist( artistPtr );
+    memoryCollection()->addAlbum( Meta::AlbumPtr::staticCast( albumPtr ) );
 
-        startIndex = cddbInfo.indexOf( "DTITLE=", 0 );
-        if ( startIndex != -1 )
+
+    startIndex = cddbInfo.indexOf( "DYEAR=", 0 );
+    if ( startIndex != -1 )
+    {
+        startIndex += 6;
+        endIndex = cddbInfo.indexOf( "\n", startIndex );
+        year = cddbInfo.mid( startIndex, endIndex - startIndex );
+    }
+
+    Meta::AudioCdYearPtr yearPtr = Meta::AudioCdYearPtr( new Meta::AudioCdYear( year ) );
+    memoryCollection()->addYear( Meta::YearPtr::staticCast( yearPtr ) );
+
+
+    startIndex = cddbInfo.indexOf( "DGENRE=", 0 );
+    if ( startIndex != -1 )
+    {
+        startIndex += 7;
+        endIndex = cddbInfo.indexOf( "\n", startIndex );
+        genre = cddbInfo.mid( startIndex, endIndex - startIndex );
+    }
+
+    Meta::AudioCdGenrePtr genrePtr = Meta::AudioCdGenrePtr( new Meta::AudioCdGenre( genre ) );
+    memoryCollection()->addGenre( Meta::GenrePtr::staticCast( genrePtr ) );
+
+    m_discCddbId = unknownCddbId;
+
+    startIndex = cddbInfo.indexOf( "DISCID=", 0 );
+    if ( startIndex != -1 )
+    {
+        startIndex += 7;
+        endIndex = cddbInfo.indexOf( "\n", startIndex );
+        m_discCddbId = cddbInfo.mid( startIndex, endIndex - startIndex );
+    }
+
+    //MediaDeviceMonitor::instance()->setCurrentCdId( m_discCddbId );
+
+    //get the list of tracknames
+    startIndex = cddbInfo.indexOf( "TTITLE0=", 0 );
+    if ( startIndex != -1 )
+    {
+        endIndex = cddbInfo.indexOf( "\nEXTD=", startIndex );
+        QString tracksBlock = cddbInfo.mid( startIndex, endIndex - startIndex );
+        debug() << "Tracks block: " << tracksBlock;
+        QStringList tracksBlockList = tracksBlock.split( '\n' );
+
+        int numberOfTracks = tracksBlockList.count();
+
+        for ( int i = 0; i < numberOfTracks; i++ )
         {
-            startIndex += 7;
-            endIndex = cddbInfo.indexOf( "\n", startIndex );
-            QString compoundTitle = cddbInfo.mid( startIndex, endIndex - startIndex );
+            QString prefix = "TTITLE" + QString::number( i ) + '=';
+            debug() << "prefix: " << prefix;
+            QString trackName = tracksBlockList.at( i );
+            trackName = trackName.remove( prefix );
 
-            debug() << "compoundTitle: " << compoundTitle;
+            QString trackArtist;
+            //check if a track artist is included in the track name:
 
-            QStringList compoundTitleList = compoundTitle.split( " / " );
-
-            artist = compoundTitleList.at( 0 );
-            album = compoundTitleList.at( 1 );
-        }
-
-        Meta::AudioCdArtistPtr artistPtr = Meta::AudioCdArtistPtr( new  Meta::AudioCdArtist( artist ) );
-        memoryCollection()->addArtist( Meta::ArtistPtr::staticCast( artistPtr ) );
-        Meta::AudioCdAlbumPtr albumPtr = Meta::AudioCdAlbumPtr( new Meta::AudioCdAlbum( album ) );
-        albumPtr->setAlbumArtist( artistPtr );
-        memoryCollection()->addAlbum( Meta::AlbumPtr::staticCast( albumPtr ) );
-
-
-        startIndex = cddbInfo.indexOf( "DYEAR=", 0 );
-        if ( startIndex != -1 )
-        {
-            startIndex += 6;
-            endIndex = cddbInfo.indexOf( "\n", startIndex );
-            year = cddbInfo.mid( startIndex, endIndex - startIndex );
-        }
-
-        Meta::AudioCdYearPtr yearPtr = Meta::AudioCdYearPtr( new Meta::AudioCdYear( year ) );
-        memoryCollection()->addYear( Meta::YearPtr::staticCast( yearPtr ) );
-
-
-        startIndex = cddbInfo.indexOf( "DGENRE=", 0 );
-        if ( startIndex != -1 )
-        {
-            startIndex += 7;
-            endIndex = cddbInfo.indexOf( "\n", startIndex );
-            genre = cddbInfo.mid( startIndex, endIndex - startIndex );
-        }
-
-        Meta::AudioCdGenrePtr genrePtr = Meta::AudioCdGenrePtr( new Meta::AudioCdGenre( genre ) );
-        memoryCollection()->addGenre( Meta::GenrePtr::staticCast( genrePtr ) );
-
-        m_discCddbId = "unknown";
-
-        startIndex = cddbInfo.indexOf( "DISCID=", 0 );
-        if ( startIndex != -1 )
-        {
-            startIndex += 7;
-            endIndex = cddbInfo.indexOf( "\n", startIndex );
-            m_discCddbId = cddbInfo.mid( startIndex, endIndex - startIndex );
-        }
-
-        //MediaDeviceMonitor::instance()->setCurrentCdId( m_discCddbId );
-
-        //get the list of tracknames
-        startIndex = cddbInfo.indexOf( "TTITLE0=", 0 );
-        if ( startIndex != -1 )
-        {
-            endIndex = cddbInfo.indexOf( "\nEXTD=", startIndex );
-            QString tracksBlock = cddbInfo.mid( startIndex, endIndex - startIndex );
-            debug() << "Tracks block: " << tracksBlock;
-            QStringList tracksBlockList = tracksBlock.split( '\n' );
-
-            int numberOfTracks = tracksBlockList.count();
-
-            for ( int i = 0; i < numberOfTracks; i++ )
+            if ( trackName.contains( " / " ) )
             {
-                QString prefix = "TTITLE" + QString::number( i ) + '=';
-                debug() << "prefix: " << prefix;
-                QString trackName = tracksBlockList.at( i );
-                trackName = trackName.remove( prefix );
-
-                QString trackArtist;
-                //check if a track artist is included in the track name:
-
-                if ( trackName.contains( " / " ) )
-                {
-                    QStringList trackArtistList = trackName.split( " / " );
-                    trackName = trackArtistList.at( 1 );
-                    trackArtist = trackArtistList.at( 0 );
-
-                }
-
-                debug() << "Track name: " << trackName;
-
-                QString padding = (i + 1) < 10 ? "0" : QString();
-
-                QString baseFileName = m_fileNamePattern;
-                debug() << "Track Base File Name (before): " << baseFileName;
-
-                baseFileName.replace( "%{title}", trackName, Qt::CaseInsensitive );
-                baseFileName.replace( "%{number}", padding  + QString::number( i + 1 ), Qt::CaseInsensitive );
-                baseFileName.replace( "%{albumtitle}", album, Qt::CaseInsensitive );
-                baseFileName.replace( "%{trackartist}", trackArtist, Qt::CaseInsensitive );
-                baseFileName.replace( "%{albumartist}", artist, Qt::CaseInsensitive );
-                baseFileName.replace( "%{year}", year, Qt::CaseInsensitive );
-                baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
-
-                //we hack the url so the engine controller knows what track on the CD to play..
-                KUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i + 1 ) );
-
-                debug() << "Track Base File Name (after): " << baseFileName;
-                debug() << "Track url: " << baseUrl;
-
-                Meta::AudioCdTrackPtr trackPtr = Meta::AudioCdTrackPtr( new Meta::AudioCdTrack( this, trackName, baseUrl ) );
-
-                trackPtr->setTrackNumber( i + 1 );
-                trackPtr->setFileNameBase( baseFileName );
-                trackPtr->setLength( trackLength( i + 1 ) );
-
-                memoryCollection()->addTrack( Meta::TrackPtr::staticCast( trackPtr ) );
-
-                artistPtr->addTrack( trackPtr );
-
-                if ( trackArtist.isEmpty() )
-                    trackPtr->setArtist( artistPtr );
-                else
-                {
-                    albumPtr->setCompilation( true );
-
-                    Meta::AudioCdArtistPtr trackArtistPtr = Meta::AudioCdArtistPtr( new Meta::AudioCdArtist( trackArtist ) );
-                    trackArtistPtr->addTrack( trackPtr );
-                    trackPtr->setArtist( trackArtistPtr );
-                }
-
-                albumPtr->addTrack( trackPtr );
-                trackPtr->setAlbum( albumPtr );
-
-                genrePtr->addTrack( trackPtr );
-                trackPtr->setGenre( genrePtr );
-
-                yearPtr->addTrack( trackPtr );
-                trackPtr->setYear( yearPtr );
+                QStringList trackArtistList = trackName.split( " / " );
+                trackName = trackArtistList.at( 1 );
+                trackArtist = trackArtistList.at( 0 );
 
             }
+
+            debug() << "Track name: " << trackName;
+
+            QString padding = (i + 1) < 10 ? "0" : QString();
+
+            QString baseFileName = m_fileNamePattern;
+            debug() << "Track Base File Name (before): " << baseFileName;
+
+            baseFileName.replace( "%{title}", trackName, Qt::CaseInsensitive );
+            baseFileName.replace( "%{number}", padding  + QString::number( i + 1 ), Qt::CaseInsensitive );
+            baseFileName.replace( "%{albumtitle}", album, Qt::CaseInsensitive );
+            baseFileName.replace( "%{trackartist}", trackArtist, Qt::CaseInsensitive );
+            baseFileName.replace( "%{albumartist}", artist, Qt::CaseInsensitive );
+            baseFileName.replace( "%{year}", year, Qt::CaseInsensitive );
+            baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
+
+            //we hack the url so the engine controller knows what track on the CD to play..
+            KUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i + 1 ) );
+
+            debug() << "Track Base File Name (after): " << baseFileName;
+            debug() << "Track url: " << baseUrl;
+
+            Meta::AudioCdTrackPtr trackPtr = Meta::AudioCdTrackPtr( new Meta::AudioCdTrack( this, trackName, baseUrl ) );
+
+            trackPtr->setTrackNumber( i + 1 );
+            trackPtr->setFileNameBase( baseFileName );
+            trackPtr->setLength( trackLength( i + 1 ) );
+
+            memoryCollection()->addTrack( Meta::TrackPtr::staticCast( trackPtr ) );
+
+            artistPtr->addTrack( trackPtr );
+
+            if ( trackArtist.isEmpty() )
+                trackPtr->setArtist( artistPtr );
+            else
+            {
+                albumPtr->setCompilation( true );
+
+                Meta::AudioCdArtistPtr trackArtistPtr = Meta::AudioCdArtistPtr( new Meta::AudioCdArtist( trackArtist ) );
+                trackArtistPtr->addTrack( trackPtr );
+                trackPtr->setArtist( trackArtistPtr );
+            }
+
+            albumPtr->addTrack( trackPtr );
+            trackPtr->setAlbum( albumPtr );
+
+            genrePtr->addTrack( trackPtr );
+            trackPtr->setGenre( genrePtr );
+
+            yearPtr->addTrack( trackPtr );
+            trackPtr->setYear( yearPtr );
+
         }
-
-        //lets see if we can find a cover for the album:
-        if( AmarokConfig::autoGetCoverArt() )
-            The::coverFetcher()->queueAlbum( Meta::AlbumPtr::staticCast( albumPtr ) );
-
     }
 
-    emit ( updated() );
+    //lets see if we can find a cover for the album:
+    if( AmarokConfig::autoGetCoverArt() )
+        The::coverFetcher()->queueAlbum( Meta::AlbumPtr::staticCast( albumPtr ) );
+
     updateProxyTracks();
+    emit collectionReady( this );
+}
 
-    m_ready = true;
-
+void
+AudioCdCollection::checkForStartPlayRequest()
+{
     //be nice and check if MainWindow is just aching for an audio cd to start playing
     if( The::mainWindow()->isWaitingForCd() )
     {
@@ -440,7 +452,7 @@ AudioCdCollection::noInfoAvailable()
 {
     DEBUG_BLOCK
 
-    m_discCddbId = "unknown";
+    m_discCddbId = unknownCddbId;
 
     //MediaDeviceMonitor::instance()->setCurrentCdId( m_discCddbId );
 
@@ -495,11 +507,8 @@ AudioCdCollection::noInfoAvailable()
         trackName = "Track " + prefix + QString::number( i );
     }
 
-    emit ( updated() );
     updateProxyTracks();
-
-    m_ready = true;
-
+    emit collectionReady( this );
 }
 
 void
@@ -513,60 +522,44 @@ AudioCdCollection::readAudioCdSettings()
 }
 
 bool
-AudioCdCollection::possiblyContainsTrack(const KUrl & url) const
+AudioCdCollection::possiblyContainsTrack( const KUrl &url ) const
 {
-    // DEBUG_BLOCK;
-    // debug() << "match: " << url.url().startsWith( "audiocd:/" );
-    return url.url().startsWith( "audiocd:/" );
+    return url.protocol() == "audiocd";
 }
 
 Meta::TrackPtr
-AudioCdCollection::trackForUrl( const KUrl & url )
+AudioCdCollection::trackForUrl( const KUrl &url )
 {
-    DEBUG_BLOCK;
+    QReadLocker locker( memoryCollection()->mapLock() );
+    if( memoryCollection()->trackMap().contains( url.url() ) )
+        return memoryCollection()->trackMap().value( url.url() );
 
-    debug() << "Disk id: " << m_discCddbId;
-
-    if ( !m_discCddbId.isEmpty() )
+    QRegExp trackUrlScheme( "^audiocd:/([a-zA-Z0-9]*)/([0-9]{1,})" );
+    if( trackUrlScheme.indexIn( url.url() ) != 0 )
     {
-
-        QString urlString = url.url().remove( "audiocd:/" );
-
-        QStringList parts = urlString.split( '/' );
-
-        if ( parts.count() != 2 )
-            return Meta::TrackPtr();
-
-        QString discId = parts.at( 0 );
-
-        if ( discId != m_discCddbId )
-            return Meta::TrackPtr();
-
-        int trackNumber = parts.at( 1 ).toInt();
-
-        foreach( Meta::TrackPtr track, memoryCollection()->trackMap().values() )
-        {
-            if ( track->trackNumber() == trackNumber )
-                return track;
-        }
-
+        warning() << __PRETTY_FUNCTION__ << url.url() << "doesn't have correct sheme" << trackUrlScheme;
         return Meta::TrackPtr();
-
     }
-    else
+
+    const QString trackCddbId = trackUrlScheme.capturedTexts().value( 1 );
+    const int trackNumber = trackUrlScheme.capturedTexts().value( 2 ).toInt();
+    if( !trackCddbId.isEmpty() && trackCddbId != unknownCddbId &&
+        !m_discCddbId.isEmpty() && m_discCddbId != unknownCddbId &&
+        trackCddbId != m_discCddbId )
     {
-        if ( m_proxyMap.contains( url ) )
-        {
-            return Meta::TrackPtr( m_proxyMap.value( url ) );
-        }
-        else
-        {
-            MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), MetaProxy::Track::ManualLookup );
-            m_proxyMap.insert( url, ptrack );
-            return Meta::TrackPtr( ptrack );
-        }
+        warning() << __PRETTY_FUNCTION__ << "track with cddbId" << trackCddbId
+                  << "doesn't match our cddbId" << m_discCddbId;
+        return Meta::TrackPtr();
     }
 
+    foreach( const Meta::TrackPtr &track, memoryCollection()->trackMap() )
+    {
+        if( track->trackNumber() == trackNumber )
+            return track;
+    }
+
+    warning() << __PRETTY_FUNCTION__ << "track with number" << trackNumber << "not found";
+    return Meta::TrackPtr();
 }
 
 void
@@ -605,15 +598,4 @@ void AudioCdCollection::startFullScan()
 {
     DEBUG_BLOCK
     readCd();
-    emit collectionReady( this );
 }
-
-bool AudioCdCollection::isReady()
-{
-    return m_ready;
-}
-
-
-
-#include "AudioCdCollection.moc"
-

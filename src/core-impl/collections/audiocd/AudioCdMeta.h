@@ -116,7 +116,6 @@ class AudioCdTrack : public Meta::Track
         QString m_name;
         qint64 m_length;
         int m_trackNumber;
-        QString m_displayUrl;
         KUrl m_playableUrl;
         QString m_fileNameBase;
 };

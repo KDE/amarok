@@ -34,7 +34,6 @@ AudioCdTrack::AudioCdTrack( Collections::AudioCdCollection *collection, const QS
     , m_name( name)
     , m_length( 0 )
     , m_trackNumber( 0 )
-    , m_displayUrl( url.url() )
     , m_playableUrl( url )
 {
 }
@@ -53,8 +52,7 @@ AudioCdTrack::name() const
 KUrl
 AudioCdTrack::playableUrl() const
 {
-    KUrl url( m_playableUrl );
-    return url;
+    return m_playableUrl;
 }
 
 QString
@@ -66,7 +64,7 @@ AudioCdTrack::uidUrl() const
 QString
 AudioCdTrack::prettyUrl() const
 {
-    return m_displayUrl;
+    return m_playableUrl.prettyUrl();
 }
 
 bool
@@ -343,7 +341,6 @@ AudioCdAlbum::name() const
 bool
 AudioCdAlbum::isCompilation() const
 {
-    DEBUG_BLOCK
     return m_isCompilation;
 }
 
@@ -356,7 +353,6 @@ AudioCdAlbum::canUpdateCompilation() const
 void
 AudioCdAlbum::setCompilation( bool compilation )
 {
-    DEBUG_BLOCK
     m_isCompilation = compilation;
 }
 

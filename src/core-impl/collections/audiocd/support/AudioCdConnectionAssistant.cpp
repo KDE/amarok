@@ -33,10 +33,7 @@ AudioCdConnectionAssistant::~AudioCdConnectionAssistant()
 bool
 AudioCdConnectionAssistant::identify( const QString& udi )
 {
-    DEBUG_BLOCK
-
     const Solid::Device device = Solid::Device(udi);
-
     if( device.is<Solid::OpticalDisc>() )
     {
         debug() << "OpticalDisc";
@@ -47,7 +44,6 @@ AudioCdConnectionAssistant::identify( const QString& udi )
             return true;
         }
     }
-
     return false;
 }
 
