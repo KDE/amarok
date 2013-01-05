@@ -107,7 +107,6 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
 
     private slots:
         void previewNextBatch();
-        void slotOrganizerFinished();
 
     private:
         QString buildFormatString() const;
@@ -123,7 +122,6 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         OrganizeCollectionOptionWidget* m_optionsWidget;
 
         TrackOrganizer *m_trackOrganizer;
-        bool m_trackOrganizerDone;
         bool m_detailed;
         Meta::TrackList m_allTracks;
         QString m_targetFileExtension;

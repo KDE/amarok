@@ -136,7 +136,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
                                                     QFlags<KDialog::ButtonCode> buttonMask )
     : KDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
-    , m_trackOrganizerDone( false )
     , m_detailed( true )
     , m_schemeModified( false )
     , m_conflict( false )
@@ -161,7 +160,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->setupUi( mainContainer );
 
     m_trackOrganizer = new TrackOrganizer( m_allTracks, this );
-    connect( m_trackOrganizer, SIGNAL(finished()), SLOT(slotOrganizerFinished()) );
 
     m_organizeCollectionWidget = new OrganizeCollectionWidget( mainContainer );
     connect( this, SIGNAL( accepted() ),  m_organizeCollectionWidget, SLOT( onAccept() ) );
@@ -303,8 +301,8 @@ OrganizeCollectionDialog::slotUpdatePreview()
 
     //empty the table, not only it's contents
     ui->previewTableWidget->setRowCount( 0 );
+    m_trackOrganizer->resetTrackOffset();
     m_conflict = false;
-    m_trackOrganizerDone = false;
 
     setCursor( Qt::BusyCursor );
 
@@ -314,7 +312,9 @@ OrganizeCollectionDialog::slotUpdatePreview()
 void
 OrganizeCollectionDialog::previewNextBatch() //private slot
 {
-    QMap<Meta::TrackPtr, QString> dests = m_trackOrganizer->getDestinations( 10 );
+    const int batchSize = 10;
+
+    QMap<Meta::TrackPtr, QString> dests = m_trackOrganizer->getDestinations( batchSize );
     QMapIterator<Meta::TrackPtr, QString> it( dests );
     while( it.hasNext() )
     {
@@ -354,18 +354,10 @@ OrganizeCollectionDialog::previewNextBatch() //private slot
         ui->conflictLabel->setText(""); // we clear the text instead of hiding it to retain the layout spacing
 
     //non-blocking way of updating the preview table.
-    if( !m_trackOrganizerDone )
-        QTimer::singleShot( 0, this, SLOT(previewNextBatch()) );
-}
-
-/** WARNING: this slot *has* to be connected with a Qt::DirectConnection to avoid overrun in
-  * previewNextBatch()
-  */
-void
-OrganizeCollectionDialog::slotOrganizerFinished()
-{
-    m_trackOrganizerDone = true;
-    unsetCursor();
+    if( dests.count() == batchSize )
+        QTimer::singleShot( 10, this, SLOT(previewNextBatch()) );
+    else
+        unsetCursor(); // finished
 }
 
 void

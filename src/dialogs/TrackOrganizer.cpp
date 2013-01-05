@@ -179,76 +179,46 @@ QMap< Meta::TrackPtr, QString > TrackOrganizer::getDestinations( unsigned int ba
             destinations.insert( track, buildDestination( m_format, track ) );
     }
 
-    if( m_trackOffset == m_allTracks.count() )
-    {
-        emit finished();
-        m_trackOffset = 0;
-    }
-
     return destinations;
 }
 
 void TrackOrganizer::setFormatString( const QString& format )
 {
-    if( m_format != format )
-        m_trackOffset = 0;
-
     m_format = format;
 }
 
 void TrackOrganizer::setFolderPrefix(const QString& prefix)
 {
-    if( m_folderPrefix != prefix )
-        m_trackOffset = 0;
-
     m_folderPrefix = prefix;
 }
 
 void TrackOrganizer::setAsciiOnly(bool flag)
 {
-    if( m_AsciiOnly != flag )
-        m_trackOffset = 0;
-
     m_AsciiOnly = flag;
 }
 
 void TrackOrganizer::setPostfixThe(bool flag)
 {
-    if( m_postfixThe != flag )
-        m_trackOffset = 0;
-
     m_postfixThe = flag;
 }
 
 void TrackOrganizer::setReplaceSpaces(bool flag)
 {
-    if( m_UnderscoresNotSpaces != flag )
-        m_trackOffset = 0;
-
     m_UnderscoresNotSpaces = flag;
 }
 
 void TrackOrganizer::setVfatSafe(bool flag)
 {
-    if( m_vfatSafe != flag )
-        m_trackOffset = 0;
-
     m_vfatSafe = flag;
 }
 
 void TrackOrganizer::setReplace(const QString& regex, const QString& string)
 {
-    if( m_regexPattern != regex || m_replaceString != string )
-        m_trackOffset = 0;
-
     m_regexPattern = regex;
     m_replaceString = string;
 }
 
 void TrackOrganizer::setTargetFileExtension( const QString &fileExtension )
 {
-    if( m_targetFileExtension != fileExtension )
-        m_trackOffset = 0;
-
     m_targetFileExtension = fileExtension;
 }

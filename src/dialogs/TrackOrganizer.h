@@ -81,7 +81,7 @@ public:
      * @param fileExtension the file extension
      */
     void setTargetFileExtension( const QString &fileExtension );
-    
+
     /**
      * Get the list of processed destinations
      * Only call after setting all the appropriate options
@@ -93,8 +93,10 @@ public:
      */
     QMap<Meta::TrackPtr, QString> getDestinations( unsigned int batchSize = 0 );
 
-signals:
-    void finished();
+    /** Call this function if you want getDestinations to return results starting from the
+        first track. */
+    void resetTrackOffset() { m_trackOffset = 0; }
+
 
 private:
     QString buildDestination( const QString &format, const Meta::TrackPtr &track ) const;
