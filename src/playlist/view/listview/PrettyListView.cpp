@@ -324,9 +324,66 @@ Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
 
     //make sure that the track we just activated is also set as the current index or
     //the selected index will get moved to the first row, making keyboard navigation difficult (BUG 225791)
-    selectionModel()->setCurrentIndex( idx, QItemSelectionModel::ClearAndSelect );
+    selectionModel_setCurrentIndex( idx, QItemSelectionModel::ClearAndSelect );
 
     setFocus();
+}
+
+
+// The following 2 functions are a workaround for crash BUG 222961 and BUG 229240:
+//   There appears to be a bad interaction between Qt 'setCurrentIndex()' and
+//   Qt 'selectedIndexes()' / 'selectionModel()->select()' / 'scrollTo()'.
+//
+//   'setCurrentIndex()' appears to do something bad with its QModelIndex parameter,
+//   leading to a crash deep within Qt.
+//
+//   It might be our fault, but we suspect a bug in Qt.  (Qt 4.6 at least)
+//
+//   The problem goes away if we use a fresh QModelIndex, which we also don't re-use
+//   afterwards.
+void
+Playlist::PrettyListView::setCurrentIndex( const QModelIndex &index )
+{
+    QModelIndex indexCopy = model()->index( index.row(), index.column() );
+    QListView::setCurrentIndex( indexCopy );
+}
+
+void
+Playlist::PrettyListView::selectionModel_setCurrentIndex( const QModelIndex &index, QItemSelectionModel::SelectionFlags command )
+{
+    QModelIndex indexCopy = model()->index( index.row(), index.column() );
+    selectionModel()->setCurrentIndex( indexCopy, command );
+}
+
+void
+Playlist::PrettyListView::showEvent( QShowEvent* event )
+{
+    QTimer::singleShot( 0, this, SLOT( fixInvisible() ) );
+
+    QListView::showEvent( event );
+}
+
+// This method is a workaround for BUG 184714.
+//
+// It prevents the playlist from becoming invisible (clear) after changing the model, while Amarok is hidden in the tray.
+// Without this workaround the playlist stays invisible when the application is restored from the tray.
+// This is especially a problem with the Dynamic Playlist mode, which modifies the model without user interaction.
+//
+// The bug only seems to happen with Qt 4.5.x, so it might actually be a bug in Qt.
+void
+Playlist::PrettyListView::fixInvisible() //SLOT
+{
+    // DEBUG_BLOCK
+
+    // Part 1: Palette change
+    newPalette( palette() );
+
+    // Part 2: Change item selection
+    const QItemSelection oldSelection( selectionModel()->selection() );
+    selectionModel()->clear();
+    selectionModel()->select( oldSelection, QItemSelectionModel::SelectCurrent );
+
+    // NOTE: A simple update() call is not sufficient, but in fact the above two steps are required.
 }
 
 void
@@ -507,7 +564,7 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
         QItemSelectionModel::SelectionFlags command = headerPressSelectionCommand( index, event );
         selectionModel()->select( selItems, command );
         // TODO: if you're doing shift-select on rows above the header, then the rows following the header will be lost from the selection
-        selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
+        selectionModel_setCurrentIndex( index, QItemSelectionModel::NoUpdate );
     }
     else
     {
