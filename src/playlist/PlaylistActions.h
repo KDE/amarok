@@ -142,7 +142,7 @@ signals:
 
 private slots:
     void slotTrackPlaying( Meta::TrackPtr engineTrack );
-    void slotPlayingStopped();
+    void slotPlayingStopped( qint64 finalPosition, qint64 trackLength );
 
 private:
     Actions();

@@ -78,9 +78,12 @@ Playlist::Actions::Actions()
     EngineController *engine = The::engineController();
 
     if( engine ) // test cases might create a playlist without having an EngineController
+    {
         connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr) ),
                  this, SLOT(slotTrackPlaying(Meta::TrackPtr)) );
-        connect( engine, SIGNAL(stopped(qint64,qint64)), SLOT(slotPlayingStopped()) );
+        connect( engine, SIGNAL(stopped(qint64,qint64)),
+                 this, SLOT(slotPlayingStopped(qint64,qint64)) );
+    }
 }
 
 Playlist::Actions::~Actions()
@@ -447,12 +450,17 @@ Playlist::Actions::slotTrackPlaying( Meta::TrackPtr engineTrack )
 }
 
 void
-Playlist::Actions::slotPlayingStopped()
+Playlist::Actions::slotPlayingStopped( qint64 finalPosition, qint64 trackLength )
 {
+    DEBUG_BLOCK;
+
     stopAfterPlayingTrack( 0 ); // reset possible "Stop after playing track";
 
-    if( m_nextTrackCandidate )
-        // this must ba a result of StopAfterCurrent or similar, nothing to do
+    // we have to determine if we reached the end of the playlist.
+    // in such a case there would be no new track and the current one
+    // played until the end.
+    // else this must be a result of StopAfterCurrent or the user stopped
+    if( m_nextTrackCandidate || finalPosition < trackLength )
         return;
 
     debug() << "nothing more to play...";

@@ -998,8 +998,10 @@ EngineController::slotFinished()
 
     if( !m_multiPlayback && !m_multiSource )
     {
+        // again. at this point the track is finished so it's trackPositionMs is 0
         if( !m_nextTrack && m_nextUrl.isEmpty() )
-            emit stopped( trackPositionMs(), m_currentTrack ? m_currentTrack->length() : 0 );
+            emit stopped( m_currentTrack ? m_currentTrack->length() : 0,
+                          m_currentTrack ? m_currentTrack->length() : 0 );
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
