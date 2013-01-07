@@ -276,15 +276,18 @@ PlaylistBrowserCategory::createNewFolder()
     QString groupName = name;
     if( !folderIndices.isEmpty() )
     {
-        QStringList names;
-        foreach( const QModelIndex &folder, folderIndices )
-            names << folder.data( Qt::DisplayRole ).toString();
-        names.sort();
-        QRegExp regex( "\\((\\d+)\\)" );
         int folderCount( 0 );
-        int matchIndex = regex.indexIn( names.last() );
-        if( matchIndex != -1 )
-            folderCount = regex.cap( 1 ).toInt();
+        foreach( const QModelIndex &folder, folderIndices )
+        {
+            QRegExp regex( name + " \\((\\d+)\\)" );
+            int matchIndex = regex.indexIn( folder.data( Qt::DisplayRole ).toString() );
+            if (matchIndex != -1)
+            {
+                int newNumber = regex.cap( 1 ).toInt();
+                if (newNumber > folderCount)
+                    folderCount = newNumber;
+            }
+        }
         groupName += QString( " (%1)" ).arg( folderCount + 1 );
     }
     QModelIndex idx = m_filterProxy->mapFromSource( m_byFolderProxy->createNewFolder( groupName ) );
