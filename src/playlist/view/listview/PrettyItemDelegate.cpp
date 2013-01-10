@@ -41,6 +41,7 @@
 #include "playlist/view/listview/InlineEditorWidget.h"
 
 #include <kratingpainter.h>
+#include <KColorScheme>
 
 #include <QFontMetricsF>
 #include <QPainter>
@@ -346,14 +347,30 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
         {
             const int x = markerOffsetX;
             const int y = nominalImageRect.y() + ( imageSize - smallIconSize );
-            const QRect rect( x, y, smallIconSize, smallIconSize );
-            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "queue_marker", smallIconSize, smallIconSize, "queue_marker" ) );
-            painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
+            const QString number = QString::number( queuePosition );
+            const int iconWidth = option.fontMetrics.boundingRect( number ).width() + smallIconSize / 2;
 
-            markerOffsetX += ( smallIconSize + iconSpacing );
+            const QRect rect( x, y, iconWidth, smallIconSize ); // shift text by 1 pixel left
+
+            const KColorScheme colorScheme( option.palette.currentColorGroup() );
+            QPen rectanglePen = painter->pen();
+            rectanglePen.setColor( colorScheme.foreground( KColorScheme::PositiveText ).color() );
+            QBrush rectangleBrush = colorScheme.background( KColorScheme::PositiveBackground );
+
+            painter->save();
+            painter->setPen( rectanglePen );
+            painter->setBrush( rectangleBrush );
+            painter->setRenderHint( QPainter::Antialiasing, true );
+            painter->drawRoundedRect( QRect( x, y - 1, iconWidth, smallIconSize ), smallIconSize / 3, smallIconSize / 3 );
+            painter->drawText( rect, Qt::AlignCenter, number );
+            painter->restore();
+
+            markerOffsetX += ( iconWidth + iconSpacing );
 
             if ( !showCover )
-                rowOffsetX = markerOffsetX;
+                rowOffsetX += ( iconWidth + iconSpacing );
+            else
+                rowOffsetX += qMax( 0, iconWidth - smallIconSize - iconSpacing );
         }
     }
 

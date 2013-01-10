@@ -15,6 +15,7 @@ VERSION 2.7
     * Removed alpha state and not really working spectrum analyzer applet.
 
   BUGFIXES:
+    * Fix queued track indicator overflow, patch by Riccardo Ferrazzo. (BR 253802)
     * Fix Amarok crashes when selecting song with Enter [@ Playlist::PrettyListView::trackActivate] (BR 312439)
     * Fix amarok starts at beginning of playlist if you previously stopped during a track (BR 312183)
     * Audio CD: fix crash due to no composer being set. (BR 293698)
