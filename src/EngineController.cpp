@@ -39,6 +39,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "playback/DelayedDoers.h"
 #include "playlist/PlaylistActions.h"
 
 #include <KMessageBox>
@@ -75,7 +76,6 @@ EngineController::EngineController()
     , m_multiSource( 0 )
     , m_playWhenFetched( true )
     , m_volume( 0 )
-    , m_currentIsAudioCd( false )
     , m_currentAudioCdTrack( 0 )
     , m_lastStreamStampPosition( -1 )
     , m_ignoreVolumeChangeAction ( false )
@@ -225,6 +225,17 @@ EngineController::initializePhonon()
         m_media.data()->setTransitionTime( AmarokConfig::trackDelayLength() ); // Also Handles gapless.
     else if( AmarokConfig::crossfadeLength() > 0 )  // TODO: Handle the possible options on when to crossfade.. the values are not documented anywhere however
         m_media.data()->setTransitionTime( -AmarokConfig::crossfadeLength() );
+
+    if( m_currentTrack )
+    {
+        unsubscribeFrom( m_currentTrack );
+        m_currentTrack.clear();
+    }
+    if( m_currentAlbum )
+    {
+        unsubscribeFrom( m_currentAlbum );
+        m_currentAlbum.clear();
+    }
 }
 
 
@@ -407,74 +418,26 @@ EngineController::playUrl( const KUrl &url, uint offset )
     debug() << "URL: " << url << url.url();
     debug() << "Offset: " << offset;
 
-    if( url.url().startsWith( "audiocd:/" ) )
+    m_currentAudioCdTrack = 0;
+    if( url.protocol() == "audiocd" )
     {
-        m_currentIsAudioCd = true;
-        //disconnect this signal for now or it will cause a loop that will cause a mutex lockup
-        disconnect( m_controller.data(), SIGNAL(titleChanged( int )),
-                    this, SLOT(slotTitleChanged( int )) );
-
-        debug() << "play track from cd";
-        QString trackNumberString = url.url();
-        trackNumberString = trackNumberString.remove( "audiocd:/" );
-
-        const QString devicePrefix( "?device=" );
-        QString device("");
-        if( trackNumberString.contains( devicePrefix ) )
+        QStringList pathItems = url.path().split( '/', QString::KeepEmptyParts );
+        if( pathItems.count() != 3 )
         {
-            int pos = trackNumberString.indexOf( devicePrefix );
-            device = QUrl::fromPercentEncoding(
-                        trackNumberString.mid( pos + devicePrefix.size() ).toLocal8Bit() );
-            trackNumberString = trackNumberString.left( pos );
-        }
-
-        QStringList parts = trackNumberString.split( '/' );
-
-        if( parts.count() != 2 )
+            error() << __PRETTY_FUNCTION__ << url.url() << "is not in expected format";
             return;
-
-        QString discId = parts.at( 0 );
-
-        //we really only want to play it if it is the disc that is currently present.
-        //In the case of CDs for which we don't have any id, any "unknown" CDs will
-        //be considered equal.
-
-
-        //FIXME:
-        //if ( MediaDeviceMonitor::instance()->currentCdId() != discId )
-        //    return;
-
-
-        int trackNumber = parts.at( 1 ).toInt();
-
-        debug() << "Old device: " << m_media.data()->currentSource().deviceName();
-
-        Phonon::MediaSource::Type type = m_media.data()->currentSource().type();
-        if( type != Phonon::MediaSource::Disc
-                || m_media.data()->currentSource().deviceName() != device )
-        {
-            m_media.data()->clear();
-            debug() << "New device: " << device;
-            m_media.data()->setCurrentSource( Phonon::MediaSource( Phonon::Cd, device ) );
         }
+        bool ok = false;
+        int trackNumber = pathItems.at( 2 ).toInt( &ok );
+        if( !ok || trackNumber <= 0 )
+        {
+            error() << __PRETTY_FUNCTION__ << "failed to get positive track number from" << url.url();
+            return;
+        }
+        QString device = url.queryItem( "device" );
 
-        debug() << "Track: " << trackNumber;
+        m_media.data()->setCurrentSource( Phonon::MediaSource( Phonon::Cd, device ) );
         m_currentAudioCdTrack = trackNumber;
-        m_controller.data()->setCurrentTitle( trackNumber );
-        debug() << "no boom?";
-
-        if( type == Phonon::MediaSource::Disc )
-        {
-            // The track has changed but the slot may not be called,
-            // because it may be still the same media source, which means
-            // we need to do it explicitly.
-            slotNewTrackPlaying( m_media.data()->currentSource() );
-        }
-
-        //reconnect it
-        connect( m_controller.data(), SIGNAL(titleChanged( int )),
-                 SLOT(slotTitleChanged( int )) );
-
     }
     else
     {
@@ -487,7 +450,17 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
     m_media.data()->clearQueue();
 
-    if( offset )
+    if( m_currentAudioCdTrack )
+    {
+        // call to play() is asynchronous and ->setCurrentTitle() can be only called on
+        // playing, buffering or paused media.
+        m_media.data()->pause();
+        DelayedSeeker *trackChanger = new DelayedTrackChanger( m_media.data(),
+                m_controller.data(), m_currentAudioCdTrack, offset );
+        connect( trackChanger, SIGNAL(trackPositionChanged(qint64,bool)),
+                 SIGNAL(trackPositionChanged(qint64,bool)) );
+    }
+    else if( offset )
     {
         // call to play() is asynchronous and ->seek() can be only called on playing,
         // buffering or paused media. Calling play() would lead to audible glitches,
@@ -535,7 +508,6 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
 
     {
         QMutexLocker locker( &m_mutex );
-        m_currentIsAudioCd = false;
         delete m_boundedPlayback;
         m_boundedPlayback = 0;
         delete m_multiPlayback; // need to get a new instance of multi if played again
@@ -747,7 +719,7 @@ EngineController::setNextTrack( Meta::TrackPtr track )
         // keep in sync with playUrl(), slotPlayableUrlFetched()
         if( url.isLocalFile() )
             m_media.data()->enqueue( url.toLocalFile() );
-        else
+        else if( url.protocol() != "audiocd" ) // we don't support gapless for CD, bug 305708
             m_media.data()->enqueue( url );
         m_nextTrack = track;
         m_nextUrl = url;
@@ -970,13 +942,6 @@ EngineController::slotAboutToFinish()
         stop( true );
         The::playlistActions()->requestNextTrack();
     }
-    else if( m_currentTrack && m_currentTrack->playableUrl().url().startsWith( "audiocd:/" ) )
-    {
-        debug() << "finished a CD track, don't care if queue is not empty, just get new track...";
-
-        The::playlistActions()->requestNextTrack();
-        slotFinished();
-    }
     else if( m_media.data()->queue().isEmpty() )
         The::playlistActions()->requestNextTrack();
 }
@@ -1170,10 +1135,8 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
             error() << "Stopping playlist.";
         }
         else
-        {
-            // and start the next song
-            slotAboutToFinish();
-        }
+            // and start the next song, even if the current failed to start playing
+            The::playlistActions()->requestUserNextTrack();
 
     }
     else if( newState == Phonon::PlayingState )
@@ -1305,12 +1268,14 @@ EngineController::slotSeekableChanged( bool seekable )
     emit seekableChanged( seekable );
 }
 
-void EngineController::slotTitleChanged( int titleNumber )
+void
+EngineController::slotTitleChanged( int titleNumber )
 {
     DEBUG_BLOCK
     if ( titleNumber != m_currentAudioCdTrack )
     {
-        slotAboutToFinish();
+        The::playlistActions()->requestNextTrack();
+        slotFinished();
     }
 }
 
@@ -1364,12 +1329,6 @@ void
 EngineController::metadataChanged( Meta::AlbumPtr album )
 {
     emit albumMetadataChanged( album );
-}
-
-
-bool EngineController::isPlayingAudioCd()
-{
-    return m_currentIsAudioCd;
 }
 
 QString EngineController::prettyNowPlaying( bool progress ) const
@@ -1465,34 +1424,4 @@ EngineController::updateStreamLength( qint64 length )
     lengthMetaData.insert( Meta::Field::URL, m_media.data()->currentSource().url() );
     lengthMetaData.insert( Meta::Field::LENGTH, length );
     emit currentMetadataChanged( lengthMetaData );
-}
-
-DelayedSeeker::DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo )
-    : m_mediaObject( mediaObject )
-    , m_seekTo( seekTo )
-{
-    Q_ASSERT( mediaObject );
-    connect( mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
-                SLOT(seekAndExplode(Phonon::State)) );
-}
-
-void
-DelayedSeeker::seekAndExplode( Phonon::State newState )
-{
-    switch( newState )
-    {
-        case Phonon::PlayingState:
-        case Phonon::BufferingState:
-        case Phonon::PausedState:
-            m_mediaObject->seek( m_seekTo );
-            emit trackPositionChanged( m_seekTo, /* userSeek */ true );
-            m_mediaObject->play();
-            // don't let be called twice, deleteLater() may fire really LATER
-            disconnect( m_mediaObject, 0, this, 0 );
-            deleteLater();
-            return;
-        default:
-            debug() << __PRETTY_FUNCTION__ << "newState" << newState << "not applicable, waiting...";
-            return;
-    }
 }

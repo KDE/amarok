@@ -184,11 +184,6 @@ public:
     QStringList eqBandsFreq() const;
 
     /**
-    * @return whether the currently playing track is from an audiocd
-    */
-    bool isPlayingAudioCd();
-
-    /**
      * @return QString with a pretty name for the current track
      * @param whether to include the playing progress (default false)
      */
@@ -453,7 +448,7 @@ Q_SIGNALS:
      * Called when playback state changes to PlayingState, StoppedState or PausedState.
      */
     void playbackStateChanged();
-    
+
     /**
     *   Is emitted when new audio Data is ready
     *   @param audioData The audio data that is available
@@ -575,7 +570,6 @@ private:
     QScopedPointer<Capabilities::MultiSourceCapability> m_multiSource;
     bool m_playWhenFetched;
     int m_volume;
-    bool m_currentIsAudioCd;
     int m_currentAudioCdTrack;
 
     QList<QVariantMap> m_metaDataHistory; // against metadata spam
@@ -604,27 +598,5 @@ private:
 namespace The {
     AMAROK_EXPORT EngineController* engineController();
 }
-
-/**
- * Helper class that calls seek() followed by play() on Phonon::MediaObject after it
- * emits stateChanged() with suitable new state and then auto-destructs itself.
- */
-class DelayedSeeker : public QObject
-{
-    Q_OBJECT
-
-    public:
-        DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo );
-
-    signals:
-        void trackPositionChanged( qint64 position, bool userSeek );
-
-    private slots:
-        void seekAndExplode( Phonon::State newState );
-
-    private:
-        Phonon::MediaObject *m_mediaObject;
-        qint64 m_seekTo;
-};
 
 #endif

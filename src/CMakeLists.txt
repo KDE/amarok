@@ -720,6 +720,7 @@ set(amaroklib_LIB_SRCS
     OpmlWriter.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
+    playback/DelayedDoers.cpp
     statemanagement/ApplicationController.cpp
     statemanagement/DefaultApplicationController.cpp
     toolbar/CurrentTrackToolbar.cpp
