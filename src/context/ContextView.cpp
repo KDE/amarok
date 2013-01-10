@@ -172,8 +172,6 @@ void ContextView::clearNoSave()
 
 void ContextView::slotTrackChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK;
-
     if( track )
         messageNotify( Current );
     else

@@ -123,7 +123,6 @@ PhotosEngine::metadataChanged( Meta::TrackPtr track )
 void
 PhotosEngine::update( bool force )
 {
-    DEBUG_BLOCK
     QString tmpYoutStr;
     // prevent
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();

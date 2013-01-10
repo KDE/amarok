@@ -59,8 +59,6 @@ void DBusAbstractAdaptor::setDBusPath( const QString &path )
 
 void DBusAbstractAdaptor::signalPropertyChange( const QString &property, const QVariant &value )
 {
-    DEBUG_BLOCK
-
     if ( m_updatedProperties.isEmpty() && m_invalidatedProperties.isEmpty() ) {
         QMetaObject::invokeMethod( this, "_m_emitPropertiesChanged", Qt::QueuedConnection );
         debug() << "MPRIS2: Queueing up a PropertiesChanged signal";
@@ -71,8 +69,6 @@ void DBusAbstractAdaptor::signalPropertyChange( const QString &property, const Q
 
 void DBusAbstractAdaptor::signalPropertyChange( const QString &property )
 {
-    DEBUG_BLOCK
-
     if ( !m_invalidatedProperties.contains( property ) ) {
         if ( m_updatedProperties.isEmpty() && m_invalidatedProperties.isEmpty() ) {
             QMetaObject::invokeMethod( this, "_m_emitPropertiesChanged", Qt::QueuedConnection );

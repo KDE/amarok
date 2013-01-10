@@ -75,8 +75,6 @@ void LyricsEngine::onTrackMetadataChanged( Meta::TrackPtr track )
 
 void LyricsEngine::update()
 {
-    DEBUG_BLOCK
-
     if( m_isUpdateInProgress )
         return;
 
@@ -169,8 +167,6 @@ void LyricsEngine::update()
 
 void LyricsEngine::newLyrics( const LyricsData &lyrics )
 {
-    DEBUG_BLOCK
-
     QString key = Qt::mightBeRichText( lyrics.text ) ? QLatin1String( "html" )
                                                      : QLatin1String( "lyrics" );
     removeAllData( "lyrics" );

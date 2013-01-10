@@ -132,7 +132,6 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
     if( name != QLatin1String("albums") )
         return;
 
-    DEBUG_BLOCK
     Meta::AlbumList albums = data[ "albums" ].value<Meta::AlbumList>();
     Meta::TrackPtr track = data[ "currentTrack" ].value<Meta::TrackPtr>();
     QString headerText = data[ "headerText" ].toString();
@@ -140,10 +139,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
     //Don't keep showing the albums for the artist of the last track that had album in the collection
     if( (m_currentTrack == track) && (m_albums == albums) )
-    {
-        debug() << "albums view data unchanged, not updating";
         return;
-    }
 
     if( albums.isEmpty() )
     {

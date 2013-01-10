@@ -143,7 +143,6 @@ LyricsAppletPrivate::determineActionIconsState()
 void
 LyricsAppletPrivate::showLyrics( const QString &text )
 {
-    DEBUG_BLOCK
     browser->clear();
     browser->setLyrics( text );
     showSuggestions = false;
@@ -377,8 +376,6 @@ LyricsAppletPrivate::_unsetCursor()
 void
 LyricsAppletPrivate::_trackDataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
     userAutoScrollOffset = 0;
     oldSliderPosition = 0;
 
@@ -553,7 +550,6 @@ LyricsApplet::connectSource( const QString& source )
 void
 LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
-    DEBUG_BLOCK
     Q_D( LyricsApplet );
 
     if( name != QLatin1String("lyrics") )

@@ -67,7 +67,6 @@ int ScriptableServiceManager::insertItem( const QString &serviceName, int level,
                                           const QString & albumOverride, const QString & artistOverride, const QString & genreOverride,
                                           const QString & composerOverride, int yearOverride, const QString &coverUrl)
 {
-    DEBUG_BLOCK
     if ( !m_serviceMap.contains( serviceName ) ) {
         //invalid service name
         return -1;

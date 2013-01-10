@@ -146,7 +146,6 @@ RecentlyPlayedListWidget::startQuery()
 void
 RecentlyPlayedListWidget::trackChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
     // engine controller will give a null track when playback stops
     if( !track )
     {

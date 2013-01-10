@@ -71,7 +71,6 @@ QString StreamItem::album() const
 
 QString StreamItem::artist() const
 {
-    DEBUG_BLOCK
     return m_artist;
 }
 
@@ -199,8 +198,6 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_populate
 
 int ScriptableServiceScript::insertItem( StreamItem* item )
 {
-    DEBUG_BLOCK
-            debug() << "artistOverride: item->artist()";
     return The::scriptableServiceManager()->insertItem( m_serviceName, item->level(), m_currentId, item->itemName(), item->infoHtml(), item->callbackData(), item->playableUrl(),
                                                         item->album(), item->artist(), item->genre(), item->composer(), item->year(),
                                                         item->coverUrl() );

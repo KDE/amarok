@@ -169,7 +169,6 @@ CurrentEngine::update( Meta::TrackPtr track )
         track == m_currentTrack )
         return;
 
-    DEBUG_BLOCK
     m_currentTrack = track;
     removeAllData( QLatin1String("current") );
 
@@ -206,7 +205,6 @@ CurrentEngine::update( Meta::AlbumPtr album )
     if( !m_requested.value( QLatin1String("albums") ) )
         return;
 
-    DEBUG_BLOCK
     m_lastQueryMaker = 0;
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
@@ -251,10 +249,8 @@ CurrentEngine::update( Meta::AlbumPtr album )
 void
 CurrentEngine::setupAlbumsData()
 {
-    DEBUG_BLOCK
     if( sender() == m_lastQueryMaker )
     {
-        debug() << "setting up" << m_albums.count() << "albums";
         m_albumData[ QLatin1String("albums") ] = QVariant::fromValue( m_albums );
         setData( QLatin1String("albums"), m_albumData );
     }

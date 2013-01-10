@@ -49,8 +49,6 @@ namespace AmarokScript
     bool
     ScriptImporter::loadQtBinding( const QString& binding )
     {
-        DEBUG_BLOCK
-        debug() << "importing qt bindings " << binding;
         QSet<QString> allowedBindings;
 #ifdef QTSCRIPTQTBINDINGS_FOUND
         allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
@@ -75,7 +73,7 @@ namespace AmarokScript
                 return true;
         }
         else
-            warning() <<"Qt Binding: " << binding << " not found!";
+            warning() << __PRETTY_FUNCTION__ << "Qt Binding" << binding << "not allowed!";
         return false;
     }
 

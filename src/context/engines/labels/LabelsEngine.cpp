@@ -110,7 +110,6 @@ LabelsEngine::dataQueryDone()
 void
 LabelsEngine::update( bool reload )
 {
-    DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
     if( !track )
@@ -183,7 +182,6 @@ LabelsEngine::update( bool reload )
 void
 LabelsEngine::fetchLastFm()
 {
-    DEBUG_BLOCK
     QStringList separators;
     QString currentArtist;
     QString currentTitle;

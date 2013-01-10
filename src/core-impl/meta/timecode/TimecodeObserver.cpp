@@ -66,8 +66,6 @@ TimecodeObserver::stopped( qint64 finalPosition, qint64 trackLength )
 void
 TimecodeObserver::trackPlaying( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
     if( track == m_currentTrack ) // no change, so do nothing
         return;
 
@@ -83,11 +81,7 @@ TimecodeObserver::trackPlaying( Meta::TrackPtr track )
 
     // now update to the new track
     if( track && track->has<Capabilities::TimecodeWriteCapability>() )
-    {
-        debug() << "current track name: " << track->prettyName();
         m_trackTimecodeable = true;
-        debug() << "Track timecodeable";
-    }
 
     m_currentTrack = track;
     m_currPos = 0;

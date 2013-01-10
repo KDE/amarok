@@ -138,7 +138,6 @@ PhotosApplet::photoAdded()
 void
 PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
-    DEBUG_BLOCK
     if( name != QLatin1String("photos") || data.isEmpty() )
         return;
 

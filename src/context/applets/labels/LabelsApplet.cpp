@@ -502,7 +502,6 @@ LabelsApplet::connectSource( const QString &source )
 void
 LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &data ) // SLOT
 {
-    DEBUG_BLOCK
     Q_UNUSED( name )
 
     if( data.isEmpty() )

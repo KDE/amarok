@@ -472,7 +472,6 @@ WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
 void
 WikipediaEnginePrivate::_checkRequireUpdate( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
     if( !track )
         return;
 
@@ -610,7 +609,6 @@ WikipediaEnginePrivate::fetchListing( const QString &title, const QString &hostL
 void
 WikipediaEnginePrivate::updateEngine()
 {
-    DEBUG_BLOCK
     Q_Q( WikipediaEngine );
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
