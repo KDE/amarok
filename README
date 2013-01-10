@@ -39,8 +39,8 @@ Required
       http://www.kde.org
 
     * Phonon backend, one of the following is strongly recommended
-      * phonon-vlc 0.6.1 (or newer)
       * phonon-gstreamer 4.6.2 (or newer)
+      * phonon-vlc 0.6.1 (or newer; as of 0.6.1 doesn't yet play Audio CDs, bug 313046)
 
     * Qt 4.8 (or newer)
       http://qt.nokia.com/
