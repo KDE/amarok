@@ -150,17 +150,23 @@ Action=Popup
 
 [Event/message]
 Name=Message
+Name[el]=Μήνυμα
+Name[ga]=Teachtaireacht
 Name[nl]=Bericht
 Name[pt]=Mensagem
 Name[pt_BR]=Mensagem
+Name[sk]=Správa
 Name[sl]=Sporočilo
 Name[sv]=Meddelande
 Name[uk]=Повідомлення
 Name[x-test]=xxMessagexx
 Comment=Amarok issued an uncategorized text message
+Comment[el]=Το Amarok εξέδωσε ένα μη κατηγοριοποιημένο μήνυμα σε απλό κείμενο
+Comment[ga]=Chuir Amarok teachtaireacht téacs gan catagóir amach
 Comment[nl]=Amarok stuurde een niet gecategoriseerd tekstbericht
 Comment[pt]=O Amarok enviou uma mensagem de texto sem categoria
 Comment[pt_BR]=O Amarok emitiu uma mensagem de texto não-categorizada
+Comment[sk]=Amarok vydal nekategorizovanú textovú správu
 Comment[sl]=Amarok je oddal nekategorizirano besedilno sporočilo
 Comment[sv]=Amarok skickade ett okategoriserat textmeddelande
 Comment[uk]=Програмою Amarok надіслано текстове повідомлення, що не належить до певної категорії
