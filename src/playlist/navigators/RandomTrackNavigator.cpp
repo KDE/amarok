@@ -4,6 +4,7 @@
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
+ * Copyright (c) 2013 Daniel Schmitz <daniel.schmitz@gmx.info>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -33,6 +34,7 @@
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {
     loadFromSourceModel();
+    qsrand( QDateTime::currentDateTime().toTime_t() );
 }
 
 void
