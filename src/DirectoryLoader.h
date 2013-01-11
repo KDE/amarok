@@ -38,7 +38,18 @@ class DirectoryLoader : public QObject
     Q_OBJECT
 
     public:
-        DirectoryLoader();
+        /**
+         * BlockingLoading: the tracks are loaded synchronously in the main thread,
+         *                  but you have a guarantee that their metadata is valid
+         *                  from start
+         * AsyncLoading: the tracks and loaded using MetaProxy::Tracks, initial metadata
+         *               are just stubs and the real ones are fetched in the banground,
+         *               then you get metadataUpdated() */
+        enum LoadingMode {
+            BlockingLoading,
+            AsyncLoading
+        };
+        DirectoryLoader( LoadingMode loadingMode = AsyncLoading );
         ~DirectoryLoader();
 
         void insertAtRow( int row ); // call before init to tell the loader the row to start inserting tracks
@@ -67,6 +78,7 @@ class DirectoryLoader : public QObject
          * the number of directory list operations. this is used so that
          * the last directory operations knows its the last */
         int m_listOperations;
+        LoadingMode m_loadingMode;
         bool m_localConnection; //!< was insertAtRow called? otherwise finishUrlList should deleteLater
         int m_row; //!< for insertAtRow
         KIO::KFileItemList m_expanded;

@@ -287,7 +287,8 @@ FileView::slotPrepareMoveTracks()
     if( list.isEmpty() )
         return;
 
-    DirectoryLoader* dl = new DirectoryLoader();
+    // copy/move to collection is a modal dialog anyway, prevent bug 313003
+    DirectoryLoader* dl = new DirectoryLoader( DirectoryLoader::BlockingLoading ); // auto-deletes itself
     connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotMoveTracks(Meta::TrackList)) );
     dl->init( list.urlList() );
 }
@@ -308,7 +309,8 @@ FileView::slotPrepareCopyTracks()
     if( list.isEmpty() )
         return;
 
-    DirectoryLoader* dl = new DirectoryLoader();
+    // copy/move to collection is a modal dialog anyway, prevent bug 313003
+    DirectoryLoader* dl = new DirectoryLoader( DirectoryLoader::BlockingLoading ); // auto-deletes itself
     connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotCopyTracks(Meta::TrackList)) );
     dl->init( list.urlList() );
 }

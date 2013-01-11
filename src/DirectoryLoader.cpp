@@ -27,9 +27,10 @@
 
 #include <KIO/Job>
 
-DirectoryLoader::DirectoryLoader()
+DirectoryLoader::DirectoryLoader( LoadingMode loadingMode )
     : QObject( 0 )
         , m_listOperations( 0 )
+        , m_loadingMode( loadingMode )
         , m_localConnection( false )
         , m_row( 0 )
 {}
@@ -141,9 +142,21 @@ DirectoryLoader::appendFile( const KUrl &url )
     }
     else if( MetaFile::Track::isTrack( url ) )
     {
-        MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
-        proxyTrack->setName( url.fileName() ); // set temporary name
-        m_tracks << Meta::TrackPtr( proxyTrack.data() );
+        Meta::TrackPtr track;
+        switch( m_loadingMode )
+        {
+            case AsyncLoading:
+            {
+                MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
+                proxyTrack->setName( url.fileName() ); // set temporary name
+                track = proxyTrack.data();
+                break;
+            }
+            case BlockingLoading:
+                track = new MetaFile::Track( url );
+                break;
+        }
+        m_tracks << track;
     }
 }
 
