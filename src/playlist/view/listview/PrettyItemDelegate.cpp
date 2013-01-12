@@ -248,9 +248,8 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
                                               const QModelIndex& index,
                                               bool headerRow ) const
 {
-    int rowCount = config.rows();
-
-    if ( rowCount == 0 )
+    const int rowCount = config.rows();
+    if( rowCount == 0 )
         return;
 
     QStyle *style;
@@ -259,29 +258,31 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
     else
         style = QApplication::style();
 
+    // we have to use the same metrics as the InlineEditorWidget or else
+    // the widgets will change places when editing
     const int horizontalSpace = style->pixelMetric( QStyle::PM_LayoutHorizontalSpacing );
     const int smallIconSize = style->pixelMetric( QStyle::PM_SmallIconSize );
     const int frameHMargin = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
     const int frameVMargin = style->pixelMetric( QStyle::PM_FocusFrameVMargin );
     const int iconSpacing = style->pixelMetric( QStyle::PM_ToolBarItemSpacing );
 
-    int rowOffsetX = frameHMargin * 2; // keep the text a little bit away from the border
+    int rowOffsetX = frameHMargin; // keep the text a little bit away from the border
     int rowOffsetY = frameVMargin;
 
-    const int imageSize = option.rect.height() - frameVMargin * 2;
-    QRectF nominalImageRect( frameHMargin,
-                             frameVMargin, imageSize, imageSize );
+    const int coverHeight = option.rect.height() - frameVMargin * 2;
+    QRectF nominalImageRect( frameHMargin, frameVMargin, coverHeight, coverHeight );
 
     const bool showCover = config.showCover();
-    if ( showCover )
-        rowOffsetX += imageSize + horizontalSpace + frameHMargin * 2;
+    if( showCover )
+        rowOffsetX += coverHeight + horizontalSpace/* + frameHMargin * 2*/;
 
-    const int rowHeight = (option.rect.height() - frameVMargin * 2) / rowCount;
-    const int rowWidth = option.rect.width() - rowOffsetX - frameHMargin * 2; // again, away from the border
+    const int contentHeight = option.rect.height() - frameVMargin * 2;
+    int rowHeight = contentHeight / rowCount;
+    const int rowWidth = option.rect.width() - rowOffsetX - frameHMargin * 2;
 
     // --- paint the active track background
     // We do not want to paint this for head items.
-    if ( !headerRow && index.data( ActiveTrackRole ).toBool() )
+    if( !headerRow && index.data( ActiveTrackRole ).toBool() )
     {
         //paint this in 3 parts to solve stretching issues with wide playlists
         //TODO: propper 9 part painting, but I don't want to bother with this until we
@@ -315,38 +316,40 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
     }
 
     // --- paint the cover
-    if ( showCover )
+    if( showCover )
     {
         QModelIndex coverIndex = index.model()->index( index.row(), CoverImage );
         QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
 
-        //offset cover if non square
-        QPointF offset = centerImage( albumPixmap, nominalImageRect );
-        QRectF imageRect( nominalImageRect.x() + offset.x(),
-                          nominalImageRect.y() + offset.y(),
-                          nominalImageRect.width() - offset.x() * 2,
-                          nominalImageRect.height() - offset.y() * 2 );
+        if( !albumPixmap.isNull() )
+        {
+            //offset cover if non square
+            QPointF offset = centerImage( albumPixmap, nominalImageRect );
+            QRectF imageRect( nominalImageRect.x() + offset.x(),
+                              nominalImageRect.y() + offset.y(),
+                              nominalImageRect.width() - offset.x() * 2,
+                              nominalImageRect.height() - offset.y() * 2 );
 
-        if ( !albumPixmap.isNull() )
             painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
+        }
 
         QModelIndex emblemIndex = index.model()->index( index.row(), SourceEmblem );
         QPixmap emblemPixmap = emblemIndex.data( Qt::DisplayRole ).value<QPixmap>();
 
-        if ( !emblemPixmap.isNull() )
+        if( !emblemPixmap.isNull() )
             painter->drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
     }
 
+    // --- paint the markers
     int markerOffsetX = frameHMargin;
     const int rowOffsetXBeforeMarkers = rowOffsetX;
-    // --- paint the markers
     if( !headerRow )
     {
         const int queuePosition = index.data( QueuePositionRole ).toInt();
         if( queuePosition > 0 )
         {
             const int x = markerOffsetX;
-            const int y = nominalImageRect.y() + ( imageSize - smallIconSize );
+            const int y = nominalImageRect.y() + ( coverHeight - smallIconSize );
             const QString number = QString::number( queuePosition );
             const int iconWidth = option.fontMetrics.boundingRect( number ).width() + smallIconSize / 2;
 
@@ -372,30 +375,30 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
             else
                 rowOffsetX += qMax( 0, iconWidth - smallIconSize - iconSpacing );
         }
-    }
 
-    if( !headerRow && index.data( MultiSourceRole ).toBool() )
-    {
-        const int x = markerOffsetX;
-        const int y = nominalImageRect.y() + ( imageSize - smallIconSize );
-        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "multi_marker", smallIconSize, smallIconSize, "multi_marker" ) );
+        if( index.data( MultiSourceRole ).toBool() )
+        {
+            const int x = markerOffsetX;
+            const int y = nominalImageRect.y() + ( coverHeight - smallIconSize );
+            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "multi_marker", smallIconSize, smallIconSize, "multi_marker" ) );
 
-        markerOffsetX += ( smallIconSize + iconSpacing );
+            markerOffsetX += ( smallIconSize + iconSpacing );
 
-        if ( !showCover )
-            rowOffsetX += ( smallIconSize + iconSpacing );
-    }
+            if ( !showCover )
+                rowOffsetX += ( smallIconSize + iconSpacing );
+        }
 
-    if( !headerRow && index.data( StopAfterTrackRole ).toBool() )
-    {
-        const int x = markerOffsetX;
-        const int y = nominalImageRect.y() + ( imageSize - smallIconSize );
-        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "stop_button", smallIconSize, smallIconSize, "stop_button" ) );
+        if( index.data( StopAfterTrackRole ).toBool() )
+        {
+            const int x = markerOffsetX;
+            const int y = nominalImageRect.y() + ( coverHeight - smallIconSize );
+            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "stop_button", smallIconSize, smallIconSize, "stop_button" ) );
 
-        markerOffsetX += ( smallIconSize + iconSpacing );
+            markerOffsetX += ( smallIconSize + iconSpacing );
 
-        if ( !showCover )
-            rowOffsetX += ( smallIconSize + iconSpacing );
+            if ( !showCover )
+                rowOffsetX += ( smallIconSize + iconSpacing );
+        }
     }
     int markersWidth = rowOffsetX - rowOffsetXBeforeMarkers;
 
@@ -405,38 +408,40 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
         trackArgs = buildTrackArgsMap( trackPtr );
 
     // --- paint all the rows
-    for ( int i = 0; i < rowCount; i++ )
+    for( int i = 0; i < rowCount; i++ )
     {
         LayoutItemConfigRow row = config.row( i );
-        qreal itemOffsetX = rowOffsetX;
-
         const int elementCount = row.count();
-
-        QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth, rowHeight );
-        int currentItemX = itemOffsetX;
 
         //we need to do a quick pass to figure out how much space is left for auto sizing elements
         qreal spareSpace = 1.0;
         int autoSizeElemCount = 0;
-        for ( int k = 0; k < elementCount; ++k )
+        for( int k = 0; k < elementCount; ++k )
         {
             spareSpace -= row.element( k ).size();
-            if ( row.element( k ).size() < 0.001 )
+            if( row.element( k ).size() < 0.001 )
                 autoSizeElemCount++;
         }
 
-        qreal spacePerAutoSizeElem = spareSpace / qreal( autoSizeElemCount );
+        const qreal spacePerAutoSizeElem = spareSpace / (qreal)autoSizeElemCount;
 
-        for ( int j = 0; j < elementCount; ++j )
+        //give left over pixels to the first rows. Widgets are doing it the same.
+        if( i == 0 )
+            rowHeight++;
+        if( i == ( contentHeight % rowCount ) )
+            rowHeight--;
+
+        int currentItemX = rowOffsetX;
+        for( int j = 0; j < elementCount; ++j )
         {
             LayoutItemConfigRowElement element = row.element( j );
 
             // -- calculate the size
             qreal size;
-            if ( element.size() > 0.0001 )
-                size = element.size();
-            else
+            if( element.size() < 0.001 )
                 size = spacePerAutoSizeElem;
+            else
+                size = element.size();
 
             qreal itemWidth;
             if( j == elementCount - 1 )
@@ -466,39 +471,32 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
             QModelIndex textIndex = index.model()->index( index.row(), value );
 
             // -- paint the element
-            if ( value == Rating )
+            if( value == Rating )
             {
                 int rating = textIndex.data( Qt::DisplayRole ).toInt();
 
-                Qt::Alignment ratingAlignment;
-                if ( alignment & Qt::AlignLeft )
-                    ratingAlignment = Qt::AlignLeft;
-                else if ( alignment & Qt::AlignRight )
-                    ratingAlignment = Qt::AlignRight;
-                else
-                    ratingAlignment = Qt::AlignCenter;
-
-                KRatingPainter::paintRating( painter, QRect( currentItemX, rowOffsetY, itemWidth, rowHeight ), ratingAlignment, rating, rating );
+                KRatingPainter::paintRating( painter,
+                                             QRect( currentItemX, rowOffsetY,
+                                                    itemWidth, rowHeight ),
+                                             element.alignment(), rating );
 
             }
-            else if ( value == Divider )
+            else if( value == Divider )
             {
-                QPixmap left = The::svgHandler()->renderSvg(
-                                                            "divider_left",
-                                                            1, rowHeight ,
-                                                            "divider_left" );
+                QPixmap left = The::svgHandler()->renderSvg( "divider_left",
+                                                             1, rowHeight ,
+                                                             "divider_left" );
 
-                QPixmap right = The::svgHandler()->renderSvg(
-                                                             "divider_right",
-                                                             1, rowHeight,
-                                                             "divider_right" );
+                QPixmap right = The::svgHandler()->renderSvg( "divider_right",
+                                                              1, rowHeight,
+                                                              "divider_right" );
 
-                if ( alignment & Qt::AlignLeft )
+                if( alignment & Qt::AlignLeft )
                 {
                     painter->drawPixmap( currentItemX, rowOffsetY, left );
                     painter->drawPixmap( currentItemX + 1, rowOffsetY, right );
                 }
-                else if ( alignment & Qt::AlignRight )
+                else if( alignment & Qt::AlignRight )
                 {
                     painter->drawPixmap( currentItemX + itemWidth - 1, rowOffsetY, left );
                     painter->drawPixmap( currentItemX + itemWidth, rowOffsetY, right );
@@ -515,10 +513,6 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
                 //we cannot ask the model for the moodbar directly as we have no
                 //way of asking for a specific size. Instead just get the track from
                 //the model and ask the moodbar manager ourselves.
-
-
-                debug() << "painting moodbar in PrettyItemDelegate::paintItem";
-
                 Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
 
                 if( The::moodbarManager()->hasMoodbar( track ) )
@@ -544,16 +538,18 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
                 {
                     painter->save();
                     QPen grayPen = painter->pen();
-                    grayPen.setColor( QColor( 127, 127, 127 ) );
+                    grayPen.setColor( QColor( 127, 127, 127 ) ); // TODO: use disabled role
                     painter->setPen( grayPen );
-                    painter->drawText( currentItemX, rowOffsetY, itemWidth, rowHeight, alignment,
-                                       text );
+                    painter->drawText( QRect( currentItemX + frameHMargin, rowOffsetY,
+                                              itemWidth - frameHMargin * 2, rowHeight ),
+                                       alignment, text );
                     painter->restore();
                 }
                 else
                 {
-                    painter->drawText( currentItemX, rowOffsetY, itemWidth, rowHeight, alignment,
-                                       text );
+                    painter->drawText( QRect( currentItemX + frameHMargin, rowOffsetY,
+                                              itemWidth - frameHMargin * 2, rowHeight ),
+                                       alignment, text );
                 }
             }
             currentItemX += itemWidth;
@@ -727,10 +723,11 @@ QWidget* Playlist::PrettyItemDelegate::createEditor( QWidget * parent, const QSt
     Q_UNUSED( option );
 
     int editorHeight = sizeHint(option, index).height();
+    int editorWidth = sizeHint(option, index).width();
     if( getGroupMode( index ) == Grouping::Head )
         editorHeight -= headerHeight();
     InlineEditorWidget *editor = new InlineEditorWidget( parent, index,
-                     LayoutManager::instance()->activeLayout(), editorHeight );
+                     LayoutManager::instance()->activeLayout(), editorHeight, editorWidth );
 
     connect( editor, SIGNAL( editingDone( InlineEditorWidget *) ),
              this, SLOT( editorDone(  InlineEditorWidget *) ) );

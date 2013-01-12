@@ -30,6 +30,7 @@
 #include <KVBox>
 
 #include <QEvent>
+#include <QBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QLineEdit>
@@ -39,19 +40,19 @@
 using namespace Playlist;
 
 InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index,
-                                        PlaylistLayout layout, int height )
+                                        PlaylistLayout layout, int height, int width )
     : KHBox( parent )
     , m_index( index )
     , m_layout( layout )
-    , m_itemHeight( height )
+    , m_widgetHeight( height )
+    , m_widgetWidth( width )
     , m_layoutChanged( false )
 {
     setAutoFillBackground( false ); // we want our own playlist background
 
-    int frameHMargin = style()->pixelMetric( QStyle::PM_FocusFrameHMargin );
-    int frameVMargin = style()->pixelMetric( QStyle::PM_FocusFrameVMargin );
+    const int frameHMargin = style()->pixelMetric( QStyle::PM_FocusFrameHMargin );
+    const int frameVMargin = style()->pixelMetric( QStyle::PM_FocusFrameVMargin );
     setContentsMargins( frameHMargin, frameVMargin, frameHMargin, frameVMargin );
-    setContentsMargins( frameHMargin, 0, frameHMargin, 0 );
 
     //prevent editor closing when clicking a rating widget or pressing return in a line edit.
     setFocusPolicy( Qt::StrongFocus );
@@ -65,78 +66,110 @@ InlineEditorWidget::~InlineEditorWidget()
 
 void InlineEditorWidget::createChildWidgets()
 {
+    QBoxLayout* boxLayout = qobject_cast<QBoxLayout*>( layout() );
+    Q_ASSERT( boxLayout );
+    boxLayout->setSpacing( 0 );
+
     //For now, we don't allow editing of the "head" data, just the body
     LayoutItemConfig config = m_layout.layoutForItem( m_index );
 
-    int trackRows = config.rows();
-    if ( trackRows == 0 )
+    const int rowCount = config.rows();
+    if( rowCount == 0 )
         return;
 
-    // some style margins:
-    int frameHMargin = style()->pixelMetric( QStyle::PM_FocusFrameHMargin );
-    int frameVMargin = style()->pixelMetric( QStyle::PM_FocusFrameVMargin );
+    // we have to use the same metrics as the PrettyItemDelegate or else
+    // the widgets will change places when editing
+    const int horizontalSpace = style()->pixelMetric( QStyle::PM_LayoutHorizontalSpacing );
+    const int frameHMargin = style()->pixelMetric( QStyle::PM_FocusFrameHMargin );
+    const int frameVMargin = style()->pixelMetric( QStyle::PM_FocusFrameVMargin );
 
-    int coverHeight = m_itemHeight - frameVMargin * 2;
-    int rowHeight = m_itemHeight / trackRows;
+    int rowOffsetX = frameHMargin; // keep the text a little bit away from the border
 
-    if ( config.showCover() )
+    const int coverHeight = m_widgetHeight - frameVMargin * 2;
+
+    const bool showCover = config.showCover();
+    if( showCover )
+        rowOffsetX += coverHeight + horizontalSpace/* + frameHMargin * 2*/;
+
+    const int contentHeight = m_widgetHeight - frameVMargin * 2;
+    int rowHeight = contentHeight / rowCount;
+    const int rowWidth = m_widgetWidth - rowOffsetX - frameHMargin * 2;
+
+    if( showCover )
     {
         QModelIndex coverIndex = m_index.model()->index( m_index.row(), CoverImage );
         QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
-        if ( !albumPixmap.isNull() )
+
+        if( !albumPixmap.isNull() )
         {
-            if ( albumPixmap.width() > albumPixmap.width() )
+            if( albumPixmap.width() > albumPixmap.height() )
                 albumPixmap = albumPixmap.scaledToWidth( coverHeight );
             else
                 albumPixmap = albumPixmap.scaledToHeight( coverHeight );
 
             QLabel *coverLabel = new QLabel( this );
             coverLabel->setPixmap( albumPixmap );
+            if( albumPixmap.width() < coverHeight )
+                coverLabel->setContentsMargins( ( coverHeight - albumPixmap.width()     ) / 2, 0,
+                                                ( coverHeight - albumPixmap.width() + 1 ) / 2, 0 );
+            boxLayout->setStretchFactor( coverLabel, 0 );
 
-            QWidget *spacing = new QWidget( this );
-            spacing->setFixedWidth( frameHMargin * 2 );
+            boxLayout->addSpacing( horizontalSpace );
         }
     }
 
     KVBox *rowsWidget = new KVBox( this );
 
-    for ( int i = 0; i < trackRows; i++ )
+    // --- paint all the rows
+    for( int i = 0; i < rowCount; i++ )
     {
+        LayoutItemConfigRow row = config.row( i );
+        const int elementCount = row.count();
 
         QSplitter *rowWidget = new QSplitter( rowsWidget );
         connect( rowWidget, SIGNAL( splitterMoved ( int, int ) ), this, SLOT( splitterMoved( int, int ) ) );
 
         m_splitterRowMap.insert( rowWidget, i );
 
-
-        LayoutItemConfigRow row = config.row( i );
-        const int elementCount = row.count();
-
         //we need to do a quick pass to figure out how much space is left for auto sizing elements
         qreal spareSpace = 1.0;
         int autoSizeElemCount = 0;
-        for ( int k = 0; k < elementCount; ++k )
+        for( int k = 0; k < elementCount; ++k )
         {
             spareSpace -= row.element( k ).size();
-            if ( row.element( k ).size() < 0.001 )
+            if( row.element( k ).size() < 0.001 )
                 autoSizeElemCount++;
         }
 
-        qreal spacePerAutoSizeElem = spareSpace / (qreal) autoSizeElemCount;
+        const qreal spacePerAutoSizeElem = spareSpace / (qreal)autoSizeElemCount;
 
-        int itemIndex = 0;
-        for ( int j = 0; j < elementCount; ++j )
+        //give left over pixels to the first rows. Widgets are doing it the same.
+        if( i == 0 )
+            rowHeight++;
+        if( i == ( contentHeight % rowCount ) )
+            rowHeight--;
+
+        QList<int> itemWidths;
+        int currentItemX = 0;
+        for( int j = 0; j < elementCount; ++j )
         {
             LayoutItemConfigRowElement element = row.element( j );
 
             // -- calculate the size
             qreal size;
-            if ( element.size() > 0.0001 )
-                size = element.size();
-            else
+            if( element.size() < 0.001 )
                 size = spacePerAutoSizeElem;
+            else
+                size = element.size();
 
-            qreal itemWidth = 100 * size;
+            int itemWidth;
+            if( j == elementCount - 1 )
+                // use the full with for the last item
+                itemWidth = rowWidth - currentItemX;
+            else
+                itemWidth = rowWidth * size;
+
+            itemWidths.append( itemWidth );
 
             int value = element.value();
 
@@ -146,7 +179,7 @@ void InlineEditorWidget::createChildWidgets()
 
             QWidget *widget = 0;
             //special case for painting the rating...
-            if ( value == Rating )
+            if( value == Rating )
             {
                 int rating = textIndex.data( Qt::DisplayRole ).toInt();
 
@@ -160,18 +193,15 @@ void InlineEditorWidget::createChildWidgets()
                 m_editorRoleMap.insert( ratingWidget, value );
                 widget = ratingWidget;
             }
-            else if ( value == Divider )
+            else if( value == Divider )
             {
-                debug() << "painting divider...";
-                QPixmap left = The::svgHandler()->renderSvg(
-                        "divider_left",
-                        1, rowHeight,
-                        "divider_left" );
+                QPixmap left = The::svgHandler()->renderSvg( "divider_left",
+                                                             1, rowHeight,
+                                                             "divider_left" );
 
-                QPixmap right = The::svgHandler()->renderSvg(
-                        "divider_right",
-                        1, rowHeight,
-                        "divider_right" );
+                QPixmap right = The::svgHandler()->renderSvg( "divider_right",
+                                                              1, rowHeight,
+                                                              "divider_right" );
 
                 QPixmap dividerPixmap( 2, rowHeight );
                 dividerPixmap.fill( Qt::transparent );
@@ -191,10 +221,6 @@ void InlineEditorWidget::createChildWidgets()
                 //we cannot ask the model for the moodbar directly as we have no
                 //way of asking for a specific size. Instead just get the track from
                 //the model and ask the moodbar manager ourselves.
-
-
-                debug() << "painting moodbar in PrettyItemDelegate::paintItem";
-
                 Meta::TrackPtr track = m_index.data( TrackRole ).value<Meta::TrackPtr>();
 
                 QLabel* moodbarLabel = new QLabel( 0 );
@@ -206,6 +232,7 @@ void InlineEditorWidget::createChildWidgets()
                 }
                 widget = moodbarLabel;
             }
+            //actual playlist item text is drawn here
             else
             {
                 QLineEdit * edit = new QLineEdit( text, 0 );
@@ -237,10 +264,19 @@ void InlineEditorWidget::createChildWidgets()
                 widget = edit;
             }
 
+            widget->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored ); // or else the widget size hint influences the space it get's which messes up the layout
             rowWidget->addWidget( widget );
-            rowWidget->setStretchFactor( itemIndex, itemWidth );
-            itemIndex++;
+
+            // handles are nice, but if we don't compensate for their sizes the layout
+            // would be different from the item delegate
+            if( j > 0 )
+                widget->setContentsMargins( -( ( rowWidget->handleWidth() + 1 ) / 2 ), 0, 0, 0 );
+            if( j < elementCount - 1 )
+                widget->setContentsMargins( 0, 0, -( rowWidget->handleWidth() / 2 ), 0 );
+
+            currentItemX += itemWidth;
         }
+        rowWidget->setSizes( itemWidths );
     }
 }
 
