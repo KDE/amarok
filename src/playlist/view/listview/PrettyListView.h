@@ -31,6 +31,7 @@
 #include <QRect>
 
 #include <QAction>
+#include <QDateTime>
 #include <QTimer>
 
 class PopupDropper;
@@ -100,6 +101,7 @@ protected:
     void mouseReleaseEvent( QMouseEvent* );
     void paintEvent( QPaintEvent* );
     void startDrag( Qt::DropActions supportedActions );
+    bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event );
 
 protected slots:
     void newPalette( const QPalette & palette );
@@ -110,6 +112,7 @@ private slots:
     void bottomModelRowsInsertedScroll();
     void moveTrackSelection( int offset );
 
+    void slotSelectionChanged();
     void trackActivated( const QModelIndex& );
     void updateProxyTimeout();
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
@@ -142,6 +145,7 @@ private:
     PrettyItemDelegate * m_prettyDelegate;
 
     QTimer *m_animationTimer;
+    QDateTime m_lastTimeSelectionChanged; // we want to prevent a click to change the selection and open the editor (BR 220818)
 
 public:
     QList<int> selectedRows() const;

@@ -102,7 +102,10 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
 
     // Signal connections
-    connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( trackActivated( const QModelIndex& ) ) );
+    connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ),
+             this, SLOT( trackActivated( const QModelIndex& ) ) );
+    connect( selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
+             this, SLOT( slotSelectionChanged() ) );
 
     connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
 
@@ -313,6 +316,12 @@ Playlist::PrettyListView::slotPlaylistActiveTrackChanged()
 
     if( AmarokConfig::autoScrollPlaylist() || m_firstScrollToActiveTrack )
         scrollToActiveTrack();
+}
+
+void
+Playlist::PrettyListView::slotSelectionChanged()
+{
+    m_lastTimeSelectionChanged = QDateTime::currentDateTime();
 }
 
 void
@@ -704,6 +713,15 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         m_pd->hide();
     }
     ongoingDrags = false;
+}
+
+bool
+Playlist::PrettyListView::edit( const QModelIndex &index, EditTrigger trigger, QEvent *event )
+{
+    // we want to prevent a click to change the selection and open the editor (BR 220818)
+    if( m_lastTimeSelectionChanged.msecsTo( QDateTime::currentDateTime() ) < qApp->doubleClickInterval() + 50 )
+        return false;
+    return QListView::edit( index, trigger, event );
 }
 
 QItemSelectionModel::SelectionFlags
