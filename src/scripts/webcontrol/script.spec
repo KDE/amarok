@@ -11,4 +11,5 @@ X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Generic
 X-KDE-PluginInfo-Depends=Amarok2.0
 X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-BugAddress=submit@bugs.kde.org
 X-KDE-PluginInfo-EnabledByDefault=false

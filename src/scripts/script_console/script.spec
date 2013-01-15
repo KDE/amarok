@@ -12,4 +12,5 @@ X-KDE-PluginInfo-Category=Generic
 X-KDE-PluginInfo-Website=http://amarok.kde.org/
 X-KDE-PluginInfo-Depends=Amarok2.0
 X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-BugAddress=submit@bugs.kde.org
 X-KDE-PluginInfo-EnabledByDefault=false

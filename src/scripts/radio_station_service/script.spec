@@ -13,5 +13,6 @@ X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Scriptable Service
 X-KDE-PluginInfo-Depends=Amarok2.0
 X-KDE-PluginInfo-License=LGPL
+X-KDE-PluginInfo-BugAddress=submit@bugs.kde.org
 X-KDE-PluginInfo-EnabledByDefault=true
 

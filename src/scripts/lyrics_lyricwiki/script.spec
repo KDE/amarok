@@ -13,4 +13,5 @@ X-KDE-PluginInfo-Version=.2
 X-KDE-PluginInfo-Category=Lyrics
 X-KDE-PluginInfo-Depends=Amarok2.0
 X-KDE-PluginInfo-License=LGPL
+X-KDE-PluginInfo-BugAddress=submit@bugs.kde.org
 X-KDE-PluginInfo-EnabledByDefault=true
