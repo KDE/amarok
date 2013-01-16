@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
  *               2009 Mathias Panzenböck <grosser.meister.morti@gmx.net>                *
+ *               2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -37,15 +38,20 @@ class KUrl;
 
 namespace Podcasts {
 
-/**
+/** Class that parses a podcast xml file and provides the results to a PodcastProvider.
+
     @author Bart Cerneels <bart.cerneels@kde.org>
             Mathias Panzenböck <grooser.meister.morti@gmx.net>
 */
-class AMAROK_CORE_EXPORT PodcastReader : public QObject, public QXmlStreamReader
+class AMAROK_CORE_EXPORT PodcastReader : public QObject
 {
     Q_OBJECT
     public:
-        PodcastReader( PodcastProvider * podcastProvider );
+        /** Create a new PodcastReader that delivers the result to the podcastProvider.
+            Note: the PodcastProvider pointer is not owned by the PodcastReader and
+                  must remain valid throughout the lifetime of this object.
+        */
+        PodcastReader( PodcastProvider *podcastProvider, QObject *parent = 0 );
         ~PodcastReader();
 
         bool read( QIODevice *device );
@@ -54,6 +60,9 @@ class AMAROK_CORE_EXPORT PodcastReader : public QObject, public QXmlStreamReader
         KUrl & url() { return m_url; }
 
         Podcasts::PodcastChannelPtr channel() { return m_channel; }
+
+        QXmlStreamReader::Error error () const { return m_xmlReader.error(); }
+        QString errorString () const { return m_xmlReader.errorString(); }
 
     signals:
         void finished( PodcastReader *podcastReader );
@@ -357,19 +366,25 @@ class AMAROK_CORE_EXPORT PodcastReader : public QObject, public QXmlStreamReader
 
         static const StaticData sd;
 
+        QXmlStreamReader m_xmlReader;
+
         KUrl m_url;
         PodcastProvider *m_podcastProvider;
         KIO::TransferJob *m_transferJob;
         Podcasts::PodcastChannelPtr m_channel;
         Podcasts::PodcastEpisodePtr m_item;
-        
+
+        /** This points to the data of the current channel or (if parsing an item) 
+            the data of the current item */
+        Podcasts::PodcastMetaCommon *m_current;
+
         // this somewhat emulates a callstack (whithout local variables):
         QStack<const Action*> m_actionStack;
-        
+
         ContentType m_contentType;
         QString m_buffer;
         QList<Enclosure> m_enclosures;
-        Podcasts::PodcastMetaCommon *m_current;
+
 };
 
 } //namespace Podcasts

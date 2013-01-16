@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
  *               2009 Mathias Panzenböck <grosser.meister.morti@gmx.net>                *
+ *               2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -52,15 +53,15 @@ using namespace Podcasts;
 
 const PodcastReader::StaticData PodcastReader::sd;
 
-PodcastReader::PodcastReader( PodcastProvider *podcastProvider )
-        : QXmlStreamReader()
+PodcastReader::PodcastReader( PodcastProvider *podcastProvider, QObject *parent )
+        : QObject( parent )
+        , m_xmlReader()
         , m_podcastProvider( podcastProvider )
         , m_transferJob( 0 )
-        , m_channel( 0 )
+        , m_current( 0 )
         , m_actionStack()
         , m_contentType( TextContent )
         , m_buffer()
-        , m_current( 0 )
 {}
 
 void
@@ -425,7 +426,7 @@ bool PodcastReader::read( QIODevice *device )
 {
     DEBUG_BLOCK
 
-    setDevice( device );
+    m_xmlReader.setDevice( device );
     return read();
 }
 
@@ -487,7 +488,7 @@ PodcastReader::slotAddData( KIO::Job *job, const QByteArray &data )
     DEBUG_BLOCK
     Q_UNUSED( job )
 
-    QXmlStreamReader::addData( data );
+    m_xmlReader.addData( data );
 
     // parse more data
     continueRead();
@@ -537,13 +538,13 @@ PodcastReader::downloadResult( KJob * job )
 PodcastReader::ElementType
 PodcastReader::elementType() const
 {
-    if( isEndDocument() || isStartDocument() )
+    if( m_xmlReader.isEndDocument() || m_xmlReader.isStartDocument() )
         return Document;
 
-    if( isCDATA() || isCharacters() )
+    if( m_xmlReader.isCDATA() || m_xmlReader.isCharacters() )
         return CharacterData;
 
-    ElementType elementType = sd.knownElements[ QXmlStreamReader::name().toString()];
+    ElementType elementType = sd.knownElements[ m_xmlReader.name().toString()];
 
     // This is a bit hacky because my automata does not support conditions.
     // Therefore I put the decision logic in here and declare some pseudo elements.
@@ -551,35 +552,35 @@ PodcastReader::elementType() const
     switch( elementType )
     {
         case Summary:
-            if( namespaceUri() == ITUNES_NS )
+            if( m_xmlReader.namespaceUri() == ITUNES_NS )
             {
                 elementType = ItunesSummary;
             }
             break;
 
         case Subtitle:
-            if( namespaceUri() == ITUNES_NS )
+            if( m_xmlReader.namespaceUri() == ITUNES_NS )
             {
                 elementType = ItunesSubtitle;
             }
             break;
 
         case Author:
-            if( namespaceUri() == ITUNES_NS )
+            if( m_xmlReader.namespaceUri() == ITUNES_NS )
             {
                 elementType = ItunesAuthor;
             }
             break;
 
         case Keywords:
-            if( namespaceUri() == ITUNES_NS )
+            if( m_xmlReader.namespaceUri() == ITUNES_NS )
             {
                 elementType = ItunesKeywords;
             }
             break;
 
         case Content:
-            if( namespaceUri() == ATOM_NS &&
+            if( m_xmlReader.namespaceUri() == ATOM_NS &&
                     // ignore atom:content elements that do not
                     // have content but only refer to some url:
                     !hasAttribute( ATOM_NS, "src" ) )
@@ -623,7 +624,7 @@ PodcastReader::read()
     m_buffer.clear();
     m_actionStack.clear();
     m_actionStack.push( &( PodcastReader::sd.startAction ) );
-    setNamespaceProcessing( true );
+    m_xmlReader.setNamespaceProcessing( true );
 
     return continueRead();
 }
@@ -636,16 +637,16 @@ PodcastReader::continueRead()
     // woithout using threads
     DEBUG_BLOCK
 
-    while( !atEnd() && error() != CustomError )
+    while( !m_xmlReader.atEnd() && m_xmlReader.error() != QXmlStreamReader::CustomError )
     {
-        TokenType token = readNext();
+        QXmlStreamReader::TokenType token = m_xmlReader.readNext();
 
-        if( error() == PrematureEndOfDocumentError && m_transferJob )
+        if( m_xmlReader.error() == QXmlStreamReader::PrematureEndOfDocumentError && m_transferJob )
         {
             return true;
         }
 
-        if( hasError() )
+        if( m_xmlReader.hasError() )
         {
             emit finished( this );
             return false;
@@ -662,11 +663,11 @@ PodcastReader::continueRead()
 
         switch( token )
         {
-            case Invalid:
+            case QXmlStreamReader::Invalid:
                 return false;
 
-            case StartDocument:
-            case StartElement:
+            case QXmlStreamReader::StartDocument:
+            case QXmlStreamReader::StartElement:
                 subAction = action->actionMap()[ elementType()];
 
                 if( !subAction )
@@ -680,8 +681,8 @@ PodcastReader::continueRead()
                 subAction->begin( this );
                 break;
 
-            case EndDocument:
-            case EndElement:
+            case QXmlStreamReader::EndDocument:
+            case QXmlStreamReader::EndElement:
                 action->end( this );
 
                 if( m_actionStack.pop() != action )
@@ -690,30 +691,30 @@ PodcastReader::continueRead()
                 }
                 break;
 
-            case Characters:
-                if( !isWhitespace() || isCDATA() )
+            case QXmlStreamReader::Characters:
+                if( !m_xmlReader.isWhitespace() || m_xmlReader.isCDATA() )
                 {
                     action->characters( this );
                 }
 
                 // ignoreable whitespaces
-            case Comment:
-            case EntityReference:
-            case ProcessingInstruction:
-            case DTD:
-            case NoToken:
+            case QXmlStreamReader::Comment:
+            case QXmlStreamReader::EntityReference:
+            case QXmlStreamReader::ProcessingInstruction:
+            case QXmlStreamReader::DTD:
+            case QXmlStreamReader::NoToken:
                 // ignore
                 break;
         }
     }
 
-    return !hasError();
+    return !m_xmlReader.hasError();
 }
 
 void
 PodcastReader::stopWithError( const QString &message )
 {
-    raiseError( message );
+    m_xmlReader.raiseError( message );
 
     if( m_transferJob )
     {
@@ -1007,7 +1008,7 @@ PodcastReader::beginUnknownFeedType()
 void
 PodcastReader::beginRss()
 {
-    if( attributes().value( "version" ) != "2.0" )
+    if( m_xmlReader.attributes().value( "version" ) != "2.0" )
     {
         // TODO: change this string once we support more
         stopWithError( i18n( "%1 is not an RSS version 2.0 feed.", m_url.url() ) );
@@ -1018,7 +1019,7 @@ void
 PodcastReader::beginRdf()
 {
     bool ok = true;
-    if( namespaceUri() != RDF_NS )
+    if( m_xmlReader.namespaceUri() != RDF_NS )
     {
         ok = false;
     }
@@ -1026,7 +1027,7 @@ PodcastReader::beginRdf()
     if( ok )
     {
         bool found = false;
-        foreach( const QXmlStreamNamespaceDeclaration &nsdecl, namespaceDeclarations() )
+        foreach( const QXmlStreamNamespaceDeclaration &nsdecl, m_xmlReader.namespaceDeclarations() )
         {
             if( nsdecl.namespaceUri() == RSS10_NS )
             {
@@ -1046,7 +1047,7 @@ PodcastReader::beginRdf()
 void
 PodcastReader::beginFeed()
 {
-    if( namespaceUri() != ATOM_NS )
+    if( m_xmlReader.namespaceUri() != ATOM_NS )
     {
         stopWithError( i18n( "%1 is not a valid Atom feed.", m_url.url() ) );
     }
@@ -1207,7 +1208,7 @@ PodcastReader::beginEnclosure()
     //    http://www.xs4all.nl/~foz/mod_enclosure.html
     QStringRef str;
 
-    str = attributes().value( "url" );
+    str = m_xmlReader.attributes().value( "url" );
 
     if( str.isEmpty() )
         str = attribute( RDF_NS, "about" );
@@ -1220,14 +1221,14 @@ PodcastReader::beginEnclosure()
 
     KUrl url( str.toString() );
 
-    str = attributes().value( "length" );
+    str = m_xmlReader.attributes().value( "length" );
 
     if( str.isEmpty() )
         str = attribute( ENC_NS, "length" );
 
     int length = str.toString().toInt();
 
-    str = attributes().value( "type" );
+    str = m_xmlReader.attributes().value( "type" );
 
     if( str.isEmpty() )
         str = attribute( ENC_NS, "type" );
@@ -1260,9 +1261,9 @@ PodcastReader::endPubDate()
 void
 PodcastReader::beginImage()
 {
-    if( namespaceUri() == ITUNES_NS )
+    if( m_xmlReader.namespaceUri() == ITUNES_NS )
     {
-        m_channel->setImageUrl( KUrl( attributes().value( "href" ).toString() ) );
+        m_channel->setImageUrl( KUrl( m_xmlReader.attributes().value( "href" ).toString() ) );
     }
 }
 
@@ -1293,7 +1294,7 @@ PodcastReader::endKeywords()
 void
 PodcastReader::endNewFeedUrl()
 {
-    if( namespaceUri() == ITUNES_NS )
+    if( m_xmlReader.namespaceUri() == ITUNES_NS )
     {
         m_url = KUrl( m_buffer.trimmed() );
 
@@ -1315,7 +1316,7 @@ void
 PodcastReader::endCreator()
 {
     // there are funny people that do not use <author> but <dc:creator>
-    if( namespaceUri() == DC_NS )
+    if( m_xmlReader.namespaceUri() == DC_NS )
     {
         endAuthor();
     }
@@ -1325,9 +1326,9 @@ void
 PodcastReader::beginXml()
 {
     m_buffer += '<';
-    m_buffer += QXmlStreamReader::name().toString();
+    m_buffer += m_xmlReader.name().toString();
 
-    foreach( const QXmlStreamAttribute &attr, attributes() )
+    foreach( const QXmlStreamAttribute &attr, m_xmlReader.attributes() )
     {
         m_buffer += QString( " %1=\"%2\"" )
                     .arg( attr.name().toString() )
@@ -1342,7 +1343,7 @@ PodcastReader::beginNoElement()
 {
     DEBUG_BLOCK
     debug() << "no element expected here, but got element: "
-    << QXmlStreamReader::name();
+    << m_xmlReader.name();
 }
 
 void
@@ -1391,7 +1392,7 @@ PodcastReader::beginAtomTextChild()
         case HtmlContent:
         case TextContent:
             // stripping illegal tags
-            debug() << "read unexpected open tag in atom text: " << QXmlStreamReader::name();
+            debug() << "read unexpected open tag in atom text: " << m_xmlReader.name();
 
         default:
             break;
@@ -1410,7 +1411,7 @@ PodcastReader::endAtomTextChild()
         case HtmlContent:
         case TextContent:
             // stripping illegal tags
-            debug() << "read unexpected close tag in atom text: " << QXmlStreamReader::name();
+            debug() << "read unexpected close tag in atom text: " << m_xmlReader.name();
 
         default:
             break;
@@ -1423,15 +1424,15 @@ PodcastReader::readAtomTextCharacters()
     switch( m_contentType )
     {
     case XHtmlContent:
-        m_buffer += Qt::escape( text().toString() );
+        m_buffer += Qt::escape( m_xmlReader.text().toString() );
         break;
 
     case HtmlContent:
-        m_buffer += text();
+        m_buffer += m_xmlReader.text();
         break;
 
     case TextContent:
-        m_buffer += text();
+        m_buffer += m_xmlReader.text();
 
     default:
         break;
@@ -1564,20 +1565,20 @@ void
 PodcastReader::endXml()
 {
     m_buffer += "</";
-    m_buffer += QXmlStreamReader::name().toString();
+    m_buffer += m_xmlReader.name().toString();
     m_buffer += '>';
 }
 
 void
 PodcastReader::readCharacters()
 {
-    m_buffer += text();
+    m_buffer += m_xmlReader.text();
 }
 
 void
 PodcastReader::readEscapedCharacters()
 {
-    m_buffer += Qt::escape( text().toString() );
+    m_buffer += Qt::escape( m_xmlReader.text().toString() );
 }
 
 QStringRef
@@ -1586,20 +1587,20 @@ PodcastReader::attribute( const char *namespaceUri, const char *name ) const
     // workaround, because Qt seems to have a bug:
     // when the default namespace is used attributes
     // aren't inside this namespace for some reason
-    if( attributes().hasAttribute( namespaceUri, name ) )
-        return attributes().value( namespaceUri, name );
+    if( m_xmlReader.attributes().hasAttribute( namespaceUri, name ) )
+        return m_xmlReader.attributes().value( namespaceUri, name );
     else
-        return attributes().value( NULL, name );
+        return m_xmlReader.attributes().value( NULL, name );
 }
 
 bool
 PodcastReader::hasAttribute( const char *namespaceUri, const char *name ) const
 {
     // see PodcastReader::attribute()
-    if( attributes().hasAttribute( namespaceUri, name ) )
+    if( m_xmlReader.attributes().hasAttribute( namespaceUri, name ) )
         return true;
     else
-        return attributes().hasAttribute( NULL, name );
+        return m_xmlReader.attributes().hasAttribute( NULL, name );
 }
 
 QDateTime
