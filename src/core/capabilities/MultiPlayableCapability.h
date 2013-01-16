@@ -27,16 +27,17 @@ namespace Capabilities
     {
         Q_OBJECT
 
-    public:
-        virtual ~MultiPlayableCapability();
+        public:
+            virtual ~MultiPlayableCapability();
 
-        static Type capabilityInterfaceType() { return Capabilities::Capability::MultiPlayable; }
+            static Type capabilityInterfaceType()
+                { return Capabilities::Capability::MultiPlayable; }
 
-        virtual void fetchFirst() = 0;
-        virtual void fetchNext() = 0;
+            virtual void fetchFirst() = 0;
+            virtual void fetchNext() = 0;
 
-    signals:
-        void playableUrlFetched( const KUrl &url );
+        signals:
+            void playableUrlFetched( const KUrl &url );
     };
 }
 

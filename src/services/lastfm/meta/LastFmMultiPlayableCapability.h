@@ -32,7 +32,7 @@
 #include <RadioTuner.h>
 #include <ws.h>
 
-class LastFmMultiPlayableCapability : public Capabilities::MultiPlayableCapability, public Meta::Observer
+class LastFmMultiPlayableCapability : public Capabilities::MultiPlayableCapability
 {
     Q_OBJECT
 
@@ -44,11 +44,8 @@ class LastFmMultiPlayableCapability : public Capabilities::MultiPlayableCapabili
         virtual void fetchFirst();
         virtual void fetchNext();
 
-        // Meta::Observer methods
-        using Observer::metadataChanged; // prevent "method hidden" gcc warnings
-        virtual void metadataChanged( Meta::TrackPtr track );
-
     private slots:
+        void slotTrackPlaying( const Meta::TrackPtr &track );
         void slotNewTrackAvailable();
         void skip();
         void error( lastfm::ws::Error e );

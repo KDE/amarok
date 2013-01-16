@@ -17,17 +17,23 @@
 
 #include "LastFmMultiPlayableCapability.h"
 
+#include "EngineController.h"
+
 LastFmMultiPlayableCapability::LastFmMultiPlayableCapability( LastFm::Track *track )
     : Capabilities::MultiPlayableCapability()
     , m_url( track->internalUrl() )
     , m_track( track )
-    , m_currentTrack( lastfm::Track() )
 {
-    Meta::TrackPtr trackptr( track );
-    subscribeTo( trackptr );
-
     connect( track, SIGNAL(skipTrack()), this, SLOT(skip()) );
+
+    Q_ASSERT( The::mainWindow() );
     connect( The::mainWindow(), SIGNAL(skipTrack()), SLOT(skip()) );
+
+    // we only update underlying Last.fm metadata once it starts playing, prevent wrong
+    // metadata Last.fm submissions etc.
+    Q_ASSERT( EngineController::instance() );
+    connect( EngineController::instance(), SIGNAL(trackPlaying(Meta::TrackPtr)),
+                                           SLOT(slotTrackPlaying(Meta::TrackPtr)) );
 }
 
 LastFmMultiPlayableCapability::~LastFmMultiPlayableCapability()
@@ -39,10 +45,11 @@ LastFmMultiPlayableCapability::fetchFirst()
 {
     DEBUG_BLOCK
     m_tuner = new lastfm::RadioTuner( lastfm::RadioStation( m_track->uidUrl() ) );
-    m_tuner->setParent( this );
+    m_tuner->setParent( this ); // memory management
 
-    connect( m_tuner, SIGNAL( trackAvailable() ), this, SLOT( slotNewTrackAvailable() ) );
-    connect( m_tuner, SIGNAL( error(lastfm::ws::Error,QString) ), this, SLOT( error( lastfm::ws::Error ) ) );
+    connect( m_tuner, SIGNAL(trackAvailable()), SLOT(slotNewTrackAvailable()) );
+    connect( m_tuner, SIGNAL(error(lastfm::ws::Error,QString)),
+                      SLOT(error(lastfm::ws::Error)) );
 }
 
 void
@@ -50,24 +57,17 @@ LastFmMultiPlayableCapability::fetchNext()
 {
     DEBUG_BLOCK
     m_currentTrack = m_tuner->takeNextTrack();
-    m_track->setTrackInfo( m_currentTrack );
+    emit playableUrlFetched( m_currentTrack.url() );
 }
 
 void
-LastFmMultiPlayableCapability::metadataChanged( Meta::TrackPtr track )
+LastFmMultiPlayableCapability::slotTrackPlaying( const Meta::TrackPtr &track )
 {
-    const LastFm::TrackPtr ltrack = LastFm::TrackPtr::dynamicCast( track );
-
-    if( ltrack.isNull() )
-        return;
-
-    KUrl url = ltrack->internalUrl();
-    if( url.isEmpty() || url != m_url ) // always should let empty url through, since otherwise we swallow an error getting first track
-    {
-        debug() << __PRETTY_FUNCTION__ << "url changed, informing EngineController";
-        m_url = url;
-        emit playableUrlFetched( url );
-    }
+    // time to update underlying track with metadata
+    // warning: this depends on MetaProxy::Track operator== returning true
+    // between proxy and underlying track!
+    if( track == m_track )
+        m_track->setTrackInfo( m_currentTrack );
 }
 
 void
@@ -76,7 +76,8 @@ LastFmMultiPlayableCapability::slotNewTrackAvailable()
     DEBUG_BLOCK
     if( m_currentTrack.isNull() ) // we only force a track change at the beginning
     {
-        m_currentTrack = m_tuner->takeNextTrack();
+        fetchNext();
+        // we update metadata immediatelly for the very first track
         m_track->setTrackInfo( m_currentTrack );
     }
 }
@@ -86,12 +87,6 @@ LastFmMultiPlayableCapability::skip()
 {
     DEBUG_BLOCK
     fetchNext();
-    /* fetchNext() calls m_track->setTrackInfo()
-     * Track::setTrackInfo() calls Track::Private::setTrackInfo()
-     * Track::Private::setTrackInfo() calls Meta::Base::notifyObservers()
-     * Meta::Base::notifyObservers() calls *OUR* metadataChanged()
-     * OUR metadataChanged() emits playableUrlFetched( url )
-     * playableUrlFetched( url ) is caught by EngineController. */
 }
 
 void
