@@ -527,15 +527,16 @@ private:
 
     /**
      * Try to detect MetaData spam in Streams etc.
-     * Some streams are doing advertisment in the metadata. We try to filter that out.
-     * Additionally, some Phonon back-ends emit more than one metadataChanged() signals
-     * per on track, so filter it all altogether.
+     *
+     * Some streams are doing advertisment in the metadata. We try to filter that
+     * out. Additionally, some Phonon back-ends emit more than one
+     * metadataChanged() signals per on track, so filter it all altogether.
      */
     bool isInRecentMetaDataHistory( const QVariantMap &meta );
 
     /**
-     * If m_lastStreamStampPosition is non-negative, update it to current position and
-     * update track length in current stream.
+     * If m_lastStreamStampPosition is non-negative, update it to current position
+     * and update track length in current stream.
      */
     void stampStreamTrackLength();
 

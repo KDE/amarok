@@ -1084,15 +1084,21 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         m_preamp.data()->setVolume( 1.0 );
     }
 
+    bool useTrackWithinStreamDetection = false;
     if( m_currentTrack )
     {
         subscribeTo( m_currentTrack );
         Meta::AlbumPtr m_currentAlbum = m_currentTrack->album();
         if( m_currentAlbum )
             subscribeTo( m_currentAlbum );
+        /** We only use detect-tracks-in-stream for tracks that have stream type
+         * (exactly, we purposely exclude stream/lastfm) *and* that don't have length
+         * already filled in. Bug 311852 */
+        if( m_currentTrack->type() == "stream" && m_currentTrack->length() == 0 )
+            useTrackWithinStreamDetection = true;
     }
 
-    m_lastStreamStampPosition = isStream() ? 0 : -1;
+    m_lastStreamStampPosition = useTrackWithinStreamDetection ? 0 : -1;
     emit trackChanged( m_currentTrack );
     emit trackPlaying( m_currentTrack );
 }
@@ -1100,7 +1106,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 void
 EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldState ) //SLOT
 {
-    DEBUG_BLOCK
+    debug() << "slotStateChanged from" << oldState << "to" << newState;
 
     static const int maxErrors = 5;
     static int errorCount = 0;
@@ -1199,6 +1205,7 @@ EngineController::slotTrackLengthChanged( qint64 milliseconds )
 void
 EngineController::slotMetaDataChanged()
 {
+    DEBUG_BLOCK
     QVariantMap meta;
     meta.insert( Meta::Field::URL, m_media.data()->currentSource().url() );
     static const QList<FieldPair> fieldPairs = QList<FieldPair>()
@@ -1307,7 +1314,11 @@ void
 EngineController::slotTrackFinishedPlaying( Meta::TrackPtr track, double playedFraction )
 {
     Q_ASSERT( track );
-    debug() << "slotTrackFinishedPlaying(" << track->playableUrl() << "," << playedFraction << ")";
+    debug() << "slotTrackFinishedPlaying("
+            << ( track->artist() ? track->artist()->name() : QString( "[no artist]" ) )
+            << "-" << ( track->album() ? track->album()->name() : QString( "[no album]" ) )
+            << "-" << track->name()
+            << "," << playedFraction << ")";
     track->finishedPlaying( playedFraction );
 }
 

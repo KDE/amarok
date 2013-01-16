@@ -15,6 +15,7 @@ VERSION 2.7
     * Removed alpha state and not really working spectrum analyzer applet.
 
   BUGFIXES:
+    * Fix double-scrobbling when playing Last.fm streams. (BR 311852)
     * Fix The size of rating stars should not change in inline editing (BR 209684)
     * Various improvements that should result in more stable Audio CD playback
       (modulo phonon-vlc BR 313046). (BR 305708, BR 308084, BR 311446)

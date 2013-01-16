@@ -487,7 +487,8 @@ SqlTrack::type() const
 
     return m_url.isLocalFile()
            ? Amarok::FileTypeSupport::toString( m_filetype )
-           : "stream"; // don't localize. This is used in different files to identify streams.
+            // don't localize. This is used in different files to identify streams, see EngineController quirks
+           : "stream";
 }
 
 void
