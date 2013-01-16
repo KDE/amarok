@@ -1198,6 +1198,7 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
 void
 EngineController::slotTrackLengthChanged( qint64 milliseconds )
 {
+    debug() << "slotTrackLengthChanged(" << milliseconds << ")";
     emit trackLengthChanged( ( !m_multiPlayback || !m_boundedPlayback )
                              ? trackLength() : milliseconds );
 }
@@ -1417,6 +1418,8 @@ EngineController::stampStreamTrackLength()
         return;
 
     qint64 currentPosition = trackPositionMs();
+    debug() << "stampStreamTrackLength(): m_lastStreamStampPosition:" << m_lastStreamStampPosition
+            << "currentPosition:" << currentPosition;
     if( currentPosition == m_lastStreamStampPosition )
         return;
     qint64 length = qMax( currentPosition - m_lastStreamStampPosition, qint64( 0 ) );
@@ -1428,11 +1431,17 @@ EngineController::stampStreamTrackLength()
 void
 EngineController::updateStreamLength( qint64 length )
 {
-    if( !m_media )
+    if( !m_currentTrack )
+    {
+        warning() << __PRETTY_FUNCTION__ << "called with cull m_currentTrack";
         return;
+    }
+
     // Last.fm scrobbling needs to know track length before it can scrobble:
     QVariantMap lengthMetaData;
-    lengthMetaData.insert( Meta::Field::URL, m_media.data()->currentSource().url() );
+    // we cannot use m_media->currentSource()->url() here because it is already empty, bug 309976
+    lengthMetaData.insert( Meta::Field::URL, QUrl( m_currentTrack->playableUrl() ) );
     lengthMetaData.insert( Meta::Field::LENGTH, length );
+    debug() << "updateStreamLength(): emitting currentMetadataChanged(" << lengthMetaData << ")";
     emit currentMetadataChanged( lengthMetaData );
 }
