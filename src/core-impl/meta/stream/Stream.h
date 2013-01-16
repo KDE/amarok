@@ -30,10 +30,10 @@ namespace MetaStream
             Track( const KUrl &url );
             virtual ~Track();
 
-        //methods inherited from Meta::Base
+        // methods inherited from Meta::Base
             virtual QString name() const;
 
-        //methods inherited from Meta::Track
+        // methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
@@ -58,6 +58,18 @@ namespace MetaStream
             virtual void finishedPlaying( double playedFraction );
 
             virtual QString type() const;
+
+        // MetaStream::Track methods, used to restore initial stream info
+
+            /**
+             * Set initial values to display before more accurate info can be fetched.
+             * This method doesn't call notifyObservers(), it is the caller's
+             * responsibility; it also doesn't overwrite already filled entries.
+             *
+             * @param length is in milliseconds
+             */
+            void setInitialInfo( const QString &artist, const QString &album,
+                                 const QString &title, qint64 length, int trackNumber );
 
         private:
             Private * const d;

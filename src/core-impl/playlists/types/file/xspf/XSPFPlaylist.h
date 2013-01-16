@@ -34,7 +34,10 @@ typedef KSharedPtr<XSPFPlaylist> XSPFPlaylistPtr;
 typedef QList<XSPFPlaylistPtr> XSPFPlaylistList;
 
 /* convenience struct for internal use */
-typedef struct {
+struct XSPFTrack {
+    // initialize primitive types, don't give stochasticity a chance!
+    XSPFTrack() : trackNum( 0 ), duration( 0 ) {}
+
     KUrl location;
     QString identifier;
     QString title;
@@ -46,7 +49,7 @@ typedef struct {
     uint trackNum;
     uint duration;
     KUrl link;
-} XSPFTrack;
+};
 
 typedef QList<XSPFTrack> XSPFTrackList;
 

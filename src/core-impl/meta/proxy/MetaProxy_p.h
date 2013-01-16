@@ -17,10 +17,9 @@
 #ifndef AMAROK_METAPROXY_P_H
 #define AMAROK_METAPROXY_P_H
 
-#include "core/support/Amarok.h"
 #include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/meta/Meta.h"
+#include "core-impl/meta/stream/Stream.h"
 
 #include <QImage>
 #include <QList>
@@ -73,6 +72,12 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         {
             if( track )
             {
+                // special handling for streams that cannot fetch metadata until played, bug 305389
+                MetaStream::Track *stream = dynamic_cast<MetaStream::Track *>( track.data() );
+                if( stream )
+                    stream->setInitialInfo( cachedArtist, cachedAlbum, cachedName,
+                                            cachedLength, cachedTrackNumber );
+
                 subscribeTo( track );
                 realTrack = track;
 

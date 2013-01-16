@@ -180,4 +180,21 @@ Track::type() const
     return "stream";
 }
 
+void
+Track::setInitialInfo( const QString &artist, const QString &album, const QString &title,
+                       qint64 length, int trackNumber )
+{
+    if( d->artist.isEmpty() )
+        d->artist = artist;
+    if( d->album.isEmpty() )
+        d->album = album;
+    if( d->title.isEmpty() )
+        d->title = title;
+
+    if( d->length == 0 )
+        d->length = length;
+    if( d->trackNumber == 0 )
+        d->trackNumber = trackNumber;
+}
+
 #include "Stream_p.moc"
