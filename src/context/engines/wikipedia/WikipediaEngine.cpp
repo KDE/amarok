@@ -21,9 +21,10 @@
 
 #include "WikipediaEngine.h"
 
+#include "EngineController.h"
+#include "core/meta/support/MetaConstants.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "EngineController.h"
 
 #include <Plasma/DataContainer>
 
@@ -609,6 +610,15 @@ WikipediaEnginePrivate::fetchListing( const QString &title, const QString &hostL
 void
 WikipediaEnginePrivate::updateEngine()
 {
+    static QMap<SelectionType, qint64> typeToFieldMap;
+    if( typeToFieldMap.isEmpty() )
+    {
+        typeToFieldMap.insert( Artist, Meta::valArtist );
+        typeToFieldMap.insert( Composer, Meta::valComposer );
+        typeToFieldMap.insert( Album, Meta::valAlbum );
+        typeToFieldMap.insert( Track, Meta::valTitle );
+    }
+
     Q_Q( WikipediaEngine );
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
@@ -617,6 +627,9 @@ WikipediaEnginePrivate::updateEngine()
 
     //TODO: Look into writing one function that can be used with different arguments for each case in this switch.
     QString tmpWikiStr;
+    QString notice = i18nc( "%1 is field name such as 'Artist Name'",
+                            "%1 is needed for searching Wikipedia.",
+                            Meta::i18nForField( typeToFieldMap.value( currentSelection ) ) );
     switch( currentSelection )
     {
     case Artist:
@@ -627,7 +640,7 @@ WikipediaEnginePrivate::updateEngine()
                 q->removeAllData( QLatin1String("wikipedia") );
                 q->scheduleSourcesUpdated();
                 q->setData( QLatin1String("wikipedia"), QLatin1String("message"),
-                            i18n( "The name of the artist is required for searching Wikipedia..." ) );
+                            notice );
                 return;
             }
             if( ( currentTrack->playableUrl().protocol() == QLatin1String("lastfm") ) ||
@@ -647,7 +660,7 @@ WikipediaEnginePrivate::updateEngine()
                 q->removeAllData( QLatin1String("wikipedia") );
                 q->scheduleSourcesUpdated();
                 q->setData( QLatin1String("wikipedia"), QLatin1String("message"),
-                            i18n( "The name of the composer is needed before searching wikipedia" ) );
+                            notice );
                 return;
             }
             if( ( currentTrack->playableUrl().protocol() == QLatin1String("lastfm") ) ||
@@ -664,7 +677,7 @@ WikipediaEnginePrivate::updateEngine()
                 q->removeAllData( QLatin1String("wikipedia") );
                 q->scheduleSourcesUpdated();
                 q->setData( QLatin1String("wikipedia"), QLatin1String("message"),
-                            i18n( "The name of this songs album is needed before searching Wikipedia" ) );
+                            notice );
                 return;
             }
             if( ( currentTrack->playableUrl().protocol() == QLatin1String("lastfm") ) ||
@@ -681,7 +694,7 @@ WikipediaEnginePrivate::updateEngine()
             q->removeAllData( QLatin1String("wikipedia") );
             q->scheduleSourcesUpdated();
             q->setData( QLatin1String("wikipedia"), QLatin1String("message"),
-                        i18n( "The name of this track is needed before searching Wikipedia" ) );
+                        notice );
             return;
         }
         tmpWikiStr = currentTrack->prettyName();
