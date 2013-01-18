@@ -150,6 +150,7 @@ Action=Popup
 
 [Event/message]
 Name=Message
+Name[cs]=Zpráva
 Name[da]=Besked
 Name[el]=Μήνυμα
 Name[es]=Mensaje
