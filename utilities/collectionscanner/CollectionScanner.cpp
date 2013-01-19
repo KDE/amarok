@@ -406,7 +406,7 @@ CollectionScanner::Scanner::displayHelp( const QString &error )
     stream << error
         << tr( "Amarok Collection Scanner\n"
         "Scans directories and outputs a xml file with the results.\n"
-        "For more information see http://amarok.kde.org/wiki/Batch_Mode\n\n"
+        "For more information see http://community.kde.org/Amarok/Development/BatchMode\n\n"
         "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
         "User-modifiable Options:\n"
         "<Folder(s)>             : list of folders to scan\n"

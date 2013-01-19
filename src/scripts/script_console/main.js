@@ -46,7 +46,7 @@ function ScriptConsoleMainWindow()
   forwardHistoryShortcut.key = new QKeySequence( QKeySequence.StandardKey( QKeySequence.MoveToNextPage ) );
   forwardHistoryShortcut.activated.connect( this, this.forwardHistory );
 
-  var explanationItem = new QListWidgetItem("The Amarok Script Console allows you to easily execute JavaScript with access to all functions\nand methods you would have in an Amarok script.\nInformation on scripting for Amarok is available at:\nhttp://amarok.kde.org/scripting\nExecute code: CTRL-Enter\nBack in code history: Page Up\nForward in code history: Page Down");
+  var explanationItem = new QListWidgetItem("The Amarok Script Console allows you to easily execute JavaScript with access to all functions\nand methods you would have in an Amarok script.\nInformation on scripting for Amarok is available at:\nhttp://community.kde.org/Amarok/Development#Scripting\nExecute code: CTRL-Enter\nBack in code history: Page Up\nForward in code history: Page Down");
   //explanationItem.setForeground( new QBrush( new QColor(Qt.darkGray) ) );
   explanationItem.setFlags( !Qt.ItemIsSelectable );
   this.historyList.addItem( explanationItem );

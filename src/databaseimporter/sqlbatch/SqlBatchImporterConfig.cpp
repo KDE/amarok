@@ -35,7 +35,7 @@ SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )
     QGridLayout *databaseLayout = new QGridLayout( gridHolder );
 
     QLabel *explanationLabel = new QLabel( i18n( "Input file produced by amarokcollectionscanner.<br>"
-                                                 "See <a href=\"http://amarok.kde.org/wiki/Batch_Mode\">Batch Mode</a>." ), gridHolder );
+                                                 "See <a href=\"http://community.kde.org/Amarok/Development/BatchMode\">Batch Mode</a>." ), gridHolder );
     explanationLabel->setTextFormat( Qt::RichText );
     explanationLabel->setAlignment( Qt::AlignHCenter );
     explanationLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ); // Don't stretch vertically
