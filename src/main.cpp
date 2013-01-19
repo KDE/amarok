@@ -60,7 +60,7 @@ int main( int argc, char *argv[] )
             ki18n("iPod collection rewrite & more (strohel)"), "matej@laitl.cz", "http://strohel.blogspot.com/" );
     ocsData.addAuthor( "strohel", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Myriam Schweingruber"), ki18n("Rokymoter, Bug triaging (Mamarok)"), "myriam@kde.org" );
+    aboutData.addAuthor( ki18n("Myriam Schweingruber"), ki18n("Rokymoter, Bug triaging (Mamarok)"), "myriam@kde.org", "http://blogs.fsfe.org/myriam" );
     ocsData.addAuthor( "Mamarok", aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Ralf 'SalsaMaster' Engels"),
@@ -112,7 +112,7 @@ int main( int argc, char *argv[] )
         ocsData.addAuthor( "nightrose", aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann" ), //krazy:exclude=contractions
-            ki18n("Project founder (markey)"), "kretschmann@kde.org", "http://amarok.kde.org/blog/categories/1-markey" );
+            ki18n("Project founder (markey)"), "kretschmann@kde.org", "https://plus.google.com/102602725322221030250/posts" );
         ocsData.addAuthor( "MarkKretschmann", aboutData.authors().last() );
 
     aboutData.addCredit( ki18n("Max Howell"), ki18n("Developer, Vision"), "max.howell@methylblue.com" );
