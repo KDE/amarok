@@ -138,6 +138,8 @@ EngineController::initializePhonon()
 
     m_path.disconnect();
     m_dataPath.disconnect();
+
+    // QWeakPointers reset themselves to null if the object is deleted
     delete m_media.data();
     delete m_controller.data();
     delete m_audio.data();
@@ -179,10 +181,12 @@ EngineController::initializePhonon()
     AmarokConfig::setFadeout( false );
 #endif
 
-    // only create pre-amp if we have replaygain on, VolumeFaderEffect can cause phonon issues
-    if( AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
+    // we now try to create pre-amp unconditionally, however we check that it is valid.
+    // So now m_preamp is null   equals   not available at all
+    QScopedPointer<Phonon::VolumeFaderEffect> preamp( new Phonon::VolumeFaderEffect( this ) );
+    if( preamp->isValid() )
     {
-        m_preamp = new Phonon::VolumeFaderEffect( this );
+        m_preamp = preamp.take();
         m_path.insertEffect( m_preamp.data() );
     }
 
@@ -1051,12 +1055,6 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     if( m_currentTrack
         && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
-        if( !m_preamp ) // replaygain was just turned on, and amarok was started with it off
-        {
-            m_preamp = new Phonon::VolumeFaderEffect( this );
-            m_path.insertEffect( m_preamp.data() );
-        }
-
         Meta::ReplayGainTag mode;
         // gain is usually negative (but may be positive)
         mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
@@ -1074,10 +1072,17 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
             debug() << "Gain of" << gain << "would clip at absolute peak of" << gain + peak;
             gain -= gain + peak;
         }
-        debug() << "Using gain of" << gain << "with relative peak of" << peak;
-        // we calculate the volume change ourselves, because m_preamp.data()->setVolumeDecibel is
-        // a little confused about minus signs
-        m_preamp.data()->setVolume( qExp( gain * log10over20 ) );
+
+        if( m_preamp )
+        {
+            debug() << "Using gain of" << gain << "with relative peak of" << peak;
+            // we calculate the volume change ourselves, because m_preamp.data()->setVolumeDecibel is
+            // a little confused about minus signs
+            m_preamp.data()->setVolume( qExp( gain * log10over20 ) );
+        }
+        else
+            warning() << "Would use gain of" << gain << ", but current Phonon backend"
+                      << "doesn't seem to support pre-amplifier (VolumeFaderEffect)";
     }
     else if( m_preamp )
     {
