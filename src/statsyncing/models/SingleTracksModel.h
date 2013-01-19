@@ -37,7 +37,7 @@ namespace StatSyncing
              * Construct model of single tracks.
              *
              * @param matchedTuples list of tracks
-             * @param columns list of Meta::val* fields that will form colums of the model
+             * @param columns list of Meta::val* fields that will form columns of the model
              *                must include Meta::valTitle, may include: valRating,
              *                valFirstPlayed, valLastPlayed, valPlaycount, valLabel.
              */

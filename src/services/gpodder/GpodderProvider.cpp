@@ -607,7 +607,7 @@ GpodderProvider::slotTrackPositionChanged( qint64 position, bool userSeek )
     Q_UNUSED( position )
 
     //If the current track is in one of the subscribed gpodder channels and it's position
-    //is not at the beggining of the track, then we probably should sync it status.
+    //is not at the beginning of the track, then we probably should sync it status.
     if( m_trackToSyncStatus )
     {
         if( userSeek )

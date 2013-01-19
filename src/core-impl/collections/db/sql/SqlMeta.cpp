@@ -145,7 +145,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection *collection, int deviceId,
     m_albumGain = 0.0;
     m_albumPeakGain = 0.0;
 
-    m_batchUpdate = 0; // reset in-batch-update without commiting
+    m_batchUpdate = 0; // reset in-batch-update without committing
 
     m_filetype = Amarok::Unknown;
 }

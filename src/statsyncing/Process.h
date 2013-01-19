@@ -37,7 +37,7 @@ namespace StatSyncing
 
     /**
      * Class that is responsible for one synchronization process from track matching
-     * to commiting synchronized values back to storage. This class should live in a main
+     * to committing synchronized values back to storage. This class should live in a main
      * thread and is event-based.
      *
      * Process auto-deletes itself when it is done with its work.

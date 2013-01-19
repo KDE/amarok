@@ -115,7 +115,7 @@ namespace StatSyncing
 
         signals:
             /**
-             * Emitted when a track passed to scrobble() is succesfully queued for
+             * Emitted when a track passed to scrobble() is successfully queued for
              * scrobbling submission. This signal is emitted for every scrobbling service.
              * For each service, you either get this or scrobbleFailed().
              */

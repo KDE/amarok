@@ -143,7 +143,7 @@ namespace Playlists
              * and metadataChanged() will be called as appropriate. This may even change
              * playlist metadata;
              *
-             * Implementators, you should start a background job in this method to
+             * Implementors, you should start a background job in this method to
              * actually load tracks, calling notifyObservers[Something]Added/Changed()
              * as appropriate. You should also use MetaProxy::Track as a second-level
              * lazy-loading so that you can return more quickly.
@@ -165,19 +165,19 @@ namespace Playlists
 
             /** Sync track status between two tracks. This is only
              * useful for podcasts providers and some other exotic
-             * playlists providers.
+             * playlist providers.
              */
             virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack )
                     { Q_UNUSED(position); Q_UNUSED(otherTrack); }
 
             /**
-             * Return user-activable actions for this playlist. Default implementation
+             * Return user-actionable actions for this playlist. Default implementation
              * just returns provider actions for this playlist.
              */
             virtual QActionList actions();
 
             /**
-             * Return actions for track at position @trackIndex fot this playlist. Default
+             * Return actions for track at position @trackIndex for this playlist. Default
              * implementation returns provider()'s trackActions().
              */
             virtual QActionList trackActions( int trackIndex );
@@ -193,7 +193,7 @@ namespace Playlists
             /**
              * Labels the playlist as part of a group.
              *
-             * In a folder-like hierachy this means adding the playlist to the folder with
+             * In a folder-like hierarchy this means adding the playlist to the folder with
              * name groups.first(). If groups is empty that means removing all groups from
              * the playlist.
              */
@@ -207,7 +207,7 @@ namespace Playlists
              * @param position is the actual new position of the added track, never negative
              * @note calling this from (code called by) Playlist constructor is FORBIDDEN.
              *
-             * TODO: find all occurences where this should be called in Playlist subclasses
+             * TODO: find all occurrences where this should be called in Playlist subclasses
              * and add the call!
              */
             void notifyObserversMetadataChanged();

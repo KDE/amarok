@@ -187,7 +187,7 @@ AmzDownloader::clamzFinished( int exitCode, QProcess::ExitStatus exitStatus )
     if( exitCode == 0 )
         QMessageBox::information( this, tr( "Download finished" ), tr( "Download finished successfully. Have fun listening to your music." ) );
     else
-        QMessageBox::warning( this, tr( "Download failed" ), tr( "Please check the progress output for further infos." ) );
+        QMessageBox::warning( this, tr( "Download failed" ), tr( "Please check the progress output for further information." ) );
 
     ui->selectAmzButton->setDisabled( false );
     ui->startButton->setDisabled( false );

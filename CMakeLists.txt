@@ -86,7 +86,7 @@ include_directories(
 set(QT_MIN_VERSION "4.8.0")
 if( WITH_PLAYER )
     set(KDE_MIN_VERSION "4.8.4")
-    find_package( KDE4 REQUIRED ) # honours QT_MIN_VERSION
+    find_package( KDE4 REQUIRED ) # honors QT_MIN_VERSION
     include (KDE4Defaults)
     include (MacroLibrary)
 

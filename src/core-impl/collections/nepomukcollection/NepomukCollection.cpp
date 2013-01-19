@@ -102,7 +102,7 @@ NepomukCollection::metadataChanged( Meta::TrackPtr track )
     bool mapsChanged = MapChanger( m_mc.data() ).trackChanged( track );
     if( mapsChanged )
         // while docs say somehting different,
-        // collection browser doesnt update unless we emit updated()
+        // collection browser doesn't update unless we emit updated()
         emit updated();
 }
 

@@ -36,7 +36,7 @@ namespace StatSyncing
      * some similar service.
      *
      * This class is memory-managed as explicitly shared data, use ScrobblingServicePtr
-     * everytime you store reference to this class.
+     * every time you store reference to this class.
      */
     // virtual inheritance to fight dreaded diamond problem in last.fm class
     // http://www.parashift.com/c++-faq-lite/mi-diamond.html

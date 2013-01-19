@@ -42,7 +42,7 @@ namespace Playdar
      * will provide a QueryPtr for each call to resolve(). Results will
      * be provided by the appropriate Query as they become available, and
      * the friendly relationship between Controller and Query ensures that
-     * results are properly matched with Querys.
+     * results are properly matched with Queries.
      */
     class Controller : public QObject
     {

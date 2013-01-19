@@ -192,7 +192,7 @@ MatchTracksJob::matchTracksFromArtist( const QMultiMap<ProviderPtr, QString> &pr
         PerProviderTrackList equalTracks = takeTracksEqualTo( firstTrack, providerTracks );
         Q_ASSERT( !equalTracks.isEmpty() );
 
-        // optimisation: continue early if there's only one provider left
+        // optimization: continue early if there's only one provider left
         if( equalTracks.keys().count() <= 1 )
         {
             ProviderPtr provider = equalTracks.keys().first();

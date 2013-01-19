@@ -547,7 +547,7 @@ AudioCdCollection::trackForUrl( const KUrl &url )
     QRegExp trackUrlScheme( "^audiocd:/([a-zA-Z0-9]*)/([0-9]{1,})" );
     if( trackUrlScheme.indexIn( url.url() ) != 0 )
     {
-        warning() << __PRETTY_FUNCTION__ << url.url() << "doesn't have correct sheme" << trackUrlScheme;
+        warning() << __PRETTY_FUNCTION__ << url.url() << "doesn't have correct scheme" << trackUrlScheme;
         return Meta::TrackPtr();
     }
 

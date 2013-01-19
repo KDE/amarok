@@ -634,7 +634,7 @@ DatabaseUpdater::upgradeVersion14to15()
      * Collection not working. Fix it back.
      *
      * A list of columns to fix was obtained by comparing a database created by
-     * Amarok 2.1.1 and then upgraded to current versin with a db freshly created by
+     * Amarok 2.1.1 and then upgraded to current version with a db freshly created by
      * Amarok 2.6-git.
      */
     DEBUG_BLOCK
