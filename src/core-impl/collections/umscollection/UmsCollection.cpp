@@ -17,24 +17,22 @@
 #define DEBUG_PREFIX "UmsCollection"
 
 #include "UmsCollection.h"
-#include "UmsCollectionLocation.h"
-#include "UmsTranscodeCapability.h"
 
 #include "amarokconfig.h"
+#include "ui_UmsConfiguration.h"
 #include "core/capabilities/ActionsCapability.h"
-#include "core/support/Debug.h"
+#include "core/interfaces/Logger.h"
 #include "core/meta/Meta.h"
-
+#include "core/support/Components.h"
+#include "core/support/Debug.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
 #include "core-impl/collections/support/MemoryMeta.h"
+#include "core-impl/collections/umscollection/UmsCollectionLocation.h"
+#include "core-impl/collections/umscollection/UmsTranscodeCapability.h"
 #include "core-impl/meta/file/File.h"
-
 #include "dialogs/FilenameLayoutDialog.h"
 #include "dialogs/TrackOrganizer.h" //TODO: move to core/utils
-
 #include "scanner/GenericScanManager.h"
-
-#include "ui_UmsConfiguration.h"
 
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>
@@ -278,8 +276,11 @@ UmsCollection::init()
         m_musicPath.cleanPath();
         if( !QDir( m_musicPath.toLocalFile() ).exists() )
         {
-            debug() << "Music path doesn't exist! Using the mountpoint instead";
-            //TODO: add user-visible warning after string freeze.
+            QString message = i18n( "File <i>%1</i> suggests that we should use <i>%2</i> "
+                    "as music folder on the device, but it doesn't exist. Falling back to "
+                    "<i>%3</i> instead", m_mountPoint + "/" + s_settingsFileName,
+                    m_musicPath.toLocalFile(), m_mountPoint );
+            Amarok::Components::logger()->longMessage( message, Amarok::Logger::Warning );
             m_musicPath = m_mountPoint;
         }
     }

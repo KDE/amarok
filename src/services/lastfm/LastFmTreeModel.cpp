@@ -169,8 +169,8 @@ LastFmTreeModel::slotAddTags()
         it.previous();
         int count = it.key();
         QString text = it.value();
-        // once string freeze is over, make this i18nc with proper context
-        QString prettyText = QString( "%1 (%2)" ).arg( text ).arg( count );
+        QString prettyText = i18nc( "%1 is Last.fm tag name, %2 is its usage count",
+                                    "%1 (%2)", text, count );
 
         LastFmTreeItem *tag = new LastFmTreeItem( mapTypeToUrl( LastFm::MyTagsChild, text ),
                                                   LastFm::MyTagsChild, prettyText, m_myTags );
@@ -220,8 +220,8 @@ LastFmTreeModel::slotAddTopArtists()
         it.previous();
         int count = it.key();
         QString text = it.value();
-        // once string freeze is over, make this i18ncp with proper context
-        QString prettyText = QString( "%1 (%2 plays)" ).arg( text ).arg( count );
+        QString prettyText = i18ncp( "%2 is artist name, %1 is number of plays",
+                                     "%2 (%1 play)", "%2 (%1 plays)", count, text );
 
         LastFmTreeItem *artist = new LastFmTreeItem( mapTypeToUrl( LastFm::ArtistsChild, text ),
                                                      LastFm::ArtistsChild, prettyText, m_myTopArtists );

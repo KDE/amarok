@@ -14,10 +14,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-//
 #include "ScriptableServiceInfoParser.h"
-#include "../ServiceMetaBase.h"
+
 #include "ScriptManager.h"
+#include "services/ServiceMetaBase.h"
 
 using namespace Meta;
 
@@ -44,9 +44,6 @@ void ScriptableServiceInfoParser::getInfo( ArtistPtr artist )
         showLoading( i18n( "Loading info..." ) );
         ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceArtist->level(), serviceArtist->callbackString() );
     }
-
-    //FIXME: when out of string freeze, add a "fething info" comment instead of just useing blank info
-
 }
 
 void ScriptableServiceInfoParser::getInfo(AlbumPtr album)
@@ -62,7 +59,6 @@ void ScriptableServiceInfoParser::getInfo(AlbumPtr album)
         showLoading( i18n( "Loading info..." ) );
         ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceAlbum->level(), serviceAlbum->callbackString() );
     }
-
 }
 
 void ScriptableServiceInfoParser::getInfo(TrackPtr track)
@@ -78,9 +74,7 @@ void ScriptableServiceInfoParser::getInfo(TrackPtr track)
         showLoading( i18n( "Loading info..." ) );
         ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceTrack->level(), serviceTrack->callbackString() );
     }
-
 }
-
 
 void ScriptableServiceInfoParser::getInfo( Meta::GenrePtr genre )
 {
@@ -94,9 +88,4 @@ void ScriptableServiceInfoParser::getInfo( Meta::GenrePtr genre )
         showLoading( i18n( "Loading info..." ) );
         ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceGenre->level(), serviceGenre->callbackString() );
     }
-
 }
-
-#include "ScriptableServiceInfoParser.moc"
-
-                 

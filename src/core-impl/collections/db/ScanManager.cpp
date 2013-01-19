@@ -714,13 +714,14 @@ ScannerJob::tryRestart()
 
     if( m_restartCount >= MAX_RESTARTS )
     {
-        QString text = i18n( "The collection scan had to be aborted. Too many errors were encountered during the scan." );
-
-        // think about showing this somehow directly in UI, once string freeze is over
         debug() << __PRETTY_FUNCTION__ << "Following files made amarokcollectionscanner (or TagLib) crash:";
         foreach( const QString &file, badFiles )
             debug() << __PRETTY_FUNCTION__ << file;
 
+        // TODO: this message doesn't seem to be propagated to the UI
+        QString text = i18n( "The collection scan had to be aborted. Too many crashes (%1) "
+                "were encountered during the scan. Following files caused the crashes:\n\n%2",
+                m_restartCount, badFiles.join( "\n" ) );
         requestAbort( text );
         return false;
     }

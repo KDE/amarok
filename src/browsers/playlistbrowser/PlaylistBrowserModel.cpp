@@ -138,10 +138,15 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
                     icon = provider->icon();
                     iconData << QVariant( icon );
                     playlistCount = provider->playlists().count();
-                    //TODO: after string freeze add a "loading" for -1"
-                    playlistCountData << i18ncp( "number of playlists from one source",
-                                                 "One Playlist", "%1 playlists",
-                                                 playlistCount );
+                    if( playlistCount >= 0 )
+                        playlistCountData << i18ncp(
+                                "number of playlists from one source",
+                                "One Playlist", "%1 playlists",
+                                playlistCount );
+                    else
+                        playlistCountData << i18nc(
+                                "normally number of playlists, but they are still loading",
+                                "Loading..." );
                     providerActions << provider->providerActions();
                     providerActionsData << QVariant::fromValue( providerActions );
                 }
