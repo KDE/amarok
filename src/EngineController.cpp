@@ -40,6 +40,7 @@
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "playback/DelayedDoers.h"
+#include "playback/Fadeouter.h"
 #include "playlist/PlaylistActions.h"
 
 #include <KMessageBox>
@@ -69,9 +70,7 @@ EngineController::instance()
 }
 
 EngineController::EngineController()
-    : m_fader( 0 )
-    , m_fadeoutTimer( 0 )
-    , m_boundedPlayback( 0 )
+    : m_boundedPlayback( 0 )
     , m_multiPlayback( 0 )
     , m_multiSource( 0 )
     , m_playWhenFetched( true )
@@ -116,22 +115,6 @@ EngineController::~EngineController()
 }
 
 void
-EngineController::createFadeoutEffect()
-{
-    QMutexLocker locker( &m_mutex );
-    if( !m_fader )
-    {
-        m_fader = new Phonon::VolumeFaderEffect( this );
-        m_path.insertEffect( m_fader );
-        m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
-
-        m_fadeoutTimer = new QTimer( this );
-        m_fadeoutTimer->setSingleShot( true );
-        connect( m_fadeoutTimer, SIGNAL(timeout()), SLOT(slotStopFadeout()) );
-    }
-}
-
-void
 EngineController::initializePhonon()
 {
     DEBUG_BLOCK
@@ -146,6 +129,7 @@ EngineController::initializePhonon()
     delete m_audioDataOutput.data();
     delete m_preamp.data();
     delete m_equalizer.data();
+    delete m_fader.data();
 
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
@@ -188,6 +172,14 @@ EngineController::initializePhonon()
     {
         m_preamp = preamp.take();
         m_path.insertEffect( m_preamp.data() );
+    }
+
+    QScopedPointer<Phonon::VolumeFaderEffect> fader( new Phonon::VolumeFaderEffect( this ) );
+    if( fader->isValid() )
+    {
+        fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
+        m_fader = fader.take();
+        m_path.insertEffect( m_fader.data() );
     }
 
     m_media.data()->setTickInterval( 100 );
@@ -343,8 +335,6 @@ EngineController::play() //SLOT
     if( isPlaying() )
         return;
 
-    resetFadeout();
-
     if( isPaused() )
     {
         if( m_currentTrack && m_currentTrack->type() == "stream" )
@@ -417,7 +407,6 @@ EngineController::playUrl( const KUrl &url, uint offset )
     DEBUG_BLOCK
 
     m_media.data()->stop();
-    resetFadeout();
 
     debug() << "URL: " << url << url.url();
     debug() << "Offset: " << offset;
@@ -490,8 +479,24 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
 {
     DEBUG_BLOCK
 
-    //let Amarok know that the previous track is no longer playing
-    if( m_currentTrack )
+    /* Only do fade-out when all conditions are met:
+     * a) instant stop is not requested
+     * b) we aren't already in a fadeout
+     * c) we are currently playing (not paused etc.)
+     * d) Amarok is configured to fadeout at all
+     * e) configured fadeout length is positive
+     * f) Phonon fader to do it is actually available
+     */
+    bool doFadeOut = !forceInstant
+                  && !m_fadeouter
+                  && m_media.data()->state() == Phonon::PlayingState
+                  && AmarokConfig::fadeout()
+                  && AmarokConfig::fadeoutLength() > 0
+                  && m_fader;
+
+    // let Amarok know that the previous track is no longer playing; if we will fade-out
+    // ::stop() is called after the fade by Fadeouter.
+    if( m_currentTrack && !doFadeOut )
     {
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
@@ -523,19 +528,12 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
         m_media.data()->clearQueue();
     }
 
-    // Stop instantly if fadeout is already running, or the media is not playing
-    if( ( m_fadeoutTimer && m_fadeoutTimer->isActive() ) ||
-        m_media.data()->state() != Phonon::PlayingState )
+    if( doFadeOut )
     {
-        forceInstant = true;
-    }
-
-    if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() && !forceInstant )
-    {
-        // WARNING: this can cause a gap in playback in GStreamer
-        createFadeoutEffect();
-        m_fader->fadeOut( AmarokConfig::fadeoutLength() );
-        m_fadeoutTimer->start( AmarokConfig::fadeoutLength() + 1000 ); //add 1s for good measure, otherwise seems to cut off early (buffering..)
+        m_fadeouter = new Fadeouter( m_media, m_fader, AmarokConfig::fadeoutLength() );
+        // even though we don't pass forceInstant, doFadeOut will be false because
+        // m_fadeouter will be still valid
+        connect( m_fadeouter.data(), SIGNAL(fadeoutFinished()), SLOT(stop()) );
     }
     else
     {
@@ -559,10 +557,10 @@ EngineController::isPlaying() const
 bool
 EngineController::isStopped() const
 {
-    return (m_media.data()->state() == Phonon::StoppedState) ||
-        (m_media.data()->state() == Phonon::LoadingState) ||
-        (m_media.data()->state() == Phonon::ErrorState) ||
-        (m_fadeoutTimer && m_fadeoutTimer->isActive());
+    return
+        m_media.data()->state() == Phonon::StoppedState ||
+        m_media.data()->state() == Phonon::LoadingState ||
+        m_media.data()->state() == Phonon::ErrorState;
 }
 
 void
@@ -907,6 +905,12 @@ void
 EngineController::slotAboutToFinish()
 {
     DEBUG_BLOCK
+
+    if( m_fadeouter )
+    {
+        debug() << "slotAboutToFinish(): a fadeout is in progress, don't queue new track";
+        return;
+    }
 
     if( m_multiPlayback )
     {
@@ -1253,26 +1257,6 @@ EngineController::slotMetaDataChanged()
 
     debug() << "slotMetaDataChanged(): new meta-data:" << meta;
     emit currentMetadataChanged( meta );
-}
-
-void
-EngineController::slotStopFadeout() //SLOT
-{
-    DEBUG_BLOCK
-
-    m_media.data()->stop();
-    m_media.data()->setCurrentSource( Phonon::MediaSource() );
-    resetFadeout();
-}
-
-void
-EngineController::resetFadeout()
-{
-    if( m_fader )
-    {
-        m_fader->setVolume( 1.0 );
-        m_fadeoutTimer->stop();
-    }
 }
 
 void

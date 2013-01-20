@@ -8,6 +8,9 @@ VERSION 2.8-Beta 1
   CHANGES:
 
   BUGFIXES:
+   * Fix bumpy fade-out when first used. (BR 312062)
+   * Fix subtle bugs when a lond fade-out is initiated near the song end.
+   * Don't try to fade-out with phonon backends that don't support it. (vlc)
 
 VERSION 2.7
   CHANGES:

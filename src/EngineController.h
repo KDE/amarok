@@ -37,10 +37,10 @@
 #include <Phonon/EffectParameter>
 #include <phonon/audiodataoutput.h>
 
-class QTimer;
-
+class Fadeouter;
 namespace Capabilities { class MultiPlayableCapability; class MultiSourceCapability; }
 namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect; }
+class QTimer;
 
 /**
  * A thin wrapper around Phonon that implements Amarok-specific functionality like
@@ -477,7 +477,6 @@ private slots:
     void slotTick( qint64 );
     void slotTrackLengthChanged( qint64 );
     void slotMetaDataChanged();
-    void slotStopFadeout(); //called after the fade-out has finished
     void slotSeekableChanged( bool );
 
     /**
@@ -522,9 +521,6 @@ private:
      */
     void playUrl( const KUrl &url, uint offset );
 
-    void createFadeoutEffect();
-    void resetFadeout();
-
     /**
      * Try to detect MetaData spam in Streams etc.
      *
@@ -559,8 +555,8 @@ private:
     Phonon::Path                            m_path;
     Phonon::Path                            m_dataPath;
 
-    Phonon::VolumeFaderEffect* m_fader;
-    QTimer* m_fadeoutTimer;
+    QWeakPointer<Fadeouter> m_fadeouter;
+    QWeakPointer<Phonon::VolumeFaderEffect> m_fader;
 
     Meta::TrackPtr  m_currentTrack;
     Meta::AlbumPtr  m_currentAlbum;

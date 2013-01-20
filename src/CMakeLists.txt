@@ -721,6 +721,7 @@ set(amaroklib_LIB_SRCS
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     playback/DelayedDoers.cpp
+    playback/Fadeouter.cpp
     statemanagement/ApplicationController.cpp
     statemanagement/DefaultApplicationController.cpp
     toolbar/CurrentTrackToolbar.cpp
