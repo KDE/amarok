@@ -6,6 +6,8 @@ VERSION 2.8-Beta 1
   FEATURES:
 
   CHANGES:
+   * When fadeout and/or Replay Gain isn't possible, gray-out related UI
+     elements in order not to fool users.
 
   BUGFIXES:
    * Fix bumpy fade-out when first used. (BR 312062)

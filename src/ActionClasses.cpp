@@ -329,10 +329,20 @@ RandomAction::setCurrentItem( int n )
 ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *parent ) :
     SelectAction( i18n( "&Replay Gain Mode" ), &AmarokConfig::setReplayGainMode, ac, "replay_gain_mode", parent )
 {
-    setItems( QStringList() << i18nc( "Replay Gain state, as in, disabled", "&Off" ) << i18nc( "Item, as in, music", "&Track" )
+    setItems( QStringList() << i18nc( "Replay Gain state, as in, disabled", "&Off" )
+                            << i18nc( "Item, as in, music", "&Track" )
                             << i18n( "&Album" ) );
-    //setIcons( QStringList() << "media-playlist-replaygain-off-amarok" << "media-track-replaygain-amarok" << "media-album-replaygain-amarok" );
-    setCurrentItem( AmarokConfig::replayGainMode() );
+    EngineController *engine = EngineController::instance();
+    Q_ASSERT( engine );
+    if( engine->supportsGainAdjustments() )
+        setCurrentItem( AmarokConfig::replayGainMode() );
+    else
+    {
+        // Note: it would be nice to set a tooltip that would explain why this is disabled
+        // to users, but tooltips aren't shown in meny anyway :-(
+        actions().at( 1 )->setEnabled( false );
+        actions().at( 2 )->setEnabled( false );
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

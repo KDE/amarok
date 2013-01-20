@@ -317,6 +317,16 @@ public slots:
      */
     void eqUpdate();
 
+    /**
+     * Return true if current Phonon back-end supports fade-out.
+     */
+    bool supportsFadeout() const;
+
+    /**
+     * Return true if current Phonon back-end supports our implementation of
+     * Replay Gain adjustment.
+     */
+    bool supportsGainAdjustments() const;
 
 Q_SIGNALS:
     /**

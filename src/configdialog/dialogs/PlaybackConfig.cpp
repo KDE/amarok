@@ -34,6 +34,17 @@ PlaybackConfig::PlaybackConfig( QWidget* parent )
     kcfg_FadeoutOnExit->setHidden( true );
 
     connect( findChild<QPushButton*>( "pushButtonPhonon" ), SIGNAL( clicked() ), SLOT( configurePhonon() ) );
+
+    EngineController *engine = EngineController::instance();
+    Q_ASSERT( engine );
+    if( !engine->supportsFadeout() )
+    {
+        QString toolTip = i18n( "Current Phonon back-end doesn't support volume fading" );
+        kcfg_Fadeout->setEnabled( false );
+        kcfg_Fadeout->setToolTip( toolTip );
+        kcfg_FadeoutOnExit->setEnabled( false );
+        kcfg_FadeoutOnExit->setToolTip( toolTip );
+    }
 }
 
 PlaybackConfig::~PlaybackConfig()
