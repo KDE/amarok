@@ -979,7 +979,6 @@ MainWindow::createActions()
     new Amarok::StopPlayingAfterCurrentTrackAction( ac, this );
     new Amarok::PlayPauseAction( ac, this );
     new Amarok::ReplayGainModeAction( ac, this );
-    new Amarok::EqualizerAction( ac, this);
 
     ac->addAssociatedWidget( this );
     foreach( QAction* action, ac->actions() )

@@ -124,21 +124,6 @@ namespace Amarok
             ReplayGainModeAction( KActionCollection *ac, QObject* );
     };
 
-    class EqualizerAction : public SelectAction
-    {
-        Q_OBJECT
-
-        public:
-            EqualizerAction( KActionCollection *ac, QObject* );
-
-        public slots:
-            void updateContent();
-            void newList();
-
-        private slots:
-            void actTrigg( int index );
-    };
-
     class BurnMenu : public KMenu
     {
         Q_OBJECT

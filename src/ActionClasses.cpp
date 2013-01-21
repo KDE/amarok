@@ -28,7 +28,6 @@
 #include "config.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "dialogs/EqualizerDialog.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/Osd.h"
@@ -343,60 +342,6 @@ ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *pare
         actions().at( 1 )->setEnabled( false );
         actions().at( 2 )->setEnabled( false );
     }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// EqualizerAction
-//////////////////////////////////////////////////////////////////////////////////////////
-EqualizerAction::EqualizerAction( KActionCollection *ac, QObject *parent ) :
-    SelectAction( i18n( "&Equalizer" ), &AmarokConfig::setEqualizerMode, ac, "equalizer_mode", parent )
-{
-    // build a new preset list in menu
-    newList();
-    // set selected preset from config
-    updateContent();
-    connect( this, SIGNAL( triggered( int ) ), this, SLOT( actTrigg( int ) ) );
-}
-
-void
-EqualizerAction::updateContent() //SLOT
-{
-    // this slot update the content of equalizer main window menu
-    // according to config blocking is necessary to prevent
-    // circluar loop between menu and config dialog
-    blockSignals( true );
-    setCurrentItem( AmarokConfig::equalizerMode() );
-    blockSignals( false );
-}
-
-void
-EqualizerAction::newList() //SLOT
-{
-    // this slot build a new list of presets in equalizer menu
-    // or disable this menu if equalizer is not supported
-    if( !The::engineController()->isEqSupported() )
-    {
-        setEnabled( false );
-        setToolTip( i18n("Your current setup does not support the equalizer feature") );
-        return;
-    }
-    setEnabled( true );
-    setToolTip( QString() );
-    setItems( QStringList() << i18nc( "Equalizer state, as in, disabled", "&Off" ) << EqualizerPresets::eqGlobalTranslatedList() );
-}
-
-void
-EqualizerAction::actTrigg( int index ) //SLOT
-{
-    if( !The::engineController()->isEqSupported() )
-        return;
-
-    const QString presetName = EqualizerPresets::eqGlobalList().at( index - 1 );
-    if (presetName.isEmpty())
-        return;
-
-    AmarokConfig::setEqualizerGains( EqualizerPresets::eqCfgGetPresetVal( presetName ) );
-    The::engineController()->eqUpdate();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

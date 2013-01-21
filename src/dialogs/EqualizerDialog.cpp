@@ -19,7 +19,6 @@
 
 #include "amarokconfig.h"
 #include "core/support/Amarok.h"
-#include "ActionClasses.h"
 #include "EngineController.h"
 #include "core/support/Debug.h"
 
@@ -146,11 +145,6 @@ EqualizerDialog::eqSetupUI()
     connect( eqPresetSaveBtn, SIGNAL( clicked() ), SLOT( eqSavePreset() ) );
     connect( eqPresetDeleteBtn, SIGNAL( clicked() ), SLOT( eqDeletePreset() ) );
     connect( eqPresetResetBtn, SIGNAL( clicked() ), SLOT( eqRestorePreset() ) );
-    // Signals exchange to keep both config dialog and eq action in sync
-    connect( eqPresets, SIGNAL( currentIndexChanged( int ) ),
-             Amarok::actionCollection()->action( "equalizer_mode" ), SLOT( updateContent() ) );
-    connect( Amarok::actionCollection()->action( "equalizer_mode" ), SIGNAL( triggered(int) ),
-             SLOT( eqUpdateUI( int ) ) );
     // Ask engine for maximum gain value and compute scale to display values
     mValueScale = The::engineController()->eqMaxGain();
     QString mlblText = i18n( "%0\ndB" ).arg( QString::number( mValueScale, 'f', 1 ) );
@@ -265,7 +259,6 @@ EqualizerDialog::eqRepopulateUi()
     eqPresets->addItem( i18nc( "Equalizer state, as in, disabled", "Off" ) );
     eqPresets->addItems( mPresets.eqGlobalTranslatedList() );
     eqPresets->blockSignals( false );
-    static_cast<Amarok::EqualizerAction*>( Amarok::actionCollection()->action( "equalizer_mode") )->newList();
 }
 
 void
