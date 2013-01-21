@@ -59,8 +59,8 @@ class CoverManager : public KDialog, public Meta::Observer
         static bool isConstructed() { return s_constructed; }
         static CoverManager *instance() { return s_instance; }
 
-        static void showOnce( const QString &artist = QString() );
-        static void viewCover( Meta::AlbumPtr album, QWidget *parent=0 );
+        static void showOnce( const QString &artist = QString(), QWidget* parent = 0 );
+        static void viewCover( Meta::AlbumPtr album, QWidget* parent = 0 );
 
         void setStatusText( QString text );
 

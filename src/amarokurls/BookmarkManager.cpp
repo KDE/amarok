@@ -26,17 +26,8 @@
 
 BookmarkManager * BookmarkManager::s_instance = 0;
 
-
-BookmarkManager * BookmarkManager::instance()
-{
-    if( s_instance == 0 )
-        s_instance = new BookmarkManager();
-
-    return s_instance;
-}
-
-BookmarkManager::BookmarkManager()
-    : QDialog()
+BookmarkManager::BookmarkManager( QWidget* parent )
+    : QDialog( parent )
 {
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
@@ -60,17 +51,13 @@ BookmarkManager::~BookmarkManager()
     s_instance = 0;
 }
 
-void BookmarkManager::showOnce()
+void BookmarkManager::showOnce( QWidget* parent )
 {
-    instance()->activateWindow();
-    instance()->show();
-    instance()->raise();
+    if( s_instance == 0 )
+        s_instance = new BookmarkManager( parent );
+
+    s_instance->activateWindow();
+    s_instance->show();
+    s_instance->raise();
 }
 
-namespace The {
-
-    BookmarkManager* bookmarkManager()
-    {
-        return BookmarkManager::instance();
-    }
-}

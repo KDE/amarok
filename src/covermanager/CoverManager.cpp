@@ -318,12 +318,12 @@ CoverManager::fetchMissingCovers() //SLOT
 }
 
 void
-CoverManager::showOnce( const QString &artist )
+CoverManager::showOnce( const QString &artist, QWidget* parent )
 {
     if( !s_instance )
     {
         artistToSelectInInitFunction = artist;
-        new CoverManager();
+        new CoverManager( parent );
     }
     else
     {

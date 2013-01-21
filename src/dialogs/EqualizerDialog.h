@@ -24,24 +24,16 @@
 
 #include <KDialog>
 
-class EqualizerDialog;
-
-namespace The {
-    EqualizerDialog* equalizer();
-}
-
 class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
 {
     Q_OBJECT
-    friend EqualizerDialog* The::equalizer();
 
     public:
-        static EqualizerDialog * instance();
         ~EqualizerDialog();
 
         QString eqSelectedPresetName() const;
 
-        static void showOnce();;
+        static void showOnce( QWidget* parent = 0 );;
 
     private Q_SLOTS:
         void eqUpdateUI( int index );
@@ -55,7 +47,7 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         void eqRestoreOriginalSettings();
 
     private:
-        EqualizerDialog();
+        EqualizerDialog( QWidget* parent = 0 );
 
         double mValueScale;
         QVector<QSlider*> mBands;

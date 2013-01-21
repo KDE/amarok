@@ -21,26 +21,18 @@
 
 #include <QDialog>
 
-class BookmarkManager;
-
-namespace The {
-    AMAROK_EXPORT BookmarkManager* bookmarkManager();
-}
-
 class BookmarkManager : public QDialog
 {
-    friend BookmarkManager* The::bookmarkManager();
-        
 public:
 
     static BookmarkManager * instance();
     ~BookmarkManager();
 
-     static void showOnce();
-    
+     static void showOnce( QWidget* parent = 0 );
+
 private:
 
-    BookmarkManager();
+    BookmarkManager( QWidget* parent = 0 );
 
     static BookmarkManager *s_instance;
     BookmarkManagerWidget * m_widget;

@@ -136,13 +136,13 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void slotNewTrackPlaying();
         void slotMetadataChanged( Meta::TrackPtr track );
 
-        void exportPlaylist() const;
+        void exportPlaylist();
         void slotShowActiveTrack() const;
         void slotEditTrackInfo() const;
-        void slotShowBookmarkManager() const;
-        void slotShowEqualizer() const;
-        void slotShowCoverManager() const;
-        void slotShowDiagnosticsDialog() const;
+        void slotShowBookmarkManager();
+        void slotShowEqualizer();
+        void slotShowCoverManager();
+        void slotShowDiagnosticsDialog();
         void slotShowMenuBar();
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );

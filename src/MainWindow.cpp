@@ -484,11 +484,11 @@ MainWindow::queryExit()
 }
 
 void
-MainWindow::exportPlaylist() const //SLOT
+MainWindow::exportPlaylist() //SLOT
 {
     DEBUG_BLOCK
 
-    KFileDialog fileDialog( KUrl("kfiledialog:///amarok-playlist-export"), QString(), 0 );
+    QScopedPointer<KFileDialog> fileDialog( new KFileDialog( KUrl("kfiledialog:///amarok-playlist-export"), QString(), this ) );
     QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving") );
     saveRelativeCheck->setChecked( AmarokConfig::relativePlaylist() );
 
@@ -497,16 +497,16 @@ MainWindow::exportPlaylist() const //SLOT
     supportedMimeTypes << "audio/x-scpls"; //PLS
     supportedMimeTypes << "application/xspf+xml"; //XSPF
 
-    fileDialog.setMimeFilter( supportedMimeTypes, supportedMimeTypes.first() );
-    fileDialog.fileWidget()->setCustomWidget( saveRelativeCheck );
-    fileDialog.setOperationMode( KFileDialog::Saving );
-    fileDialog.setMode( KFile::File );
-    fileDialog.setCaption( i18n("Save As") );
-    fileDialog.setObjectName( "PlaylistExport" );
+    fileDialog->setMimeFilter( supportedMimeTypes, supportedMimeTypes.first() );
+    fileDialog->fileWidget()->setCustomWidget( saveRelativeCheck );
+    fileDialog->setOperationMode( KFileDialog::Saving );
+    fileDialog->setMode( KFile::File );
+    fileDialog->setCaption( i18n("Save As") );
+    fileDialog->setObjectName( "PlaylistExport" );
 
-    fileDialog.exec();
+    fileDialog->exec();
 
-    QString playlistPath = fileDialog.selectedFile();
+    QString playlistPath = fileDialog->selectedFile();
 
     if( !playlistPath.isEmpty() )
         The::playlist()->exportPlaylist( playlistPath, saveRelativeCheck->isChecked() );
@@ -525,26 +525,26 @@ MainWindow::slotEditTrackInfo() const
 }
 
 void
-MainWindow::slotShowCoverManager() const //SLOT
+MainWindow::slotShowCoverManager() //SLOT
 {
-    CoverManager::showOnce();
+    CoverManager::showOnce( QString(), this );
 }
 
 void
-MainWindow::slotShowDiagnosticsDialog() const
+MainWindow::slotShowDiagnosticsDialog()
 {
-    DiagnosticDialog *dialog = new DiagnosticDialog( KGlobal::mainComponent().aboutData() );
+    DiagnosticDialog *dialog = new DiagnosticDialog( KGlobal::mainComponent().aboutData(), this );
     dialog->show();
 }
 
-void MainWindow::slotShowBookmarkManager() const
+void MainWindow::slotShowBookmarkManager()
 {
-    The::bookmarkManager()->showOnce();
+    BookmarkManager::showOnce( this );
 }
 
-void MainWindow::slotShowEqualizer() const
+void MainWindow::slotShowEqualizer()
 {
-    The::equalizer()->showOnce();
+    EqualizerDialog::showOnce( this );
 }
 
 void

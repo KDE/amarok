@@ -26,17 +26,8 @@
 
 EqualizerDialog * EqualizerDialog::s_instance = 0;
 
-
-EqualizerDialog * EqualizerDialog::instance()
-{
-    if( s_instance == 0 )
-        s_instance = new EqualizerDialog();
-
-    return s_instance;
-}
-
-EqualizerDialog::EqualizerDialog()
-    : KDialog( 0 )
+EqualizerDialog::EqualizerDialog( QWidget* parent )
+    : KDialog( parent )
 {
     DEBUG_BLOCK
 
@@ -54,13 +45,17 @@ EqualizerDialog::~EqualizerDialog()
 {
 }
 
-void EqualizerDialog::showOnce()
+void EqualizerDialog::showOnce( QWidget* parent )
 {
     DEBUG_BLOCK
-    instance()->activateWindow();
-    instance()->show();
-    instance()->raise();
-    instance()->eqRememberOriginalSettings();
+
+    if( s_instance == 0 )
+        s_instance = new EqualizerDialog();
+
+    s_instance->activateWindow();
+    s_instance->show();
+    s_instance->raise();
+    s_instance->eqRememberOriginalSettings();
 }
 
 void
@@ -331,14 +326,6 @@ EqualizerDialog::eqSavePreset() //SLOT
     mPresets.eqCfgSetPresetVal( presetName, eqGains );
     eqRepopulateUi();
     eqPresets->setCurrentIndex( eqPresets->findText( presetName ) );
-}
-
-namespace The {
-
-    EqualizerDialog* equalizer()
-    {
-        return EqualizerDialog::instance();
-    }
 }
 
 #include "EqualizerDialog.moc"
