@@ -227,7 +227,7 @@ if( WITH_PLAYER )
     #DOC_SUBDIR
 
 else( WITH_PLAYER )
-    find_package( Qt4 REQUIRED ) # honours QT_MIN_VERSION
+    find_package( Qt4 REQUIRED ) # honors QT_MIN_VERSION
     add_definitions(${QT_DEFINITIONS})
 endif( WITH_PLAYER )
 

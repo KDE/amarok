@@ -385,7 +385,7 @@ MatchedTracksModel::trackData( ProviderPtr provider, const TrackTuple &tuple,
         return provider->prettyName();
     else if( role == Qt::DecorationRole && field == Meta::valTitle )
         return provider->icon();
-    // no special background if the the field in whole tuple is not updated
+    // no special background if the field in whole tuple is not updated
     else if( role == Qt::BackgroundRole && tuple.fieldUpdated( field, m_options ) )
     {
         KColorScheme::BackgroundRole backgroundRole =
