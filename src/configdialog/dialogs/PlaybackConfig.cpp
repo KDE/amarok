@@ -39,7 +39,7 @@ PlaybackConfig::PlaybackConfig( QWidget* parent )
     Q_ASSERT( engine );
     if( !engine->supportsFadeout() )
     {
-        QString toolTip = i18n( "Current Phonon back-end doesn't support volume fading" );
+        QString toolTip = i18n( "Current Phonon backend does not support volume fading" );
         kcfg_Fadeout->setEnabled( false );
         kcfg_Fadeout->setToolTip( toolTip );
         kcfg_FadeoutOnExit->setEnabled( false );
