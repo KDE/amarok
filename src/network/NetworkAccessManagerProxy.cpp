@@ -24,6 +24,8 @@
 
 #include "core/support/Debug.h"
 
+#include "Version.h"
+
 #include <KProtocolManager>
 
 #include <QMetaMethod>
@@ -53,7 +55,7 @@ class NetworkAccessManagerProxy::NetworkAccessManagerProxyPrivate
 {
 public:
     NetworkAccessManagerProxyPrivate( NetworkAccessManagerProxy *parent )
-        : userAgent( KProtocolManager::defaultUserAgent() )
+        : userAgent( QString( "Amarok/" ) + AMAROK_VERSION )
 #ifdef DEBUG_BUILD_TYPE
         , viewer( 0 )
 #endif // DEBUG_BUILD_TYPE
@@ -269,7 +271,10 @@ NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &r
 {
     QNetworkRequest request = req;
     request.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
-    request.setRawHeader( "User-Agent", d->userAgent.toLocal8Bit() );
+    if ( request.hasRawHeader( "User-Agent" ) )
+        request.setRawHeader( "User-Agent", d->userAgent.toLocal8Bit() + " " + request.rawHeader( "User-Agent" ) );
+    else
+        request.setRawHeader( "User-Agent", d->userAgent.toLocal8Bit() );
 
     KIO::CacheControl cc = KProtocolManager::cacheControl();
     switch (cc)
