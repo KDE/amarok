@@ -69,7 +69,7 @@ SortLevel::isString() const
 {
     QList< int > strCategories;
     strCategories << Album << AlbumArtist << Artist << Comment << Composer << Directory << Filename
-        << Genre << LastPlayed << Source << Title << Year;
+        << Genre << LastPlayed << Source << Title << Type << Year;
     if( isComparable() && strCategories.contains( category() ) )
         return true;
     return false;
