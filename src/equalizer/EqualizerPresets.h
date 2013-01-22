@@ -21,25 +21,42 @@
 #include <QList>
 #include <QStringList>
 
-class EqualizerPresets
+/** Functions that handles equalizer presets.
+    There are two lists of presets. The globals are pre-defined and cannot
+    be changed.
+    The user presets can be created and deleted.
+*/
+namespace EqualizerPresets
 {
-public:
-    EqualizerPresets();
-    virtual ~EqualizerPresets();
+    QStringList eqGlobalTranslatedList();
+    QStringList eqGlobalList();
 
-    static QStringList eqGlobalTranslatedList();
-    static QStringList eqGlobalList();
-    static QStringList eqUserList();
+    /** Will return a list of all non default preset name namess */
+    QStringList eqUserList();
 
-    static QList<int> eqCfgGetPresetVal( const QString &presetName );
+    /** Will return a "user" preset if present. Else a "global". */
+    QList<int> eqCfgGetPresetVal( const QString &presetName );
 
+    /** Returns true if the preset was deleted.
+        @param presetName The untranslated preset name.
+    */
     bool eqCfgDeletePreset( const QString &presetName );
-    bool eqCfgRestorePreset( const QString &presetName );
-    void eqCfgSetPresetVal( const QString &presetName, const QList<int> &presetValues );
 
-private:
-    static QStringList eqDefaultPresetsList();
-    static QStringList eqDefaultTranslatedPresetsList();
+    /** Returns true if the preset was restored (meaning that there was
+        a user preset and a global one and we just deleted the user preset)
+        @param presetName The untranslated preset name.
+    */
+    bool eqCfgRestorePreset( const QString &presetName );
+
+    /** Returns true if it is possible to restore the preset
+        Meaning that there is a user and a default preset with the given name.
+    */
+    bool eqCfgCanRestorePreset( const QString &presetName );
+
+    /** Sets the preset (create a user preset).
+        @param presetName The untranslated preset name.
+    */
+    void eqCfgSetPresetVal( const QString &presetName, const QList<int> &presetValues );
 
 };
 

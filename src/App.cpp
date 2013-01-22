@@ -47,7 +47,6 @@
 #include "dbus/mpris1/RootHandler.h"
 #include "dbus/mpris1/TrackListHandler.h"
 #include "dbus/mpris2/Mpris2.h"
-#include "dialogs/EqualizerDialog.h"
 #include "network/NetworkAccessManagerProxy.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"

@@ -22,9 +22,15 @@
 
 #include <KLocale>
 
-static int DEFAULT_PRESET_VALUES[][11] =
+/** Will return a list of all default preset names untranslated */
+static QStringList eqDefaultPresetsList();
+/** Will return a list of all default preset names translated */
+static QStringList eqDefaultTranslatedPresetsList();
+
+#define NUM_EQ_VALUES 11
+
+static int DEFAULT_PRESET_VALUES[][NUM_EQ_VALUES] =
 {
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Manual
     {0, 0, 0, 0, 0, 0, 0, -40, -40, -40, -50}, // Classical
     {0, 0, 0, 20, 30, 30, 30, 20, 0, 0, 0}, // Club
     {-10, 50, 35, 10, 0, 0, -30, -40, -40, 0, 0}, // Dance
@@ -45,20 +51,8 @@ static int DEFAULT_PRESET_VALUES[][11] =
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // Zero
 };
 
-EqualizerPresets::EqualizerPresets()
-{
-    // do some sanity checks on instantiation
-    Q_ASSERT(eqDefaultPresetsList().size() == eqDefaultTranslatedPresetsList().size());
-}
-
-
-EqualizerPresets::~EqualizerPresets()
-{
-
-}
-
 QStringList
-EqualizerPresets::eqDefaultPresetsList()
+eqDefaultPresetsList()
 {
     QStringList presets;
     presets << "Manual"
@@ -84,7 +78,7 @@ EqualizerPresets::eqDefaultPresetsList()
 }
 
 QStringList
-EqualizerPresets::eqDefaultTranslatedPresetsList()
+eqDefaultTranslatedPresetsList()
 {
     QStringList strings;
     strings << i18n( "Manual" );
@@ -124,7 +118,7 @@ EqualizerPresets::eqGlobalList()
     // first a default preset will comes
     // then user list is filtered to omit duplicates from default preset list
     QStringList mGlobalList;
-    mGlobalList += EqualizerPresets::eqDefaultPresetsList();
+    mGlobalList += eqDefaultPresetsList();
     mGlobalList += eqUserList();
     return mGlobalList;
 }
@@ -132,7 +126,7 @@ EqualizerPresets::eqGlobalList()
 QStringList
 EqualizerPresets::eqUserList()
 {
-    QStringList defaultList = EqualizerPresets::eqDefaultPresetsList();
+    QStringList defaultList = eqDefaultPresetsList();
 
     QStringList userList;
     foreach( const QString &mUsrName, AmarokConfig::equalizerPresetsNames() )
@@ -158,8 +152,8 @@ EqualizerPresets::eqCfgDeletePreset( const QString &presetName )
           QList<int> mNewValues = AmarokConfig::equalizerPresestValues();
           mNewNames.removeAt( idUsr );
 
-          for( int it = 0; it <= 10; it++ )
-              mNewValues.removeAt( 11*idUsr );
+          for( int it = 0; it < NUM_EQ_VALUES; it++ )
+              mNewValues.removeAt( NUM_EQ_VALUES*idUsr );
 
           AmarokConfig::setEqualizerPresetsNames( mNewNames );
           AmarokConfig::setEqualizerPresestValues( mNewValues );
@@ -177,14 +171,14 @@ EqualizerPresets::eqCfgRestorePreset( const QString &presetName )
       const int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( presetName );
       const int idDef = eqDefaultPresetsList().indexOf( presetName );
 
-      if( idDef >= 0 )
+      if( idUsr >= 0 && idDef >= 0 )
       {
           QStringList mNewNames = AmarokConfig::equalizerPresetsNames();
           QList<int> mNewValues = AmarokConfig::equalizerPresestValues();
           mNewNames.removeAt( idUsr );
 
-          for( int it = 0; it <= 10; it++ )
-              mNewValues.removeAt( 11*idUsr );
+          for( int it = 0; it < NUM_EQ_VALUES; it++ )
+              mNewValues.removeAt( NUM_EQ_VALUES*idUsr );
 
           AmarokConfig::setEqualizerPresetsNames( mNewNames );
           AmarokConfig::setEqualizerPresestValues( mNewValues );
@@ -192,6 +186,17 @@ EqualizerPresets::eqCfgRestorePreset( const QString &presetName )
       }
 
       return false;
+}
+
+bool
+EqualizerPresets::eqCfgCanRestorePreset( const QString &presetName )
+{
+      // Idea is to delete the preset if it found on both
+      // user list and default list - delete from the latter if so
+      const int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( presetName );
+      const int idDef = eqDefaultPresetsList().indexOf( presetName );
+
+      return ( idUsr >= 0 && idDef >= 0 );
 }
 
 void
@@ -215,8 +220,8 @@ EqualizerPresets::eqCfgSetPresetVal( const QString &presetName, const QList<int>
     }
     else
     {
-        for( int it = 0; it <= 10; it++ )
-            mNewValues.replace( idUsr * 11 + it, presetValues.value(it) );
+        for( int it = 0; it < NUM_EQ_VALUES; it++ )
+            mNewValues.replace( idUsr * NUM_EQ_VALUES + it, presetValues.value(it) );
     }
     AmarokConfig::setEqualizerPresetsNames( mNewNames );
     AmarokConfig::setEqualizerPresestValues( mNewValues );
@@ -232,9 +237,9 @@ EqualizerPresets::eqCfgGetPresetVal( const QString &presetName )
 
       QList<int> mPresetVal;
       if( idUsr >= 0 )
-          mPresetVal = AmarokConfig::equalizerPresestValues().mid( idUsr * 11, 11 );
+          mPresetVal = AmarokConfig::equalizerPresestValues().mid( idUsr * NUM_EQ_VALUES, NUM_EQ_VALUES );
       else if( idDef >= 0) {
-          for (int i = 0; i < 11; ++i)
+          for (int i = 0; i < NUM_EQ_VALUES; ++i)
               mPresetVal << DEFAULT_PRESET_VALUES[idDef][i];
       }
 

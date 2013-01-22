@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -31,37 +32,55 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
     public:
         ~EqualizerDialog();
 
-        QString eqSelectedPresetName() const;
+        static void showOnce( QWidget *parent = 0 );;
 
-        static void showOnce( QWidget* parent = 0 );;
+        /** Returns the untranslated current preset name. */
+        QString selectedPresetName() const;
+
+        /** Returns the current gain settings */
+        QList<int> gains() const;
+        void setGains( QList<int> );
 
     private Q_SLOTS:
-        void eqUpdateUI( int index );
-        void eqPresetChanged( int index );
-        void eqBandsChanged();
-        void eqRepopulateUi();
+        /** Updates the enabled states of different ui components. */
+        void updateUi();
 
-        void eqSavePreset();
-        void eqDeletePreset();
-        void eqRestorePreset();
-        void eqRestoreOriginalSettings();
+        void setActive( bool active );
+
+        /** Set the index of the current preset.
+            Will update the UI */
+        void setPreset( int index );
+
+        /** Updates the tool tips, labels, configuration and engine */
+        void bandsChanged();
+
+        void updatePresets();
+
+        void savePreset();
+        void deletePreset();
+        void restorePreset();
+        void restoreOriginalSettings();
 
     private:
-        EqualizerDialog( QWidget* parent = 0 );
+        EqualizerDialog( QWidget *parent = 0 );
+
+        void updateToolTips();
+        void updateLabels();
+        void storeOriginalSettings();
+
+        /** Set's the AmarokConfig and informs the EngineController about the change.
+            As input for this the current Ui state is used. */
+        void updateEngine();
 
         double mValueScale;
         QVector<QSlider*> mBands;
         QVector<QLabel*> mBandsValues;
         QVector<QLabel*> mBandsLabels;
-        QList<int> mOriginalGains;
+
+        /** The preset and gains at the time "showOnce" was called. */
+        bool mOriginalActivated;
         QString mOriginalPreset;
-
-        EqualizerPresets mPresets;
-
-        void eqSetupUI();
-        void eqUpdateToolTips();
-        void eqUpdateLabels( QList<int> & mEqGains );
-        void eqRememberOriginalSettings();
+        QList<int> mOriginalGains;
 
         static EqualizerDialog *s_instance;
 };
