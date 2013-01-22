@@ -63,8 +63,8 @@ class Artist : public Meta::Artist, public Base
     public:
         Artist( const QString &name ) : MemoryMeta::Base( name ) {}
 
-        virtual QString name() const { return Base::name(); }
-        virtual Meta::TrackList tracks() { return Base::tracks(); }
+        virtual QString name() const { return MemoryMeta::Base::name(); }
+        virtual Meta::TrackList tracks() { return MemoryMeta::Base::tracks(); }
 };
 
 class Album : public Meta::Album, public Base
@@ -87,7 +87,7 @@ class Album : public Meta::Album, public Base
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         /* Meta::Base virtual methods */
-        virtual QString name() const { return Base::name(); }
+        virtual QString name() const { return MemoryMeta::Base::name(); }
 
         /* Meta::Album virtual methods */
         virtual bool isCompilation() const { return m_isCompilation; }
@@ -96,7 +96,7 @@ class Album : public Meta::Album, public Base
 
         virtual bool hasAlbumArtist() const { return !m_albumArtist.isNull(); }
         virtual Meta::ArtistPtr albumArtist() const { return m_albumArtist; }
-        virtual Meta::TrackList tracks() { return Base::tracks(); }
+        virtual Meta::TrackList tracks() { return MemoryMeta::Base::tracks(); }
 
         virtual bool hasImage( int /* size */ = 0 ) const { return !m_image.isNull(); }
         virtual QImage image( int size = 0 ) const;
@@ -124,8 +124,8 @@ class Composer : public Meta::Composer, public Base
     public:
         Composer( const QString &name ) : MemoryMeta::Base( name ) {}
 
-        virtual QString name() const { return Base::name(); }
-        virtual Meta::TrackList tracks() { return Base::tracks(); }
+        virtual QString name() const { return MemoryMeta::Base::name(); }
+        virtual Meta::TrackList tracks() { return  MemoryMeta::Base::tracks(); }
 };
 
 class Genre : public Meta::Genre, public Base
@@ -133,8 +133,8 @@ class Genre : public Meta::Genre, public Base
     public:
         Genre( const QString &name ) : MemoryMeta::Base( name ) {}
 
-        virtual QString name() const { return Base::name(); }
-        virtual Meta::TrackList tracks() { return Base::tracks(); }
+        virtual QString name() const { return MemoryMeta::Base::name(); }
+        virtual Meta::TrackList tracks() { return MemoryMeta::Base::tracks(); }
 };
 
 class Year : public Meta::Year, public Base
@@ -142,8 +142,8 @@ class Year : public Meta::Year, public Base
     public:
         Year( const QString &name ) : MemoryMeta::Base( name ) {}
 
-        virtual QString name() const { return Base::name(); }
-        virtual Meta::TrackList tracks() { return Base::tracks(); }
+        virtual QString name() const { return MemoryMeta::Base::name(); }
+        virtual Meta::TrackList tracks() { return MemoryMeta::Base::tracks(); }
 };
 
 class AMAROK_EXPORT Track : public Meta::Track
