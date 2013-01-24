@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *           (c) 2010 Ian Monroe <ian@monroe.nu>                                        *
+ *           (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -27,6 +28,8 @@
 #include <kdemacros.h>
 
 #include <QObject>
+#include <QDomDocument>
+class QNetworkReply;
 
 #ifdef MAKE_AMPACHE_ACCOUNT_LOGIN_LIB
 #define AMPACHE_ACCOUNT_EXPORT KDE_EXPORT
@@ -44,24 +47,35 @@ class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
         QString sessionId() const { return m_sessionId; }
         bool authenticated() const { return m_authenticated; }
         void reauthenticate();
+
     signals:
         void loginSuccessful(); //!authentication was successful
         void finished(); //!authentication was or was not successful
+
     private slots:
         void authenticate( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
         void authenticationComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-        void versionVerify( QByteArray data );
-    
+
     private:
-        KUrl m_xmlDownloadUrl;
-        KUrl m_xmlVersionUrl;
-        
+        int getVersion( const QDomDocument& doc ) const;
+
+        /** Does general response verification.
+            Emits finished if something is fishy.
+            @returns true if the check was successfull.
+        */
+        bool generalVerify( const QDomDocument& doc, NetworkAccessManagerProxy::Error e );
+
+        /** Returns the base url.
+            You would need to add query items to use it. */
+        KUrl getRequestUrl( const QString &action = QString() ) const;
+
         bool m_authenticated;
         QString m_server;
         QString m_username;
         QString m_password;
         QString m_sessionId;
-        int m_version;
+
+        QNetworkReply* m_lastRequest;
 };
 
 #endif // AMPACHEACCOUNTLOGIN_H

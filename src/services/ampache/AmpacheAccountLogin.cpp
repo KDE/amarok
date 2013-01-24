@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *           (c) 2010 Ian Monroe <ian@monroe.nu>                                        *
+ *           (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -27,6 +28,7 @@
 #include "core/support/Debug.h"
 
 #include <QDomDocument>
+#include <QNetworkRequest>
 
 #include <KLocale>
 #include <KPasswordDialog>
@@ -57,32 +59,13 @@ QString sha256( QString in )
 AmpacheAccountLogin::AmpacheAccountLogin( const QString& url, const QString& username, const QString& password, QWidget* parent )
     : QObject(parent)
     , m_authenticated( false )
-    , m_server ( QString() )
-    , m_sessionId ( QString() )
+    , m_server( url )
+    , m_username( username )
+    , m_password( password )
+    , m_sessionId( QString() )
+    , m_lastRequest( 0 )
 {
-    //we are using http queries later on, we require http:// prefixed
-    if( !url.contains( "://" ) )
-    {
-        m_server = QLatin1String("http://") + url;
-    }
-    else
-        m_server = url;
-    
-    // We need to check the version of Ampache we are attempting to authenticate against, as this changes how we deal with it
-    
-    QString versionString = "<server>/server/xml.server.php?action=ping&user=<user>";
-    
-    versionString.replace(QString("<server>"), m_server);
-    versionString.replace(QString("<user>"), username);
-    
-    debug() << "Verifying Ampache Version Using: " << versionString;
-    
-    m_username = username;
-    m_password = password;
-    
-    m_xmlVersionUrl = KUrl( versionString );
-    The::networkAccessManager()->getData( m_xmlVersionUrl, this,
-                                          SLOT(authenticate(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    reauthenticate();
 }
 
 
@@ -95,173 +78,209 @@ void
 AmpacheAccountLogin::reauthenticate()
 {
     DEBUG_BLOCK
-    
-    debug() << " I am trying to re-authenticate";
-    
+
     // We need to check the version of Ampache we are attempting to authenticate against, as this changes how we deal with it
-    QString versionString = "<server>/server/xml.server.php?action=ping";
-    
-    versionString.replace(QString("<server>"), m_server);
-    
-    debug() << "Verifying Ampache Version Using: " << versionString;
-    
-    m_xmlVersionUrl = KUrl( versionString );
-    The::networkAccessManager()->getData( m_xmlVersionUrl, this,
-                                          SLOT(authenticate(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    KUrl url = getRequestUrl( "ping" );
+
+    debug() << "Verifying Ampache Version Using: " << url.url();
+
+    m_lastRequest = The::networkAccessManager()->getData( url, this,
+                                                          SLOT(authenticate(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+
+    if( !m_lastRequest )
+        emit finished();
 }
 
 void
-AmpacheAccountLogin::authenticate( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmpacheAccountLogin::authenticate( const KUrl &requestUrl, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    if( m_xmlVersionUrl != url )
+    if( !m_lastRequest )
         return;
-    
-    m_xmlVersionUrl.clear();
+
+    DEBUG_BLOCK
+    Q_UNUSED( requestUrl );
+
+    QDomDocument doc;
+    doc.setContent( data );
+
+    if( !generalVerify( doc, e ) )
+        return;
+
+    // so lets figure out what we got here:
+    debug() << "Version reply: " << data;
+    int version = getVersion( doc );
+
+    KUrl url = getRequestUrl( "handshake" );
+    QString timestamp = QString::number( QDateTime::currentDateTime().toTime_t() );
+    QString passPhrase;
+
+    // We need to use different authentication strings depending on the version of ampache
+    if( version > 350000 )
+    {
+        debug() << "New Password Scheme " << version;
+        url.addQueryItem( "version", "350001" );
+
+        QString rawHandshake = timestamp + sha256( m_password );
+        passPhrase = sha256( rawHandshake );
+    }
+    else
+    {
+        debug() << "Version Older than 35001 Generated MD5 Auth " << version;
+
+        QString rawHandshake = timestamp + m_password;
+        KMD5 context( rawHandshake.toUtf8() );
+        passPhrase = context.hexDigest().data();
+    }
+
+    url.addQueryItem( "timestamp", timestamp );
+    url.addQueryItem( "auth", passPhrase );
+
+    debug() << "Authenticating with string: " << url.url() << passPhrase;
+
+    // TODO: Amarok::Components::logger()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
+    m_lastRequest = The::networkAccessManager()->getData( url, this,
+                                                          SLOT(authenticationComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+
+    if( !m_lastRequest )
+        emit finished();
+}
+
+void AmpacheAccountLogin::authenticationComplete( const KUrl &requestUrl, QByteArray data, NetworkAccessManagerProxy::Error e )
+{
+    if( !m_lastRequest )
+        return;
+
+    DEBUG_BLOCK
+    Q_UNUSED( requestUrl );
+
+    QDomDocument doc;
+    doc.setContent( data );
+
+    if( !generalVerify( doc, e ) )
+        return;
+
+    // so lets figure out what we got here:
+    debug() << "Authentication reply: " << data;
+    QDomElement root = doc.firstChildElement("root");
+
+    //find status code:
+    QDomElement element = root.firstChildElement("auth");
+    if( element.isNull() )
+    {
+        // Default the Version down if it didn't work
+        debug() << "authenticationComplete failed";
+        KMessageBox::error( qobject_cast<QWidget*>(parent()),
+                            i18n( "Authentication failed." ),
+                            i18n( "Authentication Error" ) );
+        emit finished();
+        return;
+    }
+
+    m_sessionId = element.text();
+    m_authenticated = true;
+
+    emit loginSuccessful();
+    emit finished();
+}
+
+int
+AmpacheAccountLogin::getVersion( const QDomDocument& doc ) const
+{
+    DEBUG_BLOCK
+
+    QDomElement root = doc.firstChildElement("root");
+    //is this an error?
+    QDomElement error = root.firstChildElement("error");
+    //find status code:
+    QDomElement version = root.firstChildElement("version");
+
+    // It's OK if we get a null response from the version, that just means we're dealing with an older version
+    if( !error.isNull() )
+    {
+        // Default the Version down if it didn't work
+        debug() << "getVersion error: " << error.text();
+        return 100000;
+    }
+    else if( !version.isNull() )
+    {
+        debug() << "getVersion returned: " << version.text();
+        return version.text().toInt();
+    }
+    else
+    {
+        debug() << "getVersion no version";
+        return 0;
+    }
+}
+
+bool
+AmpacheAccountLogin::generalVerify( const QDomDocument& doc, NetworkAccessManagerProxy::Error e )
+{
+    Q_ASSERT( m_lastRequest );
+
+    if( m_lastRequest->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt() != 200 )
+    {
+        debug() << "server response code:" <<
+            m_lastRequest->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt() <<
+            m_lastRequest->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString();
+        // KMessageBox::error( qobject_cast<QWidget*>(parent()), domError.text(), i18n( "Authentication Error" ) );
+        emit finished();
+        return false;
+    }
+
     if( e.code != QNetworkReply::NoError )
     {
         debug() << "authenticate Error:" << e.description;
-        return;
+        emit finished();
+        return false;
     }
-    
-    DEBUG_BLOCK
-    versionVerify( data );
-    
+
+    QDomElement root = doc.firstChildElement("root");
+    QDomElement error = root.firstChildElement("error");
+
+    if( !error.isNull() )
+    {
+        // Default the Version down if it didn't work
+        debug() << "generalVerify error: " << error.text();
+        KMessageBox::error( qobject_cast<QWidget*>(parent()), error.text(), i18n( "Authentication Error" ) );
+        emit finished();
+        return false;
+    }
+
+    return true;
+}
+
+KUrl
+AmpacheAccountLogin::getRequestUrl( const QString &action ) const
+{
     //lets keep this around for now if we want to allow people to add a service that prompts for stuff
+    /* But comment it out since the AmpacheQueryMaker does not do this
     if ( m_server.isEmpty() || m_password.isEmpty() )
     {
         KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );
         dlg.setPrompt( i18n( "Enter the server name and a password" ) );
         if( !dlg.exec() )
-            return; //the user canceled
-            
-            KUrl kurl( dlg.username() );
-        if( kurl.protocol() != "http" && kurl.protocol() != "https" )
-        {
-            kurl.setProtocol( "http" );
-        }
-        m_server = kurl.url();
+            return KUrl(); //the user canceled
+
+        m_server = KUrl( dlg.username() ).url();
         m_password = dlg.password();
     }
-    else
-    {
-        KUrl kurl( m_server );
-        if( kurl.protocol() != "http" && kurl.protocol() != "https" )
-        {
-            kurl.setProtocol( "http" );
-        }
-        m_server = kurl.url();
-    }
-    
-    QString timestamp = QString::number( QDateTime::currentDateTime().toTime_t() );
-    QString rawHandshake;
-    QString authenticationString;
-    QString passPhrase;
-    
-    // We need to use different authentication strings depending on the version of ampache
-    if ( m_version > 350000 )
-    {
-        debug() << "New Password Scheme " << m_version;
-        authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>&version=350001";
-        
-        rawHandshake = timestamp + sha256( m_password );
-        
-        passPhrase = sha256( rawHandshake );
-        debug() << "Version Greater then 35001 Generating new SHA256 Auth" << authenticationString << passPhrase;
-        debug() << "Version Greater than 350000 Generating new SHA256 Auth" << authenticationString << passPhrase;
-    }
-    else
-    {
-        debug() << "Version Older than 35001 Generated MD5 Auth " << m_version;
-        authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>";
-        rawHandshake = timestamp + m_password;
-        KMD5 context( rawHandshake.toUtf8() );
-        passPhrase = context.hexDigest().data();
-    }
-    
-    authenticationString.replace(QString("<server>"), m_server);
-    if ( !m_username.isEmpty() )
-        authenticationString.replace(QString("<username>"), "&user=" + m_username);
-    else
-        authenticationString.remove(QString("<username>"));
-    authenticationString.replace(QString("<passphrase>"), passPhrase);
-    authenticationString.replace(QString("<timestamp>"), timestamp);
-    
-    debug() << "Authenticating with string: " << authenticationString << passPhrase;
-    
-    // TODO: Amarok::Components::logger()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
-    m_xmlDownloadUrl = KUrl( authenticationString );
-    The::networkAccessManager()->getData( m_xmlDownloadUrl, this,
-                                          SLOT(authenticationComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-}
+    */
 
-void AmpacheAccountLogin::authenticationComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
-{
-    if( m_xmlDownloadUrl != url )
-        return;
-    
-    m_xmlDownloadUrl.clear();
-    if( e.code != QNetworkReply::NoError )
-    {
-        debug() << "Authentication Error:" << e.description;
-        return;
-    }
-    
-    QByteArray xmlReply( data );
-    debug() << "Authentication reply: " << xmlReply;
-    
-    //so lets figure out what we got here:
-    QDomDocument doc( "reply" );
-    doc.setContent( xmlReply );
-    QDomElement root = doc.firstChildElement("root");
-    
-    //is this an error?
-    
-    QDomElement domError = root.firstChildElement("error");
-    
-    if ( !domError.isNull() )
-    {
-        KMessageBox::error( qobject_cast<QWidget*>(parent()), domError.text(), i18n( "Authentication Error" ) );
-    }
-    else
-    {
-        //find status code:
-        QDomElement element = root.firstChildElement("auth");
-        m_sessionId = element.text();
-        m_authenticated = true;
-        emit loginSuccessful();
-    }
-    emit finished();
-}
+    QString path = m_server + "/server/xml.server.php";
 
-void AmpacheAccountLogin::versionVerify( QByteArray data)
-{
-    DEBUG_BLOCK
-    QByteArray xmlReply = data;
-    debug() << "Version Verify reply: " << xmlReply;
-    
-    //so lets figure out what we got here:
-    QDomDocument doc( "version" );
-    doc.setContent( xmlReply );
-    QDomElement root = doc.firstChildElement("root");
-    //is this an error?
-    QDomElement error = root.firstChildElement("error");
-    
-    // It's OK if we get a null response from the version, that just means we're dealing with an older version
-    if( !error.isNull() )
-    {
-        // Default the Version down if it didn't work
-        m_version = 100000;
-        debug() << "versionVerify Error: " << error.text();
-    }
-    else
-    {
-        //find status code:
-        QDomElement element = root.firstChildElement("version");
-        
-        m_version = element.text().toInt();
-        
-        debug() << "versionVerify Returned: " << m_version;
-    }
+    if( !path.startsWith("http://") && !path.startsWith("https://") )
+        path = "http://" + path;
+
+    KUrl url( path );
+
+    if( !action.isEmpty() )
+        url.addQueryItem( "action", action );
+
+    if( !m_username.isEmpty() )
+        url.addQueryItem( "user", m_username );
+
+    return url;
 }
 
 #include "AmpacheAccountLogin.moc"
