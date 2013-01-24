@@ -240,13 +240,13 @@ OSDWidget::determineMetrics( const int M )
         rect = tmpRect;
 
         if ( The::engineController()->isMuted() )
-            m_cover = KIcon( "audio-volume-muted-amarok" ).pixmap( 100, 100 ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Muted", 100, 100, "Muted" ).toImage();
         else if( m_volume > 66 )
-            m_cover = KIcon( "audio-volume-high-amarok" ).pixmap( 100, 100 ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Volume", 100, 100, "Volume" ).toImage();
         else if ( m_volume > 33 )
-            m_cover = KIcon( "audio-volume-medium-amarok" ).pixmap( 100, 100 ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Volume_mid", 100, 100, "Volume_mid" ).toImage();
         else
-            m_cover = KIcon( "audio-volume-low-amarok" ).pixmap( 100, 100 ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Volume_low", 100, 100, "Volume_low" ).toImage();
     }
     // Don't show both volume and rating
     else if( m_rating )
