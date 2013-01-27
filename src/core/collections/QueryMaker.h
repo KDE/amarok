@@ -107,7 +107,7 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual QueryMaker* setQueryType( QueryType type ) = 0;
 
         /**
-            only works after starting a custom query with startCustomQuery()
+            only works after starting a custom query with setQueryType( Custom )
             Use this to inform the query maker you are looking for results of value @param value.
             @return this
           */
