@@ -44,6 +44,26 @@ QString AmpacheAlbum::coverUrl( ) const
     return m_coverURL;
 }
 
+void
+AmpacheAlbum::addInfo( const AmpacheAlbum::AmpacheAlbumInfo &info )
+{
+    m_ampacheAlbums.insert( info.id, info );
+}
+
+AmpacheAlbum::AmpacheAlbumInfo
+AmpacheAlbum::getInfo( int id ) const
+{
+    if( !m_ampacheAlbums.contains( id ) )
+    {
+        AmpacheAlbumInfo info;
+        info.id = -1;
+        info.discNumber = -1;
+        info.year = -1;
+        return info;
+    }
+    return m_ampacheAlbums.value( id );
+}
+
 QList< QAction * > Meta::AmpacheTrack::currentTrackActions()
 {
     QList< QAction * > actions;

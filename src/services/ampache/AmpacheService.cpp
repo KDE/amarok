@@ -124,6 +124,8 @@ void
 AmpacheService::reauthenticate()
 {
     m_ampacheLogin->reauthenticate();
+    // it would make sense here to clean the complete cache
+    // information from a server might get outdated.
 }
 
 

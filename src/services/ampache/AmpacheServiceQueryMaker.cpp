@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2007 Adam Pigg <adam@piggz.co.uk>                                      *
  * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
+ *           (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,37 +22,56 @@
 #include "AmpacheServiceQueryMaker.h"
 
 #include "AmpacheMeta.h"
+#include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core/meta/support/MetaConstants.h"
 #include "core-impl/collections/support/MemoryMatcher.h"
 
+#include <QSet>
+#include <QAtomicInt>
 #include <QDomDocument>
 
 using namespace Collections;
 
 struct AmpacheServiceQueryMaker::Private
 {
-    enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
-    QueryType type;
+    AmpacheServiceCollection* collection;
+
+    QueryMaker::QueryType type;
     int maxsize;
-    QHash<QLatin1String, KUrl> urls;
+
+    QAtomicInt expectedReplies;
+
+    QString server;
+    QString sessionId;
+    QList<int> parentTrackIds;
+    QList<int> parentAlbumIds;
+    QList<int> parentArtistIds;
+    uint dateFilter;
+    QString artistFilter;
+    QString albumFilter;
+
+    /** We are collecting the results of the queries and submit them
+        in one block to ensure that we don't report albums twice
+        and because the CollectionTreeItemModelBase does not handle
+        multiple results correctly (which it should).
+    */
+    Meta::AlbumList albumResults;
+    Meta::ArtistList artistResults;
+    Meta::TrackList trackResults;
 };
 
 AmpacheServiceQueryMaker::AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QString &server, const QString &sessionId  )
     : DynamicServiceQueryMaker()
-    , m_collection( collection )
     , d( new Private )
-    , m_server( server )
-    , m_sessionId( sessionId )
-    , m_dateFilter( -1 )
 {
-    // DEBUG_BLOCK
-
-    d->type = Private::NONE;
+    d->collection = collection;
+    d->type = QueryMaker::None;
     d->maxsize = 0;
-    d->urls.clear();
-    m_dateFilter = 0;
-    //m_lastArtistFilter = QString(); this one really should survive a reset....
+    d->server = server;
+    d->sessionId = sessionId;
+    d->dateFilter = 0;
 }
 
 AmpacheServiceQueryMaker::~AmpacheServiceQueryMaker()
@@ -64,26 +84,24 @@ AmpacheServiceQueryMaker::run()
 {
     DEBUG_BLOCK
 
-    if( !d->urls.isEmpty() )
+    if( d->expectedReplies ) // still running an old query
         return;
 
     //naive implementation, fix this
     //note: we are not handling filtering yet
 
-    //TODO error handling
-    if ( d->type == Private::NONE )
-        return;
+    d->collection->acquireReadLock();
 
-    m_collection->acquireReadLock();
-
-    if (  d->type == Private::ARTIST )
+    if (  d->type == QueryMaker::Artist )
         fetchArtists();
-    else if( d->type == Private::ALBUM )
+    else if( d->type == QueryMaker::Album )
         fetchAlbums();
-    else if( d->type == Private::TRACK )
+    else if( d->type == QueryMaker::Track )
         fetchTracks();
+    else
+        warning() << "Requested unhandled query type"; //TODO error handling
 
-     m_collection->releaseLock();
+     d->collection->releaseLock();
 }
 
 void
@@ -94,61 +112,57 @@ AmpacheServiceQueryMaker::abortQuery()
 QueryMaker *
 AmpacheServiceQueryMaker::setQueryType( QueryType type )
 {
+    d->type = type;
+
+    return this;
+}
+
+QueryMaker*
+AmpacheServiceQueryMaker::addMatch( const Meta::TrackPtr &track )
+{
     DEBUG_BLOCK
-    switch( type ) {
 
-    case QueryMaker::Artist:
-    case QueryMaker::AlbumArtist:
-        d->type = Private::ARTIST;
-        return this;
-
-    case QueryMaker::Album:
-        d->type = Private::ALBUM;
-        return this;
-
-    case QueryMaker::Track:
-        d->type = Private::TRACK;
-        return this;
-
-    case QueryMaker::Genre:
-    case QueryMaker::Composer:
-    case QueryMaker::Year:
-    case QueryMaker::Custom:
-    case QueryMaker::Label:
-    case QueryMaker::None:
-        //TODO: Implement.
-        return this;
+    const Meta::AmpacheTrack* serviceTrack = dynamic_cast< const Meta::AmpacheTrack * >( track.data() );
+    if( serviceTrack )
+    {
+        d->parentTrackIds << serviceTrack->id();
+        debug() << "parent id set to: " << d->parentTrackIds;
+    }
+    else
+    {
+        // searching for something from another collection
+        //hmm, not sure what to do now
     }
 
     return this;
 }
 
-QueryMaker *
+QueryMaker*
 AmpacheServiceQueryMaker::addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour )
 {
-    Q_UNUSED( behaviour )
+    Q_UNUSED( behaviour ) // TODO
     DEBUG_BLOCK
 
-    if( m_parentAlbumId.isEmpty() )
+    if( d->parentAlbumIds.isEmpty() )
     {
-        const Meta::ServiceArtist * serviceArtist = dynamic_cast< const Meta::ServiceArtist * >( artist.data() );
+        const Meta::AmpacheArtist* serviceArtist = dynamic_cast< const Meta::AmpacheArtist * >( artist.data() );
         if( serviceArtist )
         {
-            m_parentArtistId = QString::number( serviceArtist->id() );
+            d->parentArtistIds << serviceArtist->id();
         }
         else
         {
-            if( m_collection->artistMap().contains( artist->name() ) )
+            // searching for something from another collection
+            if( d->collection->artistMap().contains( artist->name() ) )
             {
-                serviceArtist = static_cast< const Meta::ServiceArtist* >( m_collection->artistMap().value( artist->name() ).data() );
-                m_parentArtistId = QString::number( serviceArtist->id() );
+                serviceArtist = static_cast< const Meta::AmpacheArtist* >( d->collection->artistMap().value( artist->name() ).data() );
+                d->parentArtistIds << serviceArtist->id();
             }
             else
             {
                 //hmm, not sure what to do now
             }
         }
-        //debug() << "parent id set to: " << m_parentArtistId;
     }
     return this;
 }
@@ -157,19 +171,21 @@ QueryMaker *
 AmpacheServiceQueryMaker::addMatch( const Meta::AlbumPtr & album )
 {
     DEBUG_BLOCK
-    const Meta::ServiceAlbum * serviceAlbum = dynamic_cast< const Meta::ServiceAlbum * >( album.data() );
+    const Meta::AmpacheAlbum* serviceAlbum = dynamic_cast< const Meta::AmpacheAlbum * >( album.data() );
     if( serviceAlbum )
     {
-        m_parentAlbumId = QString::number( serviceAlbum->id() );
-        //debug() << "parent id set to: " << m_parentAlbumId;
-        m_parentArtistId.clear();
+        d->parentAlbumIds << serviceAlbum->ids();
+        debug() << "parent id set to: " << d->parentAlbumIds;
+        d->parentArtistIds.clear();
     }
     else
     {
-        if( m_collection->albumMap().contains( album ) )  // compares albums by value
+        // searching for something from another collection
+        if( d->collection->albumMap().contains( album ) )  // compares albums by value
         {
-            serviceAlbum = static_cast< const Meta::ServiceAlbum* >( m_collection->albumMap().value( album ).data() );
-            m_parentAlbumId = QString::number( serviceAlbum->id() );
+            serviceAlbum = static_cast< const Meta::AmpacheAlbum* >( d->collection->albumMap().value( album ).data() );
+            d->parentAlbumIds << serviceAlbum->ids();
+            d->parentArtistIds.clear();
         }
         else
         {
@@ -185,42 +201,31 @@ AmpacheServiceQueryMaker::fetchArtists()
 {
     DEBUG_BLOCK
 
-    //this stuff causes crashes and "whiteouts" and will need to change anyway if the Ampache API is updated to
-    // allow multilevel filtering. Hence it is commented out but left in for future reference
-    /*if ( ( m_collection->artistMap().values().count() != 0 ) && ( m_artistFilter == m_lastArtistFilter ) ) {
-        emit newResultReady( m_collection->artistMap().values() );
-        debug() << "no need to fetch artists again! ";
-        debug() << "    filter: " << m_artistFilter;
-        debug() << "    last filter: " << m_lastArtistFilter;
+    Meta::ArtistList artists;
 
-    }*/
-    //else {
-        KUrl request( m_server );
-        request.addPath( "/server/xml.server.php" );
-        request.addQueryItem( "action", "artists" );
-        request.addQueryItem( "auth", m_sessionId );
+    // first try the cache
+    if( !d->parentArtistIds.isEmpty() )
+    {
+        foreach( int artistId, d->parentArtistIds )
+            artists << d->collection->artistById( artistId );
+    }
 
-        if ( !m_artistFilter.isEmpty() )
-            request.addQueryItem( "filter", m_artistFilter );
+    if( !artists.isEmpty() )
+    {
+        debug() << "got" << artists.count() << "artists from the memory collection";
+        emit newResultReady( artists );
+        emit queryDone();
+        return;
+    }
 
-        if( m_dateFilter > 0 )
-        {
-            QDateTime from;
-            from.setTime_t( m_dateFilter );
-            request.addQueryItem( "add", from.toString( Qt::ISODate ) );
-            debug() << "added date filter with time:" <<  from.toString( Qt::ISODate );
-        } else
-            debug() << "m_dateFilter is:" << m_dateFilter;
+    KUrl request = getRequestUrl( "artists" );
 
-        request.addQueryItem( "limit", QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
-        debug() << "Artist url: " << request.url();
+    if ( !d->artistFilter.isEmpty() )
+        request.addQueryItem( "filter", d->artistFilter );
 
-        d->urls[QLatin1String("artists")] = request;
-        The::networkAccessManager()->getData( request, this,
-             SLOT(artistDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-    //}
-
-    m_lastArtistFilter = m_artistFilter;
+    d->expectedReplies.ref();
+    The::networkAccessManager()->getData( request, this,
+                                          SLOT(artistDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
@@ -230,38 +235,42 @@ AmpacheServiceQueryMaker::fetchAlbums()
 
     Meta::AlbumList albums;
 
-    if( !m_parentArtistId.isEmpty() )
+    // first try the cache
+    if( !d->parentArtistIds.isEmpty() )
     {
-        albums = matchAlbums( m_collection, m_collection->artistById( m_parentArtistId.toInt() ) );
+        foreach( int artistId, d->parentArtistIds )
+            albums << matchAlbums( d->collection, d->collection->artistById( artistId ) );
     }
-
-    if ( albums.count() > 0 )
+    if( !albums.isEmpty() )
     {
+        debug() << "got" << albums.count() << "albums from the memory collection";
         emit newResultReady( albums );
         emit queryDone();
+        return;
+    }
+
+    if( !d->parentArtistIds.isEmpty() )
+    {
+        foreach( int id, d->parentArtistIds )
+        {
+            KUrl request = getRequestUrl( "artist_albums" );
+            request.addQueryItem( "filter", QString::number( id ) );
+
+            d->expectedReplies.ref();
+            The::networkAccessManager()->getData( request, this,
+                                                  SLOT(albumDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        }
     }
     else
     {
-        KUrl request( m_server );
-        request.addPath( "/server/xml.server.php" );
-        request.addQueryItem( "action", "artist_albums" );
-        request.addQueryItem( "auth", m_sessionId );
+        KUrl request = getRequestUrl( "albums" );
 
-        if( !m_parentArtistId.isEmpty() )
-            request.addQueryItem( "filter", m_parentArtistId );
+        if ( !d->albumFilter.isEmpty() )
+            request.addQueryItem( "filter", d->albumFilter );
 
-        if( m_dateFilter > 0 )
-        {
-            QDateTime from;
-            from.setTime_t( m_dateFilter );
-            request.addQueryItem( "add", from.toString( Qt::ISODate ) );
-        }
-        request.addQueryItem( "limit", QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
-        debug() << "request url: " << request.url();
-
-        d->urls[QLatin1String("albums")] = request;
+        d->expectedReplies.ref();
         The::networkAccessManager()->getData( request, this,
-             SLOT(albumDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                                              SLOT(albumDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
 }
 
@@ -272,75 +281,97 @@ AmpacheServiceQueryMaker::fetchTracks()
 
     Meta::TrackList tracks;
 
-    //debug() << "parent album id: " << m_parentAlbumId;
+    //debug() << "parent album id: " << d->parentAlbumId;
 
-    if( !m_parentAlbumId.isEmpty() )
+    // first try the cache
+    // TODO: this is fishy as we cannot be sure that the cache contains
+    //       everything
+    //       we should cache database query results instead
+    if( !d->parentTrackIds.isEmpty() )
     {
-        AlbumMatcher albumMatcher( m_collection->albumById( m_parentAlbumId.toInt() ) );
-        tracks = albumMatcher.match( m_collection->trackMap().values() );
+        foreach( int trackId, d->parentTrackIds )
+        {
+            tracks << d->collection->trackById( trackId );
+        }
     }
-    else if ( !m_parentArtistId.isEmpty() )
+    else if( !d->parentAlbumIds.isEmpty() )
     {
-        ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
-        tracks = artistMatcher.match( m_collection->trackMap().values() );
+        foreach( int albumId, d->parentAlbumIds )
+        {
+            AlbumMatcher albumMatcher( d->collection->albumById( albumId ) );
+            tracks << albumMatcher.match( d->collection->trackMap().values() );
+        }
+    }
+    else if( d->parentArtistIds.isEmpty() )
+    {
+        foreach( int artistId, d->parentArtistIds )
+        {
+            ArtistMatcher artistMatcher( d->collection->artistById( artistId ) );
+            tracks << artistMatcher.match( d->collection->trackMap().values() );
+        }
     }
 
-    if( tracks.count() > 0 )
+    if( !tracks.isEmpty() )
     {
+        debug() << "got" << tracks.count() << "tracks from the memory collection";
         emit newResultReady( tracks );
         emit queryDone();
+        return;
+    }
+
+    KUrl request = getRequestUrl();
+
+
+    if( !d->parentAlbumIds.isEmpty() )
+    {
+        foreach( int id, d->parentAlbumIds )
+        {
+            KUrl request = getRequestUrl( "album_songs" );
+            request.addQueryItem( "filter", QString::number( id ) );
+
+            d->expectedReplies.ref();
+            The::networkAccessManager()->getData( request, this,
+                                                  SLOT(trackDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        }
+    }
+    else if( !d->parentArtistIds.isEmpty() )
+    {
+        foreach( int id, d->parentArtistIds )
+        {
+            KUrl request = getRequestUrl( "artist_songs" );
+            request.addQueryItem( "filter", QString::number( id ) );
+
+            d->expectedReplies.ref();
+            The::networkAccessManager()->getData( request, this,
+                                                  SLOT(trackDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        }
     }
     else
     {
-        KUrl request( m_server );
-        request.addPath( "/server/xml.server.php" );
-        request.addQueryItem( "auth", m_sessionId );
+        KUrl request = getRequestUrl( "songs" );
 
-        if( !m_parentAlbumId.isEmpty() )
-            request.addQueryItem( "action", "album_songs" );
-        else if( !m_parentArtistId.isEmpty() )
-            request.addQueryItem( "action", "artist_songs" );
-        else
-            request.addQueryItem( "action", "songs" );
-
-        if( !m_parentAlbumId.isEmpty() )
-            request.addQueryItem( "filter", m_parentAlbumId );
-        else if( !m_parentArtistId.isEmpty() )
-            request.addQueryItem( "filter", m_parentArtistId );
-        if( m_dateFilter > 0 )
-        {
-            QDateTime from;
-            from.setTime_t( m_dateFilter );
-            request.addQueryItem( "add", from.toString( Qt::ISODate ) );
-        }
-        debug() << "request url: " << request.url();
-
-        request.addQueryItem( "limit", QString::number( d->maxsize ) );// set to 0 in reset() so fine to use uncondiationally
-
-        d->urls[QLatin1String("tracks")] = request;
+        d->expectedReplies.ref();
         The::networkAccessManager()->getData( request, this,
-             SLOT(trackDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                                              SLOT(trackDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
 }
 
 void
 AmpacheServiceQueryMaker::artistDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    if( d->urls.value(QLatin1String("artists")) != url )
-        return;
+    Q_UNUSED( url );
 
-    d->urls.remove( QLatin1String("artists") );
     if( e.code != QNetworkReply::NoError )
     {
-        debug() << "Artist download error:" << e.description;
+        warning() << "Artist download error:" << e.description;
+        if( !d->expectedReplies.deref() )
+            emit queryDone();
         return;
     }
 
     // DEBUG_BLOCK
 
-    Meta::ArtistList artists;
-
-     //so lets figure out what we got here:
+    // so lets figure out what we got here:
     QDomDocument doc( "reply" );
     doc.setContent( data );
     QDomElement root = doc.firstChildElement( "root" );
@@ -350,61 +381,65 @@ AmpacheServiceQueryMaker::artistDownloadComplete( const KUrl &url, QByteArray da
 
     if ( !domError.isNull() )
     {
-        debug () << "Error getting Artist List" << domError.text();
-        AmpacheService *m_parentService = dynamic_cast< AmpacheService * >( m_collection->service() );
-        if ( m_parentService == 0 )
+        warning() << "Error getting Artist List" << domError.text();
+        AmpacheService *parentService = dynamic_cast< AmpacheService * >( d->collection->service() );
+        if( parentService == 0 )
             return;
         else
-            m_parentService->reauthenticate();
+            parentService->reauthenticate();
     }
 
-    QDomNode n = root.firstChild();
-    while( !n.isNull() )
+    for( QDomNode n = root.firstChild(); !n.isNull(); n = n.nextSibling() )
     {
         QDomElement e = n.toElement(); // try to convert the node to an element.
-        //if ( ! (e.tagName() == "item") )
-        //    break;
 
         QDomElement element = n.firstChildElement( "name" );
-        Meta::ServiceArtist * artist = new Meta::AmpacheArtist( element.text(), m_collection->service() );
-
         int artistId = e.attribute( "id", "0").toInt();
 
-        //debug() << "Adding artist: " << element.text() << " with id: " << artistId;
+        // check if we have the artist already
+        Meta::ArtistPtr artistPtr = d->collection->artistById( artistId );
 
-        artist->setId( artistId );
+        if( !artistPtr )
+        {
+            // new artist
+            Meta::ServiceArtist* artist = new Meta::AmpacheArtist( element.text(), d->collection->service() );
+            artist->setId( artistId );
 
-        Meta::ArtistPtr artistPtr( artist );
+            // debug() << "Adding artist: " << element.text() << " with id: " << artistId;
 
-        artists.push_back( artistPtr );
+            artistPtr = artist;
 
-        m_collection->acquireWriteLock();
-        m_collection->addArtist( artistPtr );
-        m_collection->releaseLock();
+            d->collection->acquireWriteLock();
+            d->collection->addArtist( artistPtr );
+            d->collection->releaseLock();
+        }
 
-        n = n.nextSibling();
+        if( !d->artistResults.contains( artistPtr ) )
+            d->artistResults.push_back( artistPtr );
     }
 
-    emit newResultReady( artists );
-    emit queryDone();
+    if( !d->expectedReplies.deref() )
+    {
+        emit newResultReady( d->artistResults );
+        emit queryDone();
+        d->artistResults.clear();
+    }
 }
 
 void
 AmpacheServiceQueryMaker::albumDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    if( d->urls.value(QLatin1String("albums")) != url )
-        return;
+    Q_UNUSED( url );
 
-    d->urls.remove( QLatin1String("albums") );
     if( e.code != QNetworkReply::NoError )
     {
-        debug() << "Album download error:" << e.description;
+        warning() << "Album download error:" << e.description;
+        if( !d->expectedReplies.deref() )
+            emit queryDone();
         return;
     }
 
     // DEBUG_BLOCK
-
-    Meta::AlbumList albums;
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -416,83 +451,113 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const KUrl &url, QByteArray dat
 
     if( !domError.isNull() )
     {
-        debug () << "Error getting Album List" << domError.text();
-        AmpacheService *m_parentService = dynamic_cast< AmpacheService * >(m_collection->service());
-        if ( m_parentService == 0 )
+        warning() << "Error getting Album List" << domError.text();
+        AmpacheService *parentService = dynamic_cast< AmpacheService * >(d->collection->service());
+        if( parentService == 0 )
             return;
         else
-            m_parentService->reauthenticate();
+            parentService->reauthenticate();
     }
 
-    QDomNode n = root.firstChild();
-    while( !n.isNull() )
+    for( QDomNode n = root.firstChild(); !n.isNull(); n = n.nextSibling() )
     {
         QDomElement e = n.toElement(); // try to convert the node to an element.
-        //if ( ! (e.tagName() == "item") )
-        //    break;
 
-        QDomElement element = n.firstChildElement( "name" );
-
-        QString title = element.text();
-        if ( title.isEmpty() )
-            title = "Unknown";
-
-        int albumId = e.attribute( "id", "0" ).toInt();
-
-        Meta::AmpacheAlbum * album = new Meta::AmpacheAlbum( title );
-        album->setId( albumId );
-
-
-        element = n.firstChildElement( "art" );
-
-        QString coverUrl = element.text();
-        album->setCoverUrl( coverUrl );
-
-        Meta::AlbumPtr albumPtr( album );
-
-        //debug() << "Adding album: " <<  title;
-        //debug() << "   Id: " <<  albumId;
-        //debug() << "   Cover url: " <<  coverUrl;
-
-        m_collection->acquireWriteLock();
-        m_collection->addAlbum( albumPtr );
-        m_collection->releaseLock();
-
-        element = n.firstChildElement( "artist" );
-
-        Meta::ArtistPtr artistPtr = m_collection->artistById( m_parentArtistId.toInt() );
-        if ( artistPtr.data() != 0 )
+        // --- the album artist
+        Meta::ArtistPtr artistPtr;
+        QDomElement artistElement = n.firstChildElement( "artist" );
+        if( !artistElement.isNull() )
         {
-           //debug() << "Found parent artist";
-           //Meta::ServiceArtist *artist = dynamic_cast< Meta::ServiceArtist * > ( artistPtr.data() );
-           album->setAlbumArtist( artistPtr );
+            int artistId = artistElement.attribute( "id", "0").toInt();
+            // check if we already know the artist
+            artistPtr = d->collection->artistById( artistId );
+            if( !artistPtr.data() )
+            {
+                // new artist.
+                Meta::ServiceArtist* artist = new Meta::AmpacheArtist( artistElement.text(), d->collection->service() );
+                artistPtr = artist;
+
+                artist->setId( artistId );
+                // debug() << "Adding artist: " << artistElement.text() << " with id: " << artistId;
+
+                d->collection->acquireWriteLock();
+                d->collection->addArtist( artistPtr );
+                d->collection->releaseLock();
+            }
         }
 
-        albums.push_back( albumPtr );
+        QDomElement element = n.firstChildElement( "name" );
+        QString title = element.text();
 
-        n = n.nextSibling();
+        Meta::AmpacheAlbum::AmpacheAlbumInfo info;
+        info.id = e.attribute( "id", "0" ).toInt();
+
+        element = n.firstChildElement( "disk" );
+        info.discNumber = element.text().toInt();
+
+        element = n.firstChildElement( "year" );
+        info.year = element.text().toInt();
+
+        // check if we have the album already
+        Meta::AlbumPtr albumPtr = d->collection->albumById( info.id );
+
+        if( !albumPtr )
+        {
+            // check if we at least have an album with the same title and artist
+            Meta::AmpacheAlbum* album = static_cast<Meta::AmpacheAlbum*>(
+            const_cast<Meta::Album*>( d->collection->albumMap().value( title, artistPtr ? artistPtr->name() : QString() ).data() ) );
+
+            if( !album )
+            {
+                // new album
+                album = new Meta::AmpacheAlbum( title );
+                album->setAlbumArtist( artistPtr );
+
+                // -- cover
+                element = n.firstChildElement( "art" );
+
+                QString coverUrl = element.text();
+                album->setCoverUrl( coverUrl );
+            }
+            album->addInfo( info );
+
+            // debug() << "Adding album" << title << "with id:" << info.id;
+
+            albumPtr = album;
+
+            // register a new id with the ServiceCollection
+            album->setId( info.id );
+            d->collection->acquireWriteLock();
+            d->collection->addAlbum( albumPtr );
+            d->collection->releaseLock();
+        }
+
+        if( !d->albumResults.contains( albumPtr ) )
+            d->albumResults.push_back( albumPtr );
     }
 
-    emit newResultReady( albums );
-    emit queryDone();
+    if( !d->expectedReplies.deref() )
+    {
+        emit newResultReady( d->albumResults );
+        emit queryDone();
+        d->albumResults.clear();
+    }
 }
 
 void
 AmpacheServiceQueryMaker::trackDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    if( d->urls.value(QLatin1String("tracks")) != url )
-        return;
+    Q_UNUSED( url );
 
-    d->urls.remove( QLatin1String("tracks") );
     if( e.code != QNetworkReply::NoError )
     {
-        debug() << "Track download error:" << e.description;
+        warning() << "Track download error:" << e.description;
+        if( !d->expectedReplies.deref() )
+            emit queryDone();
         return;
     }
 
     // DEBUG_BLOCK
-
-    Meta::TrackList tracks;
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -504,92 +569,111 @@ AmpacheServiceQueryMaker::trackDownloadComplete( const KUrl &url, QByteArray dat
 
     if( !domError.isNull() )
     {
-        debug () << "Error getting Track Download " << domError.text();
-        AmpacheService *m_parentService = dynamic_cast< AmpacheService * >( m_collection->service() );
-        if ( m_parentService == 0 )
+        warning() << "Error getting Track Download " << domError.text();
+        AmpacheService *parentService = dynamic_cast< AmpacheService * >( d->collection->service() );
+        if( parentService == 0 )
             return;
         else
-            m_parentService->reauthenticate();
+            parentService->reauthenticate();
     }
 
-    QDomNode n = root.firstChild();
-    while( !n.isNull() )
+    for( QDomNode n = root.firstChild(); !n.isNull(); n = n.nextSibling() )
     {
         QDomElement e = n.toElement(); // try to convert the node to an element.
-        //if ( ! (e.tagName() == "item") )
-        //    break;
 
         int trackId = e.attribute( "id", "0" ).toInt();
-        QDomElement element = n.firstChildElement( "title" );
+        Meta::TrackPtr trackPtr = d->collection->trackById( trackId );
 
-        QString title = element.text();
-        if ( title.isEmpty() )
-            title = "Unknown";
-        element = n.firstChildElement( "url" );
-        Meta::AmpacheTrack * track = new Meta::AmpacheTrack( title, m_collection->service() );
-        Meta::TrackPtr trackPtr( track );
-
-        //debug() << "Adding track: " <<  title;
-
-        track->setId( trackId );
-        track->setUidUrl( element.text() );
-
-        element = n.firstChildElement( "time" );
-        track->setLength( element.text().toInt() * 1000 );
-
-        element = n.firstChildElement( "track" );
-        track->setTrackNumber( element.text().toInt() );
-
-        m_collection->acquireWriteLock();
-        m_collection->addTrack( trackPtr );
-        m_collection->releaseLock();
-
-        QDomElement albumElement = n.firstChildElement( "album" );
-        int albumId = albumElement.attribute( "id", "0").toInt();
-
-        QDomElement artistElement = n.firstChildElement( "artist" );
-        int artistId = artistElement.attribute( "id", "0").toInt();
-
-        Meta::ArtistPtr artistPtr = m_collection->artistById( artistId );
-        if ( artistPtr.data() != 0 )
+        if( !trackPtr )
         {
-            //debug() << "Found parent artist " << artistPtr->name();
-            Meta::ServiceArtist *artist = dynamic_cast< Meta::ServiceArtist * > ( artistPtr.data() );
-            track->setArtist( artistPtr );
-            artist->addTrack( trackPtr );
+            // new track
+
+            QDomElement element = n.firstChildElement( "title" );
+            QString title = element.text();
+            Meta::AmpacheTrack * track = new Meta::AmpacheTrack( title, d->collection->service() );
+            trackPtr = track;
+
+            track->setId( trackId );
+
+            element = n.firstChildElement( "url" );
+            track->setUidUrl( element.text() );
+
+            element = n.firstChildElement( "time" );
+            track->setLength( element.text().toInt() * 1000 );
+
+            element = n.firstChildElement( "track" );
+            track->setTrackNumber( element.text().toInt() );
+
+            element = n.firstChildElement( "rating" );
+            track->statistics()->setRating( element.text().toDouble() * 2.0 );
+
+            QDomElement albumElement = n.firstChildElement( "album" );
+            int albumId = albumElement.attribute( "id", "0").toInt();
+
+            QDomElement artistElement = n.firstChildElement( "artist" );
+            int artistId = artistElement.attribute( "id", "0").toInt();
+
+            Meta::ArtistPtr artistPtr = d->collection->artistById( artistId );
+            // TODO: this assumes that we query all artist before tracks
+            if( artistPtr )
+            {
+                // debug() << "Found parent artist " << artistPtr->name();
+                Meta::ServiceArtist *artist = dynamic_cast< Meta::ServiceArtist * > ( artistPtr.data() );
+                track->setArtist( artistPtr );
+                artist->addTrack( trackPtr );
+            }
+
+            Meta::AlbumPtr albumPtr = d->collection->albumById( albumId );
+            // TODO: this assumes that we query all albums before tracks
+            if( albumPtr )
+            {
+                // debug() << "Found parent album " << albumPtr->name() << albumId;
+                Meta::AmpacheAlbum *album = dynamic_cast< Meta::AmpacheAlbum * > ( albumPtr.data() );
+                track->setDiscNumber( album->getInfo( albumId ).discNumber );
+                track->setYear( album->getInfo( albumId ).year );
+                track->setAlbumPtr( albumPtr );
+                // debug() << " parent album with"<<track->discNumber()<<track->year();
+                album->addTrack( trackPtr );
+            }
+
+            // debug() << "Adding track: " <<  title << " with id: " << trackId;
+
+            d->collection->acquireWriteLock();
+            d->collection->addTrack( trackPtr );
+            d->collection->releaseLock();
         }
 
-        Meta::AlbumPtr albumPtr = m_collection->albumById( albumId );
-        if ( albumPtr.data() != 0 )
-        {
-            //debug() << "Found parent album " << albumPtr->name() ;
-            Meta::ServiceAlbum *album = dynamic_cast< Meta::ServiceAlbum * > ( albumPtr.data() );
-            track->setAlbumPtr( albumPtr );
-            album->addTrack( trackPtr );
-        }
-
-        tracks.push_back( trackPtr );
-
-        n = n.nextSibling();
+        if( !d->trackResults.contains( trackPtr ) )
+            d->trackResults.push_back( trackPtr );
     }
 
-    emit newResultReady( tracks );
-    emit queryDone();
+    if( !d->expectedReplies.deref() )
+    {
+        emit newResultReady( d->trackResults );
+        emit queryDone();
+        d->trackResults.clear();
+    }
 }
 
 QueryMaker *
 AmpacheServiceQueryMaker::addFilter( qint64 value, const QString & filter, bool matchBegin, bool matchEnd )
 {
-    DEBUG_BLOCK
     Q_UNUSED( matchBegin )
     Q_UNUSED( matchEnd )
 
-    //debug() << "value: " << value;
     //for now, only accept artist filters
-    if ( value == Meta::valArtist )
+    // TODO: What about albumArtist?
+    if( value == Meta::valArtist )
     {
-        //debug() << "Filter: " << filter;
-        m_artistFilter = filter;
+        d->artistFilter = filter;
+    }
+    else if( value == Meta::valAlbum )
+    {
+        d->albumFilter = filter;
+    }
+    else
+    {
+        warning() << "unsupported filter" << Meta::nameForField( value );
     }
     return this;
 }
@@ -597,13 +681,15 @@ AmpacheServiceQueryMaker::addFilter( qint64 value, const QString & filter, bool 
 QueryMaker*
 AmpacheServiceQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
-    DEBUG_BLOCK
-
     if( value == Meta::valCreateDate && compare == QueryMaker::GreaterThan )
     {
         debug() << "asking to filter based on added date";
-        m_dateFilter = filter;
-        debug() << "setting dateFilter to:" << m_dateFilter;
+        d->dateFilter = filter;
+        debug() << "setting dateFilter to:" << d->dateFilter;
+    }
+    else
+    {
+        warning() << "unsupported filter" << Meta::nameForField( value );
     }
     return this;
 }
@@ -611,8 +697,8 @@ AmpacheServiceQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMak
 int
 AmpacheServiceQueryMaker::validFilterMask()
 {
-    //we only supprt artist filters for now...
-    return ArtistFilter;
+    //we only supprt artist and album filters for now...
+    return ArtistFilter | AlbumFilter;
 }
 
 QueryMaker *
@@ -620,6 +706,33 @@ AmpacheServiceQueryMaker::limitMaxResultSize( int size )
 {
     d->maxsize = size;
     return this;
+}
+
+KUrl
+AmpacheServiceQueryMaker::getRequestUrl( const QString &action ) const
+{
+    QString path = d->server + "/server/xml.server.php";
+
+    if( !path.startsWith("http://") && !path.startsWith("https://") )
+        path = "http://" + path;
+
+    KUrl url( path );
+
+    url.addPath( "/server/xml.server.php" );
+    url.addQueryItem( "auth", d->sessionId );
+
+    if( !action.isEmpty() )
+        url.addQueryItem( "action", action );
+
+    if( d->dateFilter > 0 )
+    {
+        QDateTime from;
+        from.setTime_t( d->dateFilter );
+        url.addQueryItem( "add", from.toString( Qt::ISODate ) );
+    }
+    url.addQueryItem( "limit", QString::number( d->maxsize ) );
+
+    return url;
 }
 
 #include "AmpacheServiceQueryMaker.moc"

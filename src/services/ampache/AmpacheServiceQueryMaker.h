@@ -23,8 +23,17 @@
 #include "AmpacheService.h"
 #include "NetworkAccessManagerProxy.h"
 
+#include <KUrl>
+
 namespace Collections {
 
+/** QueryMaker for Ampache
+    Since Ampache only supports a very limited set of searches
+    this query maker is very restricted.
+    E.g. it does not support searches with AND and OR.
+    TODO: support tags
+    TODO: think about only using the MemoryQueryMaker
+*/
 class AmpacheServiceQueryMaker : public DynamicServiceQueryMaker
 {
     Q_OBJECT
@@ -39,6 +48,7 @@ public:
     virtual QueryMaker* setQueryType( QueryType type );
 
     using DynamicServiceQueryMaker::addMatch;
+    virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
     virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
     virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
 
@@ -53,20 +63,8 @@ public:
     void fetchTracks();
 
 protected:
-    AmpacheServiceCollection * m_collection;
-
     struct Private;
     Private * const d;
-
-    QString m_server;
-    QString m_sessionId;
-    QString m_parentAlbumId;
-    QString m_parentArtistId;
-    QString m_parentService;
-    
-    uint m_dateFilter;
-    QString m_artistFilter;
-    QString m_lastArtistFilter;
 
 public slots:
     void artistDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
@@ -78,8 +76,15 @@ private:
     AmpacheServiceQueryMaker( const AmpacheServiceQueryMaker& );
     AmpacheServiceQueryMaker& operator= ( const AmpacheServiceQueryMaker& );
 
+    /** Gets the url for the ampache requests.
+        Already adds query items for the dateFilter and the limit.
+    */
+    KUrl getRequestUrl( const QString &action = QString() ) const;
+
+    /*
     template<class PointerType, class ListType>
     void emitProperResult(const ListType& list);
+    */
 };
 
 } //namespace Collections
