@@ -150,6 +150,10 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     foreach( QAction *action, actionsForIndices( indices, EditAction ) )
         menu.addAction( action );
 
+    QAction *shiftHint = new QAction( i18n( "Hold Shift for more actions" ), &menu );
+    shiftHint->setEnabled( false );
+    menu.addAction( shiftHint );
+
     menu.exec( e->globalPos() );
 }
 
