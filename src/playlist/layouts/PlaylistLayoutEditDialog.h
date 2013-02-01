@@ -54,6 +54,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
 
         /**
          * Set the currently selected layout.
+         * Loads the configuration of the layout layoutName from the m_layoutsMap to the LayoutItemConfig area.
          * @param layoutName The name of the layout to select.
          */
         void setLayout( const QString &layoutName );
@@ -122,6 +123,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
          */
         void toggleUpDownButtons();
 
+        /** Writes back the current UI values to the m_layoutsMap. */
         void setLayoutChanged();
 
     private:
@@ -140,6 +142,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
 
         QMap<QString, PlaylistLayout> *m_layoutsMap;
 
+        /** The name of the currently active layout */
         QString m_layoutName;
 
         QString m_firstActiveLayout;

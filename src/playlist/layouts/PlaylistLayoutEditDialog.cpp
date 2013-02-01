@@ -280,10 +280,6 @@ Playlist::PlaylistLayoutEditDialog::renameLayout()
     setLayout( layoutName );
 }
 
-/**
- * Loads the configuration of the layout layoutName from the m_layoutsMap to the LayoutItemConfig area.
- * @param layoutName the name of the PlaylistLayout to be loaded for configuration
- */
 void
 Playlist::PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
 {
@@ -292,6 +288,7 @@ Playlist::PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //S
 
     if( m_layoutsMap->keys().contains( layoutName ) )   //is the layout exists in the list of loaded layouts
     {
+        debug() << "loaded layout";
         PlaylistLayout layout = m_layoutsMap->value( layoutName );
         for( int part = 0; part < PlaylistLayout::NumParts; part++ )
             m_partsEdit[part]->readLayout( layout.layoutForPart( (PlaylistLayout::Part)part ) );
@@ -379,13 +376,14 @@ Playlist::PlaylistLayoutEditDialog::toggleUpDownButtons()
 void
 Playlist::PlaylistLayoutEditDialog::apply()  //SLOT
 {
-    QMap<QString, PlaylistLayout>::Iterator i = m_layoutsMap->begin();
-    while( i != m_layoutsMap->end() )
+    foreach( QString layoutName, m_layoutsMap->keys() )
     {
-        if( i.value().isDirty() )
+        PlaylistLayout layout = m_layoutsMap->value( layoutName );
+
+        if( layout.isDirty() )
         {
-            QString layoutName = i.key();
-            if ( LayoutManager::instance()->isDefaultLayout( i.key() ) )
+            // search a new name for changed default layouts
+            if( LayoutManager::instance()->isDefaultLayout( layoutName ) )
             {
                 QString newLayoutName = i18n( "copy of %1", layoutName );
                 QString orgCopyName = newLayoutName;
@@ -402,20 +400,26 @@ Playlist::PlaylistLayoutEditDialog::apply()  //SLOT
                                           "Saved as new layout '%2'", layoutName, newLayoutName );
                 KMessageBox::sorry( this, msg, i18n( "Default Layout" ) );
 
-                layoutName = newLayoutName;
 
-                layoutListWidget->addItem( layoutName );
-                layoutListWidget->setCurrentItem( ( layoutListWidget->findItems( layoutName, Qt::MatchExactly ) ).first() );
-                m_layoutsMap->insert( layoutName, i.value() );
-                setLayout( layoutName );
+                layout.setDirty( false );
+                m_layoutsMap->insert( newLayoutName, layout );
+                LayoutManager::instance()->addUserLayout( newLayoutName, layout );
+                layoutListWidget->addItem( newLayoutName );
+
+                if( layoutName == m_layoutName )
+                    layoutListWidget->setCurrentItem( ( layoutListWidget->findItems( newLayoutName, Qt::MatchExactly ) ).first() );
+
+                // restore the default layout
+                m_layoutsMap->insert( layoutName, LayoutManager::instance()->layout( layoutName ) );
             }
-            i.value().setInlineControls( inlineControlsChekbox->isChecked() );
-            i.value().setTooltips( tooltipsCheckbox->isChecked() );
-            i.value().setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
-            i.value().setDirty( false );
-            LayoutManager::instance()->addUserLayout( layoutName, i.value() );
+            else
+            {
+                layout.setDirty( false );
+
+                m_layoutsMap->insert( layoutName, layout );
+                LayoutManager::instance()->addUserLayout( layoutName, layout );
+            }
         }
-        i++;
     }
     LayoutManager::instance()->setActiveLayout( layoutListWidget->currentItem()->text() );  //important to override the previewed layout if preview is used
 }
