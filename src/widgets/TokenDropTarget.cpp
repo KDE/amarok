@@ -112,9 +112,9 @@ TokenDropTarget::setRowLimit( uint r )
     // if we have more than one row we have a stretch at the end.
     QBoxLayout *mainLayout = qobject_cast<QBoxLayout*>( layout() );
     if( ( r == 1 ) && (m_rowLimit != 1 ) )
-        mainLayout->addStretch( 1 ); // the vertical stretch
-    else if( ( r != 1 ) && (m_rowLimit == 1 ) )
         mainLayout->takeAt( mainLayout->count() - 1 );
+    else if( ( r != 1 ) && (m_rowLimit == 1 ) )
+        mainLayout->addStretch( 1 ); // the vertical stretch
 
     m_rowLimit = r;
 }
