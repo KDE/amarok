@@ -72,7 +72,7 @@ void TestTrackOrganizer::testBasic()
   mTracks = makeTracks( 10 );
   mTrackOrganizer = new TrackOrganizer( mTracks, this );
   QString folder = "/home/user/Music" ;
-  mTrackOrganizer->setFormatString( "%folder%/%artist%/%album%/%track%-%title%.%filetype%" );
+  mTrackOrganizer->setFormatString( "%collectionroot%/%artist%/%album%/%track%-%title%.%filetype%" );
   mTrackOrganizer->setFolderPrefix( folder );
   QMap <Meta::TrackPtr, QString > dests = mTrackOrganizer->getDestinations();
   QVERIFY( dests.size() == 10 );
@@ -132,6 +132,7 @@ Meta::TrackPtr TestTrackOrganizer::makeMockTrack( const QString &trackName, cons
         EXPECT_CALL( *album, name() ).Times( AnyNumber() ).WillRepeatedly( Return( albumName ) );
         EXPECT_CALL( *album, prettyName() ).Times( AnyNumber() ).WillRepeatedly( Return( albumName ) );
         EXPECT_CALL( *album, hasAlbumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( false ) );
+        EXPECT_CALL( *album, albumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ArtistPtr() ) );
         EXPECT_CALL( *album, isCompilation() ).Times( AnyNumber() ).WillRepeatedly( Return( false ) );
         mColl->mc->addAlbum( albumPtr );
     }
