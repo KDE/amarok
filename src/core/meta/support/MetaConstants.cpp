@@ -170,39 +170,39 @@ QString Meta::i18nForField( qint64 field )
 {
     switch( field )
     {
-    case 0:                    return i18nc("The field name in case nothing specific is selected e.g. in the automatic playlist generator", "anything");
-    case Meta::valUrl:         return i18nc( "The name of the file this track is stored in", "File Name" );
-    case Meta::valTitle:       return i18n("Title");
-    case Meta::valArtist:      return i18n("Artist");
-    case Meta::valAlbum:       return i18n("Album");
-    case Meta::valGenre:       return i18n("Genre");
-    case Meta::valComposer:    return i18n("Composer");
-    case Meta::valYear:        return i18n("Year");
-    case Meta::valComment:     return i18n("Comment");
-    case Meta::valTrackNr:     return i18n("Track Number");
-    case Meta::valDiscNr:      return i18n("Disc Number");
-    case Meta::valBpm:         return i18n("Bpm");
-    case Meta::valLength:      return i18n("Length");
-    case Meta::valBitrate:     return i18n("Bit Rate");
-    case Meta::valSamplerate:  return i18n("Sample Rate");
-    case Meta::valFilesize:    return i18n("File Size");
-    case Meta::valFormat:      return i18n("Format");
-    case Meta::valCreateDate:  return i18n("Added to Collection");
-    case Meta::valScore:       return i18n("Score");
-    case Meta::valRating:      return i18n("Rating");
-    case Meta::valFirstPlayed: return i18n("First Played");
-    case Meta::valLastPlayed:  return i18n("Last Played");
-    case Meta::valPlaycount:   return i18n("Playcount");
-    case Meta::valUniqueId:    return i18n("Unique Id");
+    case 0:                    return i18nc("Track field name (when nothing specific is selected e.g. in the automatic playlist generator)", "anything");
+    case Meta::valUrl:         return i18nc("Track field name (the file this track is stored in)", "File Name");
+    case Meta::valTitle:       return i18nc("Track field name", "Title");
+    case Meta::valArtist:      return i18nc("Track field name", "Artist");
+    case Meta::valAlbum:       return i18nc("Track field name", "Album");
+    case Meta::valGenre:       return i18nc("Track field name", "Genre");
+    case Meta::valComposer:    return i18nc("Track field name", "Composer");
+    case Meta::valYear:        return i18nc("Track field name", "Year");
+    case Meta::valComment:     return i18nc("Track field name", "Comment");
+    case Meta::valTrackNr:     return i18nc("Track field name", "Track Number");
+    case Meta::valDiscNr:      return i18nc("Track field name", "Disc Number");
+    case Meta::valBpm:         return i18nc("Track field name", "Bpm");
+    case Meta::valLength:      return i18nc("Track field name", "Length");
+    case Meta::valBitrate:     return i18nc("Track field name", "Bit Rate");
+    case Meta::valSamplerate:  return i18nc("Track field name", "Sample Rate");
+    case Meta::valFilesize:    return i18nc("Track field name", "File Size");
+    case Meta::valFormat:      return i18nc("Track field name", "Format");
+    case Meta::valCreateDate:  return i18nc("Track field name", "Added to Collection");
+    case Meta::valScore:       return i18nc("Track field name", "Score");
+    case Meta::valRating:      return i18nc("Track field name", "Rating");
+    case Meta::valFirstPlayed: return i18nc("Track field name", "First Played");
+    case Meta::valLastPlayed:  return i18nc("Track field name", "Last Played");
+    case Meta::valPlaycount:   return i18nc("Track field name", "Playcount");
+    case Meta::valUniqueId:    return i18nc("Track field name", "Unique Id");
 
-    case Meta::valTrackGain:   return i18n("Track Gain");
-    case Meta::valTrackGainPeak:   return i18n("Track Gain Peak");
-    case Meta::valAlbumGain:   return i18n("Album Gain");
-    case Meta::valAlbumGainPeak:   return i18n("Album Gain Peak");
+    case Meta::valTrackGain:   return i18nc("Track field name", "Track Gain");
+    case Meta::valTrackGainPeak:   return i18nc("Track field name", "Track Gain Peak");
+    case Meta::valAlbumGain:   return i18nc("Track field name", "Album Gain");
+    case Meta::valAlbumGainPeak:   return i18nc("Track field name", "Album Gain Peak");
 
-    case Meta::valAlbumArtist: return i18n("Album Artist");
-    case Meta::valLabel:       return i18n("Label");
-    case Meta::valModified:    return i18n("Last Modified");
+    case Meta::valAlbumArtist: return i18nc("Track field name", "Album Artist");
+    case Meta::valLabel:       return i18nc("Track field name", "Label");
+    case Meta::valModified:    return i18nc("Track field name", "Last Modified");
     default:                   return QString();
     }
 }
