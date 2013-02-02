@@ -51,13 +51,13 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>If checked, prepend artists' names starting with 'The' with ', The'.</string>
+      <string>If checked, append ', The' to the artists' names starting with 'The'.</string>
      </property>
      <property name="whatsThis">
       <string>If checked all artists starting with &quot;The&quot; will have it moved to the end. Example, &quot;The Beatles&quot; would become &quot;Beatles, The&quot;</string>
      </property>
      <property name="text">
-      <string>&amp;Prepend 'The' in artist names</string>
+      <string>&amp;Append 'The' to artist names</string>
      </property>
     </widget>
    </item>
