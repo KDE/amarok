@@ -38,6 +38,9 @@ class OSDWidget : public QWidget
         /** resets the colours to defaults */
         void unsetColors();
 
+        /** shadow size in every direction */
+        static const int SHADOW_SIZE = 5;
+
     public slots:
         /** calls setText() then show(), after setting image if needed */
         void show( const QString &text, const QImage &newImage = QImage() );

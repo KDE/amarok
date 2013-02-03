@@ -225,7 +225,7 @@ OSDWidget::determineMetrics( const int M )
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0, max.width() - image.width(), max.height(),
             Qt::AlignCenter | Qt::TextWordWrap, m_text );
-    rect.setHeight( rect.height() + M + M );
+    rect.adjust( 0, 0, SHADOW_SIZE * 2, SHADOW_SIZE * 2 ); // the shadow needs some space
 
     if( m_showVolume )
     {
@@ -340,7 +340,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     p.drawPixmap( 0, 0, background );
 
     p.setPen( Qt::white ); // Revert this when the background can be colorized again.
-    rect.adjust( M, M, -M, -M );
+    rect.adjust( M, M, -M, -M ); // substract margins
 
     if( !m_cover.isNull() )
     {
@@ -383,24 +383,28 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
     rect.setBottom( rect.bottom() - graphicsHeight );
 
-    // Draw "shadow" text effect (black outline)
+    // Draw "shadow" text effect (black outline) (currently it's up to five pixel in every dir.)
     if( m_drawShadow )
     {
-        QPixmap pixmap( rect.size() + QSize( 10, 10 ) );
+        QPixmap pixmap( rect.size() );
         pixmap.fill( Qt::black );
 
         QPainter p2( &pixmap );
         p2.setFont( font() );
         p2.setPen( Qt::white );
         p2.setBrush( Qt::white );
-        p2.drawText( QRect( QPoint( 5, 5 ), rect.size() ), align, m_text );
+        p2.drawText( QRect( QPoint( SHADOW_SIZE, SHADOW_SIZE ),
+                            QSize( rect.size().width() - SHADOW_SIZE * 2,
+                                   rect.size().height() - SHADOW_SIZE * 2 ) ),
+                     align, m_text );
         p2.end();
 
-        p.drawImage( rect.topLeft() - QPoint( 5, 5 ), ShadowEngine::makeShadow( pixmap, shadowColor ) );
+        p.drawImage( rect.topLeft(), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
     //p.setPen( Qt::white ); // This too.
-    p.drawText( rect, align, m_text );
+    p.drawText( rect.adjusted( SHADOW_SIZE, SHADOW_SIZE,
+                               -SHADOW_SIZE, -SHADOW_SIZE ), align, m_text );
 }
 
 void
@@ -813,7 +817,7 @@ namespace ShadowEngine
         QImage result( w, h, QImage::Format_ARGB32 );
         result.fill( 0 ); // fill with black
 
-        static const int M = 5;
+        static const int M = OSDWidget::SHADOW_SIZE;
         for( int i = M; i < w - M; i++) {
             for( int j = M; j < h - M; j++ )
             {
