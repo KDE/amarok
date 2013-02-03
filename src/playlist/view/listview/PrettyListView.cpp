@@ -53,6 +53,7 @@
 #include <KApplication>
 #include <KMenu>
 #include <KUrl>
+#include <KLocale>
 
 #include <QClipboard>
 #include <QContextMenuEvent>
@@ -76,6 +77,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_skipAutoScroll( false )
         , m_firstScrollToActiveTrack( true )
         , m_rowsInsertedScrollItem( 0 )
+        , m_showOnlyMatches( false )
         , m_pd( 0 )
 {
     // QAbstractItemView basics
@@ -658,14 +660,36 @@ Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
 void
 Playlist::PrettyListView::paintEvent( QPaintEvent* event )
 {
-    if ( !m_dropIndicator.size().isEmpty() )
+    if( m_dropIndicator.isValid() ||
+        model()->rowCount( rootIndex() ) == 0 )
     {
-        const QPoint offset( 6, 0 );
-        const QPalette p = KApplication::palette();
-        const QPen pen( p.color( QPalette::Highlight ), 6, Qt::SolidLine, Qt::RoundCap );
         QPainter painter( viewport() );
-        painter.setPen( pen );
-        painter.drawLine( m_dropIndicator.topLeft() + offset, m_dropIndicator.topRight() - offset );
+
+        if( m_dropIndicator.isValid() )
+        {
+            const QPoint offset( 6, 0 );
+            QColor c = KApplication::palette().color( QPalette::Highlight );
+            painter.setPen( QPen( c, 6, Qt::SolidLine, Qt::RoundCap ) );
+            painter.drawLine( m_dropIndicator.topLeft() + offset,
+                              m_dropIndicator.topRight() - offset );
+        }
+
+        if( model()->rowCount( rootIndex() ) == 0 )
+        {
+            // here we assume that an empty list is caused by the filter if it's active
+            QString emptyText;
+            if( m_showOnlyMatches )
+                emptyText = i18n( "Tracks have been hidden due to the active search." );
+            else
+                emptyText = i18n( "Add some songs here by dragging them from all around." );
+
+            QColor c = KApplication::palette().color( foregroundRole() );
+            c.setAlpha( c.alpha() / 2 );
+            painter.setPen( c );
+            painter.drawText( rect(),
+                              Qt::AlignCenter | Qt::TextWordWrap,
+                              emptyText );
+        }
     }
 
     QListView::paintEvent( event );
@@ -933,6 +957,8 @@ void Playlist::PrettyListView::updateProxyTimeout()
 
 void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
 {
+    m_showOnlyMatches = onlyMatches;
+
     The::playlist()->showOnlyMatches( onlyMatches );
 }
 

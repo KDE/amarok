@@ -99,7 +99,10 @@ protected:
     void keyPressEvent( QKeyEvent* );
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
+
+    /** Draws a "drop here" text if empty */
     void paintEvent( QPaintEvent* );
+
     void startDrag( Qt::DropActions supportedActions );
     bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event );
 
@@ -138,6 +141,8 @@ private:
     QString               m_searchTerm;
     int                   m_fields;
     bool                  m_filter;
+
+    bool    m_showOnlyMatches;
 
     QTimer       *m_proxyUpdateTimer;
     PopupDropper *m_pd;

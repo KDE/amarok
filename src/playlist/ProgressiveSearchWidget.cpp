@@ -42,8 +42,6 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     readConfig();
 
     KHBox *searchBox = new KHBox( this );
-    m_warningLabel = new QLabel( i18n("Warning: tracks have been hidden in the playlist"), this );
-    hideHiddenTracksWarning();
 
     m_searchEdit = new Amarok::LineEdit( searchBox );
     m_searchEdit->setClickMessage( i18n( "Search playlist" ) );
@@ -177,9 +175,6 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
         p.setColor( QPalette::Base, palette().color( QPalette::Base ) );
         m_searchEdit->setPalette( p );
 
-        if( m_showOnlyMatches )
-            hideHiddenTracksWarning();
-
         emit( filterCleared() );
 
         return;
@@ -208,9 +203,6 @@ void ProgressiveSearchWidget::match()
     QPalette p = m_searchEdit->palette();
     p.setColor( QPalette::Base, palette().color( QPalette::Base ) );
     m_searchEdit->setPalette( p );
-
-    if( m_showOnlyMatches )
-        hideHiddenTracksWarning();
 }
 
 void ProgressiveSearchWidget::noMatch()
@@ -223,19 +215,6 @@ void ProgressiveSearchWidget::noMatch()
     QPalette p = m_searchEdit->palette();
     p.setColor( QPalette::Base, backgroundBrush.brush( m_searchEdit ).color() );
     m_searchEdit->setPalette( p );
-
-    if( m_showOnlyMatches )
-        showHiddenTracksWarning();
-}
-
-void ProgressiveSearchWidget::showHiddenTracksWarning()
-{
-    m_warningLabel->show();
-}
-
-void ProgressiveSearchWidget::hideHiddenTracksWarning()
-{
-    m_warningLabel->hide();
 }
 
 void ProgressiveSearchWidget::slotSearchTracks( bool search )

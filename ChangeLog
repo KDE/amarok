@@ -6,6 +6,9 @@ VERSION 2.8-Beta 1
   FEATURES:
 
   CHANGES:
+   * The "tracks have been hidden in the playlist" warning when
+     filtering the playlist is now displayed inside the playlist
+     (BR 260352)
    * Update tag widget for Layout edit, filter edit, organize collection
      and guess tag dialog.
    * When fadeout and/or Replay Gain isn't possible, gray-out related UI

@@ -211,14 +211,10 @@ private:
      */
     void readConfig();
 
-    void hideHiddenTracksWarning();
-    void showHiddenTracksWarning();
-
     Amarok::LineEdit *m_searchEdit;
     KAction   *m_nextAction;
     KAction   *m_previousAction;
     QMenu     *m_menu;
-    QLabel    *m_warningLabel;
     QToolBar  *m_toolBar;
 
     int        m_searchFieldsMask;
