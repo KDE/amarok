@@ -76,7 +76,7 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
     QString strYear = year ? year->name() : QString();
     args["year"] = strYear.localeAwareCompare( "0" ) == 0 ? QString() : strYear;
     args["album"] = track->album() ? track->album()->name() : QString();
-    args["albumartist"] = albumArtist;
+    args["albumartist"] = strAlbumArtist;
     args["comment"] = track->comment();
     args["genre"] = genre ? genre->name() : QString();
     if( m_targetFileExtension == QString() )
