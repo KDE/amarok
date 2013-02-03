@@ -330,8 +330,8 @@ FilenameLayoutWidget::inferScheme( const QString &s ) //SLOT
 
         if( !found )
         {
-            ++i; // skip junk
             debug() << "'" << s.at(i) << "' can't be represented as TokenLayoutWidget Token";
+            ++i; // skip junk
         }
     }
 }
