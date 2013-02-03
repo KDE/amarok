@@ -548,7 +548,7 @@ CollectionLocation::slotFinishRemove()
 
     if( !dirsToRemove.isEmpty() && delegate->deleteEmptyDirs( this ) )
     {
-        debug() << "Removeing empty directories";
+        debug() << "Removing empty directories";
         dirsToRemove.removeDuplicates();
         dirsToRemove.sort();
         while( !dirsToRemove.isEmpty() )

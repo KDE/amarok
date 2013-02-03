@@ -532,8 +532,16 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         else
             debug() << "transcoding from " << src << " to " << dest;
 
-        QFileInfo info( dest.pathOrUrl() );
-        QDir dir = info.dir();
+        QFileInfo srcInfo( src.pathOrUrl() );
+        if( !srcInfo.isFile() )
+        {
+            warning() << "Source track" << src << "was no file";
+            source()->transferError( track, i18n( "Source track does not exist: %1", src.pathOrUrl() ) );
+            return true; // Attempt to copy/move the next item in m_sources
+        }
+
+        QFileInfo destInfo( dest.pathOrUrl() );
+        QDir dir = destInfo.dir();
         if( !dir.exists() )
         {
             if( !dir.mkpath( "." ) )
@@ -559,7 +567,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
 
         if( src.equals( dest ) )
         {
-            warning() << "move to itself found: " << info.absoluteFilePath();
+            warning() << "move to itself found: " << destInfo.absoluteFilePath();
             m_transferjob->slotJobFinished( 0 );
             if( m_sources.isEmpty() )
                 return false;
