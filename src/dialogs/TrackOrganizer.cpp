@@ -112,20 +112,19 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
 
     foreach( const QString &key, args.keys() )
         if( key != "collectionroot" && key != "folder" )
-            args[key] = cleanPath( args[key] );
+            args[key] = args[key].replace( '/', '-' );
 
     Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );
     if( !result.startsWith( '/' ) )
         result.prepend( "/" );
 
-    QFileInfo path( result );           // Used to polish path string. (e.g. remove '//')
-    return path.absoluteFilePath();
+    return cleanPath( result );
 }
 
-QString TrackOrganizer::cleanPath( const QString& component ) const
+QString TrackOrganizer::cleanPath( const QString& path ) const
 {
-    QString result = component;
+    QString result = path;
 
     if( m_AsciiOnly )
     {
@@ -139,13 +138,13 @@ QString TrackOrganizer::cleanPath( const QString& component ) const
     result.simplified();
     if( m_UnderscoresNotSpaces )
         result.replace( QRegExp( "\\s" ), "_" );
-//     debug()<<"I'm about to do Amarok::vfatPath( result ), this is result: "<<result;
+
+    // debug()<<"I'm about to do Amarok::vfatPath( result ), this is result: "<<result;
     if( m_vfatSafe )
         result = Amarok::vfatPath( result );
 
-    result.replace( '/', '-' );
-
-    return result;
+    QFileInfo info( result ); // Used to polish path string. (e.g. remove '//')
+    return info.absoluteFilePath();
 }
 
 int TrackOrganizer::commonPrefixLength( const QString &a, const QString &b )

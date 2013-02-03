@@ -100,7 +100,7 @@ public:
 
 private:
     QString buildDestination( const QString &format, const Meta::TrackPtr &track ) const;
-    QString cleanPath( const QString &component ) const;
+    QString cleanPath( const QString &path ) const;
 
     /** Returns the number of characters that are the same in both strings beginning. */
     static int commonPrefixLength( const QString &a, const QString &b );
