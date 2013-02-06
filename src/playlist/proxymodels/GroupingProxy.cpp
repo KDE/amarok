@@ -33,6 +33,7 @@
 #include "playlist/PlaylistDefines.h"
 
 #include <QVariant>
+#include <QFileInfo>
 
 
 Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QObject *parent )
@@ -310,7 +311,9 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
             if( track1 && track1->composer() && track2 && track2->composer() )
                 return ( *track1->composer().data() ) == ( *track2->composer().data() );
         case 3: //Directory
-            return false;  //FIXME
+            if( track1 && track2 )
+                return ( QFileInfo( track1->playableUrl().path() ).path() ) ==
+                       ( QFileInfo( track2->playableUrl().path() ).path() );
         case 4: //Genre
             if( track1 && track1->genre() && track2 && track2->genre() )
             {
