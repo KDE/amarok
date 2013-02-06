@@ -55,6 +55,7 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
 
     // -- bias itself
     m_descriptionLabel = new QLabel( "" );
+    m_descriptionLabel->setWordWrap( true );
     m_mainLayout->addWidget( m_descriptionLabel );
 
     m_biasLayout = new QVBoxLayout();
