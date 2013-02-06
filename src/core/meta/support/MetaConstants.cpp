@@ -344,7 +344,7 @@ QString Meta::iconForField( qint64 field )
     case Meta::valYear: return "filename-year-amarok";
     case Meta::valModified:
     case Meta::valCreateDate: return "filename-year-amarok";
-    case Meta::valComment:
+    case Meta::valComment: return "amarok_comment";
     case Meta::valPlaycount: return "amarok_playcount";
     case Meta::valTrackNr: return "filename-track-amarok";
     case Meta::valDiscNr: return "filename-discnumber-amarok";
