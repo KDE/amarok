@@ -290,13 +290,17 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
     // If the grouping category is empty or invalid, 'm_groupingCategoryIndex' will be -1.
     // That will cause us to choose "no grouping".
 
+    if( !track1 || !track2 )
+        return false;
+
     // DEBUG_BLOCK
-            // debug() << m_groupingCategoryIndex;
+    // debug() << m_groupingCategoryIndex;
+
     switch( m_groupingCategoryIndex )
     {
 
         case 0: //Album
-            if( track1 && track1->album() && track2 && track2->album() )
+            if( track1->album() && track2->album() )
             {
                 // don't group albums without name
                 if( track1->album()->prettyName().isEmpty() || track2->album()->prettyName().isEmpty() )
@@ -304,28 +308,31 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
                 else
                     return ( *track1->album().data() ) == ( *track2->album().data() ) && ( track1->discNumber() == track2->discNumber() );
             }
+            return false;
         case 1: //Artist
-            if( track1 && track1->artist() && track2 && track2->artist() )
+            if( track1->artist() && track2->artist() )
                 return ( *track1->artist().data() ) == ( *track2->artist().data() );
+            return false;
         case 2: //Composer
-            if( track1 && track1->composer() && track2 && track2->composer() )
+            if( track1->composer() && track2->composer() )
                 return ( *track1->composer().data() ) == ( *track2->composer().data() );
+            return false;
         case 3: //Directory
-            if( track1 && track2 )
-                return ( QFileInfo( track1->playableUrl().path() ).path() ) ==
-                       ( QFileInfo( track2->playableUrl().path() ).path() );
+            return ( QFileInfo( track1->playableUrl().path() ).path() ) ==
+                   ( QFileInfo( track2->playableUrl().path() ).path() );
         case 4: //Genre
-            if( track1 && track1->genre() && track2 && track2->genre() )
+            if( track1->genre() && track2->genre() )
             {
                 debug() << "gruping by genre. Comparing " << track1->genre()->prettyName() << " with " << track2->genre()->prettyName();
                 debug() << track1->genre().data() << " == " << track2->genre().data() << " : " << ( *track1->genre().data() == *track2->genre().data());
                 return ( *track1->genre().data() ) == ( *track2->genre().data() );
             }
+            return false;
         case 5: //Rating
-            if( track1 && track1->statistics()->rating() && track2 && track2->statistics()->rating() )
+            if( track1->statistics()->rating() && track2->statistics()->rating() )
                 return ( track1->statistics()->rating() ) == ( track2->statistics()->rating() );
+            return false;
         case 6: //Source
-            if( track1 && track2 )
             {
                 QString source1, source2;
 
@@ -354,11 +361,10 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
 
                 return source1 == source2;
             }
-            else
-                return false;
         case 7: //Year
-            if( track1 && track1->year() && track2 && track2->year() )
+            if( track1->year() && track2->year() )
                 return ( *track1->year().data() ) == ( *track2->year().data() );
+            return false;
         default:
             return false;
     }
