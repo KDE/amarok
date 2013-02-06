@@ -117,11 +117,11 @@ BrowserMessageArea::newProgressOperation( QObject *sender, const QString &text, 
     newBar->setDescription( text );
     newBar->setMaximum( maximum );
     connect( sender, SIGNAL(destroyed( QObject * )), m_progressBar,
-             SLOT(endProgressOperation( QObject * )) );
+             SLOT(endProgressOperation( QObject * )), Qt::QueuedConnection );
     connect( sender, SIGNAL(endProgressOperation( QObject * )), m_progressBar,
-             SLOT(endProgressOperation( QObject * )) );
+             SLOT(endProgressOperation( QObject * )), Qt::QueuedConnection );
     connect( sender, SIGNAL(incrementProgress()), m_progressBar,
-             SLOT(slotIncrementProgress()) );
+             SLOT(slotIncrementProgress()), Qt::QueuedConnection );
     connect( sender, SIGNAL(totalSteps( int )), newBar, SLOT(slotTotalSteps( int )) );
     newBar->setAbortSlot( obj, slot, type );
     m_progressBar->addProgressBar( newBar, sender );
