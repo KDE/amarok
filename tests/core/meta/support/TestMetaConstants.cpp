@@ -27,6 +27,16 @@ using namespace Meta;
 
 QTEST_KDEMAIN_CORE( TestMetaConstants )
 
+/* Just for clarification. This is not how you would normally write an auto test.
+   You don't write a switch just to test if the switch returns the correct values.
+
+   You also don't test localized texts, since you would have to run the test
+   in all available languages. There are other methods to test if you missed to
+   translate something. This is not it.
+
+   In my case the test failed three times. Always a false positive.
+*/
+
 void
 TestMetaConstants::dataNameField()
 {
@@ -354,7 +364,7 @@ TestMetaConstants::testIconForField_data()
     QTest::newRow( "year" )        << Meta::valYear        << "filename-year-amarok";
     QTest::newRow( "modified" )    << Meta::valModified    << "filename-year-amarok";
     QTest::newRow( "createdate" )  << Meta::valCreateDate  << "filename-year-amarok";
-    QTest::newRow( "comment" )     << Meta::valComment     << "amarok_playcount";
+    QTest::newRow( "comment" )     << Meta::valComment     << "amarok_comment";
     QTest::newRow( "playcount" )   << Meta::valPlaycount   << "amarok_playcount";
     QTest::newRow( "tracknumber" ) << Meta::valTrackNr     << "filename-track-amarok";
     QTest::newRow( "discnumber" )  << Meta::valDiscNr      << "filename-discnumber-amarok";
