@@ -95,14 +95,13 @@ Dynamic::SimpleMatchBias::setInvert( bool value )
 
 
 Dynamic::TrackSet
-Dynamic::SimpleMatchBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist,
-                                       int contextCount,
-                                       Dynamic::TrackCollectionPtr universe ) const
+Dynamic::SimpleMatchBias::matchingTracks( const Meta::TrackList& playlist,
+                                          int contextCount, int finalCount,
+                                          Dynamic::TrackCollectionPtr universe ) const
 {
-    Q_UNUSED( position );
     Q_UNUSED( playlist );
     Q_UNUSED( contextCount );
+    Q_UNUSED( finalCount );
 
     if( tracksValid() )
         return m_tracks;

@@ -44,9 +44,8 @@ namespace Dynamic
 
             virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist,
-                                             int contextCount,
+            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+                                             int contextCount, int finalCount,
                                              const TrackCollectionPtr universe ) const;
 
             virtual void resultReceived( const Dynamic::TrackSet &tracks );
@@ -59,9 +58,9 @@ namespace Dynamic
             void removeDuplicate() const;
 
             // buffered by matchingTracks
-            mutable int m_position;
             mutable Meta::TrackList m_playlist;
             mutable int m_contextCount;
+            mutable int m_finalCount;
             mutable Dynamic::TrackCollectionPtr m_universe;
 
             Q_DISABLE_COPY(IfElseBias)

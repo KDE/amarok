@@ -54,9 +54,8 @@ namespace Dynamic
 
             virtual QWidget* widget( QWidget* parent = 0 );
 
-            virtual Dynamic::TrackSet matchingTracks( int position,
-                                                      const Meta::TrackList& playlist,
-                                                      int contextCount,
+            virtual Dynamic::TrackSet matchingTracks( const Meta::TrackList& playlist,
+                                                      int contextCount, int finalCount,
                                                       Dynamic::TrackCollectionPtr universe ) const;
 
             virtual bool trackMatches( int position,

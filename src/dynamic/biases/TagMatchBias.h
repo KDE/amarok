@@ -49,8 +49,8 @@ namespace Dynamic
             virtual void fromXml( QXmlStreamReader *reader );
             virtual void toXml( QXmlStreamWriter *writer ) const;
 
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
+            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+                                             int contextCount, int finalCount,
                                              const TrackCollectionPtr universe ) const;
 
             virtual bool trackMatches( int position,

@@ -159,17 +159,18 @@ Dynamic::QuizPlayBias::widget( QWidget* parent )
 }
 
 Dynamic::TrackSet
-Dynamic::QuizPlayBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist, int contextCount,
+Dynamic::QuizPlayBias::matchingTracks( const Meta::TrackList& playlist,
+                                       int contextCount, int finalCount,
                                        Dynamic::TrackCollectionPtr universe ) const
 {
     Q_UNUSED( contextCount );
+    Q_UNUSED( finalCount );
 
-    if( position <= 0 || position > playlist.count())
+    if( playlist.isEmpty() )
         return Dynamic::TrackSet( universe, true );
 
     // determine the last character we need to quiz
-    Meta::TrackPtr lastTrack = playlist[position-1];
+    Meta::TrackPtr lastTrack = playlist.last();
     Meta::DataPtr lastData;
     if( m_follow == TitleToTitle )
         lastData = Meta::DataPtr::staticCast<Meta::Track>(lastTrack);

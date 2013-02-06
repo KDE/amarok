@@ -25,6 +25,7 @@
 #include "widgets/SliderWidget.h"
 
 #include <KLocale>
+#include <KRandom>
 
 #include <QtGlobal> // for qRound
 #include <QApplication>
@@ -78,14 +79,13 @@ class MatchState
             @param ignoreTrack a track number that should be ignored for matching. -1 if no track should be ignored.
         */
         MatchState( const Dynamic::PartBias *bias,
-                    int ignoreTrack,
-                    const Meta::TrackList& playlist, int contextCount )
+                    const Meta::TrackList& playlist,
+                    int contextCount, int finalCount )
             : m_bias( bias )
-            , m_ignoreDrain( ignoreTrack - contextCount )
             , m_playlist( playlist )
             , m_contextCount( contextCount )
             , m_sourceCount( bias->weights().count() )
-            , m_drainCount( playlist.count() - contextCount )
+            , m_drainCount( finalCount - contextCount )
             , m_edges( m_sourceCount * m_drainCount, false )
             , m_edgesUsed( m_sourceCount * m_drainCount, false )
             , m_sourceCapacity( m_sourceCount )
@@ -127,12 +127,15 @@ class MatchState
             for( int source = m_sourceCount-1; source >= 0; --source )
                 for( int drain = m_drainCount-1; drain >= 0; --drain )
                 {
+                    m_edgesUsed[ source * m_drainCount + drain ] = false;
+
+                    if( drain + m_contextCount >= m_playlist.count() )
+                        continue;
+
                     m_edges[ source * m_drainCount + drain ] =
                         biases[source]->trackMatches( drain + m_contextCount,
                                                       m_playlist,
                                                       m_contextCount );
-                    m_edgesUsed[ source * m_drainCount + drain ] = false;
-
                     // debug() << "edge:" << source << "x" << drain << ":" << m_edges[ source * m_drainCount + drain ];
                 }
 
@@ -144,8 +147,6 @@ class MatchState
 
                 for( int drain = 0; drain < m_drainCount; drain++ )
                 {
-                    if( m_ignoreDrain == drain )
-                        continue;
                     if( !m_edges[ source * m_drainCount + drain ] )
                         continue;
 
@@ -167,8 +168,6 @@ class MatchState
 
                         for( int drain2 = m_drainCount-1; drain2 >= 0; --drain2 )
                         {
-                            if( m_ignoreDrain == drain2 )
-                                continue;
                             if( m_drainFlow[drain2] > 0 )
                                 continue;
                             if( !m_edgesUsed[ source2 * m_drainCount + drain ] )
@@ -205,7 +204,6 @@ class MatchState
 
 
         const Dynamic::PartBias* const m_bias;
-        int m_ignoreDrain;
         const Meta::TrackList& m_playlist;
         int m_contextCount;
 
@@ -430,14 +428,16 @@ Dynamic::PartBias::weights() const
 }
 
 Dynamic::TrackSet
-Dynamic::PartBias::matchingTracks( int position,
-                                  const Meta::TrackList& playlist, int contextCount,
-                                  Dynamic::TrackCollectionPtr universe ) const
+Dynamic::PartBias::matchingTracks( const Meta::TrackList& playlist,
+                                   int contextCount, int finalCount,
+                                   Dynamic::TrackCollectionPtr universe ) const
 {
+    DEBUG_BLOCK;
+
     // store the parameters in case we need to request additional matching tracks later
-    m_position = position;
     m_playlist = playlist;
     m_contextCount = contextCount;
+    m_finalCount = finalCount;
     m_universe = universe;
 
     m_tracks = Dynamic::TrackSet();
@@ -445,7 +445,7 @@ Dynamic::PartBias::matchingTracks( int position,
 
     // get the matching tracks from all sub-biases
     for( int i = 0; i < m_biases.length(); ++i )
-        m_matchingTracks[i] = m_biases[i]->matchingTracks( position, playlist, contextCount, universe );
+        m_matchingTracks[i] = m_biases[i]->matchingTracks( playlist, contextCount, finalCount, universe );
     updateResults();
 
     return m_tracks;
@@ -454,24 +454,51 @@ Dynamic::PartBias::matchingTracks( int position,
 void
 Dynamic::PartBias::updateResults() const
 {
+    DEBUG_BLOCK;
+
     // -- first check if we have valid tracks from all sub-biases
     foreach( const Dynamic::TrackSet &tracks, m_matchingTracks )
         if( tracks.isOutstanding() )
             return;
 
     // -- determine the current matching
-    MatchState state( this, m_position, m_playlist, m_contextCount );
+    MatchState state( this, m_playlist, m_contextCount, m_finalCount );
 
-    // debug()<<"compute matching tracks for"<<m_position<<"pc"<<m_playlist.count()<<"context:"<<m_contextCount;
+    debug()<<"compute matching tracks for"<<m_finalCount<<"pc"<<m_playlist.count()<<"context:"<<m_contextCount;
 
-    // -- add all the tracks that have not fulfilled their capacity
-    m_tracks = Dynamic::TrackSet( m_universe, false );
+    // -- add all the tracks from one bias that has not fulfilled their capacity
+    //    biases still missing more tracks are picked more often
+    //    this prevents the problem that biases with only a few tracks always add their tracks
+    //    last
+    int missingCapacity = 0;
     for( int source = 0; source < state.m_sourceCount; source++ )
     {
-        // debug() << "PartBias::matchingTracks: biase"<<m_biases[source]->toString()<<"matches"<<state.m_sourceFlow[source]<<"out of"<<state.m_sourceCapacity[source]<<"tracks.";
-        if( state.m_sourceFlow[source] < state.m_sourceCapacity[source] )
-            m_tracks.unite( m_matchingTracks[source] );
+        if( state.m_sourceFlow[source] < state.m_sourceCapacity[source] &&
+            m_matchingTracks[source].trackCount() > 0 )
+            missingCapacity += state.m_sourceCapacity[source] - state.m_sourceFlow[source];
     }
+
+    m_tracks = Dynamic::TrackSet( m_universe, false );
+
+    // if we have some biases under-represented
+    if( missingCapacity > 0 )
+    {
+        int random = KRandom::random() % missingCapacity;
+        for( int source = 0; source < state.m_sourceCount; source++ )
+        {
+            // debug() << "PartBias::matchingTracks: biase"<<m_biases[source]->toString()<<"matches"<<state.m_sourceFlow[source]<<"out of"<<state.m_sourceCapacity[source]<<"tracks.";
+            if( state.m_sourceFlow[source] < state.m_sourceCapacity[source] &&
+                m_matchingTracks[source].trackCount() > 0 )
+                random -= state.m_sourceCapacity[source] - state.m_sourceFlow[source];
+            if( random < 0 )
+            {
+                m_tracks.unite( m_matchingTracks[source] );
+                break;
+            }
+        }
+    }
+
+    // else pick a random one.
 }
 
 void
@@ -499,24 +526,9 @@ Dynamic::PartBias::trackMatches( int position,
                                  const Meta::TrackList& playlist,
                                  int contextCount ) const
 {
-    MatchState state( this, -1, playlist, contextCount );
+    MatchState state( this, playlist, contextCount, playlist.count() );
 
     return ( state.m_drainFlow[position - contextCount] >= 0 );
-}
-
-double
-Dynamic::PartBias::energy( const Meta::TrackList& playlist, int contextCount ) const
-{
-    MatchState state( this, -1, playlist, contextCount );
-
-    int matchCount = 0;
-    for( int i = 0; i < state.m_drainCount; i++ )
-    {
-        if( state.m_drainFlow[i] )
-            matchCount++;
-    }
-
-    return 1.0 - (double(matchCount) / (state.m_drainCount));
 }
 
 void

@@ -18,6 +18,7 @@
 
 #include "TrackSet.h"
 #include "core/support/Debug.h"
+#include "core/collections/Collection.h"
 
 #include <KRandom>
 
@@ -210,8 +211,12 @@ Dynamic::TrackSet::subtract( const Meta::TrackPtr& B )
         return;
 
     QString str = B->uidUrl();
-    if( !m_collection->m_ids.contains( str ) ) {
-        warning() << "TrackSet::subtract called for a track not even known to the collection. Track uid is"<<str<<"example from collection"<<m_collection->m_ids.keys().first();
+    if( !m_collection->m_ids.contains( str ) )
+    {
+        // that seems to happen. e.g. for tracks from the file collection
+        warning() << "TrackSet::subtract called for a track not even known to the collection. "<<
+            "Track uid is"<<str<<"example from collection"<<m_collection->m_ids.keys().first()<<
+            "track is from collection"<<(B->collection()?B->collection()->collectionId():QString("no collection"));
         return;
     }
 

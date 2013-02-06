@@ -47,12 +47,13 @@
 // every time the playlist changes (e.g. after the rating changed)
 // So Small is good.
 // Pick your poison...
-const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 50;
+const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 30;
 
 Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     : DynamicPlaylist( parent )
     , m_numRequested( 0 )
     , m_bias( 0 )
+    , m_solver( 0 )
 {
     m_title = i18nc( "Title for a default dynamic playlist. The default playlist only returns random tracks.", "Random" );
 
@@ -64,6 +65,7 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *pare
     : DynamicPlaylist( parent )
     , m_numRequested( 0 )
     , m_bias( 0 )
+    , m_solver( 0 )
 {
     while (!reader->atEnd()) {
         reader->readNext();
@@ -113,8 +115,8 @@ Dynamic::BiasedPlaylist::requestAbort()
 {
     DEBUG_BLOCK
     if( m_solver ) {
+        m_solver->setAutoDelete( true );
         m_solver->requestAbort();
-        disconnect( m_solver, 0, this, 0 );
         m_solver = 0;
     }
 }
@@ -129,9 +131,7 @@ Dynamic::BiasedPlaylist::startSolver()
     {
         debug() << "assigning new m_solver";
         m_solver = new BiasSolver( BUFFER_SIZE, m_bias, getContext() );
-        m_solver->setAutoDelete( true );
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
-        connect( m_solver, SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
 
         Amarok::Components::logger()->newProgressOperation( m_solver,
                                                             i18n( "Generating playlist..." ), 100,
@@ -257,7 +257,7 @@ Dynamic::BiasedPlaylist::solverFinished()
     DEBUG_BLOCK
 
     if( m_solver != sender() )
-        return;
+        return; // maybe an old solver... aborted solvers should autodelete
 
     bool success = m_solver->success();
     if( success )
@@ -265,8 +265,7 @@ Dynamic::BiasedPlaylist::solverFinished()
         QMutexLocker locker(&m_bufferMutex);
         m_buffer.append( m_solver->solution() );
     }
-
-    disconnect( m_solver, 0, this, 0 );
+    m_solver->deleteLater();
     m_solver = 0;
 
     // empty collection just give up.

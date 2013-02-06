@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
- * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010, 2013 Ralf Engels <ralf-engels@gmx.de>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -32,9 +32,6 @@
 #include <QHash>
 #include <QMutexLocker>
 
-#include <KRandom>
-
-
 /* These number are black magic. The best values can only be obtained through
  * exhaustive trial and error or writing another optimization program to
  * optimize this optimization program. They are very sensitive. Be careful */
@@ -42,17 +39,6 @@
 
 namespace Dynamic
 {
-
-const int    BiasSolver::GA_ITERATION_LIMIT         = 70;
-const int    BiasSolver::GA_POPULATION_SIZE         = 15;
-const int    BiasSolver::GA_MATING_POPULATION_SIZE  = 5;
-const double BiasSolver::GA_MUTATION_PROBABILITY    = 0.05;
-const int    BiasSolver::GA_GIVE_UP_LIMIT           = 10;
-
-const int    BiasSolver::SA_ITERATION_LIMIT     = 1000;
-const double BiasSolver::SA_INITIAL_TEMPERATURE = 0.28;
-const double BiasSolver::SA_COOLING_RATE        = 0.82;
-const int    BiasSolver::SA_GIVE_UP_LIMIT       = 250;
 
 class SolverList
 {
@@ -64,51 +50,30 @@ class SolverList
         : m_trackList(trackList)
         , m_contextCount( contextCount )
         , m_bias( bias )
-        , m_energyValid( false )
     {}
 
     void appendTrack( Meta::TrackPtr track )
     {
         m_trackList.append( track );
-        m_energyValid = false;
     }
 
-    void setTrack( int pos, Meta::TrackPtr track )
+    void removeTrack()
     {
-        m_trackList.replace( pos, track );
-        m_energyValid = false;
+        m_trackList.removeLast();
     }
-
-    bool operator<( const SolverList& x ) const
-    { return energy() < x.energy(); }
 
     SolverList &operator=( const SolverList& x )
     {
         m_trackList = x.m_trackList;
-        m_energyValid = x.m_energyValid;
-        m_energy = x.m_energy;
         m_contextCount = x.m_contextCount;
+        m_bias = x.m_bias;
 
         return *this;
-    }
-
-    double energy() const
-    {
-        if( !m_energyValid )
-        {
-            m_energy = m_bias->energy( m_trackList, m_contextCount );
-            m_energyValid = true;
-        }
-        return m_energy;
     }
 
     Meta::TrackList m_trackList;
     int m_contextCount; // the number of tracks belonging to the context
     BiasPtr m_bias;
-
-private:
-    mutable bool m_energyValid;
-    mutable double m_energy;
 };
 
 
@@ -156,13 +121,13 @@ BiasSolver::setAutoDelete( bool autoDelete )
 {
     if( autoDelete )
     {
+        if( isFinished() )
+            deleteLater();
         connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
-        connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
     }
     else
     {
         disconnect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
-        disconnect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
     }
 }
 
@@ -173,6 +138,7 @@ BiasSolver::run()
     DEBUG_BLOCK
 
     debug() << "BiasSolver::run in thread:" << QThread::currentThreadId();
+    m_startTime = QDateTime::currentDateTime();
 
     // wait until we get the track collection
     {
@@ -185,353 +151,53 @@ BiasSolver::run()
         debug() << "collection has" << m_trackCollection->count()<<"uids";
     }
 
-    /*
-     * Two stage solver: Run ga_optimize and feed it's result into sa_optimize.
-     *
-     * Rationale: Genetic algorithms take better advantage of the heuristic used
-     * by generateInitialPlaylist and also have tendency to converge faster
-     * initially. How ever, they also tend to get stuck in local minima unless
-     * the population size is quite large, which is why we switch over to
-     * simulated annealing when that happens.
-     */
-
-    /*
-     * NOTE: For now I am disabling the ga phase, until I can do more
-     * experimentation.
-     */
-    //Meta::TrackList playlist = ga_optimize( GA_ITERATION_LIMIT, true );
-
     debug() << "generating playlist";
-    SolverList playlist = generateInitialPlaylist();
-    debug() << "got playlist with"<<playlist.energy();
+    SolverList list( m_context, m_context.count(), m_bias );
+    addTracks( &list );
+    debug() << "found solution"<<list.m_trackList.count()<<"time"<< m_startTime.msecsTo( QDateTime::currentDateTime() );
 
-    // actually for now the simple optimize finds a perfect solution in many cases
-    simpleOptimize( &playlist );
-    debug() << "after simple optimize playlist with"<<playlist.energy();
-
-    if( playlist.energy() > epsilon() && !m_abortRequested ) // the playlist is only slightly wrong
-    {
-        annealingOptimize( &playlist, SA_ITERATION_LIMIT );
-    }
-    debug() << "Found solution with energy"<<playlist.energy();
-
-    m_solution = playlist.m_trackList.mid( m_context.count() );
+    m_solution = list.m_trackList.mid( m_context.count() );
+    setFinished( true );
 }
 
 void
-BiasSolver::simpleOptimize( SolverList *list )
+BiasSolver::addTracks( SolverList *list )
 {
-    DEBUG_BLOCK;
+    bool firstTrack = ( list->m_trackList.count() == list->m_contextCount );
 
-    if( list->m_trackList.count() <= list->m_contextCount )
-        return; // nothing to optimize. All tracks are in the context
+    if( m_abortRequested )
+        return;
 
-    // first set some random tracks
-    // this prevents the part bias from first fullfilling the easy conditions
-    for( int i = 0; i < m_n / 2; i++ )
+    updateProgress( list );
+
+    if( list->m_trackList.count() >= list->m_contextCount + m_n )
+        return; // we have all tracks
+
+    TrackSet set = matchingTracks( list->m_trackList );
+    if( !m_allowDuplicates )
+        set = withoutDuplicate( list->m_trackList.count(), list->m_trackList, set );
+
+    if( set.trackCount() == 0 )
+        return; // no candidates
+
+    // debug() << "addTracks at"<<list->m_trackList.count()<<"candidates:"<<set.trackCount()<<"time"<< m_startTime.msecsTo( QDateTime::currentDateTime() );
+
+    for( int tries = 0; tries < 5 || firstTrack ; tries++ )
     {
         if( m_abortRequested )
             return;
 
-        // choose the mutation position
-        int newPos = (KRandom::random() % (list->m_trackList.count() - list->m_contextCount))
-            + list->m_contextCount;
+        list->appendTrack( getRandomTrack( set ) );
+        addTracks( list ); // add another track recursively
+        if( list->m_trackList.count() >= list->m_contextCount + m_n )
+            return; // we have all tracks
 
-        TrackSet set = matchingTracks( newPos, list->m_trackList );
-        if( !m_allowDuplicates )
-            set = withoutDuplicate( newPos, list->m_trackList, set, false );
-
-        Meta::TrackPtr newTrack;
-        newTrack = getRandomTrack( set );
-        if( newTrack )
-        {
-            list->setTrack( newPos, newTrack );
-            updateProgress( list );
-        }
-    }
-
-    // now go through the complete list again and try to fullfill all
-    for( int newPos = list->m_contextCount; newPos < list->m_trackList.count(); newPos++ )
-    {
-        if( m_abortRequested )
+        // if time is up just try to fill the list as much as possible not cleaning up
+        if( m_startTime.msecsTo( QDateTime::currentDateTime() ) > MAX_TIME_MS )
             return;
 
-        TrackSet set = matchingTracks( newPos, list->m_trackList );
-        if( !m_allowDuplicates )
-            set = withoutDuplicate( newPos, list->m_trackList, set, true );
-
-        Meta::TrackPtr newTrack;
-        newTrack = getRandomTrack( set );
-        if( newTrack )
-        {
-            list->setTrack( newPos, newTrack );
-            updateProgress( list );
-        }
+        list->removeTrack();
     }
-}
-
-void
-BiasSolver::annealingOptimize( SolverList *list,
-                               int iterationLimit )
-{
-    DEBUG_BLOCK;
-
-    if( list->m_trackList.count() <= list->m_contextCount )
-        return; // nothing to optimize. All tracks are in the context
-
-    SolverList originalList = *list;
-
-    /*
-     * The process used here is called "simulated annealing". The basic idea is
-     * that the playlist is randomly mutated one track at a time. Mutations that
-     * improve the playlist (decrease the energy) are always accepted, mutations
-     * that make the playlist worse (increase the energy) are sometimes
-     * accepted. The decision to accept is made randomly based on a special
-     * probability curve that changes as the algorithm progresses.
-     *
-     * Accepting some bad mutations makes the algorithm resilient to getting
-     * stuck in local minima (playlists that are not optimal but can't be
-     * improved by making just one change). There is much more reading available
-     * on the internet or your local library.
-     */
-
-    double temperature = SA_INITIAL_TEMPERATURE;
-    TrackSet universeSet( m_trackCollection, true );
-
-    double oldEnergy = 0.0;
-    int giveUpCount = 0;
-    while( iterationLimit-- && list->energy() >= epsilon() && !m_abortRequested )
-    {
-        // if the energy hasn't changed in SA_GIVE_UP_LIMIT iterations, we give
-        // up and bail out.
-        if( oldEnergy == list->energy() )
-            giveUpCount++;
-        else
-        {
-            oldEnergy = list->energy();
-            giveUpCount = 0;
-        }
-
-        if( giveUpCount >= SA_GIVE_UP_LIMIT )
-            break;
-
-        // choose the mutation position
-        int newPos = (KRandom::random() % (list->m_trackList.count() - list->m_contextCount))
-            + list->m_contextCount;
-
-        // choose a matching track or a random one. Prefer matching
-        Meta::TrackPtr newTrack;
-        if( iterationLimit % 4 )
-        {
-            TrackSet set = matchingTracks( newPos, list->m_trackList );
-            if( !m_allowDuplicates )
-                set = withoutDuplicate( newPos, list->m_trackList, set, false );
-            newTrack = getRandomTrack( set );
-        }
-        else
-        {
-            if( !m_allowDuplicates )
-                newTrack = getRandomTrack( withoutDuplicate( newPos, list->m_trackList, universeSet, false ) );
-            else
-                newTrack = getRandomTrack( universeSet );
-        }
-
-        if( !newTrack )
-            continue;
-
-        // debug() << "replacing"<<newPos<<list->m_trackList[newPos]->name()<<"with"<<newTrack->name();
-
-        SolverList newList = *list;
-        newList.setTrack( newPos, newTrack );
-
-        double p = 1.0 / ( 1.0 + exp( (newList.energy() - list->energy()) / list->m_trackList.count()  / temperature ) );
-        double r = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
-
-        // accept the mutation ?
-        if( r <= p )
-            *list = newList;
-
-        // cool the temperature
-        temperature *= SA_COOLING_RATE;
-
-        debug() << "SA: E = " << list->energy();
-        updateProgress( list );
-    }
-
-    // -- use the original list if we made it worse
-    if( list->energy() > originalList.energy() )
-        *list = originalList;
-}
-
-void
-BiasSolver::geneticOptimize( SolverList *list,
-                             int iterationLimit )
-{
-    Q_UNUSED( list );
-    Q_UNUSED( iterationLimit );
-
-    /**
-     * Here we attempt to produce an optimal playlist using a genetic algorithm.
-     * The basic steps:
-     *
-     *   1. Generate a population of playlists using generateInitialPlaylist.
-     *
-     * REPEAT:
-     *   2. Choose a portion of that population to reproduce. The better the
-     *      playlist (the lower the energy) the more likely it is to reproduce.
-     *   3. The mating population playlists are mixed with each other producing
-     *      offspring playlists.
-     *   4. The worst playlists in the population are thrown out and replaced
-     *      with the new offspring.
-     */
-#if 0
-
-    // 1.  Generate initial population
-    QList<SolverList> population;
-    SolverList playlist;
-    while( population.size() < GA_POPULATION_SIZE )
-    {
-        // TODO: OPTIMIZATION: most of the time spend solving now is spent
-        // getting Meta::Tracks, since we request so many with this. Experiment
-        // with lowering the population size, or finding a faster way to get a
-        // bunch of random tracks.
-        playlist = generateInitialPlaylist();
-
-        playlist.removeAll( Meta::TrackPtr() );
-
-        // test for the empty collection case
-        if( playlist.empty() )
-        {
-            warning() << "Empty collection, aborting.";
-            return Meta::TrackList();
-        }
-
-        double plEnergy = playlist->energy();
-
-        if( plEnergy < epsilon() ) // no need to continue if we already found an optimal playlist
-            return playlist;
-
-        population.append( playlist );
-    }
-
-    qSort( population ); // sort the population by energy.
-
-
-    double prevMin = 0.0;
-    int giveUpCount = 0;
-    int i = iterationLimit;
-    QList<int> matingPopulation;
-    while( i-- && population.first().energy >= epsilon() && !m_abortRequested )
-    {
-        // Sometime the optimal playlist can't have an energy of 0.0, or the
-        // algorithm just gets stuck. So if the energy hasn't changed after
-        // GIVE_UP_LIMIT iterations, we assume we bail out.
-        if( population.first().energy == prevMin )
-            giveUpCount++;
-        else
-        {
-            prevMin = population.first().energy;
-            giveUpCount = 0;
-        }
-
-        if( giveUpCount >= GA_GIVE_UP_LIMIT )
-            break;
-
-
-        // status updates
-        if( updateStatus && i % 5 == 0 )
-        {
-            int progress = (int)(100.0 * (1.0 - population.first().energy));
-            emit statusUpdate( progress >= 0 ? progress : 0 );
-        }
-
-        debug() << "GA: min E = " << population.first().energy;
-        debug() << "GA: max E = " << population.last().energy;
-
-
-
-        // 2. Choose the portion of the population to reproduce.
-        matingPopulation = generateMatingPopulation( population );
-
-        // randomize the order of the mating population so we don't get the same
-        // playlists mating over and over
-        int m = matingPopulation.size();
-        while( m > 1 )
-        {
-            int k = KRandom::random() % m;
-            --m;
-            matingPopulation.swap( m, k );
-        }
-
-        QList<Meta::TrackList> offspring;
-
-
-
-        // (I'm hanging on to code for now, until I do more testing.)
-        // reproduce using single point crossover
-#if 0
-        for( int j = 0; j < matingPopulation.size(); ++j )
-        {
-            int parent1 = matingPopulation[j];
-            int parent2 = j == 0 ? matingPopulation.last() : matingPopulation[j-1];
-
-            Meta::TrackList child1, child2;
-            int locus = KRandom::random() % m_n;
-
-            child1 += population[parent1].trackList.mid( 0, locus );
-            child1 += population[parent2].trackList.mid( locus );
-
-            child2 += population[parent2].trackList.mid( 0, locus );
-            child2 += population[parent1].trackList.mid( locus );
-
-            offspring += child1;
-            offspring += child2;
-        }
-#endif
-        
-        // 3. Reproduce (using uniform crossover).
-        for( int j = 0; j < matingPopulation.size(); ++j )
-        {
-            int parent1 = matingPopulation[j];
-            int parent2 = j == 0 ? matingPopulation.last() : matingPopulation[j-1];
-
-            Meta::TrackList child1, child2;
-
-            for( int k = 0; k < m_n; ++k )
-            {
-                if( KRandom::random() < RAND_MAX/2 )
-                {
-                    child1.append( population[parent1].trackList[k] );
-                    child2.append( population[parent2].trackList[k] );
-                }
-                else
-                {
-                    child1.append( population[parent2].trackList[k] );
-                    child2.append( population[parent1].trackList[k] );
-                }
-            }
-
-            offspring += child1;
-            offspring += child2;
-        }
-
-
-        // 4. Replace the worst in the population with the offspring.
-        int j = population.size() - 1;
-        foreach( const Meta::TrackList &p, offspring )
-        {
-            // TODO: try introducing mutations to the offspring here.
-
-            population[j--] = SolverList( p, energy(p) );
-        }
-
-        qSort( population ); // sort playlists by energy
-    }
-
-
-    // select the best solution
-    *list = population.first();
-#endif
 }
 
 
@@ -541,41 +207,6 @@ BiasSolver::solution()
     return m_solution;
 }
 
-
-SolverList
-BiasSolver::generateInitialPlaylist() const
-{
-    SolverList list( m_context, m_context.count(), m_bias );
-
-    // Empty collection
-    if( m_trackCollection->count() == 0 )
-    {
-        debug() << "Empty collection when trying to generate initial playlist...";
-        return list;
-    }
-
-    // just create a simple playlist by adding random tracks to the end.
-
-    TrackSet universeSet( m_trackCollection, true );
-    while( list.m_trackList.count() < m_context.count() + m_n )
-    {
-        if( m_abortRequested )
-            return list;
-
-        Meta::TrackPtr newTrack;
-        if( !m_allowDuplicates )
-            newTrack = getRandomTrack( withoutDuplicate( -1, list.m_trackList, universeSet, false ) );
-        else
-            newTrack = getRandomTrack( universeSet );
-        list.appendTrack( newTrack );
-
-        const_cast<BiasSolver*>(this)->updateProgress( &list );
-    }
-
-
-    debug() << "generated random playlist with"<<list.m_trackList.count()<<"tracks";
-    return list;
-}
 
 Meta::TrackPtr
 BiasSolver::getRandomTrack( const TrackSet& subset ) const
@@ -619,25 +250,26 @@ BiasSolver::biasResultReady( const TrackSet &set )
 }
 
 TrackSet
-BiasSolver::matchingTracks( int position, const Meta::TrackList& playlist ) const
+BiasSolver::matchingTracks( const Meta::TrackList& playlist ) const
 {
     QMutexLocker locker( &m_biasResultsMutex );
-    m_tracks = m_bias->matchingTracks( position, playlist, m_context.count(), m_trackCollection );
+    m_tracks = m_bias->matchingTracks( playlist,
+                                       m_context.count(), m_context.count() + m_n,
+                                       m_trackCollection );
     if( m_tracks.isOutstanding() )
         m_biasResultsReady.wait( &m_biasResultsMutex );
 
-    debug() << "BiasSolver::matchingTracks returns"<<m_tracks.trackCount()<<"of"<<m_trackCollection->count()<<"tracks.";
+    // debug() << "BiasSolver::matchingTracks returns"<<m_tracks.trackCount()<<"of"<<m_trackCollection->count()<<"tracks.";
 
     return m_tracks;
 }
 
 Dynamic::TrackSet
 BiasSolver::withoutDuplicate( int position, const Meta::TrackList& playlist,
-                              const Dynamic::TrackSet& oldSet,
-                              bool onlyBackwards )
+                              const Dynamic::TrackSet& oldSet )
 {
     Dynamic::TrackSet result = Dynamic::TrackSet( oldSet );
-    for( int i = 0; i < (onlyBackwards ? position : playlist.count()); i++ )
+    for( int i = 0; i < playlist.count(); i++ )
         if( i != position && playlist[i] )
             result.subtract( playlist[i] );
 
@@ -686,7 +318,10 @@ BiasSolver::getTrackCollection()
 void
 BiasSolver::updateProgress( const SolverList* list )
 {
-    int progress = (int)(100.0 * (1.0 - list->energy()));
+    if( m_n <= 0 )
+        return;
+
+    int progress = (int)(100.0 * (double)( list->m_trackList.count() - list->m_contextCount ) / m_n );
 
     while( m_currentProgress < progress )
     {

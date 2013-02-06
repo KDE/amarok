@@ -85,15 +85,13 @@ namespace Dynamic
             virtual QWidget* widget( QWidget* parent = 0 );
             virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
+            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+                                             int contextCount, int finalCount,
                                              const TrackCollectionPtr universe ) const;
 
             virtual bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
                                        int contextCount ) const;
-
-            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
 
             /** Returns the weights of the bias itself and all the sub-biases. */
             virtual QList<qreal> weights() const;
@@ -125,9 +123,9 @@ namespace Dynamic
             mutable QVector<Dynamic::TrackSet> m_matchingTracks;
 
             // buffered by matchingTracks
-            mutable int m_position;
             mutable Meta::TrackList m_playlist;
             mutable int m_contextCount;
+            mutable int m_finalCount;
             mutable Dynamic::TrackCollectionPtr m_universe;
 
             Q_DISABLE_COPY(PartBias)

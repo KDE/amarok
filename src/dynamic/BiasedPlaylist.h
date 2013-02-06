@@ -65,6 +65,7 @@ namespace Dynamic
             void solverFinished();
             void biasChanged();
             void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
+
         private:
             /** Starts the BiasSolver (if not already running) and requests a couple of new tracks. */
             void startSolver();
@@ -82,7 +83,7 @@ namespace Dynamic
             BiasPtr m_bias;
 
             /** A currently running BiasSolver */
-            QPointer<BiasSolver> m_solver;
+            BiasSolver* m_solver;
 
             static const int BUFFER_SIZE;
     };

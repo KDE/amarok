@@ -118,10 +118,10 @@ Dynamic::EchoNestBias::toString() const
     {
     case PreviousTrack:
         return i18nc("EchoNest bias representation",
-                     "Similar to the previous track (as reported by EchoNest)");
+                     "Similar to the previous artist (as reported by EchoNest)");
     case Playlist:
         return i18nc("EchoNest bias representation",
-                     "Similar to any track in the current playlist (as reported by EchoNest)");
+                     "Similar to any artist in the current playlist (as reported by EchoNest)");
     }
     return QString();
 }
@@ -132,12 +132,12 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
     QWidget *widget = new QWidget( parent );
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
-    QLabel *label = new QLabel( i18n( "Echo nest thinks the track is similar to" ) );
+    QLabel *label = new QLabel( i18n( "Echo nest thinks the artist is similar to" ) );
 
     QComboBox *combo = new QComboBox();
-    combo->addItem( i18n( "the previous Track" ),
+    combo->addItem( i18n( "the previous artist" ),
                     nameForMatch( PreviousTrack ) );
-    combo->addItem( i18n( "one of the tracks in the current playlist" ),
+    combo->addItem( i18n( "one of the artist in the current playlist" ),
                     nameForMatch( Playlist ) );
     switch( m_match )
     {
@@ -158,21 +158,24 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
 }
 
 Dynamic::TrackSet
-Dynamic::EchoNestBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist,
-                                       int contextCount,
+Dynamic::EchoNestBias::matchingTracks( const Meta::TrackList& playlist,
+                                       int contextCount, int finalCount,
                                        Dynamic::TrackCollectionPtr universe ) const
 {
     Q_UNUSED( contextCount );
+    Q_UNUSED( finalCount );
 
     // collect the artist
-    QStringList artists = currentArtists( position, playlist );
+    QStringList artists = currentArtists( playlist.count() - 1, playlist );
     if( artists.isEmpty() )
         return Dynamic::TrackSet( universe, true );
 
     {
         QMutexLocker locker( &m_mutex );
         QString key = tracksMapKey( artists );
+        // debug() << "searching in cache for"<<key
+            // <<"have tracks"<<m_tracksMap.contains( key )
+            // <<"have artists"<<m_similarArtistMap.contains( key );
         if( m_tracksMap.contains( key ) )
             return m_tracksMap.value( key );
     }
@@ -229,8 +232,6 @@ Dynamic::EchoNestBias::invalidate()
 void
 Dynamic::EchoNestBias::newQuery()
 {
-    DEBUG_BLOCK;
-
     // - get the similar artists
     QStringList similar;
     {
@@ -350,9 +351,9 @@ Dynamic::EchoNestBias::currentArtists( int position, const Meta::TrackList& play
 
     if( m_match == PreviousTrack )
     {
-        if( position > 0 && position < playlist.count() - 1 )
+        if( position >= 0 && position < playlist.count() )
         {
-            Meta::ArtistPtr artist = playlist[ position-1 ]->artist();
+            Meta::ArtistPtr artist = playlist[ position ]->artist();
             if( artist && !artist->name().isEmpty() )
                 result.append( artist->name() );
         }
@@ -391,8 +392,6 @@ KUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QStri
         QByteArray const value = QUrl::toPercentEncoding( i.value() );
         url.addEncodedQueryItem( key, value );
     }
-
-    // debug() << "created url for EchoNest request:" << url;
 
     return url;
 }

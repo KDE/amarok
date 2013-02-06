@@ -138,22 +138,24 @@ Dynamic::AlbumPlayBias::widget( QWidget* parent )
 }
 
 Dynamic::TrackSet
-Dynamic::AlbumPlayBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist, int contextCount,
-                                       Dynamic::TrackCollectionPtr universe ) const
+Dynamic::AlbumPlayBias::matchingTracks( const Meta::TrackList& playlist,
+                                        int contextCount, int finalCount,
+                                        Dynamic::TrackCollectionPtr universe ) const
 {
     Q_UNUSED( contextCount );
+    Q_UNUSED( finalCount );
 
-    if( position < 1 || position >= playlist.count() )
+    if( playlist.isEmpty() )
         return Dynamic::TrackSet( universe, false );
 
-    Meta::TrackPtr track = playlist[position-1];
+    Meta::TrackPtr track = playlist.last();
     Meta::AlbumPtr album = track->album();
 
     if( !album )
         return Dynamic::TrackSet( universe, false );
 
     Meta::TrackList albumTracks = album->tracks();
+
     if( albumTracks.count() == 1 ||
         ( sameTrack( track, albumTracks.last() ) && m_follow != DontCare) )
         return Dynamic::TrackSet( universe, false );
@@ -192,8 +194,8 @@ Dynamic::AlbumPlayBias::matchingTracks( int position,
 
 bool
 Dynamic::AlbumPlayBias::trackMatches( int position,
-                                     const Meta::TrackList& playlist,
-                                     int contextCount ) const
+                                      const Meta::TrackList& playlist,
+                                      int contextCount ) const
 {
     Q_UNUSED( contextCount );
 

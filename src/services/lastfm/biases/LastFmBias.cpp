@@ -152,18 +152,18 @@ Dynamic::LastFmBias::widget( QWidget* parent )
 }
 
 Dynamic::TrackSet
-Dynamic::LastFmBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist,
-                                       int contextCount,
-                                       Dynamic::TrackCollectionPtr universe ) const
+Dynamic::LastFmBias::matchingTracks( const Meta::TrackList& playlist,
+                                     int contextCount, int finalCount,
+                                     Dynamic::TrackCollectionPtr universe ) const
 {
     Q_UNUSED( contextCount );
+    Q_UNUSED( finalCount );
 
-    if( position <= 0 || position > playlist.count())
+    if( playlist.isEmpty() )
         return Dynamic::TrackSet( universe, true );
 
     // determine the last track and artist
-    Meta::TrackPtr lastTrack = playlist[position-1];
+    Meta::TrackPtr lastTrack = playlist.last();
     Meta::ArtistPtr lastArtist = lastTrack->artist();
 
     m_currentTrack = lastTrack->name();

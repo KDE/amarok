@@ -94,24 +94,6 @@ Dynamic::AbstractBias::replace( Dynamic::BiasPtr newBias )
     emit replaced( BiasPtr(const_cast<Dynamic::AbstractBias*>(this)), newBias );
 }
 
-double
-Dynamic::AbstractBias::energy( const Meta::TrackList& playlist, int contextCount ) const
-{
-    Q_UNUSED( contextCount );
-
-    if( playlist.count() <= contextCount )
-        return 0.0;
-
-    int matchCount = 0;
-    for( int i = contextCount; i < playlist.count(); i++ )
-    {
-        if( trackMatches( i, playlist, contextCount ) )
-            matchCount++;
-    }
-
-    return 1.0 - (double(matchCount) / (playlist.count() - contextCount));
-}
-
 // -------- RandomBias ------
 
 Dynamic::RandomBias::RandomBias()
@@ -146,13 +128,13 @@ Dynamic::RandomBias::widget( QWidget* parent )
 }
 
 Dynamic::TrackSet
-Dynamic::RandomBias::matchingTracks( int position,
-                                  const Meta::TrackList& playlist, int contextCount,
-                                  Dynamic::TrackCollectionPtr universe ) const
+Dynamic::RandomBias::matchingTracks( const Meta::TrackList& playlist,
+                                     int contextCount, int finalCount,
+                                     Dynamic::TrackCollectionPtr universe ) const
 {
-    Q_UNUSED( position );
     Q_UNUSED( playlist );
     Q_UNUSED( contextCount );
+    Q_UNUSED( finalCount );
     return Dynamic::TrackSet( universe, true );
 }
 
@@ -166,15 +148,6 @@ Dynamic::RandomBias::trackMatches( int position,
     Q_UNUSED( contextCount );
     return true;
 }
-
-double
-Dynamic::RandomBias::energy( const Meta::TrackList& playlist, int contextCount ) const
-{
-    Q_UNUSED( playlist );
-    Q_UNUSED( contextCount );
-    return 0.0;
-}
-
 
 // -------- AndBias ------
 
@@ -259,8 +232,8 @@ Dynamic::AndBias::paintOperator( QPainter* painter, const QRect& rect, Dynamic::
 }
 
 Dynamic::TrackSet
-Dynamic::AndBias::matchingTracks( int position,
-                                  const Meta::TrackList& playlist, int contextCount,
+Dynamic::AndBias::matchingTracks( const Meta::TrackList& playlist,
+                                  int contextCount, int finalCount,
                                   Dynamic::TrackCollectionPtr universe ) const
 {
     DEBUG_BLOCK;
@@ -271,7 +244,7 @@ debug() << "universe:" << universe.data();
 
     foreach( Dynamic::BiasPtr bias, m_biases )
     {
-        Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, contextCount, universe );
+        Dynamic::TrackSet tracks = bias->matchingTracks( playlist, contextCount, finalCount, universe );
         if( tracks.isOutstanding() )
             m_outstandingMatches++;
         else
@@ -467,8 +440,8 @@ Dynamic::OrBias::toString() const
 }
 
 Dynamic::TrackSet
-Dynamic::OrBias::matchingTracks( int position,
-                                 const Meta::TrackList& playlist, int contextCount,
+Dynamic::OrBias::matchingTracks( const Meta::TrackList& playlist,
+                                 int contextCount, int finalCount,
                                  Dynamic::TrackCollectionPtr universe ) const
 {
     m_tracks = Dynamic::TrackSet( universe, false );
@@ -476,7 +449,7 @@ Dynamic::OrBias::matchingTracks( int position,
 
     foreach( Dynamic::BiasPtr bias, m_biases )
     {
-        Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, contextCount, universe );
+        Dynamic::TrackSet tracks = bias->matchingTracks( playlist, contextCount, finalCount, universe );
         if( tracks.isOutstanding() )
             m_outstandingMatches++;
         else

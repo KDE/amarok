@@ -48,8 +48,12 @@ namespace Dynamic
 
     /** A bias is essentially just a function that evaluates the suitability of a
         playlist in some arbitrary way.
+        It's function is to return new tracks for a playlist. For this it can
+        only rely on previous tracks in the playlist (because of the way the
+        playlists are generated).
 
-        All biases are shared to prevent problems when they are removed while the
+
+        All biases are shared data to prevent problems when they are removed while the
         BiasSolver is running at the same time.
      */
     class AMAROK_EXPORT AbstractBias : public QObject, public QSharedData
@@ -88,21 +92,18 @@ namespace Dynamic
             /** Paints an operator (like "and" or a progress bar") in front of a bias item */
             virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
-            /** Returns the tracks that would fit at the indicated position.
+            /** Returns the tracks that would fit at the end of the given playlist.
                 The function can also return an "outstanding" Track set and return
                 later with a resultReady signal.
                 In such a case "matchingTracks" cannot be called again until
                 the result was received or invalidate called.
-                @param position The position inside the playlist that we search a track for.
-                                The position can be larger than the number of playlist entries
-                                if we search a track for the end of the playlist.
                 @param playlist The current playlist context for the track.
-                @param contextCount The number of songs that are already fixed. Those songs
-                                should not take part in the calculation of an energy value.
+                @param contextCount The number of songs that are already fixed.
+                @parem finalCount The number of tracks that the playlist should finally contain (including the contextCount)
                 @param universe A TrackCollectionPtr to be used for the resulting TrackSet
             */
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
+            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+                                             int contextCount, int finalCount,
                                              const TrackCollectionPtr universe ) const = 0;
 
             /** Returns true if indicated track fits that position.
@@ -111,24 +112,11 @@ namespace Dynamic
                                 The position can be larger than the number of playlist entries
                                 if we search a track for the end of the playlist.
                 @param playlist The current playlist context for the track.
-                @param contextCount The number of songs that are already fixed. Those songs
-                                should not take part in the calculation of an energy value.
+                @param contextCount The number of songs that are already fixed.
                 @param universe A TrackCollectionPtr to be used for the resulting TrackSet
             */
             virtual bool trackMatches( int position,
                                        const Meta::TrackList& playlist, int contextCount ) const = 0;
-
-
-            /** Returns an energy value for the given playlist.
-                The function might block until a result is ready.
-                The energy value should be in the range 0-1.
-                0 is the perfect value.
-                The default implementation here uses trackMatches to calculate the energy
-                @param playlist The current playlist context for the track.
-                @param contextCount The number of songs that are already fixed. Those songs
-                                should not take part in the calculation of an energy value.
-            */
-            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
 
         signals:
             /** This signal is emitted when the bias is changed.
@@ -173,15 +161,13 @@ namespace Dynamic
 
             virtual QWidget* widget( QWidget* parent = 0 );
 
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
+            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+                                             int contextCount, int finalCount,
                                              const TrackCollectionPtr universe ) const;
 
             virtual bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
                                        int contextCount ) const;
-
-            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
 
         private:
             Q_DISABLE_COPY(RandomBias)
@@ -213,8 +199,8 @@ namespace Dynamic
             virtual QWidget* widget( QWidget* parent = 0 );
             virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
+            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+                                             int contextCount, int finalCount,
                                              const TrackCollectionPtr universe ) const;
 
             virtual bool trackMatches( int position,
@@ -266,8 +252,8 @@ namespace Dynamic
 
             virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
+            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+                                             int contextCount, int finalCount,
                                              const TrackCollectionPtr universe ) const;
 
             virtual bool trackMatches( int position,

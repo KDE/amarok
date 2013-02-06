@@ -6,6 +6,10 @@ VERSION 2.8-Beta 1
   FEATURES:
 
   CHANGES:
+   * The dynamic playlist behaviour has changed. It will not longer
+     generate "pretty good" playlists that do not fullfill the
+     given biases. Instead it might add no song at all if given
+     impossible to fullfill conditions.
    * The "tracks have been hidden in the playlist" warning when
      filtering the playlist is now displayed inside the playlist
      (BR 260352)

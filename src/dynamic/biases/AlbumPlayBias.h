@@ -48,8 +48,8 @@ namespace Dynamic
 
             virtual QWidget* widget( QWidget* parent = 0 );
 
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
+            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+                                             int contextCount, int finalCount,
                                              const TrackCollectionPtr universe ) const;
 
             virtual bool trackMatches( int position,

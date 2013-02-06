@@ -21,8 +21,6 @@
 #include "IfElseBias.h"
 
 #include "amarokconfig.h"
-#include "core/support/Debug.h"
-// #include "DynamicBiasWidgets.h"
 
 #include <QtGlobal> // for qRound
 #include <QPainter>
@@ -84,15 +82,14 @@ Dynamic::IfElseBias::paintOperator( QPainter* painter, const QRect& rect, Dynami
 }
 
 Dynamic::TrackSet
-Dynamic::IfElseBias::matchingTracks( int position,
-                                     const Meta::TrackList& playlist,
-                                     int contextCount,
+Dynamic::IfElseBias::matchingTracks( const Meta::TrackList& playlist,
+                                     int contextCount, int finalCount,
                                      Dynamic::TrackCollectionPtr universe ) const
 {
     // store the parameters in case we need to request additional matching tracks later
-    m_position = position;
     m_playlist = playlist;
     m_contextCount = contextCount;
+    m_finalCount = finalCount;
     m_universe = universe;
 
     m_tracks = Dynamic::TrackSet( universe, false );
@@ -100,7 +97,7 @@ Dynamic::IfElseBias::matchingTracks( int position,
 
     foreach( Dynamic::BiasPtr bias, m_biases )
     {
-        m_tracks = bias->matchingTracks( position, playlist, contextCount, universe );
+        m_tracks = bias->matchingTracks( playlist, contextCount, finalCount, universe );
         if( m_tracks.isOutstanding() )
         {
             m_outstandingMatches++;
@@ -148,8 +145,7 @@ Dynamic::IfElseBias::resultReceived( const Dynamic::TrackSet &tracks )
         }
 
         // check the next bias
-        m_tracks = bias->matchingTracks( m_position, m_playlist,
-                                         m_contextCount, m_universe );
+        m_tracks = bias->matchingTracks( m_playlist, m_contextCount, m_finalCount, m_universe );
         if( m_tracks.isOutstanding() )
         {
             m_outstandingMatches++;
@@ -167,14 +163,14 @@ Dynamic::IfElseBias::resultReceived( const Dynamic::TrackSet &tracks )
     emit resultReady( m_tracks );
 }
 
-// we need to eliminate duplicates now to have a propper check for an empty result
+// we need to eliminate duplicates now to have a proper check for an empty result
 void
 Dynamic::IfElseBias::removeDuplicate() const
 {
     if( AmarokConfig::dynamicDuplicates() )
         return;
 
-    for( int i = 0; i < m_position; i++ )
+    for( int i = 0; i < m_playlist.count(); i++ )
         if( m_playlist[i] )
             m_tracks.subtract( m_playlist[i] );
 }
