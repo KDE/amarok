@@ -48,7 +48,11 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
     , m_widgetWidth( width )
     , m_layoutChanged( false )
 {
-    setAutoFillBackground( false ); // we want our own playlist background
+    // The line below is nice but sometimes (despite best effort) we are missing
+    // a pixel or two (e.g. the width of the splitter widget handle is not present
+    // in the delegate).
+    // So, to fix BR: 300118 set it to "true" to debug or have the own playlist background set it to "false"
+    setAutoFillBackground( true );
 
     const int frameHMargin = style()->pixelMetric( QStyle::PM_FocusFrameHMargin );
     const int frameVMargin = style()->pixelMetric( QStyle::PM_FocusFrameVMargin );
