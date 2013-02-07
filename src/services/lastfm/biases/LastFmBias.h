@@ -22,9 +22,6 @@
 
 #include <QMutex>
 
-class KJob;
-class QNetworkReply;
-
 namespace Dynamic
 {
 
@@ -77,7 +74,7 @@ namespace Dynamic
             void similarTrackQueryDone();
             void queryFailed( const char *message );
 
-            void selectionChanged( int );
+            void setMatchTypeArtist( bool matchArtist );
 
         private:
             /** The pair is used for the tracks */
@@ -91,7 +88,7 @@ namespace Dynamic
             void readSimilarArtists( QXmlStreamReader *reader );
             TitleArtistPair readTrack( QXmlStreamReader *reader );
             void readSimilarTracks( QXmlStreamReader *reader );
-            void loadFromFile();
+            void loadDataFromFile();
 
             mutable QString m_currentArtist;
             mutable QString m_currentTrack;
