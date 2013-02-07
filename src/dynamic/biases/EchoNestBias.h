@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
- * Copyright (c) 2010, 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010, 2011, 2013 Ralf Engels <ralf-engels@gmx.de>                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,12 +18,9 @@
 #ifndef ECHO_NEST_BIAS_H
 #define ECHO_NEST_BIAS_H
 
-#include "dynamic/Bias.h"
-#include "dynamic/BiasFactory.h"
 #include "dynamic/biases/TagMatchBias.h"
 
 #include <QMutex>
-#include <QNetworkReply>
 
 namespace KIO {
     class StoredTransferJob;
@@ -83,7 +80,7 @@ namespace Dynamic
             void similarArtistQueryDone( KJob* );
             virtual void updateFinished();
 
-            void selectionChanged( int );
+            void setMatchTypePlaylist( bool );
 
         private:
             /** Returns the artists we should lookup */
@@ -92,9 +89,13 @@ namespace Dynamic
             static QString nameForMatch( MatchType match );
             static MatchType matchForName( const QString &name );
 
-
             /** Returns the key used for m_tracksMap */
             static QString tracksMapKey( QStringList artists );
+
+            void saveDataToFile() const;
+
+            void readSimilarArtists( QXmlStreamReader *reader );
+            void loadDataFromFile();
 
             /** The artist we are currently quering. */
             mutable QStringList m_currentArtists;

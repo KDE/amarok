@@ -20,6 +20,8 @@ install(FILES
         emblem-scripted.png
         emblem-scripted-scalable.svgz
         lastfm-default-cover.png
+        echonest.png
+        lastfm.png
         loading1.png
         loading2.png
         mb_aicon.png

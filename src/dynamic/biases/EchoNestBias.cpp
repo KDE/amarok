@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
- * Copyright (c) 2010, 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010, 2011, 2013 Ralf Engels <ralf-engels@gmx.de>                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,23 +15,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "EchoNestBias"
+
 #include "EchoNestBias.h"
 
-#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
-#include "core/collections/Collection.h"
-#include "core/collections/QueryMaker.h"
-#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "dynamic/TrackSet.h"
 
+#include <KStandardDirs>
 #include <KIO/Job>
 
-#include <QComboBox>
 #include <QDomDocument>
-#include <QDomElement>
 #include <QDomNode>
+#include <QFile>
 #include <QLabel>
+#include <QPixmap>
+#include <QRadioButton>
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QXmlStreamReader>
@@ -62,7 +62,9 @@ Dynamic::EchoNestBias::EchoNestBias()
     , m_artistSuggestedQuery( 0 )
     , m_match( PreviousTrack )
     , m_mutex( QMutex::Recursive )
-{ }
+{
+    loadDataFromFile();
+}
 
 Dynamic::EchoNestBias::~EchoNestBias()
 {
@@ -132,27 +134,23 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
     QWidget *widget = new QWidget( parent );
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
-    QLabel *label = new QLabel( i18n( "Echo nest thinks the artist is similar to" ) );
+    QLabel *imageLabel = new QLabel();
+    imageLabel->setPixmap( QPixmap( KStandardDirs::locate( "data", "amarok/images/echonest.png" ) ) );
+    QLabel *label = new QLabel( i18n( "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is similar to" ) );
 
-    QComboBox *combo = new QComboBox();
-    combo->addItem( i18n( "the previous artist" ),
-                    nameForMatch( PreviousTrack ) );
-    combo->addItem( i18n( "one of the artist in the current playlist" ),
-                    nameForMatch( Playlist ) );
-    switch( m_match )
-    {
-    case PreviousTrack: combo->setCurrentIndex(0); break;
-    case Playlist:      combo->setCurrentIndex(1); break;
-    }
-    connect( combo, SIGNAL( currentIndexChanged(int) ),
-             this, SLOT( selectionChanged( int ) ) );
-    label->setBuddy( combo );
+    QRadioButton *rb1 = new QRadioButton( i18n( "the previous track's artist" ) );
+    QRadioButton *rb2 = new QRadioButton( i18n( "one of the artist in the current playlist" ) );
 
-    QLabel *label2 = new QLabel( "<a href=\"http://the.echonest.com/\">http://the.echonest.com/</a>"); // required by echonest term of services. TODO: add echonest logo
+    rb1->setChecked( m_match == PreviousTrack );
+    rb2->setChecked( m_match == Playlist );
 
+    connect( rb2, SIGNAL( toggled( bool ) ),
+             this, SLOT( setMatchTypePlaylist( bool ) ) );
+
+    layout->addWidget( imageLabel );
     layout->addWidget( label );
-    layout->addWidget( combo );
-    layout->addWidget( label2 );
+    layout->addWidget( rb1 );
+    layout->addWidget( rb2 );
 
     return widget;
 }
@@ -328,6 +326,7 @@ Dynamic::EchoNestBias::similarArtistQueryDone( KJob* job ) // slot
         QMutexLocker locker( &m_mutex );
         QString key = tracksMapKey( m_currentArtists );
         m_similarArtistMap.insert( key, similarArtists );
+        saveDataToFile();
     }
 
     newQuery();
@@ -396,6 +395,101 @@ KUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QStri
     return url;
 }
 
+void
+Dynamic::EchoNestBias::saveDataToFile() const
+{
+    QFile file( Amarok::saveLocation() + "dynamic_echonest_similar.xml" );
+    if( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+        return;
+
+    QXmlStreamWriter writer( &file );
+    writer.setAutoFormatting( true );
+
+    writer.writeStartDocument();
+    writer.writeStartElement( QLatin1String("echonestSimilar") );
+
+    // -- write the similar artists
+    foreach( const QString& key, m_similarArtistMap.keys() )
+    {
+        writer.writeStartElement( QLatin1String("similarArtist") );
+        writer.writeTextElement( QLatin1String("artist"), key );
+        foreach( const QString& name, m_similarArtistMap.value( key ) )
+        {
+            writer.writeTextElement( QLatin1String("similar"), name );
+        }
+        writer.writeEndElement();
+    }
+
+    writer.writeEndElement();
+    writer.writeEndDocument();
+}
+
+void
+Dynamic::EchoNestBias::readSimilarArtists( QXmlStreamReader *reader )
+{
+    QString key;
+    QList<QString> artists;
+
+    while (!reader->atEnd()) {
+        reader->readNext();
+        QStringRef name = reader->name();
+
+        if( reader->isStartElement() )
+        {
+            if( name == QLatin1String("artist") )
+                key = reader->readElementText(QXmlStreamReader::SkipChildElements);
+            else if( name == QLatin1String("similar") )
+                artists.append( reader->readElementText(QXmlStreamReader::SkipChildElements) );
+            else
+                reader->skipCurrentElement();
+        }
+        else if( reader->isEndElement() )
+        {
+            break;
+        }
+    }
+
+    m_similarArtistMap.insert( key, artists );
+}
+
+void
+Dynamic::EchoNestBias::loadDataFromFile()
+{
+    m_similarArtistMap.clear();
+
+    QFile file( Amarok::saveLocation() + "dynamic_echonest_similar.xml" );
+
+    if( !file.exists() ||
+        !file.open( QIODevice::ReadOnly ) )
+        return;
+
+    QXmlStreamReader reader( &file );
+
+    while (!reader.atEnd()) {
+        reader.readNext();
+
+        QStringRef name = reader.name();
+        if( reader.isStartElement() )
+        {
+            if( name == QLatin1String("lastfmSimilar") )
+            {
+                ; // just recurse into the element
+            }
+            else if( name == QLatin1String("similarArtist") )
+            {
+                readSimilarArtists( &reader );
+            }
+            else
+            {
+                reader.skipCurrentElement();
+            }
+        }
+        else if( reader.isEndElement() )
+        {
+            break;
+        }
+    }
+}
 
 Dynamic::EchoNestBias::MatchType
 Dynamic::EchoNestBias::match() const
@@ -411,10 +505,9 @@ Dynamic::EchoNestBias::setMatch( Dynamic::EchoNestBias::MatchType value )
 
 
 void
-Dynamic::EchoNestBias::selectionChanged( int which )
+Dynamic::EchoNestBias::setMatchTypePlaylist( bool playlist )
 {
-    if( QComboBox *box = qobject_cast<QComboBox*>(sender()) )
-        setMatch( matchForName( box->itemData( which ).toString() ) );
+    setMatch( playlist ? Playlist : PreviousTrack );
 }
 
 
