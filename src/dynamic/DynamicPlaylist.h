@@ -60,7 +60,7 @@ class AMAROK_EXPORT DynamicPlaylist : public QObject
 
     public slots:
         /** Start recalculating all tracks after the currently played track */
-        virtual void repopulate();
+        // virtual void repopulate();
 
         /** Aborts the current playlist generation operation */
         virtual void requestAbort()

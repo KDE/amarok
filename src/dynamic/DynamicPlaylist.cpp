@@ -29,11 +29,13 @@ Dynamic::DynamicPlaylist::~DynamicPlaylist()
 {
 }
 
+/*
 void
 Dynamic::DynamicPlaylist::repopulate()
 {
     // do nothing by default
 }
+*/
 
 QString Dynamic::DynamicPlaylist::title() const
 { return m_title; }

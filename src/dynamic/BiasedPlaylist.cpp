@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -39,19 +40,8 @@
 #include <threadweaver/ThreadWeaver.h>
 #include <QThread>
 
-
-// The bigger this is, the more accurate the result will be. Big is good.
-// On the other hand optimizing a ridiculous large playlist for nothing
-// is just a waste of processing power.
-// expecially since it seems that the buffers are deleted
-// every time the playlist changes (e.g. after the rating changed)
-// So Small is good.
-// Pick your poison...
-const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 30;
-
 Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     : DynamicPlaylist( parent )
-    , m_numRequested( 0 )
     , m_bias( 0 )
     , m_solver( 0 )
 {
@@ -63,7 +53,6 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
 
 Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *parent )
     : DynamicPlaylist( parent )
-    , m_numRequested( 0 )
     , m_bias( 0 )
     , m_solver( 0 )
 {
@@ -122,7 +111,7 @@ Dynamic::BiasedPlaylist::requestAbort()
 }
 
 void
-Dynamic::BiasedPlaylist::startSolver()
+Dynamic::BiasedPlaylist::startSolver( int numRequested )
 {
     DEBUG_BLOCK
     debug() << "BiasedPlaylist in:" << QThread::currentThreadId();
@@ -130,7 +119,7 @@ Dynamic::BiasedPlaylist::startSolver()
     if( !m_solver )
     {
         debug() << "assigning new m_solver";
-        m_solver = new BiasSolver( BUFFER_SIZE, m_bias, getContext() );
+        m_solver = new BiasSolver( numRequested, m_bias, getContext() );
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
 
         Amarok::Components::logger()->newProgressOperation( m_solver,
@@ -147,9 +136,6 @@ Dynamic::BiasedPlaylist::startSolver()
 void
 Dynamic::BiasedPlaylist::biasChanged()
 {
-    QMutexLocker locker( &m_bufferMutex );
-    m_buffer.clear();
-
     emit changed( this );
     bool inModel = DynamicModel::instance()->index( this ).isValid();
     if( inModel )
@@ -192,30 +178,8 @@ Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPt
 void
 Dynamic::BiasedPlaylist::requestTracks( int n )
 {
-    debug() << "Requesting " << n << " tracks.";
-
-    {
-        QMutexLocker locker(&m_bufferMutex);
-        m_numRequested = n;
-    }
-    handleRequest();
-}
-
-void
-Dynamic::BiasedPlaylist::repopulate()
-{
-    DEBUG_BLOCK
-    debug() << "repopulate" << AmarokConfig::dynamicMode() << "solver?" << m_solver << "requested:" << m_numRequested;
-    if( AmarokConfig::dynamicMode() && !m_solver )
-    {
-        {
-            QMutexLocker locker(&m_bufferMutex);
-            m_buffer.clear();
-        }
-
-        if( m_numRequested > 0 )
-            startSolver();
-    }
+    if( n > 0 )
+        startSolver( n + 1 ); // we request an additional track so that we don't end up in a position that e.g. does have no "similar" track.
 }
 
 Dynamic::BiasPtr
@@ -225,33 +189,6 @@ Dynamic::BiasedPlaylist::bias() const
 }
 
 void
-Dynamic::BiasedPlaylist::handleRequest()
-{
-    DEBUG_BLOCK
-
-    QMutexLocker locker(&m_bufferMutex);
-
-    // if we have enough tracks, submit them.
-    if( m_buffer.count() >= m_numRequested )
-    {
-        Meta::TrackList tracks;
-        while( !m_buffer.isEmpty() && m_numRequested-- )
-            tracks.append( m_buffer.takeFirst() );
-        locker.unlock();
-
-        debug() << "Returning " << tracks.size() << " tracks.";
-        emit tracksReady( tracks );
-    }
-    else
-    {
-        locker.unlock();
-        // otherwise, we ran out of buffer
-        startSolver();
-    }
-}
-
-
-void
 Dynamic::BiasedPlaylist::solverFinished()
 {
     DEBUG_BLOCK
@@ -259,20 +196,17 @@ Dynamic::BiasedPlaylist::solverFinished()
     if( m_solver != sender() )
         return; // maybe an old solver... aborted solvers should autodelete
 
-    bool success = m_solver->success();
-    if( success )
+    Meta::TrackList list = m_solver->solution();
+    if( list.count() > 0 )
     {
-        QMutexLocker locker(&m_bufferMutex);
-        m_buffer.append( m_solver->solution() );
+        // remove the additional requested track
+        if( list.count() > 1 )
+            list.removeLast();
+        emit tracksReady( list );
     }
+
     m_solver->deleteLater();
     m_solver = 0;
-
-    // empty collection just give up.
-    if(m_buffer.isEmpty())
-        m_numRequested = 0;
-
-    handleRequest();
 }
 
 
@@ -280,11 +214,6 @@ Meta::TrackList
 Dynamic::BiasedPlaylist::getContext()
 {
     Meta::TrackList context = The::playlist()->tracks();
-
-    {
-        QMutexLocker locker(&m_bufferMutex);
-        context.append( m_buffer );
-    }
 
     return context;
 }

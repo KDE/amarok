@@ -26,7 +26,6 @@
 #include "amarok_export.h" // we are exporting it for the tests
 
 #include <QObject>
-#include <QMutex>
 #include <QPointer>
 
 class QXmlStreamWriter;
@@ -58,7 +57,6 @@ namespace Dynamic
             BiasPtr bias() const;
 
         public slots:
-            virtual void repopulate();
             virtual void requestAbort();
 
         private slots:
@@ -68,16 +66,10 @@ namespace Dynamic
 
         private:
             /** Starts the BiasSolver (if not already running) and requests a couple of new tracks. */
-            void startSolver();
-            void handleRequest();
+            void startSolver( int numRequested );
 
             /** Returns all the tracks that will come before the newly generated ones. */
             Meta::TrackList getContext();
-
-            Meta::TrackList m_buffer;
-            QMutex m_bufferMutex;
-
-            int m_numRequested;
 
             /** The bias this playlist uses */
             BiasPtr m_bias;
