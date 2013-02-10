@@ -689,6 +689,13 @@ MainWindow::slotBanTrack()
 }
 
 void
+MainWindow::slotShufflePlaylist()
+{
+    m_playlistDock.data()->sortWidget()->trimToLevel();
+    m_playlistDock.data()->sortWidget()->addLevel( QString( "Shuffle" ) );
+}
+
+void
 MainWindow::activate()
 {
 #ifdef Q_WS_X11
@@ -820,6 +827,13 @@ MainWindow::createActions()
     action->setText( i18n( "Restart current track" ) );
     action->setGlobalShortcut( KShortcut() );
     connect( action, SIGNAL( triggered( bool ) ), ec, SLOT(replay()) );
+
+    action = new KAction( this );
+    ac->addAction( "shuffle_playlist", action );
+    action->setIcon( KIcon("media-playlist-shuffle") );
+    action->setText( i18n( "Shuffle Playlist" ) );
+    action->setShortcut( Qt::CTRL + Qt::Key_H );
+    connect( action, SIGNAL(triggered(bool)), this, SLOT(slotShufflePlaylist()) );
 
     action = new KAction( this );
     ac->addAction( "repopulate", action );
