@@ -240,6 +240,9 @@ UmsTransferJob::slotResult( KJob *job )
         else
             Debug::warning() << __PRETTY_FUNCTION__ << "invalid job passed to me!";
     }
+    else
+        Debug::warning() << __PRETTY_FUNCTION__ << "job failed with" << job->error();
+
     // transcoding job currently doesn't emit percentage, so emit it at least once for track
     emitPercent( m_totalTracks - m_transferList.size() , m_totalTracks );
     startNextJob();

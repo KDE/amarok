@@ -485,7 +485,7 @@ UmsCollection::organizedUrl( Meta::TrackPtr track, const QString &fileExtension 
 {
     TrackOrganizer trackOrganizer( Meta::TrackList() << track );
     //%folder% prefix required to get absolute url.
-    trackOrganizer.setFormatString( "%folder%/" + m_musicFilenameScheme + ".%filetype%" );
+    trackOrganizer.setFormatString( "%collectionroot%/" + m_musicFilenameScheme + ".%filetype%" );
     trackOrganizer.setVfatSafe( m_vfatSafe );
     trackOrganizer.setAsciiOnly( m_asciiOnly );
     trackOrganizer.setFolderPrefix( m_musicPath.path() );
