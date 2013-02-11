@@ -17,13 +17,13 @@
 
 #include "FileTypeResolver.h"
 
+#include "config.h"
+
 #include <QFile>
 #include <QFileInfo>
 #include <QtDebug>
 
 #include <kmimetype.h>
-
-#include <fileref.h>
 
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefile.h>
