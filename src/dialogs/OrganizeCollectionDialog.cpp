@@ -36,6 +36,7 @@
 #include <KInputDialog>
 
 #include <QApplication>
+#include <QDesktopWidget>
 #include <QDir>
 #include <QTimer>
 
@@ -84,15 +85,20 @@ OrganizeCollectionWidget::OrganizeCollectionWidget( QWidget *parent )
     m_tokenPool->addToken( createToken( Space ) );
 
     // show some non-editable tags before and after
-    m_schemaLineLayout->insertWidget( 0,
-                                      createStaticToken( CollectionRoot ), 0 );
-    m_schemaLineLayout->insertWidget( 1,
-                                      createStaticToken( Slash ), 0 );
+    // but only if screen size is large enough (BR: 283361)
+    const QRect screenRect = QApplication::desktop()->screenGeometry();
+    if( screenRect.width() >= 1024 )
+    {
+        m_schemaLineLayout->insertWidget( 0,
+                                          createStaticToken( CollectionRoot ), 0 );
+        m_schemaLineLayout->insertWidget( 1,
+                                          createStaticToken( Slash ), 0 );
 
-    m_schemaLineLayout->insertWidget( m_schemaLineLayout->count(),
-                                      createStaticToken( Dot ) );
-    m_schemaLineLayout->insertWidget( m_schemaLineLayout->count(),
-                                      createStaticToken( FileType ) );
+        m_schemaLineLayout->insertWidget( m_schemaLineLayout->count(),
+                                          createStaticToken( Dot ) );
+        m_schemaLineLayout->insertWidget( m_schemaLineLayout->count(),
+                                          createStaticToken( FileType ) );
+    }
 
     m_syntaxLabel->setText( buildFormatTip() );
 
@@ -149,9 +155,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     m_targetFileExtension = targetExtension;
 
     if( tracks.size() > 0 )
-    {
         m_allTracks = tracks;
-    }
 
     KVBox *mainVBox = new KVBox( this );
     setMainWidget( mainVBox );
@@ -182,6 +186,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     m_optionsWidget->setAsciiOnly( AmarokConfig::asciiOnly() );
     m_optionsWidget->setRegexpText( AmarokConfig::replacementRegexp() );
     m_optionsWidget->setReplaceText( AmarokConfig::replacementString() );
+
+    // save some space if the screensize is too small (BR: 283361)
+    const QRect screenRect = QApplication::desktop()->screenGeometry();
+    if( screenRect.height() < 800 )
+        ui->previewTableWidget->hide();
 
     ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
     ui->conflictLabel->setText("");
