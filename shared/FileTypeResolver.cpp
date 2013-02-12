@@ -36,6 +36,9 @@
 #include <mpcfile.h>
 #include <mpegfile.h>
 #include <oggfile.h>
+#ifdef TAGLIB_OPUS_FOUND
+#include <opusfile.h>
+#endif
 #include <oggflacfile.h>
 #include <speexfile.h>
 #include <trueaudiofile.h>
@@ -84,6 +87,13 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
             || mimetype->is( QLatin1String("audio/vnd.rn-realvideo") ) )
     {
         result = new TagLibExtras::RealMedia::File(fileName, readProperties, propertiesStyle);
+    }
+#endif
+#ifdef TAGLIB_OPUS_FOUND
+    else if( mimetype->is( QLatin1String("audio/opus") )
+            || mimetype->is( QLatin1String("audio/x-opus+ogg") ) )
+    {
+        result = new TagLib::Ogg::Opus::File(fileName, readProperties, propertiesStyle);
     }
 #endif
     else if( mimetype->is( QLatin1String("audio/vorbis") )
@@ -162,6 +172,13 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
     {
         result = new TagLib::ASF::File(fileName, readProperties, propertiesStyle);
     }
+#ifdef TAGLIB_OPUS_FOUND
+    // this is currently needed because shared-mime-info database doesn't have opus entry (2013-01)
+    else if( suffix == QLatin1String("opus") )
+    {
+        result = new TagLib::Ogg::Opus::File(fileName, readProperties, propertiesStyle);
+    }
+#endif
 
 #ifndef Q_WS_WIN
      if( !result )

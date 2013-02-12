@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.8-Beta 1
   FEATURES:
+   * Added support for files in Opus codec if Amarok is compiled against recent
+     enough TagLib (post 1.8), patch by Martin Brodbeck. (BR 312905)
    * Added Ctrl+H shortcut to randomize playlist, patch by Harsh Gupta. (BR 208061)
 
   CHANGES:

@@ -12,6 +12,9 @@
 /* have module file format support in TagLib */
 #cmakedefine TAGLIB_MOD_FOUND 1
 
+/* have opus file format support in TagLib */
+#cmakedefine TAGLIB_OPUS_FOUND 1
+
 /* have QtCrypto the Qt crypto architecture */
 #cmakedefine QCA2_FOUND 1
 

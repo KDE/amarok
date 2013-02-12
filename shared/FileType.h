@@ -44,7 +44,8 @@ namespace Amarok
         S3M         = 14,
         IT          = 15,
         XM          = 16,
-        Speex       = 17
+        Speex       = 17,
+        Opus        = 18
     };
 
     class FileTypeSupport

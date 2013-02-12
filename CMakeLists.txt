@@ -49,6 +49,9 @@ if(TAGLIB_FOUND)
     int main() { char *s; Mod::Tag tag; Mod::File modfile(s); S3M::File s3mfile(s);
     IT::File itfile(s); XM::File xmfile(s); return 0; }" TAGLIB_MOD_FOUND)
 
+    check_cxx_source_compiles("#include <opusfile.h>
+    int main() { char *s; TagLib::Ogg::Opus::File opusfile(s); return 0;}" TAGLIB_OPUS_FOUND)
+
     set(CMAKE_REQUIRED_INCLUDES)
     set(CMAKE_REQUIRED_LIBRARIES)
 
@@ -218,6 +221,7 @@ if( WITH_PLAYER )
     macro_log_feature( TAGLIB_FOUND "taglib" "Support for Audio metadata." "http://developer.kde.org/~wheeler/taglib.html" FALSE "" "STRONGLY RECOMMENDED" )
     # following line is here (and not near TAGLIB_MOD_FOUND) because there may be no MacroLogFeature without kdelibs
     macro_log_feature( TAGLIB_MOD_FOUND "taglib" "Additional support for Audio metadata of mod, s3m, it and xm files." "http://developer.kde.org/~wheeler/taglib.html" FALSE "1.8" "" )
+    macro_log_feature( TAGLIB_OPUS_FOUND "taglib" "Additional support for Audio metadata of opus files." "http://developer.kde.org/~wheeler/taglib.html" FALSE "1.9" "" )
 
     macro_display_feature_log()
 

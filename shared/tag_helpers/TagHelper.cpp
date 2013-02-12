@@ -29,6 +29,9 @@
 #include <mpcfile.h>
 #include <mpegfile.h>
 #include <oggfile.h>
+#ifdef TAGLIB_OPUS_FOUND
+#include <opusfile.h>
+#endif
 #include <oggflacfile.h>
 #include <rifffile.h>
 #include <speexfile.h>
@@ -284,6 +287,13 @@ Meta::Tag::selectHelper( const TagLib::FileRef fileref, bool forceCreation )
         if( file->tag() )
             tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Speex );
     }
+#ifdef TAGLIB_OPUS_FOUND
+    else if( TagLib::Ogg::Opus::File *file = dynamic_cast< TagLib::Ogg::Opus::File * >( fileref.file() ) )
+    {
+        if( file->tag() )
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Opus );
+    }
+#endif
     else if( TagLib::FLAC::File *file = dynamic_cast< TagLib::FLAC::File * >( fileref.file() ) )
     {
         if( file->xiphComment() )
