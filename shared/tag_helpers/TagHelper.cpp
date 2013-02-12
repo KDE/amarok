@@ -277,12 +277,12 @@ Meta::Tag::selectHelper( const TagLib::FileRef fileref, bool forceCreation )
     else if( TagLib::Ogg::FLAC::File *file = dynamic_cast< TagLib::Ogg::FLAC::File * >( fileref.file() ) )
     {
         if( file->tag() )
-            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Ogg );
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Flac );
     }
     else if( TagLib::Ogg::Speex::File *file = dynamic_cast< TagLib::Ogg::Speex::File * >( fileref.file() ) )
     {
         if( file->tag() )
-            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Ogg );
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Speex );
     }
     else if( TagLib::FLAC::File *file = dynamic_cast< TagLib::FLAC::File * >( fileref.file() ) )
     {

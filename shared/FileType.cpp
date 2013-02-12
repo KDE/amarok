@@ -44,7 +44,8 @@ QStringList FileTypeSupport::s_fileTypeStrings = QStringList()
         << QLatin1String( "mod" )
         << QLatin1String( "s3m" )
         << QLatin1String( "it" )
-        << QLatin1String( "xm" );
+        << QLatin1String( "xm" )
+        << QLatin1String( "spx" );
 
 QString
 FileTypeSupport::toString( Amarok::FileType ft )

@@ -29,7 +29,7 @@ namespace Amarok
     {
         Unknown     =  0,
         Mp3         =  1,
-        Ogg         =  2,
+        Ogg         =  2, // please use just for Ogg Vorbis
         Flac        =  3,
         Mp4         =  4, // a file in MPEG-4 container that may or may not contain video
         Wma         =  5,
@@ -43,7 +43,8 @@ namespace Amarok
         Mod         = 13,
         S3M         = 14,
         IT          = 15,
-        XM          = 16
+        XM          = 16,
+        Speex       = 17
     };
 
     class FileTypeSupport

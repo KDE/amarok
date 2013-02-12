@@ -86,7 +86,8 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
         result = new TagLibExtras::RealMedia::File(fileName, readProperties, propertiesStyle);
     }
 #endif
-    else if( mimetype->is( QLatin1String("audio/x-vorbis+ogg") ) )
+    else if( mimetype->is( QLatin1String("audio/vorbis") )
+            || mimetype->is( QLatin1String("audio/x-vorbis+ogg") ) )
     {
         result = new TagLib::Ogg::Vorbis::File(fileName, readProperties, propertiesStyle);
     }
@@ -121,7 +122,7 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
     else if( mimetype->is( QLatin1String("audio/x-speex") )
              || mimetype->is( QLatin1String("audio/x-speex+ogg") ) )
     {
-        result = new TagLib::TrueAudio::File(fileName, readProperties, propertiesStyle);
+        result = new TagLib::Ogg::Speex::File(fileName, readProperties, propertiesStyle);
     }
 #ifdef TAGLIB_MOD_FOUND
     else if( mimetype->is( QLatin1String("audio/x-mod") ) )
