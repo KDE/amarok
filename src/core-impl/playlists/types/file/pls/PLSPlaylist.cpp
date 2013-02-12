@@ -247,7 +247,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             m_tracks << Meta::TrackPtr( proxyTrack.data() );
             continue;
         }
-        if( (*i).contains(regExp_Title) )
+        if( (*i).contains(regExp_Title) && proxyTrack )
         {
             // Have a "Title#=XYZ" line.
             index = loadPls_extractIndex(*i);
@@ -257,7 +257,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             proxyTrack->setName( tmp );
             continue;
         }
-        if( (*i).contains( regExp_Length ) )
+        if( (*i).contains( regExp_Length ) && proxyTrack )
         {
             // Have a "Length#=XYZ" line.
             index = loadPls_extractIndex(*i);
