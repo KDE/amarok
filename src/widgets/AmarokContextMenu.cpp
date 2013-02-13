@@ -19,8 +19,6 @@
 #include <QHelpEvent>
 #include <QToolTip>
 
-#include "core/support/Debug.h"
-
 Amarok::ContextMenu::ContextMenu( QWidget *parent )
     : KMenu( parent )
 {
@@ -31,6 +29,7 @@ Amarok::ContextMenu::event( QEvent *e )
 {
     switch( e->type() )
     {
+#ifndef QT_NO_TOOLTIP
         case QEvent::ToolTip:
         {
             //show action tooltip instead of widget tooltip
@@ -53,6 +52,7 @@ Amarok::ContextMenu::event( QEvent *e )
                 return true;
             }
         }
+#endif
 
         default: break;
     }
@@ -99,5 +99,5 @@ Amarok::ContextMenu::keyReleaseEvent( QKeyEvent *e )
         }
     }
 
-    KMenu::keyPressEvent( e );
+    KMenu::keyReleaseEvent( e );
 }
