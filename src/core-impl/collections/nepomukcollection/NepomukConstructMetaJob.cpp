@@ -123,7 +123,7 @@ NepomukConstructMetaJob::run()
                            "    ?r nfo:sampleRate ?sampleRate ."
                            "}"
                            "OPTIONAL {"
-                           "    ?r nmm:trackNumber ?trackNumer ."
+                           "    ?r nmm:trackNumber ?trackNumber ."
                            "}"
                            "OPTIONAL {"
                            "    ?r nfo:codec ?type ."
