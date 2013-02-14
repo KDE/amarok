@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.7.1
   BUGFIXES:
+   * Fix typo in Nepomuk query which did not let track numbers of Nepomuk Collection
+     tracks show up in Amarok. (BR 311847)
 
 VERSION 2.7
   CHANGES:
