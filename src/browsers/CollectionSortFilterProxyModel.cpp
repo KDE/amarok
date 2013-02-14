@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -30,12 +31,13 @@ CollectionSortFilterProxyModel::CollectionSortFilterProxyModel(  QObject * paren
     : QSortFilterProxyModel( parent )
 {
     setSortLocaleAware( true );
-    setSortCaseSensitivity( Qt::CaseInsensitive );
 
-    //NOTE: This does not work properly with our lazy loaded model.  Every time we get new data (usually around an expand)
-    // the view scrolls to make the selected item visible.  This is probably a bug in qt,
-    // but as the view appears to behave without it, I'm just disabling.
-    // setDynamicSortFilter( true );
+    setSortRole( CustomRoles::SortRole );
+    setFilterRole( CustomRoles::FilterRole );
+    setSortCaseSensitivity( Qt::CaseInsensitive );
+    setFilterCaseSensitivity( Qt::CaseInsensitive );
+
+    setDynamicSortFilter( true );
 }
 
 
@@ -68,7 +70,10 @@ CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelI
     if( leftItem->isAlbumItem() && rightItem->isAlbumItem() )
         return lessThanAlbum( left, right );
 
-    return lessThanIndex( left, right );
+    if( leftItem->isDataItem() && rightItem->isDataItem() )
+        return lessThanItem( left, right );
+
+    return QSortFilterProxyModel::lessThan( left, right );
 }
 
 bool
@@ -79,8 +84,9 @@ CollectionSortFilterProxyModel::lessThanTrack( const QModelIndex &left, const QM
     if( !leftTrack || !rightTrack )
     {
         DEBUG_BLOCK
-        error() << "Should never have compared these two indexes";
-        return lessThanIndex( left, right );
+        error() << "Should never have compared these two indexes"
+            << left.data(Qt::DisplayRole) << "and" << right.data(Qt::DisplayRole);
+        return QSortFilterProxyModel::lessThan( left, right );
     }
 
     if( AmarokConfig::showTrackNumbers() )
@@ -98,8 +104,16 @@ CollectionSortFilterProxyModel::lessThanTrack( const QModelIndex &left, const QM
             return false;
     }
 
-    //fallback to name sorting
-    return lessThanIndex( left, right );
+    // compare by name
+    {
+        int comp = KStringHandler::naturalCompare( leftTrack->sortableName(), rightTrack->sortableName(), Qt::CaseInsensitive );
+        if( comp < 0 )
+            return true;
+        if( comp > 0 )
+            return false;
+    }
+
+    return leftTrack.data() < rightTrack.data(); // prevent expanded tracks from switching places (if that ever happens)
 }
 
 bool
@@ -111,8 +125,9 @@ CollectionSortFilterProxyModel::lessThanAlbum( const QModelIndex &left, const QM
     if( !leftAlbum || !rightAlbum )
     {
         DEBUG_BLOCK
-        error() << "Should never have compared these two indexes";
-        return lessThanIndex( left, right );
+        error() << "Should never have compared these two indexes"
+            << left.data(Qt::DisplayRole) << "and" << right.data(Qt::DisplayRole);
+        return QSortFilterProxyModel::lessThan( left, right );
     }
 
     // compare by year
@@ -127,7 +142,42 @@ CollectionSortFilterProxyModel::lessThanAlbum( const QModelIndex &left, const QM
             return true;
     }
 
-    return lessThanIndex( left, right );
+    // compare by name
+    {
+        int comp = KStringHandler::naturalCompare( leftAlbum->sortableName(), rightAlbum->sortableName(), Qt::CaseInsensitive );
+        if( comp < 0 )
+            return true;
+        if( comp > 0 )
+            return false;
+    }
+
+    return leftAlbum.data() < rightAlbum.data(); // prevent expanded albums from switching places
+}
+
+bool
+CollectionSortFilterProxyModel::lessThanItem( const QModelIndex &left, const QModelIndex &right ) const
+{
+    Meta::DataPtr leftData = Meta::DataPtr::dynamicCast( treeItem(left)->data() );
+    Meta::DataPtr rightData = Meta::DataPtr::dynamicCast( treeItem(right)->data() );
+
+    if( !leftData || !rightData )
+    {
+        DEBUG_BLOCK
+        error() << "Should never have compared these two indexes"
+            << left.data(Qt::DisplayRole) << "and" << right.data(Qt::DisplayRole);
+        return QSortFilterProxyModel::lessThan( left, right );
+    }
+
+    // compare by name
+    {
+        int comp = KStringHandler::naturalCompare( leftData->sortableName(), rightData->sortableName(), Qt::CaseInsensitive );
+        if( comp < 0 )
+            return true;
+        if( comp > 0 )
+            return false;
+    }
+
+    return leftData.data() < rightData.data(); // prevent expanded datas from switching places
 }
 
 inline CollectionTreeItem*
@@ -152,24 +202,3 @@ CollectionSortFilterProxyModel::albumYear( Meta::AlbumPtr album ) const
     return 0;
 }
 
-bool
-CollectionSortFilterProxyModel::lessThanIndex( const QModelIndex &left, const QModelIndex &right ) const
-{
-    // This should catch everything else
-    QVariant leftData = left.data( CustomRoles::SortRole );
-    QVariant rightData = right.data( CustomRoles::SortRole );
-
-    if( leftData.canConvert( QVariant::String ) && rightData.canConvert( QVariant::String ) )
-        return lessThanString( leftData.toString(), rightData.toString() );
-
-    warning() << "failed: an unexpected comparison was made between"<<left.data(Qt::DisplayRole)<<"and"<<right.data(Qt::DisplayRole);
-
-    //Just in case
-    return QSortFilterProxyModel::lessThan( left, right );
-}
-
-bool
-CollectionSortFilterProxyModel::lessThanString( const QString &a, const QString &b ) const
-{
-    return KStringHandler::naturalCompare( a, b, Qt::CaseInsensitive ) < 0;
-}

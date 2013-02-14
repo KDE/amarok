@@ -112,12 +112,7 @@ CollectionTreeView::setModel( QAbstractItemModel *model )
              SLOT(slotExpandIndex(QModelIndex)) );
 
     m_filterModel = new CollectionSortFilterProxyModel( this );
-    m_filterModel->setSortRole( CustomRoles::SortRole );
-    m_filterModel->setFilterRole( CustomRoles::FilterRole );
-    m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
-    m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     m_filterModel->setSourceModel( model );
-    m_filterModel->setDynamicSortFilter( true );
 
     QTreeView::setModel( m_filterModel );
 

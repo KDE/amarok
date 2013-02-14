@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,13 +23,15 @@
 
 #include <QSortFilterProxyModel>
 
-/**
-    This is a custom QSortFilterProxyModel that solves some issues with sorting a model that usses lazy loading
-    @author Nikolaj Hald Nielsen <nhn@kde.org>
-*/
-
 class CollectionTreeItem;
 
+/**
+    This is a custom QSortFilterProxyModel that gives special sort orders for
+    our meta objects.
+    e.g. it sorts tracks by disc number and track number.
+
+    @author Nikolaj Hald Nielsen <nhn@kde.org>
+*/
 class CollectionSortFilterProxyModel : public QSortFilterProxyModel
 {
     public:
@@ -42,12 +45,13 @@ class CollectionSortFilterProxyModel : public QSortFilterProxyModel
         virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
     private:
+        /** Tries to compute a year for the album using the track years. */
         int albumYear( Meta::AlbumPtr album ) const;
+
         CollectionTreeItem* treeItem( const QModelIndex &index ) const;
         bool lessThanTrack( const QModelIndex &left, const QModelIndex &right ) const;
         bool lessThanAlbum( const QModelIndex &left, const QModelIndex &right ) const;
-        bool lessThanIndex( const QModelIndex &left, const QModelIndex &right ) const;
-        bool lessThanString( const QString &a, const QString &b ) const;
+        bool lessThanItem( const QModelIndex &left, const QModelIndex &right ) const;
 };
 
 #endif
