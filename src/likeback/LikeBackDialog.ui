@@ -2,15 +2,13 @@
 <ui version="4.0">
  <class>LikeBackDialog</class>
  <widget class="QWidget" name="LikeBackDialog">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>493</width>
-    <height>456</height>
-   </rect>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,1,0,0,0">
    <item>
     <widget class="QLabel" name="m_informationLabel">
      <property name="sizePolicy">
@@ -35,12 +33,6 @@
    </item>
    <item>
     <widget class="QLabel" name="label_2">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="text">
       <string>Your comment:</string>
      </property>
@@ -48,12 +40,6 @@
    </item>
    <item>
     <widget class="QTextEdit" name="m_comment">
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>100</height>
-      </size>
-     </property>
      <property name="acceptRichText">
       <bool>false</bool>
      </property>
@@ -61,12 +47,6 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="title">
       <string>Your comment is about:</string>
      </property>
@@ -76,12 +56,6 @@
       </property>
       <item>
        <widget class="QRadioButton" name="likeRadio_">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="text">
          <string>Something you like</string>
         </property>
@@ -89,12 +63,6 @@
       </item>
       <item>
        <widget class="QRadioButton" name="dislikeRadio_">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="text">
          <string>Something you dislike</string>
         </property>
@@ -102,12 +70,6 @@
       </item>
       <item>
        <widget class="QRadioButton" name="bugRadio_">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="text">
          <string>An improper behavior of the application</string>
         </property>
@@ -115,12 +77,6 @@
       </item>
       <item>
        <widget class="QRadioButton" name="featureRadio_">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="text">
          <string>A new feature you desire</string>
         </property>
@@ -131,12 +87,6 @@
    </item>
    <item>
     <widget class="QCheckBox" name="specifyEmailCheckBox_">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="text">
       <string>Specify an email address to be contacted back:</string>
      </property>
@@ -167,22 +117,10 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
         </widget>
        </item>
        <item>
         <widget class="QLabel" name="label">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="text">
           <string>&lt;html&gt;Specifying an email address will allow the developers to ask you for more information on your report, or to tell you when your feature will be implemented.&lt;br/&gt;
 &lt;b&gt;Your email address will not be used for anything else but this report.&lt;/b&gt;&lt;/html&gt;</string>

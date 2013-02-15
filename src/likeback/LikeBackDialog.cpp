@@ -51,9 +51,6 @@ LikeBackDialog::LikeBackDialog( LikeBack::Button reason, const QString &initialC
     QWidget *mainWidget = new QWidget( this );
     setupUi( mainWidget );
     setMainWidget( mainWidget );
-    mainWidget->setMinimumSize( 400, 400 );
-    mainWidget->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
-
 
     // Group the buttons together to retrieve the checked one quickly
     m_typeGroup_ = new QButtonGroup( this );
@@ -99,6 +96,7 @@ LikeBackDialog::LikeBackDialog( LikeBack::Button reason, const QString &initialC
 
     // Specify the initial comment
     m_comment->setPlainText( initialComment );
+    m_comment->setMinimumSize( 300, 100 );
     m_comment->setFocus();
 
     // Provide the initial status for email address widgets if available
@@ -108,7 +106,6 @@ LikeBackDialog::LikeBackDialog( LikeBack::Button reason, const QString &initialC
     // The introduction message is long and will require a new minimum dialog size
     m_informationLabel->setText( introductionText() );
     m_informationLabel->setOpenExternalLinks( true );
-    setMinimumSize( sizeHint() );
 
     // Initially verify the widgets status
     verify();
