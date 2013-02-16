@@ -183,6 +183,7 @@ Playlist::Dock::polish()
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ),
                                               i18n("&Save Current Playlist"), m_mainWidget );
+        m_savePlaylistMenu->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
 
         m_saveActions = new KActionCollection( m_mainWidget );
 
@@ -283,7 +284,9 @@ Playlist::Dock::playlistProviderAdded( Playlists::PlaylistProvider *provider, in
             QWeakPointer<Playlists::UserPlaylistProvider>( userProvider ) ) );
     m_saveActions->addAction( QString::number( (qlonglong) userProvider ), action );
 
-    m_savePlaylistMenu->addAction( action );
+    // insert the playlist provider actions before "export"
+    QAction* exportAction = Amarok::actionCollection()->action( "playlist_export" );
+    m_savePlaylistMenu->insertAction( exportAction, action );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotSaveCurrentPlaylist() ) );
 }
 
