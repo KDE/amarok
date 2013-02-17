@@ -31,6 +31,7 @@ static QStringList eqDefaultTranslatedPresetsList();
 
 static int DEFAULT_PRESET_VALUES[][NUM_EQ_VALUES] =
 {
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Manual
     {0, 0, 0, 0, 0, 0, 0, -40, -40, -40, -50}, // Classical
     {0, 0, 0, 20, 30, 30, 30, 20, 0, 0, 0}, // Club
     {-10, 50, 35, 10, 0, 0, -30, -40, -40, 0, 0}, // Dance
