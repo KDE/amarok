@@ -428,17 +428,6 @@ kde4_add_ui_files(libplaylist_SRCS
 )
 
 #####################################################################
-# AUDIO CD SUPPORT
-#####################################################################
-
-if(KDEMULTIMEDIA_FOUND)
-    set(audiocdsupport_SRCS
-        core-impl/meta/cdda/AudioCdTrackProvider.cpp
-        core-impl/meta/cdda/AudioCdTrackProvider_p.cpp
-       )
-endif(KDEMULTIMEDIA_FOUND)
-
-#####################################################################
 # DYNAMIC
 #####################################################################
 set(libdynamic_SRCS
