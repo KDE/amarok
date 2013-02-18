@@ -50,14 +50,14 @@ SingleCollectionTreeItemModel::setLevels( const QList<CategoryId::CatMenuId> &le
     m_levelType = levelType;
     m_rootItem = new CollectionTreeItem( m_collection, 0, this );
 
-    d->collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
+    m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
 
     updateHeaderText();
     m_expandedItems.clear();
     m_expandedSpecialNodes.clear();
-    d->runningQueries.clear();
-    d->childQueries.clear();
-    d->compilationQueries.clear();
+    m_runningQueries.clear();
+    m_childQueries.clear();
+    m_compilationQueries.clear();
     reset(); //resets the whole model, as the data changed
 }
 

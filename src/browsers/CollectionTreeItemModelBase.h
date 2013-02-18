@@ -143,9 +143,6 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         CollectionTreeItem *m_rootItem;
         QList<CategoryId::CatMenuId> m_levelType;
 
-        class Private;
-        Private * const d;
-
         QTimeLine *m_timeLine;
         int m_animFrame;
         QPixmap m_loading1, m_loading2, m_currentAnimPixmap;    //icons for loading animation
@@ -162,22 +159,17 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
          */
         QSet<Collections::Collection*> m_dragSourceCollections;
 
+        QHash<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
+        mutable QHash<Collections::QueryMaker* , CollectionTreeItem* > m_childQueries;
+        mutable QHash<Collections::QueryMaker* , CollectionTreeItem* > m_compilationQueries;
+        mutable QHash<Collections::QueryMaker* , CollectionTreeItem* > m_noLabelsQueries;
+        mutable QMultiHash<CollectionTreeItem*, Collections::QueryMaker*> m_runningQueries;
+
     protected slots:
         void startAnimationTick();
         void loadingAnimationTick();
         void update();
-};
 
-// TODO: move this private class members into the main class as protected as it's used
-// also inside CollectioNTreeItemModel
-class CollectionTreeItemModelBase::Private
-{
- public:
-    QHash<QString, CollectionRoot > collections;  //I'll concide this one... :-)
-    QHash<Collections::QueryMaker* , CollectionTreeItem* > childQueries;
-    QHash<Collections::QueryMaker* , CollectionTreeItem* > compilationQueries;
-    QHash<Collections::QueryMaker* , CollectionTreeItem* > noLabelsQueries;
-    QMultiHash<CollectionTreeItem*, Collections::QueryMaker*> runningQueries;
 };
 
 

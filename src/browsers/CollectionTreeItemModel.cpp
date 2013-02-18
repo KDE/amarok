@@ -45,12 +45,12 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<CategoryId::CatMen
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
     //delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
-    d->collections.clear();
+    m_collections.clear();
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-        d->collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
+        m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
     }
     //m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
     updateHeaderText();
@@ -78,22 +78,22 @@ CollectionTreeItemModel::setLevels( const QList<CategoryId::CatMenuId> &levelTyp
     m_levelType = levelType;
     delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
-    d->collections.clear();
+    m_collections.clear();
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-        d->collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
+        m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
     }
     m_rootItem->setRequiresUpdate( false );  //all collections have been loaded already
     updateHeaderText();
     m_expandedItems.clear();
     m_expandedSpecialNodes.clear();
-    d->runningQueries.clear();
-    d->childQueries.clear();
-    d->compilationQueries.clear();
+    m_runningQueries.clear();
+    m_childQueries.clear();
+    m_compilationQueries.clear();
     reset();
-    if ( d->collections.count() == 1 )
+    if( m_collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
@@ -232,23 +232,23 @@ CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection
 {
     DEBUG_BLOCK
 
-    if ( !newCollection )
+    if( !newCollection )
         return;
 
     connect( newCollection, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
 
     QString collectionId = newCollection->collectionId();
-    if ( d->collections.contains( collectionId ) )
+    if( m_collections.contains( collectionId ) )
         return;
 
     debug() << "Added collection id:" << collectionId;
 
     //inserts new collection at the end.
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
-    d->collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
+    m_collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
     endInsertRows();
 
-    if( d->collections.count() == 1 )
+    if( m_collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
@@ -267,7 +267,7 @@ CollectionTreeItemModel::collectionRemoved( const QString &collectionId )
         {
             beginRemoveRows( QModelIndex(), i, i );
             m_rootItem->removeChild( i );
-            d->collections.remove( collectionId );
+            m_collections.remove( collectionId );
             m_expandedCollections.remove( item->parentCollection() );
             endRemoveRows();
         }
