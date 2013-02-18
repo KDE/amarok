@@ -166,11 +166,10 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void startAnimationTick();
         void loadingAnimationTick();
         void update();
-
-    private slots:
-        void updateRowHeight();
 };
 
+// TODO: move this private class members into the main class as protected as it's used
+// also inside CollectioNTreeItemModel
 class CollectionTreeItemModelBase::Private
 {
  public:
@@ -179,7 +178,7 @@ class CollectionTreeItemModelBase::Private
     QHash<Collections::QueryMaker* , CollectionTreeItem* > compilationQueries;
     QHash<Collections::QueryMaker* , CollectionTreeItem* > noLabelsQueries;
     QMultiHash<CollectionTreeItem*, Collections::QueryMaker*> runningQueries;
-    int rowHeight;
 };
+
 
 #endif

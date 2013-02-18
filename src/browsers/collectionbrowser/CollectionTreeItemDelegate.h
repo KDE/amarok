@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -37,15 +38,22 @@ class CollectionTreeItemDelegate : public QStyledItemDelegate
         void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
         QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
+        /** Returns the rectangle where the action icons are located. */
         static QRect decoratorRect( const QModelIndex &index );
 
     private:
-        QTreeView *m_view;
-        QFont m_bigFont;
-        QFont m_smallFont;
+        /** Verify and if needed update the buffered fonts and font metrics. */
+        void updateFonts( const QStyleOptionViewItem &option ) const;
 
-        QFontMetrics *m_bigFm;
-        QFontMetrics *m_smallFm;
+        QTreeView *m_view;
+
+        mutable QFont m_originalFont;
+        mutable QFont m_bigFont;
+        mutable QFont m_smallFont;
+
+        mutable QFontMetrics *m_normalFm;
+        mutable QFontMetrics *m_bigFm;
+        mutable QFontMetrics *m_smallFm;
 
         static QHash<QPersistentModelIndex, QRect> s_indexDecoratorRects;
 };

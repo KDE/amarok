@@ -39,12 +39,14 @@
 #include <KLocale>
 #include <KStandardDirs>
 
-#include <QFontMetrics>
+#include <QApplication>
+#include <QStyle>
 #include <QPixmap>
 #include <QTimeLine>
 #include <QTimer>
 
 using namespace Meta;
+
 
 inline uint qHash( const Meta::DataPtr &data )
 {
@@ -64,9 +66,7 @@ CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     m_timeLine = new QTimeLine( 10000, this );
     m_timeLine->setFrameRange( 0, 20 );
     m_timeLine->setLoopCount ( 0 );
-    updateRowHeight();
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( loadingAnimationTick() ) );
-    connect( KGlobalSettings::self(), SIGNAL(kdisplayFontChanged()), SLOT(updateRowHeight()) );
 }
 
 CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
@@ -195,18 +195,6 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
 QVariant
 CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, int level ) const
 {
-    // -- do the decoration and the size hint role
-    if( role == Qt::SizeHintRole )
-    {
-        QSize size( 1, d->rowHeight );
-        if( item->isAlbumItem() && AmarokConfig::showAlbumArt() )
-        {
-            if( d->rowHeight < 34 )
-                size.setHeight( 34 );
-        }
-        return size;
-    }
-
     if( level == -1 )
         level = item->level();
 
@@ -270,12 +258,20 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
 
         case Qt::DecorationRole:
             if( AmarokConfig::showAlbumArt() )
-                return The::svgHandler()->imageWithBorder( album, 32, 2 );
+            {
+                QStyle *style = QApplication::style();
+                const int largeIconSize = style->pixelMetric( QStyle::PM_LargeIconSize );
+
+                return The::svgHandler()->imageWithBorder( album, largeIconSize, 2 );
+            }
             else
                 return iconForLevel( level );
 
         case CustomRoles::SortRole:
             return album->sortableName();
+
+        case CustomRoles::HasCoverRole:
+            return AmarokConfig::showAlbumArt();
         }
     }
     else if( item->isDataItem() )
@@ -1123,13 +1119,6 @@ CollectionTreeItemModelBase::slotExpanded( const QModelIndex &index )
 void CollectionTreeItemModelBase::update()
 {
     reset();
-}
-
-void CollectionTreeItemModelBase::updateRowHeight()
-{
-    QFont font;
-    QFontMetrics fm( font );
-    d->rowHeight = fm.height() + 4;
 }
 
 void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )

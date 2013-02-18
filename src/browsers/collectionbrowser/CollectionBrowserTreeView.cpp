@@ -16,7 +16,6 @@
  ****************************************************************************************/
 
 #define DEBUG_PREFIX "CollectionBrowserTreeView"
-#include "core/support/Debug.h"
 
 #include "CollectionBrowserTreeView.h"
 #include "CollectionTreeItemDelegate.h"
@@ -32,6 +31,7 @@ Q_DECLARE_METATYPE( QList<QAction*> )
 CollectionBrowserTreeView::CollectionBrowserTreeView( QWidget *parent )
     : CollectionTreeView( parent )
 {
+    setMouseTracking( true ); // we want to highlight some icons if the mouse moves over it.
 }
 
 CollectionBrowserTreeView::~CollectionBrowserTreeView()
@@ -115,7 +115,7 @@ CollectionBrowserTreeView::viewportEvent( QEvent *event )
 QAction *
 CollectionBrowserTreeView::decoratorActionAt( const QModelIndex &idx, const QPoint pos )
 {
-        const int actionsCount = idx.data( CustomRoles::DecoratorRoleCount ).toInt();
+    const int actionsCount = idx.data( CustomRoles::DecoratorRoleCount ).toInt();
     if( actionsCount > 0 )
     {
         const QRect &rect = CollectionTreeItemDelegate::decoratorRect( idx );
@@ -125,8 +125,7 @@ CollectionBrowserTreeView::decoratorActionAt( const QModelIndex &idx, const QPoi
             if( actions.isEmpty() )
                 return 0;
 
-            //HACK: rect height == the width of one action's area.
-            int indexOfAction = ( pos.x() - rect.left() ) / rect.height();
+            int indexOfAction = ( pos.x() - rect.left() ) / ( rect.width() / actionsCount );
             if( indexOfAction >= actions.count() )
                 return 0;
             return actions.value( indexOfAction );

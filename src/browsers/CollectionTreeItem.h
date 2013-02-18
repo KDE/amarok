@@ -41,7 +41,9 @@ namespace CustomRoles
         /** The number of collection actions */
         DecoratorRoleCount = Qt::UserRole + 7,
         /** The collection actions */
-        DecoratorRole = Qt::UserRole + 8
+        DecoratorRole = Qt::UserRole + 8,
+        /** True if the item has a cover that should be displayed */
+        HasCoverRole = Qt::UserRole + 9
     };
 }
 
