@@ -86,7 +86,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotEditTracks();
         void slotCopyTracks();
         void slotMoveTracks();
-        void slotTrashTracks();
+        void slotTrashTracks( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
         void slotDeleteTracks();
         void slotOrganize();
 

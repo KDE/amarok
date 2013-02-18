@@ -73,7 +73,8 @@ protected slots:
     void slotPrepareCopyTracks();
     void slotMoveTracks( const Meta::TrackList &tracks );
     void slotCopyTracks( const Meta::TrackList &tracks );
-    void slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+    void slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+    void slotDelete();
 
 protected:
     enum ActionType {

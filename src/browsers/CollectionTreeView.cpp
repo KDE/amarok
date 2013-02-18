@@ -43,7 +43,6 @@
 #include "core-impl/collections/support/TrashCollectionLocation.h"
 #include "dialogs/TagDialog.h"
 #include "playlist/PlaylistModelStack.h"
-#include "widgets/AmarokContextMenu.h"
 
 #include <KAction>
 #include <KGlobalSettings>
@@ -216,7 +215,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
                         );
     }
 
-    Amarok::ContextMenu menu( this );
+    KMenu menu( this );
 
     // Destroy the menu when the model is reset (collection update), so that we don't
     // operate on invalid data. see BUG 190056
@@ -251,8 +250,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     }
 
     QActionList collectionActions = createCollectionActions( indices );
-    //TODO: subclass KMenu in order to show tooltip and respond to Shift key press
-    // during exec()
     KMenu menuCollection( i18n( "Collection" ) );
     foreach( QAction *action, collectionActions )
     {
@@ -280,22 +277,16 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
         KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
         copyMenu->setIcon( KIcon( "edit-copy" ) );
         copyMenu->addActions( m_currentCopyDestination.keys() );
-        QAction *menuAction = menu.addMenu( copyMenu );
+        menu.addMenu( copyMenu );
+    }
 
+    //Move = copy + delete from source
+    if( !m_currentMoveDestination.empty() )
+    {
         KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
-
-        //Move = copy + delete from source
-        if( !m_currentMoveDestination.empty() )
-        {
-            moveMenu->setIcon( KIcon( "go-jump" ) );
-            moveMenu->addActions( m_currentMoveDestination.keys() );
-            menu.addMenu( moveMenu );
-            //offer move operation only if Shift is pressed because move is destructive
-            menu.setAlternatives( copyMenu->menuAction(), moveMenu->menuAction(),
-                                  Qt::Key_Shift );
-            //HACK: menu tooltip != action tooltip in QMenu::event();
-            menuAction->setToolTip( i18n("Press Shift key for move") );
-        }
+        moveMenu->setIcon( KIcon( "go-jump" ) );
+        moveMenu->addActions( m_currentMoveDestination.keys() );
+        menu.addMenu( moveMenu );
     }
 
     // create trash and delete actions
@@ -309,11 +300,11 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
                                                 i18n( "Move Tracks to Trash" ),
                                                 &menu );
             trashAction->setProperty( "popupdropper_svg_id", "delete" );
+            // key shortcut is only for display purposes here, actual one is
+            // determined by View in Model/View classes
             trashAction->setShortcut( Qt::Key_Delete );
-            trashAction->setToolTip( i18n( "Press Shift key to delete") );
-            connect( trashAction,
-                     SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                     this, SLOT(slotTrashTracks()) );
+            connect( trashAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                     SLOT(slotTrashTracks(Qt::MouseButtons,Qt::KeyboardModifiers)) );
             menu.addAction( trashAction );
 
             KAction *deleteAction = new KAction( KIcon( "remove-amarok" ),
@@ -323,13 +314,8 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
             // key shortcut is only for display purposes here, actual one is
             // determined by View in Model/View classes
             deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
-            connect( deleteAction,
-                     SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                     this, SLOT(slotDeleteTracks()) );
+            connect( deleteAction, SIGNAL(triggered(bool)), SLOT(slotDeleteTracks()) );
             menu.addAction( deleteAction );
-
-            //offer delete operation only if Shift is pressed.
-            menu.setAlternatives( trashAction, deleteAction, Qt::Key_Shift );
         }
     }
 
@@ -339,10 +325,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     foreach( QAction *action, actions ) {
         menu.addAction( action );
     }
-
-    QAction *shiftHint = new QAction( i18n( "Hold Shift for more actions" ), &menu );
-    shiftHint->setEnabled( false );
-    menu.addAction( shiftHint );
 
     menu.exec( event->globalPos() );
 }
@@ -1266,22 +1248,15 @@ CollectionTreeView::slotMoveTracks()
 }
 
 void
-CollectionTreeView::slotTrashTracks()
+CollectionTreeView::slotTrashTracks( Qt::MouseButtons, Qt::KeyboardModifiers modifiers )
 {
-    KAction *action = qobject_cast<KAction *>( sender() );
-    if( !action )
-        return;
-    // TODO: can use m_currentRemoveDestination[ action ] and pass it to removeTracks()
-    removeTracks( m_currentItems, true /* use trash */ );
+    bool useTrash = !modifiers.testFlag( Qt::ShiftModifier );
+    removeTracks( m_currentItems, useTrash );
 }
 
 void
 CollectionTreeView::slotDeleteTracks()
 {
-    KAction *action = qobject_cast<KAction*>( sender() );
-    if( !action )
-        return;
-    // TODO: can use m_currentRemoveDestination[ action ] and pass it to removeTracks()
     removeTracks( m_currentItems, false /* do not use trash */ );
 }
 

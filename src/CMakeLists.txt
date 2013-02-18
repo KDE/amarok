@@ -718,7 +718,6 @@ set(amaroklib_LIB_SRCS
     toolbar/VolumePopupButton.cpp
     toolbar/MainToolbar.cpp
     widgets/AlbumBreadcrumbWidget.cpp
-    widgets/AmarokContextMenu.cpp
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp

@@ -9,6 +9,8 @@ VERSION 2.8-Beta 1
    * Added Ctrl+H shortcut to randomize playlist, patch by Harsh Gupta. (BR 208061)
 
   CHANGES:
+   * Fancy behavior of some context menus showing different actions when Shift
+     key is held has been reverted. All entries are now shown all the time.
    * The dynamic playlist behaviour has changed. It will not longer
      generate "pretty good" playlists that do not fullfill the
      given biases. Instead it might add no song at all if given

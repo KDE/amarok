@@ -36,7 +36,6 @@
 #include "core-impl/meta/file/File.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "dialogs/TagDialog.h"
-#include "widgets/AmarokContextMenu.h"
 
 #include <KAction>
 #include <KIO/CopyJob>
@@ -96,7 +95,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     if( indices.isEmpty() )
         return;
 
-    Amarok::ContextMenu menu;
+    KMenu menu;
     foreach( QAction *action, actionsForIndices( indices, PlaylistAction ) )
         menu.addAction( action );
     menu.addSeparator();
@@ -117,6 +116,16 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     }
     if( !writableCollections.isEmpty() )
     {
+        QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), &menu );
+        copyMenu->setIcon( KIcon( "edit-copy" ) );
+        foreach( Collections::Collection *coll, writableCollections )
+        {
+            CollectionAction *copyAction = new CollectionAction( coll, &menu );
+            connect( copyAction, SIGNAL(triggered()), this, SLOT(slotPrepareCopyTracks()) );
+            copyMenu->addAction( copyAction );
+        }
+        menu.addMenu( copyMenu );
+
         QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), &menu );
         moveMenu->setIcon( KIcon( "go-jump" ) );
         foreach( Collections::Collection *coll, writableCollections )
@@ -126,33 +135,13 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
             moveMenu->addAction( moveAction );
         }
         menu.addMenu( moveMenu );
-
-        QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), &menu );
-        copyMenu->setIcon( KIcon( "edit-copy" ) );
-        // HACK: menu tooltip != action tooltip in QMenu::event();
-        copyMenu->menuAction()->setToolTip( i18n( "Press Shift key for move" ) );
-        foreach( Collections::Collection *coll, writableCollections )
-        {
-            CollectionAction *copyAction = new CollectionAction( coll, &menu );
-            connect( copyAction, SIGNAL(triggered()), this, SLOT(slotPrepareCopyTracks()) );
-            copyMenu->addAction( copyAction );
-        }
-        menu.addMenu( copyMenu );
-
-        menu.setAlternatives( copyMenu->menuAction(), moveMenu->menuAction(), Qt::Key_Shift );
     }
     foreach( QAction *action, actionsForIndices( indices, OrganizeAction ) )
         menu.addAction( action );
-    m_moveToTrashAction->setVisible( true ); // could be left invisible by previous menu
-    menu.setAlternatives( m_moveToTrashAction, m_deleteAction, Qt::Key_Shift );
     menu.addSeparator();
 
     foreach( QAction *action, actionsForIndices( indices, EditAction ) )
         menu.addAction( action );
-
-    QAction *shiftHint = new QAction( i18n( "Hold Shift for more actions" ), &menu );
-    shiftHint->setEnabled( false );
-    menu.addAction( shiftHint );
 
     menu.exec( e->globalPos() );
 }
@@ -243,7 +232,7 @@ FileView::keyPressEvent( QKeyEvent *event )
             return;
         }
         case Qt::Key_Delete:
-            slotDelete( Qt::NoButton, event->modifiers() );
+            slotMoveToTrash( Qt::NoButton, event->modifiers() );
             break;
         default:
             break;
@@ -415,9 +404,8 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_moveToTrashAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_moveToTrashAction->setShortcut( Qt::Key_Delete );
-        m_moveToTrashAction->setToolTip( i18n( "Press Shift key to delete") );
         connect( m_moveToTrashAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                 this, SLOT(slotDelete(Qt::MouseButtons,Qt::KeyboardModifiers)) );
+                 this, SLOT(slotMoveToTrash(Qt::MouseButtons,Qt::KeyboardModifiers)) );
     }
     if( type & OrganizeAction )
         actions.append( m_moveToTrashAction );
@@ -428,8 +416,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
-        connect( m_deleteAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                 this, SLOT(slotDelete(Qt::MouseButtons,Qt::KeyboardModifiers)) );
+        connect( m_deleteAction, SIGNAL(triggered(bool)), SLOT(slotDelete()) );
     }
     if( type & OrganizeAction )
         actions.append( m_deleteAction );
@@ -565,7 +552,7 @@ FileView::tracksForEdit() const
 }
 
 void
-FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
+FileView::slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
 {
     Q_UNUSED( buttons )
     DEBUG_BLOCK
@@ -620,4 +607,8 @@ FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers 
     }
 }
 
-#include "FileView.moc"
+void
+FileView::slotDelete()
+{
+    slotMoveToTrash( Qt::NoButton, Qt::ShiftModifier );
+}
