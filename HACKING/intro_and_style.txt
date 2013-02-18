@@ -35,11 +35,9 @@ Example:
  |     if( list.isEmpty() )
  |         return false;
  |
- |     /*
- |       Define the temporary variable like this to restrict its scope
- |       when you do not need it outside the loop. Let the compiler
- |       optimise it.
- |      */
+ |     /* Define the temporary variable like this to restrict its scope
+ |      * when you do not need it outside the loop. Let the compiler
+ |      * optimise it. */
  |     foreach( const QString &string, list )
  |         debug() << "Current string is " << string << endl;
  | }
@@ -98,8 +96,8 @@ Example:
  | #include "Debug.h"
  | #include "Playlist.h"
  |
- | #include <KDialogBase>    //baseclass
- | #include <KPushButton>    //see function...
+ | #include <KDialogBase> // baseclass
+ | #include <KPushButton> // see function...
  |
  | #include <QGraphicsView>
  | #include <QWidget>
@@ -147,24 +145,23 @@ if possible.  It helps greatly when looking through the code.  Sorted methods,
 either by name or by their function (ie, group all related methods together) is
 great too. Access levels should be sorted in this order: public, protected, private.
 
-
  | #ifndef AMAROK_QUEUEMANAGER_H
  | #define AMAROK_QUEUEMANAGER_H
-
+ |
  | class QueueList : public K3ListView
  | {
- |         Q_OBJECT
+ |     Q_OBJECT
  |
  |     public:
  |         Queuelist( QWidget *parent, const char *name = 0 );
  |         ~QueueList() {};
  |
  |     public slots:
- |         void    moveSelectedUp();
- |         void    moveSelectedDown();
+ |         void moveSelectedUp();
+ |         void moveSelectedDown();
  | };
-
-#endif /* AMAROK_QUEUEMANAGER_H */
+ |
+ | #endif /* AMAROK_QUEUEMANAGER_H */
 
 
 0 vs NULL
@@ -188,10 +185,9 @@ See: http://www.parashift.com/c++-faq-lite/const-correctness.html
 Example:
 
  | bool
- | MyClass::isValidFile( const QString& path ) const
+ | MyClass::isValidFile( const QString &path ) const
  | {
  |     const bool valid = QFile::exist( path );
- |
  |     return valid;
  | }
 
@@ -205,9 +201,9 @@ Usage:
 
  | #include "debug.h"
  |
- | debug()   << "Something is happening" << endl;
- | warning() << "Something bad may happen" << endl;
- | error()   << "Something bad did happen!" << endl;
+ | debug() << "Something is happening";
+ | warning() << "Something bad may happen";
+ | error() << "Something bad did happen!";
 
 Additionally, there are some macros for debugging functions:
 
@@ -246,7 +242,7 @@ availabe in Git. Hence no need for leaving cruft in the source.
 
 Wrong:
  | myWidget->show();
- | //myWidget->rise(); //what is this good for?
+ | //myWidget->rise(); // what is this good for?
 
 Correct:
  | myWidget->show();
