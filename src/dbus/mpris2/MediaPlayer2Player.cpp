@@ -308,7 +308,7 @@ double MediaPlayer2Player::MaximumRate() const
 
 bool MediaPlayer2Player::CanSeek() const
 {
-    return The::engineController()->phononMediaObject()->isSeekable();
+    return The::engineController()->isSeekable();
 }
 
 void MediaPlayer2Player::Seek( qlonglong Offset ) const

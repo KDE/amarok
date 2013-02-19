@@ -104,14 +104,6 @@ public:
      */
     void setNextTrack( Meta::TrackPtr track );
 
-    /** Returns the media object Amarok is using for playback.
-     *  Provides access to the Phonon MediaObject for components that need more information
-     *  This is not for normal use, except maybe when you really need
-     *  the stateChanged signal.
-     */
-    // const so that it can only be used for info
-    const Phonon::MediaObject* phononMediaObject() const { return m_media.data(); }
-
     /**
      * Gets the volume
      * @return the volume as a percentage
