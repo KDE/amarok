@@ -22,9 +22,7 @@
 
 #include "ui_MagnatuneConfigWidget.h"
 
-#include <kdebug.h>
 #include <kgenericfactory.h>
-#include <QVBoxLayout>
 
 
 
@@ -34,13 +32,8 @@ K_EXPORT_PLUGIN( MagnatuneSettingsFactory( "kcm_amarok_magnatunestore" ) )
 MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVariantList &args )
     : KCModule( MagnatuneSettingsFactory::componentData(), parent, args )
 {
-    kDebug( 14310 ) << "Creating Magnatune config object";
-
-    QVBoxLayout* l = new QVBoxLayout( this );
-    QWidget *w = new QWidget;
     m_configDialog = new Ui::MagnatuneConfigWidget;
-    m_configDialog->setupUi( w );
-    l->addWidget( w );
+    m_configDialog->setupUi( this );
 
     m_configDialog->passwordEdit->setEchoMode( QLineEdit::Password );
     connect ( m_configDialog->usernameEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
@@ -50,7 +43,6 @@ MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVarian
     connect ( m_configDialog->isMemberCheckbox, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->streamTypeComboBox, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->autoUpdateDatabase, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
-    
 
     load();
 
@@ -59,6 +51,7 @@ MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVarian
 
 MagnatuneSettingsModule::~MagnatuneSettingsModule()
 {
+    delete m_configDialog;
 }
 
 void MagnatuneSettingsModule::save()

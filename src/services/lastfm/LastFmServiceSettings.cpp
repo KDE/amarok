@@ -62,6 +62,7 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
 
 LastFmServiceSettings::~LastFmServiceSettings()
 {
+    delete m_configDialog;
 }
 
 void

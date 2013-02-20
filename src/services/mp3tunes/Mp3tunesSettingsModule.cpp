@@ -19,9 +19,7 @@
 
 #include "ui_Mp3tunesConfigWidget.h"
 
-#include <kdebug.h>
 #include <kgenericfactory.h>
-#include <QVBoxLayout>
 
 K_PLUGIN_FACTORY( Mp3tunesSettingsFactory, registerPlugin<Mp3tunesSettingsModule>(); )
 K_EXPORT_PLUGIN( Mp3tunesSettingsFactory( "kcm_amarok_mp3tunes" ) )
@@ -29,15 +27,9 @@ K_EXPORT_PLUGIN( Mp3tunesSettingsFactory( "kcm_amarok_mp3tunes" ) )
 Mp3tunesSettingsModule::Mp3tunesSettingsModule( QWidget *parent, const QVariantList &args )
     : KCModule( Mp3tunesSettingsFactory::componentData(), parent, args )
 {
-
-    kDebug( 14310 ) << "Creating Mp3tunes config object";
-
-    QVBoxLayout* l = new QVBoxLayout( this );
-    QWidget *w = new QWidget;
     m_configDialog = new Ui::Mp3tunesConfigWidget;
-    m_configDialog->setupUi( w );
+    m_configDialog->setupUi( this );
     //m_configDialog->pinEdit->setReadOnly( true );
-    l->addWidget( w );
 
     m_configDialog->passwordEdit->setEchoMode( QLineEdit::Password );
     connect ( m_configDialog->emailEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
@@ -45,12 +37,12 @@ Mp3tunesSettingsModule::Mp3tunesSettingsModule( QWidget *parent, const QVariantL
     //connect ( m_configDialog->enableHarmony, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
 
     load();
-
 }
 
 
 Mp3tunesSettingsModule::~Mp3tunesSettingsModule()
 {
+    delete m_configDialog;
 }
 
 

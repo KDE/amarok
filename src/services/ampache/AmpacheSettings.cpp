@@ -19,12 +19,10 @@
 #include "AddServerDialog.h"
 #include "ui_AmpacheConfigWidget.h"
 
-#include <kdebug.h>
 #include <kgenericfactory.h>
 
 #include <QTableWidget>
 #include <QHeaderView>
-#include <QVBoxLayout>
 
 K_PLUGIN_FACTORY( AmpacheSettingsFactory, registerPlugin<AmpacheSettings>(); )
 K_EXPORT_PLUGIN( AmpacheSettingsFactory( "kcm_amarok_ampache" ) )
@@ -35,8 +33,6 @@ AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
     , m_lastRowEdited(-1)
     , m_lastColumnEdited(-1)
 {
-    kDebug( 14310 ) << "Creating Ampache config object";
-
     m_configDialog = new Ui::AmpacheConfigWidget;
     m_configDialog->setupUi( this );
     m_configDialog->serverList->setMinimumWidth(700);
@@ -51,6 +47,7 @@ AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
 
 AmpacheSettings::~AmpacheSettings()
 {
+    delete m_configDialog;
 }
 
 void
@@ -62,7 +59,6 @@ AmpacheSettings::serverNameChanged(const QString & text)
 void
 AmpacheSettings::save()
 {
-    kDebug( 14310 ) << "save";
     m_config.save();
     KCModule::save();
 }
@@ -70,7 +66,6 @@ AmpacheSettings::save()
 void
 AmpacheSettings::load()
 {
-    kDebug( 14310 ) << Q_FUNC_INFO;
     loadList();
     KCModule::load();
 }
@@ -84,7 +79,6 @@ AmpacheSettings::loadList()
     {
         AmpacheServerEntry entry = m_config.servers().at( i );
 
-        kDebug( 14310 ) << "adding item" << entry.name;
         serverList->setItem(i, 0, new QTableWidgetItem(entry.name));
         serverList->setItem(i, 1, new QTableWidgetItem(entry.url));
         serverList->setItem(i, 2, new QTableWidgetItem(entry.username));
@@ -103,14 +97,11 @@ AmpacheSettings::loadList()
 void
 AmpacheSettings::defaults()
 {
-    kDebug( 14310 ) << "defaults";
 }
 
 void
 AmpacheSettings::add()
 {
-    kDebug( 14310 ) << Q_FUNC_INFO;
-
     AddServerDialog dialog;
     if(dialog.exec() == QDialog::Accepted)
     {

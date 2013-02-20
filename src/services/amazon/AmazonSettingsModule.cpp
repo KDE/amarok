@@ -27,7 +27,6 @@
 #include <kgenericfactory.h>
 
 #include <QTimer>
-#include <QVBoxLayout>
 
 K_PLUGIN_FACTORY( AmazonSettingsFactory, registerPlugin<AmazonSettingsModule>(); )
 K_EXPORT_PLUGIN( AmazonSettingsFactory( "kcm_amarok_service_amazonstore" ) )
@@ -35,17 +34,16 @@ K_EXPORT_PLUGIN( AmazonSettingsFactory( "kcm_amarok_service_amazonstore" ) )
 AmazonSettingsModule::AmazonSettingsModule( QWidget *parent, const QVariantList &args )
     : KCModule( AmazonSettingsFactory::componentData(), parent, args )
 {
-    QVBoxLayout* l = new QVBoxLayout( this );
-    QWidget *w = new QWidget;
     m_configDialog = new Ui::AmazonConfigWidget;
-    m_configDialog->setupUi( w );
-    l->addWidget( w );
+    m_configDialog->setupUi( this );
 
     connect( m_configDialog->countrySelectionComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( settingsChanged() ) );
 }
 
 AmazonSettingsModule::~AmazonSettingsModule()
 {
+    delete m_configDialog;
+
     // TODO: clear cart and collection, if the settings have changed
 }
 

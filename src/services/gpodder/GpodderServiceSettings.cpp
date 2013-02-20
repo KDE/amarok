@@ -48,11 +48,8 @@ GpodderServiceSettings::GpodderServiceSettings( QWidget *parent, const QVariantL
 {
     debug() << "Creating gpodder.net config object";
 
-    QVBoxLayout* l = new QVBoxLayout( this );
-    QWidget *w = new QWidget;
     m_configDialog = new Ui::GpodderConfigWidget;
-    m_configDialog->setupUi( w );
-    l->addWidget( w );
+    m_configDialog->setupUi( this );
 
     connect( m_configDialog->kcfg_GpodderUsername,
              SIGNAL(textChanged( const QString & )), this,
@@ -73,6 +70,8 @@ GpodderServiceSettings::~GpodderServiceSettings()
 
     if( m_devices )
         m_devices->deleteLater();
+
+    delete m_configDialog;
 }
 
 void
