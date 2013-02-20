@@ -294,8 +294,8 @@ void TestMetaFileTrack::testSetGetComment()
     m_track->setComment( "2009" );
     QCOMPARE( m_track->comment(), QString( "2009" ) );
 
-    m_track->setComment( "Some Umlauts: äöü" );
-    QCOMPARE( m_track->comment(), QString( "Some Umlauts: äöü" ) );
+    m_track->setComment( QString::fromUtf8( "Some Umlauts: äöü" ) );
+    QCOMPARE( m_track->comment(), QString::fromUtf8( "Some Umlauts: äöü" ) );
 
     m_track->setComment( "" );
     QCOMPARE( m_track->comment(), QString( "" ) );
