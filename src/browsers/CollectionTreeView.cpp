@@ -345,17 +345,22 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         return;
     }
 
-    bool isExpandable = model()->hasChildren( index );
-    bool wouldExpand = isExpandable && !KGlobalSettings::singleClick(); // we're in doubleClick
-    if( event->button() == Qt::LeftButton &&
+
+    // that was a double click on the item itself or the expander clicked? (BR: 279513)
+    bool reverse = isRightToLeft();
+    QRect rect = visualRect( index );
+    if( KGlobalSettings::singleClick() &&
+        event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
-        !wouldExpand )
+        ( (  reverse && event->pos().x() < rect.right() ) ||
+          ( !reverse && event->pos().x() > rect.left() ) ) )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
         playChildTracks( item, Playlist::AppendAndPlay );
         event->accept();
         return;
     }
+
     Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
