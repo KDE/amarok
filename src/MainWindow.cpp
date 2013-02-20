@@ -696,6 +696,48 @@ MainWindow::slotShufflePlaylist()
 }
 
 void
+MainWindow::slotSeekForwardShort()
+{
+    EngineController* ec = The::engineController();
+    ec->seekRelative( AmarokConfig::seekShort() * 1000 );
+}
+
+void
+MainWindow::slotSeekForwardMedium()
+{
+    EngineController* ec = The::engineController();
+    ec->seekRelative( AmarokConfig::seekMedium() * 1000 );
+}
+
+void
+MainWindow::slotSeekForwardLong()
+{
+    EngineController* ec = The::engineController();
+    ec->seekRelative( AmarokConfig::seekLong() * 1000 );
+}
+
+void
+MainWindow::slotSeekBackwardShort()
+{
+    EngineController* ec = The::engineController();
+    ec->seekRelative( AmarokConfig::seekShort() * -1000 );
+}
+
+void
+MainWindow::slotSeekBackwardMedium()
+{
+    EngineController* ec = The::engineController();
+    ec->seekRelative( AmarokConfig::seekMedium() * -1000 );
+}
+
+void
+MainWindow::slotSeekBackwardLong()
+{
+    EngineController* ec = The::engineController();
+    ec->seekRelative( AmarokConfig::seekLong() * -1000 );
+}
+
+void
 MainWindow::activate()
 {
 #ifdef Q_WS_X11
@@ -793,17 +835,44 @@ MainWindow::createActions()
     action->setShortcut( Qt::CTRL + Qt::Key_E );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( slotEditTrackInfo() ) );
 
-    action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
-    ac->addAction( "seek_forward", action );
+    action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n( "Seek Forward by %1",
+            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekShort() * 1000 ) ), this );
+    ac->addAction( "seek_forward_short", action );
+    action->setShortcut( Qt::CTRL + Qt::Key_Right );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekForwardShort()) );
+
+    action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n( "Seek Forward by %1",
+            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
+    ac->addAction( "seek_forward_medium", action );
     action->setShortcut( Qt::Key_Right );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
-    connect( action, SIGNAL( triggered( bool ) ), ec, SLOT( seekForward() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekForwardMedium()) );
 
-    action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n("&Seek Backward"), this );
-    ac->addAction( "seek_backward", action );
+    action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n( "Seek Forward by %1",
+            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekLong() * 1000 ) ), this );
+    ac->addAction( "seek_forward_long", action );
+    action->setShortcut( Qt::SHIFT + Qt::Key_Right );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekForwardLong()) );
+
+
+    action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n( "Seek Backward by %1",
+            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekShort() * 1000 ) ), this );
+    ac->addAction( "seek_backward_short", action );
+    action->setShortcut( Qt::CTRL + Qt::Key_Left );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekBackwardShort()) );
+
+    action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n( "Seek Backward by %1",
+            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
+    ac->addAction( "seek_backward_medium", action );
     action->setShortcut( Qt::Key_Left );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
-    connect( action, SIGNAL( triggered( bool ) ), ec, SLOT( seekBackward() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekBackwardMedium()) );
+
+    action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n( "Seek Backward by %1",
+            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekLong() * 1000 ) ), this );
+    ac->addAction( "seek_backward_long", action );
+    action->setShortcut( Qt::SHIFT + Qt::Key_Left );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekBackwardLong()) );
 
     PERF_LOG( "MainWindow::createActions 6" )
     action = new KAction( KIcon("collection-refresh-amarok"), i18n( "Update Collection" ), this );

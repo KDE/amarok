@@ -278,6 +278,21 @@
         </choices>
         <default>Track</default>
     </entry>
+    <entry key="Seek Short" type="Int">
+        <label>The length of a short seek, in seconds.</label>
+        <default>2</default>
+        <min>1</min>
+    </entry>
+    <entry key="Seek Medium" type="Int">
+        <label>The length of a medium seek, in seconds.</label>
+        <default>10</default>
+        <min>1</min>
+    </entry>
+    <entry key="Seek Long" type="Int">
+        <label>The length of a long seek, in seconds.</label>
+        <default>60</default>
+        <min>1</min>
+    </entry>
 </group>
 
 <group name="Cover Manager">
@@ -343,8 +358,8 @@
         <label>Font scaling for OSD</label>
         <whatsthis>The scaling multiplier for the OSD font, in percent-of-normal. 100 is &ldquo;normal size&rdquo;.</whatsthis>
         <default>115</default>
-	<min>0</min>
-	<max>1000</max>
+        <min>0</min>
+        <max>1000</max>
     </entry>
     <entry key="Osd Duration" type="Int">
         <label>How many milliseconds the text should be displayed for</label>

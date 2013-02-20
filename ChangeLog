@@ -4,6 +4,9 @@ Amarok ChangeLog
 
 VERSION 2.8-Beta 1
   FEATURES:
+   * Added keyboard shortcuts for small 2 s seeks (Ctrl + Left/Right) and long 1 minute
+     seeks (Shift + Left/Right) in addition to standard 10 s seeks. Durations are now
+     configurable in amarokrc, see Amarok Handbook. Patch by Anmol Ahuja. (BR 177258)
    * Added support for files in Opus codec if Amarok is compiled against recent
      enough TagLib (post 1.8), patch by Martin Brodbeck. (BR 312905)
    * Added Ctrl+H shortcut to randomize playlist, patch by Harsh Gupta. (BR 208061)

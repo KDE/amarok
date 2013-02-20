@@ -78,11 +78,11 @@ void BrowserDock::polish()
     connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
 
     // Keyboard shortcut for going back one level
-    KAction *action = new KAction( KIcon( "go-previous" ), i18n( "Previous Browser" ),
+    KAction *action = new KAction( KIcon( "go-up" ), i18n( "Go Up in Media Sources Pane" ),
                                   m_mainWidget );
     Amarok::actionCollection()->addAction( "browser_previous", action );
     connect( action, SIGNAL(triggered( bool )), m_categoryList.data(), SLOT(back()) );
-    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_Left ) );
+    action->setShortcut( KShortcut( Qt::Key_Backspace ) );
 
     paletteChanged( App::instance()->palette() );
     connect( The::paletteHandler(), SIGNAL(newPalette( const QPalette & )),
