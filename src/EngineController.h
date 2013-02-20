@@ -232,7 +232,7 @@ public slots:
      *
      * @param ms the position in milliseconds (counting from the start of the track)
      */
-    void seek( int ms );
+    void seekTo( int ms );
 
     /**
      * Seeks forward or backward in the track
@@ -249,21 +249,7 @@ public slots:
      *
      * @param ms the offset from the current position in milliseconds
      */
-    void seekRelative( int ms );
-
-    /**
-     * Seeks forward in the track
-     *
-     * Same as seekRelative()
-     */
-    void seekForward( int ms = 10000 );
-
-    /**
-     * Seeks backward in the track
-     *
-     * Works identically to seekRelative(), but seeks in the opposite direction.
-     */
-    void seekBackward( int ms = 10000 );
+    void seekBy( int ms );
 
     /**
      * Increases the volume

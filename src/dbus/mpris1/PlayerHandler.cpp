@@ -171,7 +171,7 @@ namespace Mpris1
     void PlayerHandler::PositionSet( int time )
     {
         if( time > 0 && !The::engineController()->isStopped() )
-            The::engineController()->seek( time );
+            The::engineController()->seekTo( time );
     }
 
     void PlayerHandler::Stop()
@@ -222,13 +222,13 @@ namespace Mpris1
     void PlayerHandler::Forward( int time )
     {
         if( time > 0 && !The::engineController()->isStopped() )
-            The::engineController()->seek( The::engineController()->trackPosition() * 1000 + time );
+            The::engineController()->seekTo( The::engineController()->trackPosition() * 1000 + time );
     }
 
     void PlayerHandler::Backward( int time )
     {
         if( time > 0 && !The::engineController()->isStopped() )
-            The::engineController()->seek( The::engineController()->trackPosition() * 1000 - time );
+            The::engineController()->seekTo( The::engineController()->trackPosition() * 1000 - time );
     }
 
     QVariantMap PlayerHandler::GetMetadata()

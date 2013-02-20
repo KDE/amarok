@@ -397,7 +397,7 @@ EngineController::replay() // slot
 {
     DEBUG_BLOCK
 
-    seek( 0 );
+    seekTo( 0 );
     emit trackPositionChanged( 0, true );
 }
 
@@ -576,7 +576,7 @@ EngineController::playPause() //SLOT
 }
 
 void
-EngineController::seek( int ms ) //SLOT
+EngineController::seekTo( int ms ) //SLOT
 {
     DEBUG_BLOCK
 
@@ -606,22 +606,10 @@ EngineController::seek( int ms ) //SLOT
 
 
 void
-EngineController::seekRelative( int ms ) //SLOT
+EngineController::seekBy( int ms ) //SLOT
 {
     qint64 newPos = m_media.data()->currentTime() + ms;
-    seek( newPos <= 0 ? 0 : newPos );
-}
-
-void
-EngineController::seekForward( int ms )
-{
-    seekRelative( ms );
-}
-
-void
-EngineController::seekBackward( int ms )
-{
-    seekRelative( -ms );
+    seekTo( newPos <= 0 ? 0 : newPos );
 }
 
 int

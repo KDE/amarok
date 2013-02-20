@@ -97,22 +97,22 @@ namespace AmarokScript
 
     void AmarokEngineScript::Seek( int ms ) const
     {
-        The::engineController()->seek( ms );
+        The::engineController()->seekTo( ms );
     }
 
     void AmarokEngineScript::SeekRelative( int ms ) const
     {
-        The::engineController()->seekRelative( ms );
+        The::engineController()->seekBy( ms );
     }
 
     void AmarokEngineScript::SeekForward( int ms ) const
     {
-        The::engineController()->seekForward( ms );
+        The::engineController()->seekBy( ms );
     }
 
     void AmarokEngineScript::SeekBackward( int ms ) const
     {
-        The::engineController()->seekBackward( ms );
+        The::engineController()->seekBy( -ms );
     }
 
     int AmarokEngineScript::IncreaseVolume( int ticks )

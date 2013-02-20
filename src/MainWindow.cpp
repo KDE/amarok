@@ -699,42 +699,42 @@ void
 MainWindow::slotSeekForwardShort()
 {
     EngineController* ec = The::engineController();
-    ec->seekRelative( AmarokConfig::seekShort() * 1000 );
+    ec->seekBy( AmarokConfig::seekShort() * 1000 );
 }
 
 void
 MainWindow::slotSeekForwardMedium()
 {
     EngineController* ec = The::engineController();
-    ec->seekRelative( AmarokConfig::seekMedium() * 1000 );
+    ec->seekBy( AmarokConfig::seekMedium() * 1000 );
 }
 
 void
 MainWindow::slotSeekForwardLong()
 {
     EngineController* ec = The::engineController();
-    ec->seekRelative( AmarokConfig::seekLong() * 1000 );
+    ec->seekBy( AmarokConfig::seekLong() * 1000 );
 }
 
 void
 MainWindow::slotSeekBackwardShort()
 {
     EngineController* ec = The::engineController();
-    ec->seekRelative( AmarokConfig::seekShort() * -1000 );
+    ec->seekBy( AmarokConfig::seekShort() * -1000 );
 }
 
 void
 MainWindow::slotSeekBackwardMedium()
 {
     EngineController* ec = The::engineController();
-    ec->seekRelative( AmarokConfig::seekMedium() * -1000 );
+    ec->seekBy( AmarokConfig::seekMedium() * -1000 );
 }
 
 void
 MainWindow::slotSeekBackwardLong()
 {
     EngineController* ec = The::engineController();
-    ec->seekRelative( AmarokConfig::seekLong() * -1000 );
+    ec->seekBy( AmarokConfig::seekLong() * -1000 );
 }
 
 void

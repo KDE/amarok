@@ -84,7 +84,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
              this, SLOT( trackPositionChanged( qint64 ) ) );
 
     connect( m_slider, SIGNAL( sliderReleased( int ) ),
-             engine, SLOT( seek( int ) ) );
+             engine, SLOT( seekTo( int ) ) );
 
     connect( m_slider, SIGNAL( valueChanged( int ) ),
              SLOT( drawTimeDisplay( int ) ) );

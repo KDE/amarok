@@ -168,7 +168,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_timeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
     m_slider = new Amarok::TimeSlider( info );
-    connect( m_slider, SIGNAL(sliderReleased(int)), The::engineController(), SLOT(seek(int)) );
+    connect( m_slider, SIGNAL(sliderReleased(int)), The::engineController(), SLOT(seekTo(int)) );
     connect( m_slider, SIGNAL(valueChanged(int)), SLOT( setLabelTime(int) ) );
     connect( App::instance(), SIGNAL(settingsChanged()), SLOT(layoutProgressBar()) );
 

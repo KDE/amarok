@@ -710,7 +710,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
         long trackLength = EngineController::instance()->trackLength();
 
         qreal percentage = (qreal) xSliderPos / (qreal) sliderWidth;
-        EngineController::instance()->seek( trackLength * percentage );
+        EngineController::instance()->seekTo( trackLength * percentage );
         return true;
 
     }
