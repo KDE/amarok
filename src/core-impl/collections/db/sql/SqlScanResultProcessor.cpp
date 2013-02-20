@@ -170,7 +170,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
         entry.directoryId = directoryId;
 
         metaTrack = Meta::SqlTrackPtr::staticCast( m_collection->registry()->getTrack( urlId ) );
-        // Q_ASSERT( metaTrack->urlId() == entry.id ); crashes. See BR 313460
+        Q_ASSERT( metaTrack->urlId() == entry.id );
     }
     // find an existing track by path
     else if( m_pathCache.contains( track->path() ) )
@@ -182,7 +182,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
         entry.directoryId = directoryId;
 
         metaTrack = Meta::SqlTrackPtr::staticCast( m_collection->registry()->getTrack( urlId ) );
-        // Q_ASSERT( metaTrack->urlId() == entry.id ); crashes. See BR 313460
+        Q_ASSERT( metaTrack->urlId() == entry.id );
     }
     // create a new one
     else
@@ -481,7 +481,7 @@ SqlScanResultProcessor::removeTrack( const UrlEntry &entry )
     SqlRegistry *reg = m_collection->registry();
     // we must get the track by id, uid is not unique
     Meta::SqlTrackPtr track = Meta::SqlTrackPtr::staticCast( reg->getTrack( entry.id ) );
-    // Q_ASSERT( track->urlId() == entry.id ); crashes. See BR 313460
+    Q_ASSERT( track->urlId() == entry.id );
     track->remove();
 }
 
