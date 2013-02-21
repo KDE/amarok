@@ -35,25 +35,7 @@ using namespace Meta::Tag;
 
 static const TagLib::String VORBIS_PICTURE_TAG( "METADATA_BLOCK_PICTURE" );
 
-VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType )
-                      : TagHelper( tag, fileType )
-                      , m_tag( commentsTag )
-                      , m_flacFile( 0 )
-{
-    m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "ALBUMARTIST" ) );
-    m_fieldMap.insert( Meta::valBpm,         TagLib::String( "BPM" ) );
-    m_fieldMap.insert( Meta::valCompilation, TagLib::String( "COMPILATION" ) );
-    m_fieldMap.insert( Meta::valComposer,    TagLib::String( "COMPOSER" ) );
-    m_fieldMap.insert( Meta::valDiscNr,      TagLib::String( "DISCNUMBER" ) );
-    m_fieldMap.insert( Meta::valHasCover,    TagLib::String( "COVERART" ) ); // non-standard but frequently used
-    m_fieldMap.insert( Meta::valPlaycount,   TagLib::String( "FMPS_PLAYCOUNT" ) );
-    m_fieldMap.insert( Meta::valRating,      TagLib::String( "FMPS_RATING" ) );
-    m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS_RATING_AMAROK_SCORE" ) );
-
-    m_uidFieldMap.insert( UIDAFT,            TagLib::String( "AMAROK 2 AFTV1 - AMAROK.KDE.ORG" ) );
-}
-
-VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, TagLib::FLAC::File *file, Amarok::FileType fileType )
+VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType, TagLib::FLAC::File *file )
                       : TagHelper( tag, fileType )
                       , m_tag( commentsTag )
                       , m_flacFile( file )
@@ -63,6 +45,7 @@ VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::X
     m_fieldMap.insert( Meta::valCompilation, TagLib::String( "COMPILATION" ) );
     m_fieldMap.insert( Meta::valComposer,    TagLib::String( "COMPOSER" ) );
     m_fieldMap.insert( Meta::valDiscNr,      TagLib::String( "DISCNUMBER" ) );
+    m_fieldMap.insert( Meta::valHasCover,    TagLib::String( "COVERART" ) ); // non-standard but frequently used
     m_fieldMap.insert( Meta::valPlaycount,   TagLib::String( "FMPS_PLAYCOUNT" ) );
     m_fieldMap.insert( Meta::valRating,      TagLib::String( "FMPS_RATING" ) );
     m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS_RATING_AMAROK_SCORE" ) );

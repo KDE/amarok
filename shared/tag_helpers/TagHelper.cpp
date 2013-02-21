@@ -289,7 +289,7 @@ Meta::Tag::selectHelper( const TagLib::FileRef fileref, bool forceCreation )
     else if( TagLib::FLAC::File *file = dynamic_cast< TagLib::FLAC::File * >( fileref.file() ) )
     {
         if( file->xiphComment() )
-            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->xiphComment(), file, Amarok::Flac );
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->xiphComment(), Amarok::Flac, file );
         else if( file->ID3v2Tag() )
             tagHelper = new ID3v2TagHelper( fileref.tag(), file->ID3v2Tag(), Amarok::Flac );
         else if( file->ID3v1Tag() )
