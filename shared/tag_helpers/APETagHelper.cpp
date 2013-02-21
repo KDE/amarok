@@ -40,7 +40,6 @@ APETagHelper::APETagHelper( TagLib::Tag *tag, TagLib::APE::Tag *apeTag, Amarok::
     m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS_RATING_AMAROK_SCORE" ) );
 
     m_uidFieldMap.insert( UIDAFT,            TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" ) );
-    m_uidFieldMap.insert( UIDMusicBrainz,    TagLib::String( "MusicBrainz Track Id" ) );
 }
 
 Meta::FieldHash
@@ -64,11 +63,6 @@ APETagHelper::tags() const
         }
         else if( it->first == uidFieldName( UIDAFT ) && isValidUID( value, UIDAFT ) )
             data.insert( Meta::valUniqueId, value );
-        else if( it->first == uidFieldName( UIDMusicBrainz ) && isValidUID( value, UIDMusicBrainz ) )
-        {
-            if( !data.contains( Meta::valUniqueId ) ) // we prefer AFT uids
-                data.insert( Meta::valUniqueId, value.prepend( "mb-" ) );
-        }
     }
 
     return data;

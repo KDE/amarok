@@ -3,6 +3,10 @@ Amarok ChangeLog
 (C) 2002-2012 the Amarok authors.
 
 VERSION 2.7.1
+  CHANGES:
+   * Problematic support for treating MusicBrainz ids as track unique ids was dropped;
+     should avoid surprising "Duplicate Tracks Found" errors. (BR 315329)
+
   BUGFIXES:
    * Fix typo in Nepomuk query which did not let track numbers of Nepomuk Collection
      tracks show up in Amarok. (BR 311847)

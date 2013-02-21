@@ -214,11 +214,6 @@ ScrobblerAdapter::copyTrackMetadata( lastfm::MutableTrack &to, const Meta::Track
     if( track->trackNumber() >= 0 )
         to.setTrackNumber( track->trackNumber() );
 
-    static const QString mbidUrlStart( "amarok-sqltrackuid://mb-" );
-    QString uid = track->uidUrl();
-    if( uid.startsWith( mbidUrlStart ) )
-        to.setMbid( lastfm::Mbid( uid.mid( mbidUrlStart.length() ) ) );
-
     lastfm::Track::Source source = lastfm::Track::Player;
     if( track->type() == "stream/lastfm" )
         source = lastfm::Track::LastFmRadio;

@@ -55,7 +55,6 @@ ID3v2TagHelper::ID3v2TagHelper( TagLib::Tag *tag, TagLib::ID3v2::Tag *id3v2Tag, 
     m_fmpsFieldMap.insert( FMPSScore,        TagLib::String( "FMPS_Rating_Amarok_Score" ) );
 
     m_uidFieldMap.insert( UIDAFT,            TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" ) );
-    m_uidFieldMap.insert( UIDMusicBrainz,    TagLib::String( "http://musicbrainz.org" ) );
 }
 
 Meta::FieldHash
@@ -85,11 +84,6 @@ ID3v2TagHelper::tags() const
 
                 if( frame->owner() == uidFieldName( UIDAFT ) && isValidUID( identifier, UIDAFT ) )
                     data.insert( Meta::valUniqueId, identifier );
-                else if( frame->owner() == uidFieldName( UIDMusicBrainz ) && isValidUID( identifier, UIDMusicBrainz ) )
-                {
-                    if( !data.contains( Meta::valUniqueId ) ) // we prefer AFT uids
-                        data.insert( Meta::valUniqueId, identifier.prepend( "mb-" ) );
-                }
                 continue;
             }
             else if( field == Meta::valHasCover )

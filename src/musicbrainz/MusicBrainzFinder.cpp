@@ -409,8 +409,6 @@ MusicBrainzFinder::sendTrack( const Meta::TrackPtr track, const QVariantMap &inf
         }
     }
 
-    tags.insert( Meta::Field::UNIQUEID, tags.value( MusicBrainz::TRACKID ).toString().prepend( "mb-" ) );
-
     //Clean metadata from unused fields
     tags.remove( Meta::Field::LENGTH );
     tags.remove( Meta::Field::SCORE );
