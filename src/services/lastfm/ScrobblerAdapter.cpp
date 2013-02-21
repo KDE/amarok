@@ -204,9 +204,12 @@ ScrobblerAdapter::copyTrackMetadata( lastfm::MutableTrack &to, const Meta::Track
     to.setArtist( artistOrComposer );
 
     Meta::AlbumPtr album = track->album();
+    Meta::ArtistPtr albumArtist;
     if( album )
+    {
         to.setAlbum( album->name() );
-    Meta::ArtistPtr albumArtist = album->hasAlbumArtist() ? album->albumArtist() : Meta::ArtistPtr();
+        albumArtist = album->hasAlbumArtist() ? album->albumArtist() : Meta::ArtistPtr();
+    }
     if( albumArtist )
         to.setAlbumArtist( albumArtist->name() );
 
