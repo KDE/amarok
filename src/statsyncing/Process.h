@@ -82,6 +82,7 @@ namespace StatSyncing
             void slotSynchronize();
             void slotLogSynchronization( ThreadWeaver::Job *job );
             void slotSaveSizeAndDelete();
+            void slotDeleteDialog();
 
         private:
             Q_DISABLE_COPY( Process )
@@ -93,7 +94,7 @@ namespace StatSyncing
             MatchedTracksModel *m_matchedTracksModel;
             TrackList m_tracksToScrobble;
 
-            // has mainWindow as parent, can be deleted by it in corner cases
+            // gets deleted when MainWindow is deleted
             QWeakPointer<KDialog> m_dialog;
             QWeakPointer<ChooseProvidersPage> m_providersPage;
             QWeakPointer<MatchedTracksPage> m_tracksPage;

@@ -246,7 +246,6 @@ App::~App()
     //this should be moved to App::quit() I guess
     Amarok::Components::applicationController()->shutdown();
 
-
 #ifdef Q_WS_WIN
     // work around for KUniqueApplication being not completely implemented on windows
     QDBusConnectionInterface* dbusService;

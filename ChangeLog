@@ -29,6 +29,7 @@ VERSION 2.8-Beta 1
      elements in order not to fool users.
 
   BUGFIXES:
+   * Fix crash when quitting Amarok with Statistics Synchronization open. (BR 315525)
    * Fix items moving around when expanded in collection browser (BR 305602)
    * Fix typo in Nepomuk query which did not let track numbers show up in Amarok. (BR 311847)
    * Fix bumpy fade-out when first used. (BR 312062)

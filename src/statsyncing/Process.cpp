@@ -16,6 +16,7 @@
 
 #include "Process.h"
 
+#include "MainWindow.h"
 #include "MetaValues.h"
 #include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
@@ -50,6 +51,11 @@ Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &preSel
     m_dialog.data()->restoreDialogSize( Amarok::config( "StatSyncingDialog" ) );
     // delete this process when user hits the close button
     connect( m_dialog.data(), SIGNAL(finished()), SLOT(slotSaveSizeAndDelete()) );
+
+    /* we need to delete all QWidgets on application exit well before QApplication
+     * is destroyed. We however don't set MainWindow as parent as this would make
+     * StatSyncing dialog share taskbar entry with Amarok main window */
+    connect( The::mainWindow(), SIGNAL(destroyed(QObject*)), SLOT(slotDeleteDialog()) );
 }
 
 Process::~Process()
@@ -281,4 +287,11 @@ Process::slotSaveSizeAndDelete()
         m_dialog.data()->saveDialogSize( group );
     }
     deleteLater();
+}
+
+void
+Process::slotDeleteDialog()
+{
+    // we cannot use deleteLater(), we don't have spare eventloop iteration
+    delete m_dialog.data();
 }
