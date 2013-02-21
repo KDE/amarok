@@ -204,10 +204,11 @@ namespace Meta
             virtual KUrl playableUrl() const = 0;
             /** an url for display purposes */
             virtual QString prettyUrl() const = 0;
-            /** an url which is unique for this track. Use this if you need a key for the track.
-                Actually this is not guaranteed to be an url at all and could be something like
-                mb-f5a3456bb0 for a MusicBrainz id.
-            */
+
+            /**
+             * A fake url which is unique for this track. Use this if you need a key for
+             * the track.
+             */
             virtual QString uidUrl() const = 0;
 
             /** Returns whether playableUrl() will return a playable Url

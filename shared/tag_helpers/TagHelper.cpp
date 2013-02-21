@@ -179,13 +179,7 @@ TagHelper::splitUID( const QString &uidUrl ) const
     if( uid.startsWith( "amarok-" ) )
         uid = uid.remove( QRegExp( "^(amarok-\\w+://).+$" ) );
 
-    if( uid.startsWith( "mb-" ) )
-    {
-        uid = uid.mid( 3 );
-        if( isValidUID( uid, UIDMusicBrainz ) )
-            type = UIDMusicBrainz;
-    }
-    else if( isValidUID( uid, UIDAFT ) )
+    if( isValidUID( uid, UIDAFT ) )
         type = UIDAFT;
 
     return qMakePair( type, uid );
@@ -224,8 +218,6 @@ TagHelper::isValidUID( const QString &uid, const TagHelper::UIDType type ) const
 
     if( type == UIDAFT )
         regexp.setPattern( "^[0-9a-fA-F]{32}$" );
-    else if( type == UIDMusicBrainz )
-        regexp.setPattern( "^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$" );
 
     return regexp.exactMatch( uid );
 }

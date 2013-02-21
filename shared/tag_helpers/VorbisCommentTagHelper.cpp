@@ -51,7 +51,6 @@ VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::X
     m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS_RATING_AMAROK_SCORE" ) );
 
     m_uidFieldMap.insert( UIDAFT,            TagLib::String( "AMAROK 2 AFTV1 - AMAROK.KDE.ORG" ) );
-    m_uidFieldMap.insert( UIDMusicBrainz,    TagLib::String( "MUSICBRAINZ_TRACKID" ) );
 }
 
 VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, TagLib::FLAC::File *file, Amarok::FileType fileType )
@@ -69,7 +68,6 @@ VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::X
     m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS_RATING_AMAROK_SCORE" ) );
 
     m_uidFieldMap.insert( UIDAFT,            TagLib::String( "AMAROK 2 AFTV1 - AMAROK.KDE.ORG" ) );
-    m_uidFieldMap.insert( UIDMusicBrainz,    TagLib::String( "MUSICBRAINZ_TRACKID" ) );
 }
 
 static inline bool
@@ -135,11 +133,6 @@ VorbisCommentTagHelper::tags() const
         }
         else if( it->first == uidFieldName( UIDAFT ) && isValidUID( value, UIDAFT ) )
             data.insert( Meta::valUniqueId, value );
-        else if( it->first == uidFieldName( UIDMusicBrainz ) && isValidUID( value, UIDMusicBrainz ) )
-        {
-            if( !data.contains( Meta::valUniqueId ) ) // we prefer AFT uids
-                data.insert( Meta::valUniqueId, value.prepend( "mb-" ) );
-        }
         else if( it->first == VORBIS_PICTURE_TAG )
         {
             if( parsePictureBlock( it->second ) )

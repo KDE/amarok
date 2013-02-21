@@ -43,7 +43,6 @@ namespace Meta
                 enum UIDType
                 {
                     UIDInvalid     = 0,
-                    UIDMusicBrainz = 1,
                     UIDAFT         = 3
                 };
 

@@ -268,7 +268,7 @@ TestSqlTrack::testSetAllValuesSingleNotExisting()
 {
     {
         // get a new track
-        Meta::TrackPtr track1 = m_collection->registry()->getTrack( -1, "./IamANewTrack.mp3", 0, "mb-1e34fb213489" );
+        Meta::TrackPtr track1 = m_collection->registry()->getTrack( -1, "./IamANewTrack.mp3", 0, "1e34fb213489" );
 
         QSignalSpy spy( m_collection, SIGNAL(updated()));
         MetaNotificationSpy metaSpy;
