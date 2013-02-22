@@ -77,21 +77,8 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setSelectionBehavior( QAbstractItemView::SelectRows );
     setEditTriggers( EditKeyPressed );
-#ifdef Q_WS_MAC
-    // for some bizarre reason w/ some styles on mac per-pixel scrolling is slower than
-    // per-item
-    setVerticalScrollMode( QAbstractItemView::ScrollPerItem );
-    setHorizontalScrollMode( QAbstractItemView::ScrollPerItem );
-#else
-    // Scrolling per item is really not smooth and looks terrible
-    setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
-#endif
 
     setDragDropMode( QAbstractItemView::DragDrop );
-
-    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
-        setAnimated( true );
 
     connect( this, SIGNAL(collapsed( const QModelIndex & )),
              SLOT(slotCollapsed( const QModelIndex & )) );

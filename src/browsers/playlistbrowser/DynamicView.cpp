@@ -64,10 +64,6 @@ PlaylistBrowserNS::DynamicView::DynamicView( QWidget *parent )
     setDropIndicatorShown( true );
 
     setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
-    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
-        setAnimated( true );
-
-    The::paletteHandler()->updateItemView( this );
 
     // -- expanding the playlist should expand the whole tree
     connect( this, SIGNAL( expanded(const QModelIndex &) ),

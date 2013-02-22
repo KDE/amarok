@@ -33,6 +33,19 @@ PrettyTreeView::PrettyTreeView( QWidget *parent )
 
     The::paletteHandler()->updateItemView( this );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
+
+#ifdef Q_WS_MAC
+    // for some bizarre reason w/ some styles on mac per-pixel scrolling is slower than
+    // per-item
+    setVerticalScrollMode( QAbstractItemView::ScrollPerItem );
+    setHorizontalScrollMode( QAbstractItemView::ScrollPerItem );
+#else
+    // Scrolling per item is really not smooth and looks terrible
+    setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+#endif
+
+    setAnimated( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects );
 }
 
 

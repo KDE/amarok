@@ -59,8 +59,6 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
     setDragDropMode( QAbstractItemView::DragDrop );
     setAcceptDrops( true );
     setEditTriggers( QAbstractItemView::EditKeyPressed );
-    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
-        setAnimated( true );
 }
 
 PlaylistBrowserNS::PlaylistBrowserView::~PlaylistBrowserView()

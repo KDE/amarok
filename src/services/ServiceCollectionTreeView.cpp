@@ -31,8 +31,6 @@ ServiceCollectionTreeView::ServiceCollectionTreeView( QWidget *parent )
     : CollectionTreeView( parent )
     , m_playableTracks( true ) //per default, act just like a normal CollectionTreeView
 {
-    setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Enable smooth scrolling 
-    setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Enable smooth scrolling 
 }
 
 ServiceCollectionTreeView::~ServiceCollectionTreeView()

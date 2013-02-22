@@ -56,17 +56,6 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
 
     // -- the main list view
     m_categoryListView = new Amarok::PrettyTreeView();
-#ifdef Q_WS_MAC
-    // for some bizarre reason w/ some styles on mac
-    // per-pixel scrolling is slower than per-item
-    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerItem );
-    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerItem );
-#else
-    // Scrolling per item is really not smooth and looks terrible
-    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
-#endif
-
     m_categoryListView->setFrameShape( QFrame::NoFrame );
 
     m_proxyModel = new BrowserCategoryListSortFilterProxyModel( this );
@@ -93,8 +82,6 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
 
     vLayout->addWidget( m_categoryListView );
     m_widgetStack->addWidget( mainWidget );
-
-    The::paletteHandler()->updateItemView( m_categoryListView );
 }
 
 BrowserCategoryList::~BrowserCategoryList()
