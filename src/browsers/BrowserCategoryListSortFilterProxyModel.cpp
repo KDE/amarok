@@ -15,22 +15,16 @@
  ****************************************************************************************/
 
 #include "BrowserCategoryListSortFilterProxyModel.h"
-#include "BrowserCategoryListModel.h"
-
-#include "core/support/Debug.h"
-
-#include <QVariant>
+#include "widgets/PrettyTreeRoles.h"
 
 BrowserCategoryListSortFilterProxyModel::BrowserCategoryListSortFilterProxyModel( QObject *parent )
     : QSortFilterProxyModel( parent )
 {
     setSortLocaleAware( true );
     setSortCaseSensitivity( Qt::CaseInsensitive );
-    setSortRole( CustomCategoryRoles::SortRole );
+    setSortRole( PrettyTreeRoles::SortRole );
 
     setDynamicSortFilter( true );
-
-    setFilterCaseSensitivity( Qt::CaseInsensitive );
 }
 
 BrowserCategoryListSortFilterProxyModel::~BrowserCategoryListSortFilterProxyModel()

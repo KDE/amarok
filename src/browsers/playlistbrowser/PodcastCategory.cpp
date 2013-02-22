@@ -29,6 +29,7 @@
 #include "PaletteHandler.h"
 #include "PodcastModel.h"
 #include "PlaylistBrowserView.h"
+#include "widgets/PrettyTreeRoles.h"
 
 #include <QModelIndexList>
 #include <QTextBrowser>
@@ -245,8 +246,8 @@ PodcastCategory::showInfo( const QModelIndex &index )
             .arg( Qt::escape( keywords.join( ", " ) ) );
     }
 
-    description += index.data( ShortDescriptionRole ).toString();
-    
+    description += index.data( PrettyTreeRoles::ByLineRole ).toString();
+
     description = QString(
         "<html>"
         "    <head>"

@@ -24,7 +24,6 @@
 
 #include <QMap>
 
-class BrowserCategoryListDelegate;
 class SearchWidget;
 
 class QStackedWidget;
@@ -131,7 +130,6 @@ class BrowserCategoryList : public BrowserCategory
 
         BrowserCategoryListModel *m_categoryListModel;
         BrowserCategoryListSortFilterProxyModel* m_proxyModel;
-        BrowserCategoryListDelegate *m_delegate;
 
         QString m_infoHtmlTemplate;
 

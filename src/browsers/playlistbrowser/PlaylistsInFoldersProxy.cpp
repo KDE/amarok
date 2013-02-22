@@ -22,6 +22,7 @@
 #include "SvgHandler.h"
 #include "UserPlaylistModel.h"
 #include "playlist/PlaylistModelStack.h"
+#include "widgets/PrettyTreeRoles.h"
 
 #include <KDialog>
 #include <KIcon>
@@ -69,8 +70,8 @@ PlaylistsInFoldersProxy::data( const QModelIndex &idx, int role ) const
         return QVariant( providerString );
     }
 
-    if( idx.column() == 0 && isGroup( idx ) && role ==
-        PlaylistBrowserNS::PlaylistBrowserModel::ActionRole )
+    if( idx.column() == 0 && isGroup( idx ) &&
+        role == PrettyTreeRoles::DecoratorRole )
     {
         //whether we use the list from m_deleteFolderAction or m_renameFolderAction does not matter
         //they are the same anyway
@@ -88,6 +89,10 @@ PlaylistsInFoldersProxy::data( const QModelIndex &idx, int role ) const
         actions << m_renameFolderAction << m_deleteFolderAction;
         return QVariant::fromValue( actions );
     }
+
+    if( idx.column() == 0 && isGroup( idx ) &&
+        role == PrettyTreeRoles::DecoratorRoleCount )
+        return 2; // 2 actions, see above
 
     return QtGroupingProxy::data( idx, role );
 }

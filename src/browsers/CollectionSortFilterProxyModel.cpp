@@ -21,6 +21,7 @@
 #include "amarokconfig.h"
 #include "CollectionTreeItem.h"
 #include "core/support/Debug.h"
+#include "widgets/PrettyTreeRoles.h"
 
 #include <KStringHandler>
 
@@ -32,8 +33,8 @@ CollectionSortFilterProxyModel::CollectionSortFilterProxyModel(  QObject * paren
 {
     setSortLocaleAware( true );
 
-    setSortRole( CustomRoles::SortRole );
-    setFilterRole( CustomRoles::FilterRole );
+    setSortRole( PrettyTreeRoles::SortRole );
+    setFilterRole( PrettyTreeRoles::FilterRole );
     setSortCaseSensitivity( Qt::CaseInsensitive );
     setFilterCaseSensitivity( Qt::CaseInsensitive );
 

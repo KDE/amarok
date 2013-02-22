@@ -27,6 +27,7 @@
 #include "PodcastCategory.h"
 #include "SvgHandler.h"
 #include <ThreadWeaver/Weaver>
+#include "widgets/PrettyTreeRoles.h"
 
 #include <KIcon>
 
@@ -243,14 +244,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
                 break;
             }
 
-            case ShortDescriptionRole:
-            {
-                if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
-                    return pmc->description();
-                break;
-            }
-
-            case PlaylistBrowserModel::ByLineRole:
+            case PrettyTreeRoles::ByLineRole:
             {
                 if( idx.column() == PlaylistBrowserModel::ProviderColumn )
                 {
@@ -260,8 +254,13 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
                                        "One Channel", "%1 channels",
                                        provider->playlists().count() );
                 }
+                if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
+                    return pmc->description();
                 break;
             }
+
+            case PrettyTreeRoles::HasCoverRole:
+                return ( idx.column() == PlaylistBrowserModel::PlaylistItemColumn );
 
             case Qt::DecorationRole:
             {
@@ -270,8 +269,8 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
                 break;
             }
 
-            case ActionCountRole:
-            case ActionRole:
+            case PrettyTreeRoles::DecoratorRole:
+            case PrettyTreeRoles::DecoratorRoleCount:
                 return PlaylistBrowserModel::data( idx, role );
         }
     }

@@ -28,10 +28,11 @@
 #include "PlaylistBrowserModel.h"
 #include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
-#include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"
 #include "PlaylistsInFoldersProxy.h"
 #include "PlaylistsByProviderProxy.h"
+#include "widgets/PrettyTreeDelegate.h"
+#include "widgets/PrettyTreeRoles.h"
 
 #include <KAction>
 #include <KGlobalSettings>
@@ -88,19 +89,8 @@ PlaylistBrowserNS::PlaylistBrowserView::mousePressEvent( QMouseEvent *event )
         return;
     }
 
-    // HACK: provider elements hide the root decorations
-    // Don't bother checking actions for the others.
-    if( !rootIsDecorated() && !index.parent().isValid() )
-    {
-        const int actionCount =
-            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
-        if( actionCount > 0 )
-        {
-            const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
-            if( rect.contains( event->pos() ) )
-                return;
-        }
-    }
+    if( decoratorActionAt( index, event->pos() ) )
+        return;
 
     bool prevExpandState = isExpanded( index );
 
@@ -113,28 +103,23 @@ PlaylistBrowserNS::PlaylistBrowserView::mousePressEvent( QMouseEvent *event )
 }
 
 QAction *
-PlaylistBrowserNS::PlaylistBrowserView::decoratorActionAt( const QModelIndex &idx, const QPoint pos )
+PlaylistBrowserNS::PlaylistBrowserView::decoratorActionAt( const QModelIndex &index, const QPoint pos )
 {
-    const int actionCount =
-        idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
-    if( actionCount > 0 )
-    {
-        const QRect rect = PlaylistTreeItemDelegate::actionsRect( idx );
-        if( rect.contains( pos ) )
-        {
-            QVariantList variantList =
-                    idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).toList();
-            if( variantList.isEmpty() )
-                return 0;
+    const int actionsCount = index.data( PrettyTreeRoles::DecoratorRoleCount ).toInt();
+    if( actionsCount <= 0 )
+        return 0;
 
-            QActionList actions = variantList.first().value<QActionList>();
-            int indexOfAction = ( pos.x() - rect.left() ) /
-                                PlaylistTreeItemDelegate::delegateActionIconWidth();
-            if( indexOfAction >= actions.count() )
-                return 0;
-            return actions.value( indexOfAction );
-        }
-    }
+    PrettyTreeDelegate* ptd = qobject_cast<PrettyTreeDelegate*>( itemDelegate( index ) );
+    if( !ptd )
+        return 0;
+
+    QActionList actions = index.data( PrettyTreeRoles::DecoratorRole ).value<QActionList>();
+    QRect rect = visualRect( index );
+
+    for( int i = 0; i < actions.count(); i++ )
+        if( ptd->decoratorRect( rect, i ).contains( pos ) )
+            return actions.at( i );
+
     return 0;
 }
 
@@ -188,6 +173,12 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
 void
 PlaylistBrowserNS::PlaylistBrowserView::mouseMoveEvent( QMouseEvent *event )
 {
+    // Make sure we repaint the item for the collection action buttons
+    const QModelIndex index = indexAt( event->pos() );
+    const int actionsCount = index.data( PrettyTreeRoles::DecoratorRoleCount ).toInt();
+    if( actionsCount )
+        update( index );
+
     if( event->buttons() || event->modifiers() )
     {
         Amarok::PrettyTreeView::mouseMoveEvent( event );
@@ -290,6 +281,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent *even
         return;
     }
 
+    // code copied in src/browser/CollectionTreeView.cpp
     bool isExpandable = model()->hasChildren( index );
     bool wouldExpand = isExpandable && !KGlobalSettings::singleClick(); // we're in doubleClick
     if( event->button() == Qt::LeftButton &&
@@ -364,7 +356,7 @@ PlaylistBrowserNS::PlaylistBrowserView::actionsFor( QModelIndexList indexes )
     foreach( QModelIndex idx, indexes )
     {
         QActionList idxActions = model()->data( idx,
-                PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
+                PrettyTreeRoles::DecoratorRole ).value<QActionList>();
         //only add unique actions model is responsible for making them unique
         foreach( QAction *action, idxActions )
         {

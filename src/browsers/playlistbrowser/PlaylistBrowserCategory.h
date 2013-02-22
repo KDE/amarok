@@ -18,11 +18,11 @@
 #define PLAYLISTBROWSERCATEGORY_H
 
 #include "browsers/BrowserCategory.h"
-#include "widgets/PrettyTreeView.h"
 
-#include <QModelIndex>
-#include <QPoint>
-#include <QSortFilterProxyModel>
+#include <QMap>
+
+class QTreeView;
+class QAbstractItemDelegate;
 
 class KAction;
 class KActionMenu;
@@ -31,7 +31,6 @@ class KToolBar;
 
 class PlaylistsInFoldersProxy;
 class PlaylistsByProviderProxy;
-class PlaylistTreeItemDelegate;
 class PlaylistBrowserFilterProxy;
 
 namespace Playlists {
@@ -91,7 +90,7 @@ private:
 
     KAction *m_addFolderAction;
 
-    PlaylistTreeItemDelegate *m_byProviderDelegate;
+    QAbstractItemDelegate *m_byProviderDelegate;
     QAbstractItemDelegate *m_defaultItemDelegate;
     PlaylistsInFoldersProxy *m_byFolderProxy;
     PlaylistsByProviderProxy *m_byProviderProxy;

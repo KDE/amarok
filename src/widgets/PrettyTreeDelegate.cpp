@@ -17,10 +17,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "CollectionTreeItemDelegate.h"
+#include "PrettyTreeDelegate.h"
 
 #include "App.h"
-#include "browsers/CollectionTreeItem.h"
+#include "PrettyTreeRoles.h"
 
 #include <kcapacitybar.h>
 
@@ -29,6 +29,7 @@
 #include <QFontMetrics>
 #include <QIcon>
 #include <QPainter>
+#include <QTreeView>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
@@ -36,9 +37,7 @@ Q_DECLARE_METATYPE( QList<QAction*> )
 #define CAPACITYRECT_MIN_HEIGHT 12
 #define CAPACITYRECT_MAX_HEIGHT 18
 
-QHash<QPersistentModelIndex, QRect> CollectionTreeItemDelegate::s_indexDecoratorRects;
-
-CollectionTreeItemDelegate::CollectionTreeItemDelegate( QTreeView *view )
+PrettyTreeDelegate::PrettyTreeDelegate( QTreeView *view )
     : QStyledItemDelegate( view )
     , m_view( view )
     , m_normalFm( 0 )
@@ -48,7 +47,7 @@ CollectionTreeItemDelegate::CollectionTreeItemDelegate( QTreeView *view )
     Q_ASSERT( m_view );
 }
 
-CollectionTreeItemDelegate::~CollectionTreeItemDelegate()
+PrettyTreeDelegate::~PrettyTreeDelegate()
 {
     delete m_normalFm;
     delete m_bigFm;
@@ -56,10 +55,13 @@ CollectionTreeItemDelegate::~CollectionTreeItemDelegate()
 }
 
 void
-CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
-                                   const QModelIndex &index ) const
+PrettyTreeDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
+                           const QModelIndex &index ) const
 {
-    if( index.parent().isValid() ) // not a root item
+    const bool hasCover = index.data( PrettyTreeRoles::HasCoverRole ).toBool();
+
+    if( hasCover ||
+        index.parent().isValid() ) // not a root item
     {
         QStyledItemDelegate::paint( painter, option, index );
         return;
@@ -76,17 +78,19 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int verticalSpace = qMax( style->pixelMetric( QStyle::PM_LayoutVerticalSpacing ), 1 );
     const int largeIconSize = style->pixelMetric( QStyle::PM_LargeIconSize );
     const int expanderIconSize = style->pixelMetric( QStyle::PM_MenuButtonIndicator );
-    const int tinyIconSize = qMax( style->pixelMetric( QStyle::PM_ListViewIconSize ), largeIconSize / 2 );
+    const int tinyIconSize = m_bigFm->height();
     const int frameHMargin = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
     const int frameVMargin = style->pixelMetric( QStyle::PM_FocusFrameVMargin );
+    const int frameExtraMargin = largeIconSize / 4; // to give top items a little more space
     const int iconSpacing = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
 
     const bool isRTL = QApplication::isRightToLeft();
-    const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
-    const int actionCount = index.data( CustomRoles::DecoratorRoleCount ).toInt();
+    const bool hasCapacity = index.data( PrettyTreeRoles::HasCapacityRole ).toBool();
+    const int actionCount = index.data( PrettyTreeRoles::DecoratorRoleCount ).toInt();
 
     QRect remainingRect( option.rect );
-    remainingRect.adjust( frameHMargin, frameVMargin, -frameHMargin, -frameVMargin );
+    remainingRect.adjust( frameHMargin,   frameVMargin + frameExtraMargin,
+                          -frameHMargin, -frameVMargin - frameExtraMargin );
 
     painter->save();
 
@@ -116,7 +120,6 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         remainingRect.adjust( largeIconSize + iconSpacing, 0, 0, 0 );
 
     // -- expander option (the small arrow)
-    // const int expanderYPadding = ( remainingRect.height() - expanderIconSize ) / 2;
     QStyleOption expanderOption( option );
     expanderOption.rect = remainingRect;
     QStyle::PrimitiveElement expandedPrimitive;
@@ -154,13 +157,14 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         remainingRect.adjust( 0, 0, - expanderIconSize - iconSpacing, 0 );
 
     // -- title
-    const QString collectionName = index.data( Qt::DisplayRole ).toString();
-
     QRect titleRect( remainingRect );
-    titleRect.setHeight( qMax( tinyIconSize, m_bigFm->height() ) + verticalSpace );
+    titleRect.setHeight( m_bigFm->height() + verticalSpace );
+
+    QString titleText = index.data( Qt::DisplayRole ).toString();
+    titleText = m_bigFm->elidedText( titleText, Qt::ElideRight, titleRect.width() );
 
     painter->setFont( m_bigFont );
-    painter->drawText( titleRect, Qt::AlignLeft, collectionName );
+    painter->drawText( titleRect, titleText );
 
     const bool isHover = option.state & QStyle::State_MouseOver;
     // The collectionBrowserTreeView triggers repaints if the mouse moves so
@@ -172,32 +176,19 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     if( isHover && ( actionCount > 0 ) )
     {
         const QList<QAction*> actions =
-                index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
+                index.data( PrettyTreeRoles::DecoratorRole ).value<QList<QAction*> >();
 
-        const int actionsRectWidth = actionCount > 0 ?
-            ( actionCount * ( tinyIconSize + iconSpacing ) - iconSpacing ) : 0;
-
-        QRect decoratorRect( titleRect );
-        if( ! isRTL )
-            decoratorRect.setLeft( titleRect.right() - actionsRectWidth );
-        decoratorRect.setHeight( tinyIconSize );
-        decoratorRect.setWidth( actionsRectWidth );
-
-        QRect iconRect( decoratorRect.topLeft(), QSize( tinyIconSize, tinyIconSize ) );
-        foreach( QAction* action, actions )
+        for( int i = 0; i < actions.count(); i++ )
         {
+            QRect iconRect( this->decoratorRect( option.rect, i ) );
+
             const bool isOver = isHover && iconRect.contains( cursorPos );
 
-            action->icon().paint( painter, iconRect, Qt::AlignCenter,
-                                  isOver ? QIcon::Active : QIcon::Normal,
-                                  isOver ? QIcon::On : QIcon::Off );
+            actions[i]->icon().paint( painter, iconRect, Qt::AlignCenter,
+                                      isOver ? QIcon::Active : QIcon::Normal,
+                                      isOver ? QIcon::On : QIcon::Off );
 
-            iconRect.adjust( tinyIconSize + iconSpacing, 0, tinyIconSize + iconSpacing, 0 );
         }
-
-        // Store the Model index for lookups for clicks. FAIL.
-        QPersistentModelIndex persistentIndex( index );
-        s_indexDecoratorRects.insert( persistentIndex, decoratorRect );
     }
 
 
@@ -205,8 +196,8 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     //show the bylinetext or the capacity (if available) when hovering
     if( isHover && hasCapacity )
     {
-        qreal bytesUsed = index.data( CustomRoles::UsedCapacityRole ).toReal();
-        qreal bytesTotal = index.data( CustomRoles::TotalCapacityRole ).toReal();
+        qreal bytesUsed = index.data( PrettyTreeRoles::UsedCapacityRole ).toReal();
+        qreal bytesTotal = index.data( PrettyTreeRoles::TotalCapacityRole ).toReal();
         const int percentage = (bytesTotal > 0.0) ? qRound( 100.0 * bytesUsed / bytesTotal ) : 100;
 
         KCapacityBar capacityBar( KCapacityBar::DrawTextInline );
@@ -224,21 +215,22 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     }
     else
     {
-        const QString bylineText = index.data( CustomRoles::ByLineRole ).toString();
-
         QRectF textRect( remainingRect );
         textRect.setTop( titleRect.bottom() );
         textRect.setHeight( remainingRect.height() - titleRect.height() );
 
-        painter->drawText( textRect, Qt::TextWordWrap, bylineText );
+        QString byLineText = index.data( PrettyTreeRoles::ByLineRole ).toString();
+        byLineText = m_smallFm->elidedText( byLineText, Qt::ElideRight, textRect.width() );
+
+        painter->drawText( textRect, byLineText );
     }
 
     painter->restore();
 }
 
 QSize
-CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option,
-                                      const QModelIndex & index ) const
+PrettyTreeDelegate::sizeHint( const QStyleOptionViewItem & option,
+                              const QModelIndex & index ) const
 {
     // note: the QStyledItemDelegage::sizeHint seems to be extremly slow. don't call it
 
@@ -253,71 +245,82 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option,
     const int verticalSpace = qMax( style->pixelMetric( QStyle::PM_LayoutVerticalSpacing ), 1 );
     const int largeIconSize = style->pixelMetric( QStyle::PM_LargeIconSize );
     const int expanderIconSize = style->pixelMetric( QStyle::PM_MenuButtonIndicator );
-    const int tinyIconSize = qMax( style->pixelMetric( QStyle::PM_ListViewIconSize ), largeIconSize / 2 );
+    const int smallIconSize = style->pixelMetric( QStyle::PM_ListViewIconSize );
     const int frameHMargin = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
     const int frameVMargin = style->pixelMetric( QStyle::PM_FocusFrameVMargin );
+    const int frameExtraMargin = largeIconSize / 4; // to give top items a little more space
     const int iconSpacing = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
 
     int viewportWidth = m_view->viewport()->size().width();
-    int normalHeight = frameVMargin + qMax( tinyIconSize, m_normalFm->height() ) + frameVMargin;
+    int normalHeight = frameVMargin + qMax( smallIconSize, m_normalFm->height() ) + frameVMargin;
 
+    const bool hasCover = index.data( PrettyTreeRoles::HasCoverRole ).toBool();
 
     // -- determine if we have an album
-    const bool hasCover = index.data( CustomRoles::HasCoverRole ).toBool();
-
     if( hasCover )
         return QSize( viewportWidth, qMax( normalHeight, largeIconSize + frameVMargin * 2 ) );
-
 
     // -- not top level. this is a normal item
     if( index.parent().isValid() )
         return QSize( viewportWidth, normalHeight );
 
     // -- ok, we have a top level item
-    const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
-    const int actionCount = index.data( CustomRoles::DecoratorRoleCount ).toInt();
+    const bool hasCapacity = index.data( PrettyTreeRoles::HasCapacityRole ).toBool();
 
     QSize iconSize( largeIconSize, largeIconSize );
     QSize expanderSize( expanderIconSize, expanderIconSize );
     QSize titleSize( m_bigFm->boundingRect( index.data( Qt::DisplayRole ).toString() ).size() );
+    QSize byLineSize( m_smallFm->boundingRect( index.data( PrettyTreeRoles::ByLineRole ).toString() ).size() );
     QSize capacitySize( hasCapacity ? 10 : 0, hasCapacity ? CAPACITYRECT_MIN_HEIGHT : 0 );
 
-    const QList<QAction*> actions =
-        index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
-
-    const int actionsRectWidth = actionCount > 0 ?
-        ( actionCount * ( tinyIconSize + iconSpacing ) - iconSpacing ) : 0;
-    QSize actionIconsSize( actionsRectWidth, actionCount > 0 ? tinyIconSize : 0 );
-
     int layoutWidth = frameHMargin +
-        iconSize.width() + iconSpacing + titleSize.width() +
-        actionIconsSize.width() + iconSpacing + expanderSize.width() +
+        iconSize.width() + iconSpacing +
+        qMax( titleSize.width(), byLineSize.width() ) + expanderSize.width() +
         frameHMargin;
 
-    // if we have more size, use it (in order to get more space for the
-    // word wrapping byline
     layoutWidth = qMax( viewportWidth, layoutWidth );
 
-    QSize bylineSize( m_smallFm->boundingRect( 0, 0, layoutWidth, 300, Qt::TextWordWrap,
-                                               index.data( CustomRoles::ByLineRole ).toString() ).size() );
-
-    int layoutHeight = frameVMargin +
-        qMax( titleSize.height(), actionIconsSize.height() ) + verticalSpace +
-        qMax( capacitySize.height(), bylineSize.height() ) +
-        frameVMargin;
+    int layoutHeight = frameVMargin + frameExtraMargin +
+        titleSize.height() + verticalSpace +
+        qMax( capacitySize.height(), byLineSize.height() ) +
+        frameExtraMargin + frameVMargin;
 
     return QSize( layoutWidth, layoutHeight );
 }
 
 QRect
-CollectionTreeItemDelegate::decoratorRect( const QModelIndex &index )
+PrettyTreeDelegate::decoratorRect( const QRect &itemRect, int nr ) const
 {
-    QPersistentModelIndex persistentIndex( index );
-    return s_indexDecoratorRects.value( persistentIndex );
+    QStyle *style;
+    if( QWidget *w = qobject_cast<QWidget*>(parent()) )
+        style = w->style();
+    else
+        style = QApplication::style();
+
+    const int largeIconSize = style->pixelMetric( QStyle::PM_LargeIconSize );
+    const int expanderIconSize = style->pixelMetric( QStyle::PM_MenuButtonIndicator );
+    const int tinyIconSize = m_bigFm->height();
+    const int frameHMargin = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
+    const int frameVMargin = style->pixelMetric( QStyle::PM_FocusFrameVMargin );
+    const int frameExtraMargin = largeIconSize / 8; // to give top items a little more space
+    const int iconSpacing = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
+
+    const bool isRTL = QApplication::isRightToLeft();
+
+    int y = itemRect.top() + frameVMargin + frameExtraMargin;
+    int xOffset = frameHMargin + expanderIconSize + iconSpacing + ( tinyIconSize + iconSpacing ) * nr;
+    int x;
+
+    if( isRTL )
+        x = itemRect.left() + xOffset;
+    else
+        x = itemRect.right() - xOffset - tinyIconSize;
+
+    return QRect( QPoint( x, y ), QSize( tinyIconSize, tinyIconSize ) );
 }
 
 void
-CollectionTreeItemDelegate::updateFonts( const QStyleOptionViewItem &option ) const
+PrettyTreeDelegate::updateFonts( const QStyleOptionViewItem &option ) const
 {
     if( m_normalFm && m_bigFm && m_smallFm && option.font == m_originalFont )
         return;

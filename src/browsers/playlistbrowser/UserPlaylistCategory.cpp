@@ -24,7 +24,6 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "PlaylistsInFoldersProxy.h"
 #include "PlaylistsByProviderProxy.h"
-#include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"
 
 #include "UserPlaylistModel.h"

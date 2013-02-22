@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 #include "amarokconfig.h"
 
+#include "widgets/PrettyTreeRoles.h"
 #include "core/capabilities/ActionsCapability.h"
 
 #include <KLocale>
@@ -149,12 +150,12 @@ CollectionTreeItem::data( int role ) const
         switch( role )
         {
         case Qt::DisplayRole:
-        case CustomRoles::FilterRole:
-        case CustomRoles::SortRole:
+        case PrettyTreeRoles::FilterRole:
+        case PrettyTreeRoles::SortRole:
             return m_parentCollection->prettyName();
         case Qt::DecorationRole:
             return m_parentCollection->icon();
-        case CustomRoles::ByLineRole:
+        case PrettyTreeRoles::ByLineRole:
             if( m_isCounting )
                 return counting;
             if( m_trackCount < 0 )
@@ -173,15 +174,15 @@ CollectionTreeItem::data( int role ) const
                 return counting;
             }
             return i18np( "1 track", "%1 tracks", m_trackCount );
-        case CustomRoles::HasCapacityRole:
+        case PrettyTreeRoles::HasCapacityRole:
             return m_parentCollection->hasCapacity();
-        case CustomRoles::UsedCapacityRole:
+        case PrettyTreeRoles::UsedCapacityRole:
             return m_parentCollection->usedCapacity();
-        case CustomRoles::TotalCapacityRole:
+        case PrettyTreeRoles::TotalCapacityRole:
             return m_parentCollection->totalCapacity();
-        case CustomRoles::DecoratorRoleCount:
+        case PrettyTreeRoles::DecoratorRoleCount:
             return decoratorActions().size();
-        case CustomRoles::DecoratorRole:
+        case PrettyTreeRoles::DecoratorRole:
             QVariant v;
             v.setValue( decoratorActions() );
             return v;

@@ -23,6 +23,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 #include "core/support/Debug.h"
+#include "widgets/PrettyTreeRoles.h"
 
 #include <KIcon>
 
@@ -154,12 +155,13 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
                 {
                 case Qt::DisplayRole:
                 case Qt::EditRole: return nameData;
-                case DescriptionRole:
                 case Qt::ToolTipRole: return descriptionData;
                 case Qt::DecorationRole: return iconData;
-                case PlaylistBrowserModel::ByLineRole:
+                case PrettyTreeRoles::ByLineRole:
                     return playlistCountData;
-                case PlaylistBrowserModel::ActionRole:
+                case PrettyTreeRoles::DecoratorRoleCount:
+                    return providerActions.count();
+                case PrettyTreeRoles::DecoratorRole:
                     return providerActionsData;
                 }
             }
@@ -182,19 +184,19 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
     {
         case Qt::DisplayRole:
         case Qt::EditRole: return name;
-        case DescriptionRole:
         case Qt::ToolTipRole: return description;
         case Qt::DecorationRole: return QVariant( icon );
-        case PlaylistBrowserModel::ByLineRole:
-            return i18ncp( "number of playlists from one source",
-                           "One playlist", "%1 playlists",
-                           playlistCount );
-        case PlaylistBrowserModel::ActionRole:
-            return QVariant::fromValue( index.column() == PlaylistBrowserModel::ProviderColumn ?
-                    providerActions : actionsFor( index ) );
-        case PlaylistBrowserModel::ActionCountRole:
-            return QVariant( index.column() == PlaylistBrowserModel::ProviderColumn ?
-                    providerActions.count() : actionsFor( index ).count() );
+        case PrettyTreeRoles::ByLineRole:
+            if( IS_TRACK(index) )
+                return QVariant();
+            else
+                return i18ncp( "number of playlists from one source",
+                               "One playlist", "%1 playlists",
+                               playlistCount );
+        case PrettyTreeRoles::DecoratorRole:
+            return QVariant::fromValue( actionsFor( index ) );
+        case PrettyTreeRoles::DecoratorRoleCount:
+            return actionsFor( index ).count();
         case PlaylistBrowserModel::ProviderRole:
             return provider ? QVariant::fromValue<Playlists::PlaylistProvider *>( provider ) : QVariant();
 

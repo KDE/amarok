@@ -18,6 +18,8 @@
 #include "BrowserCategory.h"
 #include "core/support/Debug.h"
 
+#include "widgets/PrettyTreeRoles.h"
+
 BrowserCategoryListModel::BrowserCategoryListModel( QObject* parent )
  : QAbstractListModel( parent )
 {
@@ -50,18 +52,15 @@ BrowserCategoryListModel::data( const QModelIndex &index, int role ) const
         case Qt::DecorationRole:
             return QVariant( m_categories[index.row()]->icon() );
 
-        case CustomCategoryRoles::ShortDescriptionRole:
-        case CustomCategoryRoles::SortRole:
+        case PrettyTreeRoles::SortRole:
+        case PrettyTreeRoles::ByLineRole:
             return QVariant( m_categories[index.row()]->shortDescription() );
 
-        case CustomCategoryRoles::LongDescriptionRole:
+        case Qt::ToolTipRole:
             return QVariant( m_categories[index.row()]->longDescription() );
 
         case CustomCategoryRoles::CategoryRole:
             return qVariantFromValue( m_categories[index.row()] );
-
-        case CustomCategoryRoles::AlternateRowRole:
-            return ( index.row() % 2 == 1 );
 
         default:
             return QVariant();

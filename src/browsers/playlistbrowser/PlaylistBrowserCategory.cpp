@@ -26,10 +26,10 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "PlaylistsInFoldersProxy.h"
 #include "PlaylistsByProviderProxy.h"
-#include "PlaylistTreeItemDelegate.h"
 #include "PlaylistBrowserFilterProxy.h"
 #include "SvgHandler.h"
 #include "PlaylistBrowserView.h"
+#include "widgets/PrettyTreeDelegate.h"
 
 #include <KActionMenu>
 #include <KConfigGroup>
@@ -106,7 +106,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
 
     m_playlistView = new PlaylistBrowserView( m_filterProxy, this );
     m_defaultItemDelegate = m_playlistView->itemDelegate();
-    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
+    m_byProviderDelegate = new PrettyTreeDelegate( m_playlistView );
 
     toggleView( toggleAction->isChecked() );
 

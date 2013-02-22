@@ -2,7 +2,7 @@
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
- * Copyright (c) 2010 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,37 +17,51 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PLAYLISTTREEITEMDELEGATE_H
-#define PLAYLISTTREEITEMDELEGATE_H
+#ifndef AMAROK_PRETTY_TREE_DELEGATE_H
+#define AMAROK_PRETTY_TREE_DELEGATE_H
 
-#include <QAction>
 #include <QFont>
-#include <QPersistentModelIndex>
 #include <QRect>
 #include <QStyledItemDelegate>
-#include <QTreeView>
 
-class PlaylistTreeItemDelegate : public QStyledItemDelegate
+class QFontMetrics;
+class QTreeView;
+
+/** A delegate used for the browser.
+    This delegate has the following specialities:
+     It will handle the hasCoverRole and will draw a bigger item for the cover.
+     It will handle the byLineRole and will draw an extra big item with a second
+      line of text
+     Also this big item will have an expander arrow if needed and capacities and
+     actions.
+*/
+class PrettyTreeDelegate : public QStyledItemDelegate
 {
-   public:
-        PlaylistTreeItemDelegate( QTreeView *view );
-        ~PlaylistTreeItemDelegate();
+    Q_OBJECT
+
+    public:
+        PrettyTreeDelegate( QTreeView *view );
+        ~PrettyTreeDelegate();
 
         void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
         QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
-        static QRect actionsRect( const QModelIndex &index );
-
-        /** Letting the view know how much space one icon takes.
-        *   Required for the delegate actions handling.
-        */
-        static int delegateActionIconWidth();
+        /** Returns the rectangle where the action icon with the specific nr is located. */
+        QRect decoratorRect( const QRect &itemRect, int nr ) const;
 
     private:
-        QTreeView *m_view;
-        QFont m_bigFont;
-        QFont m_smallFont;
+        /** Verify and if needed update the buffered fonts and font metrics. */
+        void updateFonts( const QStyleOptionViewItem &option ) const;
 
-        static QHash<QPersistentModelIndex, QRect> s_indexActionsRects;
+        QTreeView *m_view;
+
+        mutable QFont m_originalFont;
+        mutable QFont m_bigFont;
+        mutable QFont m_smallFont;
+
+        mutable QFontMetrics *m_normalFm;
+        mutable QFontMetrics *m_bigFm;
+        mutable QFontMetrics *m_smallFm;
 };
-#endif // PLAYLISTTREEITEMDELEGATE_H
+
+#endif

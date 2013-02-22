@@ -30,11 +30,6 @@
 
 namespace PlaylistBrowserNS {
 
-enum {
-    ShortDescriptionRole = PlaylistBrowserModel::CustomRoleOffset,
-    LongDescriptionRole
-};
-
 /* TODO: these should be replaced with custom roles for PlaylistColumn so all data of a playlist can
    be fetched at once with itemData() */
 enum

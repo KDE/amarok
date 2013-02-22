@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,46 +14,35 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef BROWSERCATEGORYLISTMODEL_H
-#define BROWSERCATEGORYLISTMODEL_H
+#ifndef AMAROK_PRETTY_TREE_ROLES_H
+#define AMAROK_PRETTY_TREE_ROLES_H
 
-#include <QAbstractListModel>
-
-#include <QList>
-
-class BrowserCategory;
-Q_DECLARE_METATYPE( BrowserCategory * )
-
-namespace CustomCategoryRoles
+namespace PrettyTreeRoles
 {
-    enum CustomCategoryRolesId {
-        CategoryRole = Qt::UserRole + 31,
+    /** Roles used for the PrettyTreeDelegate and some models.
+        The numbers start at the strange index to reduce the possibility that
+        different roles from different models clash.
+    */
+    enum CustomRolesId
+    {
+        SortRole = Qt::UserRole + 51,
+        FilterRole = Qt::UserRole + 52,
+        ByLineRole = Qt::UserRole + 53,
+        /** Boolean value whether given collection knows about used and total capacity */
+        HasCapacityRole = Qt::UserRole + 54,
+        /** Number of bytes used by music and other files in collection (float) */
+        UsedCapacityRole = Qt::UserRole + 55,
+        /** Total capacity of the collection in bytes (float) */
+        TotalCapacityRole = Qt::UserRole + 56,
+        /** The number of collection actions */
+        DecoratorRoleCount = Qt::UserRole + 57,
+
+        /** The collection actions */
+        DecoratorRole = Qt::UserRole + 58,
+
+        /** True if the item has a cover that should be displayed */
+        HasCoverRole = Qt::UserRole + 59
     };
 }
-
-/**
-A very simple model to hold the available categories
-
-    @author Nikolaj Hald Nielsen <nhn@kde.org> 
-*/
-class BrowserCategoryListModel : public QAbstractListModel
-{
-public:
-    BrowserCategoryListModel( QObject *parent = 0 );
-    ~BrowserCategoryListModel();
-
-    int rowCount( const QModelIndex & parent = QModelIndex() ) const;
-    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
-
-    /**
-     * Adds a new sub-category to this list.
-     * This object will take ownership of the new category.
-     */
-    void addCategory( BrowserCategory* category );
-    void removeCategory( BrowserCategory* category );
-
-private:
-    QList<BrowserCategory*> m_categories;
-};
 
 #endif

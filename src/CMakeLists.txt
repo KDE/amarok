@@ -171,7 +171,6 @@ set(libbrowserframework_SRCS
     browsers/BrowserBreadcrumbWidget.cpp
     browsers/BrowserCategory.cpp
     browsers/BrowserCategoryList.cpp
-    browsers/BrowserCategoryListDelegate.cpp
     browsers/BrowserCategoryListModel.cpp
     browsers/BrowserCategoryListSortFilterProxyModel.cpp
     browsers/BrowserDock.cpp
@@ -189,7 +188,6 @@ set(libbrowserframework_SRCS
 # COLLECTIONBROWSER
 #####################################################################
 set(libcollectionbrowser_SRCS
-    browsers/collectionbrowser/CollectionTreeItemDelegate.cpp
     browsers/collectionbrowser/CollectionBrowserTreeView.cpp
     browsers/collectionbrowser/CollectionWidget.cpp
 )
@@ -349,7 +347,6 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/PlaylistBrowserView.cpp
     browsers/playlistbrowser/UserPlaylistCategory.cpp
     browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp
-    browsers/playlistbrowser/PlaylistTreeItemDelegate.cpp
     browsers/playlistbrowser/PlaylistsByProviderProxy.cpp
     browsers/playlistbrowser/PodcastModel.cpp
     browsers/playlistbrowser/PodcastCategory.cpp
@@ -741,6 +738,7 @@ set(amaroklib_LIB_SRCS
     widgets/PixmapViewer.cpp
     widgets/PlayPauseButton.cpp
     widgets/PrettyTreeView.cpp
+    widgets/PrettyTreeDelegate.cpp
     widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
     widgets/SliderWidget.cpp

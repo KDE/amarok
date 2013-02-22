@@ -53,12 +53,8 @@ class PlaylistBrowserModel : public QAbstractItemModel,
 
         enum
         {
-            DescriptionRole = Qt::UserRole,
-            ByLineRole, //show some additional info like count or status. Displayed under description
-            ActionCountRole,
-            ActionRole, //list of QActions for the index
-            ProviderRole,  // pointer to associated PlaylistProvider
-            CustomRoleOffset //first role that can be used by sublasses for their own data
+            ProviderRole = Qt::UserRole + 21,  // pointer to associated PlaylistProvider
+            CustomRoleOffset = Qt::UserRole + 22 //first role that can be used by sublasses for their own data
         };
 
         PlaylistBrowserModel( int PlaylistCategory );

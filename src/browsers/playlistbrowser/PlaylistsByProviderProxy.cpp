@@ -22,6 +22,7 @@
 #include "core/playlists/PlaylistProvider.h"
 #include "core/support/Debug.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "widgets/PrettyTreeRoles.h"
 
 #include <KIcon>
 
@@ -248,8 +249,8 @@ PlaylistsByProviderProxy::slotProviderAdded( Playlists::PlaylistProvider *provid
     ItemData itemData;
     itemData.insert( Qt::DisplayRole, provider->prettyName() );
     itemData.insert( Qt::DecorationRole, provider->icon() );
-    itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole,
-                        QVariant::fromValue( provider->providerActions() ) );
+    itemData.insert( PrettyTreeRoles::DecoratorRole, QVariant::fromValue( provider->providerActions() ) );
+    itemData.insert( PrettyTreeRoles::DecoratorRoleCount, provider->providerActions().count() );
 
     itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ProviderRole,
                         QVariant::fromValue<Playlists::PlaylistProvider*>( provider ) );

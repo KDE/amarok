@@ -32,6 +32,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/TextualQueryFilter.h"
+#include "widgets/PrettyTreeRoles.h"
 
 #include <KGlobalSettings>
 #include <KIcon>
@@ -203,7 +204,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         {
         case Qt::DisplayRole:
         case Qt::ToolTipRole:
-        case CustomRoles::FilterRole:
+        case PrettyTreeRoles::FilterRole:
             {
                 QString name = track->prettyName();
                 Meta::AlbumPtr album = track->album();
@@ -227,7 +228,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
 
         case Qt::DecorationRole:
             return KIcon( "media-album-track" );
-        case CustomRoles::SortRole:
+        case PrettyTreeRoles::SortRole:
             return track->sortableName();
         }
     }
@@ -265,10 +266,10 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
             else
                 return iconForLevel( level );
 
-        case CustomRoles::SortRole:
+        case PrettyTreeRoles::SortRole:
             return album->sortableName();
 
-        case CustomRoles::HasCoverRole:
+        case PrettyTreeRoles::HasCoverRole:
             return AmarokConfig::showAlbumArt();
         }
     }
@@ -278,7 +279,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         {
         case Qt::DisplayRole:
         case Qt::ToolTipRole:
-        case CustomRoles::FilterRole:
+        case PrettyTreeRoles::FilterRole:
             {
                 QString name = item->data()->prettyName();
                 if( name.isEmpty() )
@@ -296,7 +297,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
                 return iconForLevel( level );
             }
 
-        case CustomRoles::SortRole:
+        case PrettyTreeRoles::SortRole:
             return item->data()->sortableName();
         }
     }
@@ -308,7 +309,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
             return KIcon( "similarartists-amarok" );
         case Qt::DisplayRole:
             return i18n( "Various Artists" );
-        case CustomRoles::SortRole:
+        case PrettyTreeRoles::SortRole:
             return QString(); // so that we can compare it against other strings
         }
     }

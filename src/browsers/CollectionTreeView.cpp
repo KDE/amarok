@@ -347,6 +347,7 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 
     // that was a double click on the item itself or the expander clicked? (BR: 279513)
+    // code copied in src/browser/playlistbrowser/PlaylistBrowserView.cpp
     bool reverse = isRightToLeft();
     QRect rect = visualRect( index );
     if( KGlobalSettings::singleClick() &&

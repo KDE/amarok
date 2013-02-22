@@ -27,13 +27,13 @@
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "browsers/collectionbrowser/CollectionBrowserTreeView.h"
-#include "browsers/collectionbrowser/CollectionTreeItemDelegate.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/proxycollection/ProxyCollection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "widgets/SearchWidget.h"
+#include "widgets/PrettyTreeDelegate.h"
 
 #include <KAction>
 #include <KIcon>
@@ -92,7 +92,7 @@ CollectionWidget::Private::view( CollectionWidget::ViewMode mode )
             v->setFrameShape( QFrame::NoFrame );
             v->setRootIsDecorated( false );
             connect( v, SIGNAL(leavingTree()), searchWidget->comboBox(), SLOT(setFocus()) );
-            CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( v );
+            PrettyTreeDelegate *delegate = new PrettyTreeDelegate( v );
             v->setItemDelegate( delegate );
             CollectionTreeItemModelBase *multiModel = new CollectionTreeItemModel( QList<CategoryId::CatMenuId>() );
             v->setModel( multiModel );
@@ -168,11 +168,6 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     const QString &value = Amarok::config( "Collection Browser" ).readEntry( "View Mode" );
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
     enumValue == -1 ? d->viewMode = NormalCollections : d->viewMode = (ViewMode) enumValue;
-
-    // FIXME Variable viewMode is never used. What was the intention?
-    ViewMode viewMode = NormalCollections;
-    if( enumValue != -1 )
-       viewMode = (ViewMode)enumValue;
 
     // -- the search widget
     d->searchWidget = new SearchWidget( hbox );

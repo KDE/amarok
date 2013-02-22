@@ -19,12 +19,12 @@
 #include "BrowserCategoryList.h"
 
 #include "App.h"
-#include "BrowserCategoryListDelegate.h"
 #include "context/ContextView.h"
 #include "core/support/Debug.h"
 #include "InfoProxy.h"
 #include "PaletteHandler.h"
 #include "widgets/PrettyTreeView.h"
+#include "widgets/PrettyTreeDelegate.h"
 #include "widgets/SearchWidget.h"
 
 #include <QStackedWidget>
@@ -72,11 +72,9 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
     m_proxyModel = new BrowserCategoryListSortFilterProxyModel( this );
     m_proxyModel->setSourceModel( m_categoryListModel );
 
-    m_delegate = new BrowserCategoryListDelegate( m_categoryListView );
-    m_categoryListView->setItemDelegate( m_delegate );
+    m_categoryListView->setItemDelegate( new PrettyTreeDelegate( m_categoryListView ) );
     m_categoryListView->setHeaderHidden( true );
     m_categoryListView->setRootIsDecorated( false );
-    m_categoryListView->setAlternatingRowColors( true );
     m_categoryListView->setModel( m_proxyModel );
     m_categoryListView->setMouseTracking ( true );
 
