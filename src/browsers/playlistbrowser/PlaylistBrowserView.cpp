@@ -61,8 +61,6 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
     setEditTriggers( QAbstractItemView::EditKeyPressed );
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
         setAnimated( true );
-
-    The::paletteHandler()->updateItemView( this );
 }
 
 PlaylistBrowserNS::PlaylistBrowserView::~PlaylistBrowserView()

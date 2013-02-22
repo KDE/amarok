@@ -45,6 +45,11 @@ public:
     QPalette palette();
 
     void setPalette( const QPalette & palette );
+
+    /** Gives the item view a special darker palette and transparent background.
+        You need to connect to the newPalette signal afterwards because this
+        darker palette does not automatically update.
+    */
     void updateItemView( QAbstractItemView * view );
 
     /**
