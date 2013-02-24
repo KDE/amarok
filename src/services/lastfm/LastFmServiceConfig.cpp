@@ -100,6 +100,16 @@ LastFmServiceConfig::~LastFmServiceConfig()
 void LastFmServiceConfig::save()
 {
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
+
+    // if username and password is empty, reset to NoPasswordEnteredYet; this enables
+    // going from PasswordInAscii to PasswodInKWallet
+    if( m_username.isEmpty() && m_password.isEmpty() )
+    {
+        m_kWalletUsage = NoPasswordEnteredYet;
+        config.deleteEntry( "username" ); // prevent possible stray credentials
+        config.deleteEntry( "password" );
+    }
+
     config.writeEntry( "sessionKey", m_sessionKey );
     config.writeEntry( "scrobble", m_scrobble );
     config.writeEntry( "fetchSimilar", m_fetchSimilar );
