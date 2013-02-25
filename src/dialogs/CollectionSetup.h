@@ -20,19 +20,21 @@
 #ifndef AMAROK_COLLECTIONSETUP_H
 #define AMAROK_COLLECTIONSETUP_H
 
-#include <KComboBox>
+// #include <KComboBox>
 
-#include <QCheckBox>
+// #include <QCheckBox>
 #include <QFileSystemModel>
-#include <QTreeWidgetItem>
+// #include <QTreeWidgetItem>
 
 #include "core/support/Debug.h"
 
 #include "ui_CollectionConfig.h"
 
+class QAction;
+class QCheckBox;
 class TranscodingConfig;
-namespace CollectionFolder { class Model; }
 
+namespace CollectionFolder { class Model; }
 
 class CollectionSetup : public QWidget, public Ui::CollectionConfig
 {
@@ -50,8 +52,8 @@ class CollectionSetup : public QWidget, public Ui::CollectionConfig
         bool hasChanged() const;
 
         QStringList dirs() const { return m_dirs; }
-        bool recursive() const { return m_recursive && m_recursive->isChecked(); }
-        bool monitor() const { return m_monitor && m_monitor->isChecked(); }
+        bool recursive() const;
+        bool monitor() const;
 
         const QString modelFilePath( const QModelIndex &index ) const;
         Transcoding::SelectConfigWidget * transcodingConfig() const { return m_ui->transcodingConfig; }
@@ -62,12 +64,21 @@ class CollectionSetup : public QWidget, public Ui::CollectionConfig
     private slots:
         void importCollection();
 
+        /** Shows a context menu if the right mouse button is pressed over a directory. */
+        void slotPressed( const QModelIndex &index );
+        void slotRescanDirTriggered();
+
     private:
         static CollectionSetup* s_instance;
 
         Ui::CollectionConfig *m_ui;
         CollectionFolder::Model *m_model;
         QStringList m_dirs;
+
+        QAction *m_rescanDirAction;
+        /** This is the directory where the rescanDirAction was triggered */
+        QString m_currDir;
+
         QCheckBox *m_recursive;
         QCheckBox *m_monitor;
 };

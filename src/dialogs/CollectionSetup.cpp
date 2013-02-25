@@ -33,6 +33,7 @@
 
 #include <QAction>
 #include <QApplication>
+#include <QCheckBox>
 #include <QDir>
 #include <QFile>
 #include <QLabel>
@@ -45,6 +46,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
         : QWidget( parent )
         , Ui::CollectionConfig()
         , m_ui( new Ui::CollectionConfig() )
+        , m_rescanDirAction( new QAction( this ) )
 {
     m_ui->setupUi(this);
 
@@ -55,7 +57,13 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
         m_ui->view->setAnimated( true );
-    connect( m_ui->view, SIGNAL( clicked( const QModelIndex & ) ), this, SIGNAL( changed() ) );
+    connect( m_ui->view, SIGNAL( clicked( const QModelIndex & ) ),
+             this, SIGNAL( changed() ) );
+
+    connect( m_ui->view, SIGNAL( pressed(const QModelIndex &) ),
+             this, SLOT( slotPressed(const QModelIndex&) ) );
+    connect( m_rescanDirAction, SIGNAL( triggered() ),
+             this, SLOT( slotRescanDirTriggered() ) );
 
     KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui->buttonContainer );
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
@@ -107,18 +115,6 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     }
 }
 
-bool
-CollectionSetup::hasChanged() const
-{
-    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
-    QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
-
-    return
-        m_model->directories() != collectionFolders ||
-        m_recursive->isChecked() != AmarokConfig::scanRecursively() ||
-        m_monitor->isChecked() != AmarokConfig::monitorChanges();
-}
-
 void
 CollectionSetup::writeConfig()
 {
@@ -141,6 +137,33 @@ CollectionSetup::writeConfig()
     }
 }
 
+bool
+CollectionSetup::hasChanged() const
+{
+    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
+
+    return
+        m_model->directories() != collectionFolders ||
+        m_recursive->isChecked() != AmarokConfig::scanRecursively() ||
+        m_monitor->isChecked() != AmarokConfig::monitorChanges();
+}
+
+bool
+CollectionSetup::recursive() const
+{ return m_recursive && m_recursive->isChecked(); }
+
+bool
+CollectionSetup::monitor() const
+{ return m_monitor && m_monitor->isChecked(); }
+
+const QString
+CollectionSetup::modelFilePath( const QModelIndex &index ) const
+{
+    return m_model->filePath( index );
+}
+
+
 void
 CollectionSetup::importCollection()
 {
@@ -148,11 +171,44 @@ CollectionSetup::importCollection()
     dlg->exec(); // be modal to avoid messing about by the user in the application
 }
 
-const QString
-CollectionSetup::modelFilePath( const QModelIndex &index ) const
+void
+CollectionSetup::slotPressed( const QModelIndex &index )
 {
-    return m_model->filePath( index );
+    DEBUG_BLOCK
+
+    // --- show context menu on right mouse button
+    if( ( QApplication::mouseButtons() & Qt::RightButton ) )
+    {
+        m_currDir = modelFilePath( index );
+        debug() << "Setting current dir to " << m_currDir;
+
+        // check if there is an sql collection covering the directory
+        bool covered = false;
+        QList<Collections::Collection*> queryableCollections = CollectionManager::instance()->queryableCollections();
+        foreach( Collections::Collection *collection, queryableCollections )
+        {
+            if( collection->isDirInCollection( m_currDir ) )
+                covered = true;
+        }
+
+        // it's covered, so we can show the rescan option
+        if( covered )
+        {
+            m_rescanDirAction->setText( i18n( "Rescan '%1'", m_currDir ) );
+            QMenu menu;
+            menu.addAction( m_rescanDirAction );
+            menu.exec( QCursor::pos() );
+        }
+    }
 }
+
+void
+CollectionSetup::slotRescanDirTriggered()
+{
+    DEBUG_BLOCK
+    CollectionManager::instance()->startIncrementalScan( m_currDir );
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////

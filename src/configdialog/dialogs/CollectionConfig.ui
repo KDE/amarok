@@ -34,7 +34,7 @@
        </widget>
       </item>
       <item>
-       <widget class="CollectionSetupTreeView" name="view">
+       <widget class="QTreeView" name="view">
         <property name="headerHidden">
          <bool>true</bool>
         </property>
@@ -91,11 +91,6 @@
    <class>Transcoding::SelectConfigWidget</class>
    <extends>QComboBox</extends>
    <header>transcoding/TranscodingSelectConfigWidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>CollectionSetupTreeView</class>
-   <extends>QTreeView</extends>
-   <header>widgets/CollectionSetupTreeView.h</header>
   </customwidget>
  </customwidgets>
  <includes>

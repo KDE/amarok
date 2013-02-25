@@ -719,7 +719,6 @@ set(amaroklib_LIB_SRCS
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/ClearSpinBox.cpp
-    widgets/CollectionSetupTreeView.cpp
     widgets/CoverLabel.cpp
     widgets/HintLineEdit.cpp
     widgets/kdatecombo.cpp
