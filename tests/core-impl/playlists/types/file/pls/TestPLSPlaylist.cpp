@@ -19,10 +19,11 @@
 
 #include "TestPLSPlaylist.h"
 
-#include "core/support/Components.h"
-#include "config-amarok-test.h"
-#include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "EngineController.h"
+#include "config-amarok-test.h"
+#include "core/support/Components.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QFile>
@@ -50,6 +51,11 @@ void TestPLSPlaylist::initTestCase()
     Amarok::Components::setEngineController( controller );
 
     qRegisterMetaType<Meta::TrackPtr>( "Meta::TrackPtr" );
+
+    /* Collection manager needs to be instantiated in the main thread, but
+     * MetaProxy::Tracks used by playlist may trigger its creation in a different thread.
+     * Pre-create it explicitly */
+    CollectionManager::instance();
 
     const KUrl url = dataPath( "data/playlists/test.pls" );
     QFile playlistFile1( url.toLocalFile() );

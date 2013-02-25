@@ -31,6 +31,7 @@
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
 
+#include <QCoreApplication>
 #include <QList>
 #include <QMetaEnum>
 #include <QMetaObject>
@@ -107,6 +108,9 @@ CollectionManager::CollectionManager()
     , d( new Private )
 {
     DEBUG_BLOCK
+    // ensure this object is created in a main thread
+    Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
+
     setObjectName( "CollectionManager" );
     qRegisterMetaType<SqlStorage *>( "SqlStorage*" );
     d->sqlDatabase = 0;

@@ -22,6 +22,7 @@
 #include "core/support/Components.h"
 #include "EngineController.h"
 #include "config-amarok-test.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/multi/MultiTrack.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
@@ -44,6 +45,11 @@ void TestMetaMultiTrack::initTestCase()
     //apparently the engine controller is needed somewhere, or we will get a crash...
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );
+
+    /* Collection manager needs to be instantiated in the main thread, but
+     * MetaProxy::Tracks used by playlist may trigger its creation in a different thread.
+     * Pre-create it explicitly */
+    CollectionManager::instance();
 
     const QString path = QString( AMAROK_TEST_DIR ) + "/data/playlists/test.pls";
     const QFileInfo file( QDir::toNativeSeparators( path ) );

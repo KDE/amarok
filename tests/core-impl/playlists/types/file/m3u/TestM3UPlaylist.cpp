@@ -19,6 +19,7 @@
 
 #include "TestM3UPlaylist.h"
 #include "config-amarok-test.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 
 #include <KGlobal>
@@ -48,6 +49,11 @@ TestM3UPlaylist::dataPath( const QString &relPath )
 void TestM3UPlaylist::initTestCase()
 {
     qRegisterMetaType<Meta::TrackPtr>( "Meta::TrackPtr" );
+
+    /* Collection manager needs to be instantiated in the main thread, but
+     * MetaProxy::Tracks used by playlist may trigger its creation in a different thread.
+     * Pre-create it explicitly */
+    CollectionManager::instance();
 
     const QUrl url = dataPath( "data/playlists/test.m3u" );
     QFile playlistFile1( url.toLocalFile() );
