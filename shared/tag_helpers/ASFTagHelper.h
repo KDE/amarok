@@ -26,7 +26,7 @@ namespace Meta
 {
     namespace Tag
     {
-        class AMAROK_EXPORT ASFTagHelper : public TagHelper
+        class AMAROKSHARED_EXPORT ASFTagHelper : public TagHelper
         {
             public:
                 ASFTagHelper( TagLib::Tag *tag, TagLib::ASF::Tag *asfTag, Amarok::FileType fileType );
@@ -34,11 +34,9 @@ namespace Meta
                 virtual Meta::FieldHash tags() const;
                 virtual bool setTags( const Meta::FieldHash &changes );
 
-#ifndef UTILITIES_BUILD
                 virtual bool hasEmbeddedCover() const;
                 virtual QImage embeddedCover() const;
                 virtual bool setEmbeddedCover(const QImage &cover);
-#endif  //UTILITIES_BUILD
 
             private:
                 TagLib::ASF::Tag *m_tag;

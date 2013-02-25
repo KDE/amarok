@@ -20,15 +20,11 @@
 #ifndef COLLECTIONSCANNER_PLAYLIST_H
 #define COLLECTIONSCANNER_PLAYLIST_H
 
+#include "amarokshared_export.h"
+
 #include <QString>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#ifndef UTILITIES_BUILD
-    #include "amarok_export.h"
-#else
-    #define AMAROK_EXPORT
-#endif
 
 namespace CollectionScanner
 {
@@ -38,7 +34,7 @@ namespace CollectionScanner
  * @short Represents a playlist
  */
 
-class AMAROK_EXPORT Playlist
+class AMAROKSHARED_EXPORT Playlist
 {
 public:
     Playlist( const QString &path );

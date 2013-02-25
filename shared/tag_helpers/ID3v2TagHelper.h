@@ -25,7 +25,7 @@ namespace Meta
 {
     namespace Tag
     {
-        class AMAROK_EXPORT ID3v2TagHelper : public TagHelper
+        class AMAROKSHARED_EXPORT ID3v2TagHelper : public TagHelper
         {
             public:
                 ID3v2TagHelper( TagLib::Tag *tag, TagLib::ID3v2::Tag *id3v2Tag, Amarok::FileType fileType );
@@ -35,11 +35,9 @@ namespace Meta
 
                 virtual TagLib::ByteVector render() const;
 
-#ifndef UTILITIES_BUILD
                 virtual bool hasEmbeddedCover() const;
                 virtual QImage embeddedCover() const;
                 virtual bool setEmbeddedCover( const QImage &cover );
-#endif  //UTILITIES_BUILD
 
             private:
                 TagLib::ID3v2::Tag *m_tag;

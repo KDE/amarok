@@ -23,6 +23,7 @@ kde4_add_ui_files(amarok_collection-umscollection_PART_SRCS
 kde4_add_plugin(amarok_collection-umscollection ${amarok_collection-umscollection_PART_SRCS})
 	
 target_link_libraries(amarok_collection-umscollection
+  amarokshared
   amaroklib
   amarokcore
   amarok-transcoding

@@ -84,24 +84,53 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/shared
-    ${CMAKE_CURRENT_BINARY_DIR}/shared )
+    ${CMAKE_CURRENT_BINARY_DIR}/shared
+)
 
-set(QT_MIN_VERSION "4.8.0")
+set( QT_MIN_VERSION "4.8.0" )
+set( KDE_MIN_VERSION "4.8.4" )
+find_package( KDE4 REQUIRED ) # honors QT_MIN_VERSION
+include( KDE4Defaults )
+include( MacroBoolTo01 )
+include( MacroLibrary )
+add_definitions( ${QT_DEFINITIONS} ${KDE4_DEFINITIONS} )
+
+# QCA2 is required for the Script Updater
+find_package( QCA2 )
+
+find_package( QtScriptQtBindings )
+
+macro_optional_find_package( LibLastFm )
+set( LIBLASTFM_MIN_VERSION "1.0.0" )
+if( LIBLASTFM_FOUND )
+    macro_ensure_version( ${LIBLASTFM_MIN_VERSION} ${LIBLASTFM_VERSION} LIBLASTFM_FOUND )
+endif( LIBLASTFM_FOUND )
+macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
+
+macro_optional_find_package( FFmpeg )
+
+if( FFMPEG_FOUND )
+    macro_optional_find_package( LibOFA )
+    macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
+endif( FFMPEG_FOUND )
+
+string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
+if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
+    set( DEBUG_BUILD_TYPE ON )
+endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
+
+# this needs to be here because also code in shared/ needs config.h. This is also the
+# reason why various checks are above why they belong under if( WITH_PLAYER )
+configure_file( shared/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config.h )
+
+add_subdirectory( shared )
+
 if( WITH_PLAYER )
-    set(KDE_MIN_VERSION "4.8.4")
-    find_package( KDE4 REQUIRED ) # honors QT_MIN_VERSION
-    include (KDE4Defaults)
-    include (MacroLibrary)
-
-    include(MacroBoolTo01)
     include(MacroLogFeature)
 
     macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE ${KDE_MIN_VERSION} "" )
 
-    find_package( QtScriptQtBindings )
     macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" FALSE "" "" )
-
-    add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
     find_package(MySQLAmarok REQUIRED)
     if( WITH_MYSQL_EMBEDDED )
@@ -116,37 +145,23 @@ if( WITH_PLAYER )
     find_package(ZLIB REQUIRED)
     macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
 
-    # QCA2 is required for the Script Updater
-    find_package(QCA2)
     macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" FALSE "" "" )
 
     # QJson is required for the PlaydarCollection
     macro_optional_find_package(QJSON)
     macro_log_feature( QJSON_FOUND "QJson" "Qt JSON Parser used for the Playdar Collection" "http://qjson.sourceforge.net/" FALSE "" "" )
 
-    # macro_optional_find_package(Strigi)
-    # macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" FALSE "" "" )
-
-    macro_optional_find_package(LibLastFm)
-    set( LIBLASTFM_MIN_VERSION "1.0.0" )
-    if( LIBLASTFM_FOUND )
-        macro_ensure_version( ${LIBLASTFM_MIN_VERSION} ${LIBLASTFM_VERSION} LIBLASTFM_FOUND )
-    endif( LIBLASTFM_FOUND )
     # We tell users that we need 1.0.3, but we really check just >= 1.0.0. This is because
     # upstream forgot to update version in lastfm/global.h, so it looks like 1.0.2. :-(
     # will be fixed in liblastfm-1.0.4
     set( LIBLASTFM_MIN_VERSION "1.0.3" )
     macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists"
                        "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" FALSE ${LIBLASTFM_MIN_VERSION} "" )
-    macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
-    macro_optional_find_package( FFmpeg )
     macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.7" "" )
 
     if( FFMPEG_FOUND )
-        macro_optional_find_package(LibOFA)
         macro_log_feature( LIBOFA_FOUND "libofa" "Enable MusicDNS service" "http://code.google.com/p/musicip-libofa/" FALSE "0.9.x" "" )
-        macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
     endif( FFMPEG_FOUND )
 
     ##gpodder Service
@@ -201,13 +216,6 @@ if( WITH_PLAYER )
     find_program( CLAMZ_FOUND clamz PATH )
     macro_log_feature( CLAMZ_FOUND "clamz" "Optional requirement to download songs from the Amazon MP3 store. Highly recommended on Linux, as the official downloader from Amazon is quite broken on many systems." "https://code.google.com/p/clamz/" FALSE )
 
-    string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
-    if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
-        set( DEBUG_BUILD_TYPE ON )
-    endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
-
-    configure_file( shared/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config.h )
-
     include_directories( ${KDE4_INCLUDES} )
 
     if( KDE4_BUILD_TESTS AND NOT WIN32 )
@@ -230,9 +238,6 @@ if( WITH_PLAYER )
     #PO_SUBDIR
     #DOC_SUBDIR
 
-else( WITH_PLAYER )
-    find_package( Qt4 REQUIRED ) # honors QT_MIN_VERSION
-    add_definitions(${QT_DEFINITIONS})
 endif( WITH_PLAYER )
 
 if( WITH_UTILITIES )

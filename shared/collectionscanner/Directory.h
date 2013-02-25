@@ -20,22 +20,15 @@
 #ifndef COLLECTIONSCANNER_DIRECTORY_H
 #define COLLECTIONSCANNER_DIRECTORY_H
 
+#include "Album.h"
+#include "Playlist.h"
+#include "amarokshared_export.h"
+
 #include <QString>
 #include <QList>
 #include <QHash>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#include "Playlist.h"
-#include "Album.h"
-
-#ifndef UTILITIES_BUILD
-    #include "amarok_export.h"
-#else
-    #define AMAROK_EXPORT
-#endif
-
-class QSettings;
 
 namespace CollectionScanner
 {
@@ -47,7 +40,7 @@ class ScanningState;
  * @class Directory
  * @short Represents a scanned directory and it's contents
  */
-class AMAROK_EXPORT Directory
+class AMAROKSHARED_EXPORT Directory
 {
 public:
     /**
@@ -84,14 +77,12 @@ public:
     const QList<Track*>& tracks() const;
     const QList<Playlist>& playlists() const;
 
-#ifdef UTILITIES_BUILD
     /** Writes the contents of this object to an xml stream.
      *  Only the content is writen and no enclosing directory tags.
      *  This is done to make it mirror the constructor which does not read those
      *  tags either.
      */
     void toXml( QXmlStreamWriter *writer ) const;
-#endif // UTILITIES_BUILD
 
 private:
     QString m_path;

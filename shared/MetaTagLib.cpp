@@ -29,10 +29,6 @@
 #include "TagsFromFileNameGuesser.h"
 #include "config.h"
 
-#ifndef UTILITIES_BUILD
-#include "amarokconfig.h"
-#endif
-
 #include <KEncodingProber>
 
 #include <QImage>
@@ -284,9 +280,6 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
     return result;
 }
 
-#ifndef UTILITIES_BUILD
-// the utilities don't need to handle images
-
 QImage
 Meta::Tag::embeddedCover( const QString &path )
 {
@@ -313,8 +306,6 @@ Meta::Tag::embeddedCover( const QString &path )
     return QImage();
 #endif
 }
-
-#endif
 
 void
 Meta::Tag::writeTags( const QString &path, const FieldHash &changes, bool writeStatistics )
@@ -350,8 +341,6 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes, bool writeS
 #endif
 }
 
-#ifndef UTILITIES_BUILD
-
 void
 Meta::Tag::setEmbeddedCover( const QString &path, const QImage &cover )
 {
@@ -379,7 +368,4 @@ Meta::Tag::setEmbeddedCover( const QString &path, const QImage &cover )
 #endif
 }
 
-#endif
-
 #undef Qt4QStringToTString
-

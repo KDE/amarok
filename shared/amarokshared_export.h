@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
+ * Copyright (c) 2013 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,31 +14,20 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef APETAGHELPER_H
-#define APETAGHELPER_H
+#ifndef AMAROKSHARED_EXPORT_H
+#define AMAROKSHARED_EXPORT_H
 
-#include "TagHelper.h"
+/* needed for KDE_EXPORT and KDE_IMPORT macros */
+#include <kdemacros.h>
 
-#include <apetag.h>
+#ifndef AMAROKSHARED_EXPORT
+# ifdef MAKE_AMAROKSHARED_LIB
+   /* We are building this library */
+#  define AMAROKSHARED_EXPORT KDE_EXPORT
+# else
+   /* We are using this library */
+#  define AMAROKSHARED_EXPORT KDE_IMPORT
+# endif
+#endif // AMAROKSHARED_EXPORT
 
-namespace Meta
-{
-    namespace Tag
-    {
-        class AMAROKSHARED_EXPORT APETagHelper : public TagHelper
-        {
-            public:
-                APETagHelper( TagLib::Tag *tag, TagLib::APE::Tag *apeTag, Amarok::FileType fileType );
-
-                virtual Meta::FieldHash tags() const;
-                virtual bool setTags( const Meta::FieldHash &changes );
-
-                virtual TagLib::ByteVector render() const;
-
-            private:
-                TagLib::APE::Tag *m_tag;
-        };
-    }
-}
-
-#endif // APETAGHELPER_H
+#endif // AMAROKSHARED_EXPORT_H

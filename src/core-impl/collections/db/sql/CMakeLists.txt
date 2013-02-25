@@ -36,6 +36,7 @@ target_link_libraries(amarok-sqlcollection
     amarokcore
     amaroklib
     amarok-transcoding
+    amarokshared
 )
 
 if(APPLE)

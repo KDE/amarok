@@ -18,12 +18,7 @@
 #ifndef TAGSFROMFILENAMEGUESSER_H
 #define TAGSFROMFILENAMEGUESSER_H
 
-#ifndef UTILITIES_BUILD
-    #include "amarok_export.h"
-#else
-    #define AMAROK_EXPORT
-#endif
-
+#include "amarokshared_export.h"
 #include "MetaValues.h"
 
 namespace Meta
@@ -39,7 +34,7 @@ namespace Meta
             * truckated.
             * @returns guessed metadata.
             */
-            AMAROK_EXPORT Meta::FieldHash guessTags( const QString &fileName );
+            AMAROKSHARED_EXPORT Meta::FieldHash guessTags( const QString &fileName );
 
             /**
             * Try to guess metadata from fil name,using specified scheme.
@@ -50,7 +45,7 @@ namespace Meta
             * @arg isRegExp - if true - prevents guesser from screening special symbols
             * Available Tokens: %album%, %albumartist%, %artist%, %title%, %track%.
             */
-            AMAROK_EXPORT Meta::FieldHash guessTagsByScheme( const QString &fileName,
+            AMAROKSHARED_EXPORT Meta::FieldHash guessTagsByScheme( const QString &fileName,
                                                              const QString &scheme,
                                                              bool cutTrailingSpaces = true,
                                                              bool convertUnderscores = true,

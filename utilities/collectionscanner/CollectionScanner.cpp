@@ -21,9 +21,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "CollectionScanner.h"
+
 #include "Version.h"  // for AMAROK_VERSION
 #include "collectionscanner/BatchFile.h"
-#include "collectionscanner/CollectionScanner.h"
 #include "collectionscanner/Directory.h"
 #include "collectionscanner/Track.h"
 

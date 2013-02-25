@@ -18,6 +18,7 @@
 
 #include "config.h"
 
+#include <QImage>
 #include <QRegExp>
 #include <QStringList>
 
@@ -137,7 +138,6 @@ TagHelper::render() const
     return TagLib::ByteVector( byteArray.constData(), byteArray.size() );
 }
 
-#ifndef UTILITIES_BUILD
 bool
 TagHelper::hasEmbeddedCover() const
 {
@@ -156,7 +156,6 @@ TagHelper::setEmbeddedCover( const QImage &cover )
     Q_UNUSED( cover )
     return false;
 }
-#endif  //UTILITIES_BUILD
 
 TagLib::String
 TagHelper::fieldName( const qint64 field ) const

@@ -17,12 +17,6 @@
 #ifndef STRINGHELPER_H
 #define STRINGHELPER_H
 
-#ifndef UTILITIES_BUILD
-    #include "amarok_export.h"
-#else
-    #define AMAROK_EXPORT
-#endif
-
 #include <QString>
 #include <tstring.h>
 
@@ -41,18 +35,19 @@ namespace Meta
          * Convert TString to QString, trimmes spaces in the begin and at the end
          * and fixes encoding if needed.
          */
-        AMAROK_EXPORT QString TStringToQString( const TagLib::String &str );
+        QString TStringToQString( const TagLib::String &str );
+
         /**
          * Convert QString to TString and trimmes spaces in the begin and at the end.
          */
-        AMAROK_EXPORT TagLib::String Qt4QStringToTString( const QString &str );
+        TagLib::String Qt4QStringToTString( const QString &str );
+
         /**
          * Set codec for TStringToQString conversion.
          */
-        AMAROK_EXPORT void setCodec( QTextCodec *codec );
-        AMAROK_EXPORT void setCodecByName( QByteArray codecName );
+        void setCodec( QTextCodec *codec );
+        void setCodecByName( QByteArray codecName );
     }
 }
-
 
 #endif // STRINGHELPER_H

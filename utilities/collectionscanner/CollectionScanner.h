@@ -30,14 +30,6 @@
 #include <QStringList>
 #include <QXmlStreamWriter>
 
-#ifndef UTILITIES_BUILD
-    #include "amarok_export.h"
-#else
-    #define AMAROK_EXPORT
-#endif
-
-class QSharedMemory;
-
 namespace CollectionScanner
 {
 

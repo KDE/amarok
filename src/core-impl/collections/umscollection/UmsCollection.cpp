@@ -20,6 +20,7 @@
 
 #include "amarokconfig.h"
 #include "ui_UmsConfiguration.h"
+#include "collectionscanner/Track.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/interfaces/Logger.h"
 #include "core/meta/Meta.h"

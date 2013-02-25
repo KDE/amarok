@@ -17,16 +17,14 @@
 
 #include "ASFTagHelper.h"
 
-#include <asfattribute.h>
-
-#ifndef UTILITIES_BUILD
-    #include <QBuffer>
-#endif  //UTILITIES_BUILD
-
 #include "StringHelper.h"
 
-using namespace Meta::Tag;
+#include <QBuffer>
+#include <QImage>
 
+#include <asfattribute.h>
+
+using namespace Meta::Tag;
 
 ASFTagHelper::ASFTagHelper( TagLib::Tag *tag, TagLib::ASF::Tag *asfTag, Amarok::FileType fileType )
             : TagHelper( tag, fileType )
@@ -143,7 +141,6 @@ ASFTagHelper::setTags( const Meta::FieldHash &changes )
     return modified;
 }
 
-#ifndef UTILITIES_BUILD
 bool
 ASFTagHelper::hasEmbeddedCover() const
 {
@@ -253,4 +250,3 @@ ASFTagHelper::setEmbeddedCover( const QImage &cover )
 
     return true;
 }
-#endif  //UTILITIES_BUILD

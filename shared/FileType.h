@@ -19,6 +19,8 @@
 #ifndef SHARED_FILETYPE_H
 #define SHARED_FILETYPE_H
 
+#include "amarokshared_export.h"
+
 #include <QStringList>
 #include <QString>
 
@@ -48,7 +50,7 @@ namespace Amarok
         Opus        = 18
     };
 
-    class FileTypeSupport
+    class AMAROKSHARED_EXPORT FileTypeSupport
     {
         public:
             /**
@@ -72,9 +74,6 @@ namespace Amarok
              *         type is in the enum
              */
             static Amarok::FileType fileType( const QString& extension );
-
-        private:
-            static QStringList s_fileTypeStrings;
     };
 }
 

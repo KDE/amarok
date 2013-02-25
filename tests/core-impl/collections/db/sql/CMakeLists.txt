@@ -25,6 +25,7 @@ macro(add_database_test test_target test_sources)
     endif(NOT APPLE)
 
     target_link_libraries(${test_target}
+        amarokshared
         amarokcore
         amaroklib
         amarok-sqlcollection

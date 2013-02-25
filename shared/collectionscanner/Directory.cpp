@@ -22,9 +22,10 @@
  ***************************************************************************/
 
 #include "Directory.h"
-#include "utils.h"
 
 #include "collectionscanner/ScanningState.h"
+#include "collectionscanner/Track.h"
+#include "collectionscanner/utils.h"
 
 #include <QDebug>
 #include <QString>
@@ -215,7 +216,6 @@ CollectionScanner::Directory::playlists() const
     return m_playlists;
 }
 
-#ifdef UTILITIES_BUILD
 void
 CollectionScanner::Directory::toXml( QXmlStreamWriter *writer ) const
 {
@@ -245,4 +245,3 @@ CollectionScanner::Directory::toXml( QXmlStreamWriter *writer ) const
         writer->writeEndElement();
     }
 }
-#endif // UTILITIES_BUILD

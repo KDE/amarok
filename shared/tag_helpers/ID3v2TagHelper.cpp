@@ -22,16 +22,15 @@
 
 #include "ID3v2TagHelper.h"
 
+#include "StringHelper.h"
+
+#include <QBuffer>
+#include <QImage>
+
 #include <attachedpictureframe.h>
 #include <popularimeterframe.h>
 #include <textidentificationframe.h>
 #include <uniquefileidentifierframe.h>
-
-#ifndef UTILITIES_BUILD
-    #include <QBuffer>
-#endif  //UTILITIES_BUILD
-
-#include "StringHelper.h"
 
 const TagLib::ByteVector TXXX_Frame = "TXXX";
 const TagLib::ByteVector POPM_Frame = "POPM";
@@ -321,7 +320,6 @@ ID3v2TagHelper::render() const
     return m_tag->render();
 }
 
-#ifndef UTILITIES_BUILD
 bool
 ID3v2TagHelper::hasEmbeddedCover() const
 {
@@ -416,4 +414,3 @@ ID3v2TagHelper::setEmbeddedCover( const QImage &cover )
 
     return true;
 }
-#endif  //UTILITIES_BUILD

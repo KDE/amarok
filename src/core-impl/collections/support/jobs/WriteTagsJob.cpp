@@ -19,6 +19,7 @@
 #include "amarokconfig.h"
 #include "MetaTagLib.h"
 
+#include <QImage>
 
 WriteTagsJob::WriteTagsJob(const QString& path, const Meta::FieldHash& changes)
     : Job()

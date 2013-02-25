@@ -51,6 +51,7 @@ if(IPOD_FOUND AND WITH_IPOD)
   kde4_add_plugin(amarok_collection-ipodcollection ${amarok_collection-ipodcollection_PART_SRCS})
 
   target_link_libraries(amarok_collection-ipodcollection
+    amarokshared
     amarokcore
     amaroklib
     amarok-transcoding

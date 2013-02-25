@@ -23,11 +23,10 @@
 
 #include "MP4TagHelper.h"
 
-#ifndef UTILITIES_BUILD
-    #include <QBuffer>
-#endif  //UTILITIES_BUILD
-
 #include "StringHelper.h"
+
+#include <QBuffer>
+#include <QImage>
 
 using namespace Meta::Tag;
 
@@ -138,7 +137,6 @@ MP4TagHelper::setTags( const Meta::FieldHash &changes )
     return modified;
 }
 
-#ifndef UTILITIES_BUILD
 bool
 MP4TagHelper::hasEmbeddedCover() const
 {
@@ -205,4 +203,3 @@ MP4TagHelper::setEmbeddedCover( const QImage &cover )
 
     return true;
 }
-#endif  //UTILITIES_BUILD

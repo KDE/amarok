@@ -19,7 +19,7 @@
 
 using namespace Amarok;
 
-QStringList FileTypeSupport::s_fileTypeStrings = QStringList()
+static QStringList s_fileTypeStrings = QStringList()
         << QLatin1String( "" )
         << QLatin1String( "mp3" )
         << QLatin1String( "ogg" )

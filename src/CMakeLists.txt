@@ -541,36 +541,6 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 
 #####################################################################
-# SHARED
-#####################################################################
-set( shared_SRCS
-    ${CMAKE_SOURCE_DIR}/shared/MetaTagLib.cpp
-    ${CMAKE_SOURCE_DIR}/shared/TagsFromFileNameGuesser.cpp
-    ${CMAKE_SOURCE_DIR}/shared/FileType.cpp
-    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Album.cpp
-    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/BatchFile.cpp
-    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Directory.cpp
-    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Playlist.cpp
-    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/ScanningState.cpp
-    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Track.cpp
-)
-
-if( TAGLIB_FOUND )
-    set( shared_SRCS
-        ${shared_SRCS}
-        ${CMAKE_SOURCE_DIR}/shared/MetaReplayGain.cpp
-        ${CMAKE_SOURCE_DIR}/shared/FileTypeResolver.cpp
-        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/APETagHelper.cpp
-        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/ASFTagHelper.cpp
-        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/ID3v2TagHelper.cpp
-        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/MP4TagHelper.cpp
-        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/StringHelper.cpp
-        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/TagHelper.cpp
-        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/VorbisCommentTagHelper.cpp
-    )
-endif( TAGLIB_FOUND )
-
-#####################################################################
 # STATISTICS SYNCHRONIZATION
 #####################################################################
 set( statsyncing_SRCS
@@ -634,7 +604,6 @@ set(amaroklib_LIB_SRCS
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
-    ${shared_SRCS}
     ${statsyncing_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
@@ -913,6 +882,7 @@ target_link_libraries(amaroklib
     amarokcore
     amarokocsclient
     amarok-transcoding
+    amarokshared
 )
 
 if( TAGLIB_FOUND )
