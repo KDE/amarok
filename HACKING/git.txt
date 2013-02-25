@@ -4,3 +4,5 @@ git config branch.master.rebase true
 The result of this is that all "git pull" commands will do a rebase rather then a merge.
 Your local commits will be rewritten (parented to origin/master). The prevents the log
 to become unreadable because of all the merge commits.
+
+Note: rebasing can be dangerous. Check before pushing if something looks fishy.

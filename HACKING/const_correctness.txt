@@ -1,11 +1,5 @@
 === Const Correctness ===
 
-This article was originally published here:
-
-http://amarok.kde.org/blog/archives/1125-Const-Correctness.html
-
-
-
 What is const correctness?
 
 It's a programming paradigm that helps writing correct code. In C++, const
@@ -16,35 +10,60 @@ correctness, that is object constness.
 Why should I care about const correctness?
 
 Because it increases type safety, makes your code more easy to understand, and
-it helps making your code correct. Const objects can be seen as invariants in
-mathematical terms, that is, objects that do not change, that do not vary. 
+it helps making your code correct.
 
-An example in code:
+Let's have an example, the following function:
+
+void printStruct( MyStruct* str );
+
+Is it save to assume that MyStruct is unchanged? Can I give it a structure
+that is allocated in a read-only memory location?
+We can assume this (because of the name of the function) but we can't be sure.
+
+It get's even worse if you use a reference like this:
+
+void printStruct( MyStruct& str );
+
+Now you can't even see in the calling code that something might go wrong since
+a line like this:
+
+printStruct( str );
+
+is not seen as dangerous. In C it is always a call-by-value. In C++ it isn't.
+
+The solution is easy. Just declare the function like this:
+
+void printStruct( const MyStruct& str );
+
+Now nothing can go wrong. We get the benefit of a call-by-reference without
+the danger.
+Now one last problem. What if MyStruct is a class like this:
+
+class MyStruct {
+  void print();
+}
+
+How would the compiler know that calling "print" on the const MyStruct does
+not change the object?
+The compiler can't. We have to tell it like this:
+
+  void print() const;
+
+Now everything is all right. Everybody is on the same page and we don't
+have to look an hour which function might have changed our variables
+in some unexpected place.
 
 
+A last word about payoff.
+Regardless if we are just programming for fun or professionally we should
+think about payoff.
 
-const int myNumber = 41;
-
-int result;
-
-
-result = myNumber + 1;
-
-KMessageBox::information( 0, "The meaning of life is: " + QString::number(
-result ) );
-
-
-
-In this example, myNumber is a const object (an int is really a POD type, but
-let that not distract us). This indicates that I cannot change the object. And
-indeed, if I were to try that, the compiler would complain about it, which is a
-good thing. It helps preventing mistakes by accidentally changing this object
-later on.
-
-Additionally, it helps readability, because anyone can clearly see that myNumber
-is not meant to be changed. So you see, writing that "const" before it is a
-little bit of work, but it has a big pay-off. I think it's worth it, so I try to
-use it always in my code.
-
+Writing "const" all over the place is confusing, costs time and leads
+to compile time errors.
+So why the effort?
+This does not really prevent many bugs. At least in my experience.
+However it has one big benefit: It really helps searching bugs. Const-
+correctness is really a nice thing since we are using more time searching
+bugs than actually programming.
 
 [1] http://www.parashift.com/c++-faq-lite/const-correctness.html

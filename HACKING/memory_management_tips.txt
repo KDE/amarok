@@ -56,9 +56,33 @@ if( foo )
    debug() << foo->prettyUrl();
 <no output, and no crash>
 
+Also be aware that Amarok is multi-threaded. So somebody could
+change pointers while you are looking away like here:
+
+WRONG:
+
+Meta::TrackPtr myTrack;
+if( myTrack && myTrack->album() )
+    debug() << myTrack->album()->name();
+<somebody could set the album to 0 just after the if>
+
+RIGHT:
+
+Meta::TrackPtr myTrack;
+Meta::AlbumPtr myAlbum = myTrack ? myTrack->album() : 0;
+if( myAlbum )
+    debug() << myAlbum->name();
+
 
 3)
-Never, ever, use private d-pointer classes in QObject derived subclasses:
+Private d-pointer classes can be used in cases where the interfaces
+of a library should remain stable but the size of members and their
+inner working should change.
+Qt is doing it. KDE is doing it. We are also doing it in some places
+for no apparent reason and no benefit.
+
+However, if you are doing it, never, ever, use private d-pointer
+classes in QObject derived subclasses:
 
 What can happen is that you do a "delete d;" in your destructor, and
 then Qt goes ahead and auto-deletes other QObject pointers contained
@@ -72,6 +96,12 @@ http://www.purinchu.net/wp/2009/02/04/another-programming-tidbit/
 
 4)
 Use Valgrind:
+<Ralf disagrees. Larger projects with big libraries will have so
+many dirty places that Valgrind reports too many issues.
+Our own way of handling singleton objects does not help. They
+just leak. Instead have a sharp look at all your instance variables.
+Ensure that all are initialized in the constructor and all deleted
+in the destructor.>
 
 This is one of the most advanced memory debugging tools available,
 it's free, and we even have found volunteers that run regular Valgrind

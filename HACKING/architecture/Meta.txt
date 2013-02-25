@@ -1,11 +1,34 @@
 Meta Architecture
 -----------------
 
-Objects representing a media in a hierarchy. There are classes for Tracks, Albums, Artists, Composers, Genres, Years and Labels.
-These classes all derive from Meta::Base to facilitate their common methods (name and sorting) and observer interaction. They are not QObjects to avoid the overhead of the Qt MetaObject support variables. Collections are potentially millions of tracks where a significant proportion of tracks (in the case of MemoryCollections: all tracks) could at any time be loaded in memory.
+The meta objects (located in src/core/meta) e.g. Meta::Track and the more
+often used Meta::TrackPtr represent data connected to music related objects.
 
-Meta::Observer is a virtual class that can be derived from by components that are interested in changes to the tracks during application lifetime. It has metadataChanged() methods for each of the Meta types and the ability to subscribe to any Meta object.
+There are classes for Tracks, Albums, Artists, Composers, Genres, Years and Labels.
+These classes all derive from Meta::Base to facilitate their common methods (name
+and sorting) and observer interaction.
 
-[Note] Playlists will be made part of Meta as well. They have a similar Observer pattern but have been kept seperate because PlaylistObserver requires more functions. Pollution of the Observer class could be avoided using a playlistChanged(enum Change, QVariant value) type method.
+[Design decision] They are not QObjects to avoid the overhead of the Qt MetaObject
+support variables. Collections are potentially millions of tracks where a significant
+proportion of tracks (in the case of MemoryCollections: all tracks) could at any time
+be loaded in memory.
 
-KSharedPtr is used for all functions returning a pointer in the Meta classes. It strong, reference tracking smart pointer which will only delete an object once the last reference holding KSharedPtr goes out of scope or is deleted.
+Meta::Observer is a virtual class that can be derived from by components that are
+interested in changes to the tracks during application lifetime. It has
+metadataChanged() methods for each of the Meta types and the ability to subscribe
+to any Meta object.
+
+KSharedPtr is used for all functions returning a pointer in the Meta classes. It strong,
+reference tracking smart pointer which will only delete an object once the last reference
+holding KSharedPtr goes out of scope or is deleted.
+
+[Note] Playlists will be made part of Meta as well. They have a similar Observer
+pattern but have been kept seperate because PlaylistObserver requires more functions.
+Pollution of the Observer class could be avoided using a playlistChanged(enum Change,
+QVariant value) type method.
+
+[Design decision] The list of meta objects contains Tracks, Albums, Artists, Composers,
+Genres, Years and Labels because these are the categories that you can sort by in
+the collection view and thus have to be returned by the QueryMaker and represented
+in an item in the CollectionTreeItem.
+

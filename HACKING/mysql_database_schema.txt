@@ -1,3 +1,8 @@
+
+Warning: outdated.
+Look at HACKING/amarokTables.svg and keep it up to date.
+
+
 -- MySQL dump 10.13  Distrib 5.1.58, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: amarok

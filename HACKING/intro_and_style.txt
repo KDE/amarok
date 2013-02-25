@@ -1,6 +1,16 @@
 Hacking on Amarok
 -----------------
 
+Have a look at the community wiki for further information.
+Also have a look at the requirements for Amarok here:
+http://community.kde.org/Amarok/Development/Requirements
+
+Join the irc channel.
+
+New requirements, bugfixes and every other patch goes to the
+review board.
+Try not to post patches in the bugs database or the mailing list.
+
 Please respect these guidelines when coding for Amarok, thanks!
 
 * Where this document isn't clear, refer to Amarok code.
@@ -126,7 +136,10 @@ Comments are essential when adding a strange hack, like the following example:
  | };
 
 
-For headers, use the Doxygen syntax. See: http://www.stack.nl/~dimitri/doxygen/
+Otherwise the comment is in the header. Use the Doxygen syntax. See: http://www.stack.nl/~dimitri/doxygen/
+You should be able to write this comment and explain the what the function does.
+If you can't, go back to the code and think what you really wanted to do.
+If the comment is getting to complicated or confusing, go back to the code and do better.
 
 Example:
 
@@ -159,6 +172,9 @@ great too. Access levels should be sorted in this order: public, protected, priv
  |     public slots:
  |         void moveSelectedUp();
  |         void moveSelectedDown();
+ |
+ |     private
+ |         int m_member;
  | };
  |
  | #endif /* AMAROK_QUEUEMANAGER_H */
@@ -226,7 +242,9 @@ SHOULD_BE_GUI outputs a warning message if it occurs in a thread that isn't in
 
 Errors & Asserts
 ----------------
-*Never use assert() or fatal(). There must be a better option than crashing a user's
+*Use Q_ASSERT where appropriate. If you don't know what an assert is, look it up now.
+
+*Never use fatal(). There must be a better option than crashing a user's
 application (its not uncommon for end-users to have debugging enabled).
 
 *KMessageBox is fine to use to prompt the user, but do not use it to display errors

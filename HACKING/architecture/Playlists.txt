@@ -59,7 +59,7 @@ If the playback queue is restored with invalid (empty) tracks, XSPFPlaylist, Met
 
 Dynamic Playlists
 -----------------
-Using a custom UI the settings for selecting tracks are configured. Te Dynamic Playlist will select tracks and make them available from the tracks() method. These tracks can be displayed to the user as a preview of the settings but are mainly used in the playback queue.
+Using a custom UI the settings for selecting tracks are configured. The Dynamic Playlist will select tracks and make them available from the tracks() method. These tracks can be displayed to the user as a preview of the settings but are mainly used in the playback queue.
 Using the Selector/Bias system other components and plugins can add track selection conditions or statistical bias options to the dynamic playlist generator.
 [note] current implementation does not derive from Playlists::Playlist nor does it use a PlaylistProvider. It's a mode of the playback queue, not a loadable playlist.
 
