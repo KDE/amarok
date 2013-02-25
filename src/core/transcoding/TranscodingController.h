@@ -17,7 +17,7 @@
 #ifndef TRANSCODING_CONTROLLER_H
 #define TRANSCODING_CONTROLLER_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/support/Components.h"
 #include "core/transcoding/TranscodingDefines.h"
 #include "core/transcoding/TranscodingFormat.h"

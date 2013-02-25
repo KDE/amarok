@@ -17,7 +17,8 @@
 #ifndef USERPLAYLISTMODEL_H
 #define USERPLAYLISTMODEL_H
 
-#include "PlaylistBrowserModel.h"
+#include "amarok_export.h"
+#include "browsers/playlistbrowser/PlaylistBrowserModel.h"
 #include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 

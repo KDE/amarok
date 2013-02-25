@@ -17,10 +17,10 @@
 #ifndef AMAROK_METAPROXY_H
 #define AMAROK_METAPROXY_H
 
-#include "MetaProxyWorker.h"
-
-#include "core/meta/Meta.h"
+#include "amarok_export.h"
 #include "core/capabilities/Capability.h"
+#include "core/meta/Meta.h"
+#include "core-impl/meta/proxy/MetaProxyWorker.h"
 
 #include <QObject>
 

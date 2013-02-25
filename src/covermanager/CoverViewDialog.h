@@ -17,6 +17,7 @@
 #ifndef AMAROK_COVERVIEWDIALOG_H
 #define AMAROK_COVERVIEWDIALOG_H
 
+#include "amarok_export.h"
 #include "core/meta/Meta.h"
 
 #include <QDialog>

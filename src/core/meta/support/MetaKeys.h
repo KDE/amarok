@@ -17,7 +17,7 @@
 #ifndef AMAROK_METAKEYS_H
 #define AMAROK_METAKEYS_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/meta/Meta.h"
 
 #include <QHash>

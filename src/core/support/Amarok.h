@@ -18,7 +18,7 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "Version.h"
 #include "core/meta/Meta.h"
 

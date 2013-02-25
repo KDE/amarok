@@ -17,7 +17,7 @@
 #ifndef AMAROK_PLAYLISTPROVIDER_H
 #define AMAROK_PLAYLISTPROVIDER_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/playlists/Playlist.h"
 
 #include <QString>

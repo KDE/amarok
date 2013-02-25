@@ -17,6 +17,7 @@
 #ifndef ALBUMACTIONSCAPABILITY_H
 #define ALBUMACTIONSCAPABILITY_H
 
+#include "amarok_export.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/meta/Meta.h"
 

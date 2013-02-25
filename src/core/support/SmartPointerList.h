@@ -19,7 +19,7 @@
 #ifndef AMAROK_SMART_POINTER_LIST_H
 #define AMAROK_SMART_POINTER_LIST_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 
 #include <QList>   //baseclass
 #include <QObject> //baseclass

@@ -17,8 +17,9 @@
 #ifndef TIMECODEEDITCAPABILITY_H
 #define TIMECODEEDITCAPABILITY_H
 
-#include "core-impl/meta/timecode/TimecodeMeta.h"
+#include "amarok_export.h"
 #include "core/capabilities/EditCapability.h"
+#include "core-impl/meta/timecode/TimecodeMeta.h"
 
 namespace Capabilities {
 

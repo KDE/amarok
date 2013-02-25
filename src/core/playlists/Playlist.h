@@ -17,7 +17,7 @@
 #ifndef AMAROK_META_PLAYLIST_H
 #define AMAROK_META_PLAYLIST_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/meta/Meta.h"
 
 #include <QList>

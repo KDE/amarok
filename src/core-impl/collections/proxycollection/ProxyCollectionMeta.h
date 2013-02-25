@@ -19,6 +19,7 @@
 #ifndef PROXYCOLLECTIONMETA_H
 #define PROXYCOLLECTIONMETA_H
 
+#include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 

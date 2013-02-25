@@ -17,7 +17,7 @@
 #ifndef AMAROK_METACONSTANTS_H
 #define AMAROK_METACONSTANTS_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "MetaValues.h"
 #include "core/meta/Meta.h"
 

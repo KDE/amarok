@@ -17,7 +17,7 @@
 #ifndef PODCASTMETA_H
 #define PODCASTMETA_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 #include "core/support/Amarok.h"

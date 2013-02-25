@@ -17,7 +17,7 @@
 #ifndef AMAROK_COLLECTIONSSCANCAPABILITY_H
 #define AMAROK_COLLECTIONSSCANCAPABILITY_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/capabilities/Capability.h"
 
 namespace Capabilities

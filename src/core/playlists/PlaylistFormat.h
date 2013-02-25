@@ -18,7 +18,7 @@
 #ifndef AMAROK_PLAYLISTFORMAT_H
 #define AMAROK_PLAYLISTFORMAT_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 
 #include <KUrl>
 

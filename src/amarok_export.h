@@ -1,5 +1,7 @@
 /****************************************************************************************
- * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2007 David Faure <faure@kde.org>                                       *
+ * Copyright (c) 2010 Patrick von Reth <patrick.vonreth@gmail.com>                      *
+ * Copyright (c) 2013 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,44 +16,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRACKFORURLWORKER_H
-#define TRACKFORURLWORKER_H
+#ifndef AMAROK_EXPORT_H
+#define AMAROK_EXPORT_H
 
-#include "core/amarokcore_export.h"
-#include "core/support/Amarok.h"
-#include "core/meta/Meta.h"
+/* needed for KDE_EXPORT and KDE_IMPORT macros */
+#include <kdemacros.h>
 
-#include <KUrl>
+#ifndef AMAROK_EXPORT
+# ifdef MAKE_AMAROKLIB_LIB
+   /* We are building this library */
+#  define AMAROK_EXPORT KDE_EXPORT
 
-#include <threadweaver/Job.h>
+#  if defined(DEBUG)
+#    define AMAROK_EXPORT_TESTS KDE_EXPORT
+#  else
+#    define AMAROK_EXPORT_TESTS
+#  endif
 
-namespace Amarok
-{
-/**
- * Derive from this class and implement the run() method to set mTrack.
- * @author Casey Link
- */
-class AMAROK_CORE_EXPORT TrackForUrlWorker : public ThreadWeaver::Job
-{
-    Q_OBJECT
-public:
-    TrackForUrlWorker( const KUrl &url );
-    TrackForUrlWorker( const QString &url );
-    ~TrackForUrlWorker();
+# else
+   /* We are using this library */
+#  define AMAROK_EXPORT KDE_IMPORT
 
-    virtual void run() = 0;
-signals:
-    void finishedLookup( const Meta::TrackPtr &track );
+#  if defined(DEBUG)
+#    define AMAROK_EXPORT_TESTS KDE_IMPORT
+#  else
+#    define AMAROK_EXPORT_TESTS
+#  endif
 
-protected:
-    KUrl m_url;
-    Meta::TrackPtr m_track;
+# endif // MAKE_AMAROKLIB_LIB
+#endif // AMAROK_EXPORT
 
-private slots:
-    void completeJob();
-
-
-};
-
-}
-#endif // TRACKFORURLWORKER_H
+#endif // AMAROK_EXPORT_H

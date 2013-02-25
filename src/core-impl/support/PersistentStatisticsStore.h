@@ -18,6 +18,7 @@
 #ifndef PERMANENTSTATISTICSSTORE_H
 #define PERMANENTSTATISTICSSTORE_H
 
+#include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 

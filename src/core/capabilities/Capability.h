@@ -17,7 +17,7 @@
 #ifndef AMAROK_CAPABILITY_H
 #define AMAROK_CAPABILITY_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 
 #include <QObject>
 

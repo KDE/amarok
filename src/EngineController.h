@@ -21,6 +21,7 @@
 #ifndef AMAROK_ENGINECONTROLLER_H
 #define AMAROK_ENGINECONTROLLER_H
 
+#include "amarok_export.h"
 #include "core/capabilities/BoundedPlaybackCapability.h"
 #include "core/meta/Meta.h"
 

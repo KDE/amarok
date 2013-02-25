@@ -22,9 +22,10 @@
 #ifndef AMAROK_PLAYLISTCONTROLLER_H
 #define AMAROK_PLAYLISTCONTROLLER_H
 
+#include "UndoCommands.h"
+#include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
-#include "UndoCommands.h"
 
 #include <QObject>
 

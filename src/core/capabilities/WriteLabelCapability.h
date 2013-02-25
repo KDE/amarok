@@ -17,7 +17,7 @@
 #ifndef WRITELABELCAPABILITY_H
 #define WRITELABELCAPABILITY_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/capabilities/Capability.h"
 #include "core/meta/Meta.h"
 

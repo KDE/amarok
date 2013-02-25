@@ -17,7 +17,7 @@
 #ifndef AMAROK_EDITCAPABILITY_H
 #define AMAROK_EDITCAPABILITY_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/capabilities/Capability.h"
 
 namespace Capabilities

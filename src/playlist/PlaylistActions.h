@@ -21,6 +21,7 @@
 #ifndef AMAROK_PLAYLISTACTIONS_H
 #define AMAROK_PLAYLISTACTIONS_H
 
+#include "amarok_export.h"
 #include "core/support/Debug.h"
 #include "core/playlists/Playlist.h"
 

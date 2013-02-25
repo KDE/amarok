@@ -19,7 +19,7 @@
 #ifndef AMAROK_COLLECTIONLOCATION_H
 #define AMAROK_COLLECTIONLOCATION_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/meta/Meta.h"
 #include "core/transcoding/TranscodingConfiguration.h"
 

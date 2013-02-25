@@ -20,6 +20,7 @@
 #ifndef TRACKORGANIZER_H
 #define TRACKORGANIZER_H
 
+#include "amarok_export.h"
 #include "core/meta/Meta.h"
 
 #include <QObject>

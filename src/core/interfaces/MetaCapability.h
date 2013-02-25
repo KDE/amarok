@@ -18,7 +18,7 @@
 #define METACAPABILITY_H
 
 #include "core/capabilities/Capability.h"
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 
 class AMAROK_CORE_EXPORT MetaCapability
 {

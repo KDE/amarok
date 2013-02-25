@@ -17,6 +17,7 @@
 #ifndef METATYPE_EXPORTER_H
 #define METATYPE_EXPORTER_H
 
+#include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/capabilities/EditCapability.h"
 

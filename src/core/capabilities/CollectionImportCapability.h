@@ -17,7 +17,7 @@
 #ifndef AMAROK_COLLECTIONIMPORTCAPABILITY_H
 #define AMAROK_COLLECTIONIMPORTCAPABILITY_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "core/capabilities/Capability.h"
 
 #include <QIODevice>

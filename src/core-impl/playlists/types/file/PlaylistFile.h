@@ -17,6 +17,7 @@
 #ifndef METAPLAYLISTFILE_H
 #define METAPLAYLISTFILE_H
 
+#include "amarok_export.h"
 #include "core/playlists/Playlist.h"
 #include "core/meta/Meta.h"
 

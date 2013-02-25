@@ -19,6 +19,7 @@
 #ifndef USERPLAYLISTPROVIDER_H
 #define USERPLAYLISTPROVIDER_H
 
+#include "amarok_export.h"
 #include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistProvider.h"
 
