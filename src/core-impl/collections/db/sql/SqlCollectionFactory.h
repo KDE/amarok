@@ -32,7 +32,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionFactory
 public:
     SqlCollectionFactory();
 
-    SqlCollection* createSqlCollection( const QString &id, const QString &prettyName, SqlStorage *storage ) const;
+    SqlCollection* createSqlCollection( SqlStorage *storage ) const;
 };
 
 } //namespace Collections

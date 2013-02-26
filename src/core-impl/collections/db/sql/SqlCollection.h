@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -62,7 +63,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         /** Creates a new SqlCollection.
          *  @param storage The storage this collection should work on. It will be freed by the collection.
          */
-        SqlCollection( const QString &id, const QString &prettyName, SqlStorage *storage );
+        SqlCollection( SqlStorage *storage );
         virtual ~SqlCollection();
 
         virtual QueryMaker *queryMaker();

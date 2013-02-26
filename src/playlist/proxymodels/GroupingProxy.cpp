@@ -343,23 +343,14 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
                     source1 = sic1->sourceName();
                     source2 = sic2->sourceName();
                 }
-                if( sic1 )
-                    delete sic1;
-                if( sic2 )
-                    delete sic2;
+                delete sic1;
+                delete sic2;
 
-                if( ! (sic1 && sic2) )
-                {
-                    if( track1->collection() && track2->collection() )
-                    {
-                        source1 = track1->collection()->collectionId();
-                        source2 = track2->collection()->collectionId();
-                    }
-                    else
-                        return false;
-                }
+                if( sic1 && sic2 )
+                    return source1 == source2;
 
-                return source1 == source2;
+                // fall back to collection
+                return track1->collection() == track2->collection();
             }
         case 7: //Year
             if( track1->year() && track2->year() )

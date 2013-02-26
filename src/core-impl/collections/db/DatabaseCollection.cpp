@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
  * Copyright (c) 2010 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,14 +21,12 @@
 
 using namespace Collections;
 
-DatabaseCollection::DatabaseCollection( const QString &id, const QString &prettyName )
+DatabaseCollection::DatabaseCollection()
     : Collection()
     , m_mpm( 0 )
     , m_scanManager( 0 )
     , m_blockUpdatedSignalCount( 0 )
     , m_updatedSignalRequested( false )
-    , m_collectionId( id )
-    , m_prettyName( prettyName )
 {
 }
 
@@ -39,13 +38,13 @@ DatabaseCollection::~DatabaseCollection()
 QString
 DatabaseCollection::collectionId() const
 {
-    return m_collectionId;
+    return QLatin1String( "localCollection" );
 }
 
 QString
 DatabaseCollection::prettyName() const
 {
-    return m_prettyName;
+    return i18n( "Local Collection" );
 }
 
 

@@ -50,12 +50,12 @@ QueryMaker * Mp3tunesServiceCollection::queryMaker()
 
 QString Mp3tunesServiceCollection::collectionId() const
 {
-  return i18n( "MP3tunes Locker" );
+    return QLatin1String( "MP3tunesLocker" );
 }
 
 QString Mp3tunesServiceCollection::prettyName() const
 {
-    return collectionId();
+    return i18n( "MP3tunes Locker" );
 }
 
 bool

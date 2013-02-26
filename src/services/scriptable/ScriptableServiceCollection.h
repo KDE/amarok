@@ -37,9 +37,6 @@ public:
 
     virtual Collections::QueryMaker* queryMaker();
 
-    virtual QString collectionId() const;
-    virtual QString prettyName() const;
-
     void donePopulating( int parentId );
 
     void setLevels( int theValue ) {

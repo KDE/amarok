@@ -120,7 +120,7 @@ LastFmServiceCollection::trackForUrl( const KUrl &url )
 QString
 LastFmServiceCollection::collectionId() const
 {
-    return "last.fm";
+    return QLatin1String( "last.fm" );
 }
 
 

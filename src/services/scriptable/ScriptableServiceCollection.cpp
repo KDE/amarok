@@ -38,16 +38,6 @@ Collections::QueryMaker * ScriptableServiceCollection::queryMaker()
     return new ScriptableServiceQueryMaker( this, m_name );
 }
 
-QString ScriptableServiceCollection::collectionId() const
-{
-    return "Scriptable Service collection";
-}
-
-QString ScriptableServiceCollection::prettyName() const
-{
-    return collectionId();
-}
-
 void ScriptableServiceCollection::donePopulating( int parentId )
 {
     DEBUG_BLOCK

@@ -55,7 +55,7 @@ TestSqlScanManager::initTestCase()
     m_tmpDatabaseDir = new KTempDir();
     QVERIFY( m_tmpDatabaseDir->exists() );
     m_storage = new MySqlEmbeddedStorage( m_tmpDatabaseDir->name() );
-    m_collection = Collections::SqlCollectionFactory().createSqlCollection( "testId", "testscanmanager", m_storage );
+    m_collection = Collections::SqlCollectionFactory().createSqlCollection( m_storage );
     connect( m_collection, SIGNAL( updated() ), this, SLOT( slotCollectionUpdated() ) );
     SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
     m_collection->setMountPointManager( mock );

@@ -362,19 +362,19 @@ AudioCdCollection::trackLength(int i) const
 QString
 AudioCdCollection::collectionId() const
 {
-    return "AudioCd";
+    return QLatin1String( "AudioCd" );
 }
 
 QString
 AudioCdCollection::prettyName() const
 {
-    return "Audio CD";
+    return i18n( "Audio CD" );
 }
 
 KIcon
 AudioCdCollection::icon() const
 {
-    return KIcon( "media-optical-audio");
+    return KIcon( "media-optical-audio" );
 }
 
 void

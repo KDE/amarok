@@ -57,8 +57,7 @@ NepomukCollection::queryMaker()
 QString
 NepomukCollection::uidUrlProtocol() const
 {
-    static const QString uid( "amarok-nepomuk" );
-    return uid;
+    return QLatin1String( "amarok-nepomuk" );
 }
 
 QString

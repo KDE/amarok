@@ -32,7 +32,7 @@ MySqlEmbeddedCollectionFactory::init()
 {
     SqlCollectionFactory fac;
     SqlStorage *storage = new MySqlEmbeddedStorage();
-    SqlCollection *collection = fac.createSqlCollection( "localCollection", i18n( "Local Collection" ), storage );
+    SqlCollection *collection = fac.createSqlCollection( storage );
     m_initialized = true;
 
     emit newCollection( collection );

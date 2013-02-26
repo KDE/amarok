@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
  * Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>                             *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -118,8 +119,8 @@ public:
 
 using namespace Collections;
 
-SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlStorage* storage )
-    : DatabaseCollection( id, prettyName )
+SqlCollection::SqlCollection( SqlStorage* storage )
+    : DatabaseCollection()
     , m_registry( 0 )
     , m_albumCapabilityDelegate( 0 )
     , m_artistCapabilityDelegate( 0 )

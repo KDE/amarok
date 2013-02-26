@@ -101,7 +101,7 @@ QString
 ProxyCollection::collectionId() const
 {
     //do we need more than one proxycollection??
-    return "ProxyCollection";
+    return QLatin1String( "ProxyCollection" );
 }
 
 void

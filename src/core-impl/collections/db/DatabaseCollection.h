@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
  * Copyright (c) 2010 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -68,7 +69,7 @@ class DatabaseCollection : public Collections::Collection
         /** Creates a new DatabaseCollection.
          *  @param storage The storage this collection should work on. It will be freed by the collection.
          */
-        DatabaseCollection( const QString &id, const QString &prettyName );
+        DatabaseCollection();
         virtual ~DatabaseCollection();
 
         virtual QString collectionId() const;
@@ -121,9 +122,6 @@ class DatabaseCollection : public Collections::Collection
         int m_blockUpdatedSignalCount;
         bool m_updatedSignalRequested;
         QMutex m_mutex;
-
-        QString m_collectionId;
-        QString m_prettyName;
 };
 
 }
