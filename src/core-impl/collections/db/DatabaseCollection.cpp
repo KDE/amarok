@@ -22,11 +22,115 @@ using namespace Collections;
 
 DatabaseCollection::DatabaseCollection( const QString &id, const QString &prettyName )
     : Collection()
+    , m_mpm( 0 )
+    , m_scanManager( 0 )
+    , m_blockUpdatedSignalCount( 0 )
+    , m_updatedSignalRequested( false )
+    , m_collectionId( id )
+    , m_prettyName( prettyName )
 {
-    Q_UNUSED( id )
-    Q_UNUSED( prettyName )
 }
 
 DatabaseCollection::~DatabaseCollection()
 {
+    delete m_mpm;
 }
+
+QString
+DatabaseCollection::collectionId() const
+{
+    return m_collectionId;
+}
+
+QString
+DatabaseCollection::prettyName() const
+{
+    return m_prettyName;
+}
+
+
+ScanManager*
+DatabaseCollection::scanManager() const
+{
+    Q_ASSERT( m_scanManager );
+    return m_scanManager;
+}
+
+MountPointManager*
+DatabaseCollection::mountPointManager() const
+{
+    Q_ASSERT( m_mpm );
+    return m_mpm;
+}
+
+void
+DatabaseCollection::setMountPointManager( MountPointManager *mpm )
+{
+    Q_ASSERT( mpm );
+
+    if( m_mpm )
+    {
+        disconnect( mpm, SIGNAL( deviceAdded(int) ), this, SLOT( slotDeviceAdded(int) ) );
+        disconnect( mpm, SIGNAL( deviceRemoved(int) ), this, SLOT( slotDeviceRemoved(int) ) );
+    }
+
+    m_mpm = mpm;
+    connect( mpm, SIGNAL( deviceAdded(int) ), this, SLOT( slotDeviceAdded(int) ) );
+    connect( mpm, SIGNAL( deviceRemoved(int) ), this, SLOT( slotDeviceRemoved(int) ) );
+}
+
+
+QStringList
+DatabaseCollection::collectionFolders() const
+{
+    return mountPointManager()->collectionFolders();
+}
+
+void
+DatabaseCollection::setCollectionFolders( const QStringList &folders )
+{
+    mountPointManager()->setCollectionFolders( folders );
+}
+
+
+void
+DatabaseCollection::blockUpdatedSignal()
+{
+    QMutexLocker locker( &m_mutex );
+    m_blockUpdatedSignalCount ++;
+}
+
+void
+DatabaseCollection::unblockUpdatedSignal()
+{
+    QMutexLocker locker( &m_mutex );
+
+    Q_ASSERT( m_blockUpdatedSignalCount > 0 );
+    m_blockUpdatedSignalCount --;
+
+    // check if meanwhile somebody had updated the collection
+    if( m_blockUpdatedSignalCount == 0 && m_updatedSignalRequested )
+    {
+        m_updatedSignalRequested = false;
+        locker.unlock();
+        emit updated();
+    }
+}
+
+void
+DatabaseCollection::collectionUpdated()
+{
+    QMutexLocker locker( &m_mutex );
+    if( m_blockUpdatedSignalCount == 0 )
+    {
+        m_updatedSignalRequested = false;
+        locker.unlock();
+        emit updated();
+    }
+    else
+    {
+        m_updatedSignalRequested = true;
+    }
+}
+
+

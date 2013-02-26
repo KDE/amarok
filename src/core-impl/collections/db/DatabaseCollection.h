@@ -46,10 +46,18 @@ namespace Collections {
 class CollectionLocation;
 class DatabaseCollectionLocationFactory;
 
+/** The DatabaseCollection is intended to be a base class for all database backed primary collections.
+ *  Primary collection means that the basis for the collection is a file system.
+ *  It also means that there is a scan manager that scans the file system and
+ *  a mount point manager for the dynamic collection feature (we can blend out
+ *  whole parts of the collection in case a drive is just unmounted).
+ */
 class DatabaseCollection : public Collections::Collection
 {
     Q_OBJECT
 
+    /** This property is important. CollectionSetup is using the property to
+        determine the folders covered by this collection (and also setting them) */
     Q_PROPERTY( QStringList collectionFolders
                 READ collectionFolders
                 WRITE setCollectionFolders
@@ -63,20 +71,28 @@ class DatabaseCollection : public Collections::Collection
         DatabaseCollection( const QString &id, const QString &prettyName );
         virtual ~DatabaseCollection();
 
-        virtual ScanManager *scanManager() const = 0;
-        virtual MountPointManager *mountPointManager() const = 0;
+        virtual QString collectionId() const;
+        virtual QString prettyName() const;
+
+        virtual ScanManager *scanManager() const;
+        virtual MountPointManager *mountPointManager() const;
+        /** This set's the mount point manager which is actually only useful for testing.
+         *  Note: The old MountPointManager is not deleted when the new one is set.
+         */
+        virtual void setMountPointManager( MountPointManager *mpm );
 
         virtual QStringList getDatabaseDirectories( QList<int> idList ) const = 0;
-        virtual QStringList collectionFolders() const = 0;
-        virtual void setCollectionFolders( const QStringList &folders ) = 0;
+
+        virtual QStringList collectionFolders() const;
+        virtual void setCollectionFolders( const QStringList &folders );
 
         /** Call this function to prevent the collection updated signal emitted.
          *  This function can be called in preparation of larger updates.
          */
-        virtual void blockUpdatedSignal() = 0;
+        virtual void blockUpdatedSignal();
 
         /** Unblocks one blockUpdatedSignal call. */
-        virtual void unblockUpdatedSignal() = 0;
+        virtual void unblockUpdatedSignal();
 
         /** Returns a new ScanResultProcessor for this collection.
             caller has to free the processor. */
@@ -84,7 +100,7 @@ class DatabaseCollection : public Collections::Collection
 
     public slots:
         /** Emit updated if the signal is not blocked by blockUpdatedSignal */
-        virtual void collectionUpdated() = 0;
+        virtual void collectionUpdated();
 
         /** Dumps the complete database content.
          *  The content of all Amarok tables is dumped in a couple of files
@@ -94,15 +110,20 @@ class DatabaseCollection : public Collections::Collection
 
         virtual void slotScanStarted( ScannerJob *job ) = 0;
 
-    private:
-        ScanManager *m_scanManager;
+    protected slots:
+        virtual void slotDeviceAdded( int id ) { Q_UNUSED( id ); };
+        virtual void slotDeviceRemoved( int id ) { Q_UNUSED( id ); };
 
-        QString m_collectionId;
-        QString m_prettyName;
+    protected:
+        MountPointManager *m_mpm;
+        ScanManager *m_scanManager;
 
         int m_blockUpdatedSignalCount;
         bool m_updatedSignalRequested;
         QMutex m_mutex;
+
+        QString m_collectionId;
+        QString m_prettyName;
 };
 
 }

@@ -58,14 +58,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
                 SCRIPTABLE false
                 DESIGNABLE false )
 
-    /** This property is important. CollectionSetup is using the property to
-        determine the folders covered by this collection (and also setting them) */
-    Q_PROPERTY( QStringList collectionFolders
-                READ collectionFolders
-                WRITE setCollectionFolders
-                SCRIPTABLE false
-                DESIGNABLE false )
-
     public:
         /** Creates a new SqlCollection.
          *  @param storage The storage this collection should work on. It will be freed by the collection.
@@ -84,17 +76,13 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
          * fed to Track::setUidUrl().
          */
         QString generateUidUrl( const QString &hash );
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon("drive-harddisk"); }
 
         // Local collection cannot have a capacity since it may be spread over multiple
         // physical locations (even network components)
 
         SqlRegistry* registry() const;
-        ScanManager* scanManager() const;
         SqlStorage* sqlStorage() const;
-        MountPointManager* mountPointManager() const;
 
         /** Returns true if the directory is already known in the database. */
         virtual bool isDirInCollection( const QString &path );
@@ -113,9 +101,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual CollectionLocation* location();
         QStringList getDatabaseDirectories( QList<int> idList ) const;
 
-        QStringList collectionFolders() const;
-        void setCollectionFolders( const QStringList &folders );
-
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
@@ -128,25 +113,9 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual Capabilities::TrackCapabilityDelegate *trackCapabilityDelegate() const
         { return m_trackCapabilityDelegate; }
 
-        /** This set's the mount point manager which is actually only useful for testing.
-         *  Note: The old MountPointManager is not deleted when the new one is set.
-         */
-        void setMountPointManager( MountPointManager *mpm );
-
-        /** Call this function to prevent the collection updated signal emitted.
-         *  This function can be called in preparation of larger updates.
-         */
-        void blockUpdatedSignal();
-
-        /** Unblocks one blockUpdatedSignal call. */
-        void unblockUpdatedSignal();
-
         ScanResultProcessor* getNewScanResultProcessor();
 
     public slots:
-        /** Emit updated if the signal is not blocked by blockUpdatedSignal */
-        virtual void collectionUpdated();
-
         /** Dumps the complete database content.
          *  The content of all Amarok tables is dumped in a couple of files
          *  in the users homedirectory.
@@ -168,15 +137,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         SqlStorage *m_sqlStorage;
         SqlCollectionLocationFactory *m_collectionLocationFactory;
         SqlQueryMakerFactory *m_queryMakerFactory;
-        ScanManager *m_scanManager;
-        MountPointManager *m_mpm;
-
-        QString m_collectionId;
-        QString m_prettyName;
-
-        int m_blockUpdatedSignalCount;
-        bool m_updatedSignalRequested;
-        QMutex m_mutex;
 };
 
 class SqlCollectionScanCapability : public Capabilities::CollectionScanCapability

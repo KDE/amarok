@@ -127,12 +127,6 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     , m_sqlStorage( storage )
     , m_collectionLocationFactory( 0 )
     , m_queryMakerFactory( 0 )
-    , m_scanManager( 0 )
-    , m_mpm( 0 )
-    , m_collectionId( id )
-    , m_prettyName( prettyName )
-    , m_blockUpdatedSignalCount( 0 )
-    , m_updatedSignalRequested( false )
 {
     qRegisterMetaType<TrackUrls>( "TrackUrls" );
     qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
@@ -212,7 +206,6 @@ SqlCollection::~SqlCollection()
     delete m_queryMakerFactory;
     delete m_sqlStorage;
     delete m_registry;
-    delete m_mpm;
 }
 
 QString
@@ -225,18 +218,6 @@ QString
 SqlCollection::generateUidUrl( const QString &hash )
 {
     return uidUrlProtocol() + "://" + hash;
-}
-
-QString
-SqlCollection::collectionId() const
-{
-    return m_collectionId;
-}
-
-QString
-SqlCollection::prettyName() const
-{
-    return m_prettyName;
 }
 
 QueryMaker*
@@ -253,81 +234,11 @@ SqlCollection::registry() const
     return m_registry;
 }
 
-ScanManager*
-SqlCollection::scanManager() const
-{
-    Q_ASSERT( m_scanManager );
-    return m_scanManager;
-}
-
 SqlStorage*
 SqlCollection::sqlStorage() const
 {
     Q_ASSERT( m_sqlStorage );
     return m_sqlStorage;
-}
-
-MountPointManager*
-SqlCollection::mountPointManager() const
-{
-    Q_ASSERT( m_mpm );
-    return m_mpm;
-}
-
-void
-SqlCollection::setMountPointManager( MountPointManager *mpm )
-{
-    Q_ASSERT( mpm );
-
-    if( m_mpm )
-    {
-        disconnect( mpm, SIGNAL( deviceAdded(int) ), this, SLOT( slotDeviceAdded(int) ) );
-        disconnect( mpm, SIGNAL( deviceRemoved(int) ), this, SLOT( slotDeviceRemoved(int) ) );
-    }
-
-    m_mpm = mpm;
-    connect( mpm, SIGNAL( deviceAdded(int) ), this, SLOT( slotDeviceAdded(int) ) );
-    connect( mpm, SIGNAL( deviceRemoved(int) ), this, SLOT( slotDeviceRemoved(int) ) );
-}
-
-void
-SqlCollection::blockUpdatedSignal()
-{
-    QMutexLocker locker( &m_mutex );
-    m_blockUpdatedSignalCount ++;
-}
-
-void
-SqlCollection::unblockUpdatedSignal()
-{
-    QMutexLocker locker( &m_mutex );
-
-    Q_ASSERT( m_blockUpdatedSignalCount > 0 );
-    m_blockUpdatedSignalCount --;
-
-    // check if meanwhile somebody had updated the collection
-    if( m_blockUpdatedSignalCount == 0 && m_updatedSignalRequested == true )
-    {
-        m_updatedSignalRequested = false;
-        locker.unlock();
-        emit updated();
-    }
-}
-
-void
-SqlCollection::collectionUpdated()
-{
-    QMutexLocker locker( &m_mutex );
-    if( m_blockUpdatedSignalCount == 0 )
-    {
-        m_updatedSignalRequested = false;
-        locker.unlock();
-        emit updated();
-    }
-    else
-    {
-        m_updatedSignalRequested = true;
-    }
 }
 
 void
@@ -427,18 +338,6 @@ SqlCollection::getDatabaseDirectories( QList<int> idList ) const
 
     QString query = QString( "SELECT deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" );
     return m_sqlStorage->query( query.arg( deviceIds ) );
-}
-
-QStringList
-SqlCollection::collectionFolders() const
-{
-    return mountPointManager()->collectionFolders();
-}
-
-void
-SqlCollection::setCollectionFolders( const QStringList &folders )
-{
-    mountPointManager()->setCollectionFolders( folders );
 }
 
 void
