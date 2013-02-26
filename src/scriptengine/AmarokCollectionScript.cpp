@@ -111,32 +111,6 @@ namespace AmarokScript
         CollectionManager::instance()->checkCollectionChanges();
     }
 
-    bool AmarokCollectionScript::isDirInCollection( const QString& path ) const
-    {
-        DEBUG_BLOCK
-
-        KUrl url = KUrl( path );
-        KUrl parentUrl;
-        foreach( const QString &dir, collectionLocation() )
-        {
-            debug() << "Collection Location: " << dir;
-            debug() << "path: " << path;
-            debug() << "scan Recursively: " << AmarokConfig::scanRecursively();
-            parentUrl.setPath( dir );
-            if ( !AmarokConfig::scanRecursively() )
-            {
-                if ( ( dir == path ) || ( QString( dir + '/' ) == path ) )
-                    return true;
-            }
-            else //scan recursively
-            {
-                if ( parentUrl.isParentOf( path ) )
-                    return true;
-            }
-        }
-        return false;
-    }
-
     void
     AmarokCollectionScript::dumpDatabaseContent() const
     {

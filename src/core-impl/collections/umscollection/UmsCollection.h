@@ -110,7 +110,6 @@ class UmsCollection : public Collection, public Meta::Observer
 
         /* Collection methods */
         virtual QueryMaker *queryMaker();
-        virtual bool isDirInCollection( const QString &path );
         virtual QString uidUrlProtocol() const;
 
         virtual QString collectionId() const;

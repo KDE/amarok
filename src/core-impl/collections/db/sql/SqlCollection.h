@@ -58,6 +58,8 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
                 SCRIPTABLE false
                 DESIGNABLE false )
 
+    /** This property is important. CollectionSetup is using the property to
+        determine the folders covered by this collection (and also setting them) */
     Q_PROPERTY( QStringList collectionFolders
                 READ collectionFolders
                 WRITE setCollectionFolders

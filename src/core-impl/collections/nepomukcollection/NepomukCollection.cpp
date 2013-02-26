@@ -54,13 +54,6 @@ NepomukCollection::queryMaker()
     return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
 }
 
-bool
-NepomukCollection::isDirInCollection( const QString &path )
-{
-    Q_UNUSED( path );
-    return false;
-}
-
 QString
 NepomukCollection::uidUrlProtocol() const
 {

@@ -4,6 +4,7 @@
  * Copyright (c) 2004-2008 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Sebastian Trueg <trueg@kde.org>                                   *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -183,16 +184,8 @@ CollectionSetup::slotPressed( const QModelIndex &index )
         debug() << "Setting current dir to " << m_currDir;
 
         // check if there is an sql collection covering the directory
-        bool covered = false;
-        QList<Collections::Collection*> queryableCollections = CollectionManager::instance()->queryableCollections();
-        foreach( Collections::Collection *collection, queryableCollections )
-        {
-            if( collection->isDirInCollection( m_currDir ) )
-                covered = true;
-        }
-
         // it's covered, so we can show the rescan option
-        if( covered )
+        if( isDirInCollection( m_currDir ) )
         {
             m_rescanDirAction->setText( i18n( "Rescan '%1'", m_currDir ) );
             QMenu menu;
@@ -210,6 +203,35 @@ CollectionSetup::slotRescanDirTriggered()
 }
 
 
+bool
+CollectionSetup::isDirInCollection( const QString& path ) const
+{
+    DEBUG_BLOCK
+
+    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
+
+    KUrl url = KUrl( path );
+    KUrl parentUrl;
+    foreach( const QString &dir, collectionFolders )
+    {
+        debug() << "Collection Location: " << dir;
+        debug() << "path: " << path;
+        debug() << "scan Recursively: " << AmarokConfig::scanRecursively();
+        parentUrl.setPath( dir );
+        if ( !AmarokConfig::scanRecursively() )
+        {
+            if ( ( dir == path ) || ( QString( dir + '/' ) == path ) )
+                return true;
+        }
+        else //scan recursively
+        {
+            if ( parentUrl.isParentOf( path ) )
+                return true;
+        }
+    }
+    return false;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS Model
@@ -393,12 +415,6 @@ namespace CollectionFolder {
         return false;
     }
 
-    /**
-     * Check the logical recursive difference of root and excludePath.
-     * For example, if excludePath is a grandchild of root, then this method
-     * will check all of the children of root except the one that is the
-     * parent of excludePath, as well as excludePath's siblings.
-     */
     void
     Model::checkRecursiveSubfolders( const QString &root, const QString &excludePath )
     {

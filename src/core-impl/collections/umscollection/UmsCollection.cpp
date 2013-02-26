@@ -342,12 +342,6 @@ UmsCollection::queryMaker()
     return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
 }
 
-bool
-UmsCollection::isDirInCollection( const QString &path )
-{
-    return path.startsWith( m_musicPath.path() );
-}
-
 QString
 UmsCollection::uidUrlProtocol() const
 {

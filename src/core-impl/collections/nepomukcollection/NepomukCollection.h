@@ -63,7 +63,6 @@ public:
       * There is no need to construct a separate NepomukQueryMaker.
       */
     virtual QueryMaker *queryMaker();
-    virtual bool isDirInCollection( const QString &path );
     virtual QString uidUrlProtocol() const;
     virtual QString collectionId() const;
     virtual QString prettyName() const;

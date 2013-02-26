@@ -58,13 +58,6 @@ Collections::Collection::~Collection()
 {
 }
 
-bool
-Collections::Collection::isDirInCollection( const QString &path )
-{
-    Q_UNUSED( path );
-    return false;
-}
-
 QString
 Collections::Collection::uidUrlProtocol() const
 {

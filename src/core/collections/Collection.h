@@ -91,13 +91,6 @@ namespace Collections
             virtual QueryMaker *queryMaker() = 0;
 
             /**
-             * Checks if the given path is covered by this collection.
-             * Not all collections cover directories or even know what a path is.
-             * @returns true if it is covered.
-             */
-            virtual bool isDirInCollection( const QString &path );
-
-            /**
              * The protocol of uids coming from this collection.
              * @return A string of the protocol, without the ://
              */

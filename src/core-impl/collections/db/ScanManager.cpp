@@ -55,7 +55,7 @@ static const int SHARED_MEMORY_SIZE = MAX_RESTARTS * 32 * 1024;
 
 ScanManager::ScanManager( Collections::DatabaseCollection *collection, QObject *parent )
     : QObject( parent )
-    , m_collection( static_cast<Collections::SqlCollection*>( collection ) )
+    , m_collection( collection )
     , m_scanner( 0 )
     , m_blockCount( 0 )
     , m_fullScanRequested( false )
@@ -182,7 +182,10 @@ ScanManager::addDirToList( const QString &directory )
     }
     else
     {
-        if( m_collection->isDirInCollection( directory ) )
+        // TODO: clean this up. isDirInCollection currently returns dirs that were previously scanned.
+        //       instead it should return all folders below the collectionFolders
+        Collections::SqlCollection* sqlCollection = qobject_cast<Collections::SqlCollection*>(m_collection);
+        if( !sqlCollection || sqlCollection->isDirInCollection( directory ) )
             m_scanDirsRequested.insert( directory );
         else
         {
