@@ -224,7 +224,7 @@ KProcess *
 GenericScannerJob::createScannerProcess( bool restart )
 {
     if( m_abortRequested )
-        return false;
+        return 0;
 
     // -- create the shared memory
     if( !m_scannerStateMemory && !restart )

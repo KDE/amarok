@@ -382,7 +382,7 @@ Capabilities::Capability*
 MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( !m_collection || !m_collection.data()->isWritable() )
-        return false;
+        return 0;
 
     switch( type )
     {
