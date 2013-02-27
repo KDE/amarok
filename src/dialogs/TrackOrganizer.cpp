@@ -135,7 +135,7 @@ QString TrackOrganizer::cleanPath( const QString& path ) const
     if( !m_regexPattern.isEmpty() )
         result.replace( QRegExp( m_regexPattern ), m_replaceString );
 
-    result.simplified();
+    result = result.simplified();
     if( m_UnderscoresNotSpaces )
         result.replace( QRegExp( "\\s" ), "_" );
 

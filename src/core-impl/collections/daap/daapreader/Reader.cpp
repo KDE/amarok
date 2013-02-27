@@ -490,7 +490,7 @@ Reader::readTagData( QDataStream &raw, char *tag, quint32 tagLength)
             qint32 verData;
             READ_DATA( verData )
             QString version( "%1.%2.%3" );
-            version.arg( verData >> 16, (verData >> 8) & 0xFF, verData & 0xFF);
+            version = version.arg( verData >> 16, (verData >> 8) & 0xFF, verData & 0xFF);
             ret = QVariant( version );
             break;
         }
