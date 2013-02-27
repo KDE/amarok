@@ -22,8 +22,6 @@
 #define DEBUG_PREFIX "SqlCollection"
 
 #include "DefaultSqlQueryMakerFactory.h"
-#include "CapabilityDelegate.h"
-#include "CapabilityDelegateImpl.h"
 #include "DatabaseUpdater.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
@@ -125,9 +123,6 @@ using namespace Collections;
 SqlCollection::SqlCollection( SqlStorage* storage )
     : DatabaseCollection()
     , m_registry( 0 )
-    , m_albumCapabilityDelegate( 0 )
-    , m_artistCapabilityDelegate( 0 )
-    , m_trackCapabilityDelegate( 0 )
     , m_sqlStorage( storage )
     , m_collectionLocationFactory( 0 )
     , m_queryMakerFactory( 0 )
@@ -169,9 +164,6 @@ SqlCollection::SqlCollection( SqlStorage* storage )
     updater.cleanupDatabase();
 
     m_registry = new SqlRegistry( this );
-    m_albumCapabilityDelegate = new Capabilities::AlbumCapabilityDelegateImpl();
-    m_artistCapabilityDelegate = new Capabilities::ArtistCapabilityDelegateImpl();
-    m_trackCapabilityDelegate = new Capabilities::TrackCapabilityDelegateImpl();
 
     m_collectionLocationFactory = new SqlCollectionLocationFactoryImpl( this );
     m_queryMakerFactory = new DefaultSqlQueryMakerFactory( this );
@@ -203,9 +195,6 @@ SqlCollection::~SqlCollection()
 {
     if( m_scanManager )
         m_scanManager->blockScan();
-    delete m_albumCapabilityDelegate;
-    delete m_artistCapabilityDelegate;
-    delete m_trackCapabilityDelegate;
     delete m_collectionLocationFactory;
     delete m_queryMakerFactory;
     delete m_sqlStorage;
@@ -387,12 +376,11 @@ SqlCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) con
 {
     switch( type )
     {
-        case Capabilities::Capability::Transcode:
-            return true;
-        default:
-            break;
+    case Capabilities::Capability::Transcode:
+        return true;
+    default:
+        return DatabaseCollection::hasCapabilityInterface( type );
     }
-    return DatabaseCollection::hasCapabilityInterface( type );
 }
 
 Capabilities::Capability*
@@ -400,12 +388,11 @@ SqlCollection::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Capabilities::Capability::Transcode:
-            return new SqlCollectionTranscodeCapability();
-        default:
-            break;
+    case Capabilities::Capability::Transcode:
+        return new SqlCollectionTranscodeCapability();
+    default:
+        return DatabaseCollection::createCapabilityInterface( type );
     }
-    return DatabaseCollection::createCapabilityInterface( type );
 }
 
 void

@@ -1,5 +1,5 @@
 set( amarok_collection-sqlcollection_SRCS
-    CapabilityDelegateImpl.cpp
+    SqlCapabilities.cpp
     DatabaseUpdater.cpp
     ../DatabaseCollection.cpp
     ../MountPointManager.cpp

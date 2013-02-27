@@ -24,14 +24,7 @@
 #include "core/collections/support/SqlStorage.h"
 #include "core-impl/collections/db/DatabaseCollection.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "DatabaseUpdater.h"
 #include "SqlRegistry.h"
-
-namespace Capabilities {
-    class AlbumCapabilityDelegate;
-    class ArtistCapabilityDelegate;
-    class TrackCapabilityDelegate;
-}
 
 class ScanResultProcessor;
 class ScanManager;
@@ -99,15 +92,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-        virtual Capabilities::AlbumCapabilityDelegate *albumCapabilityDelegate() const
-        { return m_albumCapabilityDelegate; }
-
-        virtual Capabilities::ArtistCapabilityDelegate *artistCapabilityDelegate() const
-        { return m_artistCapabilityDelegate; }
-
-        virtual Capabilities::TrackCapabilityDelegate *trackCapabilityDelegate() const
-        { return m_trackCapabilityDelegate; }
-
         ScanResultProcessor* getNewScanResultProcessor();
 
     public slots:
@@ -125,9 +109,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
 
     private:
         SqlRegistry *m_registry;
-        Capabilities::AlbumCapabilityDelegate *m_albumCapabilityDelegate;
-        Capabilities::ArtistCapabilityDelegate *m_artistCapabilityDelegate;
-        Capabilities::TrackCapabilityDelegate *m_trackCapabilityDelegate;
 
         SqlStorage *m_sqlStorage;
         SqlCollectionLocationFactory *m_collectionLocationFactory;

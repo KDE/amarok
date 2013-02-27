@@ -21,15 +21,23 @@
 #define DEBUG_PREFIX "SqlMeta"
 
 #include "amarokconfig.h"
+
+#include "SqlCapabilities.h"
+#include "SqlCollection.h"
+#include "SqlQueryMaker.h"
+#include "SqlRegistry.h"
+#include "SqlReadLabelCapability.h"
+#include "SqlWriteLabelCapability.h"
+
 #include "MetaTagLib.h" // for getting an embedded cover
+
+#include "amarokurls/BookmarkMetaActions.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/db/sql/CapabilityDelegate.h"
-#include "core-impl/collections/db/sql/SqlCollection.h"
-#include "core-impl/collections/db/sql/SqlQueryMaker.h"
-#include "core-impl/collections/db/sql/SqlRegistry.h"
+#include "core/capabilities/BookmarkThisCapability.h"
+#include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "core-impl/collections/db/MountPointManager.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
@@ -1177,16 +1185,63 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
 bool
 SqlTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return m_collection->trackCapabilityDelegate() &&
-        m_collection->trackCapabilityDelegate()->hasCapabilityInterface( type, this );
+    switch( type )
+    {
+    case Capabilities::Capability::Actions:
+    case Capabilities::Capability::Organisable:
+    case Capabilities::Capability::BookmarkThis:
+    case Capabilities::Capability::WriteTimecode:
+    case Capabilities::Capability::LoadTimecode:
+    case Capabilities::Capability::ReadLabel:
+    case Capabilities::Capability::WriteLabel:
+    case Capabilities::Capability::FindInSource:
+        return true;
+
+    case Capabilities::Capability::Editable:
+        return isEditable();
+
+    default:
+        return Track::hasCapabilityInterface( type );
+    }
 }
 
 Capabilities::Capability*
 SqlTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( m_collection->trackCapabilityDelegate() )
-        return m_collection->trackCapabilityDelegate()->createCapabilityInterface( type, this );
-    return 0;
+    switch( type )
+    {
+    case Capabilities::Capability::Editable:
+        return new Capabilities::EditCapabilityImpl( this );
+
+    case Capabilities::Capability::Actions:
+        {
+            QList<QAction*> actions;
+            //TODO These actions will hang around until m_collection is destructed.
+            // Find a better parent to avoid this memory leak.
+            //actions.append( new CopyToDeviceAction( m_collection, this ) );
+
+            return new Capabilities::ActionsCapability( actions );
+        }
+
+    case Capabilities::Capability::Organisable:
+        return new Capabilities::OrganiseCapabilityImpl( this );
+    case Capabilities::Capability::BookmarkThis:
+        return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
+    case Capabilities::Capability::WriteTimecode:
+        return new Capabilities::TimecodeWriteCapabilityImpl( this );
+    case Capabilities::Capability::LoadTimecode:
+        return new Capabilities::TimecodeLoadCapabilityImpl( this );
+    case Capabilities::Capability::ReadLabel:
+        return new Capabilities::SqlReadLabelCapability( this, sqlCollection()->sqlStorage() );
+    case Capabilities::Capability::WriteLabel:
+        return new Capabilities::SqlWriteLabelCapability( this, sqlCollection()->sqlStorage() );
+    case Capabilities::Capability::FindInSource:
+        return new Capabilities::FindInSourceCapabilityImpl( this );
+
+    default:
+        return Track::createCapabilityInterface( type );
+    }
+
 }
 
 void
@@ -1384,16 +1439,25 @@ SqlArtist::tracks()
 bool
 SqlArtist::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return m_collection->artistCapabilityDelegate() &&
-        m_collection->artistCapabilityDelegate()->hasCapabilityInterface( type, this );
+    switch( type )
+    {
+    case Capabilities::Capability::BookmarkThis:
+        return true;
+    default:
+        return Artist::hasCapabilityInterface( type );
+    }
 }
 
 Capabilities::Capability*
 SqlArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( m_collection->artistCapabilityDelegate() )
-        return m_collection->artistCapabilityDelegate()->createCapabilityInterface( type, this );
-    return 0;
+    switch( type )
+    {
+    case Capabilities::Capability::BookmarkThis:
+        return new Capabilities::BookmarkThisCapability( new BookmarkArtistAction( 0, Meta::ArtistPtr( this ) ) );
+    default:
+        return Artist::createCapabilityInterface( type );
+    }
 }
 
 
@@ -1961,8 +2025,14 @@ SqlAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) const
     if( m_name.isEmpty() )
         return false;
 
-    return m_collection->albumCapabilityDelegate() &&
-        m_collection->albumCapabilityDelegate()->hasCapabilityInterface( type, this );
+    switch( type )
+    {
+    case Capabilities::Capability::Actions:
+    case Capabilities::Capability::BookmarkThis:
+        return true;
+    default:
+        return Album::hasCapabilityInterface( type );
+    }
 }
 
 Capabilities::Capability*
@@ -1971,9 +2041,15 @@ SqlAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
     if( m_name.isEmpty() )
         return 0;
 
-    if( m_collection->albumCapabilityDelegate() )
-        return m_collection->albumCapabilityDelegate()->createCapabilityInterface( type, this );
-    return 0;
+    switch( type )
+    {
+    case Capabilities::Capability::Actions:
+        return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
+    case Capabilities::Capability::BookmarkThis:
+        return new Capabilities::BookmarkThisCapability( new BookmarkAlbumAction( 0, Meta::AlbumPtr( this ) ) );
+    default:
+        return Album::createCapabilityInterface( type );
+    }
 }
 
 //---------------SqlComposer---------------------------------

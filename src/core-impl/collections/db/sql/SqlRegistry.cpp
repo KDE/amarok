@@ -20,6 +20,7 @@
 #define DEBUG_PREFIX "SqlRegistry"
 #include "core/support/Debug.h"
 
+#include "DatabaseUpdater.h"
 #include "SqlRegistry_p.h"
 #include "SqlCollection.h"
 #include "core-impl/collections/db/MountPointManager.h"
