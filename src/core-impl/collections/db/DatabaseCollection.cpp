@@ -19,6 +19,12 @@
 
 #include "DatabaseCollection.h"
 
+#define DEBUG_PREFIX "DatabaseCollection"
+
+#include "core/support/Debug.h"
+#include "ScanManager.h"
+#include "MountPointManager.h"
+
 using namespace Collections;
 
 DatabaseCollection::DatabaseCollection()
@@ -47,6 +53,11 @@ DatabaseCollection::prettyName() const
     return i18n( "Local Collection" );
 }
 
+KIcon
+DatabaseCollection::icon() const
+{
+    return KIcon("drive-harddisk");
+}
 
 ScanManager*
 DatabaseCollection::scanManager() const
@@ -132,4 +143,102 @@ DatabaseCollection::collectionUpdated()
     }
 }
 
+bool
+DatabaseCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
+{
+    switch( type )
+    {
+        case Capabilities::Capability::CollectionImport:
+        case Capabilities::Capability::CollectionScan:
+            return (bool) m_scanManager;
+        default:
+            break;
+    }
+    return Collection::hasCapabilityInterface( type );
+}
+
+Capabilities::Capability*
+DatabaseCollection::createCapabilityInterface( Capabilities::Capability::Type type )
+{
+    switch( type )
+    {
+        case Capabilities::Capability::CollectionImport:
+            return m_scanManager ? new DatabaseCollectionImportCapability( m_scanManager ) : 0;
+        case Capabilities::Capability::CollectionScan:
+            return m_scanManager ? new DatabaseCollectionScanCapability( m_scanManager ) : 0;
+        default:
+            break;
+    }
+    return Collection::createCapabilityInterface( type );
+}
+
+// --------- DatabaseCollectionScanCapability -------------
+
+DatabaseCollectionScanCapability::DatabaseCollectionScanCapability( ScanManager* scanManager )
+    : m_scanManager( scanManager )
+{ }
+
+DatabaseCollectionScanCapability::~DatabaseCollectionScanCapability()
+{ }
+
+void
+DatabaseCollectionScanCapability::startFullScan()
+{
+    if( m_scanManager )
+        m_scanManager->requestFullScan();
+}
+
+void
+DatabaseCollectionScanCapability::startIncrementalScan( const QString &directory )
+{
+    if( m_scanManager )
+        m_scanManager->requestIncrementalScan( directory );
+}
+
+void
+DatabaseCollectionScanCapability::stopScan()
+{
+    if( m_scanManager )
+        m_scanManager->abort( "Abort requested from DatabaseCollection::stopScan()" );
+}
+
+// --------- DatabaseCollectionImportCapability -------------
+
+DatabaseCollectionImportCapability::DatabaseCollectionImportCapability( ScanManager* scanManager )
+    : m_scanManager( scanManager )
+{ }
+
+DatabaseCollectionImportCapability::~DatabaseCollectionImportCapability()
+{ }
+
+void
+DatabaseCollectionImportCapability::import( QIODevice *input, QObject *listener )
+{
+    DEBUG_BLOCK
+    if( m_scanManager )
+    {
+        // ok. connecting of the signals is very specific for the SqlBatchImporter.
+        // For now this works.
+
+        /*
+           connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ),
+           this, SIGNAL( trackAdded( Meta::TrackPtr ) ), Qt::QueuedConnection );
+           connect( m_worker, SIGNAL( trackDiscarded( QString ) ),
+           this, SIGNAL( trackDiscarded( QString ) ), Qt::QueuedConnection );
+           connect( m_worker, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ),
+           this, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ), Qt::QueuedConnection );
+           connect( m_worker, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ),
+           this, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ), Qt::QueuedConnection );
+           connect( m_worker, SIGNAL( importError( QString ) ),
+           this, SIGNAL( importError( QString ) ), Qt::QueuedConnection );
+           */
+
+        connect( m_scanManager, SIGNAL( finished() ),
+                 listener, SIGNAL( importSucceeded() ) );
+        connect( m_scanManager, SIGNAL( message( QString ) ),
+                 listener, SIGNAL( showMessage( QString ) ) );
+
+        m_scanManager->requestImport( input );
+    }
+}
 

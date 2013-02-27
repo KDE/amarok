@@ -21,9 +21,8 @@
 #define AMAROK_COLLECTION_DATABASECOLLECTION_H
 
 #include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/collections/db/ScanResultProcessor.h"
-#include "MountPointManager.h"
+#include "core/capabilities/CollectionScanCapability.h"
+#include "core/capabilities/CollectionImportCapability.h"
 
 #include <KIcon>
 
@@ -32,13 +31,8 @@
 typedef QHash<QString, QString> TrackUrls;
 typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
 
-namespace Capabilities {
-    class CollectionCapabilityDelegate;
-    class AlbumCapabilityDelegate;
-    class ArtistCapabilityDelegate;
-    class TrackCapabilityDelegate;
-}
-
+class ScanResultProcessor;
+class MountPointManager;
 class ScanManager;
 class ScannerJob;
 
@@ -48,7 +42,7 @@ class CollectionLocation;
 class DatabaseCollectionLocationFactory;
 
 /** The DatabaseCollection is intended to be a base class for all database backed primary collections.
- *  Primary collection means that the basis for the collection is a file system.
+ *  Primary collection implies that the basis for the collection is a file system.
  *  It also means that there is a scan manager that scans the file system and
  *  a mount point manager for the dynamic collection feature (we can blend out
  *  whole parts of the collection in case a drive is just unmounted).
@@ -74,6 +68,7 @@ class DatabaseCollection : public Collections::Collection
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
+        virtual KIcon icon() const;
 
         virtual ScanManager *scanManager() const;
         virtual MountPointManager *mountPointManager() const;
@@ -99,6 +94,9 @@ class DatabaseCollection : public Collections::Collection
             caller has to free the processor. */
         virtual ScanResultProcessor *getNewScanResultProcessor() = 0;
 
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+
     public slots:
         /** Emit updated if the signal is not blocked by blockUpdatedSignal */
         virtual void collectionUpdated();
@@ -123,6 +121,37 @@ class DatabaseCollection : public Collections::Collection
         bool m_updatedSignalRequested;
         QMutex m_mutex;
 };
+
+class DatabaseCollectionScanCapability : public Capabilities::CollectionScanCapability
+{
+    Q_OBJECT
+    public:
+
+        DatabaseCollectionScanCapability( ScanManager* scanManager );
+        virtual ~DatabaseCollectionScanCapability();
+
+        virtual void startFullScan();
+        virtual void startIncrementalScan( const QString &directory = QString() );
+        virtual void stopScan();
+
+    private:
+        ScanManager *m_scanManager;
+};
+
+class DatabaseCollectionImportCapability : public Capabilities::CollectionImportCapability
+{
+    Q_OBJECT
+    public:
+
+        DatabaseCollectionImportCapability( ScanManager* scanManager );
+        virtual ~DatabaseCollectionImportCapability();
+
+        virtual void import( QIODevice *input, QObject *listener );
+
+    private:
+        ScanManager *m_scanManager;
+};
+
 
 }
 

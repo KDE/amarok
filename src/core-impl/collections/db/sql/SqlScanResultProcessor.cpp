@@ -16,15 +16,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "SqlScanResultProcessor"
-
 #include "SqlScanResultProcessor.h"
+
+#define DEBUG_PREFIX "SqlScanResultProcessor"
 
 #include "collectionscanner/Directory.h"
 #include "collectionscanner/Album.h"
 #include "collectionscanner/Track.h"
 #include "collectionscanner/Playlist.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/db/MountPointManager.h"
 #include "core-impl/collections/db/sql/SqlQueryMaker.h"
 #include "playlistmanager/PlaylistManager.h"
 

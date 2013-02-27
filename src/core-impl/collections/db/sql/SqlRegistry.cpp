@@ -15,13 +15,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "SqlRegistry.h"
+
 #define DEBUG_PREFIX "SqlRegistry"
 #include "core/support/Debug.h"
 
-#include "SqlRegistry.h"
 #include "SqlRegistry_p.h"
 #include "SqlCollection.h"
-#include "../ScanManager.h"
+#include "core-impl/collections/db/MountPointManager.h"
+#include "core-impl/collections/db/ScanManager.h"
+
 
 #include <QMutableHashIterator>
 #include <QMutexLocker>

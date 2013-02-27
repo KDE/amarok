@@ -19,6 +19,8 @@
 
 #include "SqlCollection.h"
 
+#define DEBUG_PREFIX "SqlCollection"
+
 #include "DefaultSqlQueryMakerFactory.h"
 #include "CapabilityDelegate.h"
 #include "CapabilityDelegateImpl.h"
@@ -29,6 +31,7 @@
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/db/MountPointManager.h"
 #include "core-impl/collections/db/ScanManager.h"
+#include "core-impl/collections/db/ScanResultProcessor.h"
 #include "dialogs/OrganizeCollectionDialog.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
@@ -384,15 +387,12 @@ SqlCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) con
 {
     switch( type )
     {
-        case Capabilities::Capability::CollectionImport:
-        case Capabilities::Capability::CollectionScan:
-            return (bool) m_scanManager;
         case Capabilities::Capability::Transcode:
             return true;
         default:
             break;
     }
-    return false;
+    return DatabaseCollection::hasCapabilityInterface( type );
 }
 
 Capabilities::Capability*
@@ -400,16 +400,12 @@ SqlCollection::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Capabilities::Capability::CollectionImport:
-            return m_scanManager ? new SqlCollectionImportCapability( m_scanManager ) : 0;
-        case Capabilities::Capability::CollectionScan:
-            return m_scanManager ? new SqlCollectionScanCapability( m_scanManager ) : 0;
         case Capabilities::Capability::Transcode:
             return new SqlCollectionTranscodeCapability();
         default:
             break;
     }
-    return 0;
+    return DatabaseCollection::createCapabilityInterface( type );
 }
 
 void
@@ -433,75 +429,6 @@ SqlCollection::getNewScanResultProcessor()
 }
 
 
-// --------- SqlCollectionScanCapability -------------
-
-SqlCollectionScanCapability::SqlCollectionScanCapability( ScanManager* scanManager )
-    : m_scanManager( scanManager )
-{ }
-
-SqlCollectionScanCapability::~SqlCollectionScanCapability()
-{ }
-
-void
-SqlCollectionScanCapability::startFullScan()
-{
-    if( m_scanManager )
-        m_scanManager->requestFullScan();
-}
-
-void
-SqlCollectionScanCapability::startIncrementalScan( const QString &directory )
-{
-    if( m_scanManager )
-        m_scanManager->requestIncrementalScan( directory );
-}
-
-void
-SqlCollectionScanCapability::stopScan()
-{
-    if( m_scanManager )
-        m_scanManager->abort( "Abort requested from SqlCollection::stopScan()" );
-}
-
-// --------- SqlCollectionImportCapability -------------
-
-SqlCollectionImportCapability::SqlCollectionImportCapability( ScanManager* scanManager )
-    : m_scanManager( scanManager )
-{ }
-
-SqlCollectionImportCapability::~SqlCollectionImportCapability()
-{ }
-
-void
-SqlCollectionImportCapability::import( QIODevice *input, QObject *listener )
-{
-    DEBUG_BLOCK
-    if( m_scanManager )
-    {
-        // ok. connecting of the signals is very specific for the SqlBatchImporter.
-        // For now this works.
-
-        /*
-           connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ),
-           this, SIGNAL( trackAdded( Meta::TrackPtr ) ), Qt::QueuedConnection );
-           connect( m_worker, SIGNAL( trackDiscarded( QString ) ),
-           this, SIGNAL( trackDiscarded( QString ) ), Qt::QueuedConnection );
-           connect( m_worker, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ),
-           this, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ), Qt::QueuedConnection );
-           connect( m_worker, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ),
-           this, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ), Qt::QueuedConnection );
-           connect( m_worker, SIGNAL( importError( QString ) ),
-           this, SIGNAL( importError( QString ) ), Qt::QueuedConnection );
-           */
-
-        connect( m_scanManager, SIGNAL( finished() ),
-                 listener, SIGNAL( importSucceeded() ) );
-        connect( m_scanManager, SIGNAL( message( QString ) ),
-                 listener, SIGNAL( showMessage( QString ) ) );
-
-        m_scanManager->requestImport( input );
-    }
-}
 
 SqlCollectionTranscodeCapability::~SqlCollectionTranscodeCapability()
 {

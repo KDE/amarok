@@ -24,6 +24,7 @@
 #include "SqlCollection.h"
 #include "SqlQueryMakerInternal.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core-impl/collections/db/MountPointManager.h"
 
 #include <QWeakPointer>
 #include <QStack>

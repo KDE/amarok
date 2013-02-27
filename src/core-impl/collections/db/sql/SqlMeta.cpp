@@ -16,9 +16,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "SqlMeta"
-
 #include "SqlMeta.h"
+
+#define DEBUG_PREFIX "SqlMeta"
 
 #include "amarokconfig.h"
 #include "MetaTagLib.h" // for getting an embedded cover
@@ -30,6 +30,7 @@
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/db/sql/SqlQueryMaker.h"
 #include "core-impl/collections/db/sql/SqlRegistry.h"
+#include "core-impl/collections/db/MountPointManager.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "covermanager/CoverCache.h"

@@ -20,18 +20,12 @@
 #define AMAROK_COLLECTION_SQLCOLLECTION_H
 
 #include "amarok_sqlcollection_export.h"
-#include "core/capabilities/CollectionScanCapability.h"
-#include "core/capabilities/CollectionImportCapability.h"
 #include "core/capabilities/TranscodeCapability.h"
-#include "core/collections/Collection.h"
+#include "core/collections/support/SqlStorage.h"
 #include "core-impl/collections/db/DatabaseCollection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "DatabaseUpdater.h"
 #include "SqlRegistry.h"
-#include "core/collections/support/SqlStorage.h"
-#include "core-impl/collections/db/ScanResultProcessor.h"
-
-#include <KIcon>
 
 namespace Capabilities {
     class AlbumCapabilityDelegate;
@@ -39,6 +33,7 @@ namespace Capabilities {
     class TrackCapabilityDelegate;
 }
 
+class ScanResultProcessor;
 class ScanManager;
 
 namespace Collections {
@@ -77,7 +72,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
          * fed to Track::setUidUrl().
          */
         QString generateUidUrl( const QString &hash );
-        virtual KIcon icon() const { return KIcon("drive-harddisk"); }
 
         // Local collection cannot have a capacity since it may be spread over multiple
         // physical locations (even network components)
@@ -138,36 +132,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         SqlStorage *m_sqlStorage;
         SqlCollectionLocationFactory *m_collectionLocationFactory;
         SqlQueryMakerFactory *m_queryMakerFactory;
-};
-
-class SqlCollectionScanCapability : public Capabilities::CollectionScanCapability
-{
-    Q_OBJECT
-    public:
-
-        SqlCollectionScanCapability( ScanManager* scanManager );
-        virtual ~SqlCollectionScanCapability();
-
-        virtual void startFullScan();
-        virtual void startIncrementalScan( const QString &directory = QString() );
-        virtual void stopScan();
-
-    private:
-        ScanManager *m_scanManager;
-};
-
-class SqlCollectionImportCapability : public Capabilities::CollectionImportCapability
-{
-    Q_OBJECT
-    public:
-
-        SqlCollectionImportCapability( ScanManager* scanManager );
-        virtual ~SqlCollectionImportCapability();
-
-        virtual void import( QIODevice *input, QObject *listener );
-
-    private:
-        ScanManager *m_scanManager;
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionTranscodeCapability : public Capabilities::TranscodeCapability
