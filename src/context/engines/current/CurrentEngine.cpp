@@ -94,6 +94,10 @@ CurrentEngine::sourceRequestEvent( const QString& name )
 void
 CurrentEngine::metadataChanged( Meta::AlbumPtr album )
 {
+    // disregard changes for other albums (BR: 306735)
+    if( !m_currentTrack || m_currentTrack->album() != album )
+        return;
+
     QImage cover = album->image( m_coverWidth );
     qint64 coverCacheKey = cover.cacheKey();
     if( m_coverCacheKey != coverCacheKey )
@@ -106,6 +110,8 @@ CurrentEngine::metadataChanged( Meta::AlbumPtr album )
 void
 CurrentEngine::metadataChanged( Meta::TrackPtr track )
 {
+    DEBUG_BLOCK
+
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     if( m_trackInfo != trackInfo )
     {
