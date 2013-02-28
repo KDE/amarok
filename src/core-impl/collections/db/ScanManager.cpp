@@ -37,6 +37,7 @@
 
 #include <QFileInfo>
 #include <QSharedMemory>
+#include <QUuid>
 
 #include "MainWindow.h"
 #include <KMessageBox>
@@ -647,7 +648,7 @@ ScannerJob::createScannerProcess( bool restart )
     // -- create the shared memory
     if( !m_scannerStateMemory && !restart )
     {
-        QString sharedMemoryKey = "AmarokScannerMemory"+QDateTime::currentDateTime().toString();
+        QString sharedMemoryKey = "AmarokScannerMemory"+QUuid::createUuid().toString();
         m_scannerStateMemory = new QSharedMemory( sharedMemoryKey );
         if( !m_scannerStateMemory->create( SHARED_MEMORY_SIZE ) )
         {
