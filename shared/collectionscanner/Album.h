@@ -57,6 +57,7 @@ public:
 
     /** Returns the artist of this album.  */
     QString artist() const;
+    void setArtist( const QString &artist );
 
     /** Returns the picture best suited as cover for this album */
     QString cover() const;

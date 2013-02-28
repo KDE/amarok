@@ -126,10 +126,8 @@ class ScanResultProcessor : public QObject
         */
         virtual void deleteDeletedTracks( CollectionScanner::Directory *directory) = 0;
 
-        CollectionScanner::Album* sortTrack( CollectionScanner::Track *track );
         CollectionScanner::Album* sortTrack( CollectionScanner::Track *track,
-                                             const QString &albumName,
-                                             QString albumArtist );
+                                             const QString &dirName = QString() );
 
         QList<CollectionScanner::Directory*> m_directories;
         QHash<AlbumKey, CollectionScanner::Album*> m_albums;

@@ -52,6 +52,12 @@ CollectionScanner::Album::artist() const
     return m_artist;
 }
 
+void
+CollectionScanner::Album::setArtist( const QString &artist )
+{
+    m_artist = artist;
+}
+
 
 QString
 CollectionScanner::Album::cover() const

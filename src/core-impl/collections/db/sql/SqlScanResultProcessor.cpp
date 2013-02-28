@@ -87,7 +87,7 @@ SqlScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory
 void
 SqlScanResultProcessor::commitAlbum( CollectionScanner::Album *album )
 {
-    // debug() << "SRP::commitAlbum on"<<album->name()<< "artist"<<album->artist();
+    debug() << "commitAlbum on"<<album->name()<< "artist"<<album->artist();
 
     // --- get or create the album
     Meta::SqlAlbumPtr metaAlbum;

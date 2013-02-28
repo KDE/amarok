@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
- * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010, 2013 Ralf Engels <ralf-engels@gmx.de>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -129,6 +129,16 @@ private slots:
 
     void testUidChangeMoveDirectoryIncrementalScan();
 
+    /** Test that Amarok respects the album artist from the tags.
+     *  (BR: 216759)
+     */
+    void testAlbumArtistMerges();
+
+    /** Test that two tracks getting their filename exchanged are still
+     *  handled correctly, ratings and all (BR: 272802)
+     */
+    void testCrossRenaming();
+
     void slotCollectionUpdated();
 
 private:
@@ -140,6 +150,10 @@ private:
     */
     void createTrack( const Meta::FieldHash &values );
     void createSingleTrack();
+
+    /** Creates a default album.
+      Meaning that album artist tag is not set, all songs are in one directory and the artist is the same for all the tracks.
+    */
     void createAlbum();
     void createCompilation();
     void createCompilationTrack();

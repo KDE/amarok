@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2009-2010 Jeff Mitchell <mitchell@kde.org>                             *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,9 +17,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "ScanResultProcessor"
-
 #include "ScanResultProcessor.h"
+
+#define DEBUG_PREFIX "ScanResultProcessor"
 
 #include "MountPointManager.h"
 #include "collectionscanner/Directory.h"
@@ -86,46 +87,24 @@ ScanResultProcessor::commit()
         QSet<QString> dirAlbumNames;
         QList<CollectionScanner::Track*> tracks = dir->tracks();
 
-        for( int i = tracks.count() - 1; i >= 0; --i )
+        // check what album names we have
+        foreach( CollectionScanner::Track* track, dir->tracks() )
         {
-            CollectionScanner::Album *album = sortTrack( tracks.at( i ) );
-            if( album )
-            {
-                dirAlbums.insert( album );
-                dirAlbumNames.insert( album->name() );
-                tracks.removeAt( i );
-            }
+            if( !track->album().isEmpty() )
+                dirAlbumNames.insert( track->album() );
         }
 
-        // -- sort the remainder
-        if( dirAlbums.count() == 0 )
+        // use the directory name as album name
+        QString fallbackAlbumName = ( dirAlbumNames.isEmpty() ?
+                                      QDir( dir->path() ).dirName() :
+                                      QString() );
+
+        foreach( CollectionScanner::Track* track, dir->tracks() )
         {
-            // -- use the directory name as album name
-            QString dirAlbumName = QDir( dir->path() ).dirName();
-            for( int i = tracks.count() - 1; i >= 0; --i )
-            {
-                CollectionScanner::Album *album = sortTrack( tracks.at( i ), dirAlbumName, QString() );
-                if( album )
-                {
-                    dirAlbums.insert( album );
-                    dirAlbumNames.insert( album->name() );
-                    tracks.removeAt( i );
-                }
-            }
-        }
-        else
-        {
-            // -- put into the empty album
-            for( int i = tracks.count() - 1; i >= 0; --i )
-            {
-                CollectionScanner::Album *album = sortTrack( tracks.at( i ), QString(), QString() );
-                if( album )
-                {
-                    dirAlbums.insert( album );
-                    dirAlbumNames.insert( album->name() );
-                    tracks.removeAt( i );
-                }
-            }
+            CollectionScanner::Album *album = sortTrack( track, fallbackAlbumName );
+
+            dirAlbums.insert( album );
+            dirAlbumNames.insert( track->album() );
         }
 
         // if all the tracks from this directory end up in one album
@@ -147,7 +126,6 @@ ScanResultProcessor::commit()
 
         // if we have multiple albums with the same name, check if it
         // might be a compilation
-
         for( int i = albums.count() - 1; i >= 0; --i )
         {
             CollectionScanner::Album *album = albums.at( i );
@@ -157,24 +135,43 @@ ScanResultProcessor::commit()
                 commitAlbum( albums.takeAt( i ) );
         }
 
-        // only one album left. It's no compilation.
+        // only one album left. (that either means all have the same album artist tag
+        // or none has one. In the last case we try to guess an album artist)
         if( albums.count() == 1 )
         {
-            commitAlbum( albums.takeFirst() );
+            CollectionScanner::Album *album = albums.takeFirst();
+
+            // look if all the tracks have the same (guessed) artist.
+            // It's no compilation.
+            bool isCompilation = false;
+            bool firstTrack = true;
+            QString albumArtist;
+            foreach( CollectionScanner::Track *track, album->tracks() )
+            {
+                QString trackAlbumArtist =
+                    ArtistHelper::bestGuessAlbumArtist( track->albumArtist(),
+                                                        track->artist(),
+                                                        track->genre(),
+                                                        track->composer() );
+                if( firstTrack )
+                    albumArtist = trackAlbumArtist;
+                firstTrack = false;
+
+                if( trackAlbumArtist.isEmpty() || track->isCompilation() ||
+                    albumArtist != trackAlbumArtist )
+                    isCompilation = true;
+            }
+
+            if( !isCompilation )
+                album->setArtist( albumArtist );
+            commitAlbum( album );
         }
 
-        // compilation
+        // several albums with different album artist.
         else if( albums.count() > 1 )
         {
-            CollectionScanner::Album compilation( key, QString() );
-            for( int i = albums.count() - 1; i >= 0; --i )
-            {
-                CollectionScanner::Album *album = albums.takeAt( i );
-                foreach( CollectionScanner::Track *track, album->tracks() )
-                    compilation.addTrack( track );
-                compilation.setCovers( album->covers() + compilation.covers() );
-            }
-            commitAlbum( &compilation );
+            while( !albums.isEmpty() )
+                commitAlbum( albums.takeFirst() );
         }
 
         // --- unblock every 5 second. Maybe not really needed, but still nice
@@ -247,29 +244,27 @@ ScanResultProcessor::commitPlaylist( CollectionScanner::Playlist *playlist )
         The::playlistManager()->import( "file:"+playlist->path() );
 }
 
-CollectionScanner::Album*
-ScanResultProcessor::sortTrack( CollectionScanner::Track *track )
-{
-    QString albumArtist = ArtistHelper::bestGuessAlbumArtist( track->albumArtist(),
-        track->artist(), track->genre(), track->composer() );
-
-    if( track->album().isEmpty() && albumArtist.isEmpty() )
-        return 0;  // unknown album from various artists
-    return sortTrack( track, track->album(), albumArtist );
-}
-
 /** This will just put the tracks into an album.
     @param album the name of the target album
     @returns true if the track was put into an album
 */
 CollectionScanner::Album*
-ScanResultProcessor::sortTrack( CollectionScanner::Track *track,
-                                const QString &albumName,
-                                QString albumArtist )
+ScanResultProcessor::sortTrack( CollectionScanner::Track *track, const QString &dirName )
 {
+    QString albumName = track->album();
+
     // we allow albums with empty name and nonepty artist, see bug 272471
+    QString albumArtist = track->albumArtist();
     if( track->isCompilation() )
         albumArtist.clear();  // no album artist denotes a compilation
+    if( track->isNoCompilation() && albumArtist.isEmpty() )
+        albumArtist = ArtistHelper::bestGuessAlbumArtist( track->albumArtist(),
+                                                          track->artist(),
+                                                          track->genre(),
+                                                          track->composer() );
+
+    if( albumName.isEmpty() && albumArtist.isEmpty() ) // try harder to set at least one
+        albumName = dirName;
 
     AlbumKey key( albumName, albumArtist );
 

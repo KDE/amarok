@@ -727,7 +727,6 @@ TestSqlScanManager::testMerges()
     values.insert( Meta::valFormat, QVariant("1") );
     values.insert( Meta::valTitle, QVariant("Theme From Armageddon") );
     values.insert( Meta::valArtist, QVariant("Soundtrack & Theme Orchestra") );
-    values.insert( Meta::valAlbumArtist, QVariant("Various Artists") );
     values.insert( Meta::valAlbum, QVariant("Big Screen Adventures") );
     values.insert( Meta::valComposer, QVariant("Unknown Composer") );
     values.insert( Meta::valComment, QVariant("Amazon.com Song ID: 210541237") );
@@ -747,7 +746,6 @@ TestSqlScanManager::testMerges()
     QCOMPARE( track->artist()->name(), QString("Soundtrack & Theme Orchestra") );
     QVERIFY( track->album() );
     QCOMPARE( track->album()->name(), QString("Big Screen Adventures") );
-    QVERIFY( track->album()->isCompilation() ); // the track is by various artists
     QCOMPARE( track->composer()->name(), QString("Unknown Composer") );
     QCOMPARE( track->comment(), QString("Amazon.com Song ID: 210541237") );
     QCOMPARE( track->year()->year(), 2009 );
@@ -766,7 +764,7 @@ TestSqlScanManager::testMerges()
 
 
     // -- now do an incremental scan
-    createAlbum();
+    createAlbum(); // add a new album
     m_scanManager->requestIncrementalScan();
     waitScannerFinished();
 
@@ -774,8 +772,7 @@ TestSqlScanManager::testMerges()
     Meta::AlbumPtr album;
 
     // the old track is still there
-    // and it's still has an album artist "various artists" so it's still a compilation
-    album = m_collection->registry()->getAlbum( "Big Screen Adventures", QString() );
+    album = m_collection->registry()->getAlbum( "Big Screen Adventures", "Soundtrack & Theme Orchestra" );
     QVERIFY( album );
     QCOMPARE( album->tracks().count(), 1 );
 
@@ -986,6 +983,117 @@ TestSqlScanManager::testIdentifyCompilationInMultipleDirectories()
     QCOMPARE( album->tracks().count(), 4 );
     QVERIFY( album->isCompilation() );
 }
+
+void
+TestSqlScanManager::testAlbumArtistMerges()
+{
+    // three tracks with the same artist but different album artist.
+    // (one is unset)
+    // Those should end up in different albums.
+
+    Meta::FieldHash values;
+
+    values.insert( Meta::valUniqueId, QVariant("1ef9fede5b3f98deb088b33428b0398e") );
+    values.insert( Meta::valUrl, QVariant("test1/song1.mp3") );
+    values.insert( Meta::valTitle, QVariant("title1") );
+    values.insert( Meta::valArtist, QVariant("artist") );
+    values.insert( Meta::valAlbumArtist, QVariant("albumArtist1") );
+    values.insert( Meta::valAlbum, QVariant("test1") );
+    createTrack( values );
+
+    values.clear();
+    values.insert( Meta::valUniqueId, QVariant("2ef9fede5b3f98deb088b33428b0398b") );
+    values.insert( Meta::valUrl, QVariant("test1/song2.mp3") );
+    values.insert( Meta::valTitle, QVariant("title2") );
+    values.insert( Meta::valArtist, QVariant("artist") );
+    values.insert( Meta::valAlbumArtist, QVariant("albumArtist2") );
+    values.insert( Meta::valAlbum, QVariant("test1") );
+    createTrack( values );
+
+    values.clear();
+    values.insert( Meta::valUniqueId, QVariant("3ef9fede5b3f98deb088b33428b0398c") );
+    values.insert( Meta::valUrl, QVariant("test1/song3.mp3") );
+    values.insert( Meta::valTitle, QVariant("title3") );
+    values.insert( Meta::valArtist, QVariant("artist") );
+    values.insert( Meta::valAlbum, QVariant("test1") );
+    createTrack( values );
+
+    m_scanManager->requestFullScan();
+    waitScannerFinished();
+
+    // -- check the commit
+    Meta::AlbumPtr album;
+
+    album = m_collection->registry()->getAlbum( "test1", QString() );
+    QVERIFY( album );
+    QCOMPARE( album->name(), QString("test1") );
+    QCOMPARE( album->tracks().count(), 1 );
+    QVERIFY( album->isCompilation() );
+
+    album = m_collection->registry()->getAlbum( "test1", QString("albumArtist1") );
+    QVERIFY( album );
+    QCOMPARE( album->name(), QString("test1") );
+    QCOMPARE( album->tracks().count(), 1 );
+    QVERIFY( !album->isCompilation() );
+
+    album = m_collection->registry()->getAlbum( "test1", QString("albumArtist2") );
+    QVERIFY( album );
+    QCOMPARE( album->name(), QString("test1") );
+    QCOMPARE( album->tracks().count(), 1 );
+    QVERIFY( !album->isCompilation() );
+}
+
+void
+TestSqlScanManager::testCrossRenaming()
+{
+    createAlbum();
+
+    // we use the created and first played attributes for identifying the moved tracks.
+    // currently those are not written back to the track
+
+    Meta::AlbumPtr album;
+    Meta::TrackPtr track;
+
+    m_scanManager->requestFullScan();
+    waitScannerFinished();
+
+    // -- check the commit
+    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
+    QCOMPARE( album->tracks().count(), 9 );
+    QVERIFY( !album->isCompilation() );
+
+    // --- cross-rename two track
+    track = album->tracks().at( 0 );
+    static_cast<Meta::SqlTrack*>(track.data())->setRating( 1 );
+    QString path1 = track->playableUrl().path();
+
+    track = album->tracks().at( 1 );
+    static_cast<Meta::SqlTrack*>(track.data())->setRating( 2 );
+    QString path2 = track->playableUrl().path();
+
+    QString targetPath = m_tmpCollectionDir->name() + "moved.mp3";
+    QVERIFY( QFile::rename( path2, targetPath ) );
+    QVERIFY( QFile::rename( path1, path2 ) );
+    QVERIFY( QFile::rename( targetPath, path1 ) );
+
+    m_scanManager->requestFullScan();
+    waitScannerFinished();
+
+    // -- check that the tracks are moved correctly
+    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
+    QCOMPARE( album->tracks().count(), 9 );
+
+    track = album->tracks().at( 0 );
+    QCOMPARE( track->statistics()->rating(), 1 );
+    QCOMPARE( track->playableUrl().path(), path2 );
+
+    track = album->tracks().at( 1 );
+    QCOMPARE( track->statistics()->rating(), 2 );
+    QCOMPARE( track->playableUrl().path(), path1 );
+}
+
 
 void
 TestSqlScanManager::slotCollectionUpdated()
