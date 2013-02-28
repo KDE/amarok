@@ -31,6 +31,7 @@
 #include <QFileInfo>
 #include <QSharedMemory>
 #include <QThread>
+#include <QUuid>
 
 static const int SHARED_MEMORY_SIZE = 1024 * 1024; // 1 MB shared memory
 
@@ -229,7 +230,7 @@ GenericScannerJob::createScannerProcess( bool restart )
     // -- create the shared memory
     if( !m_scannerStateMemory && !restart )
     {
-        m_sharedMemoryKey = "AmarokScannerMemory"+QDateTime::currentDateTime().toString();
+        m_sharedMemoryKey = "AmarokScannerMemory"+QUuid::createUuid().toString();
         m_scannerStateMemory = new QSharedMemory( m_sharedMemoryKey );
         if( !m_scannerStateMemory->create( SHARED_MEMORY_SIZE ) )
         {
@@ -274,7 +275,7 @@ GenericScannerJob::parseScannerOutput()
 {
     bool finished = false;
     int count = 0;
-    while( !m_reader.atEnd() )
+    while( !m_reader.atEnd() && !finished )
     {
         // -- check if we were aborted, have finished or need to wait for new data
         {
