@@ -14,21 +14,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include <QWidget>
+#include <QLabel>
 
-class QLabel;
-
-class PlaylistInfoWidget : public QWidget
+/** A small widget that displays the current length and size of the playlist.
+    It is used in the bottom bar of the playlist view */
+class PlaylistInfoWidget : public QLabel
 {
     Q_OBJECT
 
 public:
-    explicit PlaylistInfoWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    explicit PlaylistInfoWidget( QWidget* parent = 0 );
     virtual ~PlaylistInfoWidget();
 
 private Q_SLOTS:
     void updateTotalPlaylistLength();
 
-private:
-    QLabel* m_playlistLengthLabel;
 };

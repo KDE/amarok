@@ -20,14 +20,9 @@
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h"
 
-#include <QLabel>
-#include <QHBoxLayout>
-
-PlaylistInfoWidget::PlaylistInfoWidget( QWidget *parent, Qt::WindowFlags f )
-    : QWidget( parent )
-    , m_playlistLengthLabel( new QLabel( this ) )
+PlaylistInfoWidget::PlaylistInfoWidget( QWidget *parent )
+    : QLabel( parent )
 {
-    Q_UNUSED(f);
     connect( Playlist::ModelStack::instance()->bottom(),
             SIGNAL(dataChanged( const QModelIndex&, const QModelIndex& )),
             SLOT(updateTotalPlaylistLength()) );
@@ -40,11 +35,6 @@ PlaylistInfoWidget::PlaylistInfoWidget( QWidget *parent, Qt::WindowFlags f )
     connect( Playlist::ModelStack::instance()->bottom(),
             SIGNAL(rowsRemoved( const QModelIndex&, int, int )),
             SLOT(updateTotalPlaylistLength()) );
-
-    QHBoxLayout *hbox = new QHBoxLayout;
-    setLayout( hbox );
-
-    hbox->addWidget( m_playlistLengthLabel );
 
     updateTotalPlaylistLength();
 }
@@ -64,11 +54,9 @@ PlaylistInfoWidget::updateTotalPlaylistLength() //SLOT
     if( totalLength > 0 && trackCount > 0 )
     {
         const QString prettyTotalLength = Meta::msToPrettyTime( totalLength );
-        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time",
-                                                "%1 track (%2)", "%1 tracks (%2)",
-                                                trackCount, prettyTotalLength ) );
-        m_playlistLengthLabel->show();
-
+        setText( i18ncp( "%1 is number of tracks, %2 is time",
+                         "%1 track (%2)", "%1 tracks (%2)",
+                         trackCount, prettyTotalLength ) );
         quint64 queuedTotalLength( 0 );
         quint64 queuedTotalSize( 0 );
         int queuedCount( 0 );
@@ -100,17 +88,15 @@ PlaylistInfoWidget::updateTotalPlaylistLength() //SLOT
             tooltipLabel = i18n( "Total playlist size: %1", prettyTotalSize );
         }
 
-        m_playlistLengthLabel->setToolTip( tooltipLabel );
+        setToolTip( tooltipLabel );
     }
     else if( ( totalLength == 0 ) && ( trackCount > 0 ) )
     {
-        m_playlistLengthLabel->setText(
-                    i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
-        m_playlistLengthLabel->show();
-        m_playlistLengthLabel->setToolTip( 0 );
+        setText( i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
+        setToolTip( 0 );
     }
     else // Total Length will not be > 0 if trackCount is 0, so we can ignore it
     {
-        m_playlistLengthLabel->setText( i18n( "No tracks" ) );
+        setText( i18n( "No tracks" ) );
     }
 }
