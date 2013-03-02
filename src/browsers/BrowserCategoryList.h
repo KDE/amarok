@@ -24,10 +24,12 @@
 
 #include <QMap>
 
+namespace Amarok {
+    class PrettyTreeView;
+}
 class SearchWidget;
 
 class QStackedWidget;
-class QTreeView;
 
 /**
  * This is a browser category that can contain other sub-categories
@@ -124,7 +126,7 @@ class BrowserCategoryList : public BrowserCategory
 
         SearchWidget *m_searchWidget;
         QStackedWidget *m_widgetStack;
-        QTreeView *m_categoryListView;
+        Amarok::PrettyTreeView *m_categoryListView;
 
         QMap<QString, BrowserCategory *> m_categories;
 

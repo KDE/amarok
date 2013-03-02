@@ -21,8 +21,12 @@
 
 #include <QMap>
 
-class QTreeView;
+namespace Amarok {
+    class PrettyTreeView;
+}
+
 class QAbstractItemDelegate;
+class QTreeView;
 
 class KAction;
 class KActionMenu;
@@ -86,7 +90,7 @@ private:
     KActionMenu *m_providerMenu;
     QMap<const Playlists::PlaylistProvider *, QAction *> m_providerActions;
 
-    QTreeView *m_playlistView;
+    Amarok::PrettyTreeView *m_playlistView;
 
     KAction *m_addFolderAction;
 

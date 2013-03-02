@@ -24,8 +24,10 @@
 #include <QRect>
 #include <QStyledItemDelegate>
 
+namespace Amarok {
+    class PrettyTreeView;
+}
 class QFontMetrics;
-class QTreeView;
 
 /** A delegate used for the browser.
     This delegate has the following specialities:
@@ -40,7 +42,7 @@ class PrettyTreeDelegate : public QStyledItemDelegate
     Q_OBJECT
 
     public:
-        PrettyTreeDelegate( QTreeView *view );
+        PrettyTreeDelegate( Amarok::PrettyTreeView *view );
         ~PrettyTreeDelegate();
 
         void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
@@ -53,7 +55,7 @@ class PrettyTreeDelegate : public QStyledItemDelegate
         /** Verify and if needed update the buffered fonts and font metrics. */
         void updateFonts( const QStyleOptionViewItem &option ) const;
 
-        QTreeView *m_view;
+        Amarok::PrettyTreeView *m_view;
 
         mutable QFont m_originalFont;
         mutable QFont m_bigFont;
