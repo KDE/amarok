@@ -15,23 +15,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "PlaylistBrowserView"
-
 #include "PlaylistBrowserView.h"
 
-#include "core/support/Debug.h"
-#include "playlist/PlaylistModel.h"
-#include "playlist/PlaylistController.h"
-#include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
-#include "PlaylistBrowserModel.h"
+#define DEBUG_PREFIX "PlaylistBrowserView"
+
 #include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
-#include "PlaylistsInFoldersProxy.h"
-#include "PlaylistsByProviderProxy.h"
-#include "widgets/PrettyTreeDelegate.h"
+#include "browsers/playlistbrowser/PlaylistBrowserModel.h"
+#include "browsers/playlistbrowser/PlaylistsByProviderProxy.h"
+#include "browsers/playlistbrowser/PlaylistsInFoldersProxy.h"
+#include "context/ContextView.h"
+#include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "context/popupdropper/libpud/PopupDropper.h"
+#include "core/support/Debug.h"
+#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeRoles.h"
 
 #include <KAction>
@@ -40,8 +39,6 @@
 
 #include <QKeyEvent>
 #include <QMouseEvent>
-#include <QModelIndex>
-#include <QToolTip>
 
 PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel *model,
                                                              QWidget *parent )
@@ -49,7 +46,6 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
     , m_pd( 0 )
     , m_addFolderAction( 0 )
     , m_ongoingDrag( false )
-    , m_expandToggledWhenPressed( false )
 {
     DEBUG_BLOCK
     setModel( model );
@@ -76,52 +72,6 @@ PlaylistBrowserNS::PlaylistBrowserView::setModel( QAbstractItemModel *model )
 }
 
 void
-PlaylistBrowserNS::PlaylistBrowserView::mousePressEvent( QMouseEvent *event )
-{
-    const QModelIndex index = indexAt( event->pos() );
-
-    // Only forward the press event if we aren't on an action (which gets triggered on a release)
-    if( event->button() == Qt::LeftButton &&
-        event->modifiers() == Qt::NoModifier &&
-        decoratorActionAt( index, event->pos() ) )
-    {
-        event->accept();
-        return;
-    }
-
-    bool prevExpandState = isExpanded( index );
-
-    // This will toggle the expansion of the current item when clicking
-    // on the fold marker but not on the item itself. Required here to
-    // enable dragging.
-    PrettyTreeView::mousePressEvent( event );
-
-    if( index.isValid() )
-        m_expandToggledWhenPressed = ( prevExpandState != isExpanded( index ) );
-}
-
-QAction *
-PlaylistBrowserNS::PlaylistBrowserView::decoratorActionAt( const QModelIndex &index, const QPoint pos )
-{
-    const int actionsCount = index.data( PrettyTreeRoles::DecoratorRoleCount ).toInt();
-    if( actionsCount <= 0 )
-        return 0;
-
-    PrettyTreeDelegate* ptd = qobject_cast<PrettyTreeDelegate*>( itemDelegate( index ) );
-    if( !ptd )
-        return 0;
-
-    QActionList actions = index.data( PrettyTreeRoles::DecoratorRole ).value<QActionList>();
-    QRect rect = visualRect( index );
-
-    for( int i = 0; i < actions.count(); i++ )
-        if( ptd->decoratorRect( rect, i ).contains( pos ) )
-            return actions.at( i );
-
-    return 0;
-}
-
-void
 PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
 {
     if( m_pd )
@@ -145,42 +95,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
-    // if root is decorated, it doesn't show any actions
-    QAction *action = rootIsDecorated() ? 0 : decoratorActionAt( index, event->pos() );
-    if( action &&
-        event->button() == Qt::LeftButton &&
-        event->modifiers() == Qt::NoModifier )
-    {
-        action->trigger();
-        event->accept();
-        return;
-    }
-
-    if( !m_expandToggledWhenPressed &&
-        event->button() == Qt::LeftButton &&
-        event->modifiers() == Qt::NoModifier &&
-        KGlobalSettings::singleClick() &&
-        model()->hasChildren( index ) )
-    {
-        m_expandToggledWhenPressed = !m_expandToggledWhenPressed;
-        setExpanded( index, !isExpanded( index ) );
-        event->accept();
-        return;
-    }
-
     PrettyTreeView::mouseReleaseEvent( event );
-}
-
-void
-PlaylistBrowserNS::PlaylistBrowserView::mouseMoveEvent( QMouseEvent *event )
-{
-    PrettyTreeView::mouseMoveEvent( event );
-
-    // Make sure we repaint the item for the collection action buttons
-    const QModelIndex index = indexAt( event->pos() );
-    const int actionsCount = index.data( PrettyTreeRoles::DecoratorRoleCount ).toInt();
-    if( actionsCount )
-        update( index );
 }
 
 void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supportedActions )
@@ -315,27 +230,6 @@ void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent
     //Clear the data from all actions now that the context menu has executed.
     foreach( QAction *action, actions )
         action->setData( QVariant() );
-}
-
-bool
-PlaylistBrowserNS::PlaylistBrowserView::viewportEvent( QEvent *event )
-{
-    if( event->type() == QEvent::ToolTip )
-    {
-        QHelpEvent *helpEvent = static_cast<QHelpEvent *>( event );
-        if( !rootIsDecorated() )
-        {
-            QAction *action = decoratorActionAt( indexAt( helpEvent->pos() ), helpEvent->pos() );
-            if( action )
-            {
-                QToolTip::showText( helpEvent->globalPos(), action->toolTip() );
-                event->accept();
-                return true;
-            }
-        }
-    }
-
-    return PrettyTreeView::viewportEvent( event );
 }
 
 QList<QAction *>

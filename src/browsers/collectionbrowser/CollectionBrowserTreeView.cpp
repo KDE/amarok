@@ -15,19 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "CollectionBrowserTreeView"
-
 #include "CollectionBrowserTreeView.h"
-#include "browsers/CollectionTreeItem.h"
-#include "widgets/PrettyTreeDelegate.h"
-#include "widgets/PrettyTreeRoles.h"
-
-#include <QAction>
-#include <QMouseEvent>
-#include <QToolTip>
-
-Q_DECLARE_METATYPE( QAction* )
-Q_DECLARE_METATYPE( QList<QAction*> )
 
 CollectionBrowserTreeView::CollectionBrowserTreeView( QWidget *parent )
     : CollectionTreeView( parent )
@@ -37,91 +25,4 @@ CollectionBrowserTreeView::CollectionBrowserTreeView( QWidget *parent )
 
 CollectionBrowserTreeView::~CollectionBrowserTreeView()
 {
-}
-
-void
-CollectionBrowserTreeView::mouseMoveEvent( QMouseEvent *event )
-{
-    CollectionTreeView::mouseMoveEvent( event );
-
-    // Make sure we repaint the item for the collection action buttons
-    const QModelIndex index = indexAt( event->pos() );
-    const int actionsCount = index.data( PrettyTreeRoles::DecoratorRoleCount ).toInt();
-    if( actionsCount )
-        update( index );
-}
-
-void
-CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
-{
-    // Only forward the press event if we aren't on an action (which gets triggered on a release)
-    if( event->button() == Qt::LeftButton &&
-        event->modifiers() == Qt::NoModifier &&
-        decoratorActionAt( indexAt( event->pos() ), event->pos() ) )
-    {
-        event->accept();
-        return;
-    }
-
-    CollectionTreeView::mousePressEvent( event );
-}
-
-void
-CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
-{
-    QModelIndex index = indexAt( event->pos() );
-
-    // if root is decorated, it doesn't show any actions
-    QAction *action = rootIsDecorated() ? 0 : decoratorActionAt( index, event->pos() );
-    if( action &&
-        event->button() == Qt::LeftButton &&
-        event->modifiers() == Qt::NoModifier )
-    {
-        action->trigger();
-        event->accept();
-        return;
-    }
-
-    CollectionTreeView::mouseReleaseEvent( event );
-}
-
-bool
-CollectionBrowserTreeView::viewportEvent( QEvent *event )
-{
-    if( event->type() == QEvent::ToolTip )
-    {
-        QHelpEvent *helpEvent = static_cast<QHelpEvent *>( event );
-        if( !rootIsDecorated() )
-        {
-            QAction *action = decoratorActionAt( indexAt( helpEvent->pos() ), helpEvent->pos() );
-            if( action )
-            {
-                QToolTip::showText( helpEvent->globalPos(), action->toolTip() );
-                return true;
-            }
-        }
-    }
-
-    return QAbstractItemView::viewportEvent( event );
-}
-
-QAction *
-CollectionBrowserTreeView::decoratorActionAt( const QModelIndex &index, const QPoint pos )
-{
-    const int actionsCount = index.data( PrettyTreeRoles::DecoratorRoleCount ).toInt();
-    if( actionsCount <= 0 )
-        return 0;
-
-    PrettyTreeDelegate* ptd = qobject_cast<PrettyTreeDelegate*>( itemDelegate( index ) );
-    if( !ptd )
-        return 0;
-
-    QActionList actions = index.data( PrettyTreeRoles::DecoratorRole ).value<QActionList>();
-    QRect rect = visualRect( index );
-
-    for( int i = 0; i < actions.count(); i++ )
-        if( ptd->decoratorRect( rect, i ).contains( pos ) )
-            return actions.at( i );
-
-    return 0;
 }

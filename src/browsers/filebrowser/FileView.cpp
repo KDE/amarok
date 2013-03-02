@@ -152,7 +152,7 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
     QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
     {
-        event->accept();
+        PrettyTreeView::mouseReleaseEvent( event );
         return;
     }
 

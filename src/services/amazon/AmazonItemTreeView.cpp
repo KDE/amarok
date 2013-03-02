@@ -113,38 +113,6 @@ AmazonItemTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 }
 
 void
-AmazonItemTreeView::mousePressEvent( QMouseEvent *event )
-{
-    const QModelIndex index = indexAt( event->pos() );
-    if( !index.isValid() )
-    {
-        event->accept();
-        return;
-    }
-
-    Amarok::PrettyTreeView::mousePressEvent( event );
-}
-
-void
-AmazonItemTreeView::mouseMoveEvent( QMouseEvent *event )
-{
-    const QModelIndex index = indexAt( event->pos() );
-    if( !index.isValid() )
-    {
-        event->accept();
-        return;
-    }
-
-    // pass event to parent widget
-    if( event->buttons() || event->modifiers() )
-    {
-        Amarok::PrettyTreeView::mouseMoveEvent( event );
-        return;
-    }
-    event->accept();
-}
-
-void
 AmazonItemTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
     if( m_pd )

@@ -49,13 +49,10 @@ protected:
 
     virtual void keyPressEvent( QKeyEvent *event );
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
-    virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
-    virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void startDrag( Qt::DropActions supportedActions );
 
     virtual void contextMenuEvent( QContextMenuEvent* event );
-    virtual bool viewportEvent( QEvent *event );
 
 protected slots:
     /** reimplemented to emit a signal */
@@ -86,7 +83,6 @@ private:
     KAction *m_addFolderAction;
 
     bool m_ongoingDrag;
-    bool m_expandToggledWhenPressed;
 };
 
 } // namespace PlaylistBrowserNS

@@ -68,7 +68,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_editAction( 0 )
     , m_organizeAction( 0 )
     , m_ongoingDrag( false )
-    , m_expandToggledWhenPressed( false )
 {
     setSortingEnabled( true );
     setFocusPolicy( Qt::StrongFocus );
@@ -352,21 +351,6 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 }
 
 void
-CollectionTreeView::mousePressEvent( QMouseEvent *event )
-{
-    const QModelIndex index = indexAt( event->pos() );
-    bool prevExpandState = isExpanded( index );
-
-    // This will toggle the expansion of the current item when clicking
-    // on the fold marker but not on the item itself. Required here to
-    // enable dragging.
-    PrettyTreeView::mousePressEvent( event );
-
-    if( index.isValid() )
-        m_expandToggledWhenPressed = ( prevExpandState != isExpanded( index ) );
-}
-
-void
 CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
     if( m_pd )
@@ -387,18 +371,6 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
         playChildTracks( item, Playlist::AppendAndPlay );
-        event->accept();
-        return;
-    }
-
-    if( !m_expandToggledWhenPressed &&
-        event->button() == Qt::LeftButton &&
-        event->modifiers() == Qt::NoModifier &&
-        KGlobalSettings::singleClick() &&
-        model()->hasChildren( index ) )
-    {
-        m_expandToggledWhenPressed = !m_expandToggledWhenPressed;
-        setExpanded( index, !isExpanded( index ) );
         event->accept();
         return;
     }

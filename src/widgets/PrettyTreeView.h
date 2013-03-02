@@ -24,7 +24,15 @@
 namespace Amarok
 {
     /**
-     * A utility QTreeView subcass that handles drawing nice, svg themed, rows and palette changes
+     * A utility QTreeView subcass that handles:
+     * - drawing nice (svg themed) rows
+     * - palette changes
+     * - nicer expanding/collapsing interaction even when single click is used
+     * - decorator actions for root level items when isRootDecorated() is false
+     *
+     * If you use decorator actions, don't forget to set mouseTracking to true as
+     * PrettyTreeView doesn't do it automatically as it would be too costly for models
+     * that don't use the actions.
      *
      * @author: Nikolaj Hald Nielsen <nhn@kde.org>
      */
@@ -48,8 +56,41 @@ namespace Amarok
             bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event );
             void drawRow( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
+            /**
+             * Reimplemented to trigger item redraw in case mouse is over an item which
+             * has decorator actions.
+             */
+            void mouseMoveEvent( QMouseEvent *event );
+
+            /**
+             * Reimplemented to handle expanding with single-click mouse setting event
+             * when it is clicked outside the arrow and for consistency with
+             * mouseReleaseEvent() in case of decorator actions.
+             */
+            void mousePressEvent( QMouseEvent *event );
+
+            /**
+             * Reimplemented to handle expanding with single-click mouse setting event
+             * when it is clicked outside the arrow and to handle clicking on decorator
+             * actions */
+            void mouseReleaseEvent( QMouseEvent *event );
+
+            /**
+             * Reimplemented to show proper tooltips for decorator actions.
+             */
+            bool viewportEvent( QEvent *event );
+
+            /**
+             * Get dectorator action (little action icon as seen for example in collection
+             * items in collection browser) of index @p idx under mouse position @p pos.
+             */
+            QAction *decoratorActionAt( const QModelIndex &idx, const QPoint &pos );
+
         private slots:
             virtual void newPalette( const QPalette &palette );
+
+        private:
+            bool m_expandToggledWhenPressed;
     };
 }
 

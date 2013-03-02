@@ -64,7 +64,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
     protected:
         void contextMenuEvent( QContextMenuEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
-        void mousePressEvent( QMouseEvent *event );
         void mouseReleaseEvent( QMouseEvent *event );
         void keyPressEvent( QKeyEvent * event );
         void dragEnterEvent( QDragEnterEvent *event );
@@ -131,7 +130,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         QSet<CollectionTreeItem*> m_currentItems;
 
         bool m_ongoingDrag;
-        bool m_expandToggledWhenPressed;
 
     signals:
         void itemSelected( CollectionTreeItem * item );
