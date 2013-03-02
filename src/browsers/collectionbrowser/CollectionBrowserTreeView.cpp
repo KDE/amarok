@@ -54,13 +54,14 @@ CollectionBrowserTreeView::mouseMoveEvent( QMouseEvent *event )
 void
 CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
 {
-    const QModelIndex index = indexAt( event->pos() );
-
     // Only forward the press event if we aren't on an action (which gets triggered on a release)
     if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
-        decoratorActionAt( index, event->pos() ) )
+        decoratorActionAt( indexAt( event->pos() ), event->pos() ) )
+    {
+        event->accept();
         return;
+    }
 
     CollectionTreeView::mousePressEvent( event );
 }
@@ -68,14 +69,16 @@ CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
 void
 CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
-    const QModelIndex index = indexAt( event->pos() );
+    QModelIndex index = indexAt( event->pos() );
 
-    QAction *decoratorAction = decoratorActionAt( index, event->pos() );
-    if( event->button() == Qt::LeftButton &&
-        event->modifiers() == Qt::NoModifier &&
-        decoratorAction )
+    // if root is decorated, it doesn't show any actions
+    QAction *action = rootIsDecorated() ? 0 : decoratorActionAt( index, event->pos() );
+    if( action &&
+        event->button() == Qt::LeftButton &&
+        event->modifiers() == Qt::NoModifier )
     {
-        decoratorAction->trigger();
+        action->trigger();
+        event->accept();
         return;
     }
 
@@ -88,10 +91,9 @@ CollectionBrowserTreeView::viewportEvent( QEvent *event )
     if( event->type() == QEvent::ToolTip )
     {
         QHelpEvent *helpEvent = static_cast<QHelpEvent *>( event );
-        const QModelIndex &index = indexAt( helpEvent->pos() );
-        if( !rootIsDecorated() && !index.parent().isValid() )
+        if( !rootIsDecorated() )
         {
-            QAction *action = decoratorActionAt( index, helpEvent->pos() );
+            QAction *action = decoratorActionAt( indexAt( helpEvent->pos() ), helpEvent->pos() );
             if( action )
             {
                 QToolTip::showText( helpEvent->globalPos(), action->toolTip() );

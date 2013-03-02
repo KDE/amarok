@@ -356,20 +356,15 @@ void
 CollectionTreeView::mousePressEvent( QMouseEvent *event )
 {
     const QModelIndex index = indexAt( event->pos() );
-    if( !index.isValid() )
-    {
-        event->accept();
-        return;
-    }
-
     bool prevExpandState = isExpanded( index );
 
     // This will toggle the expansion of the current item when clicking
     // on the fold marker but not on the item itself. Required here to
     // enable dragging.
-    Amarok::PrettyTreeView::mousePressEvent( event );
+    PrettyTreeView::mousePressEvent( event );
 
-    m_expandToggledWhenPressed = ( prevExpandState != isExpanded(index) );
+    if( index.isValid() )
+        m_expandToggledWhenPressed = ( prevExpandState != isExpanded( index ) );
 }
 
 void
@@ -385,7 +380,7 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
     {
-        event->accept();
+        PrettyTreeView::mouseReleaseEvent( event );
         return;
     }
 
@@ -409,26 +404,7 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
-    Amarok::PrettyTreeView::mouseReleaseEvent( event );
-}
-
-void
-CollectionTreeView::mouseMoveEvent( QMouseEvent *event )
-{
-    const QModelIndex index = indexAt( event->pos() );
-    if( !index.isValid() )
-    {
-        event->accept();
-        return;
-    }
-
-    // pass event to parent widget
-    if( event->buttons() || event->modifiers() )
-    {
-        Amarok::PrettyTreeView::mouseMoveEvent( event );
-        return;
-    }
-    event->accept();
+    PrettyTreeView::mouseReleaseEvent( event );
 }
 
 CollectionTreeItem *

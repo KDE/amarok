@@ -59,6 +59,7 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
     setDragDropMode( QAbstractItemView::DragDrop );
     setAcceptDrops( true );
     setEditTriggers( QAbstractItemView::EditKeyPressed );
+    setMouseTracking( true ); // needed for highlighting provider action icons
 }
 
 PlaylistBrowserNS::PlaylistBrowserView::~PlaylistBrowserView()
@@ -79,23 +80,25 @@ void
 PlaylistBrowserNS::PlaylistBrowserView::mousePressEvent( QMouseEvent *event )
 {
     const QModelIndex index = indexAt( event->pos() );
-    if( !index.isValid() )
+
+    // Only forward the press event if we aren't on an action (which gets triggered on a release)
+    if( event->button() == Qt::LeftButton &&
+        event->modifiers() == Qt::NoModifier &&
+        decoratorActionAt( index, event->pos() ) )
     {
         event->accept();
         return;
     }
-
-    if( decoratorActionAt( index, event->pos() ) )
-        return;
 
     bool prevExpandState = isExpanded( index );
 
     // This will toggle the expansion of the current item when clicking
     // on the fold marker but not on the item itself. Required here to
     // enable dragging.
-    Amarok::PrettyTreeView::mousePressEvent( event );
+    PrettyTreeView::mousePressEvent( event );
 
-    m_expandToggledWhenPressed = ( prevExpandState != isExpanded(index) );
+    if( index.isValid() )
+        m_expandToggledWhenPressed = ( prevExpandState != isExpanded( index ) );
 }
 
 QAction *
@@ -132,7 +135,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
     QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
     {
-        event->accept();
+        PrettyTreeView::mouseReleaseEvent( event );
         return;
     }
 
@@ -143,13 +146,15 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
-    // HACK: provider elements hide the root decorations
-    // Don't bother checking actions for the others.
-    if( !rootIsDecorated() && !index.parent().isValid() )
+    // if root is decorated, it doesn't show any actions
+    QAction *action = rootIsDecorated() ? 0 : decoratorActionAt( index, event->pos() );
+    if( action &&
+        event->button() == Qt::LeftButton &&
+        event->modifiers() == Qt::NoModifier )
     {
-        QAction *action = decoratorActionAt( index, event->pos() );
-        if( action )
-            action->trigger();
+        action->trigger();
+        event->accept();
+        return;
     }
 
     if( !m_expandToggledWhenPressed &&
@@ -163,24 +168,20 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
         event->accept();
         return;
     }
-    Amarok::PrettyTreeView::mouseReleaseEvent( event );
+
+    PrettyTreeView::mouseReleaseEvent( event );
 }
 
 void
 PlaylistBrowserNS::PlaylistBrowserView::mouseMoveEvent( QMouseEvent *event )
 {
+    PrettyTreeView::mouseMoveEvent( event );
+
     // Make sure we repaint the item for the collection action buttons
     const QModelIndex index = indexAt( event->pos() );
     const int actionsCount = index.data( PrettyTreeRoles::DecoratorRoleCount ).toInt();
     if( actionsCount )
         update( index );
-
-    if( event->buttons() || event->modifiers() )
-    {
-        Amarok::PrettyTreeView::mouseMoveEvent( event );
-        return;
-    }
-    event->accept();
 }
 
 void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supportedActions )
@@ -330,19 +331,19 @@ PlaylistBrowserNS::PlaylistBrowserView::viewportEvent( QEvent *event )
     if( event->type() == QEvent::ToolTip )
     {
         QHelpEvent *helpEvent = static_cast<QHelpEvent *>( event );
-        const QModelIndex &index = indexAt( helpEvent->pos() );
-        if( !rootIsDecorated() && !index.parent().isValid() )
+        if( !rootIsDecorated() )
         {
-            QAction *action = decoratorActionAt( index, helpEvent->pos() );
+            QAction *action = decoratorActionAt( indexAt( helpEvent->pos() ), helpEvent->pos() );
             if( action )
             {
                 QToolTip::showText( helpEvent->globalPos(), action->toolTip() );
+                event->accept();
                 return true;
             }
         }
     }
 
-    return Amarok::PrettyTreeView::viewportEvent( event );
+    return PrettyTreeView::viewportEvent( event );
 }
 
 QList<QAction *>

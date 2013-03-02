@@ -64,7 +64,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
     protected:
         void contextMenuEvent( QContextMenuEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
-        void mouseMoveEvent( QMouseEvent *event );
         void mousePressEvent( QMouseEvent *event );
         void mouseReleaseEvent( QMouseEvent *event );
         void keyPressEvent( QKeyEvent * event );
