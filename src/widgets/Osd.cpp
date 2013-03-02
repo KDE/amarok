@@ -223,7 +223,7 @@ OSDWidget::determineMetrics( const int M )
 
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0, max.width() - image.width(), max.height(),
-            Qt::AlignCenter | Qt::TextWordWrap, m_text );
+        Qt::AlignCenter, m_text );
     rect.adjust( 0, 0, SHADOW_SIZE * 2, SHADOW_SIZE * 2 ); // the shadow needs some space
 
     if( m_showVolume )
@@ -233,7 +233,7 @@ OSDWidget::determineMetrics( const int M )
 
         QRect tmpRect = fontMetrics().boundingRect( 0, 0,
             max.width() - image.width(), max.height() - fontMetrics().height(),
-            Qt::AlignCenter | Qt::TextWordWrap, tmp );
+            Qt::AlignCenter, tmp );
         tmpRect.setHeight( tmpRect.height() + fontMetrics().height() / 2 );
 
         rect = tmpRect;
@@ -329,7 +329,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
         shadowColor = v > 128 ? Qt::black : Qt::white;
     }
 
-    int align = Qt::AlignCenter | Qt::TextWordWrap;
+    const int align = Qt::AlignCenter;
 
     QPainter p( this );
     p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
