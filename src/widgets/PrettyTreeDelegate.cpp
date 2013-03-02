@@ -41,6 +41,32 @@ Q_DECLARE_METATYPE( QList<QAction*> )
 
 using namespace Amarok;
 
+/**
+ * A structure to hold some pixel metrics from style, to allow code sharing
+ */
+struct PixelSizes
+{
+    explicit PixelSizes( const QStyle *style )
+        : verticalSpace( qMax( style->pixelMetric( QStyle::PM_LayoutVerticalSpacing ), 1 ) )
+        , largeIconSize( style->pixelMetric( QStyle::PM_LargeIconSize ) )
+        , expanderIconSize( style->pixelMetric( QStyle::PM_MenuButtonIndicator ) )
+        , smallIconSize( style->pixelMetric( QStyle::PM_ListViewIconSize ) )
+        , frameHMargin( style->pixelMetric( QStyle::PM_FocusFrameHMargin ) )
+        , frameVMargin( style->pixelMetric( QStyle::PM_FocusFrameVMargin ) )
+        , frameExtraMargin( largeIconSize / 4 ) // to give top items a little more space
+        , iconSpacing( style->pixelMetric( QStyle::PM_FocusFrameHMargin ) )
+    {}
+
+    const int verticalSpace;
+    const int largeIconSize;
+    const int expanderIconSize;
+    const int smallIconSize;
+    const int frameHMargin;
+    const int frameVMargin;
+    const int frameExtraMargin;
+    const int iconSpacing;
+};
+
 PrettyTreeDelegate::PrettyTreeDelegate( PrettyTreeView *view )
     : QStyledItemDelegate( view )
     , m_view( view )
@@ -74,21 +100,14 @@ PrettyTreeDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option
     updateFonts( option );
     QStyle *style = m_view->style();
 
-    const int verticalSpace = qMax( style->pixelMetric( QStyle::PM_LayoutVerticalSpacing ), 1 );
-    const int largeIconSize = style->pixelMetric( QStyle::PM_LargeIconSize );
-    const int expanderIconSize = style->pixelMetric( QStyle::PM_MenuButtonIndicator );
-    const int frameHMargin = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
-    const int frameVMargin = style->pixelMetric( QStyle::PM_FocusFrameVMargin );
-    const int frameExtraMargin = largeIconSize / 4; // to give top items a little more space
-    const int iconSpacing = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
-
+    PixelSizes s( style );
     const bool isRTL = QApplication::isRightToLeft();
     const bool hasCapacity = index.data( PrettyTreeRoles::HasCapacityRole ).toBool();
     const int actionCount = index.data( PrettyTreeRoles::DecoratorRoleCount ).toInt();
 
     QRect remainingRect( option.rect );
-    remainingRect.adjust( frameHMargin,   frameVMargin + frameExtraMargin,
-                          -frameHMargin, -frameVMargin - frameExtraMargin );
+    remainingRect.adjust( s.frameHMargin,   s.frameVMargin + s.frameExtraMargin,
+                          -s.frameHMargin, -s.frameVMargin - s.frameExtraMargin );
 
     painter->save();
     style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
@@ -101,18 +120,18 @@ PrettyTreeDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option
     painter->setRenderHint( QPainter::Antialiasing );
 
     // -- the icon
-    const int iconYPadding = ( remainingRect.height() - largeIconSize ) / 2;
+    const int iconYPadding = ( remainingRect.height() - s.largeIconSize ) / 2;
     QPoint iconPos( remainingRect.topLeft() + QPoint( 0, iconYPadding ) );
     if( isRTL )
-        iconPos.setX( remainingRect.right() - largeIconSize );
+        iconPos.setX( remainingRect.right() - s.largeIconSize );
 
     painter->drawPixmap( iconPos,
-                         index.data( Qt::DecorationRole ).value<QIcon>().pixmap( largeIconSize, largeIconSize ) );
+                         index.data( Qt::DecorationRole ).value<QIcon>().pixmap( s.largeIconSize, s.largeIconSize ) );
 
     if( isRTL )
-        remainingRect.adjust( 0, 0, - largeIconSize - iconSpacing, 0 );
+        remainingRect.adjust( 0, 0, - s.largeIconSize - s.iconSpacing, 0 );
     else
-        remainingRect.adjust( largeIconSize + iconSpacing, 0, 0, 0 );
+        remainingRect.adjust( s.largeIconSize + s.iconSpacing, 0, 0, 0 );
 
     // -- expander option (the small arrow)
     QStyleOption expanderOption( option );
@@ -125,10 +144,10 @@ PrettyTreeDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option
     else
     {
         expandedPrimitive = QStyle::PE_IndicatorArrowLeft;
-        expanderOption.rect.setLeft( expanderOption.rect.right() - expanderIconSize );
+        expanderOption.rect.setLeft( expanderOption.rect.right() - s.expanderIconSize );
     }
 
-    expanderOption.rect.setWidth( expanderIconSize );
+    expanderOption.rect.setWidth( s.expanderIconSize );
     if( m_view->model()->hasChildren( index ) )
     {
         if( m_view->isExpanded( index ) )
@@ -139,13 +158,13 @@ PrettyTreeDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option
 
     // always substract the expander size in order to align all the rest
     if( isRTL )
-        remainingRect.adjust( expanderIconSize + iconSpacing, 0, 0, 0 );
+        remainingRect.adjust( s.expanderIconSize + s.iconSpacing, 0, 0, 0 );
     else
-        remainingRect.adjust( 0, 0, - expanderIconSize - iconSpacing, 0 );
+        remainingRect.adjust( 0, 0, - s.expanderIconSize - s.iconSpacing, 0 );
 
     // -- title
     QRect titleRect( remainingRect );
-    titleRect.setHeight( m_bigFm->height() + verticalSpace );
+    titleRect.setHeight( m_bigFm->height() + s.verticalSpace );
 
     QString titleText = index.data( Qt::DisplayRole ).toString();
     titleText = m_bigFm->elidedText( titleText, Qt::ElideRight, titleRect.width() );
@@ -223,23 +242,15 @@ PrettyTreeDelegate::sizeHint( const QStyleOptionViewItem &option,
     updateFonts( option );
     QStyle *style = m_view->style();
 
-    const int verticalSpace = qMax( style->pixelMetric( QStyle::PM_LayoutVerticalSpacing ), 1 );
-    const int largeIconSize = style->pixelMetric( QStyle::PM_LargeIconSize );
-    const int expanderIconSize = style->pixelMetric( QStyle::PM_MenuButtonIndicator );
-    const int smallIconSize = style->pixelMetric( QStyle::PM_ListViewIconSize );
-    const int frameHMargin = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
-    const int frameVMargin = style->pixelMetric( QStyle::PM_FocusFrameVMargin );
-    const int frameExtraMargin = largeIconSize / 4; // to give top items a little more space
-    const int iconSpacing = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
-
+    PixelSizes s( style );
     int viewportWidth = m_view->viewport()->width();
-    int normalHeight = frameVMargin + qMax( smallIconSize, m_normalFm->height() ) + frameVMargin;
+    int normalHeight = s.frameVMargin + qMax( s.smallIconSize, m_normalFm->height() ) + s.frameVMargin;
 
     const bool hasCover = index.data( PrettyTreeRoles::HasCoverRole ).toBool();
 
     // -- determine if we have an album
     if( hasCover )
-        return QSize( viewportWidth, qMax( normalHeight, largeIconSize + frameVMargin * 2 ) );
+        return QSize( viewportWidth, qMax( normalHeight, s.largeIconSize + s.frameVMargin * 2 ) );
 
     // -- not top level. this is a normal item
     if( index.parent().isValid() )
@@ -248,23 +259,23 @@ PrettyTreeDelegate::sizeHint( const QStyleOptionViewItem &option,
     // -- ok, we have a top level item
     const bool hasCapacity = index.data( PrettyTreeRoles::HasCapacityRole ).toBool();
 
-    QSize iconSize( largeIconSize, largeIconSize );
-    QSize expanderSize( expanderIconSize, expanderIconSize );
+    QSize iconSize( s.largeIconSize, s.largeIconSize );
+    QSize expanderSize( s.expanderIconSize, s.expanderIconSize );
     QSize titleSize( m_bigFm->boundingRect( index.data( Qt::DisplayRole ).toString() ).size() );
     QSize byLineSize( m_smallFm->boundingRect( index.data( PrettyTreeRoles::ByLineRole ).toString() ).size() );
     QSize capacitySize( hasCapacity ? 10 : 0, hasCapacity ? CAPACITYRECT_MIN_HEIGHT : 0 );
 
-    int layoutWidth = frameHMargin +
-        iconSize.width() + iconSpacing +
+    int layoutWidth = s.frameHMargin +
+        iconSize.width() + s.iconSpacing +
         qMax( titleSize.width(), byLineSize.width() ) + expanderSize.width() +
-        frameHMargin;
+        s.frameHMargin;
 
     layoutWidth = qMax( viewportWidth, layoutWidth );
 
-    int layoutHeight = frameVMargin + frameExtraMargin +
-        titleSize.height() + verticalSpace +
+    int layoutHeight = s.frameVMargin + s.frameExtraMargin +
+        titleSize.height() + s.verticalSpace +
         qMax( capacitySize.height(), byLineSize.height() ) +
-        frameExtraMargin + frameVMargin;
+        s.frameExtraMargin + s.frameVMargin;
 
     return QSize( layoutWidth, layoutHeight );
 }
@@ -272,28 +283,19 @@ PrettyTreeDelegate::sizeHint( const QStyleOptionViewItem &option,
 QRect
 PrettyTreeDelegate::decoratorRect( const QRect &itemRect, int nr ) const
 {
-    QStyle *style = m_view->style();
-
-    const int largeIconSize = style->pixelMetric( QStyle::PM_LargeIconSize );
-    const int expanderIconSize = style->pixelMetric( QStyle::PM_MenuButtonIndicator );
-    const int smallIconSize = style->pixelMetric( QStyle::PM_SmallIconSize );
-    const int frameHMargin = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
-    const int frameVMargin = style->pixelMetric( QStyle::PM_FocusFrameVMargin );
-    const int frameExtraMargin = largeIconSize / 8; // to give top items a little more space
-    const int iconSpacing = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
-
+    PixelSizes s( m_view->style() );
     const bool isRTL = QApplication::isRightToLeft();
 
-    int y = itemRect.top() + frameVMargin + frameExtraMargin;
-    int xOffset = frameHMargin + expanderIconSize + iconSpacing + ( smallIconSize + iconSpacing ) * nr;
+    int y = itemRect.top() + s.frameVMargin + s.frameExtraMargin;
+    int xOffset = s.frameHMargin + s.expanderIconSize + s.iconSpacing + ( s.smallIconSize + s.iconSpacing ) * nr;
     int x;
 
     if( isRTL )
         x = itemRect.left() + xOffset;
     else
-        x = itemRect.right() - xOffset - smallIconSize;
+        x = itemRect.right() - xOffset - s.smallIconSize;
 
-    return QRect( QPoint( x, y ), QSize( smallIconSize, smallIconSize ) );
+    return QRect( QPoint( x, y ), QSize( s.smallIconSize, s.smallIconSize ) );
 }
 
 void
