@@ -114,7 +114,6 @@ class OSDWidget : public QWidget
         Alignment   m_alignment;
         int         m_screen;
         uint        m_y;
-        bool        m_drawShadow;
         short       m_rating;
         int         m_volume;
         bool        m_showVolume;

@@ -62,7 +62,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_alignment( Middle )
         , m_screen( 0 )
         , m_y( MARGIN )
-        , m_drawShadow( true )
         , m_rating( 0 )
         , m_volume( The::engineController()->volume() )
         , m_showVolume( false )
@@ -384,23 +383,21 @@ OSDWidget::paintEvent( QPaintEvent *e )
     rect.setBottom( rect.bottom() - graphicsHeight );
 
     // Draw "shadow" text effect (black outline) (currently it's up to five pixel in every dir.)
-    if( m_drawShadow )
-    {
-        QPixmap pixmap( rect.size() );
-        pixmap.fill( Qt::black );
+    QPixmap pixmap( rect.size() );
+    pixmap.fill( Qt::black );
 
-        QPainter p2( &pixmap );
-        p2.setFont( font() );
-        p2.setPen( Qt::white );
-        p2.setBrush( Qt::white );
-        p2.drawText( QRect( QPoint( SHADOW_SIZE, SHADOW_SIZE ),
-                            QSize( rect.size().width() - SHADOW_SIZE * 2,
-                                   rect.size().height() - SHADOW_SIZE * 2 ) ),
-                     align, m_text );
-        p2.end();
+    QPainter p2( &pixmap );
+    p2.setFont( font() );
+    p2.setPen( Qt::white );
+    p2.setBrush( Qt::white );
+    p2.drawText( QRect( QPoint( SHADOW_SIZE, SHADOW_SIZE ),
+                        QSize( rect.size().width() - SHADOW_SIZE * 2,
+                               rect.size().height() - SHADOW_SIZE * 2 ) ),
+                 align, m_text );
+    p2.end();
 
-        p.drawImage( rect.topLeft(), ShadowEngine::makeShadow( pixmap, shadowColor ) );
-    }
+    p.drawImage( rect.topLeft(), ShadowEngine::makeShadow( pixmap, shadowColor ) );
+
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
     //p.setPen( Qt::white ); // This too.
     p.drawText( rect.adjusted( SHADOW_SIZE, SHADOW_SIZE,
