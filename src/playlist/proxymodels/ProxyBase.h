@@ -51,9 +51,9 @@ public:
     virtual quint64 activeId() const;
     virtual int activeRow() const;
     virtual Meta::TrackPtr activeTrack() const;
-    virtual QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
+    virtual QSet<int> allRowsForTrack( const Meta::TrackPtr& track ) const;
     virtual void clearSearchTerm();
-    virtual bool containsTrack( const Meta::TrackPtr track ) const;
+    virtual bool containsTrack( const Meta::TrackPtr& track ) const;
     virtual int currentSearchFields();
     virtual QString currentSearchTerm();
     virtual bool exportPlaylist( const QString &path, bool relative = false ) const;
@@ -61,7 +61,7 @@ public:
     virtual int find( const QString &searchTerm, int searchFields );
     virtual int findNext( const QString &searchTerm, int selectedRow, int searchFields );
     virtual int findPrevious( const QString &searchTerm, int selectedRow, int searchFields );
-    virtual int firstRowForTrack( const Meta::TrackPtr track ) const;
+    virtual int firstRowForTrack( const Meta::TrackPtr& track ) const;
     virtual quint64 idAt( const int row ) const;
     virtual bool rowExists( int row ) const;
     virtual int rowForId( const quint64 id ) const;

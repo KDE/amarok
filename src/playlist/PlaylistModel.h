@@ -71,12 +71,13 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         QAbstractItemModel* qaim() const { return const_cast<Model*>( this ); }
 
         quint64 activeId() const;
-        int activeRow() const { return m_activeRow; } // returns -1 if there is no active row
-        QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
         Meta::TrackPtr activeTrack() const;
-        bool containsTrack( const Meta::TrackPtr track ) const;
-        virtual bool exportPlaylist( const QString &path, bool relative = false ) const;
-        int firstRowForTrack( const Meta::TrackPtr track ) const;
+        int activeRow() const { return m_activeRow; } // returns -1 if there is no active row
+
+        bool containsTrack( const Meta::TrackPtr& track ) const;
+        int firstRowForTrack( const Meta::TrackPtr& track ) const;
+        QSet<int> allRowsForTrack( const Meta::TrackPtr& track ) const;
+
         quint64 idAt( const int row ) const;
         bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }
         int rowForId( const quint64 id ) const; // returns -1 if the id is invalid
@@ -94,6 +95,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         quint64 totalSize() const { return m_totalSize; }
         Meta::TrackPtr trackAt( int row ) const;
         Meta::TrackPtr trackForId( const quint64 id ) const;
+
+        virtual bool exportPlaylist( const QString &path, bool relative = false ) const;
         virtual Meta::TrackList tracks() const;
 
         // Inherited from Meta::Observer

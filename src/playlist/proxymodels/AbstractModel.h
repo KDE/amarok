@@ -99,7 +99,7 @@ public:
      * @param track the track.
      * @return collection of rows, empty if the track pointer is invalid.
      */
-    virtual QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const = 0;
+    virtual QSet<int> allRowsForTrack( const Meta::TrackPtr& track ) const = 0;
 
     /**
      * Clears the current search term.
@@ -114,7 +114,7 @@ public:
      * @param track the track to check for.
      * @return true if the track is present, otherwise false.
      */
-    virtual bool containsTrack( const Meta::TrackPtr track ) const = 0;
+    virtual bool containsTrack( const Meta::TrackPtr& track ) const = 0;
 
     /**
      * Get the current search fields bitmask.
@@ -191,7 +191,7 @@ public:
      * @param track the track.
      * @return the row, or -1 if the track pointer is not found.
      */
-    virtual int firstRowForTrack( const Meta::TrackPtr track ) const = 0;
+    virtual int firstRowForTrack( const Meta::TrackPtr& track ) const = 0;
 
     /**
      * Returns the unique 64-bit id for the given row in the current model.

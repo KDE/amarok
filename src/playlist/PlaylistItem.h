@@ -24,6 +24,9 @@
 
 namespace Playlist
 {
+    /** Playlist::Item is used in the playlist model to reference an entry in the playlist.
+        It combines a track with a unique id and a played state.
+    */
     class Item
     {
         public:
@@ -41,7 +44,7 @@ namespace Playlist
             Item() : m_track ( 0 ), m_state ( Invalid ), m_id ( 0 ) { }
             Item ( Meta::TrackPtr track );
             ~Item();
-            Meta::TrackPtr track() const { return m_track; }
+            const Meta::TrackPtr& track() const { return m_track; }
 
             State state() const { return m_state; }
             void setState ( State s ) { m_state = s; }

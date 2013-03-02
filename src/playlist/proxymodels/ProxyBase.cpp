@@ -64,7 +64,7 @@ ProxyBase::activeTrack() const
 }
 
 QSet<int>
-ProxyBase::allRowsForTrack( const Meta::TrackPtr track ) const
+ProxyBase::allRowsForTrack( const Meta::TrackPtr& track ) const
 {
     QSet<int> proxyModelRows;
 
@@ -85,7 +85,7 @@ ProxyBase::clearSearchTerm()
 }
 
 bool
-ProxyBase::containsTrack( const Meta::TrackPtr track ) const
+ProxyBase::containsTrack( const Meta::TrackPtr& track ) const
 {
     return ( firstRowForTrack( track ) != -1 );    // Let him do the clever work.
 }
@@ -145,7 +145,7 @@ ProxyBase::findPrevious( const QString &searchTerm, int selectedRow, int searchF
 }
 
 int
-ProxyBase::firstRowForTrack( const Meta::TrackPtr track ) const
+ProxyBase::firstRowForTrack( const Meta::TrackPtr& track ) const
 {
     // First optimistically try 'firstRowForTrack()'. It'll usually work.
     int proxyModelRow = rowFromSource( m_belowModel->firstRowForTrack( track ) );
