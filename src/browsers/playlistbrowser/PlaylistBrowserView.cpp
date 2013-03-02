@@ -49,7 +49,6 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
     , m_pd( 0 )
     , m_addFolderAction( 0 )
     , m_ongoingDrag( false )
-    , m_dragMutex()
     , m_expandToggledWhenPressed( false )
 {
     DEBUG_BLOCK
@@ -187,14 +186,9 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseMoveEvent( QMouseEvent *event )
 void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supportedActions )
 {
     //Waah? when a parent item is dragged, startDrag is called a bunch of times
-    m_dragMutex.lock();
     if( m_ongoingDrag )
-    {
-        m_dragMutex.unlock();
         return;
-    }
     m_ongoingDrag = true;
-    m_dragMutex.unlock();
 
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
@@ -225,9 +219,7 @@ void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supporte
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
         m_pd->hide();
     }
-    m_dragMutex.lock();
     m_ongoingDrag = false;
-    m_dragMutex.unlock();
 }
 
 void

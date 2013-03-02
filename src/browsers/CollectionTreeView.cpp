@@ -67,7 +67,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_loadAction( 0 )
     , m_editAction( 0 )
     , m_organizeAction( 0 )
-    , m_dragMutex()
     , m_ongoingDrag( false )
     , m_expandToggledWhenPressed( false )
 {
@@ -536,14 +535,9 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 
     // When a parent item is dragged, startDrag() is called a bunch of times. Here we
     // prevent that:
-    m_dragMutex.lock();
     if( m_ongoingDrag )
-    {
-        m_dragMutex.unlock();
         return;
-    }
     m_ongoingDrag = true;
-    m_dragMutex.unlock();
 
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
@@ -617,9 +611,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         m_pd->hide();
     }
 
-    m_dragMutex.lock();
     m_ongoingDrag = false;
-    m_dragMutex.unlock();
 }
 
 void

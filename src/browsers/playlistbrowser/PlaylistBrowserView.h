@@ -86,7 +86,6 @@ private:
     KAction *m_addFolderAction;
 
     bool m_ongoingDrag;
-    QMutex m_dragMutex;
     bool m_expandToggledWhenPressed;
 };
 

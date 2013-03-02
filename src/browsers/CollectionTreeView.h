@@ -130,7 +130,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         QSet<CollectionTreeItem*> m_currentItems;
 
-        QMutex m_dragMutex;
         bool m_ongoingDrag;
         bool m_expandToggledWhenPressed;
 
