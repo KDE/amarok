@@ -90,7 +90,12 @@ namespace Amarok
             virtual void newPalette( const QPalette &palette );
 
         private:
-            bool m_expandToggledWhenPressed;
+            /**
+             * Position (relative to this widget) where the mouse button was pressed to
+             * trigger expand/collapse, or null pointer where expand/collapse shouldn't
+             * be handled in mouseReleaseEvent()
+             */
+            QScopedPointer<QPoint> m_expandCollapsePressedAt;
     };
 }
 

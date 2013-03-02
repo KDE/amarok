@@ -27,6 +27,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QToolTip>
+#include <QApplication>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
@@ -35,7 +36,6 @@ using namespace Amarok;
 
 PrettyTreeView::PrettyTreeView( QWidget *parent )
     : QTreeView( parent )
-    , m_expandToggledWhenPressed( false )
 {
     setAlternatingRowColors( true );
     setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
@@ -124,6 +124,7 @@ PrettyTreeView::mousePressEvent( QMouseEvent *event )
         return;
     }
 
+    m_expandCollapsePressedAt.reset();
     bool prevExpandState = isExpanded( index );
 
     // This will toggle the expansion of the current item when clicking
@@ -131,14 +132,25 @@ PrettyTreeView::mousePressEvent( QMouseEvent *event )
     // enable dragging.
     QTreeView::mousePressEvent( event );
 
-    if( index.isValid() )
-        m_expandToggledWhenPressed = ( prevExpandState != isExpanded( index ) );
+    // if we press left mouse button on valid item which did not cause the expansion,
+    // set m_expandCollapsePressedAt so that mouseReleaseEvent can perform the
+    // expansion/collapsing
+    if( index.isValid() &&
+        prevExpandState == isExpanded( index ) &&
+        event->button() == Qt::LeftButton &&
+        event->modifiers() == Qt::NoModifier &&
+        state() == QTreeView::NoState )
+    {
+        m_expandCollapsePressedAt.reset( new QPoint( event->pos() ) );
+    }
 }
 
 void
 PrettyTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
     const QModelIndex index = indexAt( event->pos() );
+    // we want to reset m_expandCollapsePressedAt in either case, but still need its value
+    QScopedPointer<QPoint> expandCollapsePressedAt( m_expandCollapsePressedAt.take() );
 
     // if root is decorated, it doesn't show any actions
     QAction *action = rootIsDecorated() ? 0 : decoratorActionAt( index, event->pos() );
@@ -151,13 +163,15 @@ PrettyTreeView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
-    if( !m_expandToggledWhenPressed &&
+    if( index.isValid() &&
         event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
+        state() == QTreeView::NoState &&
+        expandCollapsePressedAt &&
+        ( *expandCollapsePressedAt - event->pos() ).manhattanLength() < QApplication::startDragDistance() &&
         KGlobalSettings::singleClick() &&
         model()->hasChildren( index ) )
     {
-        m_expandToggledWhenPressed = !m_expandToggledWhenPressed;
         setExpanded( index, !isExpanded( index ) );
         event->accept();
         return;
