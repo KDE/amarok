@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2011 Kevin Funk <krf@electrostorm.net>                                 *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -25,6 +26,9 @@ class PlaylistInfoWidget : public QLabel
 public:
     explicit PlaylistInfoWidget( QWidget* parent = 0 );
     virtual ~PlaylistInfoWidget();
+
+protected:
+    bool event( QEvent *event );
 
 private Q_SLOTS:
     void updateTotalPlaylistLength();
