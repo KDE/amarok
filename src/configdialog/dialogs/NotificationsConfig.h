@@ -20,6 +20,7 @@
 
 #include "ui_NotificationsConfig.h"
 #include "configdialog/ConfigDialogBase.h"
+#include "widgets/Osd.h"
 
 class OSDPreviewWidget;
 
@@ -35,6 +36,9 @@ class NotificationsConfig : public ConfigDialogBase, public Ui_NotificationsConf
         virtual bool isDefault();
         virtual void updateSettings();
 
+    signals:
+        void changed();
+
     private slots:
         void slotPositionChanged();
         void useCustomColorsToggled( bool );
@@ -42,6 +46,9 @@ class NotificationsConfig : public ConfigDialogBase, public Ui_NotificationsConf
 
     private:
         OSDPreviewWidget* m_osdPreview;
+        
+        OSDWidget::Alignment m_oldAlignment;
+        uint m_oldYOffset;
 
         void hideEvent( QHideEvent* );
         void showEvent( QShowEvent* );

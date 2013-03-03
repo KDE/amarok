@@ -20,14 +20,17 @@
 #include "KNotificationBackend.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
-#include "widgets/Osd.h"
 
 #include <QDesktopWidget>
 
 NotificationsConfig::NotificationsConfig( QWidget* parent )
-    : ConfigDialogBase( parent )
+    : m_oldAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) )
+    , m_oldYOffset( AmarokConfig::osdYOffset() )
+    , ConfigDialogBase( parent )
 {
     setupUi( this );
+
+    connect( this, SIGNAL( changed() ), parent, SLOT( updateButtons() ) );
 
     m_osdPreview = new OSDPreviewWidget( this ); //must be child!!!
     m_osdPreview->setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
@@ -104,7 +107,9 @@ NotificationsConfig::~NotificationsConfig()
 bool
 NotificationsConfig::hasChanged()
 {
-    return false;
+    DEBUG_BLOCK
+
+    return ( m_osdPreview->alignment() != m_oldAlignment ) || ( m_osdPreview->offset() != m_oldYOffset );
 }
 
 bool
@@ -121,7 +126,6 @@ NotificationsConfig::updateSettings()
     AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
     AmarokConfig::setOsdYOffset( m_osdPreview->offset() );
     AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
-    //AmarokConfig::setOsdTextScaling( m_osdPreview->); //FIXME?
 
     Amarok::OSD::instance()->setEnabled( kcfg_OsdEnabled->isChecked() );
 
@@ -138,12 +142,14 @@ NotificationsConfig::updateSettings()
 void
 NotificationsConfig::slotPositionChanged()
 {
+    DEBUG_BLOCK
+
     kcfg_OsdScreen->blockSignals( true );
     kcfg_OsdScreen->setCurrentIndex( m_osdPreview->screen() );
     kcfg_OsdScreen->blockSignals( false );
 
     // Update button states (e.g. "Apply")
-    //emit settingsChanged();
+    emit changed();
 }
 
 void
