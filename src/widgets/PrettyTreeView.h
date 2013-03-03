@@ -52,6 +52,12 @@ namespace Amarok
              * IS virtual. */
             void edit( const QModelIndex &index );
 
+            /**
+             * Return pointer to decorator action which was most recently mouse-pressed
+             * or null it mouse buttom was released since then. Used by PrettyTreeDelegate.
+             */
+            QAction *pressedDecoratorAction() const;
+
         protected:
             bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event );
             void drawRow( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
@@ -96,6 +102,12 @@ namespace Amarok
              * be handled in mouseReleaseEvent()
              */
             QScopedPointer<QPoint> m_expandCollapsePressedAt;
+
+            /**
+             * Pointer to decorator action which was pressed in mousePressEvent() or null
+             * pointer if no action was pressed in the most recent mouse press
+             */
+            QAction *m_decoratorActionPressed;
     };
 }
 

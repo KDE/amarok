@@ -36,6 +36,7 @@ using namespace Amarok;
 
 PrettyTreeView::PrettyTreeView( QWidget *parent )
     : QTreeView( parent )
+    , m_decoratorActionPressed( 0 )
 {
     setAlternatingRowColors( true );
     setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
@@ -101,7 +102,11 @@ PrettyTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem & option
 void
 PrettyTreeView::mouseMoveEvent( QMouseEvent *event )
 {
-    QTreeView::mouseMoveEvent( event );
+    // swallow the mouse move event in case the press was started on decorator action icon
+    if( m_decoratorActionPressed )
+        event->accept();
+    else
+        QTreeView::mouseMoveEvent( event );
 
     // Make sure we repaint the item for the collection action buttons
     const QModelIndex index = indexAt( event->pos() );
@@ -115,16 +120,23 @@ PrettyTreeView::mousePressEvent( QMouseEvent *event )
 {
     const QModelIndex index = indexAt( event->pos() );
 
-    // Only forward the press event if we aren't on an action (which gets triggered on a release)
-    if( event->button() == Qt::LeftButton &&
+    // reset state variables on every mouse button press
+    m_expandCollapsePressedAt.reset();
+    m_decoratorActionPressed = 0;
+
+    // if root is decorated, it doesn't show any actions
+    QAction *action = rootIsDecorated() ? 0 : decoratorActionAt( index, event->pos() );
+    if( action &&
+        event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
-        decoratorActionAt( index, event->pos() ) )
+        state() == QTreeView::NoState )
     {
+        m_decoratorActionPressed = action;
+        update( index ); // trigger repaint to change icon effect
         event->accept();
         return;
     }
 
-    m_expandCollapsePressedAt.reset();
     bool prevExpandState = isExpanded( index );
 
     // This will toggle the expansion of the current item when clicking
@@ -151,14 +163,19 @@ PrettyTreeView::mouseReleaseEvent( QMouseEvent *event )
     const QModelIndex index = indexAt( event->pos() );
     // we want to reset m_expandCollapsePressedAt in either case, but still need its value
     QScopedPointer<QPoint> expandCollapsePressedAt( m_expandCollapsePressedAt.take() );
+    // ditto for m_decoratorActionPressed
+    QAction *decoratorActionPressed = m_decoratorActionPressed;
+    m_decoratorActionPressed = 0;
 
     // if root is decorated, it doesn't show any actions
     QAction *action = rootIsDecorated() ? 0 : decoratorActionAt( index, event->pos() );
     if( action &&
+        action == decoratorActionPressed &&
         event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier )
     {
         action->trigger();
+        update( index ); // trigger repaint to change icon effect
         event->accept();
         return;
     }
@@ -197,6 +214,14 @@ PrettyTreeView::viewportEvent( QEvent *event )
         }
     }
 
+    // swallow the mouse hover event in case the press was started on decorator action icon
+    // friend mouse move event is handled in mouseMoveEvent and triggers repaints
+    if( event->type() == QEvent::HoverMove && m_decoratorActionPressed )
+    {
+        event->accept();
+        return true;
+    }
+
     return QAbstractItemView::viewportEvent( event );
 }
 
@@ -219,6 +244,12 @@ PrettyTreeView::decoratorActionAt( const QModelIndex &index, const QPoint &pos )
             return actions.at( i );
 
     return 0;
+}
+
+QAction *
+PrettyTreeView::pressedDecoratorAction() const
+{
+    return m_decoratorActionPressed;
 }
 
 void

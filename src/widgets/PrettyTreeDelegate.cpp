@@ -184,18 +184,25 @@ PrettyTreeDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option
          * mouseMoveEvent calls update() which triggers repaints if the mouse moves so
          * that we always get updated mouse positions */
         QPoint cursorPos = m_view->viewport()->mapFromGlobal( QCursor::pos() );
+        QAction *pressedDecoratorAction = m_view->pressedDecoratorAction();
 
         for( int i = 0; i < actions.count(); i++ )
         {
             QRect iconRect( decoratorRect( option.rect, i ) );
-            const bool isOver = isHover && iconRect.contains( cursorPos );
-            actions[i]->icon().paint( painter, iconRect, Qt::AlignCenter,
-                                      isOver ? QIcon::Active : QIcon::Normal,
-                                      isOver ? QIcon::On : QIcon::Off );
-
+            QIcon::State state = ( actions.at( i ) == pressedDecoratorAction ) ? QIcon::On : QIcon::Off;
+            QIcon::Mode mode;
+            if( pressedDecoratorAction ) // if currently inside mouse press
+            {
+                mode = ( state == QIcon::On ) ? QIcon::Active : QIcon::Normal;
+                const int shrinkBy = iconRect.contains( cursorPos ) && state == QIcon::On
+                                   ? iconRect.width() / 16 : 0;
+                iconRect.adjust( shrinkBy, shrinkBy,  -2 * shrinkBy, -2 * shrinkBy );
+            }
+            else
+                mode = iconRect.contains( cursorPos ) ? QIcon::Active : QIcon::Normal;
+            actions[i]->icon().paint( painter, iconRect, Qt::AlignCenter, mode, state );
         }
     }
-
 
     painter->setFont( m_smallFont );  // we want smaller font for both subtitle and capacity bar
     //show the bylinetext or the capacity (if available) when hovering
