@@ -1130,21 +1130,24 @@ TagDialog::setTagsToTrack()
             setTagsToMultipleTracks( newTags );
 
             // -- special handling for labels
-            // determine the differences
-            QSet<QString> oldLabelsSet = oldTags.value( Meta::Field::LABELS ).toStringList().toSet();
-            QSet<QString> newLabelsSet = newTags.value( Meta::Field::LABELS ).toStringList().toSet();
-
-            QSet<QString> labelsToRemove = oldLabelsSet - newLabelsSet;
-            QSet<QString> labelsToAdd = newLabelsSet - oldLabelsSet;
-
-            // apply the differences for each track
-            foreach( const Meta::TrackPtr &track, m_tracks )
+            if( newTags.contains( Meta::Field::LABELS ) )
             {
-                QSet<QString> labelsSet = m_storedTags[track].value( Meta::Field::LABELS ).toStringList().toSet();
-                labelsSet += labelsToAdd;
-                labelsSet -= labelsToRemove;
+                // determine the differences
+                QSet<QString> oldLabelsSet = oldTags.value( Meta::Field::LABELS ).toStringList().toSet();
+                QSet<QString> newLabelsSet = newTags.value( Meta::Field::LABELS ).toStringList().toSet();
 
-                m_storedTags[ track ].insert( Meta::Field::LABELS, QVariant( labelsSet.toList() ) );
+                QSet<QString> labelsToRemove = oldLabelsSet - newLabelsSet;
+                QSet<QString> labelsToAdd = newLabelsSet - oldLabelsSet;
+
+                // apply the differences for each track
+                foreach( const Meta::TrackPtr &track, m_tracks )
+                {
+                    QSet<QString> labelsSet = m_storedTags[track].value( Meta::Field::LABELS ).toStringList().toSet();
+                    labelsSet += labelsToAdd;
+                    labelsSet -= labelsToRemove;
+
+                    m_storedTags[ track ].insert( Meta::Field::LABELS, QVariant( labelsSet.toList() ) );
+                }
             }
         }
     }
