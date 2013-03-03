@@ -316,7 +316,6 @@ void
 OSDWidget::paintEvent( QPaintEvent *e )
 {
     QRect rect( QPoint(), m_size );
-    rect.adjust( 0, 0, -1, -1 );
 
     QColor shadowColor;
     {
