@@ -92,11 +92,14 @@ LastFmMultiPlayableCapability::skip()
 void
 LastFmMultiPlayableCapability::error( lastfm::ws::Error e )
 {
+    // last.fm is returning an AuthenticationFailed message when the user is not
+    // a subscriber, even if the credentials are OK
     if( e == lastfm::ws::SubscribersOnly || e == lastfm::ws::AuthenticationFailed )
-    {   // last.fm is returning an AuthenticationFailed message when the user is not a subscriber, even if the credentials are OK
-        Amarok::Components::logger()->longMessage(
-            i18n( "To listen to this stream you need to be a paying Last.fm subscriber. "
-                  "All the other Last.fm features are unaffected." ) );
+    {
+        Amarok::Components::logger()->longMessage( i18n( "To listen to Last.fm streams "
+                "and radio you need to be a paying Last.fm subscriber and you need to "
+                "stream from a <a href='http://www.last.fm/announcements/radio2013'>supported "
+                "country</a>. All other Last.fm features work fine." ) );
     }
     else
     {
