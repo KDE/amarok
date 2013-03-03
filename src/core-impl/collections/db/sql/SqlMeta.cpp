@@ -168,9 +168,12 @@ SqlTrack::SqlTrack( Collections::SqlCollection *collection, const QStringList &r
 {
     QStringList::ConstIterator iter = result.constBegin();
     m_urlId = (*(iter++)).toInt();
+    Q_ASSERT( m_urlId > 0 && "refusing to create SqlTrack with non-positive urlId, please file a bug" );
     m_deviceId = (*(iter++)).toInt();
+    Q_ASSERT( m_deviceId != 0 && "refusing to create SqlTrack with zero deviceId, please file a bug" );
     m_rpath = *(iter++);
     m_directoryId = (*(iter++)).toInt();
+    Q_ASSERT( m_directoryId > 0 && "refusing to create SqlTrack with non-positive directoryId, please file a bug" );
     m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
     m_uid = *(iter++);
     m_trackId = (*(iter++)).toInt();

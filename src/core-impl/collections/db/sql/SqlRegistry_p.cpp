@@ -222,8 +222,10 @@ QStringList
 TrackUrlsTableCommitter::getValues( Meta::SqlTrack *track )
 {
     QStringList result;
+    Q_ASSERT( track->m_deviceId != 0 && "refusing to write zero deviceId to urls table, please file a bug" );
     result << QString::number( track->m_deviceId );
     result << escape( track->m_rpath );
+    Q_ASSERT( track->m_directoryId > 0 && "refusing to write non-positive directoryId to urls table, please file a bug" );
     result << nullNumber( track->m_directoryId );
     result << escape( track->m_uid );
     return result;
@@ -265,6 +267,7 @@ QStringList
 TrackTracksTableCommitter::getValues( Meta::SqlTrack *track )
 {
     QStringList result;
+    Q_ASSERT( track->m_urlId > 0 && "refusing to write non-positive urlId to tracks table, please file a bug" );
     result << QString::number( track->m_urlId );
     result << QString::number( track->m_artist ?
             KSharedPtr<Meta::SqlArtist>::staticCast( track->m_artist )->id() :
@@ -332,6 +335,7 @@ QStringList
 TrackStatisticsTableCommitter::getValues( Meta::SqlTrack *track )
 {
     QStringList result;
+    Q_ASSERT( track->m_urlId > 0 && "refusing to write non-positive urlId to statistics table, please file a bug" );
     result << QString::number( track->m_urlId );
     result << nullDate( track->m_firstPlayed );
     result << nullDate( track->m_lastPlayed );
@@ -341,4 +345,3 @@ TrackStatisticsTableCommitter::getValues( Meta::SqlTrack *track )
     result << "0"; // not deleted
     return result;
 }
-

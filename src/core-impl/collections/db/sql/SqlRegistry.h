@@ -142,7 +142,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         void emptyCache();
 
     private:
-
         typedef QPair<QString, QString> AlbumKey;
 
         // only SqlTrack can change this
