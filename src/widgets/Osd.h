@@ -107,7 +107,7 @@ class OSDWidget : public QWidget
         static const int MARGIN = 15;
 
     private:
-        uint        m_m;
+        uint        m_margin;
         QSize       m_size;
         int         m_duration;
         QTimer     *m_timer;

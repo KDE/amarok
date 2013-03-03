@@ -182,13 +182,13 @@ OSDWidget::setVisible( bool visible )
         if ( !isEnabled() || m_text.isEmpty() )
             return;
 
-        const uint M = fontMetrics().width( 'x' );
+        const uint margin = fontMetrics().width( 'x' );
 
-        const QRect newGeometry = determineMetrics( M );
+        const QRect newGeometry = determineMetrics( margin );
 
         if( newGeometry.width() > 0 && newGeometry.height() > 0 )
         {
-            m_m = M;
+            m_margin = margin;
             m_size = newGeometry.size();
             setGeometry( newGeometry );
             QWidget::setVisible( visible );
@@ -315,11 +315,7 @@ OSDWidget::determineMetrics( const int M )
 void
 OSDWidget::paintEvent( QPaintEvent *e )
 {
-    const int& M = m_m;
-    const QSize& size = m_size;
-
-    QPoint point;
-    QRect rect( point, size );
+    QRect rect( QPoint(), m_size );
     rect.adjust( 0, 0, -1, -1 );
 
     QColor shadowColor;
@@ -338,18 +334,18 @@ OSDWidget::paintEvent( QPaintEvent *e )
     QPixmap background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width(), height(), "service_list_item" );
     p.drawPixmap( 0, 0, background );
 
-    p.setPen( Qt::white ); // Revert this when the background can be colorized again.
-    rect.adjust( M, M, -M, -M ); // substract margins
+    //p.setPen( Qt::white ); // Revert this when the background can be colorized again.
+    rect.adjust( m_margin, m_margin, -m_margin, -m_margin ); // substract margins
 
     if( !m_cover.isNull() )
     {
         QRect r( rect );
-        r.setTop( ( size.height() - m_scaledCover.height() ) / 2 );
+        r.setTop( ( m_size.height() - m_scaledCover.height() ) / 2 );
         r.setSize( m_scaledCover.size() );
 
         p.drawPixmap( r.topLeft(), m_scaledCover );
 
-        rect.setLeft( rect.left() + m_scaledCover.width() + M );
+        rect.setLeft( rect.left() + m_scaledCover.width() + m_margin );
     }
 
     int graphicsHeight = 0;
@@ -363,9 +359,9 @@ OSDWidget::paintEvent( QPaintEvent *e )
         //Align to center...
         r.setLeft( ( rect.left() + rect.width() / 2 ) - star->width() * m_rating / 4 );
         r.setTop( rect.bottom() - star->height() );
-        graphicsHeight += star->height() + M;
+        graphicsHeight += star->height() + m_margin;
 
-        bool half = m_rating % 2;
+        const bool half = m_rating % 2;
 
         if( half )
         {
@@ -399,7 +395,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     p.drawImage( rect.topLeft(), ShadowEngine::makeShadow( pixmap, shadowColor ) );
 
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
-    //p.setPen( Qt::white ); // This too.
+
     p.drawText( rect.adjusted( SHADOW_SIZE, SHADOW_SIZE,
                                -SHADOW_SIZE, -SHADOW_SIZE ), align, m_text );
 }
