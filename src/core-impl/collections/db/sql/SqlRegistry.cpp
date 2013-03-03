@@ -43,6 +43,11 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     // we have to do this now before anyone can hold references
     // to those objects.
     DatabaseUpdater databaseUpdater( m_collection );
+
+    // tracks with no associated url entry are useless, just a bunch of medatada with
+    // nothing to associate them to; remove those first
+    databaseUpdater.deleteOrphanedByUrl( "tracks" );
+
     databaseUpdater.deleteAllRedundant( "album" ); // what about cover images in database and disk cache?
     databaseUpdater.deleteAllRedundant( "artist" );
     databaseUpdater.deleteAllRedundant( "genre" );
