@@ -98,10 +98,12 @@ TestSqlTrack::init()
     m_storage->query( "INSERT INTO years(id, name) VALUES (2, '2');" );
     m_storage->query( "INSERT INTO years(id, name) VALUES (3, '3');" );
 
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (1, -1, './IDoNotExist.mp3','1');" );
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (2, -1, './IDoNotExistAsWell.mp3','2');" );
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (3, -1, './MeNeither.mp3','3');" );
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (4, -1, './NothingHere.mp3','4');" );
+    m_storage->query( "INSERT INTO directories(id, deviceid, dir) VALUES (1, -1, './');" );
+
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (1, -1, './IDoNotExist.mp3', 1, '1');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (2, -1, './IDoNotExistAsWell.mp3', 1, '2');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (3, -1, './MeNeither.mp3', 1, '3');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (4, -1, './NothingHere.mp3', 1, '4');" );
 
     m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
                       "VALUES(1,1,'track1','comment1',1,1,1,1,1);" );
@@ -121,6 +123,7 @@ TestSqlTrack::cleanup()
     m_storage->query( "TRUNCATE TABLE artists;" );
     m_storage->query( "TRUNCATE TABLE tracks;" );
     m_storage->query( "TRUNCATE TABLE urls;" );
+    m_storage->query( "TRUNCATE TABLE directories;" );
     m_storage->query( "TRUNCATE TABLE statistics;" );
     m_storage->query( "TRUNCATE TABLE labels;" );
     m_storage->query( "TRUNCATE TABLE urls_labels;" );
@@ -268,7 +271,7 @@ TestSqlTrack::testSetAllValuesSingleNotExisting()
 {
     {
         // get a new track
-        Meta::TrackPtr track1 = m_collection->registry()->getTrack( -1, "./IamANewTrack.mp3", 0, "1e34fb213489" );
+        Meta::TrackPtr track1 = m_collection->registry()->getTrack( -1, "./IamANewTrack.mp3", 1, "1e34fb213489" );
 
         QSignalSpy spy( m_collection, SIGNAL(updated()));
         MetaNotificationSpy metaSpy;

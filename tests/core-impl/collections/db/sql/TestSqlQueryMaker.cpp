@@ -103,12 +103,14 @@ TestSqlQueryMaker::initTestCase()
     m_storage->query( "INSERT INTO years(id, name) VALUES (2, '2');" );
     m_storage->query( "INSERT INTO years(id, name) VALUES (3, '3');" );
 
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (1, -1, './IDoNotExist.mp3','1');" );
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (2, -1, './IDoNotExistAsWell.mp3','2');" );
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (3, -1, './MeNeither.mp3','3');" );
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (4, 2, './NothingHere.mp3','4');" );
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (5, 1, './GuessWhat.mp3','5');" );
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (6, 2, './LookItsA.flac','6');" );
+    m_storage->query( "INSERT INTO directories(id, deviceid, dir) VALUES (1, -1, './');" );
+
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (1, -1, './IDoNotExist.mp3', 1, '1');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (2, -1, './IDoNotExistAsWell.mp3', 1, '2');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (3, -1, './MeNeither.mp3', 1, '3');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (4, 2, './NothingHere.mp3', 1, '4');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (5, 1, './GuessWhat.mp3', 1, '5');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (6, 2, './LookItsA.flac', 1, '6');" );
 
     m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
                       "VALUES(1,1,'track1','comment1',1,1,1,1,1);" );
@@ -754,7 +756,7 @@ TestSqlQueryMaker::testSpecialCharacters()
                               "VALUES(999,999,'%1','',1,1,1,1,1);").arg( m_storage->escape( filter ) );
 
     //there is a unique index on TRACKS.URL
-    m_storage ->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES(999,-1, './foobar.mp3','999');");
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES(999, -1, './foobar.mp3', 1, '999');");
     m_storage->query( insertTrack );
 
     QCOMPARE( m_storage->query( "select count(*) from urls where id = 999" ).first(), QString("1") );
