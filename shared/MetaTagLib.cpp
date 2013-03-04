@@ -211,13 +211,13 @@ static void ensureFileTypeResolvers()
 Meta::FieldHash
 Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
 {
-    QMutexLocker locker( &s_mutex ); // we do not rely on taglib being thread safe especially when writing the same file from different threads.
-
-    ensureFileTypeResolvers();
-
     Meta::FieldHash result;
 
 #ifdef TAGLIB_FOUND
+    // we do not rely on taglib being thread safe especially when writing the same file from different threads.
+    QMutexLocker locker( &s_mutex );
+    ensureFileTypeResolvers();
+
     TagLib::FileRef fileref = getFileRef( path );
 
     if( fileref.isNull() )
@@ -290,20 +290,16 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
 QImage
 Meta::Tag::embeddedCover( const QString &path )
 {
-
 #ifdef TAGLIB_FOUND
+    // we do not rely on taglib being thread safe especially when writing the same file from different threads.
     QMutexLocker locker( &s_mutex );
 
     ensureFileTypeResolvers();
-
     TagLib::FileRef fileref = getFileRef( path );
-
-
     if( fileref.isNull() )
         return QImage();
 
     QImage img;
-
     TagHelper *tagHelper = selectHelper( fileref );
     if( tagHelper )
     {
@@ -340,28 +336,25 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes )
     }
 #endif
 
-    QMutexLocker locker( &s_mutex ); // we do not rely on taglib being thread safe especially when writing the same file from different threads.
 
 #ifdef TAGLIB_FOUND
+    // we do not rely on taglib being thread safe especially when writing the same file from different threads.
+    QMutexLocker locker( &s_mutex );
+
     ensureFileTypeResolvers();
-
     TagLib::FileRef fileref = getFileRef( path );
-
     if( fileref.isNull() || data.isEmpty() )
         return;
 
-    TagHelper *tagHelper = selectHelper( fileref, true );
+    QScopedPointer<TagHelper> tagHelper( selectHelper( fileref, true ) );
     if( !tagHelper )
         return;
 
     if( tagHelper->setTags( data ) )
         fileref.save();
-
-    delete tagHelper;
 #else
     Q_UNUSED( path );
 #endif
-
 }
 
 #ifndef UTILITIES_BUILD
@@ -369,9 +362,9 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes )
 void
 Meta::Tag::setEmbeddedCover( const QString &path, const QImage &cover )
 {
-    QMutexLocker locker( &s_mutex ); // we do not rely on taglib being thread safe especially when writing the same file from different threads.
-
 #ifdef TAGLIB_FOUND
+    // we do not rely on taglib being thread safe especially when writing the same file from different threads.
+    QMutexLocker locker( &s_mutex );
     ensureFileTypeResolvers();
 
     TagLib::FileRef fileref = getFileRef( path );
