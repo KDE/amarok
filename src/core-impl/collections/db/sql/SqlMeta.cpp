@@ -977,9 +977,9 @@ SqlTrack::commitIfInNonBatchUpdate()
         m_bpm = m_cache.value( Meta::valBpm ).toDouble();
 
     // --- write the file
-    if( m_writeFile )
+    if( m_writeFile && AmarokConfig::writeBack() )
     {
-        Meta::Tag::writeTags( m_url.path(), m_cache );
+        Meta::Tag::writeTags( m_url.path(), m_cache, AmarokConfig::writeBackStatistics() );
         // unique id may have changed
         QString uid = Meta::Tag::readTags( m_url.path() ).value( Meta::valUniqueId ).toString();
         if( !uid.isEmpty() )
@@ -1986,7 +1986,9 @@ SqlAlbum::setCompilation( bool compilation )
 
                 // move the track
                 sqlTrack->setAlbum( sqlAlbum->id() );
-                Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes );
+                if( AmarokConfig::writeBack() )
+                    Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes,
+                                          AmarokConfig::writeBackStatistics() );
             }
             /* TODO: delete all old tracks albums */
         }
@@ -2013,7 +2015,9 @@ SqlAlbum::setCompilation( bool compilation )
 
                 // move the track
                 sqlTrack->setAlbum( sqlAlbum->id() );
-                Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes );
+                if( AmarokConfig::writeBack() )
+                    Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes,
+                                          AmarokConfig::writeBackStatistics() );
             }
             /* TODO //step 5: delete the original album, if necessary */
         }

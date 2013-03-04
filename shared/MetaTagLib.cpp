@@ -317,16 +317,11 @@ Meta::Tag::embeddedCover( const QString &path )
 #endif
 
 void
-Meta::Tag::writeTags( const QString &path, const FieldHash &changes )
+Meta::Tag::writeTags( const QString &path, const FieldHash &changes, bool writeStatistics )
 {
     FieldHash data = changes;
-#ifndef UTILITIES_BUILD
-    // depending on the configuration we might not want to write back anything
-    if( !AmarokConfig::writeBack() )
-        return;
 
-    // depending on the configuration we might not want to write back statistics
-    if( !AmarokConfig::writeBackStatistics() )
+    if( !writeStatistics )
     {
         data.remove( Meta::valFirstPlayed );
         data.remove( Meta::valLastPlayed );
@@ -334,8 +329,6 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes )
         data.remove( Meta::valScore );
         data.remove( Meta::valRating );
     }
-#endif
-
 
 #ifdef TAGLIB_FOUND
     // we do not rely on taglib being thread safe especially when writing the same file from different threads.

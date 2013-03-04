@@ -134,9 +134,11 @@ public:
 
     void writeMetaData()
     {
-        DEBUG_BLOCK;
+        DEBUG_BLOCK
         debug() << "changes:" << changes;
-        Meta::Tag::writeTags( url.isLocalFile() ? url.toLocalFile() : url.path(), changes );
+        if( AmarokConfig::writeBack() )
+            Meta::Tag::writeTags( url.isLocalFile() ? url.toLocalFile() : url.path(),
+                                  changes, AmarokConfig::writeBackStatistics() );
         changes.clear();
         readMetaData();
     }

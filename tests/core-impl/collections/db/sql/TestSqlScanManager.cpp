@@ -511,7 +511,7 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
 
         KUrl url = track->playableUrl();
         QVERIFY( url.isLocalFile() );
-        Meta::Tag::writeTags( url.path(), uidChange );
+        Meta::Tag::writeTags( url.path(), uidChange, true );
     }
 
     // move album directory
@@ -1120,7 +1120,7 @@ TestSqlScanManager::createTrack( const Meta::FieldHash &values )
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 
     // -- set all the values that we need
-    Meta::Tag::writeTags( targetPath, values );
+    Meta::Tag::writeTags( targetPath, values, true );
 }
 
 void
