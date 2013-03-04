@@ -24,6 +24,7 @@
  ***************************************************************************/
 
 #include "MetaTagLib.h"
+
 #include "FileType.h"
 #include "TagsFromFileNameGuesser.h"
 #include "config.h"
@@ -33,6 +34,7 @@
 #endif
 
 #include <KEncodingProber>
+
 #include <QImage>
 #include <QBuffer>
 #include <QDir>

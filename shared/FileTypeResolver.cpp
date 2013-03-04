@@ -23,7 +23,7 @@
 #include <QFileInfo>
 #include <QtDebug>
 
-#include <kmimetype.h>
+#include <KMimeType>
 
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefile.h>
