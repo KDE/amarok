@@ -1,5 +1,3 @@
-add_definitions(${KDE4_ENABLE_EXCEPTIONS})
-
 include_directories( ${QJSON_INCLUDE_DIR} )
 
 set( amarok_collection-playdarcollection_PART_SRCS

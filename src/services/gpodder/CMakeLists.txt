@@ -18,8 +18,6 @@ include_directories(
 
         add_subdirectory( images )
 
-        add_definitions(${KDE4_ENABLE_EXCEPTIONS}) #not sure if needed
-
         set(amarok_service_gpodder_PART_SRCS
             GpodderService.cpp
             GpodderServiceConfig.cpp
@@ -34,11 +32,8 @@ include_directories(
             GpodderSortFilterProxyModel.cpp
         )
 
-        
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}") #not sure if needed
-
         kde4_add_plugin(amarok_service_gpodder ${amarok_service_gpodder_PART_SRCS})
-        
+
         target_link_libraries(amarok_service_gpodder
             amarokcore
             amaroklib
@@ -58,8 +53,6 @@ include_directories(
             GpodderServiceSettings.cpp
             GpodderServiceConfig.cpp
          )
-
-         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
          kde4_add_ui_files( kcm_amarok_service_gpodder_PART_SRCS GpodderConfigWidget.ui )
 

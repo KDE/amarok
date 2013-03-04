@@ -969,8 +969,7 @@ install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 # AMAROK
 #####################################################################
 
-set(amarok_SRCS equalizer/EqualizerPresets.cpp main.cpp )
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
+set( amarok_SRCS main.cpp )
 
 kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
 

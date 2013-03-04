@@ -100,7 +100,6 @@ kde4_add_library(amarokcore SHARED ${libcore_LIB_SRCS})
 target_link_libraries(amarokcore
     ${CMAKE_THREAD_LIBS_INIT}
     ${KDE4_KIO_LIBS}
-#    ${KDE4_KUTILS_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_CORE_LIBRARY}
@@ -120,5 +119,3 @@ endif(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SYSTEM_NAME MATCHES Linux)
 
 set_target_properties(amarokcore PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amarokcore ${INSTALL_TARGETS_DEFAULT_ARGS} )
-
-

@@ -6,10 +6,6 @@ include_directories( ../
 
 ########### next target ###############
 
-if(CMAKE_COMPILER_IS_GNUCXX)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
-endif(CMAKE_COMPILER_IS_GNUCXX)
-
 qt4_automoc( CollectionScanner.cpp )
 
 add_definitions( "-DUTILITIES_BUILD" )
@@ -63,9 +59,9 @@ target_link_libraries(amarokcollectionscanner
                       )
 
 if(APPLE)
-	SET_TARGET_PROPERTIES(amarokcollectionscanner PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-	# install to app bundle on os x, otherwise amarok fails to load it
-	install(TARGETS amarokcollectionscanner DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/MacOS )
+    SET_TARGET_PROPERTIES(amarokcollectionscanner PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    # install to app bundle on os x, otherwise amarok fails to load it
+    install(TARGETS amarokcollectionscanner DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/MacOS )
 else(APPLE)
-	install(TARGETS amarokcollectionscanner RUNTIME DESTINATION ${BIN_INSTALL_DIR} )
+    install(TARGETS amarokcollectionscanner RUNTIME DESTINATION ${BIN_INSTALL_DIR} )
 endif(APPLE)
