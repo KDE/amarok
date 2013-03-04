@@ -3,7 +3,7 @@
  * Copyright (c) 2004-2006 Seb Ruiz <ruiz@kde.org>                                      *
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
  * Copyright (c) 2005 Gabor Lehel <illissius@gmail.com>                                 *
- * Copyright (c) 2008,2009 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2008-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -43,6 +43,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QRegExp>
+#include <QTimeLine>
 #include <QTimer>
 
 namespace ShadowEngine
@@ -66,6 +67,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_volume( The::engineController()->volume() )
         , m_showVolume( false )
         , m_hideWhenFullscreenWindowIsActive( false )
+        , m_fadeTimeLine( new QTimeLine( FADING_DURATION, this ) )
 {
     Qt::WindowFlags flags;
     flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
@@ -91,6 +93,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 
     m_timer->setSingleShot( true );
     connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
+
+    connect( m_fadeTimeLine, SIGNAL( valueChanged( qreal ) ), SLOT( setFadeOpacity( qreal ) ) );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -124,7 +128,30 @@ void
 OSDWidget::show()
 {
     if ( !isTemporaryDisabled() )
+    {
         QWidget::show();
+
+        // Skip fading if OSD is already visible 
+        if( windowOpacity() != 0.0 )
+        {
+            m_fadeTimeLine->stop();
+            setWindowOpacity( maxOpacity() );
+        }
+        else
+        {
+            m_fadeTimeLine->setCurveShape( QTimeLine::EaseInCurve );
+            m_fadeTimeLine->setDirection( QTimeLine::Forward );
+            m_fadeTimeLine->start();
+        }
+    }
+}
+
+void
+OSDWidget::hide()
+{
+    m_fadeTimeLine->setCurveShape( QTimeLine::EaseOutCurve );
+    m_fadeTimeLine->setDirection( QTimeLine::Backward );
+    m_fadeTimeLine->start();
 }
 
 bool
@@ -139,7 +166,6 @@ OSDWidget::isTemporaryDisabled()
 
     return false;
 }
-
 
 void
 OSDWidget::ratingChanged( const QString& path, int rating )
@@ -399,13 +425,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
                                -SHADOW_SIZE, -SHADOW_SIZE ), align, m_text );
 }
 
-void
-OSDWidget::resizeEvent(QResizeEvent *e)
-{
-    //setMask(m_background->mask());
-    QWidget::resizeEvent( e );
-}
-
 bool
 OSDWidget::event( QEvent *e )
 {
@@ -451,6 +470,17 @@ OSDWidget::setScreen( int screen )
 {
     const int n = QApplication::desktop()->numScreens();
     m_screen = ( screen >= n ) ? n - 1 : screen;
+}
+
+void
+OSDWidget::setFadeOpacity( qreal value )
+{
+    setWindowOpacity( value * maxOpacity() );
+
+    if( value == 0.0 )
+    {
+        QWidget::hide();
+    }
 }
 
 void

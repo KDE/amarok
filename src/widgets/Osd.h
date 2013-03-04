@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2003 Christian Muehlhaeuser <chris@chris.de>                           *
- * Copyright (c) 2008,2009 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2008-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -27,6 +27,7 @@
 
 #define OSD_WINDOW_OPACITY 0.74
 
+class QTimeLine;
 
 class OSDWidget : public QWidget
 {
@@ -41,15 +42,21 @@ class OSDWidget : public QWidget
         /** shadow size in every direction */
         static const int SHADOW_SIZE = 5;
 
+        static const int FADING_DURATION = 400; //ms
+         
     public slots:
         /** calls setText() then show(), after setting image if needed */
         void show( const QString &text, const QImage &newImage = QImage() );
+
         void ratingChanged( const short rating );
         void ratingChanged( const QString& path, int rating );
         void volumeChanged( int volume );
 
-        /** reimplemented, shows the OSD */
+        /** reimplemented, show the OSD */
         virtual void show();
+        /** reimplemented, hide the OSD */
+        virtual void hide();
+
         virtual void setVisible( bool visible );
 
         /**
@@ -75,7 +82,8 @@ class OSDWidget : public QWidget
         void setImage( const QImage &image ) { m_cover = image; }
         void setText( const QString &text ) { m_text = text; }
         void setRating( const short rating ) { m_rating = rating; }
-        void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); }
+        void setTranslucent( bool enabled ) { m_translucent = enabled; setWindowOpacity( maxOpacity() ); }
+        void setFadeOpacity( qreal value );
         void setFontScale( int scale );
         void setHideWhenFullscreenWindowIsActive( bool hide );
 
@@ -85,6 +93,8 @@ class OSDWidget : public QWidget
 
         // work-around to get default point size on this platform, Qt API does not offer this directly
         inline qreal defaultPointSize() const { return QFont(font().family()).pointSizeF(); }
+
+        qreal maxOpacity() const { return m_translucent ? OSD_WINDOW_OPACITY : 1.0; }
 
         /** determine new size and position */
         QRect determineMetrics( const int marginMetric );
@@ -100,7 +110,6 @@ class OSDWidget : public QWidget
         // Reimplemented from QWidget
         virtual void paintEvent( QPaintEvent* );
         virtual void mousePressEvent( QMouseEvent* );
-        virtual void resizeEvent( QResizeEvent *e );
         virtual bool event( QEvent* );
 
         /** distance from screen edge */
@@ -122,6 +131,8 @@ class OSDWidget : public QWidget
         QPixmap     m_scaledCover;
         bool        m_paused;
         bool        m_hideWhenFullscreenWindowIsActive;
+        QTimeLine*  m_fadeTimeLine;
+        bool        m_translucent;
 };
 
 
@@ -134,12 +145,13 @@ public:
 
 public slots:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }
-    //void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
     void setFontScale( int scale ) { OSDWidget::setFontScale( scale ); doUpdate(); }
-    void setTranslucent( bool enabled ) { OSDWidget::setTranslucent( enabled );; doUpdate(); }
+    void setTranslucent( bool enabled ) { OSDWidget::setTranslucent( enabled ); doUpdate(); }
 
     void setUseCustomColors( const bool use, const QColor &fg );
+
+    virtual void hide() { QWidget::hide(); }
 
 private:
     inline void doUpdate() { if( !isHidden() ) show(); }
