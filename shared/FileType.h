@@ -52,17 +52,16 @@ namespace Amarok
     {
         public:
             /**
-             * Return string representation of a filetype.
+             * Return preferred extension of given filetype
              *
-             * WARNING: the return string is only partially localized currently
-             * TODO: rename to toLocalizedString() and localise all filetypes
+             * TODO: rename to extension()
              */
             static QString toString( Amarok::FileType ft );
 
             /**
              * Return a list of possible localized filetype strings.
              *
-             * TODO: actualy localize the types
+             * TODO: rename to possibleExtensions()
              */
             static QStringList possibleFileTypes();
 

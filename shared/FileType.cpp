@@ -17,18 +17,10 @@
 
 #include "FileType.h"
 
-#ifndef UTILITIES_BUILD
-#include <KLocale>
-#endif
-
 using namespace Amarok;
 
 QStringList FileTypeSupport::s_fileTypeStrings = QStringList()
-#ifndef UTILITIES_BUILD
-        << I18N_NOOP( "Other" )
-#else
-        << QLatin1String( "Other" )
-#endif
+        << QLatin1String( "" )
         << QLatin1String( "mp3" )
         << QLatin1String( "ogg" )
         << QLatin1String( "flac" )
@@ -51,10 +43,6 @@ QStringList FileTypeSupport::s_fileTypeStrings = QStringList()
 QString
 FileTypeSupport::toString( Amarok::FileType ft )
 {
-#ifndef UTILITIES_BUILD
-    if( ft == Amarok::Unknown )
-        return i18n( s_fileTypeStrings.at( ft ).toLatin1() );
-#endif
     return s_fileTypeStrings.at( ft );
 }
 
