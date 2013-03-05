@@ -50,6 +50,10 @@ namespace Playlists
         PodcastChannelPlaylist
     };
 
+    /**
+     * Subclass this class in order to be able to watch playlists as their metadata and
+     * track list changes.
+     */
     class AMAROK_CORE_EXPORT PlaylistObserver
     {
         public:
@@ -76,6 +80,8 @@ namespace Playlists
              * This method is called when playlist metadata (such as title) has changed.
              * This isn't called when just a list of tracks changes.
              *
+             * @param playlist playlist whose metadata were changed
+             *
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
              */
@@ -84,6 +90,10 @@ namespace Playlists
             /**
              * This method is called when a track has been added to the playlist.
              *
+             * @param playlist playlist whose track list was changed
+             * @param track track that was added
+             * @param position position where the track was inserted to, beggining from 0
+             *
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
              */
@@ -91,6 +101,9 @@ namespace Playlists
 
             /**
              * This method is called after a track is removed from to the playlist.
+             *
+             * @param playlist playlist whose track list was changed
+             * @param position position occupied by the track right before it was removed
              *
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
@@ -121,15 +134,15 @@ namespace Playlists
             virtual PlaylistProvider *provider() const { return 0; }
 
             /**override showing just the filename */
-            virtual void setName( const QString &name ) { Q_UNUSED( name ); }
+            virtual void setName( const QString &name );
 
             /**
-             * @returns the number of tracks this playlist contains. -1 if this can not
-             * be determined before loading them all.
+             * Returns the number of tracks this playlist contains. -1 if this can not
+             * be determined before loading them all (call triggerTrackLoad() in this case)
              *
              * Default implementation returns -1.
              */
-            virtual int trackCount() const { return -1; }
+            virtual int trackCount() const;
 
             /**
              * Returns loaded tracks in this playlist. Note that the list may be incomplete,
@@ -152,23 +165,28 @@ namespace Playlists
              */
             virtual void triggerTrackLoad();
 
-            /** Add the track to a certain position in the playlist
-             *  @arg position: place to add this track. The default value -1 appends to
-             *  the end.
+            /**
+             * Add the track to a certain position in the playlist
+             *
+             * @param position place to add this track. The default value -1 appends to
+             *                 the end.
+             *
              * @note if the position is larger then the size of the playlist append to the
              * end without generating an error.
              */
-            virtual void addTrack( Meta::TrackPtr track, int position = -1 )
-                    { Q_UNUSED(track); Q_UNUSED(position); }
-            /** Remove track at the specified position */
-            virtual void removeTrack( int position ) { Q_UNUSED(position); }
+            virtual void addTrack( Meta::TrackPtr track, int position = -1 );
 
-            /** Sync track status between two tracks. This is only
+            /**
+             * Remove track at the specified position
+             */
+            virtual void removeTrack( int position );
+
+            /**
+             * Sync track status between two tracks. This is only
              * useful for podcasts providers and some other exotic
              * playlist providers.
              */
-            virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack )
-                    { Q_UNUSED(position); Q_UNUSED(otherTrack); }
+            virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack );
 
             /**
              * Return user-actionable actions for this playlist. Default implementation
@@ -186,25 +204,24 @@ namespace Playlists
              * A list of groups or labels this playlist belongs to.
              *
              * Can be used for grouping in folders (use ex. '/' as separator) or for
-             * labels.
+             * labels. Default implementation returns empty list.
              */
-            virtual QStringList groups() { return QStringList(); }
+            virtual QStringList groups();
 
             /**
              * Labels the playlist as part of a group.
              *
              * In a folder-like hierarchy this means adding the playlist to the folder with
              * name groups.first(). If groups is empty that means removing all groups from
-             * the playlist.
+             * the playlist. Default implementation does nothing.
              */
-            virtual void setGroups( const QStringList &groups ) { Q_UNUSED(groups) }
+            virtual void setGroups( const QStringList &groups );
 
         protected:
             /**
              * Implementations must call this when metadata such as title has changed. Do
              * not call this when just a list of track changes.
              *
-             * @param position is the actual new position of the added track, never negative
              * @note calling this from (code called by) Playlist constructor is FORBIDDEN.
              *
              * TODO: find all occurrences where this should be called in Playlist subclasses

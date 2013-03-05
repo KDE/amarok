@@ -65,7 +65,31 @@ Playlist::~Playlist()
 }
 
 void
+Playlist::setName( const QString & )
+{
+}
+
+int
+Playlist::trackCount() const
+{
+    return -1;
+}
+
+void
 Playlist::triggerTrackLoad()
+{
+}
+
+void Playlist::addTrack( Meta::TrackPtr, int )
+{
+}
+
+void Playlist::removeTrack( int )
+{
+}
+
+void
+Playlist::syncTrackStatus( int, Meta::TrackPtr )
 {
 }
 
@@ -84,6 +108,17 @@ Playlist::trackActions( int trackIndex )
     if( provider() )
         return provider()->trackActions( PlaylistPtr( this ), trackIndex );
     return QActionList();
+}
+
+QStringList
+Playlist::groups()
+{
+    return QStringList();
+}
+
+void
+Playlist::setGroups( const QStringList & )
+{
 }
 
 void
