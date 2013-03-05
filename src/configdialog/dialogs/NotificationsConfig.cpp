@@ -34,7 +34,7 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
 
     m_osdPreview = new OSDPreviewWidget( this ); //must be child!!!
     m_osdPreview->setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
-    m_osdPreview->setOffset( AmarokConfig::osdYOffset() );
+    m_osdPreview->setYOffset( AmarokConfig::osdYOffset() );
     m_osdPreview->setFontScale( AmarokConfig::osdFontScaling() );
     m_osdPreview->setTranslucent( AmarokConfig::osdUseTranslucency() );
 
@@ -109,7 +109,7 @@ NotificationsConfig::hasChanged()
 {
     DEBUG_BLOCK
 
-    return ( m_osdPreview->alignment() != m_oldAlignment ) || ( m_osdPreview->offset() != m_oldYOffset );
+    return ( m_osdPreview->alignment() != m_oldAlignment ) || ( m_osdPreview->Yoffset() != m_oldYOffset );
 }
 
 bool
@@ -124,7 +124,7 @@ NotificationsConfig::updateSettings()
     DEBUG_BLOCK
 
     AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
-    AmarokConfig::setOsdYOffset( m_osdPreview->offset() );
+    AmarokConfig::setOsdYOffset( m_osdPreview->Yoffset() );
     AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
 
     Amarok::OSD::instance()->setEnabled( kcfg_OsdEnabled->isChecked() );

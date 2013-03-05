@@ -69,8 +69,8 @@ class OSDWidget : public QWidget
         void setDuration( int ms ) { m_duration = ms; }
         void setTextColor( const QColor &color );
 
-        inline int offset() const { return m_offset; }
-        void setOffset( int y ) { m_offset = y; }
+        inline int Yoffset() const { return m_Yoffset; }
+        void setYOffset( int y ) { m_Yoffset = y; }
 
         inline int alignment() const { return m_alignment; }
         void setAlignment( Alignment alignment ) { m_alignment = alignment; }
@@ -122,7 +122,7 @@ class OSDWidget : public QWidget
         QTimer     *m_timer;
         Alignment   m_alignment;
         int         m_screen;
-        uint        m_offset;
+        uint        m_Yoffset;
         short       m_rating;
         int         m_volume;
         bool        m_showVolume;
@@ -166,7 +166,7 @@ protected:
 
 private:
     bool   m_dragging;
-    QPoint m_dragOffset;
+    QPoint m_dragYOffset;
 };
 
 

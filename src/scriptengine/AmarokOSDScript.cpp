@@ -56,7 +56,7 @@ namespace AmarokScript
 
     void AmarokOSDScript::setOffset( int y )
     {
-        Amarok::OSD::instance()->setOffset( y );
+        Amarok::OSD::instance()->setYOffset( y );
     }
 
     void AmarokOSDScript::setImage( const QImage &image )

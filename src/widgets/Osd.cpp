@@ -62,7 +62,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_timer( new QTimer( this ) )
         , m_alignment( Middle )
         , m_screen( 0 )
-        , m_offset( MARGIN )
+        , m_Yoffset( MARGIN )
         , m_rating( 0 )
         , m_volume( The::engineController()->volume() )
         , m_showVolume( false )
@@ -307,7 +307,7 @@ OSDWidget::determineMetrics( const int M )
 
     const QSize newSize = rect.size();
     const QRect screen = QApplication::desktop()->screenGeometry( m_screen );
-    QPoint newPos( MARGIN, m_offset );
+    QPoint newPos( MARGIN, m_Yoffset );
 
     switch( m_alignment )
     {
@@ -519,7 +519,7 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
 void
 OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
-    m_dragOffset = event->pos();
+    m_dragYOffset = event->pos();
 
     if( event->button() == Qt::LeftButton && !m_dragging )
     {
@@ -561,7 +561,7 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
         const uint  eGlobalPosX = e->globalPos().x() - screenRect.left();
         const uint  snapZone    = screenRect.width() / 24;
 
-        QPoint destination = e->globalPos() - m_dragOffset - screenRect.topLeft();
+        QPoint destination = e->globalPos() - m_dragYOffset - screenRect.topLeft();
         int maxY = screenRect.height() - height() - MARGIN;
         if( destination.y() < MARGIN )
             destination.ry() = MARGIN;
@@ -596,13 +596,13 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
         destination += screenRect.topLeft();
         move( destination );
 
-        // compute current Position && offset
+        // compute current Position && Yoffset
         QDesktopWidget *desktop = QApplication::desktop();
         const int currentScreen = desktop->screenNumber( pos() );
 
         // set new data
         OSDWidget::setScreen( currentScreen );
-        setOffset( y() );
+        setYOffset( y() );
     }
 }
 
@@ -666,7 +666,7 @@ void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
 {
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
-    setOffset( AmarokConfig::osdYOffset() );
+    setYOffset( AmarokConfig::osdYOffset() );
 
     QString text;
     if( !track || track->playableUrl().isEmpty() )
@@ -712,7 +712,7 @@ Amarok::OSD::applySettings()
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setDuration( AmarokConfig::osdDuration() );
     setEnabled( AmarokConfig::osdEnabled() );
-    setOffset( AmarokConfig::osdYOffset() );
+    setYOffset( AmarokConfig::osdYOffset() );
     setScreen( AmarokConfig::osdScreen() );
     setFontScale( AmarokConfig::osdFontScaling() );
     setHideWhenFullscreenWindowIsActive( AmarokConfig::osdHideOnFullscreen() );
