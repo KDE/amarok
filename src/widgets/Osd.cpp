@@ -85,8 +85,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     setFocusPolicy( Qt::NoFocus );
     unsetColors();
 
-    setFont(QFont("sans-serif"));
-
     #ifdef Q_WS_X11
     KWindowSystem::setType( winId(), NET::Notification );
     #endif

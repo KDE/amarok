@@ -12,6 +12,8 @@ VERSION 2.8-Beta 1
    * Added Ctrl+H shortcut to randomize playlist, patch by Harsh Gupta. (BR 208061)
 
   CHANGES:
+   * On-Screen-Display now uses the system font instead of hardcoded sans-serif
+     (BR 248707)
    * On-Screen-Display fades in/out smoothly.
    * Problematic support for treating MusicBrainz ids as track unique ids was dropped;
      should avoid surprising "Duplicate Tracks Found" errors. (BR 315329)
