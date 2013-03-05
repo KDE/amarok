@@ -109,7 +109,7 @@ NotificationsConfig::hasChanged()
 {
     DEBUG_BLOCK
 
-    return ( m_osdPreview->alignment() != m_oldAlignment ) || ( m_osdPreview->Yoffset() != m_oldYOffset );
+    return ( m_osdPreview->alignment() != m_oldAlignment ) || ( m_osdPreview->yOffset() != m_oldYOffset );
 }
 
 bool
@@ -124,7 +124,7 @@ NotificationsConfig::updateSettings()
     DEBUG_BLOCK
 
     AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
-    AmarokConfig::setOsdYOffset( m_osdPreview->Yoffset() );
+    AmarokConfig::setOsdYOffset( m_osdPreview->yOffset() );
     AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
 
     Amarok::OSD::instance()->setEnabled( kcfg_OsdEnabled->isChecked() );

@@ -69,8 +69,8 @@ class OSDWidget : public QWidget
         void setDuration( int ms ) { m_duration = ms; }
         void setTextColor( const QColor &color );
 
-        inline int Yoffset() const { return m_Yoffset; }
-        void setYOffset( int y ) { m_Yoffset = y; }
+        inline int yOffset() const { return m_yOffset; }
+        void setYOffset( int y ) { m_yOffset = y; }
 
         inline int alignment() const { return m_alignment; }
         void setAlignment( Alignment alignment ) { m_alignment = alignment; }
@@ -94,7 +94,7 @@ class OSDWidget : public QWidget
         // work-around to get default point size on this platform, Qt API does not offer this directly
         inline qreal defaultPointSize() const { return QFont(font().family()).pointSizeF(); }
 
-        qreal maxOpacity() const { return m_translucent ? OSD_WINDOW_OPACITY : 1.0; }
+        inline qreal maxOpacity() const { return m_translucent ? OSD_WINDOW_OPACITY : 1.0; }
 
         /** determine new size and position */
         QRect determineMetrics( const int marginMetric );
@@ -122,7 +122,7 @@ class OSDWidget : public QWidget
         QTimer     *m_timer;
         Alignment   m_alignment;
         int         m_screen;
-        uint        m_Yoffset;
+        uint        m_yOffset;
         short       m_rating;
         int         m_volume;
         bool        m_showVolume;

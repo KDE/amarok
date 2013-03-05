@@ -62,7 +62,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_timer( new QTimer( this ) )
         , m_alignment( Middle )
         , m_screen( 0 )
-        , m_Yoffset( MARGIN )
+        , m_yOffset( MARGIN )
         , m_rating( 0 )
         , m_volume( The::engineController()->volume() )
         , m_showVolume( false )
@@ -306,7 +306,7 @@ OSDWidget::determineMetrics( const int M )
 
     const QSize newSize = rect.size();
     const QRect screen = QApplication::desktop()->screenGeometry( m_screen );
-    QPoint newPos( MARGIN, m_Yoffset );
+    QPoint newPos( MARGIN, m_yOffset );
 
     switch( m_alignment )
     {
@@ -595,7 +595,7 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
         destination += screenRect.topLeft();
         move( destination );
 
-        // compute current Position && Yoffset
+        // compute current Position && Y-offset
         QDesktopWidget *desktop = QApplication::desktop();
         const int currentScreen = desktop->screenNumber( pos() );
 
