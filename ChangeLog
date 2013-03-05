@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.8-Beta 1
   FEATURES:
+   * Added transcoding support for Opus codec if ffmpeg is compiled with
+     support for the libopus library, patch by Martin Brodbeck.
    * Added keyboard shortcuts for small 2 s seeks (Ctrl + Left/Right) and long 1 minute
      seeks (Shift + Left/Right) in addition to standard 10 s seeks. Durations are now
      configurable in amarokrc, see Amarok Handbook. Patch by Anmol Ahuja. (BR 177258)

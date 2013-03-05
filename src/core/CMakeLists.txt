@@ -74,6 +74,7 @@ set(libcore_transcoding_SRCS
     transcoding/formats/TranscodingAlacFormat.cpp
     transcoding/formats/TranscodingFlacFormat.cpp
     transcoding/formats/TranscodingMp3Format.cpp
+    transcoding/formats/TranscodingOpusFormat.cpp
     transcoding/formats/TranscodingVorbisFormat.cpp
     transcoding/formats/TranscodingWmaFormat.cpp
     transcoding/TranscodingConfiguration.cpp

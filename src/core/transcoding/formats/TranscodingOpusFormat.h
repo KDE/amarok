@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Téo Mrnjavac <teo@kde.org>                                        *
+ * Copyright (c) 2013 Martin Brodbeck <martin@brodbeck-online.de>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,24 +14,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRANSCODING_DEFINES_H
-#define TRANSCODING_DEFINES_H
+#ifndef TRANSCODING_OPUSFORMAT_H
+#define TRANSCODING_OPUSFORMAT_H
+
+#include "core/transcoding/TranscodingFormat.h"
 
 namespace Transcoding
 {
-    enum Encoder
-    {
-        INVALID,   // denotes invalid transcoding configuration
-        JUST_COPY, // just copy or move the tracks (no transcoding)
-        AAC,       // Advanded Audio Coding
-        ALAC,      // Apple Lossless Audio Codec
-        FLAC,      // Free Lossless Audio Codec
-        MP3,       // MPEG-1 or MPEG-2 Audio Layer III encoded using lame encoder
-        OPUS,      // Opus
-        VORBIS,    // Ogg Vorbis
-        WMA2       // Windows Media Audio 2
-    };
+
+/**
+ * This class implements the interface for the Opus encoder through FFmpeg. FFmpeg must
+ * be compiled with support for the libopus library for this to work.
+ * @author Martin Brodbeck <martin@brodbeck-online.de>
+ */
+class AMAROK_CORE_EXPORT OpusFormat : public Format
+{
+public:
+    OpusFormat();
+    QString prettyName() const;
+    QString description() const;
+    KIcon icon() const;
+    QStringList ffmpegParameters( const Configuration &configuration ) const;
+    bool verifyAvailability( const QString &ffmpegOutput ) const;
+
+private:
+    inline int toFfmpegBitrate( int setting ) const;
+    QVector< int > m_validBitrates;
+};
 
 }
 
-#endif //TRANSCODING_DEFINES_H
+#endif // TRANSCODING_OPUSFORMAT_H

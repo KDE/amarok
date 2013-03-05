@@ -144,6 +144,7 @@ Configuration::encoderNames()
     s_encoderNames.insert( ALAC, QLatin1String( "ALAC" ) );
     s_encoderNames.insert( FLAC, QLatin1String( "FLAC" ) );
     s_encoderNames.insert( MP3, QLatin1String( "MP3" ) );
+    s_encoderNames.insert( OPUS, QLatin1String( "OPUS" ) );
     s_encoderNames.insert( VORBIS, QLatin1String( "VORBIS" ) );
     s_encoderNames.insert( WMA2, QLatin1String( "WMA2" ) );
     return s_encoderNames;
