@@ -94,6 +94,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     m_timer->setSingleShot( true );
     connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
 
+    m_fadeTimeLine->setUpdateInterval( 30 ); //~33 frames per second 
     connect( m_fadeTimeLine, SIGNAL( valueChanged( qreal ) ), SLOT( setFadeOpacity( qreal ) ) );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
