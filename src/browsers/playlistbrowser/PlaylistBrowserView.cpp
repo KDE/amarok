@@ -185,9 +185,11 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent *even
         return;
     }
 
-    // code copied in src/browser/CollectionTreeView.cpp
+    // code copied in CollectionTreeView::mouseDoubleClickEvent(), keep in sync
+    // mind bug 279513
     bool isExpandable = model()->hasChildren( index );
-    bool wouldExpand = isExpandable && !KGlobalSettings::singleClick(); // we're in doubleClick
+    bool wouldExpand = !visualRect( index ).contains( event->pos() ) || // clicked outside item, perhaps on expander icon
+                       ( isExpandable && !KGlobalSettings::singleClick() ); // we're in doubleClick
     if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         !wouldExpand )
@@ -196,7 +198,8 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent *even
         event->accept();
         return;
     }
-    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
+
+    PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
 void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent *event )

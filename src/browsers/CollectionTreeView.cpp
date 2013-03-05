@@ -330,16 +330,14 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         return;
     }
 
-
-    // that was a double click on the item itself or the expander clicked? (BR: 279513)
-    // code copied in src/browser/playlistbrowser/PlaylistBrowserView.cpp
-    bool reverse = isRightToLeft();
-    QRect rect = visualRect( index );
-    if( KGlobalSettings::singleClick() &&
-        event->button() == Qt::LeftButton &&
+    // code copied in PlaylistBrowserView::mouseDoubleClickEvent(), keep in sync
+    // mind bug 279513
+    bool isExpandable = model()->hasChildren( index );
+    bool wouldExpand = !visualRect( index ).contains( event->pos() ) || // clicked outside item, perhaps on expander icon
+                       ( isExpandable && !KGlobalSettings::singleClick() ); // we're in doubleClick
+    if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
-        ( (  reverse && event->pos().x() < rect.right() ) ||
-          ( !reverse && event->pos().x() > rect.left() ) ) )
+        !wouldExpand )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
         playChildTracks( item, Playlist::AppendAndPlay );
@@ -347,7 +345,7 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         return;
     }
 
-    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
+    PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
 void
