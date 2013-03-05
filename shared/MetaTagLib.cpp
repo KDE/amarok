@@ -250,11 +250,15 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
         delete tagHelper;
     }
 
-    if( fileref.audioProperties() )
+    TagLib::AudioProperties *properties = fileref.audioProperties();
+    if( properties )
     {
-        result.insert( Meta::valBitrate, fileref.audioProperties()->bitrate() );
-        result.insert( Meta::valLength, fileref.audioProperties()->length() * 1000 );
-        result.insert( Meta::valSamplerate, fileref.audioProperties()->sampleRate() );
+        if( !result.contains( Meta::valBitrate ) && properties->bitrate() )
+            result.insert( Meta::valBitrate, properties->bitrate() );
+        if( !result.contains( Meta::valLength ) && properties->length() )
+            result.insert( Meta::valLength, properties->length() * 1000 );
+        if( !result.contains( Meta::valSamplerate ) && properties->sampleRate() )
+            result.insert( Meta::valSamplerate, properties->sampleRate() );
     }
 #endif
 
@@ -276,6 +280,11 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
 
     if( !result.contains( Meta::valUniqueId ) )
         result.insert( Meta::valUniqueId, generateUniqueId( path ) );
+
+    // compute bitrate if it is not already set and we know length
+    if( !result.contains( Meta::valBitrate ) && result.contains( Meta::valLength ) )
+        result.insert( Meta::valBitrate, ( fileInfo.size() * 8 * 1000 ) /
+                       ( result.value( Meta::valLength ).toInt() * 1024 ) );
 
     return result;
 }

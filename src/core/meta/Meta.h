@@ -239,7 +239,7 @@ namespace Meta
             virtual int filesize() const = 0;
             /** Returns the sample rate of this track */
             virtual int sampleRate() const = 0;
-            /** Returns the bitrate o this track */
+            /** Returns the bitrate o this track in kbps (kilo BITS per second) */
             virtual int bitrate() const = 0;
             /** Returns the time when the track was added to the collection,
                 or an invalid QDateTime if the time is not known. */
