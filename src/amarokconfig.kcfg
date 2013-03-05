@@ -325,19 +325,9 @@
         <default>true</default>
     </entry>
     <entry key="Growl Enabled" type="Bool">
-    <label>Use Growl for notifications</label>
-    <whatsthis>Enable/Disable use of Growl for notifications.</whatsthis>
-    <default>false</default>
-    </entry>
-    <entry key="Osd Use Playlist Columns" type="Bool">
-        <label>Display the same information in the OSD as in the playlist columns.</label>
-        <whatsthis>If enabled, the OSD will display the same information and in the same order as the columns in the playlist.</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="Osd Text" type="String">
-        <label>The OSD text to show</label>
-        <whatsthis>Customize the OSD display text.</whatsthis>
-        <default>%artist - %title {(%length)}\n%album</default>
+        <label>Use Growl for notifications</label>
+        <whatsthis>Enable/Disable use of Growl for notifications.</whatsthis>
+        <default>false</default>
     </entry>
     <entry key="Osd Use Translucency" type="Bool">
         <label>Translucency Toggle</label>
@@ -378,11 +368,6 @@
         <label>OSD screen</label>
         <whatsthis>The screen that should display the OSD. For single-headed environments this setting should be 0.</whatsthis>
         <default>0</default>
-    </entry>
-    <entry key="Osd Cover" type="Bool">
-        <label>Whether the album cover should be shown</label>
-        <whatsthis>If enabled, shows the album cover in the OSD.</whatsthis>
-        <default>true</default>
     </entry>
     <entry key="Osd Alignment" type="Enum">
         <label>Align OSD to</label>
