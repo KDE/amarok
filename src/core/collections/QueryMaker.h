@@ -32,64 +32,80 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
     Q_OBJECT
 
     public:
-        enum AlbumQueryMode { AllAlbums = 0
-                              , OnlyCompilations = 1
-                              , OnlyNormalAlbums = 2 };
+        enum AlbumQueryMode {
+            AllAlbums,
+            OnlyCompilations ,
+            OnlyNormalAlbums
+        };
 
-        enum LabelQueryMode { NoConstraint = 0
-                                , OnlyWithLabels = 1
-                                , OnlyWithoutLabels = 2 };
+        enum LabelQueryMode {
+            NoConstraint,
+            OnlyWithLabels,
+            OnlyWithoutLabels
+        };
 
-        enum ArtistMatchBehaviour { TrackArtists,
-                                    AlbumArtists,
-                                    AlbumOrTrackArtists };
+        enum ArtistMatchBehaviour {
+            TrackArtists,
+            AlbumArtists,
+            AlbumOrTrackArtists
+        };
 
-        //Filters that the QueryMaker accepts for searching.
-        //not all implementations will accept all filter levels, so make it possible to
-        //specify which ones make sense for a given qm. Add to this as needed
-        enum ValidFilters { TitleFilter      =     1,
-                            AlbumFilter      =     2,
-                            ArtistFilter     =     4,
-                            AlbumArtistFilter=     8,
-                            GenreFilter      =    16,
-                            ComposerFilter   =    32,
-                            YearFilter       =    64,
-                            UrlFilter        =   128,
-                            AllFilters       = 65535 };
+        /**
+         * Filters that the QueryMaker accepts for searching.
+         * not all implementations will accept all filter levels, so make it possible to
+         * specify which ones make sense for a given qm. Add to this as needed
+         */
+        enum ValidFilters {
+            TitleFilter = 1,
+            AlbumFilter = 2,
+            ArtistFilter = 4,
+            AlbumArtistFilter = 8,
+            GenreFilter = 16,
+            ComposerFilter = 32,
+            YearFilter = 64,
+            UrlFilter = 128,
+            AllFilters = 65535
+        };
 
-        enum ReturnFunction { Count = 0,
-                              Sum = 1,
-                              Max = 2,
-                              Min = 3 };
+        enum ReturnFunction {
+            Count,
+            Sum,
+            Max,
+            Min
+        };
 
-        enum NumberComparison { Equals = 0,
-                               GreaterThan = 1,
-                               LessThan = 2 };
+        enum NumberComparison {
+            Equals,
+            GreaterThan,
+            LessThan
+        };
 
-        enum QueryType { None = 0, // Set to faciliate using this in subclasses
-                         Track,
-                         Artist,
-                         Album,
-                         AlbumArtist,
-                         Genre,
-                         Composer,
-                         Year,
-                         Custom,
-                         Label
+        enum QueryType {
+            None, // Set to faciliate using this in subclasses
+            Track,
+            Artist,
+            Album,
+            AlbumArtist,
+            Genre,
+            Composer,
+            Year,
+            Custom,
+            Label
         };
         QueryMaker();
         virtual ~QueryMaker();
 
         /**
-            starts the query. This method returns immediately. All processing is done in one or more
-            separate worker thread(s). One of the newResultReady signals will be emitted at least once,
-            followed by the queryDone() signal exactly once.
-        */
+         *  starts the query. This method returns immediately. All processing is done in one or more
+         *  separate worker thread(s). One of the newResultReady signals will be emitted at least once,
+         *  followed by the queryDone() signal exactly once.
+         */
         virtual void run() = 0;
         /**
-            aborts a running query. Calling this method aborts a running query as soon as possible. This method returns immediately. No signals will be emitted after calling this method. This
-            method has no effect if no query is running.
-        */
+         *  aborts a running query. Calling this method aborts a running query as soon as possible.
+         *  This method returns immediately. No signals will be emitted after calling this method.
+         *  This method has no effect if no query is running.
+         */
         virtual void abortQuery() = 0;
 
         /**
@@ -107,9 +123,9 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual QueryMaker* setQueryType( QueryType type ) = 0;
 
         /**
-            only works after starting a custom query with setQueryType( Custom )
-            Use this to inform the query maker you are looking for results of value @param value.
-            @return this
+          * only works after starting a custom query with setQueryType( Custom )
+          * Use this to inform the query maker you are looking for results of value @param value.
+          * @return this
           */
         virtual QueryMaker* addReturnValue( qint64 value ) = 0;
         /**
@@ -149,22 +165,22 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          */
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
         /**
-        * Exclude filter of type @p value and value @p filter. The querymaker applies this to all queries.
-        * @param text the text to match
-        * @param matchBegin If set then wildcard match the beginning of @p text (*text)
-        * @param matchEnd If set then wildcard match the end of @p text (text*)
-        * @return this
-        */
+         * Exclude filter of type @p value and value @p filter. The querymaker applies this to all queries.
+         * @param text the text to match
+         * @param matchBegin If set then wildcard match the beginning of @p text (*text)
+         * @param matchEnd If set then wildcard match the end of @p text (text*)
+         * @return this
+         */
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
 
         virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, NumberComparison compare ) = 0;
         virtual QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, NumberComparison compare ) = 0;
 
         /**
-            limit the maximum number of items in a result. the result will have [0..@p size ] items. When this function
-            is not used, the result size is unbounded. Note: the maximum size applies to each result individually, so if
-            the newResultReady signal is emitted multiple times, each result may have up to @p size items.
-        */
+         *  limit the maximum number of items in a result. the result will have [0..@p size ] items. When this function
+         *  is not used, the result size is unbounded. Note: the maximum size applies to each result individually, so if
+         *  the newResultReady signal is emitted multiple times, each result may have up to @p size items.
+         */
         virtual QueryMaker* limitMaxResultSize( int size ) = 0;
 
         /**
@@ -199,11 +215,12 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual int validFilterMask();
 
     signals:
-        /** newResultReady will be emitted every time new results from the query maker are received.
-            This signal can be emitted zero times (in case of no results) one (the usual case) or multiple times
-            (e.g. in case when the result is received in several batches).
-            The results will be terminated by a queryDone signal.
-        */
+        /**
+         * newResultReady will be emitted every time new results from the query maker are received.
+         * This signal can be emitted zero times (in case of no results) one (the usual case) or multiple times
+         * (e.g. in case when the result is received in several batches).
+         * The results will be terminated by a queryDone signal.
+         */
         void newResultReady( Meta::TrackList );
         void newResultReady( Meta::ArtistList );
         void newResultReady( Meta::AlbumList );
@@ -214,8 +231,9 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         void newResultReady( Meta::LabelList );
         void newResultReady( Meta::DataList );
 
-        /** This signal is emitted after all the results have been submitted via zero or more newResultReady signals.
-        */
+        /**
+         * This signal is emitted after all the results have been submitted via zero or more newResultReady signals.
+         */
         void queryDone();
 };
 
