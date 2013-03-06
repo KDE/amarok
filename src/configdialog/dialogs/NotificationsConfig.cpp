@@ -17,9 +17,11 @@
 
 #include "NotificationsConfig.h"
 
-#include "KNotificationBackend.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
+#include "KNotificationBackend.h"
+
+#include <KWindowSystem>
 
 #include <QDesktopWidget>
 
@@ -45,8 +47,9 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
         connect( growl,         SIGNAL( toggled( bool ) ),
                  this,                      SLOT( setGrowlEnabled( bool ) ) );
     #endif
-    // Enable/disable the translucency option depending on whether the QWidget has the WindowOpacity property
-    // kcfg_OsdUseTranslucency->setEnabled( CheckHasWindowOpacityProperty )
+
+    // Enable/disable the translucency option depending on availablity of desktop compositing
+    kcfg_OsdUseTranslucency->setEnabled( KWindowSystem::compositingActive() );
 
     connect( m_osdPreview, SIGNAL( positionChanged() ), SLOT( slotPositionChanged() ) );
 

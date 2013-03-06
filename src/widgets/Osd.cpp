@@ -130,16 +130,16 @@ OSDWidget::show()
     {
         QWidget::show();
 
-        // Skip fading if OSD is already visible 
-        if( windowOpacity() != 0.0 )
-        {
-            m_fadeTimeLine->stop();
-            setWindowOpacity( maxOpacity() );
-        }
-        else
+        if( windowOpacity() == 0.0 && KWindowSystem::compositingActive() )
         {
             m_fadeTimeLine->setDirection( QTimeLine::Forward );
             m_fadeTimeLine->start();
+        }
+        // Skip fading if OSD is already visible or if compositing is disabled
+        else
+        {
+            m_fadeTimeLine->stop();
+            setWindowOpacity( maxOpacity() );
         }
     }
 }
@@ -147,8 +147,15 @@ OSDWidget::show()
 void
 OSDWidget::hide()
 {
-    m_fadeTimeLine->setDirection( QTimeLine::Backward );
-    m_fadeTimeLine->start();
+    if( KWindowSystem::compositingActive() )
+    {
+        m_fadeTimeLine->setDirection( QTimeLine::Backward );
+        m_fadeTimeLine->start();
+    }
+    else
+    {
+        QWidget::hide();
+    }
 }
 
 bool
