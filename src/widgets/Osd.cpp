@@ -138,7 +138,6 @@ OSDWidget::show()
         }
         else
         {
-            m_fadeTimeLine->setCurveShape( QTimeLine::EaseInCurve );
             m_fadeTimeLine->setDirection( QTimeLine::Forward );
             m_fadeTimeLine->start();
         }
@@ -148,7 +147,6 @@ OSDWidget::show()
 void
 OSDWidget::hide()
 {
-    m_fadeTimeLine->setCurveShape( QTimeLine::EaseOutCurve );
     m_fadeTimeLine->setDirection( QTimeLine::Backward );
     m_fadeTimeLine->start();
 }
