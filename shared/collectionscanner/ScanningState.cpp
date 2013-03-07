@@ -22,6 +22,10 @@
 #include <QBuffer>
 #include <QtDebug>
 
+#ifdef Q_CC_MSVC
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
 using namespace CollectionScanner;
 
 ScanningState::ScanningState()
