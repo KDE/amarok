@@ -239,8 +239,7 @@ Process::slotLogSynchronization( ThreadWeaver::Job *job )
             "Synchronization of %2 done. <b>%1</b> tracks were updated.",
             updatedTracksCount, providers );
 
-    int fromDistantPast = 0;
-    int otherErrors = 0;
+    QMap<ScrobblingService::ScrobbleError, int> scrobbleErrorCounts;
     foreach( const ScrobblingServicePtr &provider, scrobbles.keys() )
     {
         QString name = "<b>" + provider->prettyName() + "</b>";
@@ -250,31 +249,33 @@ Process::slotLogSynchronization( ThreadWeaver::Job *job )
         while( it.hasNext() )
         {
             it.next();
-            switch( it.key() )
-            {
-                case ScrobblingService::NoError:
-                    text << i18np( "<b>One</b> track was scrobbled to %2.",
-                            "<b>%1</b> tracks were scrobbled to %2.", it.value(), name );
-                    break;
-                case ScrobblingService::FromTheDistantPast:
-                    fromDistantPast += it.value();
-                    break;
-                case ScrobblingService::TooShort:
-                case ScrobblingService::BadMetadata:
-                case ScrobblingService::FromTheFuture:
-                case ScrobblingService::SkippedByUser:
-                    otherErrors += it.value();
-                    break;
-            }
+            if( it.key() == ScrobblingService::NoError )
+                text << i18np( "<b>One</b> track was queued for scrobbling to %2.",
+                        "<b>%1</b> tracks were queued for scrobbling to %2.", it.value(), name );
+            else
+                scrobbleErrorCounts[ it.key() ] += it.value();
         }
     }
-    if( fromDistantPast )
+    if( scrobbleErrorCounts.value( ScrobblingService::TooShort ) )
+        text << i18np( "<b>One</b> track's played time was too short to be scrobbled.",
+                       "<b>%1</b> tracks' played time was too short to be scrobbled.",
+                       scrobbleErrorCounts[ ScrobblingService::TooShort ] );
+    if( scrobbleErrorCounts.value( ScrobblingService::BadMetadata ) )
+        text << i18np( "<b>One</b> track had insufficient metadata to be scrobbled.",
+                       "<b>%1</b> tracks had insufficient metadata to be scrobbled.",
+                       scrobbleErrorCounts[ ScrobblingService::BadMetadata ] );
+    if( scrobbleErrorCounts.value( ScrobblingService::FromTheFuture ) )
+        text << i18np( "<b>One</b> track was reported to have been played in the future.",
+                       "<b>%1</b> tracks were reported to have been played in the future.",
+                       scrobbleErrorCounts[ ScrobblingService::FromTheFuture ] );
+    if( scrobbleErrorCounts.value( ScrobblingService::FromTheDistantPast ) )
         text << i18np( "<b>One</b> track was last played in too distant past to be scrobbled.",
                        "<b>%1</b> tracks were last played in too distant past to be scrobbled.",
-                       fromDistantPast );
-    if( otherErrors )
-        text << i18np( "Failed to scrobble <b>one</b> track.",
-                       "Failed to scrobble <b>%1</b> tracks.", otherErrors );
+                       scrobbleErrorCounts[ ScrobblingService::FromTheDistantPast ] );
+    if( scrobbleErrorCounts.value( ScrobblingService::SkippedByUser ) )
+        text << i18np( "Scrobbling of <b>one</b> track was skipped as cofigured by the user.",
+                       "Scrobbling of <b>%1</b> tracks was skipped as cofigured by the user.",
+                       scrobbleErrorCounts[ ScrobblingService::SkippedByUser ] );
 
     Amarok::Components::logger()->longMessage( text.join( "<br>\n" ) );
 }
