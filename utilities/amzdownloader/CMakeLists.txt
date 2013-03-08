@@ -1,3 +1,5 @@
+macro_optional_find_package( SharedMimeInfo )
+
 include_directories( ../
                      ${CMAKE_SOURCE_DIR}
                      ${QT_INCLUDES}
@@ -30,9 +32,9 @@ target_link_libraries( amzdownloader
                       )
 
 install( TARGETS amzdownloader RUNTIME DESTINATION ${BIN_INSTALL_DIR} )
+install( PROGRAMS amzdownloader.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 
-find_program( XDG-MIME_EXECUTABLE xdg-mime )
-find_program( XDG-DESKTOP-MENU_EXECUTABLE xdg-desktop-menu )
-execute_process( COMMAND ${XDG-MIME_EXECUTABLE} install --novendor ${CMAKE_CURRENT_LIST_DIR}/amzdownloader.xml )
-execute_process( COMMAND ${XDG-DESKTOP-MENU_EXECUTABLE} install --novendor ${CMAKE_CURRENT_LIST_DIR}/amzdownloader.desktop )
-execute_process( COMMAND ${XDG-MIME_EXECUTABLE} default amzdownloader.desktop "audio/x-amzxml" )
+if( SHAREDMIMEINFO_FOUND )
+    install( FILES amzdownloader.xml DESTINATION ${XDG_MIME_INSTALL_DIR} )
+    update_xdg_mimetypes( ${XDG_MIME_INSTALL_DIR} )
+endif( SHAREDMIMEINFO_FOUND )
