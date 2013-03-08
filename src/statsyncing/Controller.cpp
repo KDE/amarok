@@ -70,7 +70,7 @@ Controller::Controller( QObject* parent )
     connect( m_updateNowPlayingTimer, SIGNAL(timeout()),
              SLOT(slotUpdateNowPlayingWithCurrentTrack()) );
     // we need to reset m_lastSubmittedNowPlayingTrack when a track is played twice
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
              SLOT(slotResetLastSubmittedNowPlayingTrack()) );
 }
 
