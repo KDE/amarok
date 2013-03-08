@@ -175,17 +175,17 @@
         <item>
          <widget class="QCheckBox" name="kcfg_FilterByLabel">
           <property name="toolTip">
-           <string>&lt;html&gt;Check if you want certain tracks not to be scrobbled (nor be updated to last.fm now playing)&lt;/html&gt;</string>
+           <string>&lt;html&gt;Check if you want certain tracks not to be scrobbled (nor be updated to Last.fm now playing)&lt;/html&gt;</string>
           </property>
           <property name="text">
-           <string>Don't scrobble tracks with label:</string>
+           <string>Do not scrobble tracks with label:</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QComboBox" name="kcfg_FilteredLabel">
           <property name="toolTip">
-           <string>&lt;html&gt;Select a preferred label (or write a new one). Traks with this label won't be scrobbled&lt;/html&gt;</string>
+           <string>&lt;html&gt;Select a preferred label (or write a new one). Tracks with this label will not be scrobbled&lt;/html&gt;</string>
           </property>
           <property name="editable">
            <bool>true</bool>
