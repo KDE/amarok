@@ -50,7 +50,8 @@ namespace StatSyncing
                 TooShort, // to short song or too short played time
                 BadMetadata, // invalid artist, album, title...
                 FromTheFuture,
-                FromTheDistantPast
+                FromTheDistantPast,
+                SkippedByUser //track contains label to be skipped by user in lastfm config
             };
 
             /**

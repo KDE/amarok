@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Shane King <kde@dontletsstart.com>                                *
+ * Copyright (c) 2013 Vedant Agarwala <vedant.kota@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,6 +21,7 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "network/NetworkAccessManagerProxy.h"
 #include "ui_LastFmConfigWidget.h"
 
@@ -50,14 +52,24 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
 
     connect( m_config.data(), SIGNAL(updated()), SLOT(onConfigUpdated()) );
 
-    connect( m_configDialog->kcfg_ScrobblerUsername, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
-    connect( m_configDialog->kcfg_ScrobblerPassword, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
-    connect( m_configDialog->kcfg_SubmitPlayedSongs, SIGNAL( stateChanged( int ) ), this, SLOT( settingsChanged() ) );
-    connect( m_configDialog->kcfg_RetrieveSimilarArtists, SIGNAL( stateChanged( int ) ), this, SLOT( settingsChanged() ) );
-    connect( m_configDialog->kcfg_ScrobbleComposer, SIGNAL( stateChanged( int ) ), this, SLOT( settingsChanged() ) );
-    connect( m_configDialog->kcfg_UseFancyRatingTags, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
+    connect( m_configDialog->kcfg_ScrobblerUsername, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
+    connect( m_configDialog->kcfg_ScrobblerPassword, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
+    connect( m_configDialog->kcfg_SubmitPlayedSongs, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
+    connect( m_configDialog->kcfg_RetrieveSimilarArtists, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
+    connect( m_configDialog->kcfg_ScrobbleComposer, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()));
+    connect( m_configDialog->kcfg_UseFancyRatingTags, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()));
     connect( m_configDialog->kcfg_AnnounceCorrections, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
-    connect( m_configDialog->testLogin, SIGNAL( clicked() ), this, SLOT( testLogin() ) );
+    connect( m_configDialog->kcfg_FilterByLabel, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
+    connect( m_configDialog->kcfg_FilteredLabel, SIGNAL(currentIndexChanged(QString)), this, SLOT(settingsChanged()) );
+    connect( m_configDialog->testLogin, SIGNAL(clicked()), this, SLOT(testLogin()) );
+
+    using namespace Collections;
+
+    QueryMaker *query = CollectionManager::instance()->queryMaker();
+    query->setQueryType( QueryMaker::Label );
+    connect( query, SIGNAL(newResultReady(Meta::LabelList)), this, SLOT(addNewLabels(Meta::LabelList)) );
+    query->setAutoDelete( true );
+    query->run();
 }
 
 LastFmServiceSettings::~LastFmServiceSettings()
@@ -82,6 +94,8 @@ LastFmServiceSettings::save()
     m_config->setScrobbleComposer( m_configDialog->kcfg_ScrobbleComposer->isChecked() );
     m_config->setUseFancyRatingTags( m_configDialog->kcfg_UseFancyRatingTags->isChecked() );
     m_config->setAnnounceCorrections( m_configDialog->kcfg_AnnounceCorrections->isChecked() );
+    m_config->setFilterByLabel( m_configDialog->kcfg_FilterByLabel->isChecked() );
+    m_config->setFilteredLabel( m_configDialog->kcfg_FilteredLabel->currentText() );
     m_config->save();
 
     KCModule::save();
@@ -188,6 +202,8 @@ LastFmServiceSettings::load()
     m_configDialog->kcfg_ScrobbleComposer->setChecked( m_config->scrobbleComposer() );
     m_configDialog->kcfg_UseFancyRatingTags->setChecked( m_config->useFancyRatingTags() );
     m_configDialog->kcfg_AnnounceCorrections->setChecked( m_config->announceCorrections() );
+    m_configDialog->kcfg_FilterByLabel->setChecked( m_config->filterByLabel() );
+    m_configDialog->kcfg_FilteredLabel->setCurrentIndex( filteredLabelComboIndex( m_config->filteredLabel() ) );
 
     if( !m_config->username().isEmpty() && !m_config->password().isEmpty() )
         m_configDialog->kcfg_SubmitPlayedSongs->setEnabled( true );
@@ -203,6 +219,8 @@ LastFmServiceSettings::defaults()
     m_configDialog->kcfg_ScrobbleComposer->setChecked( m_config->defaultScrobbleComposer() );
     m_configDialog->kcfg_UseFancyRatingTags->setChecked( m_config->defaultUseFancyRatingTags() );
     m_configDialog->kcfg_AnnounceCorrections->setChecked( m_config->defaultAnnounceCorrections() );
+    m_configDialog->kcfg_FilterByLabel->setChecked( m_config->defaultFilterByLabel() );
+    m_configDialog->kcfg_FilteredLabel->setCurrentIndex( filteredLabelComboIndex( m_config->defaultFilteredLabel() ) );
 }
 
 void
@@ -215,4 +233,24 @@ LastFmServiceSettings::settingsChanged()
     m_configDialog->testLogin->setEnabled( true );
 
     emit changed( true );
+}
+
+void
+LastFmServiceSettings::addNewLabels( const Meta::LabelList &labels )
+{
+    foreach( const Meta::LabelPtr &label , labels )
+        m_configDialog->kcfg_FilteredLabel->addItem( label->name() );
+}
+
+int
+LastFmServiceSettings::filteredLabelComboIndex( const QString &label )
+{
+    int index = m_configDialog->kcfg_FilteredLabel->findText( label );
+    if( index == -1)
+    {
+        m_configDialog->kcfg_FilteredLabel->addItem( label );
+        return m_configDialog->kcfg_FilteredLabel->findText( label );
+    }
+    else
+        return index;
 }

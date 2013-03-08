@@ -85,6 +85,14 @@ public:
     static bool defaultAnnounceCorrections() { return true; }
     void setAnnounceCorrections( bool announceCorrections ) { m_announceCorrections = announceCorrections; }
 
+    bool filterByLabel() const { return m_filterByLabel; }
+    static bool defaultFilterByLabel() { return false; }
+    void setFilterByLabel( bool filterByLabel ) { m_filterByLabel = filterByLabel; }
+
+    QString filteredLabel() const { return m_filteredLabel; }
+    static QString defaultFilteredLabel() { return QString(); }
+    void setFilteredLabel( const QString &filteredLabel ) { m_filteredLabel = filteredLabel; }
+
 signals:
     /**
      * Emitted when settings are changed. (after save() is called)
@@ -122,6 +130,8 @@ private:
     bool m_scrobbleComposer;
     bool m_useFancyRatingTags;
     bool m_announceCorrections;
+    bool m_filterByLabel;
+    QString m_filteredLabel;
     KWalletUsage m_kWalletUsage;
 
     KDialog* m_askDiag;

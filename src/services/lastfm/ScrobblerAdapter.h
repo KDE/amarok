@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Shane King <kde@dontletsstart.com>                                *
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2013 Vedant Agarwala <vedant.kota@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -63,6 +64,12 @@ class ScrobblerAdapter : public QObject, public StatSyncing::ScrobblingService
          * Announces Last.fm suggested @param track corrections to Amarok pop-up log.
          */
         void announceTrackCorrections( const lastfm::Track &track );
+
+         /**
+         * Checks whether the @param track contains the m_config->skipLabel
+         * Also, returns false if "filterByLabel" is unchecked by user.
+         */
+        bool isToBeSkipped( const Meta::TrackPtr &track ) const;
 
         lastfm::Audioscrobbler m_scrobbler;
         LastFmServiceConfigPtr m_config;

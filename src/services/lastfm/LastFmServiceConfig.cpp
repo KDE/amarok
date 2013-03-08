@@ -58,6 +58,8 @@ LastFmServiceConfig::LastFmServiceConfig()
     m_scrobbleComposer = config.readEntry( "scrobbleComposer", defaultScrobbleComposer() );
     m_useFancyRatingTags = config.readEntry( "useFancyRatingTags", defaultUseFancyRatingTags() );
     m_announceCorrections = config.readEntry( "announceCorrections", defaultAnnounceCorrections() );
+    m_filterByLabel = config.readEntry( "filterByLabel", defaultFilterByLabel() );
+    m_filteredLabel = config.readEntry( "filteredLabel", defaultFilteredLabel() );
 
     if( config.hasKey( "kWalletUsage" ) )
         m_kWalletUsage = KWalletUsage( config.readEntry( "kWalletUsage", int( NoPasswordEnteredYet ) ) );
@@ -117,6 +119,8 @@ void LastFmServiceConfig::save()
     config.writeEntry( "useFancyRatingTags", m_useFancyRatingTags );
     config.writeEntry( "announceCorrections", m_announceCorrections );
     config.writeEntry( "kWalletUsage", int( m_kWalletUsage ) );
+    config.writeEntry( "filterByLabel", m_filterByLabel );
+    config.writeEntry( "filteredLabel", m_filteredLabel );
     config.deleteEntry( "ignoreWallet" ); // remove old settings
 
     switch( m_kWalletUsage )

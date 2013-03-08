@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Shane King <kde@dontletsstart.com>                                *
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
  * Copyright (c) 2012 Matěj Laitl <matej@laitlcz>                                       *
+ * Copyright (c) 2013 Vedant Agarwala <vedant.kota@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -76,6 +77,12 @@ ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
                             const QDateTime &time )
 {
     Q_ASSERT( track );
+    if( isToBeSkipped( track ) )
+    {
+        debug() << "scrobble(): refusing track" << track->prettyUrl()
+                << "- contains label:" << m_config->filteredLabel() << "which is marked to be skipped";
+        return SkippedByUser;
+    }
     if( track->length() * qMin( 1.0, playedFraction ) < 30 * 1000 )
     {
         debug() << "scrobble(): refusing track" << track->prettyUrl() << "- played time ("
@@ -117,6 +124,12 @@ ScrobblerAdapter::updateNowPlaying( const Meta::TrackPtr &track )
     lastfm::MutableTrack lfmTrack;
     if( track )
     {
+        if( isToBeSkipped( track ) )
+        {
+            debug() << "updateNowPlaying(): refusing track" << track->prettyUrl()
+                    << "- contains label:" << m_config->filteredLabel() << "which is marked to be skipped";
+            return;
+        }
         copyTrackMetadata( lfmTrack, track );
         debug() << "nowPlaying: " << lfmTrack.artist() << "-" << lfmTrack.album() << "-"
                 << lfmTrack.title() << "source:" << lfmTrack.source() << "duration:"
@@ -268,4 +281,16 @@ ScrobblerAdapter::announceTrackCorrections( const lastfm::Track &track )
     if( !line.isEmpty() )
         lines << line;
     Amarok::Components::logger()->longMessage( lines.join( "<br>" ) );
+}
+
+bool
+ScrobblerAdapter::isToBeSkipped( const Meta::TrackPtr &track ) const
+{
+    Q_ASSERT( track );
+    if( !m_config->filterByLabel() )
+        return false;
+    foreach( const Meta::LabelPtr &label, track->labels() )
+        if( label->name() == m_config->filteredLabel() )
+            return true;
+    return false;
 }

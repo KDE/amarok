@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Shane King <kde@dontletsstart.com>                                *
+ * Copyright (c) 2013 Vedant Agarwala <vedant.kota@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,6 +19,7 @@
 #define LASTFMSERVICESETTINGS_H
 
 #include "LastFmServiceConfig.h"
+#include "core/meta/Meta.h" // for using the Meta::LabelList
 
 #include <kcmodule.h>
 
@@ -45,6 +47,12 @@ private slots:
     void onConfigUpdated();
 
 private:
+    /**
+     * gets the index of the @param label in the QComboBox
+     * If the label doesn't exist in the list, its added and then the index is returned
+     */
+    int filteredLabelComboIndex( const QString &label );
+
     Ui::LastFmConfigWidget *m_configDialog;
     LastFmServiceConfigPtr m_config;
 
@@ -52,6 +60,7 @@ private:
 
 private slots:
     void settingsChanged();
+    void addNewLabels( const Meta::LabelList &labels );
 };
 
 #endif // LASTFMSERVICESETTINGS_H

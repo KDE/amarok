@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.8-Beta 1
   FEATURES:
+   * Added support to filter tracks to scrobble to Last.fm by label. Patch by
+     Vedant Agarwala. (BR 140198)
    * Added transcoding support for Opus codec if ffmpeg is compiled with
      support for the libopus library, patch by Martin Brodbeck.
    * Added keyboard shortcuts for small 2 s seeks (Ctrl + Left/Right) and long 1 minute

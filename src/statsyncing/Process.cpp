@@ -262,6 +262,7 @@ Process::slotLogSynchronization( ThreadWeaver::Job *job )
                 case ScrobblingService::TooShort:
                 case ScrobblingService::BadMetadata:
                 case ScrobblingService::FromTheFuture:
+                case ScrobblingService::SkippedByUser:
                     otherErrors += it.value();
                     break;
             }
