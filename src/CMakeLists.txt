@@ -288,6 +288,9 @@ set(collection_SRCS
 #####################################################################
 set( scanner_SRCS
     scanner/GenericScanManager.cpp
+    scanner/GenericScannerJob.cpp
+    scanner/AbstractDirectoryWatcher.cpp
+    scanner/AbstractScanResultProcessor.cpp
 )
 
 #####################################################################

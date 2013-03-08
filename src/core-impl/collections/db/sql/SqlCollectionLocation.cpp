@@ -31,7 +31,6 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/db/MountPointManager.h"
-#include "core-impl/collections/db/ScanManager.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/db/sql/SqlMeta.h"
 #include "transcoding/TranscodingJob.h"
@@ -277,7 +276,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     // we have a first shot at the meta data (expecially ratings and playcounts from media
     // collections) but we still need to trigger the collection scanner
     // to get the album and other meta data correct.
-    m_collection->scanManager()->delayedIncrementalScan( QFileInfo(url).path() );
+    // TODO m_collection->directoryWatcher()->delayedIncrementalScan( QFileInfo(url).path() );
 
     return true;
 }
@@ -429,7 +428,6 @@ SqlCollectionLocation::slotRemoveJobFinished( KJob *job )
 
     if( !startNextRemoveJob() )
     {
-        m_collection->scanManager()->unblockScan();
         slotRemoveOperationFinished();
     }
 
@@ -451,7 +449,6 @@ void SqlCollectionLocation::slotTransferJobFinished( KJob* job )
         m_originalUrls[track] = track->playableUrl();
     }
     debug () << "m_originalUrls" << m_originalUrls;
-    m_collection->scanManager()->unblockScan();
     slotCopyOperationFinished();
 }
 
@@ -469,7 +466,6 @@ void SqlCollectionLocation::slotTransferJobAborted()
             insert( track, m_destinations[ track ] ); // was already copied, so have to insert it in the db
         m_originalUrls[track] = track->playableUrl();
     }
-    m_collection->scanManager()->unblockScan();
     abort();
 }
 
@@ -479,8 +475,6 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
                                              const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
-    m_collection->scanManager()->blockScan();  //make sure the collection scanner does not run while we are coyping stuff
-
     m_sources = sources;
 
     QString statusBarTxt = operationInProgressText( configuration, sources.count() );
@@ -496,15 +490,10 @@ SqlCollectionLocation::removeUrlsFromCollection(  const Meta::TrackList &sources
 {
     DEBUG_BLOCK
 
-    m_collection->scanManager()->blockScan();  //make sure the collection scanner does not run while we are deleting stuff
-
     m_removetracks = sources;
 
     if( !startNextRemoveJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
-    {
-        m_collection->scanManager()->unblockScan();
         slotRemoveOperationFinished();
-    }
 }
 
 void

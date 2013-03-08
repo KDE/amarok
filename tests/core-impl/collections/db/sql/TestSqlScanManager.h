@@ -25,7 +25,9 @@
 #include <KTempDir>
 
 class SqlStorage;
-class ScanManager;
+class GenericScanManager;
+
+class QIODevice;
 
 namespace Collections {
     class SqlCollection;
@@ -47,7 +49,6 @@ private slots:
 
     void init();
     void cleanup();
-
     /**
      * Check that a single insert really inserts all the information
      */
@@ -74,11 +75,6 @@ private slots:
      * Test also compilation/no compilation tags
      */
     void testCompilation();
-
-    /**
-     * Check that the scanner continues if crashed
-     */
-    void testRestartScanner();
 
     /**
      * Check that a blocked scan really does nothing.
@@ -142,6 +138,10 @@ private slots:
     void slotCollectionUpdated();
 
 private:
+    void fullScanAndWait();
+    void incrementalScanAndWait();
+    void importAndWait( QIODevice* import );
+
     void waitScannerFinished();
 
     /**
@@ -172,7 +172,7 @@ private:
     QString m_sourcePath; // the path to the template .mp3 file
 
     Collections::SqlCollection *m_collection;
-    ScanManager *m_scanManager;
+    GenericScanManager *m_scanManager;
 };
 
 #endif // TESTSQLSCANMANAGER_H

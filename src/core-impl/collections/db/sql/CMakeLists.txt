@@ -3,8 +3,6 @@ set( amarok_collection-sqlcollection_SRCS
     DatabaseUpdater.cpp
     ../DatabaseCollection.cpp
     ../MountPointManager.cpp
-    ../ScanManager.cpp
-    ../ScanResultProcessor.cpp
     SqlCollection.cpp
     SqlCollectionFactory.cpp
     SqlCollectionLocation.cpp

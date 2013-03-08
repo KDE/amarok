@@ -85,6 +85,8 @@ public:
     void toXml( QXmlStreamWriter *writer ) const;
 
 private:
+    Q_DISABLE_COPY(Directory)
+
     QString m_path;
     QString m_rpath;
     uint m_mtime;

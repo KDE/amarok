@@ -5,6 +5,7 @@
  * Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>                             *
  * Copyright (c) 2010-2011 Ralf Engels <ralf-engels@gmx.de>                             *
  * Copyright (c) 2011 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -25,24 +26,13 @@
 #include "amarok_export.h"
 #include "collectionscanner/Directory.h"
 
-#include <KProcess>
-#include <threadweaver/Job.h>
 #include <KUrl>
 
 #include <QObject>
-#include <QSet>
 #include <QString>
 #include <QMutex>
-#include <QWaitCondition>
-#include <QXmlStreamReader>
 
-class DirWatchJob;
 class GenericScannerJob;
-
-class QTimer;
-class QSharedMemory;
-
-class KDirWatch;
 
 /** The ScanManager manages the scanning and directory watching.
 
@@ -56,127 +46,117 @@ class AMAROK_EXPORT GenericScanManager : public QObject
 {
     Q_OBJECT
     public:
-        explicit GenericScanManager( QObject *parent = 0 );
+        explicit GenericScanManager( QObject* parent = 0 );
         virtual ~GenericScanManager();
 
-        /** Aborts a currently running scan and blocks starting new scans if set to true.
-         *  After blockScan has been set to false the scan will not be resumed.
-         *  Requested scans will be delayed until the blocking has stopped.
-         *  If the scan has been blocked twice it needs to be unblocked twice again.
+        /** The scan mode.
+            In general a full scan will consider the information read from the disk
+            as being superior to the one in the database.
+            The full scan will overwrite existing album covers and statistics.
+
+            An update scan is a scan done automatically by Amarok. I will check
+            for new and changed tracks and will add to information already existing
+            in the database.
+
+            A partial update scan is an update scan that does not cover all directories, so
+            the processor cannot rely on getting all directories from the scanner
+
+            TODO: the ScanResultProcessor should be smart enought to figure out if directories
+            should be removed.
          */
-        virtual void blockScan();
+        enum ScanType
+        {
+            /** This type of scan is done from the configuration dialog.
+             *  It should react as if it's the first time that the collection is scanned.
+             *  So it might e.g. throw away album covers added by the user.
+             *
+             *  The ScanResultProcessor may assume that directories not found
+             *  during the scan are really gone (and not just excluded).
+             */
+            FullScan = 0,
 
-        virtual void unblockScan();
+            /** This scan type scans the whole set of directories from a collection.
+             *  The ScanResultProcessor may assume that directories not found
+             *  during the scan are really gone (and not just excluded).
+             */
+            UpdateScan = 1,
 
+            /** This is an UpdateScan that does not include the whole set from a collection.
+             *  That means that directories not reported by the ScannerJob might not
+             *  have been excluded.
+             */
+            PartialUpdateScan = 2
+        };
+
+        /** Returns true if the scanner job is currently scanning */
         virtual bool isRunning();
+
+        /** Write the batch file
+         *  The batch file contains the known modification dates so that the scanner only
+         *  needs to report changed directories
+         *  @returns the path to the batch file or an empty string if nothing was written.
+         */
+        virtual QString getBatchFile( const QStringList& scanDirsRequested );
+
 
     public slots:
         /** Requests the scanner to do a full scan at the next possibility. */
-        virtual void requestFullScan( QList<KUrl> directories );
+        virtual void requestScan( QList<KUrl> directories, GenericScanManager::ScanType type = UpdateScan );
+
+        /** Requests the scanner to do a full scan using the given import file.
+         */
+        virtual void requestImport( QIODevice *input, GenericScanManager::ScanType type = UpdateScan );
 
         /** Abort the request and all currently running scans.
-         *  Note: this function does not block further scans, so better call blockScan if you want
-         *  to stop scanning for a while.
+         *  Note: this function does not block further scans, so better
+         *  stop your directory watcher to stop scanning for a while.
          */
-        virtual void abort( const QString &reason = QString() );
-
-        //TODO: watch directory support
+        virtual void abort();
 
     signals:
+        // the following signals are created by the scanner job and just
+        // routed through
+        // They are directly connected to the GenericScannerJob, so
+        // beware of multi-threading
+
+        void started( GenericScanManager::ScanType type );
+
+        /** Gives the estimated count of directories that this scan will have.
+            This signal might not be emitted or emitted multiple times if the
+            count is updated.
+        */
+        void directoryCount( int count );
+
+        /** Emitted once we get the complete data for a directory.
+         *  @dir The directory structure with all containing tracks.
+         *
+         *  The dir pointer will stay valid until after the done signal.
+         *  Be carefull, you need to have direct connections to
+         *  ensure that you don't access the pointer before it's being freed.
+         *  That also means that your slots are called within the job context.
+        */
         void directoryScanned( CollectionScanner::Directory *dir );
 
-        /** This are status messages that the scanner emits frequently */
-        void message( QString message );
-
         void succeeded();
-        void failed( QString message );
+        void failed( const QString& message );
 
-    private slots:
-        void slotJobDone();
+    protected slots:
+        void slotSucceeded();
+        void slotFailed( const QString& message );
 
-    private:
-        GenericScannerJob *m_scannerJob;
-        int m_blockCount;
+    protected:
+        /** Connects all the signals to m_scannerJob */
+        void connectSignalsToJob();
+
+        GenericScannerJob* m_scannerJob;
 
         /**
          * This mutex is protecting the variables:
-         * m_scannerJob, m_blockCount
+         * m_scannerJob
          */
         QMutex m_mutex;
 };
 
-/** This is the job that does all the hard work with scanning.
-    It will receive new data from the scanner process, parse it and call the
-    ScanResultProcessor.
-    The job will delete itself when finished or aborted.
-*/
-class GenericScannerJob : public ThreadWeaver::Job
-{
-    Q_OBJECT
-
-    public:
-        /** Returns the path to the collection scanner */
-        static QString scannerPath();
-
-        /** Creates the parse job.
-            The constructor itself should be called from the UI thread.
-            @param xmlFilePath An optional xml file that is parsed
-        */
-        GenericScannerJob( QObject *parent, QIODevice *input = 0 );
-
-        GenericScannerJob( QObject *parent, QStringList scanDirsRequested, bool recursive = true,
-                           bool detectCharset = false );
-
-        ~GenericScannerJob();
-
-        /** Set the batchfile that is used by the scanner to get directory access times */
-        void setBatchFile( const QString &batchfilePath ) { m_batchfilePath = batchfilePath; }
-
-        /* ThreadWeaver::Job virtual methods */
-        virtual void run();
-        virtual void requestAbort();
-
-    // note: since this job doesn't have it's own event queue all signals and slots
-    // go through the UI event queue
-    Q_SIGNALS:
-        void endProgressOperation( QObject * );
-        void incrementProgress();
-        void totalSteps( int totalSteps );
-
-        void directoryScanned( CollectionScanner::Directory *dir );
-
-        /** This are status messages that the scanner emits frequently */
-        void message( QString message );
-
-        void failed( QString message );
-        // and the ThreadWeaver::Job also emits done
-
-    private:
-        /** Creates the scanner process.
-            @returns AmarokProcess pointer
-        */
-        KProcess *createScannerProcess( bool restart = false );
-
-        void parseScannerOutput();
-
-        QStringList m_scanDirsRequested;
-        QIODevice *m_input;
-
-        int m_restartCount;
-        bool m_abortRequested;
-        QString m_abortReason;
-        QString m_incompleteTagBuffer; // strings received via addNewXmlData but not terminated by either a </directory> or a </scanner>
-
-        KProcess *m_scanner;
-        QString m_batchfilePath;
-        QSharedMemory *m_scannerStateMemory; // a persistent storage of the current scanner state in case it needs to be restarted.
-        QString m_sharedMemoryKey;
-        bool m_recursive;
-        bool m_charsetDetect;
-
-        QXmlStreamReader m_reader;
-
-        QMutex m_mutex; // only protects m_abortRequested and the abort reason
-};
+Q_DECLARE_METATYPE(GenericScanManager::ScanType);
 
 #endif // GENERICSCANMANAGER_H

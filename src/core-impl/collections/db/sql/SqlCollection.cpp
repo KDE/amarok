@@ -28,8 +28,8 @@
 #include "core/capabilities/TranscodeCapability.h"
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/db/MountPointManager.h"
-#include "core-impl/collections/db/ScanManager.h"
-#include "core-impl/collections/db/ScanResultProcessor.h"
+#include "scanner/GenericScanManager.h"
+#include "scanner/AbstractDirectoryWatcher.h"
 #include "dialogs/OrganizeCollectionDialog.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
@@ -37,11 +37,106 @@
 #include "SvgHandler.h"
 #include "MainWindow.h"
 
+#include "collectionscanner/BatchFile.h"
+
+#include <KStandardDirs>
 #include <KApplication>
 #include <KMessageBox>
+#include <threadweaver/ThreadWeaver.h>
 
 #include <QApplication>
 #include <QDir>
+
+
+/** Concrete implementation of the directory watcher */
+class SqlDirectoryWatcher : public AbstractDirectoryWatcher
+{
+public:
+    SqlDirectoryWatcher( Collections::SqlCollection* collection )
+        : AbstractDirectoryWatcher()
+        , m_collection( collection )
+    { }
+
+    ~SqlDirectoryWatcher()
+    { }
+
+protected:
+    QList<QString> collectionFolders()
+    { return m_collection->mountPointManager()->collectionFolders(); }
+
+    Collections::SqlCollection* m_collection;
+};
+
+class SqlScanManager : public GenericScanManager
+{
+public:
+    SqlScanManager( Collections::SqlCollection* collection, QObject* parent )
+        : GenericScanManager( parent )
+        , m_collection( collection )
+    { }
+
+    ~SqlScanManager()
+    { }
+
+protected:
+    QList< QPair<QString, uint> > getKnownDirs()
+    {
+        QList< QPair<QString, uint> > result;
+
+        // -- get all (mounted) mount points
+        QList<int> idList = m_collection->mountPointManager()->getMountedDeviceIds();
+
+        // -- query all known directories
+        QString deviceIds;
+        foreach( int id, idList )
+        {
+            if( !deviceIds.isEmpty() )
+                deviceIds += ',';
+            deviceIds += QString::number( id );
+        }
+        QString query = QString( "SELECT deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" );
+
+        QStringList values = m_collection->sqlStorage()->query( query.arg( deviceIds ) );
+        for( QListIterator<QString> iter( values ); iter.hasNext(); )
+        {
+            int deviceid = iter.next().toInt();
+            QString dir = iter.next();
+            uint mtime = iter.next().toUInt();
+
+            QString folder = m_collection->mountPointManager()->getAbsolutePath( deviceid, dir );
+            result.append( QPair<QString, uint>( folder, mtime ) );
+        }
+
+        return result;
+    }
+
+    QString getBatchFile( const QStringList& scanDirsRequested )
+    {
+        // -- write the batch file
+        // the batch file contains the known modification dates so that the scanner only
+        // needs to report changed directories
+        QList< QPair<QString, uint> > knownDirs = getKnownDirs();
+        if( !knownDirs.isEmpty() )
+        {
+            QString path = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchscan.xml";
+            while( QFile::exists( path ) )
+                path += "_";
+
+            CollectionScanner::BatchFile batchfile;
+            batchfile.setTimeDefinitions( getKnownDirs() );
+            batchfile.setDirectories( scanDirsRequested );
+            if( !batchfile.write( path ) )
+            {
+                warning() << "Failed to write batch file" << path;
+                return QString();
+            }
+            return path;
+        }
+        return QString();
+    }
+
+    Collections::SqlCollection* m_collection;
+};
 
 namespace Collections {
 
@@ -124,6 +219,8 @@ SqlCollection::SqlCollection( SqlStorage* storage )
     : DatabaseCollection()
     , m_registry( 0 )
     , m_sqlStorage( storage )
+    , m_scanProcessor( 0 )
+    , m_directoryWatcher( 0 )
     , m_collectionLocationFactory( 0 )
     , m_queryMakerFactory( 0 )
 {
@@ -167,8 +264,17 @@ SqlCollection::SqlCollection( SqlStorage* storage )
 
     m_collectionLocationFactory = new SqlCollectionLocationFactoryImpl( this );
     m_queryMakerFactory = new DefaultSqlQueryMakerFactory( this );
-    m_scanManager = new ScanManager( this, this );
-    connect( m_scanManager, SIGNAL(scanStarted(ScannerJob*)), SLOT(slotScanStarted(ScannerJob*)) );
+
+    // scanning
+    m_scanManager = new SqlScanManager( this, this );
+    m_scanProcessor = new SqlScanResultProcessor( m_scanManager, this, this );
+    m_directoryWatcher = new SqlDirectoryWatcher( this );
+    connect( m_directoryWatcher, SIGNAL( done( ThreadWeaver::Job* ) ),
+             m_directoryWatcher, SLOT( deleteLater() ) ); // auto delete
+    connect( m_directoryWatcher, SIGNAL( requestScan( QList<KUrl>, GenericScanManager::ScanType ) ),
+             m_scanManager,      SLOT( requestScan( QList<KUrl>, GenericScanManager::ScanType ) ) );
+    ThreadWeaver::Weaver::instance()->enqueue( m_directoryWatcher );
+
 
     // we need a UI-dialog service, but for now just output the messages
     if( !storage->getLastErrors().isEmpty() )
@@ -193,8 +299,8 @@ SqlCollection::SqlCollection( SqlStorage* storage )
 
 SqlCollection::~SqlCollection()
 {
-    if( m_scanManager )
-        m_scanManager->blockScan();
+    m_directoryWatcher->abort();
+    delete m_scanProcessor; // this prevents any further commits from the scanner
     delete m_collectionLocationFactory;
     delete m_queryMakerFactory;
     delete m_sqlStorage;
@@ -232,25 +338,6 @@ SqlCollection::sqlStorage() const
 {
     Q_ASSERT( m_sqlStorage );
     return m_sqlStorage;
-}
-
-void
-SqlCollection::slotScanStarted( ScannerJob *job )
-{
-    if( !job )
-    {
-        warning() << "job is invalid";
-        return;
-    }
-
-    if( Amarok::Components::logger() )
-    {
-        Amarok::Components::logger()->newProgressOperation( job,
-                                                            i18n( "Scanning music" ),
-                                                            100,
-                                                            m_scanManager,
-                                                            SLOT(abort()) );
-    }
 }
 
 bool
@@ -317,20 +404,6 @@ SqlCollection::location()
 {
     Q_ASSERT( m_collectionLocationFactory );
     return m_collectionLocationFactory->createSqlCollectionLocation();
-}
-
-QStringList
-SqlCollection::getDatabaseDirectories( QList<int> idList ) const
-{
-    QString deviceIds;
-    foreach( int id, idList )
-    {  
-        if ( !deviceIds.isEmpty() ) deviceIds += ',';
-        deviceIds += QString::number( id );
-    }
-
-    QString query = QString( "SELECT deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" );
-    return m_sqlStorage->query( query.arg( deviceIds ) );
 }
 
 void
@@ -409,13 +482,7 @@ SqlCollection::dumpDatabaseContent()
     }
 }
 
-ScanResultProcessor*
-SqlCollection::getNewScanResultProcessor()
-{
-    return new SqlScanResultProcessor( this );
-}
-
-
+// ---------- SqlCollectionTranscodeCapability -------------
 
 SqlCollectionTranscodeCapability::~SqlCollectionTranscodeCapability()
 {

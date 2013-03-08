@@ -19,9 +19,8 @@
 
 #include "amarokconfig.h"
 #include "MetaTagLib.h"
-#include "core-impl/collections/db/ScanManager.h"
+#include "scanner/GenericScanManager.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
-#include "core-impl/collections/db/sql/SqlCollectionFactory.h"
 #include "core-impl/collections/db/sql/SqlQueryMaker.h"
 #include "core-impl/collections/db/sql/SqlRegistry.h"
 #include "core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.h"
@@ -29,9 +28,10 @@
 #include "config-amarok-test.h"
 #include "SqlMountPointManagerMock.h"
 
-#include <QTest>
-
 #include <qtest_kde.h>
+
+#include <QTest>
+#include <QScopedPointer>
 
 QTEST_KDEMAIN_CORE( TestSqlScanManager )
 
@@ -55,8 +55,12 @@ TestSqlScanManager::initTestCase()
     m_tmpDatabaseDir = new KTempDir();
     QVERIFY( m_tmpDatabaseDir->exists() );
     m_storage = new MySqlEmbeddedStorage( m_tmpDatabaseDir->name() );
-    m_collection = Collections::SqlCollectionFactory().createSqlCollection( m_storage );
+
+    m_collection = new Collections::SqlCollection( m_storage );
     connect( m_collection, SIGNAL( updated() ), this, SLOT( slotCollectionUpdated() ) );
+
+    // TODO: change the mock mount point manager so that it doesn't pull
+    //       in all the devices. Not much of a mock like this.
     SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
     m_collection->setMountPointManager( mock );
     m_scanManager = m_collection->scanManager();
@@ -130,8 +134,7 @@ TestSqlScanManager::testScanSingle()
     m_collectionUpdatedCount = 0;
 
     createSingleTrack();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     QVERIFY( m_collectionUpdatedCount > 0 );
 
@@ -170,8 +173,7 @@ TestSqlScanManager::testScanSingle()
     // -- check that a further scan doesn't change anything
     m_collectionUpdatedCount = 0;
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     QCOMPARE( m_collectionUpdatedCount, 0 );
 }
@@ -180,8 +182,7 @@ void
 TestSqlScanManager::testScanDirectory()
 {
     createAlbum();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album;
@@ -211,8 +212,7 @@ TestSqlScanManager::testDuplicateUid()
     values.insert( Meta::valTitle, QVariant("Track 2") );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit (the database needs to have been updated correctly)
     m_collection->registry()->emptyCache();
@@ -242,8 +242,7 @@ TestSqlScanManager::testLongUid()
     values.insert( Meta::valTitle, QVariant("Track 2") );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit (the database needs to have been updated correctly)
     m_collection->registry()->emptyCache();
@@ -303,8 +302,7 @@ TestSqlScanManager::testCompilation()
     values.insert( Meta::valAlbum, QVariant("The Last Unicorn") );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album;
@@ -342,37 +340,11 @@ TestSqlScanManager::testCompilation()
     QVERIFY( !album->isCompilation() );
 }
 
-
-void
-TestSqlScanManager::testRestartScanner()
-{
-#ifndef QT_NO_DEBUG
-    createAlbum();
-
-    // the scanner crashes at a special file:
-    Meta::FieldHash values;
-    values.clear();
-    values.insert( Meta::valUniqueId, QVariant("c6c29f50279ab9523a0f44928bc1e96b") );
-    values.insert( Meta::valUrl, QVariant("Thriller/crash_amarok_here.ogg") );
-    createTrack( values );
-
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
-
-    // -- check the commit
-    Meta::AlbumPtr album;
-    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
-    QVERIFY( album );
-    QCOMPARE( album->tracks().count(), 9 );
-
-#else
-    QSKIP( "Collection scanner only crashes in debug build.", SkipAll );
-#endif
-}
-
 void
 TestSqlScanManager::testBlock()
 {
+    /** TODO: do we need blocking at all?
+
     createSingleTrack();
     Meta::TrackPtr track;
 
@@ -389,18 +361,17 @@ TestSqlScanManager::testBlock()
     // it might or might not continue with the old scan
 
     waitScannerFinished(); // in case it does continue after all
+    */
 }
 
 void
 TestSqlScanManager::testAddDirectory()
 {
     createAlbum();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     createCompilation();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -420,8 +391,7 @@ TestSqlScanManager::testRemoveDir()
 
     createAlbum();
     createCompilation();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -435,14 +405,14 @@ TestSqlScanManager::testRemoveDir()
     QVERIFY( album->isCompilation() );
 
     // -- remove one album
+
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );
     QVERIFY( album );
     foreach( Meta::TrackPtr t, album->tracks() )
         QVERIFY( QFile::remove( t->playableUrl().path() ) );
-    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmpath( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
+    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmdir( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // this one is still here
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -455,7 +425,6 @@ TestSqlScanManager::testRemoveDir()
     QVERIFY( album );
     QCOMPARE( album->tracks().count(), 0 );
 
-
     // -- remove the second album
     // this time it's a directory inside a directory
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -463,13 +432,12 @@ TestSqlScanManager::testRemoveDir()
     QCOMPARE( album->tracks().count(), 9 );
     foreach( Meta::TrackPtr t, album->tracks() )
         QVERIFY( QFile::remove( t->playableUrl().path() ) );
-    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmpath( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
-    // QVERIFY( QDir( m_tmpCollectionDir->name() ).rmpath( "Pop" ) );
 
-    m_scanManager->requestIncrementalScan();
-    waitScannerFinished();
+    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmdir( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
 
-    // this both are gone
+    incrementalScanAndWait();
+
+    // this time both are gone
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
     QVERIFY( album );
     QCOMPARE( album->tracks().count(), 0 );
@@ -483,8 +451,7 @@ void
 TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
 {
     createAlbum();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     Meta::AlbumPtr album;
     Meta::TrackList tracks;
@@ -520,8 +487,7 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
     QVERIFY( QFile::rename( base, base + "Albums" ) );
 
     // do an incremental scan
-    m_scanManager->requestIncrementalScan();
-    waitScannerFinished();
+    incrementalScanAndWait();
 
     // recheck album
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -545,8 +511,7 @@ TestSqlScanManager::testRemoveTrack()
     QDateTime aDate = QDateTime::currentDateTime();
 
     createAlbum();
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -561,8 +526,7 @@ TestSqlScanManager::testRemoveTrack()
     // -- remove one track
     QVERIFY( QFile::remove( track->playableUrl().path() ) );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check that the track is really gone
     QCOMPARE( album->tracks().count(), 8 );
@@ -581,8 +545,7 @@ TestSqlScanManager::testMove()
     Meta::TrackPtr track;
     QDateTime aDate = QDateTime::currentDateTime();
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -599,8 +562,7 @@ TestSqlScanManager::testMove()
     const QString targetPath = m_tmpCollectionDir->name() + "moved.mp3";
     QVERIFY( QFile::rename( track->playableUrl().path(), targetPath ) );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check that the track is moved
     QVERIFY( createDate == track->createDate() ); // create date should not have changed
@@ -619,8 +581,7 @@ TestSqlScanManager::testMove()
                             m_tmpCollectionDir->name() + "Top Gun - Soundtrack" ) );
 
     // do an incremental scan
-    m_scanManager->requestIncrementalScan();
-    waitScannerFinished();
+    incrementalScanAndWait();
 
     // check that the track is now moved (but still the old object)
     QCOMPARE( album->tracks().count(), 10 ); // no doublicate tracks
@@ -641,8 +602,7 @@ TestSqlScanManager::testFeat()
     values.insert( Meta::valAlbum, QVariant("The Last Unicorn") );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album;
@@ -673,8 +633,7 @@ TestSqlScanManager::testAlbumImage()
     targetPath = m_tmpCollectionDir->name() + "Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3";
     Meta::Tag::setEmbeddedCover( targetPath, QImage( 200, 200, QImage::Format_RGB32 ) );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album;
@@ -710,8 +669,7 @@ TestSqlScanManager::testMerges()
     createTrack( values );
 
     // -- check the commit
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     Meta::TrackPtr track = m_collection->registry()->getTrack( 1 );
     QVERIFY( track );
@@ -737,8 +695,7 @@ TestSqlScanManager::testMerges()
     values.insert( Meta::valPlaycount, QVariant(5) );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     QCOMPARE( track->name(), QString("Theme From Armageddon") );
@@ -765,8 +722,7 @@ TestSqlScanManager::testMerges()
 
     // -- now do an incremental scan
     createAlbum(); // add a new album
-    m_scanManager->requestIncrementalScan();
-    waitScannerFinished();
+    incrementalScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album;
@@ -889,8 +845,7 @@ TestSqlScanManager::testLargeInsert()
     aDate = QDateTime::currentDateTime();
     // -- feed the scanner in batch mode
     buffer->seek( 0 );
-    m_scanManager->requestImport( buffer );
-    waitScannerFinished();
+    importAndWait( buffer );
 
     qDebug() << "performance test secs:"<< aDate.secsTo( QDateTime::currentDateTime() );
 
@@ -918,8 +873,7 @@ TestSqlScanManager::testLargeInsert()
     // -- feed the scanner in batch mode
     buffer = new QBuffer(&byteArray); // the old scanner deleted the old buffer.
     buffer->open(QIODevice::ReadWrite);
-    m_scanManager->requestImport( buffer );
-    waitScannerFinished();
+    importAndWait( buffer );
 
     qDebug() << "performance test secs:"<< aDate.secsTo( QDateTime::currentDateTime() );
 
@@ -973,8 +927,7 @@ TestSqlScanManager::testIdentifyCompilationInMultipleDirectories()
     values.insert( Meta::valAlbum, QVariant("Top Gun") );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album = m_collection->registry()->getAlbum( "Top Gun", QString() );
@@ -1018,8 +971,7 @@ TestSqlScanManager::testAlbumArtistMerges()
     values.insert( Meta::valAlbum, QVariant("test1") );
     createTrack( values );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     Meta::AlbumPtr album;
@@ -1054,8 +1006,7 @@ TestSqlScanManager::testCrossRenaming()
     Meta::AlbumPtr album;
     Meta::TrackPtr track;
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check the commit
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -1077,8 +1028,7 @@ TestSqlScanManager::testCrossRenaming()
     QVERIFY( QFile::rename( path1, path2 ) );
     QVERIFY( QFile::rename( targetPath, path1 ) );
 
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
+    fullScanAndWait();
 
     // -- check that the tracks are moved correctly
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
@@ -1102,11 +1052,47 @@ TestSqlScanManager::slotCollectionUpdated()
 }
 
 void
+TestSqlScanManager::fullScanAndWait()
+{
+    QScopedPointer<Capabilities::CollectionScanCapability> csc( m_collection->create<Capabilities::CollectionScanCapability>());
+    if( csc )
+        csc->startFullScan();
+
+    waitScannerFinished();
+}
+
+void
+TestSqlScanManager::incrementalScanAndWait()
+{
+    // incremental scans use the modification time of the file system.
+    // this time is only in seconds, so to be sure that the incremental scan
+    // works we need to wait at least one second.
+    QTest::qWait( 1000 );
+
+    QScopedPointer<Capabilities::CollectionScanCapability> csc( m_collection->create<Capabilities::CollectionScanCapability>());
+    if( csc )
+        csc->startIncrementalScan();
+
+    waitScannerFinished();
+}
+
+void
+TestSqlScanManager::importAndWait( QIODevice* input )
+{
+    QScopedPointer<Capabilities::CollectionImportCapability> csc( m_collection->create<Capabilities::CollectionImportCapability>());
+    if( csc )
+        csc->import( input, 0 );
+
+    waitScannerFinished();
+}
+
+void
 TestSqlScanManager::waitScannerFinished()
 {
     QVERIFY( m_scanManager->isRunning() );
-    QVERIFY2( QTest::kWaitForSignal( m_scanManager, SIGNAL(scanDone(ScannerJob*)), 60*1000 ),
+    QVERIFY2( QTest::kWaitForSignal( m_scanManager, SIGNAL(succeeded()), 60*1000 ),
               "ScanManager didn't finish scan within timeout" );
+    QVERIFY( !m_scanManager->isRunning() );
 }
 
 void

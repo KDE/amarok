@@ -24,8 +24,7 @@
 #include "SqlRegistry_p.h"
 #include "SqlCollection.h"
 #include "core-impl/collections/db/MountPointManager.h"
-#include "core-impl/collections/db/ScanManager.h"
-
+#include "scanner/GenericScanManager.h"
 
 #include <QMutableHashIterator>
 #include <QMutexLocker>

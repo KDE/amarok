@@ -31,10 +31,8 @@
 typedef QHash<QString, QString> TrackUrls;
 typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
 
-class ScanResultProcessor;
 class MountPointManager;
-class ScanManager;
-class ScannerJob;
+class GenericScanManager;
 
 namespace Collections {
 
@@ -70,14 +68,12 @@ class DatabaseCollection : public Collections::Collection
         virtual QString prettyName() const;
         virtual KIcon icon() const;
 
-        virtual ScanManager *scanManager() const;
+        virtual GenericScanManager *scanManager() const;
         virtual MountPointManager *mountPointManager() const;
         /** This set's the mount point manager which is actually only useful for testing.
          *  Note: The old MountPointManager is not deleted when the new one is set.
          */
         virtual void setMountPointManager( MountPointManager *mpm );
-
-        virtual QStringList getDatabaseDirectories( QList<int> idList ) const = 0;
 
         virtual QStringList collectionFolders() const;
         virtual void setCollectionFolders( const QStringList &folders );
@@ -89,10 +85,6 @@ class DatabaseCollection : public Collections::Collection
 
         /** Unblocks one blockUpdatedSignal call. */
         virtual void unblockUpdatedSignal();
-
-        /** Returns a new ScanResultProcessor for this collection.
-            caller has to free the processor. */
-        virtual ScanResultProcessor *getNewScanResultProcessor() = 0;
 
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
@@ -107,15 +99,13 @@ class DatabaseCollection : public Collections::Collection
          */
         virtual void dumpDatabaseContent() = 0;
 
-        virtual void slotScanStarted( ScannerJob *job ) = 0;
-
     protected slots:
         virtual void slotDeviceAdded( int id ) { Q_UNUSED( id ); };
         virtual void slotDeviceRemoved( int id ) { Q_UNUSED( id ); };
 
     protected:
         MountPointManager *m_mpm;
-        ScanManager *m_scanManager;
+        GenericScanManager *m_scanManager;
 
         int m_blockUpdatedSignalCount;
         bool m_updatedSignalRequested;
@@ -127,7 +117,7 @@ class DatabaseCollectionScanCapability : public Capabilities::CollectionScanCapa
     Q_OBJECT
     public:
 
-        DatabaseCollectionScanCapability( ScanManager* scanManager );
+        DatabaseCollectionScanCapability( DatabaseCollection* collection );
         virtual ~DatabaseCollectionScanCapability();
 
         virtual void startFullScan();
@@ -135,7 +125,7 @@ class DatabaseCollectionScanCapability : public Capabilities::CollectionScanCapa
         virtual void stopScan();
 
     private:
-        ScanManager *m_scanManager;
+        DatabaseCollection* m_collection;
 };
 
 class DatabaseCollectionImportCapability : public Capabilities::CollectionImportCapability
@@ -143,13 +133,13 @@ class DatabaseCollectionImportCapability : public Capabilities::CollectionImport
     Q_OBJECT
     public:
 
-        DatabaseCollectionImportCapability( ScanManager* scanManager );
+        DatabaseCollectionImportCapability( DatabaseCollection* collection );
         virtual ~DatabaseCollectionImportCapability();
 
         virtual void import( QIODevice *input, QObject *listener );
 
     private:
-        ScanManager *m_scanManager;
+        DatabaseCollection* m_collection;
 };
 
 

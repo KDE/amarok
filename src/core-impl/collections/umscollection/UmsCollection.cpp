@@ -562,7 +562,7 @@ UmsCollection::slotParseTracks()
     }
 
     m_tracksParsed = true;
-    m_scanManager->requestFullScan( QList<KUrl>() << m_musicPath );
+    m_scanManager->requestScan( QList<KUrl>() << m_musicPath, GenericScanManager::FullScan );
 }
 
 void

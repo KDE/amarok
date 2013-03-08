@@ -17,47 +17,88 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ScanResultProcessor.h"
+#include "AbstractScanResultProcessor.h"
 
-#define DEBUG_PREFIX "ScanResultProcessor"
+#define DEBUG_PREFIX "AbstractScanResultProcessor"
 
-#include "MountPointManager.h"
+#include "GenericScanManager.h"
+
 #include "collectionscanner/Directory.h"
 #include "collectionscanner/Album.h"
 #include "collectionscanner/Track.h"
 #include "collectionscanner/Playlist.h"
 #include "core/support/Debug.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "playlistmanager/PlaylistManager.h"
-
-ScanResultProcessor::ScanResultProcessor( QObject *parent )
-    : QObject( parent )
-    , m_type( PartialUpdateScan )
-{
-}
-
-ScanResultProcessor::~ScanResultProcessor()
-{
-    foreach( CollectionScanner::Directory *dir, m_directories )
-        delete dir;
-
-    QHash<QString, CollectionScanner::Album*>::const_iterator i = m_albumNames.constBegin();
-    while (i != m_albumNames.constEnd()) {
-        delete i.value();
-        ++i;
-    }
- }
 
 #include <core-impl/collections/support/ArtistHelper.h>
 
-void
-ScanResultProcessor::addDirectory( CollectionScanner::Directory *dir )
+AbstractScanResultProcessor::AbstractScanResultProcessor( GenericScanManager* manager, QObject* parent )
+    : QObject( parent )
+    , m_manager( manager )
+    , m_type( GenericScanManager::PartialUpdateScan )
 {
-    m_directories.append( dir );
+    connect( manager, SIGNAL( started( GenericScanManager::ScanType ) ),
+             this, SLOT( scanStarted( GenericScanManager::ScanType ) ),
+             Qt::DirectConnection );
+    connect( manager, SIGNAL( directoryCount( int ) ),
+             this, SLOT( scanDirectoryCount( int ) ),
+             Qt::DirectConnection );
+    connect( manager, SIGNAL( directoryScanned( CollectionScanner::Directory* ) ),
+             this, SLOT( scanDirectoryScanned( CollectionScanner::Directory* ) ),
+             Qt::DirectConnection );
+    connect( manager, SIGNAL( succeeded() ),
+             this, SLOT( scanSucceeded() ),
+             Qt::DirectConnection );
+    connect( manager, SIGNAL( failed( QString ) ),
+             this, SLOT( scanFailed( QString ) ),
+             Qt::DirectConnection );
+}
+
+AbstractScanResultProcessor::~AbstractScanResultProcessor()
+{
+    cleanupMembers();
 }
 
 void
-ScanResultProcessor::commit()
+AbstractScanResultProcessor::scanStarted( GenericScanManager::ScanType type )
 {
+    DEBUG_BLOCK;
+
+    m_type = type;
+
+    // -- show the progress operation for the job
+    if( Amarok::Components::logger() )
+        Amarok::Components::logger()->newProgressOperation( this,
+                                                            i18n( "Scanning music" ),
+                                                            100,
+                                                            this,
+                                                            SLOT(abort()) );
+
+}
+
+void
+AbstractScanResultProcessor::scanDirectoryCount( int count )
+{
+    // message( i18np("Found one directory", "Found %1 directories", count ) );
+    debug() << "got"<<count<<"diredtories";
+    emit totalSteps( count * 2 );
+}
+
+void
+AbstractScanResultProcessor::scanDirectoryScanned( CollectionScanner::Directory *dir )
+{
+    m_directories.append( dir );
+
+    emit incrementProgress();
+}
+
+void
+AbstractScanResultProcessor::scanSucceeded()
+{
+    DEBUG_BLOCK;
+
     // the default for albums with several artists is that it's a compilation
     // however, some album names are unlikely to be a compilation
     static QStringList nonCompilationAlbumNames;
@@ -72,10 +113,6 @@ ScanResultProcessor::commit()
             << "All Time Greatest Hits"
             << "Live";
     }
-
-    // we are blocking the updated signal for maximum of one second.
-    QDateTime blockedTime = QDateTime::currentDateTime();
-    blockUpdates();
 
     // -- commit the directories
     foreach( CollectionScanner::Directory* dir, m_directories )
@@ -114,15 +151,14 @@ ScanResultProcessor::commit()
             (*dirAlbums.begin())->setCovers( dir->covers() );
     }
 
-
     // --- add all albums
     QList<QString> keys = m_albumNames.uniqueKeys();
+    emit totalSteps( m_directories.count() + keys.count() ); // update progress bar
     foreach( const QString &key, keys )
     {
         // --- commit the albums as compilation or normal album
 
         QList<CollectionScanner::Album*> albums = m_albumNames.values( key );
-        // debug() << "commit got" <<albums.count() << "x" << key;
 
         // if we have multiple albums with the same name, check if it
         // might be a compilation
@@ -174,13 +210,7 @@ ScanResultProcessor::commit()
                 commitAlbum( albums.takeFirst() );
         }
 
-        // --- unblock every 5 second. Maybe not really needed, but still nice
-        if( blockedTime.secsTo( QDateTime::currentDateTime() ) >= 5 )
-        {
-            unblockUpdates();
-            blockedTime = QDateTime::currentDateTime();
-            blockUpdates();
-        }
+        emit incrementProgress();
     }
 
     // -- now check if some of the tracks are not longer used and also not moved to another directory
@@ -189,32 +219,30 @@ ScanResultProcessor::commit()
             deleteDeletedTracks( dir );
 
     // -- delete all not-found directories
-    if( m_type != PartialUpdateScan )
+    if( m_type != GenericScanManager::PartialUpdateScan )
         deleteDeletedDirectories();
 
-    unblockUpdates();
+    cleanupMembers();
+    emit endProgressOperation( this );
 }
 
 void
-ScanResultProcessor::rollback()
+AbstractScanResultProcessor::scanFailed( const QString& text )
 {
-    // nothing to do
-}
+    message( text );
 
-QStringList
-ScanResultProcessor::getLastErrors() const
-{
-    return m_lastErrors;
+    cleanupMembers();
+    emit endProgressOperation( this );
 }
 
 void
-ScanResultProcessor::clearLastErrors()
+AbstractScanResultProcessor::abort()
 {
-    m_lastErrors.clear();
+    m_manager->abort();
 }
 
 void
-ScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory )
+AbstractScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory )
 {
     if( directory->path().isEmpty() )
     {
@@ -222,21 +250,13 @@ ScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory )
         return;
     }
 
-    if( directory->isSkipped() )
-    {
-        emit directorySkipped();
-        return;
-    }
-
     // --- add all playlists
     foreach( CollectionScanner::Playlist playlist, directory->playlists() )
         commitPlaylist( &playlist );
-
-    emit directoryCommitted();
 }
 
 void
-ScanResultProcessor::commitPlaylist( CollectionScanner::Playlist *playlist )
+AbstractScanResultProcessor::commitPlaylist( CollectionScanner::Playlist *playlist )
 {
     // debug() << "commitPlaylist on " << playlist->path();
 
@@ -249,7 +269,7 @@ ScanResultProcessor::commitPlaylist( CollectionScanner::Playlist *playlist )
     @returns true if the track was put into an album
 */
 CollectionScanner::Album*
-ScanResultProcessor::sortTrack( CollectionScanner::Track *track, const QString &dirName )
+AbstractScanResultProcessor::sortTrack( CollectionScanner::Track *track, const QString &dirName )
 {
     QString albumName = track->album();
 
@@ -282,6 +302,20 @@ ScanResultProcessor::sortTrack( CollectionScanner::Track *track, const QString &
     return album;
 }
 
+void
+AbstractScanResultProcessor::cleanupMembers()
+{
+    // note: qt had problems with CLEAN_ALL macro
+    QHash<QString, CollectionScanner::Album*>::const_iterator i = m_albumNames.constBegin();
+    while (i != m_albumNames.constEnd()) {
+        delete i.value();
+        ++i;
+    }
+    m_albumNames.clear();
+    m_albums.clear();
+    m_directories.clear(); // the pointers itself will be freed by the scanner job
 
-#include "ScanResultProcessor.moc"
+}
+
+#include "AbstractScanResultProcessor.moc"
 

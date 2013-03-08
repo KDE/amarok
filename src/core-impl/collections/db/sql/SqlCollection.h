@@ -26,8 +26,8 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "SqlRegistry.h"
 
-class ScanResultProcessor;
-class ScanManager;
+class SqlScanResultProcessor;
+class AbstractDirectoryWatcher;
 
 namespace Collections {
 
@@ -87,12 +87,9 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual Meta::AlbumPtr getAlbum( const QString &album, const QString &artist );
 
         virtual CollectionLocation* location();
-        QStringList getDatabaseDirectories( QList<int> idList ) const;
 
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
-
-        ScanResultProcessor* getNewScanResultProcessor();
 
     public slots:
         /** Dumps the complete database content.
@@ -101,18 +98,19 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
          */
         void dumpDatabaseContent();
 
-        void slotScanStarted( ScannerJob *job );
-
     private slots:
         void slotDeviceAdded( int id );
         void slotDeviceRemoved( int id );
 
     private:
-        SqlRegistry *m_registry;
+        SqlRegistry* m_registry;
+        SqlStorage* m_sqlStorage;
 
-        SqlStorage *m_sqlStorage;
-        SqlCollectionLocationFactory *m_collectionLocationFactory;
-        SqlQueryMakerFactory *m_queryMakerFactory;
+        SqlScanResultProcessor* m_scanProcessor;
+        AbstractDirectoryWatcher* m_directoryWatcher;
+
+        SqlCollectionLocationFactory* m_collectionLocationFactory;
+        SqlQueryMakerFactory* m_queryMakerFactory;
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionTranscodeCapability : public Capabilities::TranscodeCapability

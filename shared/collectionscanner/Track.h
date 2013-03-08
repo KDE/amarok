@@ -110,6 +110,7 @@ public:
     static void setUseCharsetDetector( bool value );
 
 private:
+    Q_DISABLE_COPY(Track)
 
     void write( QXmlStreamWriter *writer, const QString &tag, const QString &str ) const;
     bool m_valid;

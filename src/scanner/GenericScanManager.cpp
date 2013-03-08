@@ -5,6 +5,7 @@
  * Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>                             *
  * Copyright (c) 2010-2011 Ralf Engels <ralf-engels@gmx.de>                             *
  * Copyright (c) 2011 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,66 +22,49 @@
 
 #include "GenericScanManager.h"
 
-#include "App.h"
+#define DEBUG_PREFIX "GenericScanManager"
+
+#include "GenericScannerJob.h"
 #include "core/support/Debug.h"
-#include "collectionscanner/BatchFile.h"
 
-#include <KStandardDirs>
 #include <threadweaver/ThreadWeaver.h>
-
 #include <QFileInfo>
-#include <QSharedMemory>
-#include <QThread>
-#include <QUuid>
-
-static const int SHARED_MEMORY_SIZE = 1024 * 1024; // 1 MB shared memory
 
 GenericScanManager::GenericScanManager( QObject *parent )
     : QObject( parent )
     , m_scannerJob( 0 )
 {
-    //TODO: folder watching
-    //TODO: incremental scanning
-    //TODO: import
+    qRegisterMetaType<GenericScanManager::ScanType>( "GenericScanManager::ScanType" );
 }
 
 GenericScanManager::~GenericScanManager()
 {
-    blockScan();
-}
-
-void
-GenericScanManager::blockScan()
-{
-    {
-        QMutexLocker locker( &m_mutex );
-        m_blockCount++;
-    }
-    abort( "Scan blocked" );
-}
-
-void
-GenericScanManager::unblockScan()
-{
-    {
-        QMutexLocker locker( &m_mutex );
-        m_blockCount--;
-    }
-    //TODO: restart scanner
+    abort();
 }
 
 bool
 GenericScanManager::isRunning()
 {
+    QMutexLocker locker( &m_mutex );
     return m_scannerJob;
 }
 
-void
-GenericScanManager::requestFullScan( QList<KUrl> directories )
+QString
+GenericScanManager::getBatchFile( const QStringList& scanDirsRequested )
 {
+    Q_UNUSED( scanDirsRequested );
+    return QString();
+}
+
+void
+GenericScanManager::requestScan( QList<KUrl> directories, ScanType type )
+{
+    DEBUG_BLOCK;
+
+    QMutexLocker locker( &m_mutex );
     if( m_scannerJob )
     {
-        //TODO: add to queue
+        //TODO: add to queue requests
         error() << "Scanner already running";
         return;
     }
@@ -97,7 +81,7 @@ GenericScanManager::requestFullScan( QList<KUrl> directories )
         QString path = url.path( KUrl::RemoveTrailingSlash );
         if( !QFileInfo( path ).isDir() )
         {
-            error() << "scan of a file requested. Skipping.";
+            error() << "scan of a non directory"<<path<<"requested. Skipping.";
             continue;
         }
         //TODO: most local path
@@ -105,224 +89,77 @@ GenericScanManager::requestFullScan( QList<KUrl> directories )
         scanDirsSet << path;
     }
 
-    m_scannerJob = new GenericScannerJob( this, scanDirsSet.toList() );
+    if( scanDirsSet.isEmpty() )
+        return; // nothing to do
 
-    //TODO:connect message signal
-    connect( m_scannerJob, SIGNAL(done( ThreadWeaver::Job* )), SLOT(slotJobDone()) );
-    connect( m_scannerJob, SIGNAL(failed( QString )), SIGNAL(failed( QString )) );
-    connect( m_scannerJob, SIGNAL(directoryScanned( CollectionScanner::Directory * )),
-             SIGNAL(directoryScanned( CollectionScanner::Directory * )),
-             Qt::DirectConnection );
-
+    m_scannerJob = new GenericScannerJob( this, scanDirsSet.toList(), type );
+    connectSignalsToJob();
     ThreadWeaver::Weaver::instance()->enqueue( m_scannerJob );
 }
 
 void
-GenericScanManager::abort( const QString &reason )
+GenericScanManager::requestImport( QIODevice *input, ScanType type )
 {
     QMutexLocker locker( &m_mutex );
+    if( m_scannerJob )
+    {
+        //TODO: add to queue requests
+        error() << "Scanner already running";
+        return;
+    }
 
-    if( !reason.isEmpty() )
-        debug() << "Abort scan: " << reason;
+    m_scannerJob = new GenericScannerJob( this, input, type );
+    connectSignalsToJob();
+    ThreadWeaver::Weaver::instance()->enqueue( m_scannerJob );
+}
+
+void
+GenericScanManager::abort()
+{
+    QMutexLocker locker( &m_mutex );
 
     if( m_scannerJob )
-        m_scannerJob->requestAbort();
-    // TODO: For testing it would be good to specify the scanner in the build directory
+        m_scannerJob->abort();
 }
 
 void
-GenericScanManager::slotJobDone()
+GenericScanManager::slotSucceeded()
 {
-    debug() << "Scanner job done";
-    QMutexLocker locker( &m_mutex );
-    if( !m_scannerJob )
-        return;
-
-    //TODO: reported error handling
-    //if( errors )
-    // emit failed()
+    {
+        QMutexLocker locker( &m_mutex );
+        m_scannerJob = 0;
+    }
     emit succeeded();
-
-    m_scannerJob->deleteLater();
-    m_scannerJob = 0;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// class GenericScannerJob
-///////////////////////////////////////////////////////////////////////////////
-
-QString
-GenericScannerJob::scannerPath()
-{
-    QString path = KStandardDirs::locate( "exe", "amarokcollectionscanner" );
-
-    // If the binary is not in $PATH, then search in the application folder too
-    if( path.isEmpty() )
-        path = App::applicationDirPath() + QDir::separator() + "amarokcollectionscanner";
-
-    return path;
-}
-
-GenericScannerJob::GenericScannerJob( QObject *parent, QIODevice *input )
-    : ThreadWeaver::Job( parent )
-    , m_input( input )
-    , m_abortRequested( false )
-    , m_scannerStateMemory( 0 )
-{
-
-}
-
-GenericScannerJob::GenericScannerJob( QObject *parent, QStringList scanDirsRequested,
-                                      bool recursive, bool detectCharset )
-    : ThreadWeaver::Job( parent )
-    , m_scanDirsRequested( scanDirsRequested )
-    , m_input( 0 )
-    , m_abortRequested( false )
-    , m_scannerStateMemory( 0 )
-    , m_recursive( recursive )
-    , m_charsetDetect( detectCharset )
-{
-}
-
-GenericScannerJob::~GenericScannerJob()
-{
-    delete m_scanner;
 }
 
 void
-GenericScannerJob::run()
+GenericScanManager::slotFailed( const QString& message )
 {
-    if( !m_input )
     {
-        m_scanner = createScannerProcess();
-        if( !m_scanner )
-        {
-            warning() << "Unable to start Amarok collection scanner.";
-            emit failed( i18n("Unable to start Amarok collection scanner." ) );
-            return;
-        }
-        m_input = qobject_cast<QIODevice *>( m_scanner );
+        QMutexLocker locker( &m_mutex );
+        m_scannerJob = 0;
     }
-
-    m_reader.setDevice( m_input );
-
-    m_scanner->start();
-
-    //TODO: make incremental
-    m_scanner->waitForFinished( -1 );
-
-    parseScannerOutput();
+    emit failed( message );
 }
 
 void
-GenericScannerJob::requestAbort()
+GenericScanManager::connectSignalsToJob()
 {
-    QMutexLocker locker( &m_mutex );
-    m_abortRequested = true;
-}
-
-KProcess *
-GenericScannerJob::createScannerProcess( bool restart )
-{
-    if( m_abortRequested )
-        return 0;
-
-    // -- create the shared memory
-    if( !m_scannerStateMemory && !restart )
-    {
-        m_sharedMemoryKey = "AmarokScannerMemory"+QUuid::createUuid().toString();
-        m_scannerStateMemory = new QSharedMemory( m_sharedMemoryKey );
-        if( !m_scannerStateMemory->create( SHARED_MEMORY_SIZE ) )
-        {
-            warning() << "Unable to create shared memory for collection scanner";
-            delete m_scannerStateMemory;
-            m_scannerStateMemory = 0;
-        }
-    }
-
-    // -- create the scanner process
-    KProcess *scanner = new KProcess(); //not parented since in a different thread
-    scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
-
-    *scanner << GenericScannerJob::scannerPath() << "--idlepriority";
-    if( !m_batchfilePath.isEmpty() )
-    {
-        *scanner << "-i";
-        *scanner << "--batch" << m_batchfilePath;
-    }
-
-    if( m_recursive )
-        *scanner << "-r";
-
-    if( m_charsetDetect )
-        *scanner << "-c";
-
-    if( restart )
-        *scanner << "-s";
-
-    if( m_scannerStateMemory )
-        *scanner << "--sharedmemory" << m_sharedMemoryKey;
-
-    //TODO: use batchfile, needed for incremental scanning
-
-    *scanner << m_scanDirsRequested;
-
-    return scanner;
-}
-
-void
-GenericScannerJob::parseScannerOutput()
-{
-    bool finished = false;
-    int count = 0;
-    while( !m_reader.atEnd() && !finished )
-    {
-        // -- check if we were aborted, have finished or need to wait for new data
-        {
-            QMutexLocker locker( &m_mutex );
-            if( m_abortRequested )
-                break;
-        }
-
-        m_reader.readNext();
-        if( m_reader.hasError() )
-        {
-            break;
-        }
-        else if( m_reader.isStartElement() )
-        {
-            QStringRef name = m_reader.name();
-            if( name == "scanner" )
-            {
-                debug() << "ScannerJob: got count:" << m_reader.attributes().value( "count" ).toString().toInt();
-                emit message( i18np("Found one directory", "Found %1 directories",
-                              m_reader.attributes().value( "count" ).toString()) );
-                emit totalSteps( m_reader.attributes().value( "count" ).toString().toInt() * 2 );
-            }
-            else if( name == "directory" )
-            {
-                CollectionScanner::Directory *dir = new CollectionScanner::Directory( &m_reader );
-                count++;
-                emit directoryScanned( dir );
-
-                emit message( i18n( "Got directory \"%1\" from scanner.", dir->rpath() ) );
-                emit incrementProgress();
-            }
-            else
-            {
-                warning() << "Unexpected xml start element"<<name<<"in input";
-                m_reader.skipCurrentElement();
-            }
-
-        }
-        else if( m_reader.isEndElement() )
-        {
-            if( m_reader.name() == "scanner" ) // ok. finished
-                finished = true;
-        }
-        else if( m_reader.isEndDocument() )
-        {
-            finished = true;
-        }
-    }
+    // all connections are direct connections, mainly because the
+    // CollectionScanner::Directory pointer belongs to the scanner job
+    // and might get missing.
+    // Also multi-threading while scanning is nice.
+    connect( m_scannerJob, SIGNAL(started( GenericScanManager::ScanType )),
+             SIGNAL(started( GenericScanManager::ScanType )),
+             Qt::DirectConnection  );
+    connect( m_scannerJob, SIGNAL(directoryCount( int )),
+             SIGNAL(directoryCount( int )),
+             Qt::DirectConnection  );
+    connect( m_scannerJob, SIGNAL(directoryScanned( CollectionScanner::Directory * )),
+             SIGNAL(directoryScanned( CollectionScanner::Directory * )),
+             Qt::DirectConnection );
+    connect( m_scannerJob, SIGNAL(succeeded()), SLOT(slotSucceeded()),
+             Qt::DirectConnection  );
+    connect( m_scannerJob, SIGNAL(failed( QString )), SLOT(slotFailed( QString )),
+             Qt::DirectConnection  );
 }
