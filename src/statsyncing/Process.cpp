@@ -273,8 +273,8 @@ Process::slotLogSynchronization( ThreadWeaver::Job *job )
                        "<b>%1</b> tracks were last played in too distant past to be scrobbled.",
                        scrobbleErrorCounts[ ScrobblingService::FromTheDistantPast ] );
     if( scrobbleErrorCounts.value( ScrobblingService::SkippedByUser ) )
-        text << i18np( "Scrobbling of <b>one</b> track was skipped as cofigured by the user.",
-                       "Scrobbling of <b>%1</b> tracks was skipped as cofigured by the user.",
+        text << i18np( "Scrobbling of <b>one</b> track was skipped as configured by the user.",
+                       "Scrobbling of <b>%1</b> tracks was skipped as configured by the user.",
                        scrobbleErrorCounts[ ScrobblingService::SkippedByUser ] );
 
     Amarok::Components::logger()->longMessage( text.join( "<br>\n" ) );
