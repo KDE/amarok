@@ -119,7 +119,7 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     eqPresetDeleteBtn->setIcon( KIcon( "edit-delete" ) );
     connect( eqPresetDeleteBtn, SIGNAL( clicked() ), SLOT( deletePreset() ) );
 
-    eqPresetResetBtn->setIcon( KIcon( "edit-undo-amarok" ) );
+    eqPresetResetBtn->setIcon( KIcon( "edit-undo" ) );
     connect( eqPresetResetBtn, SIGNAL( clicked() ), SLOT( restorePreset() ) );
 }
 

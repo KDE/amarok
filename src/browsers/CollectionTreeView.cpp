@@ -244,7 +244,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     if( collectionActions.count() > 1 )
     {
-        menuCollection.setIcon( KIcon( "collection-amarok" ) );
+        menuCollection.setIcon( KIcon( "drive-harddisk" ) );
         menuCollection.addActions( collectionActions );
         menu.addMenu( &menuCollection );
         menu.addSeparator();

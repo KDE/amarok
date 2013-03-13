@@ -202,7 +202,7 @@ FilenameLayoutWidget::createToken(qint64 value) const
         { "-", "filename-dash-amarok", Dash },
         { ".", "filename-dot-amarok", Dot },
         { " ", "filename-space-amarok", Space },
-        { i18n( "Collection root" ), "collection-amarok", CollectionRoot },
+        { i18n( "Collection root" ), "drive-harddisk", CollectionRoot },
         { QString(), 0, Space }
     };
 

@@ -260,7 +260,7 @@ MainWindow::init()
         m_collectionBrowser = new CollectionWidget( "collections", 0 );
         //TODO: rename "Music Collections
         m_collectionBrowser->setPrettyName( i18n( "Local Music" ) );
-        m_collectionBrowser->setIcon( KIcon( "collection-amarok" ) );
+        m_collectionBrowser->setIcon( KIcon( "drive-harddisk" ) );
         m_collectionBrowser->setShortDescription( i18n( "Local sources of content" ) );
         m_browserDock.data()->list()->addCategory( m_collectionBrowser );
         PERF_LOG( "Created CollectionWidget" )
@@ -776,7 +776,7 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( slotAddLocation() ) );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
 
-    action = new KAction( KIcon( "edit-clear-list-amarok" ), i18nc( "clear playlist", "&Clear Playlist" ), this );
+    action = new KAction( KIcon( "edit-clear-list" ), i18nc( "clear playlist", "&Clear Playlist" ), this );
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( clear() ) );
     ac->addAction( "playlist_clear", action );
 
@@ -875,7 +875,7 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekBackwardLong()) );
 
     PERF_LOG( "MainWindow::createActions 6" )
-    action = new KAction( KIcon("collection-refresh-amarok"), i18n( "Update Collection" ), this );
+    action = new KAction( KIcon("view-refresh"), i18n( "Update Collection" ), this );
     connect ( action, SIGNAL( triggered( bool ) ), CollectionManager::instance(), SLOT( checkCollectionChanges() ) );
     ac->addAction( "update_collection", action );
 
@@ -1022,13 +1022,13 @@ MainWindow::createActions()
     action = KStandardAction::redo( pc, SLOT( redo() ), this);
     ac->addAction( "playlist_redo", action );
     action->setEnabled( false );
-    action->setIcon( KIcon( "edit-redo-amarok" ) );
+    action->setIcon( KIcon( "edit-redo" ) );
     connect( pc, SIGNAL( canRedoChanged( bool ) ), action, SLOT( setEnabled( bool ) ) );
 
     action = KStandardAction::undo( pc, SLOT( undo() ), this);
     ac->addAction( "playlist_undo", action );
     action->setEnabled( false );
-    action->setIcon( KIcon( "edit-undo-amarok" ) );
+    action->setIcon( KIcon( "edit-undo" ) );
     connect( pc, SIGNAL( canUndoChanged( bool ) ), action, SLOT( setEnabled( bool ) ) );
 
     action = new KAction( KIcon( "amarok" ), i18n( "&About Amarok" ), this );

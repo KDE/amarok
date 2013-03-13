@@ -224,7 +224,7 @@ void LikeBack::createActions( KActionCollection *parent )
     }
     if( d->showBarAction == 0 )
     {
-        d->showBarAction = new KToggleAction( i18n( "Show &Feedback Icons" ), this );
+        d->showBarAction = new KToggleAction( KIcon( "help-feedback" ), i18n( "Show &Feedback Icons" ), this );
         d->showBarAction->setChecked( userWantsToShowBar() );
         connect( d->showBarAction, SIGNAL( triggered( bool ) ), this, SLOT( setUserWantsToShowBar( bool ) ) );
 
