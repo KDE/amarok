@@ -771,7 +771,7 @@ MainWindow::createActions()
 
     KStandardAction::quit( kapp, SLOT( quit() ), ac );
 
-    KAction *action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Media..."), this );
+    KAction *action = new KAction( KIcon( "document-open" ), i18n("&Add Media..."), this );
     ac->addAction( "playlist_add", action );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( slotAddLocation() ) );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
@@ -793,7 +793,7 @@ MainWindow::createActions()
     action = new Playlist::LayoutConfigAction( this );
     ac->addAction( "playlist_layout", action );
 
-    action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Stream..."), this );
+    action = new KAction( KIcon( "document-open-remote" ), i18n("&Add Stream..."), this );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( slotAddStream() ) );
     ac->addAction( "stream_add", action );
 
@@ -825,7 +825,7 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
-    action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
+    action = new KAction( KIcon("document-open"), i18n("Play Media..."), this );
     ac->addAction( "playlist_playmedia", action );
     action->setShortcut( Qt::CTRL + Qt::Key_O );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( slotPlayMedia() ) );
