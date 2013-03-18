@@ -17,7 +17,6 @@ set( amarok_collection-sqlcollection_SRCS
     device/massstorage/MassStorageDeviceHandler.cpp
     device/nfs/NfsDeviceHandler.cpp
     device/smb/SmbDeviceHandler.cpp
-    ${CMAKE_SOURCE_DIR}/shared/FileType.cpp
 )
 
 kde4_add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
