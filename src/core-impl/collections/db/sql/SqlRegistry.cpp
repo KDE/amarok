@@ -364,7 +364,7 @@ SqlRegistry::getArtist( const QString &oName )
 {
     QMutexLocker locker( &m_artistMutex );
 
-    QString name = oName.left( 255 ); // truncate to column lenght
+    QString name = oName.left( DatabaseUpdater::textColumnLength() );
     if( m_artistMap.contains( name ) )
         return m_artistMap.value( name );
 
@@ -434,7 +434,7 @@ SqlRegistry::getGenre( const QString &oName )
 {
     QMutexLocker locker( &m_genreMutex );
 
-    QString name = oName.left( 255 ); // truncate to column lenght
+    QString name = oName.left( DatabaseUpdater::textColumnLength() );
     if( m_genreMap.contains( name ) )
         return m_genreMap.value( name );
 
@@ -498,7 +498,7 @@ SqlRegistry::getComposer( const QString &oName )
 {
     QMutexLocker locker( &m_composerMutex );
 
-    QString name = oName.left( 255 ); // truncate to column lenght
+    QString name = oName.left( DatabaseUpdater::textColumnLength() );
     if( m_composerMap.contains( name ) )
         return m_composerMap.value( name );
 
@@ -599,8 +599,8 @@ Meta::AlbumPtr
 SqlRegistry::getAlbum( const QString &oName, const QString &oArtist )
 {
     // we allow albums with empty name but nonempty artist, see bug 272471
-    QString name = oName.left( 255 ); // truncate to column lenght
-    QString albumArtist = oArtist.left( 255 ); // truncate to column lenght
+    QString name = oName.left( DatabaseUpdater::textColumnLength() );
+    QString albumArtist = oArtist.left( DatabaseUpdater::textColumnLength() );
     AlbumKey key( name, albumArtist );
 
     QMutexLocker locker( &m_albumMutex );
@@ -702,7 +702,7 @@ Meta::LabelPtr
 SqlRegistry::getLabel( const QString &oLabel )
 {
     QMutexLocker locker( &m_labelMutex );
-    QString label = oLabel.left( 255 ); // truncate to column lenght
+    QString label = oLabel.left( DatabaseUpdater::textColumnLength() );
     if( m_labelMap.contains( label ) )
         return m_labelMap.value( label );
 

@@ -104,6 +104,8 @@ public:
 
     void writeCSVFile( const QString &table, const QString &filename, bool forceDebug = false );
 
+    static int textColumnLength() { return 255; };
+
 private:
     /** creates all the necessary tables, indexes etc. for the database */
     void createTables() const;

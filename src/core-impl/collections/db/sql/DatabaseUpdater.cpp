@@ -237,11 +237,11 @@ DatabaseUpdater::upgradeVersion4to5()
     typedef QPair<QString, int> vcpair;
     QMultiMap<QString, vcpair> columns;
     columns.insert( "admin", vcpair( "component", 255 ) );
-    columns.insert( "albums", vcpair( "name", 255 ) );
+    columns.insert( "albums", vcpair( "name", textColumnLength() ) );
     columns.insert( "amazon", vcpair( "asin", 20 ) );
     columns.insert( "amazon", vcpair( "locale", 2 ) );
     columns.insert( "amazon", vcpair( "filename", 33 ) );
-    columns.insert( "artists", vcpair( "name", 255 ) );
+    columns.insert( "artists", vcpair( "name", textColumnLength() ) );
     columns.insert( "bookmark_groups", vcpair( "name", 255 ) );
     columns.insert( "bookmark_groups", vcpair( "description", 255 ) );
     columns.insert( "bookmark_groups", vcpair( "custom", 255 ) );
@@ -249,7 +249,7 @@ DatabaseUpdater::upgradeVersion4to5()
     columns.insert( "bookmarks", vcpair( "url", 1024 ) );
     columns.insert( "bookmarks", vcpair( "description", 1024 ) );
     columns.insert( "bookmarks", vcpair( "custom", 255 ) );
-    columns.insert( "composers", vcpair( "name", 255 ) );
+    columns.insert( "composers", vcpair( "name", textColumnLength() ) );
     columns.insert( "devices", vcpair( "type", 255 ) );
     columns.insert( "devices", vcpair( "label", 255 ) );
     columns.insert( "devices", vcpair( "lastmountpoint", 255 ) );
@@ -259,7 +259,7 @@ DatabaseUpdater::upgradeVersion4to5()
     columns.insert( "directories", vcpair( "dir", 1024 ) );
     columns.insert( "genres", vcpair( "name", 255 ) );
     columns.insert( "images", vcpair( "path", 255 ) );
-    columns.insert( "labels", vcpair( "label", 255 ) );
+    columns.insert( "labels", vcpair( "label", textColumnLength() ) );
     columns.insert( "lyrics", vcpair( "url", 1024 ) );
     columns.insert( "playlist_groups", vcpair( "name", 255 ) );
     columns.insert( "playlist_groups", vcpair( "description", 255 ) );
@@ -281,10 +281,10 @@ DatabaseUpdater::upgradeVersion4to5()
     columns.insert( "statistics_permanent", vcpair( "url", 1024 ) );
     columns.insert( "statistics_tag", vcpair( "name", 255 ) );
     columns.insert( "statistics_tag", vcpair( "artist", 255 ) );
-    columns.insert( "tracks", vcpair( "title", 255 ) );
+    columns.insert( "tracks", vcpair( "title", textColumnLength() ) );
     columns.insert( "urls", vcpair( "rpath", 1024 ) );
     columns.insert( "urls", vcpair( "uniqueid", 128 ) );
-    columns.insert( "years", vcpair( "name", 255 ) );
+    columns.insert( "years", vcpair( "name", textColumnLength() ) );
 
     QMultiMap<QString, vcpair>::const_iterator i, iEnd;
     for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
@@ -476,11 +476,11 @@ DatabaseUpdater::upgradeVersion9to10()
     typedef QPair<QString, int> vcpair;
     QMultiMap<QString, vcpair> columns;
     columns.insert( "admin", vcpair( "component", 255 ) );
-    columns.insert( "albums", vcpair( "name", 255 ) );
+    columns.insert( "albums", vcpair( "name", textColumnLength() ) );
     columns.insert( "amazon", vcpair( "asin", 20 ) );
     columns.insert( "amazon", vcpair( "locale", 2 ) );
     columns.insert( "amazon", vcpair( "filename", 33 ) );
-    columns.insert( "artists", vcpair( "name", 255 ) );
+    columns.insert( "artists", vcpair( "name", textColumnLength() ) );
     columns.insert( "bookmark_groups", vcpair( "name", 255 ) );
     columns.insert( "bookmark_groups", vcpair( "description", 255 ) );
     columns.insert( "bookmark_groups", vcpair( "custom", 255 ) );
@@ -488,7 +488,7 @@ DatabaseUpdater::upgradeVersion9to10()
     columns.insert( "bookmarks", vcpair( "url", 1000 ) );
     columns.insert( "bookmarks", vcpair( "description", 1000 ) );
     columns.insert( "bookmarks", vcpair( "custom", 255 ) );
-    columns.insert( "composers", vcpair( "name", 255 ) );
+    columns.insert( "composers", vcpair( "name", textColumnLength() ) );
     columns.insert( "devices", vcpair( "type", 255 ) );
     columns.insert( "devices", vcpair( "label", 255 ) );
     columns.insert( "devices", vcpair( "lastmountpoint", 255 ) );
@@ -496,9 +496,9 @@ DatabaseUpdater::upgradeVersion9to10()
     columns.insert( "devices", vcpair( "servername", 80 ) );
     columns.insert( "devices", vcpair( "sharename", 240 ) );
     columns.insert( "directories", vcpair( "dir", 1000 ) );
-    columns.insert( "genres", vcpair( "name", 255 ) );
+    columns.insert( "genres", vcpair( "name", textColumnLength() ) );
     columns.insert( "images", vcpair( "path", 255 ) );
-    columns.insert( "labels", vcpair( "label", 255 ) );
+    columns.insert( "labels", vcpair( "label", textColumnLength() ) );
     columns.insert( "lyrics", vcpair( "url", 324 ) );
     columns.insert( "playlist_groups", vcpair( "name", 255 ) );
     columns.insert( "playlist_groups", vcpair( "description", 255 ) );
@@ -521,10 +521,10 @@ DatabaseUpdater::upgradeVersion9to10()
     columns.insert( "statistics_tag", vcpair( "name", 108 ) );
     columns.insert( "statistics_tag", vcpair( "artist", 108 ) );
     columns.insert( "statistics_tag", vcpair( "album", 108 ) );
-    columns.insert( "tracks", vcpair( "title", 255 ) );
+    columns.insert( "tracks", vcpair( "title", textColumnLength() ) );
     columns.insert( "urls", vcpair( "rpath", 324 ) );
     columns.insert( "urls", vcpair( "uniqueid", 128 ) );
-    columns.insert( "years", vcpair( "name", 255 ) );
+    columns.insert( "years", vcpair( "name", textColumnLength() ) );
 
     QMultiMap<QString, vcpair>::const_iterator i, iEnd;
 
@@ -651,7 +651,7 @@ DatabaseUpdater::upgradeVersion14to15()
     columns.insert( "devices", vcpair( "uuid", 255 ) );
     columns.insert( "devices", vcpair( "servername", 80 ) );
     columns.insert( "devices", vcpair( "sharename", 240 ) );
-    columns.insert( "labels", vcpair( "label", 255 ) );
+    columns.insert( "labels", vcpair( "label", textColumnLength() ) );
     columns.insert( "lyrics", vcpair( "lyrics", 0 ) );
     columns.insert( "playlists", vcpair( "name", 255 ) );
     columns.insert( "playlists", vcpair( "description", 255 ) );
@@ -683,7 +683,7 @@ DatabaseUpdater::upgradeVersion14to15()
     columns.insert( "statistics_tag", vcpair( "name", 108 ) );
     columns.insert( "statistics_tag", vcpair( "artist", 108 ) );
     columns.insert( "statistics_tag", vcpair( "album", 108 ) );
-    columns.insert( "tracks", vcpair( "title", 255 ) );
+    columns.insert( "tracks", vcpair( "title", textColumnLength() ) );
     columns.insert( "tracks", vcpair( "comment", 0 ) );
     columns.insert( "urls", vcpair( "uniqueid", 128 ) );
 
