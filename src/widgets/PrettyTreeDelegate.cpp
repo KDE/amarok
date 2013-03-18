@@ -164,7 +164,7 @@ PrettyTreeDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option
 
     // -- title
     QRect titleRect( remainingRect );
-    titleRect.setHeight( m_bigFm->height() + s.verticalSpace );
+    titleRect.setHeight( qMax( m_bigFm->height(), s.smallIconSize ) + s.verticalSpace );
 
     QString titleText = index.data( Qt::DisplayRole ).toString();
     titleText = m_bigFm->elidedText( titleText, Qt::ElideRight, titleRect.width() );
@@ -280,7 +280,7 @@ PrettyTreeDelegate::sizeHint( const QStyleOptionViewItem &option,
     layoutWidth = qMax( viewportWidth, layoutWidth );
 
     int layoutHeight = s.frameVMargin + s.frameExtraMargin +
-        titleSize.height() + s.verticalSpace +
+        qMax( titleSize.height(), s.smallIconSize ) + s.verticalSpace +
         qMax( capacitySize.height(), byLineSize.height() ) +
         s.frameExtraMargin + s.frameVMargin;
 
