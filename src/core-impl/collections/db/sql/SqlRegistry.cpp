@@ -360,10 +360,11 @@ SqlRegistry::removeTrack( int urlId, const QString uid )
 // -------- artist
 
 Meta::ArtistPtr
-SqlRegistry::getArtist( const QString &name )
+SqlRegistry::getArtist( const QString &oName )
 {
     QMutexLocker locker( &m_artistMutex );
 
+    QString name = oName.left( 255 ); // truncate to column lenght
     if( m_artistMap.contains( name ) )
         return m_artistMap.value( name );
 
@@ -429,10 +430,11 @@ SqlRegistry::getArtist( int id, const QString &name )
 // -------- genre
 
 Meta::GenrePtr
-SqlRegistry::getGenre( const QString &name )
+SqlRegistry::getGenre( const QString &oName )
 {
     QMutexLocker locker( &m_genreMutex );
 
+    QString name = oName.left( 255 ); // truncate to column lenght
     if( m_genreMap.contains( name ) )
         return m_genreMap.value( name );
 
@@ -492,10 +494,11 @@ SqlRegistry::getGenre( int id, const QString &name )
 // -------- composer
 
 Meta::ComposerPtr
-SqlRegistry::getComposer( const QString &name )
+SqlRegistry::getComposer( const QString &oName )
 {
     QMutexLocker locker( &m_composerMutex );
 
+    QString name = oName.left( 255 ); // truncate to column lenght
     if( m_composerMap.contains( name ) )
         return m_composerMap.value( name );
 
@@ -593,10 +596,11 @@ SqlRegistry::getYear( int year, int yearId )
 // -------- album
 
 Meta::AlbumPtr
-SqlRegistry::getAlbum( const QString &name, const QString &artist )
+SqlRegistry::getAlbum( const QString &oName, const QString &oArtist )
 {
-    QString albumArtist( artist );
     // we allow albums with empty name but nonempty artist, see bug 272471
+    QString name = oName.left( 255 ); // truncate to column lenght
+    QString albumArtist = oArtist.left( 255 ); // truncate to column lenght
     AlbumKey key( name, albumArtist );
 
     QMutexLocker locker( &m_albumMutex );
@@ -695,9 +699,10 @@ SqlRegistry::getAlbum( int albumId, const QString &name, int artistId )
 // ------------ label
 
 Meta::LabelPtr
-SqlRegistry::getLabel( const QString &label )
+SqlRegistry::getLabel( const QString &oLabel )
 {
     QMutexLocker locker( &m_labelMutex );
+    QString label = oLabel.left( 255 ); // truncate to column lenght
     if( m_labelMap.contains( label ) )
         return m_labelMap.value( label );
 
