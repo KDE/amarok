@@ -27,7 +27,7 @@
    /* We are building this library */
 #  define AMAROK_EXPORT KDE_EXPORT
 
-#  if defined(DEBUG)
+#  if defined(MAKE_AMAROK_TESTS)
 #    define AMAROK_EXPORT_TESTS KDE_EXPORT
 #  else
 #    define AMAROK_EXPORT_TESTS
@@ -37,7 +37,7 @@
    /* We are using this library */
 #  define AMAROK_EXPORT KDE_IMPORT
 
-#  if defined(DEBUG)
+#  if defined(MAKE_AMAROK_TESTS)
 #    define AMAROK_EXPORT_TESTS KDE_IMPORT
 #  else
 #    define AMAROK_EXPORT_TESTS
