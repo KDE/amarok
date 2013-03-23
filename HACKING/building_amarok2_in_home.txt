@@ -6,7 +6,7 @@ This document explains how to install Amarok 2 from git in your home directory -
 * Install git, the compiler and KDE 4 development packages:
 
   In Kubuntu, Debian, and all their derivatives:
-    sudo aptitude install git-core build-essential kde-devel
+    sudo aptitude install git-core build-essential kdesdk kdelibs5-dev libkonq5-dev kdebase-workspace-dev 
 
   In Archlinux:
     sudo pacman -Sy git base-devel kdelibs kdebase-runtime
@@ -16,6 +16,9 @@ This document explains how to install Amarok 2 from git in your home directory -
 
   In OpenSuSE:
     sudo zypper install git
+
+  In Fedora:
+    sudo yum install git kdelibs-devel
 
 
 *  Install ccache to speed up compilation
