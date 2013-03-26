@@ -47,11 +47,7 @@ Required
 
     * TagLib 1.7 (or newer)
       (Metadata tagging library)
-      When compiling against 1.8 more file types are supported (MOD, IT, S3M, XM).
-      When compiling against 1.9 opus file type is supported.
-      http://developer.kde.org/~wheeler/taglib.html
-      https://github.com/taglib/taglib
-
+      
     * TagLib Extras 1.0.1 (or newer)
       (Support for metadata reading of additional file types)
       http://www.kollide.net/~jefferai/taglib-extras-1.0.1.tar.gz
@@ -70,6 +66,12 @@ Required
       http://delta.affinix.com/qca/
 
 Optional
+
+    * Taglib 1.8 for support of MOD, IT, S3M and XM files
+    * Taglib 1.9 for support of Opus files
+      http://developer.kde.org/~wheeler/taglib.html
+      https://github.com/taglib/taglib
+      
     * iPod support requires:
       * libgpod 0.8.2 (or newer)
         http://www.gtkpod.org/libgpod/
