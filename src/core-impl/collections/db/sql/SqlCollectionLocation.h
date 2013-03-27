@@ -70,7 +70,7 @@ class TransferJob : public KCompositeJob
         Transcoding::Configuration m_transcodeFormat;
 };
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public CollectionLocation
+class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
 
@@ -133,7 +133,7 @@ class SqlCollectionLocationFactory
 
 } //namespace Collections
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS OrganizeCollectionDelegate : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT OrganizeCollectionDelegate : public QObject
 {
     Q_OBJECT
 public:

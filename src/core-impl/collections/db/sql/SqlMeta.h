@@ -59,7 +59,7 @@ namespace Meta
 
     The whole class should be thread save.
 */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statistics
+class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics
 {
     public:
         /** Creates a new SqlTrack without.
@@ -319,7 +319,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statisti
         friend class ::TrackStatisticsTableCommitter;
 };
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlArtist : public Meta::Artist
+class AMAROK_SQLCOLLECTION_EXPORT SqlArtist : public Meta::Artist
 {
     public:
         SqlArtist( Collections::SqlCollection* collection, int id, const QString &name );
@@ -354,7 +354,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlArtist : public Meta::Artist
     Note: The album without name is special. It will always be a compilation
     and never have a picture.
 */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
+class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
 {
     public:
         SqlAlbum( Collections::SqlCollection* collection, int id, const QString &name, int artist );
@@ -481,7 +481,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
         friend class ::SqlScanResultProcessor; // needs to set images directly
 };
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlComposer : public Meta::Composer
+class AMAROK_SQLCOLLECTION_EXPORT SqlComposer : public Meta::Composer
 {
     public:
         SqlComposer( Collections::SqlCollection* collection, int id, const QString &name );
@@ -539,7 +539,7 @@ class SqlGenre : public Meta::Genre
         friend class Meta::SqlTrack; // needs to call notifyObservers
 };
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlYear : public Meta::Year
+class AMAROK_SQLCOLLECTION_EXPORT SqlYear : public Meta::Year
 {
     public:
         SqlYear( Collections::SqlCollection* collection, int id, int year );
@@ -570,7 +570,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlYear : public Meta::Year
         friend class Meta::SqlTrack; // needs to call notifyObservers
 };
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlLabel : public Meta::Label
+class AMAROK_SQLCOLLECTION_EXPORT SqlLabel : public Meta::Label
 {
 public:
     SqlLabel( Collections::SqlCollection *collection, int id, const QString &name );

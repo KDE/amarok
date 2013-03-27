@@ -27,7 +27,7 @@ namespace Collections {
 
 class SqlCollection;
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
+class AMAROK_SQLCOLLECTION_EXPORT SqlQueryMaker : public QueryMaker
 {
     Q_OBJECT
 

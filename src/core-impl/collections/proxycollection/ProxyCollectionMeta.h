@@ -31,7 +31,7 @@ namespace Collections {
 
 namespace Meta {
 
-    class AMAROK_EXPORT_TESTS ProxyTrack : public Meta::Track, public Meta::Statistics, private Meta::Observer
+    class AMAROK_EXPORT ProxyTrack : public Meta::Track, public Meta::Statistics, private Meta::Observer
     {
         public:
             ProxyTrack( Collections::ProxyCollection *coll, const Meta::TrackPtr &track );
@@ -107,7 +107,7 @@ namespace Meta {
             Meta::YearPtr m_year;
     };
 
-    class AMAROK_EXPORT_TESTS ProxyAlbum : public Meta::Album, private Meta::Observer
+    class AMAROK_EXPORT ProxyAlbum : public Meta::Album, private Meta::Observer
     {
         public:
         ProxyAlbum( Collections::ProxyCollection *coll, Meta::AlbumPtr album );
@@ -156,7 +156,7 @@ namespace Meta {
         Meta::ArtistPtr m_albumArtist;
     };
 
-    class AMAROK_EXPORT_TESTS ProxyArtist : public Meta::Artist, private Meta::Observer
+    class AMAROK_EXPORT ProxyArtist : public Meta::Artist, private Meta::Observer
     {
         public:
         ProxyArtist( Collections::ProxyCollection *coll, Meta::ArtistPtr artist );
@@ -183,7 +183,7 @@ namespace Meta {
         QString m_name;
     };
 
-    class AMAROK_EXPORT_TESTS ProxyGenre : public Meta::Genre, private Meta::Observer
+    class AMAROK_EXPORT ProxyGenre : public Meta::Genre, private Meta::Observer
     {
         public:
         ProxyGenre( Collections::ProxyCollection *coll, Meta::GenrePtr genre );
@@ -210,7 +210,7 @@ namespace Meta {
         QString m_name;
     };
 
-    class AMAROK_EXPORT_TESTS ProxyComposer : public Meta::Composer, private Meta::Observer
+    class AMAROK_EXPORT ProxyComposer : public Meta::Composer, private Meta::Observer
     {
         public:
         ProxyComposer( Collections::ProxyCollection *coll, Meta::ComposerPtr composer );
@@ -237,7 +237,7 @@ namespace Meta {
         QString m_name;
     };
 
-    class AMAROK_EXPORT_TESTS ProxyYear : public Meta::Year, private Meta::Observer
+    class AMAROK_EXPORT ProxyYear : public Meta::Year, private Meta::Observer
     {
         public:
         ProxyYear( Collections::ProxyCollection * coll, Meta::YearPtr year );
@@ -268,7 +268,7 @@ namespace Meta {
 
     };
 
-    class AMAROK_EXPORT_TESTS ProxyLabel : public Meta::Label
+    class AMAROK_EXPORT ProxyLabel : public Meta::Label
     {
     public:
         ProxyLabel( Collections::ProxyCollection *coll, const Meta::LabelPtr &label );

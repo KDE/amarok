@@ -40,7 +40,7 @@ namespace Meta {
 
 namespace Collections {
 
-    class AMAROK_EXPORT_TESTS ProxyCollection : public Collections::Collection
+    class AMAROK_EXPORT ProxyCollection : public Collections::Collection
     {
         Q_OBJECT
         public:

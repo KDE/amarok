@@ -30,7 +30,7 @@ namespace Collections {
 
 /** The DatabaseUpdater class is a collection of function that can update the sql database from previous versions or create it from new.
  */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS DatabaseUpdater {
+class AMAROK_SQLCOLLECTION_EXPORT DatabaseUpdater {
 public:
     DatabaseUpdater( Collections::SqlCollection *collection );
     ~DatabaseUpdater();

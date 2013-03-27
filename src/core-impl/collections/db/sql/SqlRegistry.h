@@ -75,7 +75,7 @@ typedef QPair<int, QString> TrackPath;
     A single update is only done very seldom and does currently not
     need to be optimized.
 */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT SqlRegistry : public QObject
 {
     Q_OBJECT
 
