@@ -15,11 +15,11 @@
     </method>
     <method name="emitDownloadReady">
       <arg name="download" type="a{sv}" direction="in"/>
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QVariantMap"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="QVariantMap"/>
     </method>
     <method name="emitDownloadPending">
       <arg name="download" type="a{sv}" direction="in"/>
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QVariantMap"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="QVariantMap"/>
     </method>
   </interface>
 </node>
