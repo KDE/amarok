@@ -182,7 +182,8 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
 
 #ifndef Q_WS_WIN
      if( !result )
-         qDebug() << "kmimetype filetype guessing failed for" << fileName;
+         qDebug() << QString( "FileTypeResolver: file %1 (mimetype %2) not recognized as "
+                "Amarok-compatible" ).arg( fileName, mimetype->name() ).toLocal8Bit().data();
 #endif
 
     if( result && !result->isValid() ) {
