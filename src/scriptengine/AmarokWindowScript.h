@@ -42,6 +42,9 @@ namespace AmarokScript
             void addSettingsSeparator();
             void showBrowser( QString browser ) const;
 //TODO: show Tray Icon, Show Splash Screen
+        signals:
+            void prepareToQuit();
+
         private:
             /**
               * adds an action with the given ID and title to the given menu

@@ -41,7 +41,7 @@ namespace AmarokScript
 
     void AmarokScript::quitAmarok()
     {
-        kapp->quit();
+        App::instance()->quit();
     }
 
     void AmarokScript::debug( const QString& text ) const

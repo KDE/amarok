@@ -66,7 +66,7 @@ namespace Mpris1
     void RootHandler::Quit()
     {
         // Same as KStandardAction::Quit
-        kapp->quit();
+        App::instance()->quit();
     }
 
     Version RootHandler::MprisVersion()

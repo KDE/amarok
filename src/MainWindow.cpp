@@ -468,7 +468,7 @@ MainWindow::closeEvent( QCloseEvent *e )
     }
 
     e->accept();
-    kapp->quit();
+    App::instance()->quit();
 #endif
 }
 
@@ -769,7 +769,7 @@ MainWindow::createActions()
     ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setIcon( KIcon( "configure-amarok" ) );
     ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setMenuRole(QAction::PreferencesRole); // Define OS X Prefs menu here, removes need for ifdef later
 
-    KStandardAction::quit( kapp, SLOT( quit() ), ac );
+    KStandardAction::quit( App::instance(), SLOT( quit() ), ac );
 
     KAction *action = new KAction( KIcon( "document-open" ), i18n("&Add Media..."), this );
     ac->addAction( "playlist_add", action );

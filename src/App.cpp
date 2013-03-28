@@ -680,15 +680,8 @@ void App::quit()
     DEBUG_BLOCK
     The::playlistManager()->completePodcastDownloads();
 
+    // Following signal is relayed to scripts, which may block quitting for a while
     emit prepareToQuit();
-    /*
-    if( MediaBrowser::instance() && MediaBrowser::instance()->blockQuit() )
-    {
-        // don't quit yet, as some media devices still have to finish transferring data
-        QTimer::singleShot( 100, this, SLOT( quit() ) );
-        return;
-    }
-    */
     KApplication::quit();
 }
 

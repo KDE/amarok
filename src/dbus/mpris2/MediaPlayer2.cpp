@@ -69,7 +69,7 @@ bool MediaPlayer2::CanQuit() const
 
 void MediaPlayer2::Quit() const
 {
-    kapp->quit();
+    App::instance()->quit();
 }
 
 bool MediaPlayer2::CanSetFullscreen() const
