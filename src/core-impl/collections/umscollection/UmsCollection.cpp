@@ -74,7 +74,7 @@ UmsCollectionFactory::init()
     // detect UMS devices that were already connected on startup
     QString query( "IS StorageAccess" );
     QList<Solid::Device> devices = Solid::Device::listFromQuery( query );
-    foreach( Solid::Device device, devices )
+    foreach( const Solid::Device &device, devices )
     {
         if( identifySolidDevice( device.udi() ) )
             createCollectionForSolidDevice( device.udi() );
@@ -140,7 +140,16 @@ UmsCollectionFactory::identifySolidDevice( const QString &udi ) const
     if( device.vendor().contains( "Apple", Qt::CaseInsensitive ) )
         return false;
 
-    // everything okay, lets see whether there is parent USB StorageDrive device
+    // everything okay, check whether the device is a data CD
+    if( device.is<Solid::OpticalDisc>() )
+    {
+        const Solid::OpticalDisc *disc = device.as<Solid::OpticalDisc>();
+        if( disc && ( disc->availableContent() & Solid::OpticalDisc::Data ) )
+            return true;
+        return false;
+    }
+
+    // check whether there is parent USB StorageDrive device
     while( device.isValid() )
     {
         if( device.is<Solid::StorageDrive>() )
