@@ -87,7 +87,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/shared
 )
 
-set( QT_MIN_VERSION "4.8.0" )
+set( QT_MIN_VERSION "4.8.2" )
 set( KDE_MIN_VERSION "4.8.4" )
 find_package( KDE4 REQUIRED ) # honors QT_MIN_VERSION
 include( KDE4Defaults )
