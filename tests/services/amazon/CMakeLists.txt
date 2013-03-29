@@ -30,8 +30,8 @@ ${KDE4_KDEUI_LIBS}
 ${QT_QTTEST_LIBRARY}
 ${QT_QTCORE_LIBRARY}
 amarokcore
-amaroklib
-amarok_service_amazonstore )
+amaroklib )
+
 
 
 #------------------------ Test AmazonShoppingCart --------------------------
@@ -76,8 +76,8 @@ ${KDE4_KDEUI_LIBS}
 ${QT_QTTEST_LIBRARY}
 ${QT_QTCORE_LIBRARY}
 amarokcore
-amaroklib
-amarok_service_amazonstore )
+amaroklib )
+
 
 
 #------------------------ Test Meta::AmazonArtist ---------------------------------
@@ -94,8 +94,7 @@ ${KDE4_KDEUI_LIBS}
 ${QT_QTTEST_LIBRARY}
 ${QT_QTCORE_LIBRARY}
 amarokcore
-amaroklib
-amarok_service_amazonstore )
+amaroklib )
 
 
 #------------------------ Test Meta::AmazonItem ---------------------------------
@@ -112,8 +111,7 @@ ${KDE4_KDEUI_LIBS}
 ${QT_QTTEST_LIBRARY}
 ${QT_QTCORE_LIBRARY}
 amarokcore
-amaroklib
-amarok_service_amazonstore )
+amaroklib )
 
 
 #------------------------ Test Meta::AmazonTrack ---------------------------------
@@ -130,8 +128,7 @@ ${KDE4_KDEUI_LIBS}
 ${QT_QTTEST_LIBRARY}
 ${QT_QTCORE_LIBRARY}
 amarokcore
-amaroklib
-amarok_service_amazonstore )
+amaroklib )
 
 
 #------------------------ Test AmazonParser --------------------------------------
@@ -153,5 +150,4 @@ ${QT_QTTEST_LIBRARY}
 ${QT_QTCORE_LIBRARY}
 ${QT_QTXML_LIBRARY}
 amarokcore
-amaroklib
-amarok_service_amazonstore )
+amaroklib )
