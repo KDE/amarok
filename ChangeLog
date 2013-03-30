@@ -16,6 +16,8 @@ VERSION 2.8-Beta 1
    * Added Ctrl+H shortcut to randomize playlist, patch by Harsh Gupta. (BR 208061)
 
   CHANGES:
+   * Add note about generating .mood files into Moodbar Options; patch by Harsh
+     Gupta with tweaks by Matěj Laitl. (BR 289483)
    * Amarok now depends on Qt 4.8.2
    * Add prepareToQuit() signal to Amarok.Window script bindings; patch by
      Anmol Ahuja. (BR 241066)
