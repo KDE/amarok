@@ -6,3 +6,6 @@
 /*The number of tracks that are used for the SqlCollection performance tests/stress tests.
   It should be a multiple of 1000, check the unit tests to see why*/
   #define AMAROK_SQLCOLLECTION_STRESS_TEST_TRACK_COUNT ${STRESS_TEST_TRACK_COUNT}
+
+/*The location of the built utilities in the tree */
+#define AMAROK_OVERRIDE_UTILITIES_PATH "${AMAROK_UTILITIES_DIR}"

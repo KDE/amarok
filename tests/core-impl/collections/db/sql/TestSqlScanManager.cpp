@@ -48,6 +48,10 @@ TestSqlScanManager::initTestCase()
     // Amarok does not force LC_ALL=C but obviously the test does it which
     // will prevent scanning of files with umlauts.
 
+    //Tell GenericScanManager that we want to use the recently built scanner, not an installed version.
+    const QString overridePath = QString( AMAROK_OVERRIDE_UTILITIES_PATH );
+    qApp->setProperty( "overrideUtilitiesPath", overridePath );
+
     // that is the original mp3 file that we use to generate the "real" tracks
     m_sourcePath = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/audio/Platz 01.mp3" );
     QVERIFY( QFile::exists( m_sourcePath ) );
@@ -64,6 +68,8 @@ TestSqlScanManager::initTestCase()
     SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
     m_collection->setMountPointManager( mock );
     m_scanManager = m_collection->scanManager();
+    connect( m_scanManager, SIGNAL(succeeded()), SIGNAL(scanManagerResult()) );
+    connect( m_scanManager, SIGNAL(failed(QString)), SIGNAL(scanManagerResult()));
 
     AmarokConfig::setScanRecursively( true );
     AmarokConfig::setMonitorChanges( false );
@@ -132,7 +138,6 @@ void
 TestSqlScanManager::testScanSingle()
 {
     m_collectionUpdatedCount = 0;
-
     createSingleTrack();
     fullScanAndWait();
 
@@ -1056,9 +1061,10 @@ TestSqlScanManager::fullScanAndWait()
 {
     QScopedPointer<Capabilities::CollectionScanCapability> csc( m_collection->create<Capabilities::CollectionScanCapability>());
     if( csc )
+    {
         csc->startFullScan();
-
-    waitScannerFinished();
+        waitScannerFinished();
+    }
 }
 
 void
@@ -1090,8 +1096,13 @@ void
 TestSqlScanManager::waitScannerFinished()
 {
     QVERIFY( m_scanManager->isRunning() );
-    QVERIFY2( QTest::kWaitForSignal( m_scanManager, SIGNAL(succeeded()), 60*1000 ),
-              "ScanManager didn't finish scan within timeout" );
+    QSignalSpy succeedSpy( m_scanManager, SIGNAL(succeeded()));
+    QSignalSpy failSpy( m_scanManager, SIGNAL(failed(QString)));
+    QVERIFY2( QTest::kWaitForSignal( this, SIGNAL(scanManagerResult()), 60*1000),
+              "Scan Manager timed out without a result" );
+    QCOMPARE( succeedSpy.count(), 1);
+    QCOMPARE( failSpy.count(), 0);
+
     QVERIFY( !m_scanManager->isRunning() );
 }
 

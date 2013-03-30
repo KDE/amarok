@@ -43,6 +43,9 @@ class TestSqlScanManager : public QObject
 public:
     TestSqlScanManager();
 
+signals:
+    void scanManagerResult();
+
 private slots:
     void initTestCase();
     void cleanupTestCase();

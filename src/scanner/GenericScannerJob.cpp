@@ -171,14 +171,29 @@ GenericScannerJob::abort()
 QString
 GenericScannerJob::scannerPath()
 {
-    // TODO: For testing it would be good to specify the scanner in the build directory
+    // Defined in the tests so we use the recently built scanner for testing
+    const QString overridePath = qApp->property( "overrideUtilitiesPath" ).toString();
+    QString path;
+    if( overridePath.isEmpty() ) // Not running a test
+    {
+        path = KStandardDirs::locate( "exe", "amarokcollectionscanner" );
 
-    QString path = KStandardDirs::locate( "exe", "amarokcollectionscanner" );
+        // If the binary is not in $PATH, then search in the application folder too
+        if( path.isEmpty() )
+            path = App::applicationDirPath() + QDir::separator() + "amarokcollectionscanner";
+    }
+    else
+    {
+        // Running a test, use the path + append collectionscanner
+        path = overridePath + QDir::separator() + "collectionscanner" + QDir::separator() + "amarokcollectionscanner";
+    }
 
-    // If the binary is not in $PATH, then search in the application folder too
-    if( path.isEmpty() )
-        path = App::applicationDirPath() + QDir::separator() + "amarokcollectionscanner";
-
+    if( !QFile::exists( path ) )
+    {
+        error() << "Cannot find amarokcollectionscanner! Check your install";
+        emit failed( i18n( "Could not find amarokcollectionscanner!" ) );
+        return QString();
+    }
     return path;
 }
 
@@ -193,6 +208,7 @@ GenericScannerJob::createScannerProcess( bool restart )
         if( !m_scannerStateMemory->create( SHARED_MEMORY_SIZE ) )
         {
             warning() << "Unable to create shared memory for collection scanner";
+            warning() << "Shared Memory error: " << m_scannerStateMemory->errorString();
             delete m_scannerStateMemory;
             m_scannerStateMemory = 0;
         }

@@ -108,7 +108,7 @@ class GenericScannerJob : public ThreadWeaver::Job
 
     private:
         /** Returns the path to the collection scanner */
-        static QString scannerPath();
+        QString scannerPath();
 
         /** Tries to create the scanner process.
          *  If unable to create the scanner a failed signal will
