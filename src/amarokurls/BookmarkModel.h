@@ -82,7 +82,7 @@ public:
     void reloadFromDb();
     void editBookmark( int id );
 
-    QModelIndex createIndex( int row, int column, BookmarkViewItemPtr item ) const;
+    QModelIndex createIndex( int row, int column, const BookmarkViewItemPtr &item ) const;
     //only use the above method
     QModelIndex createIndex( int, int, void * ptr = 0 ) const
     {

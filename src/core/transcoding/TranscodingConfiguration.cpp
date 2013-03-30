@@ -116,11 +116,11 @@ Configuration::prettyName() const
     {
         case Property::TRADEOFF:
         {
-            int currValue = m_values.value( name ).toInt();
-            int min = property.min();
-            int max = property.max();
+            const int currValue = m_values.value( name ).toInt();
+            const int min = property.min();
+            const int max = property.max();
             Q_ASSERT( min <= currValue && currValue <= max );
-            if( property.valueLabels().size() == ( property.max() - property.min() + 1 ) )
+            if( property.valueLabels().size() == ( max - min + 1 ) )
                 propertyText = property.valueLabels().at( currValue - min );
             else
                 propertyText = i18nc( "%1 example: 'Compression level' %2 example: '5'",

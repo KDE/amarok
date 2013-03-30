@@ -69,7 +69,7 @@ class OSDWidget : public QWidget
         void setDuration( int ms ) { m_duration = ms; }
         void setTextColor( const QColor &color );
 
-        inline int yOffset() const { return m_yOffset; }
+        inline uint yOffset() const { return m_yOffset; }
         void setYOffset( int y ) { m_yOffset = y; }
 
         inline int alignment() const { return m_alignment; }

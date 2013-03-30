@@ -123,17 +123,13 @@ BookmarkModel::data( const QModelIndex & index, int role ) const
 
 
 QModelIndex
-BookmarkModel::createIndex( int row, int column, BookmarkViewItemPtr item ) const
+BookmarkModel::createIndex( int row, int column, const BookmarkViewItemPtr &item ) const
 {
     quint32 index = qHash( item.data() );
-    bool debugIt = false;
-    if( m_viewItems.contains( index ) )
-        debugIt = false;
-    else
+    if( !m_viewItems.contains( index ) )
         m_viewItems[ index ] = item;
     QModelIndex ret = QAbstractItemModel::createIndex( row, column, index );
-//    if( debugIt )
-//        debug() << "created " << ret << " with " << ret.parent().internalId();
+//    debug() << "created " << ret << " with " << ret.parent().internalId();
     return ret;
 }
 

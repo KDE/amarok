@@ -26,9 +26,9 @@
 #include <QDesktopWidget>
 
 NotificationsConfig::NotificationsConfig( QWidget* parent )
-    : m_oldAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) )
+    : ConfigDialogBase( parent ) 
+    , m_oldAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) )
     , m_oldYOffset( AmarokConfig::osdYOffset() )
-    , ConfigDialogBase( parent )
 {
     setupUi( this );
 
