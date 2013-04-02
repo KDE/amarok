@@ -235,9 +235,10 @@ set(libstatusbar_SRCS
 # META
 #####################################################################
 set(libmetaimpl_SRCS
+    core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
-    core-impl/playlists/providers/user/UserPlaylistProvider.cpp
+    core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp
     core-impl/playlists/types/file/xspf/XSPFPlaylist.cpp
     core-impl/capabilities/AlbumActionsCapability.cpp
@@ -385,6 +386,7 @@ set(libplaylist_SRCS
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
     playlist/PlaylistModelStack.cpp
+    playlist/PlaylistRestorer.cpp
     playlist/PlaylistQueueEditor.cpp
     playlist/PlaylistSortWidget.cpp
     playlist/PlaylistViewUrlGenerator.cpp

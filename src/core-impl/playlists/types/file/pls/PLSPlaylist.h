@@ -19,62 +19,29 @@
 
 #include "core-impl/playlists/types/file/PlaylistFile.h"
 
-class QTextStream;
-class QFile;
-
 namespace Playlists {
-
-class PLSPlaylist;
-
-typedef KSharedPtr<PLSPlaylist> PLSPlaylistPtr;
-typedef QList<PLSPlaylistPtr> PLSPlaylistList;
-
 /**
-	@author Bart Cerneels <bart.cerneels@kde.org>
-*/
+ * @author Bart Cerneels <bart.cerneels@kde.org>
+ */
 class AMAROK_EXPORT PLSPlaylist : public PlaylistFile
 {
     public:
-        PLSPlaylist();
-        PLSPlaylist( Meta::TrackList tracks );
-        PLSPlaylist( const KUrl &url );
-
-        ~PLSPlaylist();
-
-        /* Playlist virtual functions */
-        virtual KUrl uidUrl() const { return m_url; }
-        virtual QString name() const { return prettyName(); }
-        virtual QString prettyName() const { return m_url.fileName(); }
-        virtual QString description() const;
-
-        virtual int trackCount() const;
-        virtual Meta::TrackList tracks();
-        virtual void triggerTrackLoad();
-
-        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
-        virtual void removeTrack( int position );
+        PLSPlaylist( const KUrl &url, PlaylistProvider *provider = 0 );
 
         /* PlaylistFile methods */
-        bool isWritable();
-        void setName( const QString &name );
-        bool save( const KUrl &location, bool relative );
-        bool load( QTextStream &stream ) { return loadPls( stream ); }
+        using PlaylistFile::load;
+        virtual bool load( QTextStream &stream ) { return loadPls( stream ); }
+
+        virtual QString extension() const { return "pls"; }
+        virtual QString mimetype() const { return "audio/x-scpls"; }
+
+    protected:
+        virtual void savePlaylist( QFile &file );
 
     private:
         bool loadPls( QTextStream &stream );
         unsigned int loadPls_extractIndex( const QString &str ) const;
-
-        KUrl m_url;
-
-        bool m_tracksLoaded;
-        Meta::TrackList m_tracks;
-
-        QString m_name;
 };
-
 }
-
-Q_DECLARE_METATYPE( Playlists::PLSPlaylistPtr )
-Q_DECLARE_METATYPE( Playlists::PLSPlaylistList )
 
 #endif

@@ -131,11 +131,11 @@ void InfoApplet::linkClicked( const QUrl & url )
     }
     else if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) )
     {
-        new Playlists::XSPFPlaylist( url, true );
+        // FIXME: this doesn't work (triggerTrackLoad is not called) and leaks the playlist instance
+        new Playlists::XSPFPlaylist( url, 0, Playlists::XSPFPlaylist::AppendToPlaylist );
     }
     else
         QDesktopServices::openUrl( url.toString() );
 }
 
 #include "InfoApplet.moc"
-

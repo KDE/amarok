@@ -553,13 +553,13 @@ SqlPodcastProvider::addChannel( Podcasts::PodcastChannelPtr channel )
 {
     Podcasts::SqlPodcastChannelPtr sqlChannel =
             SqlPodcastChannelPtr( new Podcasts::SqlPodcastChannel( this, channel ) );
-    m_channels <<  sqlChannel;
+    m_channels << sqlChannel;
 
     if( sqlChannel->episodes().count() == 0 )
         updateSqlChannel( sqlChannel );
 
-    emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( sqlChannel ) );
-    return Podcasts::PodcastChannelPtr::dynamicCast( sqlChannel );
+    emit playlistAdded( Playlists::PlaylistPtr( sqlChannel.data() ) );
+    return PodcastChannelPtr( sqlChannel.data() );
 }
 
 Podcasts::PodcastEpisodePtr

@@ -75,7 +75,7 @@ class PlaylistBrowserModel : public QAbstractItemModel,
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
         virtual bool canFetchMore( const QModelIndex &parent ) const;
-        virtual void fetchMore ( const QModelIndex &parent );
+        virtual void fetchMore( const QModelIndex &parent );
 
         virtual QStringList mimeTypes() const;
         virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
@@ -84,6 +84,7 @@ class PlaylistBrowserModel : public QAbstractItemModel,
 
         /* Playlists::PlaylistObserver methods */
         virtual void metadataChanged( Playlists::PlaylistPtr playlist );
+        virtual void tracksLoaded( Playlists::PlaylistPtr ) {}
         virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position );
         virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
 

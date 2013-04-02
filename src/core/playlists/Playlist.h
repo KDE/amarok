@@ -110,6 +110,17 @@ namespace Playlists
              */
             virtual void trackRemoved( PlaylistPtr playlist, int position ) = 0;
 
+            /**
+             * This method is called after loading of playlist is finished
+             * (which was started by triggerTrackLoad()) and all tracks are already added.
+             *
+             * @param playlist playlist loading of which has finished
+             *
+             * @note this method may get called from non-main thread and must be
+             * implemented in a thread-safe manner
+             */
+            virtual void tracksLoaded( PlaylistPtr playlist ) = 0;
+
         private:
             QSet<PlaylistPtr> m_playlistSubscriptions;
             QMutex m_playlistSubscriptionsMutex; // guards access to m_playlistSubscriptions
@@ -133,7 +144,6 @@ namespace Playlists
 
             virtual PlaylistProvider *provider() const { return 0; }
 
-            /**override showing just the filename */
             virtual void setName( const QString &name );
 
             /**
@@ -158,10 +168,15 @@ namespace Playlists
              *
              * Implementors, you should start a background job in this method to
              * actually load tracks, calling notifyObservers[Something]Added/Changed()
-             * as appropriate. You should also use MetaProxy::Track as a second-level
-             * lazy-loading so that you can return more quickly.
+             * as appropriate.
+             * It is guaranteed that tracksLoaded() observer method will be called
+             * exactly once, either sooner (before returning from this method) or
+             * later (asynchronously perhaps from a different thread).
              *
-             * Default implementation does nothing.
+             * Implementors should also use MetaProxy::Track as a second-level
+             * lazy-loading.
+             *
+             * Default implementation just calls notifyObserversTracksLoaded().
              */
             virtual void triggerTrackLoad();
 
@@ -217,6 +232,19 @@ namespace Playlists
              */
             virtual void setGroups( const QStringList &groups );
 
+            // FIXME: two methods below are a temporary solution
+            // and should be removed after support of async loading will
+            // added everywhere
+            /**
+             * Call this method to assure synchronously loading.
+             * @note not all playlist implemetations support asynchronous loading
+             */
+            KDE_DEPRECATED void makeLoadingSync() { m_async = false; }
+            /**
+             * Allows to check if asynchronously loading is deactivated
+             */
+            bool isLoadingAsync() const { return m_async; }
+
         protected:
             /**
              * Implementations must call this when metadata such as title has changed. Do
@@ -228,6 +256,14 @@ namespace Playlists
              * and add the call!
              */
             void notifyObserversMetadataChanged();
+
+            /**
+             * Implementations must call this when playlist loading started
+             * by trriggerTrackLoad() is finished and all tracks are added.
+             *
+             * @note calling this from (code called by) Playlist constructor is FORBIDDEN.
+             */
+            void notifyObserversTracksLoaded();
 
             /**
              * Implementations must call this when a track is added to playlist
@@ -252,6 +288,7 @@ namespace Playlists
 
             QSet<PlaylistObserver *> m_observers;
             QReadWriteLock m_observersLock; // guards access to m_observers
+            bool m_async;
     };
 }
 

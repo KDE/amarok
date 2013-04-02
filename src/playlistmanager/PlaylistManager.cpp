@@ -307,37 +307,6 @@ PlaylistManager::playlistProvider(int category, QString name)
     return 0;
 }
 
-void
-PlaylistManager::downloadPlaylist( const KUrl &path, const Playlists::PlaylistFilePtr playlist )
-{
-    KIO::StoredTransferJob *downloadJob =  KIO::storedGet( path );
-
-    m_downloadJobMap[downloadJob] = playlist;
-
-    connect( downloadJob, SIGNAL( result( KJob * ) ),
-             this, SLOT( downloadComplete( KJob * ) ) );
-
-    Amarok::Components::logger()->newProgressOperation( downloadJob, i18n( "Downloading Playlist" ) );
-}
-
-void
-PlaylistManager::downloadComplete( KJob *job )
-{
-    if( !job->error() == 0 )
-    {
-        //TODO: error handling here
-        return ;
-    }
-
-    Playlists::PlaylistFilePtr playlist = m_downloadJobMap.take( job );
-
-    QString contents = static_cast<KIO::StoredTransferJob *>(job)->data();
-    QTextStream stream;
-    stream.setString( &contents );
-
-    playlist->load( stream );
-}
-
 bool
 PlaylistManager::save( Meta::TrackList tracks, const QString &name,
                        Playlists::PlaylistProvider *toProvider, bool editName )

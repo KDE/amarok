@@ -76,7 +76,6 @@ PlaylistFileProvider::~PlaylistFileProvider()
     //remove all, well add them again soon
     loadedPlaylistsConfig().deleteGroup();
     //Write loaded playlists to config file
-    debug() << m_playlists.size()  << " Playlists loaded";
     foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
     {
         KUrl url = playlistFile->uidUrl();
@@ -151,29 +150,33 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     switch( format )
     {
         case Playlists::PLS:
-            playlistFile = new Playlists::PLSPlaylist( tracks );
+            playlistFile = new Playlists::PLSPlaylist( path, this );
             break;
         case Playlists::M3U:
-            playlistFile = new Playlists::M3UPlaylist( tracks );
+            playlistFile = new Playlists::M3UPlaylist( path, this );
             break;
         case Playlists::XSPF:
-            playlistFile = new Playlists::XSPFPlaylist( tracks );
+            playlistFile = new Playlists::XSPFPlaylist( path, this );
             break;
-        default:
+        case Playlists::XML:
+        case Playlists::RAM:
+        case Playlists::SMIL:
+        case Playlists::ASX:
+        case Playlists::Unknown:
             // this should not happen since we set the format to XSPF above.
             return Playlists::PlaylistPtr();
     }
     playlistFile->setName( filename );
-    playlistFile->save( path, true );
-    playlistFile->setProvider( this );
+    playlistFile->addTracks( tracks );
+    playlistFile->save( true );
 
     Playlists::PlaylistFilePtr playlistPtr( playlistFile );
     m_playlists << playlistPtr;
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;
-    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( playlistPtr );
-    emit playlistAdded( playlist );
 
+    Playlists::PlaylistPtr playlist( playlistFile );
+    emit playlistAdded( playlist );
     return playlist;
 }
 
@@ -212,12 +215,12 @@ PlaylistFileProvider::import( const KUrl &path )
     Playlists::PlaylistFilePtr playlistFile = Playlists::loadPlaylistFile( path );
     if( !playlistFile )
         return false;
-    playlistFile->setProvider( this );
 
     m_playlists << playlistFile;
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;
-    emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( playlistFile ) );
+
+    emit playlistAdded( PlaylistPtr( playlistFile.data() ) );
     return true;
 }
 
@@ -268,8 +271,8 @@ PlaylistFileProvider::loadPlaylists()
     {
         KUrl url = m_urlsToLoad.takeFirst();
         QString groups = loadedPlaylistsConfig().readEntry( url.url() );
-        Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
-        if( playlist.isNull() )
+        Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url, this );
+        if( !playlist )
         {
             Amarok::Components::logger()->longMessage(
                     i18n("The playlist file \"%1\" could not be loaded.", url.fileName() ),
@@ -278,14 +281,11 @@ PlaylistFileProvider::loadPlaylists()
             continue;
         }
 
-        //since class PlaylistFile can be used without a collection we set it manually
-        playlist->setProvider( this );
-
         if( !groups.isEmpty() && playlist->isWritable() )
             playlist->setGroups( groups.split( ',',  QString::SkipEmptyParts ) );
 
         m_playlists << playlist;
-        emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( playlist ) );
+        emit playlistAdded( PlaylistPtr( playlist.data() ) );
     }
 
     //give the mainloop time to run
@@ -319,8 +319,7 @@ PlaylistFileProvider::slotSaveLater() //SLOT
 {
     foreach( Playlists::PlaylistFilePtr playlist, m_saveLaterPlaylists )
     {
-        KUrl url = playlist->uidUrl();
-        playlist->save( url, true ); //TODO: read relative type when loading
+        playlist->save( true ); //TODO: read relative type when loading
     }
 
     m_saveLaterPlaylists.clear();

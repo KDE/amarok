@@ -221,7 +221,7 @@ Playlist::Controller::insertOptioned( Playlists::PlaylistPtr playlist, int optio
     DEBUG_BLOCK
     if( !playlist )
         return;
-
+    playlist->makeLoadingSync();
     playlist->triggerTrackLoad();
     insertOptioned( playlist->tracks(), options );
 }
@@ -269,6 +269,7 @@ void
 Playlist::Controller::insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist )
 {
     DEBUG_BLOCK
+    playlist->makeLoadingSync();
     playlist->triggerTrackLoad();
     Meta::TrackList tl( playlist->tracks() );
     insertTracks( topModelRow, tl );
@@ -281,6 +282,7 @@ Playlist::Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList 
     Meta::TrackList tl;
     foreach( Playlists::PlaylistPtr playlist, playlists )
     {
+        playlist->makeLoadingSync();
         playlist->triggerTrackLoad();
         tl += playlist->tracks();
     }
@@ -569,6 +571,7 @@ Playlist::Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
             Playlists::PlaylistPtr playlist = Playlists::expand( track ); //expand() can return 0 if the KIO job times out
             if( playlist )
             {
+                playlist->makeLoadingSync();
                 playlist->triggerTrackLoad(); //playlist track loading is on demand.
                 //since this is a playlist masqueurading as a single track, make a MultiTrack out of it:
                 if ( playlist->tracks().count() > 0 )

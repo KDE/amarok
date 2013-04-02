@@ -170,11 +170,10 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& nam
                 this )
             );
     m_root->m_childPlaylists << sqlPlaylist;
-    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( sqlPlaylist );
+    Playlists::PlaylistPtr playlist( sqlPlaylist.data() );
 
     emit playlistAdded( playlist );
-
-    return playlist; //assumes insertion in db was successful!
+    return playlist; // assumes insertion in db was successful!
 }
 
 void

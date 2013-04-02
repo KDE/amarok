@@ -31,7 +31,7 @@ class TestDirectoryLoader : public TestBase
 Q_OBJECT
 
 public:
-    TestDirectoryLoader( const QStringList args, const QString &logPath );
+    TestDirectoryLoader( const QStringList &args, const QString &logPath );
 
 public slots:
     void loadersFinished();

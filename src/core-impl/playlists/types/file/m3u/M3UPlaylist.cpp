@@ -31,125 +31,20 @@
 #include <QFileInfo>
 #include <QTextStream>
 
-namespace Playlists {
+using namespace Playlists;
 
-M3UPlaylist::M3UPlaylist()
-    : m_url( Playlists::newPlaylistFilePath( "m3u" ) )
-    , m_tracksLoaded( true )
+M3UPlaylist::M3UPlaylist( const KUrl &url, PlaylistProvider *provider )
+    : PlaylistFile( url, provider )
 {
-    m_name = m_url.fileName();
-}
-
-M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
-    : m_url( Playlists::newPlaylistFilePath( "m3u" ) )
-    , m_tracksLoaded( true )
-    , m_tracks( tracks )
-{
-    m_name = m_url.fileName();
-}
-
-M3UPlaylist::M3UPlaylist( const KUrl &url )
-    : m_url( url )
-    , m_tracksLoaded( false )
-{
-    m_name = m_url.fileName();
-}
-
-M3UPlaylist::~M3UPlaylist()
-{
-}
-
-QString
-M3UPlaylist::description() const
-{
-    KMimeType::Ptr mimeType = KMimeType::mimeType( "audio/x-mpegurl" );
-    return QString( "%1 (%2)").arg( mimeType->name(), "m3u" );
-}
-
-int
-M3UPlaylist::trackCount() const
-{
-    if( m_tracksLoaded )
-        return m_tracks.count();
-
-    //TODO: count the number of lines starting with #
-    return -1;
-}
-
-Meta::TrackList
-M3UPlaylist::tracks()
-{
-    return m_tracks;
-}
-
-void
-M3UPlaylist::triggerTrackLoad()
-{
-    //TODO make sure we've got all tracks first.
-    if( m_tracksLoaded )
-        return;
-
-    //check if file is local or remote
-    if( m_url.isLocalFile() )
-    {
-        QFile file( m_url.toLocalFile() );
-        if( !file.open( QIODevice::ReadOnly ) )
-        {
-            error() << "cannot open file";
-            return;
-        }
-
-        QString contents( file.readAll() );
-        file.close();
-
-        QTextStream stream;
-        stream.setString( &contents );
-        loadM3u( stream );
-        m_tracksLoaded = true;
-    }
-    else
-    {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
-    }
-}
-
-void
-M3UPlaylist::addTrack( Meta::TrackPtr track, int position )
-{
-    if( !m_tracksLoaded )
-        triggerTrackLoad();
-
-    int trackPos = position < 0 ? m_tracks.count() : position;
-    if( trackPos > m_tracks.count() )
-        trackPos = m_tracks.count();
-    m_tracks.insert( trackPos, track );
-    //set in case no track was in the playlist before
-    m_tracksLoaded = true;
-
-    notifyObserversTrackAdded( track, trackPos );
-
-    if( !m_url.isEmpty() )
-        saveLater();
-}
-
-void
-M3UPlaylist::removeTrack( int position )
-{
-    if( position < 0 || position >= m_tracks.count() )
-        return;
-    m_tracks.removeAt( position );
-
-    notifyObserversTrackRemoved( position );
-
-    if( !m_url.isEmpty() )
-        saveLater();
 }
 
 bool
 M3UPlaylist::loadM3u( QTextStream &stream )
 {
+    if( m_tracksLoaded )
+        return true;
     const QString directory = m_url.directory();
-    m_tracksLoaded = false;
+    m_tracksLoaded = true;
 
     int length = -1;
     QString extinfTitle;
@@ -193,8 +88,8 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 proxyTrack->setName( extinfTitle );
             }
             proxyTrack->setLength( length );
-            m_tracks << Meta::TrackPtr( proxyTrack.data() );
-            m_tracksLoaded = true;
+            Meta::TrackPtr track( proxyTrack.data() );
+            addProxyTrack( track );
         }
     } while( !stream.atEnd() );
 
@@ -202,30 +97,17 @@ M3UPlaylist::loadM3u( QTextStream &stream )
     return true;
 }
 
-bool
-M3UPlaylist::save( const KUrl &location, bool relative )
+void
+M3UPlaylist::savePlaylist( QFile &file )
 {
-    KUrl savePath = location;
-    //if the location is a directory append the name of this playlist.
-    if( savePath.fileName().isNull() )
-        savePath.setFileName( name() );
-
-    QFile file( savePath.path() );
-
-    if( !file.open( QIODevice::WriteOnly ) )
-    {
-        error() << "Unable to write to playlist " << savePath.path();
-        return false;
-    }
-
     QTextStream stream( &file );
 
     stream << "#EXTM3U\n";
-
     KUrl::List urls;
     QStringList titles;
     QList<int> lengths;
-    foreach( Meta::TrackPtr track, m_tracks )
+
+    foreach( const Meta::TrackPtr &track, m_tracks )
     {
         if( !track ) // see BUG: 303056
             continue;
@@ -243,45 +125,11 @@ M3UPlaylist::save( const KUrl &location, bool relative )
             stream << artist << " - " << title;
             stream << '\n';
         }
+
         if( url.protocol() == "file" )
-        {
-            if( relative )
-            {
-                const QFileInfo fi( file );
-                QString relativePath = KUrl::relativePath( fi.path(), url.path() );
-                if( relativePath.startsWith( "./" ) )
-                    relativePath.remove( 0, 2 );
-                stream << relativePath;
-            }
-            else
-            {
-                stream << url.path();
-            }
-        }
+            stream << trackLocation( track );
         else
-        {
             stream << url.url();
-        }
         stream << "\n";
     }
-
-    return true;
 }
-
-bool
-M3UPlaylist::isWritable()
-{
-    if( m_url.isEmpty() )
-        return false;
-
-    return QFileInfo( m_url.path() ).isWritable();
-}
-
-void
-M3UPlaylist::setName( const QString &name )
-{
-    m_url.setFileName( name );
-}
-
-} //namespace Playlists
-

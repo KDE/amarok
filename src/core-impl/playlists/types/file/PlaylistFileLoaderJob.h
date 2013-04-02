@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2013 Tatjana Gornak <t.gornak@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,33 +14,45 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef METAM3UPLAYLIST_H
-#define METAM3UPLAYLIST_H
+#ifndef AMAROK_PLAYLISTFILELOADERJOB_H
+#define AMAROK_PLAYLISTFILELOADERJOB_H
 
 #include "core-impl/playlists/types/file/PlaylistFile.h"
 
-namespace Playlists {
-/**
- * @author Bart Cerneels <bart.cerneels@kde.org>
- */
-class AMAROK_EXPORT M3UPlaylist : public PlaylistFile
+#include <KTemporaryFile>
+#include <ThreadWeaver/Job>
+
+class KJob;
+
+namespace Playlists
 {
-    public:
-        M3UPlaylist( const KUrl &url, PlaylistProvider *provider = 0 );
+    /**
+     * Allows threading during playlist file loading. Auto-deletes when its work is done.
+     */
+    class PlaylistFileLoaderJob :  public ThreadWeaver::Job
+    {
+        Q_OBJECT
 
-        /* PlaylistFile methods */
-        using PlaylistFile::load;
-        virtual bool load( QTextStream &stream ) { return loadM3u( stream ); }
+        public:
+            PlaylistFileLoaderJob( const PlaylistFilePtr &playlist );
 
-        virtual QString extension() const { return "m3u"; }
-        virtual QString mimetype() const { return "audio/x-mpegurl"; }
+        protected:
+            void run();
 
-    protected:
-        virtual void savePlaylist( QFile &file );
+        private slots:
+            void slotDonwloadFinished( KJob *job );
 
-    private:
-        bool loadM3u( QTextStream &stream );
-};
+            /**
+             * Responsible for notification of finished loading
+             */
+            void slotDone();
+
+        private:
+            PlaylistFilePtr m_playlist;
+            KTemporaryFile m_tempFile;
+            QString m_actualPlaylistFile; // path to local playlist file to actually load
+            QSemaphore m_downloadSemaphore;
+    };
 }
 
 #endif

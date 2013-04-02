@@ -20,62 +20,126 @@
 #include "amarok_export.h"
 #include "core/playlists/Playlist.h"
 #include "core/meta/Meta.h"
+#include "core-impl/meta/proxy/MetaProxy.h"
+
+#include <QMutex>
+#include <QSemaphore>
 
 class PlaylistProvider;
+class QFile;
 
 namespace Playlists
 {
-
     class PlaylistFile;
+    class PlaylistFileLoaderJob;
 
     typedef KSharedPtr<PlaylistFile> PlaylistFilePtr;
     typedef QList<PlaylistFilePtr> PlaylistFileList;
 
     /**
      * Base class for all playlist files
-     *
      **/
     class AMAROK_EXPORT PlaylistFile : public Playlist
     {
+        friend class PlaylistFileLoaderJob;
+
         public:
-            PlaylistFile() : Playlist(), m_provider( 0 ) {}
-            virtual ~PlaylistFile() {}
+            /* Playlist methods */
+            virtual KUrl uidUrl() const { return m_url; }
+            virtual QString name() const { return m_url.fileName(); }
+            virtual QString description() const;
+            virtual Meta::TrackList tracks() { return m_tracks; }
+            virtual int trackCount() const;
+            virtual void addTrack( Meta::TrackPtr track, int position );
+            virtual void removeTrack( int position );
+            virtual void triggerTrackLoad();
 
-            virtual bool isWritable() { return false; }
+            /**
+             * Overrides filename
+             */
+            virtual void setName( const QString &name );
+            virtual PlaylistProvider *provider() const { return m_provider; }
 
-            virtual bool save( const KUrl &url, bool relative )
-                { Q_UNUSED( url ); Q_UNUSED( relative ); return false; }
-
-            /** Loads the playlist from the stream adding the newly found tracks to the current playlist.
-                This function is called automatically if the playlist is created with a file.
-                It only needs to be called when the playlist object is created from an url.
-                @returns true if the loading was successful.
-            */
-            virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
-
+            /* PlaylistFile methods */
             virtual QList<int> queue() { return QList<int>(); }
             virtual void setQueue( const QList<int> &rows ) { Q_UNUSED( rows ); }
 
-            virtual void setName( const QString &name ) = 0;
+            /**
+             * Returns file extension which is corresponding to the playlist type
+             */
+            virtual QString extension() const = 0;
+
+            /**
+             * Returns mime type of this playlist file
+             */
+            virtual QString mimetype() const = 0;
+            virtual bool isWritable() const;
+
+            /**
+             * Saves the playlist to underlying file immediatelly.
+             *
+             * @param relative whether to use relative paths to track in the file
+             */
+            bool save( bool relative );
+
+            /**
+             * Adds tracks to internal store.
+             *
+             * @note in order to save tracks to file, save method should be called
+             **/
+            virtual void addTracks( const Meta::TrackList &tracks ) { m_tracks += tracks; }
             virtual void setGroups( const QStringList &groups ) { m_groups = groups; }
             virtual QStringList groups() { return m_groups; }
 
-            //default implementation prevents crashes related to PlaylistFileProvider
-            virtual void setProvider( PlaylistProvider *provider ) { m_provider = provider; }
-
-            /* Playlist Methods */
-            virtual PlaylistProvider *provider() const { return m_provider; }
-
         protected:
-            /** Schedule this playlist file to be saved on the next iteration of the mainloop.
-              * Useful in addTrack() and removeTrack() functions.
-              */
+            PlaylistFile( const KUrl &url, PlaylistProvider *provider );
+
+            /**
+             * Schedule this playlist file to be saved on the next iteration of the
+             * mainloop. Useful in addTrack() and removeTrack() functions.
+             */
             void saveLater();
+
+            /**
+             * Actual file-specific implementation of playlist saving.
+             */
+            virtual void savePlaylist( QFile &file ) = 0;
+
+            /**
+             * Appends MetaProxy::Track* to m_tracks and invokes notifyObserversTrackAdded()
+             */
+            void addProxyTrack( const Meta::TrackPtr &proxyTrack );
+
+            /**
+             * Loads playlist from the stream.
+             * @returns true if the loading was successful.
+             */
+            virtual bool load( QTextStream &stream ) = 0;
+
+            /**
+             * Loads playlist from QByteArray in order to postpone encoding detection procedure
+             * @returns true if the loading was successful.
+             */
+            virtual bool load( QByteArray &content ) { QTextStream stream( &content ); return load( stream ); }
+
+            /** Normalizes track location */
+            QString trackLocation( const Meta::TrackPtr &track );
 
             PlaylistProvider *m_provider;
             QStringList m_groups;
-    };
 
+            KUrl m_url;
+
+            mutable bool m_tracksLoaded;
+            mutable Meta::TrackList m_tracks;
+            QString m_name;
+            /** true if tracks path are relative */
+            bool m_relativePaths;
+
+            QMutex m_saveLock;
+            /** allows to wait for end of loading */
+            QSemaphore m_loadingDone;
+    };
 }
 
 Q_DECLARE_METATYPE( Playlists::PlaylistFilePtr )

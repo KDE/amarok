@@ -16,20 +16,162 @@
 
 #include "PlaylistFile.h"
 
+#include "core/support/Debug.h"
+#include "core-impl/playlists/types/file/PlaylistFileLoaderJob.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
+#include "playlistmanager/PlaylistManager.h"
+
+#include <KUrl>
+#include <KMimeType>
+
+#include <ThreadWeaver/Weaver>
 
 using namespace Playlists;
+
+PlaylistFile::PlaylistFile( const KUrl &url, PlaylistProvider *provider )
+             : Playlist()
+             , m_provider( provider )
+             , m_url( url )
+             , m_tracksLoaded( false )
+             , m_name( m_url.fileName() )
+             , m_relativePaths( false )
+             , m_loadingDone( 0 )
+{
+}
 
 void
 PlaylistFile::saveLater()
 {
-    if( !m_provider )
-        return;
-
     PlaylistFileProvider *fileProvider = qobject_cast<PlaylistFileProvider *>( m_provider );
-
     if( !fileProvider )
         return;
 
     fileProvider->saveLater( PlaylistFilePtr( this ) );
+}
+
+void
+PlaylistFile::triggerTrackLoad()
+{
+    if( m_tracksLoaded )
+    {
+        notifyObserversTracksLoaded();
+        return;
+    }
+    PlaylistFileLoaderJob *worker = new PlaylistFileLoaderJob( PlaylistFilePtr( this ) );
+    ThreadWeaver::Weaver::instance()->enqueue( worker );
+    if ( !isLoadingAsync() )
+        m_loadingDone.acquire(); // after loading is finished worker will release semapore
+}
+
+bool
+PlaylistFile::isWritable() const
+{
+    if( m_url.isEmpty() )
+        return false;
+
+    return QFileInfo( m_url.path() ).isWritable();
+}
+
+int
+PlaylistFile::trackCount() const
+{
+    if( m_tracksLoaded )
+        return m_tracks.count();
+    return -1;
+}
+
+void
+PlaylistFile::addTrack( Meta::TrackPtr track, int position )
+{
+    if( !track ) // playlists might contain invalid tracks. see BUG: 303056
+        return;
+
+    int trackPos = position < 0 ? m_tracks.count() : position;
+    if( trackPos > m_tracks.count() )
+        trackPos = m_tracks.count();
+    m_tracks.insert( trackPos, track );
+    // set in case no track was in the playlist before
+    m_tracksLoaded = true;
+
+    notifyObserversTrackAdded( track, trackPos );
+
+    if( !m_url.isEmpty() )
+        saveLater();
+}
+
+void
+PlaylistFile::removeTrack( int position )
+{
+    if( position < 0 || position >= m_tracks.count() )
+        return;
+
+    m_tracks.removeAt( position );
+
+    notifyObserversTrackRemoved( position );
+
+    if( !m_url.isEmpty() )
+        saveLater();
+}
+
+bool
+PlaylistFile::save( bool relative )
+{
+    m_relativePaths = relative;
+    QMutexLocker locker( &m_saveLock );
+
+    //if the location is a directory append the name of this playlist.
+    if( m_url.fileName( KUrl::ObeyTrailingSlash ).isNull() )
+        m_url.setFileName( name() );
+
+    QFile file( m_url.path() );
+
+    if( !file.open( QIODevice::WriteOnly ) )
+    {
+        warning() << QString( "Cannot write playlist (%1)." ).arg( file.fileName() )
+                  << file.errorString();
+        return false;
+    }
+
+    savePlaylist( file );
+    file.close();
+    return true;
+}
+
+void
+PlaylistFile::setName( const QString &name )
+{
+    //can't save to a new file if we don't know where.
+    if( !m_url.isEmpty() && !name.isEmpty() )
+    {
+        QString exten = QString( ".%1" ).arg(extension());
+        m_url.setFileName( name + ( name.endsWith( exten, Qt::CaseInsensitive ) ? "" : exten ) );
+    }
+}
+
+QString
+PlaylistFile::description() const
+{
+    KMimeType::Ptr mimeType = KMimeType::mimeType( mimetype() );
+    return QString( "%1 (%2)" ).arg( mimeType->name(), extension() );
+}
+
+void
+PlaylistFile::addProxyTrack( const Meta::TrackPtr &proxyTrack )
+{
+    m_tracks << proxyTrack;
+    notifyObserversTrackAdded( m_tracks.last(), m_tracks.size() - 1 );
+}
+
+QString
+PlaylistFile::trackLocation( const Meta::TrackPtr &track )
+{
+    KUrl path = track->playableUrl();
+    if( path.isEmpty() )
+        return track->uidUrl();
+
+    if( !m_relativePaths || m_url.isEmpty() || !path.isLocalFile() || !m_url.isLocalFile() )
+        return path.toEncoded();
+
+    QDir playlistDir( m_url.directory() );
+    return QUrl::toPercentEncoding( playlistDir.relativeFilePath( path.path() ), "/" );
 }

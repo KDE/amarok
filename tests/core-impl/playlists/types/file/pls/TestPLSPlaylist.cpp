@@ -19,16 +19,17 @@
 
 #include "TestPLSPlaylist.h"
 
-#include "EngineController.h"
-#include "config-amarok-test.h"
 #include "core/support/Components.h"
+#include "config-amarok-test.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
+#include "EngineController.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 
+#include <KStandardDirs>
 #include <qtest_kde.h>
 #include <ThreadWeaver/Weaver>
 
@@ -57,17 +58,23 @@ void TestPLSPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const KUrl url = dataPath( "data/playlists/test.pls" );
+    const QString testPls = "data/playlists/test.pls";
+    const KUrl url = dataPath( testPls );
     QFile playlistFile1( url.toLocalFile() );
-    QTextStream playlistStream1;
+    QTextStream playlistStream;
+
+    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.pls" );
+    QFile::remove( tempPath );
+    QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
+    QVERIFY( QFile::exists( tempPath ) );
 
     QVERIFY( playlistFile1.open( QFile::ReadOnly ) );
-    playlistStream1.setDevice( &playlistFile1 );
-    QVERIFY( playlistStream1.device() );
+    playlistStream.setDevice( &playlistFile1 );
+    QVERIFY( playlistStream.device() );
 
-    m_testPlaylist1 = new Playlists::PLSPlaylist( url );
+    m_testPlaylist1 = new Playlists::PLSPlaylist( tempPath );
     QVERIFY( m_testPlaylist1 );
-    QVERIFY( m_testPlaylist1->load( playlistStream1 ) );
+    QVERIFY( m_testPlaylist1->load( playlistStream ) );
     QCOMPARE( m_testPlaylist1->tracks().size(), 4 );
     playlistFile1.close();
 }
@@ -86,18 +93,19 @@ void TestPLSPlaylist::testSetAndGetName()
     QCOMPARE( m_testPlaylist1->name(), QString( "test.pls" ) );
 
     m_testPlaylist1->setName( "set name test" );
-    QCOMPARE( m_testPlaylist1->name(), QString( "set name test" ) );
+    QCOMPARE( m_testPlaylist1->name(), QString( "set name test.pls" ) );
 
     m_testPlaylist1->setName( "set name test aäoöuüß" );
-    QCOMPARE( m_testPlaylist1->name(), QString( "set name test aäoöuüß" ) );
+    QCOMPARE( m_testPlaylist1->name(), QString( "set name test aäoöuüß.pls" ) );
 
+    m_testPlaylist1->setName( "test" );
     m_testPlaylist1->setName( "" );
-    QCOMPARE( m_testPlaylist1->name(), QString( "playlists" ) );
+    QCOMPARE( m_testPlaylist1->name(), QString( "test.pls" ) );
 }
 
 void TestPLSPlaylist::testPrettyName()
 {
-    QCOMPARE( m_testPlaylist1->prettyName(), QString( "playlists" ) );
+    QCOMPARE( m_testPlaylist1->prettyName(), QString( "test.pls" ) );
 }
 
 void TestPLSPlaylist::testTracks()
@@ -110,12 +118,12 @@ void TestPLSPlaylist::testTracks()
     QCOMPARE( tracklist.at( 3 ).data()->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
 }
 
-void TestPLSPlaylist::testRetrievableUrl()
+void TestPLSPlaylist::testUidUrl()
 {
-    m_testPlaylist1->setName( "test.pls" );
-    QCOMPARE( m_testPlaylist1->uidUrl().pathOrUrl(), dataPath( "data/playlists/test.pls" ) );
+    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.pls" );
+    m_testPlaylist1->setName( "test" );
+    QCOMPARE( m_testPlaylist1->uidUrl().pathOrUrl(), tempPath );
 }
-
 void TestPLSPlaylist::testIsWritable()
 {
     QVERIFY( m_testPlaylist1->isWritable() );
@@ -123,6 +131,5 @@ void TestPLSPlaylist::testIsWritable()
 
 void TestPLSPlaylist::testSave()
 {
-    QFile::remove( QDir::tempPath() + QDir::separator() + "test.pls" );
-    QVERIFY( m_testPlaylist1->save( QDir::tempPath() + QDir::separator() + "test.pls", false ) );
+    QVERIFY( m_testPlaylist1->save( false ) );
 }

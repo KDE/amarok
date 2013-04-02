@@ -35,6 +35,7 @@ target_link_libraries( testmetamultitrack
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_PHONON_LIBRARY}
+    ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTTEST_LIBRARY}
     ${QT_QTCORE_LIBRARY}
     ${GOOGLEMOCK_LIBRARIES}

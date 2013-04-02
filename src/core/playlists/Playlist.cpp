@@ -57,6 +57,7 @@ PlaylistObserver::unsubscribeFrom( PlaylistPtr playlist )
 
 Playlist::Playlist()
     : m_observersLock( QReadWriteLock::Recursive ) // prevent deadlocks
+    , m_async( true )
 {
 }
 
@@ -78,6 +79,7 @@ Playlist::trackCount() const
 void
 Playlist::triggerTrackLoad()
 {
+    notifyObserversTracksLoaded();
 }
 
 void Playlist::addTrack( Meta::TrackPtr, int )
@@ -129,6 +131,17 @@ Playlist::notifyObserversMetadataChanged()
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
             observer->metadataChanged( PlaylistPtr( this ) );
+    }
+}
+
+void
+Playlist::notifyObserversTracksLoaded()
+{
+    QReadLocker locker( &m_observersLock );
+    foreach( PlaylistObserver *observer, m_observers )
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->tracksLoaded( PlaylistPtr( this ) );
     }
 }
 

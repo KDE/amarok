@@ -380,6 +380,8 @@ PlaylistBrowserModel::fetchMore ( const QModelIndex &parent )
     if( !IS_TRACK(parent) )
     {
         Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
+         // TODO: following doesn't seem to be needed, PlaylistBrowserModel seems to be able to cope with async track loading fine
+        playlist->makeLoadingSync();
         playlist->triggerTrackLoad();
     }
 }
@@ -724,6 +726,7 @@ PlaylistBrowserModel::tracksFromIndexes( const QModelIndexList &list ) const
             tracks << trackFromIndex( index );
         else if( Playlists::PlaylistPtr playlist = playlistFromIndex( index ) )
         {
+            playlist->makeLoadingSync();
             //first trigger a load of the tracks or we'll end up with an empty list
             playlist->triggerTrackLoad();
             tracks << playlist->tracks();

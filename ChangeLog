@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.8-Beta 1
   FEATURES:
+   * Playlist files are now read asynchronously when possible; patch and great
+     deal of refactoring by Tatjana Gornak. (BR 291934)
    * Added support to filter tracks to scrobble to Last.fm by label. Patch by
      Vedant Agarwala. (BR 140198)
    * Added transcoding support for Opus codec if ffmpeg is compiled with

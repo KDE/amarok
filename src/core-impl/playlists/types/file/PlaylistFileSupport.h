@@ -21,18 +21,11 @@
 #include "core/meta/Meta.h"
 #include "core-impl/playlists/types/file/PlaylistFile.h"
 
-#include <QString>
-#include <QTextStream>
-
-#include <KUrl>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-
-class QFile;
-
 namespace Playlists
 {
-    AMAROK_EXPORT PlaylistFilePtr loadPlaylistFile( const KUrl &url );
+    class PlaylistFileProvider;
+
+    AMAROK_EXPORT PlaylistFilePtr loadPlaylistFile( const KUrl &url, PlaylistFileProvider *provider = 0 );
 
     bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bool relative = false,
                              const QList<int> &queued = QList<int>() );
@@ -44,7 +37,7 @@ namespace Playlists
     bool canExpand( Meta::TrackPtr track );
     PlaylistPtr expand( Meta::TrackPtr track );
 
-    AMAROK_EXPORT KUrl newPlaylistFilePath( const QString& fileExtension );
+    AMAROK_EXPORT KUrl newPlaylistFilePath( const QString &fileExtension );
 
 }
 

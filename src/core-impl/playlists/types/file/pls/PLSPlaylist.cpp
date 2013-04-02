@@ -32,124 +32,21 @@
 #include <QString>
 #include <QFile>
 
-namespace Playlists {
+#include <iostream>
 
-PLSPlaylist::PLSPlaylist()
-    : m_url( Playlists::newPlaylistFilePath( "pls" ) )
-    , m_tracksLoaded( true )
+using namespace Playlists;
+
+PLSPlaylist::PLSPlaylist( const KUrl &url, PlaylistProvider *provider )
+    : PlaylistFile( url, provider )
 {
-    m_name = m_url.fileName();
-}
-
-PLSPlaylist::PLSPlaylist( Meta::TrackList tracks )
-    : m_url( Playlists::newPlaylistFilePath( "pls" ) )
-    , m_tracksLoaded( true )
-    , m_tracks( tracks )
-{
-    m_name = m_url.fileName();
-}
-
-PLSPlaylist::PLSPlaylist( const KUrl &url )
-    : m_url( url )
-    , m_tracksLoaded( false )
-{
-    m_name = m_url.fileName();
-}
-
-PLSPlaylist::~PLSPlaylist()
-{
-}
-
-QString
-PLSPlaylist::description() const
-{
-    KMimeType::Ptr mimeType = KMimeType::mimeType( "audio/x-scpls" );
-    return QString( "%1 (%2)").arg( mimeType->name(), "pls" );
-}
-
-int
-PLSPlaylist::trackCount() const
-{
-    if( m_tracksLoaded )
-        return m_tracks.count();
-
-    //TODO: read NumberOfEntries from footer
-    return -1;
-}
-
-Meta::TrackList
-PLSPlaylist::tracks()
-{
-    return m_tracks;
-}
-
-void
-PLSPlaylist::triggerTrackLoad()
-{
-    //TODO make sure we've got all tracks first.
-    if( m_tracksLoaded )
-        return;
-
-    //check if file is local or remote
-    if( m_url.isLocalFile() )
-    {
-        QFile file( m_url.toLocalFile() );
-        if( !file.open( QIODevice::ReadOnly ) )
-        {
-            error() << "cannot open file";
-            return;
-        }
-
-        QString contents( file.readAll() );
-        file.close();
-
-        QTextStream stream;
-        stream.setString( &contents );
-        loadPls( stream );
-        m_tracksLoaded = true;
-    }
-    else
-    {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
-    }
-}
-
-void
-PLSPlaylist::addTrack( Meta::TrackPtr track, int position )
-{
-    if( !m_tracksLoaded )
-        triggerTrackLoad();
-
-    int trackPos = position < 0 ? m_tracks.count() : position;
-    if( trackPos > m_tracks.count() )
-        trackPos = m_tracks.count();
-    m_tracks.insert( trackPos, track );
-    //set in case no track was in the playlist before
-    m_tracksLoaded = true;
-
-    notifyObserversTrackAdded( track, trackPos );
-
-    if( !m_url.isEmpty() )
-        saveLater();
-}
-
-void
-PLSPlaylist::removeTrack( int position )
-{
-    if( position < 0 || position >= m_tracks.count() )
-        return;
-    m_tracks.removeAt( position );
-
-    notifyObserversTrackRemoved( position );
-
-    if( !m_url.isEmpty() )
-        saveLater();
 }
 
 bool
 PLSPlaylist::loadPls( QTextStream &textStream )
 {
-    MetaProxy::TrackPtr proxyTrack;
+    if( m_tracksLoaded )
+        return true;
+    m_tracksLoaded = true;
 
     // Counted number of "File#=" lines.
     unsigned int entryCnt = 0;
@@ -207,15 +104,17 @@ PLSPlaylist::loadPls( QTextStream &textStream )
         numberOfEntries = entryCnt;
     }
     if( numberOfEntries == 0 )
+    {
         return true;
+    }
 
     unsigned int index;
     bool ok = false;
     bool inPlaylistSection = false;
 
+    MetaProxy::TrackPtr proxyTrack;
     /* Now iterate through all beautified lines in the buffer
-    * and parse the playlist data.
-    */
+     * and parse the playlist data. */
     QStringList::const_iterator i = lines.constBegin(), end = lines.constEnd();
     for( ; i != end; ++i )
     {
@@ -244,7 +143,8 @@ PLSPlaylist::loadPls( QTextStream &textStream )
                 url.cleanPath();
             }
             proxyTrack = new MetaProxy::Track( url );
-            m_tracks << Meta::TrackPtr( proxyTrack.data() );
+            Meta::TrackPtr track( proxyTrack.data() );
+            addProxyTrack( track );
             continue;
         }
         if( (*i).contains(regExp_Title) && proxyTrack )
@@ -286,28 +186,27 @@ PLSPlaylist::loadPls( QTextStream &textStream )
         }
         warning() << ".pls playlist: Unrecognized line: \"" << *i << "\"" << endl;
     }
-
     return true;
 }
 
-bool
-PLSPlaylist::save( const KUrl &location, bool relative )
+unsigned int
+PLSPlaylist::loadPls_extractIndex( const QString &str ) const
 {
-    Q_UNUSED( relative );
+    /* Extract the index number out of a .pls line.
+     * Example:
+     *   loadPls_extractIndex("File2=foobar") == 2 */
+    bool ok = false;
+    unsigned int ret;
+    QString tmp( str.section( '=', 0, 0 ) );
+    tmp.remove( QRegExp( "^\\D*" ) );
+    ret = tmp.trimmed().toUInt( &ok );
+    Q_ASSERT(ok);
+    return ret;
+}
 
-    KUrl savePath = location;
-    //if the location is a directory append the name of this playlist.
-    if( savePath.fileName().isNull() )
-        savePath.setFileName( name() );
-
-    QFile file( savePath.path() );
-
-    if( !file.open( QIODevice::WriteOnly ) )
-    {
-        debug() << "Unable to write to playlist " << savePath.path();
-        return false;
-    }
-
+void
+PLSPlaylist::savePlaylist( QFile &file )
+{
     //Format: http://en.wikipedia.org/wiki/PLS_(file_format)
     QTextStream stream( &file );
     //header
@@ -320,23 +219,8 @@ PLSPlaylist::save( const KUrl &location, bool relative )
         if( !track ) // see BUG: 303056
             continue;
 
-        KUrl playableUrl( track->playableUrl() );
-        QString file = playableUrl.url();
+        QString file = trackLocation( track );
 
-        if( playableUrl.isLocalFile() )
-        {
-            if( relative )
-            {
-                file = KUrl::relativePath( savePath.directory(),
-                                           playableUrl.toLocalFile() );
-                if( file.startsWith( "./" ) )
-                    file.remove( 0, 2 );
-            }
-            else
-            {
-                file = playableUrl.toLocalFile();
-            }
-        }
         stream << "File" << i << "=" << file;
         stream << "\nTitle" << i << "=";
         stream << track->name();
@@ -344,44 +228,10 @@ PLSPlaylist::save( const KUrl &location, bool relative )
         stream << track->length() / 1000;
         stream << "\n";
         i++;
-    }
+   }
 
     //footer
     stream << "NumberOfEntries=" << m_tracks.count() << endl;
     stream << "Version=2\n";
     file.close();
-    return true;
-}
-
-unsigned int
-PLSPlaylist::loadPls_extractIndex( const QString &str ) const
-{
-    /* Extract the index number out of a .pls line.
-     * Example:
-    *   loadPls_extractIndex("File2=foobar") == 2
-    */
-    bool ok = false;
-    unsigned int ret;
-    QString tmp( str.section( '=', 0, 0 ) );
-    tmp.remove( QRegExp( "^\\D*" ) );
-    ret = tmp.trimmed().toUInt( &ok );
-    Q_ASSERT(ok);
-    return ret;
-}
-
-bool
-PLSPlaylist::isWritable()
-{
-    if( m_url.isEmpty() )
-        return false;
-
-    return QFileInfo( m_url.path() ).isWritable();
-}
-
-void
-PLSPlaylist::setName( const QString &name )
-{
-    m_url.setFileName( name );
-}
-
 }

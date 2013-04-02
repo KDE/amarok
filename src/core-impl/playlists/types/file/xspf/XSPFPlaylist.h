@@ -23,16 +23,8 @@
 #include <QDomDocument>
 #include <QTextStream>
 
-class QTextStream;
-class KUrl;
-
 namespace Playlists
 {
-class XSPFPlaylist;
-
-typedef KSharedPtr<XSPFPlaylist> XSPFPlaylistPtr;
-typedef QList<XSPFPlaylistPtr> XSPFPlaylistList;
-
 /* convenience struct for internal use */
 struct XSPFTrack {
     // initialize primitive types, don't give stochasticity a chance!
@@ -54,33 +46,28 @@ struct XSPFTrack {
 typedef QList<XSPFTrack> XSPFTrackList;
 
 /**
-	@author Bart Cerneels <bart.cerneels@kde.org>
-*/
+ * @author Bart Cerneels <bart.cerneels@kde.org>
+ */
 class AMAROK_EXPORT XSPFPlaylist : public PlaylistFile, public QDomDocument
 {
 public:
-    XSPFPlaylist();
+    enum OnLoadAction {
+        NoAction, // do nothing on playlist load
+        AppendToPlaylist, // apped this playlist to play queue on load
+    };
 
     /**
-    * Creates a new XSPFPlaylist and starts loading the xspf file of the url.
-    * @param url The Url of the xspf file to load.
-    * @param autoAppend Should this playlist automatically append itself to the playlist when loaded (useful when loading a remote url as it
-    * allows the caller to do it in a "one shot" way and not have to worry about waiting untill download and parsing is completed.
-    */
-    explicit XSPFPlaylist( const KUrl &url, bool autoAppend = false );
-    XSPFPlaylist( Meta::TrackList list );
+     * Creates a new XSPFPlaylist
+     *
+     * @param url The Url of the xspf file to load.
+     * @param onLoad Should this playlist automatically append itself to the playlist when loaded (useful when loading a remote url as it
+     * allows the caller to do it in a "one shot" way and not have to worry about waiting untill download and parsing is completed.
+     */
+    explicit XSPFPlaylist( const KUrl &url, PlaylistProvider *provider = 0, OnLoadAction onLoad = NoAction );
 
     ~XSPFPlaylist();
 
-    virtual QString name() const { return title(); }
-    virtual QString description() const;
-
-    virtual int trackCount() const;
-    virtual Meta::TrackList tracks();
-    virtual void triggerTrackLoad();
-
-    virtual void addTrack( Meta::TrackPtr track, int position = -1 );
-    virtual void removeTrack( int position );
+    virtual QString name() const;
 
     /* convenience functions */
     QString title() const;
@@ -92,10 +79,10 @@ public:
     KUrl image() const;
     QDateTime date() const;
     KUrl license() const;
-    KUrl::List attribution() const ;
+    KUrl::List attribution() const;
     KUrl link() const;
 
-    /* EditablePlaylistCapability virtual functions */
+    /* Extra XSPF setter methods: */
     void setTitle( const QString &title );
     void setCreator( const QString &creator );
     void setAnnotation( const QString &annotation );
@@ -109,44 +96,41 @@ public:
     void setLink( const KUrl &link );
     void setTrackList( Meta::TrackList trackList, bool append = false );
 
-    //TODO: implement these
-    void beginMetaDataUpdate() {}
-    void endMetaDataUpdate() {}
-
-    bool isEditable() const { return true; }
-
-
-    /* Meta::Playlist virtual functions */
-    virtual KUrl uidUrl() const { return m_url; }
-
     /* PlaylistFile methods */
-    bool isWritable();
-    /** Changes both the filename and the title in XML */
-    void setName( const QString &name );
-    bool load( QTextStream &stream ) { return loadXSPF( stream ); }
-    /** save to location */
-    bool save( const KUrl &location, bool relative );
+    virtual bool load( QTextStream &stream ) { return loadXSPF( stream ); }
+    virtual bool load( QByteArray &content ) { return loadXSPF( content ); }
+    /* Overrides filename and title */
+    void setName(const QString &name);
+    virtual QString extension() const { return "xspf"; }
+    virtual QString mimetype() const { return "application/xspf+xml"; }
+
+    virtual bool save( bool relative ) { return PlaylistFile::save( relative ); }
 
     void setQueue( const QList<int> &queue );
     QList<int> queue();
 
+protected:
+    virtual void savePlaylist( QFile &file );
+
 private:
     XSPFTrackList trackList();
-    QString trackLocation( Meta::TrackPtr &track );
-    bool loadXSPF( QTextStream& );
-    bool m_tracksLoaded;
-    //cache for the tracklist since a tracks() is a called *a lot*.
-    Meta::TrackList m_tracks;
 
-    KUrl m_url;
+    /**
+     * Load file after content was set
+     */
+    void load();
+
+    /**
+     * Sets content in terms of xml document
+     * @return true is xml-document is correct, false overwise
+     */
+    bool processContent( QByteArray &content );
+
+    bool loadXSPF( QTextStream &stream );
+    bool loadXSPF( QByteArray &content );
+
     bool m_autoAppendAfterLoad;
-    bool m_relativePaths;
-    bool m_saveLock;
 };
-
 }
-
-Q_DECLARE_METATYPE( Playlists::XSPFPlaylistPtr )
-Q_DECLARE_METATYPE( Playlists::XSPFPlaylistList )
 
 #endif

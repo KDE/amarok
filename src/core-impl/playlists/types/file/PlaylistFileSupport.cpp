@@ -25,6 +25,7 @@
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
+#include "playlistmanager/file/PlaylistFileProvider.h"
 
 #include "amarokconfig.h"
 
@@ -37,18 +38,14 @@
 #include <QFile>
 #include <QFileInfo>
 
-namespace Playlists {
+using namespace Playlists;
 
 PlaylistFilePtr
-loadPlaylistFile( const KUrl &url )
+Playlists::loadPlaylistFile( const KUrl &url, PlaylistFileProvider *provider )
 {
     // note: this function can be called from out of process, so don't do any
     // UI stuff from this thread.
     DEBUG_BLOCK
-
-    QFile file;
-    KUrl fileToLoad;
-
     if( !url.isValid() )
     {
         error() << "url is not valid!";
@@ -64,98 +61,29 @@ loadPlaylistFile( const KUrl &url )
         }
     }
 
-    if( url.isLocalFile() )
-    {
-        //debug() << "local file";
-
-        file.setFileName( url.toLocalFile() );
-
-        if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-        {
-            debug() << "could not read file " << url.path();
-
-            Amarok::Components::logger()->longMessage(
-                        i18n( "Cannot read playlist (%1).", url.url() ) );
-
-            return Playlists::PlaylistFilePtr( 0 );
-        }
-        fileToLoad = url;
-    }
-    else
-    {
-        //debug() << "remote file: " << url;
-        //FIXME: for now, just do a blocking download... Someone please come up with a better way...
-
-        KTemporaryFile tempFile;
-
-        tempFile.setSuffix(  '.' + Amarok::extension( url.url() ) );
-        tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
-        if( !tempFile.open() )
-        {
-            //longMessage is thread-safe
-            Amarok::Components::logger()->longMessage(
-                        i18n( "Could not create a temporary file to download playlist.") );
-
-            return Playlists::PlaylistFilePtr( 0 ); //error
-        }
-
-
-        QString tempFileName = tempFile.fileName();
-        #ifdef Q_WS_WIN
-        // KIO::file_copy faild to overwrite an open file
-        // using KTemporary.close() is not enough here
-        tempFile.remove();
-        #endif
-        KIO::FileCopyJob *job = KIO::file_copy( url , KUrl( tempFileName ), 0774 ,
-                                                KIO::Overwrite | KIO::HideProgressInfo );
-
-        Amarok::Components::logger()->newProgressOperation( job,
-                                                            i18n("Downloading remote playlist" ) );
-
-        qRegisterMetaType<KIO::filesize_t>("KIO::filesize_t"); // this is needed or else job->exec asserts
-
-        if( !job->exec() ) //Job deletes itself after execution
-        {
-            error() << "error";
-            return Playlists::PlaylistFilePtr( 0 );
-        }
-        else
-        {
-            file.setFileName( tempFileName );
-            if( !file.open( QFile::ReadOnly ) )
-            {
-                debug() << "error opening file: " << tempFileName;
-                return Playlists::PlaylistFilePtr( 0 );
-            }
-            fileToLoad = KUrl::fromPath( file.fileName() );
-        }
-    }
-
-    PlaylistFormat format = Playlists::getFormat( fileToLoad );
-    PlaylistFile *playlist = 0;
+    PlaylistFormat format = Playlists::getFormat( url );
+    PlaylistFilePtr playlist;
     switch( format )
     {
         case PLS:
-            playlist = new PLSPlaylist( fileToLoad );
+            playlist = new PLSPlaylist( url, provider );
             break;
         case M3U:
-            playlist = new M3UPlaylist( fileToLoad );
+            playlist = new M3UPlaylist( url, provider );
             break;
         case XSPF:
-        {
-            playlist = new XSPFPlaylist( fileToLoad );
+            playlist = new XSPFPlaylist( url, provider );
             break;
-        }
         default:
-            debug() << "Could not load playlist file " << fileToLoad;
+            debug() << "Could not load playlist file " << url;
             break;
     }
 
-    return PlaylistFilePtr( playlist );
+    return playlist;
 }
 
 bool
-exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bool relative,
+Playlists::exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bool relative,
                     const QList<int> &queued )
 {
     PlaylistFormat format = Playlists::getFormat( path );
@@ -165,13 +93,13 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bool relative
     switch( format )
     {
         case PLS:
-            playlist = new PLSPlaylist( list );
+            playlist = new PLSPlaylist( path.toLocalFile() );
             break;
         case M3U:
-            playlist = new M3UPlaylist( list );
+            playlist = new M3UPlaylist( path.toLocalFile() );
             break;
         case XSPF:
-            playlist = new XSPFPlaylist( list );
+            playlist = new XSPFPlaylist( path.toLocalFile() );
             break;
         default:
             debug() << "Could not export playlist file " << path;
@@ -180,8 +108,9 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bool relative
 
     if( playlist )
     {
+        playlist->addTracks( list );
         playlist->setQueue( queued );
-        result = playlist->save( path.path(), relative );
+        result = playlist->save( relative );
     }
     else
     {
@@ -189,12 +118,12 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bool relative
                             i18n( "The used file extension is not valid for playlists." ),
                             i18n( "Unknown playlist format" ) );
     }
-    
+
     return result;
 }
 
 bool
-canExpand( Meta::TrackPtr track )
+Playlists::canExpand( Meta::TrackPtr track )
 {
     if( !track )
         return false;
@@ -203,14 +132,14 @@ canExpand( Meta::TrackPtr track )
 }
 
 PlaylistPtr
-expand( Meta::TrackPtr track )
+Playlists::expand( Meta::TrackPtr track )
 {
    //this should really be made asyncrhonous
    return Playlists::PlaylistPtr::dynamicCast( loadPlaylistFile( track->uidUrl() ) );
 }
 
 KUrl
-newPlaylistFilePath( const QString &fileExtension )
+Playlists::newPlaylistFilePath( const QString &fileExtension )
 {
     int trailingNumber = 1;
     KLocalizedString fileName = ki18n("Playlist_%1");
@@ -221,6 +150,4 @@ newPlaylistFilePath( const QString &fileExtension )
         url.setFileName( fileName.subs( ++trailingNumber ).toString() );
 
     return KUrl( QString( "%1.%2" ).arg( url.path() ).arg( fileExtension ) );
-}
-
 }

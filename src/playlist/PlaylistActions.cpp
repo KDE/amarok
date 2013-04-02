@@ -44,6 +44,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistDock.h"
 #include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistRestorer.h"
 #include "playlistmanager/PlaylistManager.h"
 
 #include <KStandardDirs>
@@ -496,58 +497,9 @@ Playlist::Actions::restoreDefaultPlaylist()
     // The PlaylistManager needs to be loaded or podcast episodes and other
     // non-collection Tracks will not be loaded correctly.
     The::playlistManager();
-
-    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Amarok::defaultPlaylistPath() );
-
-    if( playlist ) // This pointer will be 0 on first startup
-        playlist->triggerTrackLoad(); // playlist track loading is on demand
-
-    if( playlist && playlist->tracks().count() > 0 )
-    {
-        Meta::TrackList tracks = playlist->tracks();
-
-        QMutableListIterator<Meta::TrackPtr> i( tracks );
-        while( i.hasNext() )
-        {
-            i.next();
-            Meta::TrackPtr track = i.value();
-            if( ! track )
-                i.remove();
-            else if( Playlists::canExpand( track ) )
-            {
-                Playlists::PlaylistPtr playlist = Playlists::expand( track );
-                //expand() can return 0 if the KIO job errors out
-                if( playlist )
-                {
-                    i.remove();
-                    playlist->triggerTrackLoad(); //playlist track loading is on demand.
-                    Meta::TrackList newtracks = playlist->tracks();
-                    foreach( Meta::TrackPtr t, newtracks )
-                        if( t )
-                            i.insert( t );
-                }
-            }
-        }
-
-        The::playlistController()->insertTracks( 0, tracks );
-
-        QList<int> queuedRows = playlist->queue();
-        queue( playlist->queue() );
-
-        //Select previously playing track
-        const int lastPlayingRow = AmarokConfig::lastPlaying();
-        if( lastPlayingRow >= 0 )
-            Playlist::ModelStack::instance()->bottom()->setActiveRow( lastPlayingRow );
-    }
-
-    //Check if we should load the first run jingle, since there is no saved playlist to load
-    else if( AmarokConfig::playFirstRunJingle() )
-    {
-        QString jingle = KStandardDirs::locate( "data", "amarok/data/first_run_jingle.ogg" );
-        The::playlistController()->clear();
-        The::playlistController()->insertTrack( 0, CollectionManager::instance()->trackForUrl( jingle ) );
-        AmarokConfig::setPlayFirstRunJingle( false );
-    }
+    Playlist::Restorer *restorer = new Playlist::Restorer();
+    restorer->restore( Amarok::defaultPlaylistPath() );
+    connect( restorer, SIGNAL(restoreFinished()), restorer, SLOT(deleteLater()) );
 }
 
 namespace The

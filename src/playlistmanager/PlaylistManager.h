@@ -108,8 +108,6 @@ class AMAROK_EXPORT PlaylistManager : public QObject
 
         Playlists::PlaylistProvider *playlistProvider( int category, QString name );
 
-        void downloadPlaylist( const KUrl &path, const Playlists::PlaylistFilePtr playlist );
-
         /**
         *   Saves a list of tracks to a new playlist. Used in the Playlist save button.
         *   @arg tracks list of tracks to save
@@ -178,7 +176,6 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         void slotUpdated();
         void slotPlaylistAdded( Playlists::PlaylistPtr playlist );
         void slotPlaylistRemoved( Playlists::PlaylistPtr playlist );
-        void downloadComplete( KJob *job );
         void slotSyncNeeded();
 
     private:

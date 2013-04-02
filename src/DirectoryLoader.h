@@ -19,9 +19,8 @@
 #ifndef AMAROK_DIRECTORYLOADER_H
 #define AMAROK_DIRECTORYLOADER_H
 
-#include <QObject>
-
 #include "core/meta/Meta.h"
+#include "core/playlists/Playlist.h"
 
 #include <KFileItem>
 
@@ -33,7 +32,7 @@ namespace KIO {
     typedef QList<KFileItem> KFileItemList;
 }
 
-class DirectoryLoader : public QObject
+class DirectoryLoader : public QObject, public Playlists::PlaylistObserver
 {
     Q_OBJECT
 
@@ -50,23 +49,29 @@ class DirectoryLoader : public QObject
             AsyncLoading
         };
         DirectoryLoader( LoadingMode loadingMode = AsyncLoading );
-        ~DirectoryLoader();
 
         void insertAtRow( int row ); // call before init to tell the loader the row to start inserting tracks
         void init( const QList<KUrl> &urls ); //!< list all
         void init( const QList<QUrl> &urls ); //!< convience
+
+        /* PlaylistObserver methods */
+        virtual void tracksLoaded( Playlists::PlaylistPtr playlist );
+        virtual void metadataChanged(Playlists::PlaylistPtr) { }
+        virtual void trackAdded(Playlists::PlaylistPtr, Meta::TrackPtr, int) { }
+        virtual void trackRemoved(Playlists::PlaylistPtr, int) { }
 
     signals:
         void finished( const Meta::TrackList &tracks );
 
     private slots:
         void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list );
-        void listJobFinished( KJob* );
+        void listJobFinished();
         void doInsertAtRow();
 
     private:
         void finishUrlList();
-
+        /** Completes the initialization */
+        void finish();
         /**
          * Probe the file @file, if it is a playlist or a track, add it to m_tracks
          */
@@ -75,9 +80,19 @@ class DirectoryLoader : public QObject
         static bool directorySensitiveLessThan( const KFileItem &item1, const KFileItem &item2 );
 
         /**
-         * the number of directory list operations. this is used so that
-         * the last directory operations knows its the last */
+         * the number of directory list operations. This is used so that
+         * the last directory operations knows its the last
+         */
         int m_listOperations;
+        /**
+         * The number of unprocessed entities.
+         * Entity is track or playlist
+         */
+        int m_entities;
+        /**
+         * Store list of url which should be processed
+         */
+        QList<KUrl> m_urlsToLoad;
         LoadingMode m_loadingMode;
         bool m_localConnection; //!< was insertAtRow called? otherwise finishUrlList should deleteLater
         int m_row; //!< for insertAtRow

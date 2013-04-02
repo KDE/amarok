@@ -31,6 +31,7 @@
 #include <QtCore/QFileInfo>
 
 #include <qtest_kde.h>
+#include <ThreadWeaver/Weaver>
 
 QTEST_KDEMAIN( TestMetaMultiTrack, GUI )
 
@@ -55,8 +56,9 @@ void TestMetaMultiTrack::initTestCase()
     const QFileInfo file( QDir::toNativeSeparators( path ) );
     QVERIFY( file.exists() );
     const QString filePath = file.absoluteFilePath();
-    m_playlist = Playlists::PlaylistPtr::dynamicCast( Playlists::loadPlaylistFile( filePath ) );
+    m_playlist = Playlists::loadPlaylistFile( filePath ).data();
     QVERIFY( m_playlist ); // no playlist -> no test. that's life ;)
+    m_playlist->makeLoadingSync();
     m_playlist->triggerTrackLoad();
     QCOMPARE( m_playlist->name(), QString("test.pls") );
     QCOMPARE( m_playlist->trackCount(), 4 );
@@ -64,6 +66,13 @@ void TestMetaMultiTrack::initTestCase()
     // now wait for all MetaProxy::Tracks to actually load their real tracks:
     NotifyObserversWaiter wainter( m_playlist->tracks().toSet() );
     QVERIFY( QTest::kWaitForSignal( &wainter, SIGNAL(done()), 5000 ) );
+}
+
+void
+TestMetaMultiTrack::cleanupTestCase()
+{
+    // Wait for other jobs, like MetaProxys fetching meta data, to finish
+    ThreadWeaver::Weaver::instance()->finish();
 }
 
 void TestMetaMultiTrack::init()

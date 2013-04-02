@@ -44,207 +44,62 @@
 
 #include <typeinfo>
 
-namespace Playlists
+using namespace Playlists;
+
+XSPFPlaylist::XSPFPlaylist( const KUrl &url, Playlists::PlaylistProvider *provider, OnLoadAction onLoad )
+    : PlaylistFile( url, provider )
+    , QDomDocument()
+    , m_autoAppendAfterLoad( onLoad == AppendToPlaylist )
 {
-
-XSPFPlaylist::XSPFPlaylist()
-    : QDomDocument()
-    , m_tracksLoaded( false )
-    , m_relativePaths( false )
-    , m_saveLock( false )
-{
-    QDomElement root = createElement( "playlist" );
-
-    root.setAttribute( "version", 1 );
-    root.setAttribute( "xmlns", "http://xspf.org/ns/1/" );
-
-    root.appendChild( createElement( "trackList" ) );
-
-    appendChild( root );
-
-}
-
-XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
-    : QDomDocument()
-    , m_tracksLoaded( false )
-    , m_url( url )
-    , m_autoAppendAfterLoad( autoAppend )
-    , m_relativePaths( false )
-    , m_saveLock( false )
-{
-    //check if file is local or remote
-    if ( m_url.isLocalFile() )
-    {
-        QFile file( m_url.toLocalFile() );
-        if( !file.open( QIODevice::ReadOnly ) )
-        {
-            error() << "cannot open file " << url.url();
-            return;
-        }
-
-        QTextStream stream( &file );
-        stream.setAutoDetectUnicode( true );
-
-        loadXSPF( stream );
-    }
-    else
-    {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
-    }
-
-}
-
-XSPFPlaylist::XSPFPlaylist( Meta::TrackList tracks )
-    : QDomDocument()
-    , m_relativePaths( false )
-    , m_saveLock( false )
-{
-    QDomElement root = createElement( "playlist" );
-
-    root.setAttribute( "version", 1 );
-    root.setAttribute( "xmlns", "http://xspf.org/ns/0/" );
-
-    root.appendChild( createElement( "trackList" ) );
-
-    appendChild( root );
-
-    setTrackList( tracks );
-
-    m_tracks = tracks;
-    m_tracksLoaded = true;
 }
 
 XSPFPlaylist::~XSPFPlaylist()
-{}
-
-QString
-XSPFPlaylist::description() const
 {
-    if( !annotation().isEmpty() )
-        return annotation();
-
-    KMimeType::Ptr mimeType = KMimeType::mimeType( "application/xspf+xml" );
-    return QString( "%1 (%2)").arg( mimeType->name(), "xspf" );
 }
 
-bool
-XSPFPlaylist::save( const KUrl &location, bool relative )
+void
+XSPFPlaylist::savePlaylist(QFile &file)
 {
-    m_url = location;
-    //if the location is a directory append the name of this playlist.
-    if( m_url.fileName( KUrl::ObeyTrailingSlash ).isNull() )
-        m_url.setFileName( name() );
-    
-    if( relative )
+    // if trackList item exists than no need to setup new file
+    if ( documentElement().namedItem( "trackList" ).isNull() )
     {
-        m_relativePaths = true;
-        m_saveLock = true;
-        setTrackList( tracks(), false );
-        m_saveLock = false;
-    }
-    else if( m_relativePaths )
-    {
-        m_relativePaths = false;
-        m_saveLock = true;
-        setTrackList( tracks(), false );
-        m_saveLock = false;
+        QDomElement root = createElement( "playlist" );
+
+        root.setAttribute( "version", 1 );
+        root.setAttribute( "xmlns", "http://xspf.org/ns/0/" );
+
+        root.appendChild( createElement( "trackList" ) );
+
+        appendChild( root );
     }
 
-    QFile file;
-
-    if( location.isLocalFile() )
-    {
-        file.setFileName( m_url.toLocalFile() );
-    }
-    else
-    {
-        file.setFileName( m_url.path() );
-    }
-
-    if( !file.open( QIODevice::WriteOnly ) )
-    {
-        warning() << QString( "Cannot write playlist (%1)." ).arg( file.fileName() )
-                  << file.errorString();
-
-        return false;
-    }
+    setTrackList( tracks(), false );
 
     QTextStream stream( &file );
     stream.setCodec( "UTF-8" );
     QDomDocument::save( stream, 2 /*indent*/, QDomNode::EncodingFromTextStream );
-
-    return true;
 }
 
 bool
-XSPFPlaylist::loadXSPF( QTextStream &stream )
+XSPFPlaylist::processContent( QByteArray &content )
 {
     QString errorMsg;
     int errorLine, errorColumn;
 
-    QString rawText = stream.readAll();
-
-    if( !setContent( rawText, &errorMsg, &errorLine, &errorColumn ) )
+    if( !setContent( content, &errorMsg, &errorLine, &errorColumn ) )
     {
         error() << "Error loading xml file: " "(" << errorMsg << ")"
                 << " at line " << errorLine << ", column " << errorColumn;
-        return false;
+        m_tracksLoaded = false;
     }
-
-    //FIXME: this needs to be moved to whatever is creating the XSPFPlaylist
-    if( m_autoAppendAfterLoad )
-        The::playlistController()->insertPlaylist(
-                    ::Playlist::ModelStack::instance()->bottom()->rowCount(),
-                    Playlists::PlaylistPtr( this )
-                );
-
-    return true;
-}
-
-int
-XSPFPlaylist::trackCount() const
-{
-    if( m_tracksLoaded )
-        return m_tracks.count();
-
-    int trackCount = 0;
-
-    QDomNode trackList = documentElement().namedItem( "trackList" );
-    QDomNode subNode = trackList.firstChild();
-    QDomNode subSubNode;
-
-    while( !subNode.isNull() )
-    {
-        subSubNode = subNode.firstChild();
-        if( subNode.nodeName() == "track" )
-        {
-            trackCount++;
-
-            while( !subSubNode.isNull() )
-                subSubNode = subSubNode.nextSibling();
-        }
-        subNode = subNode.nextSibling();
-    }
-
-    return trackCount;
-}
-
-Meta::TrackList
-XSPFPlaylist::tracks()
-{
-    //If you do not load, m_tracks can be empty before usage.
-    triggerTrackLoad();
-
-    return m_tracks;
+    else
+        m_tracksLoaded = true;
+    return m_tracksLoaded;
 }
 
 void
-XSPFPlaylist::triggerTrackLoad()
+XSPFPlaylist::load()
 {
-    //TODO make sure we've got all tracks first.
-    if( m_tracksLoaded )
-        return;
-
     XSPFTrackList xspfTracks = trackList();
 
     foreach( const XSPFTrack &track, xspfTracks )
@@ -256,45 +111,46 @@ XSPFPlaylist::triggerTrackLoad()
        proxyTrack->setArtist( track.creator );
        proxyTrack->setLength( track.duration );
        proxyTrack->setTrackNumber( track.trackNum );
-       m_tracks << Meta::TrackPtr( proxyTrack.data() );
-    }
+       Meta::TrackPtr track( proxyTrack.data() );
+       addProxyTrack( track );
+     }
 
-    m_tracksLoaded = true;
+    //FIXME: this needs to be moved to whatever is creating the XSPFPlaylist
+    if( m_autoAppendAfterLoad )
+        The::playlistController()->insertPlaylist(
+                    ::Playlist::ModelStack::instance()->bottom()->rowCount(),
+                    Playlists::PlaylistPtr( this )
+                );
 }
 
-void
-XSPFPlaylist::addTrack( Meta::TrackPtr track, int position )
+bool
+XSPFPlaylist::loadXSPF( QTextStream &stream )
 {
-    if( !track ) // playlists might contain invalid tracks. see BUG: 303056
-        return;
+    QByteArray content = stream.readAll().toUtf8();
+    if ( !processContent( content ) )
+        return false;
+    load();
 
-    Meta::TrackList trackList = tracks();
-    int trackPos = position < 0 ? trackList.count() : position;
-    if( trackPos > trackList.count() )
-        trackPos = trackList.count();
-    trackList.insert( trackPos, track );
-    setTrackList( trackList );
-    //also add to cache
-    m_tracks.insert( trackPos, track );
-    //set in case no track was in the playlist before
-    m_tracksLoaded = true;
-
-    notifyObserversTrackAdded( track, trackPos );
+    return true;
 }
 
-void
-XSPFPlaylist::removeTrack( int position )
+bool
+XSPFPlaylist::loadXSPF( QByteArray &content )
 {
-    Meta::TrackList trackList = tracks();
-    if( position < 0  || position > trackList.count() )
-        return;
+    if ( !processContent( content ) )
+        return false;
+    load();
 
-    trackList.removeAt( position );
-    setTrackList( trackList );
-    //also remove from cache
-    m_tracks.removeAt( position );
+    return true;
+}
 
-    notifyObserversTrackRemoved( position );
+QString
+XSPFPlaylist::name() const
+{
+    if ( m_tracksLoaded )
+        return title();
+    else
+        return m_url.fileName();
 }
 
 QString
@@ -389,10 +245,10 @@ XSPFPlaylist::setTitle( const QString &title )
                                     documentElement().namedItem( "title" ).firstChild()
                                 );
     }
-
+    notifyObserversMetadataChanged();
     //write changes to file directly if we know where.
     if( !m_url.isEmpty() )
-        save( m_url, false );
+        PlaylistFile::save( false );
 }
 
 void
@@ -411,9 +267,9 @@ XSPFPlaylist::setCreator( const QString &creator )
                                             documentElement().namedItem( "creator" ).firstChild() );
     }
 
-    //write changes to file directly if we know where.
+    //write changes to file directly if we know where
     if( !m_url.isEmpty() )
-        save( m_url, false );
+        PlaylistFile::save( false );
 }
 
 void
@@ -434,12 +290,13 @@ XSPFPlaylist::setAnnotation( const QString &annotation )
 
     //write changes to file directly if we know where.
     if( !m_url.isEmpty() )
-        save( m_url, false );
+        PlaylistFile::save( false );
 }
 
 void
 XSPFPlaylist::setInfo( const KUrl &info )
 {
+
     if( documentElement().namedItem( "info" ).isNull() )
     {
         QDomNode node = createElement( "info" );
@@ -455,7 +312,7 @@ XSPFPlaylist::setInfo( const KUrl &info )
 
     //write changes to file directly if we know where.
     if( !m_url.isEmpty() )
-        save( m_url, false );
+        PlaylistFile::save( false );
 }
 
 void
@@ -476,7 +333,7 @@ XSPFPlaylist::setLocation( const KUrl &location )
 
     //write changes to file directly if we know where.
     if( !m_url.isEmpty() )
-        save( m_url, false );
+        PlaylistFile::save( false );
 }
 
 void
@@ -497,7 +354,7 @@ XSPFPlaylist::setIdentifier( const QString &identifier )
 
     //write changes to file directly if we know where.
     if( !m_url.isEmpty() )
-        save( m_url, false );
+        PlaylistFile::save( false );
 }
 
 void
@@ -518,7 +375,7 @@ XSPFPlaylist::setImage( const KUrl &image )
 
     //write changes to file directly if we know where.
     if( !m_url.isEmpty() )
-        save( m_url, false );
+        PlaylistFile::save( false );
 }
 
 void
@@ -543,7 +400,7 @@ XSPFPlaylist::setDate( const QDateTime &date )
 
     //write changes to file directly if we know where.
     if( !m_url.isEmpty() )
-        save( m_url, false );
+        PlaylistFile::save( false );
 }
 
 void
@@ -564,7 +421,7 @@ XSPFPlaylist::setLicense( const KUrl &license )
 
     //write changes to file directly if we know where.
     if( !m_url.isEmpty() )
-        save( m_url, false );
+        PlaylistFile::save( false );
 }
 
 void
@@ -600,7 +457,7 @@ XSPFPlaylist::setAttribution( const KUrl &attribution, bool append )
 
     //write changes to file directly if we know where.
     if( !m_url.isEmpty() )
-        save( m_url, false );
+        PlaylistFile::save( false );
 }
 
 void
@@ -621,7 +478,7 @@ XSPFPlaylist::setLink( const KUrl &link )
 
     //write changes to file directly if we know where.
     if( !m_url.isEmpty() )
-        save( m_url, false );
+        PlaylistFile::save( false );
 }
 
 XSPFTrackList
@@ -689,11 +546,11 @@ XSPFPlaylist::trackList()
     return list;
 }
 
-
-//documentation of attributes from http://www.xspf.org/xspf-v1.html
 void
 XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
 {
+    //documentation of attributes from http://www.xspf.org/xspf-v1.html
+
     if( documentElement().namedItem( "trackList" ).isNull() )
         documentElement().appendChild( createElement( "trackList" ) );
 
@@ -793,10 +650,6 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     }
     else
         documentElement().replaceChild( node, documentElement().namedItem( "trackList" ) );
-
-    //write changes to file directly if we know where.
-    if( !m_url.isEmpty() && !m_saveLock )
-        save( m_url, false );
 }
 
 void
@@ -827,7 +680,7 @@ XSPFPlaylist::queue()
     QDomElement extension = documentElement().firstChildElement( "extension" );
     if( extension.isNull() )
         return tracks;
-    
+
     if( extension.attribute( "application" ) != "http://amarok.kde.org" )
         return tracks;
 
@@ -845,44 +698,9 @@ XSPFPlaylist::queue()
     return tracks;
 }
 
-bool
-XSPFPlaylist::isWritable()
-{
-    if( m_url.isEmpty() )
-        return false;
-
-    return QFileInfo( m_url.path() ).isWritable();
-}
-
 void
 XSPFPlaylist::setName( const QString &name )
 {
-    //can't save to a new file if we don't know where.
-    if( !m_url.isEmpty() && !name.isEmpty() )
-    {
-        if( QFileInfo( m_url.toLocalFile() ).exists() )
-        {
-            warning() << "Deleting old playlist file:" << m_url.toLocalFile();
-            QFile::remove( m_url.toLocalFile() );
-        }
-        m_url.setFileName( name + ( name.endsWith( ".xspf", Qt::CaseInsensitive ) ? "" : ".xspf" ) );
-    }
-    //setTitle will save if there is a url.
+    PlaylistFile::setName( name );
     setTitle( name );
 }
-
-QString 
-XSPFPlaylist::trackLocation( Meta::TrackPtr &track )
-{
-    KUrl path = track->playableUrl();
-    if( path.isEmpty() )
-        return track->uidUrl();
-    
-    if( !m_relativePaths || m_url.isEmpty() || !path.isLocalFile() || !m_url.isLocalFile() )
-        return path.toEncoded();
-
-    QDir playlistDir( m_url.directory() );
-    return QUrl::toPercentEncoding( playlistDir.relativeFilePath( path.path() ), "/" );
-}
-
-} //namespace Playlists

@@ -80,12 +80,6 @@ public:
     QList<QAction *> channelActions( PodcastChannelList episodes );
     QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
 
-signals:
-    //PlaylistProvider signals
-    void updated();
-    void playlistAdded( Playlists::PlaylistPtr playlist );
-    void playlistRemoved( Playlists::PlaylistPtr playlist );
-
 private slots:
     void requestDeviceUpdates();
     void deviceUpdatesFinished();

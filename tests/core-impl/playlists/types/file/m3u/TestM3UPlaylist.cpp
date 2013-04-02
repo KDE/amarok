@@ -29,11 +29,11 @@
 #include <QTemporaryFile>
 #include <QTest>
 
+#include <KStandardDirs>
 #include <threadweaver/ThreadWeaver.h>
 #include <qtest_kde.h>
 
-
-QTEST_KDEMAIN( TestM3UPlaylist, GUI )
+QTEST_KDEMAIN_CORE( TestM3UPlaylist )
 
 TestM3UPlaylist::TestM3UPlaylist()
 {
@@ -55,15 +55,20 @@ void TestM3UPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const QUrl url = dataPath( "data/playlists/test.m3u" );
+    const KUrl url = dataPath( "data/playlists/test.m3u" );
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
+
+    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.m3u" );
+    QFile::remove( tempPath );
+    QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
+    QVERIFY( QFile::exists( tempPath ) );
 
     QVERIFY( playlistFile1.open( QFile::ReadOnly ) );
     playlistStream.setDevice( &playlistFile1 );
     QVERIFY( playlistStream.device() );
 
-    m_testPlaylist = new Playlists::M3UPlaylist( url );
+    m_testPlaylist = new Playlists::M3UPlaylist( tempPath );
     QVERIFY( m_testPlaylist );
     QVERIFY( m_testPlaylist->load( playlistStream ) );
     QCOMPARE( m_testPlaylist->tracks().size(), 10 );
@@ -85,13 +90,14 @@ void TestM3UPlaylist::testSetAndGetName()
     QCOMPARE( m_testPlaylist->name(), QString( "test.m3u" ) );
 
     m_testPlaylist->setName( "set name test" );
-    QCOMPARE( m_testPlaylist->name(), QString( "set name test" ) );
+    QCOMPARE( m_testPlaylist->name(), QString( "set name test.m3u" ) );
 
-    m_testPlaylist->setName( "set name test aäoöuüß" );
-    QCOMPARE( m_testPlaylist->name(), QString( "set name test aäoöuüß" ) );
+    m_testPlaylist->setName( "set name test aäoöuüß.m3u" );
+    QCOMPARE( m_testPlaylist->name(), QString( "set name test aäoöuüß.m3u" ) );
 
+    m_testPlaylist->setName( "test" );
     m_testPlaylist->setName( "" );
-    QCOMPARE( m_testPlaylist->name(), QString( "playlists" ) );
+    QCOMPARE( m_testPlaylist->name(), QString( "test.m3u" ) );
 }
 
 void TestM3UPlaylist::testTracks()
@@ -107,7 +113,10 @@ void TestM3UPlaylist::testTracks()
 
 void TestM3UPlaylist::testUidUrl()
 {
-    QCOMPARE( m_testPlaylist->uidUrl().pathOrUrl(), dataPath( "data/playlists/" ) );
+    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.m3u" );
+    //we have chaged the name around so much, better reset it
+    m_testPlaylist->setName( "test" );
+    QCOMPARE( m_testPlaylist->uidUrl().pathOrUrl(), tempPath );
 }
 
 void TestM3UPlaylist::testSetAndGetGroups()
@@ -132,8 +141,5 @@ void TestM3UPlaylist::testIsWritable()
 
 void TestM3UPlaylist::testSave()
 {
-    QTemporaryFile temp( QDir::tempPath() + "/XXXXXX.m3u" );
-    QVERIFY( temp.open() );
-    QVERIFY( m_testPlaylist->save( temp.fileName(), false ) );
-    temp.close();
+    QVERIFY( m_testPlaylist->save( false ) );
 }

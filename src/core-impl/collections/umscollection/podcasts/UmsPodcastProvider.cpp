@@ -77,8 +77,9 @@ UmsPodcastProvider::addChannel( PodcastChannelPtr channel )
     UmsPodcastChannelPtr umsChannel = UmsPodcastChannelPtr(
             new UmsPodcastChannel( channel, this ) );
     m_umsChannels << umsChannel;
-    emit( playlistAdded( Playlists::PlaylistPtr::dynamicCast( umsChannel ) ) );
-    return PodcastChannelPtr::dynamicCast( umsChannel );
+
+    emit playlistAdded( Playlists::PlaylistPtr( umsChannel.data() ) );
+    return PodcastChannelPtr( umsChannel.data() );
 }
 
 PodcastEpisodePtr
@@ -533,7 +534,7 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
         channel = UmsPodcastChannelPtr( new UmsPodcastChannel( this ) );
         channel->setTitle( metafileTrack->album()->name() );
         m_umsChannels << channel;
-        emit( playlistAdded( Playlists::PlaylistPtr::dynamicCast( channel ) ) );
+        emit playlistAdded( Playlists::PlaylistPtr( channel.data() ) );
     }
 
     if( episode.isNull() )

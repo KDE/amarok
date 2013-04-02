@@ -27,7 +27,7 @@
 /* This one is a bit ugly, as the results of the methods in DirectoryLoader can't *
  * be checked directly there but only in the playlist.                            */
 
-TestDirectoryLoader::TestDirectoryLoader( const QStringList args, const QString &logPath )
+TestDirectoryLoader::TestDirectoryLoader( const QStringList &args, const QString &logPath )
     : TestBase( "DirectoryLoader" )
 {
     QStringList combinedArgs = args;
@@ -46,8 +46,8 @@ TestDirectoryLoader::TestDirectoryLoader( const QStringList args, const QString 
     testUrl = QUrl::fromLocalFile( dataPath( "amarok/testdata/audio/" ) );
     testList.append( testUrl );
 
-    connect( loader1, SIGNAL( finished( Meta::TrackList ) ), this, SLOT( loadersFinished() ) );
-    connect( loader2, SIGNAL( finished( Meta::TrackList ) ), this, SLOT( loadersFinished() ) );
+    connect( loader1, SIGNAL(finished(Meta::TrackList)), this, SLOT(loadersFinished()) );
+    connect( loader2, SIGNAL(finished(Meta::TrackList)), this, SLOT(loadersFinished()) );
 
     loader1->insertAtRow( 1 ); // TODO: negative values always seem to append at the beginning. is that correct?
     loader1->init( testList );

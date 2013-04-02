@@ -239,6 +239,7 @@ SqlPlaylist::triggerTrackLoad()
 {
     if( !m_tracksLoaded )
         loadTracks();
+    notifyObserversTracksLoaded();
 }
 
 void

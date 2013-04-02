@@ -132,6 +132,16 @@ SyncedPlaylist::metadataChanged( Playlists::PlaylistPtr playlist )
 }
 
 void
+SyncedPlaylist::tracksLoaded( Playlists::PlaylistPtr playlist )
+{
+    if( !m_playlists.contains( playlist ) )
+        return;
+
+    // TODO: me may give more thought to this and emit tracksLoaded() only when all subplaylists load
+    notifyObserversTracksLoaded();
+}
+
+void
 SyncedPlaylist::trackAdded( Playlists::PlaylistPtr playlist, TrackPtr track, int position )
 {
     if( !m_playlists.contains( playlist ) )

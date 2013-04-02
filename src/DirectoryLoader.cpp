@@ -28,15 +28,14 @@
 #include <KIO/Job>
 
 DirectoryLoader::DirectoryLoader( LoadingMode loadingMode )
-    : QObject( 0 )
+        : QObject( 0 )
         , m_listOperations( 0 )
+        , m_entities( 0 )
         , m_loadingMode( loadingMode )
         , m_localConnection( false )
         , m_row( 0 )
-{}
-
-DirectoryLoader::~DirectoryLoader()
-{}
+{
+}
 
 void
 DirectoryLoader::insertAtRow( int row )
@@ -76,17 +75,15 @@ DirectoryLoader::init( const QList<KUrl> &urls )
         {
             m_listOperations++;
             KIO::ListJob* lister = KIO::listRecursive( kurl ); // KJobs delete themselves
-            connect( lister, SIGNAL(finished(KJob*)), SLOT(listJobFinished( KJob*)) );
+            connect( lister, SIGNAL(finished(KJob*)), SLOT(listJobFinished()) );
             connect( lister, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
                              SLOT(directoryListResults(KIO::Job*,KIO::UDSEntryList)) );
         }
         else
-            appendFile( kurl );
+            m_urlsToLoad.append( kurl );
     }
     if( m_listOperations == 0 )
-    {
         finishUrlList();
-    }
 }
 
 void
@@ -104,7 +101,7 @@ DirectoryLoader::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &l
 }
 
 void
-DirectoryLoader::listJobFinished(KJob*)
+DirectoryLoader::listJobFinished()
 {
     m_listOperations--;
     if( m_listOperations < 1 )
@@ -112,10 +109,23 @@ DirectoryLoader::listJobFinished(KJob*)
 }
 
 void
+DirectoryLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
+{
+    m_tracks << playlist->tracks();
+    --m_entities;
+    if ( m_entities == 0 )
+        finish();
+}
+
+void
 DirectoryLoader::finishUrlList()
 {
+    m_entities = m_urlsToLoad.count();
+    foreach( const KUrl &url, m_urlsToLoad )
+        appendFile( url );
     if( !m_expanded.isEmpty() )
     {
+        m_entities += m_expanded.count();
         qStableSort( m_expanded.begin(), m_expanded.end(), DirectoryLoader::directorySensitiveLessThan );
         foreach( const KFileItem &item, m_expanded )
         {
@@ -123,8 +133,16 @@ DirectoryLoader::finishUrlList()
         }
         qStableSort( m_tracks.begin(), m_tracks.end(), Meta::Track::lessThan );
     }
+
+    if ( m_entities == 0 )
+        finish();
+}
+
+void
+DirectoryLoader::finish()
+{
     emit finished( m_tracks );
-    if( !m_localConnection )
+    if ( !m_localConnection )
         deleteLater();
 }
 
@@ -136,8 +154,9 @@ DirectoryLoader::appendFile( const KUrl &url )
         Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
         if( playlist )
         {
+            subscribeTo( Playlists::PlaylistPtr::staticCast( playlist ) );
             playlist->triggerTrackLoad(); // playlist track loading is on demand.
-            m_tracks << playlist->tracks();
+            return;
         }
     }
     else if( MetaFile::Track::isTrack( url ) )
@@ -158,6 +177,7 @@ DirectoryLoader::appendFile( const KUrl &url )
         }
         m_tracks << track;
     }
+    --m_entities;
 }
 
 bool

@@ -642,6 +642,7 @@ SqlPodcastChannel::triggerTrackLoad()
 {
     if( !m_episodesLoaded )
         loadEpisodes();
+    notifyObserversTracksLoaded();
 }
 
 Playlists::PlaylistProvider *
@@ -932,5 +933,5 @@ Podcasts::SqlPodcastChannel::addTrack( Meta::TrackPtr track, int position )
     Q_UNUSED( position );
 
     addEpisode( Podcasts::PodcastEpisodePtr::dynamicCast( track ) );
+    notifyObserversTrackAdded( track, position );
 }
-

@@ -19,8 +19,8 @@
 
 #include "TestXSPFPlaylist.h"
 
-#include "EngineController.h"
 #include "config-amarok-test.h"
+#include "EngineController.h"
 #include "core/support/Components.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
@@ -62,6 +62,13 @@ void TestXSPFPlaylist::initTestCase()
 
     const QString testXspf = "data/playlists/test.xspf";
     const KUrl url = dataPath( testXspf );
+    QFile playlistFile1( url.toLocalFile() );
+    QTextStream playlistStream1;
+
+    QVERIFY( playlistFile1.open( QFile::ReadOnly ) );
+    playlistStream1.setDevice( &playlistFile1 );
+    QVERIFY( playlistStream1.device() );
+
     qDebug() << "got playlist path: " << url.url();
 
     //we need to copy this laylist file to a temp dir as some of the tests we do will delete/overwrite it
@@ -71,7 +78,9 @@ void TestXSPFPlaylist::initTestCase()
     QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
     QVERIFY( QFile::exists( tempPath ) );
 
-    m_testPlaylist1 = new Playlists::XSPFPlaylist( tempPath, false );
+    m_testPlaylist1 = new Playlists::XSPFPlaylist( tempPath );
+    QVERIFY( m_testPlaylist1 );
+    QVERIFY( m_testPlaylist1->load( playlistStream1 ) );
 }
 
 void TestXSPFPlaylist::cleanupTestCase()
@@ -105,7 +114,6 @@ void TestXSPFPlaylist::prettyName()
 
 void TestXSPFPlaylist::testSetAndGetTracks()
 {
-    m_testPlaylist1->triggerTrackLoad();
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
 
     QCOMPARE( tracklist.size(), 23 );
@@ -324,7 +332,5 @@ void TestXSPFPlaylist::testIsWritable()
 
 void TestXSPFPlaylist::testSave()
 {
-    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.xspf" );
-    QFile::remove( tempPath );
-    QVERIFY( m_testPlaylist1->save( tempPath, false ) );
+    QVERIFY( m_testPlaylist1->save( false ) );
 }
