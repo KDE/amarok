@@ -282,7 +282,7 @@ Dynamic::TagMatchBias::toString() const
 {
     if( isInvert() )
         return i18nc("Inverted condition in tag match bias",
-                     "Not %1").arg( m_filter.toString() );
+                     "Not %1", m_filter.toString() );
     else
         return m_filter.toString();
 }

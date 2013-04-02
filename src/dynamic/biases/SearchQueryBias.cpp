@@ -115,7 +115,7 @@ Dynamic::SearchQueryBias::toString() const
                      "Random songs");
     else
         return i18nc("SearchQuery bias representation",
-                     "Search for: %1").arg( m_filter );
+                     "Search for: %1", m_filter );
 }
 
 QWidget*

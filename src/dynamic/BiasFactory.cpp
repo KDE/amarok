@@ -179,13 +179,13 @@ Dynamic::ReplacementBias::name() const
 QString
 Dynamic::ReplacementBias::toString() const
 {
-    return i18n( "Replacement for bias %1" ).arg( m_name );
+    return i18n( "Replacement for bias %1", m_name );
 }
 
 QWidget*
 Dynamic::ReplacementBias::widget( QWidget* parent )
 {
-    QLabel *label = new QLabel( i18n( "Replacement for bias %1" ).arg( m_name ), parent );
+    QLabel *label = new QLabel( i18n( "Replacement for bias %1", m_name, parent ) );
 
     return label;
 }
