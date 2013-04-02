@@ -111,7 +111,7 @@ PlaylistBrowserNS::BiasDialog::factoriesChanged()
         m_biasSelection->setCurrentIndex( m_biasSelection->count() - 1 );
         m_descriptionLabel->setText( i18n( "This bias is a replacement for another bias\n"
                                          "which is currently not loaded or deactivated.\n"
-                                         "The original bias name was %1.", m_bias->name() );
+                                         "The original bias name was %1.", m_bias->name() ) );
     }
 
     connect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
