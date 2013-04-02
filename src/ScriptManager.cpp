@@ -301,8 +301,7 @@ void ScriptManager::handleException(const QScriptValue& value)
     if (!engine)
         return;
 
-    Amarok::Components::logger()->longMessage( i18n( "Script error reported by: %1\n%2" )
-            .arg( scriptNameForEngine( engine ), value.toString() ), Amarok::Logger::Error );
+    Amarok::Components::logger()->longMessage( i18n( "Script error reported by: %1\n%2", scriptNameForEngine( engine ), value.toString() ), Amarok::Logger::Error );
 }
 
 void

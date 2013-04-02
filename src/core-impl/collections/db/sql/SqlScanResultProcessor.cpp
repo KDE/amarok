@@ -84,7 +84,7 @@ SqlScanResultProcessor::displayMessages()
     QString text = i18n( "<ul><li>%1</li></ul>"
                          "In most cases this means that not all of your tracks were imported.<br>"
                          "See <a href='http://userbase.kde.org/Amarok/Manual/Various/TroubleshootingAndCommonProblems#Duplicate_Tracks'>"
-                         "Amarok Manual</a> for information about duplicate tracks." ).arg( errorList );
+                         "Amarok Manual</a> for information about duplicate tracks.", errorList );
     KMessageBox::error( The::mainWindow(), text, i18n( "Errors During Collection Scan" ),
                         KMessageBox::AllowLink );
 

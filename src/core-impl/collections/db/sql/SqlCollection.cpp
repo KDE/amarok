@@ -284,8 +284,7 @@ SqlCollection::SqlCollection( SqlStorage* storage )
             KMessageBox::error( The::mainWindow(), //parent
                                 i18n( "The amarok database reported the following errors:\n"
                                       "%1\n"
-                                      "In most cases you will need to resolve these errors before Amarok will run properly." ).
-                                arg(storage->getLastErrors().join( "\n" ) ) );
+                                      "In most cases you will need to resolve these errors before Amarok will run properly.", storage->getLastErrors().join( "\n" ) );
         }
         else
         {

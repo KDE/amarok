@@ -118,9 +118,7 @@ QString
 Dynamic::WeeklyTopBias::toString() const
 {
     return i18nc("WeeklyTopBias bias representation",
-                 "Tracks from the Last.fm top lists from %1 to %2")
-        .arg( m_range.from.toString() )
-        .arg( m_range.to.toString() );
+                 "Tracks from the Last.fm top lists from %1 to %2", m_range.from.toString(), m_range.to.toString() );
 }
 
 QWidget*
