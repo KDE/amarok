@@ -111,8 +111,8 @@ XSPFPlaylist::load()
        proxyTrack->setArtist( track.creator );
        proxyTrack->setLength( track.duration );
        proxyTrack->setTrackNumber( track.trackNum );
-       Meta::TrackPtr track( proxyTrack.data() );
-       addProxyTrack( track );
+       Meta::TrackPtr metaTrack( proxyTrack.data() );
+       addProxyTrack( metaTrack );
      }
 
     //FIXME: this needs to be moved to whatever is creating the XSPFPlaylist
