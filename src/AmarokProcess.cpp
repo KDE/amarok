@@ -27,9 +27,9 @@
 AmarokProcess::AmarokProcess(QObject *parent) 
     : KProcess(parent), lowPriority(false) 
 {
-    connect( this, SIGNAL( finished( int ) ), this, SLOT( finished() ) );
-    connect( this, SIGNAL( readyReadStandardOutput() ), this, SLOT( readyReadStandardOutput() ) );
-    connect( this, SIGNAL( readyReadStandardError() ), this, SLOT( readyReadStandardError() ) );
+    connect( this, SIGNAL(finished(int)), this, SLOT(finished()) );
+    connect( this, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()) );
+    connect( this, SIGNAL(readyReadStandardError()), this, SLOT(readyReadStandardError()) );
 }
 
 /** 

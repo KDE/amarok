@@ -131,8 +131,8 @@ Dynamic::AlbumPlayBias::widget( QWidget* parent )
     case Follow:         combo->setCurrentIndex(0); break;
     case DontCare:       combo->setCurrentIndex(0); break;
     }
-    connect( combo, SIGNAL( currentIndexChanged(int) ),
-             this, SLOT( selectionChanged( int ) ) );
+    connect( combo, SIGNAL(currentIndexChanged(int)),
+             this, SLOT(selectionChanged(int)) );
 
     return combo;
 }

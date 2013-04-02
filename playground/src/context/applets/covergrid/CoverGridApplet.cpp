@@ -86,8 +86,8 @@ CoverGridApplet::init()
     qm->setQueryType( Collections::QueryMaker::Album );
     qm->orderBy( Meta::valArtist );
 
-    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ),
-             this, SLOT( slotAlbumQueryResult( Meta::AlbumList ) ) );
+    connect( qm, SIGNAL(newResultReady(Meta::AlbumList)),
+             this, SLOT(slotAlbumQueryResult(Meta::AlbumList)) );
     qm->run();
 }
 
@@ -121,7 +121,7 @@ void CoverGridApplet::createConfigurationInterface( KConfigDialog *parent )
     if( m_coversize )
         ui_Settings.coversizeSpin->setValue( m_coversize );
     parent->addPage( settings, i18n( "Covergrid Settings" ), "preferences-system" );
-    connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
+    connect( parent, SIGNAL(accepted()), this, SLOT(saveSettings()) );
 }
 bool
 CoverGridApplet::hasHeightForWidth() const

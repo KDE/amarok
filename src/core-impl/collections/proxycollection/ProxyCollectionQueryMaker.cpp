@@ -45,14 +45,14 @@ ProxyQueryMaker::ProxyQueryMaker( ProxyCollection *collection, const QList<Query
 {
     foreach( QueryMaker *b, m_builders )
     {
-        connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
-        connect( b, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( slotNewResultReady( Meta::TrackList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( Meta::ArtistList ) ), this, SLOT( slotNewResultReady( Meta::ArtistList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SLOT( slotNewResultReady( Meta::AlbumList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( Meta::GenreList ) ), this, SLOT( slotNewResultReady( Meta::GenreList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( Meta::ComposerList ) ), this, SLOT( slotNewResultReady( Meta::ComposerList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( Meta::YearList ) ), this, SLOT( slotNewResultReady( Meta::YearList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( Meta::LabelList ) ), this, SLOT( slotNewResultReady( Meta::LabelList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL(queryDone()), this, SLOT(slotQueryDone()) );
+        connect( b, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(slotNewResultReady(Meta::TrackList)), Qt::QueuedConnection );
+        connect( b, SIGNAL(newResultReady(Meta::ArtistList)), this, SLOT(slotNewResultReady(Meta::ArtistList)), Qt::QueuedConnection );
+        connect( b, SIGNAL(newResultReady(Meta::AlbumList)), this, SLOT(slotNewResultReady(Meta::AlbumList)), Qt::QueuedConnection );
+        connect( b, SIGNAL(newResultReady(Meta::GenreList)), this, SLOT(slotNewResultReady(Meta::GenreList)), Qt::QueuedConnection );
+        connect( b, SIGNAL(newResultReady(Meta::ComposerList)), this, SLOT(slotNewResultReady(Meta::ComposerList)), Qt::QueuedConnection );
+        connect( b, SIGNAL(newResultReady(Meta::YearList)), this, SLOT(slotNewResultReady(Meta::YearList)), Qt::QueuedConnection );
+        connect( b, SIGNAL(newResultReady(Meta::LabelList)), this, SLOT(slotNewResultReady(Meta::LabelList)), Qt::QueuedConnection );
     }
 }
 

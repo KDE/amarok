@@ -664,19 +664,19 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
     if( data.contains( MusicBrainz::ARTISTID ) )
     {
         QAction *action = new QAction( *artistIcon, i18n( "Artist page" ), menu );
-        connect( action, SIGNAL( triggered() ), SLOT( openArtistPage() ) );
+        connect( action, SIGNAL(triggered()), SLOT(openArtistPage()) );
         actions << action;
     }
     if( data.contains( MusicBrainz::RELEASEID ) )
     {
         QAction *action = new QAction( *releaseIcon, i18n( "Album page" ), menu );
-        connect( action, SIGNAL( triggered() ), SLOT( openReleasePage() ) );
+        connect( action, SIGNAL(triggered()), SLOT(openReleasePage()) );
         actions << action;
     }
     if( data.contains( MusicBrainz::TRACKID ) )
     {
         QAction *action = new QAction( *trackIcon, i18n( "Track page" ), menu );
-        connect( action, SIGNAL( triggered() ), SLOT( openTrackPage() ) );
+        connect( action, SIGNAL(triggered()), SLOT(openTrackPage()) );
         actions << action;
     }
 

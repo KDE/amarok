@@ -944,12 +944,12 @@ WikipediaEngine::init()
 
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( _checkRequireUpdate( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( _checkRequireUpdate( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( _stopped() ) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             this, SLOT(_checkRequireUpdate(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(_checkRequireUpdate(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(_stopped()) );
 }
 
 bool

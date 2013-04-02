@@ -76,7 +76,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_previous->setMinimum( 0 );
     m_previous->setToolTip( i18n( "Number of previous tracks to remain in the playlist." ) );
     m_previous->setValue( AmarokConfig::previousTracks() );
-    QObject::connect( m_previous, SIGNAL( valueChanged( int ) ), this, SLOT( setPreviousTracks( int ) ) );
+    QObject::connect( m_previous, SIGNAL(valueChanged(int)), this, SLOT(setPreviousTracks(int)) );
 
     label = new QLabel( i18n( "Upcoming:" ), controls2Layout );
     // label->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
@@ -86,11 +86,11 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_upcoming->setMinimum( 1 );
     m_upcoming->setToolTip( i18n( "Number of upcoming tracks to add to the playlist." ) );
     m_upcoming->setValue( AmarokConfig::upcomingTracks() );
-    QObject::connect( m_upcoming, SIGNAL( valueChanged( int ) ), this, SLOT( setUpcomingTracks( int ) ) );
+    QObject::connect( m_upcoming, SIGNAL(valueChanged(int)), this, SLOT(setUpcomingTracks(int)) );
 
 
-    QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ) );
-    QObject::connect( (const QObject*)Amarok::actionCollection()->action( "disable_dynamic" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ), Qt::DirectConnection );
+    QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL(triggered(bool)),  this, SLOT(playlistCleared()) );
+    QObject::connect( (const QObject*)Amarok::actionCollection()->action( "disable_dynamic" ),  SIGNAL(triggered(bool)),  this, SLOT(playlistCleared()), Qt::DirectConnection );
 
 
     // -- the tool bar
@@ -144,20 +144,20 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_repopulateButton->setIcon( KIcon( "view-refresh-amarok" ) );
     m_repopulateButton->setEnabled( enabled );
     // m_repopulateButton->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    QObject::connect( m_repopulateButton, SIGNAL( clicked(bool) ), The::playlistActions(), SLOT( repopulateDynamicPlaylist() ) );
+    QObject::connect( m_repopulateButton, SIGNAL(clicked(bool)), The::playlistActions(), SLOT(repopulateDynamicPlaylist()) );
 
 
     // -- the tree view
 
     m_tree = new DynamicView( this );
-    connect( m_tree->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection) ),
+    connect( m_tree->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
              this, SLOT(selectionChanged()) );
 
-    connect( m_onOffButton, SIGNAL( toggled( bool ) ), The::playlistActions(), SLOT( enableDynamicMode( bool ) ) );
-    connect( m_duplicateButton, SIGNAL( toggled( bool ) ), this, SLOT( setAllowDuplicates( bool ) ) );
+    connect( m_onOffButton, SIGNAL(toggled(bool)), The::playlistActions(), SLOT(enableDynamicMode(bool)) );
+    connect( m_duplicateButton, SIGNAL(toggled(bool)), this, SLOT(setAllowDuplicates(bool)) );
 
-    connect( m_addButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( addPlaylist() ) );
-    connect( m_editButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( editSelected() ) );
+    connect( m_addButton, SIGNAL(clicked(bool)), m_tree, SLOT(addPlaylist()) );
+    connect( m_editButton, SIGNAL(clicked(bool)), m_tree, SLOT(editSelected()) );
     connect( m_deleteButton, SIGNAL(clicked(bool)), m_tree, SLOT(removeSelected()) );
 
     navigatorChanged();

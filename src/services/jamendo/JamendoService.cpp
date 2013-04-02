@@ -125,8 +125,8 @@ JamendoService::polish()
     m_downloadButton->setIcon( KIcon( "download-amarok" ) );
     m_downloadButton->setEnabled( false );
 
-    connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
-    connect( m_downloadButton, SIGNAL( clicked() ), this, SLOT( download() ) );
+    connect( m_updateListButton, SIGNAL(clicked()), this, SLOT(updateButtonClicked()) );
+    connect( m_downloadButton, SIGNAL(clicked()), this, SLOT(download()) );
 
     setInfoParser( new JamendoInfoParser() );
 
@@ -135,24 +135,24 @@ JamendoService::polish()
 
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
-    connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
+    connect( m_contentView, SIGNAL(itemSelected(CollectionTreeItem*)), this, SLOT(itemSelected(CollectionTreeItem*)) );
 
     QMenu *filterMenu = new QMenu( 0 );
 
 //     QAction *action = filterMenu->addAction( i18n("Artist") );
-//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist() ) );
+//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist()) );
 // 
 //     action = filterMenu->addAction( i18n( "Artist / Album" ) );
-//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum() ) );
+//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum()) );
 // 
 //     action = filterMenu->addAction( i18n( "Album" ) );
-//     connect( action, SIGNAL(triggered(bool)), SLOT( sortByAlbum() ) );
+//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByAlbum()) );
 
     QAction *action = filterMenu->addAction( i18n( "Genre / Artist" ) );
-    connect( action, SIGNAL(triggered(bool)), SLOT( sortByGenreArtist() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtist()) );
 
     action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum()) );
 
     KAction *filterMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
     filterMenuAction->setMenu( filterMenu );
@@ -184,10 +184,10 @@ JamendoService::updateButtonClicked()
     m_tempFileName = tempFile.fileName();
     m_listDownloadJob = KIO::file_copy( KUrl( "http://img.jamendo.com/data/dbdump_artistalbumtrack.xml.gz" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
-    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com database..." ), this, SLOT( listDownloadCancelled() ) );
+    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com database..." ), this, SLOT(listDownloadCancelled()) );
 
-    connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
-            this, SLOT( listDownloadComplete( KJob * ) ) );
+    connect( m_listDownloadJob, SIGNAL(result(KJob*)),
+            this, SLOT(listDownloadComplete(KJob*)) );
 
 
 }
@@ -211,7 +211,7 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
 
     if( m_xmlParser == 0 )
         m_xmlParser = new JamendoXmlParser( m_tempFileName );
-    connect( m_xmlParser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
+    connect( m_xmlParser, SIGNAL(doneParsing()), SLOT(doneParsing()) );
 
     ThreadWeaver::Weaver::instance()->enqueue( m_xmlParser );
     downloadJob->deleteLater();
@@ -294,8 +294,8 @@ void JamendoService::download( JamendoAlbum * album )
     m_torrentFileName = tempFile.fileName();
     debug() << "downloading " << album->oggTorrentUrl() << " to " << m_torrentFileName;
     m_torrentDownloadJob = KIO::file_copy( KUrl( album->oggTorrentUrl() ), KUrl( m_torrentFileName ), 0774 , KIO::Overwrite );
-    connect( m_torrentDownloadJob, SIGNAL( result( KJob * ) ),
-             this, SLOT( torrentDownloadComplete( KJob * ) ) );
+    connect( m_torrentDownloadJob, SIGNAL(result(KJob*)),
+             this, SLOT(torrentDownloadComplete(KJob*)) );
 }
 
 void

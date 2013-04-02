@@ -38,7 +38,7 @@ ProxyCollection::ProxyCollection()
     QTimer *timer = new QTimer( this );
     timer->setSingleShot( false );
     timer->setInterval( 60000 ); //clean up every 60 seconds
-    connect( timer, SIGNAL( timeout() ), this, SLOT( emptyCache() ) );
+    connect( timer, SIGNAL(timeout()), this, SLOT(emptyCache()) );
     timer->start();
 }
 

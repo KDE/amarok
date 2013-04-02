@@ -125,8 +125,8 @@ LastFmServiceSettings::testLogin()
     query[ "authToken" ] = authToken;
     m_authQuery = lastfm::ws::post( query );
 
-    connect( m_authQuery, SIGNAL( finished() ), SLOT( onAuthenticated() ) );
-    connect( m_authQuery, SIGNAL( error( QNetworkReply::NetworkError ) ), SLOT( onError( QNetworkReply::NetworkError ) ) );
+    connect( m_authQuery, SIGNAL(finished()), SLOT(onAuthenticated()) );
+    connect( m_authQuery, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(onError(QNetworkReply::NetworkError)) );
 }
 
 void

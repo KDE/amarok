@@ -56,8 +56,8 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     setAlternatingRowColors( true );
     setDropIndicatorShown( true );
 
-    connect( header(), SIGNAL( sectionCountChanged( int, int ) ),
-             this, SLOT( slotSectionCountChanged( int, int ) ) );
+    connect( header(), SIGNAL(sectionCountChanged(int,int)),
+             this, SLOT(slotSectionCountChanged(int,int)) );
 }
 
 
@@ -110,20 +110,20 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
     if ( m_loadAction == 0 )
     {
         m_loadAction = new KAction( KIcon( "folder-open" ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
-        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
+        connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotLoad()) );
     }
 
     if ( m_deleteAction == 0 )
     {
         m_deleteAction = new KAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
+        connect( m_deleteAction, SIGNAL(triggered()), this, SLOT(slotDelete()) );
     }
 
     if ( m_createTimecodeTrackAction == 0 )
     {
         debug() << "creating m_createTimecodeTrackAction";
         m_createTimecodeTrackAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
-        connect( m_createTimecodeTrackAction, SIGNAL( triggered() ), this, SLOT( slotCreateTimecodeTrack() ) );
+        connect( m_createTimecodeTrackAction, SIGNAL(triggered()), this, SLOT(slotCreateTimecodeTrack()) );
     }
 
     if ( selectedRowCount == 1 )
@@ -205,8 +205,8 @@ void BookmarkTreeView::resizeEvent( QResizeEvent *event )
     if( oldWidth == newWidth || oldWidth < 0 || newWidth < 0 )
         return;
 
-    disconnect( headerView, SIGNAL( sectionResized( int, int, int ) ),
-                this, SLOT( slotSectionResized( int, int, int ) ) );
+    disconnect( headerView, SIGNAL(sectionResized(int,int,int)),
+                this, SLOT(slotSectionResized(int,int,int)) );
 
     QMap<BookmarkModel::Column, qreal>::const_iterator i = m_columnsSize.constBegin();
     while( i != m_columnsSize.constEnd() )
@@ -217,8 +217,8 @@ void BookmarkTreeView::resizeEvent( QResizeEvent *event )
         ++i;
     }
 
-    connect( headerView, SIGNAL( sectionResized( int, int, int ) ),
-             this, SLOT( slotSectionResized( int, int, int ) ) );
+    connect( headerView, SIGNAL(sectionResized(int,int,int)),
+             this, SLOT(slotSectionResized(int,int,int)) );
 
     QWidget::resizeEvent( event );
 }

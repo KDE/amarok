@@ -52,15 +52,15 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     m_requested[ QLatin1String("albums")  ] = false;
     EngineController* engine = The::engineController();
 
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(trackPlaying(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped()) );
 
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( metadataChanged( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
-             this, SLOT( metadataChanged( Meta::AlbumPtr ) ) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(metadataChanged(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
+             this, SLOT(metadataChanged(Meta::AlbumPtr)) );
 }
 
 CurrentEngine::~CurrentEngine()
@@ -159,9 +159,9 @@ CurrentEngine::stopped()
         qm->orderBy( Meta::valCreateDate, true );
         qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
 
-        connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ),
-                 SLOT( resultReady( Meta::AlbumList ) ), Qt::QueuedConnection );
-        connect( qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
+        connect( qm, SIGNAL(newResultReady(Meta::AlbumList)),
+                 SLOT(resultReady(Meta::AlbumList)), Qt::QueuedConnection );
+        connect( qm, SIGNAL(queryDone()), SLOT(setupAlbumsData()) );
 
         m_lastQueryMaker = qm;
         qm->run();
@@ -237,8 +237,8 @@ CurrentEngine::update( Meta::AlbumPtr album )
         qm->setAlbumQueryMode( Collections::QueryMaker::AllAlbums );
         qm->setQueryType( Collections::QueryMaker::Album );
 
-        connect( qm, SIGNAL(newResultReady( Meta::AlbumList)),
-                 SLOT(resultReady( Meta::AlbumList)), Qt::QueuedConnection );
+        connect( qm, SIGNAL(newResultReady(Meta::AlbumList)),
+                 SLOT(resultReady(Meta::AlbumList)), Qt::QueuedConnection );
         connect( qm, SIGNAL(queryDone()), SLOT(setupAlbumsData()) );
 
         m_lastQueryMaker = qm;

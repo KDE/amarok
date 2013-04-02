@@ -883,9 +883,9 @@ PictureFlow::PictureFlow( QWidget* parent, bool enableOpenGL): QWidget( parent )
 
     d->animator = new PictureFlowAnimator;
     d->animator->state = d->state;
-    QObject::connect( &d->animator->animateTimer, SIGNAL( timeout() ), this, SLOT( updateAnimation() ) );
+    QObject::connect( &d->animator->animateTimer, SIGNAL(timeout()), this, SLOT(updateAnimation()) );
 
-    QObject::connect( &d->triggerTimer, SIGNAL( timeout() ), this, SLOT( render() ) );
+    QObject::connect( &d->triggerTimer, SIGNAL(timeout()), this, SLOT(render()) );
     setAttribute( Qt::WA_StaticContents, true );
     setAttribute( Qt::WA_OpaquePaintEvent, true );
     setAttribute( Qt::WA_NoSystemBackground, true );

@@ -36,18 +36,18 @@ PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     m_renameFolderAction =  new QAction( KIcon( "media-track-edit-amarok" ),
                                          i18n( "&Rename Folder..." ), this );
     m_renameFolderAction->setProperty( "popupdropper_svg_id", "edit_group" );
-    connect( m_renameFolderAction, SIGNAL( triggered() ), this,
-             SLOT( slotRenameFolder() ) );
+    connect( m_renameFolderAction, SIGNAL(triggered()), this,
+             SLOT(slotRenameFolder()) );
 
     m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ),
                                         i18n( "&Delete Folder" ), this );
     m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
     m_deleteFolderAction->setObjectName( "deleteAction" );
-    connect( m_deleteFolderAction, SIGNAL( triggered() ), this,
-             SLOT( slotDeleteFolder() ) );
+    connect( m_deleteFolderAction, SIGNAL(triggered()), this,
+             SLOT(slotDeleteFolder()) );
 
-    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
-             SLOT(slotRenameIndex( const QModelIndex & )) );
+    connect( sourceModel(), SIGNAL(renameIndex(QModelIndex)),
+             SLOT(slotRenameIndex(QModelIndex)) );
 }
 
 PlaylistsInFoldersProxy::~PlaylistsInFoldersProxy()
@@ -275,8 +275,8 @@ PlaylistsInFoldersProxy::setSourceModel( QAbstractItemModel *model )
 
     QtGroupingProxy::setSourceModel( model );
 
-    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
-             SLOT(slotRenameIndex( const QModelIndex & )) );
+    connect( sourceModel(), SIGNAL(renameIndex(QModelIndex)),
+             SLOT(slotRenameIndex(QModelIndex)) );
 }
 
 void

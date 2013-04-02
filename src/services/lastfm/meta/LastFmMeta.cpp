@@ -57,7 +57,7 @@ Track::Track( lastfm::Track track )
 
     d->trackFetch = lastfm::ws::post( params );
 
-    connect( d->trackFetch, SIGNAL( finished() ), SLOT( slotResultReady() ) );
+    connect( d->trackFetch, SIGNAL(finished()), SLOT(slotResultReady()) );
 }
 
 
@@ -81,7 +81,7 @@ void Track::init( int id /* = -1*/ )
     QAction *banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
-    connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );
+    connect( banAction, SIGNAL(triggered()), this, SLOT(ban()) );
     m_trackActions.append( banAction );
 
     QAction *skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
@@ -371,7 +371,7 @@ Track::ban()
 {
     DEBUG_BLOCK
     d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).ban();
-    connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
+    connect( d->wsReply, SIGNAL(finished()), this, SLOT(slotWsReply()) );
     if( The::engineController()->currentTrack() == this )
         emit skipTrack();
 }

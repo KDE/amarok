@@ -60,7 +60,7 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     delApplet->setVisible( true );
     delApplet->setEnabled( true );
 
-    connect( delApplet, SIGNAL( triggered() ), this, SLOT( deleteApplet() ) );
+    connect( delApplet, SIGNAL(triggered()), this, SLOT(deleteApplet()) );
     m_deleteIcon = addAction( delApplet, 18 );
     m_deleteIcon->hide();
 

@@ -151,11 +151,11 @@ void Mp3tunesService::initTopPanel()
     if( m_harmonyEnabled )
     {
         QAction * action = new QAction( i18n( "Disable AutoSync" ), m_menubar );
-        connect( action, SIGNAL( triggered( bool) ), SLOT( disableHarmony() ) );
+        connect( action, SIGNAL(triggered(bool)), SLOT(disableHarmony()) );
         actionsMenu->addAction( action );
     } else {
         QAction * action = new QAction( i18n( "Enable AutoSync" ), m_menubar );
-        connect( action, SIGNAL( triggered( bool) ), SLOT( enableHarmony() ) );
+        connect( action, SIGNAL(triggered(bool)), SLOT(enableHarmony()) );
         actionsMenu->addAction( action );
     }
 
@@ -185,20 +185,20 @@ void Mp3tunesService::enableHarmony()
                                                 config.pin() );
 //        qRegisterMetaType<Mp3tunesHarmonyDownload>("Mp3tunesHarmonyDownload");
 
-        connect( m_harmony, SIGNAL( disconnected() ),
-                this, SLOT( harmonyDisconnected() ));
-        connect( m_harmony, SIGNAL( waitingForEmail( QString ) ),
-                this, SLOT( harmonyWaitingForEmail( QString ) ) );
-        connect( m_harmony, SIGNAL( waitingForPin() ),
-                 this, SLOT( harmonyWaitingForPin() ) );
-        connect( m_harmony, SIGNAL( connected() ),
-                this, SLOT( harmonyConnected() ) );
-        connect( m_harmony, SIGNAL( signalError( QString ) ),
-                this, SLOT( harmonyError( QString ) ) );
-        connect( m_harmony, SIGNAL( downloadReady( QVariantMap ) ),
-                this, SLOT( harmonyDownloadReady( QVariantMap ) ) );
-        connect( m_harmony, SIGNAL( downloadPending( QVariantMap ) ),
-                this, SLOT( harmonyDownloadPending( QVariantMap ) ) );
+        connect( m_harmony, SIGNAL(disconnected()),
+                this, SLOT(harmonyDisconnected()));
+        connect( m_harmony, SIGNAL(waitingForEmail(QString)),
+                this, SLOT(harmonyWaitingForEmail(QString)) );
+        connect( m_harmony, SIGNAL(waitingForPin()),
+                 this, SLOT(harmonyWaitingForPin()) );
+        connect( m_harmony, SIGNAL(connected()),
+                this, SLOT(harmonyConnected()) );
+        connect( m_harmony, SIGNAL(signalError(QString)),
+                this, SLOT(harmonyError(QString)) );
+        connect( m_harmony, SIGNAL(downloadReady(QVariantMap)),
+                this, SLOT(harmonyDownloadReady(QVariantMap)) );
+        connect( m_harmony, SIGNAL(downloadPending(QVariantMap)),
+                this, SLOT(harmonyDownloadPending(QVariantMap)) );
 
         debug() << "starting harmony";
         m_harmony->startDaemon();
@@ -249,8 +249,8 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
     m_loginWorker = new Mp3tunesLoginWorker( m_locker, uname, passwd);
     //debug() << "Connecting finishedLogin -> authentication complete.";
 
-    connect( m_loginWorker, SIGNAL( finishedLogin( QString ) ), this,
-             SLOT( authenticationComplete( QString ) ) );
+    connect( m_loginWorker, SIGNAL(finishedLogin(QString)), this,
+             SLOT(authenticationComplete(QString)) );
     //debug() << "Connection complete. Enqueueing..";
     ThreadWeaver::Weaver::instance()->enqueue( m_loginWorker );
     //debug() << "LoginWorker queue";

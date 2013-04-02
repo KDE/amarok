@@ -36,13 +36,13 @@ MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVarian
     m_configDialog->setupUi( this );
 
     m_configDialog->passwordEdit->setEchoMode( QLineEdit::Password );
-    connect ( m_configDialog->usernameEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
-    connect ( m_configDialog->passwordEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
-    connect ( m_configDialog->emailEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
-    connect ( m_configDialog->typeComboBox, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( settingsChanged() ) );
-    connect ( m_configDialog->isMemberCheckbox, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
-    connect ( m_configDialog->streamTypeComboBox, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( settingsChanged() ) );
-    connect ( m_configDialog->autoUpdateDatabase, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
+    connect ( m_configDialog->usernameEdit, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
+    connect ( m_configDialog->passwordEdit, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
+    connect ( m_configDialog->emailEdit, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
+    connect ( m_configDialog->typeComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(settingsChanged()) );
+    connect ( m_configDialog->isMemberCheckbox, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
+    connect ( m_configDialog->streamTypeComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(settingsChanged()) );
+    connect ( m_configDialog->autoUpdateDatabase, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
 
     load();
 

@@ -265,12 +265,12 @@ void SmartPlaylistEditor::init(QString defaultName)
     //add stretch
     static_cast<KHBox *>(mainWidget())->setStretchFactor(new QWidget(mainWidget()), 1);
 
-    connect( m_matchAnyCheck, SIGNAL( toggled(bool) ), m_criteriaAnyGroupBox, SLOT( setEnabled(bool) ) );
-    connect( m_matchAllCheck, SIGNAL( toggled(bool) ), m_criteriaAllGroupBox, SLOT( setEnabled(bool) ) );
-    connect( m_orderCheck, SIGNAL( toggled(bool) ), orderBox, SLOT( setEnabled(bool) ) );
-    connect( m_limitCheck, SIGNAL( toggled(bool) ), limitBox, SLOT(  setEnabled(bool) ) );
-    connect( m_expandCheck, SIGNAL( toggled(bool) ), expandBox, SLOT( setEnabled(bool) ) );
-    connect( m_orderCombo, SIGNAL( activated(int) ), this, SLOT( updateOrderTypes(int) ) );
+    connect( m_matchAnyCheck, SIGNAL(toggled(bool)), m_criteriaAnyGroupBox, SLOT(setEnabled(bool)) );
+    connect( m_matchAllCheck, SIGNAL(toggled(bool)), m_criteriaAllGroupBox, SLOT(setEnabled(bool)) );
+    connect( m_orderCheck, SIGNAL(toggled(bool)), orderBox, SLOT(setEnabled(bool)) );
+    connect( m_limitCheck, SIGNAL(toggled(bool)), limitBox, SLOT(setEnabled(bool)) );
+    connect( m_expandCheck, SIGNAL(toggled(bool)), expandBox, SLOT(setEnabled(bool)) );
+    connect( m_orderCombo, SIGNAL(activated(int)), this, SLOT(updateOrderTypes(int)) );
 
     m_criteriaAnyGroupBox->setEnabled( false );
     m_criteriaAllGroupBox->setEnabled( false );
@@ -455,15 +455,15 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, in
     m_removeButton->setToolButtonStyle( Qt::ToolButtonTextOnly );
     m_removeButton->setText( "-" );
 
-    connect( m_fieldCombo,    SIGNAL( activated(int) ), SLOT( slotFieldSelected(int) ) );
-    connect( m_criteriaCombo, SIGNAL( activated(int) ), SLOT( loadEditWidgets() ) );
+    connect( m_fieldCombo,    SIGNAL(activated(int)), SLOT(slotFieldSelected(int)) );
+    connect( m_criteriaCombo, SIGNAL(activated(int)), SLOT(loadEditWidgets()) );
     if (criteriaType == SmartPlaylistEditor::criteriaAny) {
-	connect( m_addButton, SIGNAL( clicked() ), editor, SLOT( addCriteriaAny() ) );
-	connect( m_removeButton, SIGNAL( clicked() ), SLOT( slotRemoveCriteriaAny() ) );
+	connect( m_addButton, SIGNAL(clicked()), editor, SLOT(addCriteriaAny()) );
+	connect( m_removeButton, SIGNAL(clicked()), SLOT(slotRemoveCriteriaAny()) );
     }
     else {
-	connect( m_addButton, SIGNAL( clicked() ), editor, SLOT( addCriteriaAll() ) );
-	connect( m_removeButton, SIGNAL( clicked() ), SLOT( slotRemoveCriteriaAll() ) );
+	connect( m_addButton, SIGNAL(clicked()), editor, SLOT(addCriteriaAll()) );
+	connect( m_removeButton, SIGNAL(clicked()), SLOT(slotRemoveCriteriaAll()) );
     }
 
     if ( !criteria.isNull() ) {

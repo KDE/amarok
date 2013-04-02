@@ -27,20 +27,20 @@ MetaQueryMaker::MetaQueryMaker( const QList<Collections::Collection*> &collectio
     {
         QueryMaker *b = c->queryMaker();
         builders.append( b );
-        connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
+        connect( b, SIGNAL(queryDone()), this, SLOT(slotQueryDone()) );
         //relay signals directly
         // actually this is wrong. We would need to combine the results
         // to prevent duplicate album name results.
         // On the other hand we need duplicate AlbumPtr results.
         // Summary: be carefull when using this class. (Ralf)
-        connect( b, SIGNAL( newResultReady( Meta::TrackList ) ), this, SIGNAL( newResultReady( Meta::TrackList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::ArtistList ) ), this, SIGNAL( newResultReady( Meta::ArtistList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SIGNAL( newResultReady( Meta::AlbumList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::GenreList ) ), this, SIGNAL( newResultReady( Meta::GenreList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::ComposerList ) ), this, SIGNAL( newResultReady( Meta::ComposerList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::YearList ) ), this, SIGNAL( newResultReady( Meta::YearList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QStringList ) ), this, SIGNAL( newResultReady( QStringList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::LabelList)), this, SIGNAL( newResultReady( Meta::LabelList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::TrackList)), this, SIGNAL(newResultReady(Meta::TrackList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::ArtistList)), this, SIGNAL(newResultReady(Meta::ArtistList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::AlbumList)), this, SIGNAL(newResultReady(Meta::AlbumList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::GenreList)), this, SIGNAL(newResultReady(Meta::GenreList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::ComposerList)), this, SIGNAL(newResultReady(Meta::ComposerList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::YearList)), this, SIGNAL(newResultReady(Meta::YearList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(QStringList)), this, SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::LabelList)), this, SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
     }
 }
 
@@ -52,16 +52,16 @@ MetaQueryMaker::MetaQueryMaker( const QList<QueryMaker*> &queryMakers )
 {
     foreach( QueryMaker *b, builders )
     {
-        connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
+        connect( b, SIGNAL(queryDone()), this, SLOT(slotQueryDone()) );
         //relay signals directly
-        connect( b, SIGNAL( newResultReady( Meta::TrackList ) ), this, SIGNAL( newResultReady( Meta::TrackList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::ArtistList ) ), this, SIGNAL( newResultReady( Meta::ArtistList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SIGNAL( newResultReady( Meta::AlbumList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::GenreList ) ), this, SIGNAL( newResultReady( Meta::GenreList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::ComposerList ) ), this, SIGNAL( newResultReady( Meta::ComposerList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::YearList ) ), this, SIGNAL( newResultReady( Meta::YearList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QStringList ) ), this, SIGNAL( newResultReady( QStringList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL(newResultReady( Meta::LabelList)), this, SIGNAL(newResultReady( Meta::LabelList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::TrackList)), this, SIGNAL(newResultReady(Meta::TrackList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::ArtistList)), this, SIGNAL(newResultReady(Meta::ArtistList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::AlbumList)), this, SIGNAL(newResultReady(Meta::AlbumList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::GenreList)), this, SIGNAL(newResultReady(Meta::GenreList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::ComposerList)), this, SIGNAL(newResultReady(Meta::ComposerList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::YearList)), this, SIGNAL(newResultReady(Meta::YearList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(QStringList)), this, SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady(Meta::LabelList)), this, SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
     }
 }
 

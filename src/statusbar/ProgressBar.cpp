@@ -85,8 +85,8 @@ ProgressBar::setAbortSlot( QObject *receiver, const char *slot, Qt::ConnectionTy
 {
     cancelButton()->setHidden( false );
     if( receiver )
-        connect( this, SIGNAL( cancelled() ), receiver, slot, type );
-    connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancel() ) );
+        connect( this, SIGNAL(cancelled()), receiver, slot, type );
+    connect( cancelButton(), SIGNAL(clicked()), this, SLOT(cancel()) );
 
     return this;
 }
@@ -107,7 +107,7 @@ void ProgressBar::setValue( int percentage )
     //this safety check has to be removed as KJobs sometimes start out
     //by showing 100%, thus removing the progress info before it even gets started
     /*if ( percentage == m_progressBar->maximum() )
-        QTimer::singleShot( POST_COMPLETION_DELAY, this, SLOT( delayedDone() ) );*/
+        QTimer::singleShot( POST_COMPLETION_DELAY, this, SLOT(delayedDone()) );*/
 }
 
 void ProgressBar::delayedDone()

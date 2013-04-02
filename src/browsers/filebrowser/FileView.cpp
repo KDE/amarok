@@ -73,8 +73,8 @@ FileView::FileView( QWidget *parent )
     setEditTriggers( EditKeyPressed );
 
     The::paletteHandler()->updateItemView( this );
-    connect( The::paletteHandler(), SIGNAL(newPalette( const QPalette & )),
-                                    SLOT(newPalette( const QPalette & )) );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)),
+                                    SLOT(newPalette(QPalette)) );
 }
 
 void
@@ -383,7 +383,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_appendAction->setProperty( "popupdropper_svg_id", "append" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_appendAction->setShortcut( Qt::Key_Enter );
-        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendToPlaylist() ) );
+        connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppendToPlaylist()) );
     }
     if( type & PlaylistAction )
         actions.append( m_appendAction );
@@ -393,7 +393,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_loadAction = new QAction( i18nc( "Replace the currently loaded tracks with these",
                                            "&Replace Playlist" ), this );
         m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotReplacePlaylist() ) );
+        connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotReplacePlaylist()) );
     }
     if( type & PlaylistAction )
         actions.append( m_loadAction );
@@ -426,7 +426,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_editAction = new QAction( KIcon( "media-track-edit-amarok" ),
                                     i18n( "&Edit Track Details" ), this );
         m_editAction->setProperty( "popupdropper_svg_id", "edit" );
-        connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
+        connect( m_editAction, SIGNAL(triggered()), this, SLOT(slotEditTracks()) );
     }
     if( type & EditAction )
     {
@@ -507,7 +507,7 @@ FileView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd )
     {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
         m_pd->hide();
     }
 

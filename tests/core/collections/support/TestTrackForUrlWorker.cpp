@@ -93,7 +93,7 @@ TestTrackForUrlWorker::testCompleteJobInternal( MockTrackForUrlWorker *trackForU
     connect( trackForUrlWorker, SIGNAL(finishedLookup(Meta::TrackPtr)),
              this, SLOT(setEmittedTrack(Meta::TrackPtr)) );
 
-    QSignalSpy spyFinishedLookup( trackForUrlWorker, SIGNAL(finishedLookup(const Meta::TrackPtr)) );
+    QSignalSpy spyFinishedLookup( trackForUrlWorker, SIGNAL(finishedLookup(Meta::TrackPtr)) );
 
     // Enqueue the job for execution and verify that it emits done when finished, which triggers completeJob
     ThreadWeaver::Weaver::instance()->enqueue( trackForUrlWorker );

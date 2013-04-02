@@ -65,14 +65,14 @@ ITunesImporter::import()
     m_worker = new ITunesImporterWorker();
     m_worker->setDatabaseLocation( m_config->databaseLocation() );
 
-    connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ), 
-             this, SIGNAL( trackAdded( Meta::TrackPtr ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( importError( QString ) ),
-             this, SIGNAL( importError( QString ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( done(ThreadWeaver::Job*) ), 
-             this, SLOT( finishUp() ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( showMessage( QString ) ),
-             this, SIGNAL( showMessage( QString ) ), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL(trackAdded(Meta::TrackPtr)),
+             this, SIGNAL(trackAdded(Meta::TrackPtr)), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL(importError(QString)),
+             this, SIGNAL(importError(QString)), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL(done(ThreadWeaver::Job*)),
+             this, SLOT(finishUp()), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL(showMessage(QString)),
+             this, SIGNAL(showMessage(QString)), Qt::QueuedConnection );
 
     ThreadWeaver::Weaver::instance()->enqueue( m_worker );
     

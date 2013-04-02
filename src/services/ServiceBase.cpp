@@ -142,7 +142,7 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
         m_contentView->sortByColumn ( 0, Qt::AscendingOrder );
         m_contentView->setDragEnabled ( true );
         m_contentView->setDragDropMode ( QAbstractItemView::DragOnly );
-        connect( m_contentView, SIGNAL( itemSelected ( CollectionTreeItem * )  ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
+        connect( m_contentView, SIGNAL(itemSelected(CollectionTreeItem*)), this, SLOT(itemSelected(CollectionTreeItem*)) );
     }
 
     m_bottomPanel = new KVBox( this );
@@ -166,8 +166,8 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
 
     m_searchWidget = new SearchWidget( m_topPanel );
     if( m_contentView )
-        connect( m_searchWidget, SIGNAL( filterChanged( const QString & ) ),
-                 m_contentView, SLOT( slotSetFilter( const QString & ) ) );
+        connect( m_searchWidget, SIGNAL(filterChanged(QString)),
+                 m_contentView, SLOT(slotSetFilter(QString)) );
 }
 
 ServiceBase::~ServiceBase()
@@ -322,7 +322,7 @@ ServiceBase::setInfoParser(InfoParserBase * infoParser)
 {
     m_infoParser = infoParser;
 
-    connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
+    connect ( m_infoParser, SIGNAL(info(QString)), this, SLOT(infoChanged(QString)) );
 }
 
 InfoParserBase *

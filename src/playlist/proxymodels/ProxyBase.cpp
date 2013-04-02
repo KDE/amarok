@@ -33,8 +33,8 @@ ProxyBase::ProxyBase( AbstractModel *belowModel, QObject *parent )
     // Proxy the Playlist::AbstractModel signals.
     //   If you need to do something special in a subclass, disconnect() this signal and
     //   do your own connect() call.
-    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
-    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
+    connect( sourceModel(), SIGNAL(activeTrackChanged(quint64)), this, SIGNAL(activeTrackChanged(quint64)) );
+    connect( sourceModel(), SIGNAL(queueChanged()), this, SIGNAL(queueChanged()) );
 }
 
 ProxyBase::~ProxyBase()

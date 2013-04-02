@@ -23,7 +23,7 @@
 SimilarArtistsAction::SimilarArtistsAction( QObject *parent )
     : GlobalCollectionArtistAction( i18n( "Play Similar Artists from Last.fm" ), parent )
 {
-    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
 
     setIcon( KIcon("view-services-lastfm-amarok") );
     setProperty( "popupdropper_svg_id", "lastfm" );

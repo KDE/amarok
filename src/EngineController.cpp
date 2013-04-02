@@ -193,26 +193,26 @@ EngineController::initializePhonon()
     connect( m_media.data(), SIGNAL(finished()), SLOT(slotFinished()));
     connect( m_media.data(), SIGNAL(aboutToFinish()), SLOT(slotAboutToFinish()) );
     connect( m_media.data(), SIGNAL(metaDataChanged()), SLOT(slotMetaDataChanged()) );
-    connect( m_media.data(), SIGNAL(stateChanged( Phonon::State, Phonon::State )),
-             SLOT(slotStateChanged( Phonon::State, Phonon::State )) );
-    connect( m_media.data(), SIGNAL(tick( qint64 )), SLOT(slotTick( qint64 )) );
-    connect( m_media.data(), SIGNAL(totalTimeChanged( qint64 )),
-             SLOT(slotTrackLengthChanged( qint64 )) );
-    connect( m_media.data(), SIGNAL(currentSourceChanged( const Phonon::MediaSource & )),
-             SLOT(slotNewTrackPlaying( const Phonon::MediaSource & )) );
-    connect( m_media.data(), SIGNAL(seekableChanged( bool )),
-             SLOT(slotSeekableChanged( bool )) );
-    connect( m_audio.data(), SIGNAL(volumeChanged( qreal )),
-             SLOT(slotVolumeChanged( qreal )) );
-    connect( m_audio.data(), SIGNAL(mutedChanged( bool )),
-             SLOT(slotMutedChanged( bool )) );
+    connect( m_media.data(), SIGNAL(stateChanged(Phonon::State,Phonon::State)),
+             SLOT(slotStateChanged(Phonon::State,Phonon::State)) );
+    connect( m_media.data(), SIGNAL(tick(qint64)), SLOT(slotTick(qint64)) );
+    connect( m_media.data(), SIGNAL(totalTimeChanged(qint64)),
+             SLOT(slotTrackLengthChanged(qint64)) );
+    connect( m_media.data(), SIGNAL(currentSourceChanged(Phonon::MediaSource)),
+             SLOT(slotNewTrackPlaying(Phonon::MediaSource)) );
+    connect( m_media.data(), SIGNAL(seekableChanged(bool)),
+             SLOT(slotSeekableChanged(bool)) );
+    connect( m_audio.data(), SIGNAL(volumeChanged(qreal)),
+             SLOT(slotVolumeChanged(qreal)) );
+    connect( m_audio.data(), SIGNAL(mutedChanged(bool)),
+             SLOT(slotMutedChanged(bool)) );
     connect( m_audioDataOutput.data(),
-             SIGNAL(dataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & )),
-             SIGNAL(audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ))
+             SIGNAL(dataReady(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)),
+             SIGNAL(audioDataReady(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >))
            );
 
-    connect( m_controller.data(), SIGNAL(titleChanged( int )),
-             SLOT(slotTitleChanged( int )) );
+    connect( m_controller.data(), SIGNAL(titleChanged(int)),
+             SLOT(slotTitleChanged(int)) );
 
     // Read the volume from phonon
     m_volume = qBound<qreal>( 0, qRound(m_audio.data()->volume()*100), 100 );
@@ -376,8 +376,8 @@ EngineController::play( Meta::TrackPtr track, uint offset )
 
     if( m_multiPlayback )
     {
-        connect( m_multiPlayback, SIGNAL(playableUrlFetched( const KUrl & )),
-                 SLOT(slotPlayableUrlFetched( const KUrl & )) );
+        connect( m_multiPlayback, SIGNAL(playableUrlFetched(KUrl)),
+                 SLOT(slotPlayableUrlFetched(KUrl)) );
         m_multiPlayback->fetchFirst();
     }
     else if( m_boundedPlayback )

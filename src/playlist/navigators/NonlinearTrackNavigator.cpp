@@ -33,12 +33,12 @@ Playlist::NonlinearTrackNavigator::NonlinearTrackNavigator()
     // Connect to the QAbstractItemModel signals of the source model.
     //   Ignore SIGNAL dataChanged: changes in metadata etc. don't affect the random play order.
     //   Ignore SIGNAL layoutChanged: rows moving around doesn't affect the random play order.
-    connect( m_model->qaim(), SIGNAL( modelReset() ), this, SLOT( slotModelReset() ) );
-    connect( m_model->qaim(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( m_model->qaim(), SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotRowsAboutToBeRemoved( const QModelIndex&, int, int ) ) );
+    connect( m_model->qaim(), SIGNAL(modelReset()), this, SLOT(slotModelReset()) );
+    connect( m_model->qaim(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)) );
+    connect( m_model->qaim(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(slotRowsAboutToBeRemoved(QModelIndex,int,int)) );
 
     // Connect to the Playlist::AbstractModel signals of the source model.
-    connect( m_model->qaim(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( slotActiveTrackChanged( const quint64 ) ) );
+    connect( m_model->qaim(), SIGNAL(activeTrackChanged(quint64)), this, SLOT(slotActiveTrackChanged(quint64)) );
 }
 
 

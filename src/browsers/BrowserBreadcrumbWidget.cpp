@@ -76,7 +76,7 @@ BrowserBreadcrumbWidget::setRootList( BrowserCategoryList * rootList )
     m_rootList = rootList;
 
     //update the breadcrumbs every time the view changes.
-    connect( m_rootList, SIGNAL( viewChanged() ), this, SLOT( updateBreadcrumbs() ) );
+    connect( m_rootList, SIGNAL(viewChanged()), this, SLOT(updateBreadcrumbs()) );
 
     updateBreadcrumbs();
 }
@@ -159,7 +159,7 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList *list )
                 BrowserCategory * siblingCategory = childMap.value( siblingName );
 
                 QAction * action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
-                connect( action, SIGNAL( triggered() ), childMap.value( siblingName ), SLOT( activate() ) );
+                connect( action, SIGNAL(triggered()), childMap.value( siblingName ), SLOT(activate()) );
 
             }
 

@@ -180,7 +180,7 @@ void LikeBack::execCommentDialog( Button type, const QString &initialComment, co
 {
     LikeBackDialog *dialog = new LikeBackDialog( type, initialComment, windowPath, context, this );
     disableBar();
-    connect( dialog, SIGNAL( finished() ), this, SLOT( enableBar() ) );
+    connect( dialog, SIGNAL(finished()), this, SLOT(enableBar()) );
     dialog->show();
 }
 
@@ -219,14 +219,14 @@ void LikeBack::createActions( KActionCollection *parent )
     if( d->sendAction == 0 )
     {
         d->sendAction = new KAction( KIcon("mail-message-new"), i18n("&Send a Comment to the Developers"), this );
-        connect( d->sendAction, SIGNAL( triggered( bool ) ), this, SLOT( execCommentDialog() ) );
+        connect( d->sendAction, SIGNAL(triggered(bool)), this, SLOT(execCommentDialog()) );
         parent->addAction( "likeBackSendComment", d->sendAction );
     }
     if( d->showBarAction == 0 )
     {
         d->showBarAction = new KToggleAction( KIcon( "help-feedback" ), i18n( "Show &Feedback Icons" ), this );
         d->showBarAction->setChecked( userWantsToShowBar() );
-        connect( d->showBarAction, SIGNAL( triggered( bool ) ), this, SLOT( setUserWantsToShowBar( bool ) ) );
+        connect( d->showBarAction, SIGNAL(triggered(bool)), this, SLOT(setUserWantsToShowBar(bool)) );
 
         parent->addAction( "likeBackShowIcons", d->showBarAction );
     }

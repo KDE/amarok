@@ -113,7 +113,7 @@ Downloader::init( QScriptContext* context, QScriptEngine* engine, bool stringRes
     else
         AmarokDownloadHelper::instance()->newDataDownload( url, engine, context->argument( 1 ) );
     // connect to a local slot to extract the qstring
-    //qScriptConnect( job, SIGNAL( result( KJob* ) ), object, fetchResult( job ) );
+    //qScriptConnect( job, SIGNAL(result(KJob*)), object, fetchResult( job ) );
     return object;
 }
 
@@ -124,21 +124,21 @@ Downloader::init( QScriptContext* context, QScriptEngine* engine, bool stringRes
 AmarokDownloadHelper::AmarokDownloadHelper()
 {
     s_instance = this;
-    connect( The::networkAccessManager(), SIGNAL(requestRedirected(KUrl, KUrl)),
-             this, SLOT(requestRedirected(KUrl, KUrl)) );
+    connect( The::networkAccessManager(), SIGNAL(requestRedirected(KUrl,KUrl)),
+             this, SLOT(requestRedirected(KUrl,KUrl)) );
 }
 
 void
 AmarokDownloadHelper::newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding )
 {
     m_encodings[ url ] = encoding;
-    newDownload( url, engine, obj, SLOT(resultString(KUrl, QByteArray, NetworkAccessManagerProxy::Error)) );
+    newDownload( url, engine, obj, SLOT(resultString(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
 AmarokDownloadHelper::newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj )
 {
-    newDownload( url, engine, obj, SLOT(resultData(KUrl, QByteArray, NetworkAccessManagerProxy::Error)) );
+    newDownload( url, engine, obj, SLOT(resultData(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void

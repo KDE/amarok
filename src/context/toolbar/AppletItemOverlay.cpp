@@ -119,13 +119,13 @@ Context::AppletItemOverlay::AppletItemOverlay( Context::AppletToolbarAppletItem 
     m_deleteIcon->setAttribute( Qt::WA_NoSystemBackground );
     //m_deleteIcon->setAttribute( Qt::WA_TranslucentBackground ); //NB: Introduced in Qt 4.5
     
-    connect( delApplet, SIGNAL( triggered() ), this, SLOT( deleteApplet() ) );
-    connect( m_deleteIcon, SIGNAL( released() ), this, SLOT( deleteApplet() ) );
+    connect( delApplet, SIGNAL(triggered()), this, SLOT(deleteApplet()) );
+    connect( m_deleteIcon, SIGNAL(released()), this, SLOT(deleteApplet()) );
     
     syncGeometry();
 
-    connect( m_applet, SIGNAL( destroyed(QObject*) ), this, SLOT( deleteLater() ) );
-    connect( m_applet, SIGNAL( geometryChanged() ), this, SLOT( delaySyncGeometry() ) );
+    connect( m_applet, SIGNAL(destroyed(QObject*)), this, SLOT(deleteLater()) );
+    connect( m_applet, SIGNAL(geometryChanged()), this, SLOT(delaySyncGeometry()) );
 }
 
 Context::AppletItemOverlay::~AppletItemOverlay()
@@ -418,7 +418,7 @@ Context::AppletItemOverlay::delaySyncGeometry()
     // we end up with a maze of duplicated and confused mouseMoveEvents
     // of which only half are real (the other half being caused by the
     // immediate call to syncGeometry!)
-    QTimer::singleShot( 0, this, SLOT( syncGeometry() ) );
+    QTimer::singleShot( 0, this, SLOT(syncGeometry()) );
 }
 
 void 

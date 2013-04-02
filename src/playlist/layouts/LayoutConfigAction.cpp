@@ -60,16 +60,16 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
                         //this should be fixed by itself when layouts ordering will be supported in the LayoutManager
     m_layoutActions->actions()[ index ]->setChecked( true );
 
-    connect( m_layoutActions, SIGNAL( triggered( QAction * ) ), this, SLOT( setActiveLayout( QAction * ) ) );
+    connect( m_layoutActions, SIGNAL(triggered(QAction*)), this, SLOT(setActiveLayout(QAction*)) );
 
-    connect( LayoutManager::instance(), SIGNAL( layoutListChanged() ), this, SLOT( layoutListChanged() ) );
-    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( onActiveLayoutChanged() ) );
+    connect( LayoutManager::instance(), SIGNAL(layoutListChanged()), this, SLOT(layoutListChanged()) );
+    connect( LayoutManager::instance(), SIGNAL(activeLayoutChanged()), this, SLOT(onActiveLayoutChanged()) );
 
     const KIcon configIcon( "configure" );
     m_configAction->setIcon( configIcon );
     m_configAction->setText( i18n( "Configure Playlist Layouts..." ) );
 
-    connect( m_configAction, SIGNAL( triggered() ), this, SLOT( configureLayouts() ) );
+    connect( m_configAction, SIGNAL(triggered()), this, SLOT(configureLayouts()) );
 }
 
 
@@ -89,7 +89,7 @@ void LayoutConfigAction::configureLayouts()
         m_layoutDialog = new PlaylistLayoutEditDialog( The::mainWindow() );
 
     m_layoutDialog->setModal( false );
-    connect( m_layoutDialog, SIGNAL( accepted() ), this, SLOT( layoutListChanged() ) );
+    connect( m_layoutDialog, SIGNAL(accepted()), this, SLOT(layoutListChanged()) );
 
     m_layoutDialog->show();
 }

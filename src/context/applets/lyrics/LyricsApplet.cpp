@@ -208,7 +208,7 @@ LyricsAppletPrivate::showUnsavedChangesWarning( Meta::TrackPtr newTrack )
     }
 
     // Show the warning message.
-    q->showWarning( warningMessage, SLOT(_lyricsChangedMessageButtonPressed(const Plasma::MessageButton)) );
+    q->showWarning( warningMessage, SLOT(_lyricsChangedMessageButtonPressed(Plasma::MessageButton)) );
 
     // Make the contents readonly again.
     // Since the applet is now blocked the user can not enable this again.
@@ -476,7 +476,7 @@ LyricsApplet::init()
     autoScrollAction->setEnabled( true );
     autoScrollAction->setText( i18n( "Scroll automatically" ) );
     d->autoScrollIcon = addRightHeaderAction( autoScrollAction );
-    connect( d->autoScrollIcon, SIGNAL( clicked() ), this, SLOT( _toggleAutoScroll() ) );
+    connect( d->autoScrollIcon, SIGNAL(clicked()), this, SLOT(_toggleAutoScroll()) );
 
     QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
@@ -517,9 +517,9 @@ LyricsApplet::init()
 
     EngineController* engine = The::engineController();
 
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ), this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( trackPositionChanged( qint64 , bool) ), this, SLOT( _trackPositionChanged(qint64, bool) ) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)), this, SLOT(_trackDataChanged(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), this, SLOT(_trackDataChanged(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(trackPositionChanged(qint64,bool)), this, SLOT(_trackPositionChanged(qint64,bool)) );
     connect( d->suggestView, SIGNAL(selected(LyricsSuggestion)), SLOT(_suggestionChosen(LyricsSuggestion)) );
     connect( dataEngine("amarok-lyrics"), SIGNAL(sourceAdded(QString)), this, SLOT(connectSource(QString)) );
 
@@ -659,7 +659,7 @@ LyricsApplet::refreshLyrics()
     {
         // Ask the user if he really wants to refetch the lyrics.
         const QString text( i18nc( "@info", "Do you really want to refetch lyrics for this track? All changes you may have made will be lost.") );
-        showWarning( text, SLOT(_refetchMessageButtonPressed(const Plasma::MessageButton)) );
+        showWarning( text, SLOT(_refetchMessageButtonPressed(Plasma::MessageButton)) );
     }
     else
     {

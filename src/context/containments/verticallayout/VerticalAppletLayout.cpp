@@ -93,7 +93,7 @@ Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
     emit appletAdded( applet, location );
 
     // every time the geometry change, we will call showapplet ;)
-    connect( applet, SIGNAL( sizeHintChanged( Qt::SizeHint ) ), SLOT( refresh() ) );
+    connect( applet, SIGNAL(sizeHintChanged(Qt::SizeHint)), SLOT(refresh()) );
 }
 
 void

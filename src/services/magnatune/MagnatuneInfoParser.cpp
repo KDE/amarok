@@ -42,7 +42,7 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
 
     m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl(), KIO::Reload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_infoDownloadJob, i18n( "Fetching %1 Artist Info", magnatuneArtist->prettyName() ) );
-    connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( artistInfoDownloadComplete( KJob*) ) );
+    connect( m_infoDownloadJob, SIGNAL(result(KJob*)), SLOT(artistInfoDownloadComplete(KJob*)) );
 
 }
 
@@ -167,7 +167,7 @@ void MagnatuneInfoParser::getFrontPage()
     
     m_pageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
-    connect( m_pageDownloadJob, SIGNAL(result( KJob * ) ), SLOT( frontpageDownloadComplete( KJob*) ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob*)), SLOT(frontpageDownloadComplete(KJob*)) );
 }
 
 void MagnatuneInfoParser::getFavoritesPage()
@@ -196,7 +196,7 @@ void MagnatuneInfoParser::getFavoritesPage()
 
     m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
-    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( userPageDownloadComplete( KJob*) ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob*)), SLOT(userPageDownloadComplete(KJob*)) );
 }
 
 void MagnatuneInfoParser::getRecommendationsPage()
@@ -225,7 +225,7 @@ void MagnatuneInfoParser::getRecommendationsPage()
 
     m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com recommendations page..." ) );
-    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( userPageDownloadComplete( KJob*) ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob*)), SLOT(userPageDownloadComplete(KJob*)) );
     
 }
 

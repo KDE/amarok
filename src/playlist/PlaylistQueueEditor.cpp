@@ -33,16 +33,16 @@ PlaylistQueueEditor::PlaylistQueueEditor()
 {
     m_ui.setupUi( this );
     updateView();
-    connect( The::playlist()->qaim(), SIGNAL( queueChanged() ), SLOT( queueChanged() ) );
+    connect( The::playlist()->qaim(), SIGNAL(queueChanged()), SLOT(queueChanged()) );
     m_ui.upButton->setIcon( KIcon( "go-up" ) );
     m_ui.downButton->setIcon( KIcon( "go-down" ) );
     m_ui.dequeueTrackButton->setIcon( KIcon( "list-remove" ) );
     m_ui.clearButton->setIcon( KIcon( "edit-clear-list" ) );
-    connect( m_ui.upButton, SIGNAL( clicked() ), SLOT( moveUp() ) );
-    connect( m_ui.downButton, SIGNAL( clicked() ), SLOT( moveDown() ) );
-    connect( m_ui.clearButton, SIGNAL( clicked() ), SLOT( clear() ) );
-    connect( m_ui.dequeueTrackButton, SIGNAL( clicked() ), SLOT( dequeueTrack() ) );
-    connect( m_ui.buttonBox->buttons().first(), SIGNAL( clicked() ), SLOT( accept() ) );
+    connect( m_ui.upButton, SIGNAL(clicked()), SLOT(moveUp()) );
+    connect( m_ui.downButton, SIGNAL(clicked()), SLOT(moveDown()) );
+    connect( m_ui.clearButton, SIGNAL(clicked()), SLOT(clear()) );
+    connect( m_ui.dequeueTrackButton, SIGNAL(clicked()), SLOT(dequeueTrack()) );
+    connect( m_ui.buttonBox->buttons().first(), SIGNAL(clicked()), SLOT(accept()) );
 }
 
 void

@@ -100,7 +100,7 @@ CurrentTrack::init()
     m_ratingWidget->setSpacing( 2 );
     m_ratingWidget->setMinimumSize( m_albumWidth + 10, 30 );
     m_ratingWidget->setMaximumSize( m_albumWidth + 10, 30 );
-    connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( trackRatingChanged( int ) ) );
+    connect( m_ratingWidget, SIGNAL(ratingChanged(int)), SLOT(trackRatingChanged(int)) );
 
     QLabel *collectionLabel = new QLabel( i18n( "Local Collection" ) );
     collectionLabel->setAttribute( Qt::WA_NoSystemBackground );

@@ -64,10 +64,10 @@ MusicBrainzTagger::init()
     if( m_tracks.count() > 1 )
     {
         QToolBar *toolBar = new QToolBar( this );
-        toolBar->addAction( i18n( "Expand All" ), ui->treeView_Result, SLOT( expandAll() ) );
-        toolBar->addAction( i18n( "Collapse All" ), ui->treeView_Result, SLOT( collapseAll() ) );
-        toolBar->addAction( i18n( "Expand Unchosen" ), ui->treeView_Result, SLOT( expandUnChosen() ) );
-        toolBar->addAction( i18n( "Collapse Chosen" ), ui->treeView_Result, SLOT( collapseChosen() ) );
+        toolBar->addAction( i18n( "Expand All" ), ui->treeView_Result, SLOT(expandAll()) );
+        toolBar->addAction( i18n( "Collapse All" ), ui->treeView_Result, SLOT(collapseAll()) );
+        toolBar->addAction( i18n( "Expand Unchosen" ), ui->treeView_Result, SLOT(expandUnChosen()) );
+        toolBar->addAction( i18n( "Collapse Chosen" ), ui->treeView_Result, SLOT(collapseChosen()) );
         ui->verticalLayout->insertWidget( 0, toolBar );
     }
 
@@ -82,19 +82,19 @@ MusicBrainzTagger::init()
 
 #ifdef HAVE_LIBOFA
     mdns_finder = new MusicDNSFinder( this );
-    connect( mdns_finder, SIGNAL( trackFound( Meta::TrackPtr, QString ) ),
-             mb_finder, SLOT( lookUpByPUID( Meta::TrackPtr, QString ) ) );
-    connect( mdns_finder, SIGNAL( progressStep() ), SLOT( progressStep() ) );
-    connect( mdns_finder, SIGNAL( done() ), this, SLOT( mdnsSearchDone() ) );
+    connect( mdns_finder, SIGNAL(trackFound(Meta::TrackPtr,QString)),
+             mb_finder, SLOT(lookUpByPUID(Meta::TrackPtr,QString)) );
+    connect( mdns_finder, SIGNAL(progressStep()), SLOT(progressStep()) );
+    connect( mdns_finder, SIGNAL(done()), this, SLOT(mdnsSearchDone()) );
 #endif
-    connect( mb_finder, SIGNAL( done() ), SLOT( searchDone() ) );
-    connect( mb_finder, SIGNAL( trackFound( const Meta::TrackPtr, const QVariantMap ) ),
-             q_resultsModel, SLOT( addTrack( const Meta::TrackPtr, const QVariantMap ) ) );
-    connect( mb_finder, SIGNAL( progressStep() ), SLOT( progressStep() ) );
-    connect( ui->treeView_Result->header(), SIGNAL( sectionClicked( int ) ),
-             q_resultsModel, SLOT( selectAll( int ) ) );
-    connect( ui->pushButton_saveAndClose, SIGNAL( clicked( bool ) ), SLOT( saveAndExit() ) );
-    connect( ui->pushButton_cancel, SIGNAL( clicked( bool ) ), SLOT( reject() ) );
+    connect( mb_finder, SIGNAL(done()), SLOT(searchDone()) );
+    connect( mb_finder, SIGNAL(trackFound(Meta::TrackPtr,QVariantMap)),
+             q_resultsModel, SLOT(addTrack(Meta::TrackPtr,QVariantMap)) );
+    connect( mb_finder, SIGNAL(progressStep()), SLOT(progressStep()) );
+    connect( ui->treeView_Result->header(), SIGNAL(sectionClicked(int)),
+             q_resultsModel, SLOT(selectAll(int)) );
+    connect( ui->pushButton_saveAndClose, SIGNAL(clicked(bool)), SLOT(saveAndExit()) );
+    connect( ui->pushButton_cancel, SIGNAL(clicked(bool)), SLOT(reject()) );
 }
 
 void

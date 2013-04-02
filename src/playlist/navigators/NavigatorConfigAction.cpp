@@ -151,9 +151,9 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
             break;
     }
 
-     connect( navigatorMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( setActiveNavigator( QAction* ) ) );
-     connect( favorMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( setFavored( QAction* ) ) );
-     connect( The::playlistActions(), SIGNAL( navigatorChanged() ), this, SLOT( navigatorChanged() ) );
+     connect( navigatorMenu, SIGNAL(triggered(QAction*)), this, SLOT(setActiveNavigator(QAction*)) );
+     connect( favorMenu, SIGNAL(triggered(QAction*)), this, SLOT(setFavored(QAction*)) );
+     connect( The::playlistActions(), SIGNAL(navigatorChanged()), this, SLOT(navigatorChanged()) );
 }
 
 NavigatorConfigAction::~NavigatorConfigAction()

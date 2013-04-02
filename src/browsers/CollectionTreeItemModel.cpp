@@ -41,15 +41,15 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<CategoryId::CatMen
     : CollectionTreeItemModelBase()
 {
     CollectionManager* collMgr = CollectionManager::instance();
-    connect( collMgr, SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( collectionAdded( Collections::Collection* ) ), Qt::QueuedConnection );
-    connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
+    connect( collMgr, SIGNAL(collectionAdded(Collections::Collection*)), this, SLOT(collectionAdded(Collections::Collection*)), Qt::QueuedConnection );
+    connect( collMgr, SIGNAL(collectionRemoved(QString)), this, SLOT(collectionRemoved(QString)) );
     //delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
     m_collections.clear();
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collections::Collection *coll, collections )
     {
-        connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
+        connect( coll, SIGNAL(updated()), this, SLOT(slotFilter()) ) ;
         m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
     }
     //m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
@@ -82,7 +82,7 @@ CollectionTreeItemModel::setLevels( const QList<CategoryId::CatMenuId> &levelTyp
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collections::Collection *coll, collections )
     {
-        connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
+        connect( coll, SIGNAL(updated()), this, SLOT(slotFilter()) ) ;
         m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
     }
     m_rootItem->setRequiresUpdate( false );  //all collections have been loaded already
@@ -94,7 +94,7 @@ CollectionTreeItemModel::setLevels( const QList<CategoryId::CatMenuId> &levelTyp
     m_compilationQueries.clear();
     reset();
     if( m_collections.count() == 1 )
-        QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
+        QTimer::singleShot( 0, this, SLOT(requestCollectionsExpansion()) );
 }
 
 Qt::ItemFlags
@@ -235,7 +235,7 @@ CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection
     if( !newCollection )
         return;
 
-    connect( newCollection, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
+    connect( newCollection, SIGNAL(updated()), this, SLOT(slotFilter()) ) ;
 
     QString collectionId = newCollection->collectionId();
     if( m_collections.contains( collectionId ) )
@@ -249,7 +249,7 @@ CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection
     endInsertRows();
 
     if( m_collections.count() == 1 )
-        QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
+        QTimer::singleShot( 0, this, SLOT(requestCollectionsExpansion()) );
 }
 
 void

@@ -103,10 +103,10 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
 
     EngineController* const engine = The::engineController();
 
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( slotTrackChanged( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( slotMetadataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             this, SLOT(slotTrackChanged(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(slotMetadataChanged(Meta::TrackPtr)) );
 
     // keep this assignment at bottom so that premature usage of ::self() asserts out
     s_self = this;
@@ -296,8 +296,8 @@ ContextView::showAppletExplorer()
         m_appletExplorer->setZValue( m_appletExplorer->zValue() + 1000 );
         m_appletExplorer->setFlag( QGraphicsItem::ItemIsSelectable );
 
-        connect( m_appletExplorer, SIGNAL(addAppletToContainment(QString, const int)),
-                 cont, SLOT(addApplet(QString, const int)) );
+        connect( m_appletExplorer, SIGNAL(addAppletToContainment(QString,int)),
+                 cont, SLOT(addApplet(QString,int)) );
         connect( m_appletExplorer, SIGNAL(appletExplorerHid()), SIGNAL(appletExplorerHid()) );
         connect( m_appletExplorer, SIGNAL(geometryChanged()), SLOT(slotPositionAppletExplorer()) );
 

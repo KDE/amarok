@@ -44,10 +44,10 @@ UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVarian
 
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( updateDataForArtist() ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( updateDataForArtist() ) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             this, SLOT(updateDataForArtist()) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(updateDataForArtist()) );
 }
 
 UpcomingEventsEngine::~UpcomingEventsEngine()

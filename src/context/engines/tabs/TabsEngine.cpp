@@ -43,10 +43,10 @@ TabsEngine::TabsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         , m_numAbortedUrls( 0 )
 {
     EngineController *engine = The::engineController();
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-            this, SLOT( update() ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+            this, SLOT(update()) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(update()) );
 }
 
 /**
@@ -259,7 +259,7 @@ TabsEngine::queryUltimateGuitar( const QString &artist, const QString &title )
     ultimateGuitarUrl.addQueryItem( "version_la", "" );
 
     The::networkAccessManager()->getData( ultimateGuitarUrl, this,
-        SLOT( resultUltimateGuitarSearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
+        SLOT(resultUltimateGuitarSearch(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     m_urls.insert( ultimateGuitarUrl );
 }
 
@@ -294,7 +294,7 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
                 // fetch the actual tab
                 const KUrl tabFetchUrl = KUrl( tabUrl );
                 The::networkAccessManager()->getData( tabFetchUrl, this,
-                    SLOT( resultUltimateGuitarTab( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
+                    SLOT(resultUltimateGuitarTab(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
                 m_urls.insert( tabFetchUrl );
             }
         }

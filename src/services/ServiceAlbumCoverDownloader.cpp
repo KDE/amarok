@@ -143,8 +143,8 @@ ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCoverPtr album )
 
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_coverDownloadPath ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
-    connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverDownloadComplete( KJob* ) ) );
-    connect( m_albumDownloadJob, SIGNAL( canceled( KJob* ) ), SLOT( coverDownloadCanceled( KJob * ) ) );
+    connect( m_albumDownloadJob, SIGNAL(result(KJob*)), SLOT(coverDownloadComplete(KJob*)) );
+    connect( m_albumDownloadJob, SIGNAL(canceled(KJob*)), SLOT(coverDownloadCanceled(KJob*)) );
 }
 
 void

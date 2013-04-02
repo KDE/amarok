@@ -166,7 +166,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     m_trackOrganizer = new TrackOrganizer( m_allTracks, this );
 
     m_organizeCollectionWidget = new OrganizeCollectionWidget( mainContainer );
-    connect( this, SIGNAL( accepted() ),  m_organizeCollectionWidget, SLOT( onAccept() ) );
+    connect( this, SIGNAL(accepted()),  m_organizeCollectionWidget, SLOT(onAccept()) );
     ui->verticalLayout->insertWidget( 1, m_organizeCollectionWidget );
 
     ui->folderCombo->insertItems( 0, folders );
@@ -199,9 +199,9 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->conflictLabel->setPalette( p );
 
     // to show the conflict error
-    connect( ui->overwriteCheck, SIGNAL(stateChanged( int )),
+    connect( ui->overwriteCheck, SIGNAL(stateChanged(int)),
              SLOT(slotUpdatePreview()) );
-    connect( ui->folderCombo, SIGNAL(currentIndexChanged( const QString & )),
+    connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)),
              SLOT(slotUpdatePreview()) );
     connect( m_organizeCollectionWidget, SIGNAL(schemeChanged()),
              SLOT(slotUpdatePreview()) );
@@ -210,8 +210,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     connect( this, SIGNAL(finished(int)), m_organizeCollectionWidget, SLOT(slotSaveFormatList()) );
     connect( this, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
-    connect( ui->folderCombo, SIGNAL(currentIndexChanged( const QString & )),
-             SLOT(slotEnableOk( const QString & )) );
+    connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)),
+             SLOT(slotEnableOk(QString)) );
 
     slotEnableOk( ui->folderCombo->currentText() );
 

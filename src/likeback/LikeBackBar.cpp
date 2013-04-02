@@ -210,8 +210,8 @@ void LikeBackBar::setBarVisible( bool visible )
         // Avoid duplicated connections
         if( ! m_connected )
         {
-            connect( kapp, SIGNAL( focusChanged(QWidget*,QWidget*) ),
-                     this, SLOT  ( changeWindow(QWidget*,QWidget*) ) );
+            connect( kapp, SIGNAL(focusChanged(QWidget*,QWidget*)),
+                     this, SLOT  (changeWindow(QWidget*,QWidget*)) );
             m_connected = true;
         }
 
@@ -226,8 +226,8 @@ void LikeBackBar::setBarVisible( bool visible )
 
         if( m_connected )
         {
-            disconnect( kapp, SIGNAL( focusChanged(QWidget*,QWidget*) ),
-                        this, SLOT  ( changeWindow(QWidget*,QWidget*) ) );
+            disconnect( kapp, SIGNAL(focusChanged(QWidget*,QWidget*)),
+                        this, SLOT  (changeWindow(QWidget*,QWidget*)) );
             m_connected = false;
         }
 

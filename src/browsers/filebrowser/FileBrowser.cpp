@@ -248,8 +248,8 @@ FileBrowser::initView()
     d->mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setDynamicSortFilter( true );
-    connect( d->searchWidget, SIGNAL(filterChanged( const QString & )),
-             d->mimeFilterProxyModel, SLOT(setFilterFixedString( const QString & )) );
+    connect( d->searchWidget, SIGNAL(filterChanged(QString)),
+             d->mimeFilterProxyModel, SLOT(setFilterFixedString(QString)) );
 
     d->fileView->setModel( d->mimeFilterProxyModel );
     d->fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -273,7 +273,7 @@ FileBrowser::initView()
         action->setCheckable( true );
         if( !d->fileView->isColumnHidden( i ) )
             action->setChecked( true );
-        connect( action, SIGNAL(toggled(bool)), this, SLOT(toggleColumn(bool) ) );
+        connect( action, SIGNAL(toggled(bool)), this, SLOT(toggleColumn(bool)) );
     }
 
     connect( d->fileView->header(), SIGNAL(geometriesChanged()),

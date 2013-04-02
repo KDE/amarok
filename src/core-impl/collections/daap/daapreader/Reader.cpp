@@ -76,8 +76,8 @@ Reader::logoutRequest()
 {
     DEBUG_BLOCK
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerLogoutHttp" );
-    connect( http, SIGNAL( httpError( const QString& ) ), this, SLOT( fetchingError( const QString& ) ) );
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( logoutRequest( int, bool ) ) );
+    connect( http, SIGNAL(httpError(QString)), this, SLOT(fetchingError(QString)) );
+    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(logoutRequest(int,bool)) );
     http->getDaap( "/logout?" + m_loginString );
 }
 
@@ -94,8 +94,8 @@ Reader::loginRequest()
 {
     DEBUG_BLOCK
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerHttp");
-    connect( http, SIGNAL( httpError( const QString& ) ), this, SLOT( fetchingError( const QString& ) ) );
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( contentCodesReceived( int, bool ) ) );
+    connect( http, SIGNAL(httpError(QString)), this, SLOT(fetchingError(QString)) );
+    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(contentCodesReceived(int,bool)) );
     http->getDaap( "/content-codes" );
 }
 
@@ -104,7 +104,7 @@ Reader::contentCodesReceived( int /* id */, bool error )
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( contentCodesReceived( int, bool ) ) );
+    disconnect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(contentCodesReceived(int,bool)) );
     if( error )
     {
         http->deleteLater();
@@ -130,8 +130,8 @@ Reader::contentCodesReceived( int /* id */, bool error )
         }
     }
 
-    connect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
-            , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
+    connect( http, SIGNAL(responseHeaderReceived(QHttpResponseHeader))
+            , this, SLOT(loginHeaderReceived(QHttpResponseHeader)) );
     http->getDaap( "/login" );
 }
 
@@ -140,15 +140,15 @@ Reader::loginHeaderReceived( const QHttpResponseHeader & resp )
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
-            , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
+    disconnect( http, SIGNAL(responseHeaderReceived(QHttpResponseHeader))
+            , this, SLOT(loginHeaderReceived(QHttpResponseHeader)) );
     if( resp.statusCode() == 401 /*authorization required*/)
     {
         emit passwordRequired();
         http->deleteLater();
         return;
     }
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loginFinished( int, bool ) ) );
+    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(loginFinished(int,bool)) );
 }
 
 
@@ -157,7 +157,7 @@ Reader::loginFinished( int /* id */, bool error )
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loginFinished( int, bool ) ) );
+    disconnect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(loginFinished(int,bool)) );
     if( error )
     {
         http->deleteLater();
@@ -176,7 +176,7 @@ Reader::loginFinished( int /* id */, bool error )
     }
     m_sessionId = innerList.value( 0 ).toInt();
     m_loginString = "session-id=" + QString::number( m_sessionId );
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( updateFinished( int, bool ) ) );
+    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(updateFinished(int,bool)) );
     http->getDaap( "/update?" + m_loginString );
 }
 
@@ -185,7 +185,7 @@ Reader::updateFinished( int /*id*/, bool error )
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( updateFinished( int, bool ) ) );
+    disconnect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(updateFinished(int,bool)) );
     if( error )
     {
         http->deleteLater();
@@ -202,7 +202,7 @@ Reader::updateFinished( int /*id*/, bool error )
     m_loginString = m_loginString + "&revision-number="  +
             QString::number( updateResults["mupd"].toList()[0].toMap()["musr"].toList()[0].toInt() );
 
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( databaseIdFinished( int, bool ) ) );
+    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(databaseIdFinished(int,bool)) );
     http->getDaap( "/databases?" + m_loginString );
 }
 
@@ -210,7 +210,7 @@ void
 Reader::databaseIdFinished( int /*id*/, bool error )
 {
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( databaseIdFinished( int, bool ) ) );
+    disconnect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(databaseIdFinished(int,bool)) );
     if( error )
     {
         http->deleteLater();
@@ -220,7 +220,7 @@ Reader::databaseIdFinished( int /*id*/, bool error )
     QDataStream raw( http->results() );
     Map dbIdResults = parse( raw );
     m_databaseId = QString::number( dbIdResults["avdb"].toList()[0].toMap()["mlcl"].toList()[0].toMap()["mlit"].toList()[0].toMap()["miid"].toList()[0].toInt() );
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( songListFinished( int, bool ) ) );
+    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(songListFinished(int,bool)) );
     http->getDaap( QString("/databases/%1/items?type=music&meta=dmap.itemid,dmap.itemname,daap.songformat,daap.songartist,daap.songalbum,daap.songtime,daap.songtracknumber,daap.songcomment,daap.songyear,daap.songgenre&%2")
                 .arg( m_databaseId, m_loginString ) );
 
@@ -231,7 +231,7 @@ Reader::songListFinished( int /*id*/, bool error )
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( songListFinished( int, bool ) ) );
+    disconnect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(songListFinished(int,bool)) );
     if( error )
     {
         http->deleteLater();
@@ -572,9 +572,9 @@ WorkerThread::WorkerThread( const QByteArray &data, Reader *reader, Collections:
     , m_data( data )
     , m_reader( reader )
 {
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), coll, SLOT( loadedDataFromServer() ) );
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), coll, SLOT( parsingFailed() ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), coll, SLOT(loadedDataFromServer()) );
+    connect( this, SIGNAL(failed(ThreadWeaver::Job*)), coll, SLOT(parsingFailed()) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
 }
 
 WorkerThread::~WorkerThread()

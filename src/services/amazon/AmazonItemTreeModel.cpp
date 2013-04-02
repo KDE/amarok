@@ -29,7 +29,7 @@ AmazonItemTreeModel::AmazonItemTreeModel( Collections::AmazonCollection* collect
 {
     m_collection = collection;
 
-    connect( m_collection, SIGNAL( updated() ), this, SLOT( collectionChanged() ) );
+    connect( m_collection, SIGNAL(updated()), this, SLOT(collectionChanged()) );
 }
 
 int

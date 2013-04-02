@@ -304,12 +304,12 @@ Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
     if( inModel )
         DynamicModel::instance()->endInsertBias();
 
-    connect( bias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
-             this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
-    connect( bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-             this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
-    connect( bias.data(), SIGNAL( changed( Dynamic::BiasPtr ) ),
-             this, SLOT( biasChanged( Dynamic::BiasPtr ) ) );
+    connect( bias.data(), SIGNAL(resultReady(Dynamic::TrackSet)),
+             this,  SLOT(resultReceived(Dynamic::TrackSet)) );
+    connect( bias.data(), SIGNAL(replaced(Dynamic::BiasPtr,Dynamic::BiasPtr)),
+             this, SLOT(biasReplaced(Dynamic::BiasPtr,Dynamic::BiasPtr)) );
+    connect( bias.data(), SIGNAL(changed(Dynamic::BiasPtr)),
+             this, SLOT(biasChanged(Dynamic::BiasPtr)) );
     emit biasAppended( bias );
 
     // creating a shared pointer and destructing it just afterwards would
@@ -372,12 +372,12 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
 
     if( newBias )
     {
-        connect( newBias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
-                 this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
-        connect( newBias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-                 this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
-        connect( newBias.data(), SIGNAL( changed( Dynamic::BiasPtr ) ),
-                 this, SIGNAL( changed( Dynamic::BiasPtr ) ) );
+        connect( newBias.data(), SIGNAL(resultReady(Dynamic::TrackSet)),
+                 this,  SLOT(resultReceived(Dynamic::TrackSet)) );
+        connect( newBias.data(), SIGNAL(replaced(Dynamic::BiasPtr,Dynamic::BiasPtr)),
+                 this, SLOT(biasReplaced(Dynamic::BiasPtr,Dynamic::BiasPtr)) );
+        connect( newBias.data(), SIGNAL(changed(Dynamic::BiasPtr)),
+                 this, SIGNAL(changed(Dynamic::BiasPtr)) );
 
         if( inModel )
             DynamicModel::instance()->beginInsertBias( thisPtr, index );

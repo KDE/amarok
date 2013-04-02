@@ -299,7 +299,7 @@ TextScrollingWidget::startAnimation( QAbstractAnimation::Direction direction )
         animation->setEndValue( 1.0 );
         animation->setEasingCurve( QEasingCurve::InOutQuad );
         d->animation = animation;
-        connect( animation, SIGNAL( finished() ), this, SLOT( animationFinished() ) );
+        connect( animation, SIGNAL(finished()), this, SLOT(animationFinished()) );
     }
     else
     {

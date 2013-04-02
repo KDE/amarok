@@ -32,7 +32,7 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
 {
     setupUi( this );
 
-    connect( this, SIGNAL( changed() ), parent, SLOT( updateButtons() ) );
+    connect( this, SIGNAL(changed()), parent, SLOT(updateButtons()) );
 
     m_osdPreview = new OSDPreviewWidget( this ); //must be child!!!
     m_osdPreview->setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
@@ -44,31 +44,31 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
         QCheckBox* growl = new QCheckBox( i18n( "Use Growl for notifications" ), this );
         growl->setChecked( AmarokConfig::growlEnabled() );
         gridLayout_5->addWidget( growl, 2, 0, 1, 1 );
-        connect( growl,         SIGNAL( toggled( bool ) ),
-                 this,                      SLOT( setGrowlEnabled( bool ) ) );
+        connect( growl,         SIGNAL(toggled(bool)),
+                 this,                      SLOT(setGrowlEnabled(bool)) );
     #endif
 
     // Enable/disable the translucency option depending on availablity of desktop compositing
     kcfg_OsdUseTranslucency->setEnabled( KWindowSystem::compositingActive() );
 
-    connect( m_osdPreview, SIGNAL( positionChanged() ), SLOT( slotPositionChanged() ) );
+    connect( m_osdPreview, SIGNAL(positionChanged()), SLOT(slotPositionChanged()) );
 
     const int numScreens = QApplication::desktop()->numScreens();
     for( int i = 0; i < numScreens; i++ )
         kcfg_OsdScreen->addItem( QString::number( i ) );
 
-    connect( kcfg_OsdTextColor,        SIGNAL( changed( const QColor& ) ),
-             m_osdPreview,             SLOT( setTextColor(const QColor& ) ) );
-    connect( kcfg_OsdUseCustomColors,  SIGNAL( toggled( bool ) ),
-             this,                     SLOT( useCustomColorsToggled( bool ) ) );
-    connect( kcfg_OsdScreen,           SIGNAL( activated( int ) ),
-             m_osdPreview,             SLOT( setScreen( int ) ) );
-    connect( kcfg_OsdEnabled,          SIGNAL( toggled( bool ) ),
-             m_osdPreview,             SLOT( setVisible( bool ) ) );
-    connect( kcfg_OsdUseTranslucency,  SIGNAL( toggled( bool ) ),
-             m_osdPreview,             SLOT( setTranslucent( bool ) ) );
-    connect( kcfg_OsdFontScaling,      SIGNAL( valueChanged( int ) ),
-             m_osdPreview,             SLOT( setFontScale( int ) ) );
+    connect( kcfg_OsdTextColor,        SIGNAL(changed(QColor)),
+             m_osdPreview,             SLOT(setTextColor(QColor)) );
+    connect( kcfg_OsdUseCustomColors,  SIGNAL(toggled(bool)),
+             this,                     SLOT(useCustomColorsToggled(bool)) );
+    connect( kcfg_OsdScreen,           SIGNAL(activated(int)),
+             m_osdPreview,             SLOT(setScreen(int)) );
+    connect( kcfg_OsdEnabled,          SIGNAL(toggled(bool)),
+             m_osdPreview,             SLOT(setVisible(bool)) );
+    connect( kcfg_OsdUseTranslucency,  SIGNAL(toggled(bool)),
+             m_osdPreview,             SLOT(setTranslucent(bool)) );
+    connect( kcfg_OsdFontScaling,      SIGNAL(valueChanged(int)),
+             m_osdPreview,             SLOT(setFontScale(int)) );
 
     /*
     Amarok::QStringx text = i18n(

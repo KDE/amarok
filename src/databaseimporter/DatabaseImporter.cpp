@@ -38,10 +38,10 @@ DatabaseImporter::DatabaseImporter( QObject *parent )
     , m_importing( false )
     , m_count( 0 )
 {
-    connect( this, SIGNAL( importSucceeded() ), SLOT( importingFinished() ) );
-    connect( this, SIGNAL( importFailed() ), SLOT( importingFinished() ) );
-    connect( this, SIGNAL( trackAdded( Meta::TrackPtr ) ), SLOT( trackImported( Meta::TrackPtr ) ) );
-    connect( this, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ), SLOT( trackMatched( Meta::TrackPtr, QString ) ) );
+    connect( this, SIGNAL(importSucceeded()), SLOT(importingFinished()) );
+    connect( this, SIGNAL(importFailed()), SLOT(importingFinished()) );
+    connect( this, SIGNAL(trackAdded(Meta::TrackPtr)), SLOT(trackImported(Meta::TrackPtr)) );
+    connect( this, SIGNAL(trackMatchFound(Meta::TrackPtr,QString)), SLOT(trackMatched(Meta::TrackPtr,QString)) );
 }
 
 DatabaseImporter::~DatabaseImporter()

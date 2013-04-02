@@ -41,8 +41,8 @@ AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
 
     connect ( m_configDialog->serverList, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(onCellDoubleClicked(int,int)));
     connect ( m_configDialog->serverList, SIGNAL(cellChanged(int,int)), this, SLOT(saveCellEdit(int,int)));
-    connect ( m_configDialog->addButton, SIGNAL( clicked() ), this, SLOT( add() ) );
-    connect ( m_configDialog->removeButton, SIGNAL( clicked() ), this, SLOT( remove() ) );
+    connect ( m_configDialog->addButton, SIGNAL(clicked()), this, SLOT(add()) );
+    connect ( m_configDialog->removeButton, SIGNAL(clicked()), this, SLOT(remove()) );
 }
 
 AmpacheSettings::~AmpacheSettings()

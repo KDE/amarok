@@ -72,29 +72,29 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     else
         stopped();
 
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
-    connect( engine, SIGNAL( paused() ),
-             this, SLOT( paused() ) );
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying() ) );
-    connect( engine, SIGNAL( trackLengthChanged( qint64 ) ),
-             this, SLOT( trackLengthChanged( qint64 ) ) );
-    connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),
-             this, SLOT( trackPositionChanged( qint64 ) ) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped()) );
+    connect( engine, SIGNAL(paused()),
+             this, SLOT(paused()) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(trackPlaying()) );
+    connect( engine, SIGNAL(trackLengthChanged(qint64)),
+             this, SLOT(trackLengthChanged(qint64)) );
+    connect( engine, SIGNAL(trackPositionChanged(qint64,bool)),
+             this, SLOT(trackPositionChanged(qint64)) );
 
-    connect( m_slider, SIGNAL( sliderReleased( int ) ),
-             engine, SLOT( seekTo( int ) ) );
+    connect( m_slider, SIGNAL(sliderReleased(int)),
+             engine, SLOT(seekTo(int)) );
 
-    connect( m_slider, SIGNAL( valueChanged( int ) ),
-             SLOT( drawTimeDisplay( int ) ) );
+    connect( m_slider, SIGNAL(valueChanged(int)),
+             SLOT(drawTimeDisplay(int)) );
 
     setBackgroundRole( QPalette::BrightText );
 
-    connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
-              this, SLOT( redrawBookmarks(const QString*) ) );
-    connect ( The::amarokUrlHandler(), SIGNAL( timecodeAdded(const QString&, int) ),
-              this, SLOT( addBookmark(const QString&, int) ) );
+    connect ( The::amarokUrlHandler(), SIGNAL(timecodesUpdated(const QString*)),
+              this, SLOT(redrawBookmarks(const QString*)) );
+    connect ( The::amarokUrlHandler(), SIGNAL(timecodeAdded(QString,int)),
+              this, SLOT(addBookmark(QString,int)) );
 }
 
 void

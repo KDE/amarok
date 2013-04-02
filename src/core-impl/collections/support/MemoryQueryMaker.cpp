@@ -158,7 +158,7 @@ MemoryQueryMaker::run()
         connect( qmi, SIGNAL(newResultReady(Meta::LabelList)), SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
 
         d->job = new QueryJob( qmi );
-        connect( d->job, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( done( ThreadWeaver::Job * ) ) );
+        connect( d->job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(done(ThreadWeaver::Job*)) );
         ThreadWeaver::Weaver::instance()->enqueue( d->job );
     }
 }

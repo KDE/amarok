@@ -118,7 +118,7 @@ namespace AmarokScript
         //SqlCollection instance. It then uses Qt magic to dump the whole database to CSV files
         //in the user's home directory.
         //for debugging purposes only! do not ever use code like this for anything else
-        QTimer::singleShot( 0, CollectionManager::instance()->primaryCollection(), SLOT( dumpDatabaseContent() ) );
+        QTimer::singleShot( 0, CollectionManager::instance()->primaryCollection(), SLOT(dumpDatabaseContent()) );
     }
 }
 

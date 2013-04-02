@@ -48,7 +48,7 @@ PhotosEngine::init()
     EngineController *controller = The::engineController();
     connect( controller, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), SLOT(trackChanged(Meta::TrackPtr)) );
     connect( controller, SIGNAL(trackChanged(Meta::TrackPtr)), SLOT(trackChanged(Meta::TrackPtr)) );
-    connect( controller, SIGNAL(stopped(qint64, qint64)), SLOT(stopped()) );
+    connect( controller, SIGNAL(stopped(qint64,qint64)), SLOT(stopped()) );
 }
 
 void

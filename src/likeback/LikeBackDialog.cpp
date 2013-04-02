@@ -85,8 +85,8 @@ LikeBackDialog::LikeBackDialog( LikeBack::Button reason, const QString &initialC
     }
 
     // Disable the Ok button if no comment is present
-    connect( m_comment, SIGNAL( textChanged() ),
-            this,      SLOT  (      verify() ) );
+    connect( m_comment, SIGNAL(textChanged()),
+            this,      SLOT  (verify()) );
 
     // If no window path is provided, get the current active window path:
     if( m_windowPath.isEmpty() )

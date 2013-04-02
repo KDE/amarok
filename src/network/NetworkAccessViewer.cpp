@@ -33,10 +33,10 @@ NetworkAccessViewer::NetworkAccessViewer( QWidget *parent )
     networkRequestsDialog->setupUi(dialog);
 
     mapper = new QSignalMapper(this);
-    connect( mapper, SIGNAL(mapped(QObject *)), SLOT(requestFinished(QObject *)) );
+    connect( mapper, SIGNAL(mapped(QObject*)), SLOT(requestFinished(QObject*)) );
 
-    connect( networkRequestsDialog->requestList, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ), SLOT( showItemDetails( QTreeWidgetItem *) ) );
-    connect( networkRequestsDialog->clearButton, SIGNAL( clicked() ), SLOT( clear() ) );
+    connect( networkRequestsDialog->requestList, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), SLOT(showItemDetails(QTreeWidgetItem*)) );
+    connect( networkRequestsDialog->clearButton, SIGNAL(clicked()), SLOT(clear()) );
 }
 
 NetworkAccessViewer::~NetworkAccessViewer()
@@ -78,7 +78,7 @@ void NetworkAccessViewer::addRequest( QNetworkAccessManager::Operation op, const
     itemRequestMap.insert( item, req );
 
     mapper->setMapping( reply, reply );
-    connect( reply, SIGNAL( finished() ), mapper, SLOT( map() ) );
+    connect( reply, SIGNAL(finished()), mapper, SLOT(map()) );
 }
 
 void NetworkAccessViewer::show()

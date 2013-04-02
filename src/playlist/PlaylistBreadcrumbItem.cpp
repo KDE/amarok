@@ -51,7 +51,7 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     m_menuButton->setMenu( menu );
     const int offset = 6;
     menu->setContentsMargins( offset, 1, 1, 2 );
-    connect( menu, SIGNAL( triggered( QAction* ) ), this, SLOT( siblingTriggered( QAction* ) ) );
+    connect( menu, SIGNAL(triggered(QAction*)), this, SLOT(siblingTriggered(QAction*)) );
 
     //And then the main breadcrumb button...
     bool noArrow = false;
@@ -59,10 +59,10 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
         noArrow = true;
     m_mainButton = new BreadcrumbItemSortButton( level->icon(), level->prettyName(), noArrow, this );
 
-    connect( m_mainButton, SIGNAL( clicked() ), this, SIGNAL( clicked() ) );
-    connect( m_mainButton, SIGNAL( arrowToggled( Qt::SortOrder ) ), this, SIGNAL( orderInverted() ) );
+    connect( m_mainButton, SIGNAL(clicked()), this, SIGNAL(clicked()) );
+    connect( m_mainButton, SIGNAL(arrowToggled(Qt::SortOrder)), this, SIGNAL(orderInverted()) );
 
-    connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
+    connect( m_mainButton, SIGNAL(sizePolicyChanged()), this, SLOT(updateSizePolicy()) );
     menu->hide();
 
     updateSizePolicy();
@@ -125,7 +125,7 @@ BreadcrumbAddMenuButton::BreadcrumbAddMenuButton( QWidget *parent )
     QAction *action = m_menu->addAction( KIcon( "media-playlist-shuffle" ), QString( i18n( "Shuffle" ) ) );
     action->setData( "Shuffle" );
 
-    connect( m_menu, SIGNAL( triggered( QAction* ) ), this, SLOT( siblingTriggered( QAction* ) ) );
+    connect( m_menu, SIGNAL(triggered(QAction*)), this, SLOT(siblingTriggered(QAction*)) );
 
     setMenu( m_menu );
 }

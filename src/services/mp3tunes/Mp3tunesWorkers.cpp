@@ -33,7 +33,7 @@ Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker,
     , m_username( username )
     , m_password( password )
 {
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
 }
 
 Mp3tunesLoginWorker::~Mp3tunesLoginWorker()
@@ -62,7 +62,7 @@ void Mp3tunesLoginWorker::completeJob()
 /* ARTIST FETCHER */
 Mp3tunesArtistFetcher::Mp3tunesArtistFetcher( Mp3tunesLocker * locker )
 {
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
     m_locker = locker;
 }
 
@@ -92,7 +92,7 @@ void Mp3tunesArtistFetcher::completeJob()
 /*  ALBUM w/ Artist Id FETCHER */
 Mp3tunesAlbumWithArtistIdFetcher::Mp3tunesAlbumWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId )
 {
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
     m_locker = locker;
     m_artistId = artistId;
 }
@@ -124,7 +124,7 @@ void Mp3tunesAlbumWithArtistIdFetcher::completeJob()
 Mp3tunesTrackWithAlbumIdFetcher::Mp3tunesTrackWithAlbumIdFetcher( Mp3tunesLocker * locker, int albumId )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
     m_locker = locker;
     debug() << "Constructor albumId: " << albumId;
     m_albumId = albumId;
@@ -158,7 +158,7 @@ void Mp3tunesTrackWithAlbumIdFetcher::completeJob()
 Mp3tunesTrackWithArtistIdFetcher::Mp3tunesTrackWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
     m_locker = locker;
     debug() << "Constructor artistId: " << artistId;
     m_artistId = artistId;
@@ -192,7 +192,7 @@ void Mp3tunesTrackWithArtistIdFetcher::completeJob()
 Mp3tunesSearchMonkey::Mp3tunesSearchMonkey( Mp3tunesLocker * locker, QString query, int searchFor )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
     m_locker = locker;
     m_searchFor = searchFor;
     m_query = query;
@@ -232,14 +232,14 @@ void Mp3tunesSearchMonkey::completeJob()
 Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStringList tracklist )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
 
     m_locker = locker;
     m_tracklist = tracklist;
 
     Amarok::Components::logger()->newProgressOperation( this, i18n( "Upload to MP3tunes Initiated" ), m_tracklist.count() );
     //TODO: port to Amarok::Logger signals
-//    connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
+//    connect( this, SIGNAL(incrementProgress()), The::statusBar(), SLOT(incrementProgress()), Qt::QueuedConnection );
 }
 
 Mp3tunesSimpleUploader::~Mp3tunesSimpleUploader()
@@ -300,7 +300,7 @@ void Mp3tunesSimpleUploader::completeJob()
 Mp3tunesTrackFromFileKeyFetcher::Mp3tunesTrackFromFileKeyFetcher( Mp3tunesLocker * locker, QString filekey )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
     m_locker = locker;
     debug() << "Constructor filekey: " << filekey;
     m_filekey = filekey;

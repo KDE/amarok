@@ -58,21 +58,21 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
         m_ui->view->setAnimated( true );
-    connect( m_ui->view, SIGNAL( clicked( const QModelIndex & ) ),
-             this, SIGNAL( changed() ) );
+    connect( m_ui->view, SIGNAL(clicked(QModelIndex)),
+             this, SIGNAL(changed()) );
 
-    connect( m_ui->view, SIGNAL( pressed(const QModelIndex &) ),
-             this, SLOT( slotPressed(const QModelIndex&) ) );
-    connect( m_rescanDirAction, SIGNAL( triggered() ),
-             this, SLOT( slotRescanDirTriggered() ) );
+    connect( m_ui->view, SIGNAL(pressed(QModelIndex)),
+             this, SLOT(slotPressed(QModelIndex)) );
+    connect( m_rescanDirAction, SIGNAL(triggered()),
+             this, SLOT(slotRescanDirTriggered()) );
 
     KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui->buttonContainer );
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
-    connect( rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
+    connect( rescan, SIGNAL(clicked()), CollectionManager::instance(), SLOT(startFullScan()) );
 
     KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import" ), m_ui->buttonContainer );
     import->setToolTip( i18n( "Import collection and/or statistics from older Amarok versions, the batch scanner or media players." ) );
-    connect( import, SIGNAL( clicked() ), this, SLOT( importCollection() ) );
+    connect( import, SIGNAL(clicked()), this, SLOT(importCollection()) );
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget( rescan );
@@ -81,8 +81,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), m_ui->checkboxContainer );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), m_ui->checkboxContainer );
-    connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-    connect( m_monitor  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+    connect( m_recursive, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
+    connect( m_monitor  , SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
 
     QVBoxLayout *checkboxLayout = new QVBoxLayout();
     checkboxLayout->addWidget( m_recursive );

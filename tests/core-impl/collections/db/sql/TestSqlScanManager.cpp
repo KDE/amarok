@@ -61,7 +61,7 @@ TestSqlScanManager::initTestCase()
     m_storage = new MySqlEmbeddedStorage( m_tmpDatabaseDir->name() );
 
     m_collection = new Collections::SqlCollection( m_storage );
-    connect( m_collection, SIGNAL( updated() ), this, SLOT( slotCollectionUpdated() ) );
+    connect( m_collection, SIGNAL(updated()), this, SLOT(slotCollectionUpdated()) );
 
     // TODO: change the mock mount point manager so that it doesn't pull
     //       in all the devices. Not much of a mock like this.

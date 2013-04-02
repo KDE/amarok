@@ -82,10 +82,10 @@ Job::init()
     *m_transcoder << format->ffmpegParameters( m_configuration )
                   << m_dest.path();
 
-    connect( m_transcoder, SIGNAL( readyRead() ),
-             this, SLOT( processOutput() ) );
-    connect( m_transcoder, SIGNAL( finished( int, QProcess::ExitStatus ) ),
-             this, SLOT( transcoderDone( int, QProcess::ExitStatus ) ) );
+    connect( m_transcoder, SIGNAL(readyRead()),
+             this, SLOT(processOutput()) );
+    connect( m_transcoder, SIGNAL(finished(int,QProcess::ExitStatus)),
+             this, SLOT(transcoderDone(int,QProcess::ExitStatus)) );
 }
 
 void

@@ -52,10 +52,10 @@ GpodderServiceSettings::GpodderServiceSettings( QWidget *parent, const QVariantL
     m_configDialog->setupUi( this );
 
     connect( m_configDialog->kcfg_GpodderUsername,
-             SIGNAL(textChanged( const QString & )), this,
+             SIGNAL(textChanged(QString)), this,
              SLOT(settingsChanged()) );
     connect( m_configDialog->kcfg_GpodderPassword,
-             SIGNAL(textChanged( const QString & )), this,
+             SIGNAL(textChanged(QString)), this,
              SLOT(settingsChanged()) );
     connect( m_configDialog->testLogin, SIGNAL(clicked()), this,
              SLOT(testLogin()) );
@@ -105,8 +105,8 @@ GpodderServiceSettings::testLogin()
 
         connect( m_devices.data(), SIGNAL(finished()), SLOT(finished()) );
         connect( m_devices.data(),
-                 SIGNAL(requestError( QNetworkReply::NetworkError )),
-                 SLOT(onError( QNetworkReply::NetworkError )) );
+                 SIGNAL(requestError(QNetworkReply::NetworkError)),
+                 SLOT(onError(QNetworkReply::NetworkError)) );
         connect( m_devices.data(), SIGNAL(parseError()), SLOT(onParseError()) );
     }
     else
@@ -155,10 +155,10 @@ GpodderServiceSettings::finished()
                                            QLatin1String( "Amarok on " ) % hostname,
                                            mygpo::Device::OTHER );
 
-        connect( m_createDevice, SIGNAL(finished() ),
+        connect( m_createDevice, SIGNAL(finished()),
                  SLOT(deviceCreationFinished()) );
-        connect( m_createDevice, SIGNAL(error( QNetworkReply::NetworkError )),
-                 SLOT(deviceCreationError( QNetworkReply::NetworkError )) );
+        connect( m_createDevice, SIGNAL(error(QNetworkReply::NetworkError)),
+                 SLOT(deviceCreationError(QNetworkReply::NetworkError)) );
     }
     else
     {

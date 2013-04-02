@@ -729,8 +729,8 @@ QWidget* Playlist::PrettyItemDelegate::createEditor( QWidget * parent, const QSt
     InlineEditorWidget *editor = new InlineEditorWidget( parent, index,
                      LayoutManager::instance()->activeLayout(), editorHeight, editorWidth );
 
-    connect( editor, SIGNAL( editingDone( InlineEditorWidget *) ),
-             this, SLOT( editorDone(  InlineEditorWidget *) ) );
+    connect( editor, SIGNAL(editingDone(InlineEditorWidget*)),
+             this, SLOT(editorDone(InlineEditorWidget*)) );
     return editor;
 }
 

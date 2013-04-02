@@ -38,7 +38,7 @@ Context::AppletToolbarConfigItem::AppletToolbarConfigItem( QGraphicsItem* parent
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
     
-    connect( listAdd, SIGNAL( triggered() ), this, SIGNAL( triggered() ) );
+    connect( listAdd, SIGNAL(triggered()), this, SIGNAL(triggered()) );
     
     m_icon = new Plasma::IconWidget( this );
 

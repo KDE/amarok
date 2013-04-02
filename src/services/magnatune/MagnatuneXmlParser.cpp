@@ -34,7 +34,7 @@ MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
         : ThreadWeaver::Job()
 {
     m_sFileName = filename;
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
 }
 
 

@@ -52,7 +52,7 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     , m_standardPadding( 6.0 )
 {
     setBackgroundHints( NoBackground );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette )) );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
 }
 
 Context::Applet::~Applet()

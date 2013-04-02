@@ -85,7 +85,7 @@ void CollectionLocationTest::testSuccessfulCopy()
 
     QVERIFY2( cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection ), "Calling slot failed" );
     QCOMPARE( cl->count, 1 );
-    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
+    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL(destroyed()), 500 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
@@ -107,7 +107,7 @@ void CollectionLocationTest::testFailedCopy()
 
     QVERIFY2( cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection ), "Calling slot failed"  );
     QCOMPARE( cl->count, 0 );
-    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
+    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL(destroyed()), 500 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
@@ -136,7 +136,7 @@ void CollectionLocationTest::testCopyMultipleTracks()
 
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QCOMPARE( cl->count, 2 );
-    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
+    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL(destroyed()), 500 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
@@ -160,7 +160,7 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QVERIFY2( cl->count == 0, "Expected no call to remove");
 
-    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
+    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL(destroyed()), 500 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
 
     cld = new Collections::MockCollectionLocationDelegate();
@@ -178,7 +178,7 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
 
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QVERIFY2( cl->count == 0, "Expected no call to remove after reversed method call");
-    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
+    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL(destroyed()), 500 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 

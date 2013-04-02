@@ -56,7 +56,7 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
     m_appletLayout->setSpacing( 4 );
 
     m_configItem = new AppletToolbarConfigItem( this );
-    connect( m_configItem, SIGNAL( triggered() ), this, SLOT( toggleConfigMode() ) );
+    connect( m_configItem, SIGNAL(triggered()), this, SLOT(toggleConfigMode()) );
     m_appletLayout->addItem( m_configItem );
     m_appletLayout->setAlignment( m_configItem, Qt::AlignRight );
     m_appletLayout->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
@@ -143,8 +143,8 @@ Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
     debug() << "inserting applet icon in position" << loc;
     Context::AppletToolbarAppletItem* item = new Context::AppletToolbarAppletItem( this, applet );
     item->setConfigEnabled( m_configMode );
-    connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ),
-             this, SIGNAL( showApplet( Plasma::Applet* ) ) );
+    connect( item, SIGNAL(appletChosen(Plasma::Applet*)),
+             this, SIGNAL(showApplet(Plasma::Applet*)) );
 
     // add the item
     m_appletLayout->insertItem( loc, item );

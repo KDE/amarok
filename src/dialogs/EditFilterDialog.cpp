@@ -58,24 +58,24 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     updateDropTarget( text );
     updateAttributeEditor();
 
-    connect( m_ui->mqwAttributeEditor, SIGNAL( changed( const MetaQueryWidget::Filter & ) ),
-             SLOT( slotAttributeChanged( const MetaQueryWidget::Filter & ) ) );
-    connect( this, SIGNAL( resetClicked() ), SLOT( slotReset() ) );
-    connect( m_ui->cbInvert, SIGNAL( toggled( bool ) ),
-             SLOT( slotInvert( bool ) ) );
-    connect( m_ui->rbAnd, SIGNAL( toggled( bool ) ),
-             SLOT( slotSeparatorChange() ) );
-    connect( m_ui->rbOr, SIGNAL( toggled( bool ) ),
-             SLOT( slotSeparatorChange() ) );
-    connect( m_ui->tpTokenPool, SIGNAL( onDoubleClick( Token * ) ),
-             m_ui->dropTarget, SLOT( insertToken( Token* ) ) );
-    connect( m_ui->dropTarget, SIGNAL( tokenSelected( Token * ) ),
-             SLOT( slotTokenSelected( Token * ) ) );
-    connect( m_ui->dropTarget, SIGNAL( changed() ),
-             SLOT( updateSearchEdit() ) ); // in case someone dragged a token around.
+    connect( m_ui->mqwAttributeEditor, SIGNAL(changed(MetaQueryWidget::Filter)),
+             SLOT(slotAttributeChanged(MetaQueryWidget::Filter)) );
+    connect( this, SIGNAL(resetClicked()), SLOT(slotReset()) );
+    connect( m_ui->cbInvert, SIGNAL(toggled(bool)),
+             SLOT(slotInvert(bool)) );
+    connect( m_ui->rbAnd, SIGNAL(toggled(bool)),
+             SLOT(slotSeparatorChange()) );
+    connect( m_ui->rbOr, SIGNAL(toggled(bool)),
+             SLOT(slotSeparatorChange()) );
+    connect( m_ui->tpTokenPool, SIGNAL(onDoubleClick(Token*)),
+             m_ui->dropTarget, SLOT(insertToken(Token*)) );
+    connect( m_ui->dropTarget, SIGNAL(tokenSelected(Token*)),
+             SLOT(slotTokenSelected(Token*)) );
+    connect( m_ui->dropTarget, SIGNAL(changed()),
+             SLOT(updateSearchEdit()) ); // in case someone dragged a token around.
 
-    connect( m_ui->searchEdit, SIGNAL( textEdited( QString ) ),
-             SLOT( slotSearchEditChanged( QString ) ) );
+    connect( m_ui->searchEdit, SIGNAL(textEdited(QString)),
+             SLOT(slotSearchEditChanged(QString)) );
 }
 
 EditFilterDialog::~EditFilterDialog()

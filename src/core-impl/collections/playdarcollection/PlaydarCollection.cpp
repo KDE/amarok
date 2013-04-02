@@ -60,10 +60,10 @@ namespace Collections
     {
         DEBUG_BLOCK
         m_controller = new Playdar::Controller( this );
-        connect( m_controller, SIGNAL( playdarReady() ),
-                 this, SLOT( playdarReady() ) );
-        connect( m_controller, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
-                 this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
+        connect( m_controller, SIGNAL(playdarReady()),
+                 this, SLOT(playdarReady()) );
+        connect( m_controller, SIGNAL(playdarError(Playdar::Controller::ErrorState)),
+                 this, SLOT(slotPlaydarError(Playdar::Controller::ErrorState)) );
         checkStatus();
 
         m_collection = new PlaydarCollection;
@@ -108,7 +108,7 @@ namespace Collections
             if( m_collection && !m_collectionIsManaged )
                 CollectionManager::instance()->removeTrackProvider( m_collection.data() );
 
-            QTimer::singleShot( 10 * 60 * 1000, this, SLOT( checkStatus() ) );
+            QTimer::singleShot( 10 * 60 * 1000, this, SLOT(checkStatus()) );
         }
     }
 
@@ -118,7 +118,7 @@ namespace Collections
         DEBUG_BLOCK
 
         m_collectionIsManaged = false;
-        QTimer::singleShot( 10000, this, SLOT( checkStatus() ) );
+        QTimer::singleShot( 10000, this, SLOT(checkStatus()) );
     }
 
     PlaydarCollection::PlaydarCollection()
@@ -141,8 +141,8 @@ namespace Collections
         DEBUG_BLOCK
 
         PlaydarQueryMaker *freshQueryMaker = new PlaydarQueryMaker( this );
-        connect( freshQueryMaker, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
-                 this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
+        connect( freshQueryMaker, SIGNAL(playdarError(Playdar::Controller::ErrorState)),
+                 this, SLOT(slotPlaydarError(Playdar::Controller::ErrorState)) );
         return freshQueryMaker;
     }
 
@@ -230,8 +230,8 @@ namespace Collections
             proxyTrack->setName( url.queryItem( "title" ) );
             Playdar::ProxyResolver *proxyResolver = new Playdar::ProxyResolver( this, url, proxyTrack );
 
-            connect( proxyResolver, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
-                     this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
+            connect( proxyResolver, SIGNAL(playdarError(Playdar::Controller::ErrorState)),
+                     this, SLOT(slotPlaydarError(Playdar::Controller::ErrorState)) );
 
             return Meta::TrackPtr::staticCast( proxyTrack );
         }

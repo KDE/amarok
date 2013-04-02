@@ -64,7 +64,7 @@ AmazonShoppingCartView::contextMenuEvent( QContextMenuEvent *event )
 
     QAction *removeFromCartAction = new QAction( KIcon( "amarok_cart_remove" ), QString( i18n( "Remove from Cart" ) ), &menu );
     actions.append( removeFromCartAction );
-    connect( removeFromCartAction, SIGNAL( triggered() ), this, SLOT( removeFromCartAction() ) );
+    connect( removeFromCartAction, SIGNAL(triggered()), this, SLOT(removeFromCartAction()) );
 
     menu.exec( actions, event->globalPos() );
     event->accept();

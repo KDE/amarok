@@ -146,8 +146,8 @@ void
 APG::PresetModel::exportActive()
 {
     KFileDialog* d = new ExportDialog( activePreset() );
-    connect( d, SIGNAL( pleaseExport( const QString&, const QList<APG::PresetPtr> ) ),
-          this, SLOT( savePresetsToXml( const QString&, const QList<APG::PresetPtr> ) ) );
+    connect( d, SIGNAL(pleaseExport(QString,QList<APG::PresetPtr>)),
+          this, SLOT(savePresetsToXml(QString,QList<APG::PresetPtr>)) );
     d->exec();
 }
 
@@ -275,7 +275,7 @@ APG::PresetModel::insertPreset( APG::PresetPtr ps )
         beginInsertRows( QModelIndex(), row, row );
         m_presetList.append( ps );
         endInsertRows();
-        connect( ps.data(), SIGNAL( lock( bool ) ), this, SIGNAL( lock( bool ) ) );
+        connect( ps.data(), SIGNAL(lock(bool)), this, SIGNAL(lock(bool)) );
     }
 }
 
@@ -309,7 +309,7 @@ APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
     setOperationMode( KFileDialog::Saving );
     setKeepLocation( true );
     setCaption( i18n( "Export \"%1\" preset", ps->title() ) );
-    connect( this, SIGNAL( okClicked() ), this, SLOT( recvAccept() ) );
+    connect( this, SIGNAL(okClicked()), this, SLOT(recvAccept()) );
 }
 
 APG::PresetModel::ExportDialog::~ExportDialog() {}

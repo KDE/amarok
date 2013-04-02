@@ -38,9 +38,9 @@ namespace Playlist {
     m_listWidget = new QListWidget();
 
     QPushButton * okButton = new QPushButton( i18n( "OK" ) );
-    connect( okButton, SIGNAL( clicked() ), SLOT( accept() ) );
+    connect( okButton, SIGNAL(clicked()), SLOT(accept()) );
 
-    connect( m_listWidget, SIGNAL( itemDoubleClicked( QListWidgetItem * ) ), this, SLOT( sourceSelected( QListWidgetItem * ) ) );
+    connect( m_listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(sourceSelected(QListWidgetItem*)) );
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget( label );

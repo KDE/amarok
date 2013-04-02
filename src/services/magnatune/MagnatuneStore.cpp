@@ -171,7 +171,7 @@ void MagnatuneStore::download( )
     {
         m_downloadHandler = new MagnatuneDownloadHandler();
         m_downloadHandler->setParent( this );
-        connect( m_downloadHandler, SIGNAL( downloadCompleted( bool ) ), this, SLOT( downloadCompleted( bool ) ) );
+        connect( m_downloadHandler, SIGNAL(downloadCompleted(bool)), this, SLOT(downloadCompleted(bool)) );
     }
 
     if ( m_currentAlbum != 0 )
@@ -203,7 +203,7 @@ void MagnatuneStore::download( Meta::MagnatuneAlbum * album )
     {
         m_downloadHandler = new MagnatuneDownloadHandler();
         m_downloadHandler->setParent( this );
-        connect( m_downloadHandler, SIGNAL( downloadCompleted( bool ) ), this, SLOT( downloadCompleted( bool ) ) );
+        connect( m_downloadHandler, SIGNAL(downloadCompleted(bool)), this, SLOT(downloadCompleted(bool)) );
     }
 
     m_downloadHandler->downloadAlbum( album );
@@ -216,19 +216,19 @@ void MagnatuneStore::initTopPanel( )
     QMenu *filterMenu = new QMenu( 0 );
 
     QAction *action = filterMenu->addAction( i18n("Artist") );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtist() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist()) );
 
     action = filterMenu->addAction( i18n( "Artist / Album" ) );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum()) );
 
     action = filterMenu->addAction( i18n( "Album" ) ) ;
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByAlbum() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByAlbum()) );
 
     action = filterMenu->addAction( i18n( "Genre / Artist" ) );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByGenreArtist() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtist()) );
 
     action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByGenreArtistAlbum() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum()) );
 
     KAction *filterMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
     filterMenuAction->setMenu( filterMenu );
@@ -243,10 +243,10 @@ void MagnatuneStore::initTopPanel( )
     QMenu * actionsMenu = new QMenu( 0 );
 
     action = actionsMenu->addAction( i18n( "Re-download" ) );
-    connect( action, SIGNAL( triggered( bool) ), SLOT( processRedownload() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(processRedownload()) );
 
     m_updateAction = actionsMenu->addAction( i18n( "Update Database" ) );
-    connect( m_updateAction, SIGNAL( triggered( bool) ), SLOT( updateButtonClicked() ) );
+    connect( m_updateAction, SIGNAL(triggered(bool)), SLOT(updateButtonClicked()) );
 
     KAction *actionsMenuAction = new KAction( KIcon( "list-add" ), i18n( "Tools" ), this );
     actionsMenuAction->setMenu( actionsMenu );
@@ -283,7 +283,7 @@ void MagnatuneStore::initBottomPanel()
     m_downloadAlbumButton->setObjectName( "downloadButton" );
     m_downloadAlbumButton->setIcon( KIcon( "download-amarok" ) );
     
-    connect( m_downloadAlbumButton, SIGNAL( clicked() ) , this, SLOT( download() ) );
+    connect( m_downloadAlbumButton, SIGNAL(clicked()) , this, SLOT(download()) );
 
     if ( !config.lastUpdateTimestamp() )
     {
@@ -326,10 +326,10 @@ bool MagnatuneStore::updateMagnatuneList()
     m_tempFileName = tempFile.fileName();
 
     m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com database..." ), this, SLOT( listDownloadCancelled() ) );
+    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com database..." ), this, SLOT(listDownloadCancelled()) );
 
-    connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
-            this, SLOT( listDownloadComplete( KJob * ) ) );
+    connect( m_listDownloadJob, SIGNAL(result(KJob*)),
+            this, SLOT(listDownloadComplete(KJob*)) );
 
 
     return true;
@@ -359,7 +359,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     Amarok::Components::logger()->shortMessage( i18n( "Updating the local Magnatune database."  ) );
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( m_tempFileName );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
-    connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
+    connect( parser, SIGNAL(doneParsing()), SLOT(doneParsing()) );
 
     ThreadWeaver::Weaver::instance()->enqueue( parser );
 }
@@ -470,7 +470,7 @@ void MagnatuneStore::addMoodyTracksToPlaylist( const QString &mood, int count )
 {
     MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
     databaseWorker->fetchTrackswithMood( mood, count, m_registry );
-    connect( databaseWorker, SIGNAL( gotMoodyTracks( Meta::TrackList ) ), this, SLOT( moodyTracksReady(Meta::TrackList ) ) );
+    connect( databaseWorker, SIGNAL(gotMoodyTracks(Meta::TrackList)), this, SLOT(moodyTracksReady(Meta::TrackList)) );
 
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 }
@@ -494,17 +494,17 @@ void MagnatuneStore::polish()
         setInfoParser( m_magnatuneInfoParser );
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
-        connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
+        connect( m_contentView, SIGNAL(itemSelected(CollectionTreeItem*)), this, SLOT(itemSelected(CollectionTreeItem*)) );
 
         //add a custom url runner
 
         MagnatuneUrlRunner * runner = new MagnatuneUrlRunner();
 
-        connect( runner, SIGNAL( showFavorites() ), this, SLOT( showFavoritesPage() ) );
-        connect( runner, SIGNAL( showHome() ), this, SLOT( showHomePage() ) );
-        connect( runner, SIGNAL( showRecommendations() ), this, SLOT( showRecommendationsPage() ) );
-        connect( runner, SIGNAL( buyOrDownload( const QString & ) ), this, SLOT( download( const QString & ) ) );
-        connect( runner, SIGNAL( removeFromFavorites( const QString & ) ), this, SLOT( removeFromFavorites( const QString & ) ) );
+        connect( runner, SIGNAL(showFavorites()), this, SLOT(showFavoritesPage()) );
+        connect( runner, SIGNAL(showHome()), this, SLOT(showHomePage()) );
+        connect( runner, SIGNAL(showRecommendations()), this, SLOT(showRecommendationsPage()) );
+        connect( runner, SIGNAL(buyOrDownload(QString)), this, SLOT(download(QString)) );
+        connect( runner, SIGNAL(removeFromFavorites(QString)), this, SLOT(removeFromFavorites(QString)) );
 
         The::amarokUrlHandler()->registerRunner( runner, runner->command() );
     }
@@ -520,7 +520,7 @@ void MagnatuneStore::polish()
 
     MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
     databaseWorker->fetchMoodMap();
-    connect( databaseWorker, SIGNAL( gotMoodMap(QMap< QString, int >) ), this, SLOT( moodMapReady(QMap< QString, int >) ) );
+    connect( databaseWorker, SIGNAL(gotMoodMap(QMap<QString,int>)), this, SLOT(moodMapReady(QMap<QString,int>)) );
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 
     if ( MagnatuneConfig().autoUpdateDatabase() )
@@ -614,7 +614,7 @@ void MagnatuneStore::downloadCurrentTrackAlbum()
     {
         m_downloadHandler = new MagnatuneDownloadHandler();
         m_downloadHandler->setParent( this );
-        connect( m_downloadHandler, SIGNAL( downloadCompleted( bool ) ), this, SLOT( downloadCompleted( bool ) ) );
+        connect( m_downloadHandler, SIGNAL(downloadCompleted(bool)), this, SLOT(downloadCompleted(bool)) );
     }
 
     m_downloadHandler->downloadAlbum( magnatuneAlbum );
@@ -624,7 +624,7 @@ void MagnatuneStore::downloadCurrentTrackAlbum()
 void MagnatuneStore::checkForUpdates()
 {
     m_updateTimestampDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/info/last_update_timestamp" ), KIO::Reload, KIO::HideProgressInfo );
-    connect( m_updateTimestampDownloadJob, SIGNAL( result( KJob * ) ), SLOT( timestampDownloadComplete( KJob *  ) ) );
+    connect( m_updateTimestampDownloadJob, SIGNAL(result(KJob*)), SLOT(timestampDownloadComplete(KJob*)) );
 }
 
 
@@ -728,7 +728,7 @@ void MagnatuneStore::download( const QString &sku )
     debug() << "sku: " << sku;
     MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
     databaseWorker->fetchAlbumBySku( sku, m_registry );
-    connect( databaseWorker, SIGNAL( gotAlbumBySku( Meta::MagnatuneAlbum * ) ), this, SLOT( download( Meta::MagnatuneAlbum * ) ) );
+    connect( databaseWorker, SIGNAL(gotAlbumBySku(Meta::MagnatuneAlbum*)), this, SLOT(download(Meta::MagnatuneAlbum*)) );
 
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 }
@@ -747,7 +747,7 @@ void MagnatuneStore::addToFavorites( const QString &sku )
     debug() << "favorites url: " << url;
 
     m_favoritesJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
-    connect( m_favoritesJob, SIGNAL( result( KJob * ) ), SLOT( favoritesResult( KJob *  ) ) );
+    connect( m_favoritesJob, SIGNAL(result(KJob*)), SLOT(favoritesResult(KJob*)) );
 }
 
 void MagnatuneStore::removeFromFavorites( const QString &sku )
@@ -764,7 +764,7 @@ void MagnatuneStore::removeFromFavorites( const QString &sku )
     debug() << "favorites url: " << url;
 
     m_favoritesJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
-    connect( m_favoritesJob, SIGNAL( result( KJob * ) ), SLOT( favoritesResult( KJob *  ) ) );
+    connect( m_favoritesJob, SIGNAL(result(KJob*)), SLOT(favoritesResult(KJob*)) );
 }
 
 void MagnatuneStore::favoritesResult( KJob* addToFavoritesJob )

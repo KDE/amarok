@@ -31,11 +31,11 @@
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator()
     : m_playlist( 0 )
 {
-    connect( m_model->qaim(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
-    connect( m_model->qaim(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
+    connect( m_model->qaim(), SIGNAL(activeTrackChanged(quint64)), SLOT(trackChanged()) );
+    connect( m_model->qaim(), SIGNAL(modelReset()), SLOT(repopulate()) );
 
-    connect( Dynamic::DynamicModel::instance(), SIGNAL( activeChanged( int ) ),
-             SLOT( activePlaylistChanged() ) );
+    connect( Dynamic::DynamicModel::instance(), SIGNAL(activeChanged(int)),
+             SLOT(activePlaylistChanged()) );
     activePlaylistChanged();
 }
 
@@ -87,8 +87,8 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
 
     if( m_playlist )
     {
-        disconnect( m_playlist, SIGNAL( tracksReady( Meta::TrackList ) ),
-                    this, SLOT( receiveTracks( Meta::TrackList ) ) );
+        disconnect( m_playlist, SIGNAL(tracksReady(Meta::TrackList)),
+                    this, SLOT(receiveTracks(Meta::TrackList)) );
         m_playlist->requestAbort();
     }
 
@@ -99,8 +99,8 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
     }
     else
     {
-        connect( m_playlist, SIGNAL( tracksReady( Meta::TrackList ) ),
-                 this, SLOT( receiveTracks( Meta::TrackList ) ) );
+        connect( m_playlist, SIGNAL(tracksReady(Meta::TrackList)),
+                 this, SLOT(receiveTracks(Meta::TrackList)) );
     }
 }
 

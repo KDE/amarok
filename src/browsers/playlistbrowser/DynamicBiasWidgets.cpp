@@ -68,10 +68,10 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
     factoriesChanged();
     biasReplaced( Dynamic::BiasPtr(), bias );
 
-    connect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
-             this, SLOT( factoriesChanged() ) );
-    connect( m_biasSelection, SIGNAL( activated( int ) ),
-             this, SLOT( selectionChanged( int ) ) );
+    connect( Dynamic::BiasFactory::instance(), SIGNAL(changed()),
+             this, SLOT(factoriesChanged()) );
+    connect( m_biasSelection, SIGNAL(activated(int)),
+             this, SLOT(selectionChanged(int)) );
     connect(buttonBox, SIGNAL(accepted()),
             this, SLOT(accept()));
 }
@@ -84,8 +84,8 @@ PlaylistBrowserNS::BiasDialog::factoriesChanged()
 {
     m_biasSelection->clear();
 
-    disconnect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
-                this, SLOT( factoriesChanged() ) );
+    disconnect( Dynamic::BiasFactory::instance(), SIGNAL(changed()),
+                this, SLOT(factoriesChanged()) );
 
     // -- add all the bias types to the list
     bool factoryFound = false;
@@ -114,8 +114,8 @@ PlaylistBrowserNS::BiasDialog::factoriesChanged()
                                          "The original bias name was %1.", m_bias->name() ) );
     }
 
-    connect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
-             this, SLOT( factoriesChanged() ) );
+    connect( Dynamic::BiasFactory::instance(), SIGNAL(changed()),
+             this, SLOT(factoriesChanged()) );
 }
 
 void
@@ -171,8 +171,8 @@ PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::
     if( !newBias )
         return;
 
-    connect( newBias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-             this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+    connect( newBias.data(), SIGNAL(replaced(Dynamic::BiasPtr,Dynamic::BiasPtr)),
+             this, SLOT(biasReplaced(Dynamic::BiasPtr,Dynamic::BiasPtr)) );
 
     m_biasWidget = newBias->widget( 0 );
     if( !m_biasWidget )

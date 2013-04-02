@@ -39,8 +39,8 @@ namespace Mpris1
     {
         new Mpris1TrackListAdaptor(this);
         QDBusConnection::sessionBus().registerObject( "/TrackList", this );
-        connect( The::playlist()->qaim(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
-        connect( The::playlist()->qaim(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
+        connect( The::playlist()->qaim(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotTrackListChange()) );
+        connect( The::playlist()->qaim(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(slotTrackListChange()) );
     }
 
     int TrackListHandler::AddTrack( const QString& url, bool playImmediately )

@@ -146,8 +146,8 @@ Dynamic::LastFmBias::widget( QWidget* parent )
     rb1->setChecked( m_match == SimilarArtist );
     rb2->setChecked( m_match == SimilarTrack );
 
-    connect( rb1, SIGNAL( toggled( bool ) ),
-             this, SLOT( setMatchTypeArtist( bool ) ) );
+    connect( rb1, SIGNAL(toggled(bool)),
+             this, SLOT(setMatchTypeArtist(bool)) );
 
     layout->addWidget( imageLabel );
     layout->addWidget( label );
@@ -335,8 +335,8 @@ Dynamic::LastFmBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady( QStringList )),
-             this, SLOT(updateReady( QStringList )) );
+    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
+             this, SLOT(updateReady(QStringList)) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
 
@@ -356,8 +356,8 @@ void Dynamic::LastFmBias::newSimilarQuery()
         params[ "method" ] = "artist.getSimilar";
         params[ "artist" ] = m_currentArtist;
         QNetworkReply* request = lastfm::ws::get( params );
-        connect( request, SIGNAL( finished() ),
-                 this, SLOT( similarArtistQueryDone() ) );
+        connect( request, SIGNAL(finished()),
+                 this, SLOT(similarArtistQueryDone()) );
     }
     else if( m_match == SimilarTrack )
     {
@@ -367,8 +367,8 @@ void Dynamic::LastFmBias::newSimilarQuery()
         params[ "artist" ] = m_currentArtist;
         params[ "track" ] = m_currentTrack;
         QNetworkReply* request = lastfm::ws::get( params );
-        connect( request, SIGNAL( finished() ),
-                 this, SLOT( similarTrackQueryDone() ) );
+        connect( request, SIGNAL(finished()),
+                 this, SLOT(similarTrackQueryDone()) );
     }
 }
 

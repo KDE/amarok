@@ -109,8 +109,8 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     l4->addWidget( m_peerWidth = new QRadioButton( i18nc( "automatic width", "Automatic" ), this ) );
     m_peerWidth->setToolTip( i18n( "Take homogeneous part of the space available to all elements with automatic width" ) );
     l4->addStretch();
-    boxWidget->connect( m_fixedWidth, SIGNAL( toggled(bool) ), SLOT( setEnabled(bool) ) );
-    connect( m_peerWidth, SIGNAL( toggled(bool) ), SLOT( setPeerWidth(bool) ) );
+    boxWidget->connect( m_fixedWidth, SIGNAL(toggled(bool)), SLOT(setEnabled(bool)) );
+    connect( m_peerWidth, SIGNAL(toggled(bool)), SLOT(setPeerWidth(bool)) );
     l1->addLayout( l4 );
 
     QHBoxLayout *l5 = new QHBoxLayout( boxWidget );
@@ -118,9 +118,9 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     m_width->setRange( 0, 100 );
     l = new QLabel( boxWidget );
     l5->addWidget( l );
-//         width->connect( sizeMode, SIGNAL( currentIndexChanged(int) ), SLOT( setDisabled() ) )
+//         width->connect( sizeMode, SIGNAL(currentIndexChanged(int)), SLOT(setDisabled()) )
     l->setNum( 0 );
-    l->connect( m_width, SIGNAL( valueChanged(int) ), SLOT( setNum(int) ) );
+    l->connect( m_width, SIGNAL(valueChanged(int)), SLOT(setNum(int)) );
 
 #define HAVE_METRICS 0
 #if HAVE_METRICS
@@ -163,8 +163,8 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     QDialogButtonBox *box = new QDialogButtonBox(this);
     box->addButton( QDialogButtonBox::Cancel );
     box->addButton( QDialogButtonBox::Ok );
-    connect( box, SIGNAL( rejected() ), SLOT( close() ) );
-    connect( box, SIGNAL( accepted() ), SLOT( apply() ) );
+    connect( box, SIGNAL(rejected()), SLOT(close()) );
+    connect( box, SIGNAL(accepted()), SLOT(apply()) );
     l1->addWidget( box );
 
     l1->addStretch();

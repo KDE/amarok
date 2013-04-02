@@ -108,7 +108,7 @@ bool IpodCollection::init()
 
     m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure Device" ), this );
     m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
-    connect( m_configureAction, SIGNAL( triggered() ), SLOT( slotShowConfigureDialog() ) );
+    connect( m_configureAction, SIGNAL(triggered()), SLOT(slotShowConfigureDialog()) );
 
     m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Eject Device" ), this );
     m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );

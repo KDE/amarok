@@ -29,7 +29,7 @@ ProxyLogger::ProxyLogger()
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
 
     m_timer = new QTimer( this );
-    connect( m_timer, SIGNAL( timeout() ), this, SLOT( forwardNotifications() ) );
+    connect( m_timer, SIGNAL(timeout()), this, SLOT(forwardNotifications()) );
     m_timer->setSingleShot( true );
     m_timer->setInterval( 0 );
 

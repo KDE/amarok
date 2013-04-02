@@ -248,16 +248,16 @@ UmsCollection::UmsCollection( Solid::Device device )
 
     m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure Device" ), this );
     m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
-    connect( m_configureAction, SIGNAL( triggered() ), SLOT( slotConfigure() ) );
+    connect( m_configureAction, SIGNAL(triggered()), SLOT(slotConfigure()) );
 
     m_parseAction = new QAction( KIcon( "checkbox" ), i18n(  "&Activate This Collection" ), this );
     m_parseAction->setProperty( "popupdropper_svg_id", "edit" );
-    connect( m_parseAction, SIGNAL( triggered() ), this, SLOT( slotParseActionTriggered() ) );
+    connect( m_parseAction, SIGNAL(triggered()), this, SLOT(slotParseActionTriggered()) );
 
     m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Eject Device" ),
                                  const_cast<UmsCollection*>( this ) );
     m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
-    connect( m_ejectAction, SIGNAL( triggered() ), SLOT( slotEject() ) );
+    connect( m_ejectAction, SIGNAL(triggered()), SLOT(slotEject()) );
 
     init();
 }
@@ -566,7 +566,7 @@ UmsCollection::slotParseTracks()
     if( !m_scanManager )
     {
         m_scanManager = new GenericScanManager( this );
-        connect( m_scanManager, SIGNAL(directoryScanned( CollectionScanner::Directory * )),
+        connect( m_scanManager, SIGNAL(directoryScanned(CollectionScanner::Directory*)),
                 SLOT(slotDirectoryScanned(CollectionScanner::Directory*)), Qt::DirectConnection );
     }
 

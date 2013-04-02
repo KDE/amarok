@@ -326,10 +326,10 @@ FastForwardWorker::trySmartMatch( const QString url, const QString title, const 
     trackQueryMaker->addNumberFilter( Meta::valDiscNr, discNr, Collections::QueryMaker::Equals );
     trackQueryMaker->addNumberFilter( Meta::valFilesize, filesize, Collections::QueryMaker::Equals );
 
-    connect( trackQueryMaker, SIGNAL( queryDone() ), SLOT( queryDone() ),
+    connect( trackQueryMaker, SIGNAL(queryDone()), SLOT(queryDone()),
              Qt::QueuedConnection );
-    connect( trackQueryMaker, SIGNAL( newResultReady( Meta::TrackList ) ),
-             SLOT( resultReady( Meta::TrackList ) ),
+    connect( trackQueryMaker, SIGNAL(newResultReady(Meta::TrackList)),
+             SLOT(resultReady(Meta::TrackList)),
              Qt::QueuedConnection );
     trackQueryMaker->run();
 

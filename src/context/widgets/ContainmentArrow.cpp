@@ -48,7 +48,7 @@ ContainmentArrow::ContainmentArrow( QGraphicsItem *parent, int direction ) :
     setAcceptsHoverEvents( true );
 
     m_timer = new QTimer( this );
-    connect( m_timer, SIGNAL( timeout() ), this, SLOT( timeToHide() ) );
+    connect( m_timer, SIGNAL(timeout()), this, SLOT(timeToHide()) );
 
     m_arrowSvg = new Context::Svg( this );
     m_arrowSvg->setImagePath( KStandardDirs::locate( "data", "amarok/images/navigation_arrows.svg" ) );

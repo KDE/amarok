@@ -149,17 +149,17 @@ GenericScanManager::connectSignalsToJob()
     // CollectionScanner::Directory pointer belongs to the scanner job
     // and might get missing.
     // Also multi-threading while scanning is nice.
-    connect( m_scannerJob, SIGNAL(started( GenericScanManager::ScanType )),
-             SIGNAL(started( GenericScanManager::ScanType )),
+    connect( m_scannerJob, SIGNAL(started(GenericScanManager::ScanType)),
+             SIGNAL(started(GenericScanManager::ScanType)),
              Qt::DirectConnection  );
-    connect( m_scannerJob, SIGNAL(directoryCount( int )),
-             SIGNAL(directoryCount( int )),
+    connect( m_scannerJob, SIGNAL(directoryCount(int)),
+             SIGNAL(directoryCount(int)),
              Qt::DirectConnection  );
-    connect( m_scannerJob, SIGNAL(directoryScanned( CollectionScanner::Directory * )),
-             SIGNAL(directoryScanned( CollectionScanner::Directory * )),
+    connect( m_scannerJob, SIGNAL(directoryScanned(CollectionScanner::Directory*)),
+             SIGNAL(directoryScanned(CollectionScanner::Directory*)),
              Qt::DirectConnection );
     connect( m_scannerJob, SIGNAL(succeeded()), SLOT(slotSucceeded()),
              Qt::DirectConnection  );
-    connect( m_scannerJob, SIGNAL(failed( QString )), SLOT(slotFailed( QString )),
+    connect( m_scannerJob, SIGNAL(failed(QString)), SLOT(slotFailed(QString)),
              Qt::DirectConnection  );
 }

@@ -34,7 +34,7 @@
 namespace Capabilities {
 
 #define FORWARD( call ) { foreach( Capabilities::EditCapability *ec, m_ec ) { ec->call; } \
-                            if( !m_batchMode ) QTimer::singleShot( 0, m_collection, SLOT( slotUpdated() ) ); }
+                            if( !m_batchMode ) QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) ); }
 
 class ProxyEditCapability : public Capabilities::EditCapability
 {
@@ -55,7 +55,7 @@ public:
     {
         foreach( Capabilities::EditCapability *ec, m_ec ) ec->endMetaDataUpdate();
         m_batchMode = false;
-        QTimer::singleShot( 0, m_collection, SLOT( slotUpdated() ) );
+        QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) );
     }
     void setComment( const QString &newComment ) { FORWARD( setComment( newComment ) ) }
     void setTrackNumber( int newTrackNumber ) { FORWARD( setTrackNumber( newTrackNumber ) ) }

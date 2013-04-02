@@ -79,15 +79,15 @@ PodcastSettingsDialog::init()
     enableButtonApply( false );
 
     // Connects for modification check
-    connect( m_ps->m_urlLineEdit, SIGNAL(textChanged( const QString& )),
+    connect( m_ps->m_urlLineEdit, SIGNAL(textChanged(QString)),
              SLOT(checkModified()) );
-    connect( m_ps->m_saveLocation, SIGNAL(textChanged( const QString& )),
+    connect( m_ps->m_saveLocation, SIGNAL(textChanged(QString)),
              SLOT(checkModified()) );
     connect( m_ps->m_autoFetchCheck, SIGNAL(clicked()), SLOT(checkModified()) );
     connect( m_ps->m_streamRadio, SIGNAL(clicked()), SLOT(checkModified()) );
     connect( m_ps->m_downloadRadio, SIGNAL(clicked()), SLOT(checkModified()) );
     connect( m_ps->m_purgeCheck, SIGNAL(clicked()), SLOT(checkModified()) );
-    connect( m_ps->m_purgeCountSpinBox, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
+    connect( m_ps->m_purgeCountSpinBox, SIGNAL(valueChanged(int)), SLOT(checkModified()) );
     connect( m_ps->m_writeTagsCheck, SIGNAL(clicked()), SLOT(checkModified()) );
     connect( m_ps->m_filenameLayoutConfigWidgetButton, SIGNAL(clicked()), SLOT(launchFilenameLayoutConfigDialog()) );
 

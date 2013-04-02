@@ -66,18 +66,18 @@ void
 Mp3tunesHarmonyDaemon::setClient( Mp3tunesHarmonyClient *client )
 {
     m_client = client;
-    connect( this, SIGNAL( disconnected() ),
-            m_client, SLOT( harmonyDisconnected() ));
-    connect( this, SIGNAL( waitingForEmail( QString ) ),
-            m_client, SLOT( harmonyWaitingForEmail( QString ) ) );
-    connect( this, SIGNAL( connected() ),
-            m_client, SLOT( harmonyConnected() ) );
-    connect( this, SIGNAL( errorSignal( QString ) ),
-            m_client, SLOT( harmonyError( QString ) ) );
-    connect( this, SIGNAL( downloadReady( Mp3tunesHarmonyDownload ) ),
-            m_client, SLOT( harmonyDownloadReady( Mp3tunesHarmonyDownload ) ) );
-    connect( this, SIGNAL( downloadPending( Mp3tunesHarmonyDownload ) ),
-            m_client, SLOT( harmonyDownloadPending( Mp3tunesHarmonyDownload ) ) );
+    connect( this, SIGNAL(disconnected()),
+            m_client, SLOT(harmonyDisconnected()));
+    connect( this, SIGNAL(waitingForEmail(QString)),
+            m_client, SLOT(harmonyWaitingForEmail(QString)) );
+    connect( this, SIGNAL(connected()),
+            m_client, SLOT(harmonyConnected()) );
+    connect( this, SIGNAL(errorSignal(QString)),
+            m_client, SLOT(harmonyError(QString)) );
+    connect( this, SIGNAL(downloadReady(Mp3tunesHarmonyDownload)),
+            m_client, SLOT(harmonyDownloadReady(Mp3tunesHarmonyDownload)) );
+    connect( this, SIGNAL(downloadPending(Mp3tunesHarmonyDownload)),
+            m_client, SLOT(harmonyDownloadPending(Mp3tunesHarmonyDownload)) );
 }
 
 bool

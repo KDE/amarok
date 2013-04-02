@@ -76,7 +76,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
 {
     if( m_pd )
     {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(deleteLater()) );
         m_pd->hide();
         m_pd = 0;
     }
@@ -131,7 +131,7 @@ void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supporte
     if( m_pd )
     {
         debug() << "clearing PUD";
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
         m_pd->hide();
     }
     m_ongoingDrag = false;

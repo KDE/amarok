@@ -118,7 +118,7 @@ AmazonItemTreeView::mouseReleaseEvent( QMouseEvent *event )
     if( m_pd )
     {
         m_pd->hide();
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(deleteLater()) );
         m_pd = 0;
     }
 
@@ -176,7 +176,7 @@ AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd )
     {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
         m_pd->hide();
     }
 }
@@ -243,7 +243,7 @@ QAction*
 AmazonItemTreeView::createAddToCartAction()
 {
     QAction *addToCartAction = new QAction( KIcon( "amarok_cart_add" ), QString( i18n( "Add to Cart" ) ), this );
-    connect( addToCartAction, SIGNAL( triggered() ), this, SIGNAL( addToCart() ) );
+    connect( addToCartAction, SIGNAL(triggered()), this, SIGNAL(addToCart()) );
 
     return addToCartAction;
 }
@@ -252,7 +252,7 @@ QAction*
 AmazonItemTreeView::createAddToPlaylistAction()
 {
     QAction *addToPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ), QString( i18n( "Add Preview to Playlist" ) ), this );
-    connect( addToPlaylistAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
+    connect( addToPlaylistAction, SIGNAL(triggered()), this, SLOT(itemActivatedAction()) );
 
     return addToPlaylistAction;
 }
@@ -261,7 +261,7 @@ QAction*
 AmazonItemTreeView::createDetailsAction()
 {
     QAction *getDetailsAction = new QAction( QIcon( KStandardDirs::locate( "data", "amarok/images/loading1.png" ) ), QString( i18n( "Load Details..." ) ), this );
-    connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
+    connect( getDetailsAction, SIGNAL(triggered()), this, SLOT(itemActivatedAction()) );
 
     return getDetailsAction;
 }
@@ -270,7 +270,7 @@ QAction*
 AmazonItemTreeView::createDirectCheckoutAction()
 {
     QAction *directCheckoutAction = new QAction( KIcon( "download-amarok" ), QString( i18n( "Direct Checkout" ) ), this );
-    connect( directCheckoutAction, SIGNAL( triggered() ), this, SIGNAL( directCheckout() ) );
+    connect( directCheckoutAction, SIGNAL(triggered()), this, SIGNAL(directCheckout()) );
 
     return directCheckoutAction;
 }
@@ -279,7 +279,7 @@ QAction*
 AmazonItemTreeView::createSearchForAlbumAction()
 {
     QAction *searchForAlbumAction = new QAction( KIcon( "media-optical-amarok" ), QString( i18n( "Search for Album..." ) ), this );
-    connect( searchForAlbumAction, SIGNAL( triggered() ), this, SLOT( searchForAlbumAction() ) );
+    connect( searchForAlbumAction, SIGNAL(triggered()), this, SLOT(searchForAlbumAction()) );
 
     return searchForAlbumAction;
 }

@@ -64,7 +64,7 @@ AmazonInfoParser::getInfo( Meta::AlbumPtr album )
 
     KIO::FileCopyJob *requestJob = KIO::file_copy( urlString, KUrl( tempFile.fileName() ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
-    connect( requestJob, SIGNAL( result( KJob* ) ), this, SLOT( albumInfoDownloadComplete( KJob* ) ) );
+    connect( requestJob, SIGNAL(result(KJob*)), this, SLOT(albumInfoDownloadComplete(KJob*)) );
     requestJob->start();
 }
 

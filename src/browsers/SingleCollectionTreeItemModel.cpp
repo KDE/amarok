@@ -37,7 +37,7 @@ SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Colle
     m_expandedCollections.insert( m_collection );
     setLevels( levelType );
 
-    connect( collection, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
+    connect( collection, SIGNAL(updated()), this, SLOT(slotFilter()) ) ;
 }
 
 void

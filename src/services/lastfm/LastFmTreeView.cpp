@@ -38,7 +38,7 @@ LastFmTreeView::LastFmTreeView ( QWidget* parent )
         , m_dragMutex()
         , m_ongoingDrag( false )
 {
-//     connect ( this, SIGNAL ( activated ( QModelIndex ) ), SLOT ( onActivated ( QModelIndex ) ) );
+//     connect ( this, SIGNAL (activated(QModelIndex)), SLOT (onActivated(QModelIndex)) );
 
     header()->hide();
 //     setRootIsDecorated( false );
@@ -95,7 +95,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
             {
                 m_appendAction = new QAction ( KIcon ( "media-track-add-amarok" ), i18n ( "&Add to Playlist" ), this );
                 m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-                connect ( m_appendAction, SIGNAL ( triggered() ), this, SLOT ( slotAppendChildTracks() ) );
+                connect ( m_appendAction, SIGNAL (triggered()), this, SLOT (slotAppendChildTracks()) );
             }
 
             actions.append ( m_appendAction );
@@ -104,7 +104,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
             {
                 m_loadAction = new QAction ( KIcon ( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
                 m_appendAction->setProperty( "popupdropper_svg_id", "load" );
-                connect ( m_loadAction, SIGNAL ( triggered() ), this, SLOT ( slotPlayChildTracks() ) );
+                connect ( m_loadAction, SIGNAL (triggered()), this, SLOT (slotPlayChildTracks()) );
             }
             actions.append ( m_loadAction );
         }
@@ -196,7 +196,7 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
     if( m_pd )
     {
         debug() << "clearing PUD";
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
         m_pd->hide();
     }
 

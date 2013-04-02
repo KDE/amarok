@@ -139,8 +139,8 @@ CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation
     m_destination = destination;
     m_removeSources = false;
     m_isRemoveAction = false;
-    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( resultReady( Meta::TrackList ) ) );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(resultReady(Meta::TrackList)) );
+    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()) );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
@@ -187,8 +187,8 @@ CollectionLocation::prepareMove( Collections::QueryMaker *qm, CollectionLocation
     m_destination = destination;
     m_isRemoveAction = false;
     m_removeSources = true;
-    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( resultReady( Meta::TrackList ) ) );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(resultReady(Meta::TrackList)) );
+    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()) );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
@@ -223,8 +223,8 @@ CollectionLocation::prepareRemove( Collections::QueryMaker *qm )
     m_isRemoveAction = true;
     m_removeSources = false;
 
-    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( resultReady( Meta::TrackList ) ) );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(resultReady(Meta::TrackList)) );
+    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()) );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
@@ -618,25 +618,25 @@ CollectionLocation::queryDone()
 void
 CollectionLocation::setupConnections()
 {
-    connect( this, SIGNAL( prepareOperation( Meta::TrackList, bool, const Transcoding::Configuration & ) ),
-             m_destination, SLOT( slotPrepareOperation( Meta::TrackList, bool, const Transcoding::Configuration & ) ) );
-    connect( m_destination, SIGNAL( operationPrepared() ), SLOT( slotOperationPrepared() ) );
-    connect( this, SIGNAL( startCopy( QMap<Meta::TrackPtr, KUrl>, const Transcoding::Configuration & ) ),
-             m_destination, SLOT( slotStartCopy( QMap<Meta::TrackPtr, KUrl>, const Transcoding::Configuration & ) ) );
-    connect( m_destination, SIGNAL( finishCopy() ),
-             this, SLOT( slotFinishCopy() ) );
-    connect( this, SIGNAL( aborted() ), SLOT( slotAborted() ) );
-    connect( m_destination, SIGNAL( aborted() ), SLOT( slotAborted() ) );
+    connect( this, SIGNAL(prepareOperation(Meta::TrackList,bool,Transcoding::Configuration)),
+             m_destination, SLOT(slotPrepareOperation(Meta::TrackList,bool,Transcoding::Configuration)) );
+    connect( m_destination, SIGNAL(operationPrepared()), SLOT(slotOperationPrepared()) );
+    connect( this, SIGNAL(startCopy(QMap<Meta::TrackPtr,KUrl>,Transcoding::Configuration)),
+             m_destination, SLOT(slotStartCopy(QMap<Meta::TrackPtr,KUrl>,Transcoding::Configuration)) );
+    connect( m_destination, SIGNAL(finishCopy()),
+             this, SLOT(slotFinishCopy()) );
+    connect( this, SIGNAL(aborted()), SLOT(slotAborted()) );
+    connect( m_destination, SIGNAL(aborted()), SLOT(slotAborted()) );
 }
 
 void
 CollectionLocation::setupRemoveConnections()
 {
-    connect( this, SIGNAL( aborted() ), SLOT( slotAborted() ) );
-    connect( this, SIGNAL( startRemove() ),
-             this, SLOT( slotStartRemove() ) );
-    connect( this, SIGNAL( finishRemove() ),
-             this, SLOT( slotFinishRemove() ) );
+    connect( this, SIGNAL(aborted()), SLOT(slotAborted()) );
+    connect( this, SIGNAL(startRemove()),
+             this, SLOT(slotStartRemove()) );
+    connect( this, SIGNAL(finishRemove()),
+             this, SLOT(slotFinishRemove()) );
 }
 
 void

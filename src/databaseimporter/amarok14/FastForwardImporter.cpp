@@ -79,20 +79,20 @@ FastForwardImporter::import()
     m_worker->setImportArtwork( m_config->importArtwork() );
     m_worker->setImportArtworkDir( m_config->importArtworkDir() );
 
-    connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ),
-             this, SIGNAL( trackAdded( Meta::TrackPtr ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( trackDiscarded( QString ) ),
-             this, SIGNAL( trackDiscarded( QString ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ),
-             this, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ),
-             this, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( importError( QString ) ),
-             this, SIGNAL( importError( QString ) ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( done( ThreadWeaver::Job* ) ),
-             this, SLOT( finishUp() ), Qt::QueuedConnection );
-    connect( m_worker, SIGNAL( showMessage( QString ) ),
-             this, SIGNAL( showMessage( QString ) ), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL(trackAdded(Meta::TrackPtr)),
+             this, SIGNAL(trackAdded(Meta::TrackPtr)), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL(trackDiscarded(QString)),
+             this, SIGNAL(trackDiscarded(QString)), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL(trackMatchFound(Meta::TrackPtr,QString)),
+             this, SIGNAL(trackMatchFound(Meta::TrackPtr,QString)), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL(trackMatchMultiple(Meta::TrackList,QString)),
+             this, SIGNAL(trackMatchMultiple(Meta::TrackList,QString)), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL(importError(QString)),
+             this, SIGNAL(importError(QString)), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL(done(ThreadWeaver::Job*)),
+             this, SLOT(finishUp()), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL(showMessage(QString)),
+             this, SIGNAL(showMessage(QString)), Qt::QueuedConnection );
 
     ThreadWeaver::Weaver::instance()->enqueue( m_worker );
 }

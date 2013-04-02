@@ -83,8 +83,8 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     ui.justCopyButton->setText( justCopyText );
     ui.justCopyButton->setDescription( justCopyDescription );
     ui.justCopyButton->setMinimumHeight( ui.justCopyButton->iconSize().height() + 2*10 ); //we make room for the pretty icon
-    connect( ui.justCopyButton, SIGNAL( clicked() ),
-             this, SLOT( onJustCopyClicked() ) );
+    connect( ui.justCopyButton, SIGNAL(clicked()),
+             this, SLOT(onJustCopyClicked()) );
 
     //Let's set up the codecs page...
     populateFormatList();

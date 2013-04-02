@@ -46,18 +46,18 @@ MusicDNSFinder::MusicDNSFinder( QObject *parent,
 
     decodingComplete = false;
 
-    connect( net, SIGNAL( finished( QNetworkReply * ) ), SLOT( gotReply( QNetworkReply * ) ) );
-    connect( _timer, SIGNAL( timeout() ), SLOT( sendNewRequest() ) );
+    connect( net, SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)) );
+    connect( _timer, SIGNAL(timeout()), SLOT(sendNewRequest()) );
 }
 
 void
 MusicDNSFinder::run( const Meta::TrackList &tracks )
 {
     MusicDNSAudioDecoder *decoder = new MusicDNSAudioDecoder( tracks );
-    connect( decoder, SIGNAL( trackDecoded( const Meta::TrackPtr, const QString ) ),
-                      SLOT( trackDecoded( const Meta::TrackPtr, const QString ) ) );
-    connect( decoder, SIGNAL( done( ThreadWeaver::Job * ) ),
-                      SLOT( decodingDone( ThreadWeaver::Job * ) ) );
+    connect( decoder, SIGNAL(trackDecoded(Meta::TrackPtr,QString)),
+                      SLOT(trackDecoded(Meta::TrackPtr,QString)) );
+    connect( decoder, SIGNAL(done(ThreadWeaver::Job*)),
+                      SLOT(decodingDone(ThreadWeaver::Job*)) );
 
     ThreadWeaver::Weaver::instance()->enqueue( decoder );
 
@@ -75,8 +75,8 @@ void MusicDNSFinder::sendNewRequest()
     QPair < Meta::TrackPtr, QNetworkRequest > req = m_requests.takeFirst();
     QNetworkReply *reply = net->get( req.second );
     m_replyes.insert( reply, req.first );
-    connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
-             this, SLOT( replyError( QNetworkReply::NetworkError ) ) );
+    connect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
+             this, SLOT(replyError(QNetworkReply::NetworkError)) );
     debug() << "Request sent: " << req.second.url().toString();
 }
 
@@ -91,7 +91,7 @@ MusicDNSFinder::gotReply( QNetworkReply *reply )
         if( !m_replyes.value( reply ).isNull() )
             m_parsers.insert( parser, m_replyes.value( reply ) );
 
-        connect( parser, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( parsingDone( ThreadWeaver::Job * ) ) );
+        connect( parser, SIGNAL(done(ThreadWeaver::Job*)), SLOT(parsingDone(ThreadWeaver::Job*)) );
         ThreadWeaver::Weaver::instance()->enqueue( parser );
     }
 
@@ -111,8 +111,8 @@ MusicDNSFinder::replyError( QNetworkReply::NetworkError code )
     if( !m_replyes.contains( reply ) || code == QNetworkReply::NoError )
         return;
 
-    disconnect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
-                this, SLOT( replyError( QNetworkReply::NetworkError ) ) );
+    disconnect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
+                this, SLOT(replyError(QNetworkReply::NetworkError)) );
 
     debug() << "Error occurred during network request: " << reply->errorString();
     m_replyes.remove( reply );
@@ -126,7 +126,7 @@ MusicDNSFinder::parsingDone( ThreadWeaver::Job *_parser )
     DEBUG_BLOCK
 
     MusicDNSXmlParser *parser = qobject_cast< MusicDNSXmlParser * >( _parser );
-    disconnect( parser, SIGNAL( done( ThreadWeaver::Job * ) ), this, SLOT( parsingDone( ThreadWeaver::Job * ) ) );
+    disconnect( parser, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(parsingDone(ThreadWeaver::Job*)) );
     if( m_parsers.contains( parser ) )
     {
         bool found = false;
@@ -162,10 +162,10 @@ MusicDNSFinder::decodingDone( ThreadWeaver::Job *_decoder )
 {
     DEBUG_BLOCK
     MusicDNSAudioDecoder *decoder = ( MusicDNSAudioDecoder * )_decoder;
-    disconnect( decoder, SIGNAL( trackDecoded( const Meta::TrackPtr, const QString ) ),
-                this, SLOT( trackDecoded( const Meta::TrackPtr, const QString ) ) );
-    disconnect( decoder, SIGNAL( done( ThreadWeaver::Job * ) ),
-                this, SLOT( decodingDone( ThreadWeaver::Job * ) ) );
+    disconnect( decoder, SIGNAL(trackDecoded(Meta::TrackPtr,QString)),
+                this, SLOT(trackDecoded(Meta::TrackPtr,QString)) );
+    disconnect( decoder, SIGNAL(done(ThreadWeaver::Job*)),
+                this, SLOT(decodingDone(ThreadWeaver::Job*)) );
     decoder->deleteLater();
     decodingComplete = true;
     checkDone();

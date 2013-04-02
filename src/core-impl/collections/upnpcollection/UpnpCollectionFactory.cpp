@@ -71,14 +71,14 @@ bool UpnpCollectionFactory::cagibi0_1_0Init( QDBusConnection bus )
                  "org.kde.Cagibi",
                  "devicesAdded",
                  this,
-                 SLOT( slotDeviceAdded( const DeviceTypeMap & ) ) );
+                 SLOT(slotDeviceAdded(DeviceTypeMap)) );
 
     bus.connect( "org.kde.Cagibi",
                  "/org/kde/Cagibi",
                  "org.kde.Cagibi",
                  "devicesRemoved",
                  this,
-                 SLOT( slotDeviceRemoved( const DeviceTypeMap & ) ) );
+                 SLOT(slotDeviceRemoved(DeviceTypeMap)) );
 
     m_iface = new QDBusInterface( "org.kde.Cagibi",
                                   "/org/kde/Cagibi",
@@ -116,14 +116,14 @@ bool UpnpCollectionFactory::cagibi0_2_0Init( QDBusConnection bus )
                  "org.kde.Cagibi.DeviceList",
                  "devicesAdded",
                  this,
-                 SLOT( slotDeviceAdded( const DeviceTypeMap & ) ) );
+                 SLOT(slotDeviceAdded(DeviceTypeMap)) );
 
     bus.connect( "org.kde.Cagibi",
                  "/org/kde/Cagibi/DeviceList",
                  "org.kde.Cagibi.DeviceList",
                  "devicesRemoved",
                  this,
-                 SLOT( slotDeviceRemoved( const DeviceTypeMap & ) ) );
+                 SLOT(slotDeviceRemoved(DeviceTypeMap)) );
 
     m_iface = new QDBusInterface( "org.kde.Cagibi",
                                   "/org/kde/Cagibi/DeviceList",
@@ -188,9 +188,9 @@ void UpnpCollectionFactory::createCollection( const QString &udn )
     debug() << "|||| Creating collection " << info.uuid();
     KIO::ListJob *job = KIO::listDir( QString( "upnp-ms://" + info.uuid() + "/?searchcapabilities=1" ) );
     job->setProperty( "deviceInfo", QVariant::fromValue( info ) );
-    connect( job, SIGNAL( entries( KIO::Job *, const KIO::UDSEntryList & ) ),
-            this, SLOT( slotSearchEntries( KIO::Job *, const KIO::UDSEntryList & ) ) );
-    connect( job, SIGNAL( result(KJob *) ), this, SLOT( slotSearchCapabilitiesDone( KJob* ) ) );
+    connect( job, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
+            this, SLOT(slotSearchEntries(KIO::Job*,KIO::UDSEntryList)) );
+    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotSearchCapabilitiesDone(KJob*)) );
 }
 
 bool UpnpCollectionFactory::cagibi0_1_0DeviceDetails( const QString &udn, DeviceInfo *info )

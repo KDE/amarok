@@ -73,10 +73,10 @@ MusicBrainzFinder::MusicBrainzFinder( QObject *parent, const QString &host,
     _timer = new QTimer( this );
     _timer->setInterval( 1000 );
 
-    connect( net, SIGNAL( finished( QNetworkReply * ) ), SLOT( gotReply( QNetworkReply * ) ) );
-    connect( net, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
-            SLOT( authenticationRequest( QNetworkReply *, QAuthenticator * ) ) );
-    connect( _timer, SIGNAL( timeout() ), SLOT( sendNewRequest() ) );
+    connect( net, SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)) );
+    connect( net, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
+            SLOT(authenticationRequest(QNetworkReply*,QAuthenticator*)) );
+    connect( _timer, SIGNAL(timeout()), SLOT(sendNewRequest()) );
 }
 
 MusicBrainzFinder::~MusicBrainzFinder()
@@ -132,8 +132,8 @@ MusicBrainzFinder::sendNewRequest()
     QPair < Meta::TrackPtr, QNetworkRequest > req = m_requests.takeFirst();
     QNetworkReply *reply = net->get( req.second );
     m_replyes.insert( reply, req.first );
-    connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
-             this, SLOT( replyError( QNetworkReply::NetworkError ) ) );
+    connect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
+             this, SLOT(replyError(QNetworkReply::NetworkError)) );
 
     debug() << "Request sent: " << req.second.url().toString();
 }
@@ -149,7 +149,7 @@ MusicBrainzFinder::gotReply( QNetworkReply *reply )
         if( !m_replyes.value( reply ).isNull() )
             m_parsers.insert( parser, m_replyes.value( reply ) );
 
-        connect( parser, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( parsingDone( ThreadWeaver::Job * ) ) );
+        connect( parser, SIGNAL(done(ThreadWeaver::Job*)), SLOT(parsingDone(ThreadWeaver::Job*)) );
         ThreadWeaver::Weaver::instance()->enqueue( parser );
     }
 
@@ -170,8 +170,8 @@ MusicBrainzFinder::replyError( QNetworkReply::NetworkError code )
         return;
 
     debug() << "Error occurred during network request: " << reply->errorString();
-    disconnect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
-                this, SLOT( replyError( QNetworkReply::NetworkError ) ) );
+    disconnect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
+                this, SLOT(replyError(QNetworkReply::NetworkError)) );
     m_replyes.remove( reply );
     reply->deleteLater();
     checkDone();
@@ -182,7 +182,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
 {
     DEBUG_BLOCK
     MusicBrainzXmlParser *parser = qobject_cast< MusicBrainzXmlParser * >( _parser );
-    disconnect( parser, SIGNAL( done( ThreadWeaver::Job * ) ), this, SLOT( parsingDone( ThreadWeaver::Job * ) ) );
+    disconnect( parser, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(parsingDone(ThreadWeaver::Job*)) );
     if( m_parsers.contains( parser ) )
     {
         Meta::TrackPtr trackPtr = m_parsers.take( parser );

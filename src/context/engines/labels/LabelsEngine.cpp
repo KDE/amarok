@@ -46,10 +46,10 @@ LabelsEngine::LabelsEngine( QObject *parent, const QList<QVariant> &args )
 
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             this, SLOT(update()) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(update()) );
 }
 
 LabelsEngine::~LabelsEngine()
@@ -76,9 +76,9 @@ LabelsEngine::sourceRequestEvent( const QString &name )
         qm->setQueryType( Collections::QueryMaker::Label );
         m_allLabels.clear();
 
-        connect( qm, SIGNAL( newResultReady( Meta::LabelList ) ),
-                SLOT( resultReady( Meta::LabelList ) ), Qt::QueuedConnection );
-        connect( qm, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
+        connect( qm, SIGNAL(newResultReady(Meta::LabelList)),
+                SLOT(resultReady(Meta::LabelList)), Qt::QueuedConnection );
+        connect( qm, SIGNAL(queryDone()), SLOT(dataQueryDone()) );
 
         qm->run();
     }

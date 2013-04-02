@@ -40,9 +40,9 @@ AmazonShoppingCartDialog::AmazonShoppingCartDialog( QWidget *parent, AmazonStore
     else
         ui->checkoutButton->setEnabled( true );
 
-    connect( ui->checkoutButton, SIGNAL( clicked() ), m_store, SLOT( checkout() ) );
-    connect( ui->checkoutButton, SIGNAL( clicked() ), this, SLOT( accept() ) );
-    connect( m_model, SIGNAL( contentsChanged() ), this, SLOT( contentsChanged() ) );
+    connect( ui->checkoutButton, SIGNAL(clicked()), m_store, SLOT(checkout()) );
+    connect( ui->checkoutButton, SIGNAL(clicked()), this, SLOT(accept()) );
+    connect( m_model, SIGNAL(contentsChanged()), this, SLOT(contentsChanged()) );
 }
 
 AmazonShoppingCartDialog::~AmazonShoppingCartDialog()

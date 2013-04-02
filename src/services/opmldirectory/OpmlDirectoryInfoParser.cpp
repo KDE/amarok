@@ -64,7 +64,7 @@ void OpmlDirectoryInfoParser::getInfo( TrackPtr track )
     m_rssDownloadJob = KIO::storedGet( feed->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_rssDownloadJob,
                                                         i18n( "Fetching Podcast Info" ) );
-    connect( m_rssDownloadJob, SIGNAL(result(KJob *)), SLOT( rssDownloadComplete( KJob*) ) );
+    connect( m_rssDownloadJob, SIGNAL(result(KJob*)), SLOT(rssDownloadComplete(KJob*)) );
 }
 
 void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)

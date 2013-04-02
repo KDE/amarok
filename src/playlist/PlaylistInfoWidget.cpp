@@ -29,16 +29,16 @@ PlaylistInfoWidget::PlaylistInfoWidget( QWidget *parent )
     : QLabel( parent )
 {
     connect( Playlist::ModelStack::instance()->bottom(),
-            SIGNAL(dataChanged( const QModelIndex&, const QModelIndex& )),
+            SIGNAL(dataChanged(QModelIndex,QModelIndex)),
             SLOT(updateTotalPlaylistLength()) );
     // Ignore The::playlist() layoutChanged: rows moving around does not change the total playlist length.
     connect( Playlist::ModelStack::instance()->bottom(), SIGNAL(modelReset()),
             SLOT(updateTotalPlaylistLength()) );
     connect( Playlist::ModelStack::instance()->bottom(),
-            SIGNAL(rowsInserted( const QModelIndex &, int, int )),
+            SIGNAL(rowsInserted(QModelIndex,int,int)),
             SLOT(updateTotalPlaylistLength()) );
     connect( Playlist::ModelStack::instance()->bottom(),
-            SIGNAL(rowsRemoved( const QModelIndex&, int, int )),
+            SIGNAL(rowsRemoved(QModelIndex,int,int)),
             SLOT(updateTotalPlaylistLength()) );
 
     updateTotalPlaylistLength();

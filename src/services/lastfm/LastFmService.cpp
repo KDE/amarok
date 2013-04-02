@@ -341,8 +341,8 @@ LastFmService::onGetUserInfo()
                     AvatarDownloader* downloader = new AvatarDownloader();
                     KUrl url( lfm["user"][ "image" ].text() );
                     downloader->downloadAvatar( m_config->username(),  url);
-                    connect( downloader, SIGNAL(avatarDownloaded(const QString&, QPixmap)),
-                                         SLOT(onAvatarDownloaded(const QString&, QPixmap)) );
+                    connect( downloader, SIGNAL(avatarDownloaded(QString,QPixmap)),
+                                         SLOT(onAvatarDownloaded(QString,QPixmap)) );
                 }
                 updateProfileInfo();
             }
@@ -477,9 +477,9 @@ LastFmService::polish()
         hbox->addWidget(m_customStationButton);
         customStation->setLayout(hbox);
 
-        connect( m_customStationEdit, SIGNAL( returnPressed() ), this, SLOT( playCustomStation() ) );
-        connect( m_customStationButton, SIGNAL( clicked() ), this, SLOT( playCustomStation() ) );
-        connect( m_customStationCombo, SIGNAL( currentIndexChanged(int) ), this, SLOT( updateEditHint(int) ));
+        connect( m_customStationEdit, SIGNAL(returnPressed()), this, SLOT(playCustomStation()) );
+        connect( m_customStationButton, SIGNAL(clicked()), this, SLOT(playCustomStation()) );
+        connect( m_customStationCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateEditHint(int)));
 
         QList<int> levels;
         levels << CategoryId::Genre << CategoryId::Album;

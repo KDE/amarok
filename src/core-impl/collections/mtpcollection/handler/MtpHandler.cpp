@@ -1363,7 +1363,7 @@ MtpHandler::slotDeviceMatchFailed( ThreadWeaver::Job* job )
         return;
 
     debug() << "Running slot device match failed";
-    disconnect( job, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDeviceMatchSucceeded() ) );
+    disconnect( job, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotDeviceMatchSucceeded()) );
     m_memColl->slotAttemptConnectionDone( false );
 }
 
@@ -1430,9 +1430,9 @@ WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, 
         , m_rawdevices( rawdevices )
         , m_handler( handler )
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchFailed( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchSucceeded( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    connect( this, SIGNAL(failed(ThreadWeaver::Job*)), m_handler, SLOT(slotDeviceMatchFailed(ThreadWeaver::Job*)) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), m_handler, SLOT(slotDeviceMatchSucceeded(ThreadWeaver::Job*)) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
 }
 
 WorkerThread::~WorkerThread()
@@ -1486,9 +1486,9 @@ CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MtpHandler* han
         , m_track( track )
         , m_handler( handler )
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackFailed( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackToDevice( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    connect( this, SIGNAL(failed(ThreadWeaver::Job*)), m_handler, SLOT(slotCopyNextTrackFailed(ThreadWeaver::Job*)) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), m_handler, SLOT(slotCopyNextTrackToDevice(ThreadWeaver::Job*)) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
 }
 
 CopyWorkerThread::~CopyWorkerThread()

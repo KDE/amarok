@@ -166,10 +166,10 @@ Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPt
     if( inModel )
         Dynamic::DynamicModel::instance()->endInsertBias();
 
-    connect( m_bias.data(), SIGNAL( changed( Dynamic::BiasPtr ) ),
-             this, SLOT( biasChanged() ) );
-    connect( m_bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-             this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+    connect( m_bias.data(), SIGNAL(changed(Dynamic::BiasPtr)),
+             this, SLOT(biasChanged()) );
+    connect( m_bias.data(), SIGNAL(replaced(Dynamic::BiasPtr,Dynamic::BiasPtr)),
+             this, SLOT(biasReplaced(Dynamic::BiasPtr,Dynamic::BiasPtr)) );
 
     if( oldBias ) // don't emit a changed during construction
         biasChanged();

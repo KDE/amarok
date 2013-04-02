@@ -96,8 +96,8 @@ DeviceConfigureDialog::DeviceConfigureDialog( MediaDevice *device )
         m_transcodeWhenNecessary = new QRadioButton( transcodeGroup );
         m_transcodeWhenNecessary->setText( i18n( "When necessary" ) );
         m_transcodeWhenNecessary->setChecked( !device->m_transcodeAlways );
-        connect( m_transcodeCheck, SIGNAL(toggled( bool )),
-                transcodeGroup, SLOT(setEnabled( bool )) );
+        connect( m_transcodeCheck, SIGNAL(toggled(bool)),
+                transcodeGroup, SLOT(setEnabled(bool)) );
         transcodeGroup->insert( m_transcodeAlways );
         transcodeGroup->insert( m_transcodeWhenNecessary );
         m_transcodeRemove = new QCheckBox( transcodeGroup );

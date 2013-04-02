@@ -30,8 +30,8 @@ PlaylistBrowserFilterProxy::setSourceModel( QAbstractItemModel *model )
         sourceModel()->disconnect();
 
     QSortFilterProxyModel::setSourceModel( model );
-    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
-             SLOT(slotRenameIndex( const QModelIndex & )) );
+    connect( sourceModel(), SIGNAL(renameIndex(QModelIndex)),
+             SLOT(slotRenameIndex(QModelIndex)) );
 }
 
 void

@@ -64,7 +64,7 @@ namespace Playdar {
         debug() << "Starting storedGetJob for " << resolveUrl.url();
         
         KJob* resolveJob = KIO::storedGet( resolveUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( resolveJob, SIGNAL( result( KJob* ) ), this, SLOT( processQuery( KJob* ) ) );
+        connect( resolveJob, SIGNAL(result(KJob*)), this, SLOT(processQuery(KJob*)) );
     }
     
     void
@@ -78,7 +78,7 @@ namespace Playdar {
         getResultsUrl.addQueryItem( QString( "qid" ), query->qid() );
         
         KJob* getResultsJob = KIO::storedGet( getResultsUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( getResultsJob, SIGNAL( result( KJob* ) ), query, SLOT( receiveResults( KJob* ) ) );
+        connect( getResultsJob, SIGNAL(result(KJob*)), query, SLOT(receiveResults(KJob*)) );
     }
     
     void
@@ -92,7 +92,7 @@ namespace Playdar {
         getResultsUrl.addQueryItem( QString( "qid" ), query->qid() );
         
         KJob* getResultsJob = KIO::storedGet( getResultsUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( getResultsJob, SIGNAL( result( KJob* ) ), query, SLOT( receiveResults( KJob* ) ) );
+        connect( getResultsJob, SIGNAL(result(KJob*)), query, SLOT(receiveResults(KJob*)) );
     }
     
     KUrl
@@ -117,7 +117,7 @@ namespace Playdar {
         KUrl statusUrl( baseUrl );
         
         KJob* statusJob = KIO::storedGet( statusUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( statusJob, SIGNAL( result( KJob* ) ), this, SLOT( processStatus( KJob* ) ) );
+        connect( statusJob, SIGNAL(result(KJob*)), this, SLOT(processStatus(KJob*)) );
     }
     
     void
@@ -198,7 +198,7 @@ namespace Playdar {
         debug() << "All good! Emitting queryReady( Playdar::Query* )...";
         emit queryReady( query );
         
-        connect( query, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
-                 this, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ) );
+        connect( query, SIGNAL(playdarError(Playdar::Controller::ErrorState)),
+                 this, SIGNAL(playdarError(Playdar::Controller::ErrorState)) );
     }
 }

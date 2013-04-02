@@ -52,7 +52,7 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
     m_searchWidget->setClickMessage( i18n( "Filter Music Sources" ) );
     vLayout->addWidget( m_searchWidget );
 
-    connect( m_searchWidget, SIGNAL( filterChanged( const QString & ) ), SLOT( setFilter( const QString & ) ) );
+    connect( m_searchWidget, SIGNAL(filterChanged(QString)), SLOT(setFilter(QString)) );
 
     // -- the main list view
     m_categoryListView = new Amarok::PrettyTreeView();
@@ -74,11 +74,11 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
         m_categoryListView->sortByColumn( 0 );
     }
 
-    connect( m_categoryListView, SIGNAL(activated(const QModelIndex &)),
-            SLOT(categoryActivated(const QModelIndex &)) );
+    connect( m_categoryListView, SIGNAL(activated(QModelIndex)),
+            SLOT(categoryActivated(QModelIndex)) );
 
-    connect( m_categoryListView, SIGNAL(entered( const QModelIndex &) ),
-            SLOT(categoryEntered( const QModelIndex &) ) );
+    connect( m_categoryListView, SIGNAL(entered(QModelIndex)),
+            SLOT(categoryEntered(QModelIndex)) );
 
     vLayout->addWidget( m_categoryListView );
     m_widgetStack->addWidget( mainWidget );
@@ -148,7 +148,7 @@ BrowserCategoryList::addCategory( BrowserCategory *category )
 
     BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( category );
     if ( childList )
-        connect( childList, SIGNAL( viewChanged() ), this, SLOT( childViewChanged() ) );
+        connect( childList, SIGNAL(viewChanged()), this, SLOT(childViewChanged()) );
 
     category->polish(); // service categories do an additional construction in polish
 

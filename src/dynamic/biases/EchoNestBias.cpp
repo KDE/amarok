@@ -144,8 +144,8 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
     rb1->setChecked( m_match == PreviousTrack );
     rb2->setChecked( m_match == Playlist );
 
-    connect( rb2, SIGNAL( toggled( bool ) ),
-             this, SLOT( setMatchTypePlaylist( bool ) ) );
+    connect( rb2, SIGNAL(toggled(bool)),
+             this, SLOT(setMatchTypePlaylist(bool)) );
 
     layout->addWidget( imageLabel );
     layout->addWidget( label );
@@ -262,8 +262,8 @@ Dynamic::EchoNestBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady( QStringList )),
-             this, SLOT(updateReady( QStringList )) );
+    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
+             this, SLOT(updateReady(QStringList)) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
 
@@ -280,8 +280,8 @@ Dynamic::EchoNestBias::newSimilarArtistQuery()
     params.insert( "results", "30" );
     params.insert( "name", m_currentArtists.join(", ") );
     m_artistSuggestedQuery = KIO::storedGet( createUrl( "artist/similar", params ), KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_artistSuggestedQuery, SIGNAL( result( KJob* ) ),
-             this, SLOT( similarArtistQueryDone( KJob* ) ) );
+    connect( m_artistSuggestedQuery, SIGNAL(result(KJob*)),
+             this, SLOT(similarArtistQueryDone(KJob*)) );
 }
 
 void

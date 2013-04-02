@@ -42,7 +42,7 @@ SortWidget::SortWidget( QWidget *parent )
             QString(), this );
     rootItem->setToolTip( i18n( "Clear the playlist sorting configuration." ) );
     m_layout->addWidget( rootItem );
-    connect( rootItem, SIGNAL( clicked() ), this, SLOT( trimToLevel() ) );
+    connect( rootItem, SIGNAL(clicked()), this, SLOT(trimToLevel()) );
 
     m_ribbon = new QHBoxLayout();
     m_layout->addLayout( m_ribbon );
@@ -57,7 +57,7 @@ SortWidget::SortWidget( QWidget *parent )
     m_urlButton = new BreadcrumbUrlMenuButton( "playlist", this );
     m_layout->addWidget( m_urlButton );
 
-    connect( m_addButton, SIGNAL( siblingClicked( QString ) ), this, SLOT( addLevel( QString ) ) );
+    connect( m_addButton, SIGNAL(siblingClicked(QString)), this, SLOT(addLevel(QString)) );
 
 
     QString sortPath = Amarok::config( "Playlist Sorting" ).readEntry( "SortPath", QString() );
@@ -93,9 +93,9 @@ SortWidget::addLevel( QString internalColumnName, Qt::SortOrder sortOrder )  //p
     BreadcrumbLevel *bLevel = new BreadcrumbLevel( internalColumnName );
     BreadcrumbItem *item = new BreadcrumbItem( bLevel, this );
     m_ribbon->addWidget( item );
-    connect( item, SIGNAL( clicked() ), this, SLOT( onItemClicked() ) );
-    connect( item, SIGNAL( siblingClicked( QAction* ) ), this, SLOT( onItemSiblingClicked( QAction * ) ) );
-    connect( item, SIGNAL( orderInverted() ), this, SLOT( updateSortScheme() ) );
+    connect( item, SIGNAL(clicked()), this, SLOT(onItemClicked()) );
+    connect( item, SIGNAL(siblingClicked(QAction*)), this, SLOT(onItemSiblingClicked(QAction*)) );
+    connect( item, SIGNAL(orderInverted()), this, SLOT(updateSortScheme()) );
     if( sortOrder != item->sortOrder() )
         item->invertOrder();
     m_addButton->updateMenu( levels() );

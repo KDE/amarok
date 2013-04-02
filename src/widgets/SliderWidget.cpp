@@ -252,7 +252,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
     /*
     // TODO: Phonon
     menu.addSeparator();
-    menu.addAction( KIcon( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), kapp, SLOT( slotConfigEqualizer() ) )->setData( -1 );
+    menu.addAction( KIcon( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), kapp, SLOT(slotConfigEqualizer()) )->setData( -1 );
     */
 
     QAction* a = menu.exec( mapToGlobal( e->pos() ) );
@@ -356,8 +356,8 @@ void Amarok::TimeSlider::drawTriangle( const QString& name, int milliSeconds, bo
     int x_pos = ( ( ( double ) milliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + s_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
     BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name, width(), showPopup );
-    connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );
-    connect( tri, SIGNAL( focused( int ) ), SLOT( slotTriangleFocused( int ) ) );
+    connect( tri, SIGNAL(clicked(int)), SLOT(slotTriangleClicked(int)) );
+    connect( tri, SIGNAL(focused(int)), SLOT(slotTriangleFocused(int)) );
     m_triangles << tri;
     tri->setGeometry( x_pos + 6 /* to center the point */, 1 /*y*/, 11, 11 ); // 6 = hard coded border width
     tri->show();

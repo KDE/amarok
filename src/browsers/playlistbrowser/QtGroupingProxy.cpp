@@ -56,19 +56,19 @@ QtGroupingProxy::setSourceModel( QAbstractItemModel *sourceModel )
 {
     QAbstractProxyModel::setSourceModel( sourceModel );
     // signal proxies
-    connect( sourceModel, SIGNAL(dataChanged( const QModelIndex &, const QModelIndex & )),
-             SLOT(modelDataChanged( const QModelIndex &, const QModelIndex & )) );
-    connect( sourceModel, SIGNAL(rowsInserted( const QModelIndex &, int, int )),
-             SLOT(modelRowsInserted( const QModelIndex &, int, int )) );
-    connect( sourceModel, SIGNAL(rowsAboutToBeInserted( const QModelIndex &, int ,int )),
-             SLOT(modelRowsAboutToBeInserted( const QModelIndex &, int ,int )));
-    connect( sourceModel, SIGNAL(rowsRemoved( const QModelIndex &, int, int )),
-             SLOT(modelRowsRemoved( const QModelIndex &, int, int )) );
-    connect( sourceModel, SIGNAL(rowsAboutToBeRemoved( const QModelIndex &, int ,int )),
-             SLOT(modelRowsAboutToBeRemoved( QModelIndex, int, int)) );
+    connect( sourceModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+             SLOT(modelDataChanged(QModelIndex,QModelIndex)) );
+    connect( sourceModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
+             SLOT(modelRowsInserted(QModelIndex,int,int)) );
+    connect( sourceModel, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
+             SLOT(modelRowsAboutToBeInserted(QModelIndex,int,int)));
+    connect( sourceModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
+             SLOT(modelRowsRemoved(QModelIndex,int,int)) );
+    connect( sourceModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+             SLOT(modelRowsAboutToBeRemoved(QModelIndex,int,int)) );
     connect( sourceModel, SIGNAL(layoutChanged()), SLOT(buildTree()) );
-    connect( sourceModel, SIGNAL(dataChanged( QModelIndex, QModelIndex )),
-             SLOT(modelDataChanged( QModelIndex, QModelIndex )) );
+    connect( sourceModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+             SLOT(modelDataChanged(QModelIndex,QModelIndex)) );
     //set invalid index from source as root index
     m_rootIndex = sourceModel->index( -1, -1 );
 }

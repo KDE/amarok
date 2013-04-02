@@ -91,8 +91,8 @@ BiasSolver::BiasSolver( int n, BiasPtr bias, Meta::TrackList context )
 
     getTrackCollection();
 
-    connect( m_bias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
-             this,  SLOT( biasResultReady( const Dynamic::TrackSet & ) ) );
+    connect( m_bias.data(), SIGNAL(resultReady(Dynamic::TrackSet)),
+             this,  SLOT(biasResultReady(Dynamic::TrackSet)) );
 }
 
 
@@ -123,11 +123,11 @@ BiasSolver::setAutoDelete( bool autoDelete )
     {
         if( isFinished() )
             deleteLater();
-        connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+        connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
     }
     else
     {
-        disconnect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+        disconnect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
     }
 }
 
@@ -305,8 +305,8 @@ BiasSolver::getTrackCollection()
     qm->addReturnValue( Meta::valUniqueId );
     qm->setAutoDelete( true );
 
-    connect( qm, SIGNAL(newResultReady( QStringList )),
-             this, SLOT(trackCollectionResultsReady( QStringList )),
+    connect( qm, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(trackCollectionResultsReady(QStringList)),
              Qt::DirectConnection );
     connect( qm, SIGNAL(queryDone()),
              this, SLOT(trackCollectionDone()),

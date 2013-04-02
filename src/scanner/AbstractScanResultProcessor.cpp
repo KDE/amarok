@@ -39,20 +39,20 @@ AbstractScanResultProcessor::AbstractScanResultProcessor( GenericScanManager* ma
     , m_manager( manager )
     , m_type( GenericScanManager::PartialUpdateScan )
 {
-    connect( manager, SIGNAL( started( GenericScanManager::ScanType ) ),
-             this, SLOT( scanStarted( GenericScanManager::ScanType ) ),
+    connect( manager, SIGNAL(started(GenericScanManager::ScanType)),
+             this, SLOT(scanStarted(GenericScanManager::ScanType)),
              Qt::DirectConnection );
-    connect( manager, SIGNAL( directoryCount( int ) ),
-             this, SLOT( scanDirectoryCount( int ) ),
+    connect( manager, SIGNAL(directoryCount(int)),
+             this, SLOT(scanDirectoryCount(int)),
              Qt::DirectConnection );
-    connect( manager, SIGNAL( directoryScanned( CollectionScanner::Directory* ) ),
-             this, SLOT( scanDirectoryScanned( CollectionScanner::Directory* ) ),
+    connect( manager, SIGNAL(directoryScanned(CollectionScanner::Directory*)),
+             this, SLOT(scanDirectoryScanned(CollectionScanner::Directory*)),
              Qt::DirectConnection );
-    connect( manager, SIGNAL( succeeded() ),
-             this, SLOT( scanSucceeded() ),
+    connect( manager, SIGNAL(succeeded()),
+             this, SLOT(scanSucceeded()),
              Qt::DirectConnection );
-    connect( manager, SIGNAL( failed( QString ) ),
-             this, SLOT( scanFailed( QString ) ),
+    connect( manager, SIGNAL(failed(QString)),
+             this, SLOT(scanFailed(QString)),
              Qt::DirectConnection );
 }
 

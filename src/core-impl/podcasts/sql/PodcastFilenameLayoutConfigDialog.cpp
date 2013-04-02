@@ -59,7 +59,7 @@ PodcastFilenameLayoutConfigDialog::init()
         m_choice = 1;
     }
 
-    connect( this, SIGNAL( okClicked() ), this, SLOT( slotApply() ) );
+    connect( this, SIGNAL(okClicked()), this, SLOT(slotApply()) );
 }
 
 

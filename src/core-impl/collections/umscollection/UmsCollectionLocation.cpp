@@ -124,7 +124,7 @@ UmsCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources 
     KIO::DeleteJob *delJob = KIO::del( sourceUrls, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( delJob, loggerText, delJob, SLOT(kill()) );
 
-    connect( delJob, SIGNAL(finished( KJob * )), SLOT(slotRemoveOperationFinished()) );
+    connect( delJob, SIGNAL(finished(KJob*)), SLOT(slotRemoveOperationFinished()) );
 }
 
 void
@@ -203,8 +203,8 @@ UmsTransferJob::startNextJob()
         job = KIO::file_copy( urlPair.first, urlPair.second, -1, KIO::HideProgressInfo );
     else
         job = new Transcoding::Job( urlPair.first, urlPair.second, m_transcodingConfiguration );
-    connect( job, SIGNAL(percent( KJob *, unsigned long )),
-             SLOT(slotChildJobPercent( KJob *, unsigned long )) );
+    connect( job, SIGNAL(percent(KJob*,ulong)),
+             SLOT(slotChildJobPercent(KJob*,ulong)) );
     addSubjob( job );
     job->start();  // no-op for KIO job, but matters for transcoding job
 }

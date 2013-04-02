@@ -79,13 +79,13 @@ DatabaseCollection::setMountPointManager( MountPointManager *mpm )
 
     if( m_mpm )
     {
-        disconnect( mpm, SIGNAL( deviceAdded(int) ), this, SLOT( slotDeviceAdded(int) ) );
-        disconnect( mpm, SIGNAL( deviceRemoved(int) ), this, SLOT( slotDeviceRemoved(int) ) );
+        disconnect( mpm, SIGNAL(deviceAdded(int)), this, SLOT(slotDeviceAdded(int)) );
+        disconnect( mpm, SIGNAL(deviceRemoved(int)), this, SLOT(slotDeviceRemoved(int)) );
     }
 
     m_mpm = mpm;
-    connect( mpm, SIGNAL( deviceAdded(int) ), this, SLOT( slotDeviceAdded(int) ) );
-    connect( mpm, SIGNAL( deviceRemoved(int) ), this, SLOT( slotDeviceRemoved(int) ) );
+    connect( mpm, SIGNAL(deviceAdded(int)), this, SLOT(slotDeviceAdded(int)) );
+    connect( mpm, SIGNAL(deviceRemoved(int)), this, SLOT(slotDeviceRemoved(int)) );
 }
 
 
@@ -238,10 +238,10 @@ DatabaseCollectionImportCapability::import( QIODevice *input, QObject *listener 
         // TODO: change import capability to collection action
         // TODO: why have listeners here and not for the scan capability
         // TODO: showMessage does not longer work like this, the scan result processor is doing this
-        connect( m_collection->scanManager(), SIGNAL( succeeded() ),
-                 listener, SIGNAL( importSucceeded() ) );
-        connect( m_collection->scanManager(), SIGNAL( failed( QString ) ),
-                 listener, SIGNAL( showMessage( QString ) ) );
+        connect( m_collection->scanManager(), SIGNAL(succeeded()),
+                 listener, SIGNAL(importSucceeded()) );
+        connect( m_collection->scanManager(), SIGNAL(failed(QString)),
+                 listener, SIGNAL(showMessage(QString)) );
     }
 
     m_collection->scanManager()->requestImport( input );

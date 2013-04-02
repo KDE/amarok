@@ -74,7 +74,7 @@ ScriptManager::ScriptManager( QObject* parent )
     s_instance = this;
 
     // Delay this call via eventloop, because it's a bit slow and would block
-    QTimer::singleShot( 0, this, SLOT( updateAllScripts() ) );
+    QTimer::singleShot( 0, this, SLOT(updateAllScripts()) );
 }
 
 ScriptManager::~ScriptManager()

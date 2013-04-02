@@ -96,8 +96,8 @@ CoverBlingApplet::init()
     qm->setQueryType( Collections::QueryMaker::Album );
     qm->orderBy( Meta::valArtist );
 
-    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ),
-             this, SLOT( slotAlbumQueryResult( Meta::AlbumList ) ) );
+    connect( qm, SIGNAL(newResultReady(Meta::AlbumList)),
+             this, SLOT(slotAlbumQueryResult(Meta::AlbumList)) );
 	qm->run();
 
     m_label = new QGraphicsSimpleTextItem( this );
@@ -158,9 +158,9 @@ CoverBlingApplet::init()
 
     if ( m_autojump )
     {
-	EngineController *engine = The::engineController();
-    	connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-        	this, SLOT( jumpToPlaying() ) );
+      EngineController *engine = The::engineController();
+      connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+	      this, SLOT(jumpToPlaying()) );
     }
 }
 
@@ -183,16 +183,16 @@ void CoverBlingApplet::slotAlbumQueryResult( Meta::AlbumList albums ) //SLOT
     DEBUG_BLOCK
     m_pictureflow->fillAlbums( albums );
    
-    connect( m_pictureflow, SIGNAL( centerIndexChanged( int ) ), this, SLOT( slideChanged( int ) ) );
-    connect( m_pictureflow, SIGNAL( doubleClicked( int ) ), this, SLOT( appendAlbum( int ) ) );
-    connect( m_blingtofirst, SIGNAL( clicked() ), this, SLOT( skipToFirst() ) );
-    connect( m_blingtolast, SIGNAL( clicked() ), this, SLOT( skipToLast() ) );
-    connect( m_blingfastback, SIGNAL( clicked() ), m_pictureflow, SLOT( fastBackward() ) );
-    connect( m_blingfastforward, SIGNAL( clicked() ), m_pictureflow, SLOT( fastForward() ) );
-    connect( m_fullscreen, SIGNAL( clicked() ), this, SLOT( toggleFullscreen() ) );
-    connect( m_jumptoplaying, SIGNAL( clicked() ), this, SLOT( jumpToPlaying() ) );
-    connect( m_albumsearch, SIGNAL( clicked() ), this, SLOT( switchSearchIcon() ) );
-    connect( m_editsearch, SIGNAL( editionValidated( QString ) ), this, SLOT( albumSearch( QString ) ) );
+    connect( m_pictureflow, SIGNAL(centerIndexChanged(int)), this, SLOT(slideChanged(int)) );
+    connect( m_pictureflow, SIGNAL(doubleClicked(int)), this, SLOT(appendAlbum(int)) );
+    connect( m_blingtofirst, SIGNAL(clicked()), this, SLOT(skipToFirst()) );
+    connect( m_blingtolast, SIGNAL(clicked()), this, SLOT(skipToLast()) );
+    connect( m_blingfastback, SIGNAL(clicked()), m_pictureflow, SLOT(fastBackward()) );
+    connect( m_blingfastforward, SIGNAL(clicked()), m_pictureflow, SLOT(fastForward()) );
+    connect( m_fullscreen, SIGNAL(clicked()), this, SLOT(toggleFullscreen()) );
+    connect( m_jumptoplaying, SIGNAL(clicked()), this, SLOT(jumpToPlaying()) );
+    connect( m_albumsearch, SIGNAL(clicked()), this, SLOT(switchSearchIcon()) );
+    connect( m_editsearch, SIGNAL(editionValidated(QString)), this, SLOT(albumSearch(QString)) );
     if (m_initrandompos)
     {
 		int nbAlbums = m_pictureflow->slideCount() -1;
@@ -325,7 +325,7 @@ void CoverBlingApplet::createConfigurationInterface( KConfigDialog *parent )
 	//if (m_openGL) ui_Settings.renderingCombo->setCurrentIndex(1);
 	//else ui_Settings.renderingCombo->setCurrentIndex(0);
     parent->addPage( settings, i18n( "Coverbling Settings" ), "preferences-system" );
-    connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
+    connect( parent, SIGNAL(accepted()), this, SLOT(saveSettings()) );
 }
 
 void CoverBlingApplet::saveSettings()

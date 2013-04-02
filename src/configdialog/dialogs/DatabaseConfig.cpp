@@ -34,11 +34,11 @@ DatabaseConfig::DatabaseConfig( QWidget* parent )
     setTabOrder( kcfg_User,     kcfg_Password );    // username to password
     setTabOrder( kcfg_Password, kcfg_Database );    // password to database
 
-    connect( kcfg_UseServer, SIGNAL( stateChanged(int) ), SLOT( toggleExternalConfigAvailable(int) ) );
+    connect( kcfg_UseServer, SIGNAL(stateChanged(int)), SLOT(toggleExternalConfigAvailable(int)) );
 
-    connect( kcfg_Database, SIGNAL( textChanged(const QString &) ), SLOT( updateSQLQuery() ) );
-    connect( kcfg_User,     SIGNAL( textChanged(const QString &) ), SLOT( updateSQLQuery() ) );
-    connect( kcfg_Host,     SIGNAL( textChanged(const QString &) ), SLOT( updateSQLQuery() ) );
+    connect( kcfg_Database, SIGNAL(textChanged(QString)), SLOT(updateSQLQuery()) );
+    connect( kcfg_User,     SIGNAL(textChanged(QString)), SLOT(updateSQLQuery()) );
+    connect( kcfg_Host,     SIGNAL(textChanged(QString)), SLOT(updateSQLQuery()) );
 
     toggleExternalConfigAvailable( kcfg_UseServer->checkState() );
 

@@ -206,13 +206,13 @@ void Mp3tunesServiceQueryMaker::fetchArtists()
     {
         debug() << "Artist Filtering";
         Mp3tunesSearchMonkey * searchMonkey = new Mp3tunesSearchMonkey( m_locker, m_artistFilter, Mp3tunesSearchResult::ArtistQuery );
-        connect( searchMonkey, SIGNAL( searchComplete( QList<Mp3tunesLockerArtist> ) ), this, SLOT( artistDownloadComplete( QList<Mp3tunesLockerArtist> ) ) );
+        connect( searchMonkey, SIGNAL(searchComplete(QList<Mp3tunesLockerArtist>)), this, SLOT(artistDownloadComplete(QList<Mp3tunesLockerArtist>)) );
         ThreadWeaver::Weaver::instance()->enqueue( searchMonkey ); //Go!
     } else if( m_locker->sessionValid() )
     {
         debug() << "Artist Fetching";
         Mp3tunesArtistFetcher * artistFetcher = new Mp3tunesArtistFetcher( m_locker );
-        connect( artistFetcher, SIGNAL( artistsFetched( QList<Mp3tunesLockerArtist> ) ), this, SLOT( artistDownloadComplete( QList<Mp3tunesLockerArtist> ) ) );
+        connect( artistFetcher, SIGNAL(artistsFetched(QList<Mp3tunesLockerArtist>)), this, SLOT(artistDownloadComplete(QList<Mp3tunesLockerArtist>)) );
         ThreadWeaver::Weaver::instance()->enqueue( artistFetcher );
     }
 }
@@ -236,7 +236,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
         handleResult( albums );
     } else if ( m_locker->sessionValid() ) {
         Mp3tunesAlbumWithArtistIdFetcher * albumFetcher = new Mp3tunesAlbumWithArtistIdFetcher( m_locker, m_parentArtistId.toInt() );
-        connect( albumFetcher, SIGNAL( albumsFetched( QList<Mp3tunesLockerAlbum> ) ), this, SLOT( albumDownloadComplete( QList<Mp3tunesLockerAlbum> ) ) );
+        connect( albumFetcher, SIGNAL(albumsFetched(QList<Mp3tunesLockerAlbum>)), this, SLOT(albumDownloadComplete(QList<Mp3tunesLockerAlbum>)) );
 
         ThreadWeaver::Weaver::instance()->enqueue( albumFetcher );
     } else {
@@ -273,12 +273,12 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
         if( !m_parentArtistId.isEmpty() ) {
             debug() << "Creating track w/ artist id Fetch Worker";
             Mp3tunesTrackWithArtistIdFetcher * trackFetcher = new Mp3tunesTrackWithArtistIdFetcher( m_locker, m_parentArtistId.toInt() );
-            connect( trackFetcher, SIGNAL( tracksFetched( QList<Mp3tunesLockerTrack> ) ), this, SLOT( trackDownloadComplete( QList<Mp3tunesLockerTrack> ) ) );
+            connect( trackFetcher, SIGNAL(tracksFetched(QList<Mp3tunesLockerTrack>)), this, SLOT(trackDownloadComplete(QList<Mp3tunesLockerTrack>)) );
             ThreadWeaver::Weaver::instance()->enqueue( trackFetcher ); //Go!
         } else if ( !m_parentAlbumId.isEmpty() ) {
             debug() << "Creating track w/ album id Fetch Worker";
             Mp3tunesTrackWithAlbumIdFetcher * trackFetcher = new Mp3tunesTrackWithAlbumIdFetcher( m_locker, m_parentAlbumId.toInt() );
-            connect( trackFetcher, SIGNAL( tracksFetched( QList<Mp3tunesLockerTrack> ) ), this, SLOT( trackDownloadComplete( QList<Mp3tunesLockerTrack> ) ) );
+            connect( trackFetcher, SIGNAL(tracksFetched(QList<Mp3tunesLockerTrack>)), this, SLOT(trackDownloadComplete(QList<Mp3tunesLockerTrack>)) );
             ThreadWeaver::Weaver::instance()->enqueue( trackFetcher ); //Go!
         }
     } else {

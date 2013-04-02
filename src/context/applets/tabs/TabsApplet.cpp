@@ -52,7 +52,7 @@ TabsApplet::TabsApplet( QObject* parent, const QVariantList& args )
     setHasConfigurationInterface( true );
 
     EngineController *engine = The::engineController();
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ), this, SLOT( stopped() ) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)), this, SLOT(stopped()) );
 }
 
 TabsApplet::~TabsApplet()
@@ -95,7 +95,7 @@ TabsApplet::init()
     reloadAction->setText( i18nc( "Guitar tablature", "Reload tabs" ) );
     m_reloadIcon = addLeftHeaderAction( reloadAction );
     m_reloadIcon.data()->setEnabled( false );
-    connect( m_reloadIcon.data(), SIGNAL( clicked() ), this, SLOT( reloadTabs() ) );
+    connect( m_reloadIcon.data(), SIGNAL(clicked()), this, SLOT(reloadTabs()) );
 
     // create the settings icon
     QAction* settingsAction = new QAction( this );
@@ -103,7 +103,7 @@ TabsApplet::init()
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
     QWeakPointer<Plasma::IconWidget> settingsIcon = addRightHeaderAction( settingsAction );
-    connect( settingsIcon.data(), SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
+    connect( settingsIcon.data(), SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
 
     m_layout = new QGraphicsLinearLayout( Qt::Vertical );
     m_layout->addItem( m_header );
@@ -264,7 +264,7 @@ TabsApplet::createConfigurationInterface( KConfigDialog *parent )
         ui_Settings.cbFetchBass->setChecked( true );
 
     parent->addPage( settings, i18nc( "Guitar tablature settings", "Tabs Settings" ), "preferences-system" );
-    connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings() ) );
+    connect( parent, SIGNAL(accepted()), this, SLOT(saveSettings()) );
 }
 
 void

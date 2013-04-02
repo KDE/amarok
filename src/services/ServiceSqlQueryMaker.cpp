@@ -130,7 +130,7 @@ ServiceSqlQueryMaker::run()
     else
     {
         d->worker = new ServiceSqlWorkerThread( this );
-        connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
+        connect( d->worker, SIGNAL(done(ThreadWeaver::Job*)), SLOT(done(ThreadWeaver::Job*)) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
     }
 }

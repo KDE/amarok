@@ -127,8 +127,8 @@ Dynamic::SearchQueryBias::widget( QWidget* parent )
     KLineEdit *edit = new KLineEdit( m_filter );
     layout->addWidget( edit );
 
-    connect( edit, SIGNAL( textChanged( const QString& ) ),
-             this, SLOT( setFilter( const QString& ) ) );
+    connect( edit, SIGNAL(textChanged(QString)),
+             this, SLOT(setFilter(QString)) );
 
     return widget;
 }
@@ -162,8 +162,8 @@ Dynamic::SearchQueryBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady( QStringList )),
-             this, SLOT(updateReady( QStringList )) );
+    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
+             this, SLOT(updateReady(QStringList)) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
     m_qm.data()->run();

@@ -75,9 +75,9 @@ void UpnpQueryMakerInternal::runQuery( KUrl query, bool filter )
     }
 
     KIO::ListJob *job = KIO::listDir( query, KIO::HideProgressInfo );
-    connect( job, SIGNAL( entries( KIO::Job *, const KIO::UDSEntryList & ) ),
-             this, SLOT( slotEntries( KIO::Job *, const KIO::UDSEntryList & ) ) );
-    connect( job, SIGNAL( result(KJob *) ), this, SLOT( slotDone(KJob *) ) );
+    connect( job, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
+             this, SLOT(slotEntries(KIO::Job*,KIO::UDSEntryList)) );
+    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotDone(KJob*)) );
     queueJob( job );
 }
 

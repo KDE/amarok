@@ -89,8 +89,8 @@ Playlist::Controller::Controller()
     m_topModel = The::playlist();
 
     m_undoStack->setUndoLimit( 20 );
-    connect( m_undoStack, SIGNAL( canRedoChanged( bool ) ), this, SIGNAL( canRedoChanged( bool ) ) );
-    connect( m_undoStack, SIGNAL( canUndoChanged( bool ) ), this, SIGNAL( canUndoChanged( bool ) ) );
+    connect( m_undoStack, SIGNAL(canRedoChanged(bool)), this, SIGNAL(canRedoChanged(bool)) );
+    connect( m_undoStack, SIGNAL(canUndoChanged(bool)), this, SIGNAL(canUndoChanged(bool)) );
 }
 
 Playlist::Controller::~Controller() {}

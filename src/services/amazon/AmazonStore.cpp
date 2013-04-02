@@ -117,7 +117,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     // add the collection, exclude it from global queries
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
 
-    connect( m_searchWidget, SIGNAL( filterChanged( const QString ) ), this, SLOT( newSearchRequest( const QString ) ) );
+    connect( m_searchWidget, SIGNAL(filterChanged(QString)), this, SLOT(newSearchRequest(QString)) );
 
     setServiceReady( true );
     newSearchRequest( QLatin1String( "" ) ); // to get some default content
@@ -141,16 +141,16 @@ AmazonStore::polish()
         initBottomPanel();
         initView();
 
-        connect( m_itemView, SIGNAL( itemSelected( QModelIndex ) ), this, SLOT( itemSelected( QModelIndex ) ) );
-        connect( m_itemView, SIGNAL( itemDoubleClicked( QModelIndex ) ), this, SLOT( itemDoubleClicked( QModelIndex ) ) );
-        connect( m_itemView, SIGNAL( searchForAlbum( QModelIndex ) ), this, SLOT( searchForAlbum( QModelIndex ) ) );
+        connect( m_itemView, SIGNAL(itemSelected(QModelIndex)), this, SLOT(itemSelected(QModelIndex)) );
+        connect( m_itemView, SIGNAL(itemDoubleClicked(QModelIndex)), this, SLOT(itemDoubleClicked(QModelIndex)) );
+        connect( m_itemView, SIGNAL(searchForAlbum(QModelIndex)), this, SLOT(searchForAlbum(QModelIndex)) );
 
         m_amazonInfoParser = new AmazonInfoParser();
         setInfoParser( m_amazonInfoParser );
         m_amazonInfoParser->showFrontPage();
 
         AmazonUrlRunner *runner = new AmazonUrlRunner();
-        connect( runner, SIGNAL( search( const QString ) ), this, SLOT( newSearchRequest( QString ) ) );
+        connect( runner, SIGNAL(search(QString)), this, SLOT(newSearchRequest(QString)) );
         The::amarokUrlHandler()->registerRunner( runner, runner->command() );
     }
 }
@@ -339,7 +339,7 @@ AmazonStore::newSearchRequest( const QString request )
     m_searchWidget->searchStarted();
     KIO::FileCopyJob *requestJob = KIO::file_copy( requestUrl, KUrl( tempFile.fileName() ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
-    connect( requestJob, SIGNAL( result( KJob * ) ), this, SLOT( parseReply( KJob * ) ) );
+    connect( requestJob, SIGNAL(result(KJob*)), this, SLOT(parseReply(KJob*)) );
     requestJob->start();
 }
 
@@ -420,8 +420,8 @@ AmazonStore::initTopPanel()
     navigationToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     navigationToolbar->setIconDimensions( 16 );
 
-    m_backwardAction = KStandardAction::back( this, SLOT( back() ), topPanel );
-    m_forwardAction = KStandardAction::forward( this, SLOT( forward() ), topPanel );
+    m_backwardAction = KStandardAction::back( this, SLOT(back()), topPanel );
+    m_forwardAction = KStandardAction::forward( this, SLOT(forward()), topPanel );
     m_backwardAction->setEnabled( false );
     m_forwardAction->setEnabled( false );
 
@@ -437,7 +437,7 @@ AmazonStore::initTopPanel()
     navigationToolbar->addAction( m_forwardAction );
     m_searchWidget->toolBar()->addWidget( m_resultpageSpinBox );
 
-    connect( m_resultpageSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( newSpinBoxSearchRequest( int ) ) );
+    connect( m_resultpageSpinBox, SIGNAL(valueChanged(int)), this, SLOT(newSpinBoxSearchRequest(int)) );
 }
 
 void
@@ -490,11 +490,11 @@ AmazonStore::initView()
     m_checkoutButton->setParent( bottomPanelLayout );
     m_checkoutButton->setIcon( KIcon( "download-amarok" ) );
 
-    connect( m_addToCartButton, SIGNAL( clicked() ), this, SLOT( addToCart() ) );
-    connect( m_itemView, SIGNAL( addToCart() ), this, SLOT( addToCart() ) );
-    connect( m_itemView, SIGNAL( directCheckout() ), this, SLOT( directCheckout() ) );
-    connect( m_viewCartButton, SIGNAL( clicked() ), this, SLOT( viewCart() ) );
-    connect( m_checkoutButton, SIGNAL( clicked() ), this, SLOT( checkout() ) );
+    connect( m_addToCartButton, SIGNAL(clicked()), this, SLOT(addToCart()) );
+    connect( m_itemView, SIGNAL(addToCart()), this, SLOT(addToCart()) );
+    connect( m_itemView, SIGNAL(directCheckout()), this, SLOT(directCheckout()) );
+    connect( m_viewCartButton, SIGNAL(clicked()), this, SLOT(viewCart()) );
+    connect( m_checkoutButton, SIGNAL(clicked()), this, SLOT(checkout()) );
 }
 
 QString AmazonStore::iso3166toAmazon( const QString& country )
@@ -539,8 +539,8 @@ AmazonStore::parseReply( KJob* requestJob )
 
     // create parser thread
     AmazonParser *parser = new AmazonParser( tempFileName, m_collection, m_metaFactory );
-    connect( parser, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( parsingDone( ThreadWeaver::Job* ) ) );
-    connect( parser, SIGNAL( failed( ThreadWeaver::Job* ) ), this, SLOT( parsingFailed( ThreadWeaver::Job* ) ) );
+    connect( parser, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(parsingDone(ThreadWeaver::Job*)) );
+    connect( parser, SIGNAL(failed(ThreadWeaver::Job*)), this, SLOT(parsingFailed(ThreadWeaver::Job*)) );
     ThreadWeaver::Weaver::instance()->enqueue( parser );
 
     requestJob->deleteLater();

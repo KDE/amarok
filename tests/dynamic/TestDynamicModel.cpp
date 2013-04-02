@@ -138,10 +138,10 @@ TestDynamicModel::testSlots()
     // load from the empty directory
     model->loadPlaylists();
 
-    QSignalSpy spy1( model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)) );
-    QSignalSpy spy2( model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)) );
-    QSignalSpy spy3( model, SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)) );
-    QSignalSpy spy4( model, SIGNAL(rowsInserted(const QModelIndex&, int, int)) );
+    QSignalSpy spy1( model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)) );
+    QSignalSpy spy2( model, SIGNAL(rowsRemoved(QModelIndex,int,int)) );
+    QSignalSpy spy3( model, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)) );
+    QSignalSpy spy4( model, SIGNAL(rowsInserted(QModelIndex,int,int)) );
 
     // -- removeAt with playlist
     QModelIndex playlistIndex = model->index( 1, 0 );

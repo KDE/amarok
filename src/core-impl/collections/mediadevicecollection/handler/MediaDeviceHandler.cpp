@@ -57,11 +57,11 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 {
     DEBUG_BLOCK
 
-    connect( m_memColl, SIGNAL( deletingCollection() ),
-             this, SLOT( slotDeletingHandler() ), Qt::QueuedConnection );
+    connect( m_memColl, SIGNAL(deletingCollection()),
+             this, SLOT(slotDeletingHandler()), Qt::QueuedConnection );
 
-    connect( this, SIGNAL( databaseWritten(bool)),
-             this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
+    connect( this, SIGNAL(databaseWritten(bool)),
+             this, SLOT(slotDatabaseWritten(bool)), Qt::QueuedConnection );
 }
 
 MediaDeviceHandler::~MediaDeviceHandler()
@@ -1169,7 +1169,7 @@ ParseWorkerThread::ParseWorkerThread( MediaDeviceHandler* handler )
         , m_success( false )
         , m_handler( handler )
 {
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDoneSuccess(ThreadWeaver::Job*)) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotDoneSuccess(ThreadWeaver::Job*)) );
 }
 
 ParseWorkerThread::~ParseWorkerThread()
@@ -1204,13 +1204,13 @@ CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MediaDeviceHand
         , m_track( track )
         , m_handler( handler )
 {
-    //connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackToDevice( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), this, SLOT( slotDoneFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
-    connect( this, SIGNAL( copyTrackFailed(ThreadWeaver::Job*, const Meta::TrackPtr&)), m_handler, SLOT( slotCopyNextTrackFailed( ThreadWeaver::Job*, const Meta::TrackPtr&) ) );
-    connect( this, SIGNAL( copyTrackDone(ThreadWeaver::Job*, const Meta::TrackPtr&)), m_handler, SLOT( slotCopyNextTrackDone( ThreadWeaver::Job*, const Meta::TrackPtr&) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDoneSuccess(ThreadWeaver::Job*)) );
+    //connect( this, SIGNAL(done(ThreadWeaver::Job*)), m_handler, SLOT(slotCopyNextTrackToDevice(ThreadWeaver::Job*)), Qt::QueuedConnection );
+    connect( this, SIGNAL(failed(ThreadWeaver::Job*)), this, SLOT(slotDoneFailed(ThreadWeaver::Job*)), Qt::QueuedConnection );
+    connect( this, SIGNAL(copyTrackFailed(ThreadWeaver::Job*,Meta::TrackPtr)), m_handler, SLOT(slotCopyNextTrackFailed(ThreadWeaver::Job*,Meta::TrackPtr)) );
+    connect( this, SIGNAL(copyTrackDone(ThreadWeaver::Job*,Meta::TrackPtr)), m_handler, SLOT(slotCopyNextTrackDone(ThreadWeaver::Job*,Meta::TrackPtr)) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotDoneSuccess(ThreadWeaver::Job*)) );
 
-    //connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    //connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
 }
 
 CopyWorkerThread::~CopyWorkerThread()

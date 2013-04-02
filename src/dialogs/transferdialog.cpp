@@ -100,8 +100,8 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     m_label3->setDisabled( m_sort2->currentIndex() == 0 );
     m_sort3->setDisabled( m_sort2->currentIndex() == 0 );
 
-    connect( m_sort1, SIGNAL( activated(int) ), SLOT( sort1_activated(int)) );
-    connect( m_sort2, SIGNAL( activated(int) ), SLOT( sort2_activated(int)) );
+    connect( m_sort1, SIGNAL(activated(int)), SLOT(sort1_activated(int)) );
+    connect( m_sort2, SIGNAL(activated(int)), SLOT(sort2_activated(int)) );
 
     KVBox *vbox3 = new KVBox( vbox );
     QLayout *vlayout2 = vbox3->layout();
@@ -115,7 +115,7 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     QCheckBox *convertSpaces = new QCheckBox( i18n( "Convert spaces to underscores" ), optionsLayout );
     convertSpaces->setChecked( mdev->getSpacesToUnderscores() );
 
-    connect( convertSpaces, SIGNAL( toggled(bool) ), this, SLOT( convertSpaces_toggled(bool) ) );
+    connect( convertSpaces, SIGNAL(toggled(bool)), this, SLOT(convertSpaces_toggled(bool)) );
     connect(this,SIGNAL(okClicked()),this,SLOT(slotOk()));
     connect(this,SIGNAL(cancelClicked()),this,SLOT(slotCancel()));
 }

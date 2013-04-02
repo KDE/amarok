@@ -86,8 +86,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     breadcrumbLabel->setFont( breadcrumbLabelFont );
     breadcrumbLabel->setIndent( 4 );
 
-    connect( breadcrumb, SIGNAL(artistClicked(const QString&)), SLOT(addToCustomSearch(const QString&)) );
-    connect( breadcrumb, SIGNAL(albumClicked(const QString&)), SLOT(addToCustomSearch(const QString&)) );
+    connect( breadcrumb, SIGNAL(artistClicked(QString)), SLOT(addToCustomSearch(QString)) );
+    connect( breadcrumb, SIGNAL(albumClicked(QString)), SLOT(addToCustomSearch(QString)) );
 
     KHBox *searchBox = new KHBox( vbox );
     vbox->setSpacing( 4 );
@@ -152,10 +152,10 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     sourceMenu->addAction( m_sortAction );
     sourceButton->setMenu( sourceMenu );
 
-    connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(insertComboText(const QString&)) );
-    connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(processQuery(const QString&)) );
-    connect( m_search, SIGNAL(returnPressed(const QString&)), SLOT(updateSearchButton(const QString&)) );
-    connect( m_search, SIGNAL(editTextChanged(const QString&)), SLOT(updateSearchButton(const QString&)) );
+    connect( m_search, SIGNAL(returnPressed(QString)), SLOT(insertComboText(QString)) );
+    connect( m_search, SIGNAL(returnPressed(QString)), SLOT(processQuery(QString)) );
+    connect( m_search, SIGNAL(returnPressed(QString)), SLOT(updateSearchButton(QString)) );
+    connect( m_search, SIGNAL(editTextChanged(QString)), SLOT(updateSearchButton(QString)) );
     connect( m_search->lineEdit(), SIGNAL(clearButtonClicked()), SLOT(clearQueryButtonClicked()));
     connect( m_searchButton, SIGNAL(clicked()), SLOT(processQuery()) );
 
@@ -172,12 +172,12 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_view->setViewMode( QListView::IconMode );
     m_view->setResizeMode( QListView::Adjust );
 
-    connect( m_view, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-             this,   SLOT(currentItemChanged(QListWidgetItem*, QListWidgetItem*)) );
+    connect( m_view, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
+             this,   SLOT(currentItemChanged(QListWidgetItem*,QListWidgetItem*)) );
     connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
              this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
-    connect( m_view, SIGNAL(customContextMenuRequested(const QPoint&)),
-             this,   SLOT(itemMenuRequested(const QPoint&)) );
+    connect( m_view, SIGNAL(customContextMenuRequested(QPoint)),
+             this,   SLOT(itemMenuRequested(QPoint)) );
 
     splitter->addWidget( m_sideBar );
     splitter->addWidget( vbox );
@@ -210,8 +210,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_view->setCurrentItem( m_view->item( 0 ) );
     updateGui();
     
-    connect( The::networkAccessManager(), SIGNAL( requestRedirected( QNetworkReply*, QNetworkReply* ) ),
-             this, SLOT( fetchRequestRedirected( QNetworkReply*, QNetworkReply* ) ) );
+    connect( The::networkAccessManager(), SIGNAL(requestRedirected(QNetworkReply*,QNetworkReply*)),
+             this, SLOT(fetchRequestRedirected(QNetworkReply*,QNetworkReply*)) );
 }
 
 CoverFoundDialog::~CoverFoundDialog()

@@ -85,15 +85,15 @@ LastFmServiceCollection::LastFmServiceCollection( const QString &userName )
     params[ "user" ] = userName;
     m_jobs[ "user.getNeighbours" ] = lastfm::ws::post( params );
 
-    connect( m_jobs[ "user.getNeighbours" ], SIGNAL( finished() ), this, SLOT( slotAddNeighboursLoved() ) );
-    //connect( m_jobs[ "user.getNeighbours" ], SIGNAL( finished() ), this, SLOT( slotAddNeighboursPersonal() ) );
+    connect( m_jobs[ "user.getNeighbours" ], SIGNAL(finished()), this, SLOT(slotAddNeighboursLoved()) );
+    //connect( m_jobs[ "user.getNeighbours" ], SIGNAL(finished()), this, SLOT(slotAddNeighboursPersonal()) );
     // TODO TMP HACK why do i get exceptions there...!?
 
     params[ "method" ] = "user.getFriends";
     m_jobs[ "user.getFriends" ] = lastfm::ws::post( params );
 
-    connect( m_jobs[ "user.getFriends" ], SIGNAL( finished() ), this, SLOT( slotAddFriendsLoved() ) );
-    //connect( m_jobs[ "user.getFriends" ], SIGNAL( finished() ), this, SLOT( slotAddFriendsPersonal() ) );
+    connect( m_jobs[ "user.getFriends" ], SIGNAL(finished()), this, SLOT(slotAddFriendsLoved()) );
+    //connect( m_jobs[ "user.getFriends" ], SIGNAL(finished()), this, SLOT(slotAddFriendsPersonal()) );
 
     //TODO Automatically add simmilar artist streams for the users favorite artists.
 }

@@ -45,8 +45,8 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
     connect( this, SIGNAL(appletRemoved(Plasma::Applet*)), SLOT(appletRemoved(Plasma::Applet*)) );
     connect( this, SIGNAL(appletRemoved(Plasma::Applet*)), SIGNAL(geometryChanged()) );
 
-    connect( m_applets, SIGNAL(appletAdded(Plasma::Applet*, int)), SIGNAL(appletAdded(Plasma::Applet*, int)) );
-    connect( m_applets, SIGNAL(appletAdded(Plasma::Applet*, int)), SIGNAL(geometryChanged()) );
+    connect( m_applets, SIGNAL(appletAdded(Plasma::Applet*,int)), SIGNAL(appletAdded(Plasma::Applet*,int)) );
+    connect( m_applets, SIGNAL(appletAdded(Plasma::Applet*,int)), SIGNAL(geometryChanged()) );
     connect( m_applets, SIGNAL(noApplets(bool)), SLOT(showEmptyText(bool)) );
 
 }

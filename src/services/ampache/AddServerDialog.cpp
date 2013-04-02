@@ -38,7 +38,7 @@ AddServerDialog::AddServerDialog()
     inputs << m_widgets->nameLineEdit << m_widgets->serverAddressLineEdit
            << m_widgets->userNameLineEdit << m_widgets-> passwordLineEdit;
     foreach(QObject* line, inputs)
-        connect( line, SIGNAL(textEdited(const QString&)), this, SLOT(anyTextEdited()));
+        connect( line, SIGNAL(textEdited(QString)), this, SLOT(anyTextEdited()));
 }
 
 AddServerDialog::~AddServerDialog()

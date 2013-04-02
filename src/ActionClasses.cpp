@@ -188,12 +188,12 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
     connect( this, SIGNAL(triggered()),
              engine, SLOT(playPause()) );
 
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
-    connect( engine, SIGNAL( paused() ),
-             this, SLOT( paused() ) );
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( playing() ) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped()) );
+    connect( engine, SIGNAL(paused()),
+             this, SLOT(paused()) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(playing()) );
 }
 
 void
@@ -365,7 +365,7 @@ BurnMenuAction::createWidget( QWidget *w )
 
         //addContainer( bar, id );
         w->addAction( this );
-        connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
+        connect( bar, SIGNAL(destroyed()), SLOT(slotDestroyed()) );
 
         //bar->insertButton( QString::null, id, true, i18n( "Burn" ), index );
 
@@ -389,8 +389,8 @@ BurnMenu::BurnMenu( QWidget* parent )
 {
     s_instance = this;
 
-    addAction( i18n("Current Playlist"), this, SLOT( slotBurnCurrentPlaylist() ) );
-    addAction( i18n("Selected Tracks"), this, SLOT( slotBurnSelectedTracks() ) );
+    addAction( i18n("Current Playlist"), this, SLOT(slotBurnCurrentPlaylist()) );
+    addAction( i18n("Selected Tracks"), this, SLOT(slotBurnSelectedTracks()) );
     //TODO add "album" and "all tracks by artist"
 }
 
@@ -424,7 +424,7 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
     setText( i18n( "Stop" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
     setGlobalShortcut( KShortcut( Qt::Key_MediaStop ) );
-    connect( this, SIGNAL( triggered() ), this, SLOT( stop() ) );
+    connect( this, SIGNAL(triggered()), this, SLOT(stop()) );
 
     EngineController *engine = The::engineController();
 
@@ -433,10 +433,10 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
     else
         playing();
 
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( playing() ) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped()) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(playing()) );
 
 }
 

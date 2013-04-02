@@ -38,11 +38,11 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     m_dragstack->setCustomTokenFactory( new TokenWithLayoutFactory() );
     mainLayout->addWidget( m_dragstack, 1 );
 
-    // connect ( m_dragstack, SIGNAL( focusReceived(QWidget*) ), this, SIGNAL( focusReceived(QWidget*) ) );
-    connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( changed() ) );
+    // connect ( m_dragstack, SIGNAL(focusReceived(QWidget*)), this, SIGNAL(focusReceived(QWidget*)) );
+    connect ( m_dragstack, SIGNAL(changed()), this, SIGNAL(changed()) );
 
     m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ), this );
-    connect ( m_showCoverCheckBox, SIGNAL( stateChanged( int ) ), this, SIGNAL( changed() ) );
+    connect ( m_showCoverCheckBox, SIGNAL(stateChanged(int)), this, SIGNAL(changed()) );
     mainLayout->addWidget( m_showCoverCheckBox, 0 );
 }
 
@@ -55,9 +55,9 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
     DEBUG_BLOCK
     int rowCount = config.rows();
 
-    disconnect ( m_showCoverCheckBox, SIGNAL( stateChanged( int ) ), this, SIGNAL( changed() ) );
+    disconnect ( m_showCoverCheckBox, SIGNAL(stateChanged(int)), this, SIGNAL(changed()) );
     m_showCoverCheckBox->setChecked( config.showCover() );
-    connect ( m_showCoverCheckBox, SIGNAL( stateChanged( int ) ), this, SIGNAL( changed() ) );
+    connect ( m_showCoverCheckBox, SIGNAL(stateChanged(int)), this, SIGNAL(changed()) );
 
     m_dragstack->clear();
 
@@ -101,7 +101,7 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
             token->setSuffix( element.suffix() );
             m_dragstack->insertToken( token, i, j );
             // Do all modifications on the token above that line, otherwise the dialog will think it's been modified by the user
-            connect ( token, SIGNAL( changed() ), this, SIGNAL( changed() ) );
+            connect ( token, SIGNAL(changed()), this, SIGNAL(changed()) );
         }
 
     }

@@ -162,7 +162,7 @@ ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
 //    const QScriptValue populate = engine->newFunction( ScriptableServiceScript_prototype_populate );
 //    ctor.property( "prototype" ).setProperty( "populate", populate );
     engine->globalObject().setProperty( "ScriptableServiceScript", ctor );
-//    qScriptConnect( this, SIGNAL( populate( QString, int, int, QString, QString ) ), QScriptValue() ,populate );
+//    qScriptConnect( this, SIGNAL(populate(QString,int,int,QString,QString)), QScriptValue() ,populate );
 }
 
 ScriptableServiceScript::~ScriptableServiceScript()

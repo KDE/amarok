@@ -31,7 +31,7 @@ CompoundProgressBar::CompoundProgressBar( QWidget *parent )
     m_progressDetailsWidget = new PopupWidget( parent );
     m_progressDetailsWidget->hide();
 
-    connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancelAll() ) );
+    connect( cancelButton(), SIGNAL(clicked()), this, SLOT(cancelAll()) );
 }
 
 CompoundProgressBar::~CompoundProgressBar()
@@ -53,13 +53,13 @@ void CompoundProgressBar::addProgressBar( ProgressBar *childBar, QObject *owner 
 
     m_progressDetailsWidget->reposition();
 
-    connect( childBar, SIGNAL( percentageChanged( int ) ),
-            SLOT( childPercentageChanged() ) );
-    connect( childBar, SIGNAL( cancelled( ProgressBar * ) ),
-            SLOT( childBarCancelled( ProgressBar * ) ) );
-    connect( childBar, SIGNAL( complete( ProgressBar * ) ),
-            SLOT( childBarComplete( ProgressBar * ) ) );
-    connect( owner, SIGNAL( destroyed( QObject * ) ), SLOT( slotObjectDestroyed( QObject * ) ) );
+    connect( childBar, SIGNAL(percentageChanged(int)),
+            SLOT(childPercentageChanged()) );
+    connect( childBar, SIGNAL(cancelled(ProgressBar*)),
+            SLOT(childBarCancelled(ProgressBar*)) );
+    connect( childBar, SIGNAL(complete(ProgressBar*)),
+            SLOT(childBarComplete(ProgressBar*)) );
+    connect( owner, SIGNAL(destroyed(QObject*)), SLOT(slotObjectDestroyed(QObject*)) );
 
     if( m_progressMap.count() == 1 )
     {

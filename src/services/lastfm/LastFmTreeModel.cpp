@@ -325,8 +325,8 @@ LastFmTreeModel::avatar( const QString &username, const KUrl &avatarUrl ) const
     const_cast<LastFmTreeModel *>( this )->m_avatars.insert( username, defaultIcon );
     AvatarDownloader* downloader = new AvatarDownloader();
     downloader->downloadAvatar( username, avatarUrl );
-    connect( downloader, SIGNAL(avatarDownloaded(const QString&, QPixmap)),
-                         SLOT(onAvatarDownloaded(const QString&, QPixmap)) );
+    connect( downloader, SIGNAL(avatarDownloaded(QString,QPixmap)),
+                         SLOT(onAvatarDownloaded(QString,QPixmap)) );
     return defaultIcon;
 }
 

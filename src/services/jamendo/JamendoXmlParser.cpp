@@ -124,7 +124,7 @@ JamendoXmlParser::JamendoXmlParser( const QString &filename )
     m_sFileName = filename;
     albumTags.clear();
     m_dbHandler = new JamendoDatabaseHandler();
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
 }
 
 JamendoXmlParser::~JamendoXmlParser()

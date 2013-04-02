@@ -51,18 +51,18 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     m_searchEdit->setToolTip( i18n( "Start typing to progressively search through the playlist" ) );
     m_searchEdit->setFocusPolicy( Qt::ClickFocus ); // Without this, the widget goes into text input mode directly on startup
 
-    connect( m_searchEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( slotFilterChanged(  const QString &  ) ) );
-    connect( m_searchEdit, SIGNAL( returnPressed( const QString & ) ), this, SIGNAL( activateFilterResult() ) );
-    connect( m_searchEdit, SIGNAL( returnPressed( const QString & ) ), this, SLOT( slotFilterClear() ) );
-    connect( m_searchEdit, SIGNAL( returnPressed() ), this, SLOT( defocus() ) );
-    connect( m_searchEdit, SIGNAL( downPressed() ), this, SIGNAL( downPressed() ) );
-    connect( m_searchEdit, SIGNAL( upPressed() ), this, SIGNAL( upPressed() ) );
+    connect( m_searchEdit, SIGNAL(textChanged(QString)), this, SLOT(slotFilterChanged(QString)) );
+    connect( m_searchEdit, SIGNAL(returnPressed(QString)), this, SIGNAL(activateFilterResult()) );
+    connect( m_searchEdit, SIGNAL(returnPressed(QString)), this, SLOT(slotFilterClear()) );
+    connect( m_searchEdit, SIGNAL(returnPressed()), this, SLOT(defocus()) );
+    connect( m_searchEdit, SIGNAL(downPressed()), this, SIGNAL(downPressed()) );
+    connect( m_searchEdit, SIGNAL(upPressed()), this, SIGNAL(upPressed()) );
 
     m_nextAction = new KAction( KIcon( "go-down" ), i18n( "&Next" ), this );
-    connect( m_nextAction, SIGNAL( triggered() ), this, SLOT( slotNext() ) );
+    connect( m_nextAction, SIGNAL(triggered()), this, SLOT(slotNext()) );
 
     m_previousAction = new KAction( KIcon( "go-up" ), i18n( "&Previous" ), this );
-    connect( m_previousAction, SIGNAL( triggered() ), this, SLOT( slotPrevious() ) );
+    connect( m_previousAction, SIGNAL(triggered()), this, SLOT(slotPrevious()) );
 
     m_nextAction->setEnabled( false );
     m_previousAction->setEnabled( false );
@@ -71,49 +71,49 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     KAction * searchTracksAction = new KAction( i18n( "Tracks" ), this );
     searchTracksAction->setCheckable( true );
-    connect( searchTracksAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchTracks( bool ) ) );
+    connect( searchTracksAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchTracks(bool)) );
     if( m_searchFieldsMask & Playlist::MatchTrack )
         searchTracksAction->setChecked( true );
     m_menu->addAction( searchTracksAction );
 
     KAction * searchAlbumsAction = new KAction( i18n( "Albums" ), this );
     searchAlbumsAction->setCheckable( true );
-    connect( searchAlbumsAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchAlbums( bool ) ) );
+    connect( searchAlbumsAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchAlbums(bool)) );
     if( m_searchFieldsMask & Playlist::MatchAlbum )
         searchAlbumsAction->setChecked( true );
     m_menu->addAction( searchAlbumsAction );
 
     KAction * searchArtistsAction = new KAction( i18n( "Artists" ), this );
     searchArtistsAction->setCheckable( true );
-    connect( searchArtistsAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchArtists( bool ) ) );
+    connect( searchArtistsAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchArtists(bool)) );
     if( m_searchFieldsMask & Playlist::MatchArtist )
         searchArtistsAction->setChecked( true );
     m_menu->addAction( searchArtistsAction );
 
     KAction * searchGenreAction = new KAction( i18n( "Genre" ), this );
     searchGenreAction->setCheckable( true );
-    connect( searchGenreAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchGenre( bool ) ) );
+    connect( searchGenreAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchGenre(bool)) );
     if( m_searchFieldsMask & Playlist::MatchGenre )
         searchGenreAction->setChecked( true );
     m_menu->addAction( searchGenreAction );
 
     KAction * searchComposersAction = new KAction( i18n( "Composers" ), this );
     searchComposersAction->setCheckable( true );
-    connect( searchComposersAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchComposers( bool ) ) );
+    connect( searchComposersAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchComposers(bool)) );
     if( m_searchFieldsMask & Playlist::MatchComposer )
         searchComposersAction->setChecked( true );
     m_menu->addAction( searchComposersAction );
 
     KAction * searchRatingAction = new KAction( i18n( "Rating" ), this );
     searchRatingAction->setCheckable( true );
-    connect( searchRatingAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchRating( bool ) ) );
+    connect( searchRatingAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchRating(bool)) );
     if( m_searchFieldsMask & Playlist::MatchRating )
         searchRatingAction->setChecked( true );
     m_menu->addAction( searchRatingAction );
 
     KAction * searchYearsAction = new KAction( i18n( "Years" ), this );
     searchYearsAction->setCheckable( true );
-    connect( searchYearsAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchYears( bool ) ) );
+    connect( searchYearsAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchYears(bool)) );
     if( m_searchFieldsMask & Playlist::MatchYear)
         searchYearsAction->setChecked( true );
     m_menu->addAction( searchYearsAction );
@@ -122,7 +122,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     KAction * showOnlyMatchesAction = new KAction( i18n( "Show only matches" ), this );
     showOnlyMatchesAction->setCheckable( true );
-    connect( showOnlyMatchesAction, SIGNAL( toggled( bool ) ), this, SLOT( slotShowOnlyMatches( bool ) ) );
+    connect( showOnlyMatchesAction, SIGNAL(toggled(bool)), this, SLOT(slotShowOnlyMatches(bool)) );
 
     m_toolBar = new QToolBar( searchBox );
     showOnlyMatchesAction->setChecked( m_showOnlyMatches );
@@ -144,7 +144,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     m_toolBar->setFixedHeight( m_searchEdit->sizeHint().height() );
 
     //make sure that this edit is cleared when the playlist is cleared:
-    connect( Amarok::actionCollection()->action( "playlist_clear" ), SIGNAL( triggered() ), this, SLOT( slotFilterClear() ) );
+    connect( Amarok::actionCollection()->action( "playlist_clear" ), SIGNAL(triggered()), this, SLOT(slotFilterClear()) );
 }
 
 

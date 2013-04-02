@@ -48,8 +48,8 @@ BrowserMessageArea::BrowserMessageArea( QWidget *parent )
 
     //register to carry MessageType across threads
     qRegisterMetaType<Amarok::Logger::MessageType>( "MessageType" );
-    connect( this, SIGNAL(signalLongMessage( const QString &, MessageType )),
-             this, SLOT(slotLongMessage( const QString &, MessageType )),
+    connect( this, SIGNAL(signalLongMessage(QString,MessageType)),
+             this, SLOT(slotLongMessage(QString,MessageType)),
              Qt::QueuedConnection );
 }
 
@@ -84,8 +84,8 @@ BrowserMessageArea::newProgressOperation( KJob *job, const QString &text, QObjec
 {
     KJobProgressBar *newBar = new KJobProgressBar( 0, job );
     newBar->setDescription( text );
-    connect( job, SIGNAL(destroyed( QObject * )), m_progressBar,
-             SLOT(endProgressOperation( QObject * )) );
+    connect( job, SIGNAL(destroyed(QObject*)), m_progressBar,
+             SLOT(endProgressOperation(QObject*)) );
     newBar->setAbortSlot( obj, slot, type );
     m_progressBar->addProgressBar( newBar, job );
     m_progressBar->show();
@@ -100,8 +100,8 @@ BrowserMessageArea::newProgressOperation( QNetworkReply *reply, const QString &t
     NetworkProgressBar *newBar = new NetworkProgressBar( 0, reply );
     newBar->setDescription( text );
     newBar->setAbortSlot( reply, SLOT(deleteLater()) );
-    connect( reply, SIGNAL(destroyed( QObject * )), m_progressBar,
-             SLOT(endProgressOperation( QObject * )) );
+    connect( reply, SIGNAL(destroyed(QObject*)), m_progressBar,
+             SLOT(endProgressOperation(QObject*)) );
     newBar->setAbortSlot( obj, slot, type );
     m_progressBar->addProgressBar( newBar, reply );
     m_progressBar->show();
@@ -116,13 +116,13 @@ BrowserMessageArea::newProgressOperation( QObject *sender, const QString &text, 
     ProgressBar *newBar = new ProgressBar( 0 );
     newBar->setDescription( text );
     newBar->setMaximum( maximum );
-    connect( sender, SIGNAL(destroyed( QObject * )), m_progressBar,
-             SLOT(endProgressOperation( QObject * )), Qt::QueuedConnection );
-    connect( sender, SIGNAL(endProgressOperation( QObject * )), m_progressBar,
-             SLOT(endProgressOperation( QObject * )), Qt::QueuedConnection );
+    connect( sender, SIGNAL(destroyed(QObject*)), m_progressBar,
+             SLOT(endProgressOperation(QObject*)), Qt::QueuedConnection );
+    connect( sender, SIGNAL(endProgressOperation(QObject*)), m_progressBar,
+             SLOT(endProgressOperation(QObject*)), Qt::QueuedConnection );
     connect( sender, SIGNAL(incrementProgress()), m_progressBar,
              SLOT(slotIncrementProgress()), Qt::QueuedConnection );
-    connect( sender, SIGNAL(totalSteps( int )), newBar, SLOT(slotTotalSteps( int )) );
+    connect( sender, SIGNAL(totalSteps(int)), newBar, SLOT(slotTotalSteps(int)) );
     newBar->setAbortSlot( obj, slot, type );
     m_progressBar->addProgressBar( newBar, sender );
     m_progressBar->show();
@@ -166,5 +166,5 @@ void
 BrowserMessageArea::slotLongMessage( const QString &text, MessageType type )
 {
     LongMessageWidget *message = new LongMessageWidget( this, text, type );
-    connect( message, SIGNAL( closed() ), this, SLOT( hideLongMessage() ) );
+    connect( message, SIGNAL(closed()), this, SLOT(hideLongMessage()) );
 }

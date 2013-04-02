@@ -54,7 +54,7 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
     m_appendAction->setShortcut( Qt::Key_Enter );
     m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-    connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
+    connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppend()) );
 
     m_loadAction = new QAction( KIcon( "folder-open" ),
                                 i18nc( "Replace the currently loaded tracks with these",
@@ -62,16 +62,16 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
                                 this );
     m_loadAction->setObjectName( "loadAction" );
     m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-    connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
+    connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotLoad()) );
 
-    connect( The::playlistManager(), SIGNAL(updated( int )), SLOT(slotUpdate( int )) );
+    connect( The::playlistManager(), SIGNAL(updated(int)), SLOT(slotUpdate(int)) );
 
-    connect( The::playlistManager(), SIGNAL( playlistAdded( Playlists::PlaylistPtr, int ) ),
-             SLOT( slotPlaylistAdded( Playlists::PlaylistPtr,int ) ) );
-    connect( The::playlistManager(), SIGNAL( playlistRemoved( Playlists::PlaylistPtr, int ) ),
-             SLOT( slotPlaylistRemoved( Playlists::PlaylistPtr,int ) ) );
-    connect( The::playlistManager(), SIGNAL(playlistUpdated( Playlists::PlaylistPtr, int )),
-             SLOT(slotPlaylistUpdated( Playlists::PlaylistPtr, int )) );
+    connect( The::playlistManager(), SIGNAL(playlistAdded(Playlists::PlaylistPtr,int)),
+             SLOT(slotPlaylistAdded(Playlists::PlaylistPtr,int)) );
+    connect( The::playlistManager(), SIGNAL(playlistRemoved(Playlists::PlaylistPtr,int)),
+             SLOT(slotPlaylistRemoved(Playlists::PlaylistPtr,int)) );
+    connect( The::playlistManager(), SIGNAL(playlistUpdated(Playlists::PlaylistPtr,int)),
+             SLOT(slotPlaylistUpdated(Playlists::PlaylistPtr,int)) );
 
     connect( The::playlistManager(), SIGNAL(renamePlaylist(Playlists::PlaylistPtr)),
              SLOT(slotRenamePlaylist(Playlists::PlaylistPtr)) );

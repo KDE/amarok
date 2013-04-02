@@ -59,7 +59,7 @@ TrackWidget::TrackWidget( QGraphicsItem *parent )
     setDrawBackground( true );
     m_rating->setSpacing( 2 );
 
-    connect( m_rating, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
+    connect( m_rating, SIGNAL(ratingChanged(int)), SLOT(changeTrackRating(int)) );
 }
 
 TrackWidget::~TrackWidget()

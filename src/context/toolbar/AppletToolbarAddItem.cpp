@@ -50,7 +50,7 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
     
-    connect( listAdd, SIGNAL( triggered() ), this, SLOT( iconClicked() ) );
+    connect( listAdd, SIGNAL(triggered()), this, SLOT(iconClicked()) );
     
     m_icon = new Plasma::IconWidget( this );
 
@@ -73,7 +73,7 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     m_label->hide();
 
     if( m_cont )
-        connect( m_cont->view(), SIGNAL( appletExplorerHid() ), this, SLOT( appletExplorerHid() ) );
+        connect( m_cont->view(), SIGNAL(appletExplorerHid()), this, SLOT(appletExplorerHid()) );
 
     if( m_fixedAdd )
         setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );

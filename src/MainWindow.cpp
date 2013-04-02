@@ -160,14 +160,14 @@ MainWindow::MainWindow()
     m_showMenuBar->setChecked(!menuBar()->isHidden());  // workaround for bug #171080
 
     EngineController *engine = The::engineController();
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( slotStopped() ) );
-    connect( engine, SIGNAL( paused() ),
-             this, SLOT( slotPaused() ) );
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( slotNewTrackPlaying() ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( slotMetadataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(slotStopped()) );
+    connect( engine, SIGNAL(paused()),
+             this, SLOT(slotPaused()) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(slotNewTrackPlaying()) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(slotMetadataChanged(Meta::TrackPtr)) );
 
     KGlobal::locale()->insertCatalog( "libplasma" );
 }
@@ -226,7 +226,7 @@ MainWindow::init()
     m_playlistDock.data()->installEventFilter( this );
     //HACK, need to connect after because of order in MainWindow()
     connect( Amarok::actionCollection()->action( "playlist_edit_queue" ),
-             SIGNAL( triggered( bool ) ), m_playlistDock.data(), SLOT( slotEditQueue() ) );
+             SIGNAL(triggered(bool)), m_playlistDock.data(), SLOT(slotEditQueue()) );
     PERF_LOG( "Playlist created" )
 
     PERF_LOG( "Creating ContextWidget" )
@@ -350,7 +350,7 @@ MainWindow::addViewMenuItems(QMenu* menu)
     QAction* lockAction = new QAction( i18n( "Lock Layout" ), this );
     lockAction->setCheckable( true );
     lockAction->setChecked( AmarokConfig::lockLayout() );
-    connect( lockAction, SIGNAL( toggled( bool ) ), SLOT( setLayoutLocked( bool ) ) );
+    connect( lockAction, SIGNAL(toggled(bool)), SLOT(setLayoutLocked(bool)) );
     menu->addAction( lockAction );
 
     menu->addSeparator();
@@ -376,7 +376,7 @@ MainWindow::addViewMenuItems(QMenu* menu)
         if( toolBar->parentWidget() == this )
         {
             QAction* action = toolBar->toggleViewAction();
-            connect( action, SIGNAL( toggled( bool ) ), toolBar, SLOT( setVisible( bool ) ) );
+            connect( action, SIGNAL(toggled(bool)), toolBar, SLOT(setVisible(bool)) );
             toolBarGroup->addAction( action );
             menu->addAction( action );
         }
@@ -762,22 +762,22 @@ MainWindow::createActions()
     const Playlist::Actions* const pa = The::playlistActions();
     const Playlist::Controller* const pc = The::playlistController();
 
-    KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
+    KStandardAction::keyBindings( kapp, SLOT(slotConfigShortcuts()), ac );
     m_showMenuBar = KStandardAction::showMenubar(this, SLOT(slotShowMenuBar()), ac);
-    KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
+    KStandardAction::preferences( kapp, SLOT(slotConfigAmarok()), ac );
     ac->action( KStandardAction::name( KStandardAction::KeyBindings ) )->setIcon( KIcon( "configure-shortcuts-amarok" ) );
     ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setIcon( KIcon( "configure-amarok" ) );
     ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setMenuRole(QAction::PreferencesRole); // Define OS X Prefs menu here, removes need for ifdef later
 
-    KStandardAction::quit( App::instance(), SLOT( quit() ), ac );
+    KStandardAction::quit( App::instance(), SLOT(quit()), ac );
 
     KAction *action = new KAction( KIcon( "document-open" ), i18n("&Add Media..."), this );
     ac->addAction( "playlist_add", action );
-    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( slotAddLocation() ) );
+    connect( action, SIGNAL(triggered(bool)), this, SLOT(slotAddLocation()) );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
 
     action = new KAction( KIcon( "edit-clear-list" ), i18nc( "clear playlist", "&Clear Playlist" ), this );
-    connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( clear() ) );
+    connect( action, SIGNAL(triggered(bool)), pc, SLOT(clear()) );
     ac->addAction( "playlist_clear", action );
 
     action = new KAction( KIcon( "format-list-ordered" ),
@@ -787,96 +787,96 @@ MainWindow::createActions()
     ac->addAction( "playlist_edit_queue", action );;
 
     action = new KAction( i18nc( "Remove duplicate and dead (unplayable) tracks from the playlist", "Re&move Duplicates" ), this );
-    connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( removeDeadAndDuplicates() ) );
+    connect( action, SIGNAL(triggered(bool)), pc, SLOT(removeDeadAndDuplicates()) );
     ac->addAction( "playlist_remove_dead_and_duplicates", action );
 
     action = new Playlist::LayoutConfigAction( this );
     ac->addAction( "playlist_layout", action );
 
     action = new KAction( KIcon( "document-open-remote" ), i18n("&Add Stream..."), this );
-    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( slotAddStream() ) );
+    connect( action, SIGNAL(triggered(bool)), this, SLOT(slotAddStream()) );
     ac->addAction( "stream_add", action );
 
     action = new KAction( KIcon( "document-export-amarok" ), i18n("&Export Playlist As..."), this );
-    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( exportPlaylist() ) );
+    connect( action, SIGNAL(triggered(bool)), this, SLOT(exportPlaylist()) );
     ac->addAction( "playlist_export", action );
 
     action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Media Sources View" ), this );
     ac->addAction( "bookmark_browser", action );
-    connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentBrowserView() ) );
+    connect( action, SIGNAL(triggered()), The::amarokUrlHandler(), SLOT(bookmarkCurrentBrowserView()) );
 
     action = new KAction( KIcon( "bookmarks-organize" ), i18n( "Bookmark Manager" ), this );
     ac->addAction( "bookmark_manager", action );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowBookmarkManager() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotShowBookmarkManager()) );
 
     action = new KAction( KIcon( "view-media-equalizer" ), i18n( "Equalizer" ), this );
     ac->addAction( "equalizer_dialog", action );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowEqualizer() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotShowEqualizer()) );
 
     action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Playlist Setup" ), this );
     ac->addAction( "bookmark_playlistview", action );
-    connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentPlaylistView() ) );
+    connect( action, SIGNAL(triggered()), The::amarokUrlHandler(), SLOT(bookmarkCurrentPlaylistView()) );
 
     action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Context Applets" ), this );
     ac->addAction( "bookmark_contextview", action );
-    connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentContextView() ) );
+    connect( action, SIGNAL(triggered()), The::amarokUrlHandler(), SLOT(bookmarkCurrentContextView()) );
 
     action = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowCoverManager() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotShowCoverManager()) );
     ac->addAction( "cover_manager", action );
 
     action = new KAction( KIcon("document-open"), i18n("Play Media..."), this );
     ac->addAction( "playlist_playmedia", action );
     action->setShortcut( Qt::CTRL + Qt::Key_O );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotPlayMedia() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()) );
 
     action = new KAction( KIcon("media-track-edit-amarok"), i18n("Edit Details of Currently Selected Track"), this );
     ac->addAction( "trackdetails_edit", action );
     action->setShortcut( Qt::CTRL + Qt::Key_E );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotEditTrackInfo() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotEditTrackInfo()) );
 
     action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n( "Seek Forward by %1",
             KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekShort() * 1000 ) ), this );
     ac->addAction( "seek_forward_short", action );
     action->setShortcut( Qt::CTRL + Qt::Key_Right );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekForwardShort()) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekForwardShort()) );
 
     action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n( "Seek Forward by %1",
             KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
     ac->addAction( "seek_forward_medium", action );
     action->setShortcut( Qt::Key_Right );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekForwardMedium()) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekForwardMedium()) );
 
     action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n( "Seek Forward by %1",
             KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekLong() * 1000 ) ), this );
     ac->addAction( "seek_forward_long", action );
     action->setShortcut( Qt::SHIFT + Qt::Key_Right );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekForwardLong()) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekForwardLong()) );
 
 
     action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n( "Seek Backward by %1",
             KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekShort() * 1000 ) ), this );
     ac->addAction( "seek_backward_short", action );
     action->setShortcut( Qt::CTRL + Qt::Key_Left );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekBackwardShort()) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekBackwardShort()) );
 
     action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n( "Seek Backward by %1",
             KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
     ac->addAction( "seek_backward_medium", action );
     action->setShortcut( Qt::Key_Left );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekBackwardMedium()) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekBackwardMedium()) );
 
     action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n( "Seek Backward by %1",
             KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekLong() * 1000 ) ), this );
     ac->addAction( "seek_backward_long", action );
     action->setShortcut( Qt::SHIFT + Qt::Key_Left );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT(slotSeekBackwardLong()) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekBackwardLong()) );
 
     PERF_LOG( "MainWindow::createActions 6" )
     action = new KAction( KIcon("view-refresh"), i18n( "Update Collection" ), this );
-    connect ( action, SIGNAL( triggered( bool ) ), CollectionManager::instance(), SLOT( checkCollectionChanges() ) );
+    connect ( action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()) );
     ac->addAction( "update_collection", action );
 
     action =  new KAction( KIcon( "amarok_playcount" ), i18n( "Synchronize Statistics..." ), this );
@@ -888,14 +888,14 @@ MainWindow::createActions()
     action->setIcon( KIcon("media-skip-backward-amarok") );
     action->setText( i18n( "Previous Track" ) );
     action->setGlobalShortcut( KShortcut( Qt::Key_MediaPrevious ) );
-    connect( action, SIGNAL( triggered( bool ) ), pa, SLOT( back() ) );
+    connect( action, SIGNAL(triggered(bool)), pa, SLOT(back()) );
 
     action = new KAction( this );
     ac->addAction( "replay", action );
     action->setIcon( KIcon("media-playback-start") );
     action->setText( i18n( "Restart current track" ) );
     action->setGlobalShortcut( KShortcut() );
-    connect( action, SIGNAL( triggered( bool ) ), ec, SLOT(replay()) );
+    connect( action, SIGNAL(triggered(bool)), ec, SLOT(replay()) );
 
     action = new KAction( this );
     ac->addAction( "shuffle_playlist", action );
@@ -908,7 +908,7 @@ MainWindow::createActions()
     ac->addAction( "repopulate", action );
     action->setText( i18n( "Repopulate Playlist" ) );
     action->setIcon( KIcon("view-refresh-amarok") );
-    connect( action, SIGNAL( triggered( bool ) ), pa, SLOT( repopulateDynamicPlaylist() ) );
+    connect( action, SIGNAL(triggered(bool)), pa, SLOT(repopulateDynamicPlaylist()) );
 
     action = new KAction( this );
     ac->addAction( "disable_dynamic", action );
@@ -919,129 +919,129 @@ MainWindow::createActions()
     action = new KAction( KIcon("media-skip-forward-amarok"), i18n( "Next Track" ), this );
     ac->addAction( "next", action );
     action->setGlobalShortcut( KShortcut( Qt::Key_MediaNext ) );
-    connect( action, SIGNAL( triggered( bool ) ), pa, SLOT( next() ) );
+    connect( action, SIGNAL(triggered(bool)), pa, SLOT(next()) );
 
     action = new KAction( i18n( "Increase Volume" ), this );
     ac->addAction( "increaseVolume", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Plus ) );
     action->setShortcut( Qt::Key_Plus );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( increaseVolume() ) );
+    connect( action, SIGNAL(triggered()), ec, SLOT(increaseVolume()) );
 
     action = new KAction( i18n( "Decrease Volume" ), this );
     ac->addAction( "decreaseVolume", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Minus ) );
     action->setShortcut( Qt::Key_Minus );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( decreaseVolume() ) );
+    connect( action, SIGNAL(triggered()), ec, SLOT(decreaseVolume()) );
 
     action = new KAction( i18n( "Toggle Main Window" ), this );
     ac->addAction( "toggleMainWindow", action );
     action->setGlobalShortcut( KShortcut() );
-    connect( action, SIGNAL( triggered() ), SLOT( showHide() ) );
+    connect( action, SIGNAL(triggered()), SLOT(showHide()) );
 
     action = new KAction( i18n( "Toggle Full Screen" ), this );
     ac->addAction( "toggleFullScreen", action );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::SHIFT + Qt::Key_F ) );
-    connect( action, SIGNAL( triggered() ), SLOT( slotFullScreen() ) );
+    connect( action, SIGNAL(triggered()), SLOT(slotFullScreen()) );
 
     action = new KAction( i18n( "Search playlist" ), this );
     ac->addAction( "searchPlaylist", action );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_J ) );
-    connect( action, SIGNAL( triggered() ), SLOT( slotFocusPlaylistSearch()) );
+    connect( action, SIGNAL(triggered()), SLOT(slotFocusPlaylistSearch()) );
 
     action = new KAction( i18n( "Search collection" ), this );
     ac->addAction( "searchCollection", action );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_F ) );
-    connect( action, SIGNAL( triggered() ), SLOT( slotFocusCollectionSearch()) );
+    connect( action, SIGNAL(triggered()), SLOT(slotFocusCollectionSearch()) );
 
     action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
     ac->addAction( "show_active_track", action );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowActiveTrack() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotShowActiveTrack()) );
 
     action = new KAction( i18n( "Show Notification Popup" ), this );
     ac->addAction( "showNotificationPopup", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
-    connect( action, SIGNAL( triggered() ), SLOT( showNotificationPopup() ) );
+    connect( action, SIGNAL(triggered()), SLOT(showNotificationPopup()) );
 
     action = new KAction( i18n( "Mute Volume" ), this );
     ac->addAction( "mute", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_M ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( toggleMute() ) );
+    connect( action, SIGNAL(triggered()), ec, SLOT(toggleMute()) );
 
     action = new KAction( i18n( "Last.fm: Love Current Track" ), this );
     ac->addAction( "loveTrack", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_L ) );
-    connect( action, SIGNAL( triggered() ), SLOT( slotLoveTrack() ) );
+    connect( action, SIGNAL(triggered()), SLOT(slotLoveTrack()) );
 
     action = new KAction( i18n( "Last.fm: Ban Current Track" ), this );
     ac->addAction( "banTrack", action );
     //action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
-    connect( action, SIGNAL( triggered() ), SLOT(slotBanTrack()) );
+    connect( action, SIGNAL(triggered()), SLOT(slotBanTrack()) );
 
     action = new KAction( i18n( "Last.fm: Skip Current Track" ), this );
     ac->addAction( "skipTrack", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_S ) );
-    connect( action, SIGNAL( triggered() ), SIGNAL(skipTrack()) );
+    connect( action, SIGNAL(triggered()), SIGNAL(skipTrack()) );
 
     action = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
     ac->addAction( "queueTrack", action );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_D ) );
-    connect( action, SIGNAL( triggered() ), SIGNAL( switchQueueStateShortcut() ) );
+    connect( action, SIGNAL(triggered()), SIGNAL(switchQueueStateShortcut()) );
 
     action = new KAction( i18n( "Rate Current Track: 1" ), this );
     ac->addAction( "rate1", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_1 ) );
-    connect( action, SIGNAL( triggered() ), SLOT( setRating1() ) );
+    connect( action, SIGNAL(triggered()), SLOT(setRating1()) );
 
     action = new KAction( i18n( "Rate Current Track: 2" ), this );
     ac->addAction( "rate2", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_2 ) );
-    connect( action, SIGNAL( triggered() ), SLOT( setRating2() ) );
+    connect( action, SIGNAL(triggered()), SLOT(setRating2()) );
 
     action = new KAction( i18n( "Rate Current Track: 3" ), this );
     ac->addAction( "rate3", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_3 ) );
-    connect( action, SIGNAL( triggered() ), SLOT( setRating3() ) );
+    connect( action, SIGNAL(triggered()), SLOT(setRating3()) );
 
     action = new KAction( i18n( "Rate Current Track: 4" ), this );
     ac->addAction( "rate4", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_4 ) );
-    connect( action, SIGNAL( triggered() ), SLOT( setRating4() ) );
+    connect( action, SIGNAL(triggered()), SLOT(setRating4()) );
 
     action = new KAction( i18n( "Rate Current Track: 5" ), this );
     ac->addAction( "rate5", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
-    connect( action, SIGNAL( triggered() ), SLOT( setRating5() ) );
+    connect( action, SIGNAL(triggered()), SLOT(setRating5()) );
 
 #ifdef DEBUG_BUILD_TYPE
     action = new KAction( i18n( "Network Request Viewer" ), this );
     ac->addAction( "network_request_viewer", action );
     action->setIcon( KIcon( "utilities-system-monitor" ) );
-    connect( action, SIGNAL( triggered() ), SLOT( showNetworkRequestViewer() ) );
+    connect( action, SIGNAL(triggered()), SLOT(showNetworkRequestViewer()) );
 #endif // DEBUG_BUILD_TYPE
 
-    action = KStandardAction::redo( pc, SLOT( redo() ), this);
+    action = KStandardAction::redo( pc, SLOT(redo()), this);
     ac->addAction( "playlist_redo", action );
     action->setEnabled( false );
     action->setIcon( KIcon( "edit-redo" ) );
-    connect( pc, SIGNAL( canRedoChanged( bool ) ), action, SLOT( setEnabled( bool ) ) );
+    connect( pc, SIGNAL(canRedoChanged(bool)), action, SLOT(setEnabled(bool)) );
 
-    action = KStandardAction::undo( pc, SLOT( undo() ), this);
+    action = KStandardAction::undo( pc, SLOT(undo()), this);
     ac->addAction( "playlist_undo", action );
     action->setEnabled( false );
     action->setIcon( KIcon( "edit-undo" ) );
-    connect( pc, SIGNAL( canUndoChanged( bool ) ), action, SLOT( setEnabled( bool ) ) );
+    connect( pc, SIGNAL(canUndoChanged(bool)), action, SLOT(setEnabled(bool)) );
 
     action = new KAction( KIcon( "amarok" ), i18n( "&About Amarok" ), this );
     ac->addAction( "extendedAbout", action );
-    connect( action, SIGNAL( triggered() ), SLOT( showAbout() ) );
+    connect( action, SIGNAL(triggered()), SLOT(showAbout()) );
 
     action = new KAction ( KIcon( "info-amarok" ), i18n( "&Diagnostics" ), this );
     ac->addAction( "diagnosticDialog", action );
-    connect( action, SIGNAL( triggered() ), SLOT( slotShowDiagnosticsDialog() ) );
+    connect( action, SIGNAL(triggered()), SLOT(slotShowDiagnosticsDialog()) );
 
     action = new KAction( KIcon( "tools-report-bug" ), i18n("&Report Bug..."), this );
     ac->addAction( "reportBug", action );
-    connect( action, SIGNAL( triggered() ), SLOT( showReportBug() ) );
+    connect( action, SIGNAL(triggered()), SLOT(showReportBug()) );
 
     LikeBack *likeBack = new LikeBack( LikeBack::AllButBugs,
         LikeBack::isDevelopmentVersion( KGlobal::mainComponent().aboutData()->version() ) );

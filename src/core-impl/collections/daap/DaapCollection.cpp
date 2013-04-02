@@ -61,13 +61,13 @@ DaapCollectionFactory::init()
     {
     case DNSSD::ServiceBrowser::Working:
         //don't block Amarok's startup by connecting to DAAP servers
-        QTimer::singleShot( 1000, this, SLOT( connectToManualServers() ) );
+        QTimer::singleShot( 1000, this, SLOT(connectToManualServers()) );
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
         m_browser->setObjectName("daapServiceBrowser");
-        connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ),
-                 this,   SLOT( foundDaap   ( DNSSD::RemoteService::Ptr ) ) );
-        connect( m_browser, SIGNAL( serviceRemoved( DNSSD::RemoteService::Ptr ) ),
-                 this,   SLOT( serverOffline ( DNSSD::RemoteService::Ptr ) ) );
+        connect( m_browser, SIGNAL(serviceAdded(DNSSD::RemoteService::Ptr)),
+                 this,   SLOT(foundDaap(DNSSD::RemoteService::Ptr)) );
+        connect( m_browser, SIGNAL(serviceRemoved(DNSSD::RemoteService::Ptr)),
+                 this,   SLOT(serverOffline(DNSSD::RemoteService::Ptr)) );
         m_browser->startBrowse();
         break;
 
@@ -104,7 +104,7 @@ DaapCollectionFactory::connectToManualServers()
                     i18n( "Loading remote collection from host %1", host),
                     Amarok::Logger::Information );
 
-        int lookup_id = QHostInfo::lookupHost( host, this, SLOT( resolvedManualServerIp(QHostInfo)));
+        int lookup_id = QHostInfo::lookupHost( host, this, SLOT(resolvedManualServerIp(QHostInfo)));
         m_lookupHash.insert( lookup_id, port );
     }
 }
@@ -134,7 +134,7 @@ DaapCollectionFactory::foundDaap( DNSSD::RemoteService::Ptr service )
 {
     DEBUG_BLOCK
 
-    connect( service.data(), SIGNAL( resolved( bool ) ), this, SLOT( resolvedDaap( bool ) ) );
+    connect( service.data(), SIGNAL(resolved(bool)), this, SLOT(resolvedDaap(bool)) );
     service->resolveAsync();
 }
 
@@ -145,7 +145,7 @@ DaapCollectionFactory::resolvedDaap( bool success )
     if( !success || !service ) return;
     debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type();
 
-    int lookup_id = QHostInfo::lookupHost( service->hostName(), this, SLOT( resolvedServiceIp(QHostInfo)));
+    int lookup_id = QHostInfo::lookupHost( service->hostName(), this, SLOT(resolvedServiceIp(QHostInfo)));
     m_lookupHash.insert( lookup_id, service->port() );
 }
 
@@ -162,7 +162,7 @@ DaapCollectionFactory::slotCollectionReady()
     DaapCollection *collection = dynamic_cast<DaapCollection*>( sender() );
     if( collection )
     {
-        disconnect( collection, SIGNAL( remove() ), this, SLOT( slotCollectionDownloadFailed() ) );
+        disconnect( collection, SIGNAL(remove()), this, SLOT(slotCollectionDownloadFailed()) );
         emit newCollection( collection );
     }
 }
@@ -174,7 +174,7 @@ DaapCollectionFactory::slotCollectionDownloadFailed()
     DaapCollection *collection = qobject_cast<DaapCollection*>( sender() );
     if( !collection )
         return;
-    disconnect( collection, SIGNAL( collectionReady() ), this, SLOT( slotCollectionReady() ) );
+    disconnect( collection, SIGNAL(collectionReady()), this, SLOT(slotCollectionReady()) );
     foreach( QWeakPointer< DaapCollection > it, m_collectionMap )
     {
         if( it.data() == collection )
@@ -201,8 +201,8 @@ DaapCollectionFactory::resolvedManualServerIp( QHostInfo hostInfo )
 
     //adding manual servers to the collectionMap doesn't make sense
     DaapCollection *coll = new DaapCollection( host, ip, port );
-    connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
-    connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
+    connect( coll, SIGNAL(collectionReady()), SLOT(slotCollectionReady()) );
+    connect( coll, SIGNAL(remove()), SLOT(slotCollectionDownloadFailed()) );
 }
 
 void
@@ -226,8 +226,8 @@ DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
 
    // debug() << "creating daap collection with" << host << ip << port;
     QWeakPointer<DaapCollection> coll( new DaapCollection( host, ip, port ) );
-    connect( coll.data(), SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
-    connect( coll.data(), SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
+    connect( coll.data(), SIGNAL(collectionReady()), SLOT(slotCollectionReady()) );
+    connect( coll.data(), SIGNAL(remove()), SLOT(slotCollectionDownloadFailed()) );
     m_collectionMap.insert( serverKey( host, port ), coll.data() );
 }
 
@@ -243,8 +243,8 @@ DaapCollection::DaapCollection( const QString &host, const QString &ip, quint16 
 {
     debug() << "Host: " << host << " port: " << port;
     m_reader = new Daap::Reader( this, host, port, QString(), this, "DaapReader" );
-    connect( m_reader, SIGNAL( passwordRequired() ), SLOT( passwordRequired() ) );
-    connect( m_reader, SIGNAL( httpError( QString ) ), SLOT( httpError( QString ) ) );
+    connect( m_reader, SIGNAL(passwordRequired()), SLOT(passwordRequired()) );
+    connect( m_reader, SIGNAL(httpError(QString)), SLOT(httpError(QString)) );
     m_reader->loginRequest();
 }
 
@@ -281,8 +281,8 @@ DaapCollection::passwordRequired()
     QString password;
     delete m_reader;
     m_reader = new Daap::Reader( this, m_host, m_port, password, this, "DaapReader" );
-    connect( m_reader, SIGNAL( passwordRequired() ), SLOT( passwordRequired() ) );
-    connect( m_reader, SIGNAL( httpError( QString ) ), SLOT( httpError( QString ) ) );
+    connect( m_reader, SIGNAL(passwordRequired()), SLOT(passwordRequired()) );
+    connect( m_reader, SIGNAL(httpError(QString)), SLOT(httpError(QString)) );
     m_reader->loginRequest();
 }
 

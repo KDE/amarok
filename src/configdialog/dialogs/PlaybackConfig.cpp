@@ -33,7 +33,7 @@ PlaybackConfig::PlaybackConfig( QWidget* parent )
     setupUi( this );
     kcfg_FadeoutOnExit->setHidden( true );
 
-    connect( findChild<QPushButton*>( "pushButtonPhonon" ), SIGNAL( clicked() ), SLOT( configurePhonon() ) );
+    connect( findChild<QPushButton*>( "pushButtonPhonon" ), SIGNAL(clicked()), SLOT(configurePhonon()) );
 
     EngineController *engine = EngineController::instance();
     Q_ASSERT( engine );

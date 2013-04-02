@@ -665,7 +665,7 @@ KIO::Job *App::trashFiles( const KUrl::List &files )
 {
     KIO::Job *job = KIO::trash( files );
     Amarok::Components::logger()->newProgressOperation( job, i18n("Moving files to trash") );
-    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotTrashResult( KJob* ) ) );
+    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotTrashResult(KJob*)) );
     return job;
 }
 

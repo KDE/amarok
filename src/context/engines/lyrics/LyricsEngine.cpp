@@ -37,10 +37,10 @@ LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
 {
 
     EngineController* engine = The::engineController();
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ), Qt::QueuedConnection );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( onTrackMetadataChanged( Meta::TrackPtr ) ), Qt::QueuedConnection );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             this, SLOT(update()), Qt::QueuedConnection );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(onTrackMetadataChanged(Meta::TrackPtr)), Qt::QueuedConnection );
 }
 
 QStringList LyricsEngine::sources() const

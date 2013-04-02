@@ -52,8 +52,8 @@ MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
         return;
     }
 
-    connect( MediaDeviceCache::instance(), SIGNAL( deviceAdded( QString ) ), SLOT( deviceAdded( QString ) ) );
-    connect( MediaDeviceCache::instance(), SIGNAL( deviceRemoved( QString ) ), SLOT( deviceRemoved( QString ) ) );
+    connect( MediaDeviceCache::instance(), SIGNAL(deviceAdded(QString)), SLOT(deviceAdded(QString)) );
+    connect( MediaDeviceCache::instance(), SIGNAL(deviceRemoved(QString)), SLOT(deviceRemoved(QString)) );
 
     createDeviceFactories();
 }

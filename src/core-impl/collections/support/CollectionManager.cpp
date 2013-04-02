@@ -292,8 +292,8 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
     d->collections.append( pair );
     d->managedCollections.append( newCollection );
     d->trackProviders.append( newCollection );
-    connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
-    connect( newCollection, SIGNAL( updated() ), SLOT( slotCollectionChanged() ), Qt::QueuedConnection );
+    connect( newCollection, SIGNAL(remove()), SLOT(slotRemoveCollection()), Qt::QueuedConnection );
+    connect( newCollection, SIGNAL(updated()), SLOT(slotCollectionChanged()), Qt::QueuedConnection );
     //by convention, collections that provide a SQL database have a Qt property called "sqlStorage"
     int propertyIndex = newCollection->metaObject()->indexOfProperty( "sqlStorage" );
     if( propertyIndex != -1 )
@@ -371,7 +371,7 @@ CollectionManager::slotRemoveCollection()
             }
         }
         emit collectionRemoved( collection->collectionId() );
-        QTimer::singleShot( 500, collection, SLOT( deleteLater() ) ); // give the tree some time to update itself until we really delete the collection pointers.
+        QTimer::singleShot( 500, collection, SLOT(deleteLater()) ); // give the tree some time to update itself until we really delete the collection pointers.
     }
 }
 

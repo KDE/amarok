@@ -81,11 +81,11 @@ PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget
     //qDebug() << "on create, view size = " << view->size();
     deleteTimer.setSingleShot( true );
     fadeHideTimer.setDirection( QTimeLine::Backward );
-    connect( &fadeHideTimer, SIGNAL( frameChanged(int) ), this, SLOT( fadeHideTimerFrameChanged(int) ) );
-    connect( &fadeShowTimer, SIGNAL( frameChanged(int) ), this, SLOT( fadeShowTimerFrameChanged(int) ) );
-    connect( &fadeHideTimer, SIGNAL( finished() ), this, SLOT( fadeHideTimerFinished() ) );
-    connect( &fadeShowTimer, SIGNAL( finished() ), this, SLOT( fadeShowTimerFinished() ) );
-    connect( &deleteTimer, SIGNAL( timeout() ), this, SLOT( deleteTimerFinished() ) );
+    connect( &fadeHideTimer, SIGNAL(frameChanged(int)), this, SLOT(fadeHideTimerFrameChanged(int)) );
+    connect( &fadeShowTimer, SIGNAL(frameChanged(int)), this, SLOT(fadeShowTimerFrameChanged(int)) );
+    connect( &fadeHideTimer, SIGNAL(finished()), this, SLOT(fadeHideTimerFinished()) );
+    connect( &fadeShowTimer, SIGNAL(finished()), this, SLOT(fadeShowTimerFinished()) );
+    connect( &deleteTimer, SIGNAL(timeout()), this, SLOT(deleteTimerFinished()) );
 }
 
 PopupDropperPrivate::~PopupDropperPrivate()
@@ -164,7 +164,7 @@ void PopupDropperPrivate::dragLeft()
     {
         view->setAcceptDrops( false );
         //qDebug() << "View entered, hiding";
-        connect( q, SIGNAL( fadeHideFinished() ), q, SLOT( subtractOverlay() ) );
+        connect( q, SIGNAL(fadeHideFinished()), q, SLOT(subtractOverlay()) );
         q->hide();
     }
     q->updateAllOverlays();
@@ -184,7 +184,7 @@ void PopupDropperPrivate::deleteTimerFinished() //SLOT
     //qDebug() << "Delete Timer Finished";
     if( !view->entered() && quitOnDragLeave )
     {
-        connect( q, SIGNAL( fadeHideFinished() ), q, SLOT( subtractOverlay() ) );
+        connect( q, SIGNAL(fadeHideFinished()), q, SLOT(subtractOverlay()) );
         q->hide();
     }
 }
@@ -318,11 +318,11 @@ void PopupDropper::addOverlay( PopupDropperPrivate* newD )
 bool PopupDropper::subtractOverlay()
 {
     //qDebug() << "subtractOverlay, with d pointer " << d;
-    disconnect( this, SLOT( subtractOverlay() ) );
+    disconnect( this, SLOT(subtractOverlay()) );
     while( !isHidden() && d->fadeHideTimer.state() == QTimeLine::Running )
     {
         //qDebug() << "singleshotting subtractOverlay";
-        QTimer::singleShot( 0, this, SLOT( subtractOverlay() ) );
+        QTimer::singleShot( 0, this, SLOT(subtractOverlay()) );
         return false;
     }
     //qDebug() << "in PopupDropper " << this;
@@ -373,7 +373,7 @@ PopupDropperItem* PopupDropper::addSubmenu( PopupDropper** pd, const QString &te
 
     QAction* action = new QAction( text, this );
 
-    connect( action, SIGNAL( hovered() ), this, SLOT( activateSubmenu() ) );
+    connect( action, SIGNAL(hovered()), this, SLOT(activateSubmenu()) );
     pdi->setAction( action );
     pdi->setSubmenuTrigger( true );
     pdi->setHoverIndicatorShowStyle( PopupDropperItem::OnHover );
@@ -499,8 +499,8 @@ void PopupDropper::hide()
         //qDebug() << "show timer running, queueing hide";
         d->fadeShowTimer.stop();
         d->queuedHide = true;
-        QTimer::singleShot( 0, d, SLOT( fadeShowTimerFinished() ) );
-        QTimer::singleShot( 0, this, SLOT( hide() ) );
+        QTimer::singleShot( 0, d, SLOT(fadeShowTimerFinished()) );
+        QTimer::singleShot( 0, this, SLOT(hide()) );
         return;
     }
 
@@ -509,7 +509,7 @@ void PopupDropper::hide()
     if( d->fadeHideTimer.state() == QTimeLine::Running || d->queuedHide )
     {
         //qDebug() << "hide timer running or queued hide";
-        QTimer::singleShot( 0, this, SLOT( hide() ) );
+        QTimer::singleShot( 0, this, SLOT(hide()) );
         return;
     }
 
@@ -525,7 +525,7 @@ void PopupDropper::hide()
     else  //time is zero, or no fade
     {
         //qDebug() << "time is zero, or no fade";
-        QTimer::singleShot( 0, d, SLOT( fadeHideTimerFinished() ) );
+        QTimer::singleShot( 0, d, SLOT(fadeHideTimerFinished()) );
         return;
     }
 }
@@ -533,7 +533,7 @@ void PopupDropper::hide()
 void PopupDropper::hideAllOverlays()
 {
     //qDebug() << "Entered hideAllOverlays";
-    connect( this, SIGNAL( fadeHideFinished() ), this, SLOT( slotHideAllOverlays() ) );
+    connect( this, SIGNAL(fadeHideFinished()), this, SLOT(slotHideAllOverlays()) );
     hide();
     //qDebug() << "Leaving hideAllOverlays";
 }
@@ -541,7 +541,7 @@ void PopupDropper::hideAllOverlays()
 void PopupDropper::slotHideAllOverlays()
 {
     //qDebug() << "Entered slotHideAllOverlays()";
-    disconnect( this, SIGNAL( fadeHideFinished() ), this, SLOT( slotHideAllOverlays() ) );
+    disconnect( this, SIGNAL(fadeHideFinished()), this, SLOT(slotHideAllOverlays()) );
     //qDebug() << "m_viewStack.size() = " << m_viewStack.size();
     for( int i = m_viewStack.size() - 1; i >= 0; --i )
     {
@@ -578,11 +578,11 @@ void PopupDropper::clear()
 {
     while( !isHidden() && d->fadeHideTimer.state() == QTimeLine::Running )
     {
-        QTimer::singleShot(0, this, SLOT( clear() ) );
+        QTimer::singleShot(0, this, SLOT(clear()) );
         return;
     }
     //qDebug() << "Clear happening!";
-    disconnect( this, SLOT( clear() ) );
+    disconnect( this, SLOT(clear()) );
     do
     {
         foreach( QGraphicsItem* item, d->allItems )
@@ -592,7 +592,7 @@ void PopupDropper::clear()
                 if( dynamic_cast<PopupDropperItem*>(item)->isSubmenuTrigger() )
                 {
                     //qDebug() << "Disconnecting action";
-                    disconnect( dynamic_cast<PopupDropperItem*>(item)->action(), SIGNAL( hovered() ), this, SLOT( activateSubmenu() ) );
+                    disconnect( dynamic_cast<PopupDropperItem*>(item)->action(), SIGNAL(hovered()), this, SLOT(activateSubmenu()) );
                 }
                 dynamic_cast<PopupDropperItem*>(item)->deleteLater();
             }

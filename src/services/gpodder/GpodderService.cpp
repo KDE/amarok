@@ -240,8 +240,8 @@ GpodderService::polish()
 
     connect( m_subscribeButton, SIGNAL(clicked()), this, SLOT(subscribe()) );
 
-    connect( m_searchWidget, SIGNAL(filterChanged( const QString & )),
-             m_proxyModel, SLOT(setFilterWildcard( const QString & )) );
+    connect( m_searchWidget, SIGNAL(filterChanged(QString)),
+             m_proxyModel, SLOT(setFilterWildcard(QString)) );
 
     m_polished = true;
 }

@@ -78,10 +78,10 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     setDragDropMode( QAbstractItemView::DragDrop );
 
-    connect( this, SIGNAL(collapsed( const QModelIndex & )),
-             SLOT(slotCollapsed( const QModelIndex & )) );
-    connect( this, SIGNAL(expanded( const QModelIndex & )),
-             SLOT(slotExpanded( const QModelIndex & )) );
+    connect( this, SIGNAL(collapsed(QModelIndex)),
+             SLOT(slotCollapsed(QModelIndex)) );
+    connect( this, SIGNAL(expanded(QModelIndex)),
+             SLOT(slotExpanded(QModelIndex)) );
 }
 
 void
@@ -353,7 +353,7 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
     if( m_pd )
     {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(deleteLater()) );
         m_pd->hide();
         m_pd = 0;
     }
@@ -690,8 +690,8 @@ CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem *> &items,
     AmarokMimeData *mime = dynamic_cast<AmarokMimeData*>(
                 m_treeModel->mimeData( QList<CollectionTreeItem *>::fromSet( parents ) ) );
     m_playChildTracksMode.insert( mime, insertMode );
-    connect( mime, SIGNAL(trackListSignal( Meta::TrackList )), this,
-             SLOT(playChildTracksSlot( Meta::TrackList )) );
+    connect( mime, SIGNAL(trackListSignal(Meta::TrackList)), this,
+             SLOT(playChildTracksSlot(Meta::TrackList)) );
     mime->getTrackListSignal();
 }
 

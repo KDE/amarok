@@ -66,7 +66,7 @@ CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     m_timeLine = new QTimeLine( 10000, this );
     m_timeLine->setFrameRange( 0, 20 );
     m_timeLine->setLoopCount ( 0 );
-    connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( loadingAnimationTick() ) );
+    connect( m_timeLine, SIGNAL(frameChanged(int)), this, SLOT(loadingAnimationTick()) );
 }
 
 CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
@@ -583,7 +583,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
 
         //some very quick queries may be done so fast that the loading
         //animation creates an unnecessary flicker, therefore delay it for a bit
-        QTimer::singleShot( 150, this, SLOT( startAnimationTick() ) );
+        QTimer::singleShot( 150, this, SLOT(startAnimationTick()) );
     }
 }
 
@@ -626,15 +626,15 @@ void
 CollectionTreeItemModelBase::addQueryMaker( CollectionTreeItem* item,
                                             Collections::QueryMaker *qm ) const
 {
-    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( newResultReady( Meta::TrackList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::ArtistList ) ), SLOT( newResultReady( Meta::ArtistList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ), SLOT( newResultReady( Meta::AlbumList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::GenreList ) ), SLOT( newResultReady( Meta::GenreList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::ComposerList ) ), SLOT( newResultReady( Meta::ComposerList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::YearList ) ), SLOT( newResultReady( Meta::YearList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::LabelList ) ), SLOT( newResultReady( Meta::LabelList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::DataList ) ), SLOT( newResultReady( Meta::DataList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(newResultReady(Meta::TrackList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::ArtistList)), SLOT(newResultReady(Meta::ArtistList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::AlbumList)), SLOT(newResultReady(Meta::AlbumList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::GenreList)), SLOT(newResultReady(Meta::GenreList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::ComposerList)), SLOT(newResultReady(Meta::ComposerList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::YearList)), SLOT(newResultReady(Meta::YearList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::LabelList)), SLOT(newResultReady(Meta::LabelList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::DataList)), SLOT(newResultReady(Meta::DataList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()), Qt::QueuedConnection );
     m_runningQueries.insert( item, qm );
 }
 

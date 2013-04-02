@@ -92,10 +92,10 @@ QWidget*
 ConstraintTypes::PlaylistFileSize::editWidget() const
 {
     PlaylistFileSizeEditWidget* e = new PlaylistFileSizeEditWidget( m_size, m_unit, m_comparison, static_cast<int>( 10*m_strictness ) );
-    connect( e, SIGNAL( comparisonChanged( const int ) ), this, SLOT( setComparison( const int ) ) );
-    connect( e, SIGNAL( sizeChanged( const int ) ), this, SLOT( setSize( const int ) ) );
-    connect( e, SIGNAL( unitChanged( const int ) ), this, SLOT( setUnit( const int ) ) );
-    connect( e, SIGNAL( strictnessChanged( const int ) ), this, SLOT( setStrictness( const int ) ) );
+    connect( e, SIGNAL(comparisonChanged(int)), this, SLOT(setComparison(int)) );
+    connect( e, SIGNAL(sizeChanged(int)), this, SLOT(setSize(int)) );
+    connect( e, SIGNAL(unitChanged(int)), this, SLOT(setUnit(int)) );
+    connect( e, SIGNAL(strictnessChanged(int)), this, SLOT(setStrictness(int)) );
     return e;
 }
 

@@ -26,7 +26,7 @@ CollectionConfig::CollectionConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
     m_collectionSetup = new CollectionSetup( this );
-    connect( m_collectionSetup, SIGNAL( changed() ), parent, SLOT( updateButtons() ) );
+    connect( m_collectionSetup, SIGNAL(changed()), parent, SLOT(updateButtons()) );
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( m_collectionSetup );

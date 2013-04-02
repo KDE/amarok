@@ -50,7 +50,7 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
         activeCheckBox->setChecked( false );
     }
 
-    connect(this, SIGNAL( cancelClicked() ), this, SLOT( restoreOriginalSettings() ));
+    connect(this, SIGNAL(cancelClicked()), this, SLOT(restoreOriginalSettings()));
 
     // Assign slider items to vectors
     mBands.append( eqPreampSlider );
@@ -107,20 +107,20 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     setGains( AmarokConfig::equalizerGains() );
 
     // Configure signal and slots to handle presets
-    connect( activeCheckBox, SIGNAL( toggled( bool ) ), SLOT( setActive( bool ) ) );
-    connect( eqPresets, SIGNAL( currentIndexChanged( int ) ), SLOT( setPreset( int ) ) );
-    connect( eqPresets, SIGNAL( editTextChanged( QString ) ), SLOT( updateUi() ) );
+    connect( activeCheckBox, SIGNAL(toggled(bool)), SLOT(setActive(bool)) );
+    connect( eqPresets, SIGNAL(currentIndexChanged(int)), SLOT(setPreset(int)) );
+    connect( eqPresets, SIGNAL(editTextChanged(QString)), SLOT(updateUi()) );
     foreach( QSlider* mSlider, mBands )
-        connect( mSlider, SIGNAL(  valueChanged( int ) ), SLOT( bandsChanged() ) );
+        connect( mSlider, SIGNAL(valueChanged(int)), SLOT(bandsChanged()) );
 
     eqPresetSaveBtn->setIcon( KIcon( "document-save" ) );
-    connect( eqPresetSaveBtn, SIGNAL( clicked() ), SLOT( savePreset() ) );
+    connect( eqPresetSaveBtn, SIGNAL(clicked()), SLOT(savePreset()) );
 
     eqPresetDeleteBtn->setIcon( KIcon( "edit-delete" ) );
-    connect( eqPresetDeleteBtn, SIGNAL( clicked() ), SLOT( deletePreset() ) );
+    connect( eqPresetDeleteBtn, SIGNAL(clicked()), SLOT(deletePreset()) );
 
     eqPresetResetBtn->setIcon( KIcon( "edit-undo" ) );
-    connect( eqPresetResetBtn, SIGNAL( clicked() ), SLOT( restorePreset() ) );
+    connect( eqPresetResetBtn, SIGNAL(clicked()), SLOT(restorePreset()) );
 }
 
 EqualizerDialog::~EqualizerDialog()

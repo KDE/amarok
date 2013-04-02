@@ -81,22 +81,22 @@ TagGuessOptionWidget::TagGuessOptionWidget( QWidget *parent )
     cbEliminateSpaces->setChecked(    Amarok::config( "TagGuesser" ).readEntry( "Eliminate trailing spaces", false ) );
     cbReplaceUnderscores->setChecked( Amarok::config( "TagGuesser" ).readEntry( "Replace underscores", false ) );
 
-    connect( cbCase, SIGNAL( toggled( bool ) ),
-             this, SLOT( editStateEnable( bool ) ) );
-    connect( cbCase, SIGNAL( toggled( bool ) ),
-             this, SIGNAL( changed() ) );
-    connect( rbTitleCase, SIGNAL( toggled(bool) ),
-             this, SIGNAL( changed() ) );
-    connect( rbFirstLetter, SIGNAL( toggled(bool) ),
-             this, SIGNAL( changed() ) );
-    connect( rbAllLower, SIGNAL( toggled(bool) ),
-             this, SIGNAL( changed() ) );
-    connect( rbAllUpper, SIGNAL( toggled(bool) ),
-             this, SIGNAL( changed() ) );
-    connect( cbEliminateSpaces, SIGNAL( toggled(bool) ),
-             this, SIGNAL( changed() ) );
-    connect( cbReplaceUnderscores, SIGNAL( toggled(bool) ),
-             this, SIGNAL( changed() ) );
+    connect( cbCase, SIGNAL(toggled(bool)),
+             this, SLOT(editStateEnable(bool)) );
+    connect( cbCase, SIGNAL(toggled(bool)),
+             this, SIGNAL(changed()) );
+    connect( rbTitleCase, SIGNAL(toggled(bool)),
+             this, SIGNAL(changed()) );
+    connect( rbFirstLetter, SIGNAL(toggled(bool)),
+             this, SIGNAL(changed()) );
+    connect( rbAllLower, SIGNAL(toggled(bool)),
+             this, SIGNAL(changed()) );
+    connect( rbAllUpper, SIGNAL(toggled(bool)),
+             this, SIGNAL(changed()) );
+    connect( cbEliminateSpaces, SIGNAL(toggled(bool)),
+             this, SIGNAL(changed()) );
+    connect( cbReplaceUnderscores, SIGNAL(toggled(bool)),
+             this, SIGNAL(changed()) );
 }
 
 void
@@ -235,10 +235,10 @@ TagGuesserDialog::TagGuesserDialog( const QString &fileName, QWidget *parent )
     mainLayout->addWidget( m_optionsWidget );
 
 
-    connect( m_layoutWidget, SIGNAL( schemeChanged() ),
-             this, SLOT( updatePreview() ) );
-    connect( m_optionsWidget, SIGNAL( changed() ),
-             this, SLOT( updatePreview() ) );
+    connect( m_layoutWidget, SIGNAL(schemeChanged()),
+             this, SLOT(updatePreview()) );
+    connect( m_optionsWidget, SIGNAL(changed()),
+             this, SLOT(updatePreview()) );
 
     updatePreview();
 

@@ -151,8 +151,8 @@ Dynamic::QuizPlayBias::widget( QWidget* parent )
     case ArtistToArtist: combo->setCurrentIndex(1); break;
     case AlbumToAlbum:   combo->setCurrentIndex(2); break;
     }
-    connect( combo, SIGNAL( currentIndexChanged(int) ),
-             this, SLOT( selectionChanged( int ) ) );
+    connect( combo, SIGNAL(currentIndexChanged(int)),
+             this, SLOT(selectionChanged(int)) );
     layout->addWidget( combo );
 
     return widget;
@@ -298,8 +298,8 @@ Dynamic::QuizPlayBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady( QStringList )),
-             this, SLOT(updateReady( QStringList )) );
+    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
+             this, SLOT(updateReady(QStringList)) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
     m_qm.data()->run();

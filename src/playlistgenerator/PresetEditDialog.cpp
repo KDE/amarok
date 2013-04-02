@@ -46,13 +46,13 @@ APG::PresetEditDialog::PresetEditDialog( PresetPtr p )
     ui.constraintTreeView->setModel( model );
     ui.constraintTreeView->setSelectionMode( QAbstractItemView::SingleSelection );
     ui.constraintTreeView->setHeaderHidden( true );
-    connect( ui.constraintTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
-             this, SLOT( currentNodeChanged( const QModelIndex& ) ) );
+    connect( ui.constraintTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+             this, SLOT(currentNodeChanged(QModelIndex)) );
     ui.constraintTreeView->setCurrentIndex( model->index( 0, 0 ) ); // select the visible root constraint
     ui.constraintTreeView->expandAll();
 
     QSignalMapper* adderMapper = new QSignalMapper( this );
-    connect( adderMapper, SIGNAL( mapped( const QString& ) ), this, SLOT( addNode( const QString& ) ) );
+    connect( adderMapper, SIGNAL(mapped(QString)), this, SLOT(addNode(QString)) );
 
     QMenuBar* menuBar_Actions = new QMenuBar( this );
     menuBar_Actions->setNativeMenuBar( false );  //required to make the menu work on OS X
@@ -60,17 +60,17 @@ APG::PresetEditDialog::PresetEditDialog( PresetPtr p )
     QAction* a;
     QMenu* m = new QMenu( i18n("Add new"), this );
     a = m->addAction( QString( i18n("Constraint Group") ) );
-    connect( a, SIGNAL( triggered( bool ) ), adderMapper, SLOT( map() ) );
+    connect( a, SIGNAL(triggered(bool)), adderMapper, SLOT(map()) );
     adderMapper->setMapping( a, i18n("Constraint Group") );
     foreach( const QString& name, ConstraintFactory::instance()->i18nNames() ) {
         a = m->addAction( name );
-        connect( a, SIGNAL( triggered( bool ) ), adderMapper, SLOT( map() ) );
+        connect( a, SIGNAL(triggered(bool)), adderMapper, SLOT(map()) );
         adderMapper->setMapping( a, name );
     }
     menuBar_Actions->addMenu( m );
 
     a = menuBar_Actions->addAction( i18n("Remove selected") );
-    connect( a, SIGNAL( triggered( bool ) ), m_controller, SLOT( removeNode() ) );
+    connect( a, SIGNAL(triggered(bool)), m_controller, SLOT(removeNode()) );
 
     menuBar_Actions->addSeparator();
 
@@ -79,8 +79,8 @@ APG::PresetEditDialog::PresetEditDialog( PresetPtr p )
     menuBar_Actions->addAction( a );
     ui.treeLayout->insertWidget( 0, menuBar_Actions );
 
-    connect( ui.buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-    connect( ui.buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+    connect( ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
+    connect( ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
 
     QMetaObject::connectSlotsByName( this );
 }

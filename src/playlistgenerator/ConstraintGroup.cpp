@@ -96,8 +96,8 @@ QWidget*
 ConstraintGroup::editWidget() const
 {
     ConstraintGroupEditWidget* e = new ConstraintGroupEditWidget( m_matchtype );
-    connect( e, SIGNAL( clickedMatchAny() ), this, SLOT( setMatchAny() ) );
-    connect( e, SIGNAL( clickedMatchAll() ), this, SLOT( setMatchAll() ) );
+    connect( e, SIGNAL(clickedMatchAny()), this, SLOT(setMatchAny()) );
+    connect( e, SIGNAL(clickedMatchAll()), this, SLOT(setMatchAll()) );
     return e;
 }
 

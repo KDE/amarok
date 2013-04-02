@@ -61,11 +61,11 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
     //       'this' QSFPM signal) would get called earlier, would call our 'data()'
     //       function, and we would return wrong answers from our stale internal state.
     //
-    connect( this, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( proxyDataChanged( const QModelIndex&, const QModelIndex& ) ) );
-    connect( this, SIGNAL( layoutChanged() ), this, SLOT( proxyLayoutChanged() ) );
-    connect( this, SIGNAL( modelReset() ), this, SLOT( proxyModelReset() ) );
-    connect( this, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( this, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( this, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(proxyDataChanged(QModelIndex,QModelIndex)) );
+    connect( this, SIGNAL(layoutChanged()), this, SLOT(proxyLayoutChanged()) );
+    connect( this, SIGNAL(modelReset()), this, SLOT(proxyModelReset()) );
+    connect( this, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(proxyRowsInserted(QModelIndex,int,int)) );
+    connect( this, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(proxyRowsRemoved(QModelIndex,int,int)) );
 
 
     // No need to scan the pre-existing entries in sourceModel(), because we build our

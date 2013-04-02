@@ -73,7 +73,7 @@ NepomukConstructMetaJob::run()
     QString operationText = i18n( "Updating Nepomuk Collection" );
     Amarok::Components::logger()->newProgressOperation( this, operationText,
             totalTracks, this,
-            SLOT( abort() ) );
+            SLOT(abort()) );
 
     QString query
     = QString::fromLatin1( "select distinct ?r ?title ?url ?artist ?composer ?album ?genre "

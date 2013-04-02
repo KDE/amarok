@@ -130,7 +130,7 @@ void
 NepomukCollection::buildCollection()
 {
     NepomukConstructMetaJob *job = new NepomukConstructMetaJob( this );
-    connect( job, SIGNAL( done( ThreadWeaver::Job* ) ), job, SLOT( deleteLater() ) );
-    connect( job, SIGNAL( updated() ), this , SIGNAL( updated() ) );
+    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+    connect( job, SIGNAL(updated()), this , SIGNAL(updated()) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
 }

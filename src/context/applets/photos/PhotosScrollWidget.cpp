@@ -54,7 +54,7 @@ PhotosScrollWidget::PhotosScrollWidget( QGraphicsItem* parent )
     // prepare the timer for the fading effect
     m_timer =  new QTimer( this );
     m_timer->setSingleShot( true );
-    connect(m_timer, SIGNAL( timeout() ), this, SLOT( automaticAnimBegin() ) );
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(automaticAnimBegin()) );
 
     m_animation->setEasingCurve( QEasingCurve::Linear );
     m_animation->setStartValue( 0.0 );
@@ -276,7 +276,7 @@ void PhotosScrollWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
         case PHOTOS_MODE_AUTOMATIC :
         {
             if( m_animation->state() == QAbstractAnimation::Running )
-                QTimer::singleShot( 0, this, SLOT( automaticAnimBegin() ) );
+                QTimer::singleShot( 0, this, SLOT(automaticAnimBegin()) );
             break;
         }
     }
@@ -385,7 +385,7 @@ void PhotosScrollWidget::automaticAnimEnd()
                 m_lastPix = m_pixmaplist.count() - 1; //update to point at same pic at new position at the end of the list
             }*/
 
-            QTimer::singleShot( m_interval, this, SLOT( automaticAnimBegin() ) );
+            QTimer::singleShot( m_interval, this, SLOT(automaticAnimBegin()) );
             break;
         }
         case PHOTOS_MODE_FADING:

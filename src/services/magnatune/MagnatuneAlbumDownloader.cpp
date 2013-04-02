@@ -58,7 +58,7 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
 
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir->name() + m_currentAlbumFileName ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
-    connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( albumDownloadComplete( KJob* ) ) );
+    connect( m_albumDownloadJob, SIGNAL(result(KJob*)), SLOT(albumDownloadComplete(KJob*)) );
 
     QString msgText;
     if( !info.albumName().isEmpty() && !info.artistName().isEmpty() )
@@ -70,7 +70,7 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
         msgText = i18n( "Downloading album from Magnatune.com" );
     }
 
-    Amarok::Components::logger()->newProgressOperation( m_albumDownloadJob, msgText, this, SLOT( albumDownloadAborted() ) );
+    Amarok::Components::logger()->newProgressOperation( m_albumDownloadJob, msgText, this, SLOT(albumDownloadAborted()) );
 }
 
 
@@ -130,9 +130,9 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( finalAlbumPath + "/cover.jpg" ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
-    connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverAddComplete( KJob* ) ) );
+    connect( m_albumDownloadJob, SIGNAL(result(KJob*)), SLOT(coverAddComplete(KJob*)) );
 
-    Amarok::Components::logger()->newProgressOperation( m_albumDownloadJob, i18n( "Adding album cover to collection" ), this, SLOT( coverAddAborted() ) );
+    Amarok::Components::logger()->newProgressOperation( m_albumDownloadJob, i18n( "Adding album cover to collection" ), this, SLOT(coverAddAborted()) );
 
     emit( downloadComplete( true ) );
 

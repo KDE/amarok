@@ -55,7 +55,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
             BrowserCategory *siblingCategory = siblingMap.value( siblingName );
 
             QAction *action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
-            connect( action, SIGNAL( triggered() ), siblingMap.value( siblingName ), SLOT( activate() ) );
+            connect( action, SIGNAL(triggered()), siblingMap.value( siblingName ), SLOT(activate()) );
         }
 
         m_menuButton->setMenu( menu );
@@ -70,18 +70,18 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
         m_mainButton->setIcon( KIcon( "user-home" ) );
     }
 
-    connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
+    connect( m_mainButton, SIGNAL(sizePolicyChanged()), this, SLOT(updateSizePolicy()) );
 
     //if this is a list, make cliking on this item cause us
     //to navigate to its home.
     BrowserCategoryList *list = qobject_cast<BrowserCategoryList*>( category );
     if ( list )
     {
-        connect( m_mainButton, SIGNAL( clicked( bool ) ), list, SLOT( home() ) );
+        connect( m_mainButton, SIGNAL(clicked(bool)), list, SLOT(home()) );
     }
     else  
     {
-        connect( m_mainButton, SIGNAL( clicked( bool ) ), category, SLOT( reActivate() ) );
+        connect( m_mainButton, SIGNAL(clicked(bool)), category, SLOT(reActivate()) );
     }
 
     adjustSize();
@@ -126,7 +126,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
 
     m_mainButton = new BreadcrumbItemButton( name, this );
     connect( m_mainButton, SIGNAL(sizePolicyChanged()), this, SLOT(updateSizePolicy()) );
-    connect( m_mainButton, SIGNAL( clicked( bool ) ), this, SLOT( activate() ) );
+    connect( m_mainButton, SIGNAL(clicked(bool)), this, SLOT(activate()) );
     connect( this, SIGNAL(activated(QString)), handler, SLOT(addItemActivated(QString)) );
 
     adjustSize();

@@ -187,7 +187,7 @@ Dynamic::TagMatchBiasWidget::TagMatchBiasWidget( Dynamic::TagMatchBias* bias,
 
     connect( m_invertBox, SIGNAL(toggled(bool)),
              SLOT(syncBiasToControls()));
-    connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)),
+    connect( m_queryWidget, SIGNAL(changed(MetaQueryWidget::Filter)),
              SLOT(syncBiasToControls()));
 }
 
@@ -412,8 +412,8 @@ Dynamic::TagMatchBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady( QStringList )),
-             this, SLOT(updateReady( QStringList )) );
+    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
+             this, SLOT(updateReady(QStringList)) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
     m_qm.data()->run();

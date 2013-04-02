@@ -324,8 +324,8 @@ GpodderServiceModel::fetchMore( const QModelIndex &parent )
         GpodderPodcastRequestHandler *podcastRequestHandler =
                 new GpodderPodcastRequestHandler( podcasts, parent, this );
         connect( podcasts.data(), SIGNAL(finished()), podcastRequestHandler, SLOT(finished()) );
-        connect( podcasts.data(), SIGNAL(requestError( QNetworkReply::NetworkError )),
-                 podcastRequestHandler, SLOT(requestError( QNetworkReply::NetworkError )) );
+        connect( podcasts.data(), SIGNAL(requestError(QNetworkReply::NetworkError)),
+                 podcastRequestHandler, SLOT(requestError(QNetworkReply::NetworkError)) );
         connect( podcasts.data(), SIGNAL(parseError()), podcastRequestHandler, SLOT(parseError()) );
     }
 
@@ -344,8 +344,8 @@ GpodderServiceModel::requestTopTags()
 
     m_topTags = m_apiRequest->topTags( s_numberItemsToLoad );
     connect( m_topTags.data(), SIGNAL(finished()), this, SLOT(insertTagList()) );
-    connect( m_topTags.data(), SIGNAL(requestError( QNetworkReply::NetworkError )),
-             SLOT(topTagsRequestError( QNetworkReply::NetworkError )) );
+    connect( m_topTags.data(), SIGNAL(requestError(QNetworkReply::NetworkError)),
+             SLOT(topTagsRequestError(QNetworkReply::NetworkError)) );
     connect( m_topTags.data(), SIGNAL(parseError()), SLOT(topTagsParseError()) );
 }
 
@@ -366,8 +366,8 @@ GpodderServiceModel::requestTopPodcasts()
                                                               createIndex( 0,0, m_topPodcastsItem ),
                                                               this );
     connect( topPodcasts.data(), SIGNAL(finished()), podcastRequestHandler, SLOT(finished()) );
-    connect( topPodcasts.data(), SIGNAL(requestError( QNetworkReply::NetworkError )),
-             SLOT(topPodcastsRequestError( QNetworkReply::NetworkError )) );
+    connect( topPodcasts.data(), SIGNAL(requestError(QNetworkReply::NetworkError)),
+             SLOT(topPodcastsRequestError(QNetworkReply::NetworkError)) );
     connect( topPodcasts.data(), SIGNAL(parseError()), SLOT(topPodcastsParseError()) );
 }
 
@@ -390,8 +390,8 @@ GpodderServiceModel::requestSuggestedPodcasts()
                                                               this );
     connect( topSuggestions.data(), SIGNAL(finished()),
              podcastRequestHandler, SLOT(finished()) );
-    connect( topSuggestions.data(), SIGNAL(requestError( QNetworkReply::NetworkError )),
-             SLOT(suggestedPodcastsRequestError( QNetworkReply::NetworkError )) );
+    connect( topSuggestions.data(), SIGNAL(requestError(QNetworkReply::NetworkError)),
+             SLOT(suggestedPodcastsRequestError(QNetworkReply::NetworkError)) );
     connect( topSuggestions.data(), SIGNAL(parseError()),
              SLOT(suggestedPodcastsParseError()) );
 }

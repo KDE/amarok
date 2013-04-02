@@ -93,9 +93,9 @@ QWidget*
 ConstraintTypes::PlaylistDuration::editWidget() const
 {
     PlaylistDurationEditWidget* e = new PlaylistDurationEditWidget( m_duration, m_comparison, static_cast<int>( 10*m_strictness ) );
-    connect( e, SIGNAL( comparisonChanged( const int ) ), this, SLOT( setComparison( const int ) ) );
-    connect( e, SIGNAL( durationChanged( const int ) ), this, SLOT( setDuration( const int ) ) );
-    connect( e, SIGNAL( strictnessChanged( const int ) ), this, SLOT( setStrictness( const int ) ) );
+    connect( e, SIGNAL(comparisonChanged(int)), this, SLOT(setComparison(int)) );
+    connect( e, SIGNAL(durationChanged(int)), this, SLOT(setDuration(int)) );
+    connect( e, SIGNAL(strictnessChanged(int)), this, SLOT(setStrictness(int)) );
     return e;
 }
 

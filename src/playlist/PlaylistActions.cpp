@@ -80,7 +80,7 @@ Playlist::Actions::Actions()
 
     if( engine ) // test cases might create a playlist without having an EngineController
     {
-        connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr) ),
+        connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
                  this, SLOT(slotTrackPlaying(Meta::TrackPtr)) );
         connect( engine, SIGNAL(stopped(qint64,qint64)),
                  this, SLOT(slotPlayingStopped(qint64,qint64)) );

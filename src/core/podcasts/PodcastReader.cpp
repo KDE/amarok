@@ -439,14 +439,14 @@ PodcastReader::read( const KUrl &url )
 
     m_transferJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
 
-    connect( m_transferJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
-             SLOT( slotAddData( KIO::Job *, const QByteArray & ) ) );
+    connect( m_transferJob, SIGNAL(data(KIO::Job*,QByteArray)),
+             SLOT(slotAddData(KIO::Job*,QByteArray)) );
 
-    connect( m_transferJob, SIGNAL( result( KJob * ) ),
-             SLOT( downloadResult( KJob * ) ) );
+    connect( m_transferJob, SIGNAL(result(KJob*)),
+             SLOT(downloadResult(KJob*)) );
 
-    connect( m_transferJob, SIGNAL( redirection( KIO::Job *, const KUrl & ) ),
-             SLOT( slotRedirection( KIO::Job *, const KUrl & ) ) );
+    connect( m_transferJob, SIGNAL(redirection(KIO::Job*,KUrl)),
+             SLOT(slotRedirection(KIO::Job*,KUrl)) );
 
     connect( m_transferJob, SIGNAL( permanentRedirection( KIO::Job *,
                                     const KUrl &, const KUrl & ) ),

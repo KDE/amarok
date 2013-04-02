@@ -126,7 +126,7 @@ void TimeDistanceWidget::setTimeDistance( qint64 value )
 
 void TimeDistanceWidget::connectChanged( QObject *receiver, const char *slot )
 {
-    connect( m_timeEdit, SIGNAL(valueChanged(const QString&)), receiver, slot );
+    connect( m_timeEdit, SIGNAL(valueChanged(QString)), receiver, slot );
     connect( m_unitSelection, SIGNAL(currentIndexChanged(int)), receiver, slot );
 }
 
@@ -727,8 +727,8 @@ MetaQueryWidget::makeGenericComboSelection( bool editable, Collections::QueryMak
     }
     combo->setEditText( m_filter.value );
 
-    connect( combo, SIGNAL(editTextChanged( const QString& ) ),
-            SLOT(valueChanged(const QString&)) );
+    connect( combo, SIGNAL(editTextChanged(QString)),
+            SLOT(valueChanged(QString)) );
 
     combo->completionObject()->setIgnoreCase( true );
     combo->setCompletionMode( KGlobalSettings::CompletionPopup );
@@ -772,8 +772,8 @@ MetaQueryWidget::populateComboBox( QStringList results )
 
     // reset the text and re-enable the signal
     combo.data()->setEditText( m_filter.value );
-    connect( combo.data(), SIGNAL(editTextChanged( const QString& ) ),
-            SLOT(valueChanged(const QString&)) );
+    connect( combo.data(), SIGNAL(editTextChanged(QString)),
+            SLOT(valueChanged(QString)) );
 }
 
 void
@@ -791,8 +791,8 @@ MetaQueryWidget::makeFormatComboSelection()
     combo->setCurrentIndex( index == -1 ? 0 : index );
 
     connect( combo,
-             SIGNAL( currentIndexChanged(int) ),
-             SLOT( numValueFormatChanged(int) ) );
+             SIGNAL(currentIndexChanged(int)),
+             SLOT(numValueFormatChanged(int)) );
 
     m_valueSelection1 = combo;
 }
@@ -821,7 +821,7 @@ MetaQueryWidget::makeRatingSelection()
     KRatingWidget* ratingWidget = new KRatingWidget();
     ratingWidget->setRating( (int)m_filter.numValue );
     connect( ratingWidget, SIGNAL(ratingChanged(int)),
-             this, SLOT( numValueChanged(int) ) );
+             this, SLOT(numValueChanged(int)) );
 
     m_valueSelection1 = ratingWidget;
 
@@ -847,8 +847,8 @@ MetaQueryWidget::makeLengthSelection()
     timeSpin->setMaximumTime( QTime( 0, 60, 59) );
     timeSpin->setTime( QTime().addSecs( m_filter.numValue ) );
 
-    connect( timeSpin, SIGNAL(timeChanged(const QTime&)),
-            SLOT(numValueChanged(const QTime&)) );
+    connect( timeSpin, SIGNAL(timeChanged(QTime)),
+            SLOT(numValueChanged(QTime)) );
 
     m_valueSelection1 = timeSpin;
 
@@ -861,8 +861,8 @@ MetaQueryWidget::makeLengthSelection()
     timeSpin2->setMaximumTime( QTime( 0, 60, 59) );
     timeSpin2->setTime( QTime().addSecs( m_filter.numValue2 ) );
 
-    connect( timeSpin2, SIGNAL(timeChanged(const QTime&)),
-            SLOT(numValueChanged(const QTime&)) );
+    connect( timeSpin2, SIGNAL(timeChanged(QTime)),
+            SLOT(numValueChanged(QTime)) );
 
     m_valueSelection2 = timeSpin2;
 }
@@ -924,7 +924,7 @@ MetaQueryWidget::makeDateTimeSelection()
         dateSelection->setDate( dt.date() );
 
         connect( dateSelection, SIGNAL(currentIndexChanged(int)),
-                SLOT( numValueDateChanged() ) );
+                SLOT(numValueDateChanged()) );
 
         m_valueSelection1 = dateSelection;
 
@@ -937,7 +937,7 @@ MetaQueryWidget::makeDateTimeSelection()
         dateSelection2->setDate( dt.date() );
 
         connect( dateSelection2, SIGNAL(currentIndexChanged(int)),
-                SLOT( numValue2DateChanged() ) );
+                SLOT(numValue2DateChanged()) );
 
         m_valueSelection2 = dateSelection2;
     }

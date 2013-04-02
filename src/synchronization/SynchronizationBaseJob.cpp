@@ -36,7 +36,7 @@ SynchronizationBaseJob::SynchronizationBaseJob()
         , m_collectionA( 0 )
         , m_collectionB( 0 )
 {
-    connect( &m_timer, SIGNAL( timeout() ), this, SLOT( timeout() ) );
+    connect( &m_timer, SIGNAL(timeout()), this, SLOT(timeout()) );
     //abort syncing if both queries have not returned within 30 seconds for a given state
     //probably needs to be adjusted during testing
     m_timer.setInterval( 30000 );
@@ -147,8 +147,8 @@ SynchronizationBaseJob::setupArtistQuery( Collections::Collection *coll )
 {
     Collections::QueryMaker *qm = createQueryMaker( coll );
     qm->setQueryType( Collections::QueryMaker::Artist );
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::ArtistList ) ), this, SLOT( slotResultReady(Meta::ArtistList) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL(queryDone()), this, SLOT(slotQueryDone()), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::ArtistList)), this, SLOT(slotResultReady(Meta::ArtistList)), Qt::QueuedConnection );
     return qm;
 }
 
@@ -157,8 +157,8 @@ SynchronizationBaseJob::setupAlbumQuery( Collections::Collection *coll )
 {
     Collections::QueryMaker *qm = createQueryMaker( coll );
     qm->setQueryType( Collections::QueryMaker::Album );
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SLOT( slotResultReady(Meta::AlbumList) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL(queryDone()), this, SLOT(slotQueryDone()), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::AlbumList)), this, SLOT(slotResultReady(Meta::AlbumList)), Qt::QueuedConnection );
     return qm;
 }
 
@@ -167,8 +167,8 @@ SynchronizationBaseJob::setupTrackQuery( Collections::Collection *coll )
 {
     Collections::QueryMaker *qm = createQueryMaker( coll );
     qm->setQueryType( Collections::QueryMaker::Track );
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( slotResultReady(Meta::TrackList) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL(queryDone()), this, SLOT(slotQueryDone()), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(slotResultReady(Meta::TrackList)), Qt::QueuedConnection );
     return qm;
 }
 
@@ -442,10 +442,10 @@ SynchronizationBaseJob::handleTrackResult()
     }
     qmA->endAndOr();
     qmB->endAndOr();
-    connect( qmA, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( slotSyncTracks( Meta::TrackList ) ) );
-    connect( qmB, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( slotSyncTracks( Meta::TrackList ) ) );
-    connect( qmA, SIGNAL( queryDone() ), this, SLOT( slotSyncQueryDone() ) );
-    connect( qmB, SIGNAL( queryDone() ), this, SLOT( slotSyncQueryDone() ) );
+    connect( qmA, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(slotSyncTracks(Meta::TrackList)) );
+    connect( qmB, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(slotSyncTracks(Meta::TrackList)) );
+    connect( qmA, SIGNAL(queryDone()), this, SLOT(slotSyncQueryDone()) );
+    connect( qmB, SIGNAL(queryDone()), this, SLOT(slotSyncQueryDone()) );
     m_timer.start();
     if( haveToStartQueryA )
     {

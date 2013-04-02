@@ -75,7 +75,7 @@ void InfoApplet::init()
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
     layout->addItem( m_webView );
 
-    connect( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ), SLOT( linkClicked ( const QUrl & ) ) );
+    connect( m_webView->page(), SIGNAL(linkClicked(QUrl)), SLOT(linkClicked(QUrl)) );
 
     updateConstraints();
 }

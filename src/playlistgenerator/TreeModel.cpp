@@ -220,7 +220,7 @@ void
 APG::TreeModel::connectDCSlotToNode( ConstraintNode* n )
 {
     if ( n ) {
-        connect( n, SIGNAL( dataChanged() ), this, SLOT ( slotConstraintDataChanged() ) );
+        connect( n, SIGNAL(dataChanged()), this, SLOT (slotConstraintDataChanged()) );
         int rc = n->getRowCount();
         for ( int i = 0; i < rc; i++ ) {
             connectDCSlotToNode( n->getChild( i ) );

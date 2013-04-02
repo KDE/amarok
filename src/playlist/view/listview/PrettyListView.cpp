@@ -98,34 +98,34 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setFrameShape( QFrame::NoFrame );
     setAlternatingRowColors( true) ;
     The::paletteHandler()->updateItemView( this );
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(newPalette(QPalette)) );
 
     setAutoFillBackground( false );
 
 
     // Signal connections
-    connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ),
-             this, SLOT( trackActivated( const QModelIndex& ) ) );
-    connect( selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
-             this, SLOT( slotSelectionChanged() ) );
+    connect( this, SIGNAL(doubleClicked(QModelIndex)),
+             this, SLOT(trackActivated(QModelIndex)) );
+    connect( selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+             this, SLOT(slotSelectionChanged()) );
 
-    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
+    connect( LayoutManager::instance(), SIGNAL(activeLayoutChanged()), this, SLOT(playlistLayoutChanged()) );
 
-    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( slotPlaylistActiveTrackChanged() ) );
+    connect( model(), SIGNAL(activeTrackChanged(quint64)), this, SLOT(slotPlaylistActiveTrackChanged()) );
 
-    connect( model(), SIGNAL( queueChanged() ), viewport(), SLOT( update() ) );
+    connect( model(), SIGNAL(queueChanged()), viewport(), SLOT(update()) );
 
     //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->bottom()'.
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(bottomModelRowsInserted(QModelIndex,int,int)) );
 
 
     // Timers
     m_proxyUpdateTimer = new QTimer( this );
     m_proxyUpdateTimer->setSingleShot( true );
-    connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
+    connect( m_proxyUpdateTimer, SIGNAL(timeout()), this, SLOT(updateProxyTimeout()) );
 
     m_animationTimer = new QTimer(this);
-    connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
+    connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(redrawActive()) );
     m_animationTimer->setInterval( 250 );
 
     playlistLayoutChanged();
@@ -369,7 +369,7 @@ Playlist::PrettyListView::selectionModel_setCurrentIndex( const QModelIndex &ind
 void
 Playlist::PrettyListView::showEvent( QShowEvent* event )
 {
-    QTimer::singleShot( 0, this, SLOT( fixInvisible() ) );
+    QTimer::singleShot( 0, this, SLOT(fixInvisible()) );
 
     QListView::showEvent( event );
 }
@@ -733,7 +733,7 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
     if( m_pd )
     {
         debug() << "clearing PUD";
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
         m_pd->hide();
     }
     ongoingDrags = false;
@@ -976,7 +976,7 @@ Playlist::PrettyListView::bottomModelRowsInserted( const QModelIndex& parent, in
     if( m_rowsInsertedScrollItem == 0 )
     {
         m_rowsInsertedScrollItem = Playlist::ModelStack::instance()->bottom()->idAt( start );
-        QTimer::singleShot( 0, this, SLOT( bottomModelRowsInsertedScroll() ) );
+        QTimer::singleShot( 0, this, SLOT(bottomModelRowsInsertedScroll()) );
     }
 }
 
@@ -1040,7 +1040,7 @@ void Playlist::PrettyListView::playlistLayoutChanged()
     update();
 
     // Schedule a re-scroll to the active playlist row. Assumption: Qt will run this *after* the repaint.
-    QTimer::singleShot( 0, this, SLOT( slotPlaylistActiveTrackChanged() ) );
+    QTimer::singleShot( 0, this, SLOT(slotPlaylistActiveTrackChanged()) );
 }
 
 #include "PrettyListView.moc"

@@ -135,8 +135,8 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
     if( m_range.from.isValid() )
         fromEdit->setDateTime( m_range.from );
 
-    connect( fromEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ),
-             this, SLOT( fromDateChanged( const QDateTime& ) ) );
+    connect( fromEdit, SIGNAL(dateTimeChanged(QDateTime)),
+             this, SLOT(fromDateChanged(QDateTime)) );
     label->setBuddy( fromEdit );
     layout->addWidget( label );
     layout->addWidget( fromEdit );
@@ -149,8 +149,8 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
     if( m_range.to.isValid() )
         toEdit->setDateTime( m_range.to );
 
-    connect( toEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ),
-             this, SLOT( toDateChanged( const QDateTime& ) ) );
+    connect( toEdit, SIGNAL(dateTimeChanged(QDateTime)),
+             this, SLOT(toDateChanged(QDateTime)) );
     label->setBuddy( toEdit );
     layout->addWidget( label );
     layout->addWidget( toEdit );
@@ -263,8 +263,8 @@ Dynamic::WeeklyTopBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady( QStringList )),
-             this, SLOT(updateReady( QStringList )) );
+    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
+             this, SLOT(updateReady(QStringList)) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
 
@@ -283,8 +283,8 @@ Dynamic::WeeklyTopBias::newWeeklyTimesQuery()
 
     m_weeklyTimesJob = lastfm::ws::get( params );
 
-    connect( m_weeklyTimesJob, SIGNAL( finished() ),
-             this, SLOT( weeklyTimesQueryFinished() ) );
+    connect( m_weeklyTimesJob, SIGNAL(finished()),
+             this, SLOT(weeklyTimesQueryFinished()) );
 }
 
 
@@ -329,8 +329,8 @@ void Dynamic::WeeklyTopBias::newWeeklyArtistQuery()
                 params[ "to" ] = QString::number( m_weeklyToTimes[m_weeklyFromTimes.indexOf(lastWeekTime)] );
 
                 QNetworkReply* reply = lastfm::ws::get( params );
-                connect( reply, SIGNAL( finished() ),
-                         this, SLOT( weeklyArtistQueryFinished() ) );
+                connect( reply, SIGNAL(finished()),
+                         this, SLOT(weeklyArtistQueryFinished()) );
 
                 m_weeklyArtistJobs.insert( lastWeekTime, reply );
 

@@ -49,7 +49,7 @@ ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceColle
     m_collection = collection;
     m_name = name;
 
-    connect( collection, SIGNAL( updateComplete() ), this, SLOT( slotScriptComplete() ) );
+    connect( collection, SIGNAL(updateComplete()), this, SLOT(slotScriptComplete()) );
 
     d->type = Private::NONE;
     d->closestParent = Private::NONE;
@@ -84,7 +84,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT( fetchGenre() ) );
+        QTimer::singleShot( 0, this, SLOT(fetchGenre()) );
     }
     else if ( d->type == Private::ARTIST )
     {
@@ -92,7 +92,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT( fetchArtists() ) );
+        QTimer::singleShot( 0, this, SLOT(fetchArtists()) );
     }
     else if ( d->type == Private::ALBUM )
     {
@@ -100,7 +100,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT( fetchAlbums() ) );
+        QTimer::singleShot( 0, this, SLOT(fetchAlbums()) );
     }
     else if ( d->type == Private::TRACK )
     {
@@ -108,7 +108,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT( fetchTracks() ) );
+        QTimer::singleShot( 0, this, SLOT(fetchTracks()) );
     }
 
 }

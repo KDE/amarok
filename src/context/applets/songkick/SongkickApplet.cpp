@@ -73,7 +73,7 @@ void SongkickApplet::init()
     reloadAction->setEnabled( true );
     m_reloadIcon = addAction( reloadAction );
 
-    connect( m_reloadIcon, SIGNAL( clicked() ), dataEngine( "amarok-songkick" ), SLOT( update() ) );
+    connect( m_reloadIcon, SIGNAL(clicked()), dataEngine( "amarok-songkick" ), SLOT(update()) );
 
     m_songkickProxy = new QGraphicsProxyWidget( this );
     m_songkick = new QTextBrowser;
@@ -95,8 +95,8 @@ void SongkickApplet::init()
                                     .arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
                                     .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
 
-    connect( dataEngine( "amarok-songkick" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
+    connect( dataEngine( "amarok-songkick" ), SIGNAL(sourceAdded(QString)), this, SLOT(connectSource(QString)) );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
 
     constraintsEvent();
     connectSource( "ontour" );

@@ -37,19 +37,19 @@ bool signer::setParams(int argc, char** argv)
 
 		// first code block: generate key pair and save to local files
 		if ( strcmp( argv[1], "keygen" ) == 0 ) {
-			QTimer::singleShot( 0, this, SLOT( keygen() ) );
+			QTimer::singleShot( 0, this, SLOT(keygen()) );
 			return 1;
 
 		// second code block: sign a given file
 		} else if ( strcmp( argv[1], "sign" ) == 0 ) {
 			m_privkeyFilename = argv[2];
-			QTimer::singleShot( 0, this, SLOT( signFile() ) );
+			QTimer::singleShot( 0, this, SLOT(signFile()) );
 
 			return 1;
 		// third code block: check a given file
 		} else if ( strcmp( argv[1], "check" ) == 0 ) {
 			m_pubkeyFilename = argv[2];
-			QTimer::singleShot( 0, this, SLOT( checkSignature() ) );
+			QTimer::singleShot( 0, this, SLOT(checkSignature()) );
 			return 1;
 		}
 	} 

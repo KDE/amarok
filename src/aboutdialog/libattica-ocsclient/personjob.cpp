@@ -44,7 +44,7 @@ void PersonJob::setUrl( const KUrl &url )
 
 void PersonJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT( doWork() ) );
+  QTimer::singleShot( 0, this, SLOT(doWork()) );
 }
 
 Person PersonJob::person() const
@@ -57,10 +57,10 @@ void PersonJob::doWork()
   qDebug() << m_url;
 
   m_job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
-  connect( m_job, SIGNAL( result( KJob * ) ),
-    SLOT( slotUserJobResult( KJob * ) ) );
-  connect( m_job, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
-    SLOT( slotUserJobData( KIO::Job *, const QByteArray & ) ) );
+  connect( m_job, SIGNAL(result(KJob*)),
+    SLOT(slotUserJobResult(KJob*)) );
+  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
+    SLOT(slotUserJobData(KIO::Job*,QByteArray)) );
 }
 
 void PersonJob::slotUserJobResult( KJob *job )
@@ -81,10 +81,10 @@ void PersonJob::slotUserJobResult( KJob *job )
 
       m_job = KIO::get( m_person.avatarUrl(), KIO::NoReload,
         KIO::HideProgressInfo );
-      connect( m_job, SIGNAL( result( KJob * ) ),
-        SLOT( slotAvatarJobResult( KJob * ) ) );
-      connect( m_job, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
-        SLOT( slotAvatarJobData( KIO::Job *, const QByteArray & ) ) );
+      connect( m_job, SIGNAL(result(KJob*)),
+        SLOT(slotAvatarJobResult(KJob*)) );
+      connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
+        SLOT(slotAvatarJobData(KIO::Job*,QByteArray)) );
     } else {
       emitResult();
     }

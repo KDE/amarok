@@ -77,7 +77,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_addFolderAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
     m_addFolderAction->setPriority( QAction::LowPriority );
     m_toolBar->addAction( m_addFolderAction );
-    connect( m_addFolderAction, SIGNAL( triggered( bool ) ), SLOT( createNewFolder() ) );
+    connect( m_addFolderAction, SIGNAL(triggered(bool)), SLOT(createNewFolder()) );
 
     m_providerMenu = new KActionMenu( KIcon( "checkbox" ), i18n( "Visible Sources"), this );
     m_providerMenu->setDelayed( false );
@@ -90,7 +90,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     toggleAction->setChecked( Amarok::config( m_configGroup ).readEntry( s_mergeViewKey, false ) );
     toggleAction->setPriority( QAction::LowPriority );
     m_toolBar->addAction( toggleAction );
-    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
+    connect( toggleAction, SIGNAL(triggered(bool)), SLOT(toggleView(bool)) );
 
     m_toolBar->addSeparator();
 
@@ -128,13 +128,13 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
         createProviderButton( provider );
     }
 
-    connect( The::playlistManager(), SIGNAL(providerAdded( Playlists::PlaylistProvider*, int )),
-             SLOT(slotProviderAdded( Playlists::PlaylistProvider*, int )) );
-    connect( The::playlistManager(), SIGNAL(providerRemoved( Playlists::PlaylistProvider*, int )),
-             SLOT(slotProviderRemoved( Playlists::PlaylistProvider*, int )) );
+    connect( The::playlistManager(), SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)),
+             SLOT(slotProviderAdded(Playlists::PlaylistProvider*,int)) );
+    connect( The::playlistManager(), SIGNAL(providerRemoved(Playlists::PlaylistProvider*,int)),
+             SLOT(slotProviderRemoved(Playlists::PlaylistProvider*,int)) );
 
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ),
-             SLOT( newPalette( const QPalette & ) ) );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)),
+             SLOT(newPalette(QPalette)) );
 }
 
 PlaylistBrowserCategory::~PlaylistBrowserCategory()

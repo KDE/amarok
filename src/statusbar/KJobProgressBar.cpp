@@ -19,9 +19,9 @@
 KJobProgressBar::KJobProgressBar( QWidget *parent, KJob * job )
         : ProgressBar( parent )
 {
-    connect( job, SIGNAL( percent( KJob*, unsigned long ) ),  SLOT( updateJobStatus( KJob *, unsigned long ) ) );
-    connect( job, SIGNAL( result( KJob* ) ), SLOT( delayedDone() ) );
-    connect( job, SIGNAL( infoMessage( KJob*, QString, QString ) ), SLOT( infoMessage(KJob*, QString, QString ) ) );
+    connect( job, SIGNAL(percent(KJob*,ulong)),  SLOT(updateJobStatus(KJob*,ulong)) );
+    connect( job, SIGNAL(result(KJob*)), SLOT(delayedDone()) );
+    connect( job, SIGNAL(infoMessage(KJob*,QString,QString)), SLOT(infoMessage(KJob*,QString,QString)) );
 }
 
 

@@ -105,7 +105,7 @@ TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, 
     m_wrench = new Wrench( this );
     m_wrench->installEventFilter( this );
     m_wrench->hide();
-    connect ( m_wrench, SIGNAL( clicked() ), this, SLOT( showConfig() ) );
+    connect ( m_wrench, SIGNAL(clicked()), this, SLOT(showConfig()) );
     setFocusPolicy( Qt::ClickFocus );
 }
 

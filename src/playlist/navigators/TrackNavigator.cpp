@@ -36,10 +36,10 @@ Playlist::TrackNavigator::TrackNavigator()
     // Connect to the QAbstractItemModel signals of the source model.
     //   Ignore SIGNAL dataChanged: we don't need to know when a playlist item changes.
     //   Ignore SIGNAL layoutChanged: we don't need to know when rows are moved around.
-    connect( m_model->qaim(), SIGNAL( modelReset() ), this, SLOT( slotModelReset() ) );
+    connect( m_model->qaim(), SIGNAL(modelReset()), this, SLOT(slotModelReset()) );
     connect( Playlist::ModelStack::instance()->bottom(),
-             SIGNAL( rowsAboutToBeRemoved( QModelIndex, int, int ) ),
-             SLOT( slotRowsAboutToBeRemoved( QModelIndex, int, int ) ) );
+             SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+             SLOT(slotRowsAboutToBeRemoved(QModelIndex,int,int)) );
     //   Ignore SIGNAL rowsInserted.
 }
 

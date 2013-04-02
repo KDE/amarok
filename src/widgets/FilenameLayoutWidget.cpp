@@ -150,23 +150,23 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 
     m_mainLayout->addWidget( schemeGroup );
 
-    connect( m_tokenPool, SIGNAL( onDoubleClick( Token * ) ),
-             m_dropTarget, SLOT( insertToken( Token* ) ) );
-    connect( m_advancedButton, SIGNAL( clicked() ),
-             this, SLOT( toggleAdvancedMode() ) );
-    connect( m_dropTarget, SIGNAL( changed() ),
-             this, SIGNAL( schemeChanged() ) );
-    connect( m_dropTarget, SIGNAL( changed() ),
-             this, SLOT( slotUpdatePresetButton() ) );
-    connect( m_addPresetButton, SIGNAL( clicked( bool ) ),
-             this, SLOT( slotAddFormat() ) );
-    connect( m_removePresetButton, SIGNAL( clicked( bool ) ),
-             this, SLOT( slotRemoveFormat() ) );
-    connect( m_updatePresetButton, SIGNAL( clicked( bool ) ),
-             this, SLOT( slotUpdateFormat() ) );
+    connect( m_tokenPool, SIGNAL(onDoubleClick(Token*)),
+             m_dropTarget, SLOT(insertToken(Token*)) );
+    connect( m_advancedButton, SIGNAL(clicked()),
+             this, SLOT(toggleAdvancedMode()) );
+    connect( m_dropTarget, SIGNAL(changed()),
+             this, SIGNAL(schemeChanged()) );
+    connect( m_dropTarget, SIGNAL(changed()),
+             this, SLOT(slotUpdatePresetButton()) );
+    connect( m_addPresetButton, SIGNAL(clicked(bool)),
+             this, SLOT(slotAddFormat()) );
+    connect( m_removePresetButton, SIGNAL(clicked(bool)),
+             this, SLOT(slotRemoveFormat()) );
+    connect( m_updatePresetButton, SIGNAL(clicked(bool)),
+             this, SLOT(slotUpdateFormat()) );
 
-    connect( m_filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
-             this, SIGNAL( schemeChanged() ) );
+    connect( m_filenameLayoutEdit, SIGNAL(textChanged(QString)),
+             this, SIGNAL(schemeChanged()) );
 debug() << "st3.1";
 }
 
@@ -380,7 +380,7 @@ FilenameLayoutWidget::populateFormatList()
         m_presetCombo->setCurrentIndex( selected_index );
 
     slotFormatPresetSelected( selected_index );
-    connect( m_presetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotFormatPresetSelected( int ) ) );
+    connect( m_presetCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(slotFormatPresetSelected(int)) );
 }
 
 void

@@ -51,7 +51,7 @@ CoverBling::CoverBling( QWidget* parent )
     qm->setQueryType( QueryMaker::Album );
     qm->limitMaxResultSize( 10 );
 
-    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SLOT( queryResult( Meta::AlbumList ) ) );
+    connect( qm, SIGNAL(newResultReady(Meta::AlbumList)), this, SLOT(queryResult(Meta::AlbumList)) );
 
     qm->run();
 }
@@ -63,7 +63,7 @@ CoverBling::queryResult( Meta::AlbumList albums )
         m_covers << album->image();
 
     QTimer* timer = new QTimer( this );
-    connect( timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
+    connect( timer, SIGNAL(timeout()), this, SLOT(updateGL()) );
     timer->start( 20 ); //50fps
 }
 

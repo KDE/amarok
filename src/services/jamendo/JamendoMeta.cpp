@@ -135,7 +135,7 @@ Meta::JamendoTrack::customActions()
         m_downloadCustomAction = new QAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
         m_downloadCustomAction->setProperty( "popupdropper_svg_id", "download" );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
-        QObject::connect( m_downloadCustomAction, SIGNAL( activated() ), jAlbum->service(), SLOT( download() ) );
+        QObject::connect( m_downloadCustomAction, SIGNAL(activated()), jAlbum->service(), SLOT(download()) );
     }
 
     actions.append( m_downloadCustomAction );
@@ -153,7 +153,7 @@ Meta::JamendoTrack::currentTrackActions()
         m_downloadCurrentTrackAction = new QAction( KIcon("download-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
         m_downloadCurrentTrackAction->setProperty( "popupdropper_svg_id", "download" );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
-        QObject::connect( m_downloadCurrentTrackAction, SIGNAL( activated() ), jAlbum->service(), SLOT( downloadCurrentTrackAlbum() ) );
+        QObject::connect( m_downloadCurrentTrackAction, SIGNAL(activated()), jAlbum->service(), SLOT(downloadCurrentTrackAlbum()) );
     }
 
     actions.append( m_downloadCurrentTrackAction );
@@ -371,7 +371,7 @@ Meta::JamendoAlbum::customActions()
     QAction * action = new QAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
     action->setProperty( "popupdropper_svg_id", "download" );
 
-    QObject::connect( action, SIGNAL( activated() ) , m_service, SLOT( download() ) );
+    QObject::connect( action, SIGNAL(activated()) , m_service, SLOT(download()) );
 
     actions.append( action );
     return actions;

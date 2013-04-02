@@ -189,19 +189,19 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     QMenu *filterMenu = new QMenu( 0 );
 
     QAction *action = new QAction( i18n( "Artist / Album" ), this );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum()) );
     filterMenu->addAction( action );
 
     action = new QAction( i18n( "Album / Artist" ), this );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByAlbumArtist() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByAlbumArtist()) );
     filterMenu->addAction( action );
 
     action = new QAction( i18n( "Genre / Artist" ), this );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByGenreArtist() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtist()) );
     filterMenu->addAction( action );
 
     action = new QAction( i18n( "Genre / Artist / Album" ), this );
-    connect( action, SIGNAL(triggered( bool ) ), SLOT( sortByGenreArtistAlbum() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum()) );
     filterMenu->addAction( action );
 
     filterMenu->addSeparator();
@@ -253,9 +253,9 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
         d->levelGroups[i] = actionGroup;
     }
 
-    connect( d->menuLevel[0], SIGNAL( triggered( QAction *) ), SLOT( sortLevelSelected( QAction * ) ) );
-    connect( d->menuLevel[1], SIGNAL( triggered( QAction *) ), SLOT( sortLevelSelected( QAction * ) ) );
-    connect( d->menuLevel[2], SIGNAL( triggered( QAction *) ), SLOT( sortLevelSelected( QAction * ) ) );
+    connect( d->menuLevel[0], SIGNAL(triggered(QAction*)), SLOT(sortLevelSelected(QAction*)) );
+    connect( d->menuLevel[1], SIGNAL(triggered(QAction*)), SLOT(sortLevelSelected(QAction*)) );
+    connect( d->menuLevel[2], SIGNAL(triggered(QAction*)), SLOT(sortLevelSelected(QAction*)) );
 
 
     // -- create the checkboxes
@@ -264,17 +264,17 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     QAction *showYears = filterMenu->addAction( i18n( "Show Years" ) );
     showYears->setCheckable( true );
     showYears->setChecked( AmarokConfig::showYears() );
-    connect( showYears, SIGNAL( toggled( bool ) ), SLOT( slotShowYears( bool ) ) );
+    connect( showYears, SIGNAL(toggled(bool)), SLOT(slotShowYears(bool)) );
 
     QAction *showTrackNumbers = filterMenu->addAction( i18nc("@action:inmenu", "Show Track Numbers") );
     showTrackNumbers->setCheckable( true );
     showTrackNumbers->setChecked( AmarokConfig::showTrackNumbers() );
-    connect( showTrackNumbers, SIGNAL( toggled( bool ) ), SLOT( slotShowTrackNumbers( bool ) ) );
+    connect( showTrackNumbers, SIGNAL(toggled(bool)), SLOT(slotShowTrackNumbers(bool)) );
 
     QAction *showCovers = filterMenu->addAction( i18n( "Show Cover Art" ) );
     showCovers->setCheckable( true );
     showCovers->setChecked( AmarokConfig::showAlbumArt() );
-    connect( showCovers, SIGNAL(toggled(bool)), SLOT( slotShowCovers( bool ) ) );
+    connect( showCovers, SIGNAL(toggled(bool)), SLOT(slotShowCovers(bool)) );
 
 
     d->searchWidget->toolBar()->addSeparator();
@@ -283,7 +283,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     toggleAction->setCheckable( true );
     toggleAction->setChecked( d->viewMode == CollectionWidget::UnifiedCollection );
     toggleView( d->viewMode == CollectionWidget::UnifiedCollection );
-    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
+    connect( toggleAction, SIGNAL(triggered(bool)), SLOT(toggleView(bool)) );
     d->searchWidget->toolBar()->addAction( toggleAction );
 
     KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
@@ -431,8 +431,8 @@ void CollectionWidget::toggleView( bool merged )
         d->searchWidget->disconnect( oldView );
 
     CollectionBrowserTreeView *newView = d->view( newMode );
-    connect( d->searchWidget, SIGNAL( filterChanged( const QString & ) ),
-             newView, SLOT( slotSetFilter( const QString & ) ) );
+    connect( d->searchWidget, SIGNAL(filterChanged(QString)),
+             newView, SLOT(slotSetFilter(QString)) );
     if( d->stack->indexOf( newView ) == -1 )
         d->stack->addWidget( newView );
     d->stack->setCurrentWidget( newView );

@@ -390,9 +390,9 @@ OpmlDirectoryModel::fetchMore( const QModelIndex &parent )
 
     OpmlParser *parser = new OpmlParser( urlToFetch );
     connect( parser, SIGNAL(headerDone()), SLOT(slotOpmlHeaderDone()) );
-    connect( parser, SIGNAL( outlineParsed( OpmlOutline * ) ),
-             SLOT( slotOpmlOutlineParsed( OpmlOutline * ) ) );
-    connect( parser, SIGNAL( doneParsing() ), SLOT( slotOpmlParsingDone() ) );
+    connect( parser, SIGNAL(outlineParsed(OpmlOutline*)),
+             SLOT(slotOpmlOutlineParsed(OpmlOutline*)) );
+    connect( parser, SIGNAL(doneParsing()), SLOT(slotOpmlParsingDone()) );
 
     m_currentFetchingMap.insert( parser, parent );
 

@@ -225,17 +225,17 @@ Dynamic::PartBiasWidget::PartBiasWidget( Dynamic::PartBias* bias, QWidget* paren
     , m_inSignal( false )
     , m_bias( bias )
 {
-    connect( bias, SIGNAL( biasAppended( Dynamic::BiasPtr ) ),
-             this, SLOT( biasAppended( Dynamic::BiasPtr ) ) );
+    connect( bias, SIGNAL(biasAppended(Dynamic::BiasPtr)),
+             this, SLOT(biasAppended(Dynamic::BiasPtr)) );
 
-    connect( bias, SIGNAL( biasRemoved( int ) ),
-             this, SLOT( biasRemoved( int ) ) );
+    connect( bias, SIGNAL(biasRemoved(int)),
+             this, SLOT(biasRemoved(int)) );
 
-    connect( bias, SIGNAL( biasMoved( int, int ) ),
-             this, SLOT( biasMoved( int, int ) ) );
+    connect( bias, SIGNAL(biasMoved(int,int)),
+             this, SLOT(biasMoved(int,int)) );
 
-    connect( bias, SIGNAL( weightsChanged() ),
-             this, SLOT( biasWeightsChanged() ) );
+    connect( bias, SIGNAL(weightsChanged()),
+             this, SLOT(biasWeightsChanged()) );
 
     m_layout = new QGridLayout( this );
 

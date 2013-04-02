@@ -100,47 +100,47 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     if ( layoutListWidget->currentItem() )
         setLayout( layoutListWidget->currentItem()->text() );
 
-    connect( previewButton, SIGNAL( clicked() ), this, SLOT( preview() ) );
-    connect( layoutListWidget, SIGNAL( currentTextChanged( const QString & ) ), this, SLOT( setLayout( const QString & ) ) );
-    connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleEditButtons() ) );
-    connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleUpDownButtons() ) );
+    connect( previewButton, SIGNAL(clicked()), this, SLOT(preview()) );
+    connect( layoutListWidget, SIGNAL(currentTextChanged(QString)), this, SLOT(setLayout(QString)) );
+    connect( layoutListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(toggleEditButtons()) );
+    connect( layoutListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(toggleUpDownButtons()) );
 
-    connect( moveUpButton, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
-    connect( moveDownButton, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
+    connect( moveUpButton, SIGNAL(clicked()), this, SLOT(moveUp()) );
+    connect( moveDownButton, SIGNAL(clicked()), this, SLOT(moveDown()) );
 
     buttonBox->button(QDialogButtonBox::Apply)->setIcon( KIcon( "dialog-ok-apply" ) );
     buttonBox->button(QDialogButtonBox::Ok)->setIcon( KIcon( "dialog-ok" ) );
     buttonBox->button(QDialogButtonBox::Cancel)->setIcon( KIcon( "dialog-cancel" ) );
-    connect( buttonBox->button(QDialogButtonBox::Apply), SIGNAL( clicked() ), this, SLOT( apply() ) );
+    connect( buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()) );
 
     const KIcon newIcon( "document-new" );
     newLayoutButton->setIcon( newIcon );
     newLayoutButton->setToolTip( i18n( "New playlist layout" ) );
-    connect( newLayoutButton, SIGNAL( clicked() ), this, SLOT( newLayout() ) );
+    connect( newLayoutButton, SIGNAL(clicked()), this, SLOT(newLayout()) );
 
     const KIcon copyIcon( "edit-copy" );
     copyLayoutButton->setIcon( copyIcon );
     copyLayoutButton->setToolTip( i18n( "Copy playlist layout" ) );
-    connect( copyLayoutButton, SIGNAL( clicked() ), this, SLOT( copyLayout() ) );
+    connect( copyLayoutButton, SIGNAL(clicked()), this, SLOT(copyLayout()) );
 
     const KIcon deleteIcon( "edit-delete" );
     deleteLayoutButton->setIcon( deleteIcon );
     deleteLayoutButton->setToolTip( i18n( "Delete playlist layout" ) );
-    connect( deleteLayoutButton, SIGNAL( clicked() ), this, SLOT( deleteLayout() ) );
+    connect( deleteLayoutButton, SIGNAL(clicked()), this, SLOT(deleteLayout()) );
 
     const KIcon renameIcon( "edit-rename" );
     renameLayoutButton->setIcon( renameIcon );
     renameLayoutButton->setToolTip( i18n( "Rename playlist layout" ) );
-    connect( renameLayoutButton, SIGNAL( clicked() ), this, SLOT( renameLayout() ) );
+    connect( renameLayoutButton, SIGNAL(clicked()), this, SLOT(renameLayout()) );
 
     toggleEditButtons();
     toggleUpDownButtons();
 
     for( int part = 0; part < PlaylistLayout::NumParts; part++ )
-        connect( m_partsEdit[part], SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
-    connect( inlineControlsChekbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
-    connect( tooltipsCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
-    connect( groupByComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setLayoutChanged() ) );
+        connect( m_partsEdit[part], SIGNAL(changed()), this, SLOT(setLayoutChanged()) );
+    connect( inlineControlsChekbox, SIGNAL(stateChanged(int)), this, SLOT(setLayoutChanged()) );
+    connect( tooltipsCheckbox, SIGNAL(stateChanged(int)), this, SLOT(setLayoutChanged()) );
+    connect( groupByComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setLayoutChanged()) );
 }
 
 

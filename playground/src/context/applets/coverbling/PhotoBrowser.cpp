@@ -46,9 +46,9 @@ PhotoBrowser::PhotoBrowser( QWidget* parent, bool enableOpenGL ): PictureFlow( p
     d = new Private;
 
     d->updateTimer = new QTimer;
-    connect( d->updateTimer, SIGNAL( timeout() ), this, SLOT( updateImageData() ) );
+    connect( d->updateTimer, SIGNAL(timeout()), this, SLOT(updateImageData()) );
     d->worker = new ImageLoader;
-    connect( this, SIGNAL( centerIndexChanged( int ) ), this, SLOT( preload() ) );
+    connect( this, SIGNAL(centerIndexChanged(int)), this, SLOT(preload()) );
 	m_opengl = enableOpenGL;
 }
 

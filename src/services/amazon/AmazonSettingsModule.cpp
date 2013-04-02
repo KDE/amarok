@@ -37,7 +37,7 @@ AmazonSettingsModule::AmazonSettingsModule( QWidget *parent, const QVariantList 
     m_configDialog = new Ui::AmazonConfigWidget;
     m_configDialog->setupUi( this );
 
-    connect( m_configDialog->countrySelectionComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( settingsChanged() ) );
+    connect( m_configDialog->countrySelectionComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(settingsChanged()) );
 }
 
 AmazonSettingsModule::~AmazonSettingsModule()
@@ -131,7 +131,7 @@ AmazonSettingsModule::load()
          *
          * Workaround:
          */
-        QTimer::singleShot( 200, this, SLOT( settingsChanged() ) );
+        QTimer::singleShot( 200, this, SLOT(settingsChanged()) );
 
         /*
          * I'm going to burn in hell for that one, am I? :-/

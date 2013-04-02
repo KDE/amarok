@@ -90,10 +90,10 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     #endif
 
     m_timer->setSingleShot( true );
-    connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
+    connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
 
     m_fadeTimeLine->setUpdateInterval( 30 ); //~33 frames per second 
-    connect( m_fadeTimeLine, SIGNAL( valueChanged( qreal ) ), SLOT( setFadeOpacity( qreal ) ) );
+    connect( m_fadeTimeLine, SIGNAL(valueChanged(qreal)), SLOT(setFadeOpacity(qreal)) );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -643,23 +643,23 @@ Amarok::OSD::OSD()
     if( engine->isPlaying() )
         trackPlaying( engine->currentTrack() );
 
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
-    connect( engine, SIGNAL( paused() ),
-             this, SLOT( paused() ) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(trackPlaying(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped()) );
+    connect( engine, SIGNAL(paused()),
+             this, SLOT(paused()) );
 
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( metadataChanged() ) );
-    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
-             this, SLOT( metadataChanged() ) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(metadataChanged()) );
+    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
+             this, SLOT(metadataChanged()) );
 
-    connect( engine, SIGNAL( volumeChanged( int ) ),
-             this, SLOT( volumeChanged( int ) ) );
+    connect( engine, SIGNAL(volumeChanged(int)),
+             this, SLOT(volumeChanged(int)) );
 
-    connect( engine, SIGNAL( muteStateChanged( bool ) ),
-             this, SLOT( muteStateChanged( bool ) ) );
+    connect( engine, SIGNAL(muteStateChanged(bool)),
+             this, SLOT(muteStateChanged(bool)) );
 
 }
 

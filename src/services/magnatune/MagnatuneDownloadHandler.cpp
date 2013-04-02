@@ -81,7 +81,7 @@ void MagnatuneDownloadHandler::membershipDownload( int membershipType, const QSt
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_resultDownloadJob,
                                                         i18n( "Processing download" ) );
-    connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
+    connect( m_resultDownloadJob, SIGNAL(result(KJob*)), SLOT(xmlDownloadComplete(KJob*)) );
 }
 
 void MagnatuneDownloadHandler::xmlDownloadComplete( KJob * downloadJob )
@@ -109,15 +109,15 @@ void MagnatuneDownloadHandler::xmlDownloadComplete( KJob * downloadJob )
     if ( m_albumDownloader == 0 )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
-        connect( m_albumDownloader, SIGNAL( downloadComplete( bool ) ), this, SLOT( albumDownloadComplete( bool ) ) );
+        connect( m_albumDownloader, SIGNAL(downloadComplete(bool)), this, SLOT(albumDownloadComplete(bool)) );
     }
 
     if ( m_downloadDialog == 0 )
     {
         m_downloadDialog = new MagnatuneDownloadDialog( m_parent );
         m_downloadDialog->setModal( true );
-        connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo ) ) );
-        //connect( m_downloadDialog, SIGNAL( rejected () ), this, SLOT( albumPurchaseCancelled() ) );
+        connect( m_downloadDialog, SIGNAL(downloadAlbum(MagnatuneDownloadInfo)), m_albumDownloader, SLOT(downloadAlbum(MagnatuneDownloadInfo)) );
+        //connect( m_downloadDialog, SIGNAL(rejected()), this, SLOT(albumPurchaseCancelled()) );
 
     }
 

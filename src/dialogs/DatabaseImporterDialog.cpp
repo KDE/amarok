@@ -93,7 +93,7 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
 
     m_resultsPage = addPage( resultBox, i18n("Migrating") );
 
-    connect( this, SIGNAL( currentPageChanged(KPageWidgetItem*, KPageWidgetItem*) ), SLOT( pageChanged( KPageWidgetItem*, KPageWidgetItem* ) ) );
+    connect( this, SIGNAL(currentPageChanged(KPageWidgetItem*,KPageWidgetItem*)), SLOT(pageChanged(KPageWidgetItem*,KPageWidgetItem*)) );
 }
 
 DatabaseImporterDialog::~DatabaseImporterDialog()
@@ -137,16 +137,16 @@ DatabaseImporterDialog::selectImporter()
 
     delete m_importer;
     m_importer = DatabaseImporterFactory::createImporter( name, this );
-    connect( m_importer, SIGNAL( importSucceeded() ), this, SLOT( importSucceeded() ) );
-    connect( m_importer, SIGNAL( importFailed() ), this, SLOT( importFailed() ) );
-    connect( m_importer, SIGNAL( trackAdded( Meta::TrackPtr ) ), this, SLOT( importedTrack( Meta::TrackPtr ) ) );
-    connect( m_importer, SIGNAL( trackDiscarded( QString ) ), this, SLOT( discardedTrack( QString ) ) );
-    connect( m_importer, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ),
-             this, SLOT( matchedTrack( Meta::TrackPtr, QString ) ) );
-    connect( m_importer, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ),
-             this, SLOT( ambigousTrack( Meta::TrackList, QString ) ) );
-    connect( m_importer, SIGNAL( importError( QString ) ), this, SLOT( importError( QString ) ) );
-    connect( m_importer, SIGNAL( showMessage( QString ) ), this, SLOT( showMessage( QString ) ) );
+    connect( m_importer, SIGNAL(importSucceeded()), this, SLOT(importSucceeded()) );
+    connect( m_importer, SIGNAL(importFailed()), this, SLOT(importFailed()) );
+    connect( m_importer, SIGNAL(trackAdded(Meta::TrackPtr)), this, SLOT(importedTrack(Meta::TrackPtr)) );
+    connect( m_importer, SIGNAL(trackDiscarded(QString)), this, SLOT(discardedTrack(QString)) );
+    connect( m_importer, SIGNAL(trackMatchFound(Meta::TrackPtr,QString)),
+             this, SLOT(matchedTrack(Meta::TrackPtr,QString)) );
+    connect( m_importer, SIGNAL(trackMatchMultiple(Meta::TrackList,QString)),
+             this, SLOT(ambigousTrack(Meta::TrackList,QString)) );
+    connect( m_importer, SIGNAL(importError(QString)), this, SLOT(importError(QString)) );
+    connect( m_importer, SIGNAL(showMessage(QString)), this, SLOT(showMessage(QString)) );
 
     delete m_importerConfig;
     m_importerConfig = m_importer->configWidget( m_configBox );

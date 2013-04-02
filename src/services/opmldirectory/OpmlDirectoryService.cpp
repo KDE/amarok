@@ -135,7 +135,7 @@ void OpmlDirectoryService::polish()
 
     m_subscribeButton->setEnabled( false );
 
-    connect( m_subscribeButton, SIGNAL( clicked() ), this, SLOT( subscribe() ) );
+    connect( m_subscribeButton, SIGNAL(clicked()), this, SLOT(subscribe()) );
 
     m_addOpmlButton = new QPushButton( m_bottomPanel );
     m_addOpmlButton->setText( i18n( "Add OPML" ) );
@@ -145,8 +145,8 @@ void OpmlDirectoryService::polish()
     connect( m_addOpmlButton, SIGNAL(clicked()), model(), SLOT(slotAddOpmlAction()) );
 
     connect( view()->selectionModel(),
-             SIGNAL(selectionChanged( const QItemSelection &, const QItemSelection & )),
-             SLOT(slotSelectionChanged( const QItemSelection &, const QItemSelection & ))
+             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+             SLOT(slotSelectionChanged(QItemSelection,QItemSelection))
            );
 
     setInfoParser( new OpmlDirectoryInfoParser() );

@@ -86,7 +86,7 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
 
     gridHolder->setLayout( databaseLayout );
 
-    connect( m_connectionCombo, SIGNAL( currentIndexChanged( int ) ), SLOT( connectionChanged( int ) ) );
+    connect( m_connectionCombo, SIGNAL(currentIndexChanged(int)), SLOT(connectionChanged(int)) );
     connectionChanged( m_connectionCombo->currentIndex() ); // Make sure we sync the UI as appropriate
 
     m_smartMatchCheck = new QCheckBox( i18n( "Match tracks by meta tags" ), this );
@@ -116,7 +116,7 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
 
     artworkDirHolder->setLayout( artworkDirLayout );
 
-    connect( m_importArtworkCheck, SIGNAL( stateChanged( int ) ), SLOT( importArtworkChanged( int ) ) );
+    connect( m_importArtworkCheck, SIGNAL(stateChanged(int)), SLOT(importArtworkChanged(int)) );
 
     QWidget *spacer = new QWidget( this );
     spacer->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );

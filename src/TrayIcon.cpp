@@ -79,32 +79,32 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     updateMenu();
 
     const EngineController* engine = The::engineController();
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
-    connect( engine, SIGNAL( paused() ),
-             this, SLOT( paused() ) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(trackPlaying(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped()) );
+    connect( engine, SIGNAL(paused()),
+             this, SLOT(paused()) );
 
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( metadataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(metadataChanged(Meta::TrackPtr)) );
 
-    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
-             this, SLOT( metadataChanged( Meta::AlbumPtr ) ) );
+    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
+             this, SLOT(metadataChanged(Meta::AlbumPtr)) );
 
-    connect( engine, SIGNAL( volumeChanged( int ) ),
-             this, SLOT( updateToolTip() ) );
+    connect( engine, SIGNAL(volumeChanged(int)),
+             this, SLOT(updateToolTip()) );
 
-    connect( engine, SIGNAL( muteStateChanged( bool ) ),
-             this, SLOT( updateToolTip() ) );
+    connect( engine, SIGNAL(muteStateChanged(bool)),
+             this, SLOT(updateToolTip()) );
 
-    connect( engine, SIGNAL( playbackStateChanged() ),
-             this, SLOT( updateOverlayIcon() ) );
+    connect( engine, SIGNAL(playbackStateChanged()),
+             this, SLOT(updateOverlayIcon()) );
 
-    connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ),
-             SLOT( slotScrollRequested(int, Qt::Orientation) ) );
-    connect( this, SIGNAL( secondaryActivateRequested( const QPoint & ) ),
-             The::engineController(), SLOT( playPause() ) );
+    connect( this, SIGNAL(scrollRequested(int,Qt::Orientation)),
+             SLOT(slotScrollRequested(int,Qt::Orientation)) );
+    connect( this, SIGNAL(secondaryActivateRequested(QPoint)),
+             The::engineController(), SLOT(playPause()) );
 }
 
 void

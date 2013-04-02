@@ -224,7 +224,7 @@ TestSqlCollectionLocation::testOrganizingCopiesLabels()
 
         source->prepareMove( track, dest );
 
-        QTest::kWaitForSignal( source, SIGNAL( destroyed(QObject*) ), 1000 );
+        QTest::kWaitForSignal( source, SIGNAL(destroyed(QObject*)), 1000 );
 
         QCOMPARE( track->labels().count(), 1 );
         QVERIFY( track->playableUrl().path().endsWith( "b/IDoNotExist.mp3" ) );

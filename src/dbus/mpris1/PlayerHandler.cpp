@@ -78,10 +78,10 @@ namespace Mpris1
 
         EngineController *engine = The::engineController();
 
-        connect( engine, SIGNAL( playbackStateChanged() ),
-                 this, SLOT( slotStateChanged() ) );
-        connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-                 this, SLOT( slotTrackChanged( Meta::TrackPtr ) ) );
+        connect( engine, SIGNAL(playbackStateChanged()),
+                 this, SLOT(slotStateChanged()) );
+        connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+                 this, SLOT(slotTrackChanged(Meta::TrackPtr)) );
     }
 
     Status PlayerHandler::GetStatus()

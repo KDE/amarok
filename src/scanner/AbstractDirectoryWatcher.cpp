@@ -39,17 +39,17 @@ AbstractDirectoryWatcher::AbstractDirectoryWatcher()
 {
     m_delayedScanTimer = new QTimer( this );
     m_delayedScanTimer->setSingleShot( true );
-    connect( m_delayedScanTimer, SIGNAL( timeout() ), this, SLOT( delayTimeout() ) );
+    connect( m_delayedScanTimer, SIGNAL(timeout()), this, SLOT(delayTimeout()) );
 
     // -- create a new watcher
     m_watcher = new KDirWatch( this );
 
-    connect( m_watcher, SIGNAL( dirty(const QString &) ),
-             this, SLOT( delayedScan(const QString &) ) );
-    connect( m_watcher, SIGNAL( created(const QString &) ),
-             this, SLOT( delayedScan(const QString &) ) );
-    connect( m_watcher, SIGNAL( deleted(const QString &) ),
-             this, SLOT( delayedScan(const QString &) ) );
+    connect( m_watcher, SIGNAL(dirty(QString)),
+             this, SLOT(delayedScan(QString)) );
+    connect( m_watcher, SIGNAL(created(QString)),
+             this, SLOT(delayedScan(QString)) );
+    connect( m_watcher, SIGNAL(deleted(QString)),
+             this, SLOT(delayedScan(QString)) );
 
     m_watcher->startScan( false );
 }

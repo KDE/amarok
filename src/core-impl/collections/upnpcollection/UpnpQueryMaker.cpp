@@ -38,14 +38,14 @@ UpnpQueryMaker::UpnpQueryMaker( UpnpSearchCollection *collection )
     reset();
     connect( m_internalQM, SIGNAL(done()), this, SLOT(slotDone()) );
 
-    connect( m_internalQM, SIGNAL( newResultReady( Meta::TrackList ) ),
-             this, SLOT( handleTracks(Meta::TrackList)) );
-    connect( m_internalQM, SIGNAL( newResultReady( Meta::ArtistList ) ),
-             this, SLOT( handleArtists(Meta::ArtistList)) );
-    connect( m_internalQM, SIGNAL( newResultReady( Meta::AlbumList ) ),
-             this, SLOT( handleAlbums(Meta::AlbumList)) );
-    connect( m_internalQM, SIGNAL( newResultReady( const KIO::UDSEntryList & ) ),
-             this, SLOT( handleCustom( const KIO::UDSEntryList &)) );
+    connect( m_internalQM, SIGNAL(newResultReady(Meta::TrackList)),
+             this, SLOT(handleTracks(Meta::TrackList)) );
+    connect( m_internalQM, SIGNAL(newResultReady(Meta::ArtistList)),
+             this, SLOT(handleArtists(Meta::ArtistList)) );
+    connect( m_internalQM, SIGNAL(newResultReady(Meta::AlbumList)),
+             this, SLOT(handleAlbums(Meta::AlbumList)) );
+    connect( m_internalQM, SIGNAL(newResultReady(KIO::UDSEntryList)),
+             this, SLOT(handleCustom(KIO::UDSEntryList)) );
 }
 
 UpnpQueryMaker::~UpnpQueryMaker()
