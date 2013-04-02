@@ -107,7 +107,7 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
 
         /** Cleans up all the stuff that the processor picked up through
          *  the commit methods.
-         *  This functin is called by scanSucceeded and scanFailed.
+         *  This function is called by scanSucceeded and scanFailed.
          */
         virtual void cleanupMembers();
 

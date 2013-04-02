@@ -126,7 +126,7 @@ private:
     bool m_horizontalStretch;
 
     /** True if a stretch is inserted as a last row.
-        For now we always have a vertical strech if the m_rowLimit > 1 */
+        For now we always have a vertical stretch if the m_rowLimit > 1 */
     bool m_verticalStretch;
 
     TokenFactory *m_tokenFactory;

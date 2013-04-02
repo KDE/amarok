@@ -61,7 +61,7 @@ class AMAROK_EXPORT GenericScanManager : public QObject
             A partial update scan is an update scan that does not cover all directories, so
             the processor cannot rely on getting all directories from the scanner
 
-            TODO: the ScanResultProcessor should be smart enought to figure out if directories
+            TODO: the ScanResultProcessor should be smart enough to figure out if directories
             should be removed.
          */
         enum ScanType

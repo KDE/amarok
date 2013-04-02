@@ -61,7 +61,7 @@ class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
 
         /** Does general response verification.
             Emits finished if something is fishy.
-            @returns true if the check was successfull.
+            @returns true if the check was successful.
         */
         bool generalVerify( const QDomDocument& doc, NetworkAccessManagerProxy::Error e );
 

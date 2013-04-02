@@ -364,7 +364,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     p.drawPixmap( 0, 0, background );
 
     //p.setPen( Qt::white ); // Revert this when the background can be colorized again.
-    rect.adjust( m_margin, m_margin, -m_margin, -m_margin ); // substract margins
+    rect.adjust( m_margin, m_margin, -m_margin, -m_margin ); // subtract margins
 
     if( !m_cover.isNull() )
     {

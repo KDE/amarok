@@ -178,7 +178,7 @@ CollectionSortFilterProxyModel::lessThanItem( const QModelIndex &left, const QMo
             return false;
     }
 
-    return leftData.data() < rightData.data(); // prevent expanded datas from switching places
+    return leftData.data() < rightData.data(); // prevent expanded data from switching places
 }
 
 inline CollectionTreeItem*

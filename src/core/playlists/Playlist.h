@@ -92,7 +92,7 @@ namespace Playlists
              *
              * @param playlist playlist whose track list was changed
              * @param track track that was added
-             * @param position position where the track was inserted to, beggining from 0
+             * @param position position where the track was inserted to, beginning from 0
              *
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner

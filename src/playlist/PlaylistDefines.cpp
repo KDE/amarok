@@ -106,7 +106,7 @@ Playlist::PlaylistColumnInfos::names()
             << i18nc( "'Labels' playlist column name and token for playlist layouts", "Labels" )
             << Meta::i18nForField( Meta::valLastPlayed )
             << Meta::i18nForField( Meta::valLength )
-            << Meta::i18nForField( Meta::valLength ) // this is lenght in seconds
+            << Meta::i18nForField( Meta::valLength ) // this is length in seconds
             << i18nc( "'Mood' playlist column name and token for playlist layouts", "Mood" )
             << i18nc( "'Moodbar' playlist column name and token for playlist layouts", "Moodbar" )
             << Meta::i18nForField( Meta::valPlaycount )

@@ -156,7 +156,7 @@ PrettyTreeDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option
             style->drawPrimitive( expandedPrimitive, &expanderOption, painter );
     }
 
-    // always substract the expander size in order to align all the rest
+    // always subtract the expander size in order to align all the rest
     if( isRTL )
         remainingRect.adjust( s.expanderIconSize + s.iconSpacing, 0, 0, 0 );
     else
