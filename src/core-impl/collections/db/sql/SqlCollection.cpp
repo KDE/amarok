@@ -281,10 +281,10 @@ SqlCollection::SqlCollection( SqlStorage* storage )
     {
         if( QApplication::type() != QApplication::Tty )
         {
-            KMessageBox::error( The::mainWindow(), //parent
-                                i18n( "The amarok database reported the following errors:\n"
-                                      "%1\n"
-                                      "In most cases you will need to resolve these errors before Amarok will run properly.", storage->getLastErrors().join( "\n" ) );
+            KMessageBox::error( The::mainWindow(), i18n( "The amarok database reported "
+                    "the following errors:\n%1\nIn most cases you will need to resolve "
+                    "these errors before Amarok will run properly.",
+                    storage->getLastErrors().join( "\n" ) ) );
         }
         else
         {
