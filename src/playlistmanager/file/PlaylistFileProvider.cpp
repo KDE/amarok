@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
+#include "core-impl/playlists/types/file/asx/ASXPlaylist.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
@@ -127,6 +128,7 @@ Playlists::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     DEBUG_BLOCK
+
     QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") : name;
     filename.replace( QLatin1Char('/'), QLatin1Char('-') );
     filename.replace( QLatin1Char('\\'), QLatin1Char('-') );
@@ -149,6 +151,9 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     Playlists::PlaylistFile *playlistFile = 0;
     switch( format )
     {
+        case Playlists::ASX:
+            playlistFile = new Playlists::ASXPlaylist( path, this );
+            break;
         case Playlists::PLS:
             playlistFile = new Playlists::PLSPlaylist( path, this );
             break;
@@ -161,7 +166,6 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
         case Playlists::XML:
         case Playlists::RAM:
         case Playlists::SMIL:
-        case Playlists::ASX:
         case Playlists::Unknown:
             // this should not happen since we set the format to XSPF above.
             return Playlists::PlaylistPtr();

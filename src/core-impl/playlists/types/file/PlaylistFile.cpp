@@ -152,7 +152,15 @@ QString
 PlaylistFile::description() const
 {
     KMimeType::Ptr mimeType = KMimeType::mimeType( mimetype() );
-    return QString( "%1 (%2)" ).arg( mimeType->name(), extension() );
+    if ( mimeType )
+        return QString( "%1 (%2)" ).arg( mimeType->name(), extension() );
+    else
+    {
+        warning() << "Mimetype" << mimetype() << "was not found."
+                  << "Possible reason is that it was not discovered by ksysoca,"
+                  << "because it was not added to MimeType field in .desktop files";
+        return "";
+    }
 }
 
 void

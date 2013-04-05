@@ -236,6 +236,7 @@ set(libstatusbar_SRCS
 #####################################################################
 set(libmetaimpl_SRCS
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
+    core-impl/playlists/types/file/asx/ASXPlaylist.cpp
     core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
     core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp

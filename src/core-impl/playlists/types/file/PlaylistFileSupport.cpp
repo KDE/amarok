@@ -22,6 +22,7 @@
 #include "core/support/Amarok.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/support/Debug.h"
+#include "core-impl/playlists/types/file/asx/ASXPlaylist.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
@@ -65,6 +66,9 @@ Playlists::loadPlaylistFile( const KUrl &url, PlaylistFileProvider *provider )
     PlaylistFilePtr playlist;
     switch( format )
     {
+        case ASX:
+            playlist = new ASXPlaylist( url, provider );
+            break;
         case PLS:
             playlist = new PLSPlaylist( url, provider );
             break;
@@ -92,6 +96,9 @@ Playlists::exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bo
 
     switch( format )
     {
+        case ASX:
+            playlist = new ASXPlaylist( path.toLocalFile() );
+            break;
         case PLS:
             playlist = new PLSPlaylist( path.toLocalFile() );
             break;

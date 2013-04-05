@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.8-Beta 1
   FEATURES:
+   * Added support for .asx playlists; patch by Tatjana Gornak. (BR 170207)
    * Add Radio GFM radio streams to Cool Stream Script. (BR 317978)
    * Added options to pause playback on system suspend and to inhibit automatic suspend
      if playing a track (enabled by default); patch by Anmol Ahuja. (BR 259862, 222571)

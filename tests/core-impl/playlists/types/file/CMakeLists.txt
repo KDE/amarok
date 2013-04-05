@@ -5,6 +5,12 @@ include_directories( .
   ${KDE4_INCLUDE_DIR}
 )
 
+#------------------------ Test ASXPlaylist -----------------------------
+
+set( testasxplaylist_SRCS asx/TestASXPlaylist.cpp )
+kde4_add_unit_test( testasxplaylist ${testasxplaylist_SRCS} )
+target_link_libraries( testasxplaylist ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} amarokcore amaroklib )
+
 #------------------------ Test M3UPlaylist -----------------------------
 
 set( testm3uplaylist_SRCS m3u/TestM3UPlaylist.cpp )

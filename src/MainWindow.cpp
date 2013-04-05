@@ -493,6 +493,8 @@ MainWindow::exportPlaylist() //SLOT
     saveRelativeCheck->setChecked( AmarokConfig::relativePlaylist() );
 
     QStringList supportedMimeTypes;
+
+    supportedMimeTypes << "video/x-ms-asf"; //ASX
     supportedMimeTypes << "audio/x-mpegurl"; //M3U
     supportedMimeTypes << "audio/x-scpls"; //PLS
     supportedMimeTypes << "application/xspf+xml"; //XSPF

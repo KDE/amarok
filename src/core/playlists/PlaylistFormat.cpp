@@ -36,7 +36,7 @@ getFormat( const KUrl &path )
     if( ext == "pls" ) return PLS;
     if( ext == "ram" ) return RAM;
     if( ext == "smil") return SMIL;
-    if( ext == "asx" || ext == "wax" ) return ASX;
+    if( ext == "asx" || ext == "wax" || ext == "asf" ) return ASX;
     if( ext == "xml" ) return XML;
     if( ext == "xspf" ) return XSPF;
 
