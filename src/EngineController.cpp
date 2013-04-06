@@ -41,6 +41,7 @@
 #include "core/support/Debug.h"
 #include "playback/DelayedDoers.h"
 #include "playback/Fadeouter.h"
+#include "playback/PowerManager.h"
 #include "playlist/PlaylistActions.h"
 
 #include <KMessageBox>
@@ -90,6 +91,7 @@ EngineController::EngineController()
     connect( this, SIGNAL(fillInSupportedMimeTypes()), SLOT(slotFillInSupportedMimeTypes()) );
     connect( this, SIGNAL(trackFinishedPlaying(Meta::TrackPtr,double)),
              SLOT(slotTrackFinishedPlaying(Meta::TrackPtr,double)) );
+    new PowerManager( this ); // deals with inhibiting suspend etc.
 }
 
 EngineController::~EngineController()

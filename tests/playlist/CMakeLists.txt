@@ -17,6 +17,7 @@ set( testplaylistmodels_SRCS
 	${AMAROK_SOURCE_TREE}/EngineController.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/MultiSourceCapability.cpp
+        ${AMAROK_SOURCE_TREE}/playback/PowerManager.cpp
 	${AMAROK_SOURCE_TREE}/playlist/PlaylistDefines.cpp
         ${AMAROK_SOURCE_TREE}/playlist/PlaylistModel.cpp
         ${AMAROK_SOURCE_TREE}/playlist/PlaylistModelStack.cpp
@@ -43,6 +44,7 @@ target_link_libraries( testplaylistmodels
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_PHONON_LIBRARY}
+    ${KDE4_SOLID_LIBS}
     ${QT_QTTEST_LIBRARY}
     ${QT_QTCORE_LIBRARY}
     ${GOOGLEMOCK_LIBRARIES}

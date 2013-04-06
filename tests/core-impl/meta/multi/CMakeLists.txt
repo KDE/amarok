@@ -18,7 +18,8 @@ set( testmetamultitrack_SRCS
     ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
     ${AMAROK_SOURCE_TREE}/core/capabilities/MultiSourceCapability.cpp
     ${AMAROK_SOURCE_TREE}/core-impl/meta/multi/MultiTrack.cpp
-    ${AMAROK_SOURCE_TREE}/core-impl/capabilities/multisource/MultiSourceCapabilityImpl.cpp )
+    ${AMAROK_SOURCE_TREE}/core-impl/capabilities/multisource/MultiSourceCapabilityImpl.cpp
+    ${AMAROK_SOURCE_TREE}/playback/PowerManager.cpp )
 
 
 kde4_add_unit_test( testmetamultitrack
@@ -35,6 +36,7 @@ target_link_libraries( testmetamultitrack
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_PHONON_LIBRARY}
+    ${KDE4_SOLID_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTTEST_LIBRARY}
     ${QT_QTCORE_LIBRARY}

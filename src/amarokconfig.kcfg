@@ -293,6 +293,14 @@
         <default>60</default>
         <min>1</min>
     </entry>
+    <entry key="Pause On Suspend" type="Bool">
+        <label>Whether Amarok should pause the currently playing track on suspend.</label>
+        <default>false</default>
+    </entry>
+    <entry key="Inhibit Suspend" type="Bool">
+        <label>Whether Amarok should prevent the system from sleeping if it is playing a track.</label>
+        <default>true</default>
+    </entry>
 </group>
 
 <group name="Cover Manager">
