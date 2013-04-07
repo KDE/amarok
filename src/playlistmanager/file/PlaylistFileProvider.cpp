@@ -212,7 +212,7 @@ PlaylistFileProvider::import( const KUrl &path )
         return false;
     }
 
-    Playlists::PlaylistFilePtr playlistFile = Playlists::loadPlaylistFile( path );
+    Playlists::PlaylistFilePtr playlistFile = Playlists::loadPlaylistFile( path, this );
     if( !playlistFile )
         return false;
 
