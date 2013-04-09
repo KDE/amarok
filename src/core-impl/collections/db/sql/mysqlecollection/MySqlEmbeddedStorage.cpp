@@ -60,7 +60,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         }
         QTextStream out( &df );
         out << "[embedded]" << endl;
-        out << "datadir = " << databaseDir.toAscii().data() << endl;
+        out << "datadir = " << databaseDir.toLocal8Bit() << endl;
         // CAUTION: if we ever change the table type we will need to fix a number of MYISAM specific
         // functions, such as FULLTEXT indexing.
         out << "default-storage-engine = MyISAM" << endl;
@@ -81,8 +81,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         dir.mkpath( "." );
     }
 
-    setenv( "MYSQL_HOME", storagePath.toAscii().data(), 1 );
-    setenv( "DEFAULT_HOME_ENV", storagePath.toAscii().data(), 1 );
+    setenv( "MYSQL_HOME", storagePath.toLocal8Bit().data(), 1 );
+    setenv( "DEFAULT_HOME_ENV", storagePath.toLocal8Bit().data(), 1 );
     char *args[] = { (char*) "amarok" };
     if( mysql_library_init( 1 , args, 0 ) != 0 )
     {

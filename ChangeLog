@@ -8,6 +8,8 @@ VERSION 2.7.1
      should avoid surprising "Duplicate Tracks Found" errors. (BR 315329)
 
   BUGFIXES:
+   * Fix inability to create database when home directory contains non-ASCII characters.
+     (BR 313914)
    * Fix typo in Nepomuk query which did not let track numbers of Nepomuk Collection
      tracks show up in Amarok. (BR 311847)
 
