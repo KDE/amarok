@@ -16,23 +16,9 @@
 
 #include "PLSPlaylist.h"
 
-#include "core/capabilities/EditCapability.h"
-#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/meta/proxy/MetaProxy.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "playlistmanager/PlaylistManager.h"
 
-#include <KMimeType>
-#include <KLocale>
-
-#include <QTextStream>
-#include <QRegExp>
-#include <QString>
 #include <QFile>
-
-#include <iostream>
 
 using namespace Playlists;
 
@@ -134,14 +120,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             if( index > numberOfEntries || index == 0 )
                 continue;
             tmp = (*i).section( '=', 1 ).trimmed();
-            KUrl url( tmp );
-            if( url.isRelative() )
-            {
-                const QString dir = m_url.directory();
-                url = KUrl( dir );
-                url.addPath( tmp );
-                url.cleanPath();
-            }
+            KUrl url = getAbsolutePath( KUrl( tmp ) );
             proxyTrack = new MetaProxy::Track( url );
             Meta::TrackPtr track( proxyTrack.data() );
             addProxyTrack( track );
@@ -219,9 +198,7 @@ PLSPlaylist::savePlaylist( QFile &file )
         if( !track ) // see BUG: 303056
             continue;
 
-        QString file = trackLocation( track );
-
-        stream << "File" << i << "=" << file;
+        stream << "File" << i << "=" << trackLocation( track );
         stream << "\nTitle" << i << "=";
         stream << track->name();
         stream << "\nLength" << i << "=";
@@ -230,8 +207,7 @@ PLSPlaylist::savePlaylist( QFile &file )
         i++;
    }
 
-    //footer
-    stream << "NumberOfEntries=" << m_tracks.count() << endl;
-    stream << "Version=2\n";
-    file.close();
+   //footer
+   stream << "NumberOfEntries=" << m_tracks.count() << endl;
+   stream << "Version=2\n";
 }

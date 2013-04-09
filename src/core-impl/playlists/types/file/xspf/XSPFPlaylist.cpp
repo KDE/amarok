@@ -20,29 +20,12 @@
 
 #include "XSPFPlaylist.h"
 
-#include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/StreamInfoCapability.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/meta/stream/Stream.h"
-#include "core-impl/meta/timecode/TimecodeMeta.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
-#include "playlistmanager/PlaylistManager.h"
-
-#include <KUrl>
-#include <KMessageBox>
-#include <KMimeType>
-
-#include <QDateTime>
-#include <QDomElement>
-#include <QFile>
-#include <QString>
-
-#include <typeinfo>
 
 using namespace Playlists;
 
@@ -503,16 +486,7 @@ XSPFPlaylist::trackList()
                     QByteArray path = subSubNode.firstChild().nodeValue().toAscii();
                     path.replace( '\\', '/' );
 
-                    KUrl url = KUrl::fromEncoded( path );
-                    if( url.isRelative() )
-                    {
-                        m_relativePaths = true;
-                        const QString relativePath = url.path();
-                        url = m_url.directory();
-                        url.addPath( relativePath );
-                        url.cleanPath();
-                    }
-
+                    KUrl url = getAbsolutePath( KUrl::fromEncoded( path ) );
                     track.location = url;
                 }
                 else if( subSubNode.nodeName() == "title" )

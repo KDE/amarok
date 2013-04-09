@@ -123,7 +123,15 @@ namespace Playlists
             virtual bool load( QByteArray &content ) { QTextStream stream( &content ); return load( stream ); }
 
             /** Normalizes track location */
-            QString trackLocation( const Meta::TrackPtr &track );
+            QString trackLocation( const Meta::TrackPtr &track ) const;
+
+            /**
+             * If the passed url is relative, this method convert given url to absolute.
+             * For example, "tunes/tune.ogg" gets converted to "file:///playlists/tunes/tune.ogg"
+             * Sets m_relative to true if it ecounters a relative url
+             * (this serves to preserve playlist "relativity" across reads & saves)
+             **/
+            KUrl getAbsolutePath( const KUrl &url );
 
             PlaylistProvider *m_provider;
             QStringList m_groups;

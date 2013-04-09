@@ -16,20 +16,9 @@
 
 #include "M3UPlaylist.h"
 
-#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/meta/proxy/MetaProxy.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "playlistmanager/PlaylistManager.h"
-#include "playlistmanager/file/PlaylistFileProvider.h"
-
-#include <KMimeType>
-#include <KUrl>
 
 #include <QFile>
-#include <QFileInfo>
-#include <QTextStream>
 
 using namespace Playlists;
 
@@ -64,15 +53,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
         {
             line = line.replace( "\\", "/" );
 
-            // KUrl's constructor handles detection of local file paths without
-            // file:// etc for us
-            KUrl url( line );
-            if( url.isRelative() )
-            {
-                url = KUrl( directory );
-                url.addPath( line ); // adds directory separator if required
-                url.cleanPath();
-            }
+            KUrl url = getAbsolutePath( KUrl( line ) );
 
             MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
             QString artist = extinfTitle.section( " - ", 0, 0 );

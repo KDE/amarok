@@ -162,8 +162,24 @@ PlaylistFile::addProxyTrack( const Meta::TrackPtr &proxyTrack )
     notifyObserversTrackAdded( m_tracks.last(), m_tracks.size() - 1 );
 }
 
+KUrl
+PlaylistFile::getAbsolutePath( const KUrl &url )
+{
+    KUrl absUrl = url;
+    if( url.isRelative() )
+    {
+        m_relativePaths = true;
+        // example: url = KUrl("../tunes/tune.ogg")
+        const QString relativePath = url.path(); // "../tunes/tune.ogg"
+        absUrl = m_url.directory(); // file:///playlists/
+        absUrl.addPath( relativePath ); // file:///playlists/../tunes/tune.ogg
+        absUrl.cleanPath(); // file:///playlists/tunes/tune.ogg
+    }
+    return absUrl;
+}
+
 QString
-PlaylistFile::trackLocation( const Meta::TrackPtr &track )
+PlaylistFile::trackLocation( const Meta::TrackPtr &track ) const
 {
     KUrl path = track->playableUrl();
     if( path.isEmpty() )
