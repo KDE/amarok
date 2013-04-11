@@ -354,7 +354,7 @@
     </entry>
     <entry key="Osd Font Scaling" type="Int">
         <label>Font scaling for OSD</label>
-        <whatsthis>The scaling multiplier for the OSD font, in percent-of-normal. 100 is &ldquo;normal size&rdquo;.</whatsthis>
+        <whatsthis>The scaling multiplier for the OSD font, in percent-of-normal. 100 is &#8220;normal size&#8221;.</whatsthis>
         <default>115</default>
         <min>0</min>
         <max>1000</max>
