@@ -8,6 +8,7 @@ VERSION 2.7.1
      should avoid surprising "Duplicate Tracks Found" errors. (BR 315329)
 
   BUGFIXES:
+   * Fix compilation error on systems with gcc-4.2 (BR 314528)
    * Fix inability to create database when home directory contains non-ASCII characters.
      (BR 313914)
    * Fix typo in Nepomuk query which did not let track numbers of Nepomuk Collection
