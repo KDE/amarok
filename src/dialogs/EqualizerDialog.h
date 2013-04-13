@@ -73,14 +73,14 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         void updateEngine();
 
         double mValueScale;
-        QVector<QSlider*> mBands;
-        QVector<QLabel*> mBandsValues;
-        QVector<QLabel*> mBandsLabels;
+        QVector<QSlider*> m_bands;
+        QVector<QLabel*> m_bandValues;
+        QVector<QLabel*> m_bandLabels;
 
         /** The preset and gains at the time "showOnce" was called. */
-        bool mOriginalActivated;
-        QString mOriginalPreset;
-        QList<int> mOriginalGains;
+        bool m_originalActivated;
+        QString m_originalPreset;
+        QList<int> m_originalGains;
 
         static EqualizerDialog *s_instance;
 };

@@ -53,39 +53,39 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     connect(this, SIGNAL(cancelClicked()), this, SLOT(restoreOriginalSettings()));
 
     // Assign slider items to vectors
-    mBands.append( eqPreampSlider );
-    mBands.append( eqBand0Slider );
-    mBands.append( eqBand1Slider );
-    mBands.append( eqBand2Slider );
-    mBands.append( eqBand3Slider );
-    mBands.append( eqBand4Slider );
-    mBands.append( eqBand5Slider );
-    mBands.append( eqBand6Slider );
-    mBands.append( eqBand7Slider );
-    mBands.append( eqBand8Slider );
-    mBands.append( eqBand9Slider );
-    mBandsValues.append( eqPreampValue );
-    mBandsValues.append( eqBand0Value );
-    mBandsValues.append( eqBand1Value );
-    mBandsValues.append( eqBand2Value );
-    mBandsValues.append( eqBand3Value );
-    mBandsValues.append( eqBand4Value );
-    mBandsValues.append( eqBand5Value );
-    mBandsValues.append( eqBand6Value );
-    mBandsValues.append( eqBand7Value );
-    mBandsValues.append( eqBand8Value );
-    mBandsValues.append( eqBand9Value );
-    mBandsLabels.append( eqPreampLabel );
-    mBandsLabels.append( eqBand0Label );
-    mBandsLabels.append( eqBand1Label );
-    mBandsLabels.append( eqBand2Label );
-    mBandsLabels.append( eqBand3Label );
-    mBandsLabels.append( eqBand4Label );
-    mBandsLabels.append( eqBand5Label );
-    mBandsLabels.append( eqBand6Label );
-    mBandsLabels.append( eqBand7Label );
-    mBandsLabels.append( eqBand8Label );
-    mBandsLabels.append( eqBand9Label );
+    m_bands.append( eqPreampSlider );
+    m_bands.append( eqBand0Slider );
+    m_bands.append( eqBand1Slider );
+    m_bands.append( eqBand2Slider );
+    m_bands.append( eqBand3Slider );
+    m_bands.append( eqBand4Slider );
+    m_bands.append( eqBand5Slider );
+    m_bands.append( eqBand6Slider );
+    m_bands.append( eqBand7Slider );
+    m_bands.append( eqBand8Slider );
+    m_bands.append( eqBand9Slider );
+    m_bandValues.append( eqPreampValue );
+    m_bandValues.append( eqBand0Value );
+    m_bandValues.append( eqBand1Value );
+    m_bandValues.append( eqBand2Value );
+    m_bandValues.append( eqBand3Value );
+    m_bandValues.append( eqBand4Value );
+    m_bandValues.append( eqBand5Value );
+    m_bandValues.append( eqBand6Value );
+    m_bandValues.append( eqBand7Value );
+    m_bandValues.append( eqBand8Value );
+    m_bandValues.append( eqBand9Value );
+    m_bandLabels.append( eqPreampLabel );
+    m_bandLabels.append( eqBand0Label );
+    m_bandLabels.append( eqBand1Label );
+    m_bandLabels.append( eqBand2Label );
+    m_bandLabels.append( eqBand3Label );
+    m_bandLabels.append( eqBand4Label );
+    m_bandLabels.append( eqBand5Label );
+    m_bandLabels.append( eqBand6Label );
+    m_bandLabels.append( eqBand7Label );
+    m_bandLabels.append( eqBand8Label );
+    m_bandLabels.append( eqBand9Label );
 
     // Ask engine for maximum gain value and compute scale to display values
     mValueScale = The::engineController()->eqMaxGain();
@@ -94,12 +94,12 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     eqMinEq->setText( QString("-") + mlblText );
 
     // Ask engine for band frequencies and set labels
-    QStringList meqBandFrq = The::engineController()->eqBandsFreq();
-    QStringListIterator i( meqBandFrq );
-    foreach( QLabel* mLabel, mBandsLabels )
+    QStringList equalizerBandFreq = The::engineController()->eqBandsFreq();
+    QStringListIterator i( equalizerBandFreq );
+    foreach( QLabel* mLabel, m_bandLabels )
         mLabel->setText( i.hasNext() ?  i.next() : "N/A" );
 
-    mBandsLabels.first()->setText( i18n( "%0\ndB" ).arg( mBandsLabels.first()->text() ) );
+    m_bandLabels.first()->setText( i18n( "%0\ndB" ).arg( m_bandLabels.first()->text() ) );
 
     updatePresets();
     activeCheckBox->setChecked( AmarokConfig::equalizerMode() > 0 );
@@ -110,7 +110,7 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     connect( activeCheckBox, SIGNAL(toggled(bool)), SLOT(setActive(bool)) );
     connect( eqPresets, SIGNAL(currentIndexChanged(int)), SLOT(setPreset(int)) );
     connect( eqPresets, SIGNAL(editTextChanged(QString)), SLOT(updateUi()) );
-    foreach( QSlider* mSlider, mBands )
+    foreach( QSlider* mSlider, m_bands )
         connect( mSlider, SIGNAL(valueChanged(int)), SLOT(bandsChanged()) );
 
     eqPresetSaveBtn->setIcon( KIcon( "document-save" ) );
@@ -143,7 +143,7 @@ QList<int>
 EqualizerDialog::gains() const
 {
     QList<int> result;
-    foreach( QSlider* mSlider, mBands )
+    foreach( QSlider* mSlider, m_bands )
         result << mSlider->value();
     return result;
 }
@@ -151,12 +151,12 @@ EqualizerDialog::gains() const
 void
 EqualizerDialog::setGains( QList<int> eqGains )
 {
-    for( int i = 0; i < mBands.count() && i < eqGains.count(); i++ )
+    for( int i = 0; i < m_bands.count() && i < eqGains.count(); i++ )
     {
         // Update slider values with signal blocking to prevent circular loop
-        mBands[i]->blockSignals( true );
-        mBands[i]->setValue( eqGains[ i ] );
-        mBands[i]->blockSignals( false );
+        m_bands[i]->blockSignals( true );
+        m_bands[i]->setValue( eqGains[ i ] );
+        m_bands[i]->blockSignals( false );
     }
 
     bandsChanged();
@@ -165,19 +165,19 @@ EqualizerDialog::setGains( QList<int> eqGains )
 void
 EqualizerDialog::storeOriginalSettings()
 {
-    mOriginalActivated = activeCheckBox->isChecked();
-    mOriginalPreset = selectedPresetName();
-    mOriginalGains = gains();
+    m_originalActivated = activeCheckBox->isChecked();
+    m_originalPreset = selectedPresetName();
+    m_originalGains = gains();
 }
 
 void
 EqualizerDialog::restoreOriginalSettings()
 {
-    activeCheckBox->setChecked( mOriginalActivated );
-    int originalPresetIndex = EqualizerPresets::eqGlobalList().indexOf( mOriginalPreset );
+    activeCheckBox->setChecked( m_originalActivated );
+    int originalPresetIndex = EqualizerPresets::eqGlobalList().indexOf( m_originalPreset );
     setPreset( originalPresetIndex );
-    eqPresets->setEditText( mOriginalPreset );
-    setGains( mOriginalGains );
+    eqPresets->setEditText( m_originalPreset );
+    setGains( m_originalGains );
 }
 
 void
@@ -292,15 +292,15 @@ EqualizerDialog::restorePreset() //SLOT
 void
 EqualizerDialog::updateToolTips()
 {
-    foreach( QSlider* mSlider, mBands )
+    foreach( QSlider* mSlider, m_bands )
         mSlider->setToolTip( QString::number( mSlider->value()*mValueScale/100.0, 'f', 1 ) );
 }
 
 void
 EqualizerDialog::updateLabels()
 {
-    for( int i = 0; i < mBandsValues.count() && i < mBands.count(); i++ )
-        mBandsValues[i]->setText( QString::number( mBands[i]->value() * mValueScale / 100.0, 'f', 1 ) );
+    for( int i = 0; i < m_bandValues.count() && i < m_bands.count(); i++ )
+        m_bandValues[i]->setText( QString::number( m_bands[i]->value() * mValueScale / 100.0, 'f', 1 ) );
 }
 
 void

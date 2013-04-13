@@ -763,12 +763,12 @@ EngineController::eqMaxGain() const
 {
    if( !m_equalizer )
        return 100;
-   QList<Phonon::EffectParameter> mEqPar = m_equalizer.data()->parameters();
-   if( mEqPar.isEmpty() )
+   QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
+   if( equalizerParameters.isEmpty() )
        return 100.0;
    double mScale;
-   mScale = ( qAbs(mEqPar.at(0).maximumValue().toDouble() )
-              + qAbs( mEqPar.at(0).minimumValue().toDouble() ) );
+   mScale = ( qAbs(equalizerParameters.at(0).maximumValue().toDouble() )
+              + qAbs( equalizerParameters.at(0).minimumValue().toDouble() ) );
    mScale /= 2.0;
    return mScale;
 }
@@ -780,28 +780,28 @@ EngineController::eqBandsFreq() const
     // as long as they follow the rules:
     // eq-preamp parameter will contain 'pre-amp' string
     // bands parameters are described using schema 'xxxHz'
-    QStringList mBandsFreq;
+    QStringList bandFrequencies;
     if( !m_equalizer )
-       return mBandsFreq;
-    QList<Phonon::EffectParameter> mEqPar = m_equalizer.data()->parameters();
-    if( mEqPar.isEmpty() )
-       return mBandsFreq;
+       return bandFrequencies;
+    QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
+    if( equalizerParameters.isEmpty() )
+       return bandFrequencies;
     QRegExp rx( "\\d+(?=Hz)" );
-    foreach( const Phonon::EffectParameter &mParam, mEqPar )
+    foreach( const Phonon::EffectParameter &mParam, equalizerParameters )
     {
         if( mParam.name().contains( QString( "pre-amp" ) ) )
-            mBandsFreq << i18n( "Preamp" );
+            bandFrequencies << i18n( "Preamp" );
         else if ( mParam.name().contains( rx ) )
         {
             if( rx.cap( 0 ).toInt() < 1000 )
-                mBandsFreq << i18n( "%0\nHz" ).arg( rx.cap( 0 ) );
+                bandFrequencies << i18n( "%0\nHz" ).arg( rx.cap( 0 ) );
             else
-                mBandsFreq << i18n( "%0\nkHz" ).arg( QString::number( rx.cap( 0 ).toInt()/1000 ) );
+                bandFrequencies << i18n( "%0\nkHz" ).arg( QString::number( rx.cap( 0 ).toInt()/1000 ) );
         }
         else
-            mBandsFreq << mParam.name();
+            bandFrequencies << mParam.name();
     }
-    return mBandsFreq;
+    return bandFrequencies;
 }
 
 void
@@ -823,14 +823,14 @@ EngineController::eqUpdate() //SLOT
     else
     {
         // Set equalizer parameter according to the gains from settings
-        QList<Phonon::EffectParameter> mEqPar = m_equalizer.data()->parameters();
-        QList<int> mEqParCfg = AmarokConfig::equalizerGains();
+        QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
+        QList<int> equalizerParametersCfg = AmarokConfig::equalizerGains();
 
-        QListIterator<int> mEqParNewIt( mEqParCfg );
+        QListIterator<int> equalizerParametersIt( equalizerParametersCfg );
         double scaledVal; // Scaled value to set from universal -100 - 100 range to plugin scale
-        foreach( const Phonon::EffectParameter &mParam, mEqPar )
+        foreach( const Phonon::EffectParameter &mParam, equalizerParameters )
         {
-            scaledVal = mEqParNewIt.hasNext() ? mEqParNewIt.next() : 0;
+            scaledVal = equalizerParametersIt.hasNext() ? equalizerParametersIt.next() : 0;
             scaledVal *= qAbs(mParam.maximumValue().toDouble() )
                          + qAbs( mParam.minimumValue().toDouble() );
             scaledVal /= 200.0;
