@@ -96,10 +96,14 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     // Ask engine for band frequencies and set labels
     QStringList equalizerBandFreq = The::engineController()->eqBandsFreq();
     QStringListIterator i( equalizerBandFreq );
+    // Checking if preamp is present
+    if( equalizerBandFreq.size() == s_equalizerBandsCount )
+        eqPreampSlider->setDisabled( true );
+    else if( i.hasNext() ) // If preamp is present then skip its label as it is hard-coded in UI
+        i.next();
     foreach( QLabel* mLabel, m_bandLabels )
-        mLabel->setText( i.hasNext() ?  i.next() : "N/A" );
-
-    m_bandLabels.first()->setText( i18n( "%0\ndB" ).arg( m_bandLabels.first()->text() ) );
+        if( mLabel->objectName() != "eqPreampLabel" )
+            mLabel->setText( i.hasNext() ?  i.next() : "N/A" );
 
     updatePresets();
     activeCheckBox->setChecked( AmarokConfig::equalizerMode() > 0 );

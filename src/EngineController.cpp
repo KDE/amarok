@@ -151,7 +151,8 @@ EngineController::initializePhonon()
 
     // Add an equalizer effect if available
     QList<EffectDescription> effects = BackendCapabilities::availableAudioEffects();
-    QRegExp equalizerRegExp( QString( "equalizer.*%1.*bands" ).arg( 10 ), Qt::CaseInsensitive );
+    QRegExp equalizerRegExp( QString( "equalizer.*%1.*bands" ).arg( s_equalizerBandsCount ),
+                             Qt::CaseInsensitive );
     foreach( const EffectDescription &description, effects )
     {
         if( !description.name().contains( equalizerRegExp ) )
@@ -159,7 +160,7 @@ EngineController::initializePhonon()
 
         QScopedPointer<Effect> equalizer( new Effect( description, this ) );
         int parameterCount = equalizer->parameters().count();
-        if( parameterCount == 10 || parameterCount == 10 + 1 )
+        if( parameterCount == s_equalizerBandsCount || parameterCount == s_equalizerBandsCount + 1 )
         {
             debug() << "Established Phonon equalizer effect with" << parameterCount
                     << "parameters.";
@@ -800,16 +801,14 @@ EngineController::eqBandsFreq() const
     // bands parameters are described using schema 'xxxHz'
     QStringList bandFrequencies;
     if( !m_equalizer )
-       return bandFrequencies;
+        return bandFrequencies;
     QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
     if( equalizerParameters.isEmpty() )
-       return bandFrequencies;
+        return bandFrequencies;
     QRegExp rx( "\\d+(?=Hz)" );
     foreach( const Phonon::EffectParameter &mParam, equalizerParameters )
     {
-        if( mParam.name().contains( QString( "pre-amp" ) ) )
-            bandFrequencies << i18n( "Preamp" );
-        else if ( mParam.name().contains( rx ) )
+        if( mParam.name().contains( rx ) )
         {
             if( rx.cap( 0 ).toInt() < 1000 )
                 bandFrequencies << i18n( "%0\nHz" ).arg( rx.cap( 0 ) );
@@ -846,6 +845,13 @@ EngineController::eqUpdate() //SLOT
 
         QListIterator<int> equalizerParametersIt( equalizerParametersCfg );
         double scaledVal; // Scaled value to set from universal -100 - 100 range to plugin scale
+        // Checking if preamp is present in equalizer parameters
+        if( equalizerParameters.size() == s_equalizerBandsCount )
+        {
+            // If pre-amp is not present then skip the first element of equalizer gain
+            if( equalizerParametersIt.hasNext() )
+                equalizerParametersIt.next();
+        }
         foreach( const Phonon::EffectParameter &mParam, equalizerParameters )
         {
             scaledVal = equalizerParametersIt.hasNext() ? equalizerParametersIt.next() : 0;

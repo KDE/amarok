@@ -38,6 +38,8 @@
 #include <Phonon/EffectParameter>
 #include <phonon/audiodataoutput.h>
 
+static const int s_equalizerBandsCount = 10; // Number of equalizer parameters excluding Preamp
+
 class Fadeouter;
 namespace Capabilities { class MultiPlayableCapability; class MultiSourceCapability; }
 namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect; }

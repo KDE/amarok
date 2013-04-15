@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>499</width>
-    <height>292</height>
+    <height>308</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_5">
@@ -117,7 +117,7 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QLabel" name="eqPreampLabel">
+                <widget class="QLabel" name="eqPreampValue">
                  <property name="text">
                   <string>0</string>
                  </property>
@@ -564,9 +564,9 @@
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QLabel" name="eqPreampValue">
+                <widget class="QLabel" name="eqPreampLabel">
                  <property name="text">
-                  <string>Hz</string>
+                  <string>Preamp</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>

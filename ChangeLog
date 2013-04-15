@@ -45,6 +45,8 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * Pre-apmlifier in equalizer is now only enabled if it is actually supported; patch by
+     Harsh Gupta. (BR 301311)
    * Fix compilation error on systems with gcc-4.2 (BR 314528)
    * Fix inability to create database when home directory contains non-ASCII characters.
      (BR 313914)
