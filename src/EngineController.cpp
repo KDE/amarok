@@ -133,29 +133,30 @@ EngineController::initializePhonon()
     delete m_equalizer.data();
     delete m_fader.data();
 
+    using namespace Phonon;
     PERF_LOG( "EngineController: loading phonon objects" )
-    m_media = new Phonon::MediaObject( this );
+    m_media = new MediaObject( this );
 
     // Enable zeitgeist support on linux
     //TODO: make this configurable by the user.
     m_media.data()->setProperty( "PlaybackTracking", true );
 
-    m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
-    m_audioDataOutput = new Phonon::AudioDataOutput( this );
+    m_audio = new AudioOutput( MusicCategory, this );
+    m_audioDataOutput = new AudioDataOutput( this );
 
-    m_dataPath = Phonon::createPath( m_media.data(), m_audioDataOutput.data() );
-    m_path = Phonon::createPath( m_media.data(), m_audio.data() );
+    m_dataPath = createPath( m_media.data(), m_audioDataOutput.data() );
+    m_path = createPath( m_media.data(), m_audio.data() );
 
-    m_controller = new Phonon::MediaController( m_media.data() );
+    m_controller = new MediaController( m_media.data() );
 
-    //Add an equalizer effect if available
-    QList<Phonon::EffectDescription> mEffectDescriptions =
-            Phonon::BackendCapabilities::availableAudioEffects();
-    foreach( const Phonon::EffectDescription &mDescr, mEffectDescriptions )
+    // Add an equalizer effect if available
+    QList<EffectDescription> effectDescriptions =
+            BackendCapabilities::availableAudioEffects();
+    foreach( const EffectDescription &description, effectDescriptions )
     {
-        if( mDescr.name() == QLatin1String( "KEqualizer" ) )
+        if( description.name() == QLatin1String( "KEqualizer" ) )
         {
-            m_equalizer = new Phonon::Effect( mDescr, this );
+            m_equalizer = new Effect( description, this );
             eqUpdate();
         }
     }
@@ -169,17 +170,17 @@ EngineController::initializePhonon()
 
     // we now try to create pre-amp unconditionally, however we check that it is valid.
     // So now m_preamp is null   equals   not available at all
-    QScopedPointer<Phonon::VolumeFaderEffect> preamp( new Phonon::VolumeFaderEffect( this ) );
+    QScopedPointer<VolumeFaderEffect> preamp( new VolumeFaderEffect( this ) );
     if( preamp->isValid() )
     {
         m_preamp = preamp.take();
         m_path.insertEffect( m_preamp.data() );
     }
 
-    QScopedPointer<Phonon::VolumeFaderEffect> fader( new Phonon::VolumeFaderEffect( this ) );
+    QScopedPointer<VolumeFaderEffect> fader( new VolumeFaderEffect( this ) );
     if( fader->isValid() )
     {
-        fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
+        fader->setFadeCurve( VolumeFaderEffect::Fade9Decibel );
         m_fader = fader.take();
         m_path.insertEffect( m_fader.data() );
     }
