@@ -150,14 +150,31 @@ EngineController::initializePhonon()
     m_controller = new MediaController( m_media.data() );
 
     // Add an equalizer effect if available
-    QList<EffectDescription> effectDescriptions =
-            BackendCapabilities::availableAudioEffects();
-    foreach( const EffectDescription &description, effectDescriptions )
+    QList<EffectDescription> effects = BackendCapabilities::availableAudioEffects();
+    QRegExp equalizerRegExp( QString( "equalizer.*%1.*bands" ).arg( 10 ), Qt::CaseInsensitive );
+    foreach( const EffectDescription &description, effects )
     {
-        if( description.name() == QLatin1String( "KEqualizer" ) )
+        if( !description.name().contains( equalizerRegExp ) )
+            continue;
+
+        QScopedPointer<Effect> equalizer( new Effect( description, this ) );
+        int parameterCount = equalizer->parameters().count();
+        if( parameterCount == 10 || parameterCount == 10 + 1 )
         {
-            m_equalizer = new Effect( description, this );
+            debug() << "Established Phonon equalizer effect with" << parameterCount
+                    << "parameters.";
+            m_equalizer = equalizer.take(); // accept the effect
             eqUpdate();
+            break;
+        }
+        else
+        {
+            QStringList paramNames;
+            foreach( const EffectParameter &param, equalizer->parameters() )
+                paramNames << param.name();
+            warning() << "Phonon equalizer effect" << description.name() << "with description"
+                      << description.description() << "has" << parameterCount << "parameters ("
+                      << paramNames << ") - which is unexpected. Trying other effects.";
         }
     }
 
