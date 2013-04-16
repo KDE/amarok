@@ -181,6 +181,7 @@ Name[x-test]=xxMessagexx
 Name[zh_CN]=消息
 Name[zh_TW]=訊息
 Comment=Amarok issued an uncategorized text message
+Comment[cs]=Amarok vyvolal nezařazenou textovou zprávu
 Comment[da]=Amarok udsendte en ikke-kategoriseret tekstmeddelelse
 Comment[de]=Amarok hat eine nicht kategorisierte Textnachricht ausgegeben
 Comment[el]=Το Amarok εξέδωσε ένα μη κατηγοριοποιημένο μήνυμα σε απλό κείμενο
