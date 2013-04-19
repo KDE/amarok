@@ -251,12 +251,6 @@ ServiceTrack::setDownloadableUrl(const QString & url)
     m_downloadableUrl = url;
 }
 
-bool
-ServiceTrack::isEditable() const
-{
-    return false;
-}
-
 AlbumPtr
 ServiceTrack::album() const
 {

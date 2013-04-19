@@ -85,12 +85,6 @@ TimecodeTrack::album() const
     return AlbumPtr::staticCast( m_album );
 }
 
-bool
-TimecodeTrack::isEditable() const
-{
-    return true;
-}
-
 ArtistPtr
 TimecodeTrack::artist() const
 {

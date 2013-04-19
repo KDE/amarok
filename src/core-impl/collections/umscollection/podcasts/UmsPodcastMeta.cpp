@@ -91,15 +91,6 @@ UmsPodcastEpisode::title() const
     return m_localFile->name();
 }
 
-bool
-UmsPodcastEpisode::isEditable() const
-{
-     if( m_localFile.isNull() )
-         return false;
-
-     return m_localFile->isEditable();
-}
-
 QDateTime
 UmsPodcastEpisode::createDate() const
 {

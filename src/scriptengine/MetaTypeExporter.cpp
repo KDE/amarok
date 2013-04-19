@@ -221,6 +221,7 @@ MetaTrackPrototype::isValid() const
     if ( track ) return true;
     return false;
 }
+
 bool
 MetaTrackPrototype::isEditable() const
 {

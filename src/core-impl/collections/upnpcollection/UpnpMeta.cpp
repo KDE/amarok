@@ -75,12 +75,6 @@ UpnpTrack::notPlayableReason() const
     return networkNotPlayableReason();
 }
 
-bool
-UpnpTrack::isEditable() const
-{
-    return false;
-}
-
 AlbumPtr
 UpnpTrack::album() const
 {

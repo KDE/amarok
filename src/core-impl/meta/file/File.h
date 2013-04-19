@@ -42,8 +42,6 @@ namespace MetaFile
             virtual QString uidUrl() const;
             virtual QString notPlayableReason() const;
 
-            virtual bool isEditable() const;
-
             virtual Meta::AlbumPtr album() const;
             virtual Meta::ArtistPtr artist() const;
             virtual Meta::GenrePtr genre() const;
@@ -88,6 +86,8 @@ namespace MetaFile
             virtual void endUpdate();
 
         // MetaFile::Track own methods:
+            bool isEditable() const;
+
             /**
              * Return true if file at @param url is a track.
              *

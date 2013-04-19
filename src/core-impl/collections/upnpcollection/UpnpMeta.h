@@ -53,8 +53,6 @@ class UpnpTrack : public Meta::Track
         virtual QString prettyUrl() const;
         virtual QString notPlayableReason() const;
 
-        virtual bool isEditable() const;
-
         virtual AlbumPtr album() const;
         virtual ArtistPtr artist() const;
         virtual GenrePtr genre() const;

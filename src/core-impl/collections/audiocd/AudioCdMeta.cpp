@@ -74,12 +74,6 @@ AudioCdTrack::notPlayableReason() const
     return QString();
 }
 
-bool
-AudioCdTrack::isEditable() const
-{
-    return false;
-}
-
 AlbumPtr
 AudioCdTrack::album() const
 {

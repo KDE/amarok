@@ -66,7 +66,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
         virtual QString prettyUrl() const;
         virtual QString notPlayableReason() const;
 
-        virtual bool isEditable() const;
+        bool isEditable() const;
 
         virtual AlbumPtr album() const;
         virtual ArtistPtr artist() const;

@@ -61,7 +61,6 @@ class UmsPodcastEpisode : public Podcasts::PodcastEpisode
         virtual KUrl playableUrl() const;
         virtual QString prettyName() const { return name(); }
         virtual void setTitle( const QString &title );
-        virtual bool isEditable() const;
         virtual QDateTime createDate() const;
 
         virtual Meta::AlbumPtr album() const;

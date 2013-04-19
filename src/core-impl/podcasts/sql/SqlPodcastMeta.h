@@ -64,7 +64,6 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         virtual qint64 length() const;
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
-        virtual bool isEditable() const;
         virtual void finishedPlaying( double playedFraction );
 
         virtual Meta::ArtistPtr artist() const;
@@ -80,6 +79,8 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         void deleteFromDb();
 
     private:
+        bool isEditable() const;
+
         /**
          * Establishes m_localFile using MetaProxy::Track if m_localUrl is valid.
          */

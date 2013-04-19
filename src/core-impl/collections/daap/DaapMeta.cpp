@@ -78,12 +78,6 @@ DaapTrack::notPlayableReason() const
     return networkNotPlayableReason();
 }
 
-bool
-DaapTrack::isEditable() const
-{
-    return false;
-}
-
 AlbumPtr
 DaapTrack::album() const
 {
