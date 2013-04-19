@@ -87,6 +87,8 @@ namespace MetaProxy
             virtual QString uidUrl() const;
 
             virtual bool isPlayable() const;
+            virtual QString notPlayableReason() const;
+
             virtual Meta::AlbumPtr album() const;
             virtual Meta::ArtistPtr artist() const;
             virtual Meta::GenrePtr genre() const;

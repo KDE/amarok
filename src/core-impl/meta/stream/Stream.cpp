@@ -23,8 +23,6 @@
 #include "core-impl/meta/default/DefaultMetaTypes.h"
 #include "core-impl/support/UrlStatisticsStore.h"
 
-#include <Solid/Networking>
-
 #include <QWeakPointer>
 #include <QString>
 
@@ -75,13 +73,10 @@ Track::uidUrl() const
     return playableUrl().url();
 }
 
-bool
-Track::isPlayable() const
+QString
+Track::notPlayableReason() const
 {
-    if( Solid::Networking::status() != Solid::Networking::Connected )
-        return false;
-
-    return true;
+    return networkNotPlayableReason();
 }
 
 Meta::AlbumPtr

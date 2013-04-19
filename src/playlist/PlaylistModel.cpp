@@ -250,6 +250,9 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
     Meta::YearPtr year = track->year();
     Meta::StatisticsPtr statistics = track->statistics();
 
+    if( !track->isPlayable() )
+        text += i18n( "<b>Note:</b> This track is not playable.<br>%1", track->notPlayableReason() );
+
     if( s_tooltipColumns[Playlist::Title] )
         text += HTMLLine( Playlist::Title, track->name() );
 
@@ -354,8 +357,14 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     else if ( role == StopAfterTrackRole )
         return Actions::instance()->willStopAfterTrack( idAt( row ) );
 
-    else if ( role == Qt::ToolTipRole && s_showToolTip )
-        return tooltipFor( m_items.at( row )->track() );
+    else if ( role == Qt::ToolTipRole )
+    {
+        Meta::TrackPtr track = m_items.at( row )->track();
+        if( s_showToolTip )
+            return tooltipFor( track );
+        else if( !track->isPlayable() )
+            return i18n( "<b>Note:</b> This track is not playable.<br>%1", track->notPlayableReason() );
+    }
 
     else if ( role == Qt::DisplayRole )
     {

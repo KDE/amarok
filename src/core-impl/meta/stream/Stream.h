@@ -37,8 +37,8 @@ namespace MetaStream
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
+            virtual QString notPlayableReason() const;
 
-            virtual bool isPlayable() const;
             virtual Meta::AlbumPtr album() const;
             virtual Meta::ArtistPtr artist() const;
             virtual Meta::GenrePtr genre() const;

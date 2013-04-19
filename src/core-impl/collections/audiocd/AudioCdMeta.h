@@ -52,8 +52,8 @@ class AudioCdTrack : public Meta::Track
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
+        virtual QString notPlayableReason() const;
 
-        virtual bool isPlayable() const;
         virtual bool isEditable() const;
 
         virtual AlbumPtr album() const;

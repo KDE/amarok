@@ -183,7 +183,7 @@ MetaProxy::Track::prettyUrl() const
     if( d->realTrack )
         return d->realTrack->prettyUrl();
     else
-        return d->url.url();
+        return d->url.prettyUrl();
 }
 
 QString
@@ -202,6 +202,17 @@ MetaProxy::Track::isPlayable() const
         return d->realTrack->isPlayable();
     else
         return false;
+}
+
+QString
+MetaProxy::Track::notPlayableReason() const
+{
+    if( !d->realTrack )
+        return i18n( "When Amarok was last closed, this track was at %1, but Amarok "
+                "cannot find this track on the filesystem or in any of your collections "
+                "anymore. You may try plugging in the device this track might be on.",
+                prettyUrl() );
+    return d->realTrack->notPlayableReason();
 }
 
 Meta::AlbumPtr

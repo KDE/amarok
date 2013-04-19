@@ -113,10 +113,12 @@ Meta::PlaydarTrack::sid() const
     return m_sid;
 }
 
-bool
-Meta::PlaydarTrack::isPlayable() const
+QString
+Meta::PlaydarTrack::notPlayableReason() const
 {
-    return m_collection.data();
+    if( !m_collection.data() )
+        return i18n( "Source collection removed" );
+    return QString();
 }
 
 Meta::AlbumPtr

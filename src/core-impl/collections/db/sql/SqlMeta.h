@@ -91,9 +91,8 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics
         /** returns a string describing the position of the track */
         virtual QString uidUrl() const;
         virtual void setUidUrl( const QString &uid );
+	virtual QString notPlayableReason() const;
 
-        /** true if there is a collection and the file exists on disk */
-        virtual bool isPlayable() const;
         /** true if there is a collection, the file exists on disk and is writable */
         virtual bool isEditable() const;
 

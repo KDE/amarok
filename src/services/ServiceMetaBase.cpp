@@ -252,12 +252,6 @@ ServiceTrack::setDownloadableUrl(const QString & url)
 }
 
 bool
-ServiceTrack::isPlayable() const
-{
-    return true;
-}
-
-bool
 ServiceTrack::isEditable() const
 {
     return false;

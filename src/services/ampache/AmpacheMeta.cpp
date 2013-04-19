@@ -17,8 +17,6 @@
 #include "AmpacheMeta.h"
 #include "core/support/Debug.h"
 
-#include <Solid/Networking>
-
 using namespace Meta;
 
 //// AmpacheAlbum ////
@@ -70,18 +68,8 @@ QList< QAction * > Meta::AmpacheTrack::currentTrackActions()
     return actions;
 }
 
-bool
-AmpacheTrack::isPlayable() const
+QString
+AmpacheTrack::notPlayableReason() const
 {
-    switch( Solid::Networking::status() )
-    {
-        case Solid::Networking::Unknown:
-        case Solid::Networking::Connected:
-            return true;
-        case Solid::Networking::Unconnected:
-        case Solid::Networking::Disconnecting:
-        case Solid::Networking::Connecting:
-            return false;
-    }
-    return true;
+    return networkNotPlayableReason();
 }

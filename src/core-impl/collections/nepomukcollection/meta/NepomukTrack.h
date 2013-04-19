@@ -50,8 +50,8 @@ public:
     virtual KUrl playableUrl() const;
     virtual QString prettyUrl() const;
     virtual QString uidUrl() const;
+    virtual QString notPlayableReason() const;
 
-    virtual bool isPlayable() const;
     virtual AlbumPtr album() const;
     virtual ArtistPtr artist() const;
     virtual ComposerPtr composer() const;

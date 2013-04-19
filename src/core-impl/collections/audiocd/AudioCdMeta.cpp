@@ -67,11 +67,11 @@ AudioCdTrack::prettyUrl() const
     return m_playableUrl.prettyUrl();
 }
 
-bool
-AudioCdTrack::isPlayable() const
+QString
+AudioCdTrack::notPlayableReason() const
 {
     //TODO: check availablity of correct CD somehow
-    return true;
+    return QString();
 }
 
 bool

@@ -22,8 +22,6 @@
 #include "covermanager/CoverFetchingActions.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
 
-#include <Solid/Networking>
-
 #include <QAction>
 
 #include <kio/netaccess.h>
@@ -71,13 +69,10 @@ UpnpTrack::prettyUrl() const
     return m_playableUrl;
 }
 
-bool
-UpnpTrack::isPlayable() const
+QString
+UpnpTrack::notPlayableReason() const
 {
-    if( Solid::Networking::status() != Solid::Networking::Connected )
-        return false;
-
-    return true;
+    return networkNotPlayableReason();
 }
 
 bool

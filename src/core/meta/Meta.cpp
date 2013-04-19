@@ -27,6 +27,7 @@
 #include <QImage>
 
 #include <KLocale>
+#include <Solid/Networking>
 
 using namespace Meta;
 
@@ -324,6 +325,47 @@ Meta::Track::lessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right )
     }
 
     return QString::localeAwareCompare( left->prettyName(), right->prettyName() ) < 0;
+}
+
+bool
+Track::isPlayable() const
+{
+    return notPlayableReason().isEmpty();
+}
+
+QString
+Track::notPlayableReason() const
+{
+    return QString();
+}
+
+QString
+Track::networkNotPlayableReason() const
+{
+    switch( Solid::Networking::status() )
+    {
+        case Solid::Networking::Unconnected:
+        case Solid::Networking::Disconnecting:
+        case Solid::Networking::Connecting:
+            return i18n( "No network connection" );
+        case Solid::Networking::Unknown:
+        case Solid::Networking::Connected:
+            return QString();
+    }
+    return QString();
+}
+
+QString
+Track::localFileNotPlayableReason( const QString &path ) const
+{
+    QFileInfo trackFileInfo = QFileInfo( path );
+    if( !trackFileInfo.exists() )
+        return i18n( "File does not exist" );
+    if( !trackFileInfo.isFile() )
+        return i18n( "Not a file" );
+    if( !trackFileInfo.isReadable() )
+        return i18n( "No read permissions" );
+    return QString();
 }
 
 StatisticsPtr

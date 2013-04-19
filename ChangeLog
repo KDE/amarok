@@ -46,6 +46,8 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * Reason why a particular track is not playable is now shown in playlist tooltip; patch
+     by Anmol Ahuja. (BR 313649)
    * Pre-apmlifier in equalizer is now only enabled if it is actually supported; patch by
      Harsh Gupta. (BR 301311)
    * Fix compilation error on systems with gcc-4.2 (BR 314528)

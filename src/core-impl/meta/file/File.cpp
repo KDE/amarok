@@ -217,11 +217,10 @@ Track::uidUrl() const
     return d->url.url();
 }
 
-bool
-Track::isPlayable() const
+QString
+Track::notPlayableReason() const
 {
-    QFileInfo info = QFileInfo( playableUrl().pathOrUrl() );
-    return info.isFile() && info.isReadable();
+    return localFileNotPlayableReason( playableUrl().toLocalFile() );
 }
 
 bool

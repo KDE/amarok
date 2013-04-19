@@ -366,13 +366,10 @@ SqlTrack::setUidUrl( const QString &uid )
     }
 }
 
-bool
-SqlTrack::isPlayable() const
+QString
+SqlTrack::notPlayableReason() const
 {
-    QReadLocker locker( &m_lock );
-
-    //a song is not playable anymore if the collection was removed
-    return m_collection && QFile::exists( m_url.path() );
+    return localFileNotPlayableReason( playableUrl().toLocalFile() );
 }
 
 bool

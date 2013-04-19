@@ -155,7 +155,6 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
 
-        virtual bool isPlayable() const;
         virtual bool isEditable() const;
 
         virtual AlbumPtr album() const;

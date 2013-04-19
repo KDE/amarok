@@ -211,10 +211,23 @@ namespace Meta
              */
             virtual QString uidUrl() const = 0;
 
-            /** Returns whether playableUrl() will return a playable Url
-                In principle this means that the url is valid.
+            /**
+             * Returns whether playableUrl() will return a playable Url.
+             * In principle this means that the url is valid.
+             *
+             * Default implementation returns true if notPlayableReason() is
+             * empty, false otherwise. New implementations should implement just
+             * notPlayableReason()
              */
-            virtual bool isPlayable() const = 0;
+            virtual bool isPlayable() const;
+
+            /**
+             * Return user-readable localized reason why isPlayeble() is false.
+             * Guaranteed to be empty if isPlayable() is true.
+             * Default implementation just returns an empty string.
+             */
+            virtual QString notPlayableReason() const;
+
             /** Returns the album this track belongs to */
             virtual AlbumPtr album() const = 0;
             /** Returns the artist of this track */
@@ -325,6 +338,19 @@ namespace Meta
             friend class ::PersistentStatisticsStore; // so that it can call notifyObservers
             virtual void notifyObservers() const;
 
+            /**
+             * Helper method for subclasses to implement notPlayableReason().
+             * Checks network status and returns a non-empty reason string if
+             * it isn't online.
+             */
+            QString networkNotPlayableReason() const;
+
+            /**
+             * Helper method for subclasses to implement notPlayableReason().
+             * Checks, in order, if the file exists, if it is a file and if
+             * the file is readable
+             */
+            QString localFileNotPlayableReason( const QString &path ) const;
     };
 
     class AMAROK_CORE_EXPORT Artist : public Base

@@ -96,15 +96,10 @@ MediaDeviceTrack::prettyUrl() const
     return  QString( "%1: %2 - %3" ).arg( collName, artistName, trackName );
 }
 
-bool
-MediaDeviceTrack::isPlayable() const
+QString
+MediaDeviceTrack::notPlayableReason() const
 {
-    KUrl trackUrl = playableUrl();
-    QFileInfo trackFileInfo = QFileInfo( trackUrl.pathOrUrl() );
-    if( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() )
-        return true;
-
-    return false;
+    return localFileNotPlayableReason( playableUrl().toLocalFile() );
 }
 
 bool

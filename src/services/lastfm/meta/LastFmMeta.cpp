@@ -24,7 +24,6 @@
 #include "services/lastfm/meta/LastFmStreamInfoCapability.h"
 
 #include <KIcon>
-#include <Solid/Networking>
 
 #include <QCoreApplication>
 #include <QThread>
@@ -163,20 +162,10 @@ Track::uidUrl() const
     return d->lastFmUri.toString();
 }
 
-bool
-Track::isPlayable() const
+QString
+Track::notPlayableReason() const
 {
-    switch( Solid::Networking::status() )
-    {
-        case Solid::Networking::Unknown:
-        case Solid::Networking::Connected:
-            return true;
-        case Solid::Networking::Unconnected:
-        case Solid::Networking::Disconnecting:
-        case Solid::Networking::Connecting:
-            return false;
-    }
-    return true;
+    return networkNotPlayableReason();
 }
 
 Meta::AlbumPtr

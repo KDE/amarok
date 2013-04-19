@@ -21,6 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
+#include <KLocalizedString>
 #include <Nepomuk2/Resource>
 
 using namespace Meta;
@@ -71,10 +72,12 @@ NepomukTrack::uidUrl() const
     return m_uidUrl;
 }
 
-bool
-NepomukTrack::isPlayable() const
+QString
+NepomukTrack::notPlayableReason() const
 {
-    return m_playableUrl.isValid();
+    if( !m_playableUrl.isValid() )
+        return i18n( "Invalid URL" );
+    return QString();
 }
 
 AlbumPtr

@@ -46,6 +46,12 @@ namespace Meta {
             QString uidUrl() const;
             bool isPlayable() const;
 
+            /**
+             * Return a comma separated list of reasons why constituent
+             * tracks are unplayable
+             */
+            QString notPlayableReason() const;
+
             Meta::AlbumPtr album() const;
             Meta::ArtistPtr artist() const;
             Meta::ComposerPtr composer() const;

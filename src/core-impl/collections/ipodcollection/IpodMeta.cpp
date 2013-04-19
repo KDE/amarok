@@ -229,15 +229,10 @@ Track::uidUrl() const
         return m_mountPoint + relPath;
 }
 
-bool
-Track::isPlayable() const
+QString
+Track::notPlayableReason() const
 {
-    KUrl trackUrl = playableUrl();
-    QFileInfo trackFileInfo = QFileInfo( trackUrl.path() );
-    if( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() )
-        return true;
-
-    return false;
+    return localFileNotPlayableReason( playableUrl().toLocalFile() );
 }
 
 Meta::AlbumPtr

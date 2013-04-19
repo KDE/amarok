@@ -79,8 +79,8 @@ namespace Meta
             QString prettyUrl() const;
             QString uidUrl() const;
             QString sid() const;
-            
-            bool isPlayable() const;
+            QString notPlayableReason() const;
+
             AlbumPtr album() const;
             ArtistPtr artist() const;
             ComposerPtr composer() const;

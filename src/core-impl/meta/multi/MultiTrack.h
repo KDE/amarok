@@ -70,6 +70,7 @@ namespace Meta
             virtual int discNumber() const { return m_currentTrack->discNumber(); }
 
             virtual bool isPlayable() const { return m_currentTrack->isPlayable(); }
+            virtual QString notPlayableReason() const { return m_currentTrack->notPlayableReason(); }
             virtual QString type() const { return m_currentTrack->type(); }
 
             virtual StatisticsPtr statistics();

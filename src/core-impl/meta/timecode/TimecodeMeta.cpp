@@ -91,12 +91,6 @@ TimecodeTrack::isEditable() const
     return true;
 }
 
-bool
-TimecodeTrack::isPlayable() const
-{
-     return true;
-}
-
 ArtistPtr
 TimecodeTrack::artist() const
 {

@@ -202,6 +202,20 @@ ProxyTrack::isPlayable() const
     return false;
 }
 
+QString
+ProxyTrack::notPlayableReason() const
+{
+    QStringList reasons;
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( !track->isPlayable() )
+            reasons.append( track->notPlayableReason() );
+        else
+            return QString(); // no reason if at least one playable
+    }
+    return reasons.join( QString( ", " ) );
+}
+
 Meta::AlbumPtr
 ProxyTrack::album() const
 {

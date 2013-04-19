@@ -18,8 +18,6 @@
 
 #include "DaapCollection.h"
 
-#include <Solid/Networking>
-
 using namespace Meta;
 
 DaapTrack::DaapTrack( Collections::DaapCollection *collection, const QString &host, quint16 port, const QString &dbId, const QString &itemId, const QString &format)
@@ -74,14 +72,10 @@ DaapTrack::prettyUrl() const
     return m_displayUrl;
 }
 
-bool
-DaapTrack::isPlayable() const
+QString
+DaapTrack::notPlayableReason() const
 {
-    //daap tracks are accessed over the network, so check if network connectivity is present
-    if( Solid::Networking::status() != Solid::Networking::Connected )
-        return false;
-
-    return true;
+    return networkNotPlayableReason();
 }
 
 bool

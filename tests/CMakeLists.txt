@@ -143,5 +143,5 @@ add_dependencies( testtrackorganizer amarokcore )
 add_dependencies( testtrackorganizer amaroklib )
 add_dependencies( testtrackorganizer gtest )
 
-target_link_libraries( testtrackorganizer amarokcore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${GOOGLEMOCK_LIBRARIES})
+target_link_libraries( testtrackorganizer amarokcore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_SOLID_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${GOOGLEMOCK_LIBRARIES})
 
