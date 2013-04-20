@@ -32,6 +32,7 @@
 
 #include <QTest>
 #include <QScopedPointer>
+#include <ThreadWeaver/Weaver>
 
 QTEST_KDEMAIN_CORE( TestSqlScanManager )
 
@@ -97,7 +98,14 @@ TestSqlScanManager::initTestCase()
 void
 TestSqlScanManager::cleanupTestCase()
 {
+    // aborts a ThreadWeaver job that would otherwise cause next statement to stall
     delete m_collection;
+
+    // we cannot simply call WeaverInterface::finish(), it stops event loop
+    if( !ThreadWeaver::Weaver::instance()->isIdle() )
+        QVERIFY2( QTest::kWaitForSignal( ThreadWeaver::Weaver::instance(),
+                SIGNAL(finished()), 5000 ), "threads did not finish in timeout" );
+
     //m_storage is deleted by SqlCollection
     delete m_tmpDatabaseDir;
 }
@@ -1096,10 +1104,18 @@ void
 TestSqlScanManager::waitScannerFinished()
 {
     QVERIFY( m_scanManager->isRunning() );
-    QSignalSpy succeedSpy( m_scanManager, SIGNAL(succeeded()));
-    QSignalSpy failSpy( m_scanManager, SIGNAL(failed(QString)));
+    QSignalSpy succeedSpy( m_scanManager, SIGNAL(succeeded()) );
+    QSignalSpy failSpy( m_scanManager, SIGNAL(failed(QString)) );
     QVERIFY2( QTest::kWaitForSignal( this, SIGNAL(scanManagerResult()), 60*1000),
               "Scan Manager timed out without a result" );
+    if( failSpy.count() > 0 )
+    {
+        QStringList errors;
+        foreach( const QList<QVariant> &arguments, static_cast<QList<QList<QVariant> > >( failSpy ) )
+            errors << arguments.value( 0 ).toString();
+        // this will fire each time:
+        QVERIFY2( errors.join( "\n" ) == QString(), "ScanManager failed with an error" );
+    }
     QCOMPARE( succeedSpy.count(), 1);
     QCOMPARE( failSpy.count(), 0);
 
