@@ -68,7 +68,7 @@
               <enum>Qt::NoFocus</enum>
              </property>
              <property name="text">
-              <string>Track by Artist on Album</string>
+              <string notr="true">Track by Artist on Album</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignVCenter</set>
@@ -101,6 +101,22 @@
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout">
+           <item row="6" column="1">
+            <widget class="QLabel" name="qLabel_collection">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0" colspan="2">
             <widget class="QLabel" name="leftHeaderLabel">
              <property name="sizePolicy">
@@ -120,9 +136,6 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -146,9 +159,6 @@
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -158,9 +168,6 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -178,9 +185,6 @@
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
             </widget>
            </item>
            <item row="2" column="0">
@@ -190,9 +194,6 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -210,9 +211,6 @@
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
             </widget>
            </item>
            <item row="3" column="0">
@@ -222,9 +220,6 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -242,9 +237,6 @@
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
             </widget>
            </item>
            <item row="4" column="0">
@@ -254,9 +246,6 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -274,9 +263,6 @@
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
             </widget>
            </item>
            <item row="5" column="0">
@@ -286,9 +272,6 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -301,13 +284,10 @@
               </font>
              </property>
              <property name="text">
-              <string>mp3</string>
+              <string notr="true">mp3</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -318,28 +298,6 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="1">
-            <widget class="QLabel" name="qLabel_collection">
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>0</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -366,9 +324,6 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
              <property name="buddy">
               <cstring>ratingWidget</cstring>
@@ -405,9 +360,6 @@
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
             </widget>
            </item>
            <item row="3" column="3">
@@ -430,9 +382,6 @@
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
             </widget>
            </item>
            <item row="1" column="2">
@@ -442,9 +391,6 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
              <property name="buddy">
               <cstring>qSpinBox_score</cstring>
@@ -458,9 +404,6 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -484,9 +427,6 @@
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
             </widget>
            </item>
            <item row="5" column="2">
@@ -496,9 +436,6 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -522,8 +459,31 @@
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="noteLabel">
+             <property name="text">
+              <string>Note:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1" colspan="3">
+            <widget class="QLabel" name="qLabel_note">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
              <property name="wordWrap">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
             </widget>
            </item>

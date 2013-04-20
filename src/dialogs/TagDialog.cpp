@@ -54,6 +54,7 @@ namespace Field {
     const QString LYRICS = "lyrics";
     const QString TYPE = "type";
     const QString COLLECTION = "collection";
+    const QString NOTE = "note";
 }
 }
 
@@ -795,6 +796,19 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
                                     tags.value( Meta::Field::COLLECTION ).toString() :
                                     i18nc( "The collection this track is part of", "None") );
 
+    // special handling - we want to hide this if empty
+    if( tags.contains( Meta::Field::NOTE ) )
+    {
+        ui->noteLabel->show();
+        ui->qLabel_note->setText( tags.value( Meta::Field::NOTE ).toString() );
+        ui->qLabel_note->show();
+    }
+    else
+    {
+        ui->noteLabel->hide();
+        ui->qLabel_note->hide();
+    }
+
     ui->kRichTextEdit_lyrics->setTextOrHtml( tags.value( Meta::Field::LYRICS ).toString() );
 
     m_labelModel->setLabels( tags.value( Meta::Field::LABELS ).toStringList() );
@@ -944,6 +958,10 @@ TagDialog::getTagsFromTrack( const Meta::TrackPtr &track ) const
 
     if( track->inCollection() )
         map.insert( Meta::Field::COLLECTION, track->collection()->prettyName() );
+
+    if( !track->notPlayableReason().isEmpty() )
+        map.insert( Meta::Field::NOTE, i18n( "The track is not playable. %1",
+                                             track->notPlayableReason() ) );
 
     QStringList labelNames;
     foreach( const Meta::LabelPtr &label, track->labels() )
