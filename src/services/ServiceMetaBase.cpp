@@ -237,6 +237,16 @@ ServiceTrack::prettyUrl() const
     return m_displayUrl;
 }
 
+QString
+ServiceTrack::notPlayableReason() const
+{
+    if( !m_playableUrl.isEmpty() )
+        return localFileNotPlayableReason( m_playableUrl );
+    if( !m_downloadableUrl.isEmpty() )
+        return networkNotPlayableReason();
+    return i18n( "Neither playable nor downloadable url specified." );
+}
+
 void
 ServiceTrack::setUidUrl(const QString & url)
 {

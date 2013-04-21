@@ -44,11 +44,10 @@ namespace Meta {
             KUrl playableUrl() const;
             QString prettyUrl() const;
             QString uidUrl() const;
-            bool isPlayable() const;
 
             /**
              * Return a comma separated list of reasons why constituent
-             * tracks are unplayable
+             * tracks are unplayable or an empty string if any of the tracks is playable
              */
             QString notPlayableReason() const;
 

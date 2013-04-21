@@ -77,6 +77,15 @@ PodcastEpisode::PodcastEpisode( PodcastEpisodePtr episode,
     m_url = episode->uidUrl();
 }
 
+QString
+PodcastEpisode::notPlayableReason() const
+{
+    if( m_localUrl.isEmpty() )
+        return networkNotPlayableReason();
+    else
+        return localFileNotPlayableReason( m_localUrl.toLocalFile() );
+}
+
 bool
 PodcastEpisode::operator==( const Meta::Track &track ) const
 {

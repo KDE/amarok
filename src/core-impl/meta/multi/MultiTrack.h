@@ -53,6 +53,7 @@ namespace Meta
             virtual KUrl playableUrl() const { return m_currentTrack->playableUrl(); }
             virtual QString prettyUrl() const { return m_currentTrack->prettyUrl(); }
             virtual QString uidUrl() const { return m_currentTrack->uidUrl(); }
+            virtual QString notPlayableReason() const { return m_currentTrack->notPlayableReason(); }
 
             virtual AlbumPtr album() const { return m_currentTrack->album(); }
             virtual ArtistPtr artist() const { return m_currentTrack->artist(); }
@@ -69,8 +70,6 @@ namespace Meta
             virtual int trackNumber() const { return m_currentTrack->trackNumber(); }
             virtual int discNumber() const { return m_currentTrack->discNumber(); }
 
-            virtual bool isPlayable() const { return m_currentTrack->isPlayable(); }
-            virtual QString notPlayableReason() const { return m_currentTrack->notPlayableReason(); }
             virtual QString type() const { return m_currentTrack->type(); }
 
             virtual StatisticsPtr statistics();

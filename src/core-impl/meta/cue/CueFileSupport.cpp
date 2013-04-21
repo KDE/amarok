@@ -448,7 +448,8 @@ CueFileSupport::generateTimeCodeTracks( Meta::TrackPtr baseTrack, CueFileItemMap
 
     foreach( CueFileItem item, itemMap )
     {
-        Meta::TimecodeTrack * track = new Meta::TimecodeTrack( item.title(), baseTrack->playableUrl().url(), item.index(), item.index() + item.length() );
+        Meta::TimecodeTrack *track = new Meta::TimecodeTrack( item.title(),
+                baseTrack->playableUrl().url(), item.index(), item.index() + item.length() );
         track->beginMetaDataUpdate();
         track->setArtist( item.artist() );
         track->setAlbum( item.album() );
@@ -459,5 +460,4 @@ CueFileSupport::generateTimeCodeTracks( Meta::TrackPtr baseTrack, CueFileItemMap
     }
 
     return trackList;
-    
 }

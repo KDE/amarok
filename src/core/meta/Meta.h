@@ -212,21 +212,23 @@ namespace Meta
             virtual QString uidUrl() const = 0;
 
             /**
-             * Returns whether playableUrl() will return a playable Url.
-             * In principle this means that the url is valid.
+             * Return whether playableUrl() will return a valid & readable playable url.
              *
-             * Default implementation returns true if notPlayableReason() is
-             * empty, false otherwise. New implementations should implement just
-             * notPlayableReason()
+             * Convenience method that just checks whether notPlayableReason() is empty.
              */
-            virtual bool isPlayable() const;
+            bool isPlayable() const;
 
             /**
-             * Return user-readable localized reason why isPlayeble() is false.
-             * Guaranteed to be empty if isPlayable() is true.
-             * Default implementation just returns an empty string.
+             * Return user-readable localized reason why isPlayable() is false.
+             *
+             * Subclasses must return a non-empty (localized) string if this track is not
+             * playable (i.e. playableUrl() won't return a valid url) and an empty string
+             * otherwise.
+             *
+             * This method is used to implement convenience Meta::Track::isPlayable()
+             * method.
              */
-            virtual QString notPlayableReason() const;
+            virtual QString notPlayableReason() const = 0;
 
             /** Returns the album this track belongs to */
             virtual AlbumPtr album() const = 0;

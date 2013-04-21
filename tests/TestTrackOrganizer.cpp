@@ -95,7 +95,6 @@ Meta::TrackPtr TestTrackOrganizer::makeMockTrack( const QString &trackName, cons
     EXPECT_CALL( *track, name() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
     EXPECT_CALL( *track, prettyName() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
     EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + "_" + artistName + "_" + albumName ) );
-    EXPECT_CALL( *track, isPlayable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( KUrl( '/' + track->uidUrl() ) ) );
     EXPECT_CALL( *track, trackNumber() ).Times( AnyNumber() ).WillRepeatedly( Return( trackNumber ) );
     EXPECT_CALL( *track, type() ).Times( AnyNumber() ).WillRepeatedly( Return( "mp3" ) );

@@ -165,7 +165,6 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual KUrl playableUrl() const { return m_track->playableUrl(); }
         virtual QString prettyUrl() const { return m_track->prettyUrl(); }
         virtual QString uidUrl() const { return m_track->uidUrl(); }
-        virtual bool isPlayable() const { return m_track->isPlayable(); }
         virtual QString notPlayableReason() const { return m_track->notPlayableReason(); }
 
         //these functions return the proxy track values

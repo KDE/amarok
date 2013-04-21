@@ -31,6 +31,7 @@ class MockTrack : public Meta::Track
     MockTrack() : Meta::Track()
     {
         ON_CALL( *this, name() ).WillByDefault( Return( "" ) );
+        ON_CALL( *this, notPlayableReason() ).WillByDefault( Return( QString() ) );
         ON_CALL( *this, artist() ).WillByDefault( Return( Meta::ArtistPtr() ) );
         ON_CALL( *this, album() ).WillByDefault( Return( Meta::AlbumPtr() ) );
         ON_CALL( *this, genre() ).WillByDefault( Return( Meta::GenrePtr() ) );
@@ -43,7 +44,7 @@ class MockTrack : public Meta::Track
     MOCK_CONST_METHOD0( playableUrl, KUrl() );
     MOCK_CONST_METHOD0( prettyUrl, QString() );
     MOCK_CONST_METHOD0( uidUrl, QString() );
-    MOCK_CONST_METHOD0( isPlayable, bool() );
+    MOCK_CONST_METHOD0( notPlayableReason, QString() );
     MOCK_CONST_METHOD0( album, Meta::AlbumPtr() );
     MOCK_CONST_METHOD0( artist, Meta::ArtistPtr() );
     MOCK_CONST_METHOD0( composer, Meta::ComposerPtr() );

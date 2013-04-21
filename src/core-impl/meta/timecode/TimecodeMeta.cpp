@@ -32,7 +32,7 @@ using namespace Capabilities;
 
 ////////////////// TRACK //////////////////
 
-TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 start, qint64 end )
+TimecodeTrack::TimecodeTrack( const QString &name, const QString &url, qint64 start, qint64 end )
     : m_name( name )
     , m_start( start )
     , m_end( end )
@@ -44,11 +44,7 @@ TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 
     , m_playableUrl( url )
     , m_updatedFields( 0 )
 {
-    DEBUG_BLOCK
     m_displayUrl = url + ':' + QString::number( start ) + '-' + QString::number( end );
-
-    debug() << "created with length: " << m_length;
-
 }
 
 TimecodeTrack::~ TimecodeTrack()
@@ -77,6 +73,12 @@ QString
 TimecodeTrack::prettyUrl() const
 {
     return m_displayUrl;
+}
+
+QString
+TimecodeTrack::notPlayableReason() const
+{
+    return localFileNotPlayableReason( m_playableUrl );
 }
 
 AlbumPtr

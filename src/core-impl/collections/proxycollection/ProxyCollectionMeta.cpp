@@ -191,17 +191,6 @@ ProxyTrack::uidUrl() const
     return QString();
 }
 
-bool
-ProxyTrack::isPlayable() const
-{
-    foreach( const Meta::TrackPtr &track, m_tracks )
-    {
-        if( track->isPlayable() )
-            return true;
-    }
-    return false;
-}
-
 QString
 ProxyTrack::notPlayableReason() const
 {

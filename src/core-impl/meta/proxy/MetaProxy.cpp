@@ -195,15 +195,6 @@ MetaProxy::Track::uidUrl() const
         return d->url.url();
 }
 
-bool
-MetaProxy::Track::isPlayable() const
-{
-    if( d->realTrack )
-        return d->realTrack->isPlayable();
-    else
-        return false;
-}
-
 QString
 MetaProxy::Track::notPlayableReason() const
 {

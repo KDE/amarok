@@ -37,7 +37,7 @@ class ScriptableServiceMetaItem
 {
     public:
         ScriptableServiceMetaItem( int level );
-    
+
         void setCallbackString( const QString &callbackString );
         QString callbackString() const;
         int level() const;
@@ -61,18 +61,17 @@ class ScriptableServiceMetaItem
 
 };
 
-
 class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServiceMetaItem
 {
     public:
-        ScriptableServiceTrack( const QString & name );
-        ScriptableServiceTrack( const QStringList & resultRow );
+        ScriptableServiceTrack( const QString &name );
+        ScriptableServiceTrack( const QStringList &resultRow );
 
         virtual QString sourceName();
         virtual QString sourceDescription();
         virtual QPixmap emblem();
         virtual QString scalableEmblem();
-      
+
         void setAlbumName( const QString &newAlbum );
         void setArtistName( const QString &newArtist );
         void setGenreName( const QString &newGenre );
@@ -82,11 +81,6 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
         void setCustomAlbumCoverUrl( const QString &coverurl );
 
         virtual QString collectionName() const { return m_serviceName; }
-
-    private:
-
-        
-
 };
 
 class ScriptableServiceAlbum : public Meta::ServiceAlbumWithCover, public ScriptableServiceMetaItem

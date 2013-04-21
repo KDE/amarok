@@ -334,12 +334,6 @@ Track::isPlayable() const
 }
 
 QString
-Track::notPlayableReason() const
-{
-    return QString();
-}
-
-QString
 Track::networkNotPlayableReason() const
 {
     switch( Solid::Networking::status() )

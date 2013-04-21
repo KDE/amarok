@@ -106,6 +106,7 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual KUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
         virtual QString prettyUrl() const { return playableUrl().prettyUrl(); }
         virtual QString uidUrl() const { return m_url.url(); }
+        virtual QString notPlayableReason() const;
 
         virtual Meta::AlbumPtr album() const { return m_albumPtr; }
         virtual Meta::ArtistPtr artist() const { return m_artistPtr; }

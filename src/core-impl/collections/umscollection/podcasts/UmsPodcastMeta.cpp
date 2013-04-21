@@ -76,6 +76,14 @@ UmsPodcastEpisode::playableUrl() const
     return m_localFile->playableUrl();
 }
 
+QString
+UmsPodcastEpisode::notPlayableReason() const
+{
+    if( m_localFile )
+        return m_localFile->notPlayableReason();
+    return PodcastEpisode::notPlayableReason();
+}
+
 void
 UmsPodcastEpisode::setLocalFile( MetaFile::TrackPtr localFile )
 {

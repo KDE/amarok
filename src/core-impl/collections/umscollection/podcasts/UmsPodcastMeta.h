@@ -59,6 +59,7 @@ class UmsPodcastEpisode : public Podcasts::PodcastEpisode
         //Track Methods
         virtual QString name() const { return title(); }
         virtual KUrl playableUrl() const;
+        virtual QString notPlayableReason() const;
         virtual QString prettyName() const { return name(); }
         virtual void setTitle( const QString &title );
         virtual QDateTime createDate() const;
