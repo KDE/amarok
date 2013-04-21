@@ -69,8 +69,6 @@ TestSqlScanManager::initTestCase()
     SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
     m_collection->setMountPointManager( mock );
     m_scanManager = m_collection->scanManager();
-    connect( m_scanManager, SIGNAL(succeeded()), SIGNAL(scanManagerResult()) );
-    connect( m_scanManager, SIGNAL(failed(QString)), SIGNAL(scanManagerResult()));
 
     AmarokConfig::setScanRecursively( true );
     AmarokConfig::setMonitorChanges( false );
@@ -1106,18 +1104,24 @@ TestSqlScanManager::waitScannerFinished()
     QVERIFY( m_scanManager->isRunning() );
     QSignalSpy succeedSpy( m_scanManager, SIGNAL(succeeded()) );
     QSignalSpy failSpy( m_scanManager, SIGNAL(failed(QString)) );
-    QVERIFY2( QTest::kWaitForSignal( this, SIGNAL(scanManagerResult()), 60*1000),
-              "Scan Manager timed out without a result" );
+
+    // connect the result signal *after* the spies to ensure they are updated first
+    connect( m_scanManager, SIGNAL(succeeded()), this, SIGNAL(scanManagerResult()) );
+    connect( m_scanManager, SIGNAL(failed(QString)), this, SIGNAL(scanManagerResult()));
+    const bool ok = QTest::kWaitForSignal( this, SIGNAL(scanManagerResult()), 60*1000 );
+    disconnect( m_scanManager, SIGNAL(succeeded()), this, SIGNAL(scanManagerResult()) );
+    disconnect( m_scanManager, SIGNAL(failed(QString)), this, SIGNAL(scanManagerResult()) );
+    QVERIFY2( ok, "Scan Manager timed out without a result" );
+
     if( failSpy.count() > 0 )
     {
         QStringList errors;
         foreach( const QList<QVariant> &arguments, static_cast<QList<QList<QVariant> > >( failSpy ) )
             errors << arguments.value( 0 ).toString();
         // this will fire each time:
-        QVERIFY2( errors.join( "\n" ) == QString(), "ScanManager failed with an error" );
+        qWarning() << "ScanManager failed with an error:" << errors.join( ", " );
     }
-    QCOMPARE( succeedSpy.count(), 1);
-    QCOMPARE( failSpy.count(), 0);
+    QCOMPARE( qMakePair( succeedSpy.count(), failSpy.count() ), qMakePair( 1, 0 ) );
 
     QVERIFY( !m_scanManager->isRunning() );
 }
