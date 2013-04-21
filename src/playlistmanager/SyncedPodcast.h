@@ -36,7 +36,6 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
         virtual QString subtitle() const { return m_master->subtitle(); }
         virtual QString summary() const { return m_master->summary(); }
         virtual QString author() const { return m_master->author(); }
-        virtual int podcastType() const { return m_master->podcastType(); }
 
         //Podcasts::PodcastChannel methods
         virtual KUrl url() const { return m_master->url(); }
@@ -61,7 +60,7 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
         {
             return m_master->addEpisode( episode );
         }
-        virtual Podcasts::PodcastEpisodeList episodes() { return m_master->episodes(); }
+        virtual Podcasts::PodcastEpisodeList episodes() const { return m_master->episodes(); }
 
         bool load( QTextStream &stream ) { return m_master->load( stream ); }
 

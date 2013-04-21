@@ -97,7 +97,7 @@ class UmsPodcastChannel : public Podcasts::PodcastChannel
         void setPlaylistFileSource( const KUrl &playlistFilePath );
         KUrl playlistFilePath() const { return m_playlistFilePath; }
 
-        virtual Podcasts::PodcastEpisodeList episodes()
+        virtual Podcasts::PodcastEpisodeList episodes() const
                 { return UmsPodcastEpisode::toPodcastEpisodeList( m_umsEpisodes ); }
         virtual Playlists::PlaylistProvider *provider() const;
 

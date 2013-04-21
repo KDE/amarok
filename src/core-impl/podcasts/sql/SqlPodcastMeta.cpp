@@ -685,7 +685,7 @@ SqlPodcastChannel::setTitle( const QString &title )
 }
 
 Podcasts::PodcastEpisodeList
-SqlPodcastChannel::episodes()
+SqlPodcastChannel::episodes() const
 {
     return SqlPodcastEpisode::toPodcastEpisodeList( m_episodes );
 }

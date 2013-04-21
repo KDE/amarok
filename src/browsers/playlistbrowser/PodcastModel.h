@@ -45,8 +45,8 @@ enum
 };
 
 /**
-    @author Bart Cerneels
-*/
+ * @author Bart Cerneels
+ */
 class PodcastModel : public PlaylistBrowserModel
 {
     Q_OBJECT
@@ -58,7 +58,6 @@ class PodcastModel : public PlaylistBrowserModel
         virtual QVariant data(const QModelIndex &index, int role) const;
         virtual bool setData( const QModelIndex &index, const QVariant &value,
                               int role = Qt::EditRole );
-//        virtual Qt::ItemFlags flags(const QModelIndex &index) const;
         virtual QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -87,9 +86,11 @@ class PodcastModel : public PlaylistBrowserModel
     private:
         static PodcastModel* s_instance;
         PodcastModel();
-        ~PodcastModel();
 
-        int podcastItemType( const QModelIndex &idx ) const;
+        QVariant channelData( const Podcasts::PodcastChannelPtr &channel,
+                              const QModelIndex &idx, int role ) const;
+        QVariant episodeData( const Podcasts::PodcastEpisodePtr &episode,
+                              const QModelIndex &idx, int role ) const;
 
         Podcasts::PodcastChannelPtr channelForIndex( const QModelIndex &index ) const;
         Podcasts::PodcastEpisodePtr episodeForIndex( const QModelIndex &index ) const;
@@ -98,19 +99,14 @@ class PodcastModel : public PlaylistBrowserModel
 
         QAction *m_setNewAction;
 
-        /** A convenience function to convert a PodcastEpisodeList into a TrackList.
-        **/
-        static Meta::TrackList
-        podcastEpisodesToTracks(
-            Podcasts::PodcastEpisodeList episodes );
+        /**
+         * A convenience function to convert a PodcastEpisodeList into a TrackList.
+         */
+        static Meta::TrackList podcastEpisodesToTracks( Podcasts::PodcastEpisodeList episodes );
 
-        //TODO: get rid of these 2 functions used as a HACK to get to master data.
-        //Use correct accessors in SyncedPodcast instead.
-        Playlists::PlaylistPtr getPlaylist( Playlists::PlaylistPtr playlist ) const;
-        Playlists::Playlist* getPlaylist( Playlists::Playlist* playlist ) const;
-
-        bool isOnDisk( Podcasts::PodcastMetaCommon *pmc ) const;
-        QVariant icon( Podcasts::PodcastMetaCommon *pmc ) const;
+        bool isOnDisk( Podcasts::PodcastEpisodePtr episode ) const;
+        QVariant icon( const Podcasts::PodcastChannelPtr &channel ) const;
+        QVariant icon( const Podcasts::PodcastEpisodePtr &episode ) const;
 };
 
 }

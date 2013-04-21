@@ -126,7 +126,7 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         //Podcasts::PodcastChannel methods
         virtual KUrl uidUrl() const;
         virtual void setTitle( const QString &title );
-        virtual Podcasts::PodcastEpisodeList episodes();
+        virtual Podcasts::PodcastEpisodeList episodes() const;
         virtual bool hasImage() const { return !m_image.isNull(); }
         virtual void setImage( const QImage &image );
         virtual QImage image() const { return m_image; }
