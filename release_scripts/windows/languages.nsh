@@ -39,7 +39,7 @@ Var KDE_OFFLINE_FILES
 
 !macro KDE_ADD_LANGUAGE_PACKAGE LANG LANG_SUFFIX
     Section /o "${LANG} (${LANG_SUFFIX})" SECTION_LANGUAGES_${LANG_SUFFIX}        
-        !insertmacro KDE_FETCH_AND_EXTRACT "http://winkde.org/~pvonreth/downloads/l10n/${kde-version}" "kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z" "Installing language ${LANG}..."
+        !insertmacro KDE_FETCH_AND_EXTRACT "http://winkde.org/~pvonreth/downloads/l10n/${kde-version}" "kde-l10n-${LANG_SUFFIX}-${kde-version}.7z" "Installing language ${LANG}..."
     SectionEnd
 !macroend
 

@@ -89,7 +89,7 @@ ShowInstDetails hide
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_LINK "$(VISIT_PROJECT_HOMEPAGE)"
 !define MUI_FINISHPAGE_LINK_LOCATION "${PRODUCT_WEB_SITE}"
-!insertmacro MUI_PAGE_FINISH
+;!insertmacro MUI_PAGE_FINISH
 
 
 !insertmacro MUI_UNPAGE_WELCOME
@@ -119,8 +119,9 @@ Section "Amarok" SECTION_AMAROK
     ; package all files, recursively, preserving attributes
     ; assume files are in the correct places
 
+    File /a /r /x "*.nsi" /x "${setupname}" "${srcdir}\*.*"
     File ${MUI_ICON}
-    File /a /r /x "*.nsi" /x "${setupname}" "${srcdir}\*.*" 
+    File "/oname=$INSTDIR\bin\kde.conf" "kde.conf"
 
     WriteUninstaller "${uninstaller}"
 
@@ -135,7 +136,7 @@ Section "Amarok" SECTION_AMAROK
 SectionEnd
 
 Section /o $(SECTION_SNORE) SECTION_SNORE
-    !insertmacro KDE_FETCH_AND_EXTRACT "http://winkde.org/~pvonreth/downloads/snore/bin/" "snorenotify-0.3.7z" "Installing Snore..."
+    !insertmacro KDE_FETCH_AND_EXTRACT "http://winkde.org/~pvonreth/downloads/Amarok/${version}/" "snorenotify-${architecture}-0.3.7z" "Installing Snore..."
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
         CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Snorenotify.lnk" "$INSTDIR\bin\snorenotify.exe"
     !insertmacro MUI_STARTMENU_WRITE_END
