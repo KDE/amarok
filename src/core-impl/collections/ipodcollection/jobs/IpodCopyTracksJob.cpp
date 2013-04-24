@@ -319,13 +319,15 @@ IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUr
     }
     job->setUiDelegate( 0 ); // be non-interactive
     connect( job, SIGNAL(finished(KJob*)), // we must use this instead of result() to prevent deadlock
-             SLOT(slotCopyOrTranscodeJobFinished()) );
+             SLOT(slotCopyOrTranscodeJobFinished(KJob*)) );
     job->start();  // no-op for KIO job, but matters for transcoding job
 }
 
 void
-IpodCopyTracksJob::slotCopyOrTranscodeJobFinished()
+IpodCopyTracksJob::slotCopyOrTranscodeJobFinished( KJob *job )
 {
+    if( job->error() != 0 && m_copyErrors.count() < 10 )
+        m_copyErrors.insert( job->errorString() );
     m_copying.release( 1 ); // wakeup run()
 }
 
@@ -372,8 +374,8 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
     int copyingFailedCount = m_sourceTrackStatus.count( CopyingFailed );
     if( copyingFailedCount )
     {
-        details += i18np( "One file could not be copied.<br>",
-                          "%1 files could not be copied.<br>", copyingFailedCount );
+        details += i18np( "Copy/move/transcode of one file failed.<br>",
+                          "Copy/move/transcode of %1 files failed.<br>", copyingFailedCount );
     }
     int internalErrorCount = m_sourceTrackStatus.count( InternalError );
     if( internalErrorCount )
@@ -387,6 +389,11 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
     {
         // aborted case was already caught in run()
         details += i18n( "The rest was not transferred because iPod collection disappeared.<br>" );
+    }
+    if( !m_copyErrors.isEmpty() )
+    {
+        details += i18nc( "%1 is a list of errors that occured during copying of tracks",
+                          "Error causes: %1<br>", QStringList( m_copyErrors.toList() ).join( "<br>" ) );
     }
     KMessageBox::detailedSorry( 0, text, details, caption );
 }

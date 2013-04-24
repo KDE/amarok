@@ -26,6 +26,7 @@
 #include <QMap>
 #include <QSemaphore>
 
+class KJob;
 
 class IpodCopyTracksJob : public ThreadWeaver::Job
 {
@@ -85,7 +86,7 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
 
         /// @see startCopyJob()
         void slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl );
-        void slotCopyOrTranscodeJobFinished();
+        void slotCopyOrTranscodeJobFinished( KJob *job );
 
         /// @see displaySorryDialog()
         void slotDisplaySorryDialog();
@@ -103,6 +104,7 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         bool m_aborted;
         bool m_goingToRemoveSources;
         QSet<QString> m_notPlayableFormats;
+        QSet<QString> m_copyErrors;
 };
 
 #endif // COPYTRACKSJOB_H
