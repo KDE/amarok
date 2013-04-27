@@ -139,10 +139,10 @@ public:
 class MockAlbum : public Meta::Album
 {
 public:
-    MockAlbum( const QString &name )
+    MockAlbum( const QString &name, const Meta::ArtistPtr &albumArtist = Meta::ArtistPtr() )
         : Meta::Album()
         , m_name( name )
-        , m_albumArtist( Meta::ArtistPtr() ) {}
+        , m_albumArtist( albumArtist ) {}
 
     QString name() const { return m_name; }
     QString prettyName() const { return m_name; }

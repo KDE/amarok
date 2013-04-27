@@ -80,6 +80,9 @@ struct multilevelLessThan
         long constantRandomSeqnumForRow( const QAbstractItemModel* sourceModel, int sourceModelRow ) const;
 
     private:
+        template<typename T>
+        int compareBySortableName( const KSharedPtr<T> &left, const KSharedPtr<T> &right ) const;
+
         SortScheme m_scheme;    //!< The current sorting scheme.
         long m_randomSalt;      //!< Change the random row order from run to run.
 };

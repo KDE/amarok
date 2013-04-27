@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
+ * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -95,37 +96,42 @@ SortLevel::prettyName() const
 
 // BEGIN SortScheme
 
-SortScheme::SortScheme()
-{
-}
-
-SortScheme::~SortScheme()
-{
-}
-
 const SortLevel &
 SortScheme::level( int i ) const
 {
-    return m_scheme.operator[]( i );    //SortLevel( 0 ) is a dummy, as in PlaylistDefines.h 0=PlaceHolder
+    //SortLevel( 0 ) is a dummy, as in PlaylistDefines.h 0=PlaceHolder
+    return (*this)[ i ];
 }
 
 void
 SortScheme::addLevel( const Playlist::SortLevel& level )
 {
-    m_scheme.push( level );
+    push( level );
 }
 
 int
 SortScheme::length() const
 {
-    return m_scheme.size();
+    return size();
 }
 
 void
 SortScheme::trimToLevel( int lastLevel )
 {
-    for( int i = length() - 1; i > lastLevel; i--)
-        m_scheme.pop();
+    while( size() > lastLevel )
+        pop();
+}
+
+SortScheme::const_iterator
+SortScheme::begin() const
+{
+    return QStack::begin();
+}
+
+SortScheme::const_iterator
+SortScheme::end() const
+{
+    return QStack::end();
 }
 
 }   //namespace Playlist

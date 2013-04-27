@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
+ * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,6 +20,7 @@
 
 #include "AbstractModel.h"
 #include "core/meta/Statistics.h"
+#include "core/support/Debug.h"
 
 namespace Playlist
 {
@@ -31,116 +33,145 @@ multilevelLessThan::setSortScheme( const SortScheme & scheme )
 }
 
 bool
-multilevelLessThan::operator()( const QAbstractItemModel* sourceModel, int sourceModelRowA, int sourceModelRowB ) const
+multilevelLessThan::operator()( const QAbstractItemModel* sourceModel,
+                                int sourceModelRowA, int sourceModelRowB ) const
 {
+    // Handle "Last Played" as a special case because the time since last played is not
+    // reported as an int in the data columns. Handle Title, Album, Artist as special
+    // cases with Meta::Base::sortableName(). This is necessary in order to have the same
+    // sort order policy regarding "The" in both the playlist and the collection browser.
+    QSet< Playlist::Column > specialCases;
+    specialCases << Playlist::LastPlayed << Playlist::Title << Playlist::Album
+                 << Playlist::Artist << Playlist::AlbumArtist;
 
-    for( int i = 0; i < m_scheme.length(); i++ )
+    foreach( const SortLevel &level, m_scheme )
     {
-        bool inverted = ( m_scheme.level( i ).order() == Qt::DescendingOrder );
-        int currentCategory = m_scheme.level( i ).category();  //see enum Column in PlaylistDefines.h
+        const bool inverted = ( level.order() == Qt::DescendingOrder );
+        const Playlist::Column currentCategory = level.category();
 
-        if( currentCategory == -1 ) //random
+        if( currentCategory == Playlist::Shuffle )
         {
             long randomSeqnumA = constantRandomSeqnumForRow( sourceModel, sourceModelRowA );
             long randomSeqnumB = constantRandomSeqnumForRow( sourceModel, sourceModelRowB );
 
-            if( randomSeqnumA < randomSeqnumB )
-                return !inverted;
-            else
-                return inverted;
+            // '!=' is the XOR operation; it simply negates the result if 'inverted'
+            // is true. It isn't necessarry to do it this way, although later on it will
+            // ease figuring out what's actually being returned.
+            return ( randomSeqnumA < randomSeqnumB ) != inverted;
         }
 
-        QModelIndex indexA = sourceModel->index( sourceModelRowA, currentCategory );
-        QModelIndex indexB = sourceModel->index( sourceModelRowB, currentCategory );
+        const QModelIndex indexA = sourceModel->index( sourceModelRowA, currentCategory );
+        const QModelIndex indexB = sourceModel->index( sourceModelRowB, currentCategory );
 
-        QVariant dataA = indexA.data( Qt::DisplayRole );
-        QVariant dataB = indexB.data( Qt::DisplayRole );
-        Meta::TrackPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>();
-        Meta::TrackPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>();
+        const Meta::TrackPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>();
+        const Meta::TrackPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>();
 
-        if( trackA && trackB )
+        if( trackA && trackB && specialCases.contains( currentCategory ) )
         {
-            //Handle "Last Played" as a special case because the time since last played is not
-            //reported as an int in the data columns.
-            //Also, the verdicts are inverted because I answer to the question about the time
-            //since the track was played by comparing the absolute time when the track was last
-            //played.
-            if( currentCategory == Playlist::LastPlayed )
+            switch( currentCategory )
             {
-                if( trackA->statistics()->lastPlayed() < trackB->statistics()->lastPlayed() )
-                    return inverted;
-                else if( trackA->statistics()->lastPlayed() > trackB->statistics()->lastPlayed() )
-                    return !inverted;
-            }
+                case Playlist::LastPlayed:
+                {
+                    const QDateTime lastPlayedA = trackA->statistics()->lastPlayed();
+                    const QDateTime lastPlayedB = trackB->statistics()->lastPlayed();
 
-            //Handle Title, Album, Artist as special cases with Meta::Base::sortableName().
-            //This is necessary in order to have the same sort order policy regarding "The" in
-            //both the playlist and the collection browser.
-            else if( currentCategory == Playlist::Title )
-            {
-                dataA.setValue( trackA->sortableName() );
-                dataB.setValue( trackB->sortableName() );
-            }
-            else if( currentCategory == Playlist::Album )
-            {
-                Meta::AlbumPtr albumA = trackA->album();
-                if( albumA )
-                    dataA.setValue( albumA->sortableName() );
-                else
-                    dataA.clear();
+                    // The track with higher lastPlayed value was played more recently
+                    if( lastPlayedA != lastPlayedB )
+                        return ( lastPlayedA > lastPlayedB ) != inverted;
 
-                Meta::AlbumPtr albumB = trackB->album();
-                if( albumB )
-                    dataB.setValue( albumB->sortableName() );
-                else
-                    dataB.clear();
-            }
-            else if( currentCategory == Playlist::Artist )
-            {
-                Meta::ArtistPtr artistA = trackA->artist();
-                if( artistA )
-                    dataA.setValue( artistA->sortableName() );
-                else
-                    dataA.clear();
+                    break;
+                }
+                case Playlist::Title:
+                {
+                    const int compareResult = compareBySortableName( trackA, trackB );
+                    if( compareResult != 0 )
+                        return ( compareResult < 0 ) != inverted;
 
-                Meta::ArtistPtr artistB = trackB->artist();
-                if( artistB )
-                    dataB.setValue( artistB->sortableName() );
-                else
-                    dataB.clear();
+                    break;
+                }
+                case Playlist::Album:
+                {
+                    const int compareResult
+                            = compareBySortableName( trackA->album(), trackB->album() );
+
+                    if( compareResult != 0 )
+                        return ( compareResult < 0 ) != inverted;
+
+                    // Fall through to sorting by album artist if albums have same name
+                }
+                case Playlist::AlbumArtist:
+                {
+                    const Meta::ArtistPtr artistA =
+                            (trackA->album() ? trackA->album()->albumArtist() : Meta::ArtistPtr());
+
+                    const Meta::ArtistPtr artistB =
+                            (trackB->album() ? trackB->album()->albumArtist() : Meta::ArtistPtr());
+
+                    const int compareResult = compareBySortableName( artistA, artistB );
+                    if( compareResult != 0 )
+                        return ( compareResult < 0 ) != inverted;
+
+                    break;
+                }
+                case Playlist::Artist:
+                {
+                    const int compareResult
+                            = compareBySortableName( trackA->artist(), trackB->artist() );
+
+                    if( compareResult != 0 )
+                        return ( compareResult < 0 ) != inverted;
+
+                    break;
+                }
+                default:
+                    warning() << "One of the cases in specialCases set has not received special treatment!";
+                    break;
             }
         }
+        else // either it's not a special case, or we don't have means (TrackPtrs) to handle it
+        {
+            const QVariant dataA = indexA.data( Qt::DisplayRole );
+            const QVariant dataB = indexB.data( Qt::DisplayRole );
 
-
-        if( m_scheme.level( i ).isString() )
-        {
-            QString dataAStr = dataA.toString().toLower();
-            QString dataBStr = dataB.toString().toLower();
-            if( dataAStr < dataBStr )
-                return !inverted;
-            else if( dataAStr > dataBStr )
-                return inverted;
-        }
-        else if( m_scheme.level( i ).isFloat() )
-        {
-            if( dataA.toDouble() < dataB.toDouble() )
-                return !inverted;
-            else if( dataA.toDouble() > dataB.toDouble() )
-                return inverted;
-        }
-        else //if it's not a string ==> it's a number
-        {
-            if( dataA.toInt() < dataB.toInt() )
-                return !inverted;
-            else if( dataA.toInt() > dataB.toInt() )
-                return inverted;
+            if( level.isString() )
+            {
+                const int compareResult =
+                        dataA.toString().compare(dataB.toString(),
+                                                 Qt::CaseInsensitive);
+                if( compareResult != 0 )
+                    return ( compareResult < 0 ) != inverted;
+            }
+            else if( level.isFloat() )
+            {
+                if( dataA.toDouble() != dataB.toDouble() )
+                    return ( dataA.toDouble() < dataB.toDouble() ) != inverted;
+            }
+            else // if it's neither a string nor a float ==> it's an integer
+            {
+                if( dataA.toInt() != dataB.toInt() )
+                    return ( dataA.toInt() < dataB.toInt() ) != inverted;
+            }
         }
     }
 
     // Tie breaker: order by row number
-    return (sourceModelRowA < sourceModelRowB);
+    return ( sourceModelRowA < sourceModelRowB );
 }
 
+template<typename T>
+int
+multilevelLessThan::compareBySortableName( const KSharedPtr<T> &left,
+                                           const KSharedPtr<T> &right ) const
+{
+    if( !left && right )
+        return -1;
+    else if( left && !right )
+        return 1;
+    else if( left && right )
+        return left->sortableName().compare( right->sortableName(),
+                                             Qt::CaseInsensitive );
+    return 0;
+}
 
 // If the 'qrand()' save+restore ever turns out to be a performance bottleneck: try
 // switching to 'jrand48()', which has no common random pool and therefore doesn't have
