@@ -48,8 +48,8 @@ IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,KUrl> &sources,
 {
     connect( this, SIGNAL(startDuplicateTrackSearch(Meta::TrackPtr)),
                    SLOT(slotStartDuplicateTrackSearch(Meta::TrackPtr)) );
-    connect( this, SIGNAL(startCopyOrTranscodeJob(KUrl,KUrl)),
-                   SLOT(slotStartCopyOrTranscodeJob(KUrl,KUrl)) );
+    connect( this, SIGNAL(startCopyOrTranscodeJob(KUrl,KUrl,bool)),
+                   SLOT(slotStartCopyOrTranscodeJob(KUrl,KUrl,bool)) );
     connect( this, SIGNAL(displaySorryDialog()), SLOT(slotDisplaySorryDialog()) );
 }
 
@@ -84,7 +84,10 @@ IpodCopyTracksJob::run()
 
         if( !m_coll )
             break;  // destructed behind our back
-        if( m_transcodingConfig.isJustCopy()  // if not copying, we catch big files later
+
+            bool isJustCopy = m_transcodingConfig.isJustCopy( track, m_coll.data()->supportedFormats() );
+
+        if( isJustCopy  // if not copying, we catch big files later
             && track->filesize() > totalSafeCapacity - m_coll.data()->usedCapacity() )
         {
             // this is a best effort check, we do one definite one after the file is copied
@@ -96,7 +99,7 @@ IpodCopyTracksJob::run()
             continue;
         }
         QString fileExtension;
-        if( m_transcodingConfig.isJustCopy() )
+        if( isJustCopy )
             fileExtension = track->type();
         else
             fileExtension = Amarok::Components::transcodingController()->format(
@@ -128,7 +131,7 @@ IpodCopyTracksJob::run()
 
         // start the physical copying
         KUrl destUrl = KUrl( QFile::decodeName( destFilename ) );
-        emit startCopyOrTranscodeJob( sourceUrl, destUrl );
+        emit startCopyOrTranscodeJob( sourceUrl, destUrl, isJustCopy );
 
         // wait for copying to finish:
         m_copying.acquire( 1 );
@@ -178,7 +181,7 @@ IpodCopyTracksJob::run()
             trackProcessed( InternalError, track );
             continue;
         }
-        if( !m_transcodingConfig.isJustCopy() )
+        if( !isJustCopy )
         {
             // we need to reread some metadata in case the file was transcoded
             Meta::FieldHash fields = Meta::Tag::readTags( destFile.fileName() );
@@ -293,10 +296,11 @@ IpodCopyTracksJob::slotDuplicateTrackSearchQueryDone()
 }
 
 void
-IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl )
+IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl,
+                                                bool isJustCopy )
 {
     KJob *job = 0;
-    if( m_transcodingConfig.isJustCopy() )
+    if( isJustCopy )
     {
         if( m_goingToRemoveSources && m_coll &&
             sourceUrl.toLocalFile().startsWith( m_coll.data()->mountPoint() ) )

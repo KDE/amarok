@@ -515,8 +515,9 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         src.cleanPath();
 
         bool hasMoodFile = QFile::exists( moodFile( src ).toLocalFile() );
+	bool isJustCopy = configuration.isJustCopy( track );
 
-        if( configuration.isJustCopy() )
+        if( isJustCopy )
             debug() << "copying from " << src << " to " << dest;
         else
             debug() << "transcoding from " << src << " to " << dest;
@@ -542,7 +543,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         }
 
         KIO::JobFlags flags;
-        if( configuration.isJustCopy() )
+        if( isJustCopy )
         {
             flags = KIO::HideProgressInfo;
             if( m_overwriteFiles )
@@ -576,7 +577,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         else
         {
             //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
-            if( configuration.isJustCopy() )
+            if( isJustCopy )
                 job = KIO::file_copy( src, dest, -1, flags );
             else
             {
@@ -612,7 +613,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            if( configuration.isJustCopy() )
+            if( isJustCopy )
                 m_transferjob->emitInfo( i18n( "Transferring: %1", name ) );
             else
                 m_transferjob->emitInfo( i18n( "Transcoding: %1", name ) );

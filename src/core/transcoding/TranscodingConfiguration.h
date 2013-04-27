@@ -20,6 +20,7 @@
 #include "TranscodingDefines.h"
 #include "TranscodingProperty.h"
 #include "core/amarokcore_export.h"
+#include "core/meta/Meta.h"
 
 #include <KConfigGroup>
 
@@ -37,7 +38,33 @@ namespace Transcoding
 class AMAROK_CORE_EXPORT Configuration
 {
 public:
-    explicit Configuration( Encoder encoder );
+
+    //Normally we don't specify the numbers, but must specify enumeration values in
+    //this case, as the values will get written to a config file, so we need to preserve
+    //the numbers across versions and specify them explicitly
+    enum TrackSelection {
+        /**
+         * Transcode all tracks
+         */
+        TranscodeAll = 0,
+        /**
+         * Transcode unless the target format is the same as source format
+         */
+        TranscodeUnlessSameType = 1,
+        /**
+         * Transcode tracks only if needed for playability in the destination collection
+         */
+        TranscodeOnlyIfNeeded = 2,
+        /**
+         * Transcode unless:
+         * 1. the target format is the same as source format, AND
+         * 2. the target bitrate is higher than source bitrate (with 10% tolerance to prevent re-encodings)
+         */
+        //TranscodeUnlessUpgradesBitrate = 3 //to be implemented.
+    };
+
+    explicit Configuration( Transcoding::Encoder encoder,
+                            TrackSelection trackSelection = TranscodeAll );
 
     Encoder encoder() const { return m_encoder; }
 
@@ -48,10 +75,12 @@ public:
     bool isValid() const { return m_encoder != INVALID; }
 
     /**
-     * Return true if this configuration represents plain copying of files. Bost INVALID
-     * and JUST_COPY encoders are considered plain copying.
+     * Return true if this configuration represents plain copying of files. Both INVALID
+     * and JUST_COPY encoders are considered plain copying. Also returns true if an encoder is
+     * selected, but the passed track does not satisfy the selected m_trackSelection value.
      */
-    bool isJustCopy() const { return m_encoder == INVALID || m_encoder == JUST_COPY; }
+    bool isJustCopy( const Meta::TrackPtr &srcTrack = Meta::TrackPtr( 0 ),
+                     const QStringList &playableFileTypes = QStringList() ) const;
 
     QVariant property( QByteArray name ) const;
     void addProperty( QByteArray name, QVariant value );
@@ -74,15 +103,26 @@ public:
      */
     QString prettyName() const;
 
+    TrackSelection trackSelection() const { return m_trackSelection; }
+    void setTrackSelection( TrackSelection trackSelection );
+
+    bool operator!=( const Configuration &other ) const;
+
 private:
     /**
-     * Get an Encoder to its identifier map
+     * Map an Encoder to its identifier
      */
     static const QMap<Encoder, QString> &encoderNames();
+
+    /**
+     * Return a user representable description of the format and the TrackSelection
+     */
+    QString formatPrettyPrefix() const;
 
     static QMap<Encoder, QString> s_encoderNames;
     Encoder m_encoder;
     QMap<QByteArray, QVariant> m_values;
+    TrackSelection m_trackSelection; //the transcoding configuration
 };
 
 }

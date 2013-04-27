@@ -32,23 +32,27 @@ void
 SelectConfigWidget::fillInChoices( const Configuration &savedConfiguration )
 {
     clear();
-    if( savedConfiguration.isValid() && !savedConfiguration.isJustCopy() )
-        addItem( KIcon( "audio-x-generic" ), i18nc( "An option in combo box to always transcode; "
-            "%1 are transcoding options", "Always (%1)", savedConfiguration.prettyName() ),
-            DontChange );
-
-    if( !savedConfiguration.isValid() )
-        addItem( KIcon( "view-choose" ), i18n( "Ask before each transfer" ), DontChange );
-    else
-        addItem( KIcon( "view-choose" ), i18n( "Ask before each transfer" ), Forget );
-
-    if( savedConfiguration.isValid() && savedConfiguration.isJustCopy() )
+    addItem( KIcon( "edit-copy" ), i18n( "Never" ), JustCopy );
+    addItem( KIcon( "view-choose" ), i18n( "Ask before each transfer" ), Invalid );
+    if( savedConfiguration.isValid() )
     {
-        addItem( KIcon( "edit-copy" ), i18n( "Never" ), DontChange );
-        setCurrentIndex( count() - 1 );
+        if( !savedConfiguration.isJustCopy() )
+        {
+            Configuration temp = savedConfiguration;
+            temp.setTrackSelection( Configuration::TranscodeAll );
+            addItem( KIcon( "audio-x-generic" ), temp.prettyName(),
+                    TranscodeAll );
+            temp.setTrackSelection( Configuration::TranscodeUnlessSameType );
+            addItem( KIcon( "audio-x-generic" ), temp.prettyName(),
+                    TranscodeUnlessSameType );
+            temp.setTrackSelection( Configuration::TranscodeOnlyIfNeeded );
+            addItem( KIcon( "audio-x-generic" ),temp.prettyName(),
+                    TranscodeOnlyIfNeeded );
+            setCurrentIndex( savedConfiguration.trackSelection() + 2 );
+        }
     }
     else
-        addItem( KIcon( "edit-copy" ), i18n( "Never" ), JustCopy );
+        setCurrentIndex( count() - 1 );
 
     m_passedChoice = savedConfiguration;
 }
@@ -56,18 +60,26 @@ SelectConfigWidget::fillInChoices( const Configuration &savedConfiguration )
 Configuration
 SelectConfigWidget::currentChoice() const
 {
-    Configuration invalid( INVALID );
+    Configuration invalid( INVALID, m_passedChoice.trackSelection() );
+    Configuration passedChoice = m_passedChoice;
     if( currentIndex() < 0 )
         return invalid;
     Choice choice = Choice( itemData( currentIndex() ).toInt() );
     switch( choice )
     {
-        case DontChange:
-            return m_passedChoice;
         case JustCopy:
             return Configuration( JUST_COPY );
-        case Forget:
+        case Invalid:
             return invalid;
+        case TranscodeAll:
+            passedChoice.setTrackSelection( Configuration::TranscodeAll );
+            return passedChoice;
+        case TranscodeUnlessSameType:
+            passedChoice.setTrackSelection( Configuration::TranscodeUnlessSameType );
+            return passedChoice;
+        case TranscodeOnlyIfNeeded:
+            passedChoice.setTrackSelection( Configuration::TranscodeOnlyIfNeeded );
+            return passedChoice;
     }
     return invalid;
 }
@@ -75,7 +87,7 @@ SelectConfigWidget::currentChoice() const
 bool
 SelectConfigWidget::hasChanged() const
 {
-    return currentIndex() < 0 || itemData( currentIndex() ).toInt() != DontChange;
+    return currentIndex() < 0 || m_passedChoice != currentChoice();
 }
 
 #include "TranscodingSelectConfigWidget.moc"

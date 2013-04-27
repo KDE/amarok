@@ -102,10 +102,11 @@ CollectionLocationDelegateImpl::deleteEmptyDirs( CollectionLocation *loc ) const
 Transcoding::Configuration
 CollectionLocationDelegateImpl::transcode( const QStringList &playableFileTypes,
                                            bool *remember, OperationType operation,
-                                           const QString &destCollectionName ) const
+                                           const QString &destCollectionName,
+                                           const Transcoding::Configuration &prevConfiguration ) const
 {
     Transcoding::AssistantDialog dialog( playableFileTypes, remember != 0, operation,
-                                         destCollectionName );
+                                         destCollectionName, prevConfiguration );
     if( dialog.exec() )
     {
         if( remember )

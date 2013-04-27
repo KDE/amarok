@@ -33,7 +33,7 @@ class OptionsStackedWidget : public QStackedWidget
 public:
     explicit OptionsStackedWidget( QWidget *parent = 0 );
 
-    const Configuration configuration() const;
+    const Configuration configuration( const Configuration::TrackSelection trackSelection ) const;
 
 signals:
     void formatChanged( Encoder encoder );

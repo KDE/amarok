@@ -333,9 +333,16 @@ CollectionLocation::getDestinationTranscodingConfig()
     if( collection() && collection() == destination()->collection() )
         operation = CollectionLocationDelegate::Move; // organizing
     configuration = delegate->transcode( tc->playableFileTypes(), &saveConfiguration,
-                                         operation, destCollection->prettyName() );
-    if( configuration.isValid() && saveConfiguration )
-        tc->setSavedConfiguration( configuration );
+                                         operation, destCollection->prettyName(),
+                                         saved );
+    if( configuration.isValid() )
+    {
+        if( saveConfiguration )
+            tc->setSavedConfiguration( configuration );
+        else //save the trackSelection value for restore anyway
+            tc->setSavedConfiguration( Transcoding::Configuration( Transcoding::INVALID,
+                                        configuration.trackSelection() ) );
+    }
     return configuration; // may be invalid, it means user has hit cancel
 }
 

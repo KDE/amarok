@@ -59,9 +59,11 @@ namespace Transcoding
 
         private:
             enum Choice {
-                DontChange,
+                TranscodeAll,
+                TranscodeUnlessSameType,
+                TranscodeOnlyIfNeeded,
                 JustCopy,
-                Forget
+                Invalid
             };
 
             Q_DISABLE_COPY(SelectConfigWidget)

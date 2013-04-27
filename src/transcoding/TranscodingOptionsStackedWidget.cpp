@@ -87,10 +87,10 @@ OptionsStackedWidget::initCodecPage( Format *format )
 }
 
 const Configuration
-OptionsStackedWidget::configuration() const
+OptionsStackedWidget::configuration( const Configuration::TrackSelection trackSelection ) const
 {
     Encoder encoder = m_pagesMap.key( currentIndex() );
-    Configuration configuration = Configuration( encoder );
+    Configuration configuration = Configuration( encoder, trackSelection );
 
     foreach( PropertyWidget *propertyWidget, m_propertyWidgetsMap.value( encoder ) )
     {

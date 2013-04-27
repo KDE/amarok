@@ -65,7 +65,8 @@ class UmsTransferJob : public KCompositeJob
     public:
         UmsTransferJob( UmsCollectionLocation *location, const Transcoding::Configuration &configuration );
 
-        virtual void addCopy( const KUrl &from, const KUrl &to );
+        void addCopy( const KUrl &from, const KUrl &to );
+        void addTranscode( const KUrl &from, const KUrl &to );
         virtual void start();
 
     signals:
@@ -88,7 +89,8 @@ class UmsTransferJob : public KCompositeJob
         bool m_abort;
 
         typedef QPair<KUrl,KUrl> KUrlPair;
-        QList<KUrlPair> m_transferList;
+        QList<KUrlPair> m_copyList;
+        QList<KUrlPair> m_transcodeList;
         int m_totalTracks; // total number of tracks in whole transfer
 };
 

@@ -59,7 +59,7 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         void startDuplicateTrackSearch( const Meta::TrackPtr &track );
 
         // a hack to create copyjob in a thread with event loop:
-        void startCopyOrTranscodeJob( const KUrl &src, const KUrl &dest );
+        void startCopyOrTranscodeJob( const KUrl &src, const KUrl &dest, bool isJustCopy );
 
         // a hack to display KMessageBox in a gui thread:
         void displaySorryDialog();
@@ -85,7 +85,8 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         void slotDuplicateTrackSearchQueryDone();
 
         /// @see startCopyJob()
-        void slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl );
+        void slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl,
+                                          bool isJustCopy );
         void slotCopyOrTranscodeJobFinished( KJob *job );
 
         /// @see displaySorryDialog()

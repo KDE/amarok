@@ -48,7 +48,9 @@ public:
      */
     AssistantDialog( const QStringList &playableFileTypes, bool saveSupported,
                      Collections::CollectionLocationDelegate::OperationType operation,
-                     const QString &destCollectionName, QWidget *parent = 0 );
+                     const QString &destCollectionName,
+                     const Configuration &prevConfiguration,
+                     QWidget *parent = 0 );
 
     Configuration configuration() const { return m_configuration; }
 
@@ -59,6 +61,7 @@ public:
 
 private:
     inline void populateFormatList();
+    Configuration::TrackSelection trackSelection() const;
 
     Encoder m_defaultEncoder;
     Configuration m_configuration;

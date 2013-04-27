@@ -40,7 +40,8 @@ public:
     virtual bool deleteEmptyDirs(CollectionLocation* loc) const;
     virtual Transcoding::Configuration transcode( const QStringList &playableFileTypes,
                                                   bool *remember, OperationType operation,
-                                                  const QString &destCollectionName ) const;
+                                                  const QString &destCollectionName,
+                                                  const Transcoding::Configuration &prevConfiguration ) const;
 
 private:
     QStringList trackList( const Meta::TrackList &tracks ) const;

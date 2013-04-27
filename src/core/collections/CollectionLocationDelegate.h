@@ -52,13 +52,15 @@ public:
      * remembered per target collection. If null, such option is disabled in the UI.
      * @param operation whether this is copying or moving
      * @param destCollectionName name of the destination collection
+     * @param savedConfiguration the previously saved configuration, for restoring values from
      *
      * @return Transcoding configuration user requested or invalid configuration if user
      * has hit Cancel or closed the dialog.
      */
     virtual Transcoding::Configuration transcode( const QStringList &playableFileTypes,
                                                   bool *remember, OperationType operation,
-                                                  const QString &destCollectionName ) const = 0;
+                                                  const QString &destCollectionName,
+                                                  const Transcoding::Configuration &prevConfiguration ) const = 0;
 };
 
 } //namespace Collections
