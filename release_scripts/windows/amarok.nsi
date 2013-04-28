@@ -18,7 +18,6 @@
 This script requires the Unicode NSIS framework http://www.scratchpaper.com/
 You will also need to install http://nsis.sourceforge.net/Nsis7z_plug-in
 */
-
 ; registry stuff
 !define regkey "Software\${company}\Amarok"
 !define uninstkey "Software\Microsoft\Windows\CurrentVersion\Uninstall\Amarok"
@@ -30,7 +29,6 @@ You will also need to install http://nsis.sourceforge.net/Nsis7z_plug-in
  
 !define MUI_LANGDLL_ALLLANGUAGES
 !define MUI_ICON "amarok.ico"
-!define MUI_FINISHPAGE_RUN "$INSTDIR\bin\amarok.exe"
 !define PRODUCT_WEB_SITE http://amarok.kde.org/
 
 ;save language
@@ -89,7 +87,8 @@ ShowInstDetails hide
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_LINK "$(VISIT_PROJECT_HOMEPAGE)"
 !define MUI_FINISHPAGE_LINK_LOCATION "${PRODUCT_WEB_SITE}"
-;!insertmacro MUI_PAGE_FINISH
+!define MUI_FINISHPAGE_RUN "$INSTDIR\bin\amarok.exe"
+!insertmacro MUI_PAGE_FINISH
 
 
 !insertmacro MUI_UNPAGE_WELCOME
@@ -177,6 +176,15 @@ Function .onInit
     !insertmacro MUI_LANGDLL_DISPLAY
     !insertmacro INIT_KDE "amarok"
 
+    
+    ReadRegStr $R0 HKLM "${uninstkey}" "UninstallString"
+    StrCmp $R0 "" done
+    ReadRegStr $INSTDIR HKLM "${regkey}" "Install_Dir"
+    ;Run the uninstaller
+    ;uninst:
+    ClearErrors
+    ExecWait '$R0 _?=$INSTDIR' ;Do not copy the uninstaller to a temp file
+    done:
 FunctionEnd
 
 ; Uninstaller Functions
