@@ -22,38 +22,36 @@
 
 #include <QScriptEngine>
 
-namespace AmarokScript
+using namespace AmarokScript;
+
+AmarokScriptConfig::AmarokScriptConfig( const QString &name, QScriptEngine *engine )
+    : QObject( engine )
+    , m_name( name )
 {
-    AmarokScriptConfig::AmarokScriptConfig( const QString& name, QScriptEngine *engine )
-        : QObject( engine )
-        , m_name( name )
-    {
-        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
-        engine->globalObject().property( "Amarok" ).setProperty( "Script", scriptObject );
-    }
-
-    AmarokScriptConfig::~AmarokScriptConfig()
-    {}
-
-    QVariant AmarokScriptConfig::readConfig( const QString &name, const QVariant &defaultValue ) const
-    {
-        return KGlobal::config()->group( m_name ).readEntry( name, defaultValue );
-    }
-
-    QString AmarokScriptConfig::readConfig( const QString &name, const QString &defaultValue ) const
-    {
-        return KGlobal::config()->group( m_name ).readEntry( name, defaultValue );
-    }
-
-    void AmarokScriptConfig::writeConfig( const QString &name, const QVariant &content )
-    {
-        KGlobal::config()->group( m_name ).writeEntry( name, content );
-    }
-
-    void AmarokScriptConfig::writeConfig( const QString &name, const QString &content )
-    {
-        KGlobal::config()->group( m_name ).writeEntry( name, content );
-    }
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    engine->globalObject().property( "Amarok" ).setProperty( "Script", scriptObject );
 }
 
-#include "AmarokScriptConfig.moc"
+QVariant
+AmarokScriptConfig::readConfig( const QString &name, const QVariant &defaultValue ) const
+{
+    return KGlobal::config()->group( m_name ).readEntry( name, defaultValue );
+}
+
+QString
+AmarokScriptConfig::readConfig( const QString &name, const QString &defaultValue ) const
+{
+    return KGlobal::config()->group( m_name ).readEntry( name, defaultValue );
+}
+
+void
+AmarokScriptConfig::writeConfig( const QString &name, const QVariant &content )
+{
+    KGlobal::config()->group( m_name ).writeEntry( name, content );
+}
+
+void
+AmarokScriptConfig::writeConfig( const QString &name, const QString &content )
+{
+    KGlobal::config()->group( m_name ).writeEntry( name, content );
+}

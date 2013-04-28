@@ -20,76 +20,81 @@
 #include "amarokconfig.h"
 #include "widgets/Osd.h"
 
-namespace AmarokScript
+#include <QScriptEngine>
+
+using namespace AmarokScript;
+
+AmarokOSDScript::AmarokOSDScript( QScriptEngine *engine )
+    : QObject( engine )
 {
-    AmarokOSDScript::AmarokOSDScript( QScriptEngine *engine )
-        : QObject( engine )
-    {
-        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
-        QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
-        windowObject.setProperty( "OSD", scriptObject );
-    }
-
-    AmarokOSDScript::~AmarokOSDScript()
-    {
-    }
-
-    void AmarokOSDScript::showCurrentTrack()
-    {
-        Amarok::OSD::instance()->forceToggleOSD();
-    }
-
-    void AmarokOSDScript::show()
-    {
-        Amarok::OSD::instance()->show();
-    }
-
-    void AmarokOSDScript::setDuration( int ms )
-    {
-        Amarok::OSD::instance()->setDuration( ms );
-    }
-
-    void AmarokOSDScript::setTextColor( const QColor &color )
-    {
-        Amarok::OSD::instance()->setTextColor( color );
-    }
-
-    void AmarokOSDScript::setOffset( int y )
-    {
-        Amarok::OSD::instance()->setYOffset( y );
-    }
-
-    void AmarokOSDScript::setImage( const QImage &image )
-    {
-        Amarok::OSD::instance()->setImage( image );
-    }
-
-    void AmarokOSDScript::setScreen( int screen )
-    {
-        Amarok::OSD::instance()->setScreen( screen );
-    }
-
-    void AmarokOSDScript::setText( const QString &text )
-    {
-        Amarok::OSD::instance()->setText( text );
-    }
-
-    void AmarokOSDScript::setRating( const short rating )
-    {
-        Amarok::OSD::instance()->setRating( rating );
-    }
-
-    void AmarokOSDScript::setOsdEnabled( bool enable )
-    {
-        Amarok::OSD::instance()->setEnabled( enable );
-        AmarokConfig::setOsdEnabled( enable );
-    }
-
-    bool AmarokOSDScript::osdEnabled()
-    {
-        return AmarokConfig::osdEnabled();
-    }
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
+    windowObject.setProperty( "OSD", scriptObject );
 }
 
-#include "AmarokOSDScript.moc"
+void
+AmarokOSDScript::showCurrentTrack()
+{
+    Amarok::OSD::instance()->forceToggleOSD();
+}
 
+void
+AmarokOSDScript::show()
+{
+    Amarok::OSD::instance()->show();
+}
+
+void
+AmarokOSDScript::setDuration( int ms )
+{
+    Amarok::OSD::instance()->setDuration( ms );
+}
+
+void
+AmarokOSDScript::setTextColor( const QColor &color )
+{
+    Amarok::OSD::instance()->setTextColor( color );
+}
+
+void
+AmarokOSDScript::setOffset( int y )
+{
+    Amarok::OSD::instance()->setYOffset( y );
+}
+
+void
+AmarokOSDScript::setImage( const QImage &image )
+{
+    Amarok::OSD::instance()->setImage( image );
+}
+
+void
+AmarokOSDScript::setScreen( int screen )
+{
+    Amarok::OSD::instance()->setScreen( screen );
+}
+
+void
+AmarokOSDScript::setText( const QString &text )
+{
+    Amarok::OSD::instance()->setText( text );
+}
+
+void
+AmarokOSDScript::setRating( const short rating )
+{
+    Amarok::OSD::instance()->setRating( rating );
+}
+
+void
+AmarokOSDScript::setOsdEnabled( bool enable )
+{
+    Amarok::OSD::instance()->setEnabled( enable );
+    AmarokConfig::setOsdEnabled( enable );
+}
+
+bool
+AmarokOSDScript::osdEnabled()
+{
+    return AmarokConfig::osdEnabled();
+}

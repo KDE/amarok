@@ -26,89 +26,81 @@
 
 #include <QScriptEngine>
 
-namespace AmarokScript
+AmarokScript::AmarokScript::AmarokScript( const QString &name, QScriptEngine *engine )
+    : QObject( engine )
+    , m_name( name )
 {
-    AmarokScript::AmarokScript( const QString& name, QScriptEngine *engine )
-        : QObject( engine )
-        , m_name( name )
-    {
-        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
-        engine->globalObject().setProperty( "Amarok", scriptObject );
-    }
-
-    AmarokScript::~AmarokScript()
-    {}
-
-    void AmarokScript::quitAmarok()
-    {
-        App::instance()->quit();
-    }
-
-    void AmarokScript::debug( const QString& text ) const
-    {
-        ::debug() << "SCRIPT" << m_name << ": " << text;
-    }
-
-    int AmarokScript::alert( const QString& text, const QString& type ) const
-    {
-        //Ok = 1, Cancel = 2, Yes = 3, No = 4, Continue = 5
-        if( type == "error" )
-        {
-            KMessageBox::error( 0, text );
-            return -1;
-        }
-        else if( type == "sorry" )
-        {
-            KMessageBox::sorry( 0, text );
-            return -1;
-        }
-        else if( type == "information" )
-        {
-            KMessageBox::information( 0, text );
-            return -1;
-        }
-        else if( type == "questionYesNo" )
-            return KMessageBox::questionYesNo( 0, text );
-        else if( type == "questionYesNoCancel" )
-            return KMessageBox::questionYesNo( 0, text );
-        else if( type == "warningYesNo" )
-            return KMessageBox::warningYesNo( 0, text );
-        else if( type == "warningContinueCancel" )
-            return KMessageBox::warningContinueCancel( 0, text );
-        else if( type == "warningYesNoCancel" )
-            return KMessageBox::warningYesNoCancel( 0, text );
-
-        warning() << "alert type not found!";
-        //TODO: write to error log since it's a script error
-        return -1;
-    }
-
-    void AmarokScript::end()
-    {
-        ScriptManager::instance()->stopScript( m_name );
-    }
-
-    bool AmarokScript::runScript( const QString& name ) const
-    {
-        return ScriptManager::instance()->runScript( name, true );
-    }
-
-    bool AmarokScript::stopScript( const QString& name ) const
-    {
-        return ScriptManager::instance()->stopScript( name );
-    }
-
-    QStringList AmarokScript::listRunningScripts() const
-    {
-        return ScriptManager::instance()->listRunningScripts();
-    }
-
-/*
-    void AmarokScript::slotConfigured()
-    {
-        emit configured();
-    }
-*/
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    engine->globalObject().setProperty( "Amarok", scriptObject );
 }
 
-#include "AmarokScript.moc"
+void
+AmarokScript::AmarokScript::quitAmarok()
+{
+    App::instance()->quit();
+}
+
+void
+AmarokScript::AmarokScript::debug( const QString& text ) const
+{
+    ::debug() << "SCRIPT" << m_name << ": " << text;
+}
+
+int
+AmarokScript::AmarokScript::alert( const QString& text, const QString& type ) const
+{
+    //Ok = 1, Cancel = 2, Yes = 3, No = 4, Continue = 5
+    if( type == "error" )
+    {
+        KMessageBox::error( 0, text );
+        return -1;
+    }
+    else if( type == "sorry" )
+    {
+        KMessageBox::sorry( 0, text );
+        return -1;
+    }
+    else if( type == "information" )
+    {
+        KMessageBox::information( 0, text );
+        return -1;
+    }
+    else if( type == "questionYesNo" )
+        return KMessageBox::questionYesNo( 0, text );
+    else if( type == "questionYesNoCancel" )
+        return KMessageBox::questionYesNo( 0, text );
+    else if( type == "warningYesNo" )
+        return KMessageBox::warningYesNo( 0, text );
+    else if( type == "warningContinueCancel" )
+        return KMessageBox::warningContinueCancel( 0, text );
+    else if( type == "warningYesNoCancel" )
+        return KMessageBox::warningYesNoCancel( 0, text );
+
+    warning() << "alert type not found!";
+    //TODO: write to error log since it's a script error
+    return -1;
+}
+
+void
+AmarokScript::AmarokScript::end()
+{
+    ScriptManager::instance()->stopScript( m_name );
+}
+
+bool
+AmarokScript::AmarokScript::runScript( const QString& name ) const
+{
+    return ScriptManager::instance()->runScript( name, true );
+}
+
+bool
+AmarokScript::AmarokScript::stopScript( const QString& name ) const
+{
+    return ScriptManager::instance()->stopScript( name );
+}
+
+QStringList
+AmarokScript::AmarokScript::listRunningScripts() const
+{
+    return ScriptManager::instance()->listRunningScripts();
+}

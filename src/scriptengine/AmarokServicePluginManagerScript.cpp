@@ -20,44 +20,43 @@
 #include "PluginManager.h"
 #include "services/ServicePluginManager.h"
 
-namespace AmarokScript
+#include <QScriptEngine>
+
+using namespace AmarokScript;
+
+AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QScriptEngine *engine )
+    : QObject( engine )
 {
-    AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QScriptEngine *engine )
-        : QObject( engine )
-    {
-        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
-        engine->globalObject().property( "Amarok" ).setProperty( "ServicePluginManager", scriptObject );
-    }
-
-    AmarokServicePluginManagerScript::~AmarokServicePluginManagerScript()
-    {
-    }
-
-    QStringList AmarokServicePluginManagerScript::loadedServices()
-    {
-        return The::pluginManager()->servicePluginManager()->loadedServices();
-    }
-
-    QStringList AmarokServicePluginManagerScript::loadedServiceNames()
-    {
-        return The::pluginManager()->servicePluginManager()->loadedServiceNames();
-    }
-
-    QString AmarokServicePluginManagerScript::serviceDescription( const QString &service )
-    {
-        return The::pluginManager()->servicePluginManager()->serviceDescription( service );
-    }
-
-    QString AmarokServicePluginManagerScript::serviceMessages( const QString &service )
-    {
-        return The::pluginManager()->servicePluginManager()->serviceMessages( service );
-    }
-
-    QString AmarokServicePluginManagerScript::sendMessage( const QString &service, const QString &message )
-    {
-        return The::pluginManager()->servicePluginManager()->sendMessage( service, message );
-    }
-
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    engine->globalObject().property( "Amarok" ).setProperty( "ServicePluginManager", scriptObject );
 }
 
-#include "AmarokServicePluginManagerScript.moc"
+QStringList
+AmarokServicePluginManagerScript::loadedServices()
+{
+    return The::pluginManager()->servicePluginManager()->loadedServices();
+}
+
+QStringList
+AmarokServicePluginManagerScript::loadedServiceNames()
+{
+    return The::pluginManager()->servicePluginManager()->loadedServiceNames();
+}
+
+QString
+AmarokServicePluginManagerScript::serviceDescription( const QString &service )
+{
+    return The::pluginManager()->servicePluginManager()->serviceDescription( service );
+}
+
+QString
+AmarokServicePluginManagerScript::serviceMessages( const QString &service )
+{
+    return The::pluginManager()->servicePluginManager()->serviceMessages( service );
+}
+
+QString
+AmarokServicePluginManagerScript::sendMessage( const QString &service, const QString &message )
+{
+    return The::pluginManager()->servicePluginManager()->sendMessage( service, message );
+}

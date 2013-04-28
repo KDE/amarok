@@ -23,39 +23,39 @@
 #include <KIconLoader>
 #include <QScriptEngine>
 
-AmarokScript::InfoScript::InfoScript( const KUrl& scriptUrl, QScriptEngine *engine )
+using namespace AmarokScript;
+
+InfoScript::InfoScript( const KUrl& scriptUrl, QScriptEngine *engine )
     : QObject( engine )
     , m_scriptUrl( scriptUrl )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
     engine->globalObject().property( "Amarok" ).setProperty( "Info", scriptObject );
-    QScriptValue iconEnumObject = engine->newQMetaObject( &AmarokScript::IconEnum::staticMetaObject );
+    QScriptValue iconEnumObject = engine->newQMetaObject( &IconEnum::staticMetaObject );
     scriptObject.setProperty( "IconSizes", iconEnumObject );
 }
 
 QString
-AmarokScript::InfoScript::version() const
+InfoScript::version() const
 {
     return AMAROK_VERSION;
 }
 
 QString
-AmarokScript::InfoScript::scriptPath() const
+InfoScript::scriptPath() const
 {
     return m_scriptUrl.directory();
 }
 
 QString
-AmarokScript::InfoScript::iconPath( const QString& name, int size ) const
+InfoScript::iconPath( const QString& name, int size ) const
 {
     //if size was positive it would refer to KIconLoader::Group
     return KIconLoader::global()->iconPath( name, -size );
 }
 
 QString
-AmarokScript::InfoScript::scriptConfigPath( const QString& name ) const
+InfoScript::scriptConfigPath( const QString& name ) const
 {
     return Amarok::saveLocation( "scripts/" + name );
 }
-
-#include "AmarokInfoScript.moc"

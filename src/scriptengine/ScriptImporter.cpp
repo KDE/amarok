@@ -22,77 +22,66 @@
 
 #include <KUrl>
 
+#include <QScriptEngine>
 #include <QSet>
 
-namespace AmarokScript
+using namespace AmarokScript;
+
+ScriptImporter::ScriptImporter( QScriptEngine* scriptEngine, const KUrl &url )
+    : QObject( scriptEngine )
+    , m_scriptUrl( url )
+    , m_scriptEngine( scriptEngine )
 {
-    ScriptImporter::ScriptImporter( QScriptEngine* scriptEngine, const KUrl &url )
-        : QObject( scriptEngine )
-        , m_scriptUrl( url )
-        , m_scriptEngine( scriptEngine )
-    {
-        QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership );
-        scriptEngine->globalObject().setProperty( "Importer", scriptObject );
-    }
+    QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership );
+    scriptEngine->globalObject().setProperty( "Importer", scriptObject );
+}
 
-    ScriptImporter::~ScriptImporter()
-    {
-    }
+void
+ScriptImporter::loadExtension( const QString& src )
+{
+    DEBUG_BLOCK
+    m_scriptEngine->importExtension( "amarok/" + src );
+}
 
-    void
-    ScriptImporter::loadExtension( const QString& src )
-    {
-        DEBUG_BLOCK
-        m_scriptEngine->importExtension( "amarok/" + src );
-    }
-
-    bool
-    ScriptImporter::loadQtBinding( const QString& binding )
-    {
-        QSet<QString> allowedBindings;
+bool
+ScriptImporter::loadQtBinding( const QString& binding )
+{
+    QSet<QString> allowedBindings;
 #ifdef QTSCRIPTQTBINDINGS_FOUND
-        allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
+    allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
 #endif
-        if( allowedBindings.contains( binding ) )
+    if( allowedBindings.contains( binding ) )
+    {
+        if( !m_importedBindings.contains( binding ) )
         {
-            if( !m_importedBindings.contains( binding ) )
-            {
-//I'm pretty sure this warning isn't true, the order doesn't appear to matter. - Ian
-/*                if( ( binding != "qt.core" || binding != "qt.dbus" ) && ( !m_importedBindings.contains( "qt.core" ) ) )
-                {
-                    warning() << "qt.core should be included before the other bindings!";
-                }*/
-                if( m_scriptEngine->importExtension( binding ).isUndefined() )
-                { // undefined indiciates success
-                    m_importedBindings << binding;
-                    return true;
-                }
-                //else fall through and return false
-            }
-            else
+            if( m_scriptEngine->importExtension( binding ).isUndefined() )
+            { // undefined indiciates success
+                m_importedBindings << binding;
                 return true;
+            }
+            //else fall through and return false
         }
         else
-            warning() << __PRETTY_FUNCTION__ << "Qt Binding" << binding << "not allowed!";
+            return true;
+    }
+    else
+        warning() << __PRETTY_FUNCTION__ << "Qt Binding" << binding << "not allowed!";
+    return false;
+}
+
+bool
+ScriptImporter::include( const QString& relativeFilename )
+{
+    KUrl includeUrl = m_scriptUrl.upUrl();
+    includeUrl.addPath( relativeFilename );
+    QFile file( includeUrl.toLocalFile() );
+    if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+        warning() << "cannot open the include file!";
         return false;
     }
-
-    bool
-    ScriptImporter::include( const QString& relativeFilename )
-    {
-        KUrl includeUrl = m_scriptUrl.upUrl();
-        includeUrl.addPath( relativeFilename );
-        QFile file( includeUrl.toLocalFile() );
-        if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-        {
-            warning() << "cannot open the include file!";
-            return false;
-        }
-        m_scriptEngine->currentContext()->setActivationObject(
-                              m_scriptEngine->currentContext()->parentContext()->activationObject() );
-        m_scriptEngine->evaluate( file.readAll(), relativeFilename );
-        return true;
-    }
+    m_scriptEngine->currentContext()->setActivationObject(
+                            m_scriptEngine->currentContext()->parentContext()->activationObject() );
+    m_scriptEngine->evaluate( file.readAll(), relativeFilename );
+    return true;
 }
-#include "ScriptImporter.moc"
-

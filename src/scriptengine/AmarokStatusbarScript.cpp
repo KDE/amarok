@@ -16,33 +16,29 @@
 
 #include "AmarokStatusbarScript.h"
 
-#include <core/support/Components.h>
-#include <core/interfaces/Logger.h>
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 
-namespace AmarokScript
+#include <QScriptEngine>
+
+using namespace AmarokScript;
+
+AmarokStatusbarScript::AmarokStatusbarScript( QScriptEngine *engine )
+    : QObject( engine )
 {
-    AmarokStatusbarScript::AmarokStatusbarScript( QScriptEngine *engine )
-        : QObject( engine )
-    {
-        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
-        QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
-        windowObject.setProperty( "Statusbar", scriptObject );
-    }
-
-    AmarokStatusbarScript::~AmarokStatusbarScript()
-    {
-
-    }
-
-    void AmarokStatusbarScript::longMessage( const QString &text )
-    {
-        Amarok::Components::logger()->longMessage( text );
-    }
-
-    void AmarokStatusbarScript::shortMessage( const QString &text )
-    {
-        Amarok::Components::logger()->shortMessage( text );
-    }
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
+    windowObject.setProperty( "Statusbar", scriptObject );
 }
 
-#include "AmarokStatusbarScript.moc"
+void
+AmarokStatusbarScript::longMessage( const QString &text )
+{
+    Amarok::Components::logger()->longMessage( text );
+}
+
+void
+AmarokStatusbarScript::shortMessage( const QString &text )
+{
+    Amarok::Components::logger()->shortMessage( text );
+}

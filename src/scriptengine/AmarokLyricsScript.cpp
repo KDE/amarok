@@ -33,25 +33,19 @@
 #include <QTextCodec>
 #include <QTextDocument>
 
-namespace AmarokScript
-{
+using namespace AmarokScript;
 
 AmarokLyricsScript::AmarokLyricsScript( QScriptEngine *engine )
     : QObject( engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
     engine->globalObject().property( "Amarok" ).setProperty( "Lyrics", scriptObject );
-    connect( ScriptManager::instance(),
-             SIGNAL(fetchLyrics(QString,QString,QString)),
+    connect( ScriptManager::instance(), SIGNAL(fetchLyrics(QString,QString,QString)),
              SIGNAL(fetchLyrics(QString,QString,QString)) );
 }
 
-AmarokLyricsScript::~AmarokLyricsScript()
-{
-}
-
 void
-AmarokLyricsScript::showLyrics( const QString& lyrics ) const
+AmarokLyricsScript::showLyrics( const QString &lyrics ) const
 {
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -61,7 +55,7 @@ AmarokLyricsScript::showLyrics( const QString& lyrics ) const
 }
 
 void
-AmarokLyricsScript::showLyricsHtml( const QString& lyrics ) const
+AmarokLyricsScript::showLyricsHtml( const QString &lyrics ) const
 {
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -71,7 +65,7 @@ AmarokLyricsScript::showLyricsHtml( const QString& lyrics ) const
 }
 
 void
-AmarokLyricsScript::showLyricsError( const QString& error ) const
+AmarokLyricsScript::showLyricsError( const QString &error ) const
 {
     DEBUG_BLOCK
     LyricsManager::self()->lyricsError( error );
@@ -79,7 +73,7 @@ AmarokLyricsScript::showLyricsError( const QString& error ) const
 
 
 void
-AmarokLyricsScript::showLyricsNotFound( const QString& msg ) const
+AmarokLyricsScript::showLyricsNotFound( const QString &msg ) const
 {
     DEBUG_BLOCK
     LyricsManager::self()->lyricsNotFound( msg );
@@ -87,19 +81,19 @@ AmarokLyricsScript::showLyricsNotFound( const QString& msg ) const
  
 
 QString
-AmarokLyricsScript::escape( const QString& str )
+AmarokLyricsScript::escape( const QString &str )
 {
     return Qt::escape( str );
 }
 
 void
-AmarokLyricsScript::setLyricsForTrack( const QString& trackUrl, const QString& lyrics ) const
+AmarokLyricsScript::setLyricsForTrack( const QString &trackUrl, const QString &lyrics ) const
 {
     LyricsManager::self()->setLyricsForTrack( trackUrl, lyrics );
 }
 
 QString
-AmarokLyricsScript::toUtf8( const QByteArray& lyrics, const QString& encoding )
+AmarokLyricsScript::toUtf8( const QByteArray &lyrics, const QString &encoding )
 {
     QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
     if( !codec )
@@ -111,7 +105,7 @@ AmarokLyricsScript::toUtf8( const QByteArray& lyrics, const QString& encoding )
 }
 
 QString
-AmarokLyricsScript::QStringtoUtf8( const QString& lyrics, const QString& encoding )
+AmarokLyricsScript::QStringtoUtf8( const QString &lyrics, const QString &encoding )
 {
     QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
     if( !codec )
@@ -123,7 +117,7 @@ AmarokLyricsScript::QStringtoUtf8( const QString& lyrics, const QString& encodin
 }
 
 QByteArray
-AmarokLyricsScript::fromUtf8( const QString& str, const QString& encoding )
+AmarokLyricsScript::fromUtf8( const QString &str, const QString &encoding )
 {
     QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
     if( !codec )
@@ -131,8 +125,3 @@ AmarokLyricsScript::fromUtf8( const QString& str, const QString& encoding )
 
     return codec->fromUnicode( str );
 }
-
-}
-
-#include "AmarokLyricsScript.moc"
-

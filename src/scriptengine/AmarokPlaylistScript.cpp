@@ -28,157 +28,172 @@
 #include "playlist/view/listview/PrettyListView.h"
 #include "playlist/PlaylistDock.h"
 
-#include <QObject>
+#include <QScriptEngine>
 
-namespace AmarokScript
+using namespace AmarokScript;
+
+AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine *engine )
+    : QObject( engine )
+    , m_scriptEngine( engine )
 {
-    AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine *engine )
-        : QObject( engine )
-        , m_scriptEngine( engine )
-    {
-        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
-        engine->globalObject().property( "Amarok" ).setProperty( "Playlist", scriptObject );
-        connect( The::playlist()->qaim(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT (slotTrackInserted(QModelIndex,int,int)) );
-        connect( The::playlist()->qaim(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT (slotTrackRemoved(QModelIndex,int,int)) );
-    }
-
-    AmarokPlaylistScript::~AmarokPlaylistScript()
-    {}
-
-    int AmarokPlaylistScript::activeIndex()
-    {
-        return The::playlist()->activeRow();
-    }
-
-    int AmarokPlaylistScript::totalTrackCount()
-    {
-        return The::playlist()->qaim()->rowCount();
-    }
-
-    QString AmarokPlaylistScript::saveCurrentPlaylist()
-    {
-        QString savePath = Amarok::defaultPlaylistPath();
-        The::playlist()->exportPlaylist( savePath );
-        return savePath;
-    }
-
-    void AmarokPlaylistScript::addMedia( const QUrl &url )
-    {
-        QList<KUrl> list = QList<KUrl>() << url;
-        The::playlistController()->insertOptioned( list, Playlist::Append );
-    }
-
-	void AmarokPlaylistScript::addMediaList( const QVariantList &urls )
-    {
-        QList<KUrl> list;
-        foreach( const QVariant &url, urls )
-            list << url.toUrl();
-        The::playlistController()->insertOptioned( list, Playlist::Append );
-    }
-
-    void AmarokPlaylistScript::clearPlaylist()
-    {
-        The::playlistController()->clear();
-    }
-
-    void AmarokPlaylistScript::playByIndex( int index )
-    {
-        The::playlistActions()->play( index );
-    }
-
-    void AmarokPlaylistScript::playMedia( const QUrl &url )
-    {
-        QList<KUrl> list = QList<KUrl>() << url;
-        The::playlistController()->insertOptioned( list, Playlist::DirectPlay );
-    }
-
-    void AmarokPlaylistScript::playMediaList(const QVariantList& urls)
-    {
-        QList<KUrl> list;
-        foreach( const QVariant &url, urls )
-            list << url.toUrl();
-        The::playlistController()->insertOptioned( list, Playlist::DirectPlay );
-    }
-
-    void AmarokPlaylistScript::removeCurrentTrack()
-    {
-        The::playlistController()->removeRow( activeIndex() );
-    }
-
-    void AmarokPlaylistScript::removeByIndex( int index )
-    {
-        if( index < totalTrackCount() )
-            The::playlistController()->removeRow( index );
-    }
-
-    void AmarokPlaylistScript::savePlaylist( const QString& path )
-    {
-        The::playlist()->exportPlaylist( path );
-    }
-
-    void AmarokPlaylistScript::setStopAfterCurrent( bool on )
-    {
-        if( on )
-            The::playlistActions()->stopAfterPlayingTrack();
-        else
-            The::playlistActions()->stopAfterPlayingTrack( 0 );
-    }
-
-    bool AmarokPlaylistScript::stopAfterCurrent()
-    {
-        return The::playlistActions()->willStopAfterTrack( The::playlist()->activeId() );
-    }
-
-    void AmarokPlaylistScript::togglePlaylist()
-    {
-        The::mainWindow()->showHide();
-    }
-
-    QStringList AmarokPlaylistScript::filenames()
-    {
-        QStringList fileNames;
-        for( int i=0; i < The::playlist()->qaim()->rowCount(); i++ )
-            fileNames << The::playlist()->trackAt(i)->prettyUrl();
-        return fileNames;
-    }
-
-    QVariant AmarokPlaylistScript::trackAt( int row )
-    {
-        DEBUG_BLOCK
-        Meta::TrackPtr track = The::playlist()->trackAt( row );
-        return QVariant::fromValue( track );
-    }
-
-    QList<int> AmarokPlaylistScript::selectedIndexes()
-    {
-        DEBUG_BLOCK
-
-        Playlist::PrettyListView* list = qobject_cast<Playlist::PrettyListView*>( The::mainWindow()->playlistDock()->currentView() );
-        return list->selectedRows();
-    }
-
-    QStringList AmarokPlaylistScript::selectedFilenames()
-    {
-        DEBUG_BLOCK
-
-        QStringList fileNames;
-        const QList<int> indexes = selectedIndexes();
-
-        for( int i=0; i < indexes.size(); i++ )
-            fileNames << The::playlist()->trackAt( indexes[i] )->prettyUrl();
-
-        return fileNames;
-    }
-
-    void AmarokPlaylistScript::slotTrackInserted( const QModelIndex&, int start, int end )
-    {
-        emit trackInserted( start, end );
-    }
-
-    void AmarokPlaylistScript::slotTrackRemoved( const QModelIndex&, int start, int end )
-    {
-        emit trackRemoved( start, end );
-    }
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    engine->globalObject().property( "Amarok" ).setProperty( "Playlist", scriptObject );
+    connect( The::playlist()->qaim(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT (slotTrackInserted(QModelIndex,int,int)) );
+    connect( The::playlist()->qaim(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT (slotTrackRemoved(QModelIndex,int,int)) );
 }
 
-#include "AmarokPlaylistScript.moc"
+int
+AmarokPlaylistScript::activeIndex()
+{
+    return The::playlist()->activeRow();
+}
+
+int
+AmarokPlaylistScript::totalTrackCount()
+{
+    return The::playlist()->qaim()->rowCount();
+}
+
+QString
+AmarokPlaylistScript::saveCurrentPlaylist()
+{
+    QString savePath = Amarok::defaultPlaylistPath();
+    The::playlist()->exportPlaylist( savePath );
+    return savePath;
+}
+
+void
+AmarokPlaylistScript::addMedia( const QUrl &url )
+{
+    QList<KUrl> list = QList<KUrl>() << url;
+    The::playlistController()->insertOptioned( list, Playlist::Append );
+}
+
+void
+AmarokPlaylistScript::addMediaList( const QVariantList &urls )
+{
+    QList<KUrl> list;
+    foreach( const QVariant &url, urls )
+        list << url.toUrl();
+    The::playlistController()->insertOptioned( list, Playlist::Append );
+}
+
+void
+AmarokPlaylistScript::clearPlaylist()
+{
+    The::playlistController()->clear();
+}
+
+void
+AmarokPlaylistScript::playByIndex( int index )
+{
+    The::playlistActions()->play( index );
+}
+
+void
+AmarokPlaylistScript::playMedia( const QUrl &url )
+{
+    QList<KUrl> list = QList<KUrl>() << url;
+    The::playlistController()->insertOptioned( list, Playlist::DirectPlay );
+}
+
+void
+AmarokPlaylistScript::playMediaList(const QVariantList& urls)
+{
+    QList<KUrl> list;
+    foreach( const QVariant &url, urls )
+        list << url.toUrl();
+    The::playlistController()->insertOptioned( list, Playlist::DirectPlay );
+}
+
+void
+AmarokPlaylistScript::removeCurrentTrack()
+{
+    The::playlistController()->removeRow( activeIndex() );
+}
+
+void
+AmarokPlaylistScript::removeByIndex( int index )
+{
+    if( index < totalTrackCount() )
+        The::playlistController()->removeRow( index );
+}
+
+void
+AmarokPlaylistScript::savePlaylist( const QString& path )
+{
+    The::playlist()->exportPlaylist( path );
+}
+
+void
+AmarokPlaylistScript::setStopAfterCurrent( bool on )
+{
+    if( on )
+        The::playlistActions()->stopAfterPlayingTrack();
+    else
+        The::playlistActions()->stopAfterPlayingTrack( 0 );
+}
+
+bool
+AmarokPlaylistScript::stopAfterCurrent()
+{
+    return The::playlistActions()->willStopAfterTrack( The::playlist()->activeId() );
+}
+
+void
+AmarokPlaylistScript::togglePlaylist()
+{
+    The::mainWindow()->showHide();
+}
+
+QStringList
+AmarokPlaylistScript::filenames()
+{
+    QStringList fileNames;
+    for( int i=0; i < The::playlist()->qaim()->rowCount(); i++ )
+        fileNames << The::playlist()->trackAt(i)->prettyUrl();
+    return fileNames;
+}
+
+QVariant
+AmarokPlaylistScript::trackAt( int row )
+{
+    DEBUG_BLOCK
+    Meta::TrackPtr track = The::playlist()->trackAt( row );
+    return QVariant::fromValue( track );
+}
+
+QList<int>
+AmarokPlaylistScript::selectedIndexes()
+{
+    DEBUG_BLOCK
+
+    Playlist::PrettyListView* list = qobject_cast<Playlist::PrettyListView*>( The::mainWindow()->playlistDock()->currentView() );
+    return list->selectedRows();
+}
+
+QStringList
+AmarokPlaylistScript::selectedFilenames()
+{
+    DEBUG_BLOCK
+
+    QStringList fileNames;
+    const QList<int> indexes = selectedIndexes();
+
+    for( int i=0; i < indexes.size(); i++ )
+        fileNames << The::playlist()->trackAt( indexes[i] )->prettyUrl();
+
+    return fileNames;
+}
+
+void
+AmarokPlaylistScript::slotTrackInserted( const QModelIndex&, int start, int end )
+{
+    emit trackInserted( start, end );
+}
+
+void
+AmarokPlaylistScript::slotTrackRemoved( const QModelIndex&, int start, int end )
+{
+    emit trackRemoved( start, end );
+}

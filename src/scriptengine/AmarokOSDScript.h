@@ -17,13 +17,14 @@
 #ifndef AMAROK_OSD_SCRIPT_H
 #define AMAROK_OSD_SCRIPT_H
 
-#include <QImage>
 #include <QObject>
-#include <QtScript>
+
+class QColor;
+class QImage;
+class QScriptEngine;
 
 namespace AmarokScript
 {
-
     class AmarokOSDScript : public QObject
     {
         Q_OBJECT
@@ -32,7 +33,6 @@ namespace AmarokScript
 
         public:
             AmarokOSDScript( QScriptEngine* scriptEngine );
-            ~AmarokOSDScript();
 
         public slots:
             void showCurrentTrack();

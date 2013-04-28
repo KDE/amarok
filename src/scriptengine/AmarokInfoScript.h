@@ -25,41 +25,40 @@
 class QScriptEngine;
 
 namespace AmarokScript {
+    class InfoScript : public QObject
+    {
+        Q_OBJECT
 
-class InfoScript : public QObject
-{
-    Q_OBJECT
+        public:
+            InfoScript( const KUrl& scriptUrl, QScriptEngine *engine );
 
-    public:
-        InfoScript( const KUrl& scriptUrl, QScriptEngine *engine );
+        public slots:
+            QString scriptPath() const;
+            QString scriptConfigPath( const QString& name ) const;
+            QString iconPath( const QString& name, int size ) const;
+            QString version() const;
 
-    public slots:
-        QString scriptPath() const;
-        QString scriptConfigPath( const QString& name ) const;
-        QString iconPath( const QString& name, int size ) const;
-        QString version() const;
+        private:
+            const KUrl m_scriptUrl;
+    };
 
-    private:
-        const KUrl m_scriptUrl;
-};
+    class IconEnum : public QObject
+    {
+        Q_OBJECT
+        Q_ENUMS( StdSizes )
 
-class IconEnum : public QObject
-{
-    Q_OBJECT
-    Q_ENUMS( StdSizes )
+        public:
+            IconEnum( QObject *parent ) : QObject(parent) {}
 
-    public:
-        IconEnum( QObject *parent ) : QObject(parent) {}
-      enum StdSizes {
-          Small=16,
-          SmallMedium=22,
-          Medium=32,
-          Large=48,
-          Huge=64,
-          Enormous=128
-      };
-};
-
+            enum StdSizes {
+                Small=16,
+                SmallMedium=22,
+                Medium=32,
+                Large=48,
+                Huge=64,
+                Enormous=128
+            };
+    };
 } // namespace AmarokScript
 
 #endif

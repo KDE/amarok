@@ -21,9 +21,12 @@
 #include "network/NetworkAccessManagerProxy.h"
 
 #include <QObject>
-#include <QtScript>
+#include <QScriptValue>
 
-class AmarokDownloadHelper;
+class QScriptContext;
+class QScriptEngine;
+
+// TODO: clean this up, move under namespace, don't have multiple classes per one .h file
 
 class AmarokNetworkScript : public QObject
 {
@@ -31,7 +34,6 @@ class AmarokNetworkScript : public QObject
 
     public:
         AmarokNetworkScript( QScriptEngine* scriptEngine );
-        ~AmarokNetworkScript();
 };
 
 class Downloader : public QObject
@@ -40,13 +42,11 @@ class Downloader : public QObject
 
     public:
         Downloader( QScriptEngine* scriptEngine );
-        ~Downloader();
 
     private:
         static QScriptValue dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
         static QScriptValue stringDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
         static QScriptValue init( QScriptContext* context, QScriptEngine* engine, bool stringResult );
-
 
         QScriptEngine* m_scriptEngine;
 };
@@ -60,55 +60,55 @@ class AmarokDownloadHelper : public QObject
     Q_OBJECT
 
     static AmarokDownloadHelper *s_instance;
-    
-public:
-    AmarokDownloadHelper();
 
-    static AmarokDownloadHelper *instance();
-    
-    // called by the wrapper class to register a new download
-    void newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
-    void newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj );
+    public:
+        AmarokDownloadHelper();
 
-private slots:
-    void resultString( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void resultData( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+        static AmarokDownloadHelper *instance();
 
-    void requestRedirected( const KUrl &sourceUrl, const KUrl &targetUrl );
-    
-private:
-    QHash< KUrl, QScriptEngine* > m_engines;
-    QHash< KUrl, QScriptValue > m_values;
-    QHash< KUrl, QString > m_encodings;
+        // called by the wrapper class to register a new download
+        void newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
+        void newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj );
 
-    void cleanUp( const KUrl &url );
-    void newDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot );
+    private slots:
+        void resultString( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+        void resultData( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
-    /**
-     * Template function which updates the given @p sourceUrl to the given
-     * @p targetUrl. All entries in the given hash will be copied.
-     * The old entries will be removed.
-     *
-     * @param hash The hash which contains all elements.
-     * @param sourceUrl The old URL (= the old key).
-     * @param targetUrl The new URL (= the new key).
-     */
-    template<typename T> void updateUrl( QHash< KUrl, T > &hash, const KUrl &sourceUrl, const KUrl &targetUrl )
-    {
-        // Get all entries with the source URL as key.
-        QList< T > data = hash.values( sourceUrl );
+        void requestRedirected( const KUrl &sourceUrl, const KUrl &targetUrl );
 
-        foreach( T entry, data )
+    private:
+        void cleanUp( const KUrl &url );
+        void newDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot );
+
+        /**
+        * Template function which updates the given @p sourceUrl to the given
+        * @p targetUrl. All entries in the given hash will be copied.
+        * The old entries will be removed.
+        *
+        * @param hash The hash which contains all elements.
+        * @param sourceUrl The old URL (= the old key).
+        * @param targetUrl The new URL (= the new key).
+        */
+        template<typename T> void updateUrl( QHash< KUrl, T > &hash, const KUrl &sourceUrl, const KUrl &targetUrl )
         {
-            // Copy each entry to a new one with the
-            // new URL as key.
-            hash[ targetUrl ] = entry;
-        }
+            // Get all entries with the source URL as key.
+            QList< T > data = hash.values( sourceUrl );
 
-        // Remove all entries which are still pointing
-        // to the source URL.
-        hash.remove( sourceUrl );
-    };
+            foreach( T entry, data )
+            {
+                // Copy each entry to a new one with the
+                // new URL as key.
+                hash[ targetUrl ] = entry;
+            }
+
+            // Remove all entries which are still pointing
+            // to the source URL.
+            hash.remove( sourceUrl );
+        };
+
+        QHash<KUrl, QScriptEngine *> m_engines;
+        QHash<KUrl, QScriptValue> m_values;
+        QHash<KUrl, QString> m_encodings;
 };
 
 #endif

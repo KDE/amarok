@@ -17,9 +17,12 @@ Image*                                                                          
 
 #include "MetaTypeExporter.h"
 
+#include "core/capabilities/EditCapability.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 
-#include <QtScript>
+#include <QScriptEngine>
+#include <QScriptValue>
 
 #define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );
 #define GET_TRACK_EC( X ) Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() ); \
@@ -33,10 +36,6 @@ if( ec ) \
 
 MetaTrackPrototype::MetaTrackPrototype( QObject *parent )
     : QObject( parent )
-{
-}
-
-MetaTrackPrototype::~MetaTrackPrototype()
 {
 }
 

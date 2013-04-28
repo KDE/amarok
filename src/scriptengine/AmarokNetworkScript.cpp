@@ -15,13 +15,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "AmarokNetworkScript"
-
 #include "AmarokNetworkScript.h"
+
 #include "App.h"
 #include "core/support/Debug.h"
 
-#include <QtScript>
+#include <QScriptEngine>
+#include <QTextCodec>
+
+#define DEBUG_PREFIX "AmarokNetworkScript"
 
 AmarokDownloadHelper *AmarokDownloadHelper::s_instance = 0;
 
@@ -30,10 +32,6 @@ AmarokNetworkScript::AmarokNetworkScript( QScriptEngine *engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
     engine->globalObject().property( "Amarok" ).setProperty( "Network", scriptObject );
-}
-
-AmarokNetworkScript::~AmarokNetworkScript()
-{
 }
 
 // Class Downloader
@@ -48,10 +46,6 @@ Downloader::Downloader( QScriptEngine* engine )
     engine->globalObject().setProperty( "StringDownloader", stringCtor ); //added for clarity
     const QScriptValue dataCtor = engine->newFunction( dataDownloader_prototype_ctor );
     engine->globalObject().setProperty( "DataDownloader", dataCtor );
-}
-
-Downloader::~Downloader()
-{
 }
 
 QScriptValue
@@ -73,12 +67,12 @@ Downloader::dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngin
 }
 
 QScriptValue
-Downloader::init( QScriptContext* context, QScriptEngine* engine, bool stringResult )
+Downloader::init( QScriptContext* context, QScriptEngine *engine, bool stringResult )
 {
     // from QtScript API docs
     DEBUG_BLOCK
     QScriptValue object;
-    
+
     if( context->isCalledAsConstructor() )
         object = context->thisObject();
     else
@@ -92,13 +86,13 @@ Downloader::init( QScriptContext* context, QScriptEngine* engine, bool stringRes
         debug() << "ERROR! Constructor not called with enough arguments:" << context->argumentCount();
         return object;
     }
-    
+
     if( !context->argument( 1 ).isFunction() ) //TODO: check QUrl
     {
         debug() << "ERROR! Constructor not called with a QUrl and function!";
         return object;
     }
-    
+
     KUrl url( qscriptvalue_cast<QUrl>( context->argument( 0 ) ) );
 
     // start download, and connect to it
@@ -173,7 +167,7 @@ AmarokDownloadHelper::resultData( const KUrl &url, QByteArray data, NetworkAcces
     QScriptValue obj = m_values.value( url );
     QScriptEngine* engine = m_engines.value( url );
     cleanUp( url );
-    
+
     // now send the data to the associated script object
     if( !obj.isFunction() )
     {
@@ -219,14 +213,14 @@ AmarokDownloadHelper::resultString( const KUrl &url, QByteArray data, NetworkAcc
         QTextCodec::setCodecForCStrings( utf8codec );
         str = codec->toUnicode( data );
     }
-    
+
     // now send the data to the associated script object
     if( !obj.isFunction() )
     {
         debug() << "script object is valid but not a function!!";
         return;
     }
-   
+
     if( !engine )
     {
         debug() << "stored script engine is not valid!";
@@ -253,6 +247,3 @@ AmarokDownloadHelper::instance()
         s_instance = new AmarokDownloadHelper();
     return s_instance;
 }
-
-
-#include "AmarokNetworkScript.moc"

@@ -17,27 +17,25 @@
 #ifndef AMAROK_ENGINE_SCRIPT_H
 #define AMAROK_ENGINE_SCRIPT_H
 
-#include "MetaTypeExporter.h"
-
+#include <QHash>
 #include <QObject>
-#include <QtScript>
+
+class QScriptEngine;
 
 namespace AmarokScript
 {
     class AmarokEngineScript : public QObject
     {
         Q_OBJECT
-
-        Q_PROPERTY ( bool randomMode READ randomMode WRITE setRandomMode )
-        Q_PROPERTY ( bool dynamicMode READ dynamicMode WRITE setDynamicMode )
-        Q_PROPERTY ( bool repeatPlaylist READ repeatPlaylist WRITE setRepeatPlaylist )
-        Q_PROPERTY ( bool repeatTrack READ repeatTrack WRITE setRepeatTrack )
-        Q_PROPERTY ( int volume READ volume WRITE setVolume )
-        Q_PROPERTY ( int fadeoutLength READ fadeoutLength WRITE setFadeoutLength )
+        Q_PROPERTY( bool randomMode READ randomMode WRITE setRandomMode )
+        Q_PROPERTY( bool dynamicMode READ dynamicMode WRITE setDynamicMode )
+        Q_PROPERTY( bool repeatPlaylist READ repeatPlaylist WRITE setRepeatPlaylist )
+        Q_PROPERTY( bool repeatTrack READ repeatTrack WRITE setRepeatTrack )
+        Q_PROPERTY( int volume READ volume WRITE setVolume )
+        Q_PROPERTY( int fadeoutLength READ fadeoutLength WRITE setFadeoutLength )
 
         public:
             AmarokEngineScript( QScriptEngine* scriptEngine );
-            ~AmarokEngineScript();
 
             enum PlayerStatus
             {
@@ -89,7 +87,7 @@ namespace AmarokScript
                 @param metaData Not longer filled. Use currentTrack to get the current meta data.
                 @param newTrack Always false. Use trackChanged to find changed tracks.
             */
-            void newMetaData( const QHash<qint64, QString>& metaData, bool newTrack );
+            void newMetaData( const QHash<qint64, QString> &metaData, bool newTrack );
 
             /** Will be emitted as soon as the user changes the track playback position. */
             void trackSeeked( int ); //return relative time in million second
@@ -114,7 +112,6 @@ namespace AmarokScript
             void slotPlaying();
 
         private:
-
             bool randomMode() const;
             bool dynamicMode() const;
             bool repeatPlaylist() const;

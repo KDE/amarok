@@ -18,7 +18,8 @@
 #define AMAROK_STATUSBAR_SCRIPT_H
 
 #include <QObject>
-#include <QtScript>
+
+class QScriptEngine;
 
 namespace AmarokScript
 {
@@ -29,7 +30,6 @@ namespace AmarokScript
 
         public:
             AmarokStatusbarScript( QScriptEngine* scriptEngine );
-            ~AmarokStatusbarScript();
 
         public slots:
             void longMessage( const QString &text );

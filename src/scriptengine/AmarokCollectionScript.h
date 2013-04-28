@@ -18,7 +18,8 @@
 #define AMAROK_COLLECTION_SCRIPT_H
 
 #include <QObject>
-#include <QtScript>
+
+class QScriptEngine;
 
 namespace AmarokScript
 {
@@ -28,7 +29,6 @@ namespace AmarokScript
 
         public:
             AmarokCollectionScript( QScriptEngine* scriptEngine );
-            ~AmarokCollectionScript();
 
         public slots:
             int totalAlbums() const;

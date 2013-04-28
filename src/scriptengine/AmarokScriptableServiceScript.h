@@ -18,20 +18,23 @@
 #ifndef AMAROK_SCRIPTABLE_SERVICE_SCRIPT_H
 #define AMAROK_SCRIPTABLE_SERVICE_SCRIPT_H
 
+#include <QMetaType> // for Q_DECLARE_METATYPE
 #include <QObject>
-#include <QPixmap>
-#include <QtScript>
+#include <QScriptable>
+
+class QPixmap;
+
+// TODO: move to proper namespace, one class per .h file
 
 class StreamItem : public QObject
 {
-	Q_OBJECT
-	
-	Q_PROPERTY( QString itemName WRITE setItemName READ itemName )
-	Q_PROPERTY( QString infoHtml WRITE setInfoHtml READ infoHtml )
-	Q_PROPERTY( QString playableUrl WRITE setPlayableUrl READ playableUrl )
+    Q_OBJECT
+
+    Q_PROPERTY( QString itemName WRITE setItemName READ itemName )
+    Q_PROPERTY( QString infoHtml WRITE setInfoHtml READ infoHtml )
+    Q_PROPERTY( QString playableUrl WRITE setPlayableUrl READ playableUrl )
     Q_PROPERTY( QString callbackData WRITE setCallbackData READ callbackData )
     Q_PROPERTY( int level WRITE setLevel READ level )
-            
 
     Q_PROPERTY( QString album WRITE setAlbum READ album )
     Q_PROPERTY( QString artist WRITE setArtist READ artist )
@@ -39,11 +42,9 @@ class StreamItem : public QObject
     Q_PROPERTY( QString composer WRITE setComposer READ composer )
     Q_PROPERTY( int year WRITE setYear READ year )
     Q_PROPERTY( QString coverUrl WRITE setCoverUrl READ coverUrl )
-            
 
     public:
         StreamItem( QScriptEngine *engine );
-        ~StreamItem();
 
         QString itemName() const;
         QString infoHtml() const;
@@ -70,8 +71,7 @@ class StreamItem : public QObject
         void setComposer( QString composer );
         void setYear( int year );
         void setCoverUrl( QString url );
-  
-        
+
     private:
         QString m_name;
         QString m_infoHtml;
@@ -92,10 +92,10 @@ class StreamItem : public QObject
 class ScriptableServiceScript : public QObject, public QScriptable
 {
     Q_OBJECT
-	
+
     public:
         ScriptableServiceScript( QScriptEngine* engine );
-        ~ScriptableServiceScript();
+
         void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
         void slotRequestInfo( QString name, int level, QString callbackData );
 
@@ -104,7 +104,7 @@ class ScriptableServiceScript : public QObject, public QScriptable
     public slots:
         int insertItem( StreamItem* item );
         void setCurrentInfo( const QString &infoHtml );
-        
+
         int donePopulating() const;
 
         void setIcon( const QPixmap &icon );

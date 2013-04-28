@@ -24,6 +24,7 @@
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "ScriptManager.h"
 
+#include <QScriptEngine>
 
 StreamItem::StreamItem( QScriptEngine *engine )
     : QObject( engine )
@@ -34,118 +35,136 @@ StreamItem::StreamItem( QScriptEngine *engine )
     engine->setDefaultPrototype( qMetaTypeId<StreamItem*>(), QScriptValue() );
 }
 
-StreamItem::~StreamItem()
-{
-}
-
-QString StreamItem::itemName() const
+QString
+StreamItem::itemName() const
 {
     return m_name;
 }
 
-QString StreamItem::infoHtml() const
+QString
+StreamItem::infoHtml() const
 {
     return m_infoHtml;
 }
 
-QString StreamItem::playableUrl() const
+QString
+StreamItem::playableUrl() const
 {
     return m_playableUrl;
 }
 
-QString StreamItem::callbackData() const
+QString
+StreamItem::callbackData() const
 {
     return m_callbackData;
 }
 
-int StreamItem::level() const
+int
+StreamItem::level() const
 {
     return m_level;
 }
 
 
-QString StreamItem::album() const
+QString
+StreamItem::album() const
 {
     return m_album;
 }
 
-QString StreamItem::artist() const
+QString
+StreamItem::artist() const
 {
     return m_artist;
 }
 
-QString StreamItem::genre() const
+QString
+StreamItem::genre() const
 {
     return m_genre;
 }
 
-QString StreamItem::composer() const
+QString
+StreamItem::composer() const
 {
     return m_composer;
 }
 
-int StreamItem::year() const
+int
+StreamItem::year() const
 {
     return m_year;
 }
 
-QString StreamItem::coverUrl()
+QString
+StreamItem::coverUrl()
 {
     return m_coverUrl;
 }
 
 
-void StreamItem::setItemName( QString name )
+void
+StreamItem::setItemName( QString name )
 {
     m_name = name;
 }
 
-void StreamItem::setInfoHtml( QString infoHtml )
+void
+StreamItem::setInfoHtml( QString infoHtml )
 {
     m_infoHtml = infoHtml;
 }
 
-void StreamItem::setPlayableUrl( QString playableUrl )
+void
+StreamItem::setPlayableUrl( QString playableUrl )
 {
     m_playableUrl = playableUrl;
 }
 
-void StreamItem::setCallbackData( QString callbackData )
+void
+StreamItem::setCallbackData( QString callbackData )
 {
     m_callbackData = callbackData;
 }
 
-void StreamItem::setLevel( int level )
+void
+StreamItem::setLevel( int level )
 {
     m_level = level;
 }
 
-void StreamItem::setAlbum( QString album )
+void
+StreamItem::setAlbum( QString album )
 {
     m_album = album;
 }
 
-void StreamItem::setArtist( QString artist )
+void
+StreamItem::setArtist( QString artist )
 {
     m_artist = artist;
 }
 
-void StreamItem::setGenre( QString genre )
+void
+StreamItem::setGenre( QString genre )
 {
     m_genre = genre;
 }
 
-void StreamItem::setComposer( QString composer )
+void
+StreamItem::setComposer( QString composer )
 {
     m_composer = composer;
 }
 
-void StreamItem::setYear( int year )
+void
+StreamItem::setYear( int year )
 {
     m_year = year;
 }
 
-void StreamItem::setCoverUrl( QString url )
+void
+StreamItem::setCoverUrl( QString url )
 {
     m_coverUrl = url;
 }
@@ -165,12 +184,8 @@ ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
 //    qScriptConnect( this, SIGNAL(populate(QString,int,int,QString,QString)), QScriptValue() ,populate );
 }
 
-ScriptableServiceScript::~ScriptableServiceScript()
-{
-    DEBUG_BLOCK
-}
-
-QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine )
+QScriptValue
+ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine )
 {
     DEBUG_BLOCK
     QString serviceName = context->argument(0).toString();
@@ -189,21 +204,24 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QS
     return engine->undefinedValue();
 }
 
-QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine )
+QScriptValue
+ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine )
 {
     Q_UNUSED( context );
     debug() << "prototype populating here!";
     return engine->undefinedValue(); // Fixme: return something.
 }
 
-int ScriptableServiceScript::insertItem( StreamItem* item )
+int
+ScriptableServiceScript::insertItem( StreamItem* item )
 {
     return The::scriptableServiceManager()->insertItem( m_serviceName, item->level(), m_currentId, item->itemName(), item->infoHtml(), item->callbackData(), item->playableUrl(),
                                                         item->album(), item->artist(), item->genre(), item->composer(), item->year(),
                                                         item->coverUrl() );
 }
 
-int ScriptableServiceScript::donePopulating() const
+int
+ScriptableServiceScript::donePopulating() const
 {
     DEBUG_BLOCK
 
@@ -211,7 +229,8 @@ int ScriptableServiceScript::donePopulating() const
     return -1; // Fixme: return the right thing.
 }
 
-void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter )
+void
+ScriptableServiceScript::slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter )
 {
     DEBUG_BLOCK
     m_currentId = parent_id;
@@ -227,14 +246,16 @@ void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_
 */
 }
 
-void ScriptableServiceScript::slotRequestInfo( QString name, int level, QString callbackData )
+void
+ScriptableServiceScript::slotRequestInfo( QString name, int level, QString callbackData )
 {
     DEBUG_BLOCK
     m_serviceName = name;
     emit( fetchInfo( level, callbackData ) );
 }
 
-void ScriptableServiceScript::slotCustomize( const QString &name )
+void
+ScriptableServiceScript::slotCustomize( const QString &name )
 {
     DEBUG_BLOCK
     m_serviceName = name;
@@ -242,27 +263,26 @@ void ScriptableServiceScript::slotCustomize( const QString &name )
 }
 
 
-void ScriptableServiceScript::setIcon( const QPixmap &icon )
+void
+ScriptableServiceScript::setIcon( const QPixmap &icon )
 {
     The::scriptableServiceManager()->setIcon( m_serviceName, icon );
 }
 
-void ScriptableServiceScript::setEmblem( const QPixmap &emblem )
+void
+ScriptableServiceScript::setEmblem( const QPixmap &emblem )
 {
     The::scriptableServiceManager()->setEmblem( m_serviceName, emblem );
 }
 
-void ScriptableServiceScript::setScalableEmblem ( const QString& emblemPath )
+void
+ScriptableServiceScript::setScalableEmblem ( const QString& emblemPath )
 {
     The::scriptableServiceManager()->setScalableEmblem( m_serviceName, emblemPath );
 }
 
-void ScriptableServiceScript::setCurrentInfo( const QString &infoHtml )
+void
+ScriptableServiceScript::setCurrentInfo( const QString &infoHtml )
 {
     The::scriptableServiceManager()->setCurrentInfo( m_serviceName, infoHtml );
 }
-
-
-
-
-#include "AmarokScriptableServiceScript.moc"

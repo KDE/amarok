@@ -29,10 +29,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokScript( const QString& name, QScriptEngine *engine );
-            ~AmarokScript();
-
-            void slotConfigured();
+            AmarokScript( const QString &name, QScriptEngine *engine );
 
         public slots:
             /** Shuts down Amarok completely. */
@@ -68,8 +65,8 @@ namespace AmarokScript
 
             QStringList listRunningScripts() const;
 
-        //TODO: actaully use this signal
         signals:
+            // TODO: actaully emit this signal
             void configured();
 
         private:

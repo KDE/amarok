@@ -20,11 +20,12 @@
 #include "App.h"
 #include "KNotificationBackend.h"
 
+#include <QScriptEngine>
+
 #define kNotify Amarok::KNotificationBackend::instance()
 
-namespace AmarokScript
-{
-    
+using namespace AmarokScript;
+
 AmarokKNotifyScript::AmarokKNotifyScript( QScriptEngine *engine )
     : QObject( engine )
 {
@@ -33,36 +34,33 @@ AmarokKNotifyScript::AmarokKNotifyScript( QScriptEngine *engine )
     windowObject.setProperty( "KNotify", scriptObject );
 }
 
-AmarokKNotifyScript::~AmarokKNotifyScript()
-{
-}
-
-bool AmarokKNotifyScript::kNotifyEnabled()
+bool
+AmarokKNotifyScript::kNotifyEnabled()
 {
     return AmarokConfig::kNotifyEnabled();
 }
 
-void AmarokKNotifyScript::setKNotifyEnabled(bool enable)
+void
+AmarokKNotifyScript::setKNotifyEnabled( bool enable )
 {
-    AmarokConfig::setKNotifyEnabled(enable);
+    AmarokConfig::setKNotifyEnabled( enable );
 }
 
-void AmarokKNotifyScript::show(const QString& title, const QString& body)
+void
+AmarokKNotifyScript::show( const QString &title, const QString &body )
 {
     show( title, body, QPixmap() );
 }
 
-void AmarokKNotifyScript::show(const QString& title, const QString& body, const QPixmap& pixmap)
+void
+AmarokKNotifyScript::show( const QString &title, const QString &body, const QPixmap &pixmap )
 {
-    kNotify->show(title, body, pixmap);
+    kNotify->show( title, body, pixmap );
 }
 
 
-void AmarokKNotifyScript::showCurrentTrack()
+void
+AmarokKNotifyScript::showCurrentTrack()
 {
     kNotify->showCurrentTrack( true );
 }
-
-}
-
-#include "AmarokKNotifyScript.moc"

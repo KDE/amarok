@@ -18,32 +18,29 @@
 #define AMAROK_KNOTIFY_SCRIPT_H
 
 #include <QObject>
-#include <QPixmap>
-#include <QtScript>
+
+class QPixmap;
+class QScriptEngine;
 
 namespace AmarokScript
 {
+    class AmarokKNotifyScript : public QObject
+    {
+        Q_OBJECT
+        Q_PROPERTY( bool kNotifyEnabled READ kNotifyEnabled WRITE setKNotifyEnabled )
 
-class AmarokKNotifyScript : public QObject
-{
-    Q_OBJECT
+        public:
+            AmarokKNotifyScript( QScriptEngine* scriptEngine );
 
-    Q_PROPERTY ( bool kNotifyEnabled READ kNotifyEnabled WRITE setKNotifyEnabled )
+        public slots:
+            void showCurrentTrack();
+            void show(const QString &title, const QString &body);
+            void show(const QString &title, const QString &body, const QPixmap &pixmap);
 
-    public:
-        AmarokKNotifyScript( QScriptEngine* scriptEngine );
-        ~AmarokKNotifyScript();
-
-    public slots:
-        void showCurrentTrack();
-        void show(const QString &title, const QString &body);
-        void show(const QString &title, const QString &body, const QPixmap &pixmap);
-
-    private:
-        void setKNotifyEnabled( bool enable );
-        bool kNotifyEnabled();
-};
-
+        private:
+            void setKNotifyEnabled( bool enable );
+            bool kNotifyEnabled();
+    };
 }
 
 #endif

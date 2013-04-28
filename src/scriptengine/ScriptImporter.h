@@ -20,28 +20,28 @@
 #include <KUrl>
 
 #include <QObject>
-#include <QtScript>
+#include <QSet>
+
+class QScriptEngine;
 
 namespace AmarokScript
 {
-
     class ScriptImporter : public QObject
     {
         Q_OBJECT
 
         public:
             ScriptImporter( QScriptEngine* ScriptEngine, const KUrl &url );
-            ~ScriptImporter();
 
         public slots:
-            void loadExtension( const QString& src );
-            bool loadQtBinding( const QString& binding );
-            bool include( const QString& relativeFile );
+            void loadExtension( const QString &src );
+            bool loadQtBinding( const QString &binding );
+            bool include( const QString &relativeFile );
 
         private:
-            const KUrl      m_scriptUrl;
-            QScriptEngine*  m_scriptEngine;
-            QSet<QString>   m_importedBindings;
+            const KUrl m_scriptUrl;
+            QScriptEngine *m_scriptEngine;
+            QSet<QString> m_importedBindings;
     };
 }
 

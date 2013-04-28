@@ -18,8 +18,6 @@
 #define METATYPE_EXPORTER_H
 
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
-#include "core/capabilities/EditCapability.h"
 
 #include <QObject>
 #include <QScriptable>
@@ -62,7 +60,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
 
     public:
         MetaTrackPrototype( QObject *parent );
-        ~MetaTrackPrototype();
+
     public slots:
         QScriptValue imagePixmap( int size ) const;
         QScriptValue imagePixmap() const;

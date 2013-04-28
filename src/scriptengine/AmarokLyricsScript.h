@@ -25,33 +25,30 @@ class QByteArray;
 
 namespace AmarokScript
 {
+    class AmarokLyricsScript : public QObject
+    {
+        Q_OBJECT
 
-class AmarokLyricsScript : public QObject 
-{
-    Q_OBJECT
+        public:
+            AmarokLyricsScript( QScriptEngine* scriptEngine );
 
-public:
-    AmarokLyricsScript( QScriptEngine* scriptEngine );
-    ~AmarokLyricsScript();
+        public slots:
+            void showLyrics( const QString& lyrics ) const;
 
-public slots:
-    void showLyrics( const QString& lyrics ) const;
-    
-    void showLyricsHtml( const QString& lyrics ) const;
-    void showLyricsError( const QString& error ) const;
-    void showLyricsNotFound( const QString& msg ) const;
+            void showLyricsHtml( const QString& lyrics ) const;
+            void showLyricsError( const QString& error ) const;
+            void showLyricsNotFound( const QString& msg ) const;
 
-    QString escape( const QString& str );
+            QString escape( const QString& str );
 
-    void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
-    QString toUtf8( const QByteArray& lyrics, const QString& encoding = "UTF-8" );
-    QString QStringtoUtf8( const QString& lyrics, const QString& encoding = "UTF-8" );
-    QByteArray fromUtf8( const QString& str, const QString& encoding );
-    
-signals:
-    void fetchLyrics( const QString& artist, const QString& title, const QString& );
-};
+            void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
+            QString toUtf8( const QByteArray& lyrics, const QString& encoding = "UTF-8" );
+            QString QStringtoUtf8( const QString& lyrics, const QString& encoding = "UTF-8" );
+            QByteArray fromUtf8( const QString& str, const QString& encoding );
 
+        signals:
+            void fetchLyrics( const QString& artist, const QString& title, const QString& );
+    };
 }
 
 #endif

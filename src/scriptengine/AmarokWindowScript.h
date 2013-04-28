@@ -19,10 +19,10 @@
 
 #include <KMenu>
 
-#include <QList>
 #include <QObject>
-#include <QtScript>
-#include <QWeakPointer>
+#include <QSharedPointer>
+
+class QScriptEngine;
 
 namespace AmarokScript
 {
@@ -33,7 +33,6 @@ namespace AmarokScript
 
         public:
             AmarokWindowScript( QScriptEngine* scriptEngine );
-            ~AmarokWindowScript();
 
         public slots:
             bool addToolsMenu( QString id, QString menuTitle, QString icon = "amarok" );
@@ -41,7 +40,8 @@ namespace AmarokScript
             bool addSettingsMenu( QString id, QString menuTitle, QString icon = "amarok" );
             void addSettingsSeparator();
             void showBrowser( QString browser ) const;
-//TODO: show Tray Icon, Show Splash Screen
+            //TODO: show Tray Icon, Show Splash Screen
+
         signals:
             void prepareToQuit();
 
@@ -63,7 +63,6 @@ namespace AmarokScript
             QWeakPointer<KMenu> m_settingsMenu;
             QScriptEngine*   m_scriptEngine;
             QList<QObject*> m_guiPtrList;
-
     };
 }
 
