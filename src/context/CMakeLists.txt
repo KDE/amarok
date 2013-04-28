@@ -4,7 +4,6 @@ add_subdirectory( applets )
 add_subdirectory( engines )
 add_subdirectory( containments )
 add_subdirectory( tools )
-add_subdirectory( scriptengine/javascript )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
                     ..
