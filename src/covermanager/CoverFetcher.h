@@ -20,7 +20,7 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "CoverFetchUnit.h"
 #include "network/NetworkAccessManagerProxy.h"
 

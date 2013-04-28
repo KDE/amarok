@@ -24,6 +24,7 @@
 #include "MainWindow.h"
 #include "core/collections/Collection.h"
 #include "core/interfaces/Logger.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"

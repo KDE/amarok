@@ -20,7 +20,7 @@
 #define CURRENT_TRACK_APPLET_H
 
 #include "context/Applet.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "ui_currentTrackSettings.h"
 
 #include <Plasma/DataEngine>

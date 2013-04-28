@@ -15,10 +15,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "MusicBrainzFinder"
-
 #include "MusicBrainzFinder.h"
 
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
@@ -30,6 +29,8 @@
 #include <QAuthenticator>
 #include <QNetworkAccessManager>
 #include <QTimer>
+
+#define DEBUG_PREFIX "MusicBrainzFinder"
 
 /*
  * Levenshtein distance algorithm implementation carefully pirated from Wikibooks

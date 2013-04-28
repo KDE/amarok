@@ -17,7 +17,7 @@
 #ifndef DYNAMICSERVICEQUERYMAKER_H
 #define DYNAMICSERVICEQUERYMAKER_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/collections/QueryMaker.h"
 #include "ServiceCollection.h"
 #include "amarok_export.h"

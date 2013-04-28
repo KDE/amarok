@@ -21,7 +21,7 @@
 
 #include "playlistgenerator/Constraint.h"
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QPointer>
 #include <QString>
@@ -97,7 +97,7 @@ namespace ConstraintTypes {
     class Checkpoint::TrackMatcher : public AbstractMatcher {
         public:
             TrackMatcher( const Meta::TrackPtr& );
-            virtual ~TrackMatcher() {}
+            virtual ~TrackMatcher();
 
             virtual QList<int> find( const Meta::TrackList& ) const;
             virtual bool match( const Meta::TrackPtr& ) const;
@@ -110,7 +110,7 @@ namespace ConstraintTypes {
     class Checkpoint::AlbumMatcher : public AbstractMatcher {
         public:
             AlbumMatcher( const Meta::AlbumPtr& );
-            virtual ~AlbumMatcher() {}
+            virtual ~AlbumMatcher();
 
             virtual QList<int> find( const Meta::TrackList& ) const;
             virtual bool match( const Meta::TrackPtr& ) const;
@@ -123,7 +123,7 @@ namespace ConstraintTypes {
     class Checkpoint::ArtistMatcher : public AbstractMatcher {
         public:
             ArtistMatcher( const Meta::ArtistPtr& );
-            virtual ~ArtistMatcher() {}
+            virtual ~ArtistMatcher();
 
             virtual QList<int> find( const Meta::TrackList& ) const;
             virtual bool match( const Meta::TrackPtr& ) const;

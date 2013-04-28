@@ -18,10 +18,10 @@
 #ifndef AMAROK_META_H
 #define AMAROK_META_H
 
-#include "core/amarokcore_export.h"
 #include "MetaReplayGain.h"
-
+#include "core/amarokcore_export.h"
 #include "core/interfaces/MetaCapability.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QList>
 #include <QMetaType>
@@ -45,39 +45,9 @@ class PersistentStatisticsStore;
 
 namespace Meta
 {
-    class Base;
-    class Track;
-    class Artist;
-    class Album;
-    class Genre;
-    class Composer;
-    class Year;
-    class Label;
-
-    class Statistics;
-    typedef KSharedPtr<Statistics> StatisticsPtr;
-    typedef KSharedPtr<const Statistics> ConstStatisticsPtr;
-
-    typedef KSharedPtr<Base> DataPtr;
-    typedef QList<DataPtr> DataList;
-    typedef KSharedPtr<Track> TrackPtr;
-    typedef QList<TrackPtr> TrackList;
-    typedef KSharedPtr<Artist> ArtistPtr;
-    typedef QList<ArtistPtr> ArtistList;
-    typedef KSharedPtr<Album> AlbumPtr;
-    typedef QList<AlbumPtr> AlbumList;
-    typedef KSharedPtr<Composer> ComposerPtr;
-    typedef QList<ComposerPtr> ComposerList;
-    typedef KSharedPtr<Genre> GenrePtr;
-    typedef QList<GenrePtr> GenreList;
-    typedef KSharedPtr<Year> YearPtr;
-    typedef QList<YearPtr> YearList;
-    typedef KSharedPtr<Label> LabelPtr;
-    typedef QList<LabelPtr> LabelList;
-
     class AMAROK_CORE_EXPORT Observer
     {
-        friend class Base; // so that is can call destroyedNotify()
+        friend class Base; // so that it can call destroyedNotify()
 
         public:
             virtual ~Observer();
@@ -111,7 +81,7 @@ namespace Meta
             virtual void entityDestroyed();
 
         private:
-            friend class ::PersistentStatisticsStore; // so that is can call KSharedPtr-free subscribe:
+            friend class ::PersistentStatisticsStore; // so that it can call KSharedPtr-free subscribe:
             void subscribeTo( Base *ptr );
             void unsubscribeFrom( Base *ptr );
 

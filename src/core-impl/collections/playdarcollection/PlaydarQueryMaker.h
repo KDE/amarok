@@ -25,7 +25,7 @@
 #include "support/Query.h"
 #include "support/QMFunctionTypes.h"
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/collections/QueryMaker.h"
 

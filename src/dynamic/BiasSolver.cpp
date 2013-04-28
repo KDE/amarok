@@ -17,25 +17,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "BiasSolver"
-
 #include "BiasSolver.h"
-#include "TrackSet.h"
 
 #include "amarokconfig.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
-#include <cmath>
+#include <ThreadWeaver/Thread>
 
 #include <QHash>
 #include <QMutexLocker>
 
+#include <cmath>
+
+#define DEBUG_PREFIX "BiasSolver"
+
 /* These number are black magic. The best values can only be obtained through
  * exhaustive trial and error or writing another optimization program to
  * optimize this optimization program. They are very sensitive. Be careful */
-#include <threadweaver/Thread.h>
 
 namespace Dynamic
 {

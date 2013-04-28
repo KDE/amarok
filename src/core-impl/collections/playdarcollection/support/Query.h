@@ -18,7 +18,7 @@
 #define PLAYDAR_QUERYOBJECT_H
 
 #include "Controller.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "../PlaydarMeta.h"
 
 #include <QWeakPointer>

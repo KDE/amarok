@@ -18,9 +18,11 @@
 #define APG_CONSTRAINT_FACTORY
 
 #include <QDomElement>
+#include <QHash>
 #include <QPair>
 #include <QString>
 #include <QStringList>
+
 #include <limits.h>
 
 class Constraint;

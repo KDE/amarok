@@ -20,13 +20,14 @@
 #define AMAROK_TRACKSET_H
 
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QBitArray>
+#include <QExplicitlySharedDataPointer>
+#include <QHash>
+#include <QSharedData>
 #include <QString>
 #include <QStringList>
-#include <QSharedData>
-#include <QExplicitlySharedDataPointer>
 
 namespace Dynamic
 {

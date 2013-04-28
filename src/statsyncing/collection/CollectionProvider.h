@@ -17,10 +17,14 @@
 #ifndef STATSYNCING_COLLECTIONPROVIDER_H
 #define STATSYNCING_COLLECTIONPROVIDER_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "statsyncing/Provider.h"
 
 #include <QSemaphore>
+
+namespace Collections {
+    class Collection;
+}
 
 namespace StatSyncing
 {

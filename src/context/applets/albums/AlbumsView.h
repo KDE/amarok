@@ -18,7 +18,7 @@
 #ifndef AMAROK_ALBUMSVIEW_H
 #define AMAROK_ALBUMSVIEW_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "AlbumsModel.h"
 
 #include <QGraphicsWidget>

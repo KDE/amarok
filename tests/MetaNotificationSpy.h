@@ -17,7 +17,7 @@
 #ifndef METANOTIFICATIONSPY_H
 #define METANOTIFICATIONSPY_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 class MetaNotificationSpyPrivate;
 

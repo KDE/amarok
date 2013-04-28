@@ -17,8 +17,10 @@
  ****************************************************************************************/
 
 #include "TrackSet.h"
-#include "core/support/Debug.h"
+
 #include "core/collections/Collection.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
 
 #include <KRandom>
 

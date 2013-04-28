@@ -20,9 +20,10 @@
 #ifndef TESTMETAMULTITRACK_H
 #define TESTMETAMULTITRACK_H
 
+#include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 
-#include <QtCore/QObject>
+#include <QObject>
 
 namespace Meta {
     class MultiTrack;

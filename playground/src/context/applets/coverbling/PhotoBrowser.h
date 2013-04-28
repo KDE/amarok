@@ -24,29 +24,30 @@
 #define PHOTO_BROWSER_H
 
 #include "pictureflow.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 class PhotoBrowser: public PictureFlow
 {
   Q_OBJECT
 
 public:
-  explicit PhotoBrowser(QWidget* parent = 0, bool enableOpenGL = false);
-  virtual ~PhotoBrowser();
+    explicit PhotoBrowser(QWidget* parent = 0, bool enableOpenGL = false);
+    virtual ~PhotoBrowser();
 
-  void fillAlbums(Meta::AlbumList albums);
+    void fillAlbums(Meta::AlbumList albums);
 public slots:
-	void	fastForward();
-	void	fastBackward();
-	void 	skipToSlide(int iSlide); 
+    void fastForward();
+    void fastBackward();
+    void skipToSlide(int iSlide);
+
 private slots:
-  void preload();
-  void updateImageData();
+    void preload();
+    void updateImageData();
 
 private:
-  class Private;
-  Private *d;
-};  
+    class Private;
+    Private *d;
+};
 
 #endif // PHOTO_BROWSER_H
 

@@ -17,8 +17,9 @@
 #define AMAROK_COVERCACHE_H
 
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
+#include <QHash>
 #include <QPixmap>
 #include <QPixmapCache>
 #include <QReadWriteLock>
@@ -69,10 +70,11 @@ class AMAROK_EXPORT CoverCache
 
         typedef QHash< int, QPixmapCache::Key > CoverKeys;
 
-        /** Cache holding all the pixmap keys.
-            Don't use weak pointers for the Hash key. Hash keys that change are deadly
-        */
-        mutable QHash< const Meta::Album*, CoverKeys > m_keys;
+        /**
+         * Cache holding all the pixmap keys.
+         * Don't use smart pointers for the Hash key. Hash keys that change are deadly
+         */
+        mutable QHash<const Meta::Album*, CoverKeys> m_keys;
 
         Q_DISABLE_COPY( CoverCache )
 };

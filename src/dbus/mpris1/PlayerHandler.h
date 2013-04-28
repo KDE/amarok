@@ -19,7 +19,7 @@
 #define MPRIS1_PLAYER_HANDLER_H
 
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QObject>
 #include <QVariantMap>

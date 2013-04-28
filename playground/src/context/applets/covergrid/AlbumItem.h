@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QLabel>
 
@@ -29,13 +29,15 @@ class AlbumItem : public QLabel
 
 public:
     AlbumItem( const QPixmap & pixmap, Meta::AlbumPtr album, QWidget * parent = 0, Qt::WindowFlags f = 0  );
+    ~AlbumItem();
+
     Meta::AlbumPtr getAlbum();
 
 protected :
     void mousePressEvent( QMouseEvent  * event );
-	void leaveEvent( QEvent * event);
-	void enterEvent( QEvent * event);
-	void mouseDoubleClickEvent( QMouseEvent * event );
+    void leaveEvent( QEvent * event);
+    void enterEvent( QEvent * event);
+    void mouseDoubleClickEvent( QMouseEvent * event );
 
 private:
     Meta::AlbumPtr m_album;

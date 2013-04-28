@@ -20,15 +20,16 @@
 #include "ArtistWidget.h"
 
 //Amarok
-#include "amarokurls/AmarokUrl.h"
-#include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/collections/QueryMaker.h"
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
-#include "playlist/PlaylistController.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
+#include "amarokurls/AmarokUrl.h"
+#include "core/collections/Collection.h"
+#include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "playlist/PlaylistController.h"
 
 //KDE
 #include <KColorUtils>

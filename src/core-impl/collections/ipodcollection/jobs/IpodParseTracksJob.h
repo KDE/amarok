@@ -17,7 +17,7 @@
 #ifndef IPODPARSETRACKSJOB_H
 #define IPODPARSETRACKSJOB_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <ThreadWeaver/Job>
 

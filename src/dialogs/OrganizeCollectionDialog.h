@@ -19,7 +19,7 @@
 #define AMAROK_ORGANIZECOLLECTIONDIALOG_H
 
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include "widgets/FilenameLayoutWidget.h"
 #include "ui_OrganizeCollectionOptions.h"

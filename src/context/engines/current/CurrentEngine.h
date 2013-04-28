@@ -18,7 +18,11 @@
 #define AMAROK_CURRENT_ENGINE
 
 #include "context/DataEngine.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
+
+namespace Collections {
+    class QueryMaker;
+}
 
 /**
     This class provides context information on the currently playing track.

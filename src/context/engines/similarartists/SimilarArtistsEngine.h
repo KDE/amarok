@@ -22,7 +22,7 @@
 #include "NetworkAccessManagerProxy.h"
 #include "context/DataEngine.h"
 #include "context/applets/similarartists/SimilarArtist.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 using namespace Context;
 

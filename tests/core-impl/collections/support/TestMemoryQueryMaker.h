@@ -20,7 +20,7 @@
 
 #include<QtTest/QTest>
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/collections/QueryMaker.h"
 
 #include "core-impl/collections/support/MemoryCollection.h"

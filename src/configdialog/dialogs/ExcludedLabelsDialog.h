@@ -18,7 +18,7 @@
 #define EXCLUDEDLABELSDIALOG_H
 
 #include "ui_ExcludedLabelsDialog.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <KDialog>
 

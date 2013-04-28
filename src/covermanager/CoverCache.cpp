@@ -16,6 +16,7 @@
 
 #include "covermanager/CoverCache.h"
 
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 
 #include <QDir>

@@ -18,15 +18,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "CoverFetcher"
-#include "core/support/Debug.h"
-
 #include "CoverFetcher.h"
 
+#include "amarokconfig.h"
+#include "core/interfaces/Logger.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
-#include "amarokconfig.h"
+#include "core/support/Debug.h"
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
 #include "CoverFetchUnit.h"
@@ -36,6 +35,8 @@
 
 #include <QBuffer>
 #include <QImageReader>
+
+#define DEBUG_PREFIX "CoverFetcher"
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 

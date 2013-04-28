@@ -17,7 +17,7 @@
 #ifndef AMAROK_ALBUMBREADCRUMBWIDGET_H
 #define AMAROK_ALBUMBREADCRUMBWIDGET_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <KHBox>
 

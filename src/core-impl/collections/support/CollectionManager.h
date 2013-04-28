@@ -19,13 +19,14 @@
 
 #include "amarok_export.h"
 #include "core/collections/Collection.h"
-#include "core/meta/Meta.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/forward_declarations.h"
 
 #include <KService>
 
 #include <QList>
 #include <QObject>
+#include <QSet>
 
 class SqlStorage;
 class CollectionManagerSingleton;

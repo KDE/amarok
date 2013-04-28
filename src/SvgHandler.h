@@ -19,19 +19,19 @@
 #ifndef SVGHANDLER_H
 #define SVGHANDLER_H
 
-class QStyleOptionSlider;
-
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QReadWriteLock>
 #include <QSvgRenderer>
 #include <KImageCache>
 
+#include <QHash>
 #include <QPixmap>
 #include <QString>
 
 class SvgHandler;
+class QStyleOptionSlider;
 
 namespace The {
     AMAROK_EXPORT SvgHandler* svgHandler();

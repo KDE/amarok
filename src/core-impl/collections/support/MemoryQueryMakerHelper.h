@@ -18,7 +18,7 @@
 #define MEMORYQUERYMAKERHELPER_H
 
 #include <QList>
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 namespace Collections {
 

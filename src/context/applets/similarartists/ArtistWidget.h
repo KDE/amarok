@@ -18,7 +18,7 @@
 #ifndef ARTIST_WIDGET_H
 #define ARTIST_WIDGET_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "network/NetworkAccessManagerProxy.h"
 #include "SimilarArtist.h"
 

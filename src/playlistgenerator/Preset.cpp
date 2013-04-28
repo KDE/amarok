@@ -14,8 +14,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "APG::Preset"
-
 #include "Preset.h"
 
 #include "ConstraintNode.h"
@@ -24,14 +22,17 @@
 #include "constraints/TrackSpreader.h"
 
 #include "core/interfaces/Logger.h"
+#include "core/meta/Meta.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistController.h"
 
-
 #include <QDomElement>
-#include <threadweaver/ThreadWeaver.h>
+
+#include <ThreadWeaver/Weaver>
+
+#define DEBUG_PREFIX "APG::Preset"
 
 APG::PresetPtr
 APG::Preset::createFromXml( QDomElement& xmlelem )
@@ -144,12 +145,12 @@ APG::Preset::solverFinished( ThreadWeaver::Job* job )
         debug() << "Solver" << solver->serial() << "finished successfully";
         if ( !solver->satisfied() ) {
             Amarok::Components::logger()->longMessage(
-                        i18n("The playlist generator created a playlist which does not meet all " \
-                             "of your constraints.  If you are not satisfied with the results, " \
-                             "try loosening or removing some constraints and then generating a " \
+                        i18n("The playlist generator created a playlist which does not meet all "
+                             "of your constraints.  If you are not satisfied with the results, "
+                             "try loosening or removing some constraints and then generating a "
                              "new playlist.") );
         }
-        The::playlistController()->insertOptioned( solver->getSolution() , Playlist::Replace );
+        The::playlistController()->insertOptioned( solver->getSolution(), Playlist::Replace );
     } else {
         debug() << "Ignoring results from aborted Solver" << solver->serial();
     }

@@ -24,7 +24,7 @@
 
 #include "UndoCommands.h"
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/playlists/Playlist.h"
 
 #include <QObject>

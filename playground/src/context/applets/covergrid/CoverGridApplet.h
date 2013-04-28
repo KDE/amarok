@@ -19,7 +19,7 @@
 
 #include "context/Applet.h"
 #include "ui_CoverGridSettings.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 class KConfigDialog;
 class QGraphicsProxyWidget;
@@ -39,7 +39,7 @@ class CoverGridApplet : public Context::Applet
         ~CoverGridApplet();
 
         void init();
-		bool hasHeightForWidth() const;
+        bool hasHeightForWidth() const;
 
     public slots:
         void slotAlbumQueryResult( Meta::AlbumList albums);
@@ -55,7 +55,7 @@ class CoverGridApplet : public Context::Applet
         QGraphicsProxyWidget * m_proxywidget;
         Plasma::ScrollWidget    *m_scroll;
         QGraphicsGridLayout * m_layout;
-		Meta::AlbumList m_album_list;
+        Meta::AlbumList m_album_list;
         Ui::CoverGridSettings ui_Settings;
         int m_coversize;
 };

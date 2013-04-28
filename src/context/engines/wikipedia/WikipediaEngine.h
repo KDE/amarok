@@ -19,7 +19,7 @@
 #ifndef AMAROK_WIKIPEDIA_ENGINE
 #define AMAROK_WIKIPEDIA_ENGINE
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "context/DataEngine.h"
 #include "NetworkAccessManagerProxy.h"
 

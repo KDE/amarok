@@ -18,8 +18,9 @@
 
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
-#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
+#include "core/support/Debug.h"
 
 #include <QMetaEnum>
 #include <QMetaObject>

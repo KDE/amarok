@@ -14,14 +14,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "TrackSelectWidget"
-
 #include "TrackSelectWidget.h"
 
 #include "amarokconfig.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "browsers/CollectionTreeView.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "widgets/PrettyTreeDelegate.h"
@@ -31,6 +30,8 @@
 #include <KVBox>
 
 #include <QLabel>
+
+#define DEBUG_PREFIX "TrackSelectWidget"
 
 TrackSelectWidget::TrackSelectWidget( QWidget* parent )
     : KVBox( parent )

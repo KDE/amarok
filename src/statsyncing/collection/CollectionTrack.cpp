@@ -16,6 +16,7 @@
 
 #include "CollectionTrack.h"
 
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Debug.h"
 

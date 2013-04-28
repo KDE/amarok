@@ -20,7 +20,7 @@
 #define COLLECTIONTREEITEMMODEL_H
 
 #include "CollectionTreeItemModelBase.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include "core/collections/Collection.h"
 

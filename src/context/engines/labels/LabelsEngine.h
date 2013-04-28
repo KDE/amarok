@@ -20,7 +20,7 @@
 
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "network/NetworkAccessManagerProxy.h"
 
 #include <QMap>

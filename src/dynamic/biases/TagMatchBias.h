@@ -26,6 +26,8 @@
 #include "dynamic/BiasFactory.h"
 #include "widgets/MetaQueryWidget.h"
 
+#include <QDateTime>
+
 class QWidget;
 class QCheckBox;
 

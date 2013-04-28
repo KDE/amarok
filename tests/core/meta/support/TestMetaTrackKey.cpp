@@ -16,8 +16,9 @@
 #include "TestMetaTrackKey.h"
 
 #include "config-amarok-test.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
 #include <qtest_kde.h>
 

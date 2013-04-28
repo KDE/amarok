@@ -19,13 +19,16 @@
 #define MOODBARMANAGER_H
 
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <KImageCache>
+
 #include <QColor>
+#include <QMap>
 #include <QObject>
 
-
+class KUrl;
+class QPalette;
 class MoodbarManager;
 
 namespace The {
@@ -36,7 +39,7 @@ typedef QVector<QColor> MoodbarColorList;
 
 class AMAROK_EXPORT  MoodbarManager : public QObject
 {
-    
+
 Q_OBJECT
 
 friend MoodbarManager* The::moodbarManager();

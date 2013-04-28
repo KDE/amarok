@@ -18,23 +18,25 @@
 #define AMAROK_ITUNES_IMPORTER_WORKER_H
 
 #include "databaseimporter/DatabaseImporter.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QMap>
 #include <QSqlDatabase>
 #include <QXmlStreamReader>
 
 class ITunesImporterWorker : public ThreadWeaver::Job, public QXmlStreamReader
 {
     Q_OBJECT
-    
+
     public:
         ITunesImporterWorker();
+        ~ITunesImporterWorker();
 
         void setDatabaseLocation( const QString &location ) { m_databaseLocation = location; }
-      
+
         bool failed() const { return m_failed; }
         void abort() { m_aborted = true; }
 
@@ -46,14 +48,12 @@ class ITunesImporterWorker : public ThreadWeaver::Job, public QXmlStreamReader
         void trackAdded( Meta::TrackPtr );
 
     private:
-        void readUnknownElement();
         void readTrackElement();
-        
+
         bool m_aborted;
         bool m_failed;
-        
-        QMap<Meta::TrackPtr,QString> m_tracksForInsert;
-        
+
+        QMap<Meta::TrackPtr, QString> m_tracksForInsert;
         QString m_databaseLocation;
 };
 

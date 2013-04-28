@@ -22,6 +22,9 @@
 
 #ifndef IMAGE_THUMBNAIL_H
 #define IMAGE_THUMBNAIL_H
+
+#include "core/meta/forward_declarations.h"
+
 #include <qimage.h>
 #include <qobject.h>
 #include <qsize.h>
@@ -30,7 +33,6 @@
 #include <qmutex.h>
 #include <qwaitcondition.h>
 
-#include "core/meta/Meta.h"
 class ImageLoader : public QThread
 {
 public:

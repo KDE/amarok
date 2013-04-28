@@ -20,7 +20,7 @@
 
 #include "context/DataEngine.h"
 #include "context/LyricsManager.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 /**
     This class provides Lyrics data for use in Context applets. 

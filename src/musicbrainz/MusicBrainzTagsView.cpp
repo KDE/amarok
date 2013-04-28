@@ -28,6 +28,7 @@
 #include <QDesktopServices>
 #include <QMenu>
 #include <QSortFilterProxyModel>
+#include <QUrl>
 
 #define DEBUG_PREFIX "MusicBrainzTagsView"
 

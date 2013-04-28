@@ -16,6 +16,7 @@
 
 #include "MetaProxyWorker.h"
 
+#include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
 using namespace MetaProxy;

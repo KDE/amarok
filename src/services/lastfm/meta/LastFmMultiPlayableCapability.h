@@ -22,7 +22,7 @@
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "LastFmMeta.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/capabilities/MultiPlayableCapability.h"
 
 #include <KLocale>

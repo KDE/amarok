@@ -19,13 +19,12 @@
 #include "core/support/Debug.h"
 
 #include <KStandardDirs>
+#include <KUrl>
 
 #include <QFile>
 #include <QPalette>
 
-
 QString InfoParserBase::s_loadingBaseHtml;
-
 
 InfoParserBase::InfoParserBase()
   : QObject()

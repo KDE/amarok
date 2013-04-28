@@ -18,7 +18,7 @@
 #ifndef AMAROK_OSD_H
 #define AMAROK_OSD_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QImage>
 #include <QPixmap>

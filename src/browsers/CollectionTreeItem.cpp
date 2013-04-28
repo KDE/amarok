@@ -17,15 +17,16 @@
  ****************************************************************************************/
 
 #include "CollectionTreeItem.h"
-#include "CollectionTreeItemModelBase.h"
-#include "core/support/Debug.h"
+
 #include "amarokconfig.h"
-
-#include "widgets/PrettyTreeRoles.h"
+#include "browsers/CollectionTreeItemModelBase.h"
 #include "core/capabilities/ActionsCapability.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
+#include "widgets/PrettyTreeRoles.h"
 
-#include <KLocale>
 #include <KIcon>
+#include <KLocale>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
@@ -332,6 +333,12 @@ CollectionTreeItem::operator<( const CollectionTreeItem& other ) const
     if( isVariousArtistItem() )
         return true;
     return m_data->sortableName() < other.m_data->sortableName();
+}
+
+const Meta::DataPtr
+CollectionTreeItem::data() const
+{
+    return m_data;
 }
 
 QList<Meta::TrackPtr>

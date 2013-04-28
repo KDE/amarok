@@ -20,7 +20,7 @@
 #ifndef PRETTYITEMDELEGATE_H
 #define PRETTYITEMDELEGATE_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "playlist/layouts/LayoutItemConfig.h"
 
 #include <QModelIndex>

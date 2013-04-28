@@ -17,11 +17,13 @@
 #ifndef APG_CONSTRAINTSOLVER
 #define APG_CONSTRAINTSOLVER
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
+#include <QHash>
 #include <QMutex>
 #include <QString>
-#include <threadweaver/Job.h>
+
+#include <ThreadWeaver/Job>
 
 class ConstraintNode;
 
@@ -34,8 +36,8 @@ namespace APG {
         Q_OBJECT
 
         public:
-            typedef QHash< Meta::TrackList*, double > Population;
-            
+            typedef QHash<Meta::TrackList*, double> Population;
+
             static const int QUALITY_RANGE; // allows used to adjust speed/quality tradeoff
 
             ConstraintSolver( ConstraintNode*, int );

@@ -16,10 +16,13 @@
 
 #include "MetaConstants.h"
 
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "FileType.h"
 
 #include <KLocalizedString>
+
+#include <QSet>
 
 QString Meta::nameForField( qint64 field )
 {

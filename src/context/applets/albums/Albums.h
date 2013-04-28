@@ -21,7 +21,7 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QGraphicsLinearLayout>
 

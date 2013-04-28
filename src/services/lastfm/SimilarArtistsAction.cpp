@@ -15,8 +15,10 @@
  ****************************************************************************************/
 
 #include "SimilarArtistsAction.h"
-#include "playlist/PlaylistController.h"
+
+#include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "playlist/PlaylistController.h"
 
 #include <KIcon>
 

@@ -21,7 +21,7 @@
 
 #include "ConstraintNode.h"
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QDomElement>
 #include <QHash>

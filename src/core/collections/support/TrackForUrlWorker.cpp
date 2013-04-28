@@ -16,6 +16,8 @@
 
 #include "TrackForUrlWorker.h"
 
+#include "core/meta/Meta.h"
+
 Amarok::TrackForUrlWorker::TrackForUrlWorker( const KUrl &url )
     : ThreadWeaver::Job()
     , m_url( url )

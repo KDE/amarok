@@ -14,10 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "LastFmBias"
-
 #include "LastFmBias.h"
 
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -37,6 +36,8 @@
 
 #include <Artist.h>
 #include <ws.h>
+
+#define DEBUG_PREFIX "LastFmBias"
 
 QString
 Dynamic::LastFmBiasFactory::i18nName() const

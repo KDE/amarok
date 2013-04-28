@@ -17,12 +17,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "Playlist::Item"
-
 #include "PlaylistItem.h"
+
 #include "core/capabilities/SourceInfoCapability.h"
+#include "core/meta/Meta.h"
 
 #include <KRandom>
+
+#include <QSet>
+
+#define DEBUG_PREFIX "Playlist::Item"
+
+Playlist::Item::Item()
+    : m_state ( Invalid )
+    , m_id ( 0 )
+{
+}
 
 Playlist::Item::Item( Meta::TrackPtr track )
         : m_track( track ), m_state( NewlyAdded )
@@ -31,8 +41,14 @@ Playlist::Item::Item( Meta::TrackPtr track )
 }
 
 Playlist::Item::~Item()
-{ }
+{
+}
 
+const Meta::TrackPtr &
+Playlist::Item::track() const
+{
+    return m_track;
+}
 
 // Does the same thing as:
 //     foreach( quint64 val, set )

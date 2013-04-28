@@ -17,11 +17,12 @@
 #ifndef MUSICDNSAUDIODECODER_H
 #define MUSICDNSAUDIODECODER_H
 
+#include "core/meta/forward_declarations.h"
+
+#include <ThreadWeaver/Job>
+
 #define DEFAULT_SAMPLE_LENGTH 135000
 #define MIN_SAMPLE_LENGTH 10000
-
-#include <core/meta/Meta.h>
-#include <threadweaver/Job.h>
 
 class DecodedAudioData
 {

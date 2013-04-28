@@ -18,16 +18,17 @@
 #ifndef COLLECTIONTREEITEM_H
 #define COLLECTIONTREEITEM_H
 
-#include "BrowserDefines.h"
+#include "amarok_export.h"
+#include "browsers/BrowserDefines.h"
 #include "core/collections/Collection.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QList>
 
 class CollectionTreeItemModelBase;
 class QAction;
 
-class CollectionTreeItem : public QObject
+class AMAROK_EXPORT CollectionTreeItem : public QObject
 {
     Q_OBJECT
     Q_ENUMS( Type )
@@ -84,11 +85,11 @@ class CollectionTreeItem : public QObject
          *        CategoryId::CatMenuId enum. Used only for distinction between Artist and
          *        AlbumArtist.
          */
-        void addMatch( Collections::QueryMaker* qm, CategoryId::CatMenuId levelCategory ) const;
+        void addMatch( Collections::QueryMaker *qm, CategoryId::CatMenuId levelCategory ) const;
 
-        bool operator<( const CollectionTreeItem& other ) const;
+        bool operator<( const CollectionTreeItem &other ) const;
 
-        const Meta::DataPtr data() const { return m_data; }
+        const Meta::DataPtr data() const;
         Collections::Collection* parentCollection() const { return m_parentCollection ? m_parentCollection : (m_parent ? m_parent->parentCollection() : 0); }
 
         KUrl::List urls() const;

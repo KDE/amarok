@@ -17,7 +17,7 @@
 #ifndef AMAROK_PROGRESSWIDGET_H
 #define AMAROK_PROGRESSWIDGET_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <Phonon/Global>
 

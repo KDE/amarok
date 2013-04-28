@@ -19,7 +19,7 @@
 #define LASTFMSERVICESETTINGS_H
 
 #include "LastFmServiceConfig.h"
-#include "core/meta/Meta.h" // for using the Meta::LabelList
+#include "core/meta/forward_declarations.h" // for using the Meta::LabelList
 
 #include <kcmodule.h>
 

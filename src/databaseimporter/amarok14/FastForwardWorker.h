@@ -21,7 +21,7 @@
 
 #include "databaseimporter/DatabaseImporter.h"
 #include "core/collections/CollectionLocation.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>

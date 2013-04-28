@@ -16,7 +16,7 @@
 #ifndef TESTMETAPRIVATEMETAREGISTRY_H
 #define TESTMETAPRIVATEMETAREGISTRY_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QtTest>
 
@@ -25,6 +25,9 @@ using namespace Meta;
 class TestPrivateMetaRegistry : public QObject
 {
     Q_OBJECT
+
+    public:
+        ~TestPrivateMetaRegistry();
 
     private slots:
         void initTestCase();

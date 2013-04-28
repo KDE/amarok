@@ -19,7 +19,9 @@
 #ifndef LASTFMTREEMODEL_H
 #define LASTFMTREEMODEL_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
+
+#include <KUrl>
 
 #include <QAbstractItemModel>
 #include <QPixmap>

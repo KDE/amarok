@@ -18,9 +18,12 @@
 
 #include "SortAlgorithms.h"
 
-#include "AbstractModel.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Debug.h"
+#include "playlist/proxymodels/AbstractModel.h"
+
+#include <QDateTime>
 
 namespace Playlist
 {

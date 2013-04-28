@@ -17,15 +17,15 @@
 #include "ServiceCollectionTreeView.h"
 
 #include "browsers/CollectionTreeItem.h"
-#include "core/support/Debug.h"
 #include "core/capabilities/ActionsCapability.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
 
 #include <KMenu>
 
 #include <QAction>
 #include <QContextMenuEvent>
 #include <QSortFilterProxyModel>
-
 
 ServiceCollectionTreeView::ServiceCollectionTreeView( QWidget *parent )
     : CollectionTreeView( parent )

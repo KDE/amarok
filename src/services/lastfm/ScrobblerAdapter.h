@@ -19,7 +19,7 @@
 #ifndef LASTFMSCROBBLERADAPTER_H
 #define LASTFMSCROBBLERADAPTER_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "services/lastfm/LastFmServiceConfig.h"
 #include "statsyncing/ScrobblingService.h"
 

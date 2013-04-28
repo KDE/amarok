@@ -18,7 +18,7 @@
 #define MUSICDNSFINDER_H
 
 #include "Version.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "musicbrainz/MusicDNSAudioDecoder.h"
 #include "musicbrainz/MusicDNSXmlParser.h"
 #include "network/NetworkAccessManagerProxy.h"

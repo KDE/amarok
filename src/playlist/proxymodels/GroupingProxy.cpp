@@ -21,20 +21,20 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "Playlist::GroupingProxy"
-
 #include "GroupingProxy.h"
 
-#include "core/support/Debug.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistDefines.h"
 
 #include <QVariant>
 #include <QFileInfo>
 
+#define DEBUG_PREFIX "Playlist::GroupingProxy"
 
 Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QObject *parent )
     : ProxyBase( belowModel, parent )

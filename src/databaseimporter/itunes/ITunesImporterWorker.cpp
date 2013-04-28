@@ -37,6 +37,10 @@ ITunesImporterWorker::ITunesImporterWorker()
 {
 }
 
+ITunesImporterWorker::~ITunesImporterWorker()
+{
+}
+
 void
 ITunesImporterWorker::readTrackElement()
 {

@@ -19,7 +19,7 @@
 
 #include "playlistgenerator/Constraint.h"
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 class Constraint;
 class ConstraintFactoryEntry;

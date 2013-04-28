@@ -17,7 +17,7 @@
 #ifndef STATSYNCING_COLLECTIONTRACK_H
 #define STATSYNCING_COLLECTIONTRACK_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "statsyncing/Track.h"
 
 namespace StatSyncing

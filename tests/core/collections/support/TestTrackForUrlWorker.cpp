@@ -16,6 +16,7 @@
 #include "TestTrackForUrlWorker.h"
 
 #include "config-amarok-test.h"
+#include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "mocks/MockTrackForUrlWorker.h"
 
@@ -117,3 +118,5 @@ TestTrackForUrlWorker::setEmittedTrack( Meta::TrackPtr track )
 {
     m_emittedTrack = track;
 }
+
+#include "TestTrackForUrlWorker.moc"

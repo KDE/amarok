@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 #include "AmarokUrlGenerator.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QString>
 

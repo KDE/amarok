@@ -17,7 +17,7 @@
 #ifndef AMAROK_ALBUMSMODEL_H
 #define AMAROK_ALBUMSMODEL_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>

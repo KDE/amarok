@@ -16,13 +16,16 @@
 #ifndef TESTMETAALBUMKEY_H
 #define TESTMETAALBUMKEY_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QtTest>
 
 class TestMetaAlbumKey : public QObject
 {
     Q_OBJECT
+
+    public:
+        ~TestMetaAlbumKey();
 
     private slots:
         void initTestCase();

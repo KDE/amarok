@@ -21,7 +21,7 @@
 #include "amarok_export.h"
 #include "MemoryCollection.h"
 #include "core/collections/QueryMaker.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 /**
 A helper class for finding items in a MemoryCollection

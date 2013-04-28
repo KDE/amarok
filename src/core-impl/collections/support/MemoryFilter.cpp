@@ -16,6 +16,7 @@
 
 #include "MemoryFilter.h"
 
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 
 #include <QDateTime>

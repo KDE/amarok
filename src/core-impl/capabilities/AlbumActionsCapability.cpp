@@ -15,11 +15,12 @@
  ****************************************************************************************/
 
 #include "AlbumActionsCapability.h"
+
+#include "core/meta/Meta.h"
 #include "covermanager/CoverFetchingActions.h"
 
 #include <KIcon>
 #include <KLocalizedString>
-
 
 class CompilationAction : public QAction
 {

@@ -17,7 +17,7 @@
 #ifndef APG_CONSTRAINTNODE
 #define APG_CONSTRAINTNODE
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QDomElement>
 #include <QList>

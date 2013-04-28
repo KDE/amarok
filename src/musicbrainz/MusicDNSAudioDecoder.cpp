@@ -14,12 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "MusicDNSAudioDecoder"
-
 #include "MusicDNSAudioDecoder.h"
 
 #include "config.h"
 #include "core/support/Debug.h"
+#include "core/meta/Meta.h"
 
 extern "C" {
     typedef quint64 UINT64_C;
@@ -29,6 +28,8 @@ extern "C" {
 }
 
 #include <ofa1/ofa.h>
+
+#define DEBUG_PREFIX "MusicDNSAudioDecoder"
 
 DecodedAudioData::DecodedAudioData()
                  : m_sRate( 0 )

@@ -23,7 +23,7 @@
 
 #include <QWidget>
 #include <QWeakPointer>
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/meta/support/MetaConstants.h"
 
 class QFrame;

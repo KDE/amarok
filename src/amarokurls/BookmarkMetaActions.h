@@ -18,7 +18,7 @@
 #define BOOKMARKMETAACTIONS_H
 
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QAction>
 

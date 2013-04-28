@@ -15,10 +15,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "LastFmServiceSettings"
-
 #include "LastFmServiceSettings.h"
 
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -32,6 +31,8 @@
 #include <QRegExpValidator>
 
 #include <XmlQuery.h>
+
+#define DEBUG_PREFIX "LastFmServiceSettings"
 
 K_PLUGIN_FACTORY( LastFmServiceSettingsFactory, registerPlugin<LastFmServiceSettings>(); )
 K_EXPORT_PLUGIN( LastFmServiceSettingsFactory( "kcm_amarok_lastfm" ) )

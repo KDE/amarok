@@ -17,13 +17,14 @@
 
 #include "InlineEditorWidget.h"
 
+#include "SvgHandler.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "moodbar/MoodbarManager.h"
 #include "playlist/PlaylistDefines.h"
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
-#include "PrettyItemDelegate.h"
-#include "SvgHandler.h"
+#include "playlist/view/listview/PrettyItemDelegate.h"
 
 #include <KHBox>
 #include <KRatingWidget>

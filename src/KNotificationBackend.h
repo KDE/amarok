@@ -17,7 +17,7 @@
 #ifndef AMAROK_KNOTIFICATIONBACKEND_H
 #define AMAROK_KNOTIFICATIONBACKEND_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QObject>
 #include <QPixmap>

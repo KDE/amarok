@@ -21,7 +21,7 @@
 
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/meta/support/MetaKeys.h"
 
 #include <QString>

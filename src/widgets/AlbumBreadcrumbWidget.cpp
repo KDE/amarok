@@ -15,7 +15,9 @@
  ****************************************************************************************/
 
 #include "AlbumBreadcrumbWidget.h"
-#include "BreadcrumbItemButton.h"
+
+#include "core/meta/Meta.h"
+#include "widgets/BreadcrumbItemButton.h"
 
 #include <KIcon>
 #include <KLocale>

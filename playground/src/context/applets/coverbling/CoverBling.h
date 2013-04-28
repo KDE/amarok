@@ -17,7 +17,7 @@
 #ifndef AMAROK_COVERBLING_H
 #define AMAROK_COVERBLING_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QGLWidget>
 

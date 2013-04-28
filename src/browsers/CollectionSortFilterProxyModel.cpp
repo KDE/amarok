@@ -19,7 +19,8 @@
 #include "CollectionSortFilterProxyModel.h"
 
 #include "amarokconfig.h"
-#include "CollectionTreeItem.h"
+#include "browsers/CollectionTreeItem.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "widgets/PrettyTreeRoles.h"
 

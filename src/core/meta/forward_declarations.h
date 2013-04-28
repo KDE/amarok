@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2013 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,53 +14,50 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TIMECODELOADCAPABILITY_H
-#define TIMECODELOADCAPABILITY_H
-
-#include "amarok_export.h"
-#include "core/meta/forward_declarations.h"
-#include "core/capabilities/Capability.h"
-#include "amarokurls/AmarokUrl.h"
+#ifndef AMAROKCORE_META_FORWARD_DECLARATIONS_H
+#define AMAROKCORE_META_FORWARD_DECLARATIONS_H
 
 #include <KSharedPtr>
 
 #include <QList>
 
-namespace Capabilities {
-
-typedef QList<AmarokUrlPtr> BookmarkList;
-typedef KSharedPtr<AmarokUrl> AmarokUrlPtr;
-/**
-* This capability determines whether a track has timecodes
-* that can be loaded from it, and supplies them if it can.
-* @author Casey Link
-*/
-class AMAROK_EXPORT TimecodeLoadCapability : public Capability
+namespace Meta
 {
-    Q_OBJECT
-public:
-    virtual ~TimecodeLoadCapability();
+    class Base;
+    typedef KSharedPtr<Base> DataPtr;
+    typedef QList<DataPtr> DataList;
 
-    /**
-     * @return true if the track has timecodes, false if not
-     */
-    virtual bool hasTimecodes() = 0 ;
+    class Track;
+    typedef KSharedPtr<Track> TrackPtr;
+    typedef QList<TrackPtr> TrackList;
 
-    /**
-     * @return a QList of AmarokUrlPtrs representing the track's timecodes. Might return an empty list.
-     */
-    virtual BookmarkList loadTimecodes()  = 0;
+    class Artist;
+    typedef KSharedPtr<Artist> ArtistPtr;
+    typedef QList<ArtistPtr> ArtistList;
 
-    /**
-    * Get the capabilityInterfaceType of this capability
-    * @return The capabilityInterfaceType ( always Capabilities::Capability::LoadTimecode; )
-    */
-    static Type capabilityInterfaceType()
-    {
-        return Capabilities::Capability::LoadTimecode;
-    }
-};
+    class Album;
+    typedef KSharedPtr<Album> AlbumPtr;
+    typedef QList<AlbumPtr> AlbumList;
 
+    class Genre;
+    typedef KSharedPtr<Genre> GenrePtr;
+    typedef QList<GenrePtr> GenreList;
+
+    class Composer;
+    typedef KSharedPtr<Composer> ComposerPtr;
+    typedef QList<ComposerPtr> ComposerList;
+
+    class Year;
+    typedef KSharedPtr<Year> YearPtr;
+    typedef QList<YearPtr> YearList;
+
+    class Label;
+    typedef KSharedPtr<Label> LabelPtr;
+    typedef QList<LabelPtr> LabelList;
+
+    class Statistics;
+    typedef KSharedPtr<Statistics> StatisticsPtr;
+    typedef KSharedPtr<const Statistics> ConstStatisticsPtr;
 }
 
-#endif // TIMECODELOADCAPABILITY_H
+#endif // AMAROKCORE_META_FORWARD_DECLARATIONS_H

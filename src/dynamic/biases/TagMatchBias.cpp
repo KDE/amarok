@@ -18,13 +18,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "TagMatchBias"
-
 #include "TagMatchBias.h"
 
 #include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "dynamic/TrackSet.h"
@@ -36,6 +35,8 @@
 #include <QTimer>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+
+#define DEBUG_PREFIX "TagMatchBias"
 
 QString
 Dynamic::TagMatchBiasFactory::i18nName() const

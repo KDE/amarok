@@ -21,14 +21,14 @@
 #define AMAROK_BIASSOLVER_H
 
 #include "Bias.h"
-#include "core/meta/Meta.h"
-#include "TrackSet.h"
-
-#include <threadweaver/Job.h>
+#include "core/meta/forward_declarations.h"
+#include "dynamic/TrackSet.h"
 
 #include <QDateTime>
 #include <QMutex>
 #include <QWaitCondition>
+
+#include <ThreadWeaver/Job>
 
 namespace Dynamic
 {
@@ -214,7 +214,6 @@ namespace Dynamic
             /** The maximum time we should try to spend generating the playlist */
             static const int MAX_TIME_MS = 5000;
     };
-
 }
 
 #endif

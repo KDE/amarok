@@ -19,7 +19,7 @@
 #define MUSICBRAINZFINDER_H
 
 #include "Version.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "musicbrainz/MusicBrainzXmlParser.h"
 #include "network/NetworkAccessManagerProxy.h"
 

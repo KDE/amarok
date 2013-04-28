@@ -17,7 +17,7 @@
 #ifndef RECENTLYPLAYEDLISTWIDGET_H
 #define RECENTLYPLAYEDLISTWIDGET_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <KIcon>
 #include <Plasma/ScrollWidget>

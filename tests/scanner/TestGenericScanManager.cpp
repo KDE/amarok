@@ -25,8 +25,9 @@
 
 #include <qtest_kde.h>
 
-#include <QTest>
+#include <QImage>
 #include <QScopedPointer>
+#include <QTest>
 
 QTEST_KDEMAIN_CORE( TestGenericScanManager )
 

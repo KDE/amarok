@@ -15,6 +15,8 @@
 
 #include "MockTrackForUrlWorker.h"
 
+#include "core/meta/Meta.h"
+
 MockTrackForUrlWorker::MockTrackForUrlWorker( const KUrl &url )
     : TrackForUrlWorker( url )
 {

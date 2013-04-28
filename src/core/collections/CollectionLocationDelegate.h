@@ -19,7 +19,7 @@
 #define COLLECTIONLOCATIONDELEGATE_H
 
 #include "core/amarokcore_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/transcoding/TranscodingConfiguration.h"
 
 namespace Collections {

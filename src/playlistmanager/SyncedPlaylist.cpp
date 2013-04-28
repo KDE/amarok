@@ -17,6 +17,7 @@
 
 #include "SyncedPlaylist.h"
 
+#include "core/meta/Meta.h"
 #include "core/playlists/PlaylistProvider.h"
 #include "core/support/Debug.h"
 

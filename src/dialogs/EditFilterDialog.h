@@ -19,7 +19,7 @@
 #ifndef AMAROK_EDITFILTERDIALOG_H
 #define AMAROK_EDITFILTERDIALOG_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "widgets/MetaQueryWidget.h"
 #include "widgets/TokenPool.h"
 

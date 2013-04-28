@@ -21,7 +21,7 @@
 
 #include "amarok_export.h"
 #include "CollectionTreeItemModelBase.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QAbstractItemModel>
 #include <QMap>

@@ -15,15 +15,20 @@
 
 #include "TestPrivateMetaRegistry.h"
 
+#include "config-amarok-test.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/PrivateMetaRegistry.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "config-amarok-test.h"
 
 #include <qtest_kde.h>
 
 using namespace Meta;
 
 QTEST_KDEMAIN_CORE( TestPrivateMetaRegistry )
+
+TestPrivateMetaRegistry::~TestPrivateMetaRegistry()
+{
+}
 
 void
 TestPrivateMetaRegistry::initTestCase()

@@ -21,11 +21,14 @@
  */
 
 #include "ImageLoader.h"
+
+#include "core/meta/Meta.h"
+
 #include <qimage.h>
 #include <QPixmap>
+
 #include <KStandardDirs>
 // load and resize image
-
 
 ImageLoader::ImageLoader(): QThread(),
         restart( false ), working( false ), idx( -1 )

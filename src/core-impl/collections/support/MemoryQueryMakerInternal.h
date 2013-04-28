@@ -18,7 +18,7 @@
 #define MEMORYQUERYMAKERINTERNAL_H
 
 #include "core/collections/QueryMaker.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QObject>
 #include <QWeakPointer>

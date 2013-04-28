@@ -17,7 +17,7 @@
 #ifndef STATSYNCING_SYNCHRONIZETRACKSJOB_H
 #define STATSYNCING_SYNCHRONIZETRACKSJOB_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "statsyncing/Options.h"
 #include "statsyncing/ScrobblingService.h"
 #include "statsyncing/Track.h"

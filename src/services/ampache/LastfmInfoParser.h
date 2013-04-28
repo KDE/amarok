@@ -18,13 +18,16 @@
 #ifndef LASTFMINFOPARSER_H
 #define LASTFMINFOPARSER_H
 
-#include "../InfoParserBase.h"
+#include "services/InfoParserBase.h"
+
+#include <QMap>
 
 class QNetworkReply;
 
 class LastfmInfoParser : public InfoParserBase
 {
     Q_OBJECT
+
     public:
         LastfmInfoParser() : InfoParserBase() {}
         ~LastfmInfoParser() {}
@@ -38,8 +41,7 @@ class LastfmInfoParser : public InfoParserBase
         void onGetArtistInfo();
 
     private:
-        QMap< QString, QNetworkReply* > m_jobs;
-
+        QMap<QString, QNetworkReply *> m_jobs;
 };
 
 #endif // LASTFMINFOPARSER_H

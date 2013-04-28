@@ -20,7 +20,7 @@
 
 #include "core/amarokcore_export.h"
 #include "Version.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <KActionCollection>
 #include <KConfig>

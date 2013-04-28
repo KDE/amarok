@@ -14,6 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistProvider.h"
 

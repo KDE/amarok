@@ -17,7 +17,7 @@
 #ifndef AMAROK_COVERFETCHQUEUE_H
 #define AMAROK_COVERFETCHQUEUE_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "CoverFetchUnit.h"
 
 #include <KIO/Job>

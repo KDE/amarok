@@ -18,11 +18,13 @@
 #define AMAROK_META_PLAYLIST_H
 
 #include "core/amarokcore_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QList>
 #include <QMetaType>
+#include <QMutex>
 #include <QPixmap>
+#include <QReadWriteLock>
 #include <QSet>
 #include <QSharedData>
 #include <QString>

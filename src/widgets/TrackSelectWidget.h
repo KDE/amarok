@@ -17,7 +17,7 @@
 #ifndef AMAROK_TRACK_SELECT_WIDGET_H
 #define AMAROK_TRACK_SELECT_WIDGET_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <KVBox>
 

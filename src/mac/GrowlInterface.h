@@ -24,7 +24,7 @@
 #include <QImage>
 
 #include "core/support/Debug.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "EngineController.h"
     
  // NOTE if not on mac, this whole file is useless, so not even going to try

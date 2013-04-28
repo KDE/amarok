@@ -25,8 +25,8 @@
 namespace KIO {
     class StoredTransferJob;
 }
-
 class KJob;
+class KUrl;
 
 namespace Dynamic
 {

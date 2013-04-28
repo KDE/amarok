@@ -141,6 +141,12 @@ CoverFetchPayload::~CoverFetchPayload()
 {
 }
 
+Meta::AlbumPtr
+CoverFetchPayload::album() const
+{
+    return m_album;
+}
+
 QString
 CoverFetchPayload::sanitizeQuery( const QString &query )
 {

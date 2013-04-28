@@ -21,7 +21,7 @@
 
 #include "context/applets/upcomingevents/LastFmEvent.h"
 #include "context/DataEngine.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "network/NetworkAccessManagerProxy.h"
 
 // Qt

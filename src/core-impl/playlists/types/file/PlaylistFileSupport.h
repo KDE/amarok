@@ -18,7 +18,7 @@
 #define AMAROK_META_PLAYLISTFILESUPPORT_H
 
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core-impl/playlists/types/file/PlaylistFile.h"
 
 namespace Playlists

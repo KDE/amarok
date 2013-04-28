@@ -17,6 +17,7 @@
 
 #include "CoverViewDialog.h"
 
+#include "core/meta/Meta.h"
 #include "widgets/PixmapViewer.h"
 
 #include <KApplication>

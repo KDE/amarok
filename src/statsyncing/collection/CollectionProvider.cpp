@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
 #include "statsyncing/collection/CollectionTrack.h"
 
 using namespace StatSyncing;

@@ -20,7 +20,7 @@
 #define AMAROK_COLLECTIONLOCATION_H
 
 #include "core/amarokcore_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/transcoding/TranscodingConfiguration.h"
 
 #include <QList>
@@ -29,6 +29,7 @@
 #include <KUrl>
 
 namespace Collections {
+    class Collection;
     class QueryMaker;
 
 /**
@@ -397,7 +398,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void setSource( CollectionLocation *source );
 
         //only used in the source CollectionLocation
-        CollectionLocation * m_destination;
+        CollectionLocation *m_destination;
         //only used in destination CollectionLocation
         CollectionLocation *m_source;
 

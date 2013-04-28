@@ -18,7 +18,7 @@
 #ifndef MUSICBRAINZTAGSMODEL_H
 #define MUSICBRAINZTAGSMODEL_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QAbstractItemModel>
 

@@ -17,7 +17,7 @@
 #ifndef APG_TREEMODEL
 #define APG_TREEMODEL
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QAbstractItemModel>
 #include <QModelIndex>

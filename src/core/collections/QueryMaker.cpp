@@ -19,6 +19,7 @@
 
 using namespace Collections;
 
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 
 QueryMaker::QueryMaker() : QObject()

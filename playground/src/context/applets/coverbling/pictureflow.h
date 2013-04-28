@@ -28,8 +28,9 @@
 #ifndef PICTUREFLOW_H
 #define PICTUREFLOW_H
 
+#include "core/meta/forward_declarations.h"
+
 #include <qwidget.h>
-#include "core/meta/Meta.h"
 #include <qpainter.h>
 #include <QHBoxLayout>
 //#include "CoverBling.h"

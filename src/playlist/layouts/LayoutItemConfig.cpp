@@ -18,11 +18,12 @@
 
 #include "LayoutItemConfig.h"
 
+#include "core/meta/Meta.h"
 #include "playlist/proxymodels/GroupingProxy.h"    // For 'GroupMode'
 
-namespace Playlist {
+using namespace Playlist;
 
-    LayoutItemConfigRowElement::LayoutItemConfigRowElement( int value, qreal size,
+LayoutItemConfigRowElement::LayoutItemConfigRowElement( int value, qreal size,
                                                             bool bold, bool italic, bool underline,
                                                             Qt::Alignment alignment,
                                                             const QString &prefix ,
@@ -243,12 +244,3 @@ void Playlist::PlaylistLayout::setGroupBy( const QString& groupBy )
 {
     m_groupBy = groupBy;
 }
-
-}
-
-
-
-
-
-
-

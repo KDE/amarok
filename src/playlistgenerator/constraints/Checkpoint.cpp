@@ -306,6 +306,10 @@ ConstraintTypes::Checkpoint::TrackMatcher::TrackMatcher( const Meta::TrackPtr& t
 {
 }
 
+ConstraintTypes::Checkpoint::TrackMatcher::~TrackMatcher()
+{
+}
+
 QList<int>
 ConstraintTypes::Checkpoint::TrackMatcher::find( const Meta::TrackList& tl ) const
 {
@@ -333,6 +337,10 @@ ConstraintTypes::Checkpoint::ArtistMatcher::ArtistMatcher( const Meta::ArtistPtr
 {
 }
 
+ConstraintTypes::Checkpoint::ArtistMatcher::~ArtistMatcher()
+{
+}
+
 QList<int>
 ConstraintTypes::Checkpoint::ArtistMatcher::find( const Meta::TrackList& tl ) const
 {
@@ -357,6 +365,10 @@ ConstraintTypes::Checkpoint::ArtistMatcher::match( const Meta::TrackPtr& t ) con
  ******************************/
 ConstraintTypes::Checkpoint::AlbumMatcher::AlbumMatcher( const Meta::AlbumPtr& l )
     : m_albumToMatch( l )
+{
+}
+
+ConstraintTypes::Checkpoint::AlbumMatcher::~AlbumMatcher()
 {
 }
 

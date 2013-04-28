@@ -19,7 +19,7 @@
 #ifndef AMAROK_DIRECTORYLOADER_H
 #define AMAROK_DIRECTORYLOADER_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/playlists/Playlist.h"
 
 #include <KFileItem>

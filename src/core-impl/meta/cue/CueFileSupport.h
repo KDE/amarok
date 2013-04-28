@@ -18,7 +18,7 @@
 #ifndef CUEFILESUPPORT_H
 #define CUEFILESUPPORT_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <KUrl>
 

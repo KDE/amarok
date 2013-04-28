@@ -20,7 +20,7 @@
 #ifndef TESTMETATRACK_H
 #define TESTMETATRACK_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
@@ -32,10 +32,10 @@ Q_OBJECT
 
 public:
     TestMetaTrack();
+    ~TestMetaTrack();
 
 private slots:
     void initTestCase();
-    void cleanupTestCase();
 
     void testPrettyName();
     void testPlayableUrl();

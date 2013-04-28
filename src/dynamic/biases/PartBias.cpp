@@ -16,11 +16,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "PartBias"
-
 #include "PartBias.h"
 
 #include "browsers/playlistbrowser/DynamicBiasWidgets.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "widgets/SliderWidget.h"
 
@@ -38,6 +37,8 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+
+#define DEBUG_PREFIX "PartBias"
 
 QString
 Dynamic::PartBiasFactory::i18nName() const

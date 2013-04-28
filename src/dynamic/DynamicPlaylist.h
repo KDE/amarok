@@ -19,11 +19,14 @@
 #ifndef AMAROK_DYNAMICPLAYLIST_H
 #define AMAROK_DYNAMICPLAYLIST_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/collections/QueryMaker.h"
 
 #include "amarok_export.h" // we are exporting it for the tests
 
+namespace Collections {
+    class Collection;
+}
 class QXmlStreamReader;
 class QXmlStreamWriter;
 

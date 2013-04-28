@@ -16,14 +16,15 @@
  
 #include "DBusQueryHelper.h"
 
-#include "core/support/Debug.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
+#include "core/support/Debug.h"
 
 #include <QTimer>
 
 Q_DECLARE_METATYPE( VariantMapList )
- 
+
 DBusQueryHelper::DBusQueryHelper( QObject *parent, Collections::QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible )
     : QObject( parent )
     , m_connection( conn )

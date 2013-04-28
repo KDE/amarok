@@ -14,15 +14,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "Constraint::PlaylistDuration"
-
 #include "PlaylistDuration.h"
 
+#include "core/meta/Meta.h"
 #include "playlistgenerator/Constraint.h"
 #include "playlistgenerator/ConstraintFactory.h"
 
 #include <stdlib.h>
 #include <math.h>
+
+#define DEBUG_PREFIX "Constraint::PlaylistDuration"
 
 Constraint*
 ConstraintTypes::PlaylistDuration::createFromXml( QDomElement& xmlelem, ConstraintNode* p )
@@ -134,7 +135,7 @@ ConstraintTypes::PlaylistDuration::satisfaction( const Meta::TrackList& tl ) con
     foreach( Meta::TrackPtr t, tl ) {
         l += t->length();
     }
-    
+
     double factor = m_strictness * 0.0003;
     if ( m_comparison == CompareNumEquals ) {
         return 4.0 / ( ( 1.0 + exp( factor*( double )( l - m_duration ) ) )*( 1.0 + exp( factor*( double )( m_duration - l ) ) ) );

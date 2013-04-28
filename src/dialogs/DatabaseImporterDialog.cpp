@@ -16,6 +16,7 @@
 
 #include "DatabaseImporterDialog.h"
 
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "databaseimporter/sqlbatch/SqlBatchImporter.h"
 #include "databaseimporter/amarok14/FastForwardImporter.h"

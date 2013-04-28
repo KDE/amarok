@@ -18,7 +18,7 @@
 #ifndef LASTFMREADLABELCAPABILITY_H
 #define LASTFMREADLABELCAPABILITY_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/ReadLabelCapability.h"
 

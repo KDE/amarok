@@ -24,6 +24,7 @@
 #include "amarok_export.h"
 #include "dynamic/TrackSet.h"
 
+#include <QMetaType>
 #include <QObject>
 #include <QRect>
 #include <QWidget>
@@ -272,4 +273,3 @@ namespace Dynamic
 Q_DECLARE_METATYPE( Dynamic::BiasPtr )
 
 #endif
-

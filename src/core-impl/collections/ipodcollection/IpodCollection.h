@@ -19,7 +19,7 @@
 
 #include "ui_IpodConfiguration.h"
 #include "core/collections/Collection.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QMutex>
 #include <QSharedPointer>

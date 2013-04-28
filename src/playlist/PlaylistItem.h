@@ -20,7 +20,9 @@
 #ifndef AMAROKPLAYLISTITEM_H
 #define AMAROKPLAYLISTITEM_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
+
+#include <QMetaType>
 
 namespace Playlist
 {
@@ -40,11 +42,11 @@ namespace Playlist
 
             static void listRemove( QList<quint64> &target, QSet<quint64> &removeSet );
 
-
-            Item() : m_track ( 0 ), m_state ( Invalid ), m_id ( 0 ) { }
-            Item ( Meta::TrackPtr track );
+            Item();
+            Item( Meta::TrackPtr track );
             ~Item();
-            const Meta::TrackPtr& track() const { return m_track; }
+
+            const Meta::TrackPtr& track() const;
 
             State state() const { return m_state; }
             void setState ( State s ) { m_state = s; }
@@ -62,6 +64,6 @@ namespace Playlist
     };
 }
 
-Q_DECLARE_METATYPE ( Playlist::Item* )
+Q_DECLARE_METATYPE( Playlist::Item* )
 
 #endif

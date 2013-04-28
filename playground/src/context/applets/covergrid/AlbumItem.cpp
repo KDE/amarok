@@ -15,18 +15,18 @@
  ****************************************************************************************/
 
 #include "AlbumItem.h"
-// Amarok
+
 #include "playlist/PlaylistModelStack.h"
 #include "core/meta/Meta.h"
 #include "playlist/PlaylistController.h"
-// Qt
+
 #include <QGraphicsPixmapItem>
 #include <QStyleOptionGraphicsItem>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QPalette>
 #include <QImage>
-// Other
+
 #include <math.h>
 
 
@@ -47,6 +47,11 @@ AlbumItem::AlbumItem( const QPixmap & pixmap, Meta::AlbumPtr album , QWidget * p
         if( artist ) label += " - " + artist->prettyName();
         setToolTip( label );
     }
+}
+
+AlbumItem::~AlbumItem()
+{
+    // emit the destructor here where actual (non-forward) declaration of Meta::* is known
 }
 
 Meta::AlbumPtr AlbumItem::getAlbum()

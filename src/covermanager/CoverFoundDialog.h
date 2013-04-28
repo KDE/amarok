@@ -20,7 +20,7 @@
 #ifndef AMAROK_COVERFOUNDDIALOG_H
 #define AMAROK_COVERFOUNDDIALOG_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "covermanager/CoverFetchUnit.h"
 #include "network/NetworkAccessManagerProxy.h"
 

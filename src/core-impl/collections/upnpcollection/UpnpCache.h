@@ -20,7 +20,7 @@
 
 #include <kio/udsentry.h>
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 
 

@@ -16,6 +16,8 @@
 
 #include "MetaNotificationSpy.h"
 
+#include "core/meta/Meta.h"
+
 class MetaNotificationSpyPrivate : public Meta::Observer
 {
 public:

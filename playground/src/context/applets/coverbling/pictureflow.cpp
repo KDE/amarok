@@ -24,7 +24,10 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
+
 #include "pictureflow.h"
+
+#include "core/meta/Meta.h"
 
 #include <QApplication>
 #include <QCache>
@@ -1167,3 +1170,4 @@ void PictureFlow::updateAnimation()
         emit centerIndexChanged( d->state->centerIndex );
 }
 
+#include "pictureflow.moc" // to have actual (non-forward) declaration of Meta::*

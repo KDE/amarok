@@ -18,7 +18,7 @@
 #define AMAROK_METAUTILITY_H
 
 #include "core/amarokcore_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/meta/support/MetaConstants.h"
 
 #include <QMap>

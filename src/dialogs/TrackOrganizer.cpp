@@ -21,6 +21,7 @@
 #include "TrackOrganizer.h"
 
 #include "QStringx.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 

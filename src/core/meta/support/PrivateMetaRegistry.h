@@ -17,7 +17,10 @@
 #ifndef METAPRIVATEMETAREGISTRY_H
 #define METAPRIVATEMETAREGISTRY_H
 
-#include "core/meta/Meta.h"
+#include "core/amarokcore_export.h"
+#include "core/meta/forward_declarations.h"
+
+#include <QMap>
 
 namespace Meta {
 
@@ -27,10 +30,10 @@ namespace Meta {
  * are from the same album). This, besides saving memory, also makes it possible to group
  * by pointers in the playlist instead of some album/artist name foo.
 */
-class AMAROK_CORE_EXPORT PrivateMetaRegistry{
+class AMAROK_CORE_EXPORT PrivateMetaRegistry
+{
 public:
-
-    static PrivateMetaRegistry * instance();
+    static PrivateMetaRegistry *instance();
 
     void insertAlbum( const QString &owner, const QString &key, AlbumPtr album );
     void insertArtist( const QString &owner, const QString &key, ArtistPtr artist );
@@ -45,11 +48,10 @@ public:
     YearPtr year( const QString &owner, const QString &key );
 
 private:
-
     PrivateMetaRegistry();
     ~PrivateMetaRegistry();
 
-    static PrivateMetaRegistry* s_instance;      //!< instance variable
+    static PrivateMetaRegistry *s_instance;      //!< instance variable
 
     QMap<QString, AlbumPtr> m_albums;
     QMap<QString, ArtistPtr> m_artists;
@@ -57,7 +59,6 @@ private:
     QMap<QString, ComposerPtr> m_composers;
     QMap<QString, YearPtr> m_years;
 };
-
 }
 
 #endif

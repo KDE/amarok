@@ -21,7 +21,7 @@
 
 #include "Bias.h"
 #include "DynamicPlaylist.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include "amarok_export.h" // we are exporting it for the tests
 

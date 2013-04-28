@@ -23,7 +23,7 @@
 
 #include "AlbumNavigator.h"
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 namespace Playlist
 {

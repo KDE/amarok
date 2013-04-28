@@ -19,7 +19,7 @@
 
 #include "BrowserDefines.h"
 #include "widgets/PrettyTreeView.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "playlist/PlaylistController.h"
 
 #include <QModelIndex>
@@ -31,6 +31,10 @@ class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
 class CollectionTreeItem;
 class PopupDropper;
+namespace Collections {
+    class Collection;
+    class QueryMaker;
+}
 class QAction;
 class QSortFilterProxyModel;
 

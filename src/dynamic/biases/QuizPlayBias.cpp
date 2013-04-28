@@ -16,13 +16,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "QuizPlayBias"
-
 #include "QuizPlayBias.h"
 
 #include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "dynamic/TrackSet.h"
@@ -35,8 +34,9 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include <klocale.h>
+#include <KLocale>
 
+#define DEBUG_PREFIX "QuizPlayBias"
 
 QString
 Dynamic::QuizPlayBiasFactory::i18nName() const

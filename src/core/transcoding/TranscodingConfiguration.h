@@ -17,10 +17,10 @@
 #ifndef TRANSCODING_CONFIGURATION_H
 #define TRANSCODING_CONFIGURATION_H
 
-#include "TranscodingDefines.h"
-#include "TranscodingProperty.h"
 #include "core/amarokcore_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/Meta.h" // needed for default parameter constructor
+#include "core/transcoding/TranscodingDefines.h"
+#include "core/transcoding/TranscodingProperty.h"
 
 #include <KConfigGroup>
 
@@ -79,7 +79,7 @@ public:
      * and JUST_COPY encoders are considered plain copying. Also returns true if an encoder is
      * selected, but the passed track does not satisfy the selected m_trackSelection value.
      */
-    bool isJustCopy( const Meta::TrackPtr &srcTrack = Meta::TrackPtr( 0 ),
+    bool isJustCopy( const Meta::TrackPtr &srcTrack = Meta::TrackPtr(),
                      const QStringList &playableFileTypes = QStringList() ) const;
 
     QVariant property( QByteArray name ) const;

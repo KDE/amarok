@@ -24,6 +24,7 @@
 #include "core/collections/Collection.h"
 #include "core/collections/CollectionLocationDelegate.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core/transcoding/TranscodingConfiguration.h"

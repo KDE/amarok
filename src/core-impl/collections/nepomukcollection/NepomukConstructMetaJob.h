@@ -17,7 +17,7 @@
 #ifndef NEPOMUKCONSTRUCTMETAJOB_H
 #define NEPOMUKCONSTRUCTMETAJOB_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/meta/support/MetaKeys.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 

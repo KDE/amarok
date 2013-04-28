@@ -25,9 +25,9 @@
 
 #include "UndoCommands.h"
 #include "amarok_export.h"
-#include "core/support/Amarok.h"
 #include "core/meta/Meta.h"
-#include "proxymodels/AbstractModel.h"
+#include "core/support/Amarok.h"
+#include "playlist/proxymodels/AbstractModel.h"
 
 #include <QAbstractListModel>
 #include <QHash>
@@ -39,7 +39,6 @@ class AmarokMimeData;
 class QMimeData;
 class QModelIndex;
 class TestPlaylistModels;
-
 
 namespace Playlist
 {
