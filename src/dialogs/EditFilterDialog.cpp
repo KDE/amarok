@@ -416,6 +416,8 @@ EditFilterDialog::updateDropTarget( const QString &text )
                     case expression_element::More:
                         filter.filter.condition = MetaQueryWidget::GreaterThan;
                         break;
+                    case expression_element::Contains:
+                        break;
                 }
             }
             else
@@ -427,6 +429,9 @@ EditFilterDialog::updateDropTarget( const QString &text )
                         break;
                     case expression_element::Equals:
                         filter.filter.condition = MetaQueryWidget::Equals;
+                        break;
+                    case expression_element::Less:
+                    case expression_element::More:
                         break;
                 }
                 filter.filter.value = elem.text;

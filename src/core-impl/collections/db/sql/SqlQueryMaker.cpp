@@ -595,7 +595,7 @@ SqlQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
                 sqlfunction = "MIN";
                 break;
             default:
-                sqlfunction = "Unknown function in SqlQueryMaker::addReturnFunction, function was: " + function;
+                sqlfunction = "Unknown function in SqlQueryMaker::addReturnFunction, function was: " + QString::number( function );
         }
         d->queryReturnValues += QString( "%1(%2)" ).arg( sqlfunction, nameForValue( value ) );
         d->returnValueType = value;
@@ -1047,7 +1047,7 @@ SqlQueryMaker::nameForValue( qint64 value )
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.modifydate";
         default:
-            return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
+            return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + QString::number( value );
     }
 }
 

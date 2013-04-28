@@ -89,6 +89,10 @@ DEBUG_BLOCK
                 m_query.setType( "( upnp:class derivedfrom \"object.item.audioItem\" )" );
                 baseUrl.addQueryItem( "getCount", "1" );
                 break;
+            case Sum:
+            case Max:
+            case Min:
+                break;
         }
     }
     // we don't deal with compilations

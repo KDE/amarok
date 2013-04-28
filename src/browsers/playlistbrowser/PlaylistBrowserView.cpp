@@ -152,7 +152,7 @@ PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent( QKeyEvent *event )
         //activated() only works for current index, not all selected
         case Qt::Key_Enter:
         case Qt::Key_Return:
-            if( !state() == EditingState )
+            if( state() != EditingState )
             {
                 //Why do we even get in this state? Shouldn't the editor consume the
                 //keypress? The delete works. see bug 305203

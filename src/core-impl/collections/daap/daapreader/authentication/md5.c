@@ -74,7 +74,7 @@ static void byteReverse(unsigned char *buf, unsigned longs)
 
 void OpenDaap_MD5Init(MD5_CTX *ctx, int apple_ver)
 {
-    memset(ctx, 0, sizeof(MD5_CTX));
+    memset(ctx, 0, sizeof(*ctx));
     ctx->buf[0] = 0x67452301;
     ctx->buf[1] = 0xefcdab89;
     ctx->buf[2] = 0x98badcfe;
@@ -169,7 +169,7 @@ void OpenDaap_MD5Final(MD5_CTX *ctx, unsigned char digest[16])
     MD5Transform(ctx->buf, (uint32_t *) ctx->in, ctx->apple_ver);
     byteReverse((unsigned char *) ctx->buf, 4);
     memcpy(digest, ctx->buf, 16);
-    memset(ctx, 0, sizeof(ctx));     /* In case it's sensitive */
+    memset(ctx, 0, sizeof(*ctx));     /* In case it's sensitive */
 }
 
 #ifndef ASM_MD5
