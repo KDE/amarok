@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
+ * Copyright (c) 2013 Alberto Villa <avilla@FreeBSD.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,49 +23,53 @@
 #include "musicbrainz/MusicBrainzXmlParser.h"
 #include "network/NetworkAccessManagerProxy.h"
 
+typedef QPair<Meta::TrackPtr, QVariantMap> TrackInfo;
+
 class MusicBrainzFinder : public QObject
 {
     Q_OBJECT
 
     public:
+        explicit MusicBrainzFinder( QObject *parent = 0,
+                                    const QString &host = "musicbrainz.org",
+                                    const int port = 80,
+                                    const QString &pathPrefix = "/ws/2",
+                                    const QString &username = QString(),
+                                    const QString &password = QString() );
 
-        MusicBrainzFinder( QObject *parent = 0,  const QString &host = "musicbrainz.org",
-                           const int port = 80, const QString &pathPrefix = "/ws/1",
-                           const QString &username = QString(), const QString &password = QString() );
-
-        ~MusicBrainzFinder();
-
-        bool isRunning();
+        bool isRunning() const;
 
     signals:
         void progressStep();
         void trackFound( const Meta::TrackPtr track, const QVariantMap tags );
-
         void done();
 
     public slots:
-        void run(  const Meta::TrackList &tracks );
+        void run( const Meta::TrackList &tracks );
 
         void lookUpByPUID( const Meta::TrackPtr &track, const QString &puid );
 
     private slots:
         void sendNewRequest();
+        void gotAuthenticationRequest( const QNetworkReply *reply,
+                                       QAuthenticator *authenticator ) const;
+        void gotReplyError( QNetworkReply::NetworkError code );
         void gotReply( QNetworkReply *reply );
-        void authenticationRequest( QNetworkReply *reply, QAuthenticator *authenticator );
-        void replyError( QNetworkReply::NetworkError code );
 
         void parsingDone( ThreadWeaver::Job *_parser );
 
     private:
-        QNetworkRequest compileRequest( const Meta::TrackPtr &track );
-        QNetworkRequest compileReleaseRequest( const QString &releasId );
-        QNetworkRequest compilePUIDRequest( const QString &puid );
+        QVariantMap guessMetadata( const Meta::TrackPtr &track ) const;
 
+        QNetworkRequest compileRequest( QUrl &url );
+        QNetworkRequest compileTrackRequest( const Meta::TrackPtr &track );
+        QNetworkRequest compilePUIDRequest( const QString &puid );
+        QNetworkRequest compileReleaseGroupRequest( const QString &releaseGroupID );
+
+        void sendTrack( const Meta::TrackPtr &track, QVariantMap tags );
         void checkDone();
 
-        QVariantMap guessMetadata( const Meta::TrackPtr &track );
-
-        void sendTrack( const Meta::TrackPtr track, const QVariantMap &info );
+        QTimer *m_timer;
 
         QString mb_host;
         int mb_port;
@@ -72,19 +77,15 @@ class MusicBrainzFinder : public QObject
         QString mb_username;
         QString mb_password;
 
-        QMap < Meta::TrackPtr, QVariantMap > m_parsedMetaData;
-
         QNetworkAccessManager *net;
-        QList < QPair < Meta::TrackPtr, QNetworkRequest > > m_requests;
-        QMap < QNetworkReply *, Meta::TrackPtr > m_replyes;
-        QMap < MusicBrainzXmlParser *, Meta::TrackPtr > m_parsers;
+        QList<QPair<Meta::TrackPtr, QNetworkRequest> > m_requests;
+        QMap<QNetworkReply *, Meta::TrackPtr> m_replies;
+        QMap<MusicBrainzXmlParser *, Meta::TrackPtr> m_parsers;
 
-        QMap < QString, Meta::TrackPtr > mb_tracks;     // MB Track ID -> TrackPtr
-        QMap < QString, QVariantMap > mb_trackInfo;     // MB Track ID -> Track info
-        QMap < QString, QVariantMap > mb_releasesCache; // MB Release ID -> Release info
-        QMap < QString, QStringList > mb_waitingForReleaseQueue;
+        QMap<Meta::TrackPtr, QVariantMap> m_parsedMetadata;
 
-        QTimer *_timer;
+        QMap<QString, QVariantMap> mb_releaseGroups;
+        QMap<QString, QList<TrackInfo> > mb_queuedTracks;
 };
 
 #endif // MUSICBRAINZFINDER_H

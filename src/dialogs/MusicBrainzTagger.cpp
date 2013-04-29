@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
+ * Copyright (c) 2013 Alberto Villa <avilla@FreeBSD.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,11 +22,19 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
+#include "musicbrainz/MusicBrainzFinder.h"
+#include "musicbrainz/MusicBrainzTagsModel.h"
+#include "musicbrainz/MusicBrainzTagsModelDelegate.h"
+#ifdef HAVE_LIBOFA
+#include "musicbrainz/MusicDNSFinder.h"
+#endif
 #include "ui_MusicBrainzTagger.h"
 
-#include <KMessageBox>
-#include <QTimer>
+#include <KIcon>
+
+#include <QSortFilterProxyModel>
 #include <QToolBar>
+#include <QToolButton>
 
 MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
                                       QWidget *parent )
@@ -33,7 +42,7 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
     , ui( new Ui::MusicBrainzTagger() )
 {
     DEBUG_BLOCK
-    foreach( Meta::TrackPtr track, tracks)
+    foreach( Meta::TrackPtr track, tracks )
     {
         if( !track->playableUrl().toLocalFile().isEmpty() )
             m_tracks << track;
@@ -46,10 +55,6 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
 
 MusicBrainzTagger::~MusicBrainzTagger()
 {
-    delete mb_finder;
-#ifdef HAVE_LIBOFA
-    delete mdns_finder;
-#endif
     delete ui;
 }
 
@@ -59,27 +64,61 @@ MusicBrainzTagger::init()
     DEBUG_BLOCK
     setButtons( KDialog::None );
     setAttribute( Qt::WA_DeleteOnClose );
-    setMinimumSize( 480, 300 );
+    setMinimumSize( 550, 300 );
+
+    m_resultsModel = new MusicBrainzTagsModel( this );
+    m_resultsModelDelegate = new MusicBrainzTagsModelDelegate( this );
+    m_resultsProxyModel = new QSortFilterProxyModel( this );
+
+    m_resultsProxyModel->setSourceModel( m_resultsModel );
+    m_resultsProxyModel->setSortRole( MusicBrainzTagsModel::SortRole );
+    m_resultsProxyModel->setDynamicSortFilter( true );
+
+    ui->resultsView->setModel( m_resultsProxyModel );
+    ui->resultsView->setItemDelegate( m_resultsModelDelegate );
+    // The column is not important, they all have the same data.
+    ui->resultsView->sortByColumn( 0, Qt::AscendingOrder );
 
     if( m_tracks.count() > 1 )
     {
         QToolBar *toolBar = new QToolBar( this );
-        toolBar->addAction( i18n( "Expand All" ), ui->treeView_Result, SLOT(expandAll()) );
-        toolBar->addAction( i18n( "Collapse All" ), ui->treeView_Result, SLOT(collapseAll()) );
-        toolBar->addAction( i18n( "Expand Unchosen" ), ui->treeView_Result, SLOT(expandUnChosen()) );
-        toolBar->addAction( i18n( "Collapse Chosen" ), ui->treeView_Result, SLOT(collapseChosen()) );
+        toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+
+        QAction *lastAction = toolBar->addAction( KIcon( "tools-wizard" ), i18n( "Choose Best Matches" ), m_resultsModel, SLOT(chooseBestMatches()) );
+        lastAction->setToolTip( i18n( "Use the top result for each undecided track. Alternatively, you can click on <b>Choose Best Matches from This Album</b> in the context menu of a good suggestion; it may give even better results because it prevents mixing different album releases together." ) );
+        lastAction = toolBar->addAction( KIcon( "edit-clear" ), i18n( "Clear Choices" ), m_resultsModel, SLOT(clearChoices()) );
+        lastAction->setToolTip( i18n( "Clear all choices, even manually made ones." ) );
+
+        toolBar->addSeparator();
+
+        QToolButton *lastButton = new QToolButton( toolBar );
+        lastAction = new QAction( i18n( "Collapse Chosen" ), lastButton );
+        connect( lastAction, SIGNAL(triggered()),
+                 ui->resultsView, SLOT(collapseChosen()) );
+        lastButton->setDefaultAction( lastAction );
+        lastAction = new QAction( i18n( "Collapse All" ), lastButton );
+        connect( lastAction, SIGNAL(triggered()),
+                 ui->resultsView, SLOT(collapseAll()) );
+        lastButton->addAction( lastAction );
+        toolBar->addWidget( lastButton );
+
+        lastButton = new QToolButton( toolBar );
+        lastAction = new QAction( i18n( "Expand Unchosen" ), lastButton );
+        connect( lastAction, SIGNAL(triggered()),
+                 ui->resultsView, SLOT(expandUnchosen()) );
+        lastButton->setDefaultAction( lastAction );
+        lastAction = new QAction( i18n( "Expand All" ), lastButton );
+        connect( lastAction, SIGNAL(triggered()),
+                 ui->resultsView, SLOT(expandAll()) );
+        lastButton->addAction( lastAction );
+        toolBar->addWidget( lastButton );
+
         ui->verticalLayout->insertWidget( 0, toolBar );
     }
 
     ui->progressBar->hide();
 
     mb_finder = new MusicBrainzFinder( this );
-    q_resultsModel = new MusicBrainzTagsModel( this );
-    q_resultsModelDelegate = new MusicBrainzTagsModelDelegate( this );
-    ui->treeView_Result->setModel( q_resultsModel );
-    ui->treeView_Result->setItemDelegateForColumn( 0, q_resultsModelDelegate );
-    ui->treeView_Result->header()->setClickable( true );
-
 #ifdef HAVE_LIBOFA
     mdns_finder = new MusicDNSFinder( this );
     connect( mdns_finder, SIGNAL(trackFound(Meta::TrackPtr,QString)),
@@ -89,10 +128,8 @@ MusicBrainzTagger::init()
 #endif
     connect( mb_finder, SIGNAL(done()), SLOT(searchDone()) );
     connect( mb_finder, SIGNAL(trackFound(Meta::TrackPtr,QVariantMap)),
-             q_resultsModel, SLOT(addTrack(Meta::TrackPtr,QVariantMap)) );
+             m_resultsModel, SLOT(addTrack(Meta::TrackPtr,QVariantMap)) );
     connect( mb_finder, SIGNAL(progressStep()), SLOT(progressStep()) );
-    connect( ui->treeView_Result->header(), SIGNAL(sectionClicked(int)),
-             q_resultsModel, SLOT(selectAll(int)) );
     connect( ui->pushButton_saveAndClose, SIGNAL(clicked(bool)), SLOT(saveAndExit()) );
     connect( ui->pushButton_cancel, SIGNAL(clicked(bool)), SLOT(reject()) );
 }
@@ -100,21 +137,23 @@ MusicBrainzTagger::init()
 void
 MusicBrainzTagger::search()
 {
-    ui->progressBar->setRange( 0, m_tracks.count() * 2 );
-    ui->progressBar->setValue( 0 );
-    ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Ignored );
-    ui->progressBar->show();
+    int barSize = m_tracks.count();
     mb_finder->run( m_tracks );
 #ifdef HAVE_LIBOFA
+    barSize *= 2;
     mdns_searchDone = false;
     mdns_finder->run( m_tracks );
 #endif
+    ui->progressBar->setRange( 0, barSize );
+    ui->progressBar->setValue( 0 );
+    ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Ignored );
+    ui->progressBar->show();
 }
 
 void
 MusicBrainzTagger::saveAndExit()
 {
-    QMap < Meta::TrackPtr, QVariantMap > result = q_resultsModel->getAllChecked();
+    QMap<Meta::TrackPtr, QVariantMap> result = m_resultsModel->chosenItems();
 
     if( !result.isEmpty() )
         emit sendResult( result );
@@ -132,8 +171,8 @@ MusicBrainzTagger::searchDone()
 #endif
     ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Expanding );
     ui->progressBar->hide();
-    ui->treeView_Result->expandAll();
-    ui->treeView_Result->header()->resizeSections( QHeaderView::ResizeToContents );
+    ui->resultsView->expandAll();
+    ui->resultsView->header()->resizeSections( QHeaderView::ResizeToContents );
 }
 
 #ifdef HAVE_LIBOFA
@@ -154,4 +193,3 @@ MusicBrainzTagger::progressStep()
 }
 
 #include "MusicBrainzTagger.moc"
-

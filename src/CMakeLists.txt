@@ -674,7 +674,10 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/FileView.cpp
     musicbrainz/MusicBrainzFinder.cpp
-    musicbrainz/MusicBrainzTags.cpp
+    musicbrainz/MusicBrainzTagsItem.cpp
+    musicbrainz/MusicBrainzTagsModel.cpp
+    musicbrainz/MusicBrainzTagsModelDelegate.cpp
+    musicbrainz/MusicBrainzTagsView.cpp
     musicbrainz/MusicBrainzXmlParser.cpp
     OpmlOutline.cpp
     OpmlParser.cpp

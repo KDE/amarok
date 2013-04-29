@@ -15,26 +15,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MUSICBRAINZMETA_H
-#define MUSICBRAINZMETA_H
+#ifndef MUSICBRAINZTAGSMODELDELEGATE_H
+#define MUSICBRAINZTAGSMODELDELEGATE_H
 
-#include <QString>
+#include <QItemDelegate>
 
-namespace MusicBrainz
+class MusicBrainzTagsModelDelegate : public QItemDelegate
 {
-    static const QString ARTISTID       = "mb:ArtistID";
-    static const QString RELEASEGROUPID = "mb:ReleaseGroupID";
-    static const QString RELEASEID      = "mb:ReleaseID";
-    static const QString RELEASELIST    = "mb:ReleaseList";
-    static const QString TRACKCOUNT     = "mb:TrackCount";
-    static const QString TRACKID        = "mb:TrackID";
-    static const QString TRACKINFO      = "mb:TrackInfo";
+    public:
+        explicit MusicBrainzTagsModelDelegate( QObject *parent = 0 );
 
-    static const QString MUSICBRAINZ    = "mb:musicbrainz";
-    static const QString MUSICDNS       = "mb:musicdns";
+    protected:
+        virtual void drawCheck( QPainter *painter, const QStyleOptionViewItem &option,
+                                const QRect &rect, Qt::CheckState state ) const;
+};
 
-    static const QString SIMILARITY     = "mb:similarity";
-    static const qreal   MINSIMILARITY  = 0.6;
-}
-
-#endif // MUSICBRAINZMETA_H
+#endif // MUSICBRAINZTAGSMODELDELEGATE_H

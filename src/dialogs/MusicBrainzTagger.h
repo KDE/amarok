@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
+ * Copyright (c) 2013 Alberto Villa <avilla@FreeBSD.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,22 +19,23 @@
 #define MUSICBRAINZTAGGER_H
 
 #include "config.h"
-#include <KDialog>
 #include "core/meta/Meta.h"
-#include "musicbrainz/MusicBrainzFinder.h"
-#include "musicbrainz/MusicBrainzTags.h"
-#include <QItemSelectionModel>
 
-#ifdef HAVE_LIBOFA
-    #include "musicbrainz/MusicDNSFinder.h"
-#endif
+#include <KDialog>
 
 namespace Ui
 {
     class MusicBrainzTagger;
 }
 
-class TrackListModel;
+class MusicBrainzFinder;
+class MusicBrainzTagsModel;
+class MusicBrainzTagsModelDelegate;
+#ifdef HAVE_LIBOFA
+class MusicDNSFinder;
+#endif
+
+class QSortFilterProxyModel;
 
 class MusicBrainzTagger : public KDialog
 {
@@ -48,16 +50,16 @@ class MusicBrainzTagger : public KDialog
         virtual ~MusicBrainzTagger();
 
     signals:
-        void sendResult( const QMap < Meta::TrackPtr, QVariantMap > result );
+        void sendResult( const QMap<Meta::TrackPtr, QVariantMap> result );
 
     private slots:
-        void saveAndExit();
         void search();
+        void progressStep();
         void searchDone();
 #ifdef HAVE_LIBOFA
         void mdnsSearchDone();
 #endif
-        void progressStep();
+        void saveAndExit();
 
     private:
         void init();
@@ -71,8 +73,9 @@ class MusicBrainzTagger : public KDialog
         MusicDNSFinder *mdns_finder;
         bool mdns_searchDone;
 #endif
-        MusicBrainzTagsModel *q_resultsModel;
-        MusicBrainzTagsModelDelegate *q_resultsModelDelegate;
+        MusicBrainzTagsModel *m_resultsModel;
+        MusicBrainzTagsModelDelegate *m_resultsModelDelegate;
+        QSortFilterProxyModel *m_resultsProxyModel;
 };
 
 #endif // MUSICBRAINZTAGGER_H

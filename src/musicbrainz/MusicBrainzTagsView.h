@@ -15,26 +15,41 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MUSICBRAINZMETA_H
-#define MUSICBRAINZMETA_H
+#ifndef MUSICBRAINZTAGSVIEW_H
+#define MUSICBRAINZTAGSVIEW_H
 
-#include <QString>
+#include <KIcon>
 
-namespace MusicBrainz
+#include <QTreeView>
+
+class MusicBrainzTagsModel;
+
+class MusicBrainzTagsView : public QTreeView
 {
-    static const QString ARTISTID       = "mb:ArtistID";
-    static const QString RELEASEGROUPID = "mb:ReleaseGroupID";
-    static const QString RELEASEID      = "mb:ReleaseID";
-    static const QString RELEASELIST    = "mb:ReleaseList";
-    static const QString TRACKCOUNT     = "mb:TrackCount";
-    static const QString TRACKID        = "mb:TrackID";
-    static const QString TRACKINFO      = "mb:TrackInfo";
+    Q_OBJECT
 
-    static const QString MUSICBRAINZ    = "mb:musicbrainz";
-    static const QString MUSICDNS       = "mb:musicdns";
+    public:
+        explicit MusicBrainzTagsView( QWidget *parent = 0 );
 
-    static const QString SIMILARITY     = "mb:similarity";
-    static const qreal   MINSIMILARITY  = 0.6;
-}
+        MusicBrainzTagsModel *sourceModel() const;
 
-#endif // MUSICBRAINZMETA_H
+    public slots:
+        void collapseChosen();
+        void expandUnchosen();
+
+    protected:
+        virtual void contextMenuEvent( QContextMenuEvent *event );
+
+    private slots:
+        void chooseBestMatchesFromRelease() const;
+        void openArtistPage() const;
+        void openReleasePage() const;
+        void openTrackPage() const;
+
+    private:
+        KIcon m_artistIcon;
+        KIcon m_releaseIcon;
+        KIcon m_trackIcon;
+};
+
+#endif // MUSICBRAINZTAGSVIEW_H
