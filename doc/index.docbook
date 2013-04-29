@@ -16,7 +16,7 @@
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
       </authorgroup>
 <legalnotice>&FDLNotice;</legalnotice>
-<date>2012-12-22</date>
+<date>2012-04-24</date>
       <releaseinfo>2.7.0</releaseinfo>
 <abstract>
 <para>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including &Linux;, &MacOS; and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.4.</para>
@@ -33,7 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2012-12-23T12:57:51Z</timestamp>-->
+<!--userbase <timestamp>2013-04-24T10:00:01Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -1264,7 +1264,7 @@
     <para><guilabel>Copy Current View Bookmark to Clipboard</guilabel></para>
     </entry>
     <entry>
-    <para>Copies bookmark to the KDE clipboard.</para>
+    <para>Copies bookmark to the system clipboard.</para>
     </entry>
   </row>
   <row>
@@ -1544,7 +1544,7 @@
   </row>
   <row>
     <entry>
-    <para><guilabel>Automated PLaylist Generator</guilabel></para>
+    <para><guilabel>Automated Playlist Generator</guilabel></para>
     </entry>
     <entry>
     <para>Creates playlists by specific criteria; more on this <link linkend="automatic-playlist-generator">here</link>.</para></entry>
@@ -2889,10 +2889,10 @@
       <imagedata fileref="amarok2-7settingsplugins.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>(Click to enlarge)</phrase>
+      <phrase></phrase>
     </textobject>
     <caption>
-      <para>(Click to enlarge)</para>
+      <para></para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -3127,7 +3127,7 @@
 <para>To download, you then go to the <emphasis>Media Sources</emphasis> pane, select the Internet section and click on the Magnatune Store. It will then download the catalog where you can search and select the music you want to buy.
 </para>
 </sect2>
-<sect2 id="mp3-store-configuration"><title>MP3 Store configuration</title> 
+<sect2 id="mpthree-store-configuration"><title>MP3 Store configuration</title> 
 <para>Access the Amazon MP3 Store directly from &amarok;.
 </para>
 <para>The Amazon MP3 Store needs to know what country you are located in because it offers different items depending on your location. The following countries are allowed:
@@ -3153,7 +3153,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6scriptsconfigmenu.png" format="PNG"/>
+      <imagedata fileref="amarok2-7scriptsconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Scripts configuration dialog</phrase>
@@ -3534,7 +3534,7 @@
 <listitem><para>Tracks without an album artist or an artist (or a composer in case of a classical track) are placed in a compilation.</para></listitem>
 <listitem><para>Tracks that have the compilation flag set or an album artist other than <quote>various artists</quote> will be placed in an album.</para></listitem>
 <listitem><para>Tracks that have the compilation flag set to 0 are placed in a compilation.</para></listitem>
-<listitem><para>Albums called <quote>Live</quote>, <quote>Greatest Hits</quote> and a couple of other names are always regarded as an album.</para></listitem>
+<listitem><para>Albums called <quote>Best Of</quote>, <quote>Anthology</quote>, <quote>Hit collection</quote>, <quote>Greatest Hits</quote>, <quote>All Time Greatest Hits</quote> and <quote>Live</quote> are always regarded as an album.</para></listitem>
 <listitem><para>If we end up having tracks with several different artists left over they are placed inside a compilation, or else we make one album out of them.</para></listitem>
 </itemizedlist>
 <para>This process is quite complicated. However usually the outputs of the scanner can help in figuring out why the tracks are sorted as they are.
@@ -6344,14 +6344,25 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </mediaobject>
 </screenshot>
 </para>
-<para>This most probably means that an identical file ended up twice in your collection at different places. You can use Amarok's File Browser to check the files individually, usual action is to remove one of the duplicate files. If you are sure that the tracks are not duplicates, you can use <guilabel>amarok_afttagger</guilabel> command-line utility to reset unique id of one of the tracks:
+<para>This most probably means that an identical file ended up twice in your collection at different places. You can use Amarok's File Browser to check the files individually, <guilabel>usual action is to remove one of the duplicate files</guilabel>. If you are sure that the tracks are not (or shouldn't be) duplicates, there may be several reasons why &amarok; thinks they are:
 </para>
-<para><userinput>amarok_afttagger --newid --verbose path/to/one/of/the/tracks.mp3</userinput>
-</para>
-<para>Alternatively, you can remove the unique id from one of the tracks, loosing the track-even-if-changed-from-outside functionality:
-</para>
-<para><userinput>amarok_afttagger --delete --verbose path/to/one/of/the/tracks.mp3</userinput>
-</para>
+<orderedlist>
+<listitem><para>The files are bit-by-bit identical<itemizedlist>
+<listitem><para>You can use for example <varname>md5sum</varname> command to verify that</para></listitem>
+<listitem><para>You can edit metadata of one of the files from within &amarok; File browser to differentiate them somehow, perhaps by editing (album) artist, year, composer or a comment</para></listitem>
+</itemizedlist>
+</para></listitem>
+<listitem><para>The files have the same Amarok AFT unique id<itemizedlist><listitem><para>This is often a result of running amarok_afttagger and then creating multiple copies of a tagged file; tag reader such as Kid3 or MP3Diags can be used to verify this, look for <varname>Amarok 2 AFTv1</varname> string in tags</para></listitem>
+<listitem><para>You can use <varname>amarok_afttagger</varname> command-line utility to reset unique id of one of the tracks: <userinput>amarok_afttagger --newid --verbose path/to/one/of/the/tracks.mp3</userinput></para></listitem>
+<listitem><para>Alternatively, you can remove the unique id from one of the tracks, loosing the track-even-if-changed-from-outside functionality: <userinput>amarok_afttagger --delete --verbose path/to/one/of/the/tracks.mp3</userinput></para></listitem>
+</itemizedlist>
+</para></listitem>
+<listitem><para>(for Amarok before  <ulink url="http://commits.kde.org/amarok/216c18bdaf1">v2.7.0-96-g216c18b</ulink>) The files have the same MusicBrainz id<itemizedlist><listitem><para>Released versions up to &amarok; 2.7 treated MusizBrainz id embedded in tags (filled in by MusicBrainz-enabled tagger such as Picard) as unique identifiers of tracks. However, MusicBrainz changed the semantics of the id to mean <quote>recording id</quote> since it was originally implemented in &amarok;, which means that you may get false duplicates for example for tracks that appear on the original album and the Best of one. See <emphasis role="strikethrough"><ulink url="https://bugs.kde.org/show_bug.cgi?id=315329">bug #315329</ulink></emphasis> for more info</para></listitem>
+<listitem><para>You can use any advanced tag reader to verify this (look for <varname>MusicBrainz</varname> string in tags) and to remove the MusicBrainz id from one of the tracks</para></listitem>
+<listitem><para>As an alternative solution, you can use <varname>amarok_afttagger</varname> to add &amarok; AFT id to one of the tracks because &amarok; will then prefer its own id rather than the MusicBrainz one: <userinput>amarok_afttagger --newid --verbose path/to/one/of/the/tracks.mp3</userinput></para></listitem>
+</itemizedlist>
+</para></listitem>
+</orderedlist>
 </sect3>
 </sect2>
 <sect2 id="problems-playing-files"><title>Problems playing files</title> 
@@ -6388,7 +6399,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <para>&amarok; is an audio player. More information can be found in <link linkend="amarok-menu">a summary of its features</link> and the <ulink url="http://amarok.kde.org/en/screenshots">screenshot gallery</ulink>. To get started using &amarok;, see the <link linkend="quick-start-guide">Quick Start Guide</link>. The &amarok; Handbook is <link linkend="introduction">here</link>.
 </para>
 </sect2>
-<sect2 id="what-are-the-differences-between-amarok-2-and-the-previous-versions"><title>What are the differences between Amarok 2 and the previous versions?</title> 
+<sect2 id="what-are-the-differences-between-amarok-two-and-the-previous-versions"><title>What are the differences between Amarok 2 and the previous versions?</title> 
 <para>&amarok; 2 is a nearly complete code-rewrite so the codebase has little to do with &amarok; 1.4. If you are missing a feature, please file a wish in <ulink url="http://bugs.kde.org">Bugzilla</ulink>.
 </para>
 <para>Here you have a short list of some new features:
@@ -6474,7 +6485,9 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <sect3 id="what-is-phonon-what-are-phonon-backends"><title>What is Phonon? What are Phonon backends?</title> 
 <para><emphasis>Phonon</emphasis> is the multimedia framework of KDE 4. You can find more information <link linkend="playback">here</link>.
 </para>
-<para>We recommend both the Gstreamer and the VLC backend as both are actively maintained. Make sure you do not use any other backend as those are obsolete.
+<para>We currently recommend both the Gstreamer and  VLC backend as both are actively maintained. If you want to play streams you should use the VLC backend only as the Gstreamer backend has some shortcomings in this regard. Make sure you do not use any other backend as those are obsolete.
+</para>
+<para>If you are using the Phonon-backend-gstreamer make sure you only use plugins from one single gstreamer version, else your sound will be compromised.
 </para>
 </sect3>
 <sect3 id="amarok-wont-play-mp3s-what-can-i-do"><title>Amarok won't play mp3s, what can I do?</title> 
@@ -6517,6 +6530,12 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <para>The equalizer is only available if you are using the phonon-backend-gstreamer. You can find the equalizer in the <guilabel>Tools</guilabel> menu.
 </para>
 </sect3>
+<sect3 id="how-can-i-control-the-volume-in-amarok-only-without-having-to-change-in-kmix"><title>How can I control the volume in Amarok only without having to change in KMix?</title> 
+<para> Most distributions ship the <guilabel>Pulseuadio</guilabel> sound-daemon nowadays which handles the sound settings system-wide. If you can't change the volume in &amarok; independently of <guilabel>KMix</guilabel>, then your <guilabel>Pulseaudio</guilabel> settings have the option
+</para>
+<para>enabled. Depending on your distribution this is located either in the file <guilabel>$HOME/.pulse/daemon.conf</guilabel> or in the system file <guilabel>/etc/pulse/daemon.conf</guilabel>. More information about Pulseudio-specific settings can be found in <ulink url="http://linux.die.net/man/5/pulse-daemon.conf">pulse-daemon.conf man page</ulink>.
+</para>
+</sect3>
 <sect3 id="how-do-i-turn-on-visualizations"><title>How do I turn on visualizations?</title> 
 <para>Visualizations are not implemented yet, but they will be very soon.
 </para>
@@ -6549,7 +6568,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <para>You can transfer your songs, albums and artists from your local collection by right-clicking, selecting <guilabel>Copy to Collection</guilabel> and picking your device; and you can also do it in the other way: right-click and select <menuchoice><guimenu>Copy to Collection</guimenu><guimenuitem>Local Collection</guimenuitem></menuchoice>. More about &amarok; and devices <link linkend="working-with-media-devices">here</link>.
 </para>
 </sect3>
-<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"><title>Can I use the old Amarok's collection in Amarok 2? Will my tags, score are ratings be lost?</title> 
+<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-two-will-my-tags-score-are-ratings-be-lost"><title>Can I use the old Amarok's collection in Amarok 2? Will my tags, score are ratings be lost?</title> 
 <para>A database importer is available. You will be able to keep your ratings and statistics just fine. More <link linkend="collection">here</link>.
 </para>
 </sect3>
@@ -6559,7 +6578,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <para>They are little pieces of software that add some functions to &amarok;. There are a lot of scripts, and you can find them in <ulink url="http://www.kde-apps.org/index.php?xcontentmode=57">kde-apps.org</ulink> or you can find and install them inside &amarok; using the <guilabel>Script Manager</guilabel>. More details can be found <link linkend="script-manager">here</link>. You will find the <guilabel>Script Manager</guilabel> from the <guilabel>Settings</guilabel> menu, <menuchoice><guimenu>Configure Amarok</guimenu><guimenuitem>Scripts</guimenuitem></menuchoice>.
 </para>
 </sect3>
-<sect3 id="can-i-use-amarok-1-4-scripts-in-amarok-2"><title>Can I use Amarok 1.4 scripts in Amarok 2?</title> 
+<sect3 id="can-i-use-amarok-one-four-scripts-in-amarok-2"><title>Can I use Amarok 1.4 scripts in Amarok 2?</title> 
 <para>No. A new and powerful scripting API has been created, which provides huge improvements but won't let you use your old scripts. The new scripting system is based on QtScript and will significantly reduce &amarok;'s dependencies, a huge problem for non-technical and cross-platform users, and will greatly reduce the amount of external processes launched at runtime.  Another advantage is that the new API will allow much deeper integration with &amarok; than the old scripting system. <ulink url="http://community.kde.org/Amarok/Development/Script_API">Amarok Scripting API</ulink>.
 </para>
 </sect3>
@@ -7981,7 +8000,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
     <para>Previous Browser</para>
     </entry>
     <entry>
-    <para><keycombo>&Ctrl;<keycap>Left</keycap></keycombo></para>
+    <para>&Backspace;</para>
     </entry>
   </row>
   <row>
@@ -8010,7 +8029,39 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
-    <para>Seek Backward</para>
+    <para>Seek Forward By 2 seconds</para>
+    </entry>
+    <entry>
+    <para><keycombo>&Ctrl;<keycap>Right</keycap></keycombo></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para>Seek Forward By 10 seconds</para>
+    </entry>
+    <entry>
+    <para><keycap>Right</keycap></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para>Seek Forward By 60 seconds</para>
+    </entry>
+    <entry>
+    <para><keycombo>&Shift;<keycap>Right</keycap></keycombo></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para>Seek Backward by 2 seconds</para>
+    </entry>
+    <entry>
+    <para><keycombo>&Ctrl;<keycap>Left</keycap></keycombo></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para>Seek Backward By 10 seconds</para>
     </entry>
     <entry>
     <para><keycap>Left</keycap></para>
@@ -8018,10 +8069,10 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
-    <para>Seek Forward</para>
+    <para>Seek Backward by 60 seconds</para>
     </entry>
     <entry>
-    <para><keycap>Right</keycap></para>
+    <para><keycombo>&Shift;<keycap>Left</keycap></keycombo></para>
     </entry>
   </row>
   <row>
