@@ -16,7 +16,7 @@
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
       </authorgroup>
 <legalnotice>&FDLNotice;</legalnotice>
-<date>2012-04-24</date>
+<date>2013-04-24</date>
       <releaseinfo>2.7.0</releaseinfo>
 <abstract>
 <para>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including &Linux;, &MacOS; and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.4.</para>
@@ -6531,7 +6531,9 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 </sect3>
 <sect3 id="how-can-i-control-the-volume-in-amarok-only-without-having-to-change-in-kmix"><title>How can I control the volume in Amarok only without having to change in KMix?</title> 
-<para> Most distributions ship the <guilabel>Pulseuadio</guilabel> sound-daemon nowadays which handles the sound settings system-wide. If you can't change the volume in &amarok; independently of <guilabel>KMix</guilabel>, then your <guilabel>Pulseaudio</guilabel> settings have the option
+<para> Most distributions ship the <guilabel>Pulseuadio</guilabel> sound-daemon nowadays which handles the sound settings system-wide. If you can't change the volume in &amarok; independently of &kmix;, then your <application>PulseAudio</application> settings have the option
+</para>
+<para> <userinput>flat-volume=yes</userinput>
 </para>
 <para>enabled. Depending on your distribution this is located either in the file <guilabel>$HOME/.pulse/daemon.conf</guilabel> or in the system file <guilabel>/etc/pulse/daemon.conf</guilabel>. More information about Pulseudio-specific settings can be found in <ulink url="http://linux.die.net/man/5/pulse-daemon.conf">pulse-daemon.conf man page</ulink>.
 </para>
