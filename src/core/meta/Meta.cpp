@@ -32,60 +32,6 @@
 
 using namespace Meta;
 
-// Meta::Base
-
-Base::Base()
-    : m_observersLock( QReadWriteLock::Recursive )
-{
-}
-
-Meta::Base::~Base()
-{
-    // we need to notify all observers that we're deleted to avoid stale pointers
-    foreach( Observer *observer, m_observers )
-    {
-        observer->destroyedNotify( this );
-    }
-}
-
-void
-Meta::Base::subscribe( Observer *observer )
-{
-    if( observer )
-    {
-        QWriteLocker locker( &m_observersLock );
-        m_observers.insert( observer );
-    }
-}
-
-void
-Meta::Base::unsubscribe( Observer *observer )
-{
-    QWriteLocker locker( &m_observersLock );
-    m_observers.remove( observer );
-}
-
-// this is a template method that should be normally in the .h file, the thing is that
-// only legit callers of this are also lie in this .cpp file, so it works like this
-template <typename T>
-void
-Meta::Base::notifyObserversHelper( const T *self ) const
-{
-    // observers ale allowed to remove themselves during metadataChanged() call. That's
-    // why the lock needs to be recursive AND the lock needs to be for writing, because
-    // a lock for reading cannot be recursively relocked for writing.
-    QWriteLocker locker( &m_observersLock );
-    foreach( Observer *observer, m_observers )
-    {
-        // observers can potentially remove or even destory other observers during
-        // metadataChanged() call. Guard against it. The guarding doesn't need to be
-        // thread-safe,  because we already hold m_observersLock (which is recursive),
-        // so other threads wait on potential unsubscribe().
-        if( m_observers.contains( observer ) )
-            observer->metadataChanged( KSharedPtr<T>( const_cast<T *>( self ) ) );
-    }
-}
-
 //Meta::Track
 
 QString
@@ -196,7 +142,7 @@ Meta::Track::finishedPlaying( double playedFraction )
 void
 Meta::Track::notifyObservers() const
 {
-    notifyObserversHelper<Track>( this );
+    notifyObserversHelper<Track, Observer>( this );
 }
 
 bool
@@ -309,7 +255,7 @@ Meta::Artist::prettyName() const
 void
 Meta::Artist::notifyObservers() const
 {
-    notifyObserversHelper<Artist>( this );
+    notifyObserversHelper<Artist, Observer>( this );
 }
 
 bool
@@ -355,7 +301,7 @@ Meta::Album::prettyName() const
 void
 Meta::Album::notifyObservers() const
 {
-    notifyObserversHelper<Album>( this );
+    notifyObserversHelper<Album, Observer>( this );
 }
 
 /*
@@ -388,7 +334,7 @@ Meta::Genre::prettyName() const
 void
 Meta::Genre::notifyObservers() const
 {
-    notifyObserversHelper<Genre>( this );
+    notifyObserversHelper<Genre, Observer>( this );
 }
 
 bool
@@ -410,7 +356,7 @@ Meta::Composer::prettyName() const
 void
 Meta::Composer::notifyObservers() const
 {
-    notifyObserversHelper<Composer>( this );
+    notifyObserversHelper<Composer, Observer>( this );
 }
 
 bool
@@ -424,7 +370,7 @@ Meta::Composer::operator==( const Meta::Composer &composer ) const
 void
 Meta::Year::notifyObservers() const
 {
-    notifyObserversHelper<Year>( this );
+    notifyObserversHelper<Year, Observer>( this );
 }
 
 bool
@@ -438,4 +384,3 @@ Meta::Label::notifyObservers() const
 {
     // labels are not observable
 }
-

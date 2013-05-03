@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
  * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2013 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
@@ -16,88 +17,39 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ***************************************************************************************/
 
-#include "Observer.h"
+#include "Base.h"
 
-#include "core/meta/Base.h"
+#include "core/meta/Observer.h"
 
 using namespace Meta;
 
-Observer::~Observer()
+Base::Base()
+    : m_observersLock( QReadWriteLock::Recursive )
 {
-    // Unsubscribe all stray Meta subscriptions:
-    foreach( Base *ptr, m_subscriptions )
+}
+
+Base::~Base()
+{
+    // we need to notify all observers that we're deleted to avoid stale pointers
+    foreach( Observer *observer, m_observers )
     {
-        if( ptr )
-            ptr->unsubscribe( this );
+        observer->destroyedNotify( this );
     }
 }
 
 void
-Observer::metadataChanged( TrackPtr track )
+Base::subscribe( Observer *observer )
 {
-    Q_UNUSED( track );
-}
-
-void
-Observer::metadataChanged( ArtistPtr artist )
-{
-    Q_UNUSED( artist );
-}
-
-void
-Observer::metadataChanged( AlbumPtr album )
-{
-    Q_UNUSED( album );
-}
-
-void
-Observer::metadataChanged( ComposerPtr composer )
-{
-    Q_UNUSED( composer );
-}
-
-void
-Observer::metadataChanged( GenrePtr genre )
-{
-    Q_UNUSED( genre );
-}
-
-void
-Observer::metadataChanged( YearPtr year )
-{
-    Q_UNUSED( year );
-}
-
-void
-Observer::entityDestroyed()
-{
-}
-
-void
-Observer::subscribeTo( Base *ptr )
-{
-    if( !ptr )
-        return;
-    QMutexLocker locker( &m_subscriptionsMutex );
-    ptr->subscribe( this );
-    m_subscriptions.insert( ptr );
-}
-
-void
-Observer::unsubscribeFrom( Base *ptr )
-{
-    QMutexLocker locker( &m_subscriptionsMutex );
-    if( ptr )
-        ptr->unsubscribe( this );
-    m_subscriptions.remove( ptr );
-}
-
-void
-Observer::destroyedNotify( Base *ptr )
-{
+    if( observer )
     {
-        QMutexLocker locker( &m_subscriptionsMutex );
-        m_subscriptions.remove( ptr );
+        QWriteLocker locker( &m_observersLock );
+        m_observers.insert( observer );
     }
-    entityDestroyed();
+}
+
+void
+Base::unsubscribe( Observer *observer )
+{
+    QWriteLocker locker( &m_observersLock );
+    m_observers.remove( observer );
 }

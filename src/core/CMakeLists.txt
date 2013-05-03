@@ -11,6 +11,7 @@ set(libcore_interfaces_SRCS
 )
 
 set(libcore_meta_SRCS
+    meta/Base.cpp
     meta/Meta.cpp
     meta/Observer.cpp
     meta/Statistics.cpp
