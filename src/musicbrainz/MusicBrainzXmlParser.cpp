@@ -249,8 +249,8 @@ MusicBrainzXmlParser::parseRelease( const QDomElement &e )
                 if( info.contains( Meta::Field::DISCNUMBER ) )
                 {
                     int discNumber = info.value( Meta::Field::DISCNUMBER ).toInt();
-                    if( discNumber < 1 || discNumber == 1 &&
-                        ( trackCount <= 0 || trackCountList.size() != 2 ) )
+                    if( discNumber < 1 || ( discNumber == 1 &&
+                        ( trackCount <= 0 || trackCountList.size() != 2 ) ) )
                         info.remove( Meta::Field::DISCNUMBER );
                 }
                 QVariantList trackInfoList = m_currentTrackInfo.value( id ).toList();
