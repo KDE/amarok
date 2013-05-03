@@ -171,7 +171,7 @@ TabsView::showTab( TabsItem *tab )
                     htmlData += "font-size:" + QString::number( headingFont.pointSize() ) + "pt;";
                     htmlData += "font-weight:" + QString::number( headingWeight ) + ";\">";
                     htmlData += tab->getTabTitle();
-                    htmlData += " (" + i18n( "tab provided from: " ) + "<a href=\"" + tab->getTabUrl() + "\">";
+                    htmlData += " (" + i18nc( "Guitar tablature", "tab provided from: " ) + "<a href=\"" + tab->getTabUrl() + "\">";
                     htmlData += "<span style=\"text-decoration: underline; color:" + linkColor + ";\">";
                     htmlData += tab->getTabSource() + "</a>";
                     htmlData += ")</span></p>";

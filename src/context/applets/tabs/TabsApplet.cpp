@@ -155,7 +155,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     {
         if( canAnimate() )
             setBusy( true );
-        setHeaderText( i18n( "Tabs: Fetching..." ) );
+        setHeaderText( i18nc( "Guitar tablature", "Tabs: Fetching..." ) );
         updateInterface( FetchingState );
         return;
     }
@@ -306,7 +306,7 @@ TabsApplet::reloadTabs()
     Ui::ReloadEditDialog *reloadUI = new Ui::ReloadEditDialog();
     reloadUI->setupUi( reloadWidget );
 
-    reloadDialog.setCaption( i18n( "Reload Tabs" ) );
+    reloadDialog.setCaption( i18nc( "Guitar tablature", "Reload Tabs" ) );
     reloadDialog.setButtons( KDialog::Ok|KDialog::Cancel );
     reloadDialog.setDefaultButton( KDialog::Ok );
     reloadDialog.setMainWidget( reloadWidget );
