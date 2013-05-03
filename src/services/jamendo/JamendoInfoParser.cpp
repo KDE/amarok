@@ -50,7 +50,7 @@ JamendoInfoParser::getInfo(ArtistPtr artist)
     infoHtml +=        "<div align=\"center\">";
     infoHtml +=        i18n( "Artist" ) + "<br><br>";
     infoHtml +=        "<strong>";
-    infoHtml +=        jamendoArtist->fullPrettyName();
+    infoHtml +=        jamendoArtist->prettyName();
     infoHtml +=        "</strong><br><br><em>";
 
     if ( !jamendoArtist->photoURL().isEmpty() )
@@ -82,7 +82,7 @@ JamendoInfoParser::getInfo(AlbumPtr album)
     infoHtml +=        "<div align=\"center\">";
     infoHtml +=        i18n( "Album" ) + "<br><br>";
     infoHtml +=        "<strong>";
-    infoHtml +=        jamendoAlbum->fullPrettyName();
+    infoHtml +=        jamendoAlbum->prettyName();
     infoHtml +=        "</strong><br><br><em>";
 
     if ( !jamendoAlbum->coverUrl().isEmpty() )
@@ -108,7 +108,7 @@ JamendoInfoParser::getInfo(TrackPtr track)
     infoHtml +=        "<div align=\"center\">";
     infoHtml +=        i18n( "Track" ) + "<br><br>";
     infoHtml +=        "<strong>";
-    infoHtml +=        jamendoTrack->fullPrettyName();
+    infoHtml +=        jamendoTrack->prettyName();
     infoHtml +=        "</strong><br><br><em>";
     infoHtml +=        "<br><br>" + i18n( "From Jamendo.com" ) + "</div>";
     infoHtml +=        "</BODY></HTML>";

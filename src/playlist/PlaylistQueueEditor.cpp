@@ -54,11 +54,15 @@ PlaylistQueueEditor::updateView()
 
     m_ui.listWidget->clear();
     int i = 1;
-    foreach ( quint64 id, The::playlistActions()->queue() ) {
+    foreach( quint64 id, The::playlistActions()->queue() )
+    {
         QListWidgetItem *item = new QListWidgetItem( m_ui.listWidget, s_myType );
         item->setData( s_idRole, id );
-        QString itemText = QString("%1: %2").arg( QString::number( i++ ),
-                               The::playlist()->trackForId( id )->fullPrettyName() );
+        Meta::TrackPtr track = The::playlist()->trackForId( id );
+        Meta::ArtistPtr artist = track->artist();
+        QString itemText = i18nc( "Iten in queue, %1 is position, %2 artist, %3 track",
+                "%1: %2 - %3", i++, artist ? artist->prettyName() : i18n( "Unknown Artist" ),
+                track->prettyName() );
         item->setText( itemText );
     }
 }

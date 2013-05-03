@@ -50,46 +50,49 @@ namespace Meta
     class AMAROK_CORE_EXPORT Base : public virtual QSharedData, public MetaCapability
     // virtual inherit. so that implementations can be both Meta::Track and Meta::Statistics
     {
-        friend class Observer; // so that Observer can call (un)subscribe()
-
-        Q_PROPERTY( QString name READ name )
-        Q_PROPERTY( QString prettyName READ prettyName )
-        Q_PROPERTY( QString fullPrettyName READ fullPrettyName )
-        Q_PROPERTY( QString sortableName READ sortableName )
-
         public:
             Base();
             virtual ~Base();
 
-            /** The textual label for this object.
-                For a track this is the track title, for an album it is the
-                album name.
-                If the name is unknown or unset then this returns an empty string.
-            */
+            /**
+             * The textual label for this object.
+             *
+             * For a track this is the track title, for an album it is the album name.
+             * If the name is unknown or unset then this returns an empty string.
+             */
             virtual QString name() const = 0;
 
-            /** This is a nicer representation of the object.
-                We will try to prevent this name from being empty.
-                E.g. a track will fall back to the filename if possible.
-            */
+            /**
+             * This is a nicer representation of the object.
+             *
+             * We will try to prevent this name from being empty. E.g. a track will fall
+             * back to the filename if possible.
+             */
             virtual QString prettyName() const { return name(); };
 
-            /** A exact representation of the object.
-                This might include the artist name for a track or album.
-            */
-            virtual QString fullPrettyName() const { return prettyName(); }
-
-            /** A name that can be used for sorting.
-                This should usually mean that "The Beatles" is returned as "Beatles The"
-            */
+            /**
+             * A name that can be used for sorting.
+             *
+             * This should usually mean that "The Beatles" is returned as "Beatles, The"
+             */
             virtual QString sortableName() const { return name(); }
 
-            /**used for showing a fixed name in the tree view. Needed for items that change
-             * their name occasionally such as some streams. These should overwrite this
-             */
-            virtual QString fixedName() const { return prettyName(); }
-
         protected:
+            /**
+             * This should be called by subclasses whenever metadata (such as name,
+             * artist, BPM) changes.
+             */
+            virtual void notifyObservers() const = 0;
+
+            template <typename T>
+            void notifyObserversHelper( const T *self ) const;
+
+        private:
+            // no copy allowed, since it's not safe with observer list
+            Q_DISABLE_COPY( Base )
+
+            friend class Observer; // so that Observer can call (un)subscribe()
+
             /**
              * Subscribe @param observer for change updates. Don't ever think of calling
              * this method yourself or overriding it, it's highly coupled with Observer.
@@ -102,15 +105,6 @@ namespace Meta
              * Observer.
              */
             void unsubscribe( Observer *observer );
-
-            virtual void notifyObservers() const = 0;
-
-            template <typename T>
-            void notifyObserversHelper( const T *self ) const;
-
-        private:
-            // no copy allowed, since it's not safe with observer list
-            Q_DISABLE_COPY( Base )
 
             QSet<Observer *> m_observers;
             mutable QReadWriteLock m_observersLock; // guards access to m_observers

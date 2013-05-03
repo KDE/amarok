@@ -271,30 +271,6 @@ SqlTrack::prettyName() const
     return  prettyTitle( m_url.fileName() );
 }
 
-
-QString
-SqlTrack::fullPrettyName() const
-{
-    QString artistName;
-    Meta::ArtistPtr artist = this->artist();
-    if( artist )
-        artistName = artist->name();
-
-    //FIXME doesn't work for resume playback
-
-    QString s;
-    if( !artistName.isEmpty() )
-        s = i18n("%1 - %2", artist->name(), name() );
-
-    if( s.isEmpty() )
-        s = name();
-
-    if( s.isEmpty() )
-        s = prettyTitle( playableUrl().fileName() );
-
-    return s;
-}
-
 void
 SqlTrack::setTitle( const QString &newTitle )
 {

@@ -78,9 +78,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics
         /** returns the title of the track if existing in the database,
             a value deduced from the file name otherwise */
         virtual QString prettyName() const;
-        /** returns "[artist] - [title]" if both are stored in the database,
-            a value deduced from the file name otherwise */
-        virtual QString fullPrettyName() const;
 
         /** returns the KUrl object describing the position of the track */
         virtual KUrl playableUrl() const;

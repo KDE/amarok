@@ -112,31 +112,11 @@ Track::name() const
 }
 
 QString
-Track::fullPrettyName() const
-{
-    if( d->track.isEmpty() || d->artist.isEmpty() )
-        return prettyName();
-    else
-        return i18n("%1 - %2", d->artist, d->track );
-}
-
-QString
 Track::sortableName() const
 {
     // TODO
     return name();
 }
-
-QString LastFm::Track::fixedName() const
-{
-
-    //unless this is a stream for a single track, return the generic name
-    if ( streamName() != i18n( "Track Radio" ) )
-        return streamName();
-    else
-        return name();
-}
-
 
 KUrl
 Track::playableUrl() const

@@ -107,27 +107,6 @@ void TestMetaFileTrack::testPrettyName()
     QCOMPARE( m_track->prettyName(), QString( "Platz 01" ) );
 }
 
-void TestMetaFileTrack::testFullPrettyName()
-{
-    QCOMPARE( m_track->fullPrettyName(), QString( "Platz 01" ) );
-
-    m_track->setTitle( "" );
-    //when there is no title, we default to using the filename without extension
-    QCOMPARE( m_track->fullPrettyName(), QString( "tempfile" ) );
-
-    m_track->setTitle( "test" );
-    QCOMPARE( m_track->fullPrettyName(), QString( "test" ) );
-
-    m_track->setTitle( "Another Test" );
-    QCOMPARE( m_track->fullPrettyName(), QString( "Another Test" ) );
-
-    m_track->setTitle( "Some Umlauts: äöü" );
-    QCOMPARE( m_track->fullPrettyName(), QString( "Some Umlauts: äöü" ) );
-
-    m_track->setTitle( "Platz 01" );
-    QCOMPARE( m_track->fullPrettyName(), QString( "Platz 01" ) );
-}
-
 void TestMetaFileTrack::testSortableName()
 {
     QCOMPARE( m_track->sortableName(), QString( "Platz 01" ) );

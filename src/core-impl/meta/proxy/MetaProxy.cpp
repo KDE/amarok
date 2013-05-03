@@ -135,16 +135,7 @@ MetaProxy::Track::prettyName() const
     if( d->realTrack )
         return d->realTrack->prettyName();
     else
-        return d->cachedName;
-}
-
-QString
-MetaProxy::Track::fullPrettyName() const
-{
-    if( d->realTrack )
-        return d->realTrack->fullPrettyName();
-    else
-        return d->cachedName;
+        return Meta::Track::prettyName();
 }
 
 QString
@@ -153,16 +144,7 @@ MetaProxy::Track::sortableName() const
     if( d->realTrack )
         return d->realTrack->sortableName();
     else
-        return d->cachedName;
-}
-
-QString
-Track::fixedName() const
-{
-    if( d->realTrack )
-        return d->realTrack->fixedName();
-    else
-        return d->cachedName;
+        return Meta::Track::sortableName();
 }
 
 KUrl

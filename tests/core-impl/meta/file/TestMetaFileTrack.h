@@ -44,7 +44,6 @@ private slots:
     // methods inherited from Meta::Base
     void testNameAndSetTitle();
     void testPrettyName();
-    void testFullPrettyName();
     void testSortableName();
 
     // methods inherited from Meta::Track
