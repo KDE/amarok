@@ -21,6 +21,7 @@
 
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
+#include "core/meta/Observer.h"
 #include "core/meta/Statistics.h"
 
 #include <QList>

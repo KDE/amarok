@@ -15,19 +15,20 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "LyricsManager"
-
 #include "LyricsManager.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
 #include <KLocale>
 
 #include <QGraphicsTextItem>
 #include <QXmlStreamReader>
 #include <QTextDocument>
+
+#define DEBUG_PREFIX "LyricsManager"
 
 ////////////////////////////////////////////////////////////////
 //// CLASS LyricsObserver

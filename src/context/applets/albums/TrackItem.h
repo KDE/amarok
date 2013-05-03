@@ -17,7 +17,7 @@
 #ifndef AMAROK_TRACKITEM_H
 #define AMAROK_TRACKITEM_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/Observer.h"
 
 #include <QStandardItem>
 #include <QMutex>

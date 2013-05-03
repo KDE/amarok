@@ -22,6 +22,7 @@
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/BookmarkModel.h"
 #include "amarokurls/PlayUrlGenerator.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "widgets/ProgressWidget.h"

@@ -16,32 +16,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "CurrentTrack"
-
 #include "CurrentTrack.h"
 
-#include "amarokurls/AmarokUrl.h"
-#include "core/support/Amarok.h"
 #include "App.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
-#include "CollectionManager.h"
-#include "covermanager/CoverViewDialog.h"
-#include "core/capabilities/EditCapability.h"
-#include "core/capabilities/ActionsCapability.h"
-#include "core/capabilities/BookmarkThisCapability.h"
-#include "core/capabilities/FindInSourceCapability.h"
-#include "core/meta/Statistics.h"
-#include "core/meta/support/MetaUtility.h"
 #include "MainWindow.h"
 #include "PaletteHandler.h"
 #include "PluginManager.h"
 #include "SvgHandler.h"
+#include "amarokurls/AmarokUrl.h"
 #include "context/widgets/RatingWidget.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "context/widgets/DropPixmapItem.h"
 #include "context/widgets/RecentlyPlayedListWidget.h"
+#include "core/capabilities/EditCapability.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
+#include "core/capabilities/FindInSourceCapability.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "covermanager/CoverViewDialog.h"
 #include "dialogs/TagDialog.h"
 
 #include <KConfigDialog>
@@ -59,6 +58,8 @@
 #include <QPainter>
 #include <QScopedPointer>
 #include <QSignalMapper>
+
+#define DEBUG_PREFIX "CurrentTrack"
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )

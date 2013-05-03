@@ -25,7 +25,7 @@
 
 #include "UndoCommands.h"
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/Observer.h"
 #include "core/support/Amarok.h"
 #include "playlist/proxymodels/AbstractModel.h"
 

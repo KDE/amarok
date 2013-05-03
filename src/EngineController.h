@@ -23,7 +23,9 @@
 
 #include "amarok_export.h"
 #include "core/capabilities/BoundedPlaybackCapability.h"
-#include "core/meta/Meta.h"
+#include "core/meta/Observer.h"
+
+#include <KUrl>
 
 #include <QMutex>
 #include <QObject>
@@ -464,7 +466,7 @@ private slots:
     void slotAboutToFinish();
     void slotNewTrackPlaying( const Phonon::MediaSource &source);
     void slotStateChanged( Phonon::State newState, Phonon::State oldState);
-    void slotPlayableUrlFetched(const KUrl&);
+    void slotPlayableUrlFetched( const KUrl &url );
     void slotTick( qint64 );
     void slotTrackLengthChanged( qint64 );
     void slotMetaDataChanged();

@@ -15,14 +15,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "LabelsEngine"
-
 #include "LabelsEngine.h"
 
-#include "ContextObserver.h"
-#include "ContextView.h"
 #include "EngineController.h"
+#include "context/ContextObserver.h"
+#include "context/ContextView.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
@@ -30,6 +29,8 @@
 #include <KLocale>
 
 #include <QDomDocument>
+
+#define DEBUG_PREFIX "LabelsEngine"
 
 using namespace Context;
 

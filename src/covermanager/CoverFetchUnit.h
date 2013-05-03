@@ -17,7 +17,7 @@
 #ifndef AMAROK_COVERFETCHUNIT_H
 #define AMAROK_COVERFETCHUNIT_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/Meta.h" // for AlbumPtr default argument
 
 #include <KSharedPtr>
 #include <KUrl>

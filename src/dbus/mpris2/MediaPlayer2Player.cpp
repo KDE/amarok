@@ -23,10 +23,11 @@
 
 #include "MediaPlayer2Player.h"
 
+#include "EngineController.h"
 #include "amarokconfig.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
-#include "EngineController.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"

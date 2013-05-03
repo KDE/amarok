@@ -23,6 +23,7 @@
 #include "SvgHandler.h"
 #include "amarokurls/BookmarkModel.h"
 #include "amarokurls/PlayUrlGenerator.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
 

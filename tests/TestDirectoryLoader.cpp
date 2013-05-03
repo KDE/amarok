@@ -19,6 +19,7 @@
 
 #include "TestDirectoryLoader.h"
 
+#include "core/meta/Meta.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 

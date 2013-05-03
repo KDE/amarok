@@ -14,20 +14,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "CurrentEngine"
-
 #include "CurrentEngine.h"
 
-#include "core/support/Amarok.h"
-#include "ContextView.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "covermanager/CoverCache.h"
+#include "context/ContextView.h"
+#include "core/support/Debug.h"
+#include "core/capabilities/SourceInfoCapability.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
-#include "core/capabilities/SourceInfoCapability.h"
+#include "core/support/Amarok.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "covermanager/CoverCache.h"
 
 #include <KConfigDialog>
 
@@ -36,6 +35,8 @@
 #include <Phonon/Path>
 #include <Phonon/MediaController>
 #include <Phonon/MediaSource> //Needed for the slot
+
+#define DEBUG_PREFIX "CurrentEngine"
 
 using namespace Context;
 

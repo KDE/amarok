@@ -20,6 +20,7 @@
 #include "GlobalCurrentTrackActions.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
+#include "core/meta/Meta.h"
 
 
 CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )

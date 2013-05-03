@@ -19,6 +19,7 @@
 
 #include "collectionscanner/Directory.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Observer.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 
 #include <KDirWatch>

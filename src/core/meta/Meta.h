@@ -45,54 +45,7 @@ class PersistentStatisticsStore;
 
 namespace Meta
 {
-    class AMAROK_CORE_EXPORT Observer
-    {
-        friend class Base; // so that it can call destroyedNotify()
-
-        public:
-            virtual ~Observer();
-
-            /**
-             * Subscribe to changes made by @param entity.
-             *
-             * Changed in 2.7: being subscribed to an entity no longer prevents its
-             * destruction.
-             */
-            template <typename T>
-            void subscribeTo( KSharedPtr<T> entity ) { subscribeTo( entity.data() ); }
-            template <typename T>
-            void unsubscribeFrom( KSharedPtr<T> entity ) { unsubscribeFrom( entity.data() ); }
-
-            /**
-             * This method is called when the metadata of a track has changed.
-             * The called class may not cache the pointer.
-             */
-            virtual void metadataChanged( TrackPtr track );
-            virtual void metadataChanged( ArtistPtr artist );
-            virtual void metadataChanged( AlbumPtr album );
-            virtual void metadataChanged( GenrePtr genre );
-            virtual void metadataChanged( ComposerPtr composer );
-            virtual void metadataChanged( YearPtr year );
-
-            /**
-             * One of the subscribed entities was destroyed. You don't get which one
-             * because it is already invalid.
-             */
-            virtual void entityDestroyed();
-
-        private:
-            friend class ::PersistentStatisticsStore; // so that it can call KSharedPtr-free subscribe:
-            void subscribeTo( Base *ptr );
-            void unsubscribeFrom( Base *ptr );
-
-            /**
-             * Called in Meta::Base destructor so that Observer doesn't have a stale pointer.
-             */
-            void destroyedNotify( Base *ptr );
-
-            QSet<Base *> m_subscriptions;
-            QMutex m_subscriptionsMutex; /// mutex guarding access to m_subscriptions
-    };
+    class Observer;
 
     class AMAROK_CORE_EXPORT Base : public virtual QSharedData, public MetaCapability
     // virtual inherit. so that implementations can be both Meta::Track and Meta::Statistics
@@ -159,7 +112,7 @@ namespace Meta
             // no copy allowed, since it's not safe with observer list
             Q_DISABLE_COPY( Base )
 
-            QSet<Meta::Observer*> m_observers;
+            QSet<Observer *> m_observers;
             mutable QReadWriteLock m_observersLock; // guards access to m_observers
     };
 

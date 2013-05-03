@@ -20,25 +20,26 @@
   available at kdebase/workspace/plasma
 */
 
-#define DEBUG_PREFIX "ContextView"
-
 #include "ContextView.h"
 
-#include "core/support/Amarok.h"
 #include "Context.h"
 #include "ContextScene.h"
-#include "core/support/Debug.h"
 #include "Svg.h"
 #include "Theme.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/ContextUrlRunner.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
 
 #include <plasma/dataenginemanager.h>
 
 #include <QParallelAnimationGroup>
 #include <QSequentialAnimationGroup>
 #include <QWheelEvent>
+
+#define DEBUG_PREFIX "ContextView"
 
 namespace Context
 {
@@ -387,4 +388,3 @@ QStringList ContextView::currentAppletNames()
 } // Context namespace
 
 #include "ContextView.moc"
-

@@ -14,19 +14,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "PhotosEngine"
-
 #include "PhotosEngine.h"
 
-// Amarok
-#include "core/support/Amarok.h"
-#include "ContextView.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
+#include "context/ContextView.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
-// Qt
 #include <QXmlStreamReader>
 #include <QPixmap>
+
+#define DEBUG_PREFIX "PhotosEngine"
 
 using namespace Context;
 

@@ -24,6 +24,7 @@
 #include "context/widgets/RatingWidget.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"

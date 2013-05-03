@@ -18,7 +18,8 @@
 #ifndef COVERMANAGER_H
 #define COVERMANAGER_H
 
-#include "CoverFetcher.h"
+#include "core/meta/Observer.h"
+#include "covermanager/CoverFetcher.h"
 
 #include <KDialog>
 

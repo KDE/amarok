@@ -19,6 +19,7 @@
 #include "App.h"
 #include "EngineController.h"
 #include "amarokconfig.h"
+#include "core/meta/Meta.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
 

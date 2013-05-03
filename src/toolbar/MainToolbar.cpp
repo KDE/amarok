@@ -15,11 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "MainToolbar"
-
 #include "MainToolbar.h"
-
-#include "amarokconfig.h"
 
 #include "App.h"
 #include "ActionClasses.h"
@@ -29,21 +25,18 @@
 #include "GlobalCurrentTrackActions.h"
 #include "MainWindow.h"
 #include "SvgHandler.h"
-
+#include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
-
 #include "browsers/collectionbrowser/CollectionWidget.h"
-
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
-
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistController.h"
-
 #include "widgets/AnimatedLabelStack.h"
 #include "widgets/PlayPauseButton.h"
 #include "widgets/SliderWidget.h"
@@ -60,6 +53,8 @@
 #include <QSlider>
 #include <QTimer>
 #include <QVBoxLayout>
+
+#define DEBUG_PREFIX "MainToolbar"
 
 // #define prev_next_role QPalette::Link
 #define prev_next_role foregroundRole()

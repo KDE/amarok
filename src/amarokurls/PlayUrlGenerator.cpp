@@ -18,6 +18,7 @@
 
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"

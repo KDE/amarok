@@ -37,6 +37,10 @@ DirectoryLoader::DirectoryLoader( LoadingMode loadingMode )
 {
 }
 
+DirectoryLoader::~DirectoryLoader()
+{
+}
+
 void
 DirectoryLoader::insertAtRow( int row )
 {

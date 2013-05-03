@@ -19,15 +19,14 @@
 
 #include "amarokconfig.h"
 #include "App.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "dbus/mpris1/PlayerHandler.h"
 #include "ActionClasses.h"
-
-
 
 #include "Mpris1TrackListAdaptor.h"
 

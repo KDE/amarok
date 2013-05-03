@@ -19,6 +19,7 @@
 #ifndef MEDIADEVICEHANDLER_H
 #define MEDIADEVICEHANDLER_H
 
+#include "core/meta/Observer.h"
 #include "core-impl/collections/mediadevicecollection/MediaDeviceMeta.h"
 #include "core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.h"
 #include "core-impl/collections/mediadevicecollection/handler/capabilities/PlaylistCapability.h"

@@ -16,15 +16,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "Albums"
-
 #include "Albums.h"
 
 #include "AlbumItem.h"
 #include "AlbumsView.h"
+#include "core/collections/Collection.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "context/widgets/AppletHeader.h"
 #include "TrackItem.h"
@@ -40,6 +39,8 @@
 #include <QSpinBox>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
+
+#define DEBUG_PREFIX "Albums"
 
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )

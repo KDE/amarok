@@ -27,7 +27,7 @@
 #include "playlist/PlaylistItem.h"
 #include "LabelListModel.h"
 
-#include "core/meta/Meta.h"
+#include "core/meta/Observer.h"
 #include "core/collections/MetaQueryMaker.h"
 
 #include <KDialog>

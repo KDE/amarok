@@ -16,19 +16,20 @@
 
 #include "AmarokUrlHandler.h"
 
-#include "BookmarkMetaActions.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
 #include "GlobalCurrentTrackActions.h"
-#include "NavigationUrlGenerator.h"
-#include "NavigationUrlRunner.h"
-#include "PlayUrlRunner.h"
-#include "playlist/PlaylistViewUrlGenerator.h"
-#include "BookmarkModel.h"
+#include "amarokurls/BookmarkMetaActions.h"
+#include "amarokurls/BookmarkModel.h"
+#include "amarokurls/ContextUrlGenerator.h"
+#include "amarokurls/NavigationUrlGenerator.h"
+#include "amarokurls/NavigationUrlRunner.h"
+#include "amarokurls/PlayUrlGenerator.h"
+#include "amarokurls/PlayUrlRunner.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/timecode/TimecodeObserver.h"
-#include "ContextUrlGenerator.h"
-#include "PlayUrlGenerator.h"
+#include "playlist/PlaylistViewUrlGenerator.h"
 
 #include <KIcon>
 

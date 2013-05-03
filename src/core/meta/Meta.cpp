@@ -20,6 +20,7 @@
 
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Observer.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
@@ -30,88 +31,6 @@
 #include <Solid/Networking>
 
 using namespace Meta;
-
-//Meta::Observer
-
-Meta::Observer::~Observer()
-{
-    // Unsubscribe all stray Meta subscriptions:
-    foreach( Base *ptr, m_subscriptions )
-    {
-        if( ptr )
-            ptr->unsubscribe( this );
-    }
-}
-
-void
-Meta::Observer::metadataChanged( TrackPtr track )
-{
-    Q_UNUSED( track );
-}
-
-void
-Meta::Observer::metadataChanged( ArtistPtr artist )
-{
-    Q_UNUSED( artist );
-}
-
-void
-Meta::Observer::metadataChanged( AlbumPtr album )
-{
-    Q_UNUSED( album );
-}
-
-void
-Meta::Observer::metadataChanged( ComposerPtr composer )
-{
-    Q_UNUSED( composer );
-}
-
-void
-Meta::Observer::metadataChanged( GenrePtr genre )
-{
-    Q_UNUSED( genre );
-}
-
-void
-Meta::Observer::metadataChanged( YearPtr year )
-{
-    Q_UNUSED( year );
-}
-
-void
-Meta::Observer::entityDestroyed()
-{
-}
-
-void
-Meta::Observer::subscribeTo( Meta::Base *ptr )
-{
-    if( !ptr )
-        return;
-    QMutexLocker locker( &m_subscriptionsMutex );
-    ptr->subscribe( this );
-    m_subscriptions.insert( ptr );
-}
-
-void
-Meta::Observer::unsubscribeFrom( Meta::Base *ptr )
-{
-    QMutexLocker locker( &m_subscriptionsMutex );
-    if( ptr )
-        ptr->unsubscribe( this );
-    m_subscriptions.remove( ptr );
-}
-
-void
-Meta::Observer::destroyedNotify( Meta::Base *ptr )
-{
-    {
-        QMutexLocker locker( &m_subscriptionsMutex );
-        m_subscriptions.remove( ptr );
-    }
-    entityDestroyed();
-}
 
 // Meta::Base
 

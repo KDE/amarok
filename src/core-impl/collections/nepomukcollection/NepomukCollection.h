@@ -17,9 +17,9 @@
 #ifndef NEPOMUKCOLLECTION_H
 #define NEPOMUKCOLLECTION_H
 
-#include "NepomukConstructMetaJob.h"
-
 #include "core/collections/Collection.h"
+#include "core/meta/Observer.h"
+#include "core-impl/collections/nepomukcollection/NepomukConstructMetaJob.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 
 #include <KIcon>

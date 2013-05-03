@@ -21,13 +21,14 @@
 #include "SvgHandler.h"
 
 #include "App.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "moodbar/MoodbarManager.h"
 #include "PaletteHandler.h"
 #include "SvgTinter.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
 #include "covermanager/CoverCache.h"
+#include "moodbar/MoodbarManager.h"
 
 #include <KColorScheme>
 #include <KColorUtils>
@@ -52,7 +53,6 @@ namespace The {
         return s_SvgHandler_instance;
     }
 }
-
 
 SvgHandler::SvgHandler( QObject* parent )
     : QObject( parent )

@@ -16,13 +16,12 @@
 
 #include "TimecodeObserver.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 
-
 const qint64 TimecodeObserver::m_threshold = 600 * 1000; // 6000000ms = 10 minutes
-
 
 TimecodeObserver::TimecodeObserver( QObject *parent )
     : QObject( parent )

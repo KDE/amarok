@@ -18,8 +18,9 @@
 
 #include "PlaylistQueueEditor.h"
 
-#include "PlaylistActions.h"
-#include "PlaylistModelStack.h"
+#include "core/meta/Meta.h"
+#include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistModelStack.h"
 
 static const int s_idRole = Qt::UserRole;
 static const int s_myType = QListWidgetItem::UserType;

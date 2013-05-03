@@ -20,6 +20,7 @@
 #include "SvgHandler.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/BookmarkModel.h"
+#include "core/meta/Meta.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "widgets/ProgressWidget.h"
 

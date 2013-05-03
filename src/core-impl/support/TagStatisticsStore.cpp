@@ -17,6 +17,7 @@
 #include "TagStatisticsStore.h"
 
 #include "core/collections/support/SqlStorage.h"
+#include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
 TagStatisticsStore::TagStatisticsStore( Meta::Track *track )

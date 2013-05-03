@@ -25,6 +25,7 @@
 #include "GlobalCurrentTrackActions.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "dialogs/TagDialog.h"

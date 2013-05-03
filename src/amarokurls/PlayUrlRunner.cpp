@@ -26,6 +26,7 @@
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/proxymodels/AbstractModel.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core/meta/Meta.h"
 
 PlayUrlRunner::PlayUrlRunner() : AmarokUrlRunnerBase()
 {
@@ -53,7 +54,7 @@ bool PlayUrlRunner::run ( AmarokUrl url )
     }
 
     debug() << "seek pos: " << pos;
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl ( track_url );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( track_url );
     if ( !track )
         return false;
 

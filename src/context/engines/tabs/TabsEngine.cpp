@@ -14,20 +14,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "TabsEngine"
-
 #include "TabsEngine.h"
 
-// Amarok
+#include "EngineController.h"
+#include "context/ContextView.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "ContextView.h"
-#include "EngineController.h"
 
-// Qt
 #include <QTextCodec>
 
-class QRegExp;
+#define DEBUG_PREFIX "TabsEngine"
 
 using namespace Context;
 

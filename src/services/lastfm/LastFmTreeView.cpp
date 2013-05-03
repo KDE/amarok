@@ -18,12 +18,13 @@
 
 #include "LastFmTreeView.h"
 
-#include "core/support/Debug.h"
-#include "LastFmTreeModel.h" //FIXME just for enums
 #include "PopupDropperFactory.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
+#include "services/lastfm/LastFmTreeModel.h" // FIXME just for enums
 
 #include <KMenu>
 

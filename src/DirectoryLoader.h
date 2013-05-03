@@ -49,6 +49,7 @@ class DirectoryLoader : public QObject, public Playlists::PlaylistObserver
             AsyncLoading
         };
         DirectoryLoader( LoadingMode loadingMode = AsyncLoading );
+        ~DirectoryLoader();
 
         void insertAtRow( int row ); // call before init to tell the loader the row to start inserting tracks
         void init( const QList<KUrl> &urls ); //!< list all

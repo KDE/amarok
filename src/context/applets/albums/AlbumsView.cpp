@@ -15,18 +15,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "AlbumsView"
-
 #include "AlbumsView.h"
 
 #include "AlbumItem.h"
 #include "AlbumsDefs.h"
 #include "SvgHandler.h"
 #include "TrackItem.h"
-#include "dialogs/TagDialog.h"
 #include "core/capabilities/ActionsCapability.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
+#include "dialogs/TagDialog.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
@@ -46,6 +45,8 @@
 #include <QScrollBar>
 #include <QTreeView>
 #include <QWheelEvent>
+
+#define DEBUG_PREFIX "AlbumsView"
 
 // Subclassed to override the access level of some methods.
 // The AlbumsTreeView and the AlbumsView are so highly coupled that this is acceptable, imo.

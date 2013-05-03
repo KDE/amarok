@@ -19,6 +19,7 @@
 
 #include "core/collections/Collection.h"
 #include "core/meta/Meta.h"
+#include "core/meta/Observer.h"
 #include "core-impl/meta/stream/Stream.h"
 
 #include <QImage>

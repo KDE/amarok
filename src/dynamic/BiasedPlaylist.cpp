@@ -17,28 +17,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "BiasedPlaylist"
-
-#include "BiasSolver.h"
 #include "BiasedPlaylist.h"
-#include "BiasFactory.h"
-#include "DynamicModel.h"
 
-#include "amarokconfig.h"
+
 #include "App.h"
-#include "core/interfaces/Logger.h"
-#include "core/support/Components.h"
+#include "amarokconfig.h"
 #include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core/interfaces/Logger.h"
+#include "core/meta/Meta.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "dynamic/BiasSolver.h"
+#include "dynamic/BiasFactory.h"
+#include "dynamic/DynamicModel.h"
 #include "playlist/PlaylistModelStack.h" // for The::playlist
 
+#include <ThreadWeaver/Weaver>
 
+#include <QThread>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include <threadweaver/ThreadWeaver.h>
-#include <QThread>
+#define DEBUG_PREFIX "BiasedPlaylist"
 
 Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     : DynamicPlaylist( parent )

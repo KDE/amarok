@@ -18,7 +18,7 @@
 #define AMAROK_PHOTOS_ENGINE
 
 #include "context/DataEngine.h"
-#include "core/meta/Meta.h"
+#include "core/meta/Observer.h"
 #include "NetworkAccessManagerProxy.h"
 #include "PhotosInfo.h"
 

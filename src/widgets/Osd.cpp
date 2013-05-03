@@ -26,11 +26,12 @@
 #include "KNotificationBackend.h"
 #include "SvgHandler.h"
 #include "amarokconfig.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Amarok.h"
-#include "widgets/StarManager.h"
 #include "core/support/Debug.h"
+#include "widgets/StarManager.h"
 
 #include <KApplication>
 #include <KDebug>

@@ -20,14 +20,13 @@
 
 #include "TrackNavigator.h"
 
+#include "amarokconfig.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h"
 
-#include "core/support/Amarok.h"
-#include "amarokconfig.h"
-#include "core/support/Debug.h"
-
 #include <QQueue>
-
 
 Playlist::TrackNavigator::TrackNavigator()
 {

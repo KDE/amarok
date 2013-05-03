@@ -14,20 +14,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "CoverGridApplet"
-
 #include "CoverGridApplet.h"
+
 #include "AlbumItem.h"
-// Amarok
 #include "core/support/Amarok.h"
 #include "EngineController.h"
 #include "core/support/Debug.h"
 #include "context/ContextView.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistController.h"
-// KDE
+
 #include <KAction>
 #include <KColorScheme>
 #include <KConfigDialog>
@@ -35,7 +34,7 @@
 #include <Plasma/ScrollWidget>
 #include "covermanager/CoverCache.h"
 #include <KStandardDirs>
-// Qt
+
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsSimpleTextItem>
@@ -45,6 +44,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsGridLayout>
 
+#define DEBUG_PREFIX "CoverGridApplet"
 
 CoverGridApplet::CoverGridApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )

@@ -15,7 +15,9 @@
  ****************************************************************************************/
 
 #include "TrackItem.h"
-#include "AlbumsDefs.h"
+
+#include "context/applets/albums/AlbumsDefs.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 
 #include <KStringHandler>

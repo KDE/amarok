@@ -16,6 +16,7 @@
 
 #include "PlaylistInfoWidget.h"
 
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"

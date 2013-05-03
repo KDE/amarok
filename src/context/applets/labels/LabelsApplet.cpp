@@ -16,18 +16,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "LabelsApplet"
-
 #include "LabelsApplet.h"
-#include "LabelGraphicsItem.h"
 
 #include "App.h"
-#include "amarokurls/AmarokUrl.h"
-#include "context/widgets/AppletHeader.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "PaletteHandler.h"
-#include "Theme.h"
+#include "amarokurls/AmarokUrl.h"
+#include "context/Theme.h"
+#include "context/applets/labels/LabelGraphicsItem.h"
+#include "context/widgets/AppletHeader.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
 
 #include <Plasma/IconWidget>
 #include <Plasma/Containment>
@@ -40,9 +39,8 @@
 #include <QGraphicsProxyWidget>
 #include <QPropertyAnimation>
 
-
+#define DEBUG_PREFIX "LabelsApplet"
 #define LabelsAppletMaxLabelLength 40 // if a downloaded label is longer than this, don't show it
-
 
 LabelsApplet::LabelsApplet( QObject *parent, const QVariantList &args )
     : Context::Applet( parent, args ),

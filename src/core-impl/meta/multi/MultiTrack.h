@@ -19,6 +19,7 @@
 
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/meta/Meta.h"
+#include "core/meta/Observer.h"
 #include "core/playlists/Playlist.h"
 
 namespace Meta

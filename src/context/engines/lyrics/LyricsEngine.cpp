@@ -15,18 +15,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "LyricsEngine"
-
 #include "LyricsEngine.h"
 
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
-#include "ContextView.h"
 #include "EngineController.h"
 #include "ScriptManager.h"
+#include "context/ContextView.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <QTimer>
 #include <QTextDocument>
+
+#define DEBUG_PREFIX "LyricsEngine"
 
 using namespace Context;
 

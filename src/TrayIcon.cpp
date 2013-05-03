@@ -27,6 +27,7 @@
 #include "amarokconfig.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "playlist/PlaylistActions.h"

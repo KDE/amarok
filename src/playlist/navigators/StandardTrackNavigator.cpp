@@ -23,10 +23,10 @@
 
 #include "StandardTrackNavigator.h"
 
+#include "amarokconfig.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "playlist/PlaylistModelStack.h"
-#include "amarokconfig.h"
-
 
 Playlist::StandardTrackNavigator::StandardTrackNavigator()
 {

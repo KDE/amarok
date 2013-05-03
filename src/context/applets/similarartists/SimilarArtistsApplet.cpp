@@ -16,21 +16,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "SimilarArtistsApplet"
-
 #include "SimilarArtistsApplet.h"
 
-//Amarok
-#include "core/support/Amarok.h"
 #include "App.h"
 #include "EngineController.h"
-#include "core/support/Debug.h"
+#include "PaletteHandler.h"
 #include "context/Svg.h"
 #include "context/ContextView.h"
-#include "PaletteHandler.h"
 #include "context/widgets/AppletHeader.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
 
-//Kde
 #include <KConfigDialog>
 #include <KStandardDirs>
 #include <KTextBrowser>
@@ -38,7 +35,6 @@
 #include <Plasma/Theme>
 #include <plasma/widgets/iconwidget.h>
 
-//Qt
 #include <QDesktopServices>
 #include <QTextEdit>
 #include <QGraphicsLinearLayout>
@@ -46,6 +42,8 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include <QScrollBar>
+
+#define DEBUG_PREFIX "SimilarArtistsApplet"
 
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )

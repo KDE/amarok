@@ -22,10 +22,11 @@
 #include "SliderWidget.h"
 #include "TimeLabel.h"
 #include "amarokconfig.h"
-#include "core/meta/support/MetaUtility.h"
-#include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 
 #include <KLocale>
 
