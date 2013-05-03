@@ -127,7 +127,7 @@ CollectionScanner::BatchFile::write( const QString &batchPath )
 
     writer.writeStartDocument();
     writer.writeStartElement( QLatin1String("scanner") );
-    writer.writeComment("Batch file for amarokcollectionscanner "AMAROK_VERSION" created on "+QDateTime::currentDateTime().toString());
+    writer.writeComment("Batch file for amarokcollectionscanner " AMAROK_VERSION " created on "+QDateTime::currentDateTime().toString());
 
     foreach( const QString &dir, m_directories )
     {
