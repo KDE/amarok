@@ -14,16 +14,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TESTPROXYCOLLECTIONMETA_H
-#define TESTPROXYCOLLECTIONMETA_H
+#ifndef TESTAGGREGATEMETA_H
+#define TESTAGGREGATEMETA_H
 
 #include <QtTest/QTest>
 
-class TestProxyCollectionMeta : public QObject
+class TestAggregateMeta : public QObject
 {
     Q_OBJECT
 public:
-    TestProxyCollectionMeta();
+    TestAggregateMeta();
 
 private slots:
     void testHasCapabilityOnSingleTrack();
@@ -49,4 +49,4 @@ private slots:
     void testPrettyUrl();
 };
 
-#endif // TESTPROXYCOLLECTIONALBUM_H
+#endif // TESTAGGREGATEMETA_H

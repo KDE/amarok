@@ -14,15 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TestProxyCollectionMeta.h"
+#include "TestAggregateMeta.h"
 
-#include "core-impl/collections/proxycollection/ProxyCollection.h"
-#include "core-impl/collections/proxycollection/ProxyCollectionMeta.h"
-#include "core/support/Debug.h"
 #include "core/capabilities/Capability.h"
-#include "core/meta/Meta.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/OrganiseCapability.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/aggregate/AggregateCollection.h"
+#include "core-impl/collections/aggregate/AggregateMeta.h"
 
 #include "mocks/MetaMock.h"
 #include "mocks/MockTrack.h"
@@ -37,9 +37,9 @@
 
 #include <gmock/gmock.h>
 
-QTEST_KDEMAIN_CORE( TestProxyCollectionMeta )
+QTEST_KDEMAIN_CORE( TestAggregateMeta )
 
-TestProxyCollectionMeta::TestProxyCollectionMeta()
+TestAggregateMeta::TestAggregateMeta()
 {
     KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
     ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
@@ -196,7 +196,7 @@ public:
 };
 
 void
-TestProxyCollectionMeta::testHasCapabilityOnSingleTrack()
+TestAggregateMeta::testHasCapabilityOnSingleTrack()
 {
     MyTrackMock *mock = new MyTrackMock();
     QMap<Capabilities::Capability::Type, bool> results;
@@ -206,7 +206,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleTrack()
 
     Meta::TrackPtr ptr( mock );
 
-    Meta::ProxyTrack cut( 0, ptr );
+    Meta::AggregateTrack cut( 0, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -214,7 +214,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleTrack()
 }
 
 void
-TestProxyCollectionMeta::testCreateCapabilityOnSingleTrack()
+TestAggregateMeta::testCreateCapabilityOnSingleTrack()
 {
     MyTrackMock *mock = new MyTrackMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
@@ -226,7 +226,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleTrack()
 
     Meta::TrackPtr ptr( mock );
 
-    Meta::ProxyTrack cut( 0, ptr );
+    Meta::AggregateTrack cut( 0, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -235,7 +235,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleTrack()
 }
 
 void
-TestProxyCollectionMeta::testHasCapabilityOnSingleAlbum()
+TestAggregateMeta::testHasCapabilityOnSingleAlbum()
 {
     MyAlbumMock *mock = new MyAlbumMock();
     QMap<Capabilities::Capability::Type, bool> results;
@@ -245,7 +245,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleAlbum()
 
     Meta::AlbumPtr ptr( mock );
 
-    Meta::ProxyAlbum album( 0, ptr );
+    Meta::AggregateAlbum album( 0, ptr );
 
     QVERIFY( album.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !album.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -253,7 +253,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleAlbum()
 }
 
 void
-TestProxyCollectionMeta::testCreateCapabilityOnSingleAlbum()
+TestAggregateMeta::testCreateCapabilityOnSingleAlbum()
 {
     MyAlbumMock *mock = new MyAlbumMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
@@ -265,7 +265,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleAlbum()
 
     Meta::AlbumPtr ptr( mock );
 
-    Meta::ProxyAlbum album( 0, ptr );
+    Meta::AggregateAlbum album( 0, ptr );
 
     QVERIFY( ! album.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( album.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -274,7 +274,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleAlbum()
 }
 
 void
-TestProxyCollectionMeta::testHasCapabilityOnSingleArtist()
+TestAggregateMeta::testHasCapabilityOnSingleArtist()
 {
     MyArtistMock *mock = new MyArtistMock();
     QMap<Capabilities::Capability::Type, bool> results;
@@ -284,7 +284,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleArtist()
 
     Meta::ArtistPtr ptr( mock );
 
-    Meta::ProxyArtist artist( 0, ptr );
+    Meta::AggregateArtist artist( 0, ptr );
 
     QVERIFY( artist.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !artist.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -292,7 +292,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleArtist()
 }
 
 void
-TestProxyCollectionMeta::testCreateCapabilityOnSingleArtist()
+TestAggregateMeta::testCreateCapabilityOnSingleArtist()
 {
     MyArtistMock *mock = new MyArtistMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
@@ -304,7 +304,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleArtist()
 
     Meta::ArtistPtr ptr( mock );
 
-    Meta::ProxyArtist artist( 0, ptr );
+    Meta::AggregateArtist artist( 0, ptr );
 
     QVERIFY( ! artist.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( artist.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -313,7 +313,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleArtist()
 }
 
 void
-TestProxyCollectionMeta::testHasCapabilityOnSingleComposer()
+TestAggregateMeta::testHasCapabilityOnSingleComposer()
 {
     MyComposerMock *mock = new MyComposerMock();
     QMap<Capabilities::Capability::Type, bool> results;
@@ -323,7 +323,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleComposer()
 
     Meta::ComposerPtr ptr( mock );
 
-    Meta::ProxyComposer cut( 0, ptr );
+    Meta::AggregateComposer cut( 0, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -331,7 +331,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleComposer()
 }
 
 void
-TestProxyCollectionMeta::testCreateCapabilityOnSingleComposer()
+TestAggregateMeta::testCreateCapabilityOnSingleComposer()
 {
     MyComposerMock *mock = new MyComposerMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
@@ -343,7 +343,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleComposer()
 
     Meta::ComposerPtr ptr( mock );
 
-    Meta::ProxyComposer cut( 0, ptr );
+    Meta::AggregateComposer cut( 0, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -352,7 +352,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleComposer()
 }
 
 void
-TestProxyCollectionMeta::testHasCapabilityOnSingleGenre()
+TestAggregateMeta::testHasCapabilityOnSingleGenre()
 {
     MyGenreMock *mock = new MyGenreMock();
     QMap<Capabilities::Capability::Type, bool> results;
@@ -362,7 +362,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleGenre()
 
     Meta::GenrePtr ptr( mock );
 
-    Meta::ProxyGenre cut( 0, ptr );
+    Meta::AggregateGenre cut( 0, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -370,7 +370,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleGenre()
 }
 
 void
-TestProxyCollectionMeta::testCreateCapabilityOnSingleGenre()
+TestAggregateMeta::testCreateCapabilityOnSingleGenre()
 {
     MyGenreMock *mock = new MyGenreMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
@@ -382,7 +382,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleGenre()
 
     Meta::GenrePtr ptr( mock );
 
-    Meta::ProxyGenre cut( 0, ptr );
+    Meta::AggregateGenre cut( 0, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -391,7 +391,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleGenre()
 }
 
 void
-TestProxyCollectionMeta::testHasCapabilityOnSingleYear()
+TestAggregateMeta::testHasCapabilityOnSingleYear()
 {
     MyYearMock *mock = new MyYearMock();
     QMap<Capabilities::Capability::Type, bool> results;
@@ -401,7 +401,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleYear()
 
     Meta::YearPtr ptr( mock );
 
-    Meta::ProxyYear cut( 0, ptr );
+    Meta::AggreagateYear cut( 0, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -409,7 +409,7 @@ TestProxyCollectionMeta::testHasCapabilityOnSingleYear()
 }
 
 void
-TestProxyCollectionMeta::testCreateCapabilityOnSingleYear()
+TestAggregateMeta::testCreateCapabilityOnSingleYear()
 {
     MyYearMock *mock = new MyYearMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
@@ -421,7 +421,7 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleYear()
 
     Meta::YearPtr ptr( mock );
 
-    Meta::ProxyYear cut( 0, ptr );
+    Meta::AggreagateYear cut( 0, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -455,7 +455,7 @@ public:
 };
 
 void
-TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
+TestAggregateMeta::testEditableCapabilityOnMultipleTracks()
 {
     MyTrackMock *mock1 = new MyTrackMock();
     MyTrackMock *mock2 = new MyTrackMock();
@@ -471,12 +471,12 @@ TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
     Meta::TrackPtr ptr1( mock1 );
     Meta::TrackPtr ptr2( mock2 );
 
-    Collections::ProxyCollection *proxyCollection = new Collections::ProxyCollection();
+    Collections::AggregateCollection *collection = new Collections::AggregateCollection();
 
-    QSignalSpy spy( proxyCollection, SIGNAL(updated()));
+    QSignalSpy spy( collection, SIGNAL(updated()));
     QVERIFY( spy.isValid() );
 
-    Meta::ProxyTrack cut( proxyCollection, ptr1 );
+    Meta::AggregateTrack cut( collection, ptr1 );
     cut.add( ptr2 );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::Editable ) );
@@ -515,14 +515,14 @@ using ::testing::Return;
 using ::testing::AnyNumber;
 
 void
-TestProxyCollectionMeta::testPrettyUrl()
+TestAggregateMeta::testPrettyUrl()
 {
     Meta::MockTrack *mock = new ::testing::NiceMock<Meta::MockTrack>();
     EXPECT_CALL( *mock, prettyUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( "foo" ) );
 
     Meta::TrackPtr trackPtr( mock );
 
-    Meta::ProxyTrack track( 0, trackPtr );
+    Meta::AggregateTrack track( 0, trackPtr );
 
     QCOMPARE( track.prettyUrl(), QString( "foo" ) );
 }

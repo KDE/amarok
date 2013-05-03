@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef PROXYCOLLECTIONMETA_H
-#define PROXYCOLLECTIONMETA_H
+#ifndef AGGREGATEMETA_H
+#define AGGREGATEMETA_H
 
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
@@ -27,16 +27,16 @@
 #include <QList>
 
 namespace Collections {
-    class ProxyCollection;
+    class AggregateCollection;
 }
 
 namespace Meta {
 
-    class AMAROK_EXPORT ProxyTrack : public Meta::Track, public Meta::Statistics, private Meta::Observer
+    class AMAROK_EXPORT AggregateTrack : public Meta::Track, public Meta::Statistics, private Meta::Observer
     {
         public:
-            ProxyTrack( Collections::ProxyCollection *coll, const Meta::TrackPtr &track );
-            ~ProxyTrack();
+            AggregateTrack( Collections::AggregateCollection *coll, const Meta::TrackPtr &track );
+            ~AggregateTrack();
 
             QString name() const;
             QString prettyName() const;
@@ -103,7 +103,7 @@ namespace Meta {
             virtual void metadataChanged( Meta::TrackPtr track );
 
         private:
-            Collections::ProxyCollection *m_collection;
+            Collections::AggregateCollection *m_collection;
             Meta::TrackList m_tracks;
             QString m_name;
             Meta::AlbumPtr m_album;
@@ -113,11 +113,11 @@ namespace Meta {
             Meta::YearPtr m_year;
     };
 
-    class AMAROK_EXPORT ProxyAlbum : public Meta::Album, private Meta::Observer
+    class AMAROK_EXPORT AggregateAlbum : public Meta::Album, private Meta::Observer
     {
         public:
-        ProxyAlbum( Collections::ProxyCollection *coll, Meta::AlbumPtr album );
-        ~ProxyAlbum();
+        AggregateAlbum( Collections::AggregateCollection *coll, Meta::AlbumPtr album );
+        ~AggregateAlbum();
 
         QString name() const;
         QString prettyName() const;
@@ -156,17 +156,17 @@ namespace Meta {
         virtual void metadataChanged( Meta::AlbumPtr album );
 
         private:
-        Collections::ProxyCollection *m_collection;
+        Collections::AggregateCollection *m_collection;
         Meta::AlbumList m_albums;
         QString m_name;
         Meta::ArtistPtr m_albumArtist;
     };
 
-    class AMAROK_EXPORT ProxyArtist : public Meta::Artist, private Meta::Observer
+    class AMAROK_EXPORT AggregateArtist : public Meta::Artist, private Meta::Observer
     {
         public:
-        ProxyArtist( Collections::ProxyCollection *coll, Meta::ArtistPtr artist );
-        ~ProxyArtist();
+        AggregateArtist( Collections::AggregateCollection *coll, Meta::ArtistPtr artist );
+        ~AggregateArtist();
 
         QString name() const;
         QString prettyName() const;
@@ -184,16 +184,16 @@ namespace Meta {
         virtual void metadataChanged( Meta::ArtistPtr artist );
 
         private:
-        Collections::ProxyCollection *m_collection;
+        Collections::AggregateCollection *m_collection;
         Meta::ArtistList m_artists;
         QString m_name;
     };
 
-    class AMAROK_EXPORT ProxyGenre : public Meta::Genre, private Meta::Observer
+    class AMAROK_EXPORT AggregateGenre : public Meta::Genre, private Meta::Observer
     {
         public:
-        ProxyGenre( Collections::ProxyCollection *coll, Meta::GenrePtr genre );
-        ~ProxyGenre();
+        AggregateGenre( Collections::AggregateCollection *coll, Meta::GenrePtr genre );
+        ~AggregateGenre();
 
         QString name() const;
         QString prettyName() const;
@@ -211,16 +211,16 @@ namespace Meta {
         virtual void metadataChanged( Meta::GenrePtr genre );
 
         private:
-        Collections::ProxyCollection *m_collection;
+        Collections::AggregateCollection *m_collection;
         Meta::GenreList m_genres;
         QString m_name;
     };
 
-    class AMAROK_EXPORT ProxyComposer : public Meta::Composer, private Meta::Observer
+    class AMAROK_EXPORT AggregateComposer : public Meta::Composer, private Meta::Observer
     {
         public:
-        ProxyComposer( Collections::ProxyCollection *coll, Meta::ComposerPtr composer );
-        ~ProxyComposer();
+        AggregateComposer( Collections::AggregateCollection *coll, Meta::ComposerPtr composer );
+        ~AggregateComposer();
 
         QString name() const;
         QString prettyName() const;
@@ -238,16 +238,16 @@ namespace Meta {
         virtual void metadataChanged( Meta::ComposerPtr composer );
 
         private:
-        Collections::ProxyCollection *m_collection;
+        Collections::AggregateCollection *m_collection;
         Meta::ComposerList m_composers;
         QString m_name;
     };
 
-    class AMAROK_EXPORT ProxyYear : public Meta::Year, private Meta::Observer
+    class AMAROK_EXPORT AggreagateYear : public Meta::Year, private Meta::Observer
     {
         public:
-        ProxyYear( Collections::ProxyCollection * coll, Meta::YearPtr year );
-        ~ProxyYear();
+        AggreagateYear( Collections::AggregateCollection * coll, Meta::YearPtr year );
+        ~AggreagateYear();
 
         QString name() const;
         QString prettyName() const;
@@ -268,17 +268,17 @@ namespace Meta {
         virtual void metadataChanged( Meta::YearPtr year );
 
         private:
-        Collections::ProxyCollection *m_collection;
+        Collections::AggregateCollection *m_collection;
         Meta::YearList m_years;
         QString m_name;
 
     };
 
-    class AMAROK_EXPORT ProxyLabel : public Meta::Label
+    class AMAROK_EXPORT AggregateLabel : public Meta::Label
     {
     public:
-        ProxyLabel( Collections::ProxyCollection *coll, const Meta::LabelPtr &label );
-        virtual ~ProxyLabel();
+        AggregateLabel( Collections::AggregateCollection *coll, const Meta::LabelPtr &label );
+        virtual ~AggregateLabel();
 
         virtual QString name() const;
         virtual QString prettyName() const;
@@ -293,10 +293,10 @@ namespace Meta {
         void add( const Meta::LabelPtr &label );
 
     private:
-        Collections::ProxyCollection *m_collection;
+        Collections::AggregateCollection *m_collection;
         Meta::LabelList m_labels;
         QString m_name;
     };
-} //namespace Meta
+} // namespace Meta
 
-#endif
+#endif // AGGREGATEMETA_H

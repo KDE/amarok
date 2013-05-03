@@ -15,12 +15,13 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#ifndef PROXYCOLLECTIONQUERYMAKER_H
-#define PROXYCOLLECTIONQUERYMAKER_H
+
+#ifndef AGGREGATEQUERYMAKER_H
+#define AGGREGATEQUERYMAKER_H
 
 #include "core/collections/QueryMaker.h"
 #include "core/collections/Collection.h"
-#include "ProxyCollectionMeta.h"
+#include "core-impl/collections/aggregate/AggregateMeta.h"
 
 #include <QList>
 #include <QMutex>
@@ -34,15 +35,13 @@ class CustomReturnValue;
 namespace Collections
 {
 
-class Collection;
-
-class AMAROK_EXPORT ProxyQueryMaker : public QueryMaker
+class AMAROK_EXPORT AggregateQueryMaker : public QueryMaker
 {
     Q_OBJECT
 
     public:
-        ProxyQueryMaker( Collections::ProxyCollection *collection, const QList<QueryMaker*> &queryMakers );
-        ~ProxyQueryMaker();
+        AggregateQueryMaker( Collections::AggregateCollection *collection, const QList<QueryMaker*> &queryMakers );
+        ~AggregateQueryMaker();
 
         virtual void run();
         virtual void abortQuery();
@@ -78,7 +77,7 @@ class AMAROK_EXPORT ProxyQueryMaker : public QueryMaker
 
     private:
         template <class PointerType>
-        void emitProperResult( const QList<PointerType > &list );
+        void emitProperResult( const QList<PointerType> &list );
 
         void handleResult();
 
@@ -93,7 +92,7 @@ class AMAROK_EXPORT ProxyQueryMaker : public QueryMaker
         void slotNewResultReady( const Meta::LabelList &labels );
 
     private:
-        ProxyCollection *m_collection;
+        AggregateCollection *m_collection;
         QList<QueryMaker*> m_builders;
         int m_queryDoneCount;
         bool m_returnDataPointers;
@@ -103,20 +102,19 @@ class AMAROK_EXPORT ProxyQueryMaker : public QueryMaker
         qint64 m_orderField;
         bool m_orderByNumberField;
         QMutex m_queryDoneCountMutex;
-        //store ProxyCollection meta stuff using KSharedPtr,
-        //otherwise ProxyCollection might delete it (as soon as it gets garbage collection)
-        QSet<KSharedPtr<Meta::ProxyTrack> > m_tracks;
-        QSet<KSharedPtr<Meta::ProxyArtist> > m_artists;
-        QSet<KSharedPtr<Meta::ProxyAlbum> > m_albums;
-        QSet<KSharedPtr<Meta::ProxyGenre> > m_genres;
-        QSet<KSharedPtr<Meta::ProxyComposer> > m_composers;
-        QSet<KSharedPtr<Meta::ProxyYear> > m_years;
-        QSet<KSharedPtr<Meta::ProxyLabel> > m_labels;
+        // store AggregateCollection meta stuff using KSharedPtr,
+        // otherwise AggregateCollection might delete it (as soon as it gets garbage collection)
+        QSet<KSharedPtr<Meta::AggregateTrack> > m_tracks;
+        QSet<KSharedPtr<Meta::AggregateArtist> > m_artists;
+        QSet<KSharedPtr<Meta::AggregateAlbum> > m_albums;
+        QSet<KSharedPtr<Meta::AggregateGenre> > m_genres;
+        QSet<KSharedPtr<Meta::AggregateComposer> > m_composers;
+        QSet<KSharedPtr<Meta::AggreagateYear> > m_years;
+        QSet<KSharedPtr<Meta::AggregateLabel> > m_labels;
         QList<CustomReturnFunction*> m_returnFunctions;
         QList<CustomReturnValue*> m_returnValues;
-
 };
 
 }
 
-#endif /* PROXYCOLLECTIONQUERYMAKER_H */
+#endif /* AGGREGATEQUERYMAKER_H */

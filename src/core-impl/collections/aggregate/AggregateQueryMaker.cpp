@@ -16,22 +16,22 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#define DEBUG_PREFIX "ProxyCollectionQueryMaker"
+#include "AggregateQueryMaker.h"
 
-#include "ProxyCollectionQueryMaker.h"
-
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/aggregate/AggregateCollection.h"
 #include "core-impl/collections/support/MemoryCustomValue.h"
 #include "core-impl/collections/support/MemoryQueryMakerHelper.h"
-#include "core/support/Debug.h"
-#include "core/meta/Meta.h"
-#include "ProxyCollection.h"
 
 #include <QMetaEnum>
 #include <QMetaObject>
 
+#define DEBUG_PREFIX "AggregateQueryMaker"
+
 using namespace Collections;
 
-ProxyQueryMaker::ProxyQueryMaker( ProxyCollection *collection, const QList<QueryMaker*> &queryMakers )
+AggregateQueryMaker::AggregateQueryMaker( AggregateCollection *collection, const QList<QueryMaker*> &queryMakers )
     : QueryMaker()
     , m_collection( collection )
     , m_builders( queryMakers )
@@ -56,7 +56,7 @@ ProxyQueryMaker::ProxyQueryMaker( ProxyCollection *collection, const QList<Query
     }
 }
 
-ProxyQueryMaker::~ProxyQueryMaker()
+AggregateQueryMaker::~AggregateQueryMaker()
 {
     qDeleteAll( m_returnFunctions );
     qDeleteAll( m_returnValues );
@@ -64,21 +64,21 @@ ProxyQueryMaker::~ProxyQueryMaker()
 }
 
 void
-ProxyQueryMaker::run()
+AggregateQueryMaker::run()
 {
     foreach( QueryMaker *b, m_builders )
         b->run();
 }
 
 void
-ProxyQueryMaker::abortQuery()
+AggregateQueryMaker::abortQuery()
 {
     foreach( QueryMaker *b, m_builders )
         b->abortQuery();
 }
 
 QueryMaker*
-ProxyQueryMaker::setQueryType( QueryType type )
+AggregateQueryMaker::setQueryType( QueryType type )
 {
     m_queryType = type;
     if( type != QueryMaker::Custom )
@@ -89,14 +89,14 @@ ProxyQueryMaker::setQueryType( QueryType type )
     }
     else
     {
-        //we cannot forward custom queries as there is no way to integrate the results
-        //delivered by the QueryMakers. Instead we ask for tracks that match the criterias,
-        //and then generate the custom result similar to MemoryQueryMaker.
-        //And yes, this means that we will load all tracks when we simply want the count of tracks
-        //in the collection. It might be necessary to add some specific logic for that case.
-        //On second thought, there is no way around loading all objects, as we want to operate on distinct
-        //elements (for some value of distinct) in ProxyCollection. We can only figure out what the union
-        //of all elements is after loading them in memory
+        // we cannot forward custom queries as there is no way to integrate the results
+        // delivered by the QueryMakers. Instead we ask for tracks that match the criterias,
+        // and then generate the custom result similar to MemoryQueryMaker.
+        // And yes, this means that we will load all tracks when we simply want the count of tracks
+        // in the collection. It might be necessary to add some specific logic for that case.
+        // On second thought, there is no way around loading all objects, as we want to operate on distinct
+        // elements (for some value of distinct) in AggregateCollection. We can only figure out what the union
+        // of all elements is after loading them in memory
         foreach( QueryMaker *b, m_builders )
             b->setQueryType( QueryMaker::Track );
         return this;
@@ -104,7 +104,7 @@ ProxyQueryMaker::setQueryType( QueryType type )
 }
 
 QueryMaker*
-ProxyQueryMaker::addReturnValue( qint64 value )
+AggregateQueryMaker::addReturnValue( qint64 value )
 {
     //do not forward this call, see comment in setQueryType()
     m_returnValues.append( CustomValueFactory::returnValue( value ) );
@@ -112,7 +112,7 @@ ProxyQueryMaker::addReturnValue( qint64 value )
 }
 
 QueryMaker*
-ProxyQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
+AggregateQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 {
     //do not forward this call, see comment in setQueryType()
     m_returnFunctions.append( CustomValueFactory::returnFunction( function, value ) );
@@ -120,7 +120,7 @@ ProxyQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 }
 
 QueryMaker*
-ProxyQueryMaker::orderBy( qint64 value, bool descending )
+AggregateQueryMaker::orderBy( qint64 value, bool descending )
 {
     m_orderField = value;
     m_orderDescending = descending;
@@ -156,7 +156,7 @@ ProxyQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
-ProxyQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
+AggregateQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     foreach( QueryMaker *b, m_builders )
         b->addFilter( value, filter, matchBegin, matchEnd );
@@ -164,7 +164,7 @@ ProxyQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin
 }
 
 QueryMaker*
-ProxyQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
+AggregateQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     foreach( QueryMaker *b, m_builders )
         b->excludeFilter( value, filter, matchBegin, matchEnd );
@@ -172,7 +172,7 @@ ProxyQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchB
 }
 
 QueryMaker*
-ProxyQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+AggregateQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
     foreach( QueryMaker *b, m_builders )
         b->addNumberFilter( value, filter, compare);
@@ -180,7 +180,7 @@ ProxyQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::Numbe
 }
 
 QueryMaker*
-ProxyQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+AggregateQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
     foreach( QueryMaker *b, m_builders )
         b->excludeNumberFilter( value, filter, compare );
@@ -188,7 +188,7 @@ ProxyQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::N
 }
 
 QueryMaker*
-ProxyQueryMaker::addMatch( const Meta::TrackPtr &track )
+AggregateQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
     foreach( QueryMaker *b, m_builders )
         b->addMatch( track );
@@ -196,7 +196,7 @@ ProxyQueryMaker::addMatch( const Meta::TrackPtr &track )
 }
 
 QueryMaker*
-ProxyQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::ArtistMatchBehaviour behaviour )
+AggregateQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::ArtistMatchBehaviour behaviour )
 {
     foreach( QueryMaker *b, m_builders )
         b->addMatch( artist, behaviour );
@@ -204,7 +204,7 @@ ProxyQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::ArtistMatc
 }
 
 QueryMaker*
-ProxyQueryMaker::addMatch( const Meta::AlbumPtr &album )
+AggregateQueryMaker::addMatch( const Meta::AlbumPtr &album )
 {
     foreach( QueryMaker *b, m_builders )
         b->addMatch( album );
@@ -212,7 +212,7 @@ ProxyQueryMaker::addMatch( const Meta::AlbumPtr &album )
 }
 
 QueryMaker*
-ProxyQueryMaker::addMatch( const Meta::GenrePtr &genre )
+AggregateQueryMaker::addMatch( const Meta::GenrePtr &genre )
 {
     foreach( QueryMaker *b, m_builders )
         b->addMatch( genre );
@@ -220,7 +220,7 @@ ProxyQueryMaker::addMatch( const Meta::GenrePtr &genre )
 }
 
 QueryMaker*
-ProxyQueryMaker::addMatch( const Meta::ComposerPtr &composer )
+AggregateQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 {
     foreach( QueryMaker *b, m_builders )
         b->addMatch( composer );
@@ -228,7 +228,7 @@ ProxyQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 }
 
 QueryMaker*
-ProxyQueryMaker::addMatch( const Meta::YearPtr &year )
+AggregateQueryMaker::addMatch( const Meta::YearPtr &year )
 {
     foreach( QueryMaker *b, m_builders )
         b->addMatch( year );
@@ -236,7 +236,7 @@ ProxyQueryMaker::addMatch( const Meta::YearPtr &year )
 }
 
 QueryMaker*
-ProxyQueryMaker::addMatch( const Meta::LabelPtr &label )
+AggregateQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
     foreach( QueryMaker *b, m_builders )
         b->addMatch( label );
@@ -244,7 +244,7 @@ ProxyQueryMaker::addMatch( const Meta::LabelPtr &label )
 }
 
 QueryMaker*
-ProxyQueryMaker::limitMaxResultSize( int size )
+AggregateQueryMaker::limitMaxResultSize( int size )
 {
     //forward the call so the m_builders do not have to do work
     //that we definitely know is unnecessary (like returning more than size results)
@@ -256,7 +256,7 @@ ProxyQueryMaker::limitMaxResultSize( int size )
 }
 
 QueryMaker*
-ProxyQueryMaker::beginAnd()
+AggregateQueryMaker::beginAnd()
 {
     foreach( QueryMaker *b, m_builders )
         b->beginAnd();
@@ -264,7 +264,7 @@ ProxyQueryMaker::beginAnd()
 }
 
 QueryMaker*
-ProxyQueryMaker::beginOr()
+AggregateQueryMaker::beginOr()
 {
     foreach( QueryMaker *b, m_builders )
         b->beginOr();
@@ -272,7 +272,7 @@ ProxyQueryMaker::beginOr()
 }
 
 QueryMaker*
-ProxyQueryMaker::endAndOr()
+AggregateQueryMaker::endAndOr()
 {
     foreach( QueryMaker *b, m_builders )
         b->endAndOr();
@@ -280,7 +280,7 @@ ProxyQueryMaker::endAndOr()
 }
 
 QueryMaker*
-ProxyQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
+AggregateQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
     foreach( QueryMaker *b, m_builders )
         b->setAlbumQueryMode( mode );
@@ -288,7 +288,7 @@ ProxyQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 }
 
 QueryMaker*
-ProxyQueryMaker::setLabelQueryMode( LabelQueryMode mode )
+AggregateQueryMaker::setLabelQueryMode( LabelQueryMode mode )
 {
     foreach( QueryMaker *b, m_builders )
         b->setLabelQueryMode( mode );
@@ -296,7 +296,7 @@ ProxyQueryMaker::setLabelQueryMode( LabelQueryMode mode )
 }
 
 void
-ProxyQueryMaker::slotQueryDone()
+AggregateQueryMaker::slotQueryDone()
 {
     m_queryDoneCountMutex.lock();
     m_queryDoneCount++;
@@ -314,7 +314,7 @@ ProxyQueryMaker::slotQueryDone()
 }
 
 template <class PointerType>
-void ProxyQueryMaker::emitProperResult( const QList<PointerType>& list )
+void AggregateQueryMaker::emitProperResult( const QList<PointerType>& list )
 {
    QList<PointerType> resultList = list;
 
@@ -325,7 +325,7 @@ void ProxyQueryMaker::emitProperResult( const QList<PointerType>& list )
 }
 
 void
-ProxyQueryMaker::handleResult()
+AggregateQueryMaker::handleResult()
 {
     //copied from MemoryQueryMaker::handleResult()
     switch( m_queryType )
@@ -334,7 +334,7 @@ ProxyQueryMaker::handleResult()
         {
             QStringList result;
             Meta::TrackList tracks;
-            foreach( KSharedPtr<Meta::ProxyTrack> track, m_tracks )
+            foreach( KSharedPtr<Meta::AggregateTrack> track, m_tracks )
             {
                 tracks.append( Meta::TrackPtr::staticCast( track ) );
             }
@@ -375,7 +375,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Track :
         {
             Meta::TrackList tracks;
-            foreach( KSharedPtr<Meta::ProxyTrack> track, m_tracks )
+            foreach( KSharedPtr<Meta::AggregateTrack> track, m_tracks )
             {
                 tracks.append( Meta::TrackPtr::staticCast( track ) );
             }
@@ -394,7 +394,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Album :
         {
             Meta::AlbumList albums;
-            foreach( KSharedPtr<Meta::ProxyAlbum> album, m_albums )
+            foreach( KSharedPtr<Meta::AggregateAlbum> album, m_albums )
             {
                 albums.append( Meta::AlbumPtr::staticCast( album ) );
             }
@@ -408,7 +408,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::AlbumArtist :
         {
             Meta::ArtistList artists;
-            foreach( KSharedPtr<Meta::ProxyArtist> artist, m_artists )
+            foreach( KSharedPtr<Meta::AggregateArtist> artist, m_artists )
             {
                 artists.append( Meta::ArtistPtr::staticCast( artist ) );
             }
@@ -420,7 +420,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Composer :
         {
             Meta::ComposerList composers;
-            foreach( KSharedPtr<Meta::ProxyComposer> composer, m_composers )
+            foreach( KSharedPtr<Meta::AggregateComposer> composer, m_composers )
             {
                 composers.append( Meta::ComposerPtr::staticCast( composer ) );
             }
@@ -433,7 +433,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Genre :
         {
             Meta::GenreList genres;
-            foreach( KSharedPtr<Meta::ProxyGenre> genre, m_genres )
+            foreach( KSharedPtr<Meta::AggregateGenre> genre, m_genres )
             {
                 genres.append( Meta::GenrePtr::staticCast( genre ) );
             }
@@ -446,7 +446,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Year :
         {
             Meta::YearList years;
-            foreach( KSharedPtr<Meta::ProxyYear> year, m_years )
+            foreach( KSharedPtr<Meta::AggreagateYear> year, m_years )
             {
                 years.append( Meta::YearPtr::staticCast( year ) );
             }
@@ -463,7 +463,7 @@ ProxyQueryMaker::handleResult()
         case QueryMaker::Label :
         {
             Meta::LabelList labels;
-            foreach( KSharedPtr<Meta::ProxyLabel> label, m_labels )
+            foreach( KSharedPtr<Meta::AggregateLabel> label, m_labels )
             {
                 labels.append( Meta::LabelPtr::staticCast( label ) );
             }
@@ -485,67 +485,64 @@ ProxyQueryMaker::handleResult()
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const Meta::TrackList &tracks )
+AggregateQueryMaker::slotNewResultReady( const Meta::TrackList &tracks )
 {
     foreach( const Meta::TrackPtr &track, tracks )
     {
-        m_tracks.insert( KSharedPtr<Meta::ProxyTrack>( m_collection->getTrack( track ) ) );
+        m_tracks.insert( KSharedPtr<Meta::AggregateTrack>( m_collection->getTrack( track ) ) );
     }
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const Meta::ArtistList &artists )
+AggregateQueryMaker::slotNewResultReady( const Meta::ArtistList &artists )
 {
     foreach( const Meta::ArtistPtr &artist, artists )
     {
-        m_artists.insert( KSharedPtr<Meta::ProxyArtist>( m_collection->getArtist( artist ) ) );
+        m_artists.insert( KSharedPtr<Meta::AggregateArtist>( m_collection->getArtist( artist ) ) );
     }
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const Meta::AlbumList &albums )
+AggregateQueryMaker::slotNewResultReady( const Meta::AlbumList &albums )
 {
     foreach( const Meta::AlbumPtr &album, albums )
     {
-        m_albums.insert( KSharedPtr<Meta::ProxyAlbum>( m_collection->getAlbum( album ) ) );
+        m_albums.insert( KSharedPtr<Meta::AggregateAlbum>( m_collection->getAlbum( album ) ) );
     }
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const Meta::GenreList &genres )
+AggregateQueryMaker::slotNewResultReady( const Meta::GenreList &genres )
 {
     foreach( const Meta::GenrePtr &genre, genres )
     {
-        m_genres.insert( KSharedPtr<Meta::ProxyGenre>( m_collection->getGenre( genre ) ) );
+        m_genres.insert( KSharedPtr<Meta::AggregateGenre>( m_collection->getGenre( genre ) ) );
     }
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const Meta::ComposerList &composers )
+AggregateQueryMaker::slotNewResultReady( const Meta::ComposerList &composers )
 {
     foreach( const Meta::ComposerPtr &composer, composers )
     {
-        m_composers.insert( KSharedPtr<Meta::ProxyComposer>( m_collection->getComposer( composer ) ) );
+        m_composers.insert( KSharedPtr<Meta::AggregateComposer>( m_collection->getComposer( composer ) ) );
     }
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const Meta::YearList &years )
+AggregateQueryMaker::slotNewResultReady( const Meta::YearList &years )
 {
     foreach( const Meta::YearPtr &year, years )
     {
-        m_years.insert( KSharedPtr<Meta::ProxyYear>( m_collection->getYear( year ) ) );
+        m_years.insert( KSharedPtr<Meta::AggreagateYear>( m_collection->getYear( year ) ) );
     }
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const Meta::LabelList &labels )
+AggregateQueryMaker::slotNewResultReady( const Meta::LabelList &labels )
 {
     foreach( const Meta::LabelPtr &label, labels )
     {
-        m_labels.insert( KSharedPtr<Meta::ProxyLabel>( m_collection->getLabel( label ) ) );
+        m_labels.insert( KSharedPtr<Meta::AggregateLabel>( m_collection->getLabel( label ) ) );
     }
 }
-
-#include "ProxyCollectionQueryMaker.moc"
-

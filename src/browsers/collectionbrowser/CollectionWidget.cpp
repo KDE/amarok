@@ -30,7 +30,7 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/proxycollection/ProxyCollection.h"
+#include "core-impl/collections/aggregate/AggregateCollection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "widgets/SearchWidget.h"
 #include "widgets/PrettyTreeDelegate.h"
@@ -110,18 +110,18 @@ CollectionWidget::Private::view( CollectionWidget::ViewMode mode )
             v = new CollectionBrowserTreeView( stack );
             v->setAlternatingRowColors( true );
             v->setFrameShape( QFrame::NoFrame );
-            Collections::ProxyCollection *proxyColl = new Collections::ProxyCollection();
+            Collections::AggregateCollection *aggregateColl = new Collections::AggregateCollection();
             connect( CollectionManager::instance(),
                      SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)),
-                     proxyColl,
+                     aggregateColl,
                      SLOT(addCollection(Collections::Collection*,CollectionManager::CollectionStatus)));
             connect( CollectionManager::instance(), SIGNAL(collectionRemoved(QString)),
-                     proxyColl, SLOT(removeCollection(QString)));
+                     aggregateColl, SLOT(removeCollection(QString)));
             foreach( Collections::Collection* coll, CollectionManager::instance()->viewableCollections() )
             {
-                proxyColl->addCollection( coll, CollectionManager::CollectionViewable );
+                aggregateColl->addCollection( coll, CollectionManager::CollectionViewable );
             }
-            CollectionTreeItemModelBase *singleModel = new SingleCollectionTreeItemModel( proxyColl, QList<CategoryId::CatMenuId>() );
+            CollectionTreeItemModelBase *singleModel = new SingleCollectionTreeItemModel( aggregateColl, QList<CategoryId::CatMenuId>() );
             v->setModel( singleModel );
             singleTreeView = v;
         }

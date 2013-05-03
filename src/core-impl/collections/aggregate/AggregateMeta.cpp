@@ -16,35 +16,34 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#define DEBUG_PREFIX "ProxyCollectionMeta"
+#include "AggregateMeta.h"
 
-#include "ProxyCollectionMeta.h"
-
-#include "core/meta/support/MetaUtility.h"
-#include "core/capabilities/EditCapability.h"
-#include "ProxyCollection.h"
 #include "SvgHandler.h"
-
+#include "core/capabilities/EditCapability.h"
+#include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/aggregate/AggregateCollection.h"
 
 #include <QDateTime>
 #include <QSet>
 #include <QTimer>
+
+#define DEBUG_PREFIX "AggregateMeta"
 
 namespace Capabilities {
 
 #define FORWARD( call ) { foreach( Capabilities::EditCapability *ec, m_ec ) { ec->call; } \
                             if( !m_batchMode ) QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) ); }
 
-class ProxyEditCapability : public Capabilities::EditCapability
+class AggregateEditCapability : public Capabilities::EditCapability
 {
 public:
-    ProxyEditCapability( Collections::ProxyCollection *coll, const QList<Capabilities::EditCapability*> &ecs )
+    AggregateEditCapability( Collections::AggregateCollection *coll, const QList<Capabilities::EditCapability*> &ecs )
         : Capabilities::EditCapability()
         , m_batchMode( false )
         , m_collection( coll )
         , m_ec( ecs ) {}
-    virtual ~ProxyEditCapability() { qDeleteAll( m_ec ); }
+    virtual ~AggregateEditCapability() { qDeleteAll( m_ec ); }
 
     void beginMetaDataUpdate()
     {
@@ -79,7 +78,7 @@ public:
     }
 private:
     bool m_batchMode;
-    Collections::ProxyCollection *m_collection;
+    Collections::AggregateCollection *m_collection;
     QList<Capabilities::EditCapability*> m_ec;
 };
 
@@ -89,7 +88,7 @@ private:
 
 namespace Meta {
 
-ProxyTrack::ProxyTrack( Collections::ProxyCollection *coll, const Meta::TrackPtr &track )
+AggregateTrack::AggregateTrack( Collections::AggregateCollection *coll, const Meta::TrackPtr &track )
         : Meta::Track()
         , Meta::Observer()
         , m_collection( coll )
@@ -115,24 +114,24 @@ ProxyTrack::ProxyTrack( Collections::ProxyCollection *coll, const Meta::TrackPtr
         m_year = Meta::YearPtr( m_collection->getYear( track->year() ) );
 }
 
-ProxyTrack::~ProxyTrack()
+AggregateTrack::~AggregateTrack()
 {
 }
 
 QString
-ProxyTrack::name() const
-{
-    return m_name;
-}
-
-QString
-ProxyTrack::prettyName() const
+AggregateTrack::name() const
 {
     return m_name;
 }
 
 QString
-ProxyTrack::sortableName() const
+AggregateTrack::prettyName() const
+{
+    return m_name;
+}
+
+QString
+AggregateTrack::sortableName() const
 {
     if( !m_tracks.isEmpty() )
         return m_tracks.first()->sortableName();
@@ -141,7 +140,7 @@ ProxyTrack::sortableName() const
 }
 
 KUrl
-ProxyTrack::playableUrl() const
+AggregateTrack::playableUrl() const
 {
     Meta::TrackPtr bestPlayableTrack;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -169,7 +168,7 @@ ProxyTrack::playableUrl() const
 }
 
 QString
-ProxyTrack::prettyUrl() const
+AggregateTrack::prettyUrl() const
 {
     if( m_tracks.count() == 1 )
     {
@@ -182,17 +181,17 @@ ProxyTrack::prettyUrl() const
 }
 
 QString
-ProxyTrack::uidUrl() const
+AggregateTrack::uidUrl() const
 {
-    //this is where it gets interesting
-    //a uidUrl for a proxyTrack probably has to be generated
-    //from the parts of the key in ProxyCollection::Collection
-    //need to think about this some more
+    // this is where it gets interesting
+    // a uidUrl for a AggregateTrack probably has to be generated
+    // from the parts of the key in AggregateCollection
+    // need to think about this some more
     return QString();
 }
 
 QString
-ProxyTrack::notPlayableReason() const
+AggregateTrack::notPlayableReason() const
 {
     QStringList reasons;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -206,37 +205,37 @@ ProxyTrack::notPlayableReason() const
 }
 
 Meta::AlbumPtr
-ProxyTrack::album() const
+AggregateTrack::album() const
 {
     return m_album;
 }
 
 Meta::ArtistPtr
-ProxyTrack::artist() const
+AggregateTrack::artist() const
 {
     return m_artist;
 }
 
 Meta::ComposerPtr
-ProxyTrack::composer() const
+AggregateTrack::composer() const
 {
     return m_composer;
 }
 
 Meta::GenrePtr
-ProxyTrack::genre() const
+AggregateTrack::genre() const
 {
     return m_genre;
 }
 
 Meta::YearPtr
-ProxyTrack::year() const
+AggregateTrack::year() const
 {
     return m_year;
 }
 
 QString
-ProxyTrack::comment() const
+AggregateTrack::comment() const
 {
     //try to return something sensible here...
     //do not show a comment if the internal tracks disagree about the comment
@@ -256,7 +255,7 @@ ProxyTrack::comment() const
 }
 
 qreal
-ProxyTrack::bpm() const
+AggregateTrack::bpm() const
 {
     //Similar to comment(), try to return something sensible here...
     //do not show a common bpm value if the internal tracks disagree about the bpm
@@ -276,7 +275,7 @@ ProxyTrack::bpm() const
 }
 
 double
-ProxyTrack::score() const
+AggregateTrack::score() const
 {
     //again, multiple ways to implement this method:
     //return the maximum score, the minimum score, the average
@@ -300,7 +299,7 @@ ProxyTrack::score() const
 }
 
 void
-ProxyTrack::setScore( double newScore )
+AggregateTrack::setScore( double newScore )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -309,7 +308,7 @@ ProxyTrack::setScore( double newScore )
 }
 
 int
-ProxyTrack::rating() const
+AggregateTrack::rating() const
 {
     //yay, multiple options again. As this has to be defined by the user, let's take
     //the maximum here.
@@ -323,7 +322,7 @@ ProxyTrack::rating() const
 }
 
 void
-ProxyTrack::setRating( int newRating )
+AggregateTrack::setRating( int newRating )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -332,7 +331,7 @@ ProxyTrack::setRating( int newRating )
 }
 
 QDateTime
-ProxyTrack::firstPlayed() const
+AggregateTrack::firstPlayed() const
 {
     QDateTime result;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -352,7 +351,7 @@ ProxyTrack::firstPlayed() const
 }
 
 void
-ProxyTrack::setFirstPlayed( const QDateTime &date )
+AggregateTrack::setFirstPlayed( const QDateTime &date )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -367,7 +366,7 @@ ProxyTrack::setFirstPlayed( const QDateTime &date )
 }
 
 QDateTime
-ProxyTrack::lastPlayed() const
+AggregateTrack::lastPlayed() const
 {
     QDateTime result;
     //return the latest timestamp. Easier than firstPlayed because we do not have to
@@ -384,7 +383,7 @@ ProxyTrack::lastPlayed() const
 }
 
 void
-ProxyTrack::setLastPlayed(const QDateTime& date)
+AggregateTrack::setLastPlayed(const QDateTime& date)
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -399,7 +398,7 @@ ProxyTrack::setLastPlayed(const QDateTime& date)
 }
 
 int
-ProxyTrack::playCount() const
+AggregateTrack::playCount() const
 {
     // show the maximum of all play counts.
     int result = 0;
@@ -414,14 +413,14 @@ ProxyTrack::playCount() const
 }
 
 void
-ProxyTrack::setPlayCount( int newPlayCount )
+AggregateTrack::setPlayCount( int newPlayCount )
 {
     Q_UNUSED( newPlayCount )
     // no safe thing to do here. Notice we override finishedPlaying()
 }
 
 void
-ProxyTrack::finishedPlaying( double playedFraction )
+AggregateTrack::finishedPlaying( double playedFraction )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -430,7 +429,7 @@ ProxyTrack::finishedPlaying( double playedFraction )
 }
 
 qint64
-ProxyTrack::length() const
+AggregateTrack::length() const
 {
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
@@ -441,7 +440,7 @@ ProxyTrack::length() const
 }
 
 int
-ProxyTrack::filesize() const
+AggregateTrack::filesize() const
 {
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
@@ -454,7 +453,7 @@ ProxyTrack::filesize() const
 }
 
 int
-ProxyTrack::sampleRate() const
+AggregateTrack::sampleRate() const
 {
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
@@ -465,7 +464,7 @@ ProxyTrack::sampleRate() const
 }
 
 int
-ProxyTrack::bitrate() const
+AggregateTrack::bitrate() const
 {
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
@@ -476,7 +475,7 @@ ProxyTrack::bitrate() const
 }
 
 QDateTime
-ProxyTrack::createDate() const
+AggregateTrack::createDate() const
 {
     QDateTime result;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -495,7 +494,7 @@ ProxyTrack::createDate() const
 }
 
 int
-ProxyTrack::trackNumber() const
+AggregateTrack::trackNumber() const
 {
     int result = 0;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -514,7 +513,7 @@ ProxyTrack::trackNumber() const
 }
 
 int
-ProxyTrack::discNumber() const
+AggregateTrack::discNumber() const
 {
     int result = 0;
     foreach( const Meta::TrackPtr &track, m_tracks )
@@ -533,7 +532,7 @@ ProxyTrack::discNumber() const
 }
 
 QString
-ProxyTrack::type() const
+AggregateTrack::type() const
 {
     if( m_tracks.size() == 1 )
     {
@@ -547,23 +546,23 @@ ProxyTrack::type() const
 }
 
 Collections::Collection*
-ProxyTrack::collection() const
+AggregateTrack::collection() const
 {
     return m_collection;
 }
 
 bool
-ProxyTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
+AggregateTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     if( m_tracks.count() == 1 )
     {
-        //if we proxy only one track, simply return the tracks capability directly
+        //if we aggregate only one track, simply return the tracks capability directly
         return m_tracks.at( 0 )->hasCapabilityInterface( type );
     }
     else
     {
-        //if there is more than one track, check all tracks for the given
-        //capability if and only if ProxyTrack supports it as well
+        // if there is more than one track, check all tracks for the given
+        // capability if and only if AggregateTrack supports it as well
 
         //as there are no supported capabilities yet...
         switch( type )
@@ -584,7 +583,7 @@ ProxyTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 }
 
 Capabilities::Capability*
-ProxyTrack::createCapabilityInterface( Capabilities::Capability::Type type )
+AggregateTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_tracks.count() == 1 )
     {
@@ -609,7 +608,7 @@ ProxyTrack::createCapabilityInterface( Capabilities::Capability::Type type )
                         return 0;
                     }
                 }
-                return new Capabilities::ProxyEditCapability( m_collection, ecs );
+                return new Capabilities::AggregateEditCapability( m_collection, ecs );
             }
         default:
             return 0;
@@ -618,7 +617,7 @@ ProxyTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 }
 
 void
-ProxyTrack::addLabel( const QString &label )
+AggregateTrack::addLabel( const QString &label )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -627,7 +626,7 @@ ProxyTrack::addLabel( const QString &label )
 }
 
 void
-ProxyTrack::addLabel( const Meta::LabelPtr &label )
+AggregateTrack::addLabel( const Meta::LabelPtr &label )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -636,7 +635,7 @@ ProxyTrack::addLabel( const Meta::LabelPtr &label )
 }
 
 void
-ProxyTrack::removeLabel( const Meta::LabelPtr &label )
+AggregateTrack::removeLabel( const Meta::LabelPtr &label )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -645,18 +644,18 @@ ProxyTrack::removeLabel( const Meta::LabelPtr &label )
 }
 
 Meta::LabelList
-ProxyTrack::labels() const
+AggregateTrack::labels() const
 {
-    QSet<ProxyLabel*> proxyLabels;
+    QSet<AggregateLabel *> aggregateLabels;
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
         foreach( Meta::LabelPtr label, track->labels() )
         {
-            proxyLabels.insert( m_collection->getLabel( label ) );
+            aggregateLabels.insert( m_collection->getLabel( label ) );
         }
     }
     Meta::LabelList result;
-    foreach( ProxyLabel *label, proxyLabels )
+    foreach( AggregateLabel *label, aggregateLabels )
     {
         result << Meta::LabelPtr( label );
     }
@@ -664,13 +663,13 @@ ProxyTrack::labels() const
 }
 
 StatisticsPtr
-ProxyTrack::statistics()
+AggregateTrack::statistics()
 {
     return StatisticsPtr( this );
 }
 
 void
-ProxyTrack::add( const Meta::TrackPtr &track )
+AggregateTrack::add( const Meta::TrackPtr &track )
 {
     if( !track || m_tracks.contains( track ) )
         return;
@@ -682,7 +681,7 @@ ProxyTrack::add( const Meta::TrackPtr &track )
 }
 
 void
-ProxyTrack::metadataChanged( Meta::TrackPtr track )
+AggregateTrack::metadataChanged( Meta::TrackPtr track )
 {
     if( !track )
         return;
@@ -742,7 +741,7 @@ ProxyTrack::metadataChanged( Meta::TrackPtr track )
     }
 }
 
-ProxyAlbum::ProxyAlbum( Collections::ProxyCollection *coll, Meta::AlbumPtr album )
+AggregateAlbum::AggregateAlbum( Collections::AggregateCollection *coll, Meta::AlbumPtr album )
         : Meta::Album()
         , Meta::Observer()
         , m_collection( coll )
@@ -753,24 +752,24 @@ ProxyAlbum::ProxyAlbum( Collections::ProxyCollection *coll, Meta::AlbumPtr album
         m_albumArtist = Meta::ArtistPtr( m_collection->getArtist( album->albumArtist() ) );
 }
 
-ProxyAlbum::~ProxyAlbum()
+AggregateAlbum::~AggregateAlbum()
 {
 }
 
 QString
-ProxyAlbum::name() const
-{
-    return m_name;
-}
-
-QString
-ProxyAlbum::prettyName() const
+AggregateAlbum::name() const
 {
     return m_name;
 }
 
 QString
-ProxyAlbum::sortableName() const
+AggregateAlbum::prettyName() const
+{
+    return m_name;
+}
+
+QString
+AggregateAlbum::sortableName() const
 {
     if( !m_albums.isEmpty() )
         return m_albums.first()->sortableName();
@@ -779,9 +778,9 @@ ProxyAlbum::sortableName() const
 }
 
 Meta::TrackList
-ProxyAlbum::tracks()
+AggregateAlbum::tracks()
 {
-    QSet<ProxyTrack*> tracks;
+    QSet<AggregateTrack*> tracks;
     foreach( Meta::AlbumPtr album, m_albums )
     {
         Meta::TrackList tmp = album->tracks();
@@ -792,7 +791,7 @@ ProxyAlbum::tracks()
     }
 
     Meta::TrackList result;
-    foreach( ProxyTrack *track, tracks )
+    foreach( AggregateTrack *track, tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -800,25 +799,25 @@ ProxyAlbum::tracks()
 }
 
 Meta::ArtistPtr
-ProxyAlbum::albumArtist() const
+AggregateAlbum::albumArtist() const
 {
     return m_albumArtist;
 }
 
 bool
-ProxyAlbum::isCompilation() const
+AggregateAlbum::isCompilation() const
 {
     return m_albumArtist.isNull();
 }
 
 bool
-ProxyAlbum::hasAlbumArtist() const
+AggregateAlbum::hasAlbumArtist() const
 {
     return !m_albumArtist.isNull();
 }
 
 bool
-ProxyAlbum::hasCapabilityInterface(Capabilities::Capability::Type type ) const
+AggregateAlbum::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_albums.count() == 1 )
@@ -832,7 +831,7 @@ ProxyAlbum::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 }
 
 Capabilities::Capability*
-ProxyAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
+AggregateAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_albums.count() == 1 )
     {
@@ -845,7 +844,7 @@ ProxyAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 }
 
 void
-ProxyAlbum::add( Meta::AlbumPtr album )
+AggregateAlbum::add( Meta::AlbumPtr album )
 {
     if( !album || m_albums.contains( album ) )
         return;
@@ -857,7 +856,7 @@ ProxyAlbum::add( Meta::AlbumPtr album )
 }
 
 bool
-ProxyAlbum::hasImage( int size ) const
+AggregateAlbum::hasImage( int size ) const
 {
     foreach( const Meta::AlbumPtr &album, m_albums )
     {
@@ -868,7 +867,7 @@ ProxyAlbum::hasImage( int size ) const
 }
 
 QImage
-ProxyAlbum::image( int size ) const
+AggregateAlbum::image( int size ) const
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -881,7 +880,7 @@ ProxyAlbum::image( int size ) const
 }
 
 KUrl
-ProxyAlbum::imageLocation( int size )
+AggregateAlbum::imageLocation( int size )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -898,7 +897,7 @@ ProxyAlbum::imageLocation( int size )
 }
 
 QPixmap
-ProxyAlbum::imageWithBorder( int size, int borderWidth )
+AggregateAlbum::imageWithBorder( int size, int borderWidth )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -911,7 +910,7 @@ ProxyAlbum::imageWithBorder( int size, int borderWidth )
 }
 
 bool
-ProxyAlbum::canUpdateImage() const
+AggregateAlbum::canUpdateImage() const
 {
     if( m_albums.count() == 0 )
         return false;
@@ -926,7 +925,7 @@ ProxyAlbum::canUpdateImage() const
 }
 
 void
-ProxyAlbum::setImage( const QImage &image )
+AggregateAlbum::setImage( const QImage &image )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -935,7 +934,7 @@ ProxyAlbum::setImage( const QImage &image )
 }
 
 void
-ProxyAlbum::removeImage()
+AggregateAlbum::removeImage()
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -944,7 +943,7 @@ ProxyAlbum::removeImage()
 }
 
 void
-ProxyAlbum::setSuppressImageAutoFetch( bool suppress )
+AggregateAlbum::setSuppressImageAutoFetch( bool suppress )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -953,7 +952,7 @@ ProxyAlbum::setSuppressImageAutoFetch( bool suppress )
 }
 
 bool
-ProxyAlbum::suppressImageAutoFetch() const
+AggregateAlbum::suppressImageAutoFetch() const
 {
     foreach( const Meta::AlbumPtr &album, m_albums )
     {
@@ -964,7 +963,7 @@ ProxyAlbum::suppressImageAutoFetch() const
 }
 
 void
-ProxyAlbum::metadataChanged( Meta::AlbumPtr album )
+AggregateAlbum::metadataChanged( Meta::AlbumPtr album )
 {
     if( !album || !m_albums.contains( album ) )
         return;
@@ -996,7 +995,7 @@ ProxyAlbum::metadataChanged( Meta::AlbumPtr album )
     notifyObservers();
 }
 
-ProxyArtist::ProxyArtist( Collections::ProxyCollection *coll, Meta::ArtistPtr artist )
+AggregateArtist::AggregateArtist( Collections::AggregateCollection *coll, Meta::ArtistPtr artist )
         : Meta::Artist()
         , Meta::Observer()
         , m_collection( coll )
@@ -1006,24 +1005,24 @@ ProxyArtist::ProxyArtist( Collections::ProxyCollection *coll, Meta::ArtistPtr ar
     subscribeTo( artist );
 }
 
-ProxyArtist::~ProxyArtist()
+AggregateArtist::~AggregateArtist()
 {
 }
 
 QString
-ProxyArtist::name() const
-{
-    return m_name;
-}
-
-QString
-ProxyArtist::prettyName() const
+AggregateArtist::name() const
 {
     return m_name;
 }
 
 QString
-ProxyArtist::sortableName() const
+AggregateArtist::prettyName() const
+{
+    return m_name;
+}
+
+QString
+AggregateArtist::sortableName() const
 {
     if( !m_artists.isEmpty() )
         return m_artists.first()->sortableName();
@@ -1032,9 +1031,9 @@ ProxyArtist::sortableName() const
 }
 
 Meta::TrackList
-ProxyArtist::tracks()
+AggregateArtist::tracks()
 {
-    QSet<ProxyTrack*> tracks;
+    QSet<AggregateTrack*> tracks;
     foreach( Meta::ArtistPtr artist, m_artists )
     {
         Meta::TrackList tmp = artist->tracks();
@@ -1045,7 +1044,7 @@ ProxyArtist::tracks()
     }
 
     Meta::TrackList result;
-    foreach( ProxyTrack *track, tracks )
+    foreach( AggregateTrack *track, tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -1053,7 +1052,7 @@ ProxyArtist::tracks()
 }
 
 bool
-ProxyArtist::hasCapabilityInterface(Capabilities::Capability::Type type ) const
+AggregateArtist::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_artists.count() == 1 )
@@ -1067,7 +1066,7 @@ ProxyArtist::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 }
 
 Capabilities::Capability*
-ProxyArtist::createCapabilityInterface( Capabilities::Capability::Type type )
+AggregateArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_artists.count() == 1 )
     {
@@ -1080,7 +1079,7 @@ ProxyArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 }
 
 void
-ProxyArtist::add( Meta::ArtistPtr artist )
+AggregateArtist::add( Meta::ArtistPtr artist )
 {
     if( !artist || m_artists.contains( artist ) )
         return;
@@ -1092,7 +1091,7 @@ ProxyArtist::add( Meta::ArtistPtr artist )
 }
 
 void
-ProxyArtist::metadataChanged( Meta::ArtistPtr artist )
+AggregateArtist::metadataChanged( Meta::ArtistPtr artist )
 {
     if( !artist || !m_artists.contains( artist ) )
         return;
@@ -1122,7 +1121,7 @@ ProxyArtist::metadataChanged( Meta::ArtistPtr artist )
     notifyObservers();
 }
 
-ProxyGenre::ProxyGenre( Collections::ProxyCollection *coll, Meta::GenrePtr genre )
+AggregateGenre::AggregateGenre( Collections::AggregateCollection *coll, Meta::GenrePtr genre )
         : Meta::Genre()
         , Meta::Observer()
         , m_collection( coll )
@@ -1132,24 +1131,24 @@ ProxyGenre::ProxyGenre( Collections::ProxyCollection *coll, Meta::GenrePtr genre
     subscribeTo( genre );
 }
 
-ProxyGenre::~ProxyGenre()
+AggregateGenre::~AggregateGenre()
 {
 }
 
 QString
-ProxyGenre::name() const
-{
-    return m_name;
-}
-
-QString
-ProxyGenre::prettyName() const
+AggregateGenre::name() const
 {
     return m_name;
 }
 
 QString
-ProxyGenre::sortableName() const
+AggregateGenre::prettyName() const
+{
+    return m_name;
+}
+
+QString
+AggregateGenre::sortableName() const
 {
     if( !m_genres.isEmpty() )
         return m_genres.first()->sortableName();
@@ -1158,9 +1157,9 @@ ProxyGenre::sortableName() const
 }
 
 Meta::TrackList
-ProxyGenre::tracks()
+AggregateGenre::tracks()
 {
-    QSet<ProxyTrack*> tracks;
+    QSet<AggregateTrack*> tracks;
     foreach( Meta::GenrePtr genre, m_genres )
     {
         Meta::TrackList tmp = genre->tracks();
@@ -1171,7 +1170,7 @@ ProxyGenre::tracks()
     }
 
     Meta::TrackList result;
-    foreach( ProxyTrack *track, tracks )
+    foreach( AggregateTrack *track, tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -1179,7 +1178,7 @@ ProxyGenre::tracks()
 }
 
 bool
-ProxyGenre::hasCapabilityInterface(Capabilities::Capability::Type type ) const
+AggregateGenre::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_genres.count() == 1 )
@@ -1193,7 +1192,7 @@ ProxyGenre::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 }
 
 Capabilities::Capability*
-ProxyGenre::createCapabilityInterface( Capabilities::Capability::Type type )
+AggregateGenre::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_genres.count() == 1 )
     {
@@ -1206,7 +1205,7 @@ ProxyGenre::createCapabilityInterface( Capabilities::Capability::Type type )
 }
 
 void
-ProxyGenre::add( Meta::GenrePtr genre )
+AggregateGenre::add( Meta::GenrePtr genre )
 {
     if( !genre || m_genres.contains( genre ) )
         return;
@@ -1218,7 +1217,7 @@ ProxyGenre::add( Meta::GenrePtr genre )
 }
 
 void
-ProxyGenre::metadataChanged( Meta::GenrePtr genre )
+AggregateGenre::metadataChanged( Meta::GenrePtr genre )
 {
     if( !genre || !m_genres.contains( genre ) )
         return;
@@ -1242,7 +1241,7 @@ ProxyGenre::metadataChanged( Meta::GenrePtr genre )
     notifyObservers();
 }
 
-ProxyComposer::ProxyComposer( Collections::ProxyCollection *coll, Meta::ComposerPtr composer )
+AggregateComposer::AggregateComposer( Collections::AggregateCollection *coll, Meta::ComposerPtr composer )
         : Meta::Composer()
         , Meta::Observer()
         , m_collection( coll )
@@ -1252,24 +1251,24 @@ ProxyComposer::ProxyComposer( Collections::ProxyCollection *coll, Meta::Composer
     subscribeTo( composer );
 }
 
-ProxyComposer::~ProxyComposer()
+AggregateComposer::~AggregateComposer()
 {
 }
 
 QString
-ProxyComposer::name() const
-{
-    return m_name;
-}
-
-QString
-ProxyComposer::prettyName() const
+AggregateComposer::name() const
 {
     return m_name;
 }
 
 QString
-ProxyComposer::sortableName() const
+AggregateComposer::prettyName() const
+{
+    return m_name;
+}
+
+QString
+AggregateComposer::sortableName() const
 {
     if( !m_composers.isEmpty() )
         return m_composers.first()->sortableName();
@@ -1278,9 +1277,9 @@ ProxyComposer::sortableName() const
 }
 
 Meta::TrackList
-ProxyComposer::tracks()
+AggregateComposer::tracks()
 {
-    QSet<ProxyTrack*> tracks;
+    QSet<AggregateTrack*> tracks;
     foreach( Meta::ComposerPtr composer, m_composers )
     {
         Meta::TrackList tmp = composer->tracks();
@@ -1291,7 +1290,7 @@ ProxyComposer::tracks()
     }
 
     Meta::TrackList result;
-    foreach( ProxyTrack *track, tracks )
+    foreach( AggregateTrack *track, tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -1299,7 +1298,7 @@ ProxyComposer::tracks()
 }
 
 bool
-ProxyComposer::hasCapabilityInterface(Capabilities::Capability::Type type ) const
+AggregateComposer::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_composers.count() == 1 )
@@ -1313,7 +1312,7 @@ ProxyComposer::hasCapabilityInterface(Capabilities::Capability::Type type ) cons
 }
 
 Capabilities::Capability*
-ProxyComposer::createCapabilityInterface( Capabilities::Capability::Type type )
+AggregateComposer::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_composers.count() == 1 )
     {
@@ -1326,7 +1325,7 @@ ProxyComposer::createCapabilityInterface( Capabilities::Capability::Type type )
 }
 
 void
-ProxyComposer::add( Meta::ComposerPtr composer )
+AggregateComposer::add( Meta::ComposerPtr composer )
 {
     if( !composer || m_composers.contains( composer ) )
         return;
@@ -1338,7 +1337,7 @@ ProxyComposer::add( Meta::ComposerPtr composer )
 }
 
 void
-ProxyComposer::metadataChanged( Meta::ComposerPtr composer )
+AggregateComposer::metadataChanged( Meta::ComposerPtr composer )
 {
     if( !composer || !m_composers.contains( composer ) )
         return;
@@ -1362,7 +1361,7 @@ ProxyComposer::metadataChanged( Meta::ComposerPtr composer )
     notifyObservers();
 }
 
-ProxyYear::ProxyYear( Collections::ProxyCollection *coll, Meta::YearPtr year )
+AggreagateYear::AggreagateYear( Collections::AggregateCollection *coll, Meta::YearPtr year )
         : Meta::Year()
         , Meta::Observer()
         , m_collection( coll )
@@ -1372,25 +1371,25 @@ ProxyYear::ProxyYear( Collections::ProxyCollection *coll, Meta::YearPtr year )
     subscribeTo( year );
 }
 
-ProxyYear::~ProxyYear()
+AggreagateYear::~AggreagateYear()
 {
     //nothing to do
 }
 
 QString
-ProxyYear::name() const
+AggreagateYear::name() const
 {
     return m_name;
 }
 
 QString
-ProxyYear::prettyName() const
+AggreagateYear::prettyName() const
 {
     return m_name;
 }
 
 QString
-ProxyYear::sortableName() const
+AggreagateYear::sortableName() const
 {
     if( !m_years.isEmpty() )
         return m_years.first()->sortableName();
@@ -1399,9 +1398,9 @@ ProxyYear::sortableName() const
 }
 
 Meta::TrackList
-ProxyYear::tracks()
+AggreagateYear::tracks()
 {
-    QSet<ProxyTrack*> tracks;
+    QSet<AggregateTrack*> tracks;
     foreach( Meta::YearPtr year, m_years )
     {
         Meta::TrackList tmp = year->tracks();
@@ -1412,7 +1411,7 @@ ProxyYear::tracks()
     }
 
     Meta::TrackList result;
-    foreach( ProxyTrack *track, tracks )
+    foreach( AggregateTrack *track, tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -1420,7 +1419,7 @@ ProxyYear::tracks()
 }
 
 bool
-ProxyYear::hasCapabilityInterface(Capabilities::Capability::Type type ) const
+AggreagateYear::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {
 
     if( m_years.count() == 1 )
@@ -1434,7 +1433,7 @@ ProxyYear::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 }
 
 Capabilities::Capability*
-ProxyYear::createCapabilityInterface( Capabilities::Capability::Type type )
+AggreagateYear::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_years.count() == 1 )
     {
@@ -1447,7 +1446,7 @@ ProxyYear::createCapabilityInterface( Capabilities::Capability::Type type )
 }
 
 void
-ProxyYear::add( Meta::YearPtr year )
+AggreagateYear::add( Meta::YearPtr year )
 {
     if( !year || m_years.contains( year ) )
         return;
@@ -1459,7 +1458,7 @@ ProxyYear::add( Meta::YearPtr year )
 }
 
 void
-ProxyYear::metadataChanged( Meta::YearPtr year )
+AggreagateYear::metadataChanged( Meta::YearPtr year )
 {
     if( !year || !m_years.contains( year ) )
         return;
@@ -1484,12 +1483,12 @@ ProxyYear::metadataChanged( Meta::YearPtr year )
             }
             else
             {
-                //be careful with the ordering of instructions here
-                //ProxyCollection uses KSharedPtr internally
-                //so we have to make sure that there is more than one pointer
-                //to this instance by registering this instance under the new name
-                //before removing the old one. Otherwise kSharedPtr might delete this
-                //instance in removeYear()
+                // be careful with the ordering of instructions here
+                // AggregateCollection uses KSharedPtr internally
+                // so we have to make sure that there is more than one pointer
+                // to this instance by registering this instance under the new name
+                // before removing the old one. Otherwise kSharedPtr might delete this
+                // instance in removeYear()
                 QString tmpName = m_name;
                 m_name = year->name();
                 m_collection->setYear( this );
@@ -1501,7 +1500,7 @@ ProxyYear::metadataChanged( Meta::YearPtr year )
     notifyObservers();
 }
 
-ProxyLabel::ProxyLabel( Collections::ProxyCollection *coll, const Meta::LabelPtr &label )
+AggregateLabel::AggregateLabel( Collections::AggregateCollection *coll, const Meta::LabelPtr &label )
     : Meta::Label()
     , m_collection( coll )
     , m_name( label->name() )
@@ -1509,25 +1508,25 @@ ProxyLabel::ProxyLabel( Collections::ProxyCollection *coll, const Meta::LabelPtr
     m_labels.append( label );
 }
 
-ProxyLabel::~ProxyLabel()
+AggregateLabel::~AggregateLabel()
 {
     //nothing to do
 }
 
 QString
-ProxyLabel::name() const
+AggregateLabel::name() const
 {
     return m_name;
 }
 
 QString
-ProxyLabel::prettyName() const
+AggregateLabel::prettyName() const
 {
     return m_name;
 }
 
 QString
-ProxyLabel::sortableName() const
+AggregateLabel::sortableName() const
 {
     if( !m_labels.isEmpty() )
         return m_labels.first()->sortableName();
@@ -1536,7 +1535,7 @@ ProxyLabel::sortableName() const
 }
 
 bool
-ProxyLabel::hasCapabilityInterface( Capabilities::Capability::Type type ) const
+AggregateLabel::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
 
     if( m_labels.count() == 1 )
@@ -1550,7 +1549,7 @@ ProxyLabel::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 }
 
 Capabilities::Capability*
-ProxyLabel::createCapabilityInterface( Capabilities::Capability::Type type )
+AggregateLabel::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_labels.count() == 1 )
     {
@@ -1563,7 +1562,7 @@ ProxyLabel::createCapabilityInterface( Capabilities::Capability::Type type )
 }
 
 void
-ProxyLabel::add( const Meta::LabelPtr &label )
+AggregateLabel::add( const Meta::LabelPtr &label )
 {
     if( !label || m_labels.contains( label ) )
         return;

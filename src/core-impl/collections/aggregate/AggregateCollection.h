@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef PROXYCOLLECTION_H
-#define PROXYCOLLECTION_H
+#ifndef AGGREGATECOLLECTION_H
+#define AGGREGATECOLLECTION_H
 
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -29,25 +29,25 @@
 #include <QReadWriteLock>
 
 namespace Meta {
-    class ProxyYear;
-    class ProxyTrack;
-    class ProxyArtist;
-    class ProxyAlbum;
-    class ProxyGenre;
-    class ProxyComposer;
-    class ProxyLabel;
+    class AggreagateYear;
+    class AggregateTrack;
+    class AggregateArtist;
+    class AggregateAlbum;
+    class AggregateGenre;
+    class AggregateComposer;
+    class AggregateLabel;
 }
 
 namespace Collections {
 
-    class AMAROK_EXPORT ProxyCollection : public Collections::Collection
+    class AMAROK_EXPORT AggregateCollection : public Collections::Collection
     {
         Q_OBJECT
         public:
-        ProxyCollection();
-        ~ProxyCollection();
+        AggregateCollection();
+        ~AggregateCollection();
 
-        //Collections::Collection methods
+        // Collections::Collection methods
 
         virtual QString prettyName() const;
         virtual KIcon icon() const;
@@ -59,42 +59,42 @@ namespace Collections {
 
         virtual QString collectionId() const;
 
-        //ProxyCollection::Collection methods
+        // AggregateCollection methods
 
         void removeTrack( const Meta::TrackKey &key );
-        Meta::ProxyTrack* getTrack( Meta::TrackPtr track );
-        void setTrack( Meta::ProxyTrack *track );
+        Meta::AggregateTrack* getTrack( Meta::TrackPtr track );
+        void setTrack( Meta::AggregateTrack *track );
         bool hasTrack( const Meta::TrackKey &key );
 
         void removeAlbum( const QString &album, const QString &albumArtist );
-        Meta::ProxyAlbum* getAlbum( Meta::AlbumPtr album );
-        void setAlbum( Meta::ProxyAlbum *album );
+        Meta::AggregateAlbum* getAlbum( Meta::AlbumPtr album );
+        void setAlbum( Meta::AggregateAlbum *album );
         bool hasAlbum( const QString &album, const QString &albumArtist );
 
         void removeArtist( const QString &artist );
-        Meta::ProxyArtist* getArtist( Meta::ArtistPtr artist );
-        void setArtist( Meta::ProxyArtist *artist );
+        Meta::AggregateArtist* getArtist( Meta::ArtistPtr artist );
+        void setArtist( Meta::AggregateArtist *artist );
         bool hasArtist( const QString &artist );
 
         void removeGenre( const QString &genre );
-        Meta::ProxyGenre* getGenre( Meta::GenrePtr genre );
-        void setGenre( Meta::ProxyGenre *genre );
+        Meta::AggregateGenre* getGenre( Meta::GenrePtr genre );
+        void setGenre( Meta::AggregateGenre *genre );
         bool hasGenre( const QString &genre );
 
         void removeComposer( const QString &name );
-        Meta::ProxyComposer* getComposer( Meta::ComposerPtr composer );
-        void setComposer( Meta::ProxyComposer *composer );
+        Meta::AggregateComposer* getComposer( Meta::ComposerPtr composer );
+        void setComposer( Meta::AggregateComposer *composer );
         bool hasComposer( const QString &name );
 
         bool hasYear( const QString &name );
         void removeYear( const QString &name );
-        Meta::ProxyYear* getYear( Meta::YearPtr year );
-        void setYear( Meta::ProxyYear *year );
+        Meta::AggreagateYear* getYear( Meta::YearPtr year );
+        void setYear( Meta::AggreagateYear *year );
 
         bool hasLabel( const QString &name );
         void removeLabel( const QString &name );
-        Meta::ProxyLabel* getLabel( Meta::LabelPtr label );
-        void setLabel( Meta::ProxyLabel *label );
+        Meta::AggregateLabel* getLabel( Meta::LabelPtr label );
+        void setLabel( Meta::AggregateLabel *label );
 
         public slots:
         void removeCollection( const QString &collectionId );
@@ -108,13 +108,13 @@ namespace Collections {
         private:
         QHash<QString, Collections::Collection*> m_idCollectionMap;
 
-        QHash<QString, KSharedPtr<Meta::ProxyYear> > m_yearMap;
-        QHash<QString, KSharedPtr<Meta::ProxyGenre> > m_genreMap;
-        QHash<QString, KSharedPtr<Meta::ProxyComposer> > m_composerMap;
-        QHash<QString, KSharedPtr<Meta::ProxyArtist> > m_artistMap;
-        QHash<Meta::AlbumKey, KSharedPtr<Meta::ProxyAlbum> > m_albumMap;
-        QHash<Meta::TrackKey, KSharedPtr<Meta::ProxyTrack> > m_trackMap;
-        QHash<QString, KSharedPtr<Meta::ProxyLabel> > m_labelMap;
+        QHash<QString, KSharedPtr<Meta::AggreagateYear> > m_yearMap;
+        QHash<QString, KSharedPtr<Meta::AggregateGenre> > m_genreMap;
+        QHash<QString, KSharedPtr<Meta::AggregateComposer> > m_composerMap;
+        QHash<QString, KSharedPtr<Meta::AggregateArtist> > m_artistMap;
+        QHash<Meta::AlbumKey, KSharedPtr<Meta::AggregateAlbum> > m_albumMap;
+        QHash<Meta::TrackKey, KSharedPtr<Meta::AggregateTrack> > m_trackMap;
+        QHash<QString, KSharedPtr<Meta::AggregateLabel> > m_labelMap;
 
         QReadWriteLock m_yearLock;
         QReadWriteLock m_genreLock;
@@ -123,7 +123,6 @@ namespace Collections {
         QReadWriteLock m_albumLock;
         QReadWriteLock m_trackLock;
         QReadWriteLock m_labelLock;
-
     };
 
 } //namespace Collections

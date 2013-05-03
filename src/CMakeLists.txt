@@ -49,10 +49,10 @@ set(likeback_SRCS
 #####################################################################
 # PROXYCOLLECTION
 #####################################################################
-set(libproxycollection_SRCS
-    core-impl/collections/proxycollection/ProxyCollection.cpp
-    core-impl/collections/proxycollection/ProxyCollectionMeta.cpp
-    core-impl/collections/proxycollection/ProxyCollectionQueryMaker.cpp
+set(aggregatecollection_SRCS
+    core-impl/collections/aggregate/AggregateCollection.cpp
+    core-impl/collections/aggregate/AggregateMeta.cpp
+    core-impl/collections/aggregate/AggregateQueryMaker.cpp
 )
 
 #####################################################################
@@ -588,7 +588,7 @@ set(amaroklib_LIB_SRCS
     ${libconfigdialog_SRCS}
     ${libplaylist_SRCS}
     ${libtooltip_SRCS}
-    ${libproxycollection_SRCS}
+    ${aggregatecollection_SRCS}
     ${libpodcasts_SRCS}
     ${libmediadeviceframework_SRCS}
     ${libserviceframework_SRCS}
