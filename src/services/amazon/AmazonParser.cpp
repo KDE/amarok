@@ -48,15 +48,12 @@ AmazonParser::success() const
 void
 AmazonParser::run()
 {
-    DEBUG_BLOCK
-    debug() << "AmazonParser::run: " << m_tempFileName;
-
     m_responseDocument = new QDomDocument;
 
     QFile responseFile( m_tempFileName );
     if( !responseFile.open( QIODevice::ReadOnly ) )
     {
-        debug() << "ERROR opening temp file";
+        warning() << "Failed to open temp file" << m_tempFileName;
         emit( failed( this ) );
         QFile::remove( m_tempFileName );
         return;
@@ -103,8 +100,6 @@ AmazonParser::run()
         albumPrice  = albumItemsList.at( i ).firstChildElement( QLatin1String( "price" ) ).firstChild().nodeValue();
         compilation = albumItemsList.at( i ).firstChildElement( QLatin1String( "iscompilation" ) ).firstChild().nodeValue();
         imgUrl      = albumItemsList.at( i ).firstChildElement( QLatin1String( "img" ) ).firstChild().nodeValue();
-
-        debug() << albumAsin << artist << albumTitle << albumPrice << imgUrl;
 
         artistID.setNum( addArtistToCollection( artist, description ) );
         addAlbumToCollection( albumTitle, description, artistID, albumPrice, imgUrl, albumAsin, compilation == QLatin1String( "true" ) );
@@ -182,8 +177,6 @@ AmazonParser::addAlbumToCollection( const QString &albumTitle, const QString &de
 {
     QStringList results;
     QString albumID;
-
-    debug() << albumAsin;
 
     if( !m_collection->albumIDMap().contains( albumAsin ) ) // we have a new album here
     {

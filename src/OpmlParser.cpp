@@ -50,7 +50,6 @@ OpmlParser::run()
 bool
 OpmlParser::read( const KUrl &url )
 {
-    DEBUG_BLOCK
     m_url = url;
     if( m_url.isLocalFile() )
     {
@@ -87,7 +86,6 @@ OpmlParser::read( QIODevice *device )
 void
 OpmlParser::slotAddData( KIO::Job *job, const QByteArray &data )
 {
-    DEBUG_BLOCK
     Q_UNUSED( job )
 
     QXmlStreamReader::addData( data );
@@ -248,8 +246,6 @@ OpmlParser::elementType() const
 bool
 OpmlParser::read()
 {
-    DEBUG_BLOCK
-
     m_buffer.clear();
     m_actionStack.clear();
     m_actionStack.push( &( OpmlParser::sd.startAction ) );
@@ -371,8 +367,6 @@ OpmlParser::beginText()
 void
 OpmlParser::beginOutline()
 {
-    DEBUG_BLOCK
-
     OpmlOutline *parent = m_outlineStack.empty() ? 0 : m_outlineStack.top();
     OpmlOutline *outline = new OpmlOutline( parent );
     //adding outline to stack
@@ -392,14 +386,12 @@ OpmlParser::beginOutline()
 void
 OpmlParser::beginNoElement()
 {
-    DEBUG_BLOCK
     debug() << "no element expected here, but got element: " << QXmlStreamReader::name();
 }
 
 void
 OpmlParser::endDocument()
 {
-    debug() << "successfuly parsed OPML";
     emit doneParsing();
 }
 

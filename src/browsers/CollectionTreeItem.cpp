@@ -86,7 +86,6 @@ CollectionTreeItem::CollectionTreeItem( Type type, const Meta::DataList &data, C
     , m_type( type )
     , m_isCounting( false )
 {
-    DEBUG_BLOCK
     if( m_parent )
         m_parent->m_childItems.insert( 0, this );
 
@@ -96,7 +95,7 @@ CollectionTreeItem::CollectionTreeItem( Type type, const Meta::DataList &data, C
 
 CollectionTreeItem::~CollectionTreeItem()
 {
-    qDeleteAll(m_childItems);
+    qDeleteAll( m_childItems );
 }
 
 void

@@ -121,15 +121,11 @@ Dynamic::DynamicModel::playlistIndex( Dynamic::DynamicPlaylist* playlist ) const
 QModelIndex
 Dynamic::DynamicModel::insertPlaylist( int index, Dynamic::DynamicPlaylist* playlist )
 {
-    DEBUG_BLOCK;
     if( !playlist )
         return QModelIndex();
 
-debug() << "insert playlist before"<<toString();
     int oldIndex = playlistIndex( playlist );
     bool wasActive = (oldIndex == m_activePlaylistIndex);
-
-debug() << "OldIndex: "<<oldIndex<<"was active"<<wasActive<<"to Str"<<playlist->title();
 
     // -- remove the playlist if it was already in our model
     if( oldIndex >= 0 )
@@ -163,7 +159,6 @@ debug() << "OldIndex: "<<oldIndex<<"was active"<<wasActive<<"to Str"<<playlist->
 
     endInsertRows();
 
-debug() << "insert playlist after"<<toString();
     return this->index( index, 0 );
 }
 
@@ -188,8 +183,6 @@ Dynamic::DynamicModel::insertBias( int row, const QModelIndex &parentIndex, Dyna
             return QModelIndex();
         }
     }
-
-    debug() << "insert bias" << bias->toString() << "at" << parentIndex << row;
 
     if( parentPlaylist )
     {
@@ -569,17 +562,12 @@ Dynamic::DynamicModel::dropMimeData(const QMimeData *data,
     if( action == Qt::IgnoreAction )
         return true;
 
-debug() << "dropMimeData";
-debug() << toString();
-
     if( data->hasFormat("application/amarok.biasModel.index") )
     {
         // get the source index from the mime data
         QByteArray bytes = data->data("application/amarok.biasModel.index");
         QDataStream stream( &bytes, QIODevice::ReadOnly );
         QModelIndex index = unserializeIndex( &stream );
-
-debug() << "dropMimeData at index" << index << row;
 
         if( !index.isValid() )
             return false;

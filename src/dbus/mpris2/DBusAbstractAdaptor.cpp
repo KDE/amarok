@@ -81,7 +81,6 @@ void DBusAbstractAdaptor::signalPropertyChange( const QString &property )
 
 void DBusAbstractAdaptor::_m_emitPropertiesChanged()
 {
-    DEBUG_BLOCK
     Q_ASSERT( !m_path.isEmpty() );
 
     if( m_updatedProperties.isEmpty() && m_invalidatedProperties.isEmpty() ) {

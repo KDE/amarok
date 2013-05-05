@@ -66,8 +66,6 @@ ScriptableServiceQueryMaker::~ScriptableServiceQueryMaker()
 
 void ScriptableServiceQueryMaker::run()
 {
-    DEBUG_BLOCK
-
     if ( d->albumMode == OnlyCompilations )
         return;
 
@@ -119,7 +117,6 @@ void ScriptableServiceQueryMaker::abortQuery()
 
 QueryMaker * ScriptableServiceQueryMaker::setQueryType( QueryType type )
 {
-    DEBUG_BLOCK
     switch( type ) {
     case QueryMaker::Artist:
     case QueryMaker::AlbumArtist:

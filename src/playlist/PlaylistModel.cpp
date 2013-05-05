@@ -838,8 +838,6 @@ Playlist::Model::stateOfId( quint64 id ) const
 void
 Playlist::Model::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK;
-
     int row = 0;
     foreach( Item* i, m_items )
     {
@@ -851,7 +849,6 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
                 subscribeTo( album );
 
             emit dataChanged( index( row, 0 ), index( row, columnCount() - 1 ) );
-            debug()<<"Metadata updated for track"<<track->prettyName();
         }
         row++;
     }
