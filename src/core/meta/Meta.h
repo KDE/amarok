@@ -41,8 +41,6 @@ namespace Meta
     class AMAROK_CORE_EXPORT Track : public Base
     {
         public:
-
-            virtual ~Track() {}
             /** used to display the trackname, should never be empty, returns prettyUrl() by default if name() is empty */
             virtual QString prettyName() const;
             /** an url which can be played by the engine backends */
@@ -202,11 +200,7 @@ namespace Meta
 
     class AMAROK_CORE_EXPORT Artist : public Base
     {
-        Q_PROPERTY( TrackList tracks READ tracks )
         public:
-
-            virtual ~Artist() {}
-
             virtual QString prettyName() const;
 
             /** returns all tracks by this artist */
@@ -223,35 +217,25 @@ namespace Meta
             mutable QString m_sortableName;
     };
 
-    /** Represents an album.
-        Most collections do not store a specific album object. Instead an album
-        is just a property of a track, a container containing one or more tracks.
-
-        Collections should proved an album for every track as the collection browser
-        will, depending on the setting, only display tracks inside albums.
-
-        For all albums in a compilation the pair album-title/album-artist should
-        be unique as this pair is used as a key in several places.
-
-        Albums without an artist are called compilations.
-        Albums without a title but with an artist should contain all singles of
-         the specific artist.
-        There should be one album without title and artist for all the rest.
-    */
+    /**
+     * Represents an album.
+     *
+     * Most collections do not store a specific album object. Instead an album is just
+     * a property of a track, a container containing one or more tracks.
+     *
+     * Collections should provide an album for every track as the collection browser
+     * will, depending on the setting, only display tracks inside albums.
+     *
+     * For all albums in a compilation the pair album-title/album-artist should be
+     * unique as this pair is used as a key in several places.
+     *
+     * Albums without an artist are called compilations. Albums without a title but
+     * with an artist should contain all singles of the specific artist. There should
+     * be one album without title and artist for all the rest.
+     */
     class AMAROK_CORE_EXPORT Album : public Base
     {
-        Q_PROPERTY( bool compilation READ isCompilation )
-        Q_PROPERTY( bool hasAlbumArtist READ hasAlbumArtist )
-        Q_PROPERTY( ArtistPtr albumArtist READ albumArtist )
-        Q_PROPERTY( TrackList tracks READ tracks )
-        Q_PROPERTY( bool hasImage READ hasImage )
-        // Q_PROPERTY( QPixmap image READ image WRITE setImage )
-        Q_PROPERTY( bool supressImageAutoFetch READ suppressImageAutoFetch WRITE setSuppressImageAutoFetch )
-
         public:
-            Album() {}
-            virtual ~Album() {}
-
             virtual QString prettyName() const;
 
             /**
@@ -321,11 +305,9 @@ namespace Meta
 
     class AMAROK_CORE_EXPORT Composer : public Base
     {
-        Q_PROPERTY( TrackList tracks READ tracks )
         public:
-
-            virtual ~Composer() {}
             virtual QString prettyName() const;
+
             /** returns all tracks by this composer */
             virtual TrackList tracks() = 0;
 
@@ -337,11 +319,9 @@ namespace Meta
 
     class AMAROK_CORE_EXPORT Genre : public Base
     {
-        Q_PROPERTY( TrackList tracks READ tracks )
         public:
-
-            virtual ~Genre() {}
             virtual QString prettyName() const;
+
             /** returns all tracks which belong to the genre */
             virtual TrackList tracks() = 0;
 
@@ -353,14 +333,11 @@ namespace Meta
 
     class AMAROK_CORE_EXPORT Year : public Base
     {
-        Q_PROPERTY( TrackList tracks READ tracks )
         public:
-
-            virtual ~Year() {}
-
-            /** Returns the year this object represents.
-                A number of 0 is considered unset.
-            */
+            /**
+             * Returns the year this object represents.
+             * number of 0 is considered unset.
+             */
             virtual int year() const { return name().toInt(); }
 
             /** returns all tracks which are tagged with this year */
@@ -373,22 +350,11 @@ namespace Meta
     };
 
     /**
-      A Label represents an arbitrary classification of a Track.
-      */
+     * A Label represents an arbitrary classification of a Track.
+     */
     class AMAROK_CORE_EXPORT Label : public Base
     {
-    public:
-        /**
-          Constructs a new Label.
-          */
-        Label() : Base() {}
-        /**
-          Destructs an existing Label.
-          */
-        virtual ~ Label() {}
-
-    protected:
-        virtual void notifyObservers() const;
+        // we need nothing more than what Meta::Base has
     };
 }
 

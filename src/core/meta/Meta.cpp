@@ -255,6 +255,7 @@ Meta::Artist::prettyName() const
 void
 Meta::Artist::notifyObservers() const
 {
+    m_sortableName.clear(); // name() may have changed, recompute sortableName next time
     notifyObserversHelper<Artist, Observer>( this );
 }
 
@@ -377,10 +378,4 @@ bool
 Meta::Year::operator==( const Meta::Year &year ) const
 {
     return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &year );
-}
-
-void
-Meta::Label::notifyObservers() const
-{
-    // labels are not observable
 }

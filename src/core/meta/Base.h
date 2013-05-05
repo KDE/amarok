@@ -63,12 +63,6 @@ namespace Meta {
 
         protected:
             /**
-             * This should be called by subclasses whenever metadata (such as name,
-             * artist, BPM) changes.
-             */
-            virtual void notifyObservers() const = 0;
-
-            /**
              * Helper so that notifyObservers() implemetation can be shared. Template
              * parameter Obs is just Observer, we add it so that Observer.h doesn't need
              * to be included in this header.

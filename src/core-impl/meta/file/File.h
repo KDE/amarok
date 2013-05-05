@@ -113,7 +113,7 @@ namespace MetaFile
             virtual void setDiscNumber( int newDiscNumber );
 
             // publish method so that it can be called by Private.
-            using Meta::Base::notifyObservers;
+            using Meta::Track::notifyObservers;
 
             class Private;
 

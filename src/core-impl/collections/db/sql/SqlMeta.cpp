@@ -1260,7 +1260,6 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
             locker.unlock();
             notifyObservers();
             sqlLabel->invalidateCache();
-            sqlLabel->notifyObservers();
         }
     }
 }
@@ -1298,7 +1297,6 @@ SqlTrack::removeLabel( const Meta::LabelPtr &label )
         }
         notifyObservers();
         sqlLabel->invalidateCache();
-        sqlLabel->notifyObservers();
     }
 }
 
