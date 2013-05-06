@@ -18,12 +18,12 @@
 #ifndef PLAYLISTBROWSERVIEW_H
 #define PLAYLISTBROWSERVIEW_H
 
+#include "core/playlists/Playlist.h"
 #include "widgets/PrettyTreeView.h"
 
 #include <QMutex>
 
 class PopupDropper;
-class KAction;
 class QKeyEvent;
 class QMouseEvent;
 class QContextMenuEvent;
@@ -35,54 +35,69 @@ class PlaylistBrowserView : public Amarok::PrettyTreeView
 Q_OBJECT
 public:
     explicit PlaylistBrowserView( QAbstractItemModel *model, QWidget *parent = 0 );
-    ~PlaylistBrowserView();
 
     virtual void setModel( QAbstractItemModel *model );
-
-    void setNewFolderAction( KAction *action );
 
 signals:
     void currentItemChanged( const QModelIndex &current );
 
 protected:
-    //TODO:re-implement QWidget::dragEnterEvent() to show drop-not-allowed indicator
+    // TODO: re-implement QWidget::dragEnterEvent() to show drop-not-allowed indicator
 
     virtual void keyPressEvent( QKeyEvent *event );
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void startDrag( Qt::DropActions supportedActions );
 
-    virtual void contextMenuEvent( QContextMenuEvent* event );
+    virtual void contextMenuEvent( QContextMenuEvent *event );
 
 protected slots:
     /** reimplemented to emit a signal */
     void currentChanged( const QModelIndex &current, const QModelIndex &previous );
 
+private slots:
+    // these are connected to m_*Actions:
+    void slotCreateEmptyPlaylist();
+    void slotAppend();
+    void slotLoad();
+    void slotSetNew( bool newState );
+    void slotRename();
+    void slotDelete();
+    void slotRemoveTracks();
+    void slotExport();
+
 private:
-    /**
-     * Execute all actions that are named appendAction
-     */
     void appendAndPlay( const QModelIndex &index );
     void appendAndPlay( const QModelIndexList &list );
+    void insertToPlayQueue( int options );
 
     /**
-     * Execute all actions that are named deleteAction
+     * Gets action for a list of indices and sets internal action targets to these.
+     *
+     * After you have processed/triggered the actions, you should call
+     * resetActionTargets() to prevent stale targets laying around.
      */
-    void deletePlaylistsTracks( const QModelIndexList &list );
-
-    /**
-     * Executes all actions that are named @param name
-     */
-    void performActionNamed( const QString &name, const QModelIndexList &list );
-
-    QAction *decoratorActionAt( const QModelIndex &idx, const QPoint position );
-    QList<QAction *> actionsFor( QModelIndexList indexes );
+    QList<QAction *> actionsFor( const QModelIndexList &indexes );
+    void resetActionTargets();
 
     PopupDropper* m_pd;
 
-    KAction *m_addFolderAction;
-
+    QAction *m_createEmptyPlaylistAction;
+    QAction *m_appendAction;
+    QAction *m_loadAction;
+    QAction *m_setNewAction; // for podcasts
+    QAction *m_renamePlaylistAction;
+    QAction *m_deletePlaylistAction;
+    QAction *m_removeTracksAction;
+    QAction *m_exportAction;
+    QAction *m_separatorAction;
     bool m_ongoingDrag;
+
+    Playlists::PlaylistProvider *m_writableActionProvider;
+    Playlists::PlaylistList m_actionPlaylists;
+    Playlists::PlaylistList m_writableActionPlaylists;
+    QMultiHash<Playlists::PlaylistPtr, int> m_actionTracks; // maps playlists to track positions
+    QMultiHash<Playlists::PlaylistPtr, int> m_writableActionTracks;
 };
 
 } // namespace PlaylistBrowserNS

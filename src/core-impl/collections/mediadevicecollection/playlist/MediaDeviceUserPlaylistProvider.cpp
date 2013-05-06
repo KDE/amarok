@@ -33,7 +33,6 @@
 #include <KInputDialog>
 #include <KUrl>
 
-#include <QAction>
 #include <QMap>
 
 static const int USERPLAYLIST_DB_VERSION = 2;
@@ -43,7 +42,6 @@ namespace Playlists {
 
 MediaDeviceUserPlaylistProvider::MediaDeviceUserPlaylistProvider( Collections::MediaDeviceCollection *collection )
     : Playlists::UserPlaylistProvider()
-    , m_renameAction( 0 )
     , m_collection( collection )
 {
     DEBUG_BLOCK
@@ -79,65 +77,7 @@ MediaDeviceUserPlaylistProvider::playlists()
 
     return playlists;
 }
-#if 0
-void
-SqlPlaylists::UserPlaylistProvider::slotDelete()
-{
-    DEBUG_BLOCK
 
-    //TODO FIXME Confirmation of delete
-    foreach( Playlists::PlaylistPtr playlist, The::userPlaylistModel()->selectedPlaylists() )
-    {
-        Meta::SqlPlaylistPtr sqlPlaylist =
-                Meta::SqlPlaylistPtr::dynamicCast( playlist );
-        if( sqlPlaylist )
-        {
-            debug() << "deleting " << sqlPlaylist->name();
-            sqlPlaylist->removeFromDb();
-        }
-    }
-    reloadFromDb();
-}
-#endif
-
-#if 0
-void
-MediaDeviceUserPlaylistProvider::slotRename()
-{
-    DEBUG_BLOCK
-    //only one playlist can be selected at this point
-    Playlists::MediaDevicePlaylistPtr playlist = selectedPlaylists().first();
-    if( playlist.isNull() )
-        return;
-
-    bool ok;
-    const QString newName = KInputDialog::getText( i18n("Change playlist"),
-                i18n("Enter new name for playlist:"), playlist->name(),
-                                                   &ok );
-    if ( ok )
-    {
-        playlist->setName( newName.trimmed() );
-        emit( updated() );
-    }
-}
-#endif
-#if 0
-void
-SqlPlaylists::UserPlaylistProvider::slotRemove()
-{
-    QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
-        return;
-
-    PlaylistTrackMap playlistMap = action->data().value<PlaylistTrackMap>();
-    foreach( Playlists::PlaylistPtr playlist, playlistMap.keys() )
-        foreach( Meta::TrackPtr track, playlistMap.values( playlist ) )
-            playlist->removeTrack( playlist->tracks().indexOf( track ) );
-
-    //clear the data
-    action->setData( QVariant() );
-}
-#endif
 Playlists::PlaylistPtr
 MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
@@ -169,7 +109,7 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QStr
 }
 
 void
-MediaDeviceUserPlaylistProvider::rename( Playlists::PlaylistPtr playlist, const QString &newName )
+MediaDeviceUserPlaylistProvider::renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName )
 {
     DEBUG_BLOCK
     Playlists::MediaDevicePlaylistPtr pl = Playlists::MediaDevicePlaylistPtr::staticCast( playlist );
@@ -183,7 +123,7 @@ MediaDeviceUserPlaylistProvider::rename( Playlists::PlaylistPtr playlist, const 
 }
 
 bool
-MediaDeviceUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistlist )
+MediaDeviceUserPlaylistProvider::deletePlaylists( const Playlists::PlaylistList &playlistlist )
 {
     Playlists::MediaDevicePlaylistList pllist;
     foreach( Playlists::PlaylistPtr playlist, playlistlist )

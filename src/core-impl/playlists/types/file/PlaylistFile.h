@@ -25,11 +25,11 @@
 #include <QMutex>
 #include <QSemaphore>
 
-class PlaylistProvider;
 class QFile;
 
 namespace Playlists
 {
+    class PlaylistProvider;
     class PlaylistFile;
     class PlaylistFileLoaderJob;
 

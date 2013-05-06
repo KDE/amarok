@@ -21,12 +21,6 @@
 #include "core/playlists/PlaylistProvider.h"
 #include "core/podcasts/PodcastMeta.h"
 
-#include <kio/jobclasses.h>
-#include <KLocale>
-
-class KUrl;
-class QAction;
-
 namespace Podcasts {
 
 /**
@@ -37,8 +31,6 @@ class AMAROK_CORE_EXPORT PodcastProvider : public Collections::TrackProvider, pu
     public:
         static bool couldBeFeed( const QString &urlString );
         static KUrl toFeedUrl( const QString &urlString );
-
-        virtual ~PodcastProvider() {}
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const = 0;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url ) = 0;
@@ -59,29 +51,12 @@ class AMAROK_CORE_EXPORT PodcastProvider : public Collections::TrackProvider, pu
 
         virtual Podcasts::PodcastChannelList channels() = 0;
 
-        virtual QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList )
-            { return QList<QAction *>(); }
-        virtual QList<QAction *> channelActions( Podcasts::PodcastChannelList )
-            { return QList<QAction *>(); }
-
         //TODO: need to move this to SqlPodcastProvider since it's provider specific.
         //perhaps use a more general transferprogress for playlists
         virtual void completePodcastDownloads() = 0;
 
         // PlaylistProvider methods
-        virtual QString prettyName() const = 0;
-        virtual KIcon icon() const = 0;
-
-        virtual int category() const { return (int)Playlists::PodcastChannelPlaylist; }
-
-        virtual Playlists::PlaylistList playlists() = 0;
-
-        virtual QList<QAction *> providerActions() { return QList<QAction *>(); }
-        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist )
-                { Q_UNUSED( playlist ) return QList<QAction *>(); }
-        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
-                                                  int trackIndex )
-                { Q_UNUSED( playlist) Q_UNUSED( trackIndex ) return QList<QAction *>(); }
+        virtual int category() const { return Playlists::PodcastChannelPlaylist; }
 
         /** convenience function that downcast the argument to PodcastChannel and calls addChannel()
           */

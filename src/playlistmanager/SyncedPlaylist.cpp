@@ -104,24 +104,6 @@ SyncedPlaylist::removeTrack( int position )
     m_playlists.first()->removeTrack( position );
 }
 
-QActionList
-SyncedPlaylist::actions()
-{
-    QActionList actions;
-    //only add actions from the master playlist
-    actions << playlists().first()->actions();
-    return actions;
-}
-
-QActionList
-SyncedPlaylist::trackActions( int trackIndex )
-{
-    QActionList actions;
-    //only add actions from the master playlist
-    actions << playlists().first()->trackActions( trackIndex );
-    return actions;
-}
-
 void
 SyncedPlaylist::metadataChanged( Playlists::PlaylistPtr playlist )
 {

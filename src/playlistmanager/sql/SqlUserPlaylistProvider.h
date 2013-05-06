@@ -53,18 +53,12 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 
         /* UserPlaylistProvider functions */
         virtual bool isWritable();
-        virtual bool deletePlaylists( Playlists::PlaylistList playlistlist );
-        virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
+        virtual bool deletePlaylists( const Playlists::PlaylistList &playlistlist );
+        virtual void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName );
 
         Playlists::SqlPlaylistGroupPtr group( const QString &name );
 
         static Playlists::SqlPlaylistList toSqlPlaylists( Playlists::PlaylistList playlists );
-
-    private slots:
-        /**
-         * Overridden only bacause of the m_debug flag
-         */
-        void slotDelete();
 
     private:
         void reloadFromDb();

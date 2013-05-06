@@ -97,6 +97,11 @@ PlaylistFileProvider::prettyName() const
     return i18n( "Playlist Files on Disk" );
 }
 
+KIcon PlaylistFileProvider::icon() const
+{
+    return KIcon( "folder-documents" );
+}
+
 int
 PlaylistFileProvider::playlistCount() const
 {
@@ -229,14 +234,14 @@ PlaylistFileProvider::import( const KUrl &path )
 }
 
 void
-PlaylistFileProvider::rename( Playlists::PlaylistPtr playlist, const QString &newName )
+PlaylistFileProvider::renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName )
 {
     DEBUG_BLOCK
     playlist->setName( newName );
 }
 
 bool
-PlaylistFileProvider::deletePlaylists( Playlists::PlaylistList playlists )
+PlaylistFileProvider::deletePlaylists( const Playlists::PlaylistList &playlists )
 {
     Playlists::PlaylistFileList playlistFiles;
     foreach( Playlists::PlaylistPtr playlist, playlists )

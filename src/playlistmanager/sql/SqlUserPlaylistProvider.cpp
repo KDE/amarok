@@ -76,41 +76,9 @@ SqlUserPlaylistProvider::playlists()
 }
 
 void
-SqlUserPlaylistProvider::rename( Playlists::PlaylistPtr playlist, const QString &newName )
+SqlUserPlaylistProvider::renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName )
 {
     playlist->setName( newName.trimmed() );
-}
-
-void
-SqlUserPlaylistProvider::slotDelete()
-{
-    QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
-        return;
-
-    Playlists::PlaylistList playlists = action->data().value<Playlists::PlaylistList>();
-    if( playlists.count() == 0 )
-        return;
-
-    if( !m_debug )
-    {
-        KDialog dialog;
-        dialog.setCaption( i18n( "Confirm Delete" ) );
-        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-        QLabel label( i18np( "Are you sure you want to delete this playlist?",
-                             "Are you sure you want to delete these %1 playlists?",
-                             playlists.count() )
-                      , &dialog
-                    );
-        //TODO:include a text area with all the names of the playlists
-        dialog.setButtonText( KDialog::Ok, i18nc( "%1 is playlist provider pretty name",
-                                                  "Yes, delete from %1.", prettyName() ) );
-        dialog.setMainWidget( &label );
-        if( dialog.exec() != QDialog::Accepted )
-            return;
-    }
-
-    deletePlaylists( playlists );
 }
 
 bool
@@ -120,7 +88,7 @@ SqlUserPlaylistProvider::isWritable()
 }
 
 bool
-SqlUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistList )
+SqlUserPlaylistProvider::deletePlaylists( const Playlists::PlaylistList &playlistList )
 {
     Playlists::SqlPlaylistList sqlPlaylists;
     foreach( Playlists::PlaylistPtr playlist, playlistList )

@@ -77,8 +77,7 @@ public:
     /** Copy a playlist to the provider.
     */
     virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
-    QList<QAction *> channelActions( PodcastChannelList episodes );
-    QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
+    virtual QActionList playlistActions( const Playlists::PlaylistList &playlists );
 
 private slots:
     void requestDeviceUpdates();
@@ -120,6 +119,8 @@ private slots:
     void slotEpisodeMarkedAsNew( Podcasts::PodcastEpisodePtr episode );
 
 private:
+    QActionList channelActions( PodcastChannelList episodes );
+
     ApiRequest *m_apiRequest;
     const QString m_username;
     const QString m_deviceName;

@@ -280,31 +280,25 @@ SqlPodcastProvider::playlists()
     return playlistList;
 }
 
-QList<QAction *>
+QActionList
 SqlPodcastProvider::providerActions()
 {
     if( m_providerActions.isEmpty() )
     {
         QAction *updateAllAction = new QAction( KIcon( "view-refresh-amarok" ),
-                                         i18n( "&Update All Channels" ),
-                                         this
-                                       );
+                i18n( "&Update All Channels" ), this );
         updateAllAction->setProperty( "popupdropper_svg_id", "update" );
         connect( updateAllAction, SIGNAL(triggered()), this, SLOT(updateAll()) );
         m_providerActions << updateAllAction;
 
         QAction *configureAction = new QAction( KIcon( "configure" ),
-            i18n( "&Configure General Settings" ),
-            this
-        );
+                i18n( "&Configure General Settings" ), this );
         configureAction->setProperty( "popupdropper_svg_id", "configure" );
         connect( configureAction, SIGNAL(triggered()), this, SLOT(slotConfigureProvider()) );
         m_providerActions << configureAction;
 
         QAction *exportOpmlAction = new QAction( KIcon( "document-export" ),
-                                                 i18n( "&Export subscriptions to OPML file" ),
-                                                 this
-                                               );
+                i18n( "&Export subscriptions to OPML file" ), this );
         connect( exportOpmlAction, SIGNAL(triggered()), SLOT(slotExportOpml()) );
         m_providerActions << exportOpmlAction;
     }
@@ -312,114 +306,100 @@ SqlPodcastProvider::providerActions()
     return m_providerActions;
 }
 
-QList<QAction *>
-SqlPodcastProvider::playlistActions( Playlists::PlaylistPtr playlist )
+QActionList
+SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
 {
-    QList<QAction *> actions;
+    QActionList actions;
+    SqlPodcastChannelList sqlChannels;
+    foreach( const Playlists::PlaylistPtr &playlist, playlists )
+    {
+        SqlPodcastChannelPtr sqlChannel = SqlPodcastChannel::fromPlaylistPtr( playlist );
+        if( sqlChannel )
+            sqlChannels << sqlChannel;
+    }
 
-    Podcasts::SqlPodcastChannelPtr sqlChannel = Podcasts::SqlPodcastChannel::fromPlaylistPtr( playlist );
-    if( sqlChannel.isNull() )
+    if( sqlChannels.isEmpty() )
         return actions;
 
     //TODO: add export OPML action for selected playlists only. Use the QAction::data() trick.
     if( m_configureChannelAction == 0 )
     {
-        m_configureChannelAction = new QAction(
-            KIcon( "configure" ),
-            i18n( "&Configure" ),
-            this
-        );
+        m_configureChannelAction = new QAction( KIcon( "configure" ), i18n( "&Configure" ), this );
         m_configureChannelAction->setProperty( "popupdropper_svg_id", "configure" );
         connect( m_configureChannelAction, SIGNAL(triggered()), SLOT(slotConfigureChannel()) );
     }
-
     //only one channel can be configured at a time.
-    if( m_configureChannelAction->data().isNull() )
-        m_configureChannelAction->setData( QVariant::fromValue( sqlChannel ) );
+    if( sqlChannels.count() == 1 )
+    {
+        m_configureChannelAction->setData( QVariant::fromValue( sqlChannels.first() ) );
+        actions << m_configureChannelAction;
+    }
 
-    actions << m_configureChannelAction;
-
-    Podcasts::SqlPodcastChannelList actionChannels;
     if( m_removeAction == 0 )
     {
-        m_removeAction = new QAction(
-            KIcon( "news-unsubscribe" ),
-            i18n( "&Remove Subscription" ),
-            this
-        );
+        m_removeAction = new QAction( KIcon( "news-unsubscribe" ), i18n( "&Remove Subscription" ), this );
         m_removeAction->setProperty( "popupdropper_svg_id", "remove" );
         connect( m_removeAction, SIGNAL(triggered()), SLOT(slotRemoveChannels()) );
     }
-    else
-    {
-        actionChannels = m_removeAction->data().value<Podcasts::SqlPodcastChannelList>();
-    }
-    m_removeAction->setObjectName( "deleteAction" );
-
-    actionChannels << sqlChannel;
-    m_removeAction->setData( QVariant::fromValue( actionChannels ) );
-
+    m_removeAction->setData( QVariant::fromValue( sqlChannels ) );
     actions << m_removeAction;
 
-    actionChannels.clear();
     if( m_updateAction == 0 )
     {
-        m_updateAction = new QAction(
-            KIcon( "view-refresh-amarok" ),
-            i18n( "&Update Channel" ),
-            this
-        );
+        m_updateAction = new QAction( KIcon( "view-refresh-amarok" ), i18n( "&Update Channel" ), this );
         m_updateAction->setProperty( "popupdropper_svg_id", "update" );
         connect( m_updateAction, SIGNAL(triggered()), SLOT(slotUpdateChannels()) );
     }
-    else
-    {
-        actionChannels = m_updateAction->data().value<Podcasts::SqlPodcastChannelList>();
-    }
-
-    actionChannels << sqlChannel;
-    m_updateAction->setData( QVariant::fromValue( actionChannels ) );
-
+    m_updateAction->setData( QVariant::fromValue( sqlChannels ) );
     actions << m_updateAction;
 
     return actions;
 }
 
-QList<QAction *>
-SqlPodcastProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIndex )
+QActionList
+SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks )
 {
-    QList<QAction *> actions;
-    Podcasts::SqlPodcastChannelPtr sqlChannel = Podcasts::SqlPodcastChannel::fromPlaylistPtr( playlist );
-    if( sqlChannel.isNull() )
+    SqlPodcastEpisodeList episodes;
+    foreach( const Playlists::PlaylistPtr &playlist, playlistTracks.uniqueKeys() )
+    {
+        SqlPodcastChannelPtr sqlChannel = SqlPodcastChannel::fromPlaylistPtr( playlist );
+        if( !sqlChannel )
+            continue;
+
+        SqlPodcastEpisodeList channelEpisodes = sqlChannel->sqlEpisodes();
+        QList<int> trackPositions = playlistTracks.values( playlist );
+        qSort( trackPositions );
+        foreach( int trackPosition, trackPositions )
+        {
+            if( trackPosition >= 0 && trackPosition < channelEpisodes.count() )
+                episodes << channelEpisodes.at( trackPosition );
+        }
+    }
+
+    QActionList actions;
+    if( episodes.isEmpty() )
         return actions;
 
-    Podcasts::SqlPodcastEpisodeList sqlEpisodes = sqlChannel->sqlEpisodes();
-    if( trackIndex >= sqlEpisodes.count() )
-        return actions;
-
-    Podcasts::SqlPodcastEpisodePtr sqlEpisode = sqlEpisodes.at( trackIndex );
-    if( sqlEpisode.isNull() )
-        return actions;
+    if( m_downloadAction == 0 )
+    {
+        m_downloadAction = new QAction( KIcon( "go-down" ), i18n( "&Download Episode" ), this );
+        m_downloadAction->setProperty( "popupdropper_svg_id", "download" );
+        connect( m_downloadAction, SIGNAL(triggered()), SLOT(slotDownloadEpisodes()) );
+    }
 
     if( m_deleteAction == 0 )
     {
-        m_deleteAction = new QAction(
-            KIcon( "edit-delete" ),
-            i18n( "&Delete Downloaded Episode" ),
-            this
-        );
+        m_deleteAction = new QAction( KIcon( "edit-delete" ),
+            i18n( "&Delete Downloaded Episode" ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+        m_deleteAction->setObjectName( "deleteAction" );
         connect( m_deleteAction, SIGNAL(triggered()), SLOT(slotDeleteDownloadedEpisodes()) );
     }
-    m_deleteAction->setObjectName( "deleteAction" );
 
     if( m_writeTagsAction == 0 )
     {
-        m_writeTagsAction = new QAction(
-            KIcon( "media-track-edit-amarok" ),
-            i18n( "&Write Feed Information to File" ),
-            this
-        );
+        m_writeTagsAction = new QAction( KIcon( "media-track-edit-amarok" ),
+            i18n( "&Write Feed Information to File" ), this );
         m_writeTagsAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_writeTagsAction, SIGNAL(triggered()), SLOT(slotWriteTagsToFiles()) );
     }
@@ -427,50 +407,43 @@ SqlPodcastProvider::trackActions( Playlists::PlaylistPtr playlist, int trackInde
     if( m_keepAction == 0 )
     {
         m_keepAction = new QAction( KIcon( "podcast-amarok" ),
-                                       i18nc( "toggle the \"keep\" downloaded file status of this podcast episode. "
-                                              "Notice that downloaded files with this status wouldn't be deleted if we apply a purge.",
-                                              "&Keep downloaded file" ),
-                                       this
-                                       );
+                i18n( "&Keep downloaded file" ), this );
+        m_keepAction->setToolTip( i18n( "Toggle the \"keep\" downloaded file status of "
+                "this podcast episode. Downloaded files with this status wouldn't be "
+                "deleted even if we apply a purge." ) );
         m_keepAction->setProperty( "popupdropper_svg_id", "keep" );
         m_keepAction->setCheckable( true );
-
         connect( m_keepAction, SIGNAL(triggered(bool)), SLOT(slotSetKeep()) );
     }
 
-    Podcasts::SqlPodcastEpisodeList actionEpisodes;
-    if( !sqlEpisode->localUrl().isEmpty() )
+    SqlPodcastEpisodeList remoteEpisodes;
+    SqlPodcastEpisodeList keptDownloadedEpisodes, unkeptDownloadedEpisodes;
+    foreach( const SqlPodcastEpisodePtr &episode, episodes )
     {
-        actionEpisodes = m_deleteAction->data().value<Podcasts::SqlPodcastEpisodeList>();
-        actionEpisodes << sqlEpisode;
-        m_keepAction->setChecked( sqlEpisode->isKeep() );
-        m_keepAction->setData( QVariant::fromValue( actionEpisodes ) );
-        m_deleteAction->setData( QVariant::fromValue( actionEpisodes ) );
-        //these lists are the same anyway
-        m_writeTagsAction->setData( QVariant::fromValue( actionEpisodes ) );
-        actions << m_keepAction;
-        actions << m_deleteAction;
-        actions << m_writeTagsAction;
-    }
-    else
-    {
-        if( m_downloadAction == 0 )
-        {
-            m_downloadAction = new QAction(
-                KIcon( "go-down" ),
-                i18n( "&Download Episode" ),
-                this
-            );
-            m_downloadAction->setProperty( "popupdropper_svg_id", "download" );
-            connect( m_downloadAction, SIGNAL(triggered()), SLOT(slotDownloadEpisodes()) );
-        }
+        if( episode->localUrl().isEmpty() )
+            remoteEpisodes << episode;
         else
         {
-            actionEpisodes = m_downloadAction->data().value<Podcasts::SqlPodcastEpisodeList>();
+            if( episode->isKeep() )
+                keptDownloadedEpisodes << episode;
+            else
+                unkeptDownloadedEpisodes << episode;
         }
-        actionEpisodes << sqlEpisode;
-        m_downloadAction->setData( QVariant::fromValue( actionEpisodes ) );
+    }
+
+    if( !remoteEpisodes.isEmpty() )
+    {
+        m_downloadAction->setData( QVariant::fromValue( remoteEpisodes ) );
         actions << m_downloadAction;
+    }
+    if( !( keptDownloadedEpisodes + unkeptDownloadedEpisodes ).isEmpty() )
+    {
+        m_deleteAction->setData( QVariant::fromValue( keptDownloadedEpisodes + unkeptDownloadedEpisodes ) );
+        actions << m_deleteAction;
+
+        m_keepAction->setChecked( unkeptDownloadedEpisodes.isEmpty() );
+        m_keepAction->setData( QVariant::fromValue( keptDownloadedEpisodes + unkeptDownloadedEpisodes ) );
+        actions << m_keepAction;
     }
 
     return actions;
@@ -804,179 +777,6 @@ SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel 
     //start autoscan in case it wasn't already
     if( sqlChannel->autoScan() && !oldAutoScan )
         startTimer();
-}
-
-QList<QAction *>
-SqlPodcastProvider::episodeActions( Podcasts::PodcastEpisodeList episodes )
-{
-    QList< QAction * > actions;
-    if( episodes.isEmpty() )
-        return actions;
-
-    Podcasts::PodcastEpisodeList actionEpisodes;
-    if( m_deleteAction == 0 )
-    {
-        m_deleteAction = new QAction(
-            KIcon( "edit-delete" ),
-            i18n( "&Delete Downloaded Episode" ),
-            this
-        );
-        m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_deleteAction, SIGNAL(triggered()), SLOT(slotDeleteDownloadedEpisodes()) );
-    }
-
-    actionEpisodes.clear();
-    if( m_writeTagsAction == 0 )
-    {
-        m_writeTagsAction = new QAction(
-            KIcon( "media-track-edit-amarok" ),
-            i18n( "&Write Feed Information to File" ),
-            this
-        );
-        m_writeTagsAction->setProperty( "popupdropper_svg_id", "edit" );
-        connect( m_writeTagsAction, SIGNAL(triggered()), SLOT(slotWriteTagsToFiles()) );
-    }
-
-    if( m_keepAction == 0 )
-    {
-        m_keepAction = new QAction( KIcon( "podcast-amarok" ),
-                                       i18nc( "toggle the \"keep\" downloaded file status of this podcast episode. "
-                                              "Notice that downloaded files with this status wouldn't be deleted if we apply a purge.",
-                                              "&Keep downloaded file" ),
-                                       this
-                                       );
-        m_keepAction->setProperty( "popupdropper_svg_id", "keep" );
-        m_keepAction->setCheckable( true );
-
-        connect( m_keepAction, SIGNAL(triggered(bool)), SLOT(slotSetKeep()) );
-    }
-
-    bool hasDownloaded = false;
-    bool hasKeep = false;
-    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
-    {
-        Podcasts::SqlPodcastEpisodePtr sqlEpisode
-                = Podcasts::SqlPodcastEpisodePtr::dynamicCast( episode );
-        if( sqlEpisode.isNull() )
-            break;
-
-        if( !sqlEpisode->localUrl().isEmpty() )
-        {
-            hasDownloaded = true;
-
-            if ( sqlEpisode->isKeep() )
-                hasKeep = true;
-
-            break;
-        }
-    }
-    if( hasDownloaded )
-    {
-        Podcasts::PodcastEpisodeList actionEpisodes = m_deleteAction->data().value<Podcasts::PodcastEpisodeList>();
-        actionEpisodes << episodes;
-        //these lists are the same anyway
-        m_keepAction->setData( QVariant::fromValue( actionEpisodes ) );
-        m_deleteAction->setData( QVariant::fromValue( actionEpisodes ) );
-        m_writeTagsAction->setData( QVariant::fromValue( actionEpisodes ) );
-
-        m_keepAction->setChecked( hasKeep );
-
-        actions << m_keepAction;
-        actions << m_deleteAction;
-        actions << m_writeTagsAction;
-    }
-    else
-    {
-        if( m_downloadAction == 0 )
-        {
-            m_downloadAction = new QAction(
-                KIcon( "go-down" ),
-                i18n( "&Download Episode" ),
-                this
-            );
-            m_downloadAction->setProperty( "popupdropper_svg_id", "download" );
-            connect( m_downloadAction, SIGNAL(triggered()), SLOT(slotDownloadEpisodes()) );
-        }
-        else
-        {
-            actionEpisodes = m_downloadAction->data().value<Podcasts::PodcastEpisodeList>();
-        }
-        actionEpisodes << episodes;
-        m_downloadAction->setData( QVariant::fromValue( actionEpisodes ) );
-        actions << m_downloadAction;
-    }
-
-    return actions;
-}
-
-QList<QAction *>
-SqlPodcastProvider::channelActions( Podcasts::PodcastChannelList channels )
-{
-    QList< QAction * > actions;
-
-    if( channels.isEmpty() )
-        return actions;
-
-    if( m_configureChannelAction == 0 )
-    {
-        m_configureChannelAction = new QAction(
-            KIcon( "configure" ),
-            i18n( "&Configure" ),
-            this
-        );
-        m_configureChannelAction->setProperty( "popupdropper_svg_id", "configure" );
-        connect( m_configureChannelAction, SIGNAL(triggered()), SLOT(slotConfigureChannel()) );
-    }
-
-    //only one playlist can be renamed at a time.
-    if( m_configureChannelAction->data().isNull() )
-        m_configureChannelAction->setData( QVariant::fromValue( channels.first() ) );
-
-    actions << m_configureChannelAction;
-
-    Podcasts::PodcastChannelList actionChannels;
-    if( m_removeAction == 0 )
-    {
-        m_removeAction = new QAction(
-            KIcon( "news-unsubscribe" ),
-            i18n( "&Remove Subscription" ),
-            this
-        );
-        m_removeAction->setProperty( "popupdropper_svg_id", "remove" );
-        connect( m_removeAction, SIGNAL(triggered()), SLOT(slotRemoveChannels()) );
-    }
-    else
-    {
-        actionChannels = m_removeAction->data().value<Podcasts::PodcastChannelList>();
-    }
-
-    actionChannels << channels;
-    m_removeAction->setData( QVariant::fromValue( actionChannels ) );
-
-    actions << m_removeAction;
-
-    actionChannels.clear();
-    if( m_updateAction == 0 )
-    {
-        m_updateAction = new QAction(
-            KIcon( "view-refresh-amarok" ),
-            i18n( "&Update Channel" ),
-            this
-        );
-        m_updateAction->setProperty( "popupdropper_svg_id", "update" );
-        connect( m_updateAction, SIGNAL(triggered()), SLOT(slotUpdateChannels()) );
-    }
-    else
-    {
-        actionChannels = m_updateAction->data().value<Podcasts::PodcastChannelList>();
-    }
-
-    actionChannels << channels;
-    m_updateAction->setData( QVariant::fromValue( actionChannels ) );
-
-    actions << m_updateAction;
-
-    return actions;
 }
 
 void

@@ -206,18 +206,6 @@ namespace Playlists
             virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack );
 
             /**
-             * Return user-actionable actions for this playlist. Default implementation
-             * just returns provider actions for this playlist.
-             */
-            virtual QActionList actions();
-
-            /**
-             * Return actions for track at position @trackIndex for this playlist. Default
-             * implementation returns provider()'s trackActions().
-             */
-            virtual QActionList trackActions( int trackIndex );
-
-            /**
              * A list of groups or labels this playlist belongs to.
              *
              * Can be used for grouping in folders (use ex. '/' as separator) or for

@@ -59,9 +59,9 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         virtual Playlists::PlaylistList playlists();
 
         //PlaylistProvider methods
-        virtual QList<QAction *> providerActions();
-        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
-        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist, int trackIndex );
+        virtual QActionList providerActions();
+        virtual QActionList playlistActions( const Playlists::PlaylistList &playlists );
+        virtual QActionList trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks );
 
         //PodcastProvider methods
         virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid );
@@ -72,9 +72,6 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
 
         virtual Podcasts::PodcastChannelList channels();
-
-        virtual QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList );
-        virtual QList<QAction *> channelActions( Podcasts::PodcastChannelList );
 
         virtual void completePodcastDownloads();
 

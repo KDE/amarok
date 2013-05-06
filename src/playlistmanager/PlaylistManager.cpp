@@ -359,7 +359,7 @@ PlaylistManager::rename( PlaylistPtr playlist, const QString &newName )
     if( !provider || !provider->isWritable() )
         return false;
 
-    provider->rename( playlist, newName );
+    provider->renamePlaylist( playlist, newName );
     return true;
 }
 

@@ -79,7 +79,7 @@ void TestSqlUserPlaylistProvider::testSave()
 void TestSqlUserPlaylistProvider::testRename()
 {
     Playlists::PlaylistList tempList = m_testSqlUserPlaylistProvider->playlists();
-    m_testSqlUserPlaylistProvider->rename( tempList.at( 0 ), "New Test Name" );
+    m_testSqlUserPlaylistProvider->renamePlaylist( tempList.at( 0 ), "New Test Name" );
     QCOMPARE( tempList.at( 0 )->name(), QString( "New Test Name" ) );
 }
 

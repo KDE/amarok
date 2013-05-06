@@ -20,73 +20,26 @@
 #define USERPLAYLISTPROVIDER_H
 
 #include "amarok_export.h"
-#include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistProvider.h"
 
-class QAction;
-
 namespace Playlists {
+    /**
+     * @author Bart Cerneels <bart.cerneels@kde.org>
+     */
+    class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
+    {
+        Q_OBJECT
 
-/**
-    @author Bart Cerneels <bart.cerneels@kde.org>
-*/
-class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
-{
-    Q_OBJECT
-    public:
-        explicit UserPlaylistProvider( QObject *parent = 0 );
-        virtual ~UserPlaylistProvider();
+        public:
+            explicit UserPlaylistProvider( QObject *parent = 0 );
 
-        /* PlaylistProvider functions */
-        virtual int category() const;
+            /* PlaylistProvider functions */
+            virtual int category() const;
 
-        /* UserPlaylistProvider functions */
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
-                                             const QString& name = QString() ) = 0;
-
-        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
-        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
-                                                  int trackIndex );
-
-        // UserPlaylistProvider-specific
-        virtual bool isWritable() { return false; }
-        virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName )
-                { Q_UNUSED( playlist ) Q_UNUSED(newName) }
-        virtual bool deletePlaylists( Playlists::PlaylistList playlistlist )
-                { Q_UNUSED( playlistlist ) return false; }
-
-    protected slots:
-        /**
-         * Delete selected playlists.
-         * Will only work if the sender is a QAction with a PlaylistPtr as data.
-         */
-        virtual void slotDelete();
-
-        /**
-         * Rename selected playlist.
-         * Will only work if the sender is a QAction with a PlaylistPtr as data.
-         */
-        virtual void slotRename();
-
-        /**
-         * Export the selected playlist.
-         * Will only work if the sender is a QAction with a PlaylistPtr as data.
-         */
-        virtual void slotExport();
-
-        /**
-         * Remove a track (or tracks) from a playlist.
-         * Will only work if the sender is a QAction with a PlaylistTrackMap as data.
-         */
-        virtual void slotRemoveTrack();
-
-    protected:
-        QAction *m_deleteAction;
-        QAction *m_renameAction;
-        QAction *m_exportAction;
-        QAction *m_removeTrackAction;
-};
-
+            /* UserPlaylistProvider functions */
+            virtual PlaylistPtr save( const Meta::TrackList &tracks,
+                                      const QString &name = QString() ) = 0;
+    };
 } //namespace Playlists
 
 #endif

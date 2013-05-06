@@ -22,12 +22,6 @@
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
-#include <kicon.h>
-
-class KConfigGroup;
-class KUrl;
-
-class QAction;
 class QTimer;
 
 namespace Playlists {
@@ -43,7 +37,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         virtual ~PlaylistFileProvider();
 
         virtual QString prettyName() const;
-        virtual KIcon icon() const { return KIcon( "folder-documents" ); }
+        virtual KIcon icon() const;
 
         virtual int category() const { return Playlists::UserPlaylist; }
 
@@ -62,8 +56,8 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         virtual bool import( const KUrl &path );
 
         virtual bool isWritable() { return true; }
-        virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
-        virtual bool deletePlaylists( Playlists::PlaylistList playlistList );
+        virtual void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName );
+        virtual bool deletePlaylists( const Playlists::PlaylistList &playlists );
 
         /* PlaylistFileProvider methods */
         /** Schedules a PlaylistFile to be saved on the next iteration of the mainloop.

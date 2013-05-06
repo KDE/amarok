@@ -101,45 +101,28 @@ IpodPlaylistProvider::providerActions()
 }
 
 QActionList
-IpodPlaylistProvider::playlistActions( Playlists::PlaylistPtr playlist )
+IpodPlaylistProvider::playlistActions( const Playlists::PlaylistList &playlists )
 {
-    QList<QAction *> actions;
-    if( !m_playlists.contains( playlist ) )  // make following static cast safe
-        return actions;
-    KSharedPtr<IpodPlaylist> ipodPlaylist = KSharedPtr<IpodPlaylist>::staticCast( playlist );
-    switch( ipodPlaylist->type() )
+    QActionList actions;
+    foreach( const Playlists::PlaylistPtr &playlist, playlists )
     {
-        case IpodPlaylist::Normal:
-            actions << Playlists::UserPlaylistProvider::playlistActions( playlist );
-            break;
-        case IpodPlaylist::Stale:
-        case IpodPlaylist::Orphaned:
+        if( !m_playlists.contains( playlist ) )  // make following static cast safe
+            continue;
+        IpodPlaylist::Type type = KSharedPtr<IpodPlaylist>::staticCast( playlist )->type();
+        if( type == IpodPlaylist::Stale || type == IpodPlaylist::Orphaned )
+        {
             actions << m_coll->m_consolidateAction;
             break;
+        }
     }
 
     return actions;
 }
 
 QActionList
-IpodPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIndex )
+IpodPlaylistProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks )
 {
-    QList<QAction *> actions;
-    if( !m_playlists.contains( playlist ) )  // make following static cast safe
-        return actions;
-    KSharedPtr<IpodPlaylist> ipodPlaylist = KSharedPtr<IpodPlaylist>::staticCast( playlist );
-    switch( ipodPlaylist->type() )
-    {
-        case IpodPlaylist::Normal:
-            actions << Playlists::UserPlaylistProvider::trackActions( playlist, trackIndex );
-            break;
-        case IpodPlaylist::Stale:
-        case IpodPlaylist::Orphaned:
-            actions << m_coll->m_consolidateAction;
-            break;
-    }
-
-    return actions;
+    return playlistActions( playlistTracks.uniqueKeys() );
 }
 
 bool
@@ -149,7 +132,7 @@ IpodPlaylistProvider::isWritable()
 }
 
 void
-IpodPlaylistProvider::rename( Playlists::PlaylistPtr playlist, const QString &newName )
+IpodPlaylistProvider::renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName )
 {
     if( !m_playlists.contains( playlist ) )  // make following static cast safe
         return;
@@ -163,7 +146,7 @@ IpodPlaylistProvider::rename( Playlists::PlaylistPtr playlist, const QString &ne
 }
 
 bool
-IpodPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistlist )
+IpodPlaylistProvider::deletePlaylists( const Playlists::PlaylistList &playlistlist )
 {
     if( !isWritable() )
         return false;

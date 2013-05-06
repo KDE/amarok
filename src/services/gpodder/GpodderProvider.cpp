@@ -343,51 +343,39 @@ GpodderProvider::removeChannel( const QUrl &url )
     }
 }
 
-QList<QAction *>
+QActionList
 GpodderProvider::channelActions( PodcastChannelList channels )
 {
-    DEBUG_BLOCK
-
-    QList<QAction *> actions;
+    QActionList actions;
+    if( channels.isEmpty() )
+        return actions;
 
     if( m_removeAction == 0 )
     {
-        m_removeAction = new QAction(
-            KIcon( "edit-delete" ),
-            i18n( "&Delete Channel and Episodes" ),
-            this
-        );
-
+        m_removeAction = new QAction( KIcon( "edit-delete" ),
+                i18n( "&Delete Channel and Episodes" ), this );
         m_removeAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_removeAction, 
-                 SIGNAL(triggered()),
-                 SLOT(slotRemoveChannels()) );
+        connect( m_removeAction,  SIGNAL(triggered()), SLOT(slotRemoveChannels()) );
     }
-
     //Set the episode list as data that we'll retrieve in the slot
-    PodcastChannelList actionList =
-        m_removeAction->data().value<PodcastChannelList>();
-
-    actionList << channels;
-    m_removeAction->setData( QVariant::fromValue( actionList ) );
-
+    m_removeAction->setData( QVariant::fromValue( channels ) );
     actions << m_removeAction;
 
     return actions;
 }
 
-QList<QAction *>
-GpodderProvider::playlistActions( Playlists::PlaylistPtr playlist )
+QActionList
+GpodderProvider::playlistActions( const Playlists::PlaylistList &playlists )
 {
-    DEBUG_BLOCK
-
     PodcastChannelList channels;
-    PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
+    foreach( const Playlists::PlaylistPtr &playlist, playlists )
+    {
+        PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
+        if( channel )
+            channels << channel;
+    }
 
-    if( channel.isNull() )
-        return QList<QAction *>();
-
-    return channelActions( channels << channel );
+    return channelActions( channels );
 }
 
 void

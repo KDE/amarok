@@ -66,17 +66,8 @@ PlaylistBrowserNS::PodcastModel::destroy()
 
 PlaylistBrowserNS::PodcastModel::PodcastModel()
     : PlaylistBrowserModel( PlaylistManager::PodcastChannel )
-    , m_setNewAction( 0 )
 {
     s_instance = this;
-    m_setNewAction = new QAction( KIcon( "rating" ),
-                                  i18nc( "toggle the \"new\" status of this podcast episode",
-                                         "&New" ),
-                                  this
-                                );
-    m_setNewAction->setProperty( "popupdropper_svg_id", "new" );
-    m_setNewAction->setCheckable( true );
-    connect( m_setNewAction, SIGNAL(triggered(bool)), SLOT(slotSetNew(bool)) );
 }
 
 bool
@@ -267,6 +258,8 @@ PlaylistBrowserNS::PodcastModel::episodeData( const PodcastEpisodePtr &episode,
             if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
                 return icon( episode );
             break;
+        case EpisodeIsNewRole:
+            return episode->isNew();
     }
 
     return PlaylistBrowserModel::data( idx, role );
@@ -275,10 +268,18 @@ PlaylistBrowserNS::PodcastModel::episodeData( const PodcastEpisodePtr &episode,
 bool
 PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
-    DEBUG_BLOCK
+    PodcastEpisodePtr episode = episodeForIndex( idx );
+    if( !episode || !value.canConvert<bool>() || role != EpisodeIsNewRole )
+    {
+        return PlaylistBrowserModel::setData( idx, value, role );
+    }
 
-    //TODO: implement setNew.
-    return PlaylistBrowserModel::setData( idx, value, role );
+    bool checked = value.toBool();
+    episode->setNew( checked );
+    if( checked )
+        emit episodeMarkedAsNew( episode );
+    emit dataChanged( idx, idx );
+    return true;
 }
 
 int
@@ -350,62 +351,6 @@ PlaylistBrowserNS::PodcastModel::refreshPodcasts()
         PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( provider );
         if( podcastProvider )
             podcastProvider->updateAll();
-    }
-}
-
-QActionList
-PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndex &idx ) const
-{
-    if( !idx.isValid() )
-    {
-        //TODO: add podcast action
-        return QActionList();
-    }
-
-    QActionList actions = PlaylistBrowserModel::actionsFor( idx );
-
-    /* by default a list of podcast episodes can only be changed to isNew = false or
-       isKeep = false, except when all selected episodes are the same state */
-    m_setNewAction->setChecked( false );
-
-    Podcasts::PodcastEpisodeList episodes = m_setNewAction->data().value<Podcasts::PodcastEpisodeList>();
-    if( IS_TRACK(idx) )
-        episodes << episodeForIndex( idx );
-    else
-        episodes << channelForIndex( idx )->episodes();
-
-    foreach( const Podcasts::PodcastEpisodePtr episode, episodes )
-    {
-        if( episode->isNew() )
-            m_setNewAction->setChecked( true );
-    }
-
-    m_setNewAction->setData( QVariant::fromValue( episodes ) );
-
-    actions << m_setNewAction;
-
-    return actions;
-}
-
-void
-PlaylistBrowserNS::PodcastModel::slotSetNew( bool newState )
-{
-    Q_UNUSED( newState );
-    QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
-        return;
-
-    Podcasts::PodcastEpisodeList episodes = action->data().value<Podcasts::PodcastEpisodeList>();
-
-    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
-    {
-        if( !episode.isNull() )
-        {
-            episode->setNew( action->isChecked() );
-
-            if( action->isChecked() )
-                emit episodeMarkedAsNew( episode );
-        }
     }
 }
 

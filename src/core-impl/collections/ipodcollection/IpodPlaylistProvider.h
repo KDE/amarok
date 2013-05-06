@@ -49,13 +49,12 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
                                              const QString& name = QString() );
 
         virtual QActionList providerActions();
-        virtual QActionList playlistActions( Playlists::PlaylistPtr playlist );
-        virtual QActionList trackActions( Playlists::PlaylistPtr playlist,
-                                               int trackIndex );
+        virtual QActionList playlistActions( const Playlists::PlaylistList &playlists );
+        virtual QActionList trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks );
 
         virtual bool isWritable();
-        virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
-        virtual bool deletePlaylists( Playlists::PlaylistList playlistlist );
+        virtual void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName );
+        virtual bool deletePlaylists( const Playlists::PlaylistList &playlistlist );
 
         // PlaylistObserver methods:
         virtual void metadataChanged( Playlists::PlaylistPtr playlist );

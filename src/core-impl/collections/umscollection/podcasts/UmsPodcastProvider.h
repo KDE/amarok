@@ -57,12 +57,8 @@ class UmsPodcastProvider : public PodcastProvider
 
         virtual Playlists::PlaylistList playlists();
 
-        virtual QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList );
-        virtual QList<QAction *> channelActions( Podcasts::PodcastChannelList );
-
-        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
-        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
-                                                  int trackIndex );
+        virtual QActionList playlistActions( const Playlists::PlaylistList &playlists );
+        virtual QActionList trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks );
 
         virtual void completePodcastDownloads();
 
@@ -84,6 +80,8 @@ class UmsPodcastProvider : public PodcastProvider
         void slotCopyComplete( KJob *job );
 
     private:
+        QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList );
+        QList<QAction *> channelActions( Podcasts::PodcastChannelList );
         void deleteEpisodes( UmsPodcastEpisodeList umsEpisodes );
 
         KUrl m_scanDirectory;

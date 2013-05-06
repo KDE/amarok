@@ -125,7 +125,7 @@ void TestPlaylistFileProvider::testRename()
     tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 );
 
-    m_testPlaylistFileProvider->rename( tempList.at( 0 ), "New Test Name" );
+    m_testPlaylistFileProvider->renamePlaylist( tempList.at( 0 ), "New Test Name" );
     tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.at( 0 )->name(), QString( "New Test Name.m3u" ) );
 

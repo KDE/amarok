@@ -41,29 +41,6 @@ lessThanPlaylistTitles( const Playlists::PlaylistPtr &lhs, const Playlists::Play
 PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     : m_playlistCategory( playlistCategory )
 {
-    m_createEmptyPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ),
-                                               i18n( "Create empty playlist" ),
-                                               this );
-    connect( m_createEmptyPlaylistAction, SIGNAL(triggered()), SLOT(slotCreateEmptyPlaylist()) );
-
-    //common, unconditional actions
-    m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
-                                  this );
-    // object name must match one in PlaylistBrowserNS::PlaylistBrowserView
-    m_appendAction->setObjectName( "appendAction" );
-    // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
-    m_appendAction->setShortcut( Qt::Key_Enter );
-    m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-    connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppend()) );
-
-    m_loadAction = new QAction( KIcon( "folder-open" ),
-                                i18nc( "Replace the currently loaded tracks with these",
-                                       "&Replace Playlist" ),
-                                this );
-    m_loadAction->setObjectName( "loadAction" );
-    m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-    connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotLoad()) );
-
     connect( The::playlistManager(), SIGNAL(updated(int)), SLOT(slotUpdate(int)) );
 
     connect( The::playlistManager(), SIGNAL(playlistAdded(Playlists::PlaylistPtr,int)),
@@ -93,6 +70,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
     QList<Playlists::PlaylistProvider *> providers =
         The::playlistManager()->getProvidersForPlaylist( playlist );
     Playlists::PlaylistProvider *provider = providers.count() == 1 ? providers.first() : 0;
+    Meta::TrackPtr track;
 
     switch( index.column() )
     {
@@ -100,7 +78,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
         {
             if( IS_TRACK(index) )
             {
-                Meta::TrackPtr track = playlist->tracks()[index.row()];
+                track = playlist->tracks()[index.row()];
                 name = track->prettyName();
                 icon = KIcon( "amarok_track" );
             }
@@ -190,17 +168,17 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             if( IS_TRACK(index) )
                 return QVariant();
             else
-                return i18ncp( "number of playlists from one source",
-                               "One playlist", "%1 playlists",
-                               playlistCount );
-        case PrettyTreeRoles::DecoratorRole:
-            return QVariant::fromValue( actionsFor( index ) );
-        case PrettyTreeRoles::DecoratorRoleCount:
-            return actionsFor( index ).count();
+                return i18ncp( "number of playlists from one source", "One playlist",
+                               "%1 playlists", playlistCount );
         case PlaylistBrowserModel::ProviderRole:
-            return provider ? QVariant::fromValue<Playlists::PlaylistProvider *>( provider ) : QVariant();
+            return provider ? QVariant::fromValue( provider ) : QVariant();
+        case PlaylistBrowserModel::PlaylistRole:
+            return playlist ? QVariant::fromValue( playlist ) : QVariant();
+        case PlaylistBrowserModel::TrackRole:
+            return track ? QVariant::fromValue( track ) : QVariant();
 
-        default: return QVariant();
+        default:
+            return QVariant();
     }
 }
 
@@ -618,34 +596,6 @@ PlaylistBrowserModel::loadPlaylists()
 }
 
 void
-PlaylistBrowserModel::slotLoad()
-{
-    QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
-        return;
-
-    QModelIndexList indexes = action->data().value<QModelIndexList>();
-
-    Meta::TrackList tracks = tracksFromIndexes( indexes );
-    if( !tracks.isEmpty() )
-        The::playlistController()->insertOptioned( tracks, Playlist::LoadAndPlay );
-}
-
-void
-PlaylistBrowserModel::slotAppend()
-{
-    QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
-        return;
-
-    QModelIndexList indexes = action->data().value<QModelIndexList>();
-
-    Meta::TrackList tracks = tracksFromIndexes( indexes );
-    if( !tracks.isEmpty() )
-        The::playlistController()->insertOptioned( tracks, Playlist::AppendAndPlay );
-}
-
-void
 PlaylistBrowserModel::slotPlaylistAdded( Playlists::PlaylistPtr playlist, int category )
 {
     //ignore playlists of a different category
@@ -709,13 +659,6 @@ PlaylistBrowserModel::slotPlaylistUpdated( Playlists::PlaylistPtr playlist, int 
     endInsertRows();
 }
 
-void
-PlaylistBrowserModel::slotCreateEmptyPlaylist()
-{
-    The::playlistManager()->save( Meta::TrackList(),
-                                  Amarok::generatePlaylistName( Meta::TrackList() ) );
-}
-
 Meta::TrackList
 PlaylistBrowserModel::tracksFromIndexes( const QModelIndexList &list ) const
 {
@@ -777,40 +720,6 @@ PlaylistBrowserModel::providerForIndex( const QModelIndex &idx ) const
         return 0;
 
     return m_playlists.at( playlistRow )->provider();
-}
-
-QActionList
-PlaylistBrowserModel::actionsFor( const QModelIndex &idx ) const
-{
-    if( !idx.isValid() )
-    {
-        QActionList emptyActions;
-        emptyActions << m_createEmptyPlaylistAction;
-        return emptyActions;
-    }
-    //whether we use the list from m_appendAction of m_loadAction does not matter they are the same
-    QModelIndexList actionList = m_appendAction->data().value<QModelIndexList>();
-
-    actionList << idx;
-    QVariant value = QVariant::fromValue( actionList );
-    m_appendAction->setData( value );
-    m_loadAction->setData( value );
-
-    QActionList actions;
-    actions << m_appendAction << m_loadAction;
-
-    if( !IS_TRACK(idx) )
-    {
-        Playlists::PlaylistPtr playlist = m_playlists.value( idx.internalId() );
-        actions << playlist->actions();
-    }
-    else
-    {
-        Playlists::PlaylistPtr playlist = m_playlists.value( idx.parent().internalId() );
-        actions << playlist->trackActions( idx.row() );
-    }
-
-    return actions;
 }
 
 Playlists::PlaylistProvider *

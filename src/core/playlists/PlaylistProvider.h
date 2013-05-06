@@ -20,9 +20,6 @@
 #include "core/amarokcore_export.h"
 #include "core/playlists/Playlist.h"
 
-#include <QString>
-
-class QAction;
 class KIcon;
 
 namespace Playlists {
@@ -32,14 +29,16 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject
     Q_OBJECT
 
     public:
-        PlaylistProvider( QObject *parent = 0 ) : QObject( parent ) {}
-        virtual ~PlaylistProvider() {}
+        explicit PlaylistProvider( QObject *parent = 0 );
 
         /**
-        * @returns A translated string to identify this Provider.
-        */
+         * A translated string to identify this Provider.
+         */
         virtual QString prettyName() const = 0;
 
+        /**
+         * A nice icon for this playlist provider.
+         */
         virtual KIcon icon() const = 0;
 
         /**
@@ -48,24 +47,56 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject
          */
         virtual int category() const = 0;
 
-        /** @returns the number of playlists this provider has or a negative value if it
+        /**
+         * @returns the number of playlists this provider has or a negative value if it
          * can not determine that before loading them all.
+         *
+         * Default implementation returns -1.
          */
         virtual int playlistCount() const { return -1; }
-        virtual Playlists::PlaylistList playlists() = 0;
 
-        virtual QActionList providerActions() { return QList<QAction *>(); }
-        virtual QActionList playlistActions( Playlists::PlaylistPtr playlist ) = 0;
-        virtual QActionList trackActions( Playlists::PlaylistPtr playlist, int trackIndex ) = 0;
+        /**
+         * Return a list of plyalists of this provider. If playlistCount() is negative,
+         * this list may be incomplete.
+         */
+        virtual PlaylistList playlists() = 0;
 
-        /** Copy a playlist to the provider.
-          */
-        virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
+        virtual QActionList providerActions();
+        virtual QActionList playlistActions( const PlaylistList &playlists );
+        virtual QActionList trackActions( const QMultiHash<PlaylistPtr, int> &playlistTracks );
 
-        /** Copy a track directly to a playlist provider without being in a playlist.
-          * It's up to the implementation to decide what to do but could for instance allow the
-          * creation of a new playlist from scratch.
-          */
+        /**
+         * Return true if this providers supports modification made by the user.
+         *
+         * I.e. whether addPlaylist(), renamePlaylist(), deletePlaylists() make sense
+         * to be triggered by user action.
+         *
+         * Default implementation returns false.
+         */
+        virtual bool isWritable();
+
+        /**
+         * Copy a playlist to the provider.
+         */
+        virtual PlaylistPtr addPlaylist( PlaylistPtr playlist );
+
+        /**
+         * Rename a playlist of this provider.
+         */
+        virtual void renamePlaylist( PlaylistPtr playlist, const QString &newName );
+
+        /**
+         * Deletes a list of playlists. Returns true of successful, false otherwise.
+         *
+         * Default implementation does nothing and returns false.
+         */
+        virtual bool deletePlaylists( const PlaylistList &playlistlist );
+
+        /**
+         * Copy a track directly to a playlist provider without being in a playlist.
+         * It's up to the implementation to decide what to do but could for instance allow the
+         * creation of a new playlist from scratch.
+         */
         virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
 
     signals:

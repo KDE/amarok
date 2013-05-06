@@ -50,6 +50,7 @@ enum
 class PodcastModel : public PlaylistBrowserModel
 {
     Q_OBJECT
+
     public:
         static PodcastModel *instance();
         static void destroy();
@@ -77,14 +78,8 @@ class PodcastModel : public PlaylistBrowserModel
         void addPodcast();
         void refreshPodcasts();
 
-    private slots:
-        void slotSetNew( bool newState );
-
-    protected:
-        virtual QActionList actionsFor( const QModelIndex &idx ) const;
-
     private:
-        static PodcastModel* s_instance;
+        static PodcastModel *s_instance;
         PodcastModel();
 
         QVariant channelData( const Podcasts::PodcastChannelPtr &channel,
@@ -96,8 +91,6 @@ class PodcastModel : public PlaylistBrowserModel
         Podcasts::PodcastEpisodePtr episodeForIndex( const QModelIndex &index ) const;
 
         Q_DISABLE_COPY( PodcastModel )
-
-        QAction *m_setNewAction;
 
         /**
          * A convenience function to convert a PodcastEpisodeList into a TrackList.

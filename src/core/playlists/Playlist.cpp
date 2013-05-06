@@ -96,23 +96,6 @@ Playlist::syncTrackStatus( int, Meta::TrackPtr )
 {
 }
 
-QActionList
-Playlist::actions()
-{
-    if( provider() )
-        return provider()->playlistActions( PlaylistPtr( this ) );
-
-    return QActionList();
-}
-
-QActionList
-Playlist::trackActions( int trackIndex )
-{
-    if( provider() )
-        return provider()->trackActions( PlaylistPtr( this ), trackIndex );
-    return QActionList();
-}
-
 QStringList
 Playlist::groups()
 {
