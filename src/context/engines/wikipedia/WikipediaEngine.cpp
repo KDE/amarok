@@ -804,6 +804,20 @@ WikipediaEnginePrivate::wikiParse( QString &wiki )
         }
     }
 
+    { // remove <audio> tags (can lead to crashes in QtWebKit)
+        const QString tag    = QLatin1String("<audio");
+        const QString tagEnd = QLatin1String("</audio>");
+        const int tagEndSize = tagEnd.size();
+        int matchIndex = 0;
+        QStringMatcher tagMatcher( tag );
+        while( (matchIndex = tagMatcher.indexIn(wiki, matchIndex)) != -1 )
+        {
+            const int nToTagEnd = wiki.indexOf( tagEnd, matchIndex ) - matchIndex;
+            QStringRef tagRef = wiki.midRef( matchIndex, nToTagEnd + tagEndSize );
+            wiki.remove( tagRef.toString() );
+        }
+    }
+
     // Adding back style and license information
     wiki = QLatin1String("<div id=\"bodyContent\"") + wiki;
     wiki += copyright;
