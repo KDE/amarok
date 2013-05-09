@@ -788,61 +788,27 @@ WikipediaEnginePrivate::wikiParse( QString &wiki )
     wikiRef = wiki.midRef( wikiRef.position(), wiki.indexOf( QLatin1String("<div class=\"printfooter\">"), wikiRef.position() ) - wikiRef.position() );
     wiki = wikiRef.toString();
 
-    { // lets remove the warning box
-        const QString wBox    = QLatin1String("<table class=\"metadata plainlinks ambox");
-        const QString wBoxEnd = QLatin1String("</table>");
-        const int wBoxEndSize = wBoxEnd.size();
-        int matchIndex = 0;
-        QStringMatcher mboxMatcher( wBox );
-        while( (matchIndex = mboxMatcher.indexIn(wiki, matchIndex)) != -1 )
-        {
-            const int nToBoxEnd = wiki.indexOf( wBoxEnd, matchIndex ) - matchIndex;
-            QStringRef wBoxRef = wiki.midRef( matchIndex, nToBoxEnd + wBoxEndSize );
-            wiki.remove( wBoxRef.toString() );
-        }
-    }
-
-    { // remove protection policy (we don't do edits)
-        const QString protec = QLatin1String("<div><a href=\"/wiki/Wikipedia:Protection_policy") ;
-        const QString protecEnd = QLatin1String("</a></div>") ;
-        const int protecEndSize = protecEnd.size();
-        int matchIndex = 0;
-        QStringMatcher protecMatcher( protec );
-        while( (matchIndex = protecMatcher.indexIn(wiki, matchIndex)) != -1 )
-        {
-            const int nToBoxEnd = wiki.indexOf( protecEnd, matchIndex ) - matchIndex;
-            QStringRef pRef = wiki.midRef( matchIndex, nToBoxEnd + protecEndSize );
-            wiki.remove( pRef.toString() );
-        }
-    }
-
-    { // lets also remove the "lock" image
-        const QString topIcon = QLatin1String("<div class=\"metadata topicon\" ");
-        const QString topIconEnd = QLatin1String("</a></div>");
-        const int topIconEndSize = topIconEnd.size();
-        int matchIndex = 0;
-        QStringMatcher topIconMatcher( topIcon );
-        while( (matchIndex = topIconMatcher.indexIn(wiki, matchIndex)) != -1 )
-        {
-            const int nToBoxEnd = wiki.indexOf( topIconEnd, matchIndex ) - matchIndex;
-            QStringRef tRef = wiki.midRef( matchIndex, nToBoxEnd + topIconEndSize );
-            wiki.remove( tRef.toString() );
-        }
-    }
-
-    { // remove <audio> tags (can lead to crashes in QtWebKit)
-        const QString tag    = QLatin1String("<audio");
-        const QString tagEnd = QLatin1String("</audio>");
+    auto removeTag = [&wiki] ( const QString& tagStart, const QString& tagEnd )
+    {
         const int tagEndSize = tagEnd.size();
         int matchIndex = 0;
-        QStringMatcher tagMatcher( tag );
-        while( (matchIndex = tagMatcher.indexIn(wiki, matchIndex)) != -1 )
+        const QStringMatcher tagMatcher( tagStart );
+        while( ( matchIndex = tagMatcher.indexIn( wiki, matchIndex ) ) != -1 )
         {
             const int nToTagEnd = wiki.indexOf( tagEnd, matchIndex ) - matchIndex;
-            QStringRef tagRef = wiki.midRef( matchIndex, nToTagEnd + tagEndSize );
+            const QStringRef tagRef = wiki.midRef( matchIndex, nToTagEnd + tagEndSize );
             wiki.remove( tagRef.toString() );
         }
-    }
+    };
+
+    // lets remove the warning box
+    removeTag( "<table class=\"metadata plainlinks ambox", "</table>" );
+    // remove protection policy (we don't do edits)
+    removeTag( "<div><a href=\"/wiki/Wikipedia:Protection_policy", "</a></div>" );
+    // lets also remove the "lock" image
+    removeTag( "<div class=\"metadata topicon\" ", "</a></div>" );
+    // remove <audio> tags (can lead to crashes in QtWebKit)
+    removeTag( "<audio", "</audio>" );
 
     // Adding back style and license information
     wiki = QLatin1String("<div id=\"bodyContent\"") + wiki;
