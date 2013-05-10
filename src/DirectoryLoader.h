@@ -57,9 +57,6 @@ class DirectoryLoader : public QObject, public Playlists::PlaylistObserver
 
         /* PlaylistObserver methods */
         virtual void tracksLoaded( Playlists::PlaylistPtr playlist );
-        virtual void metadataChanged(Playlists::PlaylistPtr) { }
-        virtual void trackAdded(Playlists::PlaylistPtr, Meta::TrackPtr, int) { }
-        virtual void trackRemoved(Playlists::PlaylistPtr, int) { }
 
     signals:
         void finished( const Meta::TrackList &tracks );

@@ -87,7 +87,7 @@ namespace Playlists
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
              */
-            virtual void metadataChanged( PlaylistPtr playlist ) = 0;
+            virtual void metadataChanged( PlaylistPtr playlist );
 
             /**
              * This method is called when a track has been added to the playlist.
@@ -99,7 +99,7 @@ namespace Playlists
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
              */
-            virtual void trackAdded( PlaylistPtr playlist, Meta::TrackPtr track, int position ) = 0;
+            virtual void trackAdded( PlaylistPtr playlist, Meta::TrackPtr track, int position );
 
             /**
              * This method is called after a track is removed from to the playlist.
@@ -110,7 +110,7 @@ namespace Playlists
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
              */
-            virtual void trackRemoved( PlaylistPtr playlist, int position ) = 0;
+            virtual void trackRemoved( PlaylistPtr playlist, int position );
 
             /**
              * This method is called after loading of playlist is finished
@@ -121,7 +121,7 @@ namespace Playlists
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
              */
-            virtual void tracksLoaded( PlaylistPtr playlist ) = 0;
+            virtual void tracksLoaded( PlaylistPtr playlist );
 
         private:
             QSet<PlaylistPtr> m_playlistSubscriptions;

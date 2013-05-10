@@ -86,7 +86,6 @@ class PlaylistBrowserModel : public QAbstractItemModel, public Playlists::Playli
 
         /* Playlists::PlaylistObserver methods */
         virtual void metadataChanged( Playlists::PlaylistPtr playlist );
-        virtual void tracksLoaded( Playlists::PlaylistPtr ) {}
         virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position );
         virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
 

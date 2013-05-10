@@ -62,6 +62,22 @@ Playlist::Playlist()
 {
 }
 
+void PlaylistObserver::metadataChanged( PlaylistPtr )
+{
+}
+
+void PlaylistObserver::trackAdded( PlaylistPtr, Meta::TrackPtr, int )
+{
+}
+
+void PlaylistObserver::trackRemoved( PlaylistPtr, int )
+{
+}
+
+void PlaylistObserver::tracksLoaded( PlaylistPtr )
+{
+}
+
 Playlist::~Playlist()
 {
 }

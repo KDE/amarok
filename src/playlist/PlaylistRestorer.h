@@ -41,10 +41,7 @@ class Restorer: public QObject, public Playlists::PlaylistObserver
         void restore( const KUrl &path );
 
         // PlaylistObserver methods:
-        virtual void metadataChanged( Playlists::PlaylistPtr ) {}
         virtual void tracksLoaded( Playlists::PlaylistPtr );
-        virtual void trackAdded( Playlists::PlaylistPtr, Meta::TrackPtr, int ) {}
-        virtual void trackRemoved( Playlists::PlaylistPtr, int ) {}
 
     signals:
         void restoreFinished();
