@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Ian Monroe <ian@monroe.nu>                                        *
+ * Copyright (c) 2013 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -52,9 +53,8 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
         TrackLoader( LoadingMode loadingMode = AsyncLoading );
         ~TrackLoader();
 
-        void insertAtRow( int row ); // call before init to tell the loader the row to start inserting tracks
-        void init( const QList<KUrl> &urls ); //!< list all
-        void init( const QList<QUrl> &urls ); //!< convience
+        void init( const QList<KUrl> &urls );
+        void init( const QList<QUrl> &urls );
 
         /* PlaylistObserver methods */
         virtual void tracksLoaded( Playlists::PlaylistPtr playlist );
@@ -65,7 +65,6 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
     private slots:
         void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list );
         void listJobFinished();
-        void doInsertAtRow();
 
     private:
         void finishUrlList();
@@ -93,8 +92,6 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
          */
         QList<KUrl> m_urlsToLoad;
         LoadingMode m_loadingMode;
-        bool m_localConnection; //!< was insertAtRow called? otherwise finishUrlList should deleteLater
-        int m_row; //!< for insertAtRow
         KIO::KFileItemList m_expanded;
         Meta::TrackList m_tracks; //!< the tracks found. they get all sorted at the end.
 };

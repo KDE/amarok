@@ -30,7 +30,7 @@ class TestTrackLoader : public QObject
     private slots:
         void initTestCase();
         void cleanupTestCase();
-        void testInitAndInsertAtRow();
+        void testInit();
 
     private:
         QString dataPath( const QString &relPath );

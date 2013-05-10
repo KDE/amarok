@@ -212,6 +212,19 @@ Playlist::Model::queueSaveState()
         m_saveStateTimer->start();
 }
 
+void
+Playlist::Model::insertTracksFromTrackLoader( const Meta::TrackList &tracks )
+{
+    QObject *loader = sender();
+    if( !sender() )
+    {
+        warning() << __PRETTY_FUNCTION__ << "can only be connected to TrackLoader";
+        return;
+    }
+    int insertRow = loader->property( "beginRow" ).toInt();
+    Controller::instance()->insertTracks( insertRow, tracks );
+}
+
 QVariant
 Playlist::Model::headerData( int section, Qt::Orientation orientation, int role ) const
 {
@@ -687,8 +700,9 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     else if( data->hasUrls() )
     {
         debug() << "this is _something_ with a url....";
-        TrackLoader* dl = new TrackLoader(); //this deletes itself
-        dl->insertAtRow( beginRow );
+        TrackLoader *dl = new TrackLoader(); // auto-deletes itself
+        dl->setProperty( "beginRow", beginRow );
+        connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(insertTracksFromTrackLoader(Meta::TrackList)) );
         dl->init( data->urls() );
         return true;
     }

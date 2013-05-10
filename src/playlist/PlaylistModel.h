@@ -122,6 +122,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
     private slots:
         void saveState();
         void queueSaveState();
+        void insertTracksFromTrackLoader( const Meta::TrackList &tracks );
 
     private:
         QString tooltipFor( Meta::TrackPtr track ) const;

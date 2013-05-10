@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007-2008 Ian Monroe <ian@monroe.nu>                                   *
+ * Copyright (c) 2013 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,7 +24,6 @@
 #include "core-impl/meta/file/File.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core/playlists/PlaylistFormat.h"
-#include "playlist/PlaylistController.h"
 
 #include <KIO/Job>
 
@@ -32,8 +32,6 @@ TrackLoader::TrackLoader( LoadingMode loadingMode )
         , m_listOperations( 0 )
         , m_entities( 0 )
         , m_loadingMode( loadingMode )
-        , m_localConnection( false )
-        , m_row( 0 )
 {
 }
 
@@ -42,27 +40,11 @@ TrackLoader::~TrackLoader()
 }
 
 void
-TrackLoader::insertAtRow( int row )
-{
-    m_row = row;
-    m_localConnection = true;
-    connect( this, SIGNAL(finished(Meta::TrackList)), SLOT(doInsertAtRow()) );
-}
-
-void
-TrackLoader::doInsertAtRow()
-{
-    The::playlistController()->insertTracks( m_row, m_tracks );
-    deleteLater();
-}
-
-void
 TrackLoader::init( const QList<QUrl> &qurls )
 {
     QList<KUrl> kurls;
     foreach( const QUrl &qurl, qurls )
         kurls << KUrl( qurl );
-
     init( kurls );
 }
 
@@ -146,8 +128,7 @@ void
 TrackLoader::finish()
 {
     emit finished( m_tracks );
-    if ( !m_localConnection )
-        deleteLater();
+    deleteLater();
 }
 
 void

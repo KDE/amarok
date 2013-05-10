@@ -24,8 +24,6 @@
 #include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/support/TrackLoader.h"
-#include "playlist/PlaylistController.h"
-#include "playlist/PlaylistModelStack.h"
 
 #include <ThreadWeaver/Weaver>
 #include <qtest_kde.h>
@@ -48,35 +46,30 @@ TestTrackLoader::cleanupTestCase()
 }
 
 void
-TestTrackLoader::testInitAndInsertAtRow()
+TestTrackLoader::testInit()
 {
-    The::playlistController()->clear(); // we need a clear playlist for those tests
-
     TrackLoader *loader1 = new TrackLoader();
-    loader1->insertAtRow( 0 );
     QSignalSpy spy1( loader1, SIGNAL(finished(Meta::TrackList)) );
     loader1->init( QList<KUrl>() << KUrl( dataPath( "data/audio/album" ) ) );
     if( spy1.isEmpty() )
         QVERIFY2( QTest::kWaitForSignal( loader1, SIGNAL(finished(Meta::TrackList)), 5000 ),
                   "loader1 did not finish withing timeout" );
-    QCOMPARE( spy1.first().first().value<Meta::TrackList>().count(), 3 );
+    Meta::TrackList found = spy1.first().first().value<Meta::TrackList>();
+    QCOMPARE( found.count(), 3 );
+    QCOMPARE( found.at( 0 )->prettyName(), QString( "Track01.ogg" ) );
+    QCOMPARE( found.at( 1 )->prettyName(), QString( "Track02.ogg" ) );
+    QCOMPARE( found.at( 2 )->prettyName(), QString( "Track03.ogg" ) );
 
     TrackLoader *loader2 = new TrackLoader();
-    loader2->insertAtRow( 1 );
     QSignalSpy spy2( loader2, SIGNAL(finished(Meta::TrackList)) );
     loader2->init( QList<KUrl>() << KUrl( dataPath( "data/audio/album2" ) ) );
     if( spy2.isEmpty() )
         QVERIFY2( QTest::kWaitForSignal( loader2, SIGNAL(finished(Meta::TrackList)), 5000 ),
                   "loader2 did not finish withing timeout" );
-    QCOMPARE( spy2.first().first().value<Meta::TrackList>().count(), 2 );
-
-    QCOMPARE( Playlist::ModelStack::instance()->bottom()->rowCount(), 5 );
-
-    QCOMPARE( Playlist::ModelStack::instance()->bottom()->trackAt( 0 )->prettyName(), QString( "Track01.ogg" ) );
-    QCOMPARE( Playlist::ModelStack::instance()->bottom()->trackAt( 1 )->prettyName(), QString( "Track01.ogg" ) );
-    QCOMPARE( Playlist::ModelStack::instance()->bottom()->trackAt( 2 )->prettyName(), QString( "Track02.ogg" ) );
-    QCOMPARE( Playlist::ModelStack::instance()->bottom()->trackAt( 3 )->prettyName(), QString( "Track02.ogg" ) );
-    QCOMPARE( Playlist::ModelStack::instance()->bottom()->trackAt( 4 )->prettyName(), QString( "Track03.ogg" ) );
+    found = spy2.first().first().value<Meta::TrackList>();
+    QCOMPARE( found.count(), 2 );
+    QCOMPARE( found.at( 0 )->prettyName(), QString( "Track01.ogg" ) );
+    QCOMPARE( found.at( 1 )->prettyName(), QString( "Track02.ogg" ) );
 }
 
 QString
