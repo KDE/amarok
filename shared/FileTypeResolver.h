@@ -18,7 +18,9 @@
 #ifndef AMAROK_FILETYPERESOLVER_H
 #define AMAROK_FILETYPERESOLVER_H
 
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #include <fileref.h>
+#pragma GCC diagnostic pop
 
 namespace Meta
 {

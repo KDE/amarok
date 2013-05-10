@@ -21,6 +21,7 @@
 #include "SafeFileSaver.h"
 
 //Taglib
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #include <apetag.h>
 #include <fileref.h>
 #include <flacfile.h>
@@ -35,6 +36,7 @@
 #include <uniquefileidentifierframe.h>
 #include <vorbisfile.h>
 #include <xiphcomment.h>
+#pragma GCC diagnostic pop
 
 #include <QtDebug>
 #include <QCryptographicHash>

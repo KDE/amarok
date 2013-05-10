@@ -22,6 +22,7 @@
 #include <QRegExp>
 #include <QStringList>
 
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #include <fileref.h>
 #include <aifffile.h>
 #include <asffile.h>
@@ -46,6 +47,7 @@
 #include <itfile.h>
 #include <xmfile.h>
 #endif
+#pragma GCC diagnostic pop
 
 #include "APETagHelper.h"
 #include "ASFTagHelper.h"

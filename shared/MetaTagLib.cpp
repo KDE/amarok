@@ -52,8 +52,10 @@
 #include <audioproperties.h>
 
 #ifdef TAGLIB_EXTRAS_FOUND
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #include <audiblefiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
+#pragma GCC diagnostic pop
 #endif // TAGLIB_EXTRAS_FOUND
 
 #endif // TAGLIB_FOUND

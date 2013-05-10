@@ -25,6 +25,7 @@
 #include <QFileInfo>
 #include <QtDebug>
 
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefile.h>
 #include <realmediafile.h>
@@ -51,6 +52,7 @@
 #include <itfile.h>
 #include <xmfile.h>
 #endif // TAGLIB_MOD_FOUND
+#pragma GCC diagnostic pop
 
 TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,

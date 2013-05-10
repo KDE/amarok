@@ -23,6 +23,7 @@
 #include <cmath>
 
 // Taglib
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #include <tag.h>
 #include <tlist.h>
 #include <tstring.h>
@@ -41,6 +42,7 @@
 #include <wavpackfile.h>
 #include <asffile.h>
 #include <mp4file.h>
+#pragma GCC diagnostic pop
 
 // converts a peak value from the normal digital scale form to the more useful decibel form
 // decibels are relative to the /adjusted/ waveform
