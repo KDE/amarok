@@ -69,6 +69,10 @@ TagHelper::TagHelper( TagLib::ID3v1::Tag *tag, Amarok::FileType fileType )
 {
 }
 
+TagHelper::~TagHelper()
+{
+}
+
 Meta::FieldHash
 TagHelper::tags() const
 {

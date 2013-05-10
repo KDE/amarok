@@ -406,14 +406,11 @@ MusicBrainzTagsItem::chosenItem() const
 bool
 MusicBrainzTagsItem::chooseBestMatch()
 {
-    if( !m_data.isEmpty() )
+    if( !m_data.isEmpty() || isChosen() )
         return false;
 
     QReadLocker lock( &m_childrenLock );
-    if( !childCount() || isChosen() )
-        return false;
-
-    MusicBrainzTagsItem *bestMatch;
+    MusicBrainzTagsItem *bestMatch = 0;
     float maxScore = 0;
     foreach( MusicBrainzTagsItem *item, m_childItems )
     {
@@ -423,6 +420,8 @@ MusicBrainzTagsItem::chooseBestMatch()
             maxScore = item->score();
         }
     }
+    if( !bestMatch )
+        return false;
 
     bestMatch->setChosen( true );
     return true;

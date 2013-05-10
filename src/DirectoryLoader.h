@@ -100,4 +100,5 @@ class DirectoryLoader : public QObject, public Playlists::PlaylistObserver
         KIO::KFileItemList m_expanded;
         Meta::TrackList m_tracks; //!< the tracks found. they get all sorted at the end.
 };
-#endif
+
+#endif // AMAROK_DIRECTORYLOADER_H

@@ -43,22 +43,20 @@
 #include <QDebug>
 
 #ifdef TAGLIB_FOUND
+#include "FileTypeResolver.h"
+#include "MetaReplayGain.h"
+#include "tag_helpers/TagHelper.h"
+#include "tag_helpers/StringHelper.h"
 
 //Taglib:
 #include <audioproperties.h>
-#include <fileref.h>
 
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
-#endif
-#include "FileTypeResolver.h"
-#include "MetaReplayGain.h"
-// TagHelpers
-#include "tag_helpers/TagHelper.h"
-#include "tag_helpers/StringHelper.h"
+#endif // TAGLIB_EXTRAS_FOUND
 
-#endif
+#endif // TAGLIB_FOUND
 
 namespace Meta
 {

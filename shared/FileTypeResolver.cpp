@@ -19,16 +19,16 @@
 
 #include "config.h"
 
+#include <KMimeType>
+
 #include <QFile>
 #include <QFileInfo>
 #include <QtDebug>
 
-#include <KMimeType>
-
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefile.h>
 #include <realmediafile.h>
-#endif
+#endif // TAGLIB_EXTRAS_FOUND
 #include <aifffile.h>
 #include <asffile.h>
 #include <flacfile.h>
@@ -38,7 +38,7 @@
 #include <oggfile.h>
 #ifdef TAGLIB_OPUS_FOUND
 #include <opusfile.h>
-#endif
+#endif // TAGLIB_OPUS_FOUND
 #include <oggflacfile.h>
 #include <speexfile.h>
 #include <trueaudiofile.h>
@@ -50,7 +50,7 @@
 #include <s3mfile.h>
 #include <itfile.h>
 #include <xmfile.h>
-#endif
+#endif // TAGLIB_MOD_FOUND
 
 TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,

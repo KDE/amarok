@@ -49,6 +49,7 @@ namespace Meta
 
                 TagHelper( TagLib::Tag *tag, Amarok::FileType fileType );
                 explicit TagHelper( TagLib::ID3v1::Tag *tag, Amarok::FileType fileType );
+                virtual ~TagHelper();
 
                 /**
                  * Read all supported tags from file.
