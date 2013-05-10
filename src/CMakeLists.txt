@@ -276,8 +276,6 @@ set(collection_SRCS
     core-impl/collections/support/MemoryQueryMaker.cpp
     core-impl/collections/support/MemoryQueryMakerInternal.cpp
     core-impl/collections/support/MemoryQueryMakerHelper.cpp
-    core-impl/collections/support/PlaylistCollection.cpp
-    core-impl/collections/support/PlaylistCollectionLocation.cpp
     core-impl/collections/support/TrashCollectionLocation.cpp
     core-impl/collections/support/XmlQueryReader.cpp
     core-impl/collections/support/FileCollectionLocation.cpp
