@@ -1,5 +1,6 @@
 /***************************************************************************
- *   Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>            *
+ *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2013 Matěj Laitl <matej@laitl.cz>                       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,38 +18,22 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "TestBase.h"
+#ifndef TESTTRACKLOADER_H
+#define TESTTRACKLOADER_H
 
-#include <KStandardDirs>
+#include <QObject>
 
-#include <QDir>
-#include <QStringList>
-
-TestBase::TestBase( const QString &name, QObject *parent )
-    : QObject( parent )
-    , m_name( name )
+class TestTrackLoader : public QObject
 {
-}
+    Q_OBJECT
 
-TestBase::~TestBase()
-{
-}
+    private slots:
+        void initTestCase();
+        void cleanupTestCase();
+        void testInitAndInsertAtRow();
 
-bool
-TestBase::addLogging( QStringList &args, const QString &logPath )
-{
-    if( logPath.isEmpty() )
-        return false;
+    private:
+        QString dataPath( const QString &relPath );
+};
 
-    const QString ext = args.contains( "-xml" ) ? ".xml" : ".log";
-    args << QString( "-o" ) << QString( logPath + m_name + ext );
-    return true;
-}
-
-QString
-TestBase::dataPath( const QString &relPath )
-{
-    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
-}
-
-#include "TestBase.moc"
+#endif // TESTTRACKLOADER_H

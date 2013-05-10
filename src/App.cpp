@@ -91,10 +91,6 @@
 extern void setupEventHandler_mac(SRefCon);
 #endif
 
-#ifdef DEBUG
-#include "TestDirectoryLoader.h"
-#endif // DEBUG
-
 QStringList App::s_delayedAmarokUrls = QStringList();
 AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
@@ -348,44 +344,6 @@ App::handleCliArgs() //static
     }
 
     firstTime = false;
-
-#ifdef DEBUG
-    if( args->isSet( "test" ) )
-    {
-        bool ok;
-        int verboseInt = args->getOption( "verbose" ).toInt( &ok );
-        verboseInt     = ok ? verboseInt : 2;
-
-        QStringList testOpt( "amarok" );
-
-        QString verbosity;
-        switch( verboseInt )
-        {
-        case 0:
-            verbosity = "-silent";
-            break;
-        case 1:
-            verbosity = "-v1";
-            break;
-        default:
-        case 2:
-            verbosity = "-v2";
-            break;
-        case 3:
-            verbosity = "-vs";
-            break;
-        }
-        testOpt << verbosity;
-
-        const QString format = args->getOption( "format" );
-        if( format == "xml" || format == "lightxml" )
-            testOpt << QString( '-' + format );
-
-        const bool _stdout = ( args->getOption( "output" ) == "log" ) ? false : true;
-        runUnitTests( testOpt, _stdout );
-    }
-#endif // DEBUG
-
     args->clear();    //free up memory
 }
 
@@ -427,13 +385,6 @@ App::initCliArgs() //static
     options.add("m");
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
-#ifdef DEBUG
-    options.add(":", ki18n("Unit test options:"));
-    options.add("test", ki18n( "Run integrated unit tests" ) );
-    options.add("output <dest>", ki18n( "Destination of test output: 'stdout', 'log'" ), "log" );
-    options.add("format <type>", ki18n( "Format of test output: 'xml', 'lightxml', 'plaintext'" ), "xml" );
-    options.add("verbose <level>", ki18n( "Verbosity from 0-3 (highest)" ), "2" );
-#endif // DEBUG
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
@@ -467,45 +418,6 @@ void App::applySettings( bool firstTime )
     if( !firstTime )
         emit settingsChanged();
 }
-
-#ifdef DEBUG
-//SLOT
-void
-App::runUnitTests( const QStringList options, bool _stdout )
-{
-    DEBUG_BLOCK
-
-    QString logPath;
-    if( !_stdout )
-    {
-        const QString location = Amarok::saveLocation( "testresults/" );
-        const QString stamp    = QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" );
-        logPath                = QDir::toNativeSeparators( location + stamp + "/" );
-
-        // create log folder for this run:
-        QDir logDir( logPath );
-        logDir.mkpath( logPath );
-
-        QFile::remove( QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
-        QFile::link( logPath, QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
-
-        QFile logArgs( logPath + "test_options" );
-        if( logArgs.open( QIODevice::WriteOnly ) )
-        {
-            logArgs.write( options.join( " " ).toLatin1() );
-            logArgs.close();
-        }
-    }
-
-    PERF_LOG( "Running Unit Tests" )
-
-    // modifies the playlist asynchronously, so run this last to avoid messing other test results
-    TestDirectoryLoader *test015 = new TestDirectoryLoader( options, logPath );
-
-    PERF_LOG( "Done Running Unit Tests" )
-    Q_UNUSED( test015 )
-}
-#endif // DEBUG
 
 //SLOT
 void

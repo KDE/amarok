@@ -16,9 +16,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_DIRECTORYLOADER_H
-#define AMAROK_DIRECTORYLOADER_H
+#ifndef AMAROK_TRACKLOADER_H
+#define AMAROK_TRACKLOADER_H
 
+#include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
 #include "core/playlists/Playlist.h"
 
@@ -32,7 +33,7 @@ namespace KIO {
     typedef QList<KFileItem> KFileItemList;
 }
 
-class DirectoryLoader : public QObject, public Playlists::PlaylistObserver
+class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObserver
 {
     Q_OBJECT
 
@@ -48,8 +49,8 @@ class DirectoryLoader : public QObject, public Playlists::PlaylistObserver
             BlockingLoading,
             AsyncLoading
         };
-        DirectoryLoader( LoadingMode loadingMode = AsyncLoading );
-        ~DirectoryLoader();
+        TrackLoader( LoadingMode loadingMode = AsyncLoading );
+        ~TrackLoader();
 
         void insertAtRow( int row ); // call before init to tell the loader the row to start inserting tracks
         void init( const QList<KUrl> &urls ); //!< list all
@@ -98,4 +99,4 @@ class DirectoryLoader : public QObject, public Playlists::PlaylistObserver
         Meta::TrackList m_tracks; //!< the tracks found. they get all sorted at the end.
 };
 
-#endif // AMAROK_DIRECTORYLOADER_H
+#endif // AMAROK_TRACKLOADER_H

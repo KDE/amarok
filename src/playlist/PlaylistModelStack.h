@@ -52,7 +52,7 @@ namespace Playlist
  * should only be used internally or in very specific situations.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class ModelStack : public QObject
+class AMAROK_EXPORT ModelStack : public QObject
 {
     Q_OBJECT
 public:

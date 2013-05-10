@@ -622,7 +622,6 @@ set(amaroklib_LIB_SRCS
     AmarokProcess.cpp
     App.cpp
     CaseConverter.cpp
-    DirectoryLoader.cpp
     EngineController.cpp
     KNotificationBackend.cpp
     MainWindow.cpp
@@ -638,6 +637,7 @@ set(amaroklib_LIB_SRCS
     core-impl/meta/timecode/TimecodeObserver.cpp
     core-impl/meta/timecode/TimecodeMeta.cpp
     core-impl/meta/timecode/TimecodeTrackProvider.cpp
+    core-impl/support/TrackLoader.cpp
     covermanager/CoverCache.cpp
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
@@ -741,29 +741,6 @@ if( NOT BUILD_MYSQLE_COLLECTION )
     add_definitions(${MYSQL_CFLAGS})
     include_directories(${MYSQL_INCLUDE_DIR})
 endif( NOT BUILD_MYSQLE_COLLECTION )
-
-if(KDE4_BUILD_TESTS)
-    set(amaroklib_LIB_SRCS
-        ${amaroklib_LIB_SRCS}
-        ../tests/TestBase.cpp
-        ../tests/TestDirectoryLoader.cpp
-    )
-    include_directories(
-        ../tests/
-        ../tests/context/
-        ../tests/context/engines/
-        ../tests/context/engines/upcomingevents/
-        ../tests/context/engines/similarartists/
-        ../tests/meta/
-        ../tests/meta/cue/
-        ../tests/meta/file/
-        ../tests/meta/multi/
-        ../tests/playlistmanager/
-        ../tests/playlistmanager/file/
-        ../tests/playlistmanager/sql/
-        ../tests/timecode/
-    )
-endif()
 
 if( LIBMYGPO_QT_FOUND )
     set( EXTRA_LIBS ${LIBMYGPO_QT_LIBRARIES} )

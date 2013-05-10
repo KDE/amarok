@@ -20,7 +20,6 @@
 #ifndef TESTMETAFILETRACK_H
 #define TESTMETAFILETRACK_H
 
-#include "TestBase.h"
 #include "core-impl/meta/file/File.h"
 
 #include <QtCore/QObject>

@@ -75,9 +75,6 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
     public slots:
         void applySettings( bool firstTime = false );
-#ifdef DEBUG
-        static void runUnitTests( const QStringList options, bool _stdout );
-#endif // DEBUG
         void slotConfigAmarok( const QString& page = QString() );
         void slotConfigShortcuts();
         KIO::Job *trashFiles( const KUrl::List &files );

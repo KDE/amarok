@@ -31,7 +31,6 @@
 #include "AmarokMimeData.h"
 #include "core/capabilities/ReadLabelCapability.h"
 #include "core/support/Debug.h"
-#include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
@@ -43,7 +42,8 @@
 #include "PlaylistController.h"
 #include "PlaylistItem.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "UndoCommands.h"
+#include "core-impl/support/TrackLoader.h"
+#include "playlist/UndoCommands.h"
 
 #include <KGlobal>
 #include <KIconLoader>
@@ -687,7 +687,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     else if( data->hasUrls() )
     {
         debug() << "this is _something_ with a url....";
-        DirectoryLoader* dl = new DirectoryLoader(); //this deletes itself
+        TrackLoader* dl = new TrackLoader(); //this deletes itself
         dl->insertAtRow( beginRow );
         dl->init( data->urls() );
         return true;

@@ -19,7 +19,7 @@
 #include "amarokurls/AmarokUrl.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "DirectoryLoader.h"
+#include "core-impl/support/TrackLoader.h"
 #include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
@@ -77,7 +77,7 @@ macCallbackUrlHandler( const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*
                 aUrl.run();
             } else
             {
-                DirectoryLoader* loader = new DirectoryLoader();
+                TrackLoader* loader = new TrackLoader();
                 QList<KUrl> urls;
                 urls << url;
                 loader->init(urls);

@@ -19,7 +19,6 @@
 
 #include "FileView.h"
 
-#include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
@@ -35,6 +34,7 @@
 #include "core-impl/collections/support/FileCollectionLocation.h"
 #include "core-impl/meta/file/File.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core-impl/support/TrackLoader.h"
 #include "dialogs/TagDialog.h"
 
 #include <KAction>
@@ -281,7 +281,7 @@ FileView::slotPrepareMoveTracks()
         return;
 
     // copy/move to collection is a modal dialog anyway, prevent bug 313003
-    DirectoryLoader* dl = new DirectoryLoader( DirectoryLoader::BlockingLoading ); // auto-deletes itself
+    TrackLoader* dl = new TrackLoader( TrackLoader::BlockingLoading ); // auto-deletes itself
     connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotMoveTracks(Meta::TrackList)) );
     dl->init( list.urlList() );
 }
@@ -303,7 +303,7 @@ FileView::slotPrepareCopyTracks()
         return;
 
     // copy/move to collection is a modal dialog anyway, prevent bug 313003
-    DirectoryLoader* dl = new DirectoryLoader( DirectoryLoader::BlockingLoading ); // auto-deletes itself
+    TrackLoader* dl = new TrackLoader( TrackLoader::BlockingLoading ); // auto-deletes itself
     connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotCopyTracks(Meta::TrackList)) );
     dl->init( list.urlList() );
 }

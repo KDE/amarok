@@ -27,7 +27,6 @@
 
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
-#include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "core/collections/QueryMaker.h"
 #include "core-impl/meta/cue/CueFileSupport.h"
@@ -37,12 +36,12 @@
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core-impl/meta/multi/MultiTrack.h"
 #include "core-impl/meta/file/File.h"
+#include "core-impl/support/TrackLoader.h"
 
-
-#include <algorithm> // STL
 #include <QAction>
-#include <typeinfo>
 
+#include <algorithm>
+#include <typeinfo>
 
 namespace The
 {
@@ -238,7 +237,7 @@ Playlist::Controller::insertOptioned( Playlists::PlaylistList list, int options 
 void
 Playlist::Controller::insertOptioned( QList<KUrl> &urls, int options )
 {
-    DirectoryLoader *dl = new DirectoryLoader(); // dl handles memory management
+    TrackLoader *dl = new TrackLoader(); // dl handles memory management
     dl->setProperty( "options", QVariant( options ) );
     connect( dl, SIGNAL(finished(Meta::TrackList)),
                  SLOT(slotDirectoryLoaderFinished(Meta::TrackList)) );

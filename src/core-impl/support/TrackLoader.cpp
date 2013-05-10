@@ -16,7 +16,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "DirectoryLoader.h"
+#include "TrackLoader.h"
 
 #include "core/support/Debug.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
@@ -27,7 +27,7 @@
 
 #include <KIO/Job>
 
-DirectoryLoader::DirectoryLoader( LoadingMode loadingMode )
+TrackLoader::TrackLoader( LoadingMode loadingMode )
         : QObject( 0 )
         , m_listOperations( 0 )
         , m_entities( 0 )
@@ -37,12 +37,12 @@ DirectoryLoader::DirectoryLoader( LoadingMode loadingMode )
 {
 }
 
-DirectoryLoader::~DirectoryLoader()
+TrackLoader::~TrackLoader()
 {
 }
 
 void
-DirectoryLoader::insertAtRow( int row )
+TrackLoader::insertAtRow( int row )
 {
     m_row = row;
     m_localConnection = true;
@@ -50,14 +50,14 @@ DirectoryLoader::insertAtRow( int row )
 }
 
 void
-DirectoryLoader::doInsertAtRow()
+TrackLoader::doInsertAtRow()
 {
     The::playlistController()->insertTracks( m_row, m_tracks );
     deleteLater();
 }
 
 void
-DirectoryLoader::init( const QList<QUrl> &qurls )
+TrackLoader::init( const QList<QUrl> &qurls )
 {
     QList<KUrl> kurls;
     foreach( const QUrl &qurl, qurls )
@@ -67,7 +67,7 @@ DirectoryLoader::init( const QList<QUrl> &qurls )
 }
 
 void
-DirectoryLoader::init( const QList<KUrl> &urls )
+TrackLoader::init( const QList<KUrl> &urls )
 {
     //drop from an external source or the file browser
     QList<KIO::ListJob*> jobs;
@@ -91,7 +91,7 @@ DirectoryLoader::init( const QList<KUrl> &urls )
 }
 
 void
-DirectoryLoader::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
+TrackLoader::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
 {
     DEBUG_BLOCK
     //dfaure says that job->redirectionUrl().isValid() ? job->redirectionUrl() : job->url(); might be needed
@@ -105,7 +105,7 @@ DirectoryLoader::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &l
 }
 
 void
-DirectoryLoader::listJobFinished()
+TrackLoader::listJobFinished()
 {
     m_listOperations--;
     if( m_listOperations < 1 )
@@ -113,7 +113,7 @@ DirectoryLoader::listJobFinished()
 }
 
 void
-DirectoryLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
+TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
 {
     m_tracks << playlist->tracks();
     --m_entities;
@@ -122,7 +122,7 @@ DirectoryLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
 }
 
 void
-DirectoryLoader::finishUrlList()
+TrackLoader::finishUrlList()
 {
     m_entities = m_urlsToLoad.count();
     foreach( const KUrl &url, m_urlsToLoad )
@@ -130,7 +130,7 @@ DirectoryLoader::finishUrlList()
     if( !m_expanded.isEmpty() )
     {
         m_entities += m_expanded.count();
-        qStableSort( m_expanded.begin(), m_expanded.end(), DirectoryLoader::directorySensitiveLessThan );
+        qStableSort( m_expanded.begin(), m_expanded.end(), TrackLoader::directorySensitiveLessThan );
         foreach( const KFileItem &item, m_expanded )
         {
             appendFile( item.url() );
@@ -143,7 +143,7 @@ DirectoryLoader::finishUrlList()
 }
 
 void
-DirectoryLoader::finish()
+TrackLoader::finish()
 {
     emit finished( m_tracks );
     if ( !m_localConnection )
@@ -151,7 +151,7 @@ DirectoryLoader::finish()
 }
 
 void
-DirectoryLoader::appendFile( const KUrl &url )
+TrackLoader::appendFile( const KUrl &url )
 {
     if( Playlists::isPlaylist( url ) )
     {
@@ -185,7 +185,7 @@ DirectoryLoader::appendFile( const KUrl &url )
 }
 
 bool
-DirectoryLoader::directorySensitiveLessThan( const KFileItem &item1, const KFileItem &item2 )
+TrackLoader::directorySensitiveLessThan( const KFileItem &item1, const KFileItem &item2 )
 {
     QString dir1 = item1.url().directory();
     QString dir2 = item2.url().directory();
