@@ -217,31 +217,33 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 void
 Playlist::Controller::insertOptioned( Playlists::PlaylistPtr playlist, int options )
 {
-    DEBUG_BLOCK
-    if( !playlist )
-        return;
-    playlist->makeLoadingSync();
-    playlist->triggerTrackLoad();
-    insertOptioned( playlist->tracks(), options );
+    insertOptioned( Playlists::PlaylistList() << playlist, options );
 }
 
 void
 Playlist::Controller::insertOptioned( Playlists::PlaylistList list, int options )
 {
-    DEBUG_BLOCK
-
-    foreach( Playlists::PlaylistPtr playlist, list )
-        insertOptioned( playlist, options );
+    // if we are going to play, we need full metadata (playable tracks)
+    TrackLoader::Flags flags = ( options & ( StartPlay | DirectPlay ) )
+                             ? TrackLoader::FullMetadataRequired : TrackLoader::NoFlags;
+    TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
+    loader->setProperty( "options", QVariant( options ) );
+    connect( loader, SIGNAL(finished(Meta::TrackList)),
+                 SLOT(slotLoaderWithOptionsFinished(Meta::TrackList)) );
+    loader->init( list );
 }
 
 void
 Playlist::Controller::insertOptioned( QList<KUrl> &urls, int options )
 {
-    TrackLoader *dl = new TrackLoader(); // auto-deletes itself
-    dl->setProperty( "options", QVariant( options ) );
-    connect( dl, SIGNAL(finished(Meta::TrackList)),
-                 SLOT(slotDirectoryLoaderFinished(Meta::TrackList)) );
-    dl->init( urls );
+    // if we are going to play, we need full metadata (playable tracks)
+    TrackLoader::Flags flags = ( options & ( StartPlay | DirectPlay ) )
+                             ? TrackLoader::FullMetadataRequired : TrackLoader::NoFlags;
+    TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
+    loader->setProperty( "options", QVariant( options ) );
+    connect( loader, SIGNAL(finished(Meta::TrackList)),
+                 SLOT(slotLoaderWithOptionsFinished(Meta::TrackList)) );
+    loader->init( urls );
 }
 
 void
@@ -267,25 +269,17 @@ Playlist::Controller::insertTracks( int topModelRow, Meta::TrackList tl )
 void
 Playlist::Controller::insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist )
 {
-    DEBUG_BLOCK
-    playlist->makeLoadingSync();
-    playlist->triggerTrackLoad();
-    Meta::TrackList tl( playlist->tracks() );
-    insertTracks( topModelRow, tl );
+    insertPlaylists( topModelRow, Playlists::PlaylistList() << playlist );
 }
 
 void
 Playlist::Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList playlists )
 {
-    DEBUG_BLOCK
-    Meta::TrackList tl;
-    foreach( Playlists::PlaylistPtr playlist, playlists )
-    {
-        playlist->makeLoadingSync();
-        playlist->triggerTrackLoad();
-        tl += playlist->tracks();
-    }
-    insertTracks( topModelRow, tl );
+    TrackLoader *loader = new TrackLoader(); // auto-deletes itself
+    loader->setProperty( "topModelRow", QVariant( topModelRow ) );
+    connect( loader, SIGNAL(finished(Meta::TrackList)),
+                 SLOT(slotLoaderWithRowFinished(Meta::TrackList)) );
+    loader->init( playlists );
 }
 
 void
@@ -514,10 +508,41 @@ Playlist::Controller::clear()
  **************************************************/
 
 void
-Playlist::Controller::slotDirectoryLoaderFinished( const Meta::TrackList &tracks )
+Playlist::Controller::slotLoaderWithOptionsFinished( const Meta::TrackList &tracks )
 {
+    QObject *loader = sender();
+    if( !loader )
+    {
+        error() << __PRETTY_FUNCTION__ << "must be connected to TrackLoader";
+        return;
+    }
+    QVariant options = loader->property( "options" );
+    if( !options.isValid() || options.type() != QVariant::Int )
+    {
+        error() << __PRETTY_FUNCTION__ << "loader property 'options' is not a valid integer";
+        return;
+    }
     if( !tracks.isEmpty() )
-        insertOptioned( tracks, sender()->property( "options" ).toInt() );
+        insertOptioned( tracks, options.toInt() );
+}
+
+void
+Playlist::Controller::slotLoaderWithRowFinished( const Meta::TrackList &tracks )
+{
+    QObject *loader = sender();
+    if( !loader )
+    {
+        error() << __PRETTY_FUNCTION__ << "must be connected to TrackLoader";
+        return;
+    }
+    QVariant topModelRow = loader->property( "topModelRow" );
+    if( !topModelRow.isValid() || topModelRow.type() != QVariant::Int )
+    {
+        error() << __PRETTY_FUNCTION__ << "loader property 'topModelRow' is not a valid integer";
+        return;
+    }
+    if( !tracks.isEmpty() )
+        insertTracks( topModelRow.toInt(), tracks );
 }
 
 int

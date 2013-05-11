@@ -176,7 +176,8 @@ signals:
     void replacingPlaylist();
 
 private slots:
-    void slotDirectoryLoaderFinished( const Meta::TrackList &tracks );
+    void slotLoaderWithOptionsFinished( const Meta::TrackList &tracks );
+    void slotLoaderWithRowFinished( const Meta::TrackList &tracks );
 
 private:
     Controller();
