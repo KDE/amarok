@@ -87,12 +87,6 @@ Playlist::setName( const QString & )
 {
 }
 
-int
-Playlist::trackCount() const
-{
-    return -1;
-}
-
 void
 Playlist::triggerTrackLoad()
 {

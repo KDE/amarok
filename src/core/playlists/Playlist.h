@@ -148,12 +148,10 @@ namespace Playlists
             virtual void setName( const QString &name );
 
             /**
-             * Returns the number of tracks this playlist contains. -1 if this can not
-             * be determined before loading them all (call triggerTrackLoad() in this case)
-             *
-             * Default implementation returns -1.
+             * Returns the number of tracks this playlist contains. -1 if tracks are not
+             * yet loaded (call triggerTrackLoad() in this case).
              */
-            virtual int trackCount() const;
+            virtual int trackCount() const = 0;
 
             /**
              * Returns loaded tracks in this playlist. Note that the list may be incomplete,

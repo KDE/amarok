@@ -277,14 +277,9 @@ App::handleCliArgs() //static
                 The::playlistManager()->defaultPodcasts()->addPodcast( feedUrl );
             }
             else if( url.protocol() == "amarok" )
-            {
                 s_delayedAmarokUrls.append( url.url() );
-            }
             else
-            {
                 list << url;
-                DEBUG_LINE_INFO
-            }
         }
 
         int options = Playlist::AppendAndPlay;

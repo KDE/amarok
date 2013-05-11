@@ -38,6 +38,12 @@ Playlists::MediaDevicePlaylist::~MediaDevicePlaylist()
 {
 }
 
+int
+Playlists::MediaDevicePlaylist::trackCount() const
+{
+    return m_tracks.count();
+}
+
 Meta::TrackList
 Playlists::MediaDevicePlaylist::tracks()
 {

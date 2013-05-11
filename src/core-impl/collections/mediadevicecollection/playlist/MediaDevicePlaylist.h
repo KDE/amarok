@@ -43,7 +43,7 @@ namespace Playlists
             /**override showing just the filename */
             virtual void setName( const QString &name );
 
-            /** returns all tracks in this playlist */
+            virtual int trackCount() const;
             virtual Meta::TrackList tracks();
             virtual void addTrack( Meta::TrackPtr track, int position = -1 );
 
