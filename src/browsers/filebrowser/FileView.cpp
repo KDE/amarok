@@ -280,8 +280,8 @@ FileView::slotPrepareMoveTracks()
     if( list.isEmpty() )
         return;
 
-    // copy/move to collection is a modal dialog anyway, prevent bug 313003
-    TrackLoader* dl = new TrackLoader( TrackLoader::BlockingLoading ); // auto-deletes itself
+    // prevent bug 313003, require full metadata
+    TrackLoader* dl = new TrackLoader( TrackLoader::FullMetadataRequired ); // auto-deletes itself
     connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotMoveTracks(Meta::TrackList)) );
     dl->init( list.urlList() );
 }
@@ -302,8 +302,8 @@ FileView::slotPrepareCopyTracks()
     if( list.isEmpty() )
         return;
 
-    // copy/move to collection is a modal dialog anyway, prevent bug 313003
-    TrackLoader* dl = new TrackLoader( TrackLoader::BlockingLoading ); // auto-deletes itself
+    // prevent bug 313003, require full metadata
+    TrackLoader* dl = new TrackLoader( TrackLoader::FullMetadataRequired ); // auto-deletes itself
     connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotCopyTracks(Meta::TrackList)) );
     dl->init( list.urlList() );
 }
@@ -451,13 +451,16 @@ FileView::addIndexToPlaylist( const QModelIndex &idx, Playlist::AddOptions optio
 }
 
 void
-FileView::addIndicesToPlaylist( const QModelIndexList &indices, Playlist::AddOptions options )
+FileView::addIndicesToPlaylist( QModelIndexList indices, Playlist::AddOptions options )
 {
     if( indices.isEmpty() )
         return;
 
+    // let tracks & playlists appear in playlist as they are shown in the view:
+    qSort( indices );
+
     QList<KUrl> urls;
-    foreach( const QModelIndex& index, indices )
+    foreach( const QModelIndex &index, indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         KUrl url = file.url();

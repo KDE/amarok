@@ -77,10 +77,9 @@ macCallbackUrlHandler( const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*
                 aUrl.run();
             } else
             {
-                TrackLoader* loader = new TrackLoader();
-                QList<KUrl> urls;
-                urls << url;
-                loader->init(urls);
+                TrackLoader *loader = new TrackLoader();
+                // FIXME: this has no effect, one has to connect to finished() signal
+                loader->init( url );
             }
         }
     }

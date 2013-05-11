@@ -40,6 +40,8 @@ class MetaStream::Track::Private : public QObject
             , track( t )
         {
             EngineController *engine = The::engineController();
+            if( !engine )
+                return; // engine might not be available during tests, silence the warning
 
             // force a direct connection or slot might not be called because of thread
             // affinity. (see BUG 300334)

@@ -22,78 +22,115 @@
 
 #include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
+#include "core/meta/Observer.h"
 #include "core/playlists/Playlist.h"
 
-#include <KFileItem>
-
-class KJob;
 namespace KIO {
     class Job;
     class UDSEntry;
-    typedef QList<UDSEntry>  UDSEntryList;
-    typedef QList<KFileItem> KFileItemList;
+    typedef QList<UDSEntry> UDSEntryList;
 }
 
-class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObserver
+/**
+ * Helper class that helps with loading of urls (with local and remote tracks,
+ * playlists and local directories) to tracks.
+ *
+ * Only explicitly listed playlists are loaded, not the ones found in subdirectories.
+ * TrackLoader takes care to preserve order of urls you pass, and it sorts tracks in
+ * directories you pass it using directory- and locale-aware sort.
+ */
+class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObserver, public Meta::Observer
 {
     Q_OBJECT
 
     public:
         /**
-         * BlockingLoading: the tracks are loaded synchronously in the main thread,
-         *                  but you have a guarantee that their metadata is valid
-         *                  from start
-         * AsyncLoading: the tracks and loaded using MetaProxy::Tracks, initial metadata
-         *               are just stubs and the real ones are fetched in the banground,
-         *               then you get metadataUpdated() */
-        enum LoadingMode {
-            BlockingLoading,
-            AsyncLoading
+         * FullMetadataRequired: signal TrackLoader that it should postpone the finished()
+         * signal until the any possible proxy tracks have resolved and their full
+         * metadata is available. Also use this flag when you need to immediately play
+         * the tracks. This no longer implies any blocking behaviour, you'll just get the
+         * finished signal a bit later.
+         */
+        enum Flags {
+            NoFlags = 0,
+            FullMetadataRequired = 1 << 0,
         };
-        TrackLoader( LoadingMode loadingMode = AsyncLoading );
+
+        /**
+         * Construct TrackLoader. You must construct it on the heap, it will auto-delete
+         * itself.
+         *
+         * @param flags binary or of flags, see TrackLoader::Flags enum
+         * @param timeout if FullMetadataRequired is in flags, this is the timeout in
+         * milliseconds for wating on track to resolve. Ignored otherwise.
+         */
+        TrackLoader( Flags flags = NoFlags, int timeout = 2000 );
         ~TrackLoader();
 
-        void init( const QList<KUrl> &urls );
+        /**
+         * Convenience overload for init( const QList<KUrl> &urls )
+         */
+        void init( const KUrl &url );
+
+        /**
+         * Convenience overload for init( const QList<KUrl> &urls )
+         */
         void init( const QList<QUrl> &urls );
 
+        /**
+         * Starts TrackLoader's job, you'll get finished() signal in the end and
+         * TrackLoader will auto-delete itself.
+         *
+         * @urls list of urls to load tracks from, you can pass local and remote urls
+         * pointing to directories, tracks and playlists.
+         */
+        void init( const QList<KUrl> &urls );
+
         /* PlaylistObserver methods */
+        using PlaylistObserver::metadataChanged;
         virtual void tracksLoaded( Playlists::PlaylistPtr playlist );
+
+        /* Meta::Observer methods */
+        using Observer::metadataChanged;
+        virtual void metadataChanged( Meta::TrackPtr track );
 
     signals:
         void finished( const Meta::TrackList &tracks );
 
     private slots:
+        void processNextSourceUrl();
         void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list );
         void listJobFinished();
+        void processNextResultUrl();
+        /**
+         * Emits the result and auto-destroys the TrackLoader
+         */
+        void finish();
 
     private:
-        void finishUrlList();
-        /** Completes the initialization */
-        void finish();
-        /**
-         * Probe the file @file, if it is a playlist or a track, add it to m_tracks
-         */
-        void appendFile( const KUrl &url );
+        enum Status {
+            LoadingTracks,
+            MayFinish,
+            Finished
+        };
+        void mayFinish();
 
-        static bool directorySensitiveLessThan( const KFileItem &item1, const KFileItem &item2 );
+        static bool directorySensitiveLessThan( const KUrl &left, const KUrl &right );
 
-        /**
-         * the number of directory list operations. This is used so that
-         * the last directory operations knows its the last
-         */
-        int m_listOperations;
-        /**
-         * The number of unprocessed entities.
-         * Entity is track or playlist
-         */
-        int m_entities;
-        /**
-         * Store list of url which should be processed
-         */
-        QList<KUrl> m_urlsToLoad;
-        LoadingMode m_loadingMode;
-        KIO::KFileItemList m_expanded;
-        Meta::TrackList m_tracks; //!< the tracks found. they get all sorted at the end.
+        Status m_status;
+        Flags m_flags;
+        int m_timeout;
+        /// passed urls, may contain urls of directories
+        QList<KUrl> m_sourceUrls;
+        /// contains just urls of tracks and playlists
+        QList<KUrl> m_resultUrls;
+        /// the tracks found
+        Meta::TrackList m_tracks;
+        /// temporary list of results of the list job, to keep right sorting
+        QList<KUrl> m_listJobResults;
+        /// set of unresolved MetaProxy::Tracks that we wait for
+        QSet<Meta::TrackPtr> m_unresolvedTracks;
+        QMutex m_unresolvedTracksMutex;
 };
 
 #endif // AMAROK_TRACKLOADER_H

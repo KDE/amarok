@@ -237,7 +237,7 @@ Playlist::Controller::insertOptioned( Playlists::PlaylistList list, int options 
 void
 Playlist::Controller::insertOptioned( QList<KUrl> &urls, int options )
 {
-    TrackLoader *dl = new TrackLoader(); // dl handles memory management
+    TrackLoader *dl = new TrackLoader(); // auto-deletes itself
     dl->setProperty( "options", QVariant( options ) );
     connect( dl, SIGNAL(finished(Meta::TrackList)),
                  SLOT(slotDirectoryLoaderFinished(Meta::TrackList)) );

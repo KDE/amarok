@@ -90,7 +90,7 @@ protected:
      * Convenience.
      */
     void addIndexToPlaylist( const QModelIndex &idx, Playlist::AddOptions options );
-    void addIndicesToPlaylist( const QModelIndexList &indices, Playlist::AddOptions options );
+    void addIndicesToPlaylist( QModelIndexList indices, Playlist::AddOptions options );
 
     virtual void contextMenuEvent( QContextMenuEvent *e );
     virtual void mouseReleaseEvent( QMouseEvent *event );

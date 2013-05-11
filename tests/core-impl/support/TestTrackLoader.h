@@ -30,7 +30,11 @@ class TestTrackLoader : public QObject
     private slots:
         void initTestCase();
         void cleanupTestCase();
+
+        // this in intentionally on top so that it is executed first
+        void testFullMetadataInit();
         void testInit();
+        void testInitWithPlaylists();
 
     private:
         QString dataPath( const QString &relPath );

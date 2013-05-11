@@ -19,24 +19,33 @@
 
 #include "TrackLoader.h"
 
+#include "core/playlists/PlaylistFormat.h"
 #include "core/support/Debug.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core-impl/meta/file/File.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
-#include "core/playlists/PlaylistFormat.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
 #include <KIO/Job>
+#include <KFileItem>
 
-TrackLoader::TrackLoader( LoadingMode loadingMode )
-        : QObject( 0 )
-        , m_listOperations( 0 )
-        , m_entities( 0 )
-        , m_loadingMode( loadingMode )
+#include <QFileInfo>
+#include <QTimer>
+
+TrackLoader::TrackLoader( Flags flags, int timeout )
+    : m_status( LoadingTracks )
+    , m_flags( flags )
+    , m_timeout( timeout )
 {
 }
 
 TrackLoader::~TrackLoader()
 {
+}
+
+void
+TrackLoader::init( const KUrl &url )
+{
+    init( QList<KUrl>() << url );
 }
 
 void
@@ -52,129 +61,204 @@ void
 TrackLoader::init( const QList<KUrl> &urls )
 {
     //drop from an external source or the file browser
-    QList<KIO::ListJob*> jobs;
+    m_sourceUrls = urls;
+    QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
+}
 
-    foreach( const KUrl &kurl, urls )
+void
+TrackLoader::processNextSourceUrl()
+{
+    if( m_sourceUrls.isEmpty() )
     {
-        KFileItem kitem( KFileItem::Unknown, KFileItem::Unknown, kurl, true );
-        if( kitem.isDir() )
-        {
-            m_listOperations++;
-            KIO::ListJob* lister = KIO::listRecursive( kurl ); // KJobs delete themselves
-            connect( lister, SIGNAL(finished(KJob*)), SLOT(listJobFinished()) );
-            connect( lister, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
-                             SLOT(directoryListResults(KIO::Job*,KIO::UDSEntryList)) );
-        }
-        else
-            m_urlsToLoad.append( kurl );
+        QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
+        return;
     }
-    if( m_listOperations == 0 )
-        finishUrlList();
+
+    KUrl sourceUrl = m_sourceUrls.takeFirst();
+    if( sourceUrl.isLocalFile() && QFileInfo( sourceUrl.toLocalFile() ).isDir() )
+    {
+        // KJobs delete themselves
+        KIO::ListJob *lister = KIO::listRecursive( sourceUrl, KIO::HideProgressInfo );
+        connect( lister, SIGNAL(finished(KJob*)), SLOT(listJobFinished()) );
+        connect( lister, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
+                 SLOT(directoryListResults(KIO::Job*,KIO::UDSEntryList)) );
+        // listJobFinished() calls processNextSourceUrl() in the end, don't do it here:
+        return;
+    }
+    else
+        m_resultUrls.append( sourceUrl );
+
+    QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
 }
 
 void
 TrackLoader::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
 {
-    DEBUG_BLOCK
     //dfaure says that job->redirectionUrl().isValid() ? job->redirectionUrl() : job->url(); might be needed
     //but to wait until an issue is actually found, since it might take more work
-    const KUrl dir = static_cast<KIO::SimpleJob*>( job )->url();
+    const KUrl dir = static_cast<KIO::SimpleJob *>( job )->url();
     foreach( const KIO::UDSEntry &entry, list )
     {
         KFileItem item( entry, dir, true, true );
-        m_expanded.append( item );
+        KUrl url = item.url();
+        if( MetaFile::Track::isTrack( url ) )
+            m_listJobResults << url;
     }
 }
 
 void
 TrackLoader::listJobFinished()
 {
-    m_listOperations--;
-    if( m_listOperations < 1 )
-        finishUrlList();
+    qSort( m_listJobResults.begin(), m_listJobResults.end(), directorySensitiveLessThan );
+
+    m_resultUrls << m_listJobResults;
+    m_listJobResults.clear();
+
+    QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
+}
+
+void
+TrackLoader::processNextResultUrl()
+{
+    using namespace Playlists;
+    if( m_resultUrls.isEmpty() )
+    {
+        mayFinish();
+        return;
+    }
+
+    KUrl resultUrl = m_resultUrls.takeFirst();
+    if( isPlaylist( resultUrl ) )
+    {
+        PlaylistFilePtr playlist = loadPlaylistFile( resultUrl );
+        if( playlist )
+        {
+            PlaylistObserver::subscribeTo( PlaylistPtr::staticCast( playlist ) );
+            playlist->triggerTrackLoad(); // playlist track loading is on demand.
+            // will trigger tracksLoaded() which in turn calls processNextResultUrl(),
+            // therefore we shouldn't call trigger processNextResultUrl() here:
+            return;
+        }
+        else
+            warning() << __PRETTY_FUNCTION__ << "cannot load playlist" << resultUrl;
+    }
+    else if( MetaFile::Track::isTrack( resultUrl ) )
+    {
+        MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( resultUrl ) );
+        proxyTrack->setName( resultUrl.fileName() ); // set temporary name
+        Meta::TrackPtr track( proxyTrack.data() );
+        m_tracks << Meta::TrackPtr( track );
+
+        if( ( m_flags & FullMetadataRequired ) && !proxyTrack->isResolved() )
+        {
+            m_unresolvedTracks.insert( track );
+            Observer::subscribeTo( track );
+        }
+    }
+    else
+        warning() << __PRETTY_FUNCTION__ << resultUrl
+                  << "is neither a playlist or a track, skipping";
+
+    QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
 }
 
 void
 TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
 {
-    m_tracks << playlist->tracks();
-    --m_entities;
-    if ( m_entities == 0 )
-        finish();
+    // this method needs to be thread-safe!
+
+    // accessing m_tracks is thread-safe as nothing else is happening in this class in
+    // the main thread while we are waiting for tracksLoaded() to trigger:
+    Meta::TrackList tracks = playlist->tracks();
+    if( m_flags & FullMetadataRequired )
+    {
+        foreach( const Meta::TrackPtr &track, tracks )
+        {
+            MetaProxy::TrackPtr proxyTrack = MetaProxy::TrackPtr::dynamicCast( track );
+            if( !proxyTrack )
+            {
+                debug() << __PRETTY_FUNCTION__ << "strange, playlist" << playlist->name()
+                        << "doesn't use MetaProxy::Tracks";
+                continue;
+            }
+            if( !proxyTrack->isResolved() )
+            {
+                m_unresolvedTracks.insert( track );
+                Observer::subscribeTo( track );
+            }
+        }
+    }
+    m_tracks << tracks;
+
+    PlaylistObserver::unsubscribeFrom( playlist );
+    // this also ensures that processNextResultUrl() will resume in the main thread
+    QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
 }
 
 void
-TrackLoader::finishUrlList()
+TrackLoader::metadataChanged( Meta::TrackPtr track )
 {
-    m_entities = m_urlsToLoad.count();
-    foreach( const KUrl &url, m_urlsToLoad )
-        appendFile( url );
-    if( !m_expanded.isEmpty() )
+    // first metadataChanged() from a MetaProxy::Track means that it has found the real track
+    bool isEmpty;
     {
-        m_entities += m_expanded.count();
-        qStableSort( m_expanded.begin(), m_expanded.end(), TrackLoader::directorySensitiveLessThan );
-        foreach( const KFileItem &item, m_expanded )
-        {
-            appendFile( item.url() );
-        }
-        qStableSort( m_tracks.begin(), m_tracks.end(), Meta::Track::lessThan );
+        QMutexLocker locker( &m_unresolvedTracksMutex );
+        m_unresolvedTracks.remove( track );
+        isEmpty = m_unresolvedTracks.isEmpty();
     }
 
-    if ( m_entities == 0 )
+    Observer::unsubscribeFrom( track );
+    if( m_status == MayFinish && isEmpty )
+        QTimer::singleShot( 0, this, SLOT(finish()) );
+}
+
+void
+TrackLoader::mayFinish()
+{
+    m_status = MayFinish;
+    bool isEmpty;
+    {
+        QMutexLocker locker( &m_unresolvedTracksMutex );
+        isEmpty = m_unresolvedTracks.isEmpty();
+    }
+    if( isEmpty )
+    {
         finish();
+        return;
+    }
+
+    // we must wait for tracks to resolve, but with a timeout
+    QTimer::singleShot( m_timeout, this, SLOT(finish()) );
 }
 
 void
 TrackLoader::finish()
 {
+    // prevent double emit of finished(), race between singleshot QTimers from mayFinish()
+    // and metadataChanged()
+    if( m_status != MayFinish )
+        return;
+
+    m_status = Finished;
     emit finished( m_tracks );
     deleteLater();
 }
 
-void
-TrackLoader::appendFile( const KUrl &url )
-{
-    if( Playlists::isPlaylist( url ) )
-    {
-        Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
-        if( playlist )
-        {
-            subscribeTo( Playlists::PlaylistPtr::staticCast( playlist ) );
-            playlist->triggerTrackLoad(); // playlist track loading is on demand.
-            return;
-        }
-    }
-    else if( MetaFile::Track::isTrack( url ) )
-    {
-        Meta::TrackPtr track;
-        switch( m_loadingMode )
-        {
-            case AsyncLoading:
-            {
-                MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
-                proxyTrack->setName( url.fileName() ); // set temporary name
-                track = proxyTrack.data();
-                break;
-            }
-            case BlockingLoading:
-                track = new MetaFile::Track( url );
-                break;
-        }
-        m_tracks << track;
-    }
-    --m_entities;
-}
-
 bool
-TrackLoader::directorySensitiveLessThan( const KFileItem &item1, const KFileItem &item2 )
+TrackLoader::directorySensitiveLessThan( const KUrl &left, const KUrl &right )
 {
-    QString dir1 = item1.url().directory();
-    QString dir2 = item2.url().directory();
+    QString leftDir = left.directory( KUrl::AppendTrailingSlash );
+    QString rightDir = right.directory( KUrl::AppendTrailingSlash );
 
-    if( dir1 == dir2 )
-        return item1.url().url() < item2.url().url();
-    else if( dir1 < dir2 )
-        return true;
-    else
+    // filter out tracks from same directories:
+    if( leftDir == rightDir )
+        return QString::localeAwareCompare( left.fileName(), right.fileName() ) < 0;
+
+    // left is "/a/b/c/", right is "/a/b/"
+    if( leftDir.startsWith( rightDir ) )
+        return true; // we sort directories above files
+    // left is "/a/b/", right is "/a/b/c/"
+    if( rightDir.startsWith( leftDir ) )
         return false;
+
+    return QString::localeAwareCompare( leftDir, rightDir ) < 0;
 }

@@ -123,17 +123,21 @@ namespace MetaProxy
             virtual Meta::StatisticsPtr statistics();
 
         // custom MetaProxy methods
-            virtual void setName( const QString &name );
-            virtual void setAlbum( const QString &album );
-            virtual void setAlbumArtist( const QString &artist );
-            virtual void setArtist( const QString &artist );
-            virtual void setGenre( const QString &genre );
-            virtual void setComposer( const QString &composer );
-            virtual void setYear( int year );
-            virtual void setBpm( const qreal bpm );
-            virtual void setTrackNumber( int number );
-            virtual void setDiscNumber( int discNumber );
-            virtual void setLength( qint64 length );
+            /**
+             * Return true if underlying track has already been found, false otherwise.
+             */
+            bool isResolved() const;
+            void setName( const QString &name );
+            void setAlbum( const QString &album );
+            void setAlbumArtist( const QString &artist );
+            void setArtist( const QString &artist );
+            void setGenre( const QString &genre );
+            void setComposer( const QString &composer );
+            void setYear( int year );
+            void setBpm( const qreal bpm );
+            void setTrackNumber( int number );
+            void setDiscNumber( int discNumber );
+            void setLength( qint64 length );
 
             /**
              * MetaProxy will update the proxy with the track.

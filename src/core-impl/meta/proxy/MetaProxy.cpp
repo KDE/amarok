@@ -525,3 +525,9 @@ Track::statistics()
     else
         return Meta::Track::statistics();
 }
+
+bool
+Track::isResolved() const
+{
+    return d->realTrack;
+}
