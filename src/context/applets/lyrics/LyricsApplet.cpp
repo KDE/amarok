@@ -30,19 +30,14 @@
 #include "ScriptManager.h"
 
 #include <KConfigDialog>
-#include <KTextBrowser>
 #include <KStandardDirs>
+#include <KTextBrowser>
 
 #include <Plasma/IconWidget>
-#include <Plasma/TextBrowser>
-#include <Plasma/TreeView>
 
 #include <QAction>
 #include <QGraphicsLinearLayout>
-#include <QPainter>
-#include <QPoint>
 #include <QScrollBar>
-#include <QStandardItemModel>
 #include <QTimer>
 
 class LyricsAppletPrivate
