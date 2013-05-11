@@ -56,12 +56,6 @@ PlaylistObserver::unsubscribeFrom( PlaylistPtr playlist )
     }
 }
 
-Playlist::Playlist()
-    : m_observersLock( QReadWriteLock::Recursive ) // prevent deadlocks
-    , m_async( true )
-{
-}
-
 void PlaylistObserver::metadataChanged( PlaylistPtr )
 {
 }
@@ -75,6 +69,12 @@ void PlaylistObserver::trackRemoved( PlaylistPtr, int )
 }
 
 void PlaylistObserver::tracksLoaded( PlaylistPtr )
+{
+}
+
+Playlist::Playlist()
+    : m_observersMutex( QMutex::Recursive ) // prevent deadlocks
+    , m_async( true )
 {
 }
 
@@ -126,7 +126,7 @@ Playlist::setGroups( const QStringList & )
 void
 Playlist::notifyObserversMetadataChanged()
 {
-    QReadLocker locker( &m_observersLock );
+    QMutexLocker locker( &m_observersMutex );
     foreach( PlaylistObserver *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
@@ -137,7 +137,7 @@ Playlist::notifyObserversMetadataChanged()
 void
 Playlist::notifyObserversTracksLoaded()
 {
-    QReadLocker locker( &m_observersLock );
+    QMutexLocker locker( &m_observersMutex );
     foreach( PlaylistObserver *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
@@ -149,7 +149,7 @@ void
 Playlist::notifyObserversTrackAdded( const Meta::TrackPtr &track, int position )
 {
     Q_ASSERT( position >= 0 ); // notice bug 293295 early
-    QReadLocker locker( &m_observersLock );
+    QMutexLocker locker( &m_observersMutex );
     foreach( PlaylistObserver *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
@@ -160,7 +160,7 @@ Playlist::notifyObserversTrackAdded( const Meta::TrackPtr &track, int position )
 void
 Playlist::notifyObserversTrackRemoved( int position )
 {
-    QReadLocker locker( &m_observersLock );
+    QMutexLocker locker( &m_observersMutex );
     foreach( PlaylistObserver *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
@@ -173,7 +173,7 @@ Playlist::subscribe( PlaylistObserver* observer )
 {
     if( observer )
     {
-        QWriteLocker locker( &m_observersLock );
+        QMutexLocker locker( &m_observersMutex );
         m_observers.insert( observer );
     }
 }
@@ -181,6 +181,6 @@ Playlist::subscribe( PlaylistObserver* observer )
 void
 Playlist::unsubscribe( PlaylistObserver* observer )
 {
-    QWriteLocker locker( &m_observersLock );
+    QMutexLocker locker( &m_observersMutex );
     m_observers.remove( observer );
 }

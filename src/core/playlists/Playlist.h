@@ -24,7 +24,6 @@
 #include <QMetaType>
 #include <QMutex>
 #include <QPixmap>
-#include <QReadWriteLock>
 #include <QSet>
 #include <QSharedData>
 #include <QString>
@@ -277,7 +276,13 @@ namespace Playlists
             void unsubscribe( PlaylistObserver *observer );
 
             QSet<PlaylistObserver *> m_observers;
-            QReadWriteLock m_observersLock; // guards access to m_observers
+            /**
+             * Guards access to m_observers. It would seem that QReadWriteLock would be
+             * more efficient, but when it is locked for read, it cannot be relocked for
+             * write, even if it is recursive. This can cause deadlocks, so it would be
+             * never safe to lock it just for read.
+             */
+            QMutex m_observersMutex;
             bool m_async;
     };
 }
