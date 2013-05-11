@@ -60,9 +60,16 @@ TrackLoader::init( const QList<QUrl> &qurls )
 void
 TrackLoader::init( const QList<KUrl> &urls )
 {
-    //drop from an external source or the file browser
     m_sourceUrls = urls;
     QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
+}
+
+void
+TrackLoader::init( const Playlists::PlaylistList &playlists )
+{
+    m_resultPlaylists = playlists;
+    // no need to process source urls here, short-cut to result urls (just playlists)
+    QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
 }
 
 void
@@ -121,6 +128,16 @@ void
 TrackLoader::processNextResultUrl()
 {
     using namespace Playlists;
+    if( !m_resultPlaylists.isEmpty() )
+    {
+        PlaylistPtr playlist = m_resultPlaylists.takeFirst();
+        PlaylistObserver::subscribeTo( playlist );
+        playlist->triggerTrackLoad(); // playlist track loading is on demand.
+        // will trigger tracksLoaded() which in turn calls processNextResultUrl(),
+        // therefore we shouldn't call trigger processNextResultUrl() here:
+        return;
+    }
+
     if( m_resultUrls.isEmpty() )
     {
         mayFinish();

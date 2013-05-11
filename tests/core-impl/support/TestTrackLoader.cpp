@@ -24,6 +24,7 @@
 #include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core-impl/support/TrackLoader.h"
 
 #include <ThreadWeaver/Weaver>
@@ -37,6 +38,7 @@ TestTrackLoader::initTestCase()
     qRegisterMetaType<Meta::TrackPtr>();
     qRegisterMetaType<Meta::TrackList>();
     CollectionManager::instance(); // create in the main thread
+    KGlobal::locale(); // ditto
 }
 
 void
@@ -137,6 +139,28 @@ TestTrackLoader::testInitWithPlaylists()
     QVERIFY( found.at( 3 )->uidUrl().endsWith( "/audio/album/Track03.ogg" ) );
     QCOMPARE( found.at( 4 )->uidUrl(), QString( "http://he3.magnatune.com/all/01-Sunset-Ammonite.ogg" ) ); // start of test.xspf playlist
     QCOMPARE( found.at( 5 )->uidUrl(), QString( "http://he3.magnatune.com/all/02-Heaven-Ammonite.ogg" ) );
+}
+
+void
+TestTrackLoader::testDirectlyPassingPlaylists()
+{
+    using namespace Playlists;
+    TrackLoader *loader = new TrackLoader();
+    QSignalSpy spy( loader, SIGNAL(finished(Meta::TrackList)) );
+    PlaylistList playlists;
+    playlists << PlaylistPtr::staticCast( loadPlaylistFile( KUrl( dataPath( "data/playlists/test.asx" ) ) ) )
+              << PlaylistPtr::staticCast( loadPlaylistFile( KUrl( dataPath( "data/playlists/test.xspf" ) ) ) );
+    loader->init( playlists );
+    if( spy.isEmpty() )
+        QVERIFY2( QTest::kWaitForSignal( loader, SIGNAL(finished(Meta::TrackList)), 5000 ),
+                  "loader did not finish within timeout" );
+
+    Meta::TrackList found = spy.first().first().value<Meta::TrackList>();
+    QCOMPARE( found.count(), 1 + 23 );
+    QCOMPARE( found.at( 0 )->uidUrl(), QString( "http://85.214.44.27:8000" ) ); // test.asx playlist
+    QCOMPARE( found.at( 1 )->uidUrl(), QString( "http://he3.magnatune.com/all/01-Sunset-Ammonite.ogg" ) ); // start of test.xspf playlist
+    QCOMPARE( found.at( 2 )->uidUrl(), QString( "http://he3.magnatune.com/all/02-Heaven-Ammonite.ogg" ) );
+
 }
 
 QString

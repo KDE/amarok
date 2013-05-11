@@ -156,7 +156,12 @@ namespace Playlists
             /**
              * Returns loaded tracks in this playlist. Note that the list may be incomplete,
              * to be sure, you have to become playlist observer, watch for trackAdded()
-             * methods and call triggerTrackLoad()
+             * methods and call triggerTrackLoad(). If you want to immediately play or
+             * extract metadata of the tracks, be aware that many playlist implementations
+             * initially return MetaProxy::Tracks that are resolved asynchronously.
+             *
+             * Convenient way to overcome the first and optionally the second
+             * inconvenience is to use TrackLoader helper class.
              */
             virtual Meta::TrackList tracks() = 0;
 

@@ -35,6 +35,7 @@ class TestTrackLoader : public QObject
         void testFullMetadataInit();
         void testInit();
         void testInitWithPlaylists();
+        void testDirectlyPassingPlaylists();
 
     private:
         QString dataPath( const QString &relPath );

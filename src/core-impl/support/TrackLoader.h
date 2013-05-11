@@ -86,6 +86,13 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
          */
         void init( const QList<KUrl> &urls );
 
+        /**
+         * Short-hand if you already have a list of playlists and want a convenient way
+         * to get notified of their loaded tracks. See init( const QList<KUrl> ) and
+         * class description.
+         */
+        void init( const Playlists::PlaylistList &playlists );
+
         /* PlaylistObserver methods */
         using PlaylistObserver::metadataChanged;
         virtual void tracksLoaded( Playlists::PlaylistPtr playlist );
@@ -124,6 +131,8 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
         QList<KUrl> m_sourceUrls;
         /// contains just urls of tracks and playlists
         QList<KUrl> m_resultUrls;
+        /// a list of playlists directly passed, same semantics as m_resultUrls
+        Playlists::PlaylistList m_resultPlaylists;
         /// the tracks found
         Meta::TrackList m_tracks;
         /// temporary list of results of the list job, to keep right sorting
