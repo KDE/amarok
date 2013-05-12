@@ -33,7 +33,7 @@ class TranscodingConfig;
 
 namespace CollectionFolder { class Model; }
 
-class CollectionSetup : public QWidget, public Ui::CollectionConfig
+class CollectionSetup : public QWidget
 {
     Q_OBJECT
 
@@ -48,12 +48,11 @@ class CollectionSetup : public QWidget, public Ui::CollectionConfig
         void writeConfig();
         bool hasChanged() const;
 
-        QStringList dirs() const { return m_dirs; }
         bool recursive() const;
         bool monitor() const;
 
         const QString modelFilePath( const QModelIndex &index ) const;
-        Transcoding::SelectConfigWidget * transcodingConfig() const { return m_ui->transcodingConfig; }
+        Transcoding::SelectConfigWidget *transcodingConfig() const { return m_ui.transcodingConfig; }
 
     signals:
         void changed();
@@ -73,9 +72,8 @@ class CollectionSetup : public QWidget, public Ui::CollectionConfig
 
         static CollectionSetup* s_instance;
 
-        Ui::CollectionConfig *m_ui;
+        Ui::CollectionConfig m_ui;
         CollectionFolder::Model *m_model;
-        QStringList m_dirs;
 
         QAction *m_rescanDirAction;
         /** This is the directory where the rescanDirAction was triggered */
@@ -91,7 +89,7 @@ namespace CollectionFolder //just to keep it out of the global namespace
     class Model : public QFileSystemModel
     {
         public:
-            Model();
+            Model( QObject *parent );
 
             virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
             QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;

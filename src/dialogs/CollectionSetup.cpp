@@ -21,10 +21,9 @@
 
 #include "CollectionSetup.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/collections/db/sql/SqlCollection.h"
-#include "core/support/Debug.h"
 #include "amarokconfig.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "dialogs/DatabaseImporterDialog.h"
 
 #include <KLocale>
@@ -45,11 +44,9 @@ CollectionSetup* CollectionSetup::s_instance;
 
 CollectionSetup::CollectionSetup( QWidget *parent )
         : QWidget( parent )
-        , Ui::CollectionConfig()
-        , m_ui( new Ui::CollectionConfig() )
         , m_rescanDirAction( new QAction( this ) )
 {
-    m_ui->setupUi(this);
+    m_ui.setupUi(this);
 
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
@@ -57,51 +54,52 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     s_instance = this;
 
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
-        m_ui->view->setAnimated( true );
-    connect( m_ui->view, SIGNAL(clicked(QModelIndex)),
+        m_ui.view->setAnimated( true );
+    connect( m_ui.view, SIGNAL(clicked(QModelIndex)),
              this, SIGNAL(changed()) );
 
-    connect( m_ui->view, SIGNAL(pressed(QModelIndex)),
+    connect( m_ui.view, SIGNAL(pressed(QModelIndex)),
              this, SLOT(slotPressed(QModelIndex)) );
     connect( m_rescanDirAction, SIGNAL(triggered()),
              this, SLOT(slotRescanDirTriggered()) );
 
-    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui->buttonContainer );
+    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui.buttonContainer );
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
     connect( rescan, SIGNAL(clicked()), CollectionManager::instance(), SLOT(startFullScan()) );
 
-    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import" ), m_ui->buttonContainer );
+    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import" ), m_ui.buttonContainer );
     import->setToolTip( i18n( "Import collection and/or statistics from older Amarok versions, the batch scanner or media players." ) );
     connect( import, SIGNAL(clicked()), this, SLOT(importCollection()) );
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget( rescan );
     buttonLayout->addWidget( import );
-    m_ui->buttonContainer->setLayout( buttonLayout );
+    m_ui.buttonContainer->setLayout( buttonLayout );
 
-    m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), m_ui->checkboxContainer );
-    m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), m_ui->checkboxContainer );
+    m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), m_ui.checkboxContainer );
+    m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), m_ui.checkboxContainer );
     connect( m_recursive, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
     connect( m_monitor  , SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
 
     QVBoxLayout *checkboxLayout = new QVBoxLayout();
     checkboxLayout->addWidget( m_recursive );
     checkboxLayout->addWidget( m_monitor );
-    m_ui->checkboxContainer->setLayout( checkboxLayout );
+    m_ui.checkboxContainer->setLayout( checkboxLayout );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
-    m_monitor->setToolTip(   i18n( "If selected, the collection folders will be watched for changes.\nThe watcher will not notice changes behind symbolic links." ) );
+    m_monitor->setToolTip( i18n( "If selected, the collection folders will be watched "
+            "for changes.\nThe watcher will not notice changes behind symbolic links." ) );
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
 
     // set the model _after_ constructing the checkboxes
-    m_model = new CollectionFolder::Model();
-    m_ui->view->setModel( m_model );
+    m_model = new CollectionFolder::Model( this );
+    m_ui.view->setModel( m_model );
     #ifndef Q_OS_WIN
-    m_ui->view->setRootIndex( m_model->setRootPath( QDir::rootPath() ) );
+    m_ui.view->setRootIndex( m_model->setRootPath( QDir::rootPath() ) );
     #else
-    m_ui->view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
+    m_ui.view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
     #endif
 
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
@@ -112,7 +110,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     foreach( const QString &dir, dirs )
     {
         QModelIndex index = m_model->index( dir );
-        m_ui->view->scrollTo( index, QAbstractItemView::EnsureVisible );
+        m_ui.view->scrollTo( index, QAbstractItemView::EnsureVisible );
     }
 }
 
@@ -239,8 +237,8 @@ CollectionSetup::isDirInCollection( const QString& path ) const
 
 namespace CollectionFolder {
 
-    Model::Model()
-        : QFileSystemModel()
+    Model::Model( QObject *parent )
+        : QFileSystemModel( parent )
     {
         setFilter( QDir::AllDirs | QDir::NoDotAndDotDot );
     }
@@ -436,4 +434,3 @@ namespace CollectionFolder {
     }
 
 } //namespace Collection
-
