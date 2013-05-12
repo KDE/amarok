@@ -658,7 +658,7 @@ Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
 }
 
 void
-Playlist::PrettyListView::paintEvent( QPaintEvent* event )
+Playlist::PrettyListView::paintEvent( QPaintEvent *event )
 {
     if( m_dropIndicator.isValid() ||
         model()->rowCount( rootIndex() ) == 0 )
@@ -678,7 +678,7 @@ Playlist::PrettyListView::paintEvent( QPaintEvent* event )
         {
             // here we assume that an empty list is caused by the filter if it's active
             QString emptyText;
-            if( m_showOnlyMatches )
+            if( m_showOnlyMatches && Playlist::ModelStack::instance()->bottom()->rowCount() > 0 )
                 emptyText = i18n( "Tracks have been hidden due to the active search." );
             else
                 emptyText = i18n( "Add some songs here by dragging them from all around." );
