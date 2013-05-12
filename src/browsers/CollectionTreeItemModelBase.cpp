@@ -1161,6 +1161,12 @@ CollectionTreeItemModelBase::setDragSourceCollections( const QSet<Collections::C
     m_dragSourceCollections = collections;
 }
 
+bool
+CollectionTreeItemModelBase::hasRunningQueries() const
+{
+    return !m_runningQueries.isEmpty();
+}
+
 CategoryId::CatMenuId
 CollectionTreeItemModelBase::levelCategory( const int level ) const
 {
@@ -1171,4 +1177,3 @@ CollectionTreeItemModelBase::levelCategory( const int level ) const
 }
 
 #include "CollectionTreeItemModelBase.moc"
-

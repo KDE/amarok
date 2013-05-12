@@ -845,9 +845,40 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem *> &items ) const
 void
 CollectionTreeView::slotSetFilter( const QString &filter )
 {
-    DEBUG_BLOCK;
-    if( m_treeModel )
+    if( m_treeModel && m_treeModel->currentFilter() != filter )
         m_treeModel->setCurrentFilter( filter );
+}
+
+void
+CollectionTreeView::slotAddFilteredTracksToPlaylist()
+{
+    if( !m_treeModel )
+        return;
+
+    // disconnect any possible earlier connection we've done
+    disconnect( m_treeModel, SIGNAL(allQueriesFinished()),
+                this, SLOT(slotAddFilteredTracksToPlaylist()) );
+
+    if( m_treeModel->hasRunningQueries() )
+        // wait for the queries to finish
+        connect( m_treeModel, SIGNAL(allQueriesFinished()),
+                 this, SLOT(slotAddFilteredTracksToPlaylist()) );
+    else
+    {
+        // yay, we can add the tracks now
+        QSet<CollectionTreeItem *> items;
+        for( int row = 0; row < m_treeModel->rowCount(); row++ )
+        {
+            QModelIndex idx = m_treeModel->index( row, 0 );
+            CollectionTreeItem *item = idx.isValid()
+                    ? static_cast<CollectionTreeItem *>( idx.internalPointer() ) : 0;
+            if( item )
+                items.insert( item );
+        }
+        if( !items.isEmpty() )
+            playChildTracks( items, Playlist::Append );
+        emit addingFilteredTracksDone();
+    }
 }
 
 QActionList

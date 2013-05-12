@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.8-Beta 1
   FEATURES:
+   * Pressing enter when searching collections now adds found tracks to the playlist and
+     clears the search bar, this is a very convenient way to populate your playlist.
    * Allow to transcode only certain (different format, playability) tracks when
      transferring them to a collection; patch by Anmol Ahuja. (BR 312407)
    * Added support for .asx playlists; patch by Tatjana Gornak. (BR 170207)

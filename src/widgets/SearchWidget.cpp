@@ -54,7 +54,7 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     connect( m_sw, SIGNAL(activated(int)), SLOT(onComboItemActivated(int)) );
     connect( m_sw, SIGNAL(editTextChanged(QString)), SLOT(resetFilterTimeout()) );
     connect( m_sw, SIGNAL(returnPressed()), SLOT(filterNow()) );
-    connect( m_sw, SIGNAL(returnPressed()), SLOT(advanceFocus()) );
+    connect( m_sw, SIGNAL(returnPressed()), SIGNAL(returnPressed()) );
     connect( m_sw, SIGNAL(downPressed()), SLOT(advanceFocus()) );
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -80,15 +80,6 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
 
     m_animationTimer.setInterval( 500 );
     connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(nextAnimationTick()) );
-}
-
-void
-SearchWidget::setSearchString( const QString &searchString )
-{
-    if( searchString != currentText() ) {
-        m_sw->setEditText( searchString );
-        filterNow();
-    }
 }
 
 void
@@ -200,18 +191,11 @@ SearchWidget::setTimeout( quint16 newTimeout )
 // public slots:
 
 void
-SearchWidget::searchEnded()
+SearchWidget::setSearchString( const QString &searchString )
 {
-    if( m_runningSearches > 0 ) // just to be sure...
-        m_runningSearches--;
-
-    // stop the animation
-    if( m_runningSearches == 0 )
-    {
-        m_animationTimer.stop();
-        saveLineEditStatus();
-        m_sw->setItemIcon( m_sw->currentIndex(), KStandardGuiItem::find().icon() );
-        restoreLineEditStatus();
+    if( searchString != currentText() ) {
+        m_sw->setEditText( searchString );
+        filterNow();
     }
 }
 
@@ -237,6 +221,22 @@ SearchWidget::searchStarted()
     {
         if( i != m_sw->currentIndex() ) // not the current one, which should be animated!
             m_sw->setItemIcon( i, KStandardGuiItem::find().icon() );
+    }
+}
+
+void
+SearchWidget::searchEnded()
+{
+    if( m_runningSearches > 0 ) // just to be sure...
+        m_runningSearches--;
+
+    // stop the animation
+    if( m_runningSearches == 0 )
+    {
+        m_animationTimer.stop();
+        saveLineEditStatus();
+        m_sw->setItemIcon( m_sw->currentIndex(), KStandardGuiItem::find().icon() );
+        restoreLineEditStatus();
     }
 }
 

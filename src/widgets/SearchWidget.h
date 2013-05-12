@@ -40,7 +40,6 @@ class AMAROK_EXPORT SearchWidget : public QWidget
 
         QString currentText() const { return m_sw->currentText(); }
         Amarok::ComboBox *comboBox() { return m_sw; }
-        void setSearchString( const QString &searchString );
 
         /**
          * Sets the timout length after which the filterChanged() signal will be fired automatically.
@@ -59,26 +58,36 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         void setClickMessage( const QString &message );
 
     public slots:
-        /**
-         * Tells the widget that a search operation has ended. As a consequence the progress
-         * animation will be changed back to a search icon iff no other search operation is
-         * in progress.
-         */
-        void searchEnded();
+        void setSearchString( const QString &searchString = QString() );
 
         /**
-         * Tells the widget that a search operation has started. As a consequence the "search"
-         * icon changes to a progress animation.
+         * Tells the widget that a search operation has started. As a consequence the
+         * "search" icon changes to a progress animation.
+         *
          * Note: You can call this slot several times if you ahve several search operations
          * simultaneously. The widget has an internal counter to track them.
          */
         void searchStarted();
 
+        /**
+         * Tells the widget that a search operation has ended. As a consequence the
+         * progress animation will be changed back to a search icon iff no other search
+         * operation is in progress.
+         */
+        void searchEnded();
+
     signals:
-        /** Emitted when the filter value was changed.
-            Note: This signal might be delayed while the user is typing
-        */
+        /**
+         * Emitted when the filter value was changed.
+         * Note: This signal might be delayed while the user is typing
+         */
         void filterChanged( const QString &filter );
+
+        /**
+         * Emitted when the user hits enter after after typing in the filter. It is
+         * guaranteed that filterChanged() with the current text was emitted previously.
+         */
+        void returnPressed();
 
     private slots:
         void resetFilterTimeout();

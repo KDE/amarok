@@ -430,11 +430,20 @@ void CollectionWidget::toggleView( bool merged )
     CollectionBrowserTreeView *oldView = d->view( d->viewMode );
 
     if( oldView )
+    {
         d->searchWidget->disconnect( oldView );
+        oldView->disconnect( d->searchWidget );
+    }
 
     CollectionBrowserTreeView *newView = d->view( newMode );
     connect( d->searchWidget, SIGNAL(filterChanged(QString)),
              newView, SLOT(slotSetFilter(QString)) );
+    connect( d->searchWidget, SIGNAL(returnPressed()),
+             newView, SLOT(slotAddFilteredTracksToPlaylist()) );
+    // reset search string after successful adding of filtered items to playlist
+    connect( newView, SIGNAL(addingFilteredTracksDone()),
+             d->searchWidget, SLOT(setSearchString()) );
+
     if( d->stack->indexOf( newView ) == -1 )
         d->stack->addWidget( newView );
     d->stack->setCurrentWidget( newView );

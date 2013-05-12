@@ -63,7 +63,21 @@ class CollectionTreeView: public Amarok::PrettyTreeView
     public slots:
         void slotSetFilter( const QString &filter );
 
+        /**
+         * This should append all currently visible tracks to the playlist. Takes
+         * care to ensure that the tracks are added only after any pending searches
+         * are finished.
+         */
+        void slotAddFilteredTracksToPlaylist();
+
         void playChildTracksSlot( Meta::TrackList list );
+
+    signals:
+        /**
+         * This signal is emitted when slotAddFilteredTracksToPlaylist() has done its
+         * work.
+         */
+        void addingFilteredTracksDone();
 
     protected:
         void contextMenuEvent( QContextMenuEvent *event );

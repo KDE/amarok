@@ -61,7 +61,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
         virtual bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
-        
+
         // Writable..
         virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
@@ -92,6 +92,12 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
          * This should be called every time a drag enters collection browser
          */
         void setDragSourceCollections( const QSet<Collections::Collection*> &collections );
+
+        /**
+         * Return true if there are any queries still running. If this returns true,
+         * you can expect allQueriesFinished() signal in some time.
+         */
+        bool hasRunningQueries() const;
 
     signals:
         void expandIndex( const QModelIndex &index );
