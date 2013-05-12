@@ -216,7 +216,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
 
         static QWeakPointer<MainWindow> s_instance;
 
-        bool m_layoutLocked;
         bool m_waitingForCd;
 };
 

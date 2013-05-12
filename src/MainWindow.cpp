@@ -1317,13 +1317,6 @@ MainWindow::setLayoutLocked( bool locked )
 
     AmarokConfig::setLockLayout( locked );
     AmarokConfig::self()->writeConfig();
-    m_layoutLocked = locked;
-}
-
-bool
-MainWindow::isLayoutLocked() const
-{
-    return m_layoutLocked;
 }
 
 void
