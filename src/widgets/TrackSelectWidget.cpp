@@ -55,6 +55,7 @@ TrackSelectWidget::TrackSelectWidget( QWidget* parent )
     if ( levels.isEmpty() )
         levels << CategoryId::Artist << CategoryId::Album;
     m_model = new CollectionTreeItemModel( levels );
+    m_model->setParent( this );
     m_view->setModel( m_model );
 
     connect( m_view, SIGNAL(itemSelected(CollectionTreeItem*)),

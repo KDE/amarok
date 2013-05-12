@@ -95,6 +95,8 @@ CollectionTreeView::setModel( QAbstractItemModel *model )
     connect( m_treeModel, SIGNAL(expandIndex(QModelIndex)),
              SLOT(slotExpandIndex(QModelIndex)) );
 
+    if( m_filterModel )
+        m_filterModel->deleteLater();
     m_filterModel = new CollectionSortFilterProxyModel( this );
     m_filterModel->setSourceModel( model );
 
@@ -105,10 +107,8 @@ CollectionTreeView::setModel( QAbstractItemModel *model )
 
 CollectionTreeView::~CollectionTreeView()
 {
-    DEBUG_BLOCK
-
-    delete m_treeModel;
-    delete m_filterModel;
+    // we don't own m_treeModel pointer
+    // m_filterModel will get deleted by QObject parentship
 }
 
 void

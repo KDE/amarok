@@ -95,6 +95,7 @@ CollectionWidget::Private::view( CollectionWidget::ViewMode mode )
             PrettyTreeDelegate *delegate = new PrettyTreeDelegate( v );
             v->setItemDelegate( delegate );
             CollectionTreeItemModelBase *multiModel = new CollectionTreeItemModel( QList<CategoryId::CatMenuId>() );
+            multiModel->setParent( stack );
             v->setModel( multiModel );
             treeView = v;
         }
@@ -122,6 +123,7 @@ CollectionWidget::Private::view( CollectionWidget::ViewMode mode )
                 aggregateColl->addCollection( coll, CollectionManager::CollectionViewable );
             }
             CollectionTreeItemModelBase *singleModel = new SingleCollectionTreeItemModel( aggregateColl, QList<CategoryId::CatMenuId>() );
+            singleModel->setParent( stack );
             v->setModel( singleModel );
             singleTreeView = v;
         }
