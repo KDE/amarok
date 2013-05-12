@@ -318,9 +318,6 @@ MainWindow::init()
 
     // we must filter ourself to get mouseevents on the "splitter" - what is us, but filtered by the layouter
     installEventFilter( this );
-
-    // restore the layout on app start
-    restoreLayout();
 }
 
 
@@ -423,31 +420,8 @@ MainWindow::showDock( AmarokDockId dockId )
 }
 
 void
-MainWindow::saveLayout()  //SLOT
-{
-    DEBUG_BLOCK
-
-    // Do not save the layout if the main window is hidden
-    // Qt takes widgets out of the layout if they're not visible.
-    // So this is not going to work. Also see bug 244583
-    if (!isVisible())
-        return;
-
-    //save layout to file. Does not go into to rc as it is binary data.
-    QFile file( Amarok::saveLocation() + "layout" );
-
-    if( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-    {
-        file.write( saveState( LAYOUT_VERSION ) );
-        file.flush();
-    }
-}
-
-void
 MainWindow::closeEvent( QCloseEvent *e )
 {
-    saveLayout();
-
 #ifdef Q_WS_MAC
     Q_UNUSED( e );
     hide();
@@ -476,9 +450,6 @@ bool
 MainWindow::queryExit()
 {
     DEBUG_BLOCK
-
-    // save layout on app exit
-    saveLayout();
 
     return true; // KMainWindow API expects us to always return true
 }
@@ -1318,71 +1289,6 @@ MainWindow::setLayoutLocked( bool locked )
     AmarokConfig::setLockLayout( locked );
     AmarokConfig::self()->writeConfig();
 }
-
-void
-MainWindow::restoreLayout()
-{
-    DEBUG_BLOCK
-
-    // Do not restore the layout if the main window is hidden
-    // Qt takes widgets out of the layout if they're not visible.
-    // So this is not going to work. Also see bug 244583
-    if (!isVisible())
-        return;
-
-    QFile file( Amarok::saveLocation() + "layout" );
-    QByteArray layout;
-    if( file.open( QIODevice::ReadOnly ) )
-    {
-        layout = file.readAll();
-        file.close();
-    }
-
-    if( !restoreState( layout, LAYOUT_VERSION ) )
-    {
-        //since no layout has been loaded, we know that the items are all placed next to each other in the main window
-        //so get the combined size of the widgets, as this is the space we have to play with. Then figure out
-        //how much to give to each. Give the context view any pixels leftover from the integer division.
-
-        //int totalWidgetWidth = m_browsersDock->width() + m_contextView->width() + m_playlistDock->width();
-        int totalWidgetWidth = contentsRect().width();
-
-        //get the width of the splitter handles, we need to subtract these...
-        const int splitterHandleWidth = style()->pixelMetric( QStyle::PM_DockWidgetSeparatorExtent, 0, 0 );
-        debug() << "splitter handle widths " << splitterHandleWidth;
-
-        totalWidgetWidth -= ( splitterHandleWidth * 2 );
-
-        debug() << "mainwindow width" <<  contentsRect().width();
-        debug() << "totalWidgetWidth" <<  totalWidgetWidth;
-
-        const int widgetWidth = totalWidgetWidth / 3;
-        const int leftover = totalWidgetWidth - 3*widgetWidth;
-
-        //We need to set fixed widths initially, just until the main window has been properly laid out. As soon as this has
-        //happened, we will unlock these sizes again so that the elements can be resized by the user.
-        const int mins[3] = { m_browserDock.data()->minimumWidth(), m_contextDock.data()->minimumWidth(), m_playlistDock.data()->minimumWidth() };
-        const int maxs[3] = { m_browserDock.data()->maximumWidth(), m_contextDock.data()->maximumWidth(), m_playlistDock.data()->maximumWidth() };
-
-        m_browserDock.data()->setFixedWidth( widgetWidth );
-        m_contextDock.data()->setFixedWidth( widgetWidth + leftover );
-        m_playlistDock.data()->setFixedWidth( widgetWidth );
-        this->layout()->activate();
-
-        m_browserDock.data()->setMinimumWidth( mins[0] ); m_browserDock.data()->setMaximumWidth( maxs[0] );
-        m_contextDock.data()->setMinimumWidth( mins[1] ); m_contextDock.data()->setMaximumWidth( maxs[1] );
-        m_playlistDock.data()->setMinimumWidth( mins[2] ); m_playlistDock.data()->setMaximumWidth( maxs[2] );
-    }
-
-    // Ensure that only one toolbar is visible
-    if( !m_mainToolbar.data()->isHidden() && !m_slimToolbar.data()->isHidden() )
-        m_slimToolbar.data()->hide();
-
-    // Ensure that we don't end up without any toolbar (can happen after upgrading)
-    if( m_mainToolbar.data()->isHidden() && m_slimToolbar.data()->isHidden() )
-        m_mainToolbar.data()->show();
-}
-
 
 bool
 MainWindow::playAudioCd()
