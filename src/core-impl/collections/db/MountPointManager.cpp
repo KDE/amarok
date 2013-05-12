@@ -49,6 +49,7 @@ MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
     {
         debug() << "Dynamic Collection deactivated in amarokrc, not loading plugins, not connecting signals";
         m_ready = true;
+        handleMusicLocation();
         return;
     }
 
@@ -58,6 +59,34 @@ MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
     createDeviceFactories();
 }
 
+void
+MountPointManager::handleMusicLocation()
+{
+    // For users who were using QDesktopServices::MusicLocation exclusively up
+    // to v2.2.2, which did not store the location into config.
+    // and also for versions up to 2.7-git that did wrote the Use MusicLocation entry
+
+    KConfigGroup folders = Amarok::config( "Collection Folders" );
+    const QString entryKey( "Use MusicLocation" );
+    if( !folders.hasKey( entryKey ) )
+        return; // good, already solved, nothing to do
+
+    // write the music location as another collection folder in this case
+    if( folders.readEntry( entryKey, false ) )
+    {
+        const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
+        const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
+        const QDir dir( musicDir );
+        if( dir.exists() && dir.isReadable() )
+        {
+            QStringList currentFolders = collectionFolders();
+            if( !currentFolders.contains( musicDir ) )
+                setCollectionFolders( currentFolders << musicDir );
+        }
+    }
+
+    folders.deleteEntry( entryKey ); // get rid of it for good
+}
 
 MountPointManager::~MountPointManager()
 {
@@ -96,6 +125,7 @@ MountPointManager::createDeviceFactories()
             createHandlerFromDevice( device, device.udi() );
     }
     m_ready = true;
+    handleMusicLocation();
 }
 
 int
@@ -240,7 +270,7 @@ MountPointManager::getMountedDeviceIds() const
 QStringList
 MountPointManager::collectionFolders() const
 {
-    if (!m_ready)
+    if( !m_ready )
     {
         debug() << "requested collectionFolders from MountPointManager that is not yet ready";
         return QStringList();
@@ -263,24 +293,6 @@ MountPointManager::collectionFolders() const
         }
     }
 
-    // For users who were using QDesktopServices::MusicLocation exclusively up
-    // to v2.2.2, which did not store the location into config.
-    const KConfigGroup generalConfig = KGlobal::config()->group( "General" );
-    if( result.isEmpty() && folders.readEntry( "Use MusicLocation", true )
-                         && !generalConfig.readEntry( "First Run", true ) )
-    {
-        const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
-        const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
-        const QDir dir( musicDir );
-        bool useMusicLocation( false );
-        if( dir.exists() && dir.isReadable() )
-        {
-            result << musicDir;
-            const_cast<MountPointManager*>(this)->setCollectionFolders( result );
-            useMusicLocation = true;
-        }
-        folders.writeEntry( "Use MusicLocation", useMusicLocation );
-    }
     return result;
 }
 

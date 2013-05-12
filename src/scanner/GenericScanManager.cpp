@@ -89,7 +89,8 @@ GenericScanManager::requestScan( QList<KUrl> directories, ScanType type )
         scanDirsSet << path;
     }
 
-    if( scanDirsSet.isEmpty() )
+    // we cannot skip the scan even for empty scanDirsSet and non-partial scan, bug 316216
+    if( scanDirsSet.isEmpty() && type == PartialUpdateScan )
         return; // nothing to do
 
     m_scannerJob = new GenericScannerJob( this, scanDirsSet.toList(), type );

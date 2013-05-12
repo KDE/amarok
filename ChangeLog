@@ -52,6 +52,8 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * Fix inability to reverse "Use Music Location" decision and inability to clear
+     database once all collection directories have been unset. (BR 316216)
    * Fix `amarok --play file.mp3` option didn't actually start playback.
    * Fix frequent crashes on Linux when starting to play a track. (BR 319371)
    * Reason why a particular track is not playable is now shown in playlist tooltip; patch
