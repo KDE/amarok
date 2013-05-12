@@ -191,6 +191,13 @@ private:
     void createDeviceFactories();
 
     /**
+     * Old Amarok versions used to have "Use MusicLocation" config option which caused
+     * problems (bug 316216). This method converts out of it and needs to be run after
+     * MountPointManager has initialized.
+     */
+    void handleMusicLocation();
+
+    /**
      * checks whether a medium identified by its unique database id is currently mounted.
      * Note: does not handle deviceId = -1! It only checks real devices
      * @param deviceId the mediums unique id

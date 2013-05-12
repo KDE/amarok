@@ -196,9 +196,6 @@ ScanManager::startScanner()
 {
     QMutexLocker locker( &m_mutex );
 
-    if( !m_fullScanRequested && m_scanDirsRequested.isEmpty() && !m_importRequested )
-        return; // nothing to do
-
     if( isRunning() )
     {
         debug() << "scanner already running";
@@ -229,6 +226,10 @@ ScanManager::startScanner()
             scanType = ScanResultProcessor::UpdateScan;
         else
             scanType = ScanResultProcessor::PartialUpdateScan;
+
+        // we cannot skip the scan even for empty scanDirsSet and non-partial scan, bug 316216
+        if( m_scanDirsRequested.isEmpty() && scanType == ScanResultProcessor::PartialUpdateScan )
+            return;
 
         m_scanner = new ScannerJob( this, m_collection, scanType,
                                     m_scanDirsRequested.toList() );

@@ -752,33 +752,29 @@ void App::handleFirstRun()
     int result = KMessageBox::No;
     if( dir.exists() && dir.isReadable() )
     {
-        result = KMessageBox::questionYesNoCancel(
-            mainWindow(),
-            i18n( "A music path, %1, is set in System Settings.\nWould you like to use that as a collection folder?", musicDir )
-            );
+        result = KMessageBox::questionYesNoCancel( mainWindow(), i18n( "A music path, "
+                "%1, is set in System Settings.\nWould you like to use that as a "
+                "collection folder?", musicDir ) );
     }
 
-    KConfigGroup folderConf = Amarok::config( "Collection Folders" );
-    bool useMusicLocation( false );
     switch( result )
     {
-    case KMessageBox::Yes:
-        if( CollectionManager::instance()->primaryCollection() )
+        case KMessageBox::Yes:
         {
-            CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
-            CollectionManager::instance()->startFullScan();
-            useMusicLocation = true;
+            Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
+            if( coll )
+            {
+                coll->setProperty( "collectionFolders", QStringList() << musicDir );
+                CollectionManager::instance()->startFullScan();
+            }
+            break;
         }
-        break;
-
-    case KMessageBox::No:
-        slotConfigAmarok( "CollectionConfig" );
-        break;
-
-    default:
-        break;
+        case KMessageBox::No:
+            slotConfigAmarok( "CollectionConfig" );
+            break;
+        default:
+            break;
     }
-    folderConf.writeEntry( "Use MusicLocation", useMusicLocation );
     config.writeEntry( "First Run", false );
 }
 
