@@ -72,9 +72,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         SqlRegistry* registry() const;
         SqlStorage* sqlStorage() const;
 
-        /** Returns true if the directory is already known in the database. */
-        virtual bool isDirInCollection( const QString &path );
-
         /** Every collection has this function. */
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
 

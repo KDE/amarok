@@ -340,33 +340,19 @@ SqlCollection::sqlStorage() const
 }
 
 bool
-SqlCollection::isDirInCollection( const QString &p )
-{
-    QString path = p;
-    // In the database all directories have a trailing slash, so we must add that
-    if( !path.endsWith( '/' ) )
-        path += '/';
-
-    const int deviceid = mountPointManager()->getIdForUrl( path );
-    const QString rpath = mountPointManager()->getRelativePath( deviceid, path );
-
-    const QStringList values =
-            sqlStorage()->query( QString( "SELECT changedate FROM directories WHERE dir = '%2' AND deviceid = %1;" )
-            .arg( QString::number( deviceid ), sqlStorage()->escape( rpath ) ) );
-
-    return !values.isEmpty();
-}
-
-bool
 SqlCollection::possiblyContainsTrack( const KUrl &url ) const
 {
-    // what about uidUrlProtocol?
-    foreach( const QString &folder, collectionFolders() )
+    if( url.isLocalFile() )
     {
-        if ( url.path().contains( folder ) )
-            return true;
+        foreach( const QString &folder, collectionFolders() )
+        {
+            if( KUrl( folder ).isParentOf( url ) )
+                return true;
+        }
+        return false;
     }
-    return url.protocol() == "file" || url.protocol() == uidUrlProtocol();
+    else
+        return url.protocol() == uidUrlProtocol();
 }
 
 Meta::TrackPtr
