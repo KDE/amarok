@@ -25,6 +25,7 @@
 #include <QFileInfo>
 #include <QtDebug>
 
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefile.h>

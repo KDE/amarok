@@ -23,6 +23,7 @@
 #include "FileType.h"
 #include "amarokshared_export.h"
 
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #include <fileref.h>
 #include <tag.h>

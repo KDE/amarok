@@ -21,6 +21,7 @@
 #include "SafeFileSaver.h"
 
 //Taglib
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #include <apetag.h>
 #include <fileref.h>

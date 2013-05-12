@@ -22,6 +22,7 @@
 #include <QRegExp>
 #include <QStringList>
 
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #include <fileref.h>
 #include <aifffile.h>
