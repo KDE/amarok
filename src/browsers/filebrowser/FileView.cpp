@@ -26,9 +26,7 @@
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "core/interfaces/Logger.h"
 #include "core/playlists/PlaylistFormat.h"
-#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"
@@ -601,13 +599,6 @@ FileView::slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modif
     KIO::Job *job = deleting
         ? static_cast<KIO::Job*>( KIO::del( urls, KIO::HideProgressInfo ) )
         : static_cast<KIO::Job*>( KIO::trash( urls, KIO::HideProgressInfo ) );
-
-    if( job )
-    {
-        QString statusText = i18ncp( "@info:status", "Moving to trash: 1 file",
-                                     "Moving to trash: %1 files", urls.count() );
-        Amarok::Components::logger()->newProgressOperation( job, statusText );
-    }
 }
 
 void
