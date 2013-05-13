@@ -44,8 +44,8 @@ public:
     virtual void setTrackNumber( int newTrackNumber );
     virtual void setDiscNumber( int newDiscNumber );
 
-    virtual void beginMetaDataUpdate();
-    virtual void endMetaDataUpdate();
+    virtual void beginUpdate();
+    virtual void endUpdate();
 
 private:
     Meta::TimecodeTrack * m_track;

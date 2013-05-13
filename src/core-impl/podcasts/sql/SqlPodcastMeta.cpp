@@ -425,13 +425,13 @@ SqlPodcastEpisode::writeTagsToFile()
         return false;
 
     debug() << "writing tags for podcast episode " << title() << "to " << m_localUrl.url();
-    ec->beginMetaDataUpdate();
+    ec->beginUpdate();
     ec->setTitle( m_title );
     ec->setAlbum( m_channel->title() );
     ec->setArtist( m_channel->author() );
     ec->setGenre( i18n( "Podcast" ) );
     ec->setYear( m_pubDate.date().year() );
-    ec->endMetaDataUpdate();
+    ec->endUpdate();
 
     notifyObservers();
     return true;

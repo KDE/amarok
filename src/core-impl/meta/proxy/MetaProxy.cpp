@@ -58,8 +58,8 @@ class EditCapabilityProxy : public Meta::TrackEditor
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
 
-        virtual void beginMetaDataUpdate() {}  // Nothing to do, we cache everything
-        virtual void endMetaDataUpdate() {}
+        virtual void beginUpdate() {}  // Nothing to do, we cache everything
+        virtual void endUpdate() {}
 
     private:
         KSharedPtr<MetaProxy::Track> m_track;

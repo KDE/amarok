@@ -89,8 +89,8 @@ public:
     virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
     virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-    void beginMetaDataUpdate();
-    void endMetaDataUpdate();
+    void beginUpdate();
+    void endUpdate();
 
     //TimecodeTrack specific methods
     void setAlbum( TimecodeAlbumPtr album );

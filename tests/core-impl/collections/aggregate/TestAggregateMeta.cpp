@@ -445,8 +445,8 @@ public:
     virtual void setTrackNumber( int newTrackNumber ) { Q_UNUSED( newTrackNumber ) };
     virtual void setDiscNumber( int newDiscNumber ) { Q_UNUSED( newDiscNumber ) };
     virtual void setBpm( const qreal newBpm ) { Q_UNUSED( newBpm ) };
-    virtual void beginMetaDataUpdate() { beginCallCount++; };
-    virtual void endMetaDataUpdate() { endCallcount++; };
+    virtual void beginUpdate() { beginCallCount++; };
+    virtual void endUpdate() { endCallcount++; };
 
     int beginCallCount;
     int endCallcount;
@@ -484,13 +484,13 @@ TestAggregateMeta::testEditableCapabilityOnMultipleTracks()
 
     QCOMPARE( cap1->beginCallCount, 0 );
     QCOMPARE( cap1->beginCallCount, 0 );
-    editCap->beginMetaDataUpdate();
+    editCap->beginUpdate();
     QCOMPARE( cap1->beginCallCount, 1 );
     QCOMPARE( cap1->beginCallCount, 1 );
 
     QCOMPARE( cap1->endCallcount, 0 );
     QCOMPARE( cap2->endCallcount, 0 );
-    editCap->endMetaDataUpdate();
+    editCap->endUpdate();
     QCOMPARE( cap1->endCallcount, 1 );
     QCOMPARE( cap2->endCallcount, 1 );
 

@@ -45,14 +45,14 @@ public:
         , m_ec( ecs ) {}
     virtual ~AggregateEditCapability() { qDeleteAll( m_ec ); }
 
-    void beginMetaDataUpdate()
+    void beginUpdate()
     {
         m_batchMode = true;
-        foreach( Meta::TrackEditor *ec, m_ec ) ec->beginMetaDataUpdate();
+        foreach( Meta::TrackEditor *ec, m_ec ) ec->beginUpdate();
     }
-    void endMetaDataUpdate()
+    void endUpdate()
     {
-        foreach( Meta::TrackEditor *ec, m_ec ) ec->endMetaDataUpdate();
+        foreach( Meta::TrackEditor *ec, m_ec ) ec->endUpdate();
         m_batchMode = false;
         QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) );
     }

@@ -95,14 +95,14 @@ TimecodeEditCapability::setDiscNumber( int newDiscNumber )
 }
 
 void
-TimecodeEditCapability::beginMetaDataUpdate()
+TimecodeEditCapability::beginUpdate()
 {
-    m_track->beginMetaDataUpdate();
+    m_track->beginUpdate();
 }
 
 void
-TimecodeEditCapability::endMetaDataUpdate()
+TimecodeEditCapability::endUpdate()
 {
-    m_track->endMetaDataUpdate();
+    m_track->endUpdate();
 }
 

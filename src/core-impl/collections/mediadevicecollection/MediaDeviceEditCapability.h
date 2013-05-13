@@ -47,13 +47,13 @@ class MediaDeviceEditCapability : public Meta::TrackEditor
         virtual void setTrackNumber( int newTrackNumber );
         virtual void setDiscNumber( int newDiscNumber );
 
-        virtual void beginMetaDataUpdate();
-        virtual void endMetaDataUpdate();
+        virtual void beginUpdate();
+        virtual void endUpdate();
 
     private:
         /**
          * Tells the underlying track to write back changes if and only if current update
-         * is not a part of a larger batch (initiated by beginMetaDataUpdate())
+         * is not a part of a larger batch (initiated by beginUpdate())
          */
         void commitIfInNonBatchUpdate();
 

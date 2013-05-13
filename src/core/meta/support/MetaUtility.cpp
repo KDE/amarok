@@ -261,7 +261,7 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
     QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
     if( !ec )
         return;
-    ec->beginMetaDataUpdate();
+    ec->beginUpdate();
     QString title = metadata.contains( Meta::Field::TITLE ) ?
                             metadata.value( Meta::Field::TITLE ).toString() : QString();
     ec->setTitle( title );
@@ -292,7 +292,7 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
                             metadata.value( Meta::Field::YEAR ).toInt() : 0;
     ec->setYear( year );
 
-    ec->endMetaDataUpdate();
+    ec->endUpdate();
 }
 
 QString

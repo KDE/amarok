@@ -25,9 +25,8 @@ namespace Meta
     /**
      * Capability to edit meta-data of a track.
      *
-     * If you are calling more than one setter method, tou should call
-     * beginMetaDataUpdate() before calling any setter methods and endMetaDataUpdate()
-     * when you're done.
+     * If you are calling more than one setter method, you should call beginUpdate()
+     * before calling any setter methods and endUpdate() when you're done.
      */
     class AMAROK_CORE_EXPORT TrackEditor : public Capabilities::Capability
     {
@@ -52,14 +51,14 @@ namespace Meta
 
             /**
              * The track object should not store changed meta data immediately but cache
-             * the changes until endMetaDataUpdate() is called
+             * the changes until endUpdate() is called
              */
-            virtual void beginMetaDataUpdate() = 0;
+            virtual void beginUpdate() = 0;
 
             /**
              * All meta data has been updated and the object should commit the changes
              */
-            virtual void endMetaDataUpdate() = 0;
+            virtual void endUpdate() = 0;
     };
 }
 

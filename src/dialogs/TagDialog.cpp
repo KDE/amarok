@@ -1336,7 +1336,7 @@ TagDialog::saveTags()
                 continue;
             }
 
-            ec->beginMetaDataUpdate();
+            ec->beginUpdate();
             if( data.contains( Meta::Field::TITLE ) )
                 ec->setTitle( data.value( Meta::Field::TITLE ).toString() );
             if( data.contains( Meta::Field::COMMENT ) )
@@ -1360,7 +1360,7 @@ TagDialog::saveTags()
             if( data.contains( Meta::Field::ALBUMARTIST ) )
                 ec->setAlbumArtist( data.value( Meta::Field::ALBUMARTIST ).toString() );
 
-            ec->endMetaDataUpdate();
+            ec->endUpdate();
 
             // note: the track should by itself emit a collectionUpdated signal if needed
         }

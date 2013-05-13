@@ -42,8 +42,8 @@ namespace IpodMeta
             virtual void setDiscNumber( int newDiscNumber );
             virtual void setBpm( const qreal newBpm );
 
-            virtual void beginMetaDataUpdate();
-            virtual void endMetaDataUpdate();
+            virtual void beginUpdate();
+            virtual void endUpdate();
 
         private:
             KSharedPtr<Track> m_track;

@@ -98,13 +98,13 @@ EditCapability::setDiscNumber( int newDiscNumber )
 }
 
 void
-EditCapability::beginMetaDataUpdate()
+EditCapability::beginUpdate()
 {
     m_track->beginUpdate();
 }
 
 void
-EditCapability::endMetaDataUpdate()
+EditCapability::endUpdate()
 {
     m_track->endUpdate();
 }

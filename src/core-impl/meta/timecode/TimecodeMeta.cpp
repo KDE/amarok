@@ -235,13 +235,13 @@ TimecodeTrack::setDiscNumber( int newDiscNumber )
     m_fields.insert( DISCNUMBER_UPDATED, QString::number( newDiscNumber ) );
 }
 
-void TimecodeTrack::beginMetaDataUpdate()
+void TimecodeTrack::beginUpdate()
 {
     m_updatedFields = 0;
     m_fields.clear();
 }
 
-void TimecodeTrack::endMetaDataUpdate()
+void TimecodeTrack::endUpdate()
 {
 
     bool updateCover = false;

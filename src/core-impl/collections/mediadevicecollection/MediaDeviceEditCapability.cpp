@@ -108,13 +108,13 @@ MediaDeviceEditCapability::setDiscNumber( int newDiscNumber )
 }
 
 void
-MediaDeviceEditCapability::beginMetaDataUpdate()
+MediaDeviceEditCapability::beginUpdate()
 {
     m_inBatchUpdate = true;
 }
 
 void
-MediaDeviceEditCapability::endMetaDataUpdate()
+MediaDeviceEditCapability::endUpdate()
 {
     m_inBatchUpdate = false;
     m_track->commitChanges();

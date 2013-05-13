@@ -68,8 +68,8 @@ class EditCapabilityImpl : public Meta::TrackEditor
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-        virtual void beginMetaDataUpdate() { m_track->beginUpdate(); }
-        virtual void endMetaDataUpdate() { m_track->endUpdate(); }
+        virtual void beginUpdate() { m_track->beginUpdate(); }
+        virtual void endUpdate() { m_track->endUpdate(); }
 
     private:
         KSharedPtr<MetaFile::Track> m_track;
