@@ -17,7 +17,7 @@
 #ifndef MEDIADEVICE_EDIT_CAPABILITY_H
 #define MEDIADEVICE_EDIT_CAPABILITY_H
 
-#include "core/capabilities/EditCapability.h"
+#include "core/meta/TrackEditor.h"
 #include "MediaDeviceMeta.h"
 
 namespace Meta
@@ -27,7 +27,7 @@ namespace Meta
  * This capability is different from other media device capabilities - it implements core
  * EditCapability and has nothing to do with Hander::Capability
  */
-class MediaDeviceEditCapability : public Capabilities::EditCapability
+class MediaDeviceEditCapability : public Meta::TrackEditor
 {
     Q_OBJECT
 

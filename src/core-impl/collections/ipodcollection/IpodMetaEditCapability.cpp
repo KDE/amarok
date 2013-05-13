@@ -22,7 +22,7 @@
 using namespace IpodMeta;
 
 EditCapability::EditCapability( const KSharedPtr<Track> &track )
-    : Capabilities::EditCapability()
+    : Meta::TrackEditor()
     , m_track( track )
 {
 }

@@ -19,7 +19,7 @@
 #include "AggregateMeta.h"
 
 #include "SvgHandler.h"
-#include "core/capabilities/EditCapability.h"
+#include "core/meta/TrackEditor.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/aggregate/AggregateCollection.h"
@@ -32,14 +32,14 @@
 
 namespace Capabilities {
 
-#define FORWARD( call ) { foreach( Capabilities::EditCapability *ec, m_ec ) { ec->call; } \
+#define FORWARD( call ) { foreach( Meta::TrackEditor *ec, m_ec ) { ec->call; } \
                             if( !m_batchMode ) QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) ); }
 
-class AggregateEditCapability : public Capabilities::EditCapability
+class AggregateEditCapability : public Meta::TrackEditor
 {
 public:
-    AggregateEditCapability( Collections::AggregateCollection *coll, const QList<Capabilities::EditCapability*> &ecs )
-        : Capabilities::EditCapability()
+    AggregateEditCapability( Collections::AggregateCollection *coll, const QList<Meta::TrackEditor*> &ecs )
+        : Meta::TrackEditor()
         , m_batchMode( false )
         , m_collection( coll )
         , m_ec( ecs ) {}
@@ -48,11 +48,11 @@ public:
     void beginMetaDataUpdate()
     {
         m_batchMode = true;
-        foreach( Capabilities::EditCapability *ec, m_ec ) ec->beginMetaDataUpdate();
+        foreach( Meta::TrackEditor *ec, m_ec ) ec->beginMetaDataUpdate();
     }
     void endMetaDataUpdate()
     {
-        foreach( Capabilities::EditCapability *ec, m_ec ) ec->endMetaDataUpdate();
+        foreach( Meta::TrackEditor *ec, m_ec ) ec->endMetaDataUpdate();
         m_batchMode = false;
         QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) );
     }
@@ -69,7 +69,7 @@ public:
     void setYear( int newYear ) { FORWARD( setYear( newYear ) ) }
     bool isEditable() const
     {
-        foreach( Capabilities::EditCapability *ec, m_ec )
+        foreach( Meta::TrackEditor *ec, m_ec )
         {
             if( !ec->isEditable() )
                 return false;
@@ -79,7 +79,7 @@ public:
 private:
     bool m_batchMode;
     Collections::AggregateCollection *m_collection;
-    QList<Capabilities::EditCapability*> m_ec;
+    QList<Meta::TrackEditor*> m_ec;
 };
 
 #undef FORWARD
@@ -596,10 +596,10 @@ AggregateTrack::createCapabilityInterface( Capabilities::Capability::Type type )
         {
         case Capabilities::Capability::Editable:
             {
-                QList<Capabilities::EditCapability*> ecs;
+                QList<Meta::TrackEditor*> ecs;
                 foreach( Meta::TrackPtr track, m_tracks )
                 {
-                    Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+                    Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
                     if( ec )
                         ecs << ec;
                     else

@@ -17,7 +17,7 @@
 
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
-#include "core/capabilities/EditCapability.h"
+#include "core/capabilities/CollectionScanCapability.h"
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/interfaces/MetaCapability.h"
 
@@ -90,7 +90,7 @@ TestMetaCapability::testHas()
     QVERIFY( metaCapability->has<Capabilities::BookmarkThisCapability>() == true );
 
     // these should not
-    QVERIFY( metaCapability->has<Capabilities::EditCapability>() == false );
+    QVERIFY( metaCapability->has<Capabilities::CollectionScanCapability>() == false );
     QVERIFY( metaCapability->has<Capabilities::MultiSourceCapability>() == false );
 }
 
@@ -106,6 +106,6 @@ TestMetaCapability::testCreate()
     QVERIFY( metaCapability->create<Capabilities::BookmarkThisCapability>() == MetaCapabilityMock::bookmarkThisCapability );
 
     // these should not
-    QVERIFY( metaCapability->create<Capabilities::EditCapability>() == 0 );
+    QVERIFY( metaCapability->create<Capabilities::CollectionScanCapability>() == 0 );
     QVERIFY( metaCapability->create<Capabilities::MultiSourceCapability>() == 0 );
 }

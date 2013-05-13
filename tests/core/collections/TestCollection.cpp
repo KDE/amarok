@@ -17,7 +17,6 @@
 
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/collections/Collection.h"
 #include "core/collections/CollectionLocation.h"
 

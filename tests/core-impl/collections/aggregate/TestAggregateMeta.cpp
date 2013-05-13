@@ -16,10 +16,9 @@
 
 #include "TestAggregateMeta.h"
 
-#include "core/capabilities/Capability.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/capabilities/OrganiseCapability.h"
 #include "core/meta/Meta.h"
+#include "core/meta/TrackEditor.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/aggregate/AggregateCollection.h"
 #include "core-impl/collections/aggregate/AggregateMeta.h"
@@ -429,10 +428,10 @@ TestAggregateMeta::testCreateCapabilityOnSingleYear()
     delete cap;
 }
 
-class MyEditCapability : public Capabilities::EditCapability
+class MyEditCapability : public Meta::TrackEditor
 {
 public:
-    MyEditCapability() : Capabilities::EditCapability()
+    MyEditCapability() : Meta::TrackEditor()
             , beginCallCount(0)
             , endCallcount(0) {}
     virtual bool isEditable() const { return true; }
@@ -481,7 +480,7 @@ TestAggregateMeta::testEditableCapabilityOnMultipleTracks()
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::Editable ) );
 
-    Capabilities::EditCapability *editCap = cut.create<Capabilities::EditCapability>();
+    Meta::TrackEditor *editCap = cut.create<Meta::TrackEditor>();
     QVERIFY( editCap );
     QVERIFY( editCap->isEditable() );
 

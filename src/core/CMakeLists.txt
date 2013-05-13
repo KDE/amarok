@@ -15,6 +15,7 @@ set(libcore_meta_SRCS
     meta/Meta.cpp
     meta/Observer.cpp
     meta/Statistics.cpp
+    meta/TrackEditor.cpp
     meta/support/MetaConstants.cpp
     meta/support/MetaUtility.cpp
     meta/support/MetaKeys.cpp
@@ -34,7 +35,6 @@ set(libcore_capabilities_SRCS
     capabilities/BoundedPlaybackCapability.cpp
     capabilities/CollectionScanCapability.cpp
     capabilities/CollectionImportCapability.cpp
-    capabilities/EditCapability.cpp
     capabilities/FindInSourceCapability.cpp
     capabilities/MultiPlayableCapability.cpp
     capabilities/MultiSourceCapability.cpp

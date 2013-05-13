@@ -18,12 +18,12 @@
 #define TIMECODEEDITCAPABILITY_H
 
 #include "amarok_export.h"
-#include "core/capabilities/EditCapability.h"
+#include "core/meta/TrackEditor.h"
 #include "core-impl/meta/timecode/TimecodeMeta.h"
 
 namespace Capabilities {
 
-class AMAROK_EXPORT TimecodeEditCapability : public EditCapability
+class AMAROK_EXPORT TimecodeEditCapability : public Meta::TrackEditor
 {
 Q_OBJECT
 public:

@@ -30,7 +30,6 @@
 #include "context/widgets/TextScrollingWidget.h"
 #include "context/widgets/DropPixmapItem.h"
 #include "context/widgets/RecentlyPlayedListWidget.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
@@ -38,6 +37,7 @@
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
+#include "core/meta/TrackEditor.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverViewDialog.h"
@@ -764,9 +764,9 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
         actions << btc->bookmarkAction();
     }
 
-    if( m_showEditTrackDetailsAction && track->has<EditCapability>() )
+    if( m_showEditTrackDetailsAction && track->has<Meta::TrackEditor>() )
     {
-        QScopedPointer<EditCapability> ec( track->create<EditCapability>() );
+        QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
         if( ec && ec->isEditable() )
         {
             QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),

@@ -21,16 +21,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "TagDialog"
-
 #include "TagDialog.h"
 
 #include "MainWindow.h"
 #include "SvgHandler.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/collections/QueryMaker.h"
 #include "core/interfaces/Logger.h"
 #include "core/meta/Statistics.h"
+#include "core/meta/TrackEditor.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
@@ -47,6 +45,7 @@
 #include <KMenu>
 #include <KRun>
 
+#define DEBUG_PREFIX "TagDialog"
 
 namespace Meta {
 namespace Field {
@@ -1249,8 +1248,8 @@ TagDialog::setControlsAccessability()
     bool editable = true;
     if( m_currentTrack )
     {
-        QScopedPointer<Capabilities::EditCapability> ec(
-            m_currentTrack->create<Capabilities::EditCapability>() );
+        QScopedPointer<Meta::TrackEditor> ec(
+            m_currentTrack->create<Meta::TrackEditor>() );
         editable = ec && ec->isEditable();
     }
 
@@ -1334,7 +1333,7 @@ TagDialog::saveTags()
 
             saveLabels( track, data.value( Meta::Field::LABELS ).toStringList() );
 
-            QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
+            QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
             if( !ec )
             {
                 debug() << "Track does not have Capabilities::EditCapability. Aborting loop.";

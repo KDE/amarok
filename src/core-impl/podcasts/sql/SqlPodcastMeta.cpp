@@ -19,14 +19,14 @@
 #include "amarokurls/BookmarkMetaActions.h"
 #include "amarokurls/PlayUrlRunner.h"
 #include "core/capabilities/ActionsCapability.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core/meta/TrackEditor.h"
+#include "core/support/Debug.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/podcasts/sql/SqlPodcastProvider.h"
-#include "core/support/Debug.h"
 
 #include <QDate>
 #include <QFile>
@@ -336,9 +336,8 @@ SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type typ
 bool
 SqlPodcastEpisode::isEditable() const
 {
-     using namespace Capabilities;
      Meta::TrackPtr file = m_localFile; // prevent discarding const qualifier
-     QScopedPointer<EditCapability> ec( file ? file->create<EditCapability>() : 0 );
+     QScopedPointer<Meta::TrackEditor> ec( file ? file->create<Meta::TrackEditor>() : 0 );
      return ec && ec->isEditable();
 }
 
@@ -374,8 +373,7 @@ SqlPodcastEpisode::setTitle( const QString &title )
 {
     m_title = title;
 
-    using namespace Capabilities;
-    QScopedPointer<EditCapability> ec( m_localFile ? m_localFile->create<EditCapability>() : 0 );
+    QScopedPointer<Meta::TrackEditor> ec( m_localFile ? m_localFile->create<Meta::TrackEditor>() : 0 );
     if( ec && ec->isEditable() )
     {
         ec->setTitle( title );
@@ -424,8 +422,7 @@ SqlPodcastEpisode::writeTagsToFile()
     if( !m_localFile )
         return false;
 
-    using namespace Capabilities;
-    QScopedPointer<EditCapability> ec( m_localFile->create<EditCapability>() );
+    QScopedPointer<Meta::TrackEditor> ec( m_localFile->create<Meta::TrackEditor>() );
     if( !ec )
         return false;
 

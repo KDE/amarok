@@ -18,7 +18,7 @@
 
 #include "SvgHandler.h"
 #include "core/capabilities/ActionsCapability.h"
-#include "core/capabilities/EditCapability.h"
+#include "core/meta/TrackEditor.h"
 #include "core/support/Debug.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"

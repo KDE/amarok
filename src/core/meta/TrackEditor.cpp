@@ -14,11 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core/capabilities/EditCapability.h"
+#include "TrackEditor.h"
 
-Capabilities::EditCapability::~EditCapability()
+Meta::TrackEditor::~TrackEditor()
 {
     //nothing to do
 }
-
-#include "EditCapability.moc"

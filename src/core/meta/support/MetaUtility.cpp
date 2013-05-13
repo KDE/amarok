@@ -16,11 +16,11 @@
 
 #include "core/meta/support/MetaUtility.h"
 
-#include "core/support/Debug.h"
+#include "core/capabilities/Capability.h"
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
-#include "core/capabilities/Capability.h"
-#include "core/capabilities/EditCapability.h"
+#include "core/meta/TrackEditor.h"
+#include "core/support/Debug.h"
 
 #include <QTime>
 #include <QChar>
@@ -255,10 +255,10 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
 void
 Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
 {
-    if( !track || !track->has<Capabilities::EditCapability>() )
+    if( !track || !track->has<Meta::TrackEditor>() )
         return;
 
-    QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
+    QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
     if( !ec || !ec->isEditable() )
         return;
     ec->beginMetaDataUpdate();

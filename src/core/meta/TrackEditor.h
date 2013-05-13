@@ -14,24 +14,24 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_EDITCAPABILITY_H
-#define AMAROK_EDITCAPABILITY_H
+#ifndef META_TRACKEDITOR_H
+#define META_TRACKEDITOR_H
 
 #include "core/amarokcore_export.h"
 #include "core/capabilities/Capability.h"
 
-namespace Capabilities
+namespace Meta
 {
     /**
      * Capability to edit meta-data of a track. You should call beginMetaDataUpdate()
      * before calling any setter methods and you should call endMetaDataUpdate() after
      * you're done.
      */
-    class AMAROK_CORE_EXPORT EditCapability : public Capabilities::Capability
+    class AMAROK_CORE_EXPORT TrackEditor : public Capabilities::Capability
     {
         Q_OBJECT
         public:
-            virtual ~EditCapability();
+            virtual ~TrackEditor();
 
             static Type capabilityInterfaceType() { return Capabilities::Capability::Editable; }
 
@@ -65,4 +65,4 @@ namespace Capabilities
     };
 }
 
-#endif
+#endif // META_TRACKEDITOR_H

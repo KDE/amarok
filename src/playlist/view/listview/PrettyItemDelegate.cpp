@@ -30,7 +30,7 @@
 #include "SvgHandler.h"
 #include "QStringx.h"
 #include "core/support/Debug.h"
-#include "core/capabilities/EditCapability.h"
+#include "core/meta/TrackEditor.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
@@ -762,7 +762,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
         changeMap.remove( Rating );
     }
 
-    QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
+    QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
     if( !ec || !ec->isEditable() )
         return;
 

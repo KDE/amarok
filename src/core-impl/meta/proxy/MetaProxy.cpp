@@ -17,7 +17,7 @@
 #include "MetaProxy.h"
 
 #include "core/meta/Statistics.h"
-#include "core/capabilities/EditCapability.h"
+#include "core/meta/TrackEditor.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/proxy/MetaProxy_p.h"
 #include "core-impl/meta/proxy/MetaProxy_p.moc"
@@ -39,11 +39,11 @@ class ProxyGenre;
 class ProxyComposer;
 class ProxyYear;
 
-class EditCapabilityProxy : public Capabilities::EditCapability
+class EditCapabilityProxy : public Meta::TrackEditor
 {
     public:
         EditCapabilityProxy( MetaProxy::Track *track )
-            : Capabilities::EditCapability()
+            : Meta::TrackEditor()
             , m_track( track ) {}
 
         virtual bool isEditable() const { return true; }

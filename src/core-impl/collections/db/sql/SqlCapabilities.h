@@ -19,18 +19,14 @@
 #define SQLCAPABILITIES_H
 
 #include "amarok_sqlcollection_export.h"
-
-#include "SqlMeta.h"
-
+#include "amarokurls/PlayUrlRunner.h"
 #include "core/capabilities/Capability.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/OrganiseCapability.h"
-
+#include "core/meta/TrackEditor.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
-
-#include "amarokurls/PlayUrlRunner.h"
+#include "core-impl/collections/db/sql/SqlMeta.h"
 
 /* note: currently SqlTrack has the following capabilities
     EditCapabilityImpl
@@ -46,7 +42,7 @@
 
 namespace Capabilities {
 
-class EditCapabilityImpl : public Capabilities::EditCapability
+class EditCapabilityImpl : public Meta::TrackEditor
 {
     Q_OBJECT
 

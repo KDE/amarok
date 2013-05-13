@@ -19,7 +19,7 @@
 using namespace Meta;
 
 MediaDeviceEditCapability::MediaDeviceEditCapability( MediaDeviceTrack *track )
-    : Capabilities::EditCapability()
+    : Meta::TrackEditor()
     , m_inBatchUpdate( false )
     , m_track( track )
 {

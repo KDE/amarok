@@ -17,21 +17,19 @@ Image*                                                                          
 
 #include "MetaTypeExporter.h"
 
-#include "core/capabilities/EditCapability.h"
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
+#include "core/meta/TrackEditor.h"
 
 #include <QScriptEngine>
 #include <QScriptValue>
 
 #define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );
-#define GET_TRACK_EC( X ) Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() ); \
-Capabilities::EditCapability* ec = track->create<Capabilities::EditCapability>(); \
+#define GET_TRACK_EC( X ) GET_TRACK \
+QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() ); \
 if( ec ) \
 { \
-    ec->beginMetaDataUpdate(); \
     X; \
-    ec->endMetaDataUpdate(); \
 }
 
 MetaTrackPrototype::MetaTrackPrototype( QObject *parent )
@@ -225,7 +223,7 @@ bool
 MetaTrackPrototype::isEditable() const
 {
     GET_TRACK
-    QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
+    QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
     return ( ec && ec->isEditable() );
 }
 

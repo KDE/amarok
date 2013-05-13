@@ -18,12 +18,11 @@
 #define IPODMETAEDITCAPABILITY_H
 
 #include "IpodMeta.h"
-#include "core/capabilities/EditCapability.h"
-
+#include "core/meta/TrackEditor.h"
 
 namespace IpodMeta
 {
-    class EditCapability : public Capabilities::EditCapability
+    class EditCapability : public Meta::TrackEditor
     {
         Q_OBJECT
 

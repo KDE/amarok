@@ -25,9 +25,9 @@
 #include "SvgHandler.h"
 #include "amarokconfig.h"
 #include "browsers/CollectionTreeItem.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/TrackEditor.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
@@ -98,9 +98,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
 
     if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( data ) )
     {
-        if( !track->has<Capabilities::EditCapability>() )
+        if( !track->has<Meta::TrackEditor>() )
             return false;
-        Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+        Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
         if( ec )
         {
             ec->setTitle( value.toString() );
@@ -116,7 +116,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
+                QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
                 if( ec )
                     ec->setAlbum( value.toString() );
             }
@@ -131,7 +131,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+                Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
                 if( ec )
                     ec->setArtist( value.toString() );
                 delete ec;
@@ -147,7 +147,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+                Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
                 if( ec )
                     ec->setGenre( value.toString() );
                 delete ec;
@@ -163,7 +163,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+                Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
                 if( ec )
                     ec->setYear( value.toInt() );
                 delete ec;
@@ -179,7 +179,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+                Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
                 if( ec )
                     ec->setComposer( value.toString() );
                 delete ec;

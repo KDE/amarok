@@ -25,9 +25,9 @@
 #include "amarokurls/PlayUrlRunner.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "core/capabilities/BookmarkThisCapability.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/meta/Meta.h"
+#include "core/meta/TrackEditor.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core/support/Amarok.h"
@@ -48,12 +48,12 @@
 #endif
 using namespace MetaFile;
 
-class EditCapabilityImpl : public Capabilities::EditCapability
+class EditCapabilityImpl : public Meta::TrackEditor
 {
     Q_OBJECT
     public:
         EditCapabilityImpl( MetaFile::Track *track )
-            : Capabilities::EditCapability()
+            : Meta::TrackEditor()
             , m_track( track )
         {}
 
