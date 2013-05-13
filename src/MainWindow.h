@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2002-2009 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2002-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -124,6 +124,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void slotFullScreen();
         void showNotificationPopup();
         void setLayoutLocked( bool locked );
+        void resetLayout();
         void showAbout();
         void showReportBug();
 
@@ -183,13 +184,11 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         QWeakPointer<QMenuBar>  m_menubar;
         QWeakPointer<KMenu>     m_toolsMenu;
         QWeakPointer<KMenu>     m_settingsMenu;
-        QWeakPointer<BrowserDock> m_browserDock;
 #ifdef DEBUG_BUILD_TYPE
         QWeakPointer<NetworkAccessViewer> m_networkViewer;
 #endif // DEBUG_BUILD_TYPE
 
-        QByteArray m_splitterState;
-
+        QWeakPointer<BrowserDock> m_browserDock;
         QWeakPointer<ContextDock> m_contextDock;
         QWeakPointer<Playlist::Dock> m_playlistDock;
 

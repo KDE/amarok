@@ -1,5 +1,5 @@
  /****************************************************************************************
- * Copyright (c) 2002-2009 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2002-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2002 Gabor Lehel <illissius@gmail.com>                                 *
  * Copyright (c) 2002 Nikolaj Hald Nielsen <nhn@kde.org>                                *
@@ -340,7 +340,6 @@ MainWindow::createPopupMenu()
 void
 MainWindow::addViewMenuItems(QMenu* menu)
 {
-    DEBUG_BLOCK
     menu->setTitle( i18nc("@item:inmenu", "&View" ) );
 
     // Layout locking:
@@ -378,6 +377,12 @@ MainWindow::addViewMenuItems(QMenu* menu)
             menu->addAction( action );
         }
     }
+
+    menu->addSeparator();
+
+    QAction *resetAction = new QAction( i18n( "Reset Layout" ), this );
+    connect( resetAction, SIGNAL( triggered() ), this, SLOT( resetLayout() ) );
+    menu->addAction( resetAction );
 }
 
 void
@@ -1288,6 +1293,60 @@ MainWindow::setLayoutLocked( bool locked )
 
     AmarokConfig::setLockLayout( locked );
     AmarokConfig::self()->writeConfig();
+}
+
+void
+MainWindow::resetLayout()
+{
+    DEBUG_BLOCK
+
+    // Store current state, so that we can undo the operation
+    const QByteArray state = saveState();
+
+    { // Remove all dock widgets, then add them again. This resets their state completely.
+        removeDockWidget( m_browserDock.data() );
+        removeDockWidget( m_contextDock.data() );
+        removeDockWidget( m_playlistDock.data() );
+
+        addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
+        addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
+        addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock.data(), Qt::Horizontal );
+
+        m_browserDock.data()->setFloating( false );
+        m_contextDock.data()->setFloating( false );
+        m_playlistDock.data()->setFloating( false );
+
+        m_browserDock.data()->show();
+        m_contextDock.data()->show();
+        m_playlistDock.data()->show();
+    }
+
+    int totalWidgetWidth = contentsRect().width();
+
+    //get the width of the splitter handles, we need to subtract these...
+    const int splitterHandleWidth = style()->pixelMetric( QStyle::PM_DockWidgetSeparatorExtent, 0, 0 );
+
+    totalWidgetWidth -= ( splitterHandleWidth * 2 );
+
+    const int widgetWidth = totalWidgetWidth / 3;
+    const int leftover = totalWidgetWidth - 3 * widgetWidth;
+
+    //We need to set fixed widths initially, just until the main window has been properly laid out. As soon as this has
+    //happened, we will unlock these sizes again so that the elements can be resized by the user.
+    const int mins[3] = { m_browserDock.data()->minimumWidth(), m_contextDock.data()->minimumWidth(), m_playlistDock.data()->minimumWidth() };
+    const int maxs[3] = { m_browserDock.data()->maximumWidth(), m_contextDock.data()->maximumWidth(), m_playlistDock.data()->maximumWidth() };
+
+    m_browserDock.data()->setFixedWidth( widgetWidth * 0.65 );
+    m_contextDock.data()->setFixedWidth( widgetWidth * 1.7 + leftover );
+    m_playlistDock.data()->setFixedWidth( widgetWidth * 0.65 );
+    this->layout()->activate();
+
+    m_browserDock.data()->setMinimumWidth( mins[0] ); m_browserDock.data()->setMaximumWidth( maxs[0] );
+    m_contextDock.data()->setMinimumWidth( mins[1] ); m_contextDock.data()->setMaximumWidth( maxs[1] );
+    m_playlistDock.data()->setMinimumWidth( mins[2] ); m_playlistDock.data()->setMaximumWidth( maxs[2] );
+
+    if( KMessageBox::warningContinueCancel( this, i18n( "Continue using this layout?" ), i18n( "Reset Layout" ) ) == KMessageBox::Cancel )
+        restoreState( state );
 }
 
 bool
