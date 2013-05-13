@@ -564,10 +564,10 @@ FileView::slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modif
     if( indices.isEmpty() )
         return;
 
-    const bool skipTrash = modifiers.testFlag( Qt::ShiftModifier );
+    const bool deleting = modifiers.testFlag( Qt::ShiftModifier );
     QString caption;
     QString labelText;
-    if( skipTrash )
+    if( deleting  )
     {
         caption = i18nc( "@title:window", "Confirm Delete" );
         labelText = i18np( "Are you sure you want to delete this item?",
@@ -591,14 +591,14 @@ FileView::slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modif
         urls << file.url();
     }
 
-    KGuiItem confirmButton = skipTrash ? KStandardGuiItem::del() : KStandardGuiItem::remove();
+    KGuiItem confirmButton = deleting ? KStandardGuiItem::del() : KStandardGuiItem::remove();
     const bool cont = KMessageBox::warningContinueCancelList( 0, labelText, filepaths,
             caption, confirmButton ) == KMessageBox::Continue;
 
     if( !cont )
         return;
 
-    KIO::Job *job = skipTrash
+    KIO::Job *job = deleting
         ? static_cast<KIO::Job*>( KIO::del( urls, KIO::HideProgressInfo ) )
         : static_cast<KIO::Job*>( KIO::trash( urls, KIO::HideProgressInfo ) );
 
