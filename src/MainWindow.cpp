@@ -1345,7 +1345,7 @@ MainWindow::resetLayout()
     m_contextDock.data()->setMinimumWidth( mins[1] ); m_contextDock.data()->setMaximumWidth( maxs[1] );
     m_playlistDock.data()->setMinimumWidth( mins[2] ); m_playlistDock.data()->setMaximumWidth( maxs[2] );
 
-    if( KMessageBox::warningContinueCancel( this, i18n( "Continue using this layout?" ), i18n( "Reset Layout" ) ) == KMessageBox::Cancel )
+    if( KMessageBox::warningContinueCancel( this, i18n( "Apply this layout change?" ), i18n( "Reset Layout" ) ) == KMessageBox::Cancel )
         restoreState( state );
 }
 
