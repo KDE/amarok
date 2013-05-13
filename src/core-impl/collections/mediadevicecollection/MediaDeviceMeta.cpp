@@ -361,13 +361,10 @@ MediaDeviceTrack::collection() const
 bool
 MediaDeviceTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    if( !m_collection || !m_collection.data()->isWritable() )
-        return false;
-
     switch( type )
     {
         case Capabilities::Capability::Editable:
-            return true;
+            return isEditable();
         default:
             return false;
     }
@@ -376,13 +373,10 @@ MediaDeviceTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) 
 Capabilities::Capability*
 MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( !m_collection || !m_collection.data()->isWritable() )
-        return 0;
-
     switch( type )
     {
         case Capabilities::Capability::Editable:
-            return new MediaDeviceEditCapability( this );
+            return isEditable() ? new MediaDeviceEditCapability( this ) : 0;
         default:
             return 0;
     }

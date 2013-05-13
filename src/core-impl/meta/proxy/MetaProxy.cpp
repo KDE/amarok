@@ -46,7 +46,6 @@ class EditCapabilityProxy : public Meta::TrackEditor
             : Meta::TrackEditor()
             , m_track( track ) {}
 
-        virtual bool isEditable() const { return true; }
         virtual void setTitle( const QString &title ) { m_track->setName( title ); }
         virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
         virtual void setAlbumArtist( const QString &newAlbumArtist ) { m_track->setAlbumArtist( newAlbumArtist ); }

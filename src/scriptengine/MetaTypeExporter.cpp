@@ -224,7 +224,7 @@ MetaTrackPrototype::isEditable() const
 {
     GET_TRACK
     QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
-    return ( ec && ec->isEditable() );
+    return ec;
 }
 
 QString

@@ -35,7 +35,6 @@ class MediaDeviceEditCapability : public Meta::TrackEditor
         MediaDeviceEditCapability( MediaDeviceTrack *track );
         virtual ~MediaDeviceEditCapability();
 
-        virtual bool isEditable() const { return m_track->isEditable(); }
         virtual void setAlbum( const QString &newAlbum );
         virtual void setAlbumArtist( const QString &newAlbumArtist );
         virtual void setArtist( const QString &newArtist );

@@ -1247,11 +1247,7 @@ TagDialog::setControlsAccessability()
 {
     bool editable = true;
     if( m_currentTrack )
-    {
-        QScopedPointer<Meta::TrackEditor> ec(
-            m_currentTrack->create<Meta::TrackEditor>() );
-        editable = ec && ec->isEditable();
-    }
+        editable = m_currentTrack->has<Meta::TrackEditor>();
 
     ui->kTabWidget->setTabEnabled( ui->kTabWidget->indexOf(ui->lyricsTab),
                                    m_perTrack );
@@ -1336,13 +1332,7 @@ TagDialog::saveTags()
             QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
             if( !ec )
             {
-                debug() << "Track does not have Capabilities::EditCapability. Aborting loop.";
-                continue;
-            }
-            if( !ec->isEditable() )
-            {
-                debug() << "Track not editable. Aborting loop.";
-                Amarok::Components::logger()->shortMessage( i18n( "Writing to file failed. Please check permissions and available disc space." ) );
+                debug() << "Track" << track->prettyUrl() << "does not have Meta::TrackEditor. Skiping.";
                 continue;
             }
 

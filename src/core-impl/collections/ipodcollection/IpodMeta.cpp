@@ -147,7 +147,7 @@ Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
     switch( type )
     {
         case Capabilities::Capability::Editable:
-            return true;
+            return isEditable();
         default:
             break;
     }
@@ -160,7 +160,7 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
     switch( type )
     {
         case Capabilities::Capability::Editable:
-            return new EditCapability( KSharedPtr<Track>( this ) );
+            return isEditable() ? new EditCapability( KSharedPtr<Track>( this ) ) : 0;
         default:
             break;
     }
@@ -644,7 +644,7 @@ Track::setType( const QString &newType )
 bool
 Track::inCollection() const
 {
-    return !m_coll.isNull();
+    return m_coll; // converts to bool nicely
 }
 
 Collections::Collection*
@@ -723,6 +723,14 @@ void Track::endUpdate()
     Q_ASSERT( m_batch > 0 );
     m_batch--;
     commitIfInNonBatchUpdate();
+}
+
+bool
+Track::isEditable() const
+{
+    if( !inCollection() )
+        return false;
+    return collection()->isWritable(); // IpodCollection implements this nicely
 }
 
 void

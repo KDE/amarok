@@ -57,7 +57,6 @@ class EditCapabilityImpl : public Meta::TrackEditor
             , m_track( track )
         {}
 
-        virtual bool isEditable() const { return m_track->isEditable(); }
         virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
         virtual void setAlbumArtist( const QString &newAlbumArtist ) { m_track->setAlbumArtist( newAlbumArtist ); }
         virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }

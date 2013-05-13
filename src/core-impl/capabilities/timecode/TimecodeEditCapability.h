@@ -32,7 +32,6 @@ public:
 
     static Type capabilityInterfaceType() { return Capabilities::Capability::Editable; }
 
-    virtual bool isEditable() const { return true; }
     virtual void setAlbum( const QString &newAlbum );
     virtual void setAlbumArtist( const QString &newAlbumArtist );
     virtual void setArtist( const QString &newArtist );

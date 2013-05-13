@@ -763,7 +763,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
     }
 
     QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
-    if( !ec || !ec->isEditable() )
+    if( !ec )
         return;
 
     QList<int> columns = changeMap.keys();

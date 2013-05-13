@@ -767,7 +767,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
     if( m_showEditTrackDetailsAction && track->has<Meta::TrackEditor>() )
     {
         QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
-        if( ec && ec->isEditable() )
+        if( ec )
         {
             QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),
                                                i18n("Edit Track Details"), this );

@@ -259,7 +259,7 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
         return;
 
     QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
-    if( !ec || !ec->isEditable() )
+    if( !ec )
         return;
     ec->beginMetaDataUpdate();
     QString title = metadata.contains( Meta::Field::TITLE ) ?

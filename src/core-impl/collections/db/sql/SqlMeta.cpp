@@ -1187,7 +1187,7 @@ SqlTrack::createCapabilityInterface( Capabilities::Capability::Type type )
     switch( type )
     {
     case Capabilities::Capability::Editable:
-        return new Capabilities::EditCapabilityImpl( this );
+        return isEditable() ? new Capabilities::EditCapabilityImpl( this ) : 0;
 
     case Capabilities::Capability::Actions:
         {

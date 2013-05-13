@@ -31,14 +31,6 @@ EditCapability::~EditCapability()
 {
 }
 
-bool
-EditCapability::isEditable() const
-{
-    if( !m_track->inCollection() || !m_track->collection() )
-        return false;
-    return m_track->collection()->isWritable(); // IpodCollection implements this nicely
-}
-
 void
 EditCapability::setAlbum( const QString &newAlbum )
 {

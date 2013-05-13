@@ -23,22 +23,20 @@
 namespace Meta
 {
     /**
-     * Capability to edit meta-data of a track. You should call beginMetaDataUpdate()
-     * before calling any setter methods and you should call endMetaDataUpdate() after
-     * you're done.
+     * Capability to edit meta-data of a track.
+     *
+     * If you are calling more than one setter method, tou should call
+     * beginMetaDataUpdate() before calling any setter methods and endMetaDataUpdate()
+     * when you're done.
      */
     class AMAROK_CORE_EXPORT TrackEditor : public Capabilities::Capability
     {
         Q_OBJECT
+
         public:
             virtual ~TrackEditor();
 
             static Type capabilityInterfaceType() { return Capabilities::Capability::Editable; }
-
-            /**
-             * Return true if the tags of this track are currently editable
-             */
-            virtual bool isEditable() const = 0;
 
             virtual void setAlbum( const QString &newAlbum ) = 0;
             virtual void setAlbumArtist( const QString &newAlbumArtist ) = 0;
@@ -59,7 +57,7 @@ namespace Meta
             virtual void beginMetaDataUpdate() = 0;
 
             /**
-             * All meta data has been updated and the object should commit the changed
+             * All meta data has been updated and the object should commit the changes
              */
             virtual void endMetaDataUpdate() = 0;
     };

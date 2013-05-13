@@ -67,15 +67,6 @@ public:
     void setGenre( const QString &newGenre ) { FORWARD( setGenre( newGenre ) ) }
     void setComposer( const QString &newComposer ) { FORWARD( setComposer( newComposer ) ) }
     void setYear( int newYear ) { FORWARD( setYear( newYear ) ) }
-    bool isEditable() const
-    {
-        foreach( Meta::TrackEditor *ec, m_ec )
-        {
-            if( !ec->isEditable() )
-                return false;
-        }
-        return true;
-    }
 private:
     bool m_batchMode;
     Collections::AggregateCollection *m_collection;

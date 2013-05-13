@@ -338,7 +338,7 @@ SqlPodcastEpisode::isEditable() const
 {
      Meta::TrackPtr file = m_localFile; // prevent discarding const qualifier
      QScopedPointer<Meta::TrackEditor> ec( file ? file->create<Meta::TrackEditor>() : 0 );
-     return ec && ec->isEditable();
+     return ec;
 }
 
 void
@@ -374,10 +374,8 @@ SqlPodcastEpisode::setTitle( const QString &title )
     m_title = title;
 
     QScopedPointer<Meta::TrackEditor> ec( m_localFile ? m_localFile->create<Meta::TrackEditor>() : 0 );
-    if( ec && ec->isEditable() )
-    {
+    if( ec  )
         ec->setTitle( title );
-    }
 }
 
 Meta::ArtistPtr
@@ -427,11 +425,6 @@ SqlPodcastEpisode::writeTagsToFile()
         return false;
 
     debug() << "writing tags for podcast episode " << title() << "to " << m_localUrl.url();
-    if( !ec->isEditable() )
-    {
-        debug() << QString( "local file (%1)is not editable!" ).arg( m_localUrl.url() );
-        return false;
-    }
     ec->beginMetaDataUpdate();
     ec->setTitle( m_title );
     ec->setAlbum( m_channel->title() );
@@ -441,7 +434,6 @@ SqlPodcastEpisode::writeTagsToFile()
     ec->endMetaDataUpdate();
 
     notifyObservers();
-
     return true;
 }
 

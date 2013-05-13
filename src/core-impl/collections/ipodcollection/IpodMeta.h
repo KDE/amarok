@@ -172,6 +172,8 @@ namespace IpodMeta
             void setType( const QString &newType );
 
         private:
+            bool isEditable() const;
+
             /**
              * Must be called at end of every set*() method, with m_trackLock locked for
              * writing. Takes care of writing back the fields and notifying observers.

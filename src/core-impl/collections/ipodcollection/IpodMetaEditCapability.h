@@ -30,7 +30,6 @@ namespace IpodMeta
             EditCapability( const KSharedPtr<Track> &track );
             virtual ~EditCapability();
 
-            virtual bool isEditable() const;
             virtual void setAlbum( const QString &newAlbum );
             virtual void setAlbumArtist( const QString &newAlbumArtist );
             virtual void setArtist( const QString &newArtist );

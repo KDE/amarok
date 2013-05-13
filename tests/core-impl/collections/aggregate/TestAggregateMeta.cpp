@@ -434,7 +434,6 @@ public:
     MyEditCapability() : Meta::TrackEditor()
             , beginCallCount(0)
             , endCallcount(0) {}
-    virtual bool isEditable() const { return true; }
     virtual void setAlbum( const QString &newAlbum ) { Q_UNUSED( newAlbum ) }
     virtual void setAlbumArtist( const QString &newAlbumArtist ) { Q_UNUSED( newAlbumArtist ) }
     virtual void setArtist( const QString &newArtist ) { Q_UNUSED( newArtist ) }
@@ -482,7 +481,6 @@ TestAggregateMeta::testEditableCapabilityOnMultipleTracks()
 
     Meta::TrackEditor *editCap = cut.create<Meta::TrackEditor>();
     QVERIFY( editCap );
-    QVERIFY( editCap->isEditable() );
 
     QCOMPARE( cap1->beginCallCount, 0 );
     QCOMPARE( cap1->beginCallCount, 0 );
