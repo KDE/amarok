@@ -590,15 +590,17 @@ FileView::slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modif
     }
 
     KGuiItem confirmButton = deleting ? KStandardGuiItem::del() : KStandardGuiItem::remove();
-    const bool cont = KMessageBox::warningContinueCancelList( 0, labelText, filepaths,
-            caption, confirmButton ) == KMessageBox::Continue;
 
-    if( !cont )
+    if( KMessageBox::warningContinueCancelList( this, labelText, filepaths, caption, confirmButton ) == KMessageBox::Cancel )
         return;
 
-    KIO::Job *job = deleting
-        ? static_cast<KIO::Job*>( KIO::del( urls, KIO::HideProgressInfo ) )
-        : static_cast<KIO::Job*>( KIO::trash( urls, KIO::HideProgressInfo ) );
+    if( deleting )
+    {
+        KIO::del( urls, KIO::HideProgressInfo );
+        return;
+    }
+
+    KIO::trash( urls, KIO::HideProgressInfo );
 }
 
 void
