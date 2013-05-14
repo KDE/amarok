@@ -122,7 +122,7 @@ void LastFmTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
     if( index.isValid() && index.internalPointer() )
     {
-        playChildTracks( index, Playlist::AppendAndPlay );
+        playChildTracks( index, Playlist::StartPlay );
     }
 }
 
@@ -215,7 +215,7 @@ LastFmTreeView::slotPlayChildTracks()
 void
 LastFmTreeView::slotAppendChildTracks()
 {
-    playChildTracks ( m_currentItems, Playlist::AppendAndPlay );
+    playChildTracks ( m_currentItems, Playlist::StartPlay );
 }
 
 void

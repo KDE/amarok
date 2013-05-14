@@ -42,15 +42,13 @@ namespace Mpris1
         connect( The::playlist()->qaim(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(slotTrackListChange()) );
     }
 
-    int TrackListHandler::AddTrack( const QString& url, bool playImmediately )
+    int TrackListHandler::AddTrack( const QString &url, bool playImmediately )
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
         if( track )
         {
-            if( playImmediately )
-                The::playlistController()->insertOptioned( track, Playlist::AppendAndPlayImmediately );
-            else
-                The::playlistController()->insertOptioned( track, Playlist::Append );
+            Playlist::AddOptions options = playImmediately ? Playlist::DirectPlay : Playlist::AddOptions();
+            The::playlistController()->insertOptioned( track, options );
             return 0;
         }
         else

@@ -271,7 +271,7 @@ AmazonStore::itemDoubleClicked( QModelIndex index )
 
         Meta::TrackPtr trackPtr( track );
 
-        The::playlistController()->instance()->insertOptioned( trackPtr, Playlist::Append );
+        The::playlistController()->instance()->insertOptioned( trackPtr );
     }
 }
 

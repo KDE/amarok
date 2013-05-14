@@ -156,7 +156,7 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
 
     if( state() == QAbstractItemView::NoState && event->button() == Qt::MidButton )
     {
-        addIndexToPlaylist( index, Playlist::AppendAndPlay );
+        addIndexToPlaylist( index, Playlist::StartPlay );
         event->accept();
         return;
     }
@@ -198,7 +198,7 @@ FileView::mouseDoubleClickEvent( QMouseEvent *event )
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         KUrl url = file.url();
         if( !file.isNull() && ( Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) ) )
-            addIndexToPlaylist( index, Playlist::AppendAndPlay );
+            addIndexToPlaylist( index, Playlist::StartPlay );
         else
             emit navigateToDirectory( index );
 
@@ -223,7 +223,7 @@ FileView::keyPressEvent( QKeyEvent *event )
             KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
             KUrl url = file.url();
             if( !file.isNull() && ( Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) ) )
-                addIndexToPlaylist( index, Playlist::AppendAndPlay );
+                addIndexToPlaylist( index, Playlist::StartPlay );
             else
                 emit navigateToDirectory( index );
 
@@ -242,7 +242,7 @@ FileView::keyPressEvent( QKeyEvent *event )
 void
 FileView::slotAppendToPlaylist()
 {
-    addSelectionToPlaylist( Playlist::AppendAndPlay );
+    addSelectionToPlaylist( Playlist::StartPlay );
 }
 
 void

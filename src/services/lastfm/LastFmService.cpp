@@ -528,7 +528,7 @@ void LastFmService::playCustomStation()
 void LastFmService::playLastFmStation( const KUrl &url )
 {
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-    The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( track, Playlist::StartPlay );
 }
 
 Collections::Collection * LastFmService::collection()

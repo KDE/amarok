@@ -399,7 +399,7 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
 
     //now add it to the playlist
 
-    The::playlistController()->insertOptioned( Meta::TrackPtr::staticCast( track ), Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( Meta::TrackPtr::staticCast( track ), Playlist::StartPlay );
 
     
 }

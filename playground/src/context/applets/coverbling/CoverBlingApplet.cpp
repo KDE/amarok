@@ -246,7 +246,7 @@ void CoverBlingApplet::appendAlbum( int islideindex )
     Meta::AlbumPtr album = m_pictureflow->album( islideindex );
     if ( album )
     {
-        The::playlistController()->insertOptioned( album->tracks(), Playlist::AppendAndPlay );
+        The::playlistController()->insertOptioned( album->tracks(), Playlist::StartPlay );
     }
 
 }

@@ -299,7 +299,7 @@ void
 AlbumsView::slotAppendSelected()
 {
     Meta::TrackList selected = getSelectedTracks();
-    The::playlistController()->insertOptioned( selected, Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( selected, Playlist::StartPlay );
 }
 
 void

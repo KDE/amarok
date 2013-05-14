@@ -598,7 +598,7 @@ CoverManager::playSelectedAlbums()
     Meta::TrackList tracks;
     foreach( CoverViewItem *item, selectedItems() )
         tracks.append( item->albumPtr()->tracks() );
-    The::playlistController()->insertOptioned( tracks, Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( tracks, Playlist::StartPlay );
 }
 
 QList<CoverViewItem*>

@@ -97,7 +97,7 @@ Controller::Controller()
 Controller::~Controller() {}
 
 void
-Controller::insertOptioned( Meta::TrackPtr track, int options )
+Controller::insertOptioned( Meta::TrackPtr track, AddOptions options )
 {
     DEBUG_BLOCK
     if( ! track )
@@ -109,7 +109,7 @@ Controller::insertOptioned( Meta::TrackPtr track, int options )
 }
 
 void
-Controller::insertOptioned( Meta::TrackList list, int options )
+Controller::insertOptioned( Meta::TrackList list, AddOptions options )
 {
     DEBUG_BLOCK
 
@@ -217,32 +217,32 @@ Controller::insertOptioned( Meta::TrackList list, int options )
 }
 
 void
-Controller::insertOptioned( Playlists::PlaylistPtr playlist, int options )
+Controller::insertOptioned( Playlists::PlaylistPtr playlist, AddOptions options )
 {
     insertOptioned( Playlists::PlaylistList() << playlist, options );
 }
 
 void
-Controller::insertOptioned( Playlists::PlaylistList list, int options )
+Controller::insertOptioned( Playlists::PlaylistList list, AddOptions options )
 {
     // if we are going to play, we need full metadata (playable tracks)
     TrackLoader::Flags flags = ( options & ( StartPlay | DirectPlay ) )
                              ? TrackLoader::FullMetadataRequired : TrackLoader::NoFlags;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
-    loader->setProperty( "options", QVariant( options ) );
+    loader->setProperty( "options", QVariant::fromValue<AddOptions>( options ) );
     connect( loader, SIGNAL(finished(Meta::TrackList)),
                  SLOT(slotLoaderWithOptionsFinished(Meta::TrackList)) );
     loader->init( list );
 }
 
 void
-Controller::insertOptioned( QList<KUrl> &urls, int options )
+Controller::insertOptioned( QList<KUrl> &urls, AddOptions options )
 {
     // if we are going to play, we need full metadata (playable tracks)
     TrackLoader::Flags flags = ( options & ( StartPlay | DirectPlay ) )
                              ? TrackLoader::FullMetadataRequired : TrackLoader::NoFlags;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
-    loader->setProperty( "options", QVariant( options ) );
+    loader->setProperty( "options", QVariant::fromValue<AddOptions>( options ) );
     connect( loader, SIGNAL(finished(Meta::TrackList)),
                  SLOT(slotLoaderWithOptionsFinished(Meta::TrackList)) );
     loader->init( urls );
@@ -519,13 +519,13 @@ Controller::slotLoaderWithOptionsFinished( const Meta::TrackList &tracks )
         return;
     }
     QVariant options = loader->property( "options" );
-    if( !options.isValid() || options.type() != QVariant::Int )
+    if( !options.canConvert<AddOptions>() )
     {
-        error() << __PRETTY_FUNCTION__ << "loader property 'options' is not a valid integer";
+        error() << __PRETTY_FUNCTION__ << "loader property 'options' is not valid";
         return;
     }
     if( !tracks.isEmpty() )
-        insertOptioned( tracks, options.toInt() );
+        insertOptioned( tracks, options.value<AddOptions>() );
 }
 
 void

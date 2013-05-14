@@ -65,7 +65,7 @@ void AlbumItem::mousePressEvent( QMouseEvent  * event )
 void AlbumItem::mouseDoubleClickEvent( QMouseEvent * event )
 {
     Q_UNUSED( event )
-    The::playlistController()->insertOptioned( m_album->tracks(), Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( m_album->tracks(), Playlist::StartPlay );
 }
 void AlbumItem::leaveEvent( QEvent * event )
 {

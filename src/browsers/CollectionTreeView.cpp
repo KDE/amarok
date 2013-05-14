@@ -340,7 +340,7 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         !wouldExpand )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
-        playChildTracks( item, Playlist::AppendAndPlay );
+        playChildTracks( item, Playlist::StartPlay );
         event->accept();
         return;
     }
@@ -368,7 +368,7 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     if( event->button() == Qt::MidButton )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
-        playChildTracks( item, Playlist::AppendAndPlay );
+        playChildTracks( item, Playlist::StartPlay );
         event->accept();
         return;
     }
@@ -876,7 +876,7 @@ CollectionTreeView::slotAddFilteredTracksToPlaylist()
                 items.insert( item );
         }
         if( !items.isEmpty() )
-            playChildTracks( items, Playlist::Append );
+            playChildTracks( items, 0 );
         emit addingFilteredTracksDone();
     }
 }
@@ -1176,7 +1176,7 @@ CollectionTreeView::slotPlayChildTracks()
 void
 CollectionTreeView::slotAppendChildTracks()
 {
-    playChildTracks( m_currentItems, Playlist::AppendAndPlay );
+    playChildTracks( m_currentItems, Playlist::StartPlay );
 }
 
 void

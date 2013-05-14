@@ -19,6 +19,7 @@
 #define PLAYLISTBROWSERVIEW_H
 
 #include "core/playlists/Playlist.h"
+#include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
 #include <QMutex>
@@ -69,7 +70,7 @@ private slots:
 private:
     void appendAndPlay( const QModelIndex &index );
     void appendAndPlay( const QModelIndexList &list );
-    void insertToPlayQueue( int options );
+    void insertToPlayQueue( Playlist::AddOptions options );
 
     /**
      * Gets action for a list of indices and sets internal action targets to these.

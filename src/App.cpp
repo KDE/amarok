@@ -282,13 +282,15 @@ App::handleCliArgs() //static
                 list << url;
         }
 
-        int options = Playlist::AppendAndPlay;
+        Playlist::AddOptions options;
         if( args->isSet( "queue" ) )
            options = Playlist::Queue;
         else if( args->isSet( "append" ) )
-           options = Playlist::Append;
+           options = 0; // append is the default
         else if( args->isSet( "load" ) )
             options = Playlist::Replace;
+        else
+            options = Playlist::StartPlay;
 
         if( args->isSet( "play" ) )
             options |= Playlist::DirectPlay;
@@ -606,12 +608,12 @@ bool App::event( QEvent *event )
             {
                 Playlists::PlaylistPtr playlist =
                         Playlists::PlaylistPtr::dynamicCast( Playlists::loadPlaylistFile( url ) );
-                The::playlistController()->insertOptioned( playlist, Playlist::AppendAndPlay );
+                The::playlistController()->insertOptioned( playlist, Playlist::StartPlay );
             }
             else
             {
                 Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-                The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
+                The::playlistController()->insertOptioned( track, Playlist::StartPlay );
             }
             return true;
         }

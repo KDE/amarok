@@ -109,7 +109,7 @@ void CoverGridApplet::appendAlbum( int islideindex )
     Meta::AlbumPtr album = m_album_list[islideindex];
     if( album )
     {
-        The::playlistController()->insertOptioned( album->tracks(), Playlist::AppendAndPlay );
+        The::playlistController()->insertOptioned( album->tracks(), Playlist::StartPlay );
     }
 
 }

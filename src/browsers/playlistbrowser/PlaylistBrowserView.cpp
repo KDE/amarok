@@ -30,7 +30,6 @@
 #include "core/support/Debug.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistModel.h"
-#include "playlist/PlaylistController.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "widgets/PrettyTreeRoles.h"
 
@@ -419,7 +418,7 @@ PlaylistBrowserView::slotCreateEmptyPlaylist()
 void
 PlaylistBrowserView::slotAppend()
 {
-    insertToPlayQueue( Playlist::AppendAndPlay );
+    insertToPlayQueue( Playlist::StartPlay );
 }
 
 void
@@ -549,12 +548,12 @@ void
 PlaylistBrowserNS::PlaylistBrowserView::appendAndPlay( const QModelIndexList &list )
 {
     actionsFor( list ); // sets action targets
-    insertToPlayQueue( Playlist::AppendAndPlay );
+    insertToPlayQueue( Playlist::StartPlay );
     resetActionTargets();
 }
 
 void
-PlaylistBrowserView::insertToPlayQueue( int options )
+PlaylistBrowserView::insertToPlayQueue( Playlist::AddOptions options )
 {
     Meta::TrackList tracks;
 

@@ -589,7 +589,7 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
         {
             QList<KUrl> list;
             list.append( url );
-            The::playlistController()->insertOptioned( list, Playlist::AppendAndPlay );
+            The::playlistController()->insertOptioned( list, Playlist::StartPlay );
         }
     }
 

@@ -35,19 +35,22 @@ namespace Playlist
 {
 class AbstractModel;
 
-enum AddOptions
+/**
+ * No options means: append at the end of the playlist (without touching playing
+ * state)
+ */
+enum AddOption
 {
-    Append     = 1,     ///< inserts media after the last item in the playlist
-    Queue      = 2,     ///< inserts media after the currentTrack
-    Replace    = 4,     ///< clears the playlist first
-    DirectPlay = 8,     ///< start playback of the first item in the list
-    Unique     = 16,    ///< don't insert anything already in the playlist
-    StartPlay  = 32,    ///< start playback of the first item in the list if nothing else playing
-    AppendAndPlay = Append | StartPlay,
+    Queue      = 1, ///< inserts media after the currentTrack instead of default appending
+    Replace    = 2, ///< replaces the playlists instead of default appending (or queueing)
+    DirectPlay = 4, ///< start playback of the first item in the list
+    Unique     = 8, ///< don't insert anything already in the playlist
+    StartPlay  = 16, ///< start playback of the first item in the list if nothing else playing
+
     LoadAndPlay = Replace | StartPlay,
-    AppendAndPlayImmediately = Append | DirectPlay, ///< append and start playback of the added item
-    LoadAndPlayImmediately = Replace | DirectPlay   ///< replace and begin playing of new item
+    LoadAndPlayImmediately = Replace | DirectPlay ///< replace and begin playing of new item
 };
+Q_DECLARE_FLAGS( AddOptions, AddOption )
 
 /** The Playlist::Controller allows to add, remove or otherwise change tracks to the playlist.
     Instead of directly talking to The::Playlist or PlaylistModelStack this object
@@ -78,7 +81,7 @@ public slots:
      * @param options the set of options to be applied to the operation.
      * @see enum AddOptions.
      */
-    void insertOptioned( Meta::TrackPtr track, int options );
+    void insertOptioned( Meta::TrackPtr track, AddOptions options = 0 );
 
     /**
      * Handles the insertion of one or more tracks into the playlist, considering a set of
@@ -87,10 +90,10 @@ public slots:
      * @param options the set of options to be applied to the operation.
      * @see enum AddOptions.
      */
-    void insertOptioned( Meta::TrackList list, int options );
-    void insertOptioned( Playlists::PlaylistPtr playlist, int options );
-    void insertOptioned( Playlists::PlaylistList list, int options );
-    void insertOptioned( QList<KUrl> &urls, int options );
+    void insertOptioned( Meta::TrackList list, AddOptions options = 0 );
+    void insertOptioned( Playlists::PlaylistPtr playlist, AddOptions options = 0 );
+    void insertOptioned( Playlists::PlaylistList list, AddOptions options = 0 );
+    void insertOptioned( QList<KUrl> &urls, AddOptions options = 0 );
 
     /**
      * Handles the insertion of one or more tracks into the playlist on a specific row.
@@ -207,6 +210,9 @@ private:
     QUndoStack* m_undoStack;
 };
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( Playlist::AddOptions )
+Q_DECLARE_METATYPE( Playlist::AddOptions )
 
 namespace The
 {

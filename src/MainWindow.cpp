@@ -555,7 +555,7 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
     if( files.isEmpty() )
         return;
 
-    The::playlistController()->insertOptioned( files, directPlay ? Playlist::AppendAndPlayImmediately : Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( files, directPlay ? Playlist::DirectPlay : Playlist::StartPlay );
 }
 
 void
@@ -569,7 +569,7 @@ MainWindow::slotAddStream() //SLOT
 
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
 
-    The::playlistController()->insertOptioned( track, Playlist::Append );
+    The::playlistController()->insertOptioned( track );
 }
 
 void
