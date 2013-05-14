@@ -20,6 +20,9 @@
 #include "File_p.h"
 
 #include "config.h"
+#ifdef HAVE_LIBLASTFM
+#include "LastfmReadLabelCapability.h"
+#endif
 #include "MainWindow.h"
 #include "amarokurls/BookmarkMetaActions.h"
 #include "amarokurls/PlayUrlRunner.h"
@@ -27,7 +30,6 @@
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/meta/Meta.h"
-#include "core/meta/TrackEditor.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core/support/Amarok.h"
@@ -43,37 +45,7 @@
 #include <QWeakPointer>
 #include <QString>
 
-#ifdef HAVE_LIBLASTFM
-  #include "LastfmReadLabelCapability.h"
-#endif
 using namespace MetaFile;
-
-class EditCapabilityImpl : public Meta::TrackEditor
-{
-    Q_OBJECT
-    public:
-        EditCapabilityImpl( MetaFile::Track *track )
-            : Meta::TrackEditor()
-            , m_track( track )
-        {}
-
-        virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
-        virtual void setAlbumArtist( const QString &newAlbumArtist ) { m_track->setAlbumArtist( newAlbumArtist ); }
-        virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
-        virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
-        virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-        virtual void setYear( int newYear ) { m_track->setYear( newYear ); }
-        virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
-        virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
-        virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
-        virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
-        virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-        virtual void beginUpdate() { m_track->beginUpdate(); }
-        virtual void endUpdate() { m_track->endUpdate(); }
-
-    private:
-        KSharedPtr<MetaFile::Track> m_track;
-};
 
 class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
 {
@@ -494,8 +466,7 @@ Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 #ifdef HAVE_LIBLASTFM
     readlabel = true;
 #endif
-    return ( type == Capabilities::Capability::Editable && isEditable() ) ||
-           type == Capabilities::Capability::BookmarkThis ||
+    return type == Capabilities::Capability::BookmarkThis ||
            type == Capabilities::Capability::WriteTimecode ||
            type == Capabilities::Capability::LoadTimecode ||
            ( type == Capabilities::Capability::ReadLabel && readlabel ) ||
@@ -507,12 +478,6 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Capabilities::Capability::Editable:
-            if( isEditable() )
-                return new EditCapabilityImpl( this );
-            else
-                return 0;
-
         case Capabilities::Capability::BookmarkThis:
             return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
 
@@ -536,6 +501,12 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
 
         return 0;
     }
+}
+
+Meta::TrackEditorPtr
+Track::editor()
+{
+    return Meta::TrackEditorPtr( isEditable() ? this : 0 );
 }
 
 Meta::StatisticsPtr

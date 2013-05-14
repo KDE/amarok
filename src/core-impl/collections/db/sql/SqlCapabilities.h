@@ -29,7 +29,6 @@
 #include "core-impl/collections/db/sql/SqlMeta.h"
 
 /* note: currently SqlTrack has the following capabilities
-    EditCapabilityImpl
     ActionsCapability
     OrganiseCapabilityImpl
     BookmarkThisCapability
@@ -41,33 +40,6 @@
 */
 
 namespace Capabilities {
-
-class EditCapabilityImpl : public Meta::TrackEditor
-{
-    Q_OBJECT
-
-    public:
-
-    EditCapabilityImpl( Meta::SqlTrack *track );
-    virtual ~EditCapabilityImpl();
-
-    virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
-    virtual void setAlbumArtist( const QString &newAlbumArtist ) { m_track->setAlbumArtist( newAlbumArtist ); }
-    virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
-    virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
-    virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-    virtual void setYear( int newYear ) { m_track->setYear( newYear ); }
-    virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
-    virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
-    virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
-    virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
-    virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-    virtual void beginUpdate() { m_track->beginUpdate(); }
-    virtual void endUpdate() { m_track->endUpdate(); }
-
-    private:
-    KSharedPtr<Meta::SqlTrack> m_track;
-};
 
 class OrganiseCapabilityImpl : public Capabilities::OrganiseCapability
 {

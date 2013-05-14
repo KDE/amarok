@@ -71,6 +71,8 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         virtual Meta::GenrePtr genre() const;
         virtual Meta::YearPtr year() const;
 
+        virtual Meta::TrackEditorPtr editor();
+
         //SqlPodcastEpisode specific methods
         bool writeTagsToFile();
         int dbId() const { return m_dbId; }
@@ -79,8 +81,6 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         void deleteFromDb();
 
     private:
-        bool isEditable() const;
-
         /**
          * Establishes m_localFile using MetaProxy::Track if m_localUrl is valid.
          */

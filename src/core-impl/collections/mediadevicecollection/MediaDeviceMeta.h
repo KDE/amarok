@@ -117,9 +117,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
         virtual bool inCollection() const;
         virtual Collections::Collection* collection() const;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
-
+        virtual TrackEditorPtr editor();
         virtual StatisticsPtr statistics();
 
         // Meta::Statistics methods

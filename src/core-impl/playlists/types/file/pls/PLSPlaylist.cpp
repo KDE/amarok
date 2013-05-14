@@ -133,7 +133,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             if( index > numberOfEntries || index == 0 )
                 continue;
             tmp = (*i).section( '=', 1 ).trimmed();
-            proxyTrack->setName( tmp );
+            proxyTrack->setTitle( tmp );
             continue;
         }
         if( (*i).contains( regExp_Length ) && proxyTrack )

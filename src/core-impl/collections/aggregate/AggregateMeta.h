@@ -82,6 +82,7 @@ namespace Meta {
             virtual void removeLabel( const Meta::LabelPtr &label );
             virtual Meta::LabelList labels() const;
 
+            virtual TrackEditorPtr editor();
             virtual StatisticsPtr statistics();
 
             // Meta::Statistics methods:

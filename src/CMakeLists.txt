@@ -61,8 +61,8 @@ set(aggregatecollection_SRCS
 set(libmediadeviceframework_SRCS
   core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceCollectionLocation.cpp
-  core-impl/collections/mediadevicecollection/MediaDeviceEditCapability.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceTrackEditor.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
@@ -244,7 +244,6 @@ set(libmetaimpl_SRCS
     core-impl/playlists/types/file/xspf/XSPFPlaylist.cpp
     core-impl/capabilities/AlbumActionsCapability.cpp
     core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
-    core-impl/capabilities/timecode/TimecodeEditCapability.cpp
     core-impl/capabilities/timecode/TimecodeLoadCapability.cpp
     core-impl/capabilities/timecode/TimecodeWriteCapability.cpp
     core-impl/capabilities/multisource/MultiSourceCapabilityImpl.cpp

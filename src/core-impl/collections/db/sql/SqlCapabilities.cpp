@@ -28,15 +28,6 @@
 
 namespace Capabilities {
 
-EditCapabilityImpl::EditCapabilityImpl( Meta::SqlTrack *track )
-    : Meta::TrackEditor()
-    , m_track( track )
-{}
-
-EditCapabilityImpl::~EditCapabilityImpl()
-{}
-
-
 OrganiseCapabilityImpl::OrganiseCapabilityImpl( Meta::SqlTrack *track )
     : Capabilities::OrganiseCapability()
     , m_track( track )

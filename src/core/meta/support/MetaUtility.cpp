@@ -255,12 +255,12 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
 void
 Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
 {
-    if( !track || !track->has<Meta::TrackEditor>() )
+    if( !track )
         return;
-
-    QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
+    Meta::TrackEditorPtr ec = track->editor();
     if( !ec )
         return;
+
     ec->beginUpdate();
     QString title = metadata.contains( Meta::Field::TITLE ) ?
                             metadata.value( Meta::Field::TITLE ).toString() : QString();
@@ -291,7 +291,6 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
     int year = metadata.contains( Meta::Field::YEAR ) ?
                             metadata.value( Meta::Field::YEAR ).toInt() : 0;
     ec->setYear( year );
-
     ec->endUpdate();
 }
 

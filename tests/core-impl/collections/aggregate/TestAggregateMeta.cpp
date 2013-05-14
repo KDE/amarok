@@ -63,9 +63,14 @@ public:
         return cap;
     }
 
+    Meta::TrackEditorPtr editor()
+    {
+        return trackEditors.isEmpty() ? Meta::TrackEditorPtr() : trackEditors.takeFirst();
+    }
 
     mutable QMap<Capabilities::Capability::Type, bool> results;
     mutable QMap<Capabilities::Capability::Type, Capabilities::Capability*> capabilities;
+    QList<Meta::TrackEditorPtr> trackEditors;
 };
 
 class MyAlbumMock : public MockAlbum
@@ -428,10 +433,10 @@ TestAggregateMeta::testCreateCapabilityOnSingleYear()
     delete cap;
 }
 
-class MyEditCapability : public Meta::TrackEditor
+class MyTrackEditor : public Meta::TrackEditor
 {
 public:
-    MyEditCapability() : Meta::TrackEditor()
+    MyTrackEditor() : Meta::TrackEditor()
             , beginCallCount(0)
             , endCallcount(0) {}
     virtual void setAlbum( const QString &newAlbum ) { Q_UNUSED( newAlbum ) }
@@ -457,14 +462,10 @@ TestAggregateMeta::testEditableCapabilityOnMultipleTracks()
 {
     MyTrackMock *mock1 = new MyTrackMock();
     MyTrackMock *mock2 = new MyTrackMock();
-    QMap<Capabilities::Capability::Type, bool> result;
-    result.insert( Capabilities::Capability::Editable, true );
-    MyEditCapability *cap1 = new MyEditCapability();
-    MyEditCapability *cap2 = new MyEditCapability();
-    mock1->capabilities.insert( Capabilities::Capability::Editable, cap1 );
-    mock2->capabilities.insert( Capabilities::Capability::Editable, cap2 );
-    mock1->results = result;
-    mock2->results = result;
+    KSharedPtr<MyTrackEditor> cap1 ( new MyTrackEditor() );
+    KSharedPtr<MyTrackEditor> cap2 ( new MyTrackEditor() );
+    mock1->trackEditors << Meta::TrackEditorPtr( cap1.data() );
+    mock2->trackEditors << Meta::TrackEditorPtr( cap2.data() );
 
     Meta::TrackPtr ptr1( mock1 );
     Meta::TrackPtr ptr2( mock2 );
@@ -477,16 +478,14 @@ TestAggregateMeta::testEditableCapabilityOnMultipleTracks()
     Meta::AggregateTrack cut( collection, ptr1 );
     cut.add( ptr2 );
 
-    QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::Editable ) );
-
-    Meta::TrackEditor *editCap = cut.create<Meta::TrackEditor>();
+    Meta::TrackEditorPtr editCap = cut.editor();
     QVERIFY( editCap );
 
     QCOMPARE( cap1->beginCallCount, 0 );
-    QCOMPARE( cap1->beginCallCount, 0 );
+    QCOMPARE( cap2->beginCallCount, 0 );
     editCap->beginUpdate();
     QCOMPARE( cap1->beginCallCount, 1 );
-    QCOMPARE( cap1->beginCallCount, 1 );
+    QCOMPARE( cap2->beginCallCount, 1 );
 
     QCOMPARE( cap1->endCallcount, 0 );
     QCOMPARE( cap2->endCallcount, 0 );
@@ -498,14 +497,6 @@ TestAggregateMeta::testEditableCapabilityOnMultipleTracks()
     QTest::qWait( 50 );
     //required so that the colleection browser refreshes itself
     QCOMPARE( spy.count(), 1 );
-
-    QPointer<MyEditCapability> qpointer1( cap1 );
-    QPointer<MyEditCapability> qpointer2( cap2 );
-    QVERIFY( qpointer1 );
-    QVERIFY( qpointer2 );
-    delete editCap;
-    QVERIFY( !qpointer1 );
-    QVERIFY( !qpointer2 );
 }
 
 using ::testing::Return;

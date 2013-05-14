@@ -89,7 +89,7 @@ XSPFPlaylist::load()
     {
        MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( track.location ) );
        //Fill in values from xspf..
-       proxyTrack->setName( track.title );
+       proxyTrack->setTitle( track.title );
        proxyTrack->setAlbum( track.album );
        proxyTrack->setArtist( track.creator );
        proxyTrack->setLength( track.duration );

@@ -162,7 +162,7 @@ TrackLoader::processNextResultUrl()
     else if( MetaFile::Track::isTrack( resultUrl ) )
     {
         MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( resultUrl ) );
-        proxyTrack->setName( resultUrl.fileName() ); // set temporary name
+        proxyTrack->setTitle( resultUrl.fileName() ); // set temporary name
         Meta::TrackPtr track( proxyTrack.data() );
         m_tracks << Meta::TrackPtr( track );
 

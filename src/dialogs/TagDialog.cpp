@@ -1245,9 +1245,7 @@ TagDialog::updateCover()
 void
 TagDialog::setControlsAccessability()
 {
-    bool editable = true;
-    if( m_currentTrack )
-        editable = m_currentTrack->has<Meta::TrackEditor>();
+    bool editable = m_currentTrack ? bool( m_currentTrack->editor() ) : true;
 
     ui->kTabWidget->setTabEnabled( ui->kTabWidget->indexOf(ui->lyricsTab),
                                    m_perTrack );
@@ -1329,7 +1327,7 @@ TagDialog::saveTags()
 
             saveLabels( track, data.value( Meta::Field::LABELS ).toStringList() );
 
-            QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
+            Meta::TrackEditorPtr ec = track->editor();
             if( !ec )
             {
                 debug() << "Track" << track->prettyUrl() << "does not have Meta::TrackEditor. Skiping.";
@@ -1361,7 +1359,6 @@ TagDialog::saveTags()
                 ec->setAlbumArtist( data.value( Meta::Field::ALBUMARTIST ).toString() );
 
             ec->endUpdate();
-
             // note: the track should by itself emit a collectionUpdated signal if needed
         }
     }

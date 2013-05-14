@@ -121,7 +121,7 @@ ASXPlaylist::loadAsx( QTextStream &stream )
             }
         }
         MetaProxy::Track *proxyTrack = new MetaProxy::Track( track.location );
-        proxyTrack->setName( track.title );
+        proxyTrack->setTitle( track.title );
         proxyTrack->setArtist( track.creator );
         proxyTrack->setLength( track.duration );
         m_tracks << Meta::TrackPtr( proxyTrack );

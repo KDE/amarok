@@ -61,12 +61,12 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             //if title and artist are saved such as in M3UPlaylist::save()
             if( !title.isEmpty() && !artist.isEmpty() )
             {
-                proxyTrack->setName( title );
+                proxyTrack->setTitle( title );
                 proxyTrack->setArtist( artist );
             }
             else
             {
-                proxyTrack->setName( extinfTitle );
+                proxyTrack->setTitle( extinfTitle );
             }
             proxyTrack->setLength( length );
             Meta::TrackPtr track( proxyTrack.data() );

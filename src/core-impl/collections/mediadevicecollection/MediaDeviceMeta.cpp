@@ -18,11 +18,10 @@
 
 #include "SvgHandler.h"
 #include "core/capabilities/ActionsCapability.h"
-#include "core/meta/TrackEditor.h"
 #include "core/support/Debug.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
-#include "core-impl/collections/mediadevicecollection/MediaDeviceEditCapability.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceTrackEditor.h"
 #include "core-impl/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.h"
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetchingActions.h"
@@ -176,7 +175,7 @@ MediaDeviceTrack::setRating( int newRating )
     if( newRating == m_rating )
         return;
     m_rating = newRating;
-    // this method is _not_ called though EditCapability, notify observers manually
+    // this method is _not_ called though TrackEditor, notify observers manually
     notifyObservers();
 }
 
@@ -358,28 +357,10 @@ MediaDeviceTrack::collection() const
     return m_collection.data();
 }
 
-bool
-MediaDeviceTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
+TrackEditorPtr
+MediaDeviceTrack::editor()
 {
-    switch( type )
-    {
-        case Capabilities::Capability::Editable:
-            return isEditable();
-        default:
-            return false;
-    }
-}
-
-Capabilities::Capability*
-MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type )
-{
-    switch( type )
-    {
-        case Capabilities::Capability::Editable:
-            return isEditable() ? new MediaDeviceEditCapability( this ) : 0;
-        default:
-            return 0;
-    }
+    return TrackEditorPtr( isEditable() ? new MediaDeviceTrackEditor( this ) : 0 );
 }
 
 StatisticsPtr

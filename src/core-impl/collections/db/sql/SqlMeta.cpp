@@ -1172,10 +1172,6 @@ SqlTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
     case Capabilities::Capability::WriteLabel:
     case Capabilities::Capability::FindInSource:
         return true;
-
-    case Capabilities::Capability::Editable:
-        return isEditable();
-
     default:
         return Track::hasCapabilityInterface( type );
     }
@@ -1186,19 +1182,15 @@ SqlTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-    case Capabilities::Capability::Editable:
-        return isEditable() ? new Capabilities::EditCapabilityImpl( this ) : 0;
-
     case Capabilities::Capability::Actions:
-        {
+    {
             QList<QAction*> actions;
             //TODO These actions will hang around until m_collection is destructed.
             // Find a better parent to avoid this memory leak.
             //actions.append( new CopyToDeviceAction( m_collection, this ) );
 
             return new Capabilities::ActionsCapability( actions );
-        }
-
+    }
     case Capabilities::Capability::Organisable:
         return new Capabilities::OrganiseCapabilityImpl( this );
     case Capabilities::Capability::BookmarkThis:
@@ -1325,6 +1317,12 @@ SqlTrack::labels() const
     {
         return Meta::LabelList();
     }
+}
+
+TrackEditorPtr
+SqlTrack::editor()
+{
+    return TrackEditorPtr( isEditable() ? this : 0 );
 }
 
 StatisticsPtr

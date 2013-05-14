@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
+ * Copyright (c) 2011 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,99 +14,111 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "IpodMetaEditCapability.h"
+#include "MediaDeviceTrackEditor.h"
 
-#include "core/collections/Collection.h"
+using namespace Meta;
 
-
-using namespace IpodMeta;
-
-EditCapability::EditCapability( const KSharedPtr<Track> &track )
+MediaDeviceTrackEditor::MediaDeviceTrackEditor( MediaDeviceTrack *track )
     : Meta::TrackEditor()
+    , m_inBatchUpdate( false )
     , m_track( track )
 {
 }
 
-EditCapability::~EditCapability()
-{
-}
-
 void
-EditCapability::setAlbum( const QString &newAlbum )
+MediaDeviceTrackEditor::setAlbum( const QString &newAlbum )
 {
     m_track->setAlbum( newAlbum );
+    commitIfInNonBatchUpdate();
 }
 
 void
-EditCapability::setAlbumArtist( const QString &newAlbumArtist )
+MediaDeviceTrackEditor::setAlbumArtist( const QString &newAlbumArtist )
 {
     m_track->setAlbumArtist( newAlbumArtist );
+    commitIfInNonBatchUpdate();
 }
 
 void
-EditCapability::setArtist( const QString &newArtist )
+MediaDeviceTrackEditor::setArtist( const QString &newArtist )
 {
     m_track->setArtist( newArtist );
+    commitIfInNonBatchUpdate();
 }
 
 void
-EditCapability::setComposer( const QString &newComposer )
+MediaDeviceTrackEditor::setComposer( const QString &newComposer )
 {
     m_track->setComposer( newComposer );
+    commitIfInNonBatchUpdate();
 }
 
 void
-EditCapability::setGenre( const QString &newGenre )
+MediaDeviceTrackEditor::setGenre( const QString &newGenre )
 {
     m_track->setGenre( newGenre );
+    commitIfInNonBatchUpdate();
 }
 
 void
-EditCapability::setYear( int newYear )
+MediaDeviceTrackEditor::setYear( int newYear )
 {
     m_track->setYear( newYear );
+    commitIfInNonBatchUpdate();
 }
 
 void
-EditCapability::setBpm( const qreal newBpm )
+MediaDeviceTrackEditor::setBpm( const qreal newBpm )
 {
     m_track->setBpm( newBpm );
+    commitIfInNonBatchUpdate();
 }
 
 void
-EditCapability::setTitle( const QString &newTitle )
+MediaDeviceTrackEditor::setTitle( const QString &newTitle )
 {
     m_track->setTitle( newTitle );
+    commitIfInNonBatchUpdate();
 }
 
 void
-EditCapability::setComment( const QString &newComment )
+MediaDeviceTrackEditor::setComment( const QString &newComment )
 {
     m_track->setComment( newComment );
+    commitIfInNonBatchUpdate();
 }
 
 void
-EditCapability::setTrackNumber( int newTrackNumber )
+MediaDeviceTrackEditor::setTrackNumber( int newTrackNumber )
 {
     m_track->setTrackNumber( newTrackNumber );
+    commitIfInNonBatchUpdate();
 }
 
 void
-EditCapability::setDiscNumber( int newDiscNumber )
+MediaDeviceTrackEditor::setDiscNumber( int newDiscNumber )
 {
     m_track->setDiscNumber( newDiscNumber );
+    commitIfInNonBatchUpdate();
 }
 
 void
-EditCapability::beginUpdate()
+MediaDeviceTrackEditor::beginUpdate()
 {
-    m_track->beginUpdate();
+    m_inBatchUpdate = true;
 }
 
 void
-EditCapability::endUpdate()
+MediaDeviceTrackEditor::endUpdate()
 {
-    m_track->endUpdate();
+    m_inBatchUpdate = false;
+    m_track->commitChanges();
 }
 
-#include "IpodMetaEditCapability.moc"
+void
+MediaDeviceTrackEditor::commitIfInNonBatchUpdate()
+{
+    if( m_inBatchUpdate )
+        return;
+    m_track->commitChanges();
+}

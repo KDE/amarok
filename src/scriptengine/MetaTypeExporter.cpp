@@ -26,7 +26,7 @@ Image*                                                                          
 
 #define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );
 #define GET_TRACK_EC( X ) GET_TRACK \
-QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() ); \
+Meta::TrackEditorPtr ec = track->editor(); \
 if( ec ) \
 { \
     X; \
@@ -223,8 +223,7 @@ bool
 MetaTrackPrototype::isEditable() const
 {
     GET_TRACK
-    QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
-    return ec;
+    return track->editor(); // converts to bool nicely
 }
 
 QString

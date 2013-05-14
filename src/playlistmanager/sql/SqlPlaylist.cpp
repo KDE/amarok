@@ -288,7 +288,7 @@ SqlPlaylist::loadTracks()
 
         MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
 
-        proxyTrack->setName( row[3] );
+        proxyTrack->setTitle( row[3] );
         proxyTrack->setAlbum( row[4] );
         proxyTrack->setArtist( row[5] );
         m_tracks << Meta::TrackPtr( proxyTrack.data() );

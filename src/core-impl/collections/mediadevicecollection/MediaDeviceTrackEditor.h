@@ -22,18 +22,10 @@
 
 namespace Meta
 {
-
-/**
- * This capability is different from other media device capabilities - it implements core
- * EditCapability and has nothing to do with Hander::Capability
- */
-class MediaDeviceEditCapability : public Meta::TrackEditor
+class MediaDeviceTrackEditor : public Meta::TrackEditor
 {
-    Q_OBJECT
-
     public:
-        MediaDeviceEditCapability( MediaDeviceTrack *track );
-        virtual ~MediaDeviceEditCapability();
+        MediaDeviceTrackEditor( MediaDeviceTrack *track );
 
         virtual void setAlbum( const QString &newAlbum );
         virtual void setAlbumArtist( const QString &newAlbumArtist );

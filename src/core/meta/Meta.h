@@ -172,6 +172,18 @@ namespace Meta
             static bool lessThan( const TrackPtr& left, const TrackPtr& right );
 
             /**
+             * Return a pointer to TrackEditor interface that allows you to edit metadata
+             * of this track. May be null, which signifies that the track is not editable.
+             *
+             * This is a replacement to ::create<Capabilities::EditCapability>() with more
+             * well-defined memory management and nicer implementation possibilities.
+             * (multiple inheritance and returning self)
+             *
+             * Default implementation returns null pointer.
+             */
+            virtual TrackEditorPtr editor();
+
+            /**
              * Return a pointer to track's Statistics interface. May never be null.
              *
              * Subclasses: always return the default implementation instead of returning 0.

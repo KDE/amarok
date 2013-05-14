@@ -18,7 +18,7 @@
 #define TIMECODEMETA_H
 
 #include "core/meta/Meta.h"
-#include "core/capabilities/Capability.h"
+#include "core/meta/TrackEditor.h"
 
 class QAction;
 
@@ -39,7 +39,7 @@ namespace Meta {
     typedef KSharedPtr<TimecodeYear> TimecodeYearPtr;
 
 
-class TimecodeTrack : public Track
+class TimecodeTrack : public Track, public TrackEditor
 {
 public:
     TimecodeTrack( const QString &name, const QString &url, qint64 start, qint64 end );
@@ -58,39 +58,36 @@ public:
     virtual ComposerPtr composer() const;
     virtual YearPtr year() const;
 
-    virtual void setAlbum ( const QString &newAlbum );
-    virtual void setArtist ( const QString &newArtist );
-    virtual void setGenre ( const QString &newGenre );
-    virtual void setComposer ( const QString &newComposer );
-    virtual void setYear ( int newYear );
-
-    virtual void setTitle( const QString &newTitle );
-
     virtual qreal bpm() const;
-    virtual void setBpm ( const qreal newBpm );
-
     virtual QString comment() const;
-    virtual void setComment ( const QString &newComment );
-
     virtual qint64 length() const;
-
     virtual int filesize() const;
     virtual int sampleRate() const;
     virtual int bitrate() const;
-
     virtual int trackNumber() const;
-    virtual void setTrackNumber ( int newTrackNumber );
-
     virtual int discNumber() const;
-    virtual void setDiscNumber ( int newDiscNumber );
-
     virtual QString type() const;
 
     virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+    virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type );
 
-    void beginUpdate();
-    void endUpdate();
+    virtual TrackEditorPtr editor();
+
+    // TrackEditor methods
+    virtual void setAlbum( const QString &newAlbum );
+    virtual void setAlbumArtist( const QString &newAlbumArtist );
+    virtual void setArtist( const QString &newArtist );
+    virtual void setComposer( const QString &newComposer );
+    virtual void setGenre( const QString &newGenre );
+    virtual void setYear( int newYear );
+    virtual void setTitle( const QString &newTitle );
+    virtual void setComment( const QString &newComment );
+    virtual void setTrackNumber( int newTrackNumber );
+    virtual void setDiscNumber( int newDiscNumber );
+    virtual void setBpm( const qreal newBpm );
+
+    virtual void beginUpdate();
+    virtual void endUpdate();
 
     //TimecodeTrack specific methods
     void setAlbum( TimecodeAlbumPtr album );

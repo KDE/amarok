@@ -227,7 +227,7 @@ namespace Collections
             MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
             proxyTrack->setArtist( url.queryItem( "artist" ) );
             proxyTrack->setAlbum( url.queryItem( "album" ) );
-            proxyTrack->setName( url.queryItem( "title" ) );
+            proxyTrack->setTitle( url.queryItem( "title" ) );
             Playdar::ProxyResolver *proxyResolver = new Playdar::ProxyResolver( this, url, proxyTrack );
 
             connect( proxyResolver, SIGNAL(playdarError(Playdar::Controller::ErrorState)),

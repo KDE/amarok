@@ -22,6 +22,7 @@
 #include "core/collections/QueryMaker.h"
 #include "core/meta/Observer.h"
 #include "core/meta/Statistics.h"
+#include "core/meta/TrackEditor.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
@@ -225,6 +226,12 @@ Track::localFileNotPlayableReason( const QString &path ) const
     if( !trackFileInfo.isReadable() )
         return i18n( "No read permissions" );
     return QString();
+}
+
+TrackEditorPtr
+Track::editor()
+{
+    return TrackEditorPtr();
 }
 
 StatisticsPtr

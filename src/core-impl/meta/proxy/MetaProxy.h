@@ -20,6 +20,7 @@
 #include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 #include "core/meta/Meta.h"
+#include "core/meta/TrackEditor.h"
 #include "core-impl/meta/proxy/MetaProxyWorker.h"
 
 #include <QObject>
@@ -33,7 +34,7 @@ namespace MetaProxy
 {
     class Track;
     typedef KSharedPtr<Track> TrackPtr;
-    class AMAROK_EXPORT Track : public Meta::Track
+    class AMAROK_EXPORT Track : public Meta::Track, public Meta::TrackEditor
     {
         public:
             class Private;
@@ -119,24 +120,32 @@ namespace MetaProxy
             virtual void addLabel( const Meta::LabelPtr &label );
             virtual void removeLabel( const Meta::LabelPtr &label );
 
-            virtual bool operator==( const Meta::Track &track ) const;
+            virtual Meta::TrackEditorPtr editor();
             virtual Meta::StatisticsPtr statistics();
+
+            virtual bool operator==( const Meta::Track &track ) const;
+
+        // Meta::TrackEditor methods:
+            virtual void setAlbum( const QString &album );
+            virtual void setAlbumArtist( const QString &artist );
+            virtual void setArtist( const QString &artist );
+            virtual void setComposer( const QString &composer );
+            virtual void setGenre( const QString &genre );
+            virtual void setYear( int year );
+            virtual void setComment( const QString &comment );
+            virtual void setTitle( const QString &name );
+            virtual void setTrackNumber( int number );
+            virtual void setDiscNumber( int discNumber );
+            virtual void setBpm( const qreal bpm );
+
+            virtual void beginUpdate();
+            virtual void endUpdate();
 
         // custom MetaProxy methods
             /**
              * Return true if underlying track has already been found, false otherwise.
              */
             bool isResolved() const;
-            void setName( const QString &name );
-            void setAlbum( const QString &album );
-            void setAlbumArtist( const QString &artist );
-            void setArtist( const QString &artist );
-            void setGenre( const QString &genre );
-            void setComposer( const QString &composer );
-            void setYear( int year );
-            void setBpm( const qreal bpm );
-            void setTrackNumber( int number );
-            void setDiscNumber( int discNumber );
             void setLength( qint64 length );
 
             /**

@@ -301,10 +301,6 @@ SqlPodcastEpisode::hasCapabilityInterface( Capabilities::Capability::Type type )
             //only downloaded episodes can be position marked
 //            return !localUrl().isEmpty();
             return true;
-            //TODO: downloaded episodes can be edited
-        case Capabilities::Capability::Editable:
-            return isEditable();
-
         default:
             return false;
     }
@@ -325,20 +321,9 @@ SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type typ
             return new TimecodeWriteCapabilityPodcastImpl( this );
         case Capabilities::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityPodcastImpl( this );
-        case Capabilities::Capability::Editable:
-            if( !m_localFile.isNull() )
-                return m_localFile->createCapabilityInterface( type );
         default:
             return 0;
     }
-}
-
-bool
-SqlPodcastEpisode::isEditable() const
-{
-     Meta::TrackPtr file = m_localFile; // prevent discarding const qualifier
-     QScopedPointer<Meta::TrackEditor> ec( file ? file->create<Meta::TrackEditor>() : 0 );
-     return ec;
 }
 
 void
@@ -373,7 +358,7 @@ SqlPodcastEpisode::setTitle( const QString &title )
 {
     m_title = title;
 
-    QScopedPointer<Meta::TrackEditor> ec( m_localFile ? m_localFile->create<Meta::TrackEditor>() : 0 );
+    Meta::TrackEditorPtr ec = m_localFile ? m_localFile->editor() : Meta::TrackEditorPtr();
     if( ec  )
         ec->setTitle( title );
 }
@@ -414,13 +399,22 @@ SqlPodcastEpisode::year() const
     return m_localFile->year();
 }
 
+Meta::TrackEditorPtr
+SqlPodcastEpisode::editor()
+{
+    if( m_localFile )
+        return m_localFile->editor();
+    else
+        return Meta::TrackEditorPtr();
+}
+
 bool
 SqlPodcastEpisode::writeTagsToFile()
 {
     if( !m_localFile )
         return false;
 
-    QScopedPointer<Meta::TrackEditor> ec( m_localFile->create<Meta::TrackEditor>() );
+    Meta::TrackEditorPtr ec = m_localFile->editor();
     if( !ec )
         return false;
 

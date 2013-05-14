@@ -29,7 +29,6 @@ if(IPOD_FOUND AND WITH_IPOD)
     IpodCollectionFactory.cpp
     IpodCollectionLocation.cpp
     IpodMeta.cpp
-    IpodMetaEditCapability.cpp
     IpodPlaylist.cpp
     IpodPlaylistProvider.cpp
     jobs/IpodCopyTracksJob.cpp

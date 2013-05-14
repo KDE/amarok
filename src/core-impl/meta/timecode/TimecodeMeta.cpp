@@ -24,7 +24,6 @@
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/BoundedPlaybackCapability.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
-#include "core-impl/capabilities/timecode/TimecodeEditCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.h"
 
 using namespace Meta;
@@ -335,6 +334,12 @@ TimecodeTrack::setAlbum( TimecodeAlbumPtr album )
 }
 
 void
+TimecodeTrack::setAlbumArtist( const QString & )
+{
+    // no suport for it
+}
+
+void
 TimecodeTrack::setYear( TimecodeYearPtr year )
 {
     m_year = year;
@@ -362,8 +367,7 @@ TimecodeTrack::setArtist( TimecodeArtistPtr artist )
 bool
 TimecodeTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return type == Capabilities::Capability::BoundedPlayback
-           || type == Capabilities::Capability::Editable;
+    return type == Capabilities::Capability::BoundedPlayback;
 }
 
 Capabilities::Capability *
@@ -373,10 +377,14 @@ TimecodeTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 
     if ( type == Capabilities::Capability::BoundedPlayback )
         return new Capabilities::TimecodeBoundedPlaybackCapability( this );
-    else if( type == Capabilities::Capability::Editable )
-        return new Capabilities::TimecodeEditCapability( this );
     else
         return 0;
+}
+
+TrackEditorPtr
+TimecodeTrack::editor()
+{
+    return TrackEditorPtr( this );
 }
 
 qint64 Meta::TimecodeTrack::start()

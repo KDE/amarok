@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2013 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,7 +19,8 @@
 #define META_TRACKEDITOR_H
 
 #include "core/amarokcore_export.h"
-#include "core/capabilities/Capability.h"
+
+#include <KSharedPtr>
 
 namespace Meta
 {
@@ -27,15 +29,18 @@ namespace Meta
      *
      * If you are calling more than one setter method, you should call beginUpdate()
      * before calling any setter methods and endUpdate() when you're done.
+     *
+     * This class is memory-managed exclusively using KSharedPtrs: always use
+     * TrackEditorPtr to store or pass pointer to this class. This class must be
+     * implemented in a reentrant manner. Additionally, underlying Meta::Track must
+     * be thread-safe -- if you return same instance of TrackEditor every time then it
+     * means that even the instance must be thread-safe.
      */
-    class AMAROK_CORE_EXPORT TrackEditor : public Capabilities::Capability
+    class AMAROK_CORE_EXPORT TrackEditor : public virtual QSharedData // virtual inheritance
+    // so that Track implementations can inherit both Meta::Track and Meta::TrackEditor
     {
-        Q_OBJECT
-
         public:
             virtual ~TrackEditor();
-
-            static Type capabilityInterfaceType() { return Capabilities::Capability::Editable; }
 
             virtual void setAlbum( const QString &newAlbum ) = 0;
             virtual void setAlbumArtist( const QString &newAlbumArtist ) = 0;
@@ -60,6 +65,8 @@ namespace Meta
              */
             virtual void endUpdate() = 0;
     };
+
+    typedef KSharedPtr<TrackEditor> TrackEditorPtr;
 }
 
 #endif // META_TRACKEDITOR_H

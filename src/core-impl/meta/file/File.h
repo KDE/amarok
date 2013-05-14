@@ -20,6 +20,7 @@
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
+#include "core/meta/TrackEditor.h"
 
 namespace MetaFile
 {
@@ -27,7 +28,7 @@ namespace MetaFile
 
     typedef KSharedPtr<Track> TrackPtr;
 
-    class AMAROK_EXPORT Track : public Meta::Track, public Meta::Statistics
+    class AMAROK_EXPORT Track : public Meta::Track, public Meta::Statistics, Meta::TrackEditor
     {
         public:
             Track( const KUrl &url );
@@ -70,7 +71,21 @@ namespace MetaFile
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
+            virtual Meta::TrackEditorPtr editor();
             virtual Meta::StatisticsPtr statistics();
+
+        // Meta::TrackEditor methods:
+            virtual void setAlbum( const QString &newAlbum );
+            virtual void setAlbumArtist( const QString &newAlbumArtist );
+            virtual void setArtist( const QString &newArtist );
+            virtual void setComposer( const QString &newComposer );
+            virtual void setGenre( const QString &newGenre );
+            virtual void setYear( int newYear );
+            virtual void setTitle( const QString &newTitle );
+            virtual void setComment( const QString &newComment );
+            virtual void setTrackNumber( int newTrackNumber );
+            virtual void setDiscNumber( int newDiscNumber );
+            virtual void setBpm( const qreal newBpm );
 
         // Meta::Statistics methods:
             virtual double score() const;
@@ -82,6 +97,7 @@ namespace MetaFile
             virtual int playCount() const;
             virtual void setPlayCount( int newPlayCount );
 
+        // combined Meta::TrackEditor, Meta::Statistics methods:
             virtual void beginUpdate();
             virtual void endUpdate();
 
@@ -98,19 +114,7 @@ namespace MetaFile
             static bool isTrack( const KUrl &url );
 
             virtual QImage getEmbeddedCover() const;
-
             virtual void setCollection( Collections::Collection *newCollection );
-            virtual void setTitle( const QString &newTitle );
-            virtual void setAlbum( const QString &newAlbum );
-            virtual void setAlbumArtist( const QString &newAlbumArtist );
-            virtual void setArtist( const QString &newArtist );
-            virtual void setGenre( const QString &newGenre );
-            virtual void setComposer( const QString &newComposer );
-            virtual void setYear( int newYear );
-            virtual void setTrackNumber( int newTrackNumber );
-            virtual void setBpm( const qreal newBpm );
-            virtual void setComment( const QString &newComment );
-            virtual void setDiscNumber( int newDiscNumber );
 
             // publish method so that it can be called by Private.
             using Meta::Track::notifyObservers;

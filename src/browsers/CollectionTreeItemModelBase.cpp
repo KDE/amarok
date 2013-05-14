@@ -98,14 +98,11 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
 
     if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( data ) )
     {
-        if( !track->has<Meta::TrackEditor>() )
-            return false;
-        Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
+        Meta::TrackEditorPtr ec = track->editor();
         if( ec )
         {
             ec->setTitle( value.toString() );
             emit dataChanged( index, index );
-            delete ec;
             return true;
         }
     }
@@ -116,7 +113,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
+                Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
                     ec->setAlbum( value.toString() );
             }
@@ -131,10 +128,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
+                Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
                     ec->setArtist( value.toString() );
-                delete ec;
             }
             emit dataChanged( index, index );
             return true;
@@ -147,10 +143,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
+                Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
                     ec->setGenre( value.toString() );
-                delete ec;
             }
             emit dataChanged( index, index );
             return true;
@@ -163,10 +158,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
+                Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
                     ec->setYear( value.toInt() );
-                delete ec;
             }
             emit dataChanged( index, index );
             return true;
@@ -179,10 +173,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
+                Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
                     ec->setComposer( value.toString() );
-                delete ec;
             }
             emit dataChanged( index, index );
             return true;

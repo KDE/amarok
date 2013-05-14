@@ -30,29 +30,30 @@
 
 #define DEBUG_PREFIX "AggregateMeta"
 
-namespace Capabilities {
+namespace Meta
+{
 
-#define FORWARD( call ) { foreach( Meta::TrackEditor *ec, m_ec ) { ec->call; } \
+#define FORWARD( call ) { foreach( TrackEditorPtr e, m_editors ) { e->call; } \
                             if( !m_batchMode ) QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) ); }
 
-class AggregateEditCapability : public Meta::TrackEditor
+class AggregateTrackEditor : public TrackEditor
 {
 public:
-    AggregateEditCapability( Collections::AggregateCollection *coll, const QList<Meta::TrackEditor*> &ecs )
-        : Meta::TrackEditor()
+    AggregateTrackEditor( Collections::AggregateCollection *coll, const QList<TrackEditorPtr> &editors )
+        : TrackEditor()
         , m_batchMode( false )
         , m_collection( coll )
-        , m_ec( ecs ) {}
-    virtual ~AggregateEditCapability() { qDeleteAll( m_ec ); }
+        , m_editors( editors )
+    {}
 
     void beginUpdate()
     {
         m_batchMode = true;
-        foreach( Meta::TrackEditor *ec, m_ec ) ec->beginUpdate();
+        foreach( TrackEditorPtr ec, m_editors ) ec->beginUpdate();
     }
     void endUpdate()
     {
-        foreach( Meta::TrackEditor *ec, m_ec ) ec->endUpdate();
+        foreach( TrackEditorPtr ec, m_editors ) ec->endUpdate();
         m_batchMode = false;
         QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) );
     }
@@ -70,18 +71,14 @@ public:
 private:
     bool m_batchMode;
     Collections::AggregateCollection *m_collection;
-    QList<Meta::TrackEditor*> m_ec;
+    QList<TrackEditorPtr> m_editors;
 };
 
 #undef FORWARD
 
-}
-
-namespace Meta {
-
-AggregateTrack::AggregateTrack( Collections::AggregateCollection *coll, const Meta::TrackPtr &track )
-        : Meta::Track()
-        , Meta::Observer()
+AggregateTrack::AggregateTrack( Collections::AggregateCollection *coll, const TrackPtr &track )
+        : Track()
+        , Observer()
         , m_collection( coll )
         , m_name( track->name() )
         , m_album( 0 )
@@ -546,65 +543,37 @@ bool
 AggregateTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     if( m_tracks.count() == 1 )
-    {
-        //if we aggregate only one track, simply return the tracks capability directly
-        return m_tracks.at( 0 )->hasCapabilityInterface( type );
-    }
+        // if we aggregate only one track, simply return the tracks capability directly
+        return m_tracks.first()->hasCapabilityInterface( type );
     else
-    {
-        // if there is more than one track, check all tracks for the given
-        // capability if and only if AggregateTrack supports it as well
-
-        //as there are no supported capabilities yet...
-        switch( type )
-        {
-        case Capabilities::Capability::Editable:
-            {
-                foreach( const Meta::TrackPtr &track, m_tracks )
-                {
-                    if( !track->hasCapabilityInterface( type ) )
-                        return false;
-                }
-                return true;
-            }
-        default:
-            return false;
-        }
-    }
+        return false;
 }
 
 Capabilities::Capability*
 AggregateTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_tracks.count() == 1 )
-    {
-        Meta::TrackPtr track = m_tracks.at( 0 );
-        return track->createCapabilityInterface( type );
-    }
+        return m_tracks.first()->createCapabilityInterface( type );
     else
+        return 0;
+}
+
+TrackEditorPtr
+AggregateTrack::editor()
+{
+    if( m_tracks.count() == 1 )
+        return m_tracks.first()->editor();
+
+    QList<Meta::TrackEditorPtr> editors;
+    foreach( Meta::TrackPtr track, m_tracks )
     {
-        switch( type )
-        {
-        case Capabilities::Capability::Editable:
-            {
-                QList<Meta::TrackEditor*> ecs;
-                foreach( Meta::TrackPtr track, m_tracks )
-                {
-                    Meta::TrackEditor *ec = track->create<Meta::TrackEditor>();
-                    if( ec )
-                        ecs << ec;
-                    else
-                    {
-                        qDeleteAll( ecs );
-                        return 0;
-                    }
-                }
-                return new Capabilities::AggregateEditCapability( m_collection, ecs );
-            }
-        default:
-            return 0;
-        }
+        Meta::TrackEditorPtr ec = track->editor();
+        if( ec )
+            editors << ec;
+        else
+            return TrackEditorPtr();
     }
+    return TrackEditorPtr( new AggregateTrackEditor( m_collection, editors ) );
 }
 
 void

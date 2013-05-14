@@ -20,7 +20,6 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/ipodcollection/IpodCollection.h"
-#include "core-impl/collections/ipodcollection/IpodMetaEditCapability.h"
 #include "core-impl/collections/ipodcollection/config-ipodcollection.h"
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "core-impl/collections/support/ArtistHelper.h"
@@ -139,32 +138,6 @@ Track::~Track()
     itdb_track_free( m_track );
     if( !m_tempImageFilePath.isEmpty() )
         QFile::remove( m_tempImageFilePath );
-}
-
-bool
-Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
-{
-    switch( type )
-    {
-        case Capabilities::Capability::Editable:
-            return isEditable();
-        default:
-            break;
-    }
-    return false;
-}
-
-Capabilities::Capability*
-Track::createCapabilityInterface( Capabilities::Capability::Type type )
-{
-    switch( type )
-    {
-        case Capabilities::Capability::Editable:
-            return isEditable() ? new EditCapability( KSharedPtr<Track>( this ) ) : 0;
-        default:
-            break;
-    }
-    return 0;
 }
 
 QString
@@ -651,6 +624,12 @@ Collections::Collection*
 Track::collection() const
 {
     return m_coll.data();
+}
+
+Meta::TrackEditorPtr
+Track::editor()
+{
+    return Meta::TrackEditorPtr( isEditable() ? this : 0 );
 }
 
 Meta::StatisticsPtr

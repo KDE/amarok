@@ -764,16 +764,12 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
         actions << btc->bookmarkAction();
     }
 
-    if( m_showEditTrackDetailsAction && track->has<Meta::TrackEditor>() )
+    if( m_showEditTrackDetailsAction && track->editor() )
     {
-        QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
-        if( ec )
-        {
-            QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),
-                                               i18n("Edit Track Details"), this );
-            connect( editAction, SIGNAL(triggered()), SLOT(editTrack()) );
-            m_customActions << editAction;
-        }
+        QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),
+                                           i18n("Edit Track Details"), this );
+        connect( editAction, SIGNAL(triggered()), SLOT(editTrack()) );
+        m_customActions << editAction;
     }
 
     if( track->has<FindInSourceCapability>() )

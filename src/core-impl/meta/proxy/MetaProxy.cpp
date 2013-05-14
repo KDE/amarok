@@ -17,7 +17,6 @@
 #include "MetaProxy.h"
 
 #include "core/meta/Statistics.h"
-#include "core/meta/TrackEditor.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/proxy/MetaProxy_p.h"
 #include "core-impl/meta/proxy/MetaProxy_p.moc"
@@ -38,32 +37,6 @@ class ProxyFmAlbum;
 class ProxyGenre;
 class ProxyComposer;
 class ProxyYear;
-
-class EditCapabilityProxy : public Meta::TrackEditor
-{
-    public:
-        EditCapabilityProxy( MetaProxy::Track *track )
-            : Meta::TrackEditor()
-            , m_track( track ) {}
-
-        virtual void setTitle( const QString &title ) { m_track->setName( title ); }
-        virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
-        virtual void setAlbumArtist( const QString &newAlbumArtist ) { m_track->setAlbumArtist( newAlbumArtist ); }
-        virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
-        virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
-        virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-        virtual void setYear( int newYear ) { m_track->setYear( newYear ); }
-        virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
-        virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ); /*m_track->setComment( newComment );*/ } // Do we want to support this?
-        virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
-        virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-
-        virtual void beginUpdate() {}  // Nothing to do, we cache everything
-        virtual void endUpdate() {}
-
-    private:
-        KSharedPtr<MetaProxy::Track> m_track;
-};
 
 MetaProxy::Track::Track( const KUrl &url, LookupType lookupType )
     : Meta::Track()
@@ -123,7 +96,7 @@ MetaProxy::Track::name() const
 }
 
 void
-MetaProxy::Track::setName( const QString &name )
+MetaProxy::Track::setTitle( const QString &name )
 {
     d->cachedName = name;
 }
@@ -283,7 +256,13 @@ MetaProxy::Track::comment() const
     if( d->realTrack )
         return d->realTrack->comment();
     else
-        return QString();       //do we cache the comment??
+        return QString(); // we don't cache comment
+}
+
+void
+Track::setComment( const QString & )
+{
+    // we don't cache comment
 }
 
 int
@@ -484,11 +463,7 @@ MetaProxy::Track::hasCapabilityInterface( Capabilities::Capability::Type type ) 
     if( d->realTrack )
         return d->realTrack->hasCapabilityInterface( type );
     else
-    {
-        if( type == Capabilities::Capability::Editable )
-            return true;
         return false;
-    }
 }
 
 Capabilities::Capability *
@@ -497,11 +472,7 @@ MetaProxy::Track::createCapabilityInterface( Capabilities::Capability::Type type
     if( d->realTrack )
         return d->realTrack->createCapabilityInterface( type );
     else
-    {
-        if( type == Capabilities::Capability::Editable )
-            return new EditCapabilityProxy( this );
         return 0;
-    }
 }
 
 bool
@@ -516,6 +487,15 @@ MetaProxy::Track::operator==( const Meta::Track &track ) const
     return d->realTrack && d->realTrack.data() == &track;
 }
 
+Meta::TrackEditorPtr
+Track::editor()
+{
+    if( d->realTrack )
+        return d->realTrack->editor();
+    else
+        return Meta::TrackEditorPtr( this );
+}
+
 Meta::StatisticsPtr
 Track::statistics()
 {
@@ -523,6 +503,19 @@ Track::statistics()
         return d->realTrack->statistics();
     else
         return Meta::Track::statistics();
+}
+
+void
+Track::beginUpdate()
+{
+    // nothing to do
+}
+
+void
+Track::endUpdate()
+{
+    // we intentionally don't call metadataUpdated() so that thi first thing that
+    // triggers metadataUpdated() is when the real track is found.
 }
 
 bool

@@ -754,15 +754,15 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
     if( !track )
         return;
 
-    // this does not require EditCapability
-    if(changeMap.contains(Rating))
+    // this does not require TrackEditor
+    if( changeMap.contains( Rating ) )
     {
-        int rating = changeMap.value(Rating).toInt();
+        int rating = changeMap.value( Rating ).toInt();
         track->statistics()->setRating( rating );
         changeMap.remove( Rating );
     }
 
-    QScopedPointer<Meta::TrackEditor> ec( track->create<Meta::TrackEditor>() );
+    Meta::TrackEditorPtr ec = track->editor();
     if( !ec )
         return;
 

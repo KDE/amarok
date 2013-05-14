@@ -58,6 +58,9 @@ namespace Meta
     class Statistics;
     typedef KSharedPtr<Statistics> StatisticsPtr;
     typedef KSharedPtr<const Statistics> ConstStatisticsPtr;
+
+    class TrackEditor;
+    typedef KSharedPtr<TrackEditor> TrackEditorPtr;
 }
 
 #endif // AMAROKCORE_META_FORWARD_DECLARATIONS_H
