@@ -57,8 +57,8 @@ enum AddOptions
 class AMAROK_EXPORT Controller : public QObject
 {
     Q_OBJECT
-public:
 
+public:
     /**
      * Accessor for the singleton pattern.
      * @return a pointer to the only instance of Playlist::Controller.

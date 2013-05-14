@@ -43,19 +43,21 @@
 #include <algorithm>
 #include <typeinfo>
 
+using namespace Playlist;
+
 namespace The
 {
-    AMAROK_EXPORT Playlist::Controller* playlistController()
+    AMAROK_EXPORT Controller* playlistController()
     {
-        return Playlist::Controller::instance();
+        return Controller::instance();
     }
 }
 
 
-Playlist::Controller* Playlist::Controller::s_instance = 0;
+Controller* Controller::s_instance = 0;
 
-Playlist::Controller*
-Playlist::Controller::instance()
+Controller*
+Controller::instance()
 {
     if( s_instance == 0 )
         s_instance = new Controller();
@@ -63,7 +65,7 @@ Playlist::Controller::instance()
 }
 
 void
-Playlist::Controller::destroy()
+Controller::destroy()
 {
     if( s_instance )
     {
@@ -72,7 +74,7 @@ Playlist::Controller::destroy()
     }
 }
 
-Playlist::Controller::Controller()
+Controller::Controller()
         : QObject()
         , m_undoStack( new QUndoStack( this ) )
 {
@@ -84,7 +86,7 @@ Playlist::Controller::Controller()
     //so we get a pointer to the bottom model and use it with great care.
     // TODO: get these values only when we really need them to loosen up the
     // coupling between Controller and Model
-    m_bottomModel = Playlist::ModelStack::instance()->bottom();
+    m_bottomModel = ModelStack::instance()->bottom();
     m_topModel = The::playlist();
 
     m_undoStack->setUndoLimit( 20 );
@@ -92,10 +94,10 @@ Playlist::Controller::Controller()
     connect( m_undoStack, SIGNAL(canUndoChanged(bool)), this, SIGNAL(canUndoChanged(bool)) );
 }
 
-Playlist::Controller::~Controller() {}
+Controller::~Controller() {}
 
 void
-Playlist::Controller::insertOptioned( Meta::TrackPtr track, int options )
+Controller::insertOptioned( Meta::TrackPtr track, int options )
 {
     DEBUG_BLOCK
     if( ! track )
@@ -107,7 +109,7 @@ Playlist::Controller::insertOptioned( Meta::TrackPtr track, int options )
 }
 
 void
-Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
+Controller::insertOptioned( Meta::TrackList list, int options )
 {
     DEBUG_BLOCK
 
@@ -215,13 +217,13 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 }
 
 void
-Playlist::Controller::insertOptioned( Playlists::PlaylistPtr playlist, int options )
+Controller::insertOptioned( Playlists::PlaylistPtr playlist, int options )
 {
     insertOptioned( Playlists::PlaylistList() << playlist, options );
 }
 
 void
-Playlist::Controller::insertOptioned( Playlists::PlaylistList list, int options )
+Controller::insertOptioned( Playlists::PlaylistList list, int options )
 {
     // if we are going to play, we need full metadata (playable tracks)
     TrackLoader::Flags flags = ( options & ( StartPlay | DirectPlay ) )
@@ -234,7 +236,7 @@ Playlist::Controller::insertOptioned( Playlists::PlaylistList list, int options 
 }
 
 void
-Playlist::Controller::insertOptioned( QList<KUrl> &urls, int options )
+Controller::insertOptioned( QList<KUrl> &urls, int options )
 {
     // if we are going to play, we need full metadata (playable tracks)
     TrackLoader::Flags flags = ( options & ( StartPlay | DirectPlay ) )
@@ -247,7 +249,7 @@ Playlist::Controller::insertOptioned( QList<KUrl> &urls, int options )
 }
 
 void
-Playlist::Controller::insertTrack( int topModelRow, Meta::TrackPtr track )
+Controller::insertTrack( int topModelRow, Meta::TrackPtr track )
 {
     DEBUG_BLOCK
     if( !track )
@@ -260,20 +262,20 @@ Playlist::Controller::insertTrack( int topModelRow, Meta::TrackPtr track )
 
 // Overloads use this method.
 void
-Playlist::Controller::insertTracks( int topModelRow, Meta::TrackList tl )
+Controller::insertTracks( int topModelRow, Meta::TrackList tl )
 {
     DEBUG_BLOCK
     insertionHelper( insertionTopRowToBottom( topModelRow ), tl );
 }
 
 void
-Playlist::Controller::insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist )
+Controller::insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist )
 {
     insertPlaylists( topModelRow, Playlists::PlaylistList() << playlist );
 }
 
 void
-Playlist::Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList playlists )
+Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList playlists )
 {
     TrackLoader *loader = new TrackLoader(); // auto-deletes itself
     loader->setProperty( "topModelRow", QVariant( topModelRow ) );
@@ -283,14 +285,14 @@ Playlist::Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList 
 }
 
 void
-Playlist::Controller::removeRow( int topModelRow )
+Controller::removeRow( int topModelRow )
 {
     DEBUG_BLOCK
     removeRows( topModelRow, 1 );
 }
 
 void
-Playlist::Controller::removeRows( int topModelRow, int count )
+Controller::removeRows( int topModelRow, int count )
 {
     DEBUG_BLOCK
     QList<int> rl;
@@ -300,7 +302,7 @@ Playlist::Controller::removeRows( int topModelRow, int count )
 }
 
 void
-Playlist::Controller::removeRows( QList<int>& topModelRows )
+Controller::removeRows( QList<int>& topModelRows )
 {
     DEBUG_BLOCK
     RemoveCmdList bottomModelCmds;
@@ -323,7 +325,7 @@ Playlist::Controller::removeRows( QList<int>& topModelRows )
 }
 
 void
-Playlist::Controller::removeDeadAndDuplicates()
+Controller::removeDeadAndDuplicates()
 {
     DEBUG_BLOCK
 
@@ -358,10 +360,10 @@ Playlist::Controller::removeDeadAndDuplicates()
 }
 
 void
-Playlist::Controller::moveRow( int from, int to )
+Controller::moveRow( int from, int to )
 {
     DEBUG_BLOCK
-    if( Playlist::ModelStack::instance()->sortProxy()->isSorted() )
+    if( ModelStack::instance()->sortProxy()->isSorted() )
         return;
     if( from == to )
         return;
@@ -393,7 +395,7 @@ Playlist::Controller::moveRow( int from, int to )
 }
 
 int
-Playlist::Controller::moveRows( QList<int>& from, int to )
+Controller::moveRows( QList<int>& from, int to )
 {
     DEBUG_BLOCK
     if( from.size() <= 0 )
@@ -401,7 +403,7 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
 
     qSort( from.begin(), from.end() );
 
-    if( Playlist::ModelStack::instance()->sortProxy()->isSorted() )
+    if( ModelStack::instance()->sortProxy()->isSorted() )
         return from.first();
 
     to = ( to == qBound( 0, to, m_topModel->qaim()->rowCount() ) ) ? to : m_topModel->qaim()->rowCount();
@@ -446,7 +448,7 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
 }
 
 void
-Playlist::Controller::moveRows( QList<int>& from, QList<int>& to )
+Controller::moveRows( QList<int>& from, QList<int>& to )
 {
     DEBUG_BLOCK
     if( from.size() != to.size() )
@@ -480,7 +482,7 @@ Playlist::Controller::moveRows( QList<int>& from, QList<int>& to )
 }
 
 void
-Playlist::Controller::undo()
+Controller::undo()
 {
     DEBUG_BLOCK
     m_undoStack->undo();
@@ -488,7 +490,7 @@ Playlist::Controller::undo()
 }
 
 void
-Playlist::Controller::redo()
+Controller::redo()
 {
     DEBUG_BLOCK
     m_undoStack->redo();
@@ -496,10 +498,10 @@ Playlist::Controller::redo()
 }
 
 void
-Playlist::Controller::clear()
+Controller::clear()
 {
     DEBUG_BLOCK
-    removeRows( 0, Playlist::ModelStack::instance()->bottom()->qaim()->rowCount() );
+    removeRows( 0, ModelStack::instance()->bottom()->qaim()->rowCount() );
     emit changed();
 }
 
@@ -508,7 +510,7 @@ Playlist::Controller::clear()
  **************************************************/
 
 void
-Playlist::Controller::slotLoaderWithOptionsFinished( const Meta::TrackList &tracks )
+Controller::slotLoaderWithOptionsFinished( const Meta::TrackList &tracks )
 {
     QObject *loader = sender();
     if( !loader )
@@ -527,7 +529,7 @@ Playlist::Controller::slotLoaderWithOptionsFinished( const Meta::TrackList &trac
 }
 
 void
-Playlist::Controller::slotLoaderWithRowFinished( const Meta::TrackList &tracks )
+Controller::slotLoaderWithRowFinished( const Meta::TrackList &tracks )
 {
     QObject *loader = sender();
     if( !loader )
@@ -546,7 +548,7 @@ Playlist::Controller::slotLoaderWithRowFinished( const Meta::TrackList &tracks )
 }
 
 int
-Playlist::Controller::insertionTopRowToBottom( int topModelRow )
+Controller::insertionTopRowToBottom( int topModelRow )
 {
     DEBUG_BLOCK
 
@@ -557,7 +559,7 @@ Playlist::Controller::insertionTopRowToBottom( int topModelRow )
     }
 
     int bottomModelRow;
-    if( Playlist::ModelStack::instance()->sortProxy()->isSorted() )
+    if( ModelStack::instance()->sortProxy()->isSorted() )
     {
         // if the playlist is sorted there's no point in placing the added tracks at any
         // specific point in relation to another track, so we just append them.
@@ -574,7 +576,7 @@ Playlist::Controller::insertionTopRowToBottom( int topModelRow )
 }
 
 void
-Playlist::Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
+Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
 {
     //expand any tracks that are actually playlists into multisource tracks
     //and any tracks with an associated cue file
