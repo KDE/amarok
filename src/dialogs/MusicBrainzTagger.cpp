@@ -20,6 +20,7 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/support/MetaUtility.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "musicbrainz/MusicBrainzFinder.h"
 #include "musicbrainz/MusicBrainzTagsModel.h"
@@ -49,6 +50,7 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
             m_tracks << track;
     }
     ui->setupUi( mainWidget() );
+    restoreDialogSize( Amarok::config( "MusicBrainzTagDialog" ) );
 
     init();
     search();
@@ -56,6 +58,8 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
 
 MusicBrainzTagger::~MusicBrainzTagger()
 {
+    KConfigGroup group = Amarok::config( "MusicBrainzTagDialog" );
+    saveDialogSize( group );
     delete ui;
 }
 
