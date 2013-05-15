@@ -591,7 +591,7 @@ FileView::slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modif
 
     KGuiItem confirmButton = deleting ? KStandardGuiItem::del() : KStandardGuiItem::remove();
 
-    if( KMessageBox::warningContinueCancelList( this, labelText, filepaths, caption, confirmButton ) == KMessageBox::Cancel )
+    if( KMessageBox::warningContinueCancelList( this, labelText, filepaths, caption, confirmButton ) != KMessageBox::Continue )
         return;
 
     if( deleting )
