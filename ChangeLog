@@ -81,6 +81,23 @@ VERSION 2.8-Beta 1
    * Fix subtle bugs when a long fade-out is initiated near the song end.
    * Don't try to fade-out with phonon backends that don't support it. (vlc)
 
+
+VERSION 2.7.1
+  CHANGES:
+   * Problematic support for treating MusicBrainz ids as track unique ids was dropped;
+     should avoid surprising "Duplicate Tracks Found" errors. (BR 315329)
+
+  BUGFIXES:
+   * Fix inability to reverse "Use Music Location" decision and inability to clear
+     database once all collection directories have been unset. (BR 316216)
+   * Fix frequent crashes on Linux when starting to play a track. (BR 319371)
+   * Fix compilation error on systems with gcc-4.2 (BR 314528)
+   * Fix inability to create database when home directory contains non-ASCII characters.
+     (BR 313914)
+   * Fix typo in Nepomuk query which did not let track numbers of Nepomuk Collection
+     tracks show up in Amarok. (BR 311847)
+
+
 VERSION 2.7
   CHANGES:
     * Files page has been made more intuitive by making Places the root view
