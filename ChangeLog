@@ -39,8 +39,6 @@ VERSION 2.8-Beta 1
    * On-Screen-Display now uses the system font instead of hardcoded sans-serif.
      (BR 248707)
    * On-Screen-Display fades in/out smoothly.
-   * Problematic support for treating MusicBrainz ids as track unique ids was dropped;
-     should avoid surprising "Duplicate Tracks Found" errors. (BR 315329)
    * Fancy behavior of some context menus showing different actions when Shift key is held
      has been reverted. All entries are now shown all the time.
    * The dynamic playlist behavior has changed. It will no longer generate "pretty good"
@@ -56,17 +54,11 @@ VERSION 2.8-Beta 1
   BUGFIXES:
    * Fix suboptimal initial MusicBrainz tag dialog size by remembering it. (BR 269454)
    * Fix file-browser becoming empty when a file was moved to trash. (BR 317944)
-   * Fix inability to reverse "Use Music Location" decision and inability to clear
-     database once all collection directories have been unset. (BR 316216)
    * Fix `amarok --play file.mp3` option didn't actually start playback.
-   * Fix frequent crashes on Linux when starting to play a track. (BR 319371)
    * Reason why a particular track is not playable is now shown in playlist tooltip; patch
      by Anmol Ahuja. (BR 313649)
    * Pre-apmlifier in equalizer is now only enabled if it is actually supported; patch by
      Harsh Gupta. (BR 301311)
-   * Fix compilation error on systems with gcc-4.2 (BR 314528)
-   * Fix inability to create database when home directory contains non-ASCII characters.
-     (BR 313914)
    * Fix Amarok crashed while doing "Organize Files" (BR 317980)
    * Fix Crash on very long artist names [@ Meta::SqlArtist::SqlArtist]. (BR 276894)
    * Clarify message when Last.fm streams are not available. (BR 315771)
@@ -75,8 +67,6 @@ VERSION 2.8-Beta 1
    * Prevent inability to save Last.fm password in corner cases. (BR 315306)
    * Fix crash when quitting Amarok with Statistics Synchronization open. (BR 315525)
    * Fix items moving around when expanded in collection browser. (BR 305602)
-   * Fix typo in Nepomuk query which did not let track numbers show up in Amarok.
-     (BR 311847)
    * Fix bumpy fade-out when first used. (BR 312062)
    * Fix subtle bugs when a long fade-out is initiated near the song end.
    * Don't try to fade-out with phonon backends that don't support it. (vlc)
