@@ -44,8 +44,7 @@ enum AddOption
     Queue      = 1, ///< inserts media after the currentTrack instead of default appending
     Replace    = 2, ///< replaces the playlists instead of default appending (or queueing)
     DirectPlay = 4, ///< start playback of the first item in the list
-    Unique     = 8, ///< don't insert anything already in the playlist
-    StartPlay  = 16, ///< start playback of the first item in the list if nothing else playing
+    StartPlay  = 8, ///< start playback of the first item in the list if nothing else playing
 
     LoadAndPlay = Replace | StartPlay,
     LoadAndPlayImmediately = Replace | DirectPlay ///< replace and begin playing of new item

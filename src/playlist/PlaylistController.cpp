@@ -116,16 +116,6 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
     if( list.isEmpty() )
         return;
 
-    if( options & Unique )
-    {
-        QMutableListIterator<Meta::TrackPtr> i( list );
-        while( i.hasNext() )
-        {
-            if( m_bottomModel->containsTrack( i.next() ) )
-                i.remove();
-        }
-    }
-
     QString actionName = i18nc( "name of the action in undo stack", "Add tracks to playlist" );
     if( options & Queue )
         actionName = i18nc( "name of the action in undo stack", "Queue tracks" );
