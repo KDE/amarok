@@ -14,17 +14,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "StatSyncing"
+
 #include "MatchTracksJob.h"
 
 #include "MetaValues.h"
 #include "core/meta/Meta.h"
 
-#undef VERBOSE_DEBUG
-
 using namespace StatSyncing;
 
+#undef VERBOSE_DEBUG
 #ifdef VERBOSE_DEBUG
-#define DEBUG_PREFIX "StatSyncing"
 #include "core/support/Debug.h"
 static void printPerProviderTrackList( const PerProviderTrackList &providerTracks,
                                        const QString *fromArtist = 0L )

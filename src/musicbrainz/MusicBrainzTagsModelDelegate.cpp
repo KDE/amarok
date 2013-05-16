@@ -15,11 +15,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MusicBrainzTagsModelDelegate"
+
 #include "MusicBrainzTagsModelDelegate.h"
 
 #include <QApplication>
-
-#define DEBUG_PREFIX "MusicBrainzTagsModelDelegate"
 
 MusicBrainzTagsModelDelegate::MusicBrainzTagsModelDelegate( QObject *parent )
     : QItemDelegate( parent )

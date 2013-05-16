@@ -18,6 +18,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CoverFetcher"
+
 #include "CoverFetcher.h"
 
 #include "amarokconfig.h"
@@ -35,8 +37,6 @@
 
 #include <QBuffer>
 #include <QImageReader>
-
-#define DEBUG_PREFIX "CoverFetcher"
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 

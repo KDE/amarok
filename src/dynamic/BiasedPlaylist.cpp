@@ -17,8 +17,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "BiasedPlaylist.h"
+#define DEBUG_PREFIX "BiasedPlaylist"
 
+#include "BiasedPlaylist.h"
 
 #include "App.h"
 #include "amarokconfig.h"
@@ -38,8 +39,6 @@
 #include <QThread>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#define DEBUG_PREFIX "BiasedPlaylist"
 
 Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     : DynamicPlaylist( parent )

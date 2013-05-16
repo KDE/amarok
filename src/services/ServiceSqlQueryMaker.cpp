@@ -14,16 +14,15 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#include "ServiceSqlQueryMaker.h"
 
 #define DEBUG_PREFIX "ServiceSqlQueryMaker"
 
-#include "core/support/Debug.h"
+#include "ServiceSqlQueryMaker.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core/meta/support/MetaConstants.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "ServiceSqlCollection.h"
 
 #include <threadweaver/Job.h>

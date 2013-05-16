@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Playlist::Item"
+
 #include "PlaylistItem.h"
 
 #include "core/capabilities/SourceInfoCapability.h"
@@ -25,8 +27,6 @@
 #include <KRandom>
 
 #include <QSet>
-
-#define DEBUG_PREFIX "Playlist::Item"
 
 Playlist::Item::Item()
     : m_state ( Invalid )

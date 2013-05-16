@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "UpcomingEventsEngine"
+
 #include "UpcomingEventsEngine.h"
 
 #include "context/ContextView.h"
@@ -29,8 +31,6 @@
 #include <KDateTime>
 
 #include <QXmlStreamReader>
-
-#define DEBUG_PREFIX "UpcomingEventsEngine"
 
 AMAROK_EXPORT_DATAENGINE( upcomingEvents, UpcomingEventsEngine )
 

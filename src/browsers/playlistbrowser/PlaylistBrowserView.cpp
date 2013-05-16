@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PlaylistBrowserView"
+
 #include "PlaylistBrowserView.h"
 
 #include "PaletteHandler.h"
@@ -41,8 +43,6 @@
 #include <QMouseEvent>
 #include <QCheckBox>
 #include <QLabel>
-
-#define DEBUG_PREFIX "PlaylistBrowserView"
 
 Q_DECLARE_METATYPE( QModelIndexList )
 

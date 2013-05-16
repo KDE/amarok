@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "APG::Preset"
+
 #include "Preset.h"
 
 #include "ConstraintNode.h"
@@ -31,8 +33,6 @@
 #include <QDomElement>
 
 #include <ThreadWeaver/Weaver>
-
-#define DEBUG_PREFIX "APG::Preset"
 
 APG::PresetPtr
 APG::Preset::createFromXml( QDomElement& xmlelem )

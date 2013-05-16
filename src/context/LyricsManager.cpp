@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LyricsManager"
+
 #include "LyricsManager.h"
 
 #include "EngineController.h"
@@ -27,8 +29,6 @@
 #include <QGraphicsTextItem>
 #include <QXmlStreamReader>
 #include <QTextDocument>
-
-#define DEBUG_PREFIX "LyricsManager"
 
 ////////////////////////////////////////////////////////////////
 //// CLASS LyricsObserver

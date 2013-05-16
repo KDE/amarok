@@ -17,9 +17,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "DatabaseCollection.h"
-
 #define DEBUG_PREFIX "DatabaseCollection"
+
+#include "DatabaseCollection.h"
 
 #include "core/support/Debug.h"
 #include "scanner/GenericScanManager.h"

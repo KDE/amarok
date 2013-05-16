@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "AbstractDirectoryWatcher.h"
-
 #define DEBUG_PREFIX "AbstractDirectoryWatcher"
+
+#include "AbstractDirectoryWatcher.h"
 
 #include "amarokconfig.h"
 #include "core/support/Debug.h"

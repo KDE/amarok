@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Constraint::PlaylistFileSize"
+
 #include "PlaylistFileSize.h"
 
 #include "core/meta/Meta.h"
@@ -22,8 +24,6 @@
 
 #include <stdlib.h>
 #include <math.h>
-
-#define DEBUG_PREFIX "Constraint::PlaylistFileSize"
 
 Constraint*
 ConstraintTypes::PlaylistFileSize::createFromXml( QDomElement& xmlelem, ConstraintNode* p )

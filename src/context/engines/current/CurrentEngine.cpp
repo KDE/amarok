@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CurrentEngine"
+
 #include "CurrentEngine.h"
 
 #include "EngineController.h"
@@ -35,8 +37,6 @@
 #include <Phonon/Path>
 #include <Phonon/MediaController>
 #include <Phonon/MediaSource> //Needed for the slot
-
-#define DEBUG_PREFIX "CurrentEngine"
 
 using namespace Context;
 

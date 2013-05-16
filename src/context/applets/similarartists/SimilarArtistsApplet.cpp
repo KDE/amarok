@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "SimilarArtistsApplet"
+
 #include "SimilarArtistsApplet.h"
 
 #include "App.h"
@@ -42,8 +44,6 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include <QScrollBar>
-
-#define DEBUG_PREFIX "SimilarArtistsApplet"
 
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )

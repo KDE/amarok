@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LyricsEngine"
+
 #include "LyricsEngine.h"
 
 #include "EngineController.h"
@@ -26,8 +28,6 @@
 
 #include <QTimer>
 #include <QTextDocument>
-
-#define DEBUG_PREFIX "LyricsEngine"
 
 using namespace Context;
 

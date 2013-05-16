@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MainToolbar"
+
 #include "MainToolbar.h"
 
 #include "App.h"
@@ -53,8 +55,6 @@
 #include <QSlider>
 #include <QTimer>
 #include <QVBoxLayout>
-
-#define DEBUG_PREFIX "MainToolbar"
 
 // #define prev_next_role QPalette::Link
 #define prev_next_role foregroundRole()

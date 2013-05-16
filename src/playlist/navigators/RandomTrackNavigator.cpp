@@ -21,6 +21,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Playlist::RandomTrackNavigator"
+
 #include "RandomTrackNavigator.h"
 
 #include "core/support/Debug.h"
@@ -29,8 +31,6 @@
 #include <QtGlobal> // For 'qrand()'
 
 #include <math.h> // For 'round()'
-
-#define DEBUG_PREFIX "Playlist::RandomTrackNavigator"
 
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {

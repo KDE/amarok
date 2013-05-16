@@ -17,9 +17,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "SqlCollection.h"
-
 #define DEBUG_PREFIX "SqlCollection"
+
+#include "SqlCollection.h"
 
 #include "DefaultSqlQueryMakerFactory.h"
 #include "DatabaseUpdater.h"

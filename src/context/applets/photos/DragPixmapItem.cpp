@@ -14,17 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "DragPixmapItem.h"
-
 #define DEBUG_PREFIX "DragPixmapItem"
 
-#include <core/support/Debug.h>
+#include "DragPixmapItem.h"
 
-// KDE
+#include "core/support/Debug.h"
+
 #include <KIcon>
 #include <KLocale>
 
-// QT
 #include <QApplication>
 #include <QDesktopServices>
 #include <QDrag>

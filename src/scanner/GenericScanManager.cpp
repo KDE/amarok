@@ -20,14 +20,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "GenericScanManager.h"
-
 #define DEBUG_PREFIX "GenericScanManager"
 
-#include "GenericScannerJob.h"
-#include "core/support/Debug.h"
+#include "GenericScanManager.h"
 
-#include <threadweaver/ThreadWeaver.h>
+#include "core/support/Debug.h"
+#include "scanner/GenericScannerJob.h"
+
+#include <ThreadWeaver/Weaver>
+
 #include <QFileInfo>
 
 GenericScanManager::GenericScanManager( QObject *parent )

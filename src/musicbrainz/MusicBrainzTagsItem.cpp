@@ -15,13 +15,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MusicBrainzTagsItem"
+
 #include "MusicBrainzTagsItem.h"
 
 #include "AmarokMimeData.h"
 #include "core/support/Debug.h"
 #include "MusicBrainzMeta.h"
-
-#define DEBUG_PREFIX "MusicBrainzTagsItem"
 
 MusicBrainzTagsItem::MusicBrainzTagsItem( MusicBrainzTagsItem *parent,
                                           const Meta::TrackPtr track,

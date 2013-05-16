@@ -17,9 +17,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "SqlScanResultProcessor.h"
-
 #define DEBUG_PREFIX "SqlScanResultProcessor"
+
+#include "SqlScanResultProcessor.h"
 
 #include "MainWindow.h"
 #include "collectionscanner/Directory.h"

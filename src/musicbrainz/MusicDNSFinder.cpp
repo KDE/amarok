@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MusicDNSFinder"
+
 #include "MusicDNSFinder.h"
 
 #include "core/meta/Meta.h"
@@ -22,8 +24,6 @@
 #include <ThreadWeaver/Weaver>
 
 #include <QNetworkAccessManager>
-
-#define DEBUG_PREFIX "MusicDNSFinder"
 
 MusicDNSFinder::MusicDNSFinder( QObject *parent,
                                 const QString &host, const int port, const QString &pathPrefix,

@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MusicDNSAudioDecoder"
+
 #include "MusicDNSAudioDecoder.h"
 
 #include "config.h"
@@ -28,8 +30,6 @@ extern "C" {
 }
 
 #include <ofa1/ofa.h>
-
-#define DEBUG_PREFIX "MusicDNSAudioDecoder"
 
 DecodedAudioData::DecodedAudioData()
                  : m_sRate( 0 )

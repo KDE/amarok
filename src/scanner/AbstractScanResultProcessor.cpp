@@ -17,22 +17,20 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "AbstractScanResultProcessor.h"
-
 #define DEBUG_PREFIX "AbstractScanResultProcessor"
 
-#include "GenericScanManager.h"
+#include "AbstractScanResultProcessor.h"
 
-#include "collectionscanner/Directory.h"
 #include "collectionscanner/Album.h"
-#include "collectionscanner/Track.h"
+#include "collectionscanner/Directory.h"
 #include "collectionscanner/Playlist.h"
+#include "collectionscanner/Track.h"
+#include "core/interfaces/Logger.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core-impl/collections/support/ArtistHelper.h"
 #include "playlistmanager/PlaylistManager.h"
-
-#include <core-impl/collections/support/ArtistHelper.h>
+#include "scanner/GenericScanManager.h"
 
 AbstractScanResultProcessor::AbstractScanResultProcessor( GenericScanManager* manager, QObject* parent )
     : QObject( parent )

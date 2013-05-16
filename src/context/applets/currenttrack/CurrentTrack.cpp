@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CurrentTrack"
+
 #include "CurrentTrack.h"
 
 #include "App.h"
@@ -58,8 +60,6 @@
 #include <QPainter>
 #include <QScopedPointer>
 #include <QSignalMapper>
-
-#define DEBUG_PREFIX "CurrentTrack"
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )

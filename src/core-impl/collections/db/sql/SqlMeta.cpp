@@ -16,9 +16,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "SqlMeta.h"
-
 #define DEBUG_PREFIX "SqlMeta"
+
+#include "SqlMeta.h"
 
 #include "amarokconfig.h"
 

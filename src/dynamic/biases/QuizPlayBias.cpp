@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "QuizPlayBias"
+
 #include "QuizPlayBias.h"
 
 #include "browsers/playlistbrowser/DynamicBiasWidgets.h"
@@ -35,8 +37,6 @@
 #include <QXmlStreamWriter>
 
 #include <KLocale>
-
-#define DEBUG_PREFIX "QuizPlayBias"
 
 QString
 Dynamic::QuizPlayBiasFactory::i18nName() const

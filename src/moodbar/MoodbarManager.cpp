@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MoodbarManager"
+
 /*
 The mood file loading and rendering code is based on the Amarok 1.4 moodbar implementation
 by Gav Wood and Joseph Rabinoff, ported to Qt 4 with only a few modifications by me.
@@ -39,7 +41,6 @@ even porting to qtscript so it could be run, as needed, by Amarok.
 #include <QFileInfo>
 #include <QPainter>
 
-#define DEBUG_PREFIX "MoodbarManager"
 #define NUM_HUES 12
 
 namespace The

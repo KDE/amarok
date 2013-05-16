@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LabelsEngine"
+
 #include "LabelsEngine.h"
 
 #include "EngineController.h"
@@ -29,8 +31,6 @@
 #include <KLocale>
 
 #include <QDomDocument>
-
-#define DEBUG_PREFIX "LabelsEngine"
 
 using namespace Context;
 

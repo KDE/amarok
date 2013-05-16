@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CoverGridApplet"
+
 #include "CoverGridApplet.h"
 
 #include "AlbumItem.h"
@@ -43,8 +45,6 @@
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsGridLayout>
-
-#define DEBUG_PREFIX "CoverGridApplet"
 
 CoverGridApplet::CoverGridApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )

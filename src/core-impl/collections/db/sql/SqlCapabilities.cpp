@@ -15,9 +15,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "SqlCapabilities.h"
-
 #define DEBUG_PREFIX "SqlCapabilities"
+
+#include "SqlCapabilities.h"
 
 #include "MetaValues.h"
 #include "SqlMeta.h"

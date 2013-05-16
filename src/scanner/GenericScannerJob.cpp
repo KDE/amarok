@@ -20,9 +20,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "GenericScannerJob.h"
-
 #define DEBUG_PREFIX "GenericScannerJob"
+
+#include "GenericScannerJob.h"
 
 #include "App.h"
 #include "GenericScanManager.h"

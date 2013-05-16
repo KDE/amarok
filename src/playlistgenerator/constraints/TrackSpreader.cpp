@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Constraint::TrackSpreader"
+
 #include "TrackSpreader.h"
 
 #include "core/meta/Meta.h"
@@ -23,8 +25,6 @@
 
 #include <math.h>
 #include <stdlib.h>
-
-#define DEBUG_PREFIX "Constraint::TrackSpreader"
 
 Constraint*
 ConstraintTypes::TrackSpreader::createNew( ConstraintNode* p )

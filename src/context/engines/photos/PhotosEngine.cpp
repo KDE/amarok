@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PhotosEngine"
+
 #include "PhotosEngine.h"
 
 #include "EngineController.h"
@@ -24,8 +26,6 @@
 
 #include <QXmlStreamReader>
 #include <QPixmap>
-
-#define DEBUG_PREFIX "PhotosEngine"
 
 using namespace Context;
 

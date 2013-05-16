@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LabelsApplet"
+
 #include "LabelsApplet.h"
 
 #include "App.h"
@@ -39,7 +41,6 @@
 #include <QGraphicsProxyWidget>
 #include <QPropertyAnimation>
 
-#define DEBUG_PREFIX "LabelsApplet"
 #define LabelsAppletMaxLabelLength 40 // if a downloaded label is longer than this, don't show it
 
 LabelsApplet::LabelsApplet( QObject *parent, const QVariantList &args )

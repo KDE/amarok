@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AlbumsView"
+
 #include "AlbumsView.h"
 
 #include "AlbumItem.h"
@@ -45,8 +47,6 @@
 #include <QScrollBar>
 #include <QTreeView>
 #include <QWheelEvent>
-
-#define DEBUG_PREFIX "AlbumsView"
 
 // Subclassed to override the access level of some methods.
 // The AlbumsTreeView and the AlbumsView are so highly coupled that this is acceptable, imo.

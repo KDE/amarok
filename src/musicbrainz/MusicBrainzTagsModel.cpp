@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MusicBrainzTagsModel"
+
 #include "MusicBrainzTagsModel.h"
 
 #include "AmarokMimeData.h"
@@ -25,8 +27,6 @@
 #include <KLocalizedString>
 
 #include <QFont>
-
-#define DEBUG_PREFIX "MusicBrainzTagsModel"
 
 MusicBrainzTagsModel::MusicBrainzTagsModel( QObject *parent )
     : QAbstractItemModel( parent )

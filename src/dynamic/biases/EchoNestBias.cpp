@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "EchoNestBias"
+
 #include "EchoNestBias.h"
 
 #include "core/meta/Meta.h"
@@ -35,8 +37,6 @@
 #include <QVBoxLayout>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#define DEBUG_PREFIX "EchoNestBias"
 
 QString
 Dynamic::EchoNestBiasFactory::i18nName() const

@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "IfElseBias"
+
 #include "IfElseBias.h"
 
 #include "amarokconfig.h"
@@ -28,8 +30,6 @@
 #include <QXmlStreamWriter>
 
 #include <KLocale>
-
-#define DEBUG_PREFIX "IfElseBias"
 
 QString
 Dynamic::IfElseBiasFactory::i18nName() const

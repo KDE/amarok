@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AmarokNetworkScript"
+
 #include "AmarokNetworkScript.h"
 
 #include "App.h"
@@ -22,8 +24,6 @@
 
 #include <QScriptEngine>
 #include <QTextCodec>
-
-#define DEBUG_PREFIX "AmarokNetworkScript"
 
 AmarokDownloadHelper *AmarokDownloadHelper::s_instance = 0;
 

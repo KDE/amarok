@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MusicBrainzTagsView"
+
 #include "MusicBrainzTagsView.h"
 
 #include "core/support/Debug.h"
@@ -29,8 +31,6 @@
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QUrl>
-
-#define DEBUG_PREFIX "MusicBrainzTagsView"
 
 MusicBrainzTagsView::MusicBrainzTagsView( QWidget *parent )
     : QTreeView( parent )

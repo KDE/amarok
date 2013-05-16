@@ -21,6 +21,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "TagDialog"
+
 #include "TagDialog.h"
 
 #include "MainWindow.h"
@@ -44,8 +46,6 @@
 #include <KLineEdit>
 #include <KMenu>
 #include <KRun>
-
-#define DEBUG_PREFIX "TagDialog"
 
 namespace Meta {
 namespace Field {

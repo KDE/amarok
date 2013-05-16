@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "SingleCollectionTreeItemModel"
+
 #include "SingleCollectionTreeItemModel.h"
 
 #include "amarokconfig.h"
@@ -26,8 +28,6 @@
 #include "core/support/Debug.h"
 
 #include <KLocale>
-
-#define DEBUG_PREFIX "SingleCollectionTreeItemModel"
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Collection *collection,
                                                               const QList<CategoryId::CatMenuId> &levelType )

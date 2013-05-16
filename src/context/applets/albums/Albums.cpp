@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Albums"
+
 #include "Albums.h"
 
 #include "AlbumItem.h"
@@ -39,8 +41,6 @@
 #include <QSpinBox>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
-
-#define DEBUG_PREFIX "Albums"
 
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )

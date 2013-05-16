@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ContextView"
+
 /*
   Significant parts of this code is inspired and/or copied from KDE plasma sources,
   available at kdebase/workspace/plasma
@@ -38,8 +40,6 @@
 #include <QParallelAnimationGroup>
 #include <QSequentialAnimationGroup>
 #include <QWheelEvent>
-
-#define DEBUG_PREFIX "ContextView"
 
 namespace Context
 {

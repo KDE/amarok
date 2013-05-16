@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Constraint::PlaylistDuration"
+
 #include "PlaylistDuration.h"
 
 #include "core/meta/Meta.h"
@@ -22,8 +24,6 @@
 
 #include <stdlib.h>
 #include <math.h>
-
-#define DEBUG_PREFIX "Constraint::PlaylistDuration"
 
 Constraint*
 ConstraintTypes::PlaylistDuration::createFromXml( QDomElement& xmlelem, ConstraintNode* p )

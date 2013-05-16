@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "BiasSolver"
+
 #include "BiasSolver.h"
 
 #include "amarokconfig.h"
@@ -31,8 +33,6 @@
 #include <QMutexLocker>
 
 #include <cmath>
-
-#define DEBUG_PREFIX "BiasSolver"
 
 /* These number are black magic. The best values can only be obtained through
  * exhaustive trial and error or writing another optimization program to

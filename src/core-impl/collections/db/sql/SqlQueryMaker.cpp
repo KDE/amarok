@@ -15,15 +15,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "SqlQueryMaker.h"
-
 #define DEBUG_PREFIX "SqlQueryMaker"
 
-#include "core/support/Debug.h"
+#include "SqlQueryMaker.h"
 
 #include "SqlCollection.h"
 #include "SqlQueryMakerInternal.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core/support/Debug.h"
 #include "core-impl/collections/db/MountPointManager.h"
 
 #include <QWeakPointer>

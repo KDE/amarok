@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "TabsEngine"
+
 #include "TabsEngine.h"
 
 #include "EngineController.h"
@@ -23,8 +25,6 @@
 #include "core/support/Debug.h"
 
 #include <QTextCodec>
-
-#define DEBUG_PREFIX "TabsEngine"
 
 using namespace Context;
 

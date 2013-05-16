@@ -14,13 +14,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "TextWidget"
+
 #include "TextWidget.h"
 
 #include "core/support/Debug.h"
 
 #include <QTextDocument>
-
-#define DEBUG_PREFIX "TextWidget"
 
 namespace Context
 {

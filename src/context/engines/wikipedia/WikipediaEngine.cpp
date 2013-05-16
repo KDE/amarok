@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "WikipediaEngine"
+
 #include "WikipediaEngine.h"
 
 #include "EngineController.h"
@@ -29,8 +31,6 @@
 
 #include <QHashIterator>
 #include <QXmlStreamReader>
-
-#define DEBUG_PREFIX "WikipediaEngine"
 
 using namespace Context;
 

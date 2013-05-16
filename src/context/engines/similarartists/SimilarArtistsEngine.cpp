@@ -16,6 +16,8 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
+#define DEBUG_PREFIX "SimilarArtistsEngine"
+
 #include "SimilarArtistsEngine.h"
 
 #include "EngineController.h"
@@ -25,8 +27,6 @@
 
 #include <QTimer>
 #include <QXmlStreamReader>
-
-#define DEBUG_PREFIX "SimilarArtistsEngine"
 
 AMAROK_EXPORT_DATAENGINE( similarArtists, SimilarArtistsEngine )
 
