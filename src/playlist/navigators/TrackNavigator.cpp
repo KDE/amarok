@@ -43,23 +43,11 @@ Playlist::TrackNavigator::TrackNavigator()
 }
 
 void
-Playlist::TrackNavigator::queueId( const quint64 id )
-{
-    QList<quint64> ids;
-    ids << id;
-    queueIds( ids );
-}
-
-void
 Playlist::TrackNavigator::queueIds( const QList<quint64> &ids )
 {
-    Meta::TrackPtr track;
     foreach( quint64 id, ids )
     {
-        track = m_model->trackForId( id );
-        if( !track ) // playlist might contain invalid tracks. See BUG: 302607
-            continue;
-        if( !m_queue.contains( id ) && track->isPlayable() )
+        if( !m_queue.contains( id ) )
             m_queue.enqueue( id );
     }
 }

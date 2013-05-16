@@ -185,7 +185,7 @@ Playlist::Actions::play()
 }
 
 void
-Playlist::Actions::play( const QModelIndex& index )
+Playlist::Actions::play( const QModelIndex &index )
 {
     DEBUG_BLOCK
 
@@ -388,22 +388,24 @@ Playlist::Actions::dequeue( quint64 id )
 }
 
 void
-Playlist::Actions::queue( QList<int> rows )
+Playlist::Actions::queue( const QList<int> &rows )
 {
-    DEBUG_BLOCK
-
+    QList<quint64> ids;
     foreach( int row, rows )
-    {
-        quint64 id = The::playlist()->idAt( row );
-        debug() << "About to queue proxy row"<< row;
-        m_navigator->queueId( id );
-    }
-    if ( !rows.isEmpty() )
+        ids << The::playlist()->idAt( row );
+    queue( ids );
+}
+
+void
+Playlist::Actions::queue( const QList<quint64> &ids )
+{
+    m_navigator->queueIds( ids );
+    if ( !ids.isEmpty() )
         Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
 }
 
 void
-Playlist::Actions::dequeue( QList<int> rows )
+Playlist::Actions::dequeue( const QList<int> &rows )
 {
     DEBUG_BLOCK
 

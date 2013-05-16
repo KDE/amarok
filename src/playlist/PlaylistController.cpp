@@ -21,9 +21,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PlaylistController.h"
-
 #define DEBUG_PREFIX "Playlist::Controller"
+
+#include "PlaylistController.h"
 
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
@@ -121,72 +121,63 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
         QMutableListIterator<Meta::TrackPtr> i( list );
         while( i.hasNext() )
         {
-            i.next();
-            debug()<<"About to check m_bottomModel->containsTrack()";
-            if( m_bottomModel->containsTrack( i.value() ) )
+            if( m_bottomModel->containsTrack( i.next() ) )
                 i.remove();
         }
     }
 
-    int topModelInsertRow;
-    int visibleInsertedRowCount;
+    QString actionName = i18nc( "name of the action in undo stack", "Add tracks to playlist" );
+    if( options & Queue )
+        actionName = i18nc( "name of the action in undo stack", "Queue tracks" );
+    if( options & Replace )
+        actionName = i18nc( "name of the action in undo stack", "Replace playlist" );
+    m_undoStack->beginMacro( actionName );
+
     if( options & Replace )
     {
-        debug()<<"Replace";
         emit replacingPlaylist();   //make sure that we clear filters
-
-        m_undoStack->beginMacro( "Replace playlist" ); // TODO: does this need to be internationalized?
         clear();
-
         //make sure that we turn off dynamic mode.
         Amarok::actionCollection()->action( "disable_dynamic" )->trigger();
-
-        int bottomModelInsertRow = insertionTopRowToBottom( 0 );
-        insertionHelper( bottomModelInsertRow, list );
-        topModelInsertRow = m_topModel->rowFromBottomModel( bottomModelInsertRow );
-        m_undoStack->endMacro();
-        visibleInsertedRowCount = m_topModel->qaim()->rowCount(); // simple
     }
-    else if( options & Queue )
+
+    int bottomModelRowCount = m_bottomModel->qaim()->rowCount();
+    int bottomModelInsertRow;
+    if( options & Queue )
     {
-        debug()<<"Queue";
-
-        int oldVisibleRowCount = m_topModel->qaim()->rowCount();
-        topModelInsertRow = m_topModel->activeRow() + 1;
-
-        while( m_topModel->queuePositionOfRow( topModelInsertRow ) )
-            topModelInsertRow++;    // We want to add the newly queued items after any items which are already queued
-
-        int bottomModelInsertRow = insertionTopRowToBottom( topModelInsertRow );
-        insertionHelper( bottomModelInsertRow, list );
-        topModelInsertRow = m_topModel->rowFromBottomModel( bottomModelInsertRow );
-        visibleInsertedRowCount = m_topModel->qaim()->rowCount() - oldVisibleRowCount;
-
-        // Construct list of rows to be queued
-        QList<int> topModelRows;
-        for( int bottomModelRow = bottomModelInsertRow; bottomModelRow < bottomModelInsertRow + list.size(); ++bottomModelRow )
+        // queue is a list of playlist item ids
+        QQueue<quint64> queue = Actions::instance()->queue();
+        if( !queue.isEmpty() )
         {
-            quint64 playlistItemId = m_bottomModel->idAt( bottomModelRow );
-            int topModelRow = m_topModel->rowForId( playlistItemId );
-            if( topModelRow >= 0 )      // If a filter doesn't hide the item...
-                topModelRows << topModelRow;
+            int lastQueueRow = m_bottomModel->rowForId( queue.last() );
+            debug() << "queue is:" << queue << "lastQueueRow:" << lastQueueRow;
+            bottomModelInsertRow = ( lastQueueRow >= 0 ) ? lastQueueRow + 1 : bottomModelRowCount;
         }
-        Actions::instance()->queue( topModelRows );
+        else
+        {
+            int activeRow = m_bottomModel->activeRow();
+            bottomModelInsertRow = ( activeRow >= 0 ) ? activeRow + 1 : bottomModelRowCount;
+        }
     }
     else
+        bottomModelInsertRow = m_bottomModel->qaim()->rowCount();
+
+    int oldVisibleRowCount = m_topModel->qaim()->rowCount();
+    insertionHelper( bottomModelInsertRow, list );
+    int visibleInsertedRowCount = m_topModel->qaim()->rowCount() - oldVisibleRowCount;
+
+    if( options & Queue )
     {
-        debug()<<"Append";
-
-        int oldVisibleRowCount = m_topModel->qaim()->rowCount();
-        topModelInsertRow = m_topModel->qaim()->rowCount();
-
-        int bottomModelInsertRow = insertionTopRowToBottom( topModelInsertRow );
-        insertionHelper( bottomModelInsertRow, list );
-        topModelInsertRow = m_topModel->rowFromBottomModel( bottomModelInsertRow );
-        visibleInsertedRowCount = m_topModel->qaim()->rowCount() - oldVisibleRowCount;
+        // Construct list of rows to be queued
+        QList<quint64> ids;
+        for( int bottomModelRow = bottomModelInsertRow;
+             bottomModelRow < bottomModelInsertRow + list.size(); bottomModelRow++ )
+        {
+            ids << m_bottomModel->idAt( bottomModelRow );
+        }
+        Actions::instance()->queue( ids );
     }
-
-    debug() << "engine playing?: " << The::engineController()->isPlaying();
+    m_undoStack->endMacro();
 
     bool playNow = false;
     if( options & DirectPlay )
@@ -210,7 +201,7 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
         if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
              AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum )
             fuzz = qrand() % visibleInsertedRowCount;
-        Actions::instance()->play( topModelInsertRow + fuzz );
+        Actions::instance()->play( m_topModel->rowFromBottomModel( bottomModelInsertRow ) + fuzz );
     }
 
     emit changed();
@@ -550,29 +541,18 @@ Controller::slotLoaderWithRowFinished( const Meta::TrackList &tracks )
 int
 Controller::insertionTopRowToBottom( int topModelRow )
 {
-    DEBUG_BLOCK
-
     if( ( topModelRow < 0 ) || ( topModelRow > m_topModel->qaim()->rowCount() ) )
     {
-        error() << "Row number invalid:" << topModelRow;
+        error() << "Row number invalid, using bottom:" << topModelRow;
         topModelRow = m_topModel->qaim()->rowCount();    // Failsafe: append.
     }
 
-    int bottomModelRow;
     if( ModelStack::instance()->sortProxy()->isSorted() )
-    {
         // if the playlist is sorted there's no point in placing the added tracks at any
         // specific point in relation to another track, so we just append them.
-        debug()<<"SortProxy is SORTED             ... so I'll just append.";
-        bottomModelRow = m_bottomModel->qaim()->rowCount();
-    }
+        return m_bottomModel->qaim()->rowCount();
     else
-    {
-        debug()<<"SortProxy is NOT SORTED         ... so I'll take care of the right row.";
-        bottomModelRow = m_topModel->rowToBottomModel( topModelRow );
-    }
-
-    return bottomModelRow;
+        return m_topModel->rowToBottomModel( topModelRow );
 }
 
 void

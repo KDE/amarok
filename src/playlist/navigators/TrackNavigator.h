@@ -93,7 +93,6 @@ namespace Playlist
              * Queues the specified id and schedules it to be played.
              */
             virtual void queueIds( const QList<quint64> &ids );
-            virtual void queueId( const quint64 id );
 
             /**
              * Dequeue the specified id from the queue list
