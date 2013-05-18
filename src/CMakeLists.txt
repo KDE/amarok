@@ -203,22 +203,6 @@ set(libsynchronization_SRCS
 )
 
 #####################################################################
-# ANALYZERS
-#####################################################################
-#set(libanalyzers_SRCS
-#    analyzers/analyzerbase.cpp
-#    analyzers/analyzerfactory.cpp
-#    analyzers/baranalyzer.cpp
-#    analyzers/blockanalyzer.cpp
-#    analyzers/glanalyzer.cpp
-#    analyzers/glanalyzer2.cpp
-#    analyzers/glanalyzer3.cpp
-#    analyzers/sonogram.cpp
-#    analyzers/turbine.cpp
-#    analyzers/boomanalyzer.cpp
-#)
-
-#####################################################################
 # STATUSBAR
 #####################################################################
 set(libstatusbar_SRCS
@@ -578,7 +562,6 @@ kde4_add_ui_files(statsyncing_SRCS
 #####################################################################
 set(amaroklib_LIB_SRCS
     ${libscriptableservice_SRCS}
-    ${libanalyzers_SRCS}
     ${libbrowserframework_SRCS}
     ${libcontextview_SRCS}
     ${libcollectionbrowser_SRCS}
