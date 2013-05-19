@@ -146,34 +146,38 @@ CollectionManager::~CollectionManager()
 }
 
 void
-CollectionManager::init( const QList<Plugins::PluginFactory*> &factories )
+CollectionManager::init()
 {
-    DEBUG_BLOCK
-
     //register the timecode track provider now, as it needs to get added before loading
     //the stored playlist... Since it can have playable urls that might also match other providers, it needs to get added first.
     m_timecodeTrackProvider = new TimecodeTrackProvider();
     addTrackProvider( m_timecodeTrackProvider );
+}
 
-    QList<Collections::CollectionFactory*> orderdFactories;
+void
+CollectionManager::handleNewFactories( const QList<Plugins::PluginFactory*> &factories )
+{
+    using Collections::CollectionFactory;
+
+    QList<CollectionFactory*> cfactories;
     foreach( Plugins::PluginFactory *pFactory, factories )
     {
-        using namespace Collections;
         CollectionFactory *factory = qobject_cast<CollectionFactory*>( pFactory );
         if( !factory )
             continue;
 
         const QString name = factory->info().pluginName();
-        if( name == QLatin1String("amarok_collection-mysqlservercollection") || name == QLatin1String("amarok_collection-mysqlecollection") )
+        if( name == QLatin1String("amarok_collection-mysqlservercollection") ||
+            name == QLatin1String("amarok_collection-mysqlecollection") )
         {
-            orderdFactories.prepend( factory );
+            cfactories.prepend( factory );
         }
         else
         {
-            orderdFactories.append( factory );
+            cfactories.append( factory );
         }
     }
-    loadPlugins( orderdFactories );
+    loadPlugins( cfactories );
 }
 
 void

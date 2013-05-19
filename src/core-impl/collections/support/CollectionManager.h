@@ -136,7 +136,15 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         bool haveEmbeddedMysql() { return m_haveEmbeddedMysql; }
 
-        void init( const QList<Plugins::PluginFactory*> &factories );
+        void init();
+
+        /**
+         * should be called whenever new factories are created.
+         *
+         * For every factory that is a CollectionFactory uses it to create new
+         * collections and register with this manager.
+         */
+        void handleNewFactories( const QList<Plugins::PluginFactory*> &factories );
 
         /**
          * Return a pointer to CollectionManger's internal FileTrackProvider instance.
