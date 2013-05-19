@@ -21,6 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "services/ServicePluginManager.h"
 
 #include <KBuildSycocaProgressDialog>

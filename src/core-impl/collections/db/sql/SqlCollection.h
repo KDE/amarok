@@ -23,7 +23,6 @@
 #include "core/capabilities/TranscodeCapability.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core-impl/collections/db/DatabaseCollection.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "SqlRegistry.h"
 
 class SqlScanResultProcessor;
