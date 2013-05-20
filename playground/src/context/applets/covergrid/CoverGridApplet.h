@@ -43,7 +43,6 @@ class CoverGridApplet : public Context::Applet
 
     public slots:
         void slotAlbumQueryResult( Meta::AlbumList albums);
-        void appendAlbum( int islideindex );
         void saveSettings();
 
     protected :

@@ -96,7 +96,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         void slotCheckAutoExpand();
 
-        void slotPlayChildTracks();
+        void slotReplacePlaylistWithChildTracks();
         void slotAppendChildTracks();
         void slotQueueChildTracks();
         void slotEditTracks();

@@ -96,13 +96,11 @@ class CoverManager : public KDialog, public Meta::Observer
         void updateFetchingProgress( int state );
         void stopFetching();
 
-        void playSelectedAlbums();
         void progressAllDone();
         void cancelCoverViewLoading();
 
     private:
         void loadCover( const QString &, const QString & );
-        QList<CoverViewItem*> selectedItems();
 
         QSplitter        *m_splitter;
         QTreeWidget      *m_artistView;

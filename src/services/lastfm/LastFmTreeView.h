@@ -49,7 +49,7 @@ signals:
     void plsShowNowPlaying();
 
 private slots:
-    void slotPlayChildTracks();
+    void slotReplacePlaylistByChildTracks();
     void slotAppendChildTracks();
 
 protected:

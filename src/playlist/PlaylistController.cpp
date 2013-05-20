@@ -140,7 +140,6 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
         if( !queue.isEmpty() )
         {
             int lastQueueRow = m_bottomModel->rowForId( queue.last() );
-            debug() << "queue is:" << queue << "lastQueueRow:" << lastQueueRow;
             bottomModelInsertRow = ( lastQueueRow >= 0 ) ? lastQueueRow + 1 : bottomModelRowCount;
         }
         else
@@ -232,20 +231,14 @@ Controller::insertOptioned( QList<KUrl> &urls, AddOptions options )
 void
 Controller::insertTrack( int topModelRow, Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
     if( !track )
         return;
-
-    Meta::TrackList tl;
-    tl.append( track );
-    insertTracks( topModelRow, tl );
+    insertTracks( topModelRow, Meta::TrackList() << track );
 }
 
-// Overloads use this method.
 void
 Controller::insertTracks( int topModelRow, Meta::TrackList tl )
 {
-    DEBUG_BLOCK
     insertionHelper( insertionTopRowToBottom( topModelRow ), tl );
 }
 
@@ -261,7 +254,7 @@ Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList playlists 
     TrackLoader *loader = new TrackLoader(); // auto-deletes itself
     loader->setProperty( "topModelRow", QVariant( topModelRow ) );
     connect( loader, SIGNAL(finished(Meta::TrackList)),
-                 SLOT(slotLoaderWithRowFinished(Meta::TrackList)) );
+             SLOT(slotLoaderWithRowFinished(Meta::TrackList)) );
     loader->init( playlists );
 }
 

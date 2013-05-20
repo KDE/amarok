@@ -106,7 +106,6 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
     int selectedRowCount = indices.count() / 4;
 
     QList< KAction * > actions;
-    
     if ( m_loadAction == 0 )
     {
         m_loadAction = new KAction( KIcon( "folder-open" ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
@@ -324,7 +323,6 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
 {
 
     //TODO: Factor into separate class
-    
     QList<BookmarkViewItemPtr> list = selectedItems().toList();
     if ( list.count() != 2 )
         return;
@@ -348,7 +346,6 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
 
     //ok, so we actually have to timecodes from the same base url, not get the
     //minimum and maximum time:
-
     qreal pos1 = 0;
     qreal pos2 = 0;
 
@@ -372,13 +369,11 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
     //new track, but for now, just fake it as this is just for testing anyway
 
     QString url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url1->path().toUtf8() ) ).toString();
-    
     Meta::TimecodeTrackPtr track = Meta::TimecodeTrackPtr( new Meta::TimecodeTrack( i18n( "New Timecode Track" ), url, start, end ) );
     Meta::TimecodeAlbumPtr album = Meta::TimecodeAlbumPtr( new Meta::TimecodeAlbum( i18n( "Unknown" ) ) );
     Meta::TimecodeArtistPtr artist = Meta::TimecodeArtistPtr( new Meta::TimecodeArtist( i18n(  "Unknown" ) ) );
     Meta::TimecodeGenrePtr genre = Meta::TimecodeGenrePtr( new Meta::TimecodeGenre( i18n( "Unknown" ) ) );
 
-    
     album->addTrack( track );
     artist->addTrack( track );
     genre->addTrack( track );
@@ -396,12 +391,8 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
     TagDialog *dialog = new TagDialog( tl, 0 );
     dialog->show();
 
-
     //now add it to the playlist
-
     The::playlistController()->insertOptioned( Meta::TrackPtr::staticCast( track ), Playlist::StartPlay );
-
-    
 }
 
 void BookmarkTreeView::setProxy( QSortFilterProxyModel *proxy )

@@ -48,8 +48,6 @@ Playlist::DynamicTrackNavigator::~DynamicTrackNavigator()
 void
 Playlist::DynamicTrackNavigator::receiveTracks( Meta::TrackList tracks )
 {
-    DEBUG_BLOCK
-
     The::playlistController()->insertOptioned( tracks );
 }
 

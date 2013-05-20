@@ -603,18 +603,8 @@ bool App::event( QEvent *event )
         {
             QString file = static_cast<QFileOpenEvent*>( event )->file();
             //we are only going to receive local files here
-            KUrl url( file );
-            if( Playlists::isPlaylist( url ) )
-            {
-                Playlists::PlaylistPtr playlist =
-                        Playlists::PlaylistPtr::dynamicCast( Playlists::loadPlaylistFile( url ) );
-                The::playlistController()->insertOptioned( playlist, Playlist::StartPlay );
-            }
-            else
-            {
-                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-                The::playlistController()->insertOptioned( track, Playlist::StartPlay );
-            }
+            QList<KUrl> urls = QList<KUrl>() << KUrl( file );
+            The::playlistController()->insertOptioned( urls, Playlist::StartPlay );
             return true;
         }
         default:

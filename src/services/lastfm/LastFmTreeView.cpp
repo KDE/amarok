@@ -105,7 +105,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
             {
                 m_loadAction = new QAction ( KIcon ( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
                 m_appendAction->setProperty( "popupdropper_svg_id", "load" );
-                connect ( m_loadAction, SIGNAL (triggered()), this, SLOT (slotPlayChildTracks()) );
+                connect ( m_loadAction, SIGNAL (triggered()), this, SLOT (slotReplacePlaylistByChildTracks()) );
             }
             actions.append ( m_loadAction );
         }
@@ -207,7 +207,7 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
 }
 
 void
-LastFmTreeView::slotPlayChildTracks()
+LastFmTreeView::slotReplacePlaylistByChildTracks()
 {
     playChildTracks ( m_currentItems, Playlist::LoadAndPlay );
 }
@@ -238,5 +238,5 @@ LastFmTreeView::playChildTracks ( const QModelIndexList &items, Playlist::AddOpt
             list << track;
     }
     qStableSort ( list.begin(), list.end(), Meta::Track::lessThan );
-    The::playlistController()->insertOptioned ( list, insertMode );
+    The::playlistController()->insertOptioned( list, insertMode );
 }

@@ -245,11 +245,10 @@ void CoverBlingApplet::appendAlbum( int islideindex )
 {
     Meta::AlbumPtr album = m_pictureflow->album( islideindex );
     if ( album )
-    {
+        // this is connected to the doubleClicked signal:
         The::playlistController()->insertOptioned( album->tracks(), Playlist::StartPlay );
-    }
-
 }
+
 void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )

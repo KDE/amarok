@@ -669,7 +669,7 @@ CollectionTreeView::slotCheckAutoExpand()
 }
 
 void
-CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode)
+CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode )
 {
     QSet<CollectionTreeItem*> items;
     items.insert( item );
@@ -908,7 +908,7 @@ CollectionTreeView::createBasicActions( const QModelIndexList &indices )
                                "&Replace Playlist" ), this );
             m_loadAction->setProperty( "popupdropper_svg_id", "load" );
             connect( m_loadAction, SIGNAL(triggered()),
-                     this, SLOT(slotPlayChildTracks()) );
+                     this, SLOT(slotReplacePlaylistWithChildTracks()) );
         }
 
         actions.append( m_loadAction );
@@ -1168,7 +1168,7 @@ CollectionTreeView::getCollection( const QModelIndex &index )
 }
 
 void
-CollectionTreeView::slotPlayChildTracks()
+CollectionTreeView::slotReplacePlaylistWithChildTracks()
 {
     playChildTracks( m_currentItems, Playlist::LoadAndPlay );
 }

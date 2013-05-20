@@ -104,15 +104,6 @@ void CoverGridApplet::slotAlbumQueryResult( Meta::AlbumList albums ) //SLOT
     prepareLayout();
 }
 
-void CoverGridApplet::appendAlbum( int islideindex )
-{
-    Meta::AlbumPtr album = m_album_list[islideindex];
-    if( album )
-    {
-        The::playlistController()->insertOptioned( album->tracks(), Playlist::StartPlay );
-    }
-
-}
 void CoverGridApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     KConfigGroup configuration = config();
@@ -141,7 +132,6 @@ void CoverGridApplet::prepareLayout()
     for( int i = nb_prev - 1; i >= 0; i-- ) m_layout->removeAt( i );
     m_layout->invalidate();
 
-    const int vertical_size = boundingRect().height();
     const int horizontal_size = boundingRect().width();
     int x_pos = 0;
     int y_pos = 0;

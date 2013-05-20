@@ -592,26 +592,6 @@ CoverManager::loadCover( const QString &artist, const QString &album )
 }
 
 void
-CoverManager::playSelectedAlbums()
-{
-    // -- get all the track from the selected items
-    Meta::TrackList tracks;
-    foreach( CoverViewItem *item, selectedItems() )
-        tracks.append( item->albumPtr()->tracks() );
-    The::playlistController()->insertOptioned( tracks, Playlist::StartPlay );
-}
-
-QList<CoverViewItem*>
-CoverManager::selectedItems()
-{
-    QList<CoverViewItem*> selectedItems;
-    foreach( QListWidgetItem *item, m_coverView->selectedItems() )
-        selectedItems.append( static_cast<CoverViewItem*>(item) );
-
-    return selectedItems;
-}
-
-void
 CoverManager::progressAllDone()
 {
     m_progress->hide();

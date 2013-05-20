@@ -54,24 +54,33 @@ AlbumItem::~AlbumItem()
     // emit the destructor here where actual (non-forward) declaration of Meta::* is known
 }
 
-Meta::AlbumPtr AlbumItem::getAlbum()
+Meta::AlbumPtr
+AlbumItem::getAlbum()
 {
     return m_album;
 }
-void AlbumItem::mousePressEvent( QMouseEvent  * event )
+
+void
+AlbumItem::mousePressEvent( QMouseEvent  *event )
 {
     Q_UNUSED( event )
 }
-void AlbumItem::mouseDoubleClickEvent( QMouseEvent * event )
+
+void
+AlbumItem::mouseDoubleClickEvent( QMouseEvent *event )
 {
     Q_UNUSED( event )
     The::playlistController()->insertOptioned( m_album->tracks(), Playlist::StartPlay );
 }
-void AlbumItem::leaveEvent( QEvent * event )
+
+void
+AlbumItem::leaveEvent( QEvent * )
 {
     setPixmap( m_pixmap );
 }
-void AlbumItem::enterEvent( QEvent * event )
+
+void
+AlbumItem::enterEvent( QEvent *event )
 {
     Q_UNUSED( event )
     QImage image = m_pixmap.toImage();
