@@ -4,6 +4,7 @@
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  * Copyright (c) 2011 Sandeep Raghuraman <sandy.8925@gmail.com>                         *
+ * Copyright (c) 2013 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -43,10 +44,12 @@
 #include <kratingpainter.h>
 #include <KColorScheme>
 
+#include <QAction>
 #include <QFontMetricsF>
 #include <QPainter>
-#include <QAction>
 #include <QStyleOptionSlider>
+#include <QTimeLine>
+#include <QTimer>
 
 using namespace Playlist;
 
@@ -56,6 +59,12 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
     : QStyledItemDelegate( parent )
 {
     LayoutManager::instance();
+
+    m_timeLine = new QTimeLine( 900, this );
+    m_timeLine->setFrameRange( 100, 60 );
+    connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SIGNAL( redrawRequested() ) );
+
+    connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SIGNAL( redrawRequested() ) );
 }
 
 PrettyItemDelegate::~PrettyItemDelegate() { }
@@ -296,23 +305,44 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
 
         int endWidth = overlayHeight / 4;
 
+        if( m_timeLine->currentFrame() == m_timeLine->startFrame() && EngineController::instance()->isPlaying() ) {
+            m_timeLine->setDirection( QTimeLine::Forward );
+            m_timeLine->start();
+        }
+        else if( m_timeLine->currentFrame() == m_timeLine->endFrame() ) {
+            m_timeLine->setDirection( QTimeLine::Backward );
+            m_timeLine->start();
+        }
+
+        // Opacity is used for animating the active track item
+        const qreal opacity = qreal( m_timeLine->currentFrame() ) / 100;
+
+        // If opacity is not the default value we cannot render from cache
+        const bool skipCache = opacity == 1.0 ? false : true;
+
         painter->drawPixmap( overlayXOffset, overlayYOffset,
                              The::svgHandler()->renderSvg( "active_overlay_left",
                                                            endWidth,
                                                            overlayHeight,
-                                                           "active_overlay_left" ) );
+                                                           "active_overlay_left",
+                                                           skipCache,
+                                                           opacity ) );
 
         painter->drawPixmap( overlayXOffset + endWidth, overlayYOffset,
                              The::svgHandler()->renderSvg( "active_overlay_mid",
                                                            overlayLength - endWidth * 2,
                                                            overlayHeight,
-                                                           "active_overlay_mid" ) );
+                                                           "active_overlay_mid",
+                                                           skipCache,
+                                                           opacity ) );
 
         painter->drawPixmap( overlayXOffset + ( overlayLength - endWidth ), overlayYOffset,
                              The::svgHandler()->renderSvg( "active_overlay_right",
                                                            endWidth,
                                                            overlayHeight,
-                                                           "active_overlay_right" ) );
+                                                           "active_overlay_right",
+                                                           skipCache,
+                                                           opacity ) );
     }
 
     // --- paint the cover

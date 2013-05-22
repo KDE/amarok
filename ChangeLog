@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.8-Beta 1
   FEATURES:
+   * The active playlist item is animated with a soft glow effect.
    * Added an audio analyzer visualization applet.
    * Added a function for resetting the GUI layout back to default state. (BR 300753)
    * Pressing enter when searching collections now adds found tracks to the playlist and

@@ -82,8 +82,11 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 {
     // QAbstractItemView basics
     setModel( The::playlist()->qaim() );
+
     m_prettyDelegate = new PrettyItemDelegate( this );
+    connect( m_prettyDelegate, SIGNAL( redrawRequested() ), this, SLOT( redrawActive() ) );
     setItemDelegate( m_prettyDelegate );
+
     setSelectionMode( ExtendedSelection );
     setDragDropMode( DragDrop );
     setDropIndicatorShown( false ); // we draw our own drop indicator
@@ -117,7 +120,6 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->bottom()'.
     connect( Playlist::ModelStack::instance()->bottom(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(bottomModelRowsInserted(QModelIndex,int,int)) );
-
 
     // Timers
     m_proxyUpdateTimer = new QTimer( this );

@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Jeff Mitchell <kde-dev@emailgoeshere.com>                         *
- * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2009-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -121,7 +121,8 @@ QPixmap SvgHandler::renderSvg( const QString &name,
                                int width,
                                int height,
                                const QString& element,
-                               bool skipCache )
+                               bool skipCache,
+                               const qreal opacity )
 {
     QString key;
     if( !skipCache )
@@ -150,6 +151,8 @@ QPixmap SvgHandler::renderSvg( const QString &name,
         }
 
         QPainter pt( &pixmap );
+        pt.setOpacity( opacity );
+
         if ( element.isEmpty() )
             m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
         else
@@ -162,9 +165,9 @@ QPixmap SvgHandler::renderSvg( const QString &name,
     return pixmap;
 }
 
-QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, const QString & element, bool skipCache )
+QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, const QString & element, bool skipCache, const qreal opacity )
 {
-    return renderSvg( m_themeFile, keyname, width, height, element, skipCache );
+    return renderSvg( m_themeFile, keyname, width, height, element, skipCache, opacity );
 }
 
 QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, int height, const QString & element)

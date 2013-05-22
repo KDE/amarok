@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Jeff Mitchell <kde-dev@emailgoeshere.com>                         *
- * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2009-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -51,7 +51,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
 
         QSvgRenderer* getRenderer( const QString &name );
         QSvgRenderer* getRenderer();
-        QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false );
+        QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false, const qreal opacity = 1.0 );
 
         /**
         * Overloaded function that uses the current theme
@@ -60,9 +60,10 @@ class AMAROK_EXPORT SvgHandler : public QObject
         * @param height Height of the resulting pixmap
         * @param element The theme element to render ( if none the entire svg is rendered )
         * @param skipCache If true, the pixmap will always get rendered and never fetched from the cache.
+        * @param opacity The opacity used for rendering. Range 0.0 to 1.0.
         * @return The svg element/file rendered into a pixmap
         */
-        QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false );
+        QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false, const qreal opacity = 1.0 );
         
         /**
          * Yet another overloaded function. This one renders the svg element and adds half a divider element to the top and the bottom
