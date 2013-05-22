@@ -1,8 +1,0 @@
-This bash script (not for Amarok itself) installs the current development version of Amarok (from SVN) on your computer.
-
-There will be a later version (4.0, I guess) written in ruby (maybe python) instead of bash, that version will probably be split into smaller parts
-to make the
-script able to update itself on each run. That's the main reason why I put it in the SVN repository (besides making others able to change it, that
-is...)
-
-For now, use the stable version if you want reliability. It's available at http://amarok.kde.org/amarokwiki/index.php/AmaroK-svn
