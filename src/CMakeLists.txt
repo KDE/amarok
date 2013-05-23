@@ -616,9 +616,6 @@ set(amaroklib_LIB_SRCS
     SvgHandler.cpp
     SvgTinter.cpp
     TrayIcon.cpp
-    analyzer/AnalyzerBase.cpp
-    analyzer/BlockAnalyzer.cpp
-    analyzer/fht.cpp
     core-impl/meta/timecode/TimecodeObserver.cpp
     core-impl/meta/timecode/TimecodeMeta.cpp
     core-impl/meta/timecode/TimecodeTrackProvider.cpp

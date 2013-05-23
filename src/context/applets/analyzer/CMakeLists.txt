@@ -6,9 +6,9 @@ include_directories(
 
 set(analyzer_SRCS
     AnalyzerApplet.cpp
-    ${Amarok_SOURCE_DIR}/src/analyzer/AnalyzerBase.cpp
-    ${Amarok_SOURCE_DIR}/src/analyzer/BlockAnalyzer.cpp
-    ${Amarok_SOURCE_DIR}/src/analyzer/fht.cpp
+    AnalyzerBase.cpp
+    BlockAnalyzer.cpp
+    fht.cpp
     )
 
 kde4_add_plugin(amarok_context_applet_analyzer ${analyzer_SRCS})

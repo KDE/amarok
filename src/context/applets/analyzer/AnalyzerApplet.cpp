@@ -18,7 +18,7 @@
 
 #include "AnalyzerApplet.h"
 
-#include "analyzer/BlockAnalyzer.h"
+#include "BlockAnalyzer.h"
 
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
