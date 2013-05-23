@@ -18,10 +18,7 @@
 
 #include "AnalyzerApplet.h"
 
-#include "App.h"
 #include "analyzer/BlockAnalyzer.h"
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
 
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
