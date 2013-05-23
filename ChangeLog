@@ -56,6 +56,7 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * Optimize removal of tens of thousands of tracks from playlist. (BR 316242)
    * Fix `amarok --queue` which didn't actually queue the tracks. (BR 317385)
    * Fix suboptimal initial MusicBrainz tag dialog size by remembering it. (BR 269454)
    * Fix file-browser becoming empty when a file was moved to trash. (BR 317944)

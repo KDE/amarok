@@ -1006,116 +1006,105 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     }
 }
 
+static bool
+removeCmdLessThanByRow( const Playlist::RemoveCmd &left, const Playlist::RemoveCmd &right )
+{
+    return left.second < right.second;
+}
 
 void
-Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
+Playlist::Model::removeTracksCommand( const RemoveCmdList &passedCmds )
 {
     DEBUG_BLOCK
-    if ( cmds.size() < 1 )
+    if ( passedCmds.size() < 1 )
         return;
 
-    if ( cmds.size() == m_items.size() )
+    if ( passedCmds.size() == m_items.size() )
     {
         clearCommand();
         return;
     }
 
-    int activeShift = 0;
-    bool activeDeleted = false;
-    foreach( const RemoveCmd &rc, cmds )
+    // sort tracks to remove by their row
+    RemoveCmdList cmds( passedCmds );
+    qSort( cmds.begin(), cmds.end(), removeCmdLessThanByRow );
+
+    // update the active row
+    if( m_activeRow >= 0 )
     {
-        activeShift += ( rc.second < m_activeRow ) ? 1 : 0;
-        if ( rc.second == m_activeRow )
-            activeDeleted = true;
+        int activeShift = 0;
+        foreach( const RemoveCmd &rc, cmds )
+        {
+            if( rc.second < m_activeRow )
+                activeShift++;
+            else if( rc.second == m_activeRow )
+                m_activeRow = -1; // disappeared
+            else
+                break; // we got over it, nothing left to do
+        }
+        if( m_activeRow >= 0 ) // not deleted
+            m_activeRow -= activeShift;
     }
 
-    /* This next bit is probably more complicated that you expected it to be.
-     * The reason for the complexity comes from the following:
-     *
-     * 1. Qt's Model/View architecture can handle removal of only consecutive rows
-     * 2. The "remove rows" command from the Controller must handle
-     *    non-consecutive rows, and the removal command probably isn't sorted
-     *
-     * So each item has to be removed individually, and you can't just iterate
-     * over the commands, calling "m_items.removeAt(index)" as you go, because
-     * the indices of m_items will change with every removeAt().  Thus the
-     * following strategy of copying m_item, looking up the index in the copy and
-     * removing the item from the original list. (The strategy was changed from
-     * only replacing m_items at the end because that meant lying to the view -- Max)
-     *
-     * As a safety measure, the items themselves are not deleted until after m_items
-     * has been replaced.  If you delete as you go, then m_items will be holding
-     * dangling pointers, and the program will probably crash if the model is
-     * accessed in this state.   -- stharward */
+    QSet<Meta::TrackPtr> trackUnsubscribeCandidates;
+    QSet<Meta::AlbumPtr> albumUnsubscribeCandidates;
 
-    QList<Item*> originalList(m_items); // copy the current item list
-    QList<Item*> delitems;
-
-    foreach( const RemoveCmd &rc, cmds )
+    QListIterator<RemoveCmd> it( cmds );
+    int removedRows = 0;
+    while( it.hasNext() )
     {
-        Meta::TrackPtr track = rc.first;
-        Item* item = originalList.at(rc.second);
-        Q_ASSERT( track == item->track() );
+        int startRow = it.next().second;
+        int endRow = startRow;
 
-        // -- remove the items from the lists
-        int row = rowForItem( item );
-        if( row != -1 ) {
-            beginRemoveRows( QModelIndex(), row, row );
-            delitems.append( item );
-            m_items.removeAll( item );
-            m_itemIds.remove( item->id() );
+        // find consecutive runs of rows, this is important to group begin/endRemoveRows(),
+        // which are very costly when there are many proxymodels and a view above.
+        while( it.hasNext() && it.peekNext().second == endRow + 1 )
+        {
+            it.next();
+            endRow++;
+        }
+
+        beginRemoveRows( QModelIndex(), startRow - removedRows, endRow - removedRows );
+        for( int row = startRow; row <= endRow; row++ )
+        {
+            Item *removedItem = m_items.at( row - removedRows );
+            m_items.removeAt( row - removedRows );
+            m_itemIds.remove( removedItem->id() );
+
+            const Meta::TrackPtr &track = removedItem->track();
             // update totals here so they're right when endRemoveRows() called
             m_totalLength -= track->length();
             m_totalSize -= track->filesize();
-            endRemoveRows();
-        } else {
-            error() << "tried to delete a non-existent item:" << rc.first->prettyName() << rc.second;
-        }
-    }
-
-    // -- unsubscribe from tracks and albums
-    // we do it after all the to-be-deleted items have actually been deleted.
-    // doing this on a smaller list is faster
-    foreach( const RemoveCmd &rc, cmds )
-    {
-        Meta::TrackPtr track = rc.first;
-
-        // -- unsubscribe
-        if( !containsTrack( track ) ) // check against same track two times in playlist
-        {
-            unsubscribeFrom( track );
-
+            trackUnsubscribeCandidates.insert( track );
             Meta::AlbumPtr album = track->album();
             if( album )
-            {
-                // check if we are the last track in playlist with this album
-                bool last = true;
-                const int size = m_items.size();
-                for ( int i = 0; i < size; i++ )
-                {
-                    if( m_items.at( i )->track()->album() == album )
-                    {
-                        last = false;
-                        break;
-                    }
-                }
-                if( last )
-                    unsubscribeFrom( album );
-            }
+                albumUnsubscribeCandidates.insert( album );
+
+            delete removedItem; // note track is by reference, needs removedItem alive
+            removedRows++;
         }
+        endRemoveRows();
     }
 
-    qDeleteAll(delitems);
-    delitems.clear();
-
-    //update the active row
-    if ( !activeDeleted && ( m_activeRow >= 0 ) )
+    // unsubscribe from tracks no longer present in playlist
+    foreach( Meta::TrackPtr track, trackUnsubscribeCandidates )
     {
-        m_activeRow = ( m_activeRow > 0 ) ? m_activeRow - activeShift : 0;
+        if( !containsTrack( track ) )
+            unsubscribeFrom( track );
     }
-    else
+
+    // unsubscribe from albums no longer present im playlist
+    QSet<Meta::AlbumPtr> remainingAlbums;
+    foreach( const Item *item, m_items )
     {
-        m_activeRow = -1;
+        Meta::AlbumPtr album = item->track()->album();
+        if( album )
+            remainingAlbums.insert( album );
+    }
+    foreach( Meta::AlbumPtr album, albumUnsubscribeCandidates )
+    {
+        if( !remainingAlbums.contains( album ) )
+            unsubscribeFrom( album );
     }
 
     // make sure that there are enough tracks if we just removed from a dynamic playlist.
