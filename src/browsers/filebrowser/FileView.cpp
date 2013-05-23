@@ -156,7 +156,7 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
 
     if( state() == QAbstractItemView::NoState && event->button() == Qt::MidButton )
     {
-        addIndexToPlaylist( index, Playlist::StartPlay );
+        addIndexToPlaylist( index, Playlist::OnMiddleClickOnSelectedItems );
         event->accept();
         return;
     }
@@ -198,7 +198,7 @@ FileView::mouseDoubleClickEvent( QMouseEvent *event )
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         KUrl url = file.url();
         if( !file.isNull() && ( Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) ) )
-            addIndexToPlaylist( index, Playlist::StartPlay );
+            addIndexToPlaylist( index, Playlist::OnDoubleClickOnSelectedItems );
         else
             emit navigateToDirectory( index );
 
@@ -218,12 +218,14 @@ FileView::keyPressEvent( QKeyEvent *event )
 
     switch( event->key() )
     {
+        case Qt::Key_Enter:
         case Qt::Key_Return:
         {
             KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
             KUrl url = file.url();
             if( !file.isNull() && ( Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) ) )
-                addIndexToPlaylist( index, Playlist::StartPlay );
+                // right, we test the current item, but then add the selection to playlist
+                addSelectionToPlaylist( Playlist::OnReturnPressedOnSelectedItems );
             else
                 emit navigateToDirectory( index );
 
@@ -245,13 +247,13 @@ FileView::keyPressEvent( QKeyEvent *event )
 void
 FileView::slotAppendToPlaylist()
 {
-    addSelectionToPlaylist( Playlist::StartPlay );
+    addSelectionToPlaylist( Playlist::OnAppendToPlaylistAction );
 }
 
 void
 FileView::slotReplacePlaylist()
 {
-    addSelectionToPlaylist( Playlist::Replace );
+    addSelectionToPlaylist( Playlist::OnReplacePlaylistAction );
 }
 
 void
@@ -382,8 +384,6 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
                                       this );
         m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-        // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
-        m_appendAction->setShortcut( Qt::Key_Enter );
         connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppendToPlaylist()) );
     }
     if( type & PlaylistAction )

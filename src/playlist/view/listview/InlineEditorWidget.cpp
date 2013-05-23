@@ -394,36 +394,30 @@ bool
 InlineEditorWidget::eventFilter( QObject *obj, QEvent *event )
 {
     QList<QWidget *> editWidgets = m_editorRoleMap.keys();
-
-    QWidget * widget = qobject_cast<QWidget *>( obj );
-
+    QWidget *widget = qobject_cast<QWidget *>( obj );
     if( editWidgets.contains( widget ) )
     {
         if( event->type() == QEvent::KeyPress )
         {
-            QKeyEvent * keyEvent = static_cast<QKeyEvent *>( event );
-            if( keyEvent->key() == Qt::Key_Return )
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+            switch( keyEvent->key() )
             {
-                debug() << "InlineEditorWidget ate a return press for a child widget";
-                if( widget )
-                {
-                    widget->clearFocus ();
-                    debug() << "emitting editingDone!";
-                    emit editingDone( this );
-                }
-
-                return true;
+                case Qt::Key_Enter:
+                case Qt::Key_Return:
+                    if( widget )
+                    {
+                        widget->clearFocus();
+                        emit editingDone( this );
+                    }
+                    return true;
             }
-            else
-                return false;
+            return false;
         }
         else
             return false;
-
     }
     else
         return KHBox::eventFilter( obj, event );
 }
 
 #include "InlineEditorWidget.moc"
-

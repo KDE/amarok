@@ -68,9 +68,9 @@ private slots:
     void slotExport();
 
 private:
-    void appendAndPlay( const QModelIndex &index );
-    void appendAndPlay( const QModelIndexList &list );
-    void insertToPlayQueue( Playlist::AddOptions options );
+    void insertIntoPlaylist( const QModelIndex &index, Playlist::AddOptions options );
+    void insertIntoPlaylist( const QModelIndexList &list, Playlist::AddOptions options );
+    void insertIntoPlaylist( Playlist::AddOptions options );
 
     /**
      * Gets action for a list of indices and sets internal action targets to these.

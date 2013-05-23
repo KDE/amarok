@@ -70,7 +70,7 @@ void
 AlbumItem::mouseDoubleClickEvent( QMouseEvent *event )
 {
     Q_UNUSED( event )
-    The::playlistController()->insertOptioned( m_album->tracks(), Playlist::StartPlay );
+    The::playlistController()->insertOptioned( m_album->tracks(), Playlist::OnDoubleClickOnSelectedItems );
 }
 
 void

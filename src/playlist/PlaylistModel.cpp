@@ -636,7 +636,6 @@ Playlist::Model::mimeData( const QModelIndexList &indexes ) const
 bool
 Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int, const QModelIndex &parent )
 {
-    DEBUG_BLOCK
     if ( action == Qt::IgnoreAction )
         return true;
 

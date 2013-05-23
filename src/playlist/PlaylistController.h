@@ -41,13 +41,24 @@ class AbstractModel;
  */
 enum AddOption
 {
-    Queue      = 1, ///< inserts media after the currentTrack instead of default appending
-    Replace    = 2, ///< replaces the playlists instead of default appending (or queueing)
-    DirectPlay = 4, ///< start playback of the first item in the list
-    StartPlay  = 8, ///< start playback of the first item in the list if nothing else playing
+    Replace = 1, ///< replaces the playlist instead of default appending (or queueing)
+    Queue = 2, ///< inserts media into the queue after the currentTrack instead of default
+               ///  appending to the end of the playlist
+    PrependToQueue = Queue | 4, ///< prepends media to the queue (after current track), implies Queue
+    DirectPlay = PrependToQueue | 8, ///< start playback of the first item in the list, implies PrependToQueue
 
-    LoadAndPlay = Replace | StartPlay,
-    LoadAndPlayImmediately = Replace | DirectPlay ///< replace and begin playing of new item
+    // following are "consistency convenience enums" so that it is easy for us to make the
+    // bahaviour of similarly-looking UI elements the same. These enums are the preferred
+    // ones on calling sites. Feel free to add a new one if you find another UI element
+    // that appears on multiple places. Prefix these with On*.
+    OnDoubleClickOnSelectedItems = DirectPlay,
+    OnMiddleClickOnSelectedItems = 0, // append
+    OnReturnPressedOnSelectedItems = OnDoubleClickOnSelectedItems, // these should be kept same
+
+    OnPlayMediaAction = OnDoubleClickOnSelectedItems,
+    OnAppendToPlaylistAction = 0, // no-brainer, just for consistency, applied to popup-dropper too
+    OnReplacePlaylistAction = Replace, // ditto
+    OnQueueToPlaylistAction = Queue,
 };
 Q_DECLARE_FLAGS( AddOptions, AddOption )
 
@@ -104,6 +115,7 @@ public slots:
     void insertTracks( int topModelRow, Meta::TrackList list );
     void insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist );
     void insertPlaylists( int topModelRow, Playlists::PlaylistList playlists );
+    void insertUrls( int topModelRow, QList<KUrl> &urls );
 
     /**
      * Handles the removal of a single track from the playlist.

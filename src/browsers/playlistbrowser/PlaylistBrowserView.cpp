@@ -69,8 +69,6 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
 
     m_appendAction = new QAction( KIcon( "media-track-add-amarok" ),
             i18n( "&Add to Playlist" ), this );
-    // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
-    m_appendAction->setShortcut( Qt::Key_Enter );
     m_appendAction->setProperty( "popupdropper_svg_id", "append" );
     connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppend()) );
 
@@ -143,7 +141,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
 
     if( event->button() == Qt::MidButton )
     {
-        appendAndPlay( index );
+        insertIntoPlaylist( index, Playlist::OnMiddleClickOnSelectedItems );
         event->accept();
         return;
     }
@@ -200,7 +198,7 @@ PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent( QKeyEvent *event )
         //activated() only works for current index, not all selected
         case Qt::Key_Enter:
         case Qt::Key_Return:
-            appendAndPlay( indices );
+            insertIntoPlaylist( indices, Playlist::OnReturnPressedOnSelectedItems );
             return;
         case Qt::Key_Delete:
         {
@@ -243,7 +241,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent *even
         event->modifiers() == Qt::NoModifier &&
         !wouldExpand )
     {
-        appendAndPlay( index );
+        insertIntoPlaylist( index, Playlist::OnDoubleClickOnSelectedItems );
         event->accept();
         return;
     }
@@ -418,13 +416,13 @@ PlaylistBrowserView::slotCreateEmptyPlaylist()
 void
 PlaylistBrowserView::slotAppend()
 {
-    insertToPlayQueue( Playlist::StartPlay );
+    insertIntoPlaylist( Playlist::OnAppendToPlaylistAction );
 }
 
 void
 PlaylistBrowserView::slotLoad()
 {
-    insertToPlayQueue( Playlist::LoadAndPlay );
+    insertIntoPlaylist( Playlist::OnReplacePlaylistAction );
 }
 
 void
@@ -539,21 +537,21 @@ PlaylistBrowserView::slotExport()
 }
 
 void
-PlaylistBrowserNS::PlaylistBrowserView::appendAndPlay( const QModelIndex &index )
+PlaylistBrowserView::insertIntoPlaylist( const QModelIndex &index, Playlist::AddOptions options )
 {
-    appendAndPlay( QModelIndexList() << index );
+    insertIntoPlaylist( QModelIndexList() << index, options );
 }
 
 void
-PlaylistBrowserNS::PlaylistBrowserView::appendAndPlay( const QModelIndexList &list )
+PlaylistBrowserView::insertIntoPlaylist( const QModelIndexList &list, Playlist::AddOptions options )
 {
     actionsFor( list ); // sets action targets
-    insertToPlayQueue( Playlist::StartPlay );
+    insertIntoPlaylist( options );
     resetActionTargets();
 }
 
 void
-PlaylistBrowserView::insertToPlayQueue( Playlist::AddOptions options )
+PlaylistBrowserView::insertIntoPlaylist( Playlist::AddOptions options )
 {
     Meta::TrackList tracks;
 

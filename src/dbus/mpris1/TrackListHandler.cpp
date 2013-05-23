@@ -47,7 +47,8 @@ namespace Mpris1
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
         if( track )
         {
-            Playlist::AddOptions options = playImmediately ? Playlist::DirectPlay : Playlist::AddOptions();
+            Playlist::AddOptions options = playImmediately ?
+                    Playlist::OnPlayMediaAction : Playlist::OnAppendToPlaylistAction;
             The::playlistController()->insertOptioned( track, options );
             return 0;
         }

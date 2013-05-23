@@ -25,18 +25,18 @@
 
 #include "PlaylistController.h"
 
-#include "amarokconfig.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
+#include "amarokconfig.h"
 #include "core/collections/QueryMaker.h"
+#include "core/support/Debug.h"
 #include "core-impl/meta/cue/CueFileSupport.h"
+#include "core-impl/meta/file/File.h"
+#include "core-impl/meta/multi/MultiTrack.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core-impl/support/TrackLoader.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "core-impl/meta/multi/MultiTrack.h"
-#include "core-impl/meta/file/File.h"
-#include "core-impl/support/TrackLoader.h"
 
 #include <QAction>
 
@@ -99,8 +99,7 @@ Controller::~Controller() {}
 void
 Controller::insertOptioned( Meta::TrackPtr track, AddOptions options )
 {
-    DEBUG_BLOCK
-    if( ! track )
+    if( !track )
         return;
 
     Meta::TrackList list;
@@ -112,18 +111,25 @@ void
 Controller::insertOptioned( Meta::TrackList list, AddOptions options )
 {
     DEBUG_BLOCK
+    /* Note: don't use (options & flag) here to test whether flag is present in options.
+     * We have compound flags and for example (Queue & DirectPlay) == Queue, which
+     * evaluates to true, which isn't usually what you want.
+     *
+     * Use (options & flag == flag) instead, or rather QFlag's convenience method:
+     * options.testFlag( flag )
+     */
 
     if( list.isEmpty() )
         return;
 
     QString actionName = i18nc( "name of the action in undo stack", "Add tracks to playlist" );
-    if( options & Queue )
+    if( options.testFlag( Queue ) )
         actionName = i18nc( "name of the action in undo stack", "Queue tracks" );
-    if( options & Replace )
+    if( options.testFlag( Replace ) )
         actionName = i18nc( "name of the action in undo stack", "Replace playlist" );
     m_undoStack->beginMacro( actionName );
 
-    if( options & Replace )
+    if( options.testFlag( Replace ) )
     {
         emit replacingPlaylist();   //make sure that we clear filters
         clear();
@@ -133,29 +139,38 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
 
     int bottomModelRowCount = m_bottomModel->qaim()->rowCount();
     int bottomModelInsertRow;
-    if( options & Queue )
+    if( options.testFlag( Queue ) )
     {
         // queue is a list of playlist item ids
         QQueue<quint64> queue = Actions::instance()->queue();
-        if( !queue.isEmpty() )
+        int activeRow = m_bottomModel->activeRow();
+
+        if( options.testFlag( PrependToQueue ) )
         {
-            int lastQueueRow = m_bottomModel->rowForId( queue.last() );
-            bottomModelInsertRow = ( lastQueueRow >= 0 ) ? lastQueueRow + 1 : bottomModelRowCount;
+            if( activeRow >= 0 )
+                bottomModelInsertRow = activeRow + 1; // right after active track
+            else if( !queue.isEmpty() )
+                bottomModelInsertRow = m_bottomModel->rowForId( queue.first() ); // prepend to queue
+            else
+                bottomModelInsertRow = bottomModelRowCount; // fallback: append to end
         }
-        else
+        else // append to queue
         {
-            int activeRow = m_bottomModel->activeRow();
-            bottomModelInsertRow = ( activeRow >= 0 ) ? activeRow + 1 : bottomModelRowCount;
+            if( !queue.isEmpty() )
+                bottomModelInsertRow = m_bottomModel->rowForId( queue.last() ) + 1; // after queue
+            else if( activeRow >= 0 )
+                bottomModelInsertRow = activeRow + 1; // after active track
+            else
+                bottomModelInsertRow = bottomModelRowCount; // fallback: append to end
         }
     }
     else
-        bottomModelInsertRow = m_bottomModel->qaim()->rowCount();
+        bottomModelInsertRow = bottomModelRowCount;
 
-    int oldVisibleRowCount = m_topModel->qaim()->rowCount();
+    // this guy does the thing:
     insertionHelper( bottomModelInsertRow, list );
-    int visibleInsertedRowCount = m_topModel->qaim()->rowCount() - oldVisibleRowCount;
 
-    if( options & Queue )
+    if( options.testFlag( Queue ) )
     {
         // Construct list of rows to be queued
         QList<quint64> ids;
@@ -164,34 +179,24 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
         {
             ids << m_bottomModel->idAt( bottomModelRow );
         }
+
+        if( options.testFlag( PrependToQueue ) ) // PrependToQueue implies Queue
+        {
+            // append current queue to new queue and remove it
+            foreach( const quint64 id, Actions::instance()->queue() )
+            {
+                Actions::instance()->dequeue( id );
+                ids << id;
+            }
+        }
+
         Actions::instance()->queue( ids );
     }
+
     m_undoStack->endMacro();
 
-    bool playNow = false;
-    if( options & DirectPlay )
-        playNow = true;
-
-    if( options & StartPlay )
-    {
-        bool isDynamic = AmarokConfig::dynamicMode();
-        bool isPaused  = The::engineController()->isPaused();
-        bool isPlaying = The::engineController()->isPlaying();
-
-        // when not in dyanmic mode: start playing when paused
-        // when in dyanmic mode: do not start playing when paused
-        if( !isPlaying && (!isDynamic || (isDynamic && !isPaused)) )
-            playNow = true;
-    }
-
-    if( playNow && visibleInsertedRowCount > 0 )
-    {
-        int fuzz = 0;
-        if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
-             AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum )
-            fuzz = qrand() % visibleInsertedRowCount;
-        Actions::instance()->play( m_topModel->rowFromBottomModel( bottomModelInsertRow ) + fuzz );
-    }
+    if( options.testFlag( DirectPlay ) ) // implies PrependToQueue
+        Actions::instance()->requestUserNextTrack(); // inserted track will be first in queue
 
     emit changed();
 }
@@ -206,7 +211,7 @@ void
 Controller::insertOptioned( Playlists::PlaylistList list, AddOptions options )
 {
     // if we are going to play, we need full metadata (playable tracks)
-    TrackLoader::Flags flags = ( options & ( StartPlay | DirectPlay ) )
+    TrackLoader::Flags flags = ( options.testFlag( DirectPlay ) )
                              ? TrackLoader::FullMetadataRequired : TrackLoader::NoFlags;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
     loader->setProperty( "options", QVariant::fromValue<AddOptions>( options ) );
@@ -219,7 +224,7 @@ void
 Controller::insertOptioned( QList<KUrl> &urls, AddOptions options )
 {
     // if we are going to play, we need full metadata (playable tracks)
-    TrackLoader::Flags flags = ( options & ( StartPlay | DirectPlay ) )
+    TrackLoader::Flags flags = ( options.testFlag( DirectPlay ) )
                              ? TrackLoader::FullMetadataRequired : TrackLoader::NoFlags;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
     loader->setProperty( "options", QVariant::fromValue<AddOptions>( options ) );
@@ -256,6 +261,16 @@ Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList playlists 
     connect( loader, SIGNAL(finished(Meta::TrackList)),
              SLOT(slotLoaderWithRowFinished(Meta::TrackList)) );
     loader->init( playlists );
+}
+
+void
+Controller::insertUrls( int topModelRow, QList<KUrl> &urls )
+{
+    TrackLoader *loader = new TrackLoader(); // auto-deletes itself
+    loader->setProperty( "topModelRow", QVariant( topModelRow ) );
+    connect( loader, SIGNAL(finished(Meta::TrackList)),
+             SLOT(slotLoaderWithRowFinished(Meta::TrackList)) );
+    loader->init( urls );
 }
 
 void

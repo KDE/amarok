@@ -519,19 +519,19 @@ Playlist::PrettyListView::dropEvent( QDropEvent* event )
 }
 
 void
-Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
+Playlist::PrettyListView::keyPressEvent( QKeyEvent *event )
 {
-    if ( event->matches( QKeySequence::Delete ) )
+    if( event->matches( QKeySequence::Delete ) )
     {
         removeSelection();
         event->accept();
     }
-    else if ( event->key() == Qt::Key_Return )
+    else if( event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return )
     {
         trackActivated( currentIndex() );
         event->accept();
     }
-    else if ( event->matches( QKeySequence::SelectAll ) )
+    else if( event->matches( QKeySequence::SelectAll ) )
     {
         QModelIndex topIndex = model()->index( 0, 0 );
         QModelIndex bottomIndex = model()->index( model()->rowCount() - 1, 0 );
@@ -540,9 +540,7 @@ Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
         event->accept();
     }
     else
-    {
         QListView::keyPressEvent( event );
-    }
 }
 
 void
@@ -589,9 +587,11 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
         KUrl url( QApplication::clipboard()->text() );
         if ( url.isValid() )
         {
-            QList<KUrl> list;
-            list.append( url );
-            The::playlistController()->insertOptioned( list, Playlist::StartPlay );
+            QList<KUrl> urls = QList<KUrl>() << url;
+            if( index.isValid() )
+                The::playlistController()->insertUrls( index.row() + 1, urls );
+            else
+                The::playlistController()->insertOptioned( urls, Playlist::OnAppendToPlaylistAction );
         }
     }
 

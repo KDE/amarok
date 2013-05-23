@@ -50,7 +50,7 @@ class CoverBlingApplet : public Context::Applet
     public slots:
         void slotAlbumQueryResult( Meta::AlbumList albums);
         void slideChanged( int islideindex );
-        void appendAlbum( int islideindex );
+        void slotDoubleClicked( int islideindex );
         void toggleFullscreen();
         void jumpToPlaying();
         void saveSettings();

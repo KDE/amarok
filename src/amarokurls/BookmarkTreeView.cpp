@@ -392,7 +392,7 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
     dialog->show();
 
     //now add it to the playlist
-    The::playlistController()->insertOptioned( Meta::TrackPtr::staticCast( track ), Playlist::StartPlay );
+    The::playlistController()->insertOptioned( Meta::TrackPtr::staticCast( track ) );
 }
 
 void BookmarkTreeView::setProxy( QSortFilterProxyModel *proxy )

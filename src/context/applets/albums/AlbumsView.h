@@ -70,9 +70,10 @@ protected:
 
 private slots:
     void itemClicked( const QModelIndex &index );
+    void slotDoubleClicked();
     void slotAppendSelected();
     void slotEditSelected();
-    void slotPlaySelected();
+    void slotReplaceWithSelected();
     void slotQueueSelected();
     void slotScrollBarRangeChanged( int min, int max );
 

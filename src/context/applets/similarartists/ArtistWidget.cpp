@@ -559,7 +559,7 @@ ArtistWidget::fullBio() const
 void
 ArtistWidget::addTopTrackToPlaylist()
 {
-    The::playlistController()->insertOptioned( m_topTrack, Playlist::StartPlay );
+    The::playlistController()->insertOptioned( m_topTrack, Playlist::OnAppendToPlaylistAction );
 }
 
 void
@@ -577,7 +577,7 @@ ArtistWidget::addLastfmArtistStation()
 {
     const QString url = "lastfm://artist/" + m_artist->name() + "/similarartists";
     Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
-    The::playlistController()->insertOptioned( lastfmtrack, Playlist::StartPlay );
+    The::playlistController()->insertOptioned( lastfmtrack, Playlist::OnAppendToPlaylistAction );
 }
 
 ArtistsListWidget::ArtistsListWidget( QGraphicsWidget *parent )

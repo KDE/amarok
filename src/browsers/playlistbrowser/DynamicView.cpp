@@ -170,8 +170,8 @@ PlaylistBrowserNS::DynamicView::keyPressEvent( QKeyEvent *event )
         case Qt::Key_Delete:
             removeSelected();
             return;
-        case Qt::Key_Return:
         case Qt::Key_Enter:
+        case Qt::Key_Return:
             editSelected();
             return;
     }

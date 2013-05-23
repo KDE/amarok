@@ -183,9 +183,9 @@ void CoverBlingApplet::slotAlbumQueryResult( Meta::AlbumList albums ) //SLOT
 {
     DEBUG_BLOCK
     m_pictureflow->fillAlbums( albums );
-   
+
     connect( m_pictureflow, SIGNAL(centerIndexChanged(int)), this, SLOT(slideChanged(int)) );
-    connect( m_pictureflow, SIGNAL(doubleClicked(int)), this, SLOT(appendAlbum(int)) );
+    connect( m_pictureflow, SIGNAL(doubleClicked(int)), this, SLOT(slotDoubleClicked(int)) );
     connect( m_blingtofirst, SIGNAL(clicked()), this, SLOT(skipToFirst()) );
     connect( m_blingtolast, SIGNAL(clicked()), this, SLOT(skipToLast()) );
     connect( m_blingfastback, SIGNAL(clicked()), m_pictureflow, SLOT(fastBackward()) );
@@ -241,12 +241,11 @@ void CoverBlingApplet::slideChanged( int islideindex )
     }
 }
 
-void CoverBlingApplet::appendAlbum( int islideindex )
+void CoverBlingApplet::slotDoubleClicked( int islideindex )
 {
     Meta::AlbumPtr album = m_pictureflow->album( islideindex );
     if ( album )
-        // this is connected to the doubleClicked signal:
-        The::playlistController()->insertOptioned( album->tracks(), Playlist::StartPlay );
+        The::playlistController()->insertOptioned( album->tracks(), Playlist::OnDoubleClickOnSelectedItems );
 }
 
 void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )

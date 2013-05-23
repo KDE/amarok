@@ -150,7 +150,7 @@ APG::Preset::solverFinished( ThreadWeaver::Job* job )
                              "try loosening or removing some constraints and then generating a "
                              "new playlist.") );
         }
-        The::playlistController()->insertOptioned( solver->getSolution(), Playlist::Replace );
+        The::playlistController()->insertOptioned( solver->getSolution(), Playlist::OnReplacePlaylistAction );
     } else {
         debug() << "Ignoring results from aborted Solver" << solver->serial();
     }

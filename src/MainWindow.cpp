@@ -555,7 +555,9 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
     if( files.isEmpty() )
         return;
 
-    The::playlistController()->insertOptioned( files, directPlay ? Playlist::DirectPlay : Playlist::StartPlay );
+    Playlist::AddOptions options = directPlay ? Playlist::OnPlayMediaAction
+                                              : Playlist::OnAppendToPlaylistAction;
+    The::playlistController()->insertOptioned( files, options );
 }
 
 void
@@ -569,7 +571,7 @@ MainWindow::slotAddStream() //SLOT
 
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
 
-    The::playlistController()->insertOptioned( track );
+    The::playlistController()->insertOptioned( track, Playlist::OnAppendToPlaylistAction );
 }
 
 void
@@ -1374,9 +1376,7 @@ MainWindow::playAudioCd()
                 return false;
             }
 
-            The::engineController()->stop( true );
-            The::playlistController()->clear();
-            The::playlistController()->insertOptioned( cdColl->trackMap().values(), Playlist::DirectPlay );
+            The::playlistController()->insertOptioned( cdColl->trackMap().values(), Playlist::OnPlayMediaAction );
             m_waitingForCd = false;
             return true;
         }

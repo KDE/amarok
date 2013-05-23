@@ -122,7 +122,7 @@ void LastFmTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
     if( index.isValid() && index.internalPointer() )
     {
-        playChildTracks( index, Playlist::StartPlay );
+        playChildTracks( index, Playlist::OnDoubleClickOnSelectedItems );
     }
 }
 
@@ -209,13 +209,13 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
 void
 LastFmTreeView::slotReplacePlaylistByChildTracks()
 {
-    playChildTracks ( m_currentItems, Playlist::LoadAndPlay );
+    playChildTracks( m_currentItems, Playlist::OnReplacePlaylistAction );
 }
 
 void
 LastFmTreeView::slotAppendChildTracks()
 {
-    playChildTracks ( m_currentItems, Playlist::StartPlay );
+    playChildTracks( m_currentItems, Playlist::OnAppendToPlaylistAction );
 }
 
 void

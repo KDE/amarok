@@ -95,7 +95,7 @@ void
 AmarokPlaylistScript::playMedia( const QUrl &url )
 {
     QList<KUrl> list = QList<KUrl>() << url;
-    The::playlistController()->insertOptioned( list, Playlist::DirectPlay );
+    The::playlistController()->insertOptioned( list, Playlist::OnPlayMediaAction );
 }
 
 void
@@ -104,7 +104,7 @@ AmarokPlaylistScript::playMediaList(const QVariantList& urls)
     QList<KUrl> list;
     foreach( const QVariant &url, urls )
         list << url.toUrl();
-    The::playlistController()->insertOptioned( list, Playlist::DirectPlay );
+    The::playlistController()->insertOptioned( list, Playlist::OnPlayMediaAction );
 }
 
 void

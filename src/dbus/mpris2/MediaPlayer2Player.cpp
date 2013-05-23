@@ -171,7 +171,7 @@ void MediaPlayer2Player::SetPosition( const QDBusObjectPath& TrackId, qlonglong 
 void MediaPlayer2Player::OpenUri( QString Uri ) const
 {
     KUrl url( Uri );
-    The::playlistController()->insertOptioned( KUrl::List() << url, Playlist::DirectPlay );
+    The::playlistController()->insertOptioned( KUrl::List() << url, Playlist::OnPlayMediaAction );
 }
 
 QString MediaPlayer2Player::PlaybackStatus() const

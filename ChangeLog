@@ -31,6 +31,10 @@ VERSION 2.8-Beta 1
    * Added Ctrl+H shortcut to randomize playlist, patch by Harsh Gupta. (BR 208061)
 
   CHANGES:
+   * Playlist-related actions were harmonized: double-clicking, pressing enter or using
+     any "play media" action will prepend tracks to queue and immediately start playing;
+     middle-clicking appends to playlist; append or replace actions will no longer start
+     playback. (BR 145468, BR 145490, BR 194549)
    * When a new collection plugin is enabled, its collections appear immediately without a
      need for restart.
    * Update the MusicBrainz tagger to MusicBrainz web service 2, make it show some more

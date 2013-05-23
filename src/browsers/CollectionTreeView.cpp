@@ -340,7 +340,7 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         !wouldExpand )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
-        playChildTracks( item, Playlist::StartPlay );
+        playChildTracks( item, Playlist::OnDoubleClickOnSelectedItems );
         event->accept();
         return;
     }
@@ -368,7 +368,7 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     if( event->button() == Qt::MidButton )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
-        playChildTracks( item, Playlist::StartPlay );
+        playChildTracks( item, Playlist::OnMiddleClickOnSelectedItems );
         event->accept();
         return;
     }
@@ -426,7 +426,7 @@ CollectionTreeView::keyPressEvent( QKeyEvent *event )
     {
         case Qt::Key_Enter:
         case Qt::Key_Return:
-            slotAppendChildTracks();
+            playChildTracks( m_currentItems, Playlist::OnReturnPressedOnSelectedItems );
             return;
         case Qt::Key_Delete:
             if( !onlyOneCollection( indices ) )
@@ -876,7 +876,7 @@ CollectionTreeView::slotAddFilteredTracksToPlaylist()
                 items.insert( item );
         }
         if( !items.isEmpty() )
-            playChildTracks( items, 0 );
+            playChildTracks( items, Playlist::OnAppendToPlaylistAction );
         emit addingFilteredTracksDone();
     }
 }
@@ -893,10 +893,7 @@ CollectionTreeView::createBasicActions( const QModelIndexList &indices )
             m_appendAction = new QAction( KIcon( "media-track-add-amarok" ),
                                           i18n( "&Add to Playlist" ), this );
             m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-            // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
-            m_appendAction->setShortcut( Qt::Key_Enter );
-            connect( m_appendAction, SIGNAL(triggered()), this,
-                     SLOT(slotAppendChildTracks()) );
+            connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppendChildTracks()) );
         }
 
         actions.append( m_appendAction );
@@ -1170,19 +1167,19 @@ CollectionTreeView::getCollection( const QModelIndex &index )
 void
 CollectionTreeView::slotReplacePlaylistWithChildTracks()
 {
-    playChildTracks( m_currentItems, Playlist::LoadAndPlay );
+    playChildTracks( m_currentItems, Playlist::OnReplacePlaylistAction );
 }
 
 void
 CollectionTreeView::slotAppendChildTracks()
 {
-    playChildTracks( m_currentItems, Playlist::StartPlay );
+    playChildTracks( m_currentItems, Playlist::OnAppendToPlaylistAction );
 }
 
 void
 CollectionTreeView::slotQueueChildTracks()
 {
-    playChildTracks( m_currentItems, Playlist::Queue );
+    playChildTracks( m_currentItems, Playlist::OnQueueToPlaylistAction );
 }
 
 void

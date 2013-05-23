@@ -285,16 +285,13 @@ App::handleCliArgs() //static
 
         Playlist::AddOptions options;
         if( args->isSet( "queue" ) )
-           options = Playlist::Queue;
+           options = Playlist::OnQueueToPlaylistAction;
         else if( args->isSet( "append" ) )
-           options = 0; // append is the default
+           options = Playlist::OnAppendToPlaylistAction;
         else if( args->isSet( "load" ) )
-            options = Playlist::Replace;
+            options = Playlist::OnReplacePlaylistAction;
         else
-            options = Playlist::StartPlay;
-
-        if( args->isSet( "play" ) )
-            options |= Playlist::DirectPlay;
+            options = Playlist::OnPlayMediaAction;
 
         The::playlistController()->insertOptioned( list, options );
     }
@@ -605,7 +602,7 @@ bool App::event( QEvent *event )
             QString file = static_cast<QFileOpenEvent*>( event )->file();
             //we are only going to receive local files here
             QList<KUrl> urls = QList<KUrl>() << KUrl( file );
-            The::playlistController()->insertOptioned( urls, Playlist::StartPlay );
+            The::playlistController()->insertOptioned( urls, Playlist::OnPlayMediaAction );
             return true;
         }
         default:
