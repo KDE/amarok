@@ -24,7 +24,6 @@ add_subdirectory( core )
 add_subdirectory( core-impl/collections )
 #don't use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
-add_subdirectory( images )
 add_subdirectory( services )
 if( QTSCRIPTQTBINDINGS_FOUND )
     add_subdirectory( scripts )
@@ -954,7 +953,7 @@ install(FILES context/servicetypes/amarok_context_applet.desktop
               context/servicetypes/amarok_data_engine.desktop
               DESTINATION ${SERVICETYPES_INSTALL_DIR} )
 
-install(FILES  amarokconfig.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
+install(FILES amarokconfig.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
 install(FILES dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
               dbus/mpris1/org.freedesktop.MediaPlayer.player.xml
               dbus/mpris1/org.freedesktop.MediaPlayer.tracklist.xml
@@ -964,14 +963,8 @@ install(FILES dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
               dbus/mpris2/org.kde.amarok.Mpris2Extensions.Player.xml
               DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 
-
-install(FILES data/DefaultPlaylistLayouts.xml
-              data/first_run_jingle.ogg
-              services/InfoParserLoading.html
+install(FILES services/InfoParserLoading.html
               browsers/hover_info_template.html
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
-
-install( FILES data/amarok_homerc DESTINATION ${CONFIG_INSTALL_DIR} )
-install( FILES data/amarok.notifyrc DESTINATION ${DATA_INSTALL_DIR}/amarok )
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )

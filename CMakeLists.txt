@@ -123,6 +123,8 @@ endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 # reason why various checks are above why they belong under if( WITH_PLAYER )
 configure_file( shared/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config.h )
 
+add_subdirectory( data )
+add_subdirectory( images )
 add_subdirectory( shared )
 
 if( WITH_PLAYER )
