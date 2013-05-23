@@ -61,7 +61,7 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
     LayoutManager::instance();
 
     m_timeLine = new QTimeLine( 900, this );
-    m_timeLine->setFrameRange( 100, 60 );
+    m_timeLine->setFrameRange( 1000, 600 );
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SIGNAL( redrawRequested() ) );
 
     connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SIGNAL( redrawRequested() ) );
@@ -307,7 +307,8 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
 
         if( m_timeLine->currentFrame() == m_timeLine->startFrame() && EngineController::instance()->isPlaying() ) {
             m_timeLine->setDirection( QTimeLine::Forward );
-            m_timeLine->start();
+            if( m_timeLine->state() == QTimeLine::NotRunning )
+                m_timeLine->start();
         }
         else if( m_timeLine->currentFrame() == m_timeLine->endFrame() ) {
             m_timeLine->setDirection( QTimeLine::Backward );
@@ -315,7 +316,7 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
         }
 
         // Opacity is used for animating the active track item
-        const qreal opacity = qreal( m_timeLine->currentFrame() ) / 100;
+        const qreal opacity = qreal( m_timeLine->currentFrame() ) / 1000;
 
         // If opacity is not the default value we cannot render from cache
         const bool skipCache = opacity == 1.0 ? false : true;
