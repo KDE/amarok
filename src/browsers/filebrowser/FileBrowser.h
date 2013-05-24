@@ -82,6 +82,7 @@ protected slots:
      * Refreshes current directory
      */
     void refresh();
+
     /**
      * Handle results of tryiong to setup an item in "places" that needed mouting or other
      * special setup.

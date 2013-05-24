@@ -68,7 +68,7 @@ FileBrowser::Private::Private( FileBrowser *parent )
     upAction = KStandardAction::up( q, SLOT(up()), topHBox );
     homeAction = KStandardAction::home( q, SLOT(home()), topHBox );
     refreshAction = new KAction( KIcon("view-refresh"), i18n( "Refresh" ), topHBox );
-    QObject::connect(refreshAction, SIGNAL(triggered(bool)), q, SLOT(refresh()));
+    QObject::connect( refreshAction, SIGNAL(triggered(bool)), q, SLOT(refresh()) );
 
     navigationToolbar->addAction( backAction );
     navigationToolbar->addAction( forwardAction );
