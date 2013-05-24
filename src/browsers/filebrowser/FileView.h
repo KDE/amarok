@@ -64,6 +64,7 @@ public:
 
 signals:
     void navigateToDirectory( const QModelIndex &index );
+    void refreshBrowser();
 
 protected slots:
     void slotAppendToPlaylist();

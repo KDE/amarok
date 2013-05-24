@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.8-Beta 1
   FEATURES:
+   * The Files browser now has a Refresh button.
    * The active playlist item is animated with a soft glow effect.
    * Added an audio analyzer visualization applet.
    * Added a function for resetting the GUI layout back to default state. (BR 300753)

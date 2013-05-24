@@ -67,11 +67,14 @@ FileBrowser::Private::Private( FileBrowser *parent )
 
     upAction = KStandardAction::up( q, SLOT(up()), topHBox );
     homeAction = KStandardAction::home( q, SLOT(home()), topHBox );
+    refreshAction = new KAction( KIcon("view-refresh"), i18n( "Refresh" ), topHBox );
+    QObject::connect(refreshAction, SIGNAL(triggered(bool)), q, SLOT(refresh()));
 
     navigationToolbar->addAction( backAction );
     navigationToolbar->addAction( forwardAction );
     navigationToolbar->addAction( upAction );
     navigationToolbar->addAction( homeAction );
+    navigationToolbar->addAction( refreshAction );
 
     searchWidget = new SearchWidget( topHBox, false );
     searchWidget->setClickMessage( i18n( "Filter Files" ) );
@@ -280,6 +283,8 @@ FileBrowser::initView()
                                     SLOT(updateHeaderState()) );
     connect( d->fileView, SIGNAL(navigateToDirectory(QModelIndex)),
                           SLOT(slotNavigateToDirectory(QModelIndex)) );
+    connect( d->fileView, SIGNAL(refreshBrowser()),
+                          SLOT(refresh()) );
 }
 
 FileBrowser::~FileBrowser()
@@ -559,6 +564,12 @@ FileBrowser::home()
     d->backStack.push( d->currentPath );
     d->forwardStack.clear(); // navigating resets forward stack
     setDir( KUrl( QDir::homePath() ) );
+}
+
+void
+FileBrowser::refresh()
+{
+    setDir( d->currentPath );
 }
 
 void

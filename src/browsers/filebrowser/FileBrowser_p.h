@@ -81,6 +81,7 @@ public:
 
     KAction *upAction;
     KAction *homeAction;
+    KAction *refreshAction;
 
     KAction *backAction;
     KAction *forwardAction;

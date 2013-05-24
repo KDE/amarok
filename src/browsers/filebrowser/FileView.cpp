@@ -232,6 +232,9 @@ FileView::keyPressEvent( QKeyEvent *event )
         case Qt::Key_Delete:
             slotMoveToTrash( Qt::NoButton, event->modifiers() );
             break;
+        case Qt::Key_F5:
+            emit refreshBrowser();
+            break;
         default:
             break;
     }
