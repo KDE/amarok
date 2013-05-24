@@ -59,8 +59,10 @@ protected:
     virtual void transform( QVector<float>& );
     virtual void analyze( const QVector<float>& ) = 0;
     virtual void paused();
+
 public slots:
     void demo();
+
 protected:
     FHT    *m_fht;
 };
@@ -78,7 +80,7 @@ public:
 private slots:
     void enableDemo( bool enable )
     {
-        enable ? timer.start() : timer.stop();
+        enable ? m_timer.start() : m_timer.stop();
     }
     void playbackStateChanged();
 
@@ -98,7 +100,7 @@ protected slots:
 
 private:
     QPixmap m_canvas;
-    QTimer timer;
+    QTimer m_timer;
 };
 
 class Factory

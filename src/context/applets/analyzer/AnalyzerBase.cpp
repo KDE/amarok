@@ -167,11 +167,11 @@ Analyzer::Base2D::Base2D( QWidget *parent, uint scopeSize )
 {
     connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SLOT( playbackStateChanged() ) );
 
+    m_timer.setInterval( 34 );
+    connect( &m_timer, SIGNAL( timeout() ), this, SLOT( demo() ) );
+
+    enableDemo( !EngineController::instance()->isPlaying() );
     QTimer::singleShot( 0, this, SLOT( init() ) ); // needs to know the size
-    timer.setInterval( 34 );
-    timer.setSingleShot( false );
-    connect( &timer, SIGNAL( timeout() ), this, SLOT( demo() ) );
-    timer.start();
 }
 
 void Analyzer::Base2D::resizeEvent( QResizeEvent *e )
