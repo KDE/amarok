@@ -90,7 +90,7 @@ void TrackActionButton::reloadContent( const QSize &sz )
 
     // and a very translucent variant
     for (int i = 0; i < n; ++i)
-        pixel[i] = qRgba(r,g,b, ALPHA/6);
+        pixel[i] = qRgba(r,g,b, ALPHA/3);
 
 #undef ALPHA
 #undef GRAY
