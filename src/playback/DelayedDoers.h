@@ -66,7 +66,7 @@ class AMAROK_EXPORT DelayedSeeker : public DelayedDoer
     Q_OBJECT
 
     public:
-        DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo );
+        DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo, bool startPaused );
 
     signals:
         void trackPositionChanged( qint64 position, bool userSeek );
@@ -75,6 +75,7 @@ class AMAROK_EXPORT DelayedSeeker : public DelayedDoer
         virtual void performAction();
 
         qint64 m_seekTo;
+        bool m_startPaused;
 };
 
 class AMAROK_EXPORT DelayedTrackChanger : public DelayedSeeker
@@ -84,7 +85,7 @@ class AMAROK_EXPORT DelayedTrackChanger : public DelayedSeeker
     public:
         explicit DelayedTrackChanger( Phonon::MediaObject *mediaObject,
                                       Phonon::MediaController *mediaController,
-                                      int trackNumber, qint64 seekTo );
+                                      int trackNumber, qint64 seekTo, bool startPaused );
 
     protected:
         virtual void performAction();

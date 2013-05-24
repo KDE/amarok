@@ -406,6 +406,11 @@
         <label>Track URL to resume upon startup</label>
         <whatsthis>Internal: URL of the track to resume on startup.</whatsthis>
     </entry>
+    <entry key="Resume Paused" type="Bool">
+        <label>Resume playback in paused state</label>
+        <whatsthis>If set, Amarok resumes playback of the last played track on startup, in paused state.</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="Resume Time" type="Int">
         <label>Time to resume at, in milliseconds</label>
         <whatsthis>Internal: Playback position in the track to resume on startup.</whatsthis>

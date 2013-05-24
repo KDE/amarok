@@ -46,11 +46,12 @@ DelayedDoer::slotStateChanged( Phonon::State newState )
         debug() << __PRETTY_FUNCTION__ << "newState" << newState << "not applicable, waiting...";
 }
 
-DelayedSeeker::DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo )
+DelayedSeeker::DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo, bool startPaused )
     : DelayedDoer( mediaObject, QSet<Phonon::State>() << Phonon::PlayingState
                                                       << Phonon::BufferingState
                                                       << Phonon::PausedState )
     , m_seekTo( seekTo )
+    , m_startPaused( startPaused )
 {
 }
 
@@ -59,13 +60,15 @@ DelayedSeeker::performAction()
 {
     m_mediaObject->seek( m_seekTo );
     emit trackPositionChanged( m_seekTo, /* userSeek */ true );
-    m_mediaObject->play();
+
+    if( !m_startPaused )
+        m_mediaObject->play();
 }
 
 DelayedTrackChanger::DelayedTrackChanger( Phonon::MediaObject *mediaObject,
                                           Phonon::MediaController *mediaController,
-                                          int trackNumber, qint64 seekTo )
-    : DelayedSeeker( mediaObject, seekTo )
+                                          int trackNumber, qint64 seekTo, bool startPaused )
+    : DelayedSeeker( mediaObject, seekTo, startPaused )
     , m_mediaController( mediaController )
     , m_trackNumber( trackNumber )
 {
@@ -83,5 +86,7 @@ DelayedTrackChanger::performAction()
         m_mediaObject->seek( m_seekTo );
         emit trackPositionChanged( m_seekTo, /* userSeek */ true );
     }
-    m_mediaObject->play();
+
+    if( !m_startPaused )
+        m_mediaObject->play();
 }

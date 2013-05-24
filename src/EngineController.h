@@ -197,7 +197,7 @@ public slots:
      * Plays the specified track
      * This happens asynchronously.
      */
-    void play( Meta::TrackPtr track, uint offset = 0 );
+    void play( Meta::TrackPtr track, uint offset = 0, bool startPaused = false );
 
     /**
      * Replays the current track
@@ -511,8 +511,9 @@ private:
      *
      * @param url the URL of the media
      * @param offset the position in the media to start at in milliseconds
+     * @param startPaused if true, go to paused state. if false, go to playing state (default)
      */
-    void playUrl( const KUrl &url, uint offset );
+    void playUrl( const KUrl &url, uint offset, bool startPaused = false );
 
     /**
      * Try to detect MetaData spam in Streams etc.

@@ -323,9 +323,9 @@ EngineController::restoreSession()
         // Only give a resume time for local files, because resuming remote protocols can have weird side effects.
         // See: http://bugs.kde.org/show_bug.cgi?id=172897
         if( url.isLocalFile() )
-            play( track, AmarokConfig::resumeTime() );
+            play( track, AmarokConfig::resumeTime(), AmarokConfig::resumePaused() );
         else
-            play( track );
+            play( track, 0, AmarokConfig::resumePaused() );
     }
 }
 
@@ -376,7 +376,7 @@ EngineController::play() //SLOT
 }
 
 void
-EngineController::play( Meta::TrackPtr track, uint offset )
+EngineController::play( Meta::TrackPtr track, uint offset, bool startPaused )
 {
     DEBUG_BLOCK
 
@@ -404,12 +404,12 @@ EngineController::play( Meta::TrackPtr track, uint offset )
     else if( m_boundedPlayback )
     {
         debug() << "Starting bounded playback of url " << track->playableUrl() << " at position " << m_boundedPlayback->startPosition();
-        playUrl( track->playableUrl(), m_boundedPlayback->startPosition() );
+        playUrl( track->playableUrl(), m_boundedPlayback->startPosition(), startPaused );
     }
     else
     {
         debug() << "Just a normal, boring track... :-P";
-        playUrl( track->playableUrl(), offset );
+        playUrl( track->playableUrl(), offset, startPaused );
     }
 }
 
@@ -423,7 +423,7 @@ EngineController::replay() // slot
 }
 
 void
-EngineController::playUrl( const KUrl &url, uint offset )
+EngineController::playUrl( const KUrl &url, uint offset, bool startPaused )
 {
     DEBUG_BLOCK
 
@@ -470,7 +470,7 @@ EngineController::playUrl( const KUrl &url, uint offset )
         // playing, buffering or paused media.
         m_media.data()->pause();
         DelayedTrackChanger *trackChanger = new DelayedTrackChanger( m_media.data(),
-                m_controller.data(), m_currentAudioCdTrack, offset );
+                m_controller.data(), m_currentAudioCdTrack, offset, startPaused );
         connect( trackChanger, SIGNAL(trackPositionChanged(qint64,bool)),
                  SIGNAL(trackPositionChanged(qint64,bool)) );
     }
@@ -480,12 +480,16 @@ EngineController::playUrl( const KUrl &url, uint offset )
         // buffering or paused media. Calling play() would lead to audible glitches,
         // so call pause() that doesn't suffer from such problem.
         m_media.data()->pause();
-        DelayedSeeker *seeker = new DelayedSeeker( m_media.data(), offset );
+        DelayedSeeker *seeker = new DelayedSeeker( m_media.data(), offset, startPaused );
         connect( seeker, SIGNAL(trackPositionChanged(qint64,bool)),
                  SIGNAL(trackPositionChanged(qint64,bool)) );
     }
-    else
-        m_media.data()->play();
+    else {
+        if( startPaused )
+            m_media.data()->pause();
+        else
+            m_media.data()->play();
+    }
 }
 
 void

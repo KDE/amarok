@@ -198,6 +198,7 @@ App::~App()
         {
             AmarokConfig::setResumeTrack( engineTrack->playableUrl().prettyUrl() );
             AmarokConfig::setResumeTime( The::engineController()->trackPositionMs() );
+            AmarokConfig::setResumePaused( The::engineController()->isPaused() );
         }
         else
             AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!

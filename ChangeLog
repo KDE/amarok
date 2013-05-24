@@ -57,6 +57,8 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * Resume Playback on Start will correctly restore paused state, instead
+     of always starting in playing state. (BR 313330)
    * Optimize removal of tens of thousands of tracks from playlist. (BR 316242)
    * Fix `amarok --queue` which didn't actually queue the tracks. (BR 317385)
    * Fix suboptimal initial MusicBrainz tag dialog size by remembering it. (BR 269454)
