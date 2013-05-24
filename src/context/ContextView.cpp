@@ -215,6 +215,28 @@ ContextView::loadConfig()
         if( containment )
         {
             KConfigGroup cg( &conf, QString( "Containment %1" ).arg( i ) );
+
+            // Special case: If this is the first time that the user runs an Amarok version
+            // containing the Analyzer applet, modify the user's config so that the applet
+            // will become active. We do this for discoverability and prettiness.
+            // Remove this code in a future Amarok release (possibly 3.0)
+            const bool firstTimeWithAnalyzer = Amarok::config( "Context View" ).readEntry( "firstTimeWithAnalyzer", true );
+            if( firstTimeWithAnalyzer )
+            {
+                Amarok::config( "Context View" ).writeEntry( "firstTimeWithAnalyzer", false );
+                QStringList plugins = cg.readEntry( "plugins", QStringList() );
+                if( !plugins.contains( "analyzer" ) )
+                {
+                    // If there are no applets enabled at all, add the analyzer as only applet.
+                    // Else, put it at the second position, which is most likely below the Currenttrack applet.
+                    if( plugins.empty() )
+                        plugins.append( "analyzer" );
+                    else
+                        plugins.insert( 1, "analyzer" );
+
+                    cg.writeEntry( "plugins", plugins );
+                }
+            }
             containment->loadConfig( cg );
         }
     }
