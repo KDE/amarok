@@ -1,5 +1,12 @@
 [Desktop Entry]
 Name=Analyzer
+Name[cs]=Analyzátor
+Name[nl]=Analysator
+Name[pt]=Analisador
+Name[pt_BR]=Analisador
+Name[sl]=Preučevalnik
+Name[uk]=Аналізатор
+Name[x-test]=xxAnalyzerxx
 Type=Service
 Icon=analyzer-amarok
 ServiceTypes=Plasma/Applet
