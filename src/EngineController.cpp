@@ -469,7 +469,7 @@ EngineController::playUrl( const KUrl &url, uint offset )
         // call to play() is asynchronous and ->setCurrentTitle() can be only called on
         // playing, buffering or paused media.
         m_media.data()->pause();
-        DelayedSeeker *trackChanger = new DelayedTrackChanger( m_media.data(),
+        DelayedTrackChanger *trackChanger = new DelayedTrackChanger( m_media.data(),
                 m_controller.data(), m_currentAudioCdTrack, offset );
         connect( trackChanger, SIGNAL(trackPositionChanged(qint64,bool)),
                  SIGNAL(trackPositionChanged(qint64,bool)) );
