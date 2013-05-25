@@ -92,8 +92,6 @@ Analyzer::Base::drawFrame( const QMap<Phonon::AudioDataOutput::Channel, QVector<
     analyze( scope );
 
     scope.resize( m_fht->size() );
-
-    update();
 }
 
 int
