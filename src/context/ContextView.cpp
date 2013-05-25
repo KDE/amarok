@@ -37,6 +37,7 @@
 
 #include <plasma/dataenginemanager.h>
 
+#include <Phonon/AudioOutput>
 #include <QParallelAnimationGroup>
 #include <QSequentialAnimationGroup>
 #include <QWheelEvent>
@@ -224,8 +225,13 @@ ContextView::loadConfig()
             if( firstTimeWithAnalyzer )
             {
                 Amarok::config( "Context View" ).writeEntry( "firstTimeWithAnalyzer", false );
+
+                // Check if the Phonon backend implements all features required by the analyzer
+                Phonon::AudioDataOutput out;
+                const bool phononCanHandleAnalyzer = out.isValid();
+
                 QStringList plugins = cg.readEntry( "plugins", QStringList() );
-                if( !plugins.contains( "analyzer" ) )
+                if( phononCanHandleAnalyzer && !plugins.contains( "analyzer" ) )
                 {
                     // If there are no applets enabled at all, add the analyzer as only applet.
                     // Else, put it at the second position, which is most likely below the Currenttrack applet.

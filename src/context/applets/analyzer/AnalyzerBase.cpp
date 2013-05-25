@@ -23,8 +23,7 @@
 
 #include <QEvent> // event()
 #include <QPainter>
-
-#include <phonon/audiodataoutput.h>
+#include <Phonon/AudioOutput>
 
 
 // INSTRUCTIONS Base2D
