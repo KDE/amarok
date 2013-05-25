@@ -106,7 +106,8 @@ ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
     debug() << "scrobble: " << lfmTrack.artist() << "-" << lfmTrack.album() << "-"
             << lfmTrack.title() << "source:" << lfmTrack.source() << "duration:"
             << lfmTrack.duration();
-    m_scrobbler.cache( lfmTrack ); // automatically calls submit()
+    m_scrobbler.cache( lfmTrack );
+    m_scrobbler.submit(); // since liblastfm 1.0.7, submit() is not called automatically upon cache()
     switch( lfmTrack.scrobbleStatus() )
     {
         case lastfm::Track::Cached:

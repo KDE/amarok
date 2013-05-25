@@ -61,6 +61,8 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * Prevent Last.fm scrobbles not being submitted until restart due to change in
+     liblastfm 1.0.7. (BR 320219)
    * Resume Playback on Start will correctly restore paused state, instead
      of always starting in playing state. (BR 313330)
    * Optimize removal of tens of thousands of tracks from playlist. (BR 316242)
