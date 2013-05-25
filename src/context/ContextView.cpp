@@ -233,11 +233,8 @@ ContextView::loadConfig()
                 QStringList plugins = cg.readEntry( "plugins", QStringList() );
                 if( phononCanHandleAnalyzer && !plugins.contains( "analyzer" ) )
                 {
-                    // If there are no applets enabled at all, add the analyzer as only applet.
-                    // Else, put it at the second position, which is most likely below the Currenttrack applet.
-                    if( plugins.empty() )
-                        plugins.append( "analyzer" );
-                    else
+                    // Put the Analyzer applet at position #2, which is most likely below the Currenttrack applet.
+                    if( !plugins.empty() )
                         plugins.insert( 1, "analyzer" );
 
                     cg.writeEntry( "plugins", plugins );
