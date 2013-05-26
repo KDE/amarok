@@ -23,7 +23,6 @@
 
 #include <QEvent> // event()
 #include <QPainter>
-#include <Phonon/AudioOutput>
 
 
 // INSTRUCTIONS Base2D
@@ -36,16 +35,15 @@
 //can't mod scope in analyze you have to use transform
 
 
-Analyzer::Base::Base( QWidget *parent, uint scopeSize )
-    : QWidget( parent )
+template<class W>
+Analyzer::Base<W>::Base( QWidget *parent, uint scopeSize )
+    : W( parent )
     , m_fht( new FHT( scopeSize ) )
 {
-    connect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
-             this,   SLOT( drawFrame( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
 }
 
-void
-Analyzer::Base::transform( QVector<float> &scope ) //virtual
+template<class W> void
+Analyzer::Base<W>::transform( QVector<float> &scope ) //virtual
 {
     //this is a standard transformation that should give
     //an FFT scope that has bands for pretty analyzers
@@ -64,8 +62,8 @@ Analyzer::Base::transform( QVector<float> &scope ) //virtual
     delete [] f;
 }
 
-void
-Analyzer::Base::drawFrame( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
+template<class W> void
+Analyzer::Base<W>::drawFrame( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
 {
     if( thescope.isEmpty() )
         return;
@@ -94,8 +92,8 @@ Analyzer::Base::drawFrame( const QMap<Phonon::AudioDataOutput::Channel, QVector<
     scope.resize( m_fht->size() );
 }
 
-int
-Analyzer::Base::resizeExponent( int exp )
+template<class W> int
+Analyzer::Base<W>::resizeExponent( int exp )
 {
     if( exp < 3 )
         exp = 3;
@@ -110,8 +108,8 @@ Analyzer::Base::resizeExponent( int exp )
     return exp;
 }
 
-int
-Analyzer::Base::resizeForBands( int bands )
+template<class W> int
+Analyzer::Base<W>::resizeForBands( int bands )
 {
     int exp;
     if( bands <= 8 )
@@ -131,12 +129,12 @@ Analyzer::Base::resizeForBands( int bands )
     return m_fht->size() / 2;
 }
 
-void
-Analyzer::Base::paused() //virtual
+template<class W> void
+Analyzer::Base<W>::paused() //virtual
 {}
 
-void
-Analyzer::Base::demo() //virtual
+template<class W> void
+Analyzer::Base<W>::demo() //virtual
 {
     static int t = 201; //FIXME make static to namespace perhaps
 //    qDebug() << Q_FUNC_INFO << t;
@@ -160,15 +158,22 @@ Analyzer::Base::demo() //virtual
 
 
 Analyzer::Base2D::Base2D( QWidget *parent, uint scopeSize )
-    : Base( parent, scopeSize )
+    : Base<QWidget>( parent, scopeSize )
 {
     connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SLOT( playbackStateChanged() ) );
+
+    connect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
+             this,   SLOT( draw( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
 
     m_timer.setInterval( 34 );
     connect( &m_timer, SIGNAL( timeout() ), this, SLOT( demo() ) );
 
     enableDemo( !EngineController::instance()->isPlaying() );
-    QTimer::singleShot( 0, this, SLOT( init() ) ); // needs to know the size
+
+    QTimer *timer = new QTimer( this );
+    timer->setInterval( 20 );
+    connect( timer, SIGNAL( timeout() ), this, SLOT( update() ) );
+    timer->start();
 }
 
 void Analyzer::Base2D::resizeEvent( QResizeEvent *e )
@@ -192,6 +197,34 @@ void Analyzer::Base2D::playbackStateChanged()
 {
     enableDemo( !EngineController::instance()->isPlaying() );
 }
+
+
+
+Analyzer::Base3D::Base3D( QWidget *parent, uint scopeSize )
+    : Base<QGLWidget>( parent, scopeSize )
+{
+    connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SLOT( playbackStateChanged() ) );
+
+    connect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
+             this,   SLOT( draw( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
+
+    m_timer.setInterval( 34 );
+    connect( &m_timer, SIGNAL( timeout() ), this, SLOT( demo() ) );
+
+    enableDemo( !EngineController::instance()->isPlaying() );
+
+    QTimer *timer = new QTimer( this );
+    timer->setInterval( 20 );
+    connect( timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
+    timer->start();
+}
+
+void Analyzer::Base3D::playbackStateChanged()
+{
+    enableDemo( !EngineController::instance()->isPlaying() );
+}
+
+
 
 void
 Analyzer::interpolate( const QVector<float> &inVec, QVector<float> &outVec ) //static

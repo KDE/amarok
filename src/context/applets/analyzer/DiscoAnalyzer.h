@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2013 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2004 Enrico Ros <eros.kde@email.it>                                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,43 +14,58 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef ANALYZER_APPLET_H
-#define ANALYZER_APPLET_H
-
-#include "context/Applet.h"
-#include "context/DataEngine.h"
+#ifndef DISCO_ANALYZER_H
+#define DISCO_ANALYZER_H
 
 
-class AnalyzerApplet : public Context::Applet
+#include "AnalyzerBase.h"
+
+
+class QPaintEvent;
+
+class DiscoAnalyzer : public Analyzer::Base3D
 {
-    Q_OBJECT
-
 public:
-    enum WidgetHeight { Small = 0, Medium = 1, Tall = 2 };
+    DiscoAnalyzer( QWidget * );
+    ~DiscoAnalyzer();
+    void analyze( const QVector<float>& );
+    void paused();
 
-    AnalyzerApplet( QObject* parent, const QVariantList& args );
-    virtual ~AnalyzerApplet();
-
-public slots:
-    virtual void init();
-
-private slots:
-    void newGeometry();
-    void setHeightSmall();
-    void setHeightMedium();
-    void setHeightTall();
-    void analyzerAction( QAction* );
+protected:
+    void initializeGL();
+    void resizeGL( int w, int h );
+    void paintGL();
 
 private:
-    void setCurrentAnalyzer( const QString &name);
-    QList<QAction *> contextualActions();
+    struct ShowProperties
+    {
+        bool paused;
+        double timeStamp;
+        double dT;
+        double pauseTimer;
+        float rotDegrees;
+    } showStruct;
 
-    QWidget *m_analyzer;
-    QString m_analyzerName;
-    QMap<QString, QString> m_analyzerNames;
-    WidgetHeight m_currentHeight;
+    struct FrameProperties
+    {
+        float energy;
+        float dEnergy;
+        float meanBand;
+        float rotDegrees;
+        bool silence;
+    } frame;
+
+    GLuint dotTexture;
+    GLuint w1Texture;
+    GLuint w2Texture;
+    float unitX, unitY;
+
+    void drawDot( float x, float y, float size );
+    void drawFullDot( float r, float g, float b, float a );
+    void setTextureMatrix( float rot, float scale );
+
+    bool loadTexture( QString file, GLuint& textureID );
+    void freeTexture( GLuint& textureID );
 };
-
-AMAROK_EXPORT_APPLET( analyzer, AnalyzerApplet )
 
 #endif

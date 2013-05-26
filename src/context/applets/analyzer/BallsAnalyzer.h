@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2013 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2004 Enrico Ros <eros.kde@email.it>                                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,43 +14,63 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef ANALYZER_APPLET_H
-#define ANALYZER_APPLET_H
+#ifndef BALLS_ANALYZER_H
+#define BALLS_ANALYZER_H
 
-#include "context/Applet.h"
-#include "context/DataEngine.h"
+#include "AnalyzerBase.h"
 
 
-class AnalyzerApplet : public Context::Applet
+class QWidget;
+class Ball;
+class Paddle;
+
+class BallsAnalyzer : public Analyzer::Base3D
 {
-    Q_OBJECT
-
 public:
-    enum WidgetHeight { Small = 0, Medium = 1, Tall = 2 };
+    BallsAnalyzer( QWidget * );
+    ~BallsAnalyzer();
+    void analyze( const QVector<float> & );
+    void paused();
 
-    AnalyzerApplet( QObject* parent, const QVariantList& args );
-    virtual ~AnalyzerApplet();
-
-public slots:
-    virtual void init();
-
-private slots:
-    void newGeometry();
-    void setHeightSmall();
-    void setHeightMedium();
-    void setHeightTall();
-    void analyzerAction( QAction* );
+protected:
+    void initializeGL();
+    void resizeGL( int w, int h );
+    void paintGL();
 
 private:
-    void setCurrentAnalyzer( const QString &name);
-    QList<QAction *> contextualActions();
+    struct ShowProperties
+    {
+        double timeStamp;
+        double dT;
+        float colorK;
+        float gridScrollK;
+        float gridEnergyK;
+        float camRot;
+        float camRoll;
+        float peakEnergy;
+    } show;
 
-    QWidget *m_analyzer;
-    QString m_analyzerName;
-    QMap<QString, QString> m_analyzerNames;
-    WidgetHeight m_currentHeight;
+    struct FrameProperties
+    {
+        bool silence;
+        float energy;
+        float dEnergy;
+    } frame;
+
+    static const int NUMBER_OF_BALLS = 16;
+
+    QList<Ball*> balls;
+    Paddle * leftPaddle, * rightPaddle;
+    float unitX, unitY;
+    GLuint ballTexture;
+    GLuint gridTexture;
+
+    void drawDot3s( float x, float y, float z, float size );
+    void drawHFace( float y );
+    void drawScrollGrid( float scroll, float color[4] );
+
+    bool loadTexture( QString file, GLuint& textureID );
+    void freeTexture( GLuint& textureID );
 };
-
-AMAROK_EXPORT_APPLET( analyzer, AnalyzerApplet )
 
 #endif

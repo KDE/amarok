@@ -43,9 +43,8 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
     , m_fade_pos( 1 << 8, 50 ) //vector<uint>
     , m_fade_intensity( 1 << 8, 32 ) //vector<uint>
 {
-    setMinimumSize( MIN_COLUMNS * ( WIDTH + 1 ) - 1, MIN_ROWS * ( HEIGHT + 1 ) - 1 ); //-1 is padding, no drawing takes place there
+    setObjectName( "Blocky" );
     setMaximumWidth( MAX_COLUMNS * ( WIDTH + 1 ) - 1 );
-    setMaximumHeight( MIN_ROWS * ( HEIGHT + 1 ) - 1 );
 }
 
 BlockAnalyzer::~BlockAnalyzer()
@@ -124,7 +123,6 @@ void
 BlockAnalyzer::analyze( const QVector<float> &s )
 {
     Analyzer::interpolate( s, m_scope );
-    update();
 }
 
 void

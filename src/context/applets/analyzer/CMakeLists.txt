@@ -7,7 +7,9 @@ include_directories(
 set(analyzer_SRCS
     AnalyzerApplet.cpp
     AnalyzerBase.cpp
+    BallsAnalyzer.cpp
     BlockAnalyzer.cpp
+    DiscoAnalyzer.cpp
     fht.cpp
     )
 

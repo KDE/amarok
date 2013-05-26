@@ -4,7 +4,9 @@ add_subdirectory( icons )
 
 install(FILES
         amarok_icon.svg
+        ball.png
         default-theme-clean.svg
+        dot.png
         emblem-amazon.png
         emblem-default.png
         emblem-jamendo.png
@@ -19,6 +21,7 @@ install(FILES
         emblem-ampache-scalable.svgz
         emblem-scripted.png
         emblem-scripted-scalable.svgz
+        grid.png
         lastfm-default-cover.png
         echonest.png
         lastfm.png
@@ -38,6 +41,8 @@ install(FILES
         star.png
         volume_icon.png
         volume_muted_icon.png
+        wirl1.png
+        wirl2.png
         service_info_loading1.png
         service_info_loading2.png
         service_info_loading3.png

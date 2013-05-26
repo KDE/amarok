@@ -23,12 +23,16 @@
 #endif
 
 #include "fht.h"     //stack allocated and convenience
-#include <qpixmap.h> //stack allocated and convenience
-#include <qtimer.h>  //stack allocated
-#include <qwidget.h> //baseclass
+
+#include <QGLWidget>
+#include <QPixmap> //stack allocated and convenience
+#include <QTimer>  //stack allocated
+#include <QWidget> //baseclass
+
 #include <vector>    //included for convenience
 
 #include <phonon/audiodataoutput.h>
+
 
 class QEvent;
 class QPaintEvent;
@@ -40,12 +44,10 @@ namespace Analyzer
 
 typedef std::vector<float> Scope;
 
-class Base : public QWidget
+template<class W> class Base : public W
 {
-    Q_OBJECT
-
-public slots:
-    void drawFrame( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope );
+public:
+    virtual void drawFrame( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope );
 
 protected:
     Base( QWidget*, uint = 7 );
@@ -54,28 +56,29 @@ protected:
         delete m_fht;
     }
 
+    void demo();
+
     int  resizeExponent( int );
     int  resizeForBands( int );
     virtual void transform( QVector<float>& );
     virtual void analyze( const QVector<float>& ) = 0;
     virtual void paused();
 
-public slots:
-    void demo();
-
 protected:
     FHT    *m_fht;
 };
 
 
-class Base2D : public Base
+class Base2D : public Base<QWidget>
 {
     Q_OBJECT
+
 public:
     const QPixmap *canvas()     const
     {
         return &m_canvas;
     }
+
 
 private slots:
     void enableDemo( bool enable )
@@ -83,6 +86,11 @@ private slots:
         enable ? m_timer.start() : m_timer.stop();
     }
     void playbackStateChanged();
+
+    void draw( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
+    {
+        drawFrame( thescope );
+    }
 
 protected:
     Base2D( QWidget*, uint scopeSize = 7 );
@@ -95,13 +103,35 @@ protected:
     void paintEvent( QPaintEvent* );
     void resizeEvent( QResizeEvent* );
 
-protected slots:
-    virtual void init() {}
-
 private:
     QPixmap m_canvas;
     QTimer m_timer;
 };
+
+
+class Base3D : public Base<QGLWidget>
+{
+    Q_OBJECT
+
+private slots:
+    void enableDemo( bool enable )
+    {
+        enable ? m_timer.start() : m_timer.stop();
+    }
+    void playbackStateChanged();
+
+    void draw( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
+    {
+        drawFrame( thescope );
+    }
+
+protected:
+    Base3D( QWidget*, uint scopeSize = 7 );
+
+private:
+    QTimer m_timer;
+};
+
 
 class Factory
 {

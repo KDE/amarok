@@ -18,21 +18,33 @@
 
 #include "AnalyzerApplet.h"
 
-#include "BlockAnalyzer.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
-#include <QGraphicsLinearLayout>
-#include <QGraphicsProxyWidget>
-#include <QGraphicsScene>
+#include "BallsAnalyzer.h"
+#include "BlockAnalyzer.h"
+#include "DiscoAnalyzer.h"
+
+#include <QAction>
+#include <QGraphicsView>
+#include <QMenu>
 
 
 AnalyzerApplet::AnalyzerApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
+    , m_analyzer( 0 )
 {
     setHasConfigurationInterface( false );
+
+    connect( this, SIGNAL( geometryChanged() ), this, SLOT( newGeometry() ) );
 }
 
 AnalyzerApplet::~AnalyzerApplet()
-{}
+{
+    KConfigGroup config = Amarok::config( "Analyzer Applet" );
+    config.writeEntry( "Height", (int)m_currentHeight );
+    config.writeEntry( "Current Analyzer", m_analyzerName );
+}
 
 void
 AnalyzerApplet::init()
@@ -40,14 +52,126 @@ AnalyzerApplet::init()
     // Call the base implementation.
     Context::Applet::init();
 
-    BlockAnalyzer *analyzer = new BlockAnalyzer( 0 );
+    m_analyzerNames["Balls"] = i18n( "Balls (OpenGL)" );
+    m_analyzerNames["Blocky"] = i18n( "Blocky" );
+    m_analyzerNames["Disco"] = i18n( "Disco (OpenGL)" );
 
-    QGraphicsProxyWidget *proxy = scene()->addWidget( analyzer );
+    KConfigGroup config = Amarok::config( "Analyzer Applet" );
 
-    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
-    layout->addItem( proxy );
+    if( config.readEntry( "Height", (int)Small ) == Small )
+        setHeightSmall();
+    if( config.readEntry( "Height", (int)Small ) == Medium )
+        setHeightMedium();
+    if( config.readEntry( "Height", (int)Small ) == Tall )
+        setHeightTall();
 
-    updateConstraints();
+    setCurrentAnalyzer( config.readEntry( "Current Analyzer", "Blocky" ) );
+}
+
+void AnalyzerApplet::newGeometry()
+{
+    m_analyzer->setGeometry( geometry().toRect() );
+}
+
+QList<QAction *>
+AnalyzerApplet::contextualActions ()
+{
+    QList<QAction*> actions;
+    QAction *action;
+
+    QMenu *heightMenu = new QMenu( i18n( "Height" ), view() );
+    actions << heightMenu->menuAction();
+
+    QActionGroup *heightActions = new QActionGroup( this );
+
+    action = heightMenu->addAction( i18n( "Small" ) );
+    action->setCheckable( true );
+    action->setChecked( m_currentHeight == Small );
+    action->setActionGroup( heightActions );
+    connect( action, SIGNAL( triggered() ), this, SLOT( setHeightSmall() ) );
+    action = heightMenu->addAction( i18n( "Medium" ) );
+    action->setCheckable( true );
+    action->setChecked( m_currentHeight == Medium );
+    action->setActionGroup( heightActions );
+    connect( action, SIGNAL( triggered() ), this, SLOT( setHeightMedium() ) );
+    action = heightMenu->addAction( i18n( "Tall" ) );
+    action->setCheckable( true );
+    action->setChecked( m_currentHeight == Tall );
+    action->setActionGroup( heightActions );
+    connect( action, SIGNAL( triggered() ), this, SLOT( setHeightTall() ) );
+
+    action = new QAction( this );
+    action->setSeparator( true );
+    actions << action;
+
+    QActionGroup *analyzerActions = new QActionGroup( this );
+    connect( analyzerActions, SIGNAL( triggered( QAction* ) ), this, SLOT( analyzerAction( QAction* ) ) );
+
+    QMap<QString, QString>::const_iterator i = m_analyzerNames.constBegin();
+    while ( i != m_analyzerNames.constEnd() ) {
+        action = new QAction( i.value(), this );
+        action->setData( i.key() );
+        action->setCheckable( true );
+        action->setChecked( m_analyzerName == i.key() );
+        action->setActionGroup( analyzerActions );
+        actions << action;
+        i++;
+    }
+
+    return actions;
+}
+
+void
+AnalyzerApplet::setHeightSmall()
+{
+    setMinimumHeight( 100 );
+    m_currentHeight = Small;
+}
+
+void
+AnalyzerApplet::setHeightMedium()
+{
+    setMinimumHeight( 150 );
+    m_currentHeight = Medium;
+}
+
+void
+AnalyzerApplet::setHeightTall()
+{
+    setMinimumHeight( 200 );
+    m_currentHeight = Tall;
+}
+
+void
+AnalyzerApplet::analyzerAction( QAction *action )
+{
+    DEBUG_BLOCK
+
+    setCurrentAnalyzer( action->data().toString() );
+}
+
+void
+AnalyzerApplet::setCurrentAnalyzer( const QString &name )
+{
+    DEBUG_BLOCK
+
+    debug() << "name: " << name;
+
+    if( m_analyzerName == name )
+        return;
+
+    delete m_analyzer;
+    m_analyzerName = name;
+
+    if( name == "Balls" )
+        m_analyzer = new BallsAnalyzer( view()->viewport() );
+    else if( name == "Blocky" )
+        m_analyzer = new BlockAnalyzer( view()->viewport() );
+    else if( name == "Disco" )
+        m_analyzer = new DiscoAnalyzer( view()->viewport() );
+
+    newGeometry();
+    m_analyzer->show();
 }
 
 #include "AnalyzerApplet.moc"
