@@ -62,7 +62,7 @@ Track::playableUrl() const
 QString
 Track::prettyUrl() const
 {
-    return playableUrl().url();
+    return playableUrl().prettyUrl();
 }
 
 QString
