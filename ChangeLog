@@ -13,6 +13,7 @@ VERSION 2.8-Beta 1
      clears the search bar, this is a very convenient way to populate your playlist.
    * Allow to transcode only certain (different format, playability) tracks when
      transferring them to a collection; patch by Anmol Ahuja. (BR 312407)
+   * On-Screen-Display fades in/out smoothly.
    * Added support for .asx playlists; patch by Tatjana Gornak. (BR 170207)
    * Add Radio GFM radio streams to Cool Stream Script. (BR 317978)
    * Added options to pause playback on system suspend and to inhibit automatic suspend
@@ -47,7 +48,6 @@ VERSION 2.8-Beta 1
    * Data CDs are now recognized in Amarok; patch by Anmol Ahuja. (BR 316128)
    * On-Screen-Display now uses the system font instead of hardcoded sans-serif.
      (BR 248707)
-   * On-Screen-Display fades in/out smoothly.
    * Fancy behavior of some context menus showing different actions when Shift key is held
      has been reverted. All entries are now shown all the time.
    * The dynamic playlist behavior has changed. It will no longer generate "pretty good"
