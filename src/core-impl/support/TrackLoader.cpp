@@ -184,6 +184,10 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
 {
     // this method needs to be thread-safe!
 
+    // some playlists used to emit tracksLoaded() in ->tracks(), prevent infinite
+    // recursion by unsubscribing early
+    PlaylistObserver::unsubscribeFrom( playlist );
+
     // accessing m_tracks is thread-safe as nothing else is happening in this class in
     // the main thread while we are waiting for tracksLoaded() to trigger:
     Meta::TrackList tracks = playlist->tracks();
@@ -207,7 +211,6 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
     }
     m_tracks << tracks;
 
-    PlaylistObserver::unsubscribeFrom( playlist );
     // this also ensures that processNextResultUrl() will resume in the main thread
     QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
 }
