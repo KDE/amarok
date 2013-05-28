@@ -188,13 +188,14 @@ PlaylistBrowserNS::DynamicView::mouseDoubleClickEvent( QMouseEvent *event )
         QVariant v = model()->data( index, Dynamic::DynamicModel::PlaylistRole );
         if( v.isValid() )
         {
-            Dynamic::DynamicModel* model = Dynamic::DynamicModel::instance();
+            Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
             model->setActivePlaylist( model->playlistIndex( qobject_cast<Dynamic::DynamicPlaylist*>(v.value<QObject*>() ) ) );
             The::playlistActions()->enableDynamicMode( true );
             event->accept();
             return;
         }
-        // if the click was on a playlist
+
+        // if the click was on a bias
         v = model()->data( index, Dynamic::DynamicModel::BiasRole );
         if( v.isValid() )
         {
