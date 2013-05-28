@@ -564,14 +564,13 @@ void
 MainWindow::slotAddStream() //SLOT
 {
     bool ok;
-    QString url = KInputDialog::getText( i18n("Add Stream"), i18n("Enter Stream URL:"), QString(), &ok, this );
-
+    QString url = KInputDialog::getText( i18n( "Add Stream" ), i18n( "Enter Stream URL:" ),
+                                         QString(), &ok, this );
     if( !ok )
         return;
 
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
-
-    The::playlistController()->insertOptioned( track, Playlist::OnAppendToPlaylistAction );
+    The::playlistController()->insertOptioned( KUrl( url ),
+            Playlist::OnAppendToPlaylistAction | Playlist::RemotePlaylistsAreStreams );
 }
 
 void

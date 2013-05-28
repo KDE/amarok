@@ -210,9 +210,12 @@ Controller::insertOptioned( Playlists::PlaylistPtr playlist, AddOptions options 
 void
 Controller::insertOptioned( Playlists::PlaylistList list, AddOptions options )
 {
+    TrackLoader::Flags flags;
     // if we are going to play, we need full metadata (playable tracks)
-    TrackLoader::Flags flags = ( options.testFlag( DirectPlay ) )
-                             ? TrackLoader::FullMetadataRequired : TrackLoader::NoFlags;
+    if( options.testFlag( DirectPlay ) )
+        flags |= TrackLoader::FullMetadataRequired;
+    if( options.testFlag( Playlist::RemotePlaylistsAreStreams ) )
+        flags |= TrackLoader::RemotePlaylistsAreStreams;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
     loader->setProperty( "options", QVariant::fromValue<AddOptions>( options ) );
     connect( loader, SIGNAL(finished(Meta::TrackList)),
@@ -221,11 +224,20 @@ Controller::insertOptioned( Playlists::PlaylistList list, AddOptions options )
 }
 
 void
+Controller::insertOptioned( const KUrl &url, AddOptions options )
+{
+    insertOptioned( QList<KUrl>() << url, options );
+}
+
+void
 Controller::insertOptioned( QList<KUrl> &urls, AddOptions options )
 {
+    TrackLoader::Flags flags;
     // if we are going to play, we need full metadata (playable tracks)
-    TrackLoader::Flags flags = ( options.testFlag( DirectPlay ) )
-                             ? TrackLoader::FullMetadataRequired : TrackLoader::NoFlags;
+    if( options.testFlag( DirectPlay ) )
+        flags |= TrackLoader::FullMetadataRequired;
+    if( options.testFlag( Playlist::RemotePlaylistsAreStreams ) )
+        flags |= TrackLoader::RemotePlaylistsAreStreams;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
     loader->setProperty( "options", QVariant::fromValue<AddOptions>( options ) );
     connect( loader, SIGNAL(finished(Meta::TrackList)),

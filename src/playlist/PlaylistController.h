@@ -46,6 +46,8 @@ enum AddOption
                ///  appending to the end of the playlist
     PrependToQueue = Queue | 4, ///< prepends media to the queue (after current track), implies Queue
     DirectPlay = PrependToQueue | 8, ///< start playback of the first item in the list, implies PrependToQueue
+    RemotePlaylistsAreStreams = 16, ///< treat remote urls pointing to playlists as streams.
+                                    ///  only has sense for methods that accept urls or playlists
 
     // following are "consistency convenience enums" so that it is easy for us to make the
     // bahaviour of similarly-looking UI elements the same. These enums are the preferred
@@ -103,6 +105,7 @@ public slots:
     void insertOptioned( Meta::TrackList list, AddOptions options = 0 );
     void insertOptioned( Playlists::PlaylistPtr playlist, AddOptions options = 0 );
     void insertOptioned( Playlists::PlaylistList list, AddOptions options = 0 );
+    void insertOptioned( const KUrl &url, AddOptions options = 0 );
     void insertOptioned( QList<KUrl> &urls, AddOptions options = 0 );
 
     /**

@@ -468,7 +468,7 @@ CollectionManager::trackForUrl( const KUrl &url )
 
     // TODO: create specific TrackProviders for these:
     static const QSet<QString> remoteProtocols = QSet<QString>()
-            << "http" << "https" << "mms" << "smb";
+            << "http" << "https" << "mms" << "smb"; // consider unifying with TrackLoader::tracksLoaded()
     if( remoteProtocols.contains( url.protocol() ) )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 

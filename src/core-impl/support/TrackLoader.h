@@ -50,11 +50,16 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
          * metadata is available. Also use this flag when you need to immediately play
          * the tracks. This no longer implies any blocking behaviour, you'll just get the
          * finished signal a bit later.
+         *
+         * RemotePlaylistsAreStreams: treat playlists with remote urls as Streams with
+         * multiple alternative download locations (Meta::MultiTracks). Works even when
+         * you pass playlists.
          */
-        enum Flags {
-            NoFlags = 0,
+        enum Flag {
             FullMetadataRequired = 1 << 0,
+            RemotePlaylistsAreStreams = 1 << 1,
         };
+        Q_DECLARE_FLAGS( Flags, Flag )
 
         /**
          * Construct TrackLoader. You must construct it on the heap, it will auto-delete
@@ -64,7 +69,7 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
          * @param timeout if FullMetadataRequired is in flags, this is the timeout in
          * milliseconds for wating on track to resolve. Ignored otherwise.
          */
-        TrackLoader( Flags flags = NoFlags, int timeout = 2000 );
+        TrackLoader( Flags flags = 0, int timeout = 2000 );
         ~TrackLoader();
 
         /**
@@ -125,7 +130,7 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
         static bool directorySensitiveLessThan( const KUrl &left, const KUrl &right );
 
         Status m_status;
-        Flags m_flags;
+        const Flags m_flags;
         int m_timeout;
         /// passed urls, may contain urls of directories
         QList<KUrl> m_sourceUrls;
@@ -141,5 +146,7 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
         QSet<Meta::TrackPtr> m_unresolvedTracks;
         QMutex m_unresolvedTracksMutex;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( TrackLoader::Flags )
 
 #endif // AMAROK_TRACKLOADER_H

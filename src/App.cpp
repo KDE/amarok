@@ -600,9 +600,7 @@ bool App::event( QEvent *event )
         case QEvent::FileOpen:
         {
             QString file = static_cast<QFileOpenEvent*>( event )->file();
-            //we are only going to receive local files here
-            QList<KUrl> urls = QList<KUrl>() << KUrl( file );
-            The::playlistController()->insertOptioned( urls, Playlist::OnPlayMediaAction );
+            The::playlistController()->insertOptioned( KUrl( file ), Playlist::OnPlayMediaAction );
             return true;
         }
         default:

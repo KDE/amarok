@@ -66,8 +66,7 @@ AmarokPlaylistScript::saveCurrentPlaylist()
 void
 AmarokPlaylistScript::addMedia( const QUrl &url )
 {
-    QList<KUrl> list = QList<KUrl>() << url;
-    The::playlistController()->insertOptioned( list );
+    The::playlistController()->insertOptioned( url );
 }
 
 void
@@ -94,8 +93,7 @@ AmarokPlaylistScript::playByIndex( int index )
 void
 AmarokPlaylistScript::playMedia( const QUrl &url )
 {
-    QList<KUrl> list = QList<KUrl>() << url;
-    The::playlistController()->insertOptioned( list, Playlist::OnPlayMediaAction );
+    The::playlistController()->insertOptioned( url, Playlist::OnPlayMediaAction );
 }
 
 void

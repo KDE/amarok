@@ -23,6 +23,7 @@
 #include "core/support/Debug.h"
 #include "core-impl/meta/file/File.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
+#include "core-impl/meta/multi/MultiTrack.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
 #include <KIO/Job>
@@ -166,7 +167,7 @@ TrackLoader::processNextResultUrl()
         Meta::TrackPtr track( proxyTrack.data() );
         m_tracks << Meta::TrackPtr( track );
 
-        if( ( m_flags & FullMetadataRequired ) && !proxyTrack->isResolved() )
+        if( m_flags.testFlag( FullMetadataRequired ) && !proxyTrack->isResolved() )
         {
             m_unresolvedTracks.insert( track );
             Observer::subscribeTo( track );
@@ -191,7 +192,7 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
     // accessing m_tracks is thread-safe as nothing else is happening in this class in
     // the main thread while we are waiting for tracksLoaded() to trigger:
     Meta::TrackList tracks = playlist->tracks();
-    if( m_flags & FullMetadataRequired )
+    if( m_flags.testFlag( FullMetadataRequired ) )
     {
         foreach( const Meta::TrackPtr &track, tracks )
         {
@@ -209,7 +210,16 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
             }
         }
     }
-    m_tracks << tracks;
+
+    static const QSet<QString> remoteProtocols = QSet<QString>()
+            << "http" << "https" << "mms" << "smb"; // consider unifying with CollectionManager::trackForUrl()
+    if( m_flags.testFlag( RemotePlaylistsAreStreams ) && tracks.count() > 1
+        && remoteProtocols.contains( playlist->uidUrl().protocol() ) )
+    {
+        m_tracks << Meta::TrackPtr( new Meta::MultiTrack( playlist ) );
+    }
+    else
+        m_tracks << tracks;
 
     // this also ensures that processNextResultUrl() will resume in the main thread
     QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
