@@ -149,14 +149,16 @@ namespace Playlists
 
             /**
              * Returns the number of tracks this playlist contains. -1 if tracks are not
-             * yet loaded (call triggerTrackLoad() in this case).
+             * yet loaded (call triggerTrackLoad() in this case). If you get non-negative
+             * number, all tracks have been already loaded.
              */
             virtual int trackCount() const = 0;
 
             /**
              * Returns loaded tracks in this playlist. Note that the list may be incomplete,
-             * to be sure, you have to become playlist observer, watch for trackAdded()
-             * methods and call triggerTrackLoad(). If you want to immediately play or
+             * to be sure, check that trackCount() is non-negative. Otherwise you have to
+             * become playlist observer, watch for trackAdded() methods and call
+             * triggerTrackLoad(). If you want to immediately play or
              * extract metadata of the tracks, be aware that many playlist implementations
              * initially return MetaProxy::Tracks that are resolved asynchronously.
              *

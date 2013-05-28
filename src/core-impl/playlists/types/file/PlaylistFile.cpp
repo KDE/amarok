@@ -77,7 +77,8 @@ PlaylistFile::trackCount() const
 {
     if( m_tracksLoaded )
         return m_tracks.count();
-    return -1;
+    else
+        return -1;
 }
 
 void

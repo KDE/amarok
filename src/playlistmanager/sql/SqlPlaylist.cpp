@@ -207,30 +207,13 @@ SqlPlaylist::trackCount() const
 {
     if( m_tracksLoaded )
         return m_tracks.count();
-
-    QString query = "SELECT COUNT(id) FROM playlist_tracks WHERE playlist_id=%1;";
-
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
-    Q_ASSERT( sql );
-
-    QStringList results = sql->query( query.arg( m_dbId ) );
-    debug() << results;
-    if( results.isEmpty() )
-    {
-        error() << "no results for COUNT query on playlist_tracks table!";
+    else
         return -1;
-    }
-    int trackCount = results.first().toInt();
-    return trackCount;
 }
 
 Meta::TrackList
 SqlPlaylist::tracks()
 {
-    //If you do not load before, m_tracks
-    //can be empty before usage.
-    triggerTrackLoad();
-
     return m_tracks;
 }
 

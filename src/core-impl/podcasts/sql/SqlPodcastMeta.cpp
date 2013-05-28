@@ -603,21 +603,8 @@ SqlPodcastChannel::trackCount() const
 {
     if( m_episodesLoaded )
         return m_episodes.count();
-
-    QString query = "SELECT COUNT(id) FROM podcastepisodes WHERE channel = %1";
-
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
-    Q_ASSERT( sql );
-
-    QStringList results = sql->query( query.arg( m_dbId ) );
-    if( results.isEmpty() )
-    {
-        error() << "no results for COUNT query on playlist_tracks table!";
+    else
         return -1;
-    }
-
-    int trackCount = results.first().toInt();
-    return m_purge ? qMin( m_purgeCount, trackCount ): trackCount;
 }
 
 void
@@ -887,10 +874,6 @@ SqlPodcastChannel::loadEpisodes()
 Meta::TrackList
 Podcasts::SqlPodcastChannel::tracks()
 {
-    //If you do not load before, m_episodes
-    //can be empty before usage.
-    triggerTrackLoad();
-
     return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes );
 }
 
