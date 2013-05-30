@@ -26,7 +26,7 @@ Formatting
 * Spaces, not tabs
 * Indentation is 4 spaces
 * Lines should be limited to 90 characters
-* Spaces between brackets and argument functions
+* Spaces between brackets and argument functions, except for template arguments
 * For pointer and reference variable declarations put a space between the type
   and the * or & and no space before the variable name.
 * For if, else, while and similar statements put the brackets on the next line,
@@ -34,7 +34,7 @@ Formatting
 * Function and class definitions have their brackets on separate lines
 * A function implementation's return type is on its own line.
 * CamelCase.{cpp,h} style file names.
-* Qt 4 includes a foreach keyword which makes it very easy to iterate over all
+* Qt includes a foreach keyword which makes it very easy to iterate over all
   elements of a container.
 
 Example:
@@ -50,6 +50,17 @@ Example:
  |      * optimise it. */
  |     foreach( const QString &string, list )
  |         debug() << "Current string is " << string << endl;
+ |
+ |     switch( m_enumValue )
+ |     {
+ |         case Something:
+ |             return true;
+ |         case SomethingElse:
+ |         {
+ |             int auxiliaryVariable; // needs scoping in case construct
+ |             break;
+ |         }
+ |     }
  | }
 
 
@@ -81,16 +92,17 @@ Includes
 --------
 Header includes should be listed in the following order:
     - Own Header
-    - Amarok includes
-    - KDE includes
+    - Amarok includes, relative to src/ (or shared/) preferably
+    - KDE includes, <KJob> is preferred to <kjob.h>
     - Qt includes
+    - other includes
 
-They should also be sorted alphabetically, for ease of locating them.  A small comment
-if applicable is also helpful.
+They should also be sorted alphabetically (case-sensitively: classes on same level before
+folders), for ease of locating them. A small comment if applicable is also helpful.
 
 Includes in a header file should be kept to the absolute minimum, as to keep compile times
 low. This can be achieved by using "forward declarations" instead of includes, like
-"class QListView;" Forward declarations work for pointers and const references.
+"class QListView;"
 
 TIP:
 Kate/KDevelop users can sort the headers automatically. Select the lines you want to sort,
@@ -102,9 +114,10 @@ Example:
 
  | #include "MySuperWidget.h"
  |
- | #include "Amarok.h"
- | #include "Debug.h"
- | #include "Playlist.h"
+ | #include "EngineController.h"
+ | #include "core/playlists/Playlist.h"
+ | #include "core/support/Debug.h"
+ | #include "core/support/Amarok.h"
  |
  | #include <KDialogBase> // baseclass
  | #include <KPushButton> // see function...
@@ -120,19 +133,16 @@ good for others reading your code, and ultimately it's good for you too.
 
 Comments are essential when adding a strange hack, like the following example:
 
- | /** Due to xine-lib, we have to make K3Process close all fds, otherwise we get "device is busy" messages
- |   * Used by AmarokProcIO and AmarokProcess, exploiting commSetupDoneC(), a virtual method that
- |   * happens to be called in the forked process
- |   * See bug #103750 for more information.
- |   */
+ | /**
+ |  * Due to xine-lib, we have to make K3Process close all fds, otherwise we get "device
+ |  * is busy" messages. Used by AmarokProcIO and AmarokProcess, exploiting commSetupDoneC(),
+ |  * a virtual method that happens to be called in the forked process.
+ |  * See bug #103750 for more information.
+ |  */
  | class AmarokProcIO : public K3ProcIO 
  | {
  |     public:
- |     virtual int commSetupDoneC() {
- |         const int i = K3ProcIO::commSetupDoneC();
- |         Amarok::closeOpenFiles(K3ProcIO::out[0],K3ProcIO::in[0],K3ProcIO::err[0]);
- |         return i;
- |     }
+ |         virtual int commSetupDoneC();
  | };
 
 
@@ -161,23 +171,46 @@ great too. Access levels should be sorted in this order: public, protected, priv
  | #ifndef AMAROK_QUEUEMANAGER_H
  | #define AMAROK_QUEUEMANAGER_H
  |
- | class QueueList : public K3ListView
- | {
- |     Q_OBJECT
+ | #include <QListView>
  |
- |     public:
- |         Queuelist( QWidget *parent, const char *name = 0 );
- |         ~QueueList() {};
+ | namespace MyNamespace {
+ |     /**
+ |      * View showing currently queued tracks.
+ |      */
+ |     class QueueList : public QListView
+ |     {
+ |         Q_OBJECT
  |
- |     public slots:
- |         void moveSelectedUp();
- |         void moveSelectedDown();
+ |         public:
+ |             explicit QueueList( QWidget *parent, const QString ̛&name = QString() );
+ |             ~QueueList();
  |
- |     private
- |         int m_member;
- | };
+ |         public slots:
+ |             void moveSelectedUp();
+ |             void moveSelectedDown();
+ |
+ |         private:
+ |             int m_member;
+ |             QHash<int, QString> m_names;
+ |     };
+ | } // namespace MyNamespace
  |
  | #endif /* AMAROK_QUEUEMANAGER_H */
+
+
+Associated .cpp file could look like (skipping license):
+
+ | #define DEBUG_PREFIX "MyNamespace::QueueList" // only if you use debug(), warning()...
+ |
+ | #include "QueueList.h"
+ |
+ | using namespace MyNamespace;
+ |
+ | QueueList::QueueList( QWidget *parent, const QString ̛&name )
+ |     : QListView( parent )
+ |     , m_member( name.length() )
+ | {
+ | }
 
 
 0 vs NULL
@@ -196,7 +229,7 @@ Try to keep your code const correct. Declare methods const if they don't mutate 
 and use const variables. It improves safety, and also makes it easier to understand the code.
 
 See: http://www.parashift.com/c++-faq-lite/const-correctness.html
-
+     const_correstness.txt
 
 Example:
 
