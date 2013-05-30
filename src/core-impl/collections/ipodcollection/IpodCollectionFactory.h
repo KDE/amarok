@@ -38,7 +38,7 @@ class IpodCollectionFactory : public Collections::CollectionFactory
 
         virtual void init();
 
-    public slots:
+    private slots:
         /**
          * Called when solid notifier detects a new device has been added
          */
