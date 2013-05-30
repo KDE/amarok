@@ -70,7 +70,13 @@ AnalyzerApplet::init()
 
 void AnalyzerApplet::newGeometry()
 {
-    m_analyzer->setGeometry( geometry().toRect() );
+    // Use the applet's geometry for showing the analyzer widget at the same position
+    QRect analyzerGeometry = geometry().toRect();
+
+    // Adjust widget geometry to keep the applet border intact
+    analyzerGeometry.adjust( +3, +3, -3, -3 );
+
+    m_analyzer->setGeometry( analyzerGeometry );
 }
 
 QList<QAction *>
