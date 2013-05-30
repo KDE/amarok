@@ -1,9 +1,5 @@
 project(context-analyzer)
 
-include_directories(
-    ${Amarok_SOURCE_DIR}/src
-    )
-
 set(analyzer_SRCS
     AnalyzerApplet.cpp
     AnalyzerBase.cpp
@@ -11,7 +7,7 @@ set(analyzer_SRCS
     BlockAnalyzer.cpp
     DiscoAnalyzer.cpp
     fht.cpp
-    )
+)
 
 kde4_add_plugin(amarok_context_applet_analyzer ${analyzer_SRCS})
 
@@ -23,7 +19,9 @@ target_link_libraries(amarok_context_applet_analyzer
     amarokcore
     amaroklib
     ${KDE4_PLASMA_LIBS}
-    )
+    ${QT_QTOPENGL_LIBRARY}
+    GL
+)
 
 install(TARGETS amarok_context_applet_analyzer DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-context-applet-analyzer.desktop DESTINATION ${SERVICES_INSTALL_DIR})
