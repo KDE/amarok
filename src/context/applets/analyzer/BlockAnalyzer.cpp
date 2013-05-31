@@ -146,7 +146,7 @@ BlockAnalyzer::paintEvent( QPaintEvent* )
     // Paint the background
     p.drawPixmap( 0, 0, m_background );
 
-    for( uint y, x = 0; x < m_scope.size(); ++x )
+    for( uint y, x = 0; x < (uint)m_scope.size(); ++x )
     {
         // determine y
         for( y = 0; m_scope[x] < m_yscale[y]; ++y )
@@ -171,7 +171,7 @@ BlockAnalyzer::paintEvent( QPaintEvent* )
         {
             const uint offset = --m_fade_intensity[x];
             const uint y = m_y + ( m_fade_pos[x] * ( HEIGHT + 1 ) );
-            if( y < height() )
+            if( y < (uint)height() )
                 p.drawPixmap( x * ( WIDTH + 1 ), y, m_fade_bars[offset], 0, 0, WIDTH, height() - y );
         }
 
