@@ -1147,14 +1147,18 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
     if ( cmds.size() < 1 )
         return;
 
-    int min = m_items.size() + cmds.size();
-    int max = 0;
+    int min = INT_MAX;
+    int max = INT_MIN;
     foreach( const MoveCmd &rc, cmds )
     {
         min = qMin( min, rc.first );
-        min = qMin( min, rc.second );
         max = qMax( max, rc.first );
-        max = qMax( max, rc.second );
+    }
+
+    if( min < 0 || max >= m_items.size() )
+    {
+        error() << "Wrong row numbers given";
+        return;
     }
 
     int newActiveRow = m_activeRow;

@@ -97,7 +97,12 @@ private slots:
      * Handles the rearrangement of the breadcrumb path when a sibling of an item is clicked.
      * @param action the action in the menu.
      */
-    void onItemSiblingClicked( QAction *action );
+    void onItemSiblingClicked( QString internalColumnName );
+
+    /**
+     * Handles the rearrangement of the breadcrumb path when a Shuffle action is clicked.
+     */
+    void onShuffleSiblingClicked();
 };
 
 }   //namespace Playlist

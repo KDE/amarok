@@ -28,27 +28,8 @@ BreadcrumbLevel::BreadcrumbLevel( QString internalColumnName )
 {
     Column col = columnForName( internalColumnName );
 
-    if( col == Shuffle )
-    {
-        m_icon = KIcon( "media-playlist-shuffle" );
-        m_prettyName = i18n( "Shuffle" );
-    }
-    else
-    {
-        m_icon = KIcon( iconName( col ) );
-        m_prettyName = columnName( col );
-    }
-
-    for( int i = 0; i < NUM_COLUMNS; ++i )  //might be faster if it used a const_iterator
-    {
-        Column currentCol = static_cast<Column>(i);
-        if( !isSortableColumn( currentCol ) || currentCol == col )
-            continue;
-        m_siblings.insert( Playlist::internalColumnName( currentCol ),
-                           QPair< KIcon, QString>( KIcon( iconName( currentCol ) ), columnName( currentCol ) ) );
-    }
-    if( col != Shuffle )
-        m_siblings.insert( "Shuffle", QPair< KIcon, QString>( KIcon( "media-playlist-shuffle" ), i18n("Shuffle" ) ) );
+    m_icon = KIcon( iconName( col ) );
+    m_prettyName = columnName( col );
 }
 
 BreadcrumbLevel::~BreadcrumbLevel()
@@ -70,12 +51,6 @@ const KIcon &
 BreadcrumbLevel::icon()
 {
     return m_icon;
-}
-
-const QMap< QString, QPair< KIcon, QString > >
-BreadcrumbLevel::siblings()
-{
-    return m_siblings;
 }
 
 }   //namespace Playlist

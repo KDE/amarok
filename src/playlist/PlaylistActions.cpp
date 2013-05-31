@@ -349,6 +349,27 @@ Playlist::Actions::repopulateDynamicPlaylist()
     }
 }
 
+void
+Playlist::Actions::shuffle()
+{
+    QList<int> fromRows, toRows;
+
+    {
+        const int rowCount = The::playlist()->qaim()->rowCount();
+        fromRows.reserve( rowCount );
+
+        QMultiMap<int, int> shuffleToRows;
+        for( int row = 0; row < rowCount; ++row )
+        {
+            fromRows.append( row );
+            shuffleToRows.insert( qrand(), row );
+        }
+        toRows = shuffleToRows.values();
+    }
+
+    The::playlistController()->reorderRows( fromRows, toRows );
+}
+
 int
 Playlist::Actions::queuePosition( quint64 id )
 {

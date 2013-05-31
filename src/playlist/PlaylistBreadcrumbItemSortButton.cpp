@@ -28,7 +28,6 @@ namespace Playlist
 BreadcrumbItemSortButton::BreadcrumbItemSortButton( QWidget *parent )
     : BreadcrumbItemButton( parent )
     , m_order( Qt::AscendingOrder )
-    , m_noArrows( false )
     , m_arrowPressed( false )
     , m_arrowHovered( false )
     , m_arrowWidth( 11 )
@@ -37,10 +36,9 @@ BreadcrumbItemSortButton::BreadcrumbItemSortButton( QWidget *parent )
     init();
 }
 
-BreadcrumbItemSortButton::BreadcrumbItemSortButton( const QIcon &icon, const QString &text, bool noArrows, QWidget *parent )
+BreadcrumbItemSortButton::BreadcrumbItemSortButton(const QIcon &icon, const QString &text, QWidget *parent )
     : BreadcrumbItemButton( icon, text, parent )
     , m_order( Qt::AscendingOrder )
-    , m_noArrows( noArrows )
     , m_arrowPressed( false )
     , m_arrowHovered( false )
     , m_arrowWidth( 11 )
@@ -63,48 +61,40 @@ BreadcrumbItemSortButton::init()
 void
 BreadcrumbItemSortButton::paintEvent( QPaintEvent *event )
 {
-    if( !m_noArrows )
-    {
-        QPainter painter(this);
+    Q_UNUSED( event )
+    QPainter painter(this);
 
-        const int buttonHeight = height();
-        int buttonWidth = width();
-        int preferredWidth = sizeHint().width();
-        if (preferredWidth < minimumWidth())
-            preferredWidth = minimumWidth();
-        if (buttonWidth > preferredWidth)
-            buttonWidth = preferredWidth;
+    const int buttonHeight = height();
+    const int preferredWidth = qMax( minimumWidth(), sizeHint().width() );
+    const int buttonWidth = qMin( preferredWidth, width() );
 
-        int left, top, right, bottom;
-        getContentsMargins ( &left, &top, &right, &bottom );
-        const int padding = 2;
+    int left, top, right, bottom;
+    getContentsMargins ( &left, &top, &right, &bottom );
+    const int padding = 2;
 
-        const int arrowLeft = buttonWidth - m_arrowWidth - padding;
-        const int arrowTop = ( ( buttonHeight - top - bottom) - m_arrowHeight )/2;
-        m_arrowRect = QRect( arrowLeft, arrowTop, m_arrowWidth, m_arrowHeight );
+    const int arrowLeft = buttonWidth - m_arrowWidth - padding;
+    const int arrowTop = ( ( buttonHeight - top - bottom) - m_arrowHeight )/2;
+    m_arrowRect = QRect( arrowLeft, arrowTop, m_arrowWidth, m_arrowHeight );
 
-        drawHoverBackground( &painter );
+    drawHoverBackground( &painter );
 
-        const QColor fgColor = foregroundColor();
-        QStyleOption option;
-        option.initFrom(this);
-        option.rect = m_arrowRect;
-        option.palette = palette();
-        option.palette.setColor(QPalette::Text, fgColor);
-        option.palette.setColor(QPalette::WindowText, fgColor);
-        option.palette.setColor(QPalette::ButtonText, fgColor);
+    const QColor fgColor = foregroundColor();
+    QStyleOption option;
+    option.initFrom(this);
+    option.rect = m_arrowRect;
+    option.palette = palette();
+    option.palette.setColor(QPalette::Text, fgColor);
+    option.palette.setColor(QPalette::WindowText, fgColor);
+    option.palette.setColor(QPalette::ButtonText, fgColor);
 
-        if( m_order == Qt::DescendingOrder )
-            style()->drawPrimitive( QStyle::PE_IndicatorArrowDown, &option, &painter, this );
-        else
-            style()->drawPrimitive( QStyle::PE_IndicatorArrowUp, &option, &painter, this );
-
-        QRect newPaintRect( 0, 0, buttonWidth - m_arrowWidth - padding, buttonHeight );
-        QPaintEvent newEvent( newPaintRect );
-        BreadcrumbItemButton::paintEvent( &newEvent );
-    }
+    if( m_order == Qt::DescendingOrder )
+        style()->drawPrimitive( QStyle::PE_IndicatorArrowDown, &option, &painter, this );
     else
-        BreadcrumbItemButton::paintEvent( event );
+        style()->drawPrimitive( QStyle::PE_IndicatorArrowUp, &option, &painter, this );
+
+    QRect newPaintRect( 0, 0, buttonWidth - m_arrowWidth - padding, buttonHeight );
+    QPaintEvent newEvent( newPaintRect );
+    BreadcrumbItemButton::paintEvent( &newEvent );
 }
 
 void
@@ -172,14 +162,9 @@ BreadcrumbItemSortButton::invertOrder()
 QSize
 BreadcrumbItemSortButton::sizeHint() const
 {
-    if( !m_noArrows )
-    {
-        QSize size = BreadcrumbItemButton::sizeHint();
-        size.setWidth( size.width() + m_arrowWidth );
-        return size;
-    }
-    else
-        return BreadcrumbItemButton::sizeHint();
+    QSize size = BreadcrumbItemButton::sizeHint();
+    size.setWidth( size.width() + m_arrowWidth );
+    return size;
 }
 
 Qt::SortOrder

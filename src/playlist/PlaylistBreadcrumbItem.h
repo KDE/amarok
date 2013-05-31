@@ -20,13 +20,56 @@
 
 #include "PlaylistBreadcrumbItemSortButton.h"
 #include "PlaylistBreadcrumbLevel.h"
+#include "PlaylistDefines.h"
 
 #include <KHBox>
 
+#include <QMenu>
 #include <QStringList>
 
 namespace Playlist
 {
+
+/**
+ * A menu that is filled with elements consisting of sortable columns
+ * and shuffle action.
+ */
+class BreadcrumbItemMenu : public QMenu
+{
+    Q_OBJECT
+
+public:
+    /**
+     * Constructor.
+     * @param currentColumn The column corresponding to the current sort level
+     * @param parent The parent QWidget
+     */
+    explicit BreadcrumbItemMenu( Column currentColumn, QWidget *parent = 0 );
+
+    /**
+     * Destructor.
+     */
+    virtual ~BreadcrumbItemMenu();
+
+signals:
+    /**
+     * Emitted when a non-Shuffle item is triggered from the menu.
+     * @param action the action in the menu that has been triggered.
+     */
+    void actionClicked( QString internalColName );
+
+    /**
+     * Emmited when the Shuffle item is triggered from the menu.
+     */
+    void shuffleActionClicked();
+
+private slots:
+    /**
+     * Handles the selection of an item from the menu.
+     * @param action the action in the menu that has been triggered.
+     */
+    void actionTriggered( QAction *action );
+};
 
 /**
  *  A single item that represents a level of a general-purpose breadcrumb ribbon.
@@ -72,13 +115,13 @@ public:
      */
     void invertOrder();
 
-signals:
     /**
-     * Emitted when a sibling of this item has been chosen from the siblings menu.
-     * @param action the action in the menu that has been triggered.
+     * Menu accessor for the purpose of connecting to menu's signals.
+     * @return a pointer to the constant menu object.
      */
-    void siblingClicked( QAction *action );
+    const BreadcrumbItemMenu *menu();
 
+signals:
     /**
      * Emitted when the item has been clicked.
      */
@@ -93,17 +136,11 @@ protected slots:
     void updateSizePolicy();
 
 private:
+    BreadcrumbItemMenu *m_menu;
     BreadcrumbItemMenuButton *m_menuButton;
     BreadcrumbItemSortButton *m_mainButton;
     QString m_name;
     QString m_prettyName;
-
-private slots:
-    /**
-     * Handles the selection of a sibling from the siblings menu.
-     * @param action the action in the menu that has been triggered.
-     */
-    void siblingTriggered( QAction *action );
 };
 
 /**
@@ -113,6 +150,7 @@ private slots:
 class BreadcrumbAddMenuButton : public BreadcrumbItemMenuButton
 {
     Q_OBJECT
+
 public:
     /**
      * Constructor.
@@ -125,27 +163,19 @@ public:
     virtual ~BreadcrumbAddMenuButton();
 
     /**
+     * Menu accessor for the purpose of connecting to menu's signals.
+     * @return a pointer to the constant menu object.
+     */
+    const BreadcrumbItemMenu *menu();
+
+    /**
      * Updates the menu when the breadcrumb path changes.
      * @param usedBreadcrumbLevels the levels used in the path.
      */
     void updateMenu( const QStringList &usedBreadcrumbLevels );
 
-signals:
-    /**
-     * Emitted when a sibling is triggered from the menu.
-     * @param sibling the name of the sibling.
-     */
-    void siblingClicked( QString sibling );
-
-private slots:
-    /**
-     * Handles the selection of an item from the menu.
-     * @param action the action in the menu that has been triggered.
-     */
-    void siblingTriggered( QAction *action );
-
 private:
-    QMenu *m_menu;
+    BreadcrumbItemMenu *m_menu;
 };
 
 }   //namespace Playlist

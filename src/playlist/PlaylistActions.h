@@ -123,6 +123,11 @@ public slots:
     void repopulateDynamicPlaylist();
 
     /**
+      * Shuffles tracks (that are visible in the top model) at the bottom model level
+      */
+    void shuffle();
+
+    /**
      * Adds a list of top playlist model rows to the queue.
      */
     void queue( const QList<int> &rows );

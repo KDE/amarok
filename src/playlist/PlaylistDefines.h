@@ -30,7 +30,6 @@ namespace Playlist
 */
 enum Column
 {
-    Shuffle = -1, // TODO: having shuffle at -1 is causing a lot of effort.
     PlaceHolder = 0,
     Album,
     AlbumArtist,
@@ -117,9 +116,6 @@ class PlaylistColumnInfos
 
 inline Column columnForName( const QString &internalName )
 {
-    if( internalName == QLatin1String( "Shuffle" ) )
-        return Shuffle;
-
     return static_cast<Column>(Playlist::PlaylistColumnInfos::internalNames().
                                indexOf( internalName ));
 }

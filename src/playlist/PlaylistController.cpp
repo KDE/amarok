@@ -392,7 +392,7 @@ Controller::moveRow( int from, int to )
         }
     }
 
-    moveRows( source, target );
+    reorderRows( source, target );
 }
 
 int
@@ -443,22 +443,24 @@ Controller::moveRows( QList<int>& from, int to )
         source.insert( ( to - min ), *f_iter );
     }
 
-    moveRows( source, target );
+    reorderRows( source, target );
 
     return to;
 }
 
 void
-Controller::moveRows( QList<int>& from, QList<int>& to )
+Controller::reorderRows( const QList<int> &from, const QList<int> &to )
 {
     DEBUG_BLOCK
     if( from.size() != to.size() )
         return;
 
-    // validity check
-    foreach( int i, from )
+    // validity check: each item should appear exactly once in both lists
     {
-        if(( from.count( i ) != 1 ) || ( to.count( i ) != 1 ) )
+        QSet<int> fromItems( from.toSet() );
+        QSet<int> toItems( to.toSet() );
+
+        if( fromItems.size() != from.size() || toItems.size() != to.size() || fromItems != toItems )
         {
             error() << "row move lists malformed:";
             error() << from;
@@ -470,7 +472,7 @@ Controller::moveRows( QList<int>& from, QList<int>& to )
     MoveCmdList bottomModelCmds;
     for( int i = 0; i < from.size(); i++ )
     {
-        debug() << "moving rows:" << from.at( i ) << to.at( i );
+        debug() << "moving rows:" << from.at( i ) << "->" << to.at( i );
         if( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_topModel->qaim()->rowCount() ) )
             if( from.at( i ) != to.at( i ) )
                 bottomModelCmds.append( MoveCmd( m_topModel->rowToBottomModel( from.at( i ) ), m_topModel->rowToBottomModel( to.at( i ) ) ) );

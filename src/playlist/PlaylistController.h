@@ -177,8 +177,18 @@ public slots:
      * @param to the target row where the tracks should be moved.
      * @return the first row where the tracks ended up in the new list.
      */
-    int  moveRows( QList<int>& topModelFrom, int topModelTo );
-    void moveRows( QList<int>& topModelFrom, QList<int>& topModelTo );
+    int moveRows( QList<int>& topModelFrom, int topModelTo );
+
+    /**
+     * Reorders tracks in the playlist. For each i, track at position
+     * topModelFrom[i] is moved to the position topModelTo[i]. Note that when track
+     * on position A is moved to the position B, the track from position B needs to
+     * be moved as well. As a consequence, every track position appearing
+     * in topModelFrom needs to appear in topModelTo.
+     * @param topModelFrom the list containing positions of tracks to be moved
+     * @param topModelTo the list containing positions the tracks should be moved to
+     */
+    void reorderRows( const QList<int> &topModelFrom, const QList<int> &topModelTo );
 
     void undo();
     void redo();

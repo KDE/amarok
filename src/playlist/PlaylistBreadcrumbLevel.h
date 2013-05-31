@@ -55,7 +55,6 @@ protected:
     QString m_name;         //!< the name of this item.
     QString m_prettyName;
     KIcon m_icon;
-    QMap< QString, QPair< KIcon, QString > > m_siblings;    //!< internalColumnName, icon, prettyName
 };
 
 }   //namespace Playlist

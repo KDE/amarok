@@ -89,8 +89,6 @@ SortLevel::isFloat() const
 QString
 SortLevel::prettyName() const
 {
-    if( m_category == -1 )
-        return i18n( "Shuffle" );
     return columnName( m_category );
 }
 

@@ -17,56 +17,76 @@
 
 #include "PlaylistBreadcrumbItem.h"
 
-#include "PlaylistDefines.h"
 #include "PlaylistSortWidget.h"
 
 #include <KIcon>
 #include <KLocale>
 
-#include <QMenu>
-
 namespace Playlist
 {
 
+BreadcrumbItemMenu::BreadcrumbItemMenu( Column currentColumn, QWidget *parent )
+    : QMenu( parent )
+{
+    for( Column col = Column( 0 ); col != NUM_COLUMNS; col = Column( col + 1 ) )
+    {
+        if( !isSortableColumn( col ) || currentColumn == col )
+            continue;
+
+        QAction *action = addAction( KIcon( iconName( col ) ),
+                                     QString( columnName( col ) ) );
+        action->setData( internalColumnName( col ) );
+    }
+
+    addSeparator();
+    QAction *shuffleAction = addAction( KIcon( "media-playlist-shuffle" ),
+                                        QString( i18n( "Shuffle" ) ) );
+    shuffleAction->setData( QString( "Shuffle" ) );
+
+    connect( this, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)) );
+}
+
+BreadcrumbItemMenu::~BreadcrumbItemMenu()
+{}
+
+void
+BreadcrumbItemMenu::actionTriggered( QAction *action )
+{
+    const QString actionName( action->data().toString() );
+    if( actionName == "Shuffle" )
+        emit shuffleActionClicked();
+    else
+        emit actionClicked( actionName );
+}
+
+/////// BreadcrumbItem methods begin here
+
 BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     : KHBox( parent )
+    , m_name( level->name() )
+    , m_prettyName( level->prettyName() )
 {
-     m_name = level->name();
-     m_prettyName = level->prettyName();
-
-     //Let's set up the "siblings" button first...
+    // Let's set up the "siblings" button first...
     m_menuButton = new BreadcrumbItemMenuButton( this );
-    QMenu *menu = new QMenu( this );
+    m_menu = new BreadcrumbItemMenu( columnForName( m_name ), this );
+
+    // Disable used levels
     QStringList usedBreadcrumbLevels = qobject_cast< SortWidget * >( parent )->levels();
-
-    QMap< QString, QPair< KIcon, QString > > siblings = level->siblings();
-    for( QMap< QString, QPair< KIcon, QString > >::const_iterator
-         i = siblings.constBegin(), end = siblings.constEnd(); i != end; ++i )
-    {
-        QAction *action = menu->addAction( i.value().first, i.value().second );
-        action->setData( i.key() );
-        if( usedBreadcrumbLevels.contains( i.key() ) )
+    foreach( QAction *action, m_menu->actions() )
+        if( usedBreadcrumbLevels.contains( action->data().toString() ) )
             action->setEnabled( false );
-    }
-    m_menuButton->setMenu( menu );
-    const int offset = 6;
-    menu->setContentsMargins( offset, 1, 1, 2 );
-    connect( menu, SIGNAL(triggered(QAction*)), this, SLOT(siblingTriggered(QAction*)) );
 
-    //And then the main breadcrumb button...
-    bool noArrow = false;
-    if( m_name == "Shuffle" )
-        noArrow = true;
-    m_mainButton = new BreadcrumbItemSortButton( level->icon(), level->prettyName(), noArrow, this );
+    m_menuButton->setMenu( m_menu );
+    m_menu->setContentsMargins( /*offset*/ 6, 1, 1, 2 );
 
+    // And then the main breadcrumb button...
+    m_mainButton = new BreadcrumbItemSortButton( level->icon(), level->prettyName(), this );
     connect( m_mainButton, SIGNAL(clicked()), this, SIGNAL(clicked()) );
     connect( m_mainButton, SIGNAL(arrowToggled(Qt::SortOrder)), this, SIGNAL(orderInverted()) );
-
     connect( m_mainButton, SIGNAL(sizePolicyChanged()), this, SLOT(updateSizePolicy()) );
-    menu->hide();
+    m_menu->hide();
 
     updateSizePolicy();
-
 }
 
 BreadcrumbItem::~BreadcrumbItem()
@@ -96,12 +116,11 @@ BreadcrumbItem::updateSizePolicy()
     setSizePolicy( m_mainButton->sizePolicy() );
 }
 
-void
-BreadcrumbItem::siblingTriggered( QAction * action )
+const BreadcrumbItemMenu*
+BreadcrumbItem::menu()
 {
-    emit siblingClicked( action );
+    return m_menu;
 }
-
 
 /////// BreadcrumbAddMenuButton methods begin here
 
@@ -110,50 +129,27 @@ BreadcrumbAddMenuButton::BreadcrumbAddMenuButton( QWidget *parent )
 {
     setToolTip( i18n( "Add a sorting level to the playlist." ) );
 
-    m_menu = new QMenu( this );
-    for( int i = 0; i < NUM_COLUMNS; ++i )  //might be faster if it used a const_iterator
-    {
-        Playlist::Column col = static_cast<Playlist::Column>( i );
-
-        if( !isSortableColumn( col ) )
-            continue;
-        QAction *action = m_menu->addAction( KIcon( iconName( col ) ), QString( columnName( col ) ) );
-        action->setData( internalColumnName( col ) );
-        //FIXME: this menu should have the same margins as other Playlist::Breadcrumb and
-        //       BrowserBreadcrumb menus.
-    }
-    QAction *action = m_menu->addAction( KIcon( "media-playlist-shuffle" ), QString( i18n( "Shuffle" ) ) );
-    action->setData( "Shuffle" );
-
-    connect( m_menu, SIGNAL(triggered(QAction*)), this, SLOT(siblingTriggered(QAction*)) );
-
+    //FIXME: the menu should have the same margins as other Playlist::Breadcrumb and
+    //       BrowserBreadcrumb menus.
+    m_menu = new BreadcrumbItemMenu( PlaceHolder, this );
     setMenu( m_menu );
 }
 
 BreadcrumbAddMenuButton::~BreadcrumbAddMenuButton()
 {}
 
-void
-BreadcrumbAddMenuButton::siblingTriggered( QAction *action )
+const BreadcrumbItemMenu*
+BreadcrumbAddMenuButton::menu()
 {
-    emit siblingClicked( action->data().toString() );
+    return m_menu;
 }
 
 void
 BreadcrumbAddMenuButton::updateMenu( const QStringList &usedBreadcrumbLevels )
 {
-    if( usedBreadcrumbLevels.contains( "Shuffle" ) )
-        hide();
-    else
-        show();
+    // Enable unused, disable used levels
     foreach( QAction *action, m_menu->actions() )
-    {
-        if( usedBreadcrumbLevels.contains( action->data().toString() ) )
-            action->setEnabled( false );
-        else
-            action->setEnabled( true );
-    }
-
+        action->setEnabled( !usedBreadcrumbLevels.contains( action->data().toString() ) );
 }
 
 }   //namespace Playlist

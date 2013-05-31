@@ -17,6 +17,7 @@
 #include "PlaylistSortWidget.h"
 
 #include "core/support/Debug.h"
+#include "PlaylistActions.h"
 #include "PlaylistModelStack.h"
 #include "proxymodels/SortScheme.h"
 
@@ -57,8 +58,8 @@ SortWidget::SortWidget( QWidget *parent )
     m_urlButton = new BreadcrumbUrlMenuButton( "playlist", this );
     m_layout->addWidget( m_urlButton );
 
-    connect( m_addButton, SIGNAL(siblingClicked(QString)), this, SLOT(addLevel(QString)) );
-
+    connect( m_addButton->menu(), SIGNAL(actionClicked(QString)), this, SLOT(addLevel(QString)) );
+    connect( m_addButton->menu(), SIGNAL(shuffleActionClicked()), The::playlistActions(), SLOT(shuffle()) );
 
     QString sortPath = Amarok::config( "Playlist Sorting" ).readEntry( "SortPath", QString() );
     if( !sortPath.isEmpty() )
@@ -66,11 +67,6 @@ SortWidget::SortWidget( QWidget *parent )
         QStringList levels = sortPath.split( '-' );
         foreach( const QString &level, levels )
         {
-            if( level == QString( "Shuffle" ) || level == QString( "Random" ) ) //we keep "Random" for compatibility
-            {
-                addLevel( QString( "Shuffle" ) );
-                break;
-            }
             QStringList levelParts = level.split( '_' );
             if( levelParts.count() > 2 )
                 warning() << "Playlist sorting load error: Invalid sort level " << level;
@@ -94,7 +90,8 @@ SortWidget::addLevel( QString internalColumnName, Qt::SortOrder sortOrder )  //p
     BreadcrumbItem *item = new BreadcrumbItem( bLevel, this );
     m_ribbon->addWidget( item );
     connect( item, SIGNAL(clicked()), this, SLOT(onItemClicked()) );
-    connect( item, SIGNAL(siblingClicked(QAction*)), this, SLOT(onItemSiblingClicked(QAction*)) );
+    connect( item->menu(), SIGNAL(actionClicked(QString)), this, SLOT(onItemSiblingClicked(QString)) );
+    connect( item->menu(), SIGNAL(shuffleActionClicked()), this, SLOT(onShuffleSiblingClicked()) );
     connect( item, SIGNAL(orderInverted()), this, SLOT(updateSortScheme()) );
     if( sortOrder != item->sortOrder() )
         item->invertOrder();
@@ -128,16 +125,24 @@ SortWidget::levels() const
 void
 SortWidget::onItemClicked()
 {
-    const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender() ) );
+    const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender()->parent() ) );
     trimToLevel( level );
 }
 
 void
-SortWidget::onItemSiblingClicked( QAction *action )
+SortWidget::onItemSiblingClicked( QString internalColumnName )
 {
-    const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender() ) );
-    trimToLevel( level -1 );
-    addLevel( action->data().toString() );
+    const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender()->parent() ) );
+    trimToLevel( level - 1 );
+    addLevel( internalColumnName );
+}
+
+void
+SortWidget::onShuffleSiblingClicked()
+{
+    const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender()->parent() ) );
+    trimToLevel( level - 1 );
+    The::playlistActions()->shuffle();
 }
 
 void
@@ -165,7 +170,7 @@ SortWidget::sortPath() const
     {
         QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
-        QString level = ( name == "Shuffle" ) ? name : ( name + "_" + ( sortOrder ? "des" : "asc" ) );
+        QString level = name + "_" + ( sortOrder ? "des" : "asc" );
         path.append( ( i == m_ribbon->count() - 1 ) ? level : ( level + '-' ) );
     }
     return path;
@@ -180,7 +185,7 @@ SortWidget::prettySortPath() const
         QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
         QString prettyName( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->prettyName() );
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
-        QString prettyLevel = ( name == "Shuffle" ) ? prettyName : ( prettyName + ( sortOrder ? "↓" : "↑" ) );
+        QString prettyLevel = prettyName + ( sortOrder ? "↓" : "↑" );
         prettyPath.append( ( i == m_ribbon->count() - 1 ) ? prettyLevel : ( prettyLevel + " > " ) );
         //TODO: see how this behaves on RTL systems
     }

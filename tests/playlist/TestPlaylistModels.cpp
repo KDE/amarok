@@ -20,6 +20,7 @@
 #include "EngineController.h"
 
 #include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/UndoCommands.h"
@@ -45,10 +46,13 @@ TestPlaylistModels::TestPlaylistModels()
 
 void TestPlaylistModels::initTestCase()
 {
-
     //apparently the engine controller is needed somewhere, or we will get a crash...
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );
+
+    // Initialize playlistAction before we set the playlist, lest our playlist be overwritten with Art Of Nations
+    The::playlistActions();
+    The::playlistController()->removeRow( 0 );
 
     //we want to add a few tracks to the playlist so we can test sorting, filtering and so on. So first create a bunch of dummy tracks we can use.
 
@@ -102,32 +106,20 @@ void TestPlaylistModels::initTestCase()
     // note: no artist, no album!
     tracks << Meta::TrackPtr( metaMock );
 
-    InsertCmdList insertCmds;
-    int row = 0;
-    foreach( Meta::TrackPtr t, tracks )
-    {
-        insertCmds.append( InsertCmd( t, row ) );
-        row++;
-    }
+    The::playlistController()->insertTracks( 0, tracks );
 
-    //make sure sort mode is reset
+    QCOMPARE( The::playlist()->trackAt( 3 )->prettyName(), QString( "Zlick" ) );
+}
+
+void TestPlaylistModels::cleanup()
+{
     SortScheme scheme = SortScheme();
     ModelStack::instance()->sortProxy()->updateSortMap( scheme );
     ModelStack::instance()->filterProxy()->clearSearchTerm();
-
-    Model * model = ModelStack::instance()->bottom();
-    model->insertTracksCommand( insertCmds );
-
-    AbstractModel * topModel = The::playlist();
-
-    QCOMPARE( topModel->trackAt( 3 )->prettyName(), QString( "Zlick" ) );
 }
 
 void TestPlaylistModels::testSorting()
 {
-
-    ModelStack::instance()->filterProxy()->clearSearchTerm();
-
     //simple sort by title
     //******************************//
 
@@ -210,11 +202,6 @@ void TestPlaylistModels::testSorting()
 
 void TestPlaylistModels::testFiltering()
 {
-
-    //make sure sort mode is reset
-    SortScheme scheme = SortScheme();
-    ModelStack::instance()->sortProxy()->updateSortMap( scheme );
-
     ModelStack::instance()->filterProxy()->showOnlyMatches( true );
     ModelStack::instance()->filterProxy()->find( "ou" );
     ModelStack::instance()->filterProxy()->filterUpdated();
@@ -232,4 +219,17 @@ void TestPlaylistModels::testFiltering()
 
 void TestPlaylistModels::testSearching()
 {
+}
+
+void TestPlaylistModels::testShuffling()
+{
+    Meta::TrackList oldTrackList = The::playlist()->tracks();
+
+    The::playlistActions()->shuffle();
+
+    QVERIFY( oldTrackList != The::playlist()->tracks() );
+
+    The::playlistController()->undo();
+
+    QCOMPARE( oldTrackList, The::playlist()->tracks() );
 }

@@ -24,12 +24,14 @@ class TestPlaylistModels : public QObject
 Q_OBJECT
 public:
     TestPlaylistModels();
-    
+
 private slots:
     void initTestCase();
+    void cleanup();
     void testSorting();
     void testFiltering();
     void testSearching();
+    void testShuffling();
 };
 
 #endif // TESTPLAYLISTMODELS_H

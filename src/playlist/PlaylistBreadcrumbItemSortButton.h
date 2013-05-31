@@ -47,7 +47,7 @@ public:
      * otherwise false.
      * @param parent the parent QWidget.
      */
-    BreadcrumbItemSortButton( const QIcon &icon, const QString &text, bool noArrows, QWidget *parent );
+    BreadcrumbItemSortButton( const QIcon &icon, const QString &text, QWidget *parent );
 
     /**
      * Destructor.
@@ -116,7 +116,6 @@ private:
      */
     void init();
     Qt::SortOrder m_order;
-    bool m_noArrows;
     QRect m_arrowRect;      //!< the QRect that contains the order inversion arrow primitive.
     QPoint m_pressedPos;    //!< the position of the last mousePressEvent, for handling clicks.
     bool m_arrowPressed;

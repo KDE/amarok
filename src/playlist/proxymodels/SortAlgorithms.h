@@ -57,28 +57,6 @@ struct multilevelLessThan
      */
     bool operator()( const QAbstractItemModel* sourceModel, int sourceModelRowA, int sourceModelRowB ) const;
 
-
-    protected:
-        /**
-         * For random sort, we want to assign a random sequence number to each item in
-         * the source model.
-         *
-         * However, the sequence number must stay constant for any given item.
-         * The QSortFilterProxyModel sort code can ask us about the same row twice, and
-         * we need to return consistent answers.
-         *
-         * The sequence number must also stay constant across item insert/remove, so the
-         * row number itself should not be used as a persistent key.
-         *
-         * The returned sequence numbers don't need to be contiguous.
-         *
-         * The returned sequence numbers don't need to be unique; a few collisions are no
-         * problem.  (fallback tiebreaker will be the source row numbers, as always)
-         *
-         * @return a sequence number that is random, but constant for the item at 'sourceModelRow'.
-         */
-        long constantRandomSeqnumForRow( const QAbstractItemModel* sourceModel, int sourceModelRow ) const;
-
     private:
         template<typename T>
         int compareBySortableName( const KSharedPtr<T> &left, const KSharedPtr<T> &right ) const;
