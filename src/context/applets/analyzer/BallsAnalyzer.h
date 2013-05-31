@@ -30,7 +30,6 @@ public:
     BallsAnalyzer( QWidget * );
     ~BallsAnalyzer();
     void analyze( const QVector<float> & );
-    void paused();
 
 protected:
     void initializeGL();

@@ -97,12 +97,6 @@ void DiscoAnalyzer::resizeGL( int w, int h )
     showStruct.timeStamp = ( double )tv.tv_sec + ( double )tv.tv_usec / 1000000.0;
 }
 
-void DiscoAnalyzer::paused()
-{
-    // FIXME
-//    analyze( Scope() );
-}
-
 void DiscoAnalyzer::analyze( const QVector<float> &s )
 {
     bool haveNoData = s.empty();

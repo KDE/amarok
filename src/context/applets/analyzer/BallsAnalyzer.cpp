@@ -198,11 +198,6 @@ void BallsAnalyzer::resizeGL( int w, int h )
     show.timeStamp = ( double )tv.tv_sec + ( double )tv.tv_usec / 1000000.0;
 }
 
-void BallsAnalyzer::paused()
-{
-    //analyze( Scope() );
-}
-
 void BallsAnalyzer::analyze( const QVector<float> &s )
 {
     // compute the dTime since the last call

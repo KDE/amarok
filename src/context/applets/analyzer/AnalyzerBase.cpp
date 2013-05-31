@@ -25,7 +25,7 @@
 #include <QPainter>
 
 
-// INSTRUCTIONS Base2D
+// INSTRUCTIONS
 // 1. reimplement analyze(), and paint to canvas(), Base2D will update the widget when you return control to it
 // 2. if you want to manipulate the scope, reimplement transform()
 

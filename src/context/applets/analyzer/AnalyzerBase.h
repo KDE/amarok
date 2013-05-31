@@ -56,7 +56,7 @@ protected:
         delete m_fht;
     }
 
-    void demo();
+    virtual void demo();
 
     virtual void transform( QVector<float>& );
     virtual void analyze( const QVector<float>& ) = 0;
@@ -79,6 +79,8 @@ public:
 
 
 private slots:
+    void demo() { Base<QWidget>::demo(); }
+
     void enableDemo( bool enable )
     {
         enable ? m_timer.start() : m_timer.stop();
@@ -112,6 +114,8 @@ class Base3D : public Base<QGLWidget>
     Q_OBJECT
 
 private slots:
+    void demo() { Base<QGLWidget>::demo(); }
+
     void enableDemo( bool enable )
     {
         enable ? m_timer.start() : m_timer.stop();

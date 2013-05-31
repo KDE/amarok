@@ -29,7 +29,6 @@ public:
     DiscoAnalyzer( QWidget * );
     ~DiscoAnalyzer();
     void analyze( const QVector<float>& );
-    void paused();
 
 protected:
     void initializeGL();
