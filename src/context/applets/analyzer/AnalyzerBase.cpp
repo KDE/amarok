@@ -26,30 +26,21 @@
 
 
 // INSTRUCTIONS Base2D
-// 1. do anything that depends on height() in init(), Base2D will call it before you are shown
-// 2. otherwise you can use the constructor to initialise things
-// 3. reimplement analyze(), and paint to canvas(), Base2D will update the widget when you return control to it
-// 4. if you want to manipulate the scope, reimplement transform()
-// 5. for convenience <vector> <qpixmap.h> <qwdiget.h> are pre-included
-// TODO make an INSTRUCTIONS file
-//can't mod scope in analyze you have to use transform
+// 1. reimplement analyze(), and paint to canvas(), Base2D will update the widget when you return control to it
+// 2. if you want to manipulate the scope, reimplement transform()
 
 
 template<class W>
-Analyzer::Base<W>::Base( QWidget *parent, uint scopeSize )
+Analyzer::Base<W>::Base( QWidget *parent )
     : W( parent )
-    , m_fht( new FHT( scopeSize ) )
-{
-}
+    , m_fht( new FHT( 9 ) ) // 2^9 = 512. It's the number of values AudioDataOutput sends
+{}
 
 template<class W> void
 Analyzer::Base<W>::transform( QVector<float> &scope ) //virtual
 {
     //this is a standard transformation that should give
     //an FFT scope that has bands for pretty analyzers
-
-    //NOTE resizing here is redundant as FHT routines only calculate FHT::size() values
-    //scope.resize( m_fht->size() );
 
     float *front = static_cast<float*>( &scope.front() );
 
@@ -68,8 +59,7 @@ Analyzer::Base<W>::drawFrame( const QMap<Phonon::AudioDataOutput::Channel, QVect
     if( thescope.isEmpty() )
         return;
 
-    static QVector<float> scope( 512 );
-    int i = 0;
+    QVector<float> scope( m_fht->size() );
 
     for( uint x = 0; ( int )x < m_fht->size(); ++x )
     {
@@ -83,50 +73,10 @@ Analyzer::Base<W>::drawFrame( const QMap<Phonon::AudioDataOutput::Channel, QVect
                                + thescope[Phonon::AudioDataOutput::RightChannel][x] )
                        / ( 2 * ( 1 << 15 ) ); // Average between the channels
         }
-        i += 2;
     }
 
     transform( scope );
     analyze( scope );
-
-    scope.resize( m_fht->size() );
-}
-
-template<class W> int
-Analyzer::Base<W>::resizeExponent( int exp )
-{
-    if( exp < 3 )
-        exp = 3;
-    else if( exp > 9 )
-        exp = 9;
-
-    if( exp != m_fht->sizeExp() )
-    {
-        delete m_fht;
-        m_fht = new FHT( exp );
-    }
-    return exp;
-}
-
-template<class W> int
-Analyzer::Base<W>::resizeForBands( int bands )
-{
-    int exp;
-    if( bands <= 8 )
-        exp = 4;
-    else if( bands <= 16 )
-        exp = 5;
-    else if( bands <= 32 )
-        exp = 6;
-    else if( bands <= 64 )
-        exp = 7;
-    else if( bands <= 128 )
-        exp = 8;
-    else
-        exp = 9;
-
-    resizeExponent( exp );
-    return m_fht->size() / 2;
 }
 
 template<class W> void
@@ -157,8 +107,8 @@ Analyzer::Base<W>::demo() //virtual
 
 
 
-Analyzer::Base2D::Base2D( QWidget *parent, uint scopeSize )
-    : Base<QWidget>( parent, scopeSize )
+Analyzer::Base2D::Base2D( QWidget *parent )
+    : Base<QWidget>( parent )
 {
     connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SLOT( playbackStateChanged() ) );
 
@@ -200,8 +150,8 @@ void Analyzer::Base2D::playbackStateChanged()
 
 
 
-Analyzer::Base3D::Base3D( QWidget *parent, uint scopeSize )
-    : Base<QGLWidget>( parent, scopeSize )
+Analyzer::Base3D::Base3D( QWidget *parent )
+    : Base<QGLWidget>( parent )
 {
     connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SLOT( playbackStateChanged() ) );
 

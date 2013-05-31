@@ -50,7 +50,7 @@ public:
     virtual void drawFrame( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope );
 
 protected:
-    Base( QWidget*, uint = 7 );
+    Base( QWidget* );
     ~Base()
     {
         delete m_fht;
@@ -58,8 +58,6 @@ protected:
 
     void demo();
 
-    int  resizeExponent( int );
-    int  resizeForBands( int );
     virtual void transform( QVector<float>& );
     virtual void analyze( const QVector<float>& ) = 0;
     virtual void paused();
@@ -93,7 +91,7 @@ private slots:
     }
 
 protected:
-    Base2D( QWidget*, uint scopeSize = 7 );
+    Base2D( QWidget* );
 
     QPixmap *canvas()
     {
@@ -126,7 +124,7 @@ private slots:
     }
 
 protected:
-    Base3D( QWidget*, uint scopeSize = 7 );
+    Base3D( QWidget* );
 
 private:
     QTimer m_timer;

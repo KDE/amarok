@@ -31,7 +31,7 @@ static inline uint myMax( uint v1, uint v2 )
 }
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
-    : Analyzer::Base2D( parent, 9 )
+    : Analyzer::Base2D( parent )
     , m_columns( 0 )         //uint
     , m_rows( 0 )            //uint
     , m_y( 0 )               //uint
