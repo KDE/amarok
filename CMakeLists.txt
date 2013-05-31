@@ -117,6 +117,7 @@ endif( FFMPEG_FOUND )
 string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
 if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
     set( DEBUG_BUILD_TYPE ON )
+    add_definitions(-Wall -Wextra)
 endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 
 # this needs to be here because also code in shared/ needs config.h. This is also the
