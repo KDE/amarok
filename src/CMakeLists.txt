@@ -759,35 +759,35 @@ if( LIBOFA_FOUND )
 endif( LIBOFA_FOUND )
 
 qt4_add_dbus_adaptor(
-   amaroklib_LIB_SRCS
+   AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
    dbus/mpris1/RootHandler.h
    Mpris1::RootHandler
    Mpris1RootAdaptor
    Mpris1RootAdaptor )
 qt4_add_dbus_adaptor(
-   amaroklib_LIB_SRCS
+   AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/mpris1/org.freedesktop.MediaPlayer.player.xml
    dbus/mpris1/PlayerHandler.h
    Mpris1::PlayerHandler
    Mpris1PlayerAdaptor
    Mpris1PlayerAdaptor )
 qt4_add_dbus_adaptor(
-   amaroklib_LIB_SRCS
+   AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/mpris1/org.freedesktop.MediaPlayer.tracklist.xml
    dbus/mpris1/TrackListHandler.h
    Mpris1::TrackListHandler
    Mpris1TrackListAdaptor
    Mpris1TrackListAdaptor )
 qt4_add_dbus_adaptor(
-   amaroklib_LIB_SRCS
+   AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/org.kde.amarok.App.xml
    dbus/mpris1/RootHandler.h
    Mpris1::RootHandler
    Mpris1AmarokAppAdaptor
    Mpris1AmarokAppAdaptor )
 qt4_add_dbus_adaptor(
-   amaroklib_LIB_SRCS
+   AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/mpris1/org.kde.amarok.Mpris1Extensions.Player.xml
    dbus/mpris1/PlayerHandler.h
    Mpris1::PlayerHandler
@@ -795,13 +795,19 @@ qt4_add_dbus_adaptor(
    Mpris1AmarokPlayerAdaptor )
 
 qt4_add_dbus_adaptor(
-   amaroklib_LIB_SRCS
+   AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/org.kde.amarok.Collection.xml
    dbus/CollectionDBusHandler.h
    CollectionDBusHandler
    CollectionAdaptor
    CollectionAdaptor )
 
+# supress deprecated methods warnings
+if(NOT WIN32)
+    set_source_files_properties(${AMAROK_MPRIS1_ADAPTOR_SRCS}
+                                PROPERTIES
+                                COMPILE_FLAGS -Wno-deprecated-declarations)
+endif(NOT WIN32)
 
 set( amaroklib_DEPENDS "amarokpud" )
 set( amaroklib_DEPENDS "amarokcore" )
@@ -828,7 +834,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 
-kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
+kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS} ${AMAROK_MPRIS1_ADAPTOR_SRCS})
 
 target_link_libraries(amaroklib
     ${KDE4_KDEUI_LIBS}
