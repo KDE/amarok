@@ -47,22 +47,22 @@ private:
         float camRot;
         float camRoll;
         float peakEnergy;
-    } show;
+    } m_show;
 
     struct FrameProperties
     {
         bool silence;
         float energy;
         float dEnergy;
-    } frame;
+    } m_frame;
 
     static const int NUMBER_OF_BALLS = 16;
 
-    QList<Ball*> balls;
-    Paddle * leftPaddle, * rightPaddle;
-    float unitX, unitY;
-    GLuint ballTexture;
-    GLuint gridTexture;
+    QList<Ball *> m_balls;
+    Paddle * m_leftPaddle, * m_rightPaddle;
+    float m_unitX, m_unitY;
+    GLuint m_ballTexture;
+    GLuint m_gridTexture;
 
     void drawDot3s( float x, float y, float z, float size );
     void drawHFace( float y );

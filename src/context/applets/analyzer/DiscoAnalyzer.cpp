@@ -33,21 +33,21 @@ DiscoAnalyzer::DiscoAnalyzer( QWidget *parent ):
 
     //initialize openGL context before managing GL calls
     makeCurrent();
-    loadTexture( KStandardDirs::locate( "data", "amarok/images/dot.png" ), dotTexture );
-    loadTexture( KStandardDirs::locate( "data", "amarok/images/wirl1.png" ), w1Texture );
-    loadTexture( KStandardDirs::locate( "data", "amarok/images/wirl2.png" ), w2Texture );
+    loadTexture( KStandardDirs::locate( "data", "amarok/images/dot.png" ), m_dotTexture );
+    loadTexture( KStandardDirs::locate( "data", "amarok/images/wirl1.png" ), m_w1Texture );
+    loadTexture( KStandardDirs::locate( "data", "amarok/images/wirl2.png" ), m_w2Texture );
 
-    showStruct.paused = true;
-    showStruct.pauseTimer = 0.0;
-    showStruct.rotDegrees = 0.0;
-    frame.rotDegrees = 0.0;
+    m_show.paused = true;
+    m_show.pauseTimer = 0.0;
+    m_show.rotDegrees = 0.0;
+    m_frame.rotDegrees = 0.0;
 }
 
 DiscoAnalyzer::~DiscoAnalyzer()
 {
-    freeTexture( dotTexture );
-    freeTexture( w1Texture );
-    freeTexture( w2Texture );
+    freeTexture( m_dotTexture );
+    freeTexture( m_w1Texture );
+    freeTexture( m_w2Texture );
 }
 
 void DiscoAnalyzer::initializeGL()
@@ -77,24 +77,24 @@ void DiscoAnalyzer::resizeGL( int w, int h )
     glOrtho( -10.0f, 10.0f, -10.0f, 10.0f, -5.0f, 5.0f );
 
     // Get the aspect ratio of the screen to draw 'cicular' particles
-    float ratio = ( float )w / ( float )h,
+    const float ratio = ( float )w / ( float )h,
           eqPixH = 60,
           eqPixW = 80;
     if( ratio >= ( 4.0 / 3.0 ) )
     {
-        unitX = 10.0 / ( eqPixH * ratio );
-        unitY = 10.0 / eqPixH;
+        m_unitX = 10.0 / ( eqPixH * ratio );
+        m_unitY = 10.0 / eqPixH;
     }
     else
     {
-        unitX = 10.0 / eqPixW;
-        unitY = 10.0 / ( eqPixW / ratio );
+        m_unitX = 10.0 / eqPixW;
+        m_unitY = 10.0 / ( eqPixW / ratio );
     }
 
     // Get current timestamp.
     timeval tv;
     gettimeofday( &tv, NULL );
-    showStruct.timeStamp = ( double )tv.tv_sec + ( double )tv.tv_usec / 1000000.0;
+    m_show.timeStamp = ( double )tv.tv_sec + ( double )tv.tv_usec / 1000000.0;
 }
 
 void DiscoAnalyzer::analyze( const QVector<float> &s )
@@ -102,11 +102,11 @@ void DiscoAnalyzer::analyze( const QVector<float> &s )
     bool haveNoData = s.empty();
 
     // if we're going into pause mode, clear timers.
-    if( !showStruct.paused && haveNoData )
-        showStruct.pauseTimer = 0.0;
+    if( !m_show.paused && haveNoData )
+        m_show.pauseTimer = 0.0;
 
     // if we have got data, interpolate it (asking myself why I'm doing it here..)
-    if( !( showStruct.paused = haveNoData ) )
+    if( !( m_show.paused = haveNoData ) )
     {
         int bands = s.size(),
             lowbands = bands / 4,
@@ -123,17 +123,17 @@ void DiscoAnalyzer::analyze( const QVector<float> &s )
             if( value > maxValue )
                 maxValue = value;
         }
-        frame.silence = currentEnergy < 0.001;
-        if( !frame.silence )
+        m_frame.silence = currentEnergy < 0.001;
+        if( !m_frame.silence )
         {
-            frame.meanBand = 100.0 * currentMeanBand / ( currentEnergy * bands );
+            m_frame.meanBand = 100.0 * currentMeanBand / ( currentEnergy * bands );
             currentEnergy = 100.0 * currentEnergy / ( float )bands;
-            frame.dEnergy = currentEnergy - frame.energy;
-            frame.energy = currentEnergy;
+            m_frame.dEnergy = currentEnergy - m_frame.energy;
+            m_frame.energy = currentEnergy;
 //            printf( "%d  [%f :: %f ]\t%f \n", bands, frame.energy, frame.meanBand, maxValue         );
         }
         else
-            frame.energy = 0.0;
+            m_frame.energy = 0.0;
     }
 }
 
@@ -143,8 +143,8 @@ void DiscoAnalyzer::paintGL()
     timeval tv;
     gettimeofday( &tv, NULL );
     double currentTime = ( double )tv.tv_sec + ( double )tv.tv_usec / 1000000.0;
-    showStruct.dT = currentTime - showStruct.timeStamp;
-    showStruct.timeStamp = currentTime;
+    m_show.dT = currentTime - m_show.timeStamp;
+    m_show.timeStamp = currentTime;
 
     // Clear frame
     glClear( GL_COLOR_BUFFER_BIT );
@@ -165,14 +165,14 @@ void DiscoAnalyzer::paintGL()
 
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_TEXTURE_2D );
-    float alphaN = showStruct.paused ? 0.2 : ( frame.energy / 10.0 ),
-          alphaP = showStruct.paused ? 1.0 : ( 1 - frame.energy / 20.0 );
+    float alphaN = m_show.paused ? 0.2 : ( m_frame.energy / 10.0 ),
+          alphaP = m_show.paused ? 1.0 : ( 1 - m_frame.energy / 20.0 );
     if( alphaN > 1.0 )
         alphaN = 1.0;
     if( alphaP < 0.1 )
         alphaP = 0.1;
-    glBindTexture( GL_TEXTURE_2D, w2Texture );
-    setTextureMatrix( showStruct.rotDegrees, 0.707 * alphaP );
+    glBindTexture( GL_TEXTURE_2D, m_w2Texture );
+    setTextureMatrix( m_show.rotDegrees, 0.707 * alphaP );
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
     glBegin( GL_TRIANGLE_STRIP );
     glTexCoord2f( 1.0, 1.0 );
@@ -184,8 +184,8 @@ void DiscoAnalyzer::paintGL()
     glTexCoord2f( 0.0 , 0.0 );
     glVertex2f( -10.0f, -10.0f );
     glEnd();
-    glBindTexture( GL_TEXTURE_2D, w1Texture );
-    setTextureMatrix( -showStruct.rotDegrees * 2, 0.707 );
+    glBindTexture( GL_TEXTURE_2D, m_w1Texture );
+    setTextureMatrix( -m_show.rotDegrees * 2, 0.707 );
     glColor4f( 1.0f, 1.0f, 1.0f, alphaN );
     glBegin( GL_TRIANGLE_STRIP );
     glTexCoord2f( 1.0, 1.0 );
@@ -203,27 +203,27 @@ void DiscoAnalyzer::paintGL()
 
     // Here begins the real draw loop
     // some updates to the showStruct
-    showStruct.rotDegrees += 40.0 * showStruct.dT;
-    frame.rotDegrees += 80.0 * showStruct.dT;
+    m_show.rotDegrees += 40.0 * m_show.dT;
+    m_frame.rotDegrees += 80.0 * m_show.dT;
 
     // handle the 'pause' status
-    if( showStruct.paused )
+    if( m_show.paused )
     {
-        if( showStruct.pauseTimer > 0.5 )
+        if( m_show.pauseTimer > 0.5 )
         {
-            if( showStruct.pauseTimer > 0.6 )
-                showStruct.pauseTimer -= 0.6;
+            if( m_show.pauseTimer > 0.6 )
+                m_show.pauseTimer -= 0.6;
             drawFullDot( 0.0f, 0.4f, 0.8f, 1.0f );
             drawFullDot( 0.0f, 0.4f, 0.8f, 1.0f );
         }
-        showStruct.pauseTimer += showStruct.dT;
+        m_show.pauseTimer += m_show.dT;
         return;
     }
 
-    if( dotTexture )
+    if( m_dotTexture )
     {
         glEnable( GL_TEXTURE_2D );
-        glBindTexture( GL_TEXTURE_2D, dotTexture );
+        glBindTexture( GL_TEXTURE_2D, m_dotTexture );
     }
     else
         glDisable( GL_TEXTURE_2D );
@@ -235,19 +235,19 @@ void DiscoAnalyzer::paintGL()
 //     for (; particle; particle = particleList.next())
     {
         glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-        drawDot( 0, 0, qMax( 10.0, ( 10.0 * frame.energy ) ) );
+        drawDot( 0, 0, qMax( 10.0, ( 10.0 * m_frame.energy ) ) );
         glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-        drawDot( 6, 0, qMax( 10.0, ( 5.0 * frame.energy ) ) );
+        drawDot( 6, 0, qMax( 10.0, ( 5.0 * m_frame.energy ) ) );
         glColor4f( 0.0f, 0.4f, 1.0f, 1.0f );
-        drawDot( -6, 0, qMax( 10.0, ( 5.0 * frame.energy ) ) );
+        drawDot( -6, 0, qMax( 10.0, ( 5.0 * m_frame.energy ) ) );
     }
     glEnd();
 }
 
 void DiscoAnalyzer::drawDot( float x, float y, float size )
 {
-    float sizeX = size * unitX,
-          sizeY = size * unitY,
+    float sizeX = size * m_unitX,
+          sizeY = size * m_unitY,
           pLeft = x - sizeX,
           pTop = y + sizeY,
           pRight = x + sizeX,
@@ -264,7 +264,7 @@ void DiscoAnalyzer::drawDot( float x, float y, float size )
 
 void DiscoAnalyzer::drawFullDot( float r, float g, float b, float a )
 {
-    glBindTexture( GL_TEXTURE_2D, dotTexture );
+    glBindTexture( GL_TEXTURE_2D, m_dotTexture );
     glEnable( GL_TEXTURE_2D );
     glColor4f( r, g, b, a );
     glBegin( GL_TRIANGLE_STRIP );

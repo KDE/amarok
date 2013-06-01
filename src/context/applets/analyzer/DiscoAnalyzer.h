@@ -43,7 +43,7 @@ private:
         double dT;
         double pauseTimer;
         float rotDegrees;
-    } showStruct;
+    } m_show;
 
     struct FrameProperties
     {
@@ -52,12 +52,12 @@ private:
         float meanBand;
         float rotDegrees;
         bool silence;
-    } frame;
+    } m_frame;
 
-    GLuint dotTexture;
-    GLuint w1Texture;
-    GLuint w2Texture;
-    float unitX, unitY;
+    GLuint m_dotTexture;
+    GLuint m_w1Texture;
+    GLuint m_w2Texture;
+    float m_unitX, m_unitY;
 
     void drawDot( float x, float y, float size );
     void drawFullDot( float r, float g, float b, float a );

@@ -126,34 +126,33 @@ BallsAnalyzer::BallsAnalyzer( QWidget *parent ):
 
     //initialize openGL context before managing GL calls
     makeCurrent();
-    loadTexture( KStandardDirs::locate( "data", "amarok/images/ball.png" ), ballTexture );
-    loadTexture( KStandardDirs::locate( "data", "amarok/images/grid.png" ), gridTexture );
+    loadTexture( KStandardDirs::locate( "data", "amarok/images/ball.png" ), m_ballTexture );
+    loadTexture( KStandardDirs::locate( "data", "amarok/images/grid.png" ), m_gridTexture );
 
-    leftPaddle = new Paddle( -1.0 );
-    rightPaddle = new Paddle( 1.0 );
+    m_leftPaddle = new Paddle( -1.0 );
+    m_rightPaddle = new Paddle( 1.0 );
     for( int i = 0; i < NUMBER_OF_BALLS; i++ )
-        balls.append( new Ball() );
+        m_balls.append( new Ball() );
 
-    show.colorK = 0.0;
-    show.gridScrollK = 0.0;
-    show.gridEnergyK = 0.0;
-    show.camRot = 0.0;
-    show.camRoll = 0.0;
-    show.peakEnergy = 1.0;
-    frame.silence = true;
-    frame.energy = 0.0;
-    frame.dEnergy = 0.0;
+    m_show.colorK = 0.0;
+    m_show.gridScrollK = 0.0;
+    m_show.gridEnergyK = 0.0;
+    m_show.camRot = 0.0;
+    m_show.camRoll = 0.0;
+    m_show.peakEnergy = 1.0;
+    m_frame.silence = true;
+    m_frame.energy = 0.0;
+    m_frame.dEnergy = 0.0;
 }
 
 BallsAnalyzer::~BallsAnalyzer()
 {
-    freeTexture( ballTexture );
-    freeTexture( gridTexture );
-    delete leftPaddle;
-    delete rightPaddle;
+    freeTexture( m_ballTexture );
+    freeTexture( m_gridTexture );
+    delete m_leftPaddle;
+    delete m_rightPaddle;
 
-    foreach( Ball * ball, balls )
-    delete ball;
+    qDeleteAll( m_balls );
 }
 
 void BallsAnalyzer::initializeGL()
@@ -183,19 +182,19 @@ void BallsAnalyzer::resizeGL( int w, int h )
     float ratio = ( float )w / ( float )h;
     if( ratio >= 1.0 )
     {
-        unitX = 0.34 / ratio;
-        unitY = 0.34;
+        m_unitX = 0.34 / ratio;
+        m_unitY = 0.34;
     }
     else
     {
-        unitX = 0.34;
-        unitY = 0.34 * ratio;
+        m_unitX = 0.34;
+        m_unitY = 0.34 * ratio;
     }
 
     // Get current timestamp.
     timeval tv;
     gettimeofday( &tv, NULL );
-    show.timeStamp = ( double )tv.tv_sec + ( double )tv.tv_usec / 1000000.0;
+    m_show.timeStamp = ( double )tv.tv_sec + ( double )tv.tv_usec / 1000000.0;
 }
 
 void BallsAnalyzer::analyze( const QVector<float> &s )
@@ -204,8 +203,8 @@ void BallsAnalyzer::analyze( const QVector<float> &s )
     timeval tv;
     gettimeofday( &tv, NULL );
     double currentTime = ( double )tv.tv_sec + ( double )tv.tv_usec / 1000000.0;
-    show.dT = currentTime - show.timeStamp;
-    show.timeStamp = currentTime;
+    m_show.dT = currentTime - m_show.timeStamp;
+    m_show.timeStamp = currentTime;
 
     // compute energy integrating frame's spectrum
     if( !s.empty() )
@@ -223,29 +222,29 @@ void BallsAnalyzer::analyze( const QVector<float> &s )
         }
         currentEnergy *= 100.0 / ( float )bands;
         // emulate a peak detector: currentEnergy -> peakEnergy (3tau = 30 seconds)
-        show.peakEnergy = 1.0 + ( show.peakEnergy - 1.0 ) * exp( - show.dT / 10.0 );
-        if( currentEnergy > show.peakEnergy )
-            show.peakEnergy = currentEnergy;
+        m_show.peakEnergy = 1.0 + ( m_show.peakEnergy - 1.0 ) * exp( - m_show.dT / 10.0 );
+        if( currentEnergy > m_show.peakEnergy )
+            m_show.peakEnergy = currentEnergy;
         // check for silence
-        frame.silence = currentEnergy < 0.001;
+        m_frame.silence = currentEnergy < 0.001;
         // normalize frame energy against peak energy and compute frame stats
-        currentEnergy /= show.peakEnergy;
-        frame.dEnergy = currentEnergy - frame.energy;
-        frame.energy = currentEnergy;
+        currentEnergy /= m_show.peakEnergy;
+        m_frame.dEnergy = currentEnergy - m_frame.energy;
+        m_frame.energy = currentEnergy;
     }
     else
-        frame.silence = true;
+        m_frame.silence = true;
 }
 
 void BallsAnalyzer::paintGL()
 {
     // limit max dT to 0.05 and update color and scroll constants
-    if( show.dT > 0.05 )
-        show.dT = 0.05;
-    show.colorK += show.dT * 0.4;
-    if( show.colorK > 3.0 )
-        show.colorK -= 3.0;
-    show.gridScrollK += 0.2 * show.peakEnergy * show.dT;
+    if( m_show.dT > 0.05 )
+        m_show.dT = 0.05;
+    m_show.colorK += m_show.dT * 0.4;
+    if( m_show.colorK > 3.0 )
+        m_show.colorK -= 3.0;
+    m_show.gridScrollK += 0.2 * m_show.peakEnergy * m_show.dT;
 
     // Switch to MODEL matrix and clear screen
     glMatrixMode( GL_MODELVIEW );
@@ -253,22 +252,22 @@ void BallsAnalyzer::paintGL()
     glClear( GL_COLOR_BUFFER_BIT );
 
     // Draw scrolling grid
-    if( ( show.gridEnergyK > 0.05 ) || ( !frame.silence && frame.dEnergy < -0.3 ) )
+    if( ( m_show.gridEnergyK > 0.05 ) || ( !m_frame.silence && m_frame.dEnergy < -0.3 ) )
     {
-        show.gridEnergyK *= exp( -show.dT / 0.1 );
-        if( -frame.dEnergy > show.gridEnergyK )
-            show.gridEnergyK = -frame.dEnergy * 2.0;
-        float gridColor[4] = { 0.0, 1.0, 0.6, show.gridEnergyK };
-        drawScrollGrid( show.gridScrollK, gridColor );
+        m_show.gridEnergyK *= exp( -m_show.dT / 0.1 );
+        if( -m_frame.dEnergy > m_show.gridEnergyK )
+            m_show.gridEnergyK = -m_frame.dEnergy * 2.0;
+        float gridColor[4] = { 0.0, 1.0, 0.6, m_show.gridEnergyK };
+        drawScrollGrid( m_show.gridScrollK, gridColor );
     }
 
     // Roll camera up/down handling the beat
-    show.camRot += show.camRoll * show.dT;        // posision
-    show.camRoll -= 400 * show.camRot * show.dT;    // elasticity
-    show.camRoll *= ( 1 - 2.0 * show.dT );      // friction
-    if( !frame.silence && frame.dEnergy > 0.4 )
-        show.camRoll += show.peakEnergy * 2.0;
-    glRotatef( show.camRoll / 2.0, 1, 0, 0 );
+    m_show.camRot += m_show.camRoll * m_show.dT;        // posision
+    m_show.camRoll -= 400 * m_show.camRot * m_show.dT;    // elasticity
+    m_show.camRoll *= ( 1 - 2.0 * m_show.dT );      // friction
+    if( !m_frame.silence && m_frame.dEnergy > 0.4 )
+        m_show.camRoll += m_show.peakEnergy * 2.0;
+    glRotatef( m_show.camRoll / 2.0, 1, 0, 0 );
 
     // Translate the drawing plane
     glTranslatef( 0.0f, 0.0f, -1.8f );
@@ -276,22 +275,22 @@ void BallsAnalyzer::paintGL()
     // Draw upper/lower planes and paddles
     drawHFace( -1.0 );
     drawHFace( 1.0 );
-    leftPaddle->renderGL();
-    rightPaddle->renderGL();
+    m_leftPaddle->renderGL();
+    m_rightPaddle->renderGL();
 
     // Draw Balls
-    if( ballTexture )
+    if( m_ballTexture )
     {
         glEnable( GL_TEXTURE_2D );
-        glBindTexture( GL_TEXTURE_2D, ballTexture );
+        glBindTexture( GL_TEXTURE_2D, m_ballTexture );
     }
     else
         glDisable( GL_TEXTURE_2D );
     glEnable( GL_BLEND );
-    foreach( Ball * ball, balls )
+    foreach( Ball * ball, m_balls )
     {
         float color[3],
-              angle = show.colorK;
+              angle = m_show.colorK;
         // Rotate the color based on 'angle' value [0,3)
         if( angle < 1.0 )
         {
@@ -316,30 +315,30 @@ void BallsAnalyzer::paintGL()
         // Draw the dot and update its physics also checking at bounces
         glColor3fv( color );
         drawDot3s( ball->x, ball->y, ball->z, 1.0 );
-        ball->updatePhysics( show.dT );
+        ball->updatePhysics( m_show.dT );
         if( ball->x < 0 )
-            leftPaddle->bounce( ball );
+            m_leftPaddle->bounce( ball );
         else
-            rightPaddle->bounce( ball );
+            m_rightPaddle->bounce( ball );
     }
     glDisable( GL_BLEND );
     glDisable( GL_TEXTURE_2D );
 
     // Update physics of paddles
-    leftPaddle->updatePhysics( show.dT );
-    rightPaddle->updatePhysics( show.dT );
-    if( !frame.silence )
+    m_leftPaddle->updatePhysics( m_show.dT );
+    m_rightPaddle->updatePhysics( m_show.dT );
+    if( !m_frame.silence )
     {
-        leftPaddle->impulse( frame.energy * 3.0 + frame.dEnergy * 6.0 );
-        rightPaddle->impulse( -frame.energy * 3.0 - frame.dEnergy * 6.0 );
+        m_leftPaddle->impulse( m_frame.energy * 3.0 + m_frame.dEnergy * 6.0 );
+        m_rightPaddle->impulse( -m_frame.energy * 3.0 - m_frame.dEnergy * 6.0 );
     }
 }
 
 void BallsAnalyzer::drawDot3s( float x, float y, float z, float size )
 {
     // Circular XY dot drawing functions
-    float sizeX = size * unitX,
-          sizeY = size * unitY,
+    float sizeX = size * m_unitX,
+          sizeY = size * m_unitY,
           pXm = x - sizeX,
           pXM = x + sizeX,
           pYm = y - sizeY,
@@ -407,7 +406,7 @@ void BallsAnalyzer::drawHFace( float y )
 
 void BallsAnalyzer::drawScrollGrid( float scroll, float color[4] )
 {
-    if( !gridTexture )
+    if( !m_gridTexture )
         return;
     glMatrixMode( GL_TEXTURE );
     glLoadIdentity();
@@ -417,7 +416,7 @@ void BallsAnalyzer::drawScrollGrid( float scroll, float color[4] )
     for( int i = 0; i < 3; i++ )
         backColor[ i ] = color[ i ];
     glEnable( GL_TEXTURE_2D );
-    glBindTexture( GL_TEXTURE_2D, gridTexture );
+    glBindTexture( GL_TEXTURE_2D, m_gridTexture );
     glEnable( GL_BLEND );
     glBegin( GL_TRIANGLE_STRIP );
     glColor4fv( color );    // top face
