@@ -31,6 +31,7 @@ public:
     void analyze( const QVector<float>& );
 
 protected:
+    void demo();
     void initializeGL();
     void resizeGL( int w, int h );
     void paintGL();

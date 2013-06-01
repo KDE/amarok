@@ -50,6 +50,30 @@ DiscoAnalyzer::~DiscoAnalyzer()
     freeTexture( m_w2Texture );
 }
 
+void DiscoAnalyzer::demo()
+{
+    static int t = 0;
+    static bool forward = true;
+
+    debug() << t;
+    debug() << forward;
+
+    QVector<float> s( 200 );
+    const double dt = double( t ) / 200;
+
+    for( int i = 0; i < s.size(); ++i )
+        s[i] = dt * ( sin( M_PI + ( i * M_PI ) / s.size() ) + 1.0 );
+
+    analyze( s );
+
+    if( t == 0 )
+        forward = true;
+    if( t == 200 )
+        forward = false;
+
+    t = forward ? t + 2 : t - 2;
+}
+
 void DiscoAnalyzer::initializeGL()
 {
     // Set a smooth shade model

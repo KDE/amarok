@@ -86,9 +86,11 @@ Analyzer::Base<W>::paused() //virtual
 template<class W> void
 Analyzer::Base<W>::demo() //virtual
 {
-    static int t = 201; //FIXME make static to namespace perhaps
+    static int t = 201;
 
-    if( t > 300 ) t = 1; //0 = wasted calculations
+    if( t > 300 )
+        t = 1; //0 = wasted calculations
+
     if( t < 201 )
     {
         QVector<float> s( 512 );
@@ -99,7 +101,8 @@ Analyzer::Base<W>::demo() //virtual
 
         analyze( s );
     }
-    else analyze( QVector<float>( 1, 0 ) );
+    else
+        analyze( QVector<float>( 1, 0 ) );
 
     ++t;
 }
