@@ -123,7 +123,7 @@ Analyzer::Base2D::Base2D( QWidget *parent )
     enableDemo( !EngineController::instance()->isPlaying() );
 
     QTimer *timer = new QTimer( this );
-    timer->setInterval( 25 ); //~40 FPS
+    timer->setInterval( 20 ); //~50 FPS
     connect( timer, SIGNAL( timeout() ), this, SLOT( update() ) );
     timer->start();
 }
