@@ -87,7 +87,6 @@ template<class W> void
 Analyzer::Base<W>::demo() //virtual
 {
     static int t = 201; //FIXME make static to namespace perhaps
-//    qDebug() << Q_FUNC_INFO << t;
 
     if( t > 300 ) t = 1; //0 = wasted calculations
     if( t < 201 )
@@ -115,13 +114,13 @@ Analyzer::Base2D::Base2D( QWidget *parent )
     connect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
              this,   SLOT( draw( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
 
-    m_timer.setInterval( 34 );
+    m_timer.setInterval( 33 );
     connect( &m_timer, SIGNAL( timeout() ), this, SLOT( demo() ) );
 
     enableDemo( !EngineController::instance()->isPlaying() );
 
     QTimer *timer = new QTimer( this );
-    timer->setInterval( 20 );
+    timer->setInterval( 25 ); //~40 FPS
     connect( timer, SIGNAL( timeout() ), this, SLOT( update() ) );
     timer->start();
 }
@@ -158,13 +157,13 @@ Analyzer::Base3D::Base3D( QWidget *parent )
     connect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
              this,   SLOT( draw( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
 
-    m_timer.setInterval( 34 );
+    m_timer.setInterval( 33 );
     connect( &m_timer, SIGNAL( timeout() ), this, SLOT( demo() ) );
 
     enableDemo( !EngineController::instance()->isPlaying() );
 
     QTimer *timer = new QTimer( this );
-    timer->setInterval( 20 );
+    timer->setInterval( 17 ); //~60 FPS
     connect( timer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
     timer->start();
 }
