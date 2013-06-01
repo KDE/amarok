@@ -57,6 +57,8 @@ class AMAROK_EXPORT EngineController : public QObject, public Meta::Observer
     Q_OBJECT
 
 public:
+    static const uint DATAOUTPUT_DATA_SIZE = 512;
+
     /**
      * Construct EngineController. Must be called from the main thread.
      */

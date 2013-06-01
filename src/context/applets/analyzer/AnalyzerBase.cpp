@@ -33,7 +33,7 @@
 template<class W>
 Analyzer::Base<W>::Base( QWidget *parent )
     : W( parent )
-    , m_fht( new FHT( 9 ) ) // 2^9 = 512. It's the number of values AudioDataOutput sends
+    , m_fht( new FHT( log2( EngineController::DATAOUTPUT_DATA_SIZE ) ) )
 {}
 
 template<class W> void

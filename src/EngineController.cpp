@@ -143,6 +143,7 @@ EngineController::initializePhonon()
 
     m_audio = new AudioOutput( MusicCategory, this );
     m_audioDataOutput = new AudioDataOutput( this );
+    m_audioDataOutput.data()->setDataSize( DATAOUTPUT_DATA_SIZE ); // The number of samples that Phonon sends per signal
 
     m_dataPath = createPath( m_media.data(), m_audioDataOutput.data() );
     m_path = createPath( m_media.data(), m_audio.data() );

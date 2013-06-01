@@ -77,7 +77,6 @@ public:
         return &m_canvas;
     }
 
-
 private slots:
     void demo() { Base<QWidget>::demo(); }
 
