@@ -143,7 +143,7 @@ void Analyzer::Base2D::connectSignals()
 
     static bool startup = true;
 
-    if( ( The::mainWindow()->isOnCurrentDesktop() && isVisible() ) || startup )
+    if( ( The::mainWindow()->isOnCurrentDesktop() && The::mainWindow()->isVisible() ) || startup )
     {
         connect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
             this, SLOT( processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
@@ -221,7 +221,7 @@ void Analyzer::Base3D::connectSignals()
 
     static bool startup = true;
 
-    if( ( The::mainWindow()->isOnCurrentDesktop() && isVisible() ) || startup )
+    if( ( The::mainWindow()->isOnCurrentDesktop() && The::mainWindow()->isVisible() ) || startup )
     {
         connect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
             this, SLOT( processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
