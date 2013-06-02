@@ -25,12 +25,10 @@
 #include <sys/time.h>
 
 
-#ifndef HAVE_FABSF
-inline float fabsf( float f )
+inline float myfabsf( float f )
 {
     return f < 0.f ? -f : f;
 }
-#endif
 
 
 class Ball
@@ -53,10 +51,10 @@ public:
         x += vx * dT;                // position
         y += vy * dT;                // position
         z += vz * dT;                // position
-        if( y < -0.8 ) vy = fabsf( vy );
-        if( y > 0.8 ) vy = -fabsf( vy );
-        if( z < 0.1 ) vz = fabsf( vz );
-        if( z > 0.9 ) vz = -fabsf( vz );
+        if( y < -0.8 ) vy = myfabsf( vy );
+        if( y > 0.8 ) vy = -myfabsf( vy );
+        if( z < 0.1 ) vz = myfabsf( vz );
+        if( z > 0.9 ) vz = -myfabsf( vz );
         vx += ( ( x > 0 ) ? 4.94 : -4.94 ) * dT;  // G-force
         vx *= ( 1 - 2.9 * dT );          // air friction
         vy *= ( 1 - 2.9 * dT );          // air friction
@@ -93,14 +91,14 @@ public:
     {
         if( onLeft && ball->x < x )
         {
-            ball->vx = vx * mass / ( mass + ball->mass ) + fabsf( ball->vx );
+            ball->vx = vx * mass / ( mass + ball->mass ) + myfabsf( ball->vx );
             ball->vy = ( drand48() - drand48() ) * 1.8;
             ball->vz = ( drand48() - drand48() ) * 0.9;
             ball->x = x;
         }
         else if( !onLeft && ball->x > x )
         {
-            ball->vx = vx * mass / ( mass + ball->mass ) - fabsf( ball->vx );
+            ball->vx = vx * mass / ( mass + ball->mass ) - myfabsf( ball->vx );
             ball->vy = ( drand48() - drand48() ) * 1.8;
             ball->vz = ( drand48() - drand48() ) * 0.9;
             ball->x = x;
