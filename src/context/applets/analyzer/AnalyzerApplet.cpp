@@ -77,8 +77,6 @@ void AnalyzerApplet::newGeometry()
     analyzerGeometry.adjust( +3, +3, -3, -3 );
 
     m_analyzer->setGeometry( analyzerGeometry );
-
-    isObscured() ? m_analyzer->hide() : m_analyzer->show();
 }
 
 QList<QAction *>
