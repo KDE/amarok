@@ -47,7 +47,7 @@ typedef std::vector<float> Scope;
 template<class W> class Base : public W
 {
 public:
-    virtual void drawFrame( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope );
+    virtual void processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope );
 
 protected:
     Base( QWidget* );
@@ -82,14 +82,16 @@ private slots:
 
     void enableDemo( bool enable )
     {
-        enable ? m_timer.start() : m_timer.stop();
+        enable ? m_demoTimer.start() : m_demoTimer.stop();
     }
     void playbackStateChanged();
 
-    void draw( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
+    void processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
     {
-        drawFrame( thescope );
+        Base<QWidget>::processData( thescope );
     }
+
+    void connectSignals();
 
 protected:
     Base2D( QWidget* );
@@ -104,7 +106,8 @@ protected:
 
 private:
     QPixmap m_canvas;
-    QTimer m_timer;
+    QTimer m_demoTimer;
+    QTimer m_renderTimer;
 };
 
 
@@ -117,20 +120,23 @@ private slots:
 
     void enableDemo( bool enable )
     {
-        enable ? m_timer.start() : m_timer.stop();
+        enable ? m_demoTimer.start() : m_demoTimer.stop();
     }
     void playbackStateChanged();
 
-    void draw( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
+    void processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
     {
-        drawFrame( thescope );
+        Base<QGLWidget>::processData( thescope );
     }
+
+    void connectSignals();
 
 protected:
     Base3D( QWidget* );
 
 private:
-    QTimer m_timer;
+    QTimer m_demoTimer;
+    QTimer m_renderTimer;
 };
 
 

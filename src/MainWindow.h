@@ -112,6 +112,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         bool playAudioCd();
 
         bool isWaitingForCd() const;
+        bool isOnCurrentDesktop() const;
 
     signals:
         void loveTrack( Meta::TrackPtr track );

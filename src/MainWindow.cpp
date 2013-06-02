@@ -1394,4 +1394,15 @@ MainWindow::isWaitingForCd() const
     return m_waitingForCd;
 }
 
+bool
+MainWindow::isOnCurrentDesktop() const
+{
+#ifdef Q_WS_X11
+    return KWindowSystem::windowInfo( winId(), NET::WMDesktop ).desktop() == KWindowSystem::currentDesktop();
+#else
+    return true;
+#endif
+}
+
+
 #include "MainWindow.moc"
