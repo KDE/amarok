@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2003 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2009 Martin Sandsmark <martin.sandsmark@kde.org>                       *
+ * Copyright (c) 2013 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
