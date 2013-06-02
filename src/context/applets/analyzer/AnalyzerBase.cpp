@@ -160,25 +160,6 @@ void Analyzer::Base2D::connectSignals()
     }
 }
 
-void Analyzer::Base2D::resizeEvent( QResizeEvent *e )
-{
-    QWidget::resizeEvent( e );
-
-    m_canvas = QPixmap( size() );
-    m_canvas.fill( Qt::transparent );
-}
-
-void Analyzer::Base2D::paintEvent( QPaintEvent* )
-{
-    DEBUG_BLOCK
-
-    if( m_canvas.isNull() )
-        return;
-
-    QPainter painter( this );
-    painter.drawPixmap( rect(), m_canvas );
-}
-
 void Analyzer::Base2D::playbackStateChanged()
 {
     enableDemo( !EngineController::instance()->isPlaying() );
@@ -265,15 +246,3 @@ Analyzer::interpolate( const QVector<float> &inVec, QVector<float> &outVec ) //s
     }
 }
 
-void
-Analyzer::initSin( QVector<float> &v, const uint size ) //static
-{
-    double step = ( M_PI * 2 ) / size;
-    double radian = 0;
-
-    for( uint i = 0; i < size; i++ )
-    {
-        v.push_back( sin( radian ) );
-        radian += step;
-    }
-}

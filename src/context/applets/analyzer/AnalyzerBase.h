@@ -34,15 +34,8 @@
 #include <phonon/audiodataoutput.h>
 
 
-class QEvent;
-class QPaintEvent;
-class QResizeEvent;
-
-
 namespace Analyzer
 {
-
-typedef std::vector<float> Scope;
 
 template<class W> class Base : public W
 {
@@ -71,12 +64,6 @@ class Base2D : public Base<QWidget>
 {
     Q_OBJECT
 
-public:
-    const QPixmap *canvas()     const
-    {
-        return &m_canvas;
-    }
-
 private slots:
     void demo() { Base<QWidget>::demo(); }
 
@@ -96,16 +83,7 @@ private slots:
 protected:
     Base2D( QWidget* );
 
-    QPixmap *canvas()
-    {
-        return &m_canvas;
-    }
-
-    void paintEvent( QPaintEvent* );
-    void resizeEvent( QResizeEvent* );
-
 private:
-    QPixmap m_canvas;
     QTimer m_demoTimer;
     QTimer m_renderTimer;
 };
@@ -140,26 +118,9 @@ private:
 };
 
 
-class Factory
-{
-    //Currently this is a rather small class, its only purpose
-    //to ensure that making changes to analyzers will not require
-    //rebuilding the world!
-
-    //eventually it would be better to make analyzers pluggable
-    //but I can't be arsed, nor can I see much reason to do so
-    //yet!
-public:
-    static QWidget* createAnalyzer( QWidget* );
-    static QWidget* createPlaylistAnalyzer( QWidget * );
-};
-
-
 void interpolate( const QVector<float>&, QVector<float>& );
-void initSin( QVector<float>&, const uint = 6000 );
 
 } //END namespace Analyzer
 
-using Analyzer::Scope;
 
 #endif
