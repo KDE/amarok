@@ -122,7 +122,7 @@ BlockAnalyzer::transform( QVector<float> &s ) //pure virtual
 void
 BlockAnalyzer::analyze( const QVector<float> &s )
 {
-    Analyzer::interpolate( s, m_scope );
+    interpolate( s, m_scope );
 }
 
 void

@@ -30,18 +30,74 @@
 
 
 // INSTRUCTIONS
-// 1. reimplement analyze(), and paint to canvas(), Base2D will update the widget when you return control to it
+// 1. reimplement analyze()
 // 2. if you want to manipulate the scope, reimplement transform()
 
 
-template<class W>
-Analyzer::Base<W>::Base( QWidget *parent )
-    : W( parent )
+Analyzer::Base::Base( QWidget *parent )
+    : QGLWidget( parent )
     , m_fht( new FHT( log2( EngineController::DATAOUTPUT_DATA_SIZE ) ) )
-{}
+{
+    connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SLOT( playbackStateChanged() ) );
 
-template<class W> void
-Analyzer::Base<W>::transform( QVector<float> &scope ) //virtual
+    m_demoTimer.setInterval( 33 );
+
+    enableDemo( !EngineController::instance()->isPlaying() );
+
+#ifdef Q_WS_X11
+    connect( KWindowSystem::self(), SIGNAL( currentDesktopChanged( int ) ), this, SLOT( connectSignals() ) );
+#endif
+
+    connectSignals();
+}
+
+
+Analyzer::Base::~Base()
+{
+    delete m_fht;
+}
+
+void
+Analyzer::Base::connectSignals()
+{
+    DEBUG_BLOCK
+
+    // Optimization for X11/Linux desktops:
+    // Don't update the analyzer if Amarok is not on the active virtual desktop.
+
+    static bool startup = true;
+
+    if( ( The::mainWindow()->isOnCurrentDesktop() && The::mainWindow()->isVisible() ) || startup )
+    {
+        connect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
+            this, SLOT( processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
+        connect( &m_demoTimer, SIGNAL( timeout() ), this, SLOT( demo() ) );
+        m_renderTimer.start();
+        startup = false;
+    }
+    else
+    {
+        disconnect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
+            this, SLOT( processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
+        disconnect( &m_demoTimer, SIGNAL( timeout() ), this, SLOT( demo() ) );
+        m_renderTimer.stop();
+    }
+}
+
+void
+Analyzer::Base::playbackStateChanged()
+{
+    enableDemo( !EngineController::instance()->isPlaying() );
+}
+
+void
+Analyzer::Base::enableDemo( bool enable )
+{
+    enable ? m_demoTimer.start() : m_demoTimer.stop();
+}
+
+void
+Analyzer::Base::transform( QVector<float> &scope ) //virtual
 {
     //this is a standard transformation that should give
     //an FFT scope that has bands for pretty analyzers
@@ -57,8 +113,8 @@ Analyzer::Base<W>::transform( QVector<float> &scope ) //virtual
     delete [] f;
 }
 
-template<class W> void
-Analyzer::Base<W>::processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
+void
+Analyzer::Base::processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
 {
     if( thescope.isEmpty() )
         return;
@@ -83,12 +139,8 @@ Analyzer::Base<W>::processData( const QMap<Phonon::AudioDataOutput::Channel, QVe
     analyze( scope );
 }
 
-template<class W> void
-Analyzer::Base<W>::paused() //virtual
-{}
-
-template<class W> void
-Analyzer::Base<W>::demo() //virtual
+void
+Analyzer::Base::demo() //virtual
 {
     static int t = 201;
 
@@ -111,117 +163,8 @@ Analyzer::Base<W>::demo() //virtual
     ++t;
 }
 
-
-
-Analyzer::Base2D::Base2D( QWidget *parent )
-    : Base<QWidget>( parent )
-{
-    connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SLOT( playbackStateChanged() ) );
-
-    m_demoTimer.setInterval( 33 );
-
-    enableDemo( !EngineController::instance()->isPlaying() );
-
-    m_renderTimer.setInterval( 20 ); //~50 FPS
-    connect( &m_renderTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
-
-#ifdef Q_WS_X11
-    connect( KWindowSystem::self(), SIGNAL( currentDesktopChanged( int ) ), this, SLOT( connectSignals() ) );
-#endif
-
-    connectSignals();
-}
-
-void Analyzer::Base2D::connectSignals()
-{
-    DEBUG_BLOCK
-
-    // Optimization for X11/Linux desktops:
-    // Don't update the analyzer if Amarok is not on the active virtual desktop.
-    //
-    // FIXME Get rid of the code duplication in both base classes
-
-    static bool startup = true;
-
-    if( ( The::mainWindow()->isOnCurrentDesktop() && The::mainWindow()->isVisible() ) || startup )
-    {
-        connect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
-            this, SLOT( processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
-        connect( &m_demoTimer, SIGNAL( timeout() ), this, SLOT( demo() ) );
-        m_renderTimer.start();
-        startup = false;
-    }
-    else
-    {
-        disconnect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
-            this, SLOT( processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
-        disconnect( &m_demoTimer, SIGNAL( timeout() ), this, SLOT( demo() ) );
-        m_renderTimer.stop();
-    }
-}
-
-void Analyzer::Base2D::playbackStateChanged()
-{
-    enableDemo( !EngineController::instance()->isPlaying() );
-}
-
-
-
-Analyzer::Base3D::Base3D( QWidget *parent )
-    : Base<QGLWidget>( parent )
-{
-    connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SLOT( playbackStateChanged() ) );
-
-    m_demoTimer.setInterval( 33 );
-
-    enableDemo( !EngineController::instance()->isPlaying() );
-
-    m_renderTimer.setInterval( 17 ); //~60 FPS
-    connect( &m_renderTimer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
-
-#ifdef Q_WS_X11
-    connect( KWindowSystem::self(), SIGNAL( currentDesktopChanged( int ) ), this, SLOT( connectSignals() ) );
-#endif
-
-    connectSignals();
-}
-
-void Analyzer::Base3D::playbackStateChanged()
-{
-    enableDemo( !EngineController::instance()->isPlaying() );
-}
-
-void Analyzer::Base3D::connectSignals()
-{
-    DEBUG_BLOCK
-
-    // Optimization for X11/Linux desktops:
-    // Don't update the analyzer if Amarok is not on the active virtual desktop.
-    //
-    // FIXME Get rid of the code duplication in both base classes
-
-    static bool startup = true;
-
-    if( ( The::mainWindow()->isOnCurrentDesktop() && The::mainWindow()->isVisible() ) || startup )
-    {
-        connect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
-            this, SLOT( processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
-        connect( &m_demoTimer, SIGNAL( timeout() ), this, SLOT( demo() ) );
-        m_renderTimer.start();
-        startup = false;
-    }
-    else
-    {
-        disconnect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
-            this, SLOT( processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
-        disconnect( &m_demoTimer, SIGNAL( timeout() ), this, SLOT( demo() ) );
-        m_renderTimer.stop();
-    }
-}
-
-
 void
-Analyzer::interpolate( const QVector<float> &inVec, QVector<float> &outVec ) //static
+Analyzer::Base::interpolate( const QVector<float> &inVec, QVector<float> &outVec ) const
 {
     double pos = 0.0;
     const double step = ( double )inVec.size() / outVec.size();
@@ -244,5 +187,24 @@ Analyzer::interpolate( const QVector<float> &inVec, QVector<float> &outVec ) //s
         outVec[i] = inVec[indexLeft ] * ( 1.0 - error ) +
                     inVec[indexRight] * error;
     }
+}
+
+
+
+
+Analyzer::Base2D::Base2D( QWidget *parent )
+    : Base( parent )
+{
+    m_renderTimer.setInterval( 20 ); //~50 FPS
+    connect( &m_renderTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
+}
+
+
+
+Analyzer::Base3D::Base3D( QWidget *parent )
+    : Base( parent )
+{
+    m_renderTimer.setInterval( 17 ); //~60 FPS
+    connect( &m_renderTimer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
 }
 

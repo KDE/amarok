@@ -22,12 +22,10 @@
 #include <sys/types.h>
 #endif
 
-#include "fht.h"     //stack allocated and convenience
+#include "fht.h"     //stack allocated
 
 #include <QGLWidget>
-#include <QPixmap> //stack allocated and convenience
-#include <QTimer>  //stack allocated
-#include <QWidget> //baseclass
+#include <QTimer>
 
 #include <vector>    //included for convenience
 
@@ -37,88 +35,53 @@
 namespace Analyzer
 {
 
-template<class W> class Base : public W
+class Base : public QGLWidget
 {
-public:
-    virtual void processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope );
+    Q_OBJECT
 
 protected:
     Base( QWidget* );
-    ~Base()
-    {
-        delete m_fht;
-    }
+    ~Base();
 
-    virtual void demo();
+    void interpolate( const QVector<float>&, QVector<float>& ) const;
 
     virtual void transform( QVector<float>& );
     virtual void analyze( const QVector<float>& ) = 0;
-    virtual void paused();
 
-protected:
     FHT    *m_fht;
+    QTimer m_demoTimer;
+    QTimer m_renderTimer;
+
+protected slots:
+    virtual void demo();
+
+private slots:
+    void processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope );
+    void playbackStateChanged();
+
+private:
+    void enableDemo( bool enable );
+    void connectSignals();
 };
 
 
-class Base2D : public Base<QWidget>
+class Base2D : public Base
 {
     Q_OBJECT
-
-private slots:
-    void demo() { Base<QWidget>::demo(); }
-
-    void enableDemo( bool enable )
-    {
-        enable ? m_demoTimer.start() : m_demoTimer.stop();
-    }
-    void playbackStateChanged();
-
-    void processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
-    {
-        Base<QWidget>::processData( thescope );
-    }
-
-    void connectSignals();
 
 protected:
     Base2D( QWidget* );
-
-private:
-    QTimer m_demoTimer;
-    QTimer m_renderTimer;
 };
 
 
-class Base3D : public Base<QGLWidget>
+class Base3D : public Base
 {
     Q_OBJECT
 
-private slots:
-    void demo() { Base<QGLWidget>::demo(); }
-
-    void enableDemo( bool enable )
-    {
-        enable ? m_demoTimer.start() : m_demoTimer.stop();
-    }
-    void playbackStateChanged();
-
-    void processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
-    {
-        Base<QGLWidget>::processData( thescope );
-    }
-
-    void connectSignals();
-
 protected:
     Base3D( QWidget* );
-
-private:
-    QTimer m_demoTimer;
-    QTimer m_renderTimer;
 };
 
-
-void interpolate( const QVector<float>&, QVector<float>& );
 
 } //END namespace Analyzer
 

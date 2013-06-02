@@ -16,8 +16,6 @@
 
 #include "DiscoAnalyzer.h"
 
-#include "core/support/Debug.h"
-
 #include <QImage>
 #include <KStandardDirs>
 
@@ -54,9 +52,6 @@ void DiscoAnalyzer::demo()
 {
     static int t = 0;
     static bool forward = true;
-
-    debug() << t;
-    debug() << forward;
 
     QVector<float> s( 200 );
     const double dt = double( t ) / 200;
