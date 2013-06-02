@@ -176,6 +176,8 @@ AnalyzerApplet::setCurrentAnalyzer( const QString &name )
     else if( name == "Disco" )
         m_analyzer = new DiscoAnalyzer( view()->viewport() );
 
+    connect( this, SIGNAL( appletDestroyed( Plasma::Applet* ) ), m_analyzer, SLOT( deleteLater() ) );
+
     newGeometry();
     m_analyzer->show();
 }
