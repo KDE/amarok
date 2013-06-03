@@ -182,14 +182,15 @@ AnalyzerApplet::setCurrentAnalyzer( const QString &name )
         return;
 
     delete m_analyzer;
-    m_analyzerName = name;
 
     if( name == "Balls" )
         m_analyzer = new BallsAnalyzer( view()->viewport() );
-    else if( name == "Blocky" )
-        m_analyzer = new BlockAnalyzer( view()->viewport() );
     else if( name == "Disco" )
         m_analyzer = new DiscoAnalyzer( view()->viewport() );
+    else
+        m_analyzer = new BlockAnalyzer( view()->viewport() ); // The default
+
+    m_analyzerName = m_analyzer->objectName();
 
     connect( this, SIGNAL( appletDestroyed( Plasma::Applet* ) ), m_analyzer, SLOT( deleteLater() ) );
 
