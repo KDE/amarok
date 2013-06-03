@@ -68,8 +68,11 @@ AnalyzerApplet::init()
     setCurrentAnalyzer( config.readEntry( "Current Analyzer", "Blocky" ) );
 }
 
-void AnalyzerApplet::newGeometry()
+void
+AnalyzerApplet::newGeometry()
 {
+    DEBUG_BLOCK
+
     // Use the applet's geometry for showing the analyzer widget at the same position
     QRect analyzerGeometry = geometry().toRect();
 
@@ -77,6 +80,18 @@ void AnalyzerApplet::newGeometry()
     analyzerGeometry.adjust( +3, +3, -3, -3 );
 
     m_analyzer->setGeometry( analyzerGeometry );
+}
+
+void
+AnalyzerApplet::hideEvent( QHideEvent* )
+{
+    m_analyzer->hide();
+}
+
+void
+AnalyzerApplet::showEvent( QShowEvent* )
+{
+    m_analyzer->show();
 }
 
 QList<QAction *>

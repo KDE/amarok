@@ -42,6 +42,9 @@ private slots:
     void analyzerAction( QAction* );
 
 private:
+    void hideEvent( QHideEvent* );
+    void showEvent( QShowEvent* );
+
     void setCurrentAnalyzer( const QString &name);
     QList<QAction *> contextualActions();
 
