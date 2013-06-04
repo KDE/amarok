@@ -52,9 +52,9 @@ AnalyzerApplet::init()
     // Call the base implementation.
     Context::Applet::init();
 
-    m_analyzerNames["Balls"] = i18n( "Balls (OpenGL)" );
-    m_analyzerNames["Blocky"] = i18n( "Blocky" );
-    m_analyzerNames["Disco"] = i18n( "Disco (OpenGL)" );
+    m_analyzerNames["Balls"] = i18nc( "Analyzer name", "Balls (OpenGL)" );
+    m_analyzerNames["Blocky"] = i18nc( "Analyzer name", "Blocky" );
+    m_analyzerNames["Disco"] = i18nc( "Analyzer name", "Disco (OpenGL)" );
 
     KConfigGroup config = Amarok::config( "Analyzer Applet" );
 
@@ -105,17 +105,17 @@ AnalyzerApplet::contextualActions ()
 
     QActionGroup *heightActions = new QActionGroup( this );
 
-    action = heightMenu->addAction( i18n( "Small" ) );
+    action = heightMenu->addAction( i18nc( "Height of the Analyzer applet", "Small" ) );
     action->setCheckable( true );
     action->setChecked( m_currentHeight == Small );
     action->setActionGroup( heightActions );
     connect( action, SIGNAL( triggered() ), this, SLOT( setHeightSmall() ) );
-    action = heightMenu->addAction( i18n( "Medium" ) );
+    action = heightMenu->addAction( i18nc( "Height of the Analyzer applet", "Medium" ) );
     action->setCheckable( true );
     action->setChecked( m_currentHeight == Medium );
     action->setActionGroup( heightActions );
     connect( action, SIGNAL( triggered() ), this, SLOT( setHeightMedium() ) );
-    action = heightMenu->addAction( i18n( "Tall" ) );
+    action = heightMenu->addAction( i18nc( "Height of the Analyzer applet", "Tall" ) );
     action->setCheckable( true );
     action->setChecked( m_currentHeight == Tall );
     action->setActionGroup( heightActions );
