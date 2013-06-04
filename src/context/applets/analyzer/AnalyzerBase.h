@@ -26,7 +26,6 @@
 #include "fht.h"     //stack allocated
 
 #include <QGLWidget>
-#include <QTimer>
 
 #include <vector>    //included for convenience
 
@@ -57,6 +56,8 @@ protected slots:
 
 private slots:
     void connectSignals();
+    void disconnectSignals();
+    void currentDesktopChanged();
     void processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope );
     void playbackStateChanged();
 
@@ -65,7 +66,7 @@ private:
     void hideEvent( QHideEvent* );
     void showEvent( QShowEvent* );
 
-    QTimer m_demoTimer;
+    QTimer *m_demoTimer;
 };
 
 
