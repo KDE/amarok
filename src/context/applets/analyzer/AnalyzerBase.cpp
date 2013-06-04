@@ -38,6 +38,7 @@
 Analyzer::Base::Base( QWidget *parent )
     : QGLWidget( parent )
     , m_fht( new FHT( log2( EngineController::DATAOUTPUT_DATA_SIZE ) ) )
+    , m_renderTimer( new QTimer( this ) )
 {
     connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SLOT( playbackStateChanged() ) );
 
@@ -68,20 +69,23 @@ Analyzer::Base::connectSignals()
 
     static bool startup = true;
 
-    if( ( The::mainWindow()->isOnCurrentDesktop() && The::mainWindow()->isVisible() ) || startup )
+    if( ( The::mainWindow()->isOnCurrentDesktop() && The::mainWindow()->isVisible() && isVisible() ) || startup )
     {
+        if( m_renderTimer->isActive() )
+            return;
+
         connect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
             this, SLOT( processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
         connect( &m_demoTimer, SIGNAL( timeout() ), this, SLOT( demo() ) );
-        m_renderTimer.start();
+        m_renderTimer->start();
         startup = false;
     }
     else
     {
         disconnect( EngineController::instance(), SIGNAL( audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ),
             this, SLOT( processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > & ) ) );
-        disconnect( &m_demoTimer, SIGNAL( timeout() ), this, SLOT( demo() ) );
-        m_renderTimer.stop();
+        m_demoTimer.disconnect( this );
+        m_renderTimer->stop();
     }
 }
 
@@ -95,6 +99,18 @@ void
 Analyzer::Base::enableDemo( bool enable )
 {
     enable ? m_demoTimer.start() : m_demoTimer.stop();
+}
+
+void
+Analyzer::Base::hideEvent( QHideEvent * )
+{
+    QTimer::singleShot( 0, this, SLOT( connectSignals() ) );
+}
+
+void
+Analyzer::Base::showEvent( QShowEvent * )
+{
+    QTimer::singleShot( 0, this, SLOT( connectSignals() ) );
 }
 
 void
@@ -196,8 +212,8 @@ Analyzer::Base::interpolate( const QVector<float> &inVec, QVector<float> &outVec
 Analyzer::Base2D::Base2D( QWidget *parent )
     : Base( parent )
 {
-    m_renderTimer.setInterval( 20 ); //~50 FPS
-    connect( &m_renderTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
+    m_renderTimer->setInterval( 20 ); //~50 FPS
+    connect( m_renderTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
 }
 
 
@@ -205,7 +221,7 @@ Analyzer::Base2D::Base2D( QWidget *parent )
 Analyzer::Base3D::Base3D( QWidget *parent )
     : Base( parent )
 {
-    m_renderTimer.setInterval( 17 ); //~60 FPS
-    connect( &m_renderTimer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
+    m_renderTimer->setInterval( 17 ); //~60 FPS
+    connect( m_renderTimer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
 }
 

@@ -50,8 +50,7 @@ protected:
     virtual void analyze( const QVector<float>& ) = 0;
 
     FHT    *m_fht;
-    QTimer m_demoTimer;
-    QTimer m_renderTimer;
+    QTimer *m_renderTimer;
 
 protected slots:
     virtual void demo();
@@ -63,6 +62,10 @@ private slots:
 
 private:
     void enableDemo( bool enable );
+    void hideEvent( QHideEvent* );
+    void showEvent( QShowEvent* );
+
+    QTimer m_demoTimer;
 };
 
 
