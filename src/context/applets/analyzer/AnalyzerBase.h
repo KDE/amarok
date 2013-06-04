@@ -57,12 +57,12 @@ protected slots:
     virtual void demo();
 
 private slots:
+    void connectSignals();
     void processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope );
     void playbackStateChanged();
 
 private:
     void enableDemo( bool enable );
-    void connectSignals();
 };
 
 
