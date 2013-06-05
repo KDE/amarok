@@ -122,8 +122,6 @@ BallsAnalyzer::BallsAnalyzer( QWidget *parent ):
 {
     setObjectName( "Balls" );
 
-    //initialize openGL context before managing GL calls
-    makeCurrent();
     loadTexture( KStandardDirs::locate( "data", "amarok/images/ball.png" ), m_ballTexture );
     loadTexture( KStandardDirs::locate( "data", "amarok/images/grid.png" ), m_gridTexture );
 

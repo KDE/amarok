@@ -29,8 +29,6 @@ DiscoAnalyzer::DiscoAnalyzer( QWidget *parent ):
 {
     setObjectName( "Disco" );
 
-    //initialize openGL context before managing GL calls
-    makeCurrent();
     loadTexture( KStandardDirs::locate( "data", "amarok/images/dot.png" ), m_dotTexture );
     loadTexture( KStandardDirs::locate( "data", "amarok/images/wirl1.png" ), m_w1Texture );
     loadTexture( KStandardDirs::locate( "data", "amarok/images/wirl2.png" ), m_w2Texture );

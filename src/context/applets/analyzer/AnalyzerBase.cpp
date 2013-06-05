@@ -26,8 +26,6 @@
 
 #include <KWindowSystem>
 
-#include <QEvent> // event()
-#include <QPainter>
 #include <QTimer>
 
 
@@ -232,5 +230,12 @@ Analyzer::Base3D::Base3D( QWidget *parent )
 {
     m_renderTimer->setInterval( 17 ); //~60 FPS
     connect( m_renderTimer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
+
+    //initialize openGL context before managing GL calls
+    makeCurrent();
+
+    initializeGLFunctions();
 }
 
+
+#include "AnalyzerBase.moc"

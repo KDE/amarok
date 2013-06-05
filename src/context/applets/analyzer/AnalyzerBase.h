@@ -25,6 +25,7 @@
 
 #include "fht.h"     //stack allocated
 
+#include <QGLFunctions>
 #include <QGLWidget>
 
 #include <vector>    //included for convenience
@@ -79,7 +80,7 @@ protected:
 };
 
 
-class Base3D : public Base
+class Base3D : public Base, protected QGLFunctions
 {
     Q_OBJECT
 
