@@ -230,10 +230,7 @@ void BallsAnalyzer::analyze( const QVector<float> &s )
     }
     else
         m_frame.silence = true;
-}
 
-void BallsAnalyzer::paintGL()
-{
     // limit max dT to 0.05 and update color and scroll constants
     if( m_show.dT > 0.05 )
         m_show.dT = 0.05;
@@ -242,27 +239,50 @@ void BallsAnalyzer::paintGL()
         m_show.colorK -= 3.0;
     m_show.gridScrollK += 0.2 * m_show.peakEnergy * m_show.dT;
 
-    // Switch to MODEL matrix and clear screen
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-    glClear( GL_COLOR_BUFFER_BIT );
-
-    // Draw scrolling grid
-    if( ( m_show.gridEnergyK > 0.05 ) || ( !m_frame.silence && m_frame.dEnergy < -0.3 ) )
-    {
-        m_show.gridEnergyK *= exp( -m_show.dT / 0.1 );
-        if( -m_frame.dEnergy > m_show.gridEnergyK )
-            m_show.gridEnergyK = -m_frame.dEnergy * 2.0;
-        float gridColor[4] = { 0.0, 1.0, 0.6, m_show.gridEnergyK };
-        drawScrollGrid( m_show.gridScrollK, gridColor );
-    }
-
     // Roll camera up/down handling the beat
     m_show.camRot += m_show.camRoll * m_show.dT;        // posision
     m_show.camRoll -= 400 * m_show.camRot * m_show.dT;    // elasticity
     m_show.camRoll *= ( 1 - 2.0 * m_show.dT );      // friction
     if( !m_frame.silence && m_frame.dEnergy > 0.4 )
         m_show.camRoll += m_show.peakEnergy * 2.0;
+
+    if( ( m_show.gridEnergyK > 0.05 ) || ( !m_frame.silence && m_frame.dEnergy < -0.3 ) )
+    {
+        m_show.gridEnergyK *= exp( -m_show.dT / 0.1 );
+        if( -m_frame.dEnergy > m_show.gridEnergyK )
+            m_show.gridEnergyK = -m_frame.dEnergy * 2.0;
+    }
+
+    foreach( Ball * ball, m_balls )
+    {
+        ball->updatePhysics( m_show.dT );
+        if( ball->x < 0 )
+            m_leftPaddle->bounce( ball );
+        else
+            m_rightPaddle->bounce( ball );
+    }
+
+    // Update physics of paddles
+    m_leftPaddle->updatePhysics( m_show.dT );
+    m_rightPaddle->updatePhysics( m_show.dT );
+    if( !m_frame.silence )
+    {
+        m_leftPaddle->impulse( m_frame.energy * 3.0 + m_frame.dEnergy * 6.0 );
+        m_rightPaddle->impulse( -m_frame.energy * 3.0 - m_frame.dEnergy * 6.0 );
+    }
+}
+
+void BallsAnalyzer::paintGL()
+{
+    // Switch to MODEL matrix and clear screen
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+    glClear( GL_COLOR_BUFFER_BIT );
+
+    // Draw scrolling grid
+    float gridColor[4] = { 0.0, 1.0, 0.6, m_show.gridEnergyK };
+    drawScrollGrid( m_show.gridScrollK, gridColor );
+
     glRotatef( m_show.camRoll / 2.0, 1, 0, 0 );
 
     // Translate the drawing plane
@@ -282,7 +302,9 @@ void BallsAnalyzer::paintGL()
     }
     else
         glDisable( GL_TEXTURE_2D );
+
     glEnable( GL_BLEND );
+
     foreach( Ball * ball, m_balls )
     {
         float color[3],
@@ -311,23 +333,9 @@ void BallsAnalyzer::paintGL()
         // Draw the dot and update its physics also checking at bounces
         glColor3fv( color );
         drawDot3s( ball->x, ball->y, ball->z, 1.0 );
-        ball->updatePhysics( m_show.dT );
-        if( ball->x < 0 )
-            m_leftPaddle->bounce( ball );
-        else
-            m_rightPaddle->bounce( ball );
     }
     glDisable( GL_BLEND );
     glDisable( GL_TEXTURE_2D );
-
-    // Update physics of paddles
-    m_leftPaddle->updatePhysics( m_show.dT );
-    m_rightPaddle->updatePhysics( m_show.dT );
-    if( !m_frame.silence )
-    {
-        m_leftPaddle->impulse( m_frame.energy * 3.0 + m_frame.dEnergy * 6.0 );
-        m_rightPaddle->impulse( -m_frame.energy * 3.0 - m_frame.dEnergy * 6.0 );
-    }
 }
 
 void BallsAnalyzer::drawDot3s( float x, float y, float z, float size )
