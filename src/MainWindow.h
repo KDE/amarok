@@ -106,12 +106,17 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         bool isLayoutLocked() const;
 
         /**
-        *    If an audiocd collection is present. Stop current playback, clear playlist,
-        *    add cd to playlist and start playback
-        */
+         *    If an audiocd collection is present. Stop current playback, clear playlist,
+         *    add cd to playlist and start playback
+         */
         bool playAudioCd();
 
         bool isWaitingForCd() const;
+
+        /**
+         * @return Whether the application is on the currently active virtual desktop. On non-X11 systems
+           this is always true.
+         */
         bool isOnCurrentDesktop() const;
 
     signals:

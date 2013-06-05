@@ -91,10 +91,13 @@ protected slots:
 signals:
     void redrawRequested();
 
+private slots:
+    void currentDesktopChanged();
+
 private:
     void paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const;
 
-    QTimeLine * m_timeLine;
+    QTimeLine * m_animationTimeLine;
     QPointF centerImage( const QPixmap&, const QRectF& ) const;
 
     static int getGroupMode( const QModelIndex &index);
