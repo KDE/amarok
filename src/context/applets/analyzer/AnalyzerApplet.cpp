@@ -52,9 +52,9 @@ AnalyzerApplet::init()
     // Call the base implementation.
     Context::Applet::init();
 
-    m_analyzerNames["Balls"] = i18nc( "Analyzer name", "Balls (OpenGL)" );
+    m_analyzerNames["Balls"] = i18nc( "Analyzer name", "Balls" );
     m_analyzerNames["Blocky"] = i18nc( "Analyzer name", "Blocky" );
-    m_analyzerNames["Disco"] = i18nc( "Analyzer name", "Disco (OpenGL)" );
+    m_analyzerNames["Disco"] = i18nc( "Analyzer name", "Disco" );
 
     KConfigGroup config = Amarok::config( "Analyzer Applet" );
 
