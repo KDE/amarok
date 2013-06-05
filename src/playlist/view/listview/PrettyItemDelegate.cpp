@@ -42,7 +42,7 @@
 #include "playlist/view/listview/InlineEditorWidget.h"
 
 #include <KColorScheme>
-#include <KRatingPainter>
+#include <kratingpainter.h>  // #include <KratingPainter> does not work on some distros
 #include <KWindowSystem>
 
 #include <QAction>
