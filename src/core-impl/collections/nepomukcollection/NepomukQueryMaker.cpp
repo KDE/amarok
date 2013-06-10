@@ -187,6 +187,8 @@ NepomukQueryMakerPrivate::constructSelector()
         case QueryMaker::Label:
             return QString();
     }
+    warning() << "unknown QueryMaker type " << type;
+    return QString();
 }
 
 QString
