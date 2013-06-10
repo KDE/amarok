@@ -61,6 +61,8 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * Fix crash on startup with KDE 4.11. Patch by Hrvoje Senjan
+     <hrvoje.senjan@gmail.com>. (BR 320855)
    * Fix tracks not able to be dragged around when playlist is shuffled. (BR 320129)
    * Prevent Last.fm scrobbles not being submitted until restart due to change in
      liblastfm 1.0.7. (BR 320219)

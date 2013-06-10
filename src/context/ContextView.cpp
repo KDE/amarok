@@ -78,11 +78,6 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     p.setColor( QPalette::Base, c );
     setPalette( p );
 
-    PERF_LOG( "Accessing Plasma::Theme" );
-    // here we initialize all the Plasma paths to Amarok paths
-    Plasma::Theme::defaultTheme()->setUseGlobalSettings( false );
-    Theme::defaultTheme()->setThemeName( "Amarok-Mockup" );
-    PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
 
     cont->setPos( 0, 0 );
