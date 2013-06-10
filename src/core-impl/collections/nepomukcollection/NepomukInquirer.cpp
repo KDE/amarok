@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,50 +14,47 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKCONSTRUCTMETAJOB_H
-#define NEPOMUKCONSTRUCTMETAJOB_H
+#include "NepomukInquirer.h"
 
-#include "core/meta/forward_declarations.h"
-#include "core/meta/support/MetaKeys.h"
-#include "core-impl/collections/support/MemoryCollection.h"
+#include "NepomukParser.h"
 
-#include <ThreadWeaver/Job>
+#include "core/support/Debug.h"
 
-namespace Collections
+#include <Nepomuk2/ResourceManager>
+#include <Soprano/Model>
+
+namespace Collections {
+
+
+NepomukInquirer::NepomukInquirer( QString query, std::auto_ptr<NepomukParser> parser )
+    : m_query( query )
 {
+    Q_ASSERT( parser.get() );
 
-class NepomukCollection;
-
-class NepomukConstructMetaJob : public ThreadWeaver::Job
-{
-    Q_OBJECT
-
-public:
-    explicit NepomukConstructMetaJob( NepomukCollection *coll );
-
-public slots:
-    /**
-     * Aborts the job as soon as it is safely possible
-     */
-    void abort();
-
-signals:
-    // signals for progress operation:
-    void incrementProgress();
-    void endProgressOperation( QObject *obj );
-    // not used, defined to keep QObject::conect warning quiet
-    void totalSteps( int steps );
-    void updated();
-
-protected:
-    void run();
-
-private:
-    QSharedPointer<Collections::MemoryCollection> m_mc;
-    bool m_aborted;
-    NepomukCollection *m_coll;
-};
-
+    m_parser = parser.release();
+    m_parser->setParent( this );
 }
 
-#endif // NEPOMUKCONSTRUCTMETAJOB_H
+NepomukInquirer::~NepomukInquirer()
+{
+}
+
+void
+NepomukInquirer::run()
+{
+    DEBUG_BLOCK
+
+    Soprano::Model *model = Nepomuk2::ResourceManager::instance()->mainModel();
+    Soprano::QueryResultIterator it = model->executeQuery( m_query, Soprano::Query::QueryLanguageSparql );
+
+    if( !it.isValid() )
+    {
+        error() << "nepomuk query failed!";
+        error() << "Soprano message:" << it.lastError().message();
+        return;
+    }
+
+    m_parser->parse( it );
+}
+
+}

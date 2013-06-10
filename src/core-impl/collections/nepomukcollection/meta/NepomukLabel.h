@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,6 +20,12 @@
 
 #include "core/meta/Meta.h"
 
+#include <QScopedPointer>
+
+namespace Nepomuk2 { class Tag; }
+
+namespace Collections { class NepomukCollection; }
+
 namespace Meta
 {
 /**
@@ -27,11 +34,19 @@ namespace Meta
 class NepomukLabel : public Label
 {
 public:
-    NepomukLabel( const QString &name );
+    explicit NepomukLabel( const QString &name );
+    explicit NepomukLabel( const QUrl &resourceUri );
+    ~NepomukLabel();
+
     virtual QString name() const;
 
+    Nepomuk2::Tag &tag() const { return *m_nepomukTag; }
+
+    static LabelPtr fromNepomukTag( Collections::NepomukCollection *collection,
+                                    const Nepomuk2::Tag &tag );
+
 private:
-    QString m_name;
+    QScopedPointer<Nepomuk2::Tag> m_nepomukTag;
 };
 
 }

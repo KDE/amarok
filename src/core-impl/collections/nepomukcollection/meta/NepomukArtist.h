@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,6 +20,8 @@
 
 #include "core/meta/Meta.h"
 
+#include <QUrl>
+
 namespace Meta
 {
 /**
@@ -27,11 +30,19 @@ namespace Meta
 class NepomukArtist : public Artist
 {
 public:
-    NepomukArtist( const QString &name );
+    explicit NepomukArtist( const QUrl &resourceUri );
+
     virtual TrackList tracks();
-    virtual QString name() const;
+    virtual QString name() const { return m_name; }
+
+    bool isFilled() const { return !m_name.isEmpty(); }
+
+    void fill( const QString &name ) { m_name = name; }
+
+    QUrl resourceUri() const { return m_resource; }
 
 private:
+    QUrl m_resource;
     QString m_name;
 };
 

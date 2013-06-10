@@ -26,12 +26,14 @@ namespace Meta
 class NepomukYear : public Year
 {
 public:
-    NepomukYear( const QString &name );
+    NepomukYear( int yearValue );
+
     virtual TrackList tracks();
     virtual QString name() const;
+    virtual int year() const;
 
 private:
-    QString m_name;
+    int m_year;
 };
 
 }

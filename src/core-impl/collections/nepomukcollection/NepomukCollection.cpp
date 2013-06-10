@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,15 +18,13 @@
 #define DEBUG_PREFIX "NepomukCollection"
 
 #include "NepomukCollection.h"
-#include "NepomukConstructMetaJob.h"
 
-#include "core/collections/QueryMaker.h"
+#include "NepomukCache.h"
+#include "NepomukQueryMaker.h"
+
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/MemoryCollection.h"
-#include "core-impl/collections/support/MemoryMeta.h"
-#include "core-impl/collections/support/MemoryQueryMaker.h"
 
 #include <Nepomuk2/Resource>
 #include <Nepomuk2/ResourceManager>
@@ -34,14 +33,12 @@
 #include <KIcon>
 #include <ThreadWeaver/Weaver>
 
-using namespace MemoryMeta;
-using namespace Collections;
+namespace Collections
+{
 
 NepomukCollection::NepomukCollection()
-    : Collection()
-    , m_mc( new MemoryCollection() )
+    : m_cache( new NepomukCache( this ) )
 {
-    buildCollection();
 }
 
 NepomukCollection::~NepomukCollection()
@@ -51,7 +48,7 @@ NepomukCollection::~NepomukCollection()
 QueryMaker*
 NepomukCollection::queryMaker()
 {
-    return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
+    return new NepomukQueryMaker( this );
 }
 
 QString
@@ -87,50 +84,18 @@ NepomukCollection::isWritable() const
     return false;
 }
 
-void
-NepomukCollection::metadataChanged( Meta::TrackPtr track )
-{
-    // reflect change to ouside world:
-    bool mapsChanged = MapChanger( m_mc.data() ).trackChanged( track );
-    if( mapsChanged )
-        // while docs say somehting different,
-        // collection browser doesn't update unless we emit updated()
-        emit updated();
-}
-
 bool
-NepomukCollection::possiblyContainsTrack( const KUrl &url ) const
+NepomukCollection::possiblyContainsTrack( const KUrl & ) const
 {
-    // if a resource of type audio is created successfully return true
-    Nepomuk2::Resource res( url );
-    if( res.exists() && res.hasType( Nepomuk2::Vocabulary::NFO::Audio() ) )
-        return true;
-    else
-        return false;
+    return true;
 }
 
 Meta::TrackPtr
 NepomukCollection::trackForUrl( const KUrl &url )
 {
-    Nepomuk2::Resource fileRes( url );
-    QString uidUrl = fileRes.uri().toString();
-    return trackForUidUrl( uidUrl );
+    DEBUG_BLOCK
+    debug() << url;
+    return Meta::TrackPtr(); // TODO
 }
 
-Meta::TrackPtr
-NepomukCollection::trackForUidUrl( const QString &uidUrl )
-{
-    m_mc->acquireReadLock();
-    Meta::TrackPtr ret = m_mc->trackMap().value( uidUrl, Meta::TrackPtr() );
-    m_mc->releaseLock();
-    return ret;
-}
-
-void
-NepomukCollection::buildCollection()
-{
-    NepomukConstructMetaJob *job = new NepomukConstructMetaJob( this );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    connect( job, SIGNAL(updated()), this , SIGNAL(updated()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
 }

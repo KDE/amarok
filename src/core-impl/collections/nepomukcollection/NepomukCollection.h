@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,50 +19,29 @@
 #define NEPOMUKCOLLECTION_H
 
 #include "core/collections/Collection.h"
-#include "core/meta/Observer.h"
-#include "core-impl/collections/nepomukcollection/NepomukConstructMetaJob.h"
-#include "core-impl/collections/support/MemoryCollection.h"
 
 #include <KIcon>
 
 namespace Collections
 {
-class NepomukConstructMetaJob;
+
+
+class NepomukCache;
 
 /**
-  * NepomukCollection is a plugin to use Nepomuk as a backend instead of the SQL
-  * collection that Amarok uses as default.
-  * Until the NepomukCollection is feature complete and easy to use, it shall run
-  * along with the existing SQL Collection.
-  * However, the goal of the plugin remains to replace the SQL Collection.
-  * Nepomuk indexes all data on the machine and categorises them.
-  * So, it is easy to retrieve all resources of type 'music' and use them in Amarok
-  * Nepomuk helps establish a common backend in a KDE environment, which has its own
-  * advantages
-  *
-  * The NepomukCollection uses MemoryCollection as a base. MemoryCollection is usec by
-  * most of the other plugins. The NepomukCollection loads the tracks extracted from the
-  * Nepomuk index into buckets called {Meta}Maps.
-  *
-  * MemoryCollection provides a default implementation of the QueryMaker which handles
-  * all query calls.
-  */
-class NepomukCollection : public Collection, public Meta::Observer
+ * This collection class interfaces with KDE Nepomuk semantic data storage.
+ *
+ * It connects to the underlying Soprano database interface and provides a
+ * QueryMaker interface to the objects of type nfo:Audio stored there.
+ */
+class NepomukCollection : public Collection
 {
     Q_OBJECT
 
 public:
-    /**
-      * The entry point of Nepomuk Collection.
-      */
     NepomukCollection();
     virtual ~NepomukCollection();
 
-    /**
-      * This function returns a generic MemoryQueryMaker.
-      * Nepomuk Collection uses a MemoryQueryMaker as its QueryMaker
-      * There is no need to construct a separate NepomukQueryMaker.
-      */
     virtual QueryMaker *queryMaker();
     virtual QString uidUrlProtocol() const;
     virtual QString collectionId() const;
@@ -69,41 +49,14 @@ public:
     virtual KIcon icon() const;
     virtual bool isWritable() const;
 
-    // Observer methods:
-    virtual void metadataChanged( Meta::TrackPtr track );
-    // so that the compiler doesn't complain about hidden virtual functions:
-    using Meta::Observer::metadataChanged;
-
     // TrackProvider methods
     virtual bool possiblyContainsTrack( const KUrl &url ) const;
     virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
+    NepomukCache *cache() const { return m_cache; }
+
 private:
-    // nepomuk specific
-    /**
-      * This function is called to build the Nepomuk Collection by populating the Meta QMaps.
-      * This function forms the crux of the Nepomuk Collection.
-      * It first executes a query to fetch all resources of type 'audio' and returns
-      * immediately.
-      * Enumeration of the queried results into Meta QMaps of MemoeryCollection.h happens
-      * as a background job.
-      *
-      * After each track is extracted, its corresponding properties of artist, genre, composer
-      * album ( year is not yet implemented ) is fetched and inserted into the NepomukTrack
-      * object.
-      */
-    void buildCollection();
-    /**
-      * Inspired by iPod Collection.
-      * This function is quite self explanatory.
-      * Given an @p uidUrl, ( Resource URI in the language of Nepomuk )
-      * it returns a TrackPtr to the music track with that URI.
-      *
-      * Note : the function doesn't check if the passed uidUrl is valid or if it exists
-      */
-    Meta::TrackPtr trackForUidUrl( const QString &uidUrl );
-    friend class NepomukConstructMetaJob;
-    QSharedPointer<MemoryCollection> m_mc;
+    NepomukCache *m_cache;
 };
 
 } //namespace Collections

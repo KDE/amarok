@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
- * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>                             *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,25 +14,41 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "NepomukComposer.h"
+#ifndef AMAROK_COLLECTION_NEPOMUKINQUIRER_H
+#define AMAROK_COLLECTION_NEPOMUKINQUIRER_H
 
-#include "core/meta/Meta.h"
+#include <memory>
 
-using namespace Meta;
+#include <ThreadWeaver/Job>
 
-NepomukComposer::NepomukComposer( const QUrl &resourceUri )
-    : m_resource( resourceUri )
+#include <QString>
+
+namespace Collections {
+
+class NepomukParser;
+
+class NepomukInquirerPrivate;
+
+/**
+ * A ThreadWeaver Job that runs the given SPARQL query on a Nepomuk's
+ * database and passes the results to a given parser.
+ */
+class NepomukInquirer: public ThreadWeaver::Job
 {
+    Q_OBJECT
+
+public:
+    NepomukInquirer( QString query, std::auto_ptr<NepomukParser> parser );
+    ~NepomukInquirer();
+
+protected:
+    void run();
+
+private:
+    QString m_query;
+    NepomukParser *m_parser;
+};
+
 }
 
-TrackList
-NepomukComposer::tracks()
-{
-    return TrackList(); // TODO
-}
-
-QString
-NepomukComposer::name() const
-{
-    return m_name;
-}
+#endif // AMAROK_COLLECTION_NEPOMUKINQUIRER_H

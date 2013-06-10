@@ -20,20 +20,25 @@
 
 using namespace Meta;
 
-NepomukYear::NepomukYear( const QString &name )
-    : Meta::Year()
-    , m_name( name )
+NepomukYear::NepomukYear( int yearValue )
+    : m_year( yearValue )
 {
 }
 
 TrackList
 NepomukYear::tracks()
 {
-    return TrackList();
+    return TrackList(); // TODO
 }
 
 QString
 NepomukYear::name() const
 {
-    return m_name;
+    return QString::number( m_year );
+}
+
+int
+NepomukYear::year() const
+{
+    return m_year;
 }

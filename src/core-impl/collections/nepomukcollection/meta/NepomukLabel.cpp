@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,18 +17,41 @@
 
 #include "NepomukLabel.h"
 
+#include "../NepomukCache.h"
+#include "../NepomukCollection.h"
+
 #include "core/meta/Meta.h"
+
+#include <Nepomuk2/Tag>
 
 using namespace Meta;
 
 NepomukLabel::NepomukLabel( const QString &name )
-    : Meta::Label()
-    , m_name( name )
+    : m_nepomukTag( new Nepomuk2::Tag )
+{
+    m_nepomukTag->setLabel( name );
+}
+
+NepomukLabel::NepomukLabel( const QUrl &resourceUri )
+    : m_nepomukTag( new Nepomuk2::Tag( resourceUri ) )
+{
+}
+
+NepomukLabel::~NepomukLabel()
 {
 }
 
 QString
 NepomukLabel::name() const
 {
-    return m_name;
+    return m_nepomukTag->label();
+}
+
+LabelPtr
+NepomukLabel::fromNepomukTag( Collections::NepomukCollection *collection,
+                              const Nepomuk2::Tag &tag )
+{
+    if( !collection ) return LabelPtr();
+    if( tag.uri().isEmpty() ) return LabelPtr();
+    return collection->cache()->getLabel( tag.uri() );
 }

@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,37 +21,15 @@
 
 using namespace Meta;
 
-NepomukAlbum::NepomukAlbum( const QString &albumName, const ArtistPtr &artistPtr )
-    : Meta::Album()
-    , m_name( albumName )
-    , m_artist( artistPtr )
-    , m_isCompilation( false )
+NepomukAlbum::NepomukAlbum( const QUrl &resourceUri )
+    : m_resource( resourceUri )
 {
 }
 
 TrackList
 NepomukAlbum::tracks()
 {
-    return TrackList();
-}
-
-bool
-NepomukAlbum::isCompilation() const
-{
-    return m_isCompilation;
-}
-
-
-bool
-NepomukAlbum::hasAlbumArtist() const
-{
-    return m_artist;
-}
-
-ArtistPtr
-NepomukAlbum::albumArtist() const
-{
-    return m_artist;
+    return TrackList(); // TODO
 }
 
 QString

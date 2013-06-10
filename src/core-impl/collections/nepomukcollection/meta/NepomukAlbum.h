@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,25 +20,36 @@
 
 #include "core/meta/Meta.h"
 
+#include <QUrl>
+
 namespace Meta
 {
 /**
  * Represents a unit album resource in Amarok
  */
-class NepomukAlbum : public Meta::Album
+class NepomukAlbum : public Album
 {
 public:
-    NepomukAlbum( const QString &albumName, const ArtistPtr &artistPtr );
-    virtual bool isCompilation() const;
-    virtual bool hasAlbumArtist() const;
-    virtual ArtistPtr albumArtist() const;
+    explicit NepomukAlbum( const QUrl &resourceUri );
+
+    /* Nepomuk does not support album artists and compilations */
+    /* TODO: fix this once it actually does */
+    virtual bool isCompilation() const { return false; }
+    virtual bool hasAlbumArtist() const { return false; }
+    virtual ArtistPtr albumArtist() const { return ArtistPtr(); }
+
     virtual TrackList tracks();
     virtual QString name() const;
 
+    bool isFilled() const { return !m_name.isEmpty(); }
+
+    void fill( const QString &name ) { m_name = name; }
+
+    QUrl resourceUri() const { return m_resource; }
+
 private:
+    QUrl m_resource;
     QString m_name;
-    ArtistPtr m_artist;
-    bool m_isCompilation;
 };
 
 }

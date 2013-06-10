@@ -59,8 +59,12 @@ CollectionProvider::icon() const
 qint64
 CollectionProvider::reliableTrackMetaData() const
 {
-    return Meta::valTitle | Meta::valArtist | Meta::valAlbum |
-           Meta::valComposer | Meta::valYear | Meta::valTrackNr | Meta::valDiscNr;
+    if( id().startsWith("amarok-nepomuk:") )
+        return Meta::valTitle | Meta::valArtist | Meta::valAlbum | Meta::valComposer |
+               Meta::valTrackNr;
+    else
+        return Meta::valTitle | Meta::valArtist | Meta::valAlbum |
+               Meta::valComposer | Meta::valYear | Meta::valTrackNr | Meta::valDiscNr;
 }
 
 qint64

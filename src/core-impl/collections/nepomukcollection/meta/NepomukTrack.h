@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,24 +18,19 @@
 #ifndef NEPOMUKTRACK_H
 #define NEPOMUKTRACK_H
 
-#include "NepomukCollection.h"
-#include "NepomukGenre.h"
-#include "NepomukComposer.h"
-#include "NepomukAlbum.h"
-#include "NepomukArtist.h"
-#include "NepomukYear.h"
-
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 
-#include <QSharedPointer>
+#include <QScopedPointer>
 
-#include <Nepomuk2/Resource>
+namespace Collections { class NepomukCollection; }
+
+namespace Nepomuk2 { class Resource; }
 
 namespace Meta
 {
+
 class NepomukTrack;
-typedef KSharedPtr<NepomukTrack> NepomukTrackPtr;
 
 /**
  * Represents a unit music track resource in Amarok
@@ -43,7 +39,7 @@ class NepomukTrack : public Track, public Statistics
 {
 public:
     // construct a NepomukTrack out of a Nepomuk resource
-    NepomukTrack( const QUrl &resUri, NepomukCollection *coll );
+    NepomukTrack( const QUrl &resUri, Collections::NepomukCollection *coll = 0 );
     ~NepomukTrack();
 
     virtual QString name() const;
@@ -72,9 +68,6 @@ public:
     virtual qreal replayGain( ReplayGainTag mode ) const;
 
     virtual QString type() const;
-    // TODO: switch to default finishedPlaying() implementation from Meta::Track once
-    // we implement setPlaycount(), setLastPlayed().
-    virtual void finishedPlaying( double playedFraction );
 
     virtual bool inCollection() const;
     virtual Collections::Collection *collection() const;
@@ -91,41 +84,54 @@ public:
     virtual int rating() const;
     virtual void setRating( int newRating );
 
-    // TODO: implement (set)First/LastPlayed()
+    virtual QDateTime lastPlayed() const;
+    virtual void setLastPlayed( const QDateTime &date );
+    virtual QDateTime firstPlayed() const;
+    virtual void setFirstPlayed( const QDateTime &date );
 
     virtual int playCount() const;
-    // TODO: implement setPlayCount();
-
-    // TODO: implement beginUpdate()/endUpdate() once other stats methods are here
+    virtual void setPlayCount( int newPlayCount );
 
     // NepomukTrack meta methods
-    void setAlbum( AlbumPtr album );
-    void setArtist( ArtistPtr artist );
-    void setComposer( ComposerPtr composer );
-    void setGenre( GenrePtr genre );
-    void setYear( YearPtr year );
+    void setAlbum( AlbumPtr album ) { m_album = album; }
+    void setArtist( ArtistPtr artist ) { m_artist = artist; }
+    void setComposer( ComposerPtr composer ) { m_composer = composer; }
+    void setGenre( GenrePtr genre ) { m_genre = genre; }
+    void setYear( YearPtr year ) { m_year = year; }
 
     // NepomukTrack secondary metadata methods
-    void setName( const QString &name );
-    void setType( const QString &type );
-    void setLength( const qint64 length );
-    void setBitrate( int rate );
-    void setTrackNumber( int trackNumber );
-    void setUidUrl( const QString &uidUrl );
-    void setDiscNumber( int discNumber );
-    void setModifyDate( const QDateTime &modifyDate );
-    void setCreateDate( const QDateTime &createDate );
-    void setbpm( const qreal bpm );
-    void setComment( const QString &comment );
-    void setSampleRate( int sampleRate );
-    void setFilesize( int filesize );
-    void setTrackGain( qreal trackGain );
-    void setTrackPeakGain( qreal trackPeakGain );
-    void setAlbumGain( qreal albumGain );
-    void setAlbumPeakGain( qreal albumPeakGain );
-    void setPlayableUrl( const KUrl &url );
+    void setName( const QString &name ) { m_name = name; }
+    void setType( const QString &type ) { m_type = type; }
+    void setLength( const qint64 length ) { m_length = length; }
+    void setBitrate( int rate ) { m_bitrate = rate; }
+    void setTrackNumber( int trackNumber ) { m_trackNumber = trackNumber; }
+    void setDiscNumber( int discNumber ) { m_discNumber = discNumber; }
+    void setModifyDate( const QDateTime &modifyDate ) { m_modifyDate = modifyDate; }
+    void setCreateDate( const QDateTime &createDate ) { m_createDate = createDate; }
+    void setbpm( const qreal bpm ) { m_bpm = bpm; }
+    void setComment( const QString &comment ) { m_comment = comment; }
+    void setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
+    void setFilesize( int filesize ) { m_filesize = filesize; }
+    void setTrackGain( qreal trackGain ) { m_trackGain = trackGain; }
+    void setTrackPeakGain( qreal trackPeakGain ) { m_trackPeakGain = trackPeakGain; }
+    void setAlbumGain( qreal albumGain ) { m_albumGain = albumGain; }
+    void setAlbumPeakGain( qreal albumPeakGain ) { m_albumPeakGain = albumPeakGain; }
+    void setPlayableUrl( const KUrl &url ) { m_playableUrl = url; }
+
+    bool isFilled(){ return m_filled; }
+
+    void fill( const QString &name, const KUrl &url, Collections::NepomukCollection *coll )
+    {
+        m_name = name;
+        m_playableUrl = url;
+        m_coll = coll;
+        m_filled = true;
+    }
+
+    Nepomuk2::Resource *resource() const;
 
 private:
+    bool m_filled;
 
     ArtistPtr m_artist;
     GenrePtr m_genre;
@@ -140,7 +146,6 @@ private:
     qint64 m_length;
     int m_bitrate;
     int m_trackNumber;
-    QString m_uidUrl;
     int m_discNumber;
     QDateTime m_modifyDate;
     QDateTime m_createDate;
@@ -153,8 +158,9 @@ private:
     double m_albumGain;
     double m_albumPeakGain;
 
-    NepomukCollection *m_coll;
-    Nepomuk2::Resource m_resource;
+    Collections::NepomukCollection *m_coll;
+    mutable QScopedPointer<Nepomuk2::Resource> m_resource;
+    QUrl m_resourceUri;
 };
 
 }

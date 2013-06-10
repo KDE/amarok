@@ -15,9 +15,12 @@ if(NepomukCore_FOUND AND Soprano_FOUND)
 
     set(amarok_collection-nepomukcollection_PART_SRCS
 
+        NepomukCache.cpp
         NepomukCollection.cpp
         NepomukCollectionFactory.cpp
-        NepomukConstructMetaJob.cpp
+        NepomukInquirer.cpp
+        NepomukParser.cpp
+        NepomukQueryMaker.cpp
 
         meta/NepomukAlbum.cpp
         meta/NepomukArtist.cpp

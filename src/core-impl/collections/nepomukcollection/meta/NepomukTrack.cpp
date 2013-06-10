@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
+ * Copyright (c) 2013 Edward Toroshchin <amarok@hades.name>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,8 +15,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "NepomukLabel.h"
 #include "NepomukTrack.h"
+
+#include "NepomukCollection.h"
+#include "NepomukLabel.h"
 
 #include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
@@ -23,11 +26,15 @@
 
 #include <KLocalizedString>
 #include <Nepomuk2/Resource>
+#include <Nepomuk2/Tag>
+#include <Nepomuk2/Variant>
+#include <Nepomuk2/Vocabulary/NUAO>
+#include <Soprano/Vocabulary/NAO>
 
 using namespace Meta;
 
-NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection *coll )
-    : Track()
+NepomukTrack::NepomukTrack( const QUrl &resUri, Collections::NepomukCollection *coll )
+    : m_filled( false )
     , m_length( 0 )
     , m_bitrate( 0 )
     , m_trackNumber( 0 )
@@ -40,7 +47,7 @@ NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection *coll )
     , m_albumGain( 0.0 )
     , m_albumPeakGain( 0.0 )
     , m_coll( coll )
-    , m_resource( resUri )
+    , m_resourceUri( resUri )
 {
 }
 
@@ -69,7 +76,7 @@ NepomukTrack::prettyUrl() const
 QString
 NepomukTrack::uidUrl() const
 {
-    return m_uidUrl;
+    return m_resourceUri.toString();
 }
 
 QString
@@ -122,19 +129,6 @@ NepomukTrack::comment() const
     return m_comment;
 }
 
-int
-NepomukTrack::rating() const
-{
-    return m_resource.rating();
-}
-
-void
-NepomukTrack::setRating( int newRating )
-{
-    m_resource.setRating( newRating );
-    notifyObservers();
-}
-
 qint64
 NepomukTrack::length() const
 {
@@ -184,213 +178,6 @@ NepomukTrack::discNumber() const
     return m_discNumber;
 }
 
-int
-NepomukTrack::playCount() const
-{
-    return m_resource.usageCount();
-}
-
-QString
-NepomukTrack::type() const
-{
-    return m_type;
-}
-
-void
-NepomukTrack::finishedPlaying( double playedFraction )
-{
-    // track length unreliable currently, so don't take into account
-    if( playedFraction < 0.5 )
-        return;
-
-    // this handles playCount() and lastPlayed() (once we implement its reading)
-    m_resource.increaseUsageCount();
-}
-
-StatisticsPtr
-NepomukTrack::statistics()
-{
-    return StatisticsPtr( this );
-}
-
-void
-NepomukTrack::setArtist( ArtistPtr artist )
-{
-    m_artist = artist;
-}
-
-void
-NepomukTrack::setComposer( ComposerPtr composer )
-{
-    m_composer = composer;
-}
-
-void
-NepomukTrack::setGenre( GenrePtr genre )
-{
-    m_genre = genre;
-}
-
-void
-NepomukTrack::setAlbum( AlbumPtr album )
-{
-    m_album = album;
-}
-
-void
-NepomukTrack::setYear( YearPtr year )
-{
-    m_year = year;
-}
-
-void
-NepomukTrack::addLabel( const Meta::LabelPtr &label )
-{
-    if( !m_labellist.contains( label ) )
-        m_labellist.append( label );
-}
-
-void
-NepomukTrack::addLabel( const QString &label )
-{
-    LabelPtr labelPtr;
-    labelPtr = new NepomukLabel( label );
-    m_labellist.append( labelPtr );
-}
-
-Meta::LabelList
-NepomukTrack::labels() const
-{
-    return m_labellist;
-}
-
-void
-NepomukTrack::removeLabel( const LabelPtr &label )
-{
-    m_labellist.removeAll( label );
-}
-
-void
-NepomukTrack::setName( const QString &name )
-{
-    m_name = name;
-}
-
-void
-NepomukTrack::setType( const QString &type )
-{
-    m_type = type;
-}
-
-void
-NepomukTrack::setLength( const qint64 length )
-{
-    m_length = length;
-}
-
-void
-NepomukTrack::setBitrate( int rate )
-{
-    m_bitrate = rate;
-}
-
-void
-NepomukTrack::setTrackNumber( int trackNumber )
-{
-    m_trackNumber = trackNumber;
-}
-
-void
-NepomukTrack::setUidUrl( const QString &uidUrl )
-{
-    m_uidUrl = uidUrl;
-}
-
-void
-NepomukTrack::setDiscNumber( int discNumber )
-{
-    m_discNumber = discNumber;
-}
-
-void
-NepomukTrack::setModifyDate( const QDateTime &modifyDate )
-{
-    m_modifyDate = modifyDate;
-}
-
-void
-NepomukTrack::setCreateDate( const QDateTime &createDate )
-{
-    m_createDate = createDate;
-}
-
-void
-NepomukTrack::setbpm( const qreal bpm )
-{
-    m_bpm = bpm;
-}
-
-void
-NepomukTrack::setComment( const QString &comment )
-{
-    m_comment = comment;
-}
-
-void
-NepomukTrack::setSampleRate( int sampleRate )
-{
-    m_sampleRate = sampleRate;
-}
-
-void
-NepomukTrack::setFilesize( int filesize )
-{
-    m_filesize = filesize;
-}
-
-void
-NepomukTrack::setTrackGain( qreal trackGain )
-{
-    m_trackGain = trackGain;
-}
-
-void NepomukTrack::setTrackPeakGain( qreal trackPeakGain )
-{
-    m_trackPeakGain = trackPeakGain;
-}
-
-void
-NepomukTrack::setAlbumGain( qreal albumGain )
-{
-    m_albumGain = albumGain;
-}
-
-void NepomukTrack::setAlbumPeakGain( qreal albumPeakGain )
-{
-    m_albumPeakGain = albumPeakGain;
-}
-
-void
-NepomukTrack::setPlayableUrl( const KUrl &url )
-{
-    m_playableUrl = url;
-}
-
-bool
-NepomukTrack::inCollection() const
-{
-    if( m_resource.isValid() )
-        return true;
-    else return false;
-}
-
-Collections::Collection*
-NepomukTrack::collection() const
-{
-    // This should be implemented whenever you return true in inCollection()
-    return m_coll;
-}
-
 qreal
 NepomukTrack::replayGain( ReplayGainTag mode ) const
 {
@@ -416,4 +203,139 @@ NepomukTrack::replayGain( ReplayGainTag mode ) const
     }
 
     return gain;
+}
+
+QString
+NepomukTrack::type() const
+{
+    return m_type;
+}
+
+bool
+NepomukTrack::inCollection() const
+{
+    return m_coll;
+}
+
+Collections::Collection*
+NepomukTrack::collection() const
+{
+    return m_coll;
+}
+
+void
+NepomukTrack::addLabel( const Meta::LabelPtr &label )
+{
+    if( !label )
+        return;
+
+    const NepomukLabel *nlabel = dynamic_cast<const NepomukLabel*>(label.data());
+    if( nlabel )
+    {
+        resource()->addTag( nlabel->tag() );
+        notifyObservers();
+    }
+    else
+    {
+        addLabel( label->name() );
+    }
+}
+
+void
+NepomukTrack::addLabel( const QString &label )
+{
+    Nepomuk2::Tag tag;
+    tag.setLabel( label );
+    resource()->addTag( tag );
+
+    notifyObservers();
+}
+
+Meta::LabelList
+NepomukTrack::labels() const
+{
+    LabelList result;
+
+    foreach( const Nepomuk2::Tag &tag, resource()->tags() )
+        result << NepomukLabel::fromNepomukTag( m_coll, tag );
+
+    return result;
+}
+
+void
+NepomukTrack::removeLabel( const LabelPtr &label )
+{
+    const NepomukLabel *nlabel = dynamic_cast<const NepomukLabel*>(label.data());
+
+    if( !nlabel ) return;
+
+    resource()->removeProperty( Soprano::Vocabulary::NAO::hasTag(), nlabel->tag() );
+
+    notifyObservers();
+}
+
+StatisticsPtr
+NepomukTrack::statistics()
+{
+    return StatisticsPtr( this );
+}
+
+int
+NepomukTrack::rating() const
+{
+    return resource()->rating();
+}
+
+void
+NepomukTrack::setRating( int newRating )
+{
+    resource()->setRating( newRating );
+    notifyObservers();
+}
+
+QDateTime
+NepomukTrack::lastPlayed() const
+{
+    return resource()->property( Nepomuk2::Vocabulary::NUAO::lastUsage() ).toDateTime();
+}
+
+void
+NepomukTrack::setLastPlayed( const QDateTime &date )
+{
+    resource()->setProperty( Nepomuk2::Vocabulary::NUAO::lastUsage(), date );
+    notifyObservers();
+}
+
+QDateTime
+NepomukTrack::firstPlayed() const
+{
+    return resource()->property( Nepomuk2::Vocabulary::NUAO::firstUsage() ).toDateTime();
+}
+
+void
+NepomukTrack::setFirstPlayed( const QDateTime &date )
+{
+    resource()->setProperty( Nepomuk2::Vocabulary::NUAO::firstUsage(), date );
+    notifyObservers();
+}
+
+int
+NepomukTrack::playCount() const
+{
+    return resource()->usageCount();
+}
+
+void
+NepomukTrack::setPlayCount( int newPlayCount )
+{
+    resource()->setProperty( Nepomuk2::Vocabulary::NUAO::usageCount(), newPlayCount );
+    notifyObservers();
+}
+
+Nepomuk2::Resource*
+NepomukTrack::resource() const
+{
+    if( !m_resource )
+        m_resource.reset(new Nepomuk2::Resource( m_resourceUri ));
+    return m_resource.data();
 }
