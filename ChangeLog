@@ -32,6 +32,7 @@ VERSION 2.8-Beta 1
    * Added Ctrl+H shortcut to randomize playlist, patch by Harsh Gupta. (BR 208061)
 
   CHANGES:
+   * Removed the splash screen.
    * Playlist-related actions were harmonized: double-clicking, pressing enter or using
      any "play media" action will prepend tracks to queue and immediately start playing;
      middle-clicking appends to playlist; append or replace actions will no longer start

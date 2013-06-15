@@ -40,7 +40,7 @@ namespace AmarokScript
             bool addSettingsMenu( QString id, QString menuTitle, QString icon = "amarok" );
             void addSettingsSeparator();
             void showBrowser( QString browser ) const;
-            //TODO: show Tray Icon, Show Splash Screen
+            //TODO: show Tray Icon
 
         signals:
             void prepareToQuit();

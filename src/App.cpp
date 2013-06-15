@@ -432,17 +432,6 @@ App::continueInit()
     new Amarok::DefaultApplicationController( this );
     Amarok::Components::applicationController()->start();
 
-    // splash screen makes problems on Windows, it cannot be closed with a click
-	KSplashScreen* splash = 0;
-#ifndef Q_WS_WIN
-    if( AmarokConfig::showSplashScreen() && !isSessionRestored() )
-    {
-        QPixmap splashimg( KGlobal::dirs()->findResource( "data", "amarok/images/splash_screen.jpg" ) );
-        splash = new KSplashScreen( splashimg, Qt::WindowStaysOnTopHint );
-        splash->show();
-    }
-#endif
-
     // Instantiate statistics synchronization controller. Needs to be before creating
     // MainWindow as MainWindow connects a signal to StatSyncing::Controller.
     Amarok::Components::setStatSyncingController( new StatSyncing::Controller( this ) );
@@ -499,12 +488,6 @@ App::continueInit()
     //Instantiate the Transcoding::Controller, this fires up an asynchronous KProcess with
     //FFmpeg which should not take more than ~200msec.
     Amarok::Components::setTranscodingController( new Transcoding::Controller( this ) );
-
-    if( splash ) // close splash correctly
-    {
-        splash->close();
-        delete splash;
-    }
 
     PERF_LOG( "App init done" )
 

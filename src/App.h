@@ -23,7 +23,6 @@
 #include "aboutdialog/OcsData.h"
 
 #include <KAboutData>
-#include <KSplashScreen>
 #include <KUniqueApplication>   //baseclass
 #include <KUrl>
 

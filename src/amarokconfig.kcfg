@@ -89,11 +89,6 @@
         <whatsthis>The number of undo levels in the playlist.</whatsthis>
         <default>30</default>
     </entry>
-    <entry key="Show Splash Screen" type="Bool">
-        <label>Whether a splash-screen should be displayed on startup</label>
-        <whatsthis>Enable/Disable splashscreen during Amarok startup.</whatsthis>
-        <default>true</default>
-    </entry>
     <entry key="Relative Playlist" type="Bool">
         <label>Whether playlists store relative path</label>
         <whatsthis>If set, Amarok's manually saved playlists will contain a relative path to each track, not an absolute path.</whatsthis>
