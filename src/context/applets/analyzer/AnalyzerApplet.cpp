@@ -145,21 +145,21 @@ AnalyzerApplet::contextualActions ()
 void
 AnalyzerApplet::setHeightSmall()
 {
-    setMinimumHeight( 100 );
+    setMinimumHeight( 120 );
     m_currentHeight = Small;
 }
 
 void
 AnalyzerApplet::setHeightMedium()
 {
-    setMinimumHeight( 150 );
+    setMinimumHeight( 170 );
     m_currentHeight = Medium;
 }
 
 void
 AnalyzerApplet::setHeightTall()
 {
-    setMinimumHeight( 200 );
+    setMinimumHeight( 220 );
     m_currentHeight = Tall;
 }
 
