@@ -74,16 +74,6 @@
         <whatsthis>Enable/Disable context view in Amarok.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Animate Tray Icon" type="Bool">
-        <label>Whether to animate the systray icon</label>
-        <whatsthis>Enable/Disable tray icon animation.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Track Delay Length" type="Int">
-        <label>Delay between tracks, in milliseconds</label>
-        <whatsthis>Delay between tracks, in milliseconds.</whatsthis>
-        <default>0</default>
-    </entry>
     <entry key="Undo Levels" type="Int">
         <label>Number of undo levels in playlist</label>
         <whatsthis>The number of undo levels in the playlist.</whatsthis>
@@ -210,22 +200,6 @@
         <whatsthis>Mute/Unmute sound.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Crossfade" type="Bool">
-        <label>Whether to crossfade between tracks</label>
-        <whatsthis>Enable/Disable crossfading between track changes.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Crossfade Length" type="Int">
-        <label>Length of crossfade, in milliseconds</label>
-        <whatsthis>The length of the crossfade between tracks in milliseconds.</whatsthis>
-        <default>4000</default>
-        <min>400</min>
-    </entry>
-    <entry key="Crossfade Type" type="Int">
-        <label>When to Crossfade</label>
-        <whatsthis>Determines whether to crossfade always, or on automatic/manual track changes only.</whatsthis>
-        <default>0</default>
-    </entry>
     <entry key="Fadeout" type="Bool">
         <label>Whether to fade out tracks when pressing stop.</label>
         <whatsthis>Enable/Disable fadeout.</whatsthis>
@@ -236,10 +210,6 @@
         <whatsthis>The length of the fadeout in milliseconds.</whatsthis>
         <default>2500</default>
         <min>400</min>
-    </entry>
-    <entry key="FadeoutOnExit" type="Bool">
-        <label>Whether to fade out when exiting the program.</label>
-        <default>true</default>
     </entry>
     <entry key="EqualizerMode" type="Int">
         <label>Equalizer mode - 0 = off, 1 to n = preset no</label>

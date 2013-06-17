@@ -239,11 +239,6 @@ EngineController::initializePhonon()
     // Read the volume from phonon
     m_volume = qBound<qreal>( 0, qRound(m_audio.data()->volume()*100), 100 );
 
-    if( AmarokConfig::trackDelayLength() > -1 )
-        m_media.data()->setTransitionTime( AmarokConfig::trackDelayLength() ); // Also Handles gapless.
-    else if( AmarokConfig::crossfadeLength() > 0 )  // TODO: Handle the possible options on when to crossfade.. the values are not documented anywhere however
-        m_media.data()->setTransitionTime( -AmarokConfig::crossfadeLength() );
-
     if( m_currentTrack )
     {
         unsubscribeFrom( m_currentTrack );
