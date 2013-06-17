@@ -208,7 +208,7 @@
     <entry key="Fadeout Length" type="Int">
         <label>Length of fadeout, in milliseconds</label>
         <whatsthis>The length of the fadeout in milliseconds.</whatsthis>
-        <default>2500</default>
+        <default>2000</default>
         <min>400</min>
     </entry>
     <entry key="EqualizerMode" type="Int">
