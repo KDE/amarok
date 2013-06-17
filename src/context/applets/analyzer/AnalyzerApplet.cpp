@@ -191,6 +191,7 @@ AnalyzerApplet::setCurrentAnalyzer( const QString &name )
         m_analyzer = new BlockAnalyzer( view()->viewport() ); // The default
 
     m_analyzerName = m_analyzer->objectName();
+    m_analyzer->setToolTip( i18n( "Right-click to configure" ) );
 
     connect( this, SIGNAL( appletDestroyed( Plasma::Applet* ) ), m_analyzer, SLOT( deleteLater() ) );
 
