@@ -57,6 +57,10 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
 
     setStatus( KStatusNotifierItem::Active );
 
+    // Remove the "Configure Amarok..." action, as it makes no sense in the tray menu
+    const QString preferences = KStandardAction::name( KStandardAction::Preferences );
+    contextMenu()->removeAction( ac->action( preferences ) );
+
     PERF_LOG( "Before adding actions" );
 
 #ifdef Q_WS_MAC
@@ -70,6 +74,9 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     contextMenu()->addAction( ac->action( "play_pause" ) );
     contextMenu()->addAction( ac->action( "stop"       ) );
     contextMenu()->addAction( ac->action( "next"       ) );
+
+    contextMenu()->addSeparator();
+
     contextMenu()->setObjectName( "TrayIconContextMenu" );
 
     PERF_LOG( "Initializing system tray icon" );
@@ -287,19 +294,15 @@ Amarok::TrayIcon::updateMenu()
     if( m_extraActions.count() > 0 ||
         contextMenu()->actions().last() != actionCollection()->action( "file_quit" ) )
     {
-        KActionCollection const *ac = Amarok::actionCollection();
-        QAction *preferenceAction = ac->action( KStandardAction::name( KStandardAction::Preferences ) );
-        // remove the 3 bottom items, so we can push them to the bottom again
+        // remove the 2 bottom items, so we can push them to the bottom again
         contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
         contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
-        contextMenu()->removeAction( preferenceAction );
 
         foreach( QAction* action, m_extraActions )
             contextMenu()->addAction( action );
 
         m_separator = contextMenu()->addSeparator();
         // readd
-        contextMenu()->addAction( preferenceAction );
         contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
         contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
     }
