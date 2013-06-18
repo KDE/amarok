@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004 Frederik Holljen <fh@ez.no>                                       *
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
- * Copyright (c) 2004-2010 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2004-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
@@ -473,6 +473,7 @@ private slots:
     void slotTrackLengthChanged( qint64 );
     void slotMetaDataChanged();
     void slotSeekableChanged( bool );
+    void slotPause();
 
     /**
      * For volume/mute changes from the phonon side
@@ -564,6 +565,7 @@ private:
     bool m_playWhenFetched;
     int m_volume;
     int m_currentAudioCdTrack;
+    QTimer *m_pauseTimer;
 
     QList<QVariantMap> m_metaDataHistory; // against metadata spam
     // last position (in ms) when the song changed (within the current stream) or -1 for non-stream

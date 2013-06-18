@@ -35,6 +35,7 @@ class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
 
     private Q_SLOTS:
         void configurePhonon();
+        void setFadeoutState();
 };
 
 #endif

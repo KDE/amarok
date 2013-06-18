@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.8-Beta 1
   FEATURES:
+   * Volume fade-out is now also available for pause.
    * The Files browser now has a Refresh button. (BR 213666)
    * The active playlist item is animated with a soft glow effect.
    * Added an audio analyzer visualization applet.

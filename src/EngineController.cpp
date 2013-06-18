@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004 Frederik Holljen <fh@ez.no>                                       *
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
- * Copyright (c) 2004-2010 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2004-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2006,2008 Ian Monroe <ian@monroe.nu>                                   *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
@@ -77,6 +77,7 @@ EngineController::EngineController()
     , m_playWhenFetched( true )
     , m_volume( 0 )
     , m_currentAudioCdTrack( 0 )
+    , m_pauseTimer( new QTimer( this ) )
     , m_lastStreamStampPosition( -1 )
     , m_ignoreVolumeChangeAction ( false )
     , m_ignoreVolumeChangeObserve ( false )
@@ -92,6 +93,9 @@ EngineController::EngineController()
     connect( this, SIGNAL(trackFinishedPlaying(Meta::TrackPtr,double)),
              SLOT(slotTrackFinishedPlaying(Meta::TrackPtr,double)) );
     new PowerManager( this ); // deals with inhibiting suspend etc.
+
+    m_pauseTimer->setSingleShot( true );
+    connect( m_pauseTimer, SIGNAL(timeout()), SLOT(slotPause() ) );
 }
 
 EngineController::~EngineController()
@@ -362,6 +366,8 @@ EngineController::play() //SLOT
         }
         else
         {
+            m_pauseTimer->stop();
+            m_fader.data()->setVolume( 1.0 );
             m_media.data()->play();
             emit trackPlaying( m_currentTrack );
             return;
@@ -484,6 +490,8 @@ EngineController::playUrl( const KUrl &url, uint offset, bool startPaused )
         if( startPaused )
             m_media.data()->pause();
         else
+            m_pauseTimer->stop();
+            m_fader.data()->setVolume( 1.0 );
             m_media.data()->play();
     }
 }
@@ -491,7 +499,32 @@ EngineController::playUrl( const KUrl &url, uint offset, bool startPaused )
 void
 EngineController::pause() //SLOT
 {
-    m_media.data()->pause();
+    if( AmarokConfig::fadeoutOnPause() )
+    {
+        m_fader.data()->fadeOut( AmarokConfig::fadeoutLength() );
+        m_pauseTimer->start( AmarokConfig::fadeoutLength() );
+        return;
+    }
+
+    slotPause();
+}
+
+void
+EngineController::slotPause()
+{
+    if( AmarokConfig::fadeoutOnPause() )
+    {
+        // Reset VolumeFaderEffect to full volume
+        m_fader.data()->setVolume( 1.0 );
+
+        // Wait a bit before pausing the pipeline. Necessary for the new fader setting to take effect.
+        QTimer::singleShot( 1000, m_media.data(), SLOT(pause()) );
+    }
+    else
+    {
+        m_media.data()->pause();
+    }
+
     emit paused();
 }
 
@@ -511,7 +544,7 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
     bool doFadeOut = !forceInstant
                   && !m_fadeouter
                   && m_media.data()->state() == Phonon::PlayingState
-                  && AmarokConfig::fadeout()
+                  && AmarokConfig::fadeoutOnStop()
                   && AmarokConfig::fadeoutLength() > 0
                   && m_fader;
 
