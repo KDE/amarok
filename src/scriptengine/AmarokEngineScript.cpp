@@ -56,9 +56,9 @@ AmarokEngineScript::Play() const
 }
 
 void
-AmarokEngineScript::Stop( bool forceInstant ) const
+AmarokEngineScript::Stop() const
 {
-    The::engineController()->stop( forceInstant );
+    The::engineController()->stop();
 }
 
 void
