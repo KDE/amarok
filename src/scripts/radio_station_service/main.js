@@ -42,7 +42,7 @@ var stationArray = new Array (
     new Station( "Radio GFM - Electro [Electro]",                       "http://streams.radio-gfm.net/electro.ogg.m3u" ),
     new Station( "Radio GFM - Metal [Metal]",                           "http://streams.radio-gfm.net/metal.ogg.m3u" ),
     new Station( "Radio GFM - RockPop [Rock/Pop]",                      "http://streams.radio-gfm.net/rockpop.ogg.m3u" ),
-    new Station( "Kohina [Computer-Music]",                             "http://la.campus.ltu.se:8000/stream.ogg.m3u" ),
+    new Station( "Kohina [Computer-Music]",                             "http://www.kohina.com/kohinasolanum.m3u" ),
     new Station( "Mostly Classical [Classical]",                        "http://www.sky.fm/mp3/classical.pls" ),
     new Station( "MTH.Electro [Minimal Techno]",                        "http://www.shouted.fm/tunein/electro-dsl.m3u" ),
     new Station( "MTH.House [House]",                                   "http://stream.mth-house.de:8500/listen.pls" ),
