@@ -73,6 +73,9 @@ AnalyzerApplet::newGeometry()
 {
     DEBUG_BLOCK
 
+    if( !m_analyzer )
+        return;
+
     // Use the applet's geometry for showing the analyzer widget at the same position
     QRect analyzerGeometry = geometry().toRect();
 
