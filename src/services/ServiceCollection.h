@@ -102,8 +102,6 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
         ServiceBase * m_service;
         QSharedPointer<MemoryCollection> m_mc;
 
-        ServiceMetaFactory * m_metaFactory;
-
         QString m_collectionId;
         QString m_prettyName;
 

@@ -174,8 +174,6 @@ private:
     QString m_imagePath;
     BrowserCategoryList * m_parentList;
 
-    BrowserBreadcrumbItem * m_breadcrumb;
-
     QList<BrowserBreadcrumbItem *> m_additionalItems;
 
 };

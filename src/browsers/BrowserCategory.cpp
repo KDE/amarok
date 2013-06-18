@@ -29,7 +29,6 @@ BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
     : KVBox( parent )
     , m_name( name )
     , m_parentList( 0 )
-    , m_breadcrumb( 0 )
 {
     setObjectName( name );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );

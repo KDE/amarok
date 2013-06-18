@@ -183,7 +183,6 @@ class CoverViewItem : public QListWidgetItem
         QString m_album;
         QString m_coverImagePath;
         bool    m_embedded;
-        QListWidget *m_parent;
 };
 
 #endif

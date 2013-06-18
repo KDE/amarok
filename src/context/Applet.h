@@ -194,7 +194,6 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         void cleanUpAndDelete();
 
         bool m_transient;
-        bool m_isMessageShown;
         qreal m_standardPadding;
         QWeakPointer<QPropertyAnimation> m_animation;
 };

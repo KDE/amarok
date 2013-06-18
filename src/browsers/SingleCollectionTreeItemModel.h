@@ -53,7 +53,6 @@ class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemMode
     private:
 
         Collections::Collection* m_collection;
-        Collections::QueryMaker* m_queryMaker;
 };
 
 #endif
