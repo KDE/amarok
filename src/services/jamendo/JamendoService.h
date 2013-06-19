@@ -76,7 +76,6 @@ private:
     QPushButton *m_downloadButton;
     KIO::FileCopyJob * m_listDownloadJob;
     KIO::FileCopyJob *m_torrentDownloadJob;
-    JamendoDatabaseHandler * m_dbHandler;
     QString m_tempFileName;
     QString m_torrentFileName;
     Collections::ServiceSqlCollection * m_collection;

@@ -26,9 +26,6 @@ public:
     ~PopupWidget();
 
     void reposition();
-
-private:
-    QWidget *m_anchor;
 };
 
 #endif

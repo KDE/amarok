@@ -49,7 +49,6 @@ private slots:
 private:
     KGraphicsWebView *m_webView;
     bool m_initialized;
-    Playlists::XSPFPlaylist *m_currentPlaylist;
 
     static QString s_defaultHtml;
 };

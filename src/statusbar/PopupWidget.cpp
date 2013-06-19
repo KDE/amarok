@@ -23,7 +23,6 @@
 
 PopupWidget::PopupWidget( QWidget *anchor, const QString &name )
         : KVBox( The::mainWindow() )
-        , m_anchor( anchor )
 {
     Q_UNUSED( name );
 

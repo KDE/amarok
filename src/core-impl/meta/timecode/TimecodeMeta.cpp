@@ -439,11 +439,6 @@ TimecodeAlbum::TimecodeAlbum( const QString & name )
     : QObject()
     , m_name( name )
     , m_isCompilation( false )
-    , m_separator( 0 )
-    , m_displayCoverAction( 0 )
-    , m_fetchCoverAction( 0 )
-    , m_setCustomCoverAction( 0 )
-    , m_unsetCoverAction( 0 )
 {
 }
 

@@ -47,7 +47,6 @@ private Q_SLOTS:
 
 private:
     QLabel * m_volumeLabel;
-    QToolButton * m_volumeToolButton;
     QMenu * m_volumeMenu;
     Amarok::VolumeSlider * m_volumeSlider;
     QAction * m_muteAction;

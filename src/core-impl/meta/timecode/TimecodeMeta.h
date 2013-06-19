@@ -201,12 +201,6 @@ private:
     TimecodeArtistPtr m_albumArtist;
 
     QImage m_cover;
-
-    QAction *m_separator;
-    QAction *m_displayCoverAction;
-    QAction *m_fetchCoverAction;
-    QAction *m_setCustomCoverAction;
-    QAction *m_unsetCoverAction;
 };
 
 class TimecodeGenre : public Meta::Genre

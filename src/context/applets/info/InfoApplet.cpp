@@ -46,8 +46,6 @@ InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_webView( 0 )
     , m_initialized( false )
-    , m_currentPlaylist( 0 )
-   
 {
     setHasConfigurationInterface( false );
 }

@@ -40,8 +40,7 @@ class AppletMoveSpacer : public QGraphicsWidget
 {
 public:
     AppletMoveSpacer( QGraphicsWidget *applet )
-        : QGraphicsWidget( applet ),
-          m_applet( applet )
+        : QGraphicsWidget( applet )
     {
     }
 
@@ -67,9 +66,6 @@ protected:
 
         painter->fillPath( p, c );
     }
-
-private:
-    QGraphicsWidget *m_applet;
 };
 
 
