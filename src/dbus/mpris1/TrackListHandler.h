@@ -41,6 +41,8 @@ namespace Mpris1
 
             // NB: Amarok extensions, not part of the mpris spec
             void PlayTrack( int index );
+            void UpdateAllPodcasts();
+            void AddPodcast( const QString& );
 
         signals:
             void TrackListChange( int );

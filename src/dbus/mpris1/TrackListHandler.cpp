@@ -17,16 +17,18 @@
 
 #include "TrackListHandler.h"
 
+#include "ActionClasses.h"
 #include "amarokconfig.h"
 #include "App.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
+#include "core/podcasts/PodcastProvider.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "dbus/mpris1/PlayerHandler.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "playlist/PlaylistModelStack.h"
-#include "dbus/mpris1/PlayerHandler.h"
-#include "ActionClasses.h"
 
 #include "Mpris1TrackListAdaptor.h"
 
@@ -114,6 +116,33 @@ namespace Mpris1
     {
         emit TrackListChange( The::playlist()->qaim()->rowCount() );
     }
+
+    void TrackListHandler::UpdateAllPodcasts()
+    {
+        foreach( Playlists::PlaylistProvider *provider,
+                 The::playlistManager()->providersForCategory( PlaylistManager::PodcastChannel ) )
+        {
+            Podcasts::PodcastProvider *podcastProvider = dynamic_cast<Podcasts::PodcastProvider*>( provider );
+            if( podcastProvider )
+                podcastProvider->updateAll();
+        }
+    }
+
+    void TrackListHandler::AddPodcast( const QString& url )
+    {
+        //RSS 1.0/2.0 or Atom feed URL
+        Podcasts::PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
+        if( podcastProvider )
+        {
+            if( !url.isEmpty() )
+                podcastProvider->addPodcast( Podcasts::PodcastProvider::toFeedUrl( url.trimmed() ) );
+            else
+                error() << "Invalid input string";
+        }
+        else
+            error() << "PodcastChannel provider is null";
+    }
+
 }
 
 #include "TrackListHandler.moc"

@@ -18,6 +18,13 @@
         <arg type="i" direction="out" />
     </method>
 
+    <method name="UpdateAllPodcasts">
+    </method>
+
+    <method name="AddPodcast">
+        <arg type="s" direction="in" />
+    </method>
+
     <method name="AddTrack">
         <arg type="s" direction="in" />
         <arg type="b" direction="in" />
