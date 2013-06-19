@@ -38,8 +38,6 @@ class PlaylistBrowser : public BrowserCategoryList
         ~PlaylistBrowser();
 
     private:
-        PodcastCollection* m_localPodcasts;
-        PodcastCategory* m_podcastCategory;
         QMap<int, int> m_categoryIndexMap;
     };
 }

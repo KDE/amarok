@@ -194,7 +194,6 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         QAction *m_downloadAction;
         QAction *m_keepAction;
         QAction *m_removeAction; //remove a subscription
-        QAction *m_renameAction; //rename a Channel or Episode
         QAction *m_updateAction;
         QAction *m_writeTagsAction; //write feed information to downloaded file
 

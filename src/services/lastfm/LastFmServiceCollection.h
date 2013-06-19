@@ -56,8 +56,6 @@ private:
     Meta::ServiceGenre *m_neighborsPersonal;
     Meta::ServiceGenre *m_friendsLoved;
     Meta::ServiceGenre *m_friendsPersonal;
-    Meta::ServiceGenre *m_recentlyLoved;
-    Meta::ServiceGenre *m_recentlyPlayed;
 };
 
 } //namespace Collections

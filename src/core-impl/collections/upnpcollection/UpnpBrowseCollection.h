@@ -83,7 +83,6 @@ class UpnpBrowseCollection : public UpnpCollectionBase
 
   private:
     QSharedPointer<MemoryCollection> m_mc;
-    UpnpMemoryQueryMaker *m_umqm;
 
     QTimer *m_fullScanTimer;
     bool m_fullScanInProgress;
