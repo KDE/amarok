@@ -47,7 +47,7 @@ namespace AmarokScript
 
         public slots:
             void Play() const;
-            void Stop() const;
+            void Stop( bool forceInstant = false ) const;
             void Pause() const;
             void Next() const;
             void Prev() const;
