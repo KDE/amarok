@@ -40,6 +40,7 @@
 #include <QFileInfo>
 
 #include <kdiskfreespaceinfo.h>
+#include <KFileItem>
 #include <kjob.h>
 #include <KSharedPtr>
 #include <kio/job.h>
@@ -515,14 +516,14 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         src.cleanPath();
 
         bool hasMoodFile = QFile::exists( moodFile( src ).toLocalFile() );
-	bool isJustCopy = configuration.isJustCopy( track );
+        bool isJustCopy = configuration.isJustCopy( track );
 
         if( isJustCopy )
             debug() << "copying from " << src << " to " << dest;
         else
             debug() << "transcoding from " << src << " to " << dest;
 
-        QFileInfo srcInfo( src.pathOrUrl() );
+        KFileItem srcInfo( src, src.toMimeDataString(), KFileItem::Unknown );
         if( !srcInfo.isFile() )
         {
             warning() << "Source track" << src << "was no file";
