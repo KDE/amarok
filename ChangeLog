@@ -34,7 +34,7 @@ VERSION 2.8-Beta 1
 
   CHANGES:
    * Removed the splash screen.
-   * Playlist-related actions were harmonized: double-clicking, pressing enter or using
+   * Playlist-related actions were harmonized, double-clicking, pressing enter or using
      any "play media" action will prepend tracks to queue and immediately start playing;
      middle-clicking appends to playlist; append or replace actions will no longer start
      playback. (BR 145468, BR 145490, BR 194549)
@@ -82,16 +82,40 @@ VERSION 2.8-Beta 1
    * Pre-apmlifier in equalizer is now only enabled if it is actually supported; patch by
      Harsh Gupta. (BR 301311)
    * Fix Amarok crashed while doing "Organize Files" (BR 317980)
-   * Fix Crash on very long artist names [@ Meta::SqlArtist::SqlArtist]. (BR 276894)
+   * Fix Amarok erroneously merges two albums. (BR 216759, BR 272802)
+   * Fix Crash on very long artist names. (BR 276894)
+   * Fix Move tracks to rubbish and the current track cover changes to the deleted cover. (BR 306735)
+   * Fix theoretical configwidget leak in services. (BR 301352)
+   * Fix "Local collection" text label is truncated with large font. (BR 282561)
+   * Fix crash by putting a broadcast in the playlist. (BR 313718)
+   * Fix Keyboard navigates context menu in collection will move two items. (BR 307794)
+   * Fix add track to playlist by double click on arrow in the collection. (BR 279513)
+   * Fix VFAT safe names missing a couple of idiosyncrasies. (BR 312574)
    * Clarify message when Last.fm streams are not available. (BR 315771)
+   * Fix crash when Dynamic Playlist based on last.fm is aborted. (BR 314243)
+   * Fix Group by directory doesn't work in main playlist. (BR 265415)
    * Don't remove common labels when editing the tags of multiple tracks. (BR 316043)
    * Fix vertical positioning of On-Screen-Display. (BR 269788)
+   * Fix OSD sometimes misplaces the font and the font's shadow. (BR 257643)
    * Prevent inability to save Last.fm password in corner cases. (BR 315306)
+   * Fix "Copy to Collection" window doesn't fit on small screens. (BR 283361)
    * Fix crash when quitting Amarok with Statistics Synchronization open. (BR 315525)
    * Fix items moving around when expanded in collection browser. (BR 305602)
+   * Fix Organize collection folder deletion going 'too far'. (BR 314348)
+   * Fix %albumartist% placeholder translates to some strange unicode symbol. (BR 314351)
    * Fix bumpy fade-out when first used. (BR 312062)
+   * Fix crash when switching/removing organize collection presets. (BR 314344)
+   * Fix crash on start if a playlist source is unavailable. (BR 313460)
+   * Fix Copy/Move to collection picks up wrong destination path and fails silently. (BR 314460)
+   * Cleanup TrackOrganizer. (BR 305291)
+   * Fix Editing Playist Layout Editor. (BR 250594)
+   * Fix Display glitch for rating in verbose playlist. (BR 300118)
+   * Refactoring Ampache service, fix Albums with multiple disks not listed correctly. (BR 249857)
+   * Fix playlist sorting by type. (BR 249338)
    * Fix subtle bugs when a long fade-out is initiated near the song end.
    * Don't try to fade-out with phonon backends that don't support it. (vlc)
+   * Fix Can't edit & save an existing equalizer preset. (BR 241874)
+   * Clean up Equalizer Dialog. (BR 274972)
 
 
 VERSION 2.7.1
