@@ -63,6 +63,8 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * Albums having same name but different album artist won't be mixed together on the
+     playlist if sorting by album is enabled.
    * Fix crash on startup with KDE 4.11. Patch by Hrvoje Senjan
      <hrvoje.senjan@gmail.com>. (BR 320855)
    * Fix tracks not able to be dragged around when playlist is shuffled. (BR 320129)
