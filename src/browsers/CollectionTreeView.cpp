@@ -743,7 +743,13 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem *> &items,
                                 Collection *destination, bool removeSources ) const
 {
     DEBUG_BLOCK
-    if( !destination || !destination->isWritable() )
+
+    if( !destination )
+    {
+        warning() << "collection is not writable (0-pointer)! Aborting";
+        return;
+    }
+    if( !destination->isWritable() )
     {
         warning() << "collection " << destination->prettyName() << " is not writable! Aborting";
         return;
