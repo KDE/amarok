@@ -47,7 +47,7 @@ ScriptableService::ScriptableService( const QString & name )
 
 ScriptableService::~ ScriptableService()
 {
-    delete m_collection;
+    m_collection->deleteLater();
 }
 
 void ScriptableService::init( int levels, const QString & rootHtml, bool showSearchBar )

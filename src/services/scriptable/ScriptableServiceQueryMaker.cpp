@@ -46,6 +46,7 @@ ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceColle
  , d( new Private )
 
 {
+    setParent( collection );
     m_collection = collection;
     m_name = name;
 
