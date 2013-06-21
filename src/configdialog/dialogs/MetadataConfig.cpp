@@ -75,7 +75,8 @@ MetadataConfig::MetadataConfig( QWidget *parent )
         m_synchronizeButton->setEnabled( false );
     slotUpdateForgetButton();
 
-    qint64 checkedFields = config->checkedFields();
+    const qint64 checkedFields = config ? config->checkedFields() : 0;
+
     foreach( qint64 field, StatSyncing::Controller::availableFields() )
     {
         QCheckBox *checkBox;
