@@ -593,7 +593,10 @@ DelayedActivator::DelayedActivator( QAbstractItemView *view )
 {
     QAbstractItemModel *model = view->model();
     if( !model )
+    {
         deleteLater();
+        return;
+    }
 
     // short-cut for already-filled models
     if( model->rowCount() > 0 )
