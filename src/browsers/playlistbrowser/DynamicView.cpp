@@ -49,7 +49,6 @@
 
 PlaylistBrowserNS::DynamicView::DynamicView( QWidget *parent )
     : Amarok::PrettyTreeView( parent )
-    , m_expandToggledWhenPressed( false )
 {
     DEBUG_BLOCK
     setHeaderHidden( true );

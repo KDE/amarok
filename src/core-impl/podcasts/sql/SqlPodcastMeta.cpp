@@ -115,7 +115,6 @@ SqlPodcastEpisode::toPodcastEpisodeList( SqlPodcastEpisodeList episodes )
 
 SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChannelPtr sqlChannel )
     : Podcasts::PodcastEpisode( Podcasts::PodcastChannelPtr::staticCast( sqlChannel ) )
-    , m_batchUpdate( false )
     , m_channel( sqlChannel )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();

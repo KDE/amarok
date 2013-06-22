@@ -39,7 +39,6 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     , m_applet( applet )
     , m_label( 0 )
     , m_deleteIcon( 0 )
-    , m_labelPadding( 5 )
     , m_configEnabled( false )
 {
     m_label = new QGraphicsTextItem( this );
@@ -153,10 +152,8 @@ Context::AppletToolbarAppletItem::sizeHint( Qt::SizeHint which, const QSizeF & c
 {
     Q_UNUSED( constraint )
     if( which == Qt::MinimumSize )
-    //    return QSizeF( m_label->boundingRect().width() + 2 * m_labelPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
         return QSizeF();
     else
-       // return QGraphicsWidget::sizeHint( which, constraint );
         return QSizeF( 10000, 10000 );
 }
 

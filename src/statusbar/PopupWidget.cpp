@@ -25,6 +25,7 @@ PopupWidget::PopupWidget( QWidget *anchor, const QString &name )
         : KVBox( The::mainWindow() )
 {
     Q_UNUSED( name );
+    Q_UNUSED( anchor );
 
     setBackgroundRole( QPalette::Window );
     setAutoFillBackground( true );

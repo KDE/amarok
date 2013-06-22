@@ -30,7 +30,6 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
                                   const Configuration &prevConfiguration,
                                   QWidget *parent )
     : KDialog( parent, Qt::Dialog )
-    , m_defaultEncoder( VORBIS )
     , m_configuration( JUST_COPY )
     , m_save( false )
     , m_playableFileTypes( playableFileTypes )

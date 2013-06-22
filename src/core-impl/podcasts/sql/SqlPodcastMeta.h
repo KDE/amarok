@@ -86,8 +86,6 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
          */
         void setupLocalFile();
 
-        bool m_batchUpdate;
-
         int m_dbId; //database ID
         bool m_isKeep; //Keep the download after purge or not?
         SqlPodcastChannelPtr m_channel; //the parent of this episode

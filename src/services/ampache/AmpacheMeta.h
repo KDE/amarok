@@ -43,7 +43,9 @@ public:
         : ServiceTrack( title )
         , m_service( service )
         , m_discNumber( 0 )
-    {}
+    {
+        Q_UNUSED(m_service); // might be used again later
+    }
 
     virtual QString sourceName() { return "Ampache"; }
     virtual QString sourceDescription() { return "The Ampache music server project: http://Ampache.org"; }

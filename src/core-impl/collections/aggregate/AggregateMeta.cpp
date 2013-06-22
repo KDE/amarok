@@ -1464,6 +1464,7 @@ AggregateLabel::AggregateLabel( Collections::AggregateCollection *coll, const Me
     , m_name( label->name() )
 {
     m_labels.append( label );
+    Q_UNUSED(m_collection); // might be needed later
 }
 
 AggregateLabel::~AggregateLabel()

@@ -22,9 +22,8 @@
 
 using namespace Meta;
 
-OpmlDirectoryMetaFactory::OpmlDirectoryMetaFactory( const QString & dbPrefix, OpmlDirectoryService * service )
+OpmlDirectoryMetaFactory::OpmlDirectoryMetaFactory( const QString & dbPrefix, OpmlDirectoryService * )
     : ServiceMetaFactory( dbPrefix )
-    , m_service( service )
 {
 }
 

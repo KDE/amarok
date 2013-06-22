@@ -83,7 +83,6 @@ class AppletToolbarAppletItem : public AppletToolbarBase
 
         Plasma::IconWidget* m_deleteIcon;
 
-        int m_labelPadding;
         bool m_configEnabled;
 };
 

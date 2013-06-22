@@ -63,7 +63,6 @@ private:
     inline void populateFormatList();
     Configuration::TrackSelection trackSelection() const;
 
-    Encoder m_defaultEncoder;
     Configuration m_configuration;
     bool m_save;
     QStringList m_playableFileTypes;

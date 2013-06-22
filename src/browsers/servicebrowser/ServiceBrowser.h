@@ -81,7 +81,6 @@ class ServiceBrowser : public BrowserCategoryList
         static ServiceBrowser    *s_instance;
 
         ScriptableServiceManager *m_scriptableServiceManager;
-        bool                      m_usingContextView;
 
         QTimer m_filterTimer;
 

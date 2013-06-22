@@ -57,9 +57,6 @@ protected:
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
 
     virtual void contextMenuEvent( QContextMenuEvent* event );
-
-private:
-    bool m_expandToggledWhenPressed;
 };
 
 } // namespace PlaylistBrowserNS
