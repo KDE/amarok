@@ -224,8 +224,8 @@ LmHandlerResult harmony_get_session_id_callback(LmMessageHandler* handler, LmCon
     MP3tunesHarmony *harmony = MP3TUNES_HARMONY(void_harmony);
     LmMessageNode *harmony_session_node;
 
-    handler = handler;    
-    connection = connection;
+    (void)handler;
+    (void)connection;
 
     harmony_session_node = lm_message_node_get_child(message->node, "sessionId");
     if (harmony_session_node) {
@@ -319,7 +319,7 @@ LmHandlerResult harmony_iq_callback(LmMessageHandler* handler, LmConnection *con
     mp3tunes_harmony_download_t *download;
     gchar *email;
     
-    handler = handler;
+    (void)handler;
 
     harmony_download_node = lm_message_node_get_child(message->node, "download");
     if (harmony_download_node) {
@@ -368,8 +368,8 @@ LmHandlerResult harmony_get_device_pin_callback(LmMessageHandler* handler, LmCon
     MP3tunesHarmony *harmony = MP3TUNES_HARMONY(void_harmony);
     LmMessageNode *harmony_pin_node;
 
-    handler = handler;
-    connection = connection;
+    (void)handler;
+    (void)connection;
 
     harmony_pin_node = lm_message_node_get_child(message->node, "pin");
     if (harmony_pin_node) {
@@ -412,8 +412,8 @@ LmHandlerResult harmony_get_device_email_callback(LmMessageHandler* handler, LmC
     MP3tunesHarmony *harmony = MP3TUNES_HARMONY(void_harmony);
     LmMessageNode *harmony_email_node;
 
-    handler = handler;
-    connection = connection;
+    (void)handler;
+    (void)connection;
 
     harmony_email_node = lm_message_node_get_child(message->node, "email");
     if (harmony_email_node) {
@@ -460,7 +460,7 @@ void harmony_get_device_email(MP3tunesHarmony *harmony) {
 void authenticate_known_callback(LmConnection* connection, gboolean success, gpointer void_harmony) {
     GError *err = NULL;
     MP3tunesHarmony *harmony = MP3TUNES_HARMONY(void_harmony);
-    connection = connection;
+    (void)connection;
     if (success) {
         harmony->connected = TRUE;
         state_change_emit(harmony, MP3TUNES_HARMONY_STATE_CONNECTED);
@@ -476,7 +476,7 @@ void authenticate_known_callback(LmConnection* connection, gboolean success, gpo
 
 void authenticate_new_callback(LmConnection* connection, gboolean success, gpointer void_harmony) {
     MP3tunesHarmony *harmony = MP3TUNES_HARMONY(void_harmony);
-    connection = connection;
+    (void)connection;
     if (success) {
         harmony_get_device_pin(harmony);
     } else {
@@ -487,7 +487,7 @@ void authenticate_new_callback(LmConnection* connection, gboolean success, gpoin
 
 void authenticate_unknown_callback(LmConnection* connection, gboolean success, gpointer void_harmony) {
     MP3tunesHarmony *harmony = MP3TUNES_HARMONY(void_harmony);
-    connection = connection;
+    (void)connection;
     if (success) {
         harmony_get_device_email(harmony);
     } else {
