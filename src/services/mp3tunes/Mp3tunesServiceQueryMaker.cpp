@@ -31,7 +31,8 @@
 
 using namespace Collections;
 
-struct Mp3tunesServiceQueryMaker::Private {
+class Mp3tunesServiceQueryMaker::Private {
+public:
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
     QueryType type;
     int maxsize;
