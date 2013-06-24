@@ -63,6 +63,7 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * Fix crash when disabling the Free Music Charts script. (BR 321329)
    * Albums having same name but different album artist won't be mixed together on the
      playlist if sorting by album is enabled.
    * Fix crash on startup with KDE 4.11. Patch by Hrvoje Senjan
