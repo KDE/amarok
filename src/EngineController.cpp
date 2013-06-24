@@ -367,7 +367,8 @@ EngineController::play() //SLOT
         else
         {
             m_pauseTimer->stop();
-            m_fader.data()->setVolume( 1.0 );
+            if( supportsFadeout() )
+                m_fader.data()->setVolume( 1.0 );
             m_media.data()->play();
             emit trackPlaying( m_currentTrack );
             return;
@@ -491,7 +492,8 @@ EngineController::playUrl( const KUrl &url, uint offset, bool startPaused )
             m_media.data()->pause();
         else
             m_pauseTimer->stop();
-            m_fader.data()->setVolume( 1.0 );
+            if( supportsFadeout() )
+                m_fader.data()->setVolume( 1.0 );
             m_media.data()->play();
     }
 }
@@ -499,7 +501,7 @@ EngineController::playUrl( const KUrl &url, uint offset, bool startPaused )
 void
 EngineController::pause() //SLOT
 {
-    if( AmarokConfig::fadeoutOnPause() )
+    if( supportsFadeout() && AmarokConfig::fadeoutOnPause() )
     {
         m_fader.data()->fadeOut( AmarokConfig::fadeoutLength() );
         m_pauseTimer->start( AmarokConfig::fadeoutLength() );
@@ -512,7 +514,7 @@ EngineController::pause() //SLOT
 void
 EngineController::slotPause()
 {
-    if( AmarokConfig::fadeoutOnPause() )
+    if( supportsFadeout() && AmarokConfig::fadeoutOnPause() )
     {
         // Reset VolumeFaderEffect to full volume
         m_fader.data()->setVolume( 1.0 );
