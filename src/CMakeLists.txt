@@ -802,7 +802,7 @@ qt4_add_dbus_adaptor(
    CollectionAdaptor
    CollectionAdaptor )
 
-# supress deprecated methods warnings
+# suppress deprecated methods warnings
 if(NOT WIN32)
     set_source_files_properties(${AMAROK_MPRIS1_ADAPTOR_SRCS}
                                 PROPERTIES

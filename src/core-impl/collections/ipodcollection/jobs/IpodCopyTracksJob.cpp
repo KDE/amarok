@@ -396,7 +396,7 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
     }
     if( !m_copyErrors.isEmpty() )
     {
-        details += i18nc( "%1 is a list of errors that occured during copying of tracks",
+        details += i18nc( "%1 is a list of errors that occurred during copying of tracks",
                           "Error causes: %1<br>", QStringList( m_copyErrors.toList() ).join( "<br>" ) );
     }
     KMessageBox::detailedSorry( 0, text, details, caption );
