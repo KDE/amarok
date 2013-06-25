@@ -431,8 +431,10 @@ ScriptManager::loadScript( const QString& path )
     const QString pluginName = pluginInfo.pluginName();
     const QString category   = pluginInfo.category();
     const QString version    = pluginInfo.version();
+    const QStringList dependencies = pluginInfo.dependencies();
 
-    if( pluginName.isEmpty() || category.isEmpty() || version.isEmpty() )
+    if( pluginName.isEmpty() || category.isEmpty() || version.isEmpty()
+        || dependencies.isEmpty() )
     {
         error() << "PluginInfo has empty values for" << specPath;
         return false;
