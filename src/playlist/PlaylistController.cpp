@@ -195,8 +195,11 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
 
     m_undoStack->endMacro();
 
+    EngineController *engine = The::engineController();
     if( options.testFlag( DirectPlay ) ) // implies PrependToQueue
         Actions::instance()->requestUserNextTrack(); // inserted track will be first in queue
+    if( options.testFlag( Playlist::StartPlay ) && engine && !engine->isPlaying() )
+        engine->play();
 
     emit changed();
 }

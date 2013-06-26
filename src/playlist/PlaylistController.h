@@ -48,6 +48,8 @@ enum AddOption
     DirectPlay = PrependToQueue | 8, ///< start playback of the first item in the list, implies PrependToQueue
     RemotePlaylistsAreStreams = 16, ///< treat remote urls pointing to playlists as streams.
                                     ///  only has sense for methods that accept urls or playlists
+    StartPlay = 32, ///< start playing (something arbitrary, not necessarily the tracks that
+                    ///  have been just added) if nothing else is already playing
 
     // following are "consistency convenience enums" so that it is easy for us to make the
     // bahaviour of similarly-looking UI elements the same. These enums are the preferred
