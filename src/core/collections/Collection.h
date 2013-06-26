@@ -134,20 +134,36 @@ namespace Collections
              */
             virtual bool isOrganizable() const;
 
-        public slots:
-            virtual void collectionUpdated() { emit updated(); }
-
         signals:
+            /**
+             * Once you register a collection with CollectionManager, this signal is the
+             * only way to safely destroy it. CollectionManger will remove this collection
+             * from the list of active ones and will destroy this collection after some
+             * time.
+             */
             void remove();
 
             /**
-             * This signal is sent when the collection has changed.
-             * This signal is sent when the collection more than can be detected by
-             * Meta::metaDataChanged.
-             * This is e.g. a new song was added, an old one removed, new device added, ...
+             * This signal must be emitted when the collection contents has changed
+             * significantly.
              *
-             * Specifically this means that previous done searches can no longer
-             * be considered valid.
+             * More specifically, you must emit this signal (only) in such situations:
+             *  a) the set of entities (tracks, albums, years, ...) in this collection has
+             *     changed: a track was added, album is renamed, year was removed...
+             *  b) the relationship between the entities has changed: the track changed
+             *     album, album is no longer associated to an album artist and bacame a
+             *     compilation, an alum changed its year...
+             *
+             * You should not emit this signal when some minor data of an entity change,
+             * for example when a track comment changes, etc.
+             *
+             * Also note there are ::notifyObservers() methods of various entities.
+             * ::notifyObservers() and Collection::updated() are perpendicular and
+             * responsibility to call one of these may and may not mean need to call the
+             * other.
+             *
+             * This signal spedifically this means that previous done searches can no
+             * longer be considered valid.
              */
             void updated();
     };

@@ -814,30 +814,38 @@ SqlRegistry::commitDirtyTracks()
     // -- notify all observers
     foreach( Meta::SqlYearPtr year, dirtyYears )
     {
+        // this means that a new year was added to track or an old removed (or both),
+        // Collection docs says we need to emit updated() in this case. Ditto below.
+        m_collectionChanged = true;
         year->invalidateCache();
         year->notifyObservers();
     }
     foreach( Meta::SqlGenrePtr genre, dirtyGenres )
     {
+        m_collectionChanged = true;
         genre->invalidateCache();
         genre->notifyObservers();
     }
     foreach( Meta::SqlAlbumPtr album, dirtyAlbums )
     {
+        m_collectionChanged = true;
         album->invalidateCache();
         album->notifyObservers();
     }
     foreach( Meta::SqlTrackPtr track, dirtyTracks )
     {
+        // if only track changes, no need to emit updated() from here
         track->notifyObservers();
     }
     foreach( Meta::SqlArtistPtr artist, dirtyArtists )
     {
+        m_collectionChanged = true;
         artist->invalidateCache();
         artist->notifyObservers();
     }
     foreach( Meta::SqlComposerPtr composer, dirtyComposers )
     {
+        m_collectionChanged = true;
         composer->invalidateCache();
         composer->notifyObservers();
     }

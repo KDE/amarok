@@ -78,21 +78,28 @@ class DatabaseCollection : public Collections::Collection
         virtual QStringList collectionFolders() const;
         virtual void setCollectionFolders( const QStringList &folders );
 
-        /** Call this function to prevent the collection updated signal emitted.
-         *  This function can be called in preparation of larger updates.
+        /**
+         * Call this function to prevent the collection updated signal emitted.
+         * This function can be called in preparation of larger updates.
          */
-        virtual void blockUpdatedSignal();
+        void blockUpdatedSignal();
 
-        /** Unblocks one blockUpdatedSignal call. */
-        virtual void unblockUpdatedSignal();
+        /**
+         * Unblocks one blockUpdatedSignal call. If collectionUpdated() has been called,
+         * when the update was blocked, update() will be emitted here.
+         */
+        void unblockUpdatedSignal();
+
+        /**
+         * Emit updated if the signal. If it is blocked by blockUpdatedSignal(), it will
+         * be postponed until unblockUpdatedSignal() is called, but never discarded.
+         */
+        void collectionUpdated();
 
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
     public slots:
-        /** Emit updated if the signal is not blocked by blockUpdatedSignal */
-        virtual void collectionUpdated();
-
         /** Dumps the complete database content.
          *  The content of all Amarok tables is dumped in a couple of files
          *  in the users homedirectory.

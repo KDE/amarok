@@ -173,12 +173,12 @@ class UmsCollection : public Collection, public Meta::Observer
         void slotTrackAdded( KUrl trackLocation );
         void slotTrackRemoved( const Meta::TrackPtr &track );
 
-        /**
-         * overridden to update m_lastUpdated timestamp
-         */
-        virtual void collectionUpdated();
-
     private slots:
+        /**
+         * Update m_lastUpdated timestamp and emit updated()
+         */
+        void collectionUpdated();
+
         void slotParseTracks();
         void slotParseActionTriggered();
         void slotConfigure();
