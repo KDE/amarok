@@ -72,8 +72,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual QIcon iconForLevel( int level ) const;
         virtual void listForLevel( int level, Collections::QueryMaker *qm, CollectionTreeItem* parent );
 
-
-        virtual void setLevels( const QList<CategoryId::CatMenuId> &levelType ) = 0;
+        virtual void setLevels( const QList<CategoryId::CatMenuId> &levelType );
         virtual QList<CategoryId::CatMenuId> levels() const { return m_levelType; }
         virtual CategoryId::CatMenuId levelCategory( const int level ) const;
 
@@ -118,7 +117,6 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void slotFilter();
 
         void slotCollapsed( const QModelIndex &index );
-    
         void slotExpanded( const QModelIndex &index );
 
     private:
@@ -140,7 +138,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void markSubTreeAsDirty( CollectionTreeItem *item );
 
         /** Initiates a special search for albums without artists */
-        void handleCompilations( CollectionTreeItem *parent ) const;
+        void handleCompilations( Collections::QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const;
 
         /** Initiates a special search for tracks without label */
         void handleTracksWithoutLabels( Collections::QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const;
@@ -174,8 +172,6 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
     protected slots:
         void startAnimationTick();
         void loadingAnimationTick();
-        void update();
-
 };
 
 

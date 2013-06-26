@@ -35,7 +35,6 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
 
     public:
         CollectionTreeItemModel( const QList<CategoryId::CatMenuId> &levelType );
-        ~CollectionTreeItemModel();
 
         /* QAbstractItemModel methods */
         virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -46,9 +45,6 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         virtual void fetchMore( const QModelIndex &parent );
         virtual Qt::DropActions supportedDropActions() const;
 
-        /* CollectionTreeItemModelBase methods */
-        virtual void setLevels( const QList<CategoryId::CatMenuId> &levelType );
-
     public slots:
         virtual void collectionAdded( Collections::Collection *newCollection );
         virtual void collectionRemoved( const QString &collectionId );
@@ -58,9 +54,7 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         virtual int levelModifier() const { return 0; }
 
     private slots:
-        virtual void requestCollectionsExpansion();
-        void update();
-
+        void requestCollectionsExpansion();
 };
 
 #endif
