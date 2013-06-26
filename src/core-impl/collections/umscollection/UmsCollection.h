@@ -183,7 +183,7 @@ class UmsCollection : public Collection, public Meta::Observer
         void slotParseActionTriggered();
         void slotConfigure();
 
-        void slotDirectoryScanned( CollectionScanner::Directory *dir );
+        void slotDirectoryScanned( QSharedPointer<CollectionScanner::Directory> dir );
 
         /**
          * Starts a timer that ensures we emit updated() signal sometime in future.

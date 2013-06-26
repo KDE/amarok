@@ -65,7 +65,7 @@ private slots:
 public slots:
     void slotStarted( GenericScanManager::ScanType type );
     void slotDirectoryCount( int count );
-    void slotDirectoryScanned( CollectionScanner::Directory *dir );
+    void slotDirectoryScanned( QSharedPointer<CollectionScanner::Directory> dir );
     void slotSucceeded();
     void slotFailed( const QString& message );
 

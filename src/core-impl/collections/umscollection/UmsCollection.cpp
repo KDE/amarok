@@ -566,8 +566,8 @@ UmsCollection::slotParseTracks()
     if( !m_scanManager )
     {
         m_scanManager = new GenericScanManager( this );
-        connect( m_scanManager, SIGNAL(directoryScanned(CollectionScanner::Directory*)),
-                SLOT(slotDirectoryScanned(CollectionScanner::Directory*)), Qt::DirectConnection );
+        connect( m_scanManager, SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)),
+                 SLOT(slotDirectoryScanned(QSharedPointer<CollectionScanner::Directory>)) );
     }
 
     m_tracksParsed = true;
@@ -717,7 +717,7 @@ UmsCollection::slotConfigure()
 }
 
 void
-UmsCollection::slotDirectoryScanned( CollectionScanner::Directory *dir )
+UmsCollection::slotDirectoryScanned( QSharedPointer<CollectionScanner::Directory> dir )
 {
     debug() << "directory scanned: " << dir->path();
     if( dir->tracks().isEmpty() )

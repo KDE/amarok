@@ -35,12 +35,13 @@
 #include <QWaitCondition>
 #include <QXmlStreamReader>
 
-class QSharedMemory;
-class KProcess;
-
 namespace CollectionScanner {
     class Directory;
 }
+class KProcess;
+class QSharedMemory;
+template<class T>
+class QSharedPointer;
 
 /** This is the job that does all the hard work with scanning.
     It will receive new data from the scanner process, parse it and call the
@@ -79,10 +80,7 @@ class GenericScannerJob : public ThreadWeaver::Job
         virtual void run();
         virtual void abort();
 
-    // note: since this job doesn't have it's own event queue all signals and slots
-    // go through the UI event queue
     signals:
-
         void started( GenericScanManager::ScanType type );
 
         /** Gives the estimated count of directories that this scan will have.
@@ -91,16 +89,15 @@ class GenericScannerJob : public ThreadWeaver::Job
         */
         void directoryCount( int count );
 
-        /** Emitted once we get the complete data for a directory.
-         *  @dir The directory structure with all containing tracks.
+        /**
+         * Emitted once we get the complete data for a directory.
          *
-         *  The dir pointer belongs to the scanner job.
-         *  The dir pointer will stay valid until after the done signal.
-         *  Be carefull, you need to have direct connections to
-         *  ensure that you don't access the pointer before it's being freed.
-         *  That also means that your slots are called within the job context.
-        */
-        void directoryScanned( CollectionScanner::Directory *dir );
+         * @param dir The directory structure with all containing tracks. It is
+         * memory-managed using QSharedPointer - you are not allowed to convert it to a
+         * plain pointer unless you can guarantee another QSharedPointer instance pointing
+         * to the same object exist for the time of the existence of the plain pointer.
+         */
+        void directoryScanned( QSharedPointer<CollectionScanner::Directory> dir );
 
         void succeeded();
         void failed( QString message );
@@ -150,8 +147,6 @@ class GenericScannerJob : public ThreadWeaver::Job
         bool m_charsetDetect;
 
         QXmlStreamReader m_reader;
-
-        QList<CollectionScanner::Directory*> m_directories;
 
         QMutex m_mutex; // only protects m_abortRequested and the abort reason
 };

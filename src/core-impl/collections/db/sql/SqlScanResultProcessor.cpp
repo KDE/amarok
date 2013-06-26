@@ -112,7 +112,7 @@ SqlScanResultProcessor::message( const QString& message )
 }
 
 void
-SqlScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory )
+SqlScanResultProcessor::commitDirectory( QSharedPointer<CollectionScanner::Directory> directory )
 {
     // debug() << "commitDirectory on"<<directory->path()<<directory<<"with"<<directory->tracks().count()<<"tracks."<<"skipped?"<<directory->isSkipped();
 
@@ -124,7 +124,8 @@ SqlScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory
 
     // getDirectory() updates the directory entry mtime:
     int dirId = m_collection->registry()->getDirectory( path, directory->mtime() );
-    m_directoryIds.insert( directory, dirId );
+    // we never dereference key of m_directoryIds, it is safe to add it as a plain pointer
+    m_directoryIds.insert( directory.data(), dirId );
     m_foundDirectories.insert( path, dirId );
 
     AbstractScanResultProcessor::commitDirectory( directory );
@@ -426,10 +427,10 @@ SqlScanResultProcessor::deleteDeletedDirectories()
 }
 
 void
-SqlScanResultProcessor::deleteDeletedTracks( CollectionScanner::Directory *directory )
+SqlScanResultProcessor::deleteDeletedTracks( QSharedPointer<CollectionScanner::Directory> directory )
 {
-    Q_ASSERT( m_directoryIds.contains( directory ) );
-    int directoryId = m_directoryIds.value( directory );
+    Q_ASSERT( m_directoryIds.contains( directory.data() ) );
+    int directoryId = m_directoryIds.value( directory.data() );
     deleteDeletedTracks( directoryId );
 }
 

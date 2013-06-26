@@ -44,14 +44,14 @@ class SqlScanResultProcessor : public AbstractScanResultProcessor
     protected:
         virtual void message( const QString& message );
 
-        virtual void commitDirectory( CollectionScanner::Directory *dir );
+        virtual void commitDirectory( QSharedPointer<CollectionScanner::Directory> directory );
         virtual void commitAlbum( CollectionScanner::Album *album );
         virtual void commitTrack( CollectionScanner::Track *track, CollectionScanner::Album *srcAlbum );
 
         /** Deletes all directories (and it's tracks) not contained in m_foundDirectories */
         virtual void deleteDeletedDirectories();
 
-        virtual void deleteDeletedTracks( CollectionScanner::Directory *directory );
+        virtual void deleteDeletedTracks( QSharedPointer<CollectionScanner::Directory> directory );
 
         /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks. */
         virtual void deleteDeletedTracks( int directoryId );
@@ -103,6 +103,7 @@ class SqlScanResultProcessor : public AbstractScanResultProcessor
          *  because it implements contains( key, value ) */
         QMultiHash<QString, int> m_foundTracks;
 
+        // never dereference they key, it might be a stale pointer in corner cases
         QHash<CollectionScanner::Directory*, int> m_directoryIds;
         QHash<CollectionScanner::Album*, int> m_albumIds;
 

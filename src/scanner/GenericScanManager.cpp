@@ -30,12 +30,14 @@
 #include <ThreadWeaver/Weaver>
 
 #include <QFileInfo>
+#include <QSharedPointer>
 
 GenericScanManager::GenericScanManager( QObject *parent )
     : QObject( parent )
     , m_scannerJob( 0 )
 {
     qRegisterMetaType<GenericScanManager::ScanType>( "GenericScanManager::ScanType" );
+    qRegisterMetaType<QSharedPointer<CollectionScanner::Directory> >( "QSharedPointer<CollectionScanner::Directory>" );
 }
 
 GenericScanManager::~GenericScanManager()
@@ -147,21 +149,15 @@ GenericScanManager::slotFailed( const QString& message )
 void
 GenericScanManager::connectSignalsToJob()
 {
-    // all connections are direct connections, mainly because the
-    // CollectionScanner::Directory pointer belongs to the scanner job
-    // and might get missing.
-    // Also multi-threading while scanning is nice.
+    // we used to have direct connections here, but that caused too much work being done
+    // int the non-main thread, even in code that wasn't thread-safe, which lead to
+    // crashes (bug 319835) and other potential data races
     connect( m_scannerJob, SIGNAL(started(GenericScanManager::ScanType)),
-             SIGNAL(started(GenericScanManager::ScanType)),
-             Qt::DirectConnection  );
-    connect( m_scannerJob, SIGNAL(directoryCount(int)),
-             SIGNAL(directoryCount(int)),
-             Qt::DirectConnection  );
-    connect( m_scannerJob, SIGNAL(directoryScanned(CollectionScanner::Directory*)),
-             SIGNAL(directoryScanned(CollectionScanner::Directory*)),
-             Qt::DirectConnection );
-    connect( m_scannerJob, SIGNAL(succeeded()), SLOT(slotSucceeded()),
-             Qt::DirectConnection  );
-    connect( m_scannerJob, SIGNAL(failed(QString)), SLOT(slotFailed(QString)),
-             Qt::DirectConnection  );
+             SIGNAL(started(GenericScanManager::ScanType)) );
+    connect( m_scannerJob, SIGNAL(directoryCount(int)), SIGNAL(directoryCount(int)) );
+    connect( m_scannerJob, SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)),
+             SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)) );
+
+    connect( m_scannerJob, SIGNAL(succeeded()), SLOT(slotSucceeded()) );
+    connect( m_scannerJob, SIGNAL(failed(QString)), SLOT(slotFailed(QString)) );
 }

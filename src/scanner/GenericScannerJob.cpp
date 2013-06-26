@@ -85,9 +85,6 @@ GenericScannerJob::~GenericScannerJob()
 
     if( !m_batchfilePath.isEmpty() )
         QFile( m_batchfilePath ).remove();
-
-    foreach( CollectionScanner::Directory *dir, m_directories )
-        delete dir;
 }
 
 void
@@ -355,8 +352,7 @@ GenericScannerJob::parseScannerOutput()
             }
             else if( name == "directory" )
             {
-                CollectionScanner::Directory *dir = new CollectionScanner::Directory( &m_reader );
-                m_directories.append( dir );
+                QSharedPointer<CollectionScanner::Directory> dir( new CollectionScanner::Directory( &m_reader ) );
                 emit directoryScanned( dir );
             }
             else

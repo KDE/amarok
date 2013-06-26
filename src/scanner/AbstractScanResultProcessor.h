@@ -38,8 +38,9 @@ namespace CollectionScanner
     class Album;
     class Playlist;
 }
-
 class GenericScanManager;
+template<class T >
+class QSharedPointer;
 
 /** The ScanResulProcessor class connects to a GenericScanManager and
  *  adds further processing to the directoryScanned signal.
@@ -75,7 +76,7 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
         virtual void scanDirectoryCount( int count );
 
         /** Submits a new directory for processing. */
-        virtual void scanDirectoryScanned( CollectionScanner::Directory *dir );
+        virtual void scanDirectoryScanned( QSharedPointer<CollectionScanner::Directory> dir );
 
         virtual void scanSucceeded();
         virtual void scanFailed( const QString& message );
@@ -88,7 +89,7 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
          */
         virtual void message( const QString& message ) = 0;
 
-        virtual void commitDirectory( CollectionScanner::Directory *dir );
+        virtual void commitDirectory( QSharedPointer<CollectionScanner::Directory> dir );
         virtual void commitPlaylist( CollectionScanner::Playlist *playlist );
         virtual void commitAlbum( CollectionScanner::Album *album ) = 0;
         virtual void commitTrack( CollectionScanner::Track *track, CollectionScanner::Album *srcAlbum ) = 0;
@@ -96,7 +97,7 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
         /** Deletes all directories (and it's tracks) not contained in m_foundDirectories */
         virtual void deleteDeletedDirectories() = 0;
 
-        virtual void deleteDeletedTracks( CollectionScanner::Directory *directory ) = 0;
+        virtual void deleteDeletedTracks( QSharedPointer<CollectionScanner::Directory> directory ) = 0;
 
         /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks. */
         virtual void deleteDeletedTracks( int directoryId ) = 0;
@@ -113,7 +114,7 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
 
         GenericScanManager* m_manager;
 
-        QList<CollectionScanner::Directory*> m_directories;
+        QList<QSharedPointer<CollectionScanner::Directory> > m_directories;
 
         // The keys for this hashtable are album name, artist (artist is empty for compilations)
         typedef QPair<QString, QString> AlbumKey;

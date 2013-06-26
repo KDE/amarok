@@ -63,6 +63,7 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * Fix crashed caused by race conditions at the end of the track scanning. (BR 319835)
    * Make Collection Browser update listing correctly when metadata change. (BR 262504)
    * Fix crash when disabling the Free Music Charts script. (BR 321329)
    * Albums having same name but different album artist won't be mixed together on the

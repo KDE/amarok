@@ -38,20 +38,12 @@ AbstractScanResultProcessor::AbstractScanResultProcessor( GenericScanManager* ma
     , m_type( GenericScanManager::PartialUpdateScan )
 {
     connect( manager, SIGNAL(started(GenericScanManager::ScanType)),
-             this, SLOT(scanStarted(GenericScanManager::ScanType)),
-             Qt::DirectConnection );
-    connect( manager, SIGNAL(directoryCount(int)),
-             this, SLOT(scanDirectoryCount(int)),
-             Qt::DirectConnection );
-    connect( manager, SIGNAL(directoryScanned(CollectionScanner::Directory*)),
-             this, SLOT(scanDirectoryScanned(CollectionScanner::Directory*)),
-             Qt::DirectConnection );
-    connect( manager, SIGNAL(succeeded()),
-             this, SLOT(scanSucceeded()),
-             Qt::DirectConnection );
-    connect( manager, SIGNAL(failed(QString)),
-             this, SLOT(scanFailed(QString)),
-             Qt::DirectConnection );
+             SLOT(scanStarted(GenericScanManager::ScanType)) );
+    connect( manager, SIGNAL(directoryCount(int)), SLOT(scanDirectoryCount(int)) );
+    connect( manager, SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)),
+             SLOT(scanDirectoryScanned(QSharedPointer<CollectionScanner::Directory>)) );
+    connect( manager, SIGNAL(succeeded()), SLOT(scanSucceeded()) );
+    connect( manager, SIGNAL(failed(QString)), SLOT(scanFailed(QString)) );
 }
 
 AbstractScanResultProcessor::~AbstractScanResultProcessor()
@@ -85,10 +77,9 @@ AbstractScanResultProcessor::scanDirectoryCount( int count )
 }
 
 void
-AbstractScanResultProcessor::scanDirectoryScanned( CollectionScanner::Directory *dir )
+AbstractScanResultProcessor::scanDirectoryScanned( QSharedPointer<CollectionScanner::Directory> dir )
 {
     m_directories.append( dir );
-
     emit incrementProgress();
 }
 
@@ -113,7 +104,7 @@ AbstractScanResultProcessor::scanSucceeded()
     }
 
     // -- commit the directories
-    foreach( CollectionScanner::Directory* dir, m_directories )
+    foreach( QSharedPointer<CollectionScanner::Directory> dir, m_directories )
     {
         commitDirectory( dir );
 
@@ -212,7 +203,7 @@ AbstractScanResultProcessor::scanSucceeded()
     }
 
     // -- now check if some of the tracks are not longer used and also not moved to another directory
-    foreach( CollectionScanner::Directory* dir, m_directories )
+    foreach( QSharedPointer<CollectionScanner::Directory> dir, m_directories )
         if( !dir->isSkipped() )
             deleteDeletedTracks( dir );
 
@@ -240,16 +231,16 @@ AbstractScanResultProcessor::abort()
 }
 
 void
-AbstractScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory )
+AbstractScanResultProcessor::commitDirectory( QSharedPointer<CollectionScanner::Directory> dir )
 {
-    if( directory->path().isEmpty() )
+    if( dir->path().isEmpty() )
     {
         warning() << "got directory with no path from the scanner, not adding";
         return;
     }
 
     // --- add all playlists
-    foreach( CollectionScanner::Playlist playlist, directory->playlists() )
+    foreach( CollectionScanner::Playlist playlist, dir->playlists() )
         commitPlaylist( &playlist );
 }
 
@@ -311,8 +302,7 @@ AbstractScanResultProcessor::cleanupMembers()
     }
     m_albumNames.clear();
     m_albums.clear();
-    m_directories.clear(); // the pointers itself will be freed by the scanner job
-
+    m_directories.clear();
 }
 
 #include "AbstractScanResultProcessor.moc"

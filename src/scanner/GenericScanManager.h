@@ -33,15 +33,18 @@
 #include <QMutex>
 
 class GenericScannerJob;
+template<class T >
+class QSharedPointer;
 
-/** The ScanManager manages the scanning and directory watching.
-
-    The scan manager will check the version of the amarokcollectionscanner application,
-    watch directories using the KDirWatch and initiate the scanning.
-
-    For the scanning an external process with the scanner is started and the result
-    is handled in a separate thread.
-*/
+/**
+ * The ScanManager manages the scanning and directory watching.
+ *
+ * The scan manager will check the version of the amarokcollectionscanner application,
+ * watch directories using the KDirWatch and initiate the scanning.
+ *
+ * For the scanning an external process with the scanner is started and the result
+ * is handled in a separate thread.
+ */
 class AMAROK_EXPORT GenericScanManager : public QObject
 {
     Q_OBJECT
@@ -135,7 +138,7 @@ class AMAROK_EXPORT GenericScanManager : public QObject
          *  ensure that you don't access the pointer before it's being freed.
          *  That also means that your slots are called within the job context.
         */
-        void directoryScanned( CollectionScanner::Directory *dir );
+        void directoryScanned( QSharedPointer<CollectionScanner::Directory> dir );
 
         void succeeded();
         void failed( const QString& message );
