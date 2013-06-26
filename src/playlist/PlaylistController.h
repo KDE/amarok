@@ -55,11 +55,11 @@ enum AddOption
     // bahaviour of similarly-looking UI elements the same. These enums are the preferred
     // ones on calling sites. Feel free to add a new one if you find another UI element
     // that appears on multiple places. Prefix these with On*.
-    OnDoubleClickOnSelectedItems = DirectPlay,
+    OnDoubleClickOnSelectedItems = StartPlay,
     OnMiddleClickOnSelectedItems = 0, // append
     OnReturnPressedOnSelectedItems = OnDoubleClickOnSelectedItems, // these should be kept same
 
-    OnPlayMediaAction = OnDoubleClickOnSelectedItems,
+    OnPlayMediaAction = DirectPlay,
     OnAppendToPlaylistAction = 0, // no-brainer, just for consistency, applied to popup-dropper too
     OnReplacePlaylistAction = Replace, // ditto
     OnQueueToPlaylistAction = Queue,
