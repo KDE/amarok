@@ -54,6 +54,8 @@ inline uint qHash( const Meta::DataPtr &data )
     return qHash( data.data() );
 }
 
+static const QSet<CategoryId::CatMenuId> variousArtistCategories =
+        QSet<CategoryId::CatMenuId>() << CategoryId::AlbumArtist << CategoryId::Artist;
 
 CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     : QAbstractItemModel()
@@ -540,25 +542,20 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
 
             qm->setQueryType( mapCategoryToQueryType( m_levelType.value( level ) ) );
 
-            switch( m_levelType.value( level ) )
+            CategoryId::CatMenuId category = m_levelType.value( level );
+            if( category == CategoryId::Album )
             {
-                case CategoryId::Album:
-                    // restrict query to normal albums if the previous level
-                    // was the AlbumArtist category. In that case we handle compilations below
-                    if( levelCategory( level - 1 ) == CategoryId::AlbumArtist )
-                        qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
-                    break;
-                case CategoryId::AlbumArtist:
-                    // we used to handleCompilations() only if nextLevel is Album, but I cannot
-                    // tell any reason why we should have done this --- strohel
-                    handleCompilations( nextLevel, parent );
-                    break;
-                case CategoryId::Label:
-                    handleTracksWithoutLabels( nextLevel, parent );
-                    break;
-                default : //TODO handle error condition. return tracks?
-                    break;
+                // restrict query to normal albums if the previous level
+                // was the AlbumArtist category. In that case we handle compilations below
+                if( levelCategory( level - 1 ) == CategoryId::AlbumArtist )
+                    qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
             }
+            else if( variousArtistCategories.contains( category ) )
+                // we used to handleCompilations() only if nextLevel is Album, but I cannot
+                // tell any reason why we should have done this --- strohel
+                handleCompilations( nextLevel, parent );
+            else if( category == CategoryId::Label )
+                handleTracksWithoutLabels( nextLevel, parent );
         }
 
         for( CollectionTreeItem *tmp = parent; tmp; tmp = tmp->parent() )
@@ -640,7 +637,6 @@ CollectionTreeItemModelBase::addQueryMaker( CollectionTreeItem* item,
     connect( qm, SIGNAL(queryDone()), SLOT(queryDone()), Qt::QueuedConnection );
     m_runningQueries.insert( item, qm );
 }
-
 
 void
 CollectionTreeItemModelBase::queryDone()
@@ -918,7 +914,7 @@ CollectionTreeItemModelBase::populateChildren( const DataList &dataList, Collect
         if( child->isDataItem() )
             toBeRemoved = dataToBeRemoved.contains( child->data() );
         else if( child->isVariousArtistItem() )
-            toBeRemoved = childCategory != CategoryId::AlbumArtist;
+            toBeRemoved = !variousArtistCategories.contains( childCategory );
         else if( child->isNoLabelItem() )
             toBeRemoved = childCategory != CategoryId::Label;
         else
