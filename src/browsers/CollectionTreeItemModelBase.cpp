@@ -54,8 +54,12 @@ inline uint qHash( const Meta::DataPtr &data )
     return qHash( data.data() );
 }
 
+/**
+ * This set determines which collection browser levels should have shown Various Artists
+ * item under them. AlbumArtist is certain, (Track)Artist is questionable.
+ */
 static const QSet<CategoryId::CatMenuId> variousArtistCategories =
-        QSet<CategoryId::CatMenuId>() << CategoryId::AlbumArtist << CategoryId::Artist;
+        QSet<CategoryId::CatMenuId>() << CategoryId::AlbumArtist;
 
 CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     : QAbstractItemModel()
@@ -482,31 +486,6 @@ CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item )
     if ( item->requiresUpdate() && !m_runningQueries.contains( item ) )
     {
         listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
-    }
-}
-
-QIcon
-CollectionTreeItemModelBase::iconForLevel(int level) const
-{
-    switch( m_levelType.value( level ) )
-    {
-        case CategoryId::Album :
-            return KIcon( "media-optical-amarok" );
-        case CategoryId::Artist :
-            return KIcon( "view-media-artist-amarok" );
-        case CategoryId::AlbumArtist :
-            return KIcon( "amarok_artist" );
-        case CategoryId::Composer :
-            return KIcon( "filename-composer-amarok" );
-        case CategoryId::Genre :
-            return KIcon( "favorite-genres-amarok" );
-        case CategoryId::Year :
-            return KIcon( "clock" );
-        case CategoryId::Label :
-            return KIcon( "label-amarok" );
-        case CategoryId::None :
-        default:
-            return KIcon( "image-missing" );
     }
 }
 
@@ -967,15 +946,47 @@ CollectionTreeItemModelBase::updateHeaderText()
     m_headerText.chop( 3 );
 }
 
-QString
-CollectionTreeItemModelBase::nameForLevel( int level ) const
+QIcon
+CollectionTreeItemModelBase::iconForCategory( CategoryId::CatMenuId category )
 {
-    switch( m_levelType.value( level ) )
+    switch( category )
+    {
+        case CategoryId::Album :
+            return KIcon( "media-optical-amarok" );
+        case CategoryId::Artist :
+            return KIcon( "view-media-artist-amarok" );
+        case CategoryId::AlbumArtist :
+            return KIcon( "view-media-artist-amarok" );
+        case CategoryId::Composer :
+            return KIcon( "filename-composer-amarok" );
+        case CategoryId::Genre :
+            return KIcon( "favorite-genres-amarok" );
+        case CategoryId::Year :
+            return KIcon( "clock" );
+        case CategoryId::Label :
+            return KIcon( "label-amarok" );
+        case CategoryId::None:
+        default:
+            return KIcon( "image-missing" );
+    }
+
+}
+
+QIcon
+CollectionTreeItemModelBase::iconForLevel( int level ) const
+{
+    return iconForCategory( m_levelType.value( level ) );
+}
+
+QString
+CollectionTreeItemModelBase::nameForCategory( CategoryId::CatMenuId category, bool showYears )
+{
+    switch( category )
     {
         case CategoryId::Album:
-            return AmarokConfig::showYears() ? i18n( "Year - Album" ) : i18n( "Album" );
+            return showYears ? i18n( "Year - Album" ) : i18n( "Album" );
         case CategoryId::Artist:
-            return i18n( "Artist" );
+            return i18n( "Track Artist" );
         case CategoryId::AlbumArtist:
             return i18n( "Album Artist" );
         case CategoryId::Composer:
@@ -986,9 +997,17 @@ CollectionTreeItemModelBase::nameForLevel( int level ) const
             return i18n( "Year" );
         case CategoryId::Label:
             return i18n( "Label" );
+        case CategoryId::None:
+            return i18n( "None" );
         default:
             return QString();
     }
+}
+
+QString
+CollectionTreeItemModelBase::nameForLevel( int level ) const
+{
+    return nameForCategory( m_levelType.value( level ), AmarokConfig::showYears() );
 }
 
 void

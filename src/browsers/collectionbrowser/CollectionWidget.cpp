@@ -56,6 +56,8 @@ CollectionWidget *CollectionWidget::s_instance = 0;
 
 #define CATEGORY_LEVEL_COUNT 3
 
+Q_DECLARE_METATYPE( QList<CategoryId::CatMenuId> ) // needed to QAction payload
+
 class CollectionWidget::Private
 {
 public:
@@ -156,14 +158,6 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     KHBox *hbox = new KHBox( this );
     d->stack = new QStackedWidget( this );
 
-    // -- read the view level settings from the configuration
-    QList<int> levelNumbers = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
-    QList<CategoryId::CatMenuId> levels;
-    foreach( int levelNumber, levelNumbers )
-        levels << CategoryId::CatMenuId( levelNumber );
-    if ( levels.isEmpty() )
-        levels << CategoryId::Artist << CategoryId::Album;
-
     // -- read the current view mode from the configuration
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
@@ -190,23 +184,30 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     QMenu *filterMenu = new QMenu( 0 );
 
-    QAction *action = new QAction( i18n( "Artist / Album" ), this );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum()) );
-    filterMenu->addAction( action );
-
-    action = new QAction( i18n( "Album / Artist" ), this );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByAlbumArtist()) );
-    filterMenu->addAction( action );
-
-    action = new QAction( i18n( "Genre / Artist" ), this );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtist()) );
-    filterMenu->addAction( action );
-
-    action = new QAction( i18n( "Genre / Artist / Album" ), this );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum()) );
-    filterMenu->addAction( action );
-
+    using namespace CategoryId;
+    static const QList<QList<CatMenuId> > levelPresets = QList<QList<CatMenuId> >()
+        << ( QList<CatMenuId>() << CategoryId::AlbumArtist << CategoryId::Album )
+        << ( QList<CatMenuId>() << CategoryId::Album << CategoryId::Artist ) // album artist has no sense here
+        << ( QList<CatMenuId>() << CategoryId::Genre << CategoryId::AlbumArtist )
+        << ( QList<CatMenuId>() << CategoryId::Genre << CategoryId::AlbumArtist << CategoryId::Album );
+    foreach( const QList<CatMenuId> &levels, levelPresets )
+    {
+        QStringList categoryLabels;
+        foreach( CatMenuId category, levels )
+            categoryLabels << CollectionTreeItemModelBase::nameForCategory( category );
+        QAction *action = filterMenu->addAction( categoryLabels.join( i18nc(
+                "separator between collection browser level categories, i.e. the ' / ' "
+                "in 'Artist / Album'", " / " ) ) );
+        action->setData( QVariant::fromValue( levels ) );
+    }
+    // following catches all actions in the filter menu
+    connect( filterMenu, SIGNAL(triggered(QAction*)), SLOT(sortByActionPayload(QAction*)) );
     filterMenu->addSeparator();
+
+    // -- read the view level settings from the configuration
+    QList<CategoryId::CatMenuId> levels = readLevelsFromConfig();
+    if ( levels.isEmpty() )
+        levels << levelPresets.at( 0 ); // use first preset as default
 
     // -- generate the level menus
     d->menuLevel[0] = filterMenu->addMenu( i18n( "First Level" ) );
@@ -214,54 +215,36 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     d->menuLevel[2] = filterMenu->addMenu( i18n( "Third Level" ) );
 
     // - fill the level menus
+    static const QList<CatMenuId> levelChoices = QList<CatMenuId>()
+            << CategoryId::AlbumArtist
+            << CategoryId::Artist
+            << CategoryId::Album
+            << CategoryId::Genre
+            << CategoryId::Composer
+            << CategoryId::Label;
     for( int i = 0; i < CATEGORY_LEVEL_COUNT; i++ )
     {
+        QList<CatMenuId> usedLevelChoices = levelChoices;
         QActionGroup *actionGroup = new QActionGroup( this );
+        if( i > 0 ) // skip first submenu
+            usedLevelChoices.prepend( CategoryId::None );
 
-        if( i > 0 )
+        QMenu *menuLevel = d->menuLevel[i];
+        foreach( CatMenuId level, usedLevelChoices )
         {
-            QAction *action = d->menuLevel[i]->addAction( i18n( "None" ) );
-            action->setData( CategoryId::None );
+            QAction *action = menuLevel->addAction( CollectionTreeItemModelBase::nameForCategory( level ) );
+            action->setData( QVariant::fromValue<CatMenuId>( level ) );
             action->setCheckable( true );
+            action->setChecked( ( levels.count() > i ) ? ( levels[i] == level )
+                    : ( level == CategoryId::None ) );
             actionGroup->addAction( action );
-
-            if( levels.count() <= i )
-                action->setChecked( true );
-        }
-
-        // - and now the different selections
-        struct LevelDefinition {
-            qint64 field;
-            CategoryId::CatMenuId menuId;
-        };
-        LevelDefinition definitions[] = { {Meta::valArtist, CategoryId::Artist},
-                                          {Meta::valAlbum, CategoryId::Album},
-                                          {Meta::valAlbumArtist, CategoryId::AlbumArtist},
-                                          {Meta::valGenre, CategoryId::Genre},
-                                          {Meta::valComposer, CategoryId::Composer},
-                                          {Meta::valLabel, CategoryId::Label} };
-
-        for( unsigned int j = 0; j < sizeof( definitions ) / sizeof( definitions[0] ); j++ )
-        {
-            QAction *action = d->menuLevel[i]->addAction( Meta::i18nForField( definitions[j].field ) );
-            action->setData( QVariant::fromValue<CategoryId::CatMenuId>( definitions[j].menuId ) );
-            action->setCheckable( true );
-            actionGroup->addAction( action );
-
-            if( levels.count() > i && levels[i] == definitions[j].menuId )
-                action->setChecked( true );
         }
 
         d->levelGroups[i] = actionGroup;
+        connect( menuLevel, SIGNAL(triggered(QAction*)), SLOT(sortLevelSelected(QAction*)) );
     }
 
-    connect( d->menuLevel[0], SIGNAL(triggered(QAction*)), SLOT(sortLevelSelected(QAction*)) );
-    connect( d->menuLevel[1], SIGNAL(triggered(QAction*)), SLOT(sortLevelSelected(QAction*)) );
-    connect( d->menuLevel[2], SIGNAL(triggered(QAction*)), SLOT(sortLevelSelected(QAction*)) );
-
-
-    // -- create the checkboxes
-
+    // -- create the checkboxesh
     filterMenu->addSeparator();
     QAction *showYears = filterMenu->addAction( i18n( "Show Years" ) );
     showYears->setCheckable( true );
@@ -331,35 +314,11 @@ CollectionWidget::sortLevelSelected( QAction *action )
 }
 
 void
-CollectionWidget::sortByArtistAlbum()
+CollectionWidget::sortByActionPayload( QAction *action )
 {
-    QList<CategoryId::CatMenuId> levels;
-    levels << CategoryId::Artist << CategoryId::Album;
-    setLevels( levels );
-}
-
-void
-CollectionWidget::sortByAlbumArtist()
-{
-    QList<CategoryId::CatMenuId> levels;
-    levels << CategoryId::Album << CategoryId::Artist;
-    setLevels( levels );
-}
-
-void
-CollectionWidget::sortByGenreArtist()
-{
-    QList<CategoryId::CatMenuId> levels;
-    levels << CategoryId::Genre << CategoryId::Artist;
-    setLevels( levels );
-}
-
-void
-CollectionWidget::sortByGenreArtistAlbum()
-{
-    QList<CategoryId::CatMenuId> levels;
-    levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
-    setLevels( levels );
+    QList<CategoryId::CatMenuId> levels = action->data().value<QList<CategoryId::CatMenuId> >();
+    if( !levels.isEmpty() )
+        setLevels( levels );
 }
 
 void
@@ -462,6 +421,37 @@ void CollectionWidget::toggleView( bool merged )
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
     Amarok::config( "Collection Browser" ).writeEntry( "View Mode", me.valueToKey( d->viewMode ) );
+}
+
+QList<CategoryId::CatMenuId>
+CollectionWidget::readLevelsFromConfig() const
+{
+    QList<int> levelNumbers = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
+    QList<CategoryId::CatMenuId> levels;
+
+    // we changed "Track Artist" to "Album Artist" default before Amarok 2.8. Migrate user
+    // config mentioning Track Artist to Album Artist where it makes sense:
+    static const int OldArtistValue = 2;
+    bool albumOrAlbumArtistEncountered = false;
+    foreach( int levelNumber, levelNumbers )
+    {
+        CategoryId::CatMenuId category;
+        if( levelNumber == OldArtistValue )
+        {
+            if( albumOrAlbumArtistEncountered )
+                category = CategoryId::Artist;
+            else
+                category = CategoryId::AlbumArtist;
+        }
+        else
+            category = CategoryId::CatMenuId( levelNumber );
+
+        levels << category;
+        if( category == CategoryId::Album || category == CategoryId::AlbumArtist )
+            albumOrAlbumArtistEncountered = true;
+    }
+
+    return levels;
 }
 
 #include "CollectionWidget.moc"

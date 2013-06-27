@@ -69,7 +69,6 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual QMimeData* mimeData( const QList<CollectionTreeItem*> &items ) const;
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
-        virtual QIcon iconForLevel( int level ) const;
         virtual void listForLevel( int level, Collections::QueryMaker *qm, CollectionTreeItem* parent );
 
         virtual void setLevels( const QList<CategoryId::CatMenuId> &levelType );
@@ -97,6 +96,9 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
          * you can expect allQueriesFinished() signal in some time.
          */
         bool hasRunningQueries() const;
+
+        static QIcon iconForCategory( CategoryId::CatMenuId category );
+        static QString nameForCategory( CategoryId::CatMenuId category, bool showYears = false );
 
     signals:
         void expandIndex( const QModelIndex &index );
@@ -128,7 +130,10 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
     protected:
         virtual void populateChildren(const Meta::DataList &dataList, CollectionTreeItem *parent, const QModelIndex &parentIndex );
         virtual void updateHeaderText();
+
+        virtual QIcon iconForLevel( int level ) const;
         virtual QString nameForLevel( int level ) const;
+
         virtual int levelModifier() const = 0;
         virtual QVariant dataForItem( CollectionTreeItem *item, int role, int level = -1 ) const;
 

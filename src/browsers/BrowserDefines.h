@@ -30,7 +30,7 @@ namespace CategoryId
     enum CatMenuId {
         None = 0,
         Album = 1,
-        Artist = 2,
+        Artist = 8, // used to be 2, transitioned to 8 to allow for transition pre Amarok 2.8
         AlbumArtist = 3,
         Composer = 4,
         Genre = 5,

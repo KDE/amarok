@@ -55,12 +55,10 @@ class CollectionWidget : public BrowserCategory
         void setLevels( const QList<CategoryId::CatMenuId> &levels );
 
         void focusInputLine();
+
     public slots:
         void sortLevelSelected( QAction * );
-        void sortByArtistAlbum();
-        void sortByAlbumArtist();
-        void sortByGenreArtist();
-        void sortByGenreArtistAlbum();
+        void sortByActionPayload( QAction * );
         void slotShowYears( bool checked );
         void slotShowTrackNumbers( bool checked );
         void slotShowCovers( bool checked );
@@ -68,6 +66,8 @@ class CollectionWidget : public BrowserCategory
         void toggleView( bool merged );
 
     private:
+        QList<CategoryId::CatMenuId> readLevelsFromConfig() const;
+
         class Private;
         Private *const d;
         static CollectionWidget *s_instance;

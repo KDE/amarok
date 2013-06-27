@@ -33,6 +33,8 @@ VERSION 2.8-Beta 1
    * Added Ctrl+H shortcut to randomize playlist, patch by Harsh Gupta. (BR 208061)
 
   CHANGES:
+   * Collection Browser: Artist level was renamed to Track Artist and replaced by Album
+     Artist by default. Various Artists item is no longer shown under Track Artist level.
    * Removed the splash screen.
    * Playlist-related actions were harmonized, double-clicking or pressing enter will
      append tracks to playlist, middle-clicking or using any "play media" action will
