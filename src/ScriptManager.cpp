@@ -52,9 +52,10 @@
 
 #include <KMessageBox>
 #include <KStandardDirs>
+#include <KPushButton>
 
+#include <QToolTip>
 #include <QFileInfo>
-#include <QTimer>
 #include <QScriptEngine>
 
 #include <sys/stat.h>
@@ -112,10 +113,7 @@ ScriptManager::minimumBindingsAvailable()
 }
 
 ScriptManager::~ScriptManager()
-{
-    DEBUG_BLOCK
-    qDeleteAll( m_scripts.values() );
-}
+{}
 
 void
 ScriptManager::destroy() {
@@ -151,7 +149,7 @@ ScriptManager::stopScript( const QString& name )
         return false;
     if( !m_scripts.contains( name ) )
         return false;
-    slotStopScript( name );
+    m_scripts[name]->stop();
     return true;
 }
 
@@ -161,8 +159,8 @@ ScriptManager::listRunningScripts() const
     QStringList runningScripts;
     foreach( const ScriptItem *item, m_scripts )
     {
-        if( item->running )
-            runningScripts << item->info.pluginName();
+        if( item->running() )
+            runningScripts << item->info().pluginName();
     }
     return runningScripts;
 }
@@ -172,9 +170,7 @@ ScriptManager::specForScript( const QString& name ) const
 {
     if( !m_scripts.contains( name ) )
         return QString();
-    QFileInfo info( m_scripts.value(name)->url.path() );
-    const QString specPath = QString( "%1/%2.spec" ).arg( info.path(), info.completeBaseName() );
-    return specPath;
+    return m_scripts[name]->specPath();
 }
 
 bool
@@ -271,68 +267,23 @@ ScriptManager::updaterFinished( const QString &scriptPath ) // SLOT
 bool
 ScriptManager::slotRunScript( const QString &name, bool silent )
 {
-    DEBUG_BLOCK
-
     ScriptItem *item = m_scripts.value( name );
-    const KUrl url = item->url;
-    //load the wrapper classes
-    item->engine = new QScriptEngine( this );
-    connect(item->engine,
-            SIGNAL(signalHandlerException(QScriptValue)),
-            SLOT(handleException(QScriptValue)));
-
-    startScriptEngine( name );
-    QFile scriptFile( url.path() );
-    scriptFile.open( QIODevice::ReadOnly );
-    item->info.setPluginEnabled( true );
-    item->running = true;
-    item->evaluating = true;
-    if( item->info.category() == "Lyrics" )
+    connect( item, SIGNAL(signalHandlerException(QScriptValue)),
+             SLOT(handleException(QScriptValue)));
+    if( item->info().category() == "Lyrics" )
     {
         m_lyricsScript = name;
         debug() << "lyrics script started:" << name;
         emit lyricsScriptStarted();
     }
-
-    item->log << QString( "%1 Script started" ).arg( QTime::currentTime().toString() );
-    item->engine->setProcessEventsInterval( 100 );
-    item->engine->evaluate( scriptFile.readAll() );
-    scriptFile.close();
-
-    if ( item->evaluating )
-    {
-        item->evaluating = false;
-        if ( item->engine->hasUncaughtException() )
-        {
-            QString errorString = QString( "Script Error: %1 (line: %2)" )
-                .arg( item->engine->uncaughtException().toString() )
-                .arg( item->engine->uncaughtExceptionLineNumber() );
-            item->log << errorString;
-            error() << errorString;
-            item->engine->clearExceptions();
-            slotStopScript( name );
-
-            if( !silent )
-            {
-                debug() << "The Log For the script that is the borked: " << item->log;
-            }
-            return false;
-        }
-
-        if( item->info.category() == QLatin1String("Scriptable Service") )
-            ServiceScriptCustomize( name );
-    }
-    else
-        slotStopScript( name );
-
-    return true;
+    return item->start( silent );
 }
 
 void ScriptManager::handleException( const QScriptValue &value )
 {
     DEBUG_BLOCK
 
-    QScriptEngine * engine = value.engine();
+    QScriptEngine *engine = value.engine();
     if (!engine)
         return;
 
@@ -340,55 +291,23 @@ void ScriptManager::handleException( const QScriptValue &value )
 }
 
 void
-ScriptManager::slotStopScript( const QString &name )
-{
-    DEBUG_BLOCK
-
-    ScriptItem *item = m_scripts.value( name );
-    item->servicePtr = 0;
-    if( !item->engine ) {
-        warning() << "Script has no script engine attached:" << name;
-        return;
-    }
-
-    //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
-    if( item->engine->isEvaluating() )
-    {
-        item->engine->abortEvaluation();
-        item->evaluating = false;
-        return;
-    }
-
-    if( item->info.category() == "Scriptable Service" )
-        The::scriptableServiceManager()->removeRunningScript( name );
-
-    if( item->info.isPluginEnabled() )
-    {
-        debug() << "Disabling sccript" << item->info.pluginName();
-        item->info.setPluginEnabled( false );
-        item->info.save();
-    }
-    scriptFinished( name );
-}
-
-void
 ScriptManager::ServiceScriptPopulate( const QString &name, int level, int parent_id,
                                       const QString &path, const QString &filter )
 {
-    if( m_scripts.value( name )->servicePtr )
-        m_scripts.value( name )->servicePtr->slotPopulate( name, level, parent_id, path, filter );
+    if( m_scripts.value( name )->servicePtr() )
+        m_scripts.value( name )->servicePtr()->slotPopulate( name, level, parent_id, path, filter );
 }
 
 void ScriptManager::ServiceScriptCustomize( const QString &name )
 {
-    if( m_scripts.value( name )->servicePtr )
-        m_scripts.value( name )->servicePtr->slotCustomize( name );
+    if( m_scripts.value( name )->servicePtr() )
+        m_scripts.value( name )->servicePtr()->slotCustomize( name );
 }
 
 void ScriptManager::ServiceScriptRequestInfo( const QString &name, int level, const QString &callbackString )
 {
-    if( m_scripts.value( name )->servicePtr )
-        m_scripts.value( name )->servicePtr->slotRequestInfo( name, level, callbackString );
+    if( m_scripts.value( name )->servicePtr() )
+        m_scripts.value( name )->servicePtr()->slotRequestInfo( name, level, callbackString );
 }
 
 void
@@ -397,43 +316,23 @@ ScriptManager::configChanged( bool changed )
     DEBUG_BLOCK
     if( changed )
     {
-        foreach( const ScriptItem *item, m_scripts )
+        foreach( ScriptItem *item, m_scripts )
         {
-            const QString name = item->info.pluginName();
-            bool enabledByDefault = item->info.isPluginEnabledByDefault();
+            const QString name = item->info().pluginName();
+            bool enabledByDefault = item->info().isPluginEnabledByDefault();
             bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
 
-            if( !item->running && enabled )
+            if( !item->running() && enabled )
             {
                 slotRunScript( name );
             }
-            else if( item->running && !enabled )
+            else if( item->running() && !enabled )
             {
-                slotStopScript( name );
+                item->stop();
             }
         }
     }
 }
-
-void
-ScriptManager::scriptFinished( const QString &name )
-{
-    DEBUG_BLOCK
-    //FIXME: probably can cause crash if you stop a script from evaluating. eg. if a deadlock is introduced in a menu_click_slot.
-    if( !m_scripts.contains( name ) )
-    {
-        warning() << "Script is not in m_scripts?";
-        return;
-    }
-
-    ScriptItem *item = m_scripts.value( name );
-    item->log << QString( "%1 Script ended" ).arg( QTime::currentTime().toString() );
-    delete item->engine;
-    item->engine = 0;
-    item->running = false;
-    item->evaluating = false;
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // private
@@ -466,10 +365,8 @@ ScriptManager::loadScript( const QString& path )
     const QString pluginName = pluginInfo.pluginName();
     const QString category   = pluginInfo.category();
     const QString version    = pluginInfo.version();
-    const QStringList dependencies = pluginInfo.dependencies();
 
-    if( pluginName.isEmpty() || category.isEmpty() || version.isEmpty()
-        || dependencies.isEmpty() )
+    if( pluginName.isEmpty() || category.isEmpty() || version.isEmpty() )
     {
         error() << "PluginInfo has empty values for" << specPath;
         return false;
@@ -477,18 +374,17 @@ ScriptManager::loadScript( const QString& path )
 
     if( !m_scripts.contains( pluginName ) )
     {
-        ScriptItem *item = new ScriptItem;
+        ScriptItem *item = new ScriptItem( this, pluginName, path, pluginInfo );
         m_scripts[ pluginName ] = item;
     }
 
     ScriptItem *item = m_scripts.value( pluginName );
-    item->info = pluginInfo;
 
     //assume it is API V1.0.0 if there is no "API V" prefix found
-    if( !item->info.dependencies().at(0).startsWith("API V") )
+    if( !item->info().dependencies().at(0).startsWith("API V") )
         ScriptVersion = QLatin1String("API V1.0.0");
     else
-        ScriptVersion = item->info.dependencies().at(0);
+        ScriptVersion = item->info().dependencies().at(0);
 
     if( !SupportAPIVersion.contains( ScriptVersion ) )
     {
@@ -496,9 +392,7 @@ ScriptManager::loadScript( const QString& path )
         return false;
     }
 
-    debug() << "found script:" << category << pluginName << version << item->info.dependencies();
-    item->url = KUrl( path );
-    item->running = false;
+    debug() << "found script:" << category << pluginName << version << item->info().dependencies();
     return true;
 }
 
@@ -508,8 +402,8 @@ ScriptManager::scripts( const QString &category ) const
     KPluginInfo::List scripts;
     foreach( const ScriptItem *script, m_scripts )
     {
-        if( script->info.category() == category )
-            scripts << script->info;
+        if( script->info().category() == category )
+            scripts << script->info();
     }
     return scripts;
 }
@@ -518,72 +412,241 @@ QString ScriptManager::scriptNameForEngine(const QScriptEngine* engine) const
 {
     foreach( const QString& name, m_scripts.keys() ) {
         ScriptItem *script = m_scripts[name];
-        if (script->engine == engine)
+        if( script->engine() == engine )
             return name;
     }
 
     return QString();
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// ScriptTerminatorWidget
+////////////////////////////////////////////////////////////////////////////////
+
+ScriptTerminatorWidget::ScriptTerminatorWidget( const QString &message )
+: PopupWidget( 0 )
+{
+    setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
+
+    setContentsMargins( 4, 4, 4, 4 );
+
+    setMinimumWidth( 26 );
+    setMinimumHeight( 26 );
+    setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+
+    QPalette p = QToolTip::palette();
+    setPalette( p );
+
+    QLabel *alabel = new QLabel( message, this );
+    alabel->setWordWrap( true );
+    alabel->setTextFormat( Qt::RichText );
+    alabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
+    alabel->setPalette( p );
+
+    KPushButton *button = new KPushButton( i18n( "Terminate" ), this );
+    button->setPalette(p);;
+    connect( button, SIGNAL(clicked()), SIGNAL(terminate()) );
+    button = new KPushButton( KStandardGuiItem::close(), this );
+    button->setPalette(p);
+    connect( button, SIGNAL(clicked()), SLOT(hide()) );
+
+    reposition();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// ScriptItem
+////////////////////////////////////////////////////////////////////////////////
+
+
+ScriptItem::ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginInfo &info )
+: QObject( parent )
+, m_name( name )
+, m_url( path )
+, m_info( info )
+, m_engine( 0 )
+, m_running( false )
+, m_evaluating( false )
+, m_servicePtr( 0 )
+, m_runningTime( 0 )
+, m_timerId( 0 )
+, m_popupWidget( 0 )
+{}
+
 void
-ScriptManager::startScriptEngine( const QString &name )
+ScriptItem::stop()
+{
+    DEBUG_BLOCK
+    m_servicePtr = 0;
+    if( !m_engine ) {
+        warning() << "Script has no script engine attached:" << m_name;
+        return;
+    }
+
+    killTimer( m_timerId );
+    if( m_popupWidget )
+    {
+        m_popupWidget->hide();
+        m_popupWidget->deleteLater();;
+        m_popupWidget = 0;
+    }
+    //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
+    if( m_engine->isEvaluating() )
+    {
+        m_engine->abortEvaluation();
+        m_evaluating = false;
+        return;
+    }
+    if( m_info.category() == "Scriptable Service" )
+        The::scriptableServiceManager()->removeRunningScript( m_name );
+
+    if( m_info.isPluginEnabled() )
+    {
+        debug() << "Disabling script" << m_info.pluginName();
+        m_info.setPluginEnabled( false );
+        m_info.save();
+    }
+
+    m_log << QString( "%1 Script ended" ).arg( QTime::currentTime().toString() );
+    m_engine->deleteLater();
+    m_engine = 0;
+    m_running = false;
+    m_evaluating = false;
+}
+
+QString
+ScriptItem::specPath() const
+{
+    QFileInfo info( m_url.path() );
+    const QString specPath = QString( "%1/%2.spec" ).arg( info.path(), info.completeBaseName() );
+    return specPath;
+}
+
+void
+ScriptItem::timerEvent( QTimerEvent* event )
+{
+    Q_UNUSED( event )
+    if( m_engine && m_engine->isEvaluating() )
+    {
+        m_runningTime += 100;
+        if( m_runningTime >= 5000 )
+        {
+            debug() << "5 seconds passed evaluating" << m_name;
+            m_runningTime = 0;
+            if( !m_popupWidget )
+                m_popupWidget = new ScriptTerminatorWidget(
+                    i18n( "Script %1 has been evaluating for over"
+                    " 5 seconds now, terminate?"
+                    , m_name ) );
+            connect( m_popupWidget, SIGNAL(terminate()), SLOT(stop()) );
+            m_popupWidget->show();
+        }
+    }
+    else
+    {
+        if( m_popupWidget )
+        {
+            m_popupWidget->deleteLater();
+            m_popupWidget = 0;
+        }
+        m_runningTime = 0;
+    }
+}
+
+bool
+ScriptItem::start( bool silent )
+{
+    DEBUG_BLOCK
+    //load the wrapper classes
+    initializeScriptEngine();
+
+    QFile scriptFile( m_url.path() );
+    scriptFile.open( QIODevice::ReadOnly );
+    m_running = true;
+    m_evaluating = true;
+
+    QString( "%1 Script started" ).arg( QTime::currentTime().toString() );
+
+    m_timerId = startTimer( 100 );
+    m_engine->evaluate( scriptFile.readAll() );
+    debug() << "After Evaluation "<< m_name;
+    scriptFile.close();
+
+    if ( m_evaluating )
+    {
+        m_evaluating = false;
+        if ( m_engine->hasUncaughtException() )
+        {
+            QString errorString = QString( "Script Error: %1 (line: %2)" )
+                            .arg( m_engine->uncaughtException().toString() )
+                            .arg( m_engine->uncaughtExceptionLineNumber() );
+            m_log << errorString;
+            error() << errorString;
+            m_engine->clearExceptions();
+            stop();
+
+            if( !silent )
+            {
+                debug() << "The Log For the script that is the borked: " << m_log;
+            }
+            return false;
+        }
+        if( m_info.category() == QLatin1String("Scriptable Service") )
+            m_servicePtr->slotCustomize( m_name );
+    }
+    else
+        stop();
+    return true;
+}
+
+void
+ScriptItem::initializeScriptEngine()
 {
     DEBUG_BLOCK
 
-    debug() << "start script engine:" << name;
-    ScriptItem *item = m_scripts.value( name );
-    QScriptEngine* scriptEngine = item->engine;
+    m_engine = new QScriptEngine( this );
+    connect( m_engine, SIGNAL(signalHandlerException(QScriptValue)), this,
+             SIGNAL(signalHandlerException(QScriptValue)));
+    m_engine->setProcessEventsInterval( 50 );
+    debug() << "starting script engine:" << m_name;
 
     // first create the Amarok global script object
-    new AmarokScript::AmarokScript( name, scriptEngine );
+    new AmarokScript::AmarokScript( m_name, m_engine );
 
     // common utils
-    new AmarokScript::ScriptImporter( scriptEngine, item->url );
-    new AmarokScript::AmarokScriptConfig( name, scriptEngine );
-    new AmarokScript::InfoScript( item->url, scriptEngine );
-    new AmarokNetworkScript( scriptEngine );
-    new Downloader( scriptEngine );
+    new AmarokScript::ScriptImporter( m_engine, m_url );
+    new AmarokScript::AmarokScriptConfig( m_name, m_engine );
+    new AmarokScript::InfoScript( m_url, m_engine );
+    new AmarokNetworkScript( m_engine );
+    new Downloader( m_engine );
 
     // backend
-    new AmarokScript::AmarokCollectionScript( scriptEngine );
-    new AmarokScript::AmarokEngineScript( scriptEngine );
+    new AmarokScript::AmarokCollectionScript( m_engine );
+    new AmarokScript::AmarokEngineScript( m_engine );
 
     // UI
-    new AmarokScript::AmarokWindowScript( scriptEngine );
-    new AmarokScript::AmarokPlaylistScript( scriptEngine );
-    new AmarokScript::AmarokStatusbarScript( scriptEngine );
-    new AmarokScript::AmarokKNotifyScript( scriptEngine );
-    new AmarokScript::AmarokOSDScript( scriptEngine );
-    QScriptValue windowObject = scriptEngine->globalObject().property( "Amarok" ).property( "Window" );
-    windowObject.setProperty( "ToolsMenu", scriptEngine->newObject() );
-    windowObject.setProperty( "SettingsMenu", scriptEngine->newObject() );
+    new AmarokScript::AmarokWindowScript( m_engine );
+    new AmarokScript::AmarokPlaylistScript( m_engine );
+    new AmarokScript::AmarokStatusbarScript( m_engine );
+    new AmarokScript::AmarokKNotifyScript( m_engine );
+    new AmarokScript::AmarokOSDScript( m_engine );
+    QScriptValue windowObject = m_engine->globalObject().property( "Amarok" ).property( "Window" );
+    windowObject.setProperty( "ToolsMenu", m_engine->newObject() );
+    windowObject.setProperty( "SettingsMenu", m_engine->newObject() );
 
-    const QString &category = item->info.category();
+    const QString &category = m_info.category();
     if( category == QLatin1String("Lyrics") )
     {
-        new AmarokScript::AmarokLyricsScript( scriptEngine );
+        new AmarokScript::AmarokLyricsScript( m_engine );
     }
     else if( category == QLatin1String("Scriptable Service") )
     {
-        new StreamItem( scriptEngine );
-        item->servicePtr = new ScriptableServiceScript( scriptEngine );
-        new AmarokScript::AmarokServicePluginManagerScript( scriptEngine );
+        new StreamItem( m_engine );
+        m_servicePtr = new ScriptableServiceScript( m_engine );
+        new AmarokScript::AmarokServicePluginManagerScript( m_engine );
     }
 
     MetaTrackPrototype* trackProto = new MetaTrackPrototype( this );
-    scriptEngine->setDefaultPrototype( qMetaTypeId<Meta::TrackPtr>(),
-                                       scriptEngine->newQObject(trackProto, QScriptEngine::AutoOwnership) );
+    m_engine->setDefaultPrototype( qMetaTypeId<Meta::TrackPtr>(),
+                                   m_engine->newQObject(trackProto, QScriptEngine::AutoOwnership) );
 }
-
-ScriptItem::ScriptItem()
-    : engine( 0 )
-    , running( false )
-    , servicePtr( 0 )
-{}
-
-ScriptItem::~ScriptItem()
-{
-    delete engine;
-}
-
-#include "ScriptManager.moc"
