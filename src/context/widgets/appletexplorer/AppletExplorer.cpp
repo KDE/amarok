@@ -149,8 +149,6 @@ QSizeF
 AppletExplorer::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {
     QSizeF sz = QGraphicsWidget::sizeHint( which, constraint );
-    qreal height = layout()->itemAt( 0 )->geometry().height();
-    height += layout()->itemAt( 1 )->geometry().height();
     return QSizeF( sz.width(), sz.height() + 2 );
 }
 
