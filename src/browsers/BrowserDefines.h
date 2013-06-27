@@ -21,15 +21,21 @@
 
 namespace CategoryId
 {
+    /**
+     * Categories for collection browser levels.
+     *
+     * Beware, the numeric values get written to config files, change them only if
+     * you know what you're doing.
+     */
     enum CatMenuId {
         None = 0,
-        Album,
-        Artist,
-        AlbumArtist,
-        Composer,
-        Genre,
-        Year,
-        Label
+        Album = 1,
+        Artist = 2,
+        AlbumArtist = 3,
+        Composer = 4,
+        Genre = 5,
+        Year = 6,
+        Label = 7
     };
 }
 
