@@ -47,7 +47,7 @@ ITunesImporterWorker::readTrackElement()
     QString title, artist, album, url;
     int year = -1, bpm = -1, playcount = -1, rating = -1;
     QDateTime lastplayed;
-    
+
     while( !( isEndElement() && name() == "dict" ) )
     {
         readNext();
@@ -74,15 +74,15 @@ ITunesImporterWorker::readTrackElement()
             readNext(); // skip past the </key> and to the data tag
             bpm = readElementText().toInt();
         } else if( name() == "key" && text == "Play Count" )
-        { 
+        {
             readNext(); // skip past the </key> and to the data tag
             playcount = readElementText().toInt();
         } else if( name() == "key" && text == "Rating" )
-          { 
+          {
             readNext(); // skip past the </key> and to the data tag
             rating = readElementText().toInt() / 10; // itunes rates 0-100
         } else if( name() == "key" && text == "Play Date" )
-        { 
+        {
             readNext(); // skip past the </key> and to the data tag
             lastplayed = QDateTime::fromTime_t(readElementText().toInt());
         } else if( name() == "key" && text == "Location" )
@@ -91,13 +91,13 @@ ITunesImporterWorker::readTrackElement()
             url = readElementText();
         }
     }
-    
+
     //split the file://localhost/path/to/track   to just file:///path/to/track
     if( url.indexOf( "file://localhost" ) == 0 )
         url = url.remove( 7, 9 );
-    
+
     debug() << "got track info:" << title << artist << album << year << bpm << url;
-    
+
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
     if( track )
     {
@@ -131,7 +131,7 @@ ITunesImporterWorker::run()
 {
     DEBUG_BLOCK
     debug() << "file:" << m_databaseLocation;
-    QFile* file = new QFile( m_databaseLocation );
+    QScopedPointer<QFile> file( new QFile( m_databaseLocation ) );
     if( !file->exists() )
     {
         debug() << "COULDN'T FIND DB FILE!";
@@ -146,7 +146,7 @@ ITunesImporterWorker::run()
         m_failed = true;
         return;
     }
-    setDevice( file );
+    setDevice( file.data() );
 
     //debug() << "got element:" << name().toString();
 
@@ -161,7 +161,7 @@ ITunesImporterWorker::run()
         {
             readNext();
             readNext();
-            readNext(); // this skips the first all-encompassing <dict> tag 
+            readNext(); // this skips the first all-encompassing <dict> tag
             debug() << "got start of tracks";
             while( !atEnd() && !( isEndElement() && name() == "dict" ) )
             {
