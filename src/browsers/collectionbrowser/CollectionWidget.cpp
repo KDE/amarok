@@ -363,6 +363,7 @@ CollectionWidget::levels() const
 void CollectionWidget::setLevels( const QList<CategoryId::CatMenuId> &levels )
 {
     // -- select the corrrect menu entries
+    QSet<CategoryId::CatMenuId> encounteredLevels;
     for( int i = 0; i < CATEGORY_LEVEL_COUNT; i++ )
     {
         CategoryId::CatMenuId category;
@@ -371,11 +372,16 @@ void CollectionWidget::setLevels( const QList<CategoryId::CatMenuId> &levels )
         else
             category = CategoryId::None;
 
-        foreach( QAction* action, d->levelGroups[i]->actions() )
+        foreach( QAction *action, d->levelGroups[i]->actions() )
         {
-            if( action->data().value<CategoryId::CatMenuId>() == category && !action->isChecked() )
-                action->setChecked( true );
+            CategoryId::CatMenuId actionCategory = action->data().value<CategoryId::CatMenuId>();
+            if( actionCategory == category )
+                action->setChecked( true ); // unchecks other actions in the same group
+            action->setEnabled( !encounteredLevels.contains( actionCategory ) );
         }
+
+        if( category != CategoryId::None )
+            encounteredLevels << category;
     }
 
     // -- set the levels in the view
