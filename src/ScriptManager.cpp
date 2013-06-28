@@ -46,8 +46,9 @@
 #include "scriptengine/AmarokServicePluginManagerScript.h"
 #include "scriptengine/AmarokStatusbarScript.h"
 #include "scriptengine/AmarokWindowScript.h"
-#include "scriptengine/exporters/MetaTypeExporter.h"
 #include "scriptengine/exporters/CollectionTypeExporter.h"
+#include "scriptengine/exporters/MetaTypeExporter.h"
+#include "scriptengine/exporters/QueryMakerExporter.h"
 #include "scriptengine/ScriptImporter.h"
 #include "ScriptUpdater.h"
 
@@ -633,6 +634,7 @@ ScriptItem::initializeScriptEngine()
     new AmarokScript::AmarokOSDScript( m_engine );
 
     AmarokScript::CollectionPrototype::init( m_engine );
+    AmarokScript::QueryMakerPrototype::init( m_engine );
 
     const QString &category = m_info.category();
     if( category == QLatin1String("Lyrics") )

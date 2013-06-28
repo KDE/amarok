@@ -99,6 +99,11 @@ namespace AmarokScript
          */
         Q_PROPERTY( bool supportsTranscode READ supportsTranscode )
 
+        /**
+         * Return a query maker object for querying the collection
+         */
+        Q_PROPERTY( QueryMaker* queryMaker READ queryMaker )
+
         public:
             static void init( QScriptEngine *engine );
             static QScriptValue toScriptValue( QScriptEngine *engine,
@@ -159,11 +164,6 @@ namespace AmarokScript
              */
             void queryAndRemoveTracks( Collections::QueryMaker *qm );
 
-            /**
-             * Return a query maker object for querying the collection
-             */
-            Collections::QueryMaker *queryMaker();
-
         private:
             Collections::Collection *m_collection;
 
@@ -178,6 +178,7 @@ namespace AmarokScript
             bool isQueryable();
             bool isViewable();
             bool supportsTranscode();
+            Collections::QueryMaker *queryMaker();
 
             CollectionPrototype( QScriptEngine *engine,
                                 Collections::Collection *collection );
