@@ -32,26 +32,22 @@
 class PopupDropperViewPrivate
 {
 public:
-    PopupDropperViewPrivate( PopupDropperView* parent, PopupDropper* pd )
+    PopupDropperViewPrivate( PopupDropper* pd )
         : pd( pd )
         , lastItem( 0 )
         , entered( false )
-        , q( parent )
         {}
 
     PopupDropper *pd;
     PopupDropperItem *lastItem;
     bool entered;
-    
-private:
-    PopupDropperView* q;
 };
 
 ////////////////////////////////////////////////////////////////////////////
 
 PopupDropperView::PopupDropperView( PopupDropper *pd, QGraphicsScene *scene, QWidget *parent )
     : QGraphicsView( scene, parent ) 
-    , d( new PopupDropperViewPrivate( this, pd ) )
+    , d( new PopupDropperViewPrivate( pd ) )
 {
     setInteractive( true );
     setAcceptDrops( true );
