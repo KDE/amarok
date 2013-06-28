@@ -16,55 +16,52 @@ option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNI
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
 
-# --------- taglib --------
-# building without taglib is stupid, but it's possible
 
+############### Taglib
 set(TAGLIB_MIN_VERSION "1.7")
-find_package(Taglib)
+find_package(Taglib REQUIRED)
 
-if(TAGLIB_FOUND)
-    # Check if TagLib is built with ASF and MP4 support
-    include(CheckCXXSourceCompiles)
-    set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
-    set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
+# Check if TagLib is built with ASF and MP4 support
+include(CheckCXXSourceCompiles)
+set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
+set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
 
-    check_cxx_source_compiles("#include <asftag.h>
-    int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
-    if( NOT TAGLIB_ASF_FOUND )
-        message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
-    endif( NOT TAGLIB_ASF_FOUND )
+check_cxx_source_compiles("#include <asftag.h>
+int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
+if( NOT TAGLIB_ASF_FOUND )
+    message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
+endif( NOT TAGLIB_ASF_FOUND )
 
-    check_cxx_source_compiles("#include <mp4tag.h>
-    int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
-    if( NOT TAGLIB_MP4_FOUND )
-        message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
-    endif( NOT TAGLIB_MP4_FOUND )
+check_cxx_source_compiles("#include <mp4tag.h>
+int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
+if( NOT TAGLIB_MP4_FOUND )
+    message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
+endif( NOT TAGLIB_MP4_FOUND )
 
-    check_cxx_source_compiles("#include <modtag.h>
-    #include <modfile.h>
-    #include <s3mfile.h>
-    #include <itfile.h>
-    #include <xmfile.h>
-    using namespace TagLib;
-    int main() { char *s; Mod::Tag tag; Mod::File modfile(s); S3M::File s3mfile(s);
-    IT::File itfile(s); XM::File xmfile(s); return 0; }" TAGLIB_MOD_FOUND)
+check_cxx_source_compiles("#include <modtag.h>
+#include <modfile.h>
+#include <s3mfile.h>
+#include <itfile.h>
+#include <xmfile.h>
+using namespace TagLib;
+int main() { char *s; Mod::Tag tag; Mod::File modfile(s); S3M::File s3mfile(s);
+IT::File itfile(s); XM::File xmfile(s); return 0; }" TAGLIB_MOD_FOUND)
 
-    check_cxx_source_compiles("#include <opusfile.h>
-    int main() { char *s; TagLib::Ogg::Opus::File opusfile(s); return 0;}" TAGLIB_OPUS_FOUND)
+check_cxx_source_compiles("#include <opusfile.h>
+int main() { char *s; TagLib::Ogg::Opus::File opusfile(s); return 0;}" TAGLIB_OPUS_FOUND)
 
-    set(CMAKE_REQUIRED_INCLUDES)
-    set(CMAKE_REQUIRED_LIBRARIES)
+set(CMAKE_REQUIRED_INCLUDES)
+set(CMAKE_REQUIRED_LIBRARIES)
 
-    set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
-    find_package(Taglib-Extras)
-    set(TAGLIB_EXTRAS_FOUND ${TAGLIB-EXTRAS_FOUND}) # we need a c-compatible name for the include file
+set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
+find_package(Taglib-Extras)
+set(TAGLIB_EXTRAS_FOUND ${TAGLIB-EXTRAS_FOUND}) # we need a c-compatible name for the include file
 
-    include(CheckTagLibFileName)
+include(CheckTagLibFileName)
 
-    check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
-else()
-    message(WARNING "You are building Amarok without taglib. This has been known to cause many strange behaviours and is strongly advised against.")
-endif()
+check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
+###############
+
 
 # Needed to conditionally build tests and gui
 if(KDE4_BUILD_TESTS)

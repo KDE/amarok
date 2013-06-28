@@ -42,7 +42,6 @@
 #include <QTime>
 #include <QDebug>
 
-#ifdef TAGLIB_FOUND
 #include "FileTypeResolver.h"
 #include "MetaReplayGain.h"
 #include "tag_helpers/TagHelper.h"
@@ -59,7 +58,6 @@
 #pragma GCC diagnostic pop
 #endif // TAGLIB_EXTRAS_FOUND
 
-#endif // TAGLIB_FOUND
 
 namespace Meta
 {
@@ -69,20 +67,17 @@ namespace Meta
 
         static void addRandomness( QCryptographicHash *md5 );
 
-#ifdef TAGLIB_FOUND
         /** Get a taglib fileref for a path */
         static TagLib::FileRef getFileRef( const QString &path );
 
         /** Returns a byte vector that can be used to generate the unique id based on the tags. */
         static TagLib::ByteVector generatedUniqueIdHelper( const TagLib::FileRef &fileref );
-#endif
 
         static QString generateUniqueId( const QString &path );
 
     }
 }
 
-#ifdef TAGLIB_FOUND
 TagLib::FileRef
 Meta::Tag::getFileRef( const QString &path )
 {
@@ -108,7 +103,6 @@ Meta::Tag::getFileRef( const QString &path )
 
     return TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
 }
-#endif
 
 
 // ----------------------- unique id ------------------------
@@ -128,7 +122,6 @@ Meta::Tag::addRandomness( QCryptographicHash *md5 )
     md5->addData( QString::number( qrand() ).toAscii() );
 }
 
-#ifdef TAGLIB_FOUND
 TagLib::ByteVector
 Meta::Tag::generatedUniqueIdHelper( const TagLib::FileRef &fileref )
 {
@@ -144,7 +137,6 @@ Meta::Tag::generatedUniqueIdHelper( const TagLib::FileRef &fileref )
 
     return bv;
 }
-#endif
 
 QString
 Meta::Tag::generateUniqueId( const QString &path )
@@ -154,11 +146,9 @@ Meta::Tag::generateUniqueId( const QString &path )
     QByteArray size;
     md5.addData( size.setNum( qfile.size() ) );
 
-#ifdef TAGLIB_FOUND
     TagLib::FileRef fileref = getFileRef( path );
     TagLib::ByteVector bv = generatedUniqueIdHelper( fileref );
     md5.addData( bv.data(), bv.size() );
-#endif
 
     char databuf[16384];
     int readlen = 0;
@@ -193,13 +183,11 @@ static void ensureFileTypeResolvers()
     if( !alreadyAdded ) {
         alreadyAdded = true;
 
-#ifdef TAGLIB_FOUND
 #ifdef TAGLIB_EXTRAS_FOUND
         TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
         TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
 #endif
         TagLib::FileRef::addFileTypeResolver(new Meta::Tag::FileTypeResolver());
-#endif
     }
 }
 
@@ -210,7 +198,6 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
 {
     Meta::FieldHash result;
 
-#ifdef TAGLIB_FOUND
     // we do not rely on taglib being thread safe especially when writing the same file from different threads.
     QMutexLocker locker( &s_mutex );
     ensureFileTypeResolvers();
@@ -261,7 +248,6 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
         if( !result.contains( Meta::valSamplerate ) && properties->sampleRate() )
             result.insert( Meta::valSamplerate, properties->sampleRate() );
     }
-#endif
 
     //If tags doesn't contains title and artist, try to guess It from file name
     if( !result.contains( Meta::valTitle ) ||
@@ -293,7 +279,6 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
 QImage
 Meta::Tag::embeddedCover( const QString &path )
 {
-#ifdef TAGLIB_FOUND
     // we do not rely on taglib being thread safe especially when writing the same file from different threads.
     QMutexLocker locker( &s_mutex );
 
@@ -310,11 +295,6 @@ Meta::Tag::embeddedCover( const QString &path )
         delete tagHelper;
     }
     return img;
-
-#else
-    Q_UNUSED( path );
-    return QImage();
-#endif
 }
 
 void
@@ -331,7 +311,6 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes, bool writeS
         data.remove( Meta::valRating );
     }
 
-#ifdef TAGLIB_FOUND
     // we do not rely on taglib being thread safe especially when writing the same file from different threads.
     QMutexLocker locker( &s_mutex );
 
@@ -346,15 +325,11 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes, bool writeS
 
     if( tagHelper->setTags( data ) )
         fileref.save();
-#else
-    Q_UNUSED( path );
-#endif
 }
 
 void
 Meta::Tag::setEmbeddedCover( const QString &path, const QImage &cover )
 {
-#ifdef TAGLIB_FOUND
     // we do not rely on taglib being thread safe especially when writing the same file from different threads.
     QMutexLocker locker( &s_mutex );
     ensureFileTypeResolvers();
@@ -372,10 +347,6 @@ Meta::Tag::setEmbeddedCover( const QString &path, const QImage &cover )
         fileref.save();
 
     delete tagHelper;
-#else
-    Q_UNUSED( path );
-    Q_UNUSED( cover );
-#endif
 }
 
 #undef Qt4QStringToTString
