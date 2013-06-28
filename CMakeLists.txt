@@ -87,9 +87,9 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/shared
 )
 
-set( QT_MIN_VERSION "4.8.2" )
-set( KDE_MIN_VERSION "4.8.4" )
-find_package( KDE4 REQUIRED ) # honors QT_MIN_VERSION
+find_package( Qt4 4.8.2 COMPONENTS QtCore QtGui QtOpenGL QtScript QtSvg QtXml QtWebKit REQUIRED )
+find_package( KDE4 4.8.4 REQUIRED )
+
 include( KDE4Defaults )
 include( MacroBoolTo01 )
 include( MacroLibrary )
