@@ -36,7 +36,7 @@ AnalyzerApplet::AnalyzerApplet( QObject* parent, const QVariantList& args )
 {
     setHasConfigurationInterface( false );
 
-    connect( this, SIGNAL( geometryChanged() ), this, SLOT( newGeometry() ) );
+    connect( this, SIGNAL(geometryChanged()), SLOT(newGeometry()) );
 }
 
 AnalyzerApplet::~AnalyzerApplet()
@@ -57,19 +57,13 @@ AnalyzerApplet::init()
     m_analyzerNames["Disco"] = i18nc( "Analyzer name", "Disco" );
 
     KConfigGroup config = Amarok::config( "Analyzer Applet" );
-
-    if( config.readEntry( "Height", (int)Small ) == Small )
-        setHeightSmall();
-    if( config.readEntry( "Height", (int)Small ) == Medium )
-        setHeightMedium();
-    if( config.readEntry( "Height", (int)Small ) == Tall )
-        setHeightTall();
+    setNewHeight( (WidgetHeight)config.readEntry( "Height", (int)Small ) ); // Small is the default height
 
     setCurrentAnalyzer( config.readEntry( "Current Analyzer", "Blocky" ) );
 }
 
 void
-AnalyzerApplet::newGeometry()
+AnalyzerApplet::newGeometry() // SLOT
 {
     DEBUG_BLOCK
 
@@ -112,24 +106,29 @@ AnalyzerApplet::contextualActions ()
     action->setCheckable( true );
     action->setChecked( m_currentHeight == Small );
     action->setActionGroup( heightActions );
-    connect( action, SIGNAL( triggered() ), this, SLOT( setHeightSmall() ) );
+    action->setData( (int)Small );
+    connect( action, SIGNAL(triggered()), SLOT(heightActionTriggered()) );
+
     action = heightMenu->addAction( i18nc( "Height of the Analyzer applet", "Medium" ) );
     action->setCheckable( true );
     action->setChecked( m_currentHeight == Medium );
     action->setActionGroup( heightActions );
-    connect( action, SIGNAL( triggered() ), this, SLOT( setHeightMedium() ) );
+    action->setData( (int)Medium );
+    connect( action, SIGNAL(triggered()), SLOT(heightActionTriggered()) );
+
     action = heightMenu->addAction( i18nc( "Height of the Analyzer applet", "Tall" ) );
     action->setCheckable( true );
     action->setChecked( m_currentHeight == Tall );
     action->setActionGroup( heightActions );
-    connect( action, SIGNAL( triggered() ), this, SLOT( setHeightTall() ) );
+    action->setData( (int)Tall );
+    connect( action, SIGNAL(triggered()), SLOT(heightActionTriggered()) );
 
     action = new QAction( this );
     action->setSeparator( true );
     actions << action;
 
     QActionGroup *analyzerActions = new QActionGroup( this );
-    connect( analyzerActions, SIGNAL( triggered( QAction* ) ), this, SLOT( analyzerAction( QAction* ) ) );
+    connect( analyzerActions, SIGNAL(triggered(QAction*)), SLOT( analyzerAction(QAction*)) );
 
     QMap<QString, QString>::const_iterator i = m_analyzerNames.constBegin();
     while ( i != m_analyzerNames.constEnd() ) {
@@ -146,28 +145,21 @@ AnalyzerApplet::contextualActions ()
 }
 
 void
-AnalyzerApplet::setHeightSmall()
+AnalyzerApplet::setNewHeight( WidgetHeight height )
 {
-    setMinimumHeight( 120 );
-    m_currentHeight = Small;
+    setMinimumHeight( (int)height );
+    m_currentHeight = height;
 }
 
 void
-AnalyzerApplet::setHeightMedium()
+AnalyzerApplet::heightActionTriggered() // SLOT
 {
-    setMinimumHeight( 170 );
-    m_currentHeight = Medium;
+    QAction *action = static_cast<QAction*>( sender() );
+    setNewHeight( static_cast<WidgetHeight>( action->data().toInt() ) );
 }
 
 void
-AnalyzerApplet::setHeightTall()
-{
-    setMinimumHeight( 220 );
-    m_currentHeight = Tall;
-}
-
-void
-AnalyzerApplet::analyzerAction( QAction *action )
+AnalyzerApplet::analyzerAction( QAction *action ) // SLOT
 {
     DEBUG_BLOCK
 
@@ -196,7 +188,7 @@ AnalyzerApplet::setCurrentAnalyzer( const QString &name )
     m_analyzerName = m_analyzer->objectName();
     m_analyzer->setToolTip( i18n( "Right-click to configure" ) );
 
-    connect( this, SIGNAL( appletDestroyed( Plasma::Applet* ) ), m_analyzer, SLOT( deleteLater() ) );
+    connect( this, SIGNAL(appletDestroyed(Plasma::Applet*)), m_analyzer, SLOT(deleteLater()) );
 
     newGeometry();
     m_analyzer->show();

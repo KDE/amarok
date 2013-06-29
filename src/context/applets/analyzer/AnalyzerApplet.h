@@ -26,7 +26,7 @@ class AnalyzerApplet : public Context::Applet
     Q_OBJECT
 
 public:
-    enum WidgetHeight { Small = 0, Medium = 1, Tall = 2 };
+    enum WidgetHeight { Small = 120, Medium = 170, Tall = 220 };
 
     AnalyzerApplet( QObject* parent, const QVariantList& args );
     virtual ~AnalyzerApplet();
@@ -36,16 +36,14 @@ public slots:
 
 private slots:
     void newGeometry();
-    void setHeightSmall();
-    void setHeightMedium();
-    void setHeightTall();
+    void heightActionTriggered();
     void analyzerAction( QAction* );
 
 private:
     void hideEvent( QHideEvent* );
     void showEvent( QShowEvent* );
-
-    void setCurrentAnalyzer( const QString &name);
+    void setNewHeight( WidgetHeight height );
+    void setCurrentAnalyzer( const QString &name );
     QList<QAction *> contextualActions();
 
     QWidget *m_analyzer;
