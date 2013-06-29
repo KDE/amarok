@@ -102,6 +102,13 @@ AnalyzerApplet::contextualActions ()
 
     QActionGroup *heightActions = new QActionGroup( this );
 
+    action = heightMenu->addAction( i18nc( "Height of the Analyzer applet", "Very Small" ) );
+    action->setCheckable( true );
+    action->setChecked( m_currentHeight == VerySmall );
+    action->setActionGroup( heightActions );
+    action->setData( (int)VerySmall );
+    connect( action, SIGNAL(triggered()), SLOT(heightActionTriggered()) );
+
     action = heightMenu->addAction( i18nc( "Height of the Analyzer applet", "Small" ) );
     action->setCheckable( true );
     action->setChecked( m_currentHeight == Small );
