@@ -4,16 +4,11 @@ include_directories(
 
 set( amarokshared_SRCS
     FileType.cpp
+    FileTypeResolver.cpp
+    MetaReplayGain.cpp
     MetaTagLib.cpp
     TagsFromFileNameGuesser.cpp
 )
-if( TAGLIB_FOUND )
-    set( amarokshared_SRCS
-        ${amarokshared_SRCS}
-        FileTypeResolver.cpp
-        MetaReplayGain.cpp
-    )
-endif( TAGLIB_FOUND )
 
 set( amarokshared_collectionscanner_SRCS
     collectionscanner/Album.cpp
@@ -24,26 +19,25 @@ set( amarokshared_collectionscanner_SRCS
     collectionscanner/Track.cpp
 )
 
-if( TAGLIB_FOUND )
-    set( amarokshared_tag_helpers_SRCS
-        tag_helpers/APETagHelper.cpp
-        tag_helpers/ASFTagHelper.cpp
-        tag_helpers/ID3v2TagHelper.cpp
-        tag_helpers/MP4TagHelper.cpp
-        tag_helpers/StringHelper.cpp
-        tag_helpers/TagHelper.cpp
-        tag_helpers/VorbisCommentTagHelper.cpp
-    )
-endif( TAGLIB_FOUND )
 
-kde4_add_library( amarokshared SHARED ${amarokshared_SRCS}
-    ${amarokshared_collectionscanner_SRCS} ${amarokshared_tag_helpers_SRCS} )
+set( amarokshared_tag_helpers_SRCS
+    tag_helpers/APETagHelper.cpp
+    tag_helpers/ASFTagHelper.cpp
+    tag_helpers/ID3v2TagHelper.cpp
+    tag_helpers/MP4TagHelper.cpp
+    tag_helpers/StringHelper.cpp
+    tag_helpers/TagHelper.cpp
+    tag_helpers/VorbisCommentTagHelper.cpp
+)
 
-if( TAGLIB_FOUND )
-    include_directories( ${TAGLIB_INCLUDES} )
-    add_definitions( ${TAGLIB_CFLAGS} )
-    target_link_libraries( amarokshared ${TAGLIB_LIBRARIES} )
-endif( TAGLIB_FOUND )
+kde4_add_library( amarokshared SHARED
+    ${amarokshared_SRCS}
+    ${amarokshared_collectionscanner_SRCS}
+    ${amarokshared_tag_helpers_SRCS} )
+
+include_directories( ${TAGLIB_INCLUDES} )
+add_definitions( ${TAGLIB_CFLAGS} )
+target_link_libraries( amarokshared ${TAGLIB_LIBRARIES} )
 if( TAGLIB-EXTRAS_FOUND )
     include_directories( ${TAGLIB-EXTRAS_INCLUDES} )
     add_definitions( ${TAGLIB-EXTRAS_CFLAGS} )

@@ -1,5 +1,3 @@
-
-if( TAGLIB_FOUND )
 include_directories( ../
                      ${QT_INCLUDES}             
                      ${TAGLIB_INCLUDES}         
@@ -33,6 +31,3 @@ if(APPLE)
 else(APPLE)
     install(TARGETS amarok_afttagger RUNTIME DESTINATION ${BIN_INSTALL_DIR} )
 endif(APPLE)
-
-endif( TAGLIB_FOUND )
-

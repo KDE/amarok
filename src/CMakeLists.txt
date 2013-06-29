@@ -857,11 +857,9 @@ target_link_libraries(amaroklib
     amarokshared
 )
 
-if( TAGLIB_FOUND )
-    include_directories(${TAGLIB_INCLUDES})
-    add_definitions(${TAGLIB_CFLAGS})
-    target_link_libraries(amaroklib ${TAGLIB_LIBRARIES})
-endif( TAGLIB_FOUND )
+include_directories(${TAGLIB_INCLUDES})
+add_definitions(${TAGLIB_CFLAGS})
+target_link_libraries(amaroklib ${TAGLIB_LIBRARIES})
 if( TAGLIB-EXTRAS_FOUND )
     include_directories(${TAGLIB-EXTRAS_INCLUDES})
     add_definitions(${TAGLIB-EXTRAS_CFLAGS})
