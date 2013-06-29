@@ -499,6 +499,12 @@ void
 CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 {
     DEBUG_BLOCK
+
+    // Don't allow dragging with middle mouse button, as this often interferes with the single-click
+    // click action (accidentally registering click as drag)
+    if( QApplication::mouseButtons() & Qt::MidButton )
+        return;
+
     QModelIndexList indices = selectedIndexes();
     if( indices.isEmpty() )
         return;
