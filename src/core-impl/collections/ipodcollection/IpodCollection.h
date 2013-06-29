@@ -41,8 +41,6 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
     Q_OBJECT
 
     public:
-        static const QString s_uidUrlProtocol;
-
         /**
          * Creates an iPod collection on top of already-mounted filesystem.
          *
@@ -216,6 +214,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         friend class IpodWriteDatabaseJob;
         friend class IpodPlaylistProvider;
 
+        static const QString s_uidUrlProtocol;
         static const QStringList s_audioFileTypes;
         static const QStringList s_videoFileTypes;
         static const QStringList s_audioVideoFileTypes;
