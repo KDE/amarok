@@ -57,6 +57,7 @@ class FastForwardWorker : public ThreadWeaver::Job
 
     public:
         FastForwardWorker();
+        ~FastForwardWorker();
 
         void setDriver( const FastForwardImporter::ConnectionType &driver ) { m_driver = driver; }
         void setDatabaseLocation( const QString &location ) { m_databaseLocation = location; }
@@ -74,7 +75,7 @@ class FastForwardWorker : public ThreadWeaver::Job
         virtual void run();
 
     signals:
-        void importError( QString ); 
+        void importError( QString );
         void showMessage( QString );
         void trackAdded( Meta::TrackPtr );
         void trackDiscarded( QString );
@@ -86,7 +87,7 @@ class FastForwardWorker : public ThreadWeaver::Job
         void queryDone();
 
     private:
-        void setupDatabaseConnection();
+        QSqlDatabase setupDatabaseConnection();
         const QString driverName() const;
         void failWithError( const QString &errorMsg );
 
@@ -110,7 +111,7 @@ class FastForwardWorker : public ThreadWeaver::Job
          * adds misc track data (lyrics, labels) to cache @param dataForInsert.
          */
         void setTrackMiscData( ImporterMiscDataStorage &dataForInsert, Meta::TrackPtr track,
-                               const QString &uniqueId, QString lyrics );
+                               const QString &uniqueId, QString lyrics , QSqlDatabase db );
 
         /**
          * Inserts misc data such as lyrics and labels to database.
@@ -135,7 +136,6 @@ class FastForwardWorker : public ThreadWeaver::Job
         bool m_importArtwork;
         QString m_importArtworkDir;
 
-        QSqlDatabase m_db;
         QMap<QString, QSharedPointer<Collections::CollectionLocation> > m_collectionFolders;
         Meta::TrackList m_matchTracks;
         QEventLoop *m_eventLoop;

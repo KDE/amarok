@@ -68,7 +68,12 @@ FastForwardWorker::FastForwardWorker()
     }
 }
 
-void
+FastForwardWorker::~FastForwardWorker()
+{
+    QSqlDatabase::removeDatabase( QSqlDatabase::defaultConnection );
+}
+
+QSqlDatabase
 FastForwardWorker::setupDatabaseConnection()
 {
     DEBUG_BLOCK
@@ -79,24 +84,26 @@ FastForwardWorker::setupDatabaseConnection()
     if( driver.isEmpty() )
     {
         emit importError( i18n( "No database driver was selected" ) );
-        return; // no need to set m_failed here, it is in failWithError()
+        return QSqlDatabase(); // no need to set m_failed here, it is in failWithError()
     }
 
     if( isSqlite && !QFile::exists( m_databaseLocation ) )
     {
         emit importError( i18n( "Database could not be found at: %1", m_databaseLocation ) );
-        return;
+        return QSqlDatabase();
     }
 
-    m_db = QSqlDatabase::addDatabase( driver );
-    m_db.setDatabaseName( isSqlite ? m_databaseLocation : m_database );
+    QSqlDatabase db = QSqlDatabase::addDatabase( driver );
+    db.setDatabaseName( isSqlite ? m_databaseLocation : m_database );
 
     if( !isSqlite )
     {
-        m_db.setHostName( m_hostname );
-        m_db.setUserName( m_username );
-        m_db.setPassword( m_password );
+        db.setHostName( m_hostname );
+        db.setUserName( m_username );
+        db.setPassword( m_password );
     }
+
+    return db;
 }
 
 const QString
@@ -116,10 +123,10 @@ FastForwardWorker::run()
 {
     DEBUG_BLOCK
 
-    setupDatabaseConnection();
-    if( !m_db.open() )
+    QSqlDatabase db = setupDatabaseConnection();
+    if( !db.open() )
     {
-        failWithError( i18n( "Could not open Amarok 1.4 database: %1", m_db.lastError().text() ) );
+        failWithError( i18n( "Could not open Amarok 1.4 database: %1", db.lastError().text() ) );
         return;
     }
 
@@ -145,11 +152,11 @@ FastForwardWorker::run()
         "LEFT OUTER JOIN year Y "
         "  ON T.year = Y.id "
         "ORDER BY lastmountpoint, S.url" );
-    QSqlQuery query( sql, m_db );
+    QSqlQuery query( sql, db );
 
     if( query.lastError().isValid() )
     {
-        failWithError( i18n( "Could not execute import query: %1", m_db.lastError().text() ) );
+        failWithError( i18n( "Could not execute import query: %1", db.lastError().text() ) );
         return;
     }
 
@@ -255,7 +262,7 @@ FastForwardWorker::run()
         if( track )
         {
             setTrackMetadata( track, score, rating, firstPlayed, lastPlayed, playCount );
-            setTrackMiscData( dataForInsert, track, uniqueId, lyrics );
+            setTrackMiscData( dataForInsert, track, uniqueId, lyrics, db );
         }
     }
 
@@ -381,7 +388,7 @@ FastForwardWorker::setTrackMetadata( Meta::TrackPtr track, double score, int rat
 
 void
 FastForwardWorker::setTrackMiscData( ImporterMiscDataStorage& dataForInsert, Meta::TrackPtr track,
-                                     const QString& uniqueId, QString lyrics )
+                                     const QString& uniqueId, QString lyrics, QSqlDatabase db )
 {
     QString url = track->playableUrl().url(); // we cannot reuse url, it may have changed in smartMatch
 
@@ -401,12 +408,12 @@ FastForwardWorker::setTrackMiscData( ImporterMiscDataStorage& dataForInsert, Met
         QString labelsSql = QString( "SELECT L.name FROM tags_labels T "
             "LEFT JOIN labels L ON L.id = T.labelid "
             "WHERE L.name != '' AND T.uniqueid = '%1'" ).arg( uniqueId );
-        QSqlQuery labelsQuery( labelsSql, m_db );
+        QSqlQuery labelsQuery( labelsSql, db );
 
         if( labelsQuery.lastError().isValid() )
         {
             failWithError( i18n( "Could not execute labels import query: %1; query was: %2",
-                                m_db.lastError().text(), labelsSql ) );
+                                db.lastError().text(), labelsSql ) );
             return;
         }
 
@@ -465,11 +472,11 @@ FastForwardWorker::insertMiscData( const ImporterMiscDataStorage& dataForInsert 
 
     debug() << "lyrics and labels updated";
     QString lyricUpdateMessage = i18np( "Cached lyrics updated for 1 track",
-                                        "Cached lyrics updated for %1 tracks", 
+                                        "Cached lyrics updated for %1 tracks",
                                         lyricsCount );
 
     QString labelUpdateMessage = i18np( "labels added to 1 track",
-                                        "labels added to %1 tracks", 
+                                        "labels added to %1 tracks",
                                         labelsCount );
 
 

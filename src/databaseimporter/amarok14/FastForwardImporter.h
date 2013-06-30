@@ -31,7 +31,7 @@ class FastForwardImporter : public DatabaseImporter
         virtual ~FastForwardImporter();
 
         virtual DatabaseImporterConfig *configWidget( QWidget *parent );
-        
+
         static QString name() { return QString( "amarok" ); }
 
         virtual bool canImportArtwork() const { return true; }
@@ -41,11 +41,12 @@ class FastForwardImporter : public DatabaseImporter
     protected:
         virtual void import();
 
+        FastForwardImporterConfig *m_config;
+
     private slots:
         void finishUp();
 
     private:
-        FastForwardImporterConfig *m_config;
         FastForwardWorker         *m_worker;
 };
 

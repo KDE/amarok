@@ -34,15 +34,15 @@ class FastForwardImporterConfig : public DatabaseImporterConfig
         FastForwardImporterConfig( QWidget *parent = 0 );
         virtual ~FastForwardImporterConfig() { };
 
-        FastForwardImporter::ConnectionType connectionType() const;
-        QString databaseLocation() const { return m_databaseLocationInput->text(); }
-        QString databaseName() const { return m_databaseInput->text(); }
-        QString databaseHost() const { return m_hostnameInput->text(); }
-        QString databaseUser() const { return m_usernameInput->text(); }
-        QString databasePass() const { return m_passwordInput->text(); }
-        bool smartMatch() const { return m_smartMatchCheck->checkState() == Qt::Checked; }
-        bool importArtwork() const { return m_importArtworkCheck->checkState() == Qt::Checked; }
-        QString importArtworkDir() const { return m_importArtworkDirInput->text(); }
+        virtual FastForwardImporter::ConnectionType connectionType() const;
+        virtual QString databaseLocation() const { return m_databaseLocationInput->text(); }
+        virtual QString databaseName() const { return m_databaseInput->text(); }
+        virtual QString databaseHost() const { return m_hostnameInput->text(); }
+        virtual QString databaseUser() const { return m_usernameInput->text(); }
+        virtual QString databasePass() const { return m_passwordInput->text(); }
+        virtual bool smartMatch() const { return m_smartMatchCheck->checkState() == Qt::Checked; }
+        virtual bool importArtwork() const { return m_importArtworkCheck->checkState() == Qt::Checked; }
+        virtual QString importArtworkDir() const { return m_importArtworkDirInput->text(); }
 
     private slots:
         void connectionChanged( int index );
