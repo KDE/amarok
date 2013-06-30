@@ -21,6 +21,7 @@
 #include "core/meta/forward_declarations.h"
 
 #include <QObject>
+#include <QWeakPointer>
 
 namespace Collections
 {
@@ -76,15 +77,12 @@ namespace AmarokScript
         void addFilter( const QString &filter );
 
     private:
-        Collections::QueryMaker *m_querymaker;
+        QWeakPointer<Collections::QueryMaker> m_querymaker;
         QString m_filter;
 
-        QueryMakerPrototype( QScriptEngine *engine, Collections::QueryMaker *collection );
+        QueryMakerPrototype( Collections::QueryMaker *collection );
         bool isValid();
         QString filter();
-
-    private slots:
-        void slotQueryMakerDestroyed();
 
     signals:
         /**

@@ -30,7 +30,6 @@
 
 class ScriptItem;
 class ScriptableServiceScript;
-class QTimer;
 namespace AmarokScript {
     class AmarokScript;
 }
@@ -151,8 +150,8 @@ class ScriptItem : public QObject
 public:
     ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginInfo &info );
 
-    QScriptEngine* engine() { return m_engine; }
-    ScriptableServiceScript* servicePtr() { return m_servicePtr; }
+    QScriptEngine* engine() { return m_engine.data(); }
+    ScriptableServiceScript* servicePtr() { return m_servicePtr.data(); }
     KUrl url() const{ return m_url; }
     KPluginInfo info() const { return m_info; }
     bool running() const { return m_running; }
@@ -173,15 +172,15 @@ private:
     QString                                         m_name;
     KUrl                                            m_url;
     KPluginInfo                                     m_info;
-    QScriptEngine*                                  m_engine;
+    QWeakPointer<QScriptEngine>                     m_engine;
     /** Currently activated in the Script Manager */
     bool                                            m_running;
     bool                                            m_evaluating;
-    ScriptableServiceScript*                        m_servicePtr;
+    QWeakPointer<ScriptableServiceScript>           m_servicePtr;
     QStringList                                     m_log;
     int                                             m_runningTime;
     int                                             m_timerId;
-    ScriptTerminatorWidget                          *m_popupWidget;
+    QWeakPointer<ScriptTerminatorWidget>            m_popupWidget;
 
     /**
      * Initialize QScriptEngine and load wrapper classes
@@ -190,4 +189,3 @@ private:
 };
 
 #endif /* AMAROK_SCRIPTMANAGER_H */
-

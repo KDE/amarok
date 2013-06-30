@@ -35,8 +35,8 @@ QueryMakerPrototype::init( QScriptEngine *engine )
 QScriptValue
 QueryMakerPrototype::toScriptValue( QScriptEngine *engine, QueryMaker* const &queryMaker ) //move to a template?
 {
-    QueryMakerPrototype *prototype = new QueryMakerPrototype( engine, queryMaker );
-    QScriptValue val = engine->newQObject( prototype, QScriptEngine::AutoOwnership);
+    QueryMakerPrototype *prototype = new QueryMakerPrototype( queryMaker );
+    QScriptValue val = engine->newQObject( prototype, QScriptEngine::ScriptOwnership );
     return val;
 }
 
@@ -47,7 +47,7 @@ QueryMakerPrototype::fromScriptValue( const QScriptValue &obj, QueryMaker* &quer
     if( !prototype )
         queryMaker = 0;
     else
-        queryMaker = prototype->m_querymaker;
+        queryMaker = prototype->m_querymaker.data();
 }
 
 // script invokable
@@ -57,42 +57,34 @@ QueryMakerPrototype::addFilter( const QString &filter )
 {
     if( !m_querymaker )
         return;
-    Collections::addTextualFilter( m_querymaker, filter );
-    m_filter += filter;
+    Collections::addTextualFilter( m_querymaker.data(), filter );
+    m_filter += filter + " ";
 }
 
 void
 QueryMakerPrototype::run()
 {
-    if( m_querymaker )
-        m_querymaker->run();
+    if( !m_querymaker )
+        return;
+    m_querymaker.data()->setQueryType( Collections::QueryMaker::Track );
+    m_querymaker.data()->run();
 }
 
 void
 QueryMakerPrototype::abort()
 {
     if( m_querymaker )
-        m_querymaker->abortQuery();
+        m_querymaker.data()->abortQuery();
 }
 
 //private
 
-QueryMakerPrototype::QueryMakerPrototype( QScriptEngine *engine, QueryMaker *queryMaker )
-: QObject() //engine ownership
+QueryMakerPrototype::QueryMakerPrototype( QueryMaker *queryMaker )
+: QObject( 0 ) //engine ownership
 , m_querymaker( queryMaker )
 {
-    Q_UNUSED( engine )
-    connect( m_querymaker, SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)) );
-    connect( m_querymaker, SIGNAL(queryDone()), SIGNAL(queryDone()) );
-    connect( m_querymaker, SIGNAL(destroyed(QObject*)), SLOT(slotQueryMakerDestroyed()) );
-    m_querymaker->setAutoDelete( true );
-
-}
-
-void
-QueryMakerPrototype::slotQueryMakerDestroyed()
-{
-    m_querymaker = 0;
+    connect( m_querymaker.data(), SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)) );
+    connect( m_querymaker.data(), SIGNAL(queryDone()), SIGNAL(queryDone()) );
 }
 
 QString

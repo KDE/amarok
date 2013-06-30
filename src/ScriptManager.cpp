@@ -466,20 +466,16 @@ ScriptItem::ScriptItem( QObject *parent, const QString &name, const QString &pat
 , m_name( name )
 , m_url( path )
 , m_info( info )
-, m_engine( 0 )
 , m_running( false )
 , m_evaluating( false )
-, m_servicePtr( 0 )
 , m_runningTime( 0 )
 , m_timerId( 0 )
-, m_popupWidget( 0 )
 {}
 
 void
 ScriptItem::stop()
 {
     DEBUG_BLOCK
-    m_servicePtr = 0;
     if( !m_engine ) {
         warning() << "Script has no script engine attached:" << m_name;
         return;
@@ -488,14 +484,13 @@ ScriptItem::stop()
     killTimer( m_timerId );
     if( m_popupWidget )
     {
-        m_popupWidget->hide();
-        m_popupWidget->deleteLater();;
-        m_popupWidget = 0;
+        m_popupWidget.data()->hide();
+        m_popupWidget.data()->deleteLater();;
     }
     //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
-    if( m_engine->isEvaluating() )
+    if( m_engine.data()->isEvaluating() )
     {
-        m_engine->abortEvaluation();
+        m_engine.data()->abortEvaluation();
         m_evaluating = false;
         return;
     }
@@ -510,8 +505,7 @@ ScriptItem::stop()
     }
 
     m_log << QString( "%1 Script ended" ).arg( QTime::currentTime().toString() );
-    m_engine->deleteLater();
-    m_engine = 0;
+    m_engine.data()->deleteLater();
     m_running = false;
     m_evaluating = false;
 }
@@ -528,7 +522,7 @@ void
 ScriptItem::timerEvent( QTimerEvent* event )
 {
     Q_UNUSED( event )
-    if( m_engine && m_engine->isEvaluating() )
+    if( m_engine && m_engine.data()->isEvaluating() )
     {
         m_runningTime += 100;
         if( m_runningTime >= 5000 )
@@ -540,17 +534,14 @@ ScriptItem::timerEvent( QTimerEvent* event )
                     i18n( "Script %1 has been evaluating for over"
                     " 5 seconds now, terminate?"
                     , m_name ) );
-            connect( m_popupWidget, SIGNAL(terminate()), SLOT(stop()) );
-            m_popupWidget->show();
+            connect( m_popupWidget.data(), SIGNAL(terminate()), SLOT(stop()) );
+            m_popupWidget.data()->show();
         }
     }
     else
     {
         if( m_popupWidget )
-        {
-            m_popupWidget->deleteLater();
-            m_popupWidget = 0;
-        }
+            m_popupWidget.data()->deleteLater();
         m_runningTime = 0;
     }
 }
@@ -570,21 +561,21 @@ ScriptItem::start( bool silent )
     QString( "%1 Script started" ).arg( QTime::currentTime().toString() );
 
     m_timerId = startTimer( 100 );
-    m_engine->evaluate( scriptFile.readAll() );
+    m_engine.data()->evaluate( scriptFile.readAll() );
     debug() << "After Evaluation "<< m_name;
     scriptFile.close();
 
     if ( m_evaluating )
     {
         m_evaluating = false;
-        if ( m_engine->hasUncaughtException() )
+        if ( m_engine.data()->hasUncaughtException() )
         {
             QString errorString = QString( "Script Error: %1 (line: %2)" )
-                            .arg( m_engine->uncaughtException().toString() )
-                            .arg( m_engine->uncaughtExceptionLineNumber() );
+                            .arg( m_engine.data()->uncaughtException().toString() )
+                            .arg( m_engine.data()->uncaughtExceptionLineNumber() );
             m_log << errorString;
             error() << errorString;
-            m_engine->clearExceptions();
+            m_engine.data()->clearExceptions();
             stop();
 
             if( !silent )
@@ -594,7 +585,7 @@ ScriptItem::start( bool silent )
             return false;
         }
         if( m_info.category() == QLatin1String("Scriptable Service") )
-            m_servicePtr->slotCustomize( m_name );
+            m_servicePtr.data()->slotCustomize( m_name );
     }
     else
         stop();
@@ -607,46 +598,46 @@ ScriptItem::initializeScriptEngine()
     DEBUG_BLOCK
 
     m_engine = new QScriptEngine( this );
-    connect( m_engine, SIGNAL(signalHandlerException(QScriptValue)), this,
+    connect( m_engine.data(), SIGNAL(signalHandlerException(QScriptValue)), this,
              SIGNAL(signalHandlerException(QScriptValue)));
-    m_engine->setProcessEventsInterval( 50 );
+    m_engine.data()->setProcessEventsInterval( 50 );
     debug() << "starting script engine:" << m_name;
 
     // first create the Amarok global script object
-    new AmarokScript::AmarokScript( m_name, m_engine );
+    new AmarokScript::AmarokScript( m_name, m_engine.data() );
 
     // common utils
-    new AmarokScript::ScriptImporter( m_engine, m_url );
-    new AmarokScript::AmarokScriptConfig( m_name, m_engine );
-    new AmarokScript::InfoScript( m_url, m_engine );
-    new AmarokNetworkScript( m_engine );
-    new Downloader( m_engine );
+    new AmarokScript::ScriptImporter( m_engine.data(), m_url );
+    new AmarokScript::AmarokScriptConfig( m_name, m_engine.data() );
+    new AmarokScript::InfoScript( m_url, m_engine.data() );
+    new AmarokNetworkScript( m_engine.data() );
+    new Downloader( m_engine.data() );
 
     // backend
-    new AmarokScript::AmarokCollectionScript( m_engine );
-    new AmarokScript::AmarokEngineScript( m_engine );
+    new AmarokScript::AmarokCollectionScript( m_engine.data() );
+    new AmarokScript::AmarokEngineScript( m_engine.data() );
 
     // UI
-    new AmarokScript::AmarokWindowScript( m_engine );
-    new AmarokScript::AmarokPlaylistScript( m_engine );
-    new AmarokScript::AmarokStatusbarScript( m_engine );
-    new AmarokScript::AmarokKNotifyScript( m_engine );
-    new AmarokScript::AmarokOSDScript( m_engine );
+    new AmarokScript::AmarokWindowScript( m_engine.data() );
+    new AmarokScript::AmarokPlaylistScript( m_engine.data() );
+    new AmarokScript::AmarokStatusbarScript( m_engine.data() );
+    new AmarokScript::AmarokKNotifyScript( m_engine.data() );
+    new AmarokScript::AmarokOSDScript( m_engine.data() );
 
-    AmarokScript::CollectionPrototype::init( m_engine );
-    AmarokScript::QueryMakerPrototype::init( m_engine );
+    AmarokScript::CollectionPrototype::init( m_engine.data() );
+    AmarokScript::QueryMakerPrototype::init( m_engine.data() );
 
     const QString &category = m_info.category();
     if( category == QLatin1String("Lyrics") )
     {
-        new AmarokScript::AmarokLyricsScript( m_engine );
+        new AmarokScript::AmarokLyricsScript( m_engine.data() );
     }
     else if( category == QLatin1String("Scriptable Service") )
     {
-        new StreamItem( m_engine );
-        m_servicePtr = new ScriptableServiceScript( m_engine );
-        new AmarokScript::AmarokServicePluginManagerScript( m_engine );
+        new StreamItem( m_engine.data() );
+        m_servicePtr = new ScriptableServiceScript( m_engine.data() );
+        new AmarokScript::AmarokServicePluginManagerScript( m_engine.data() );
     }
 
-    new AmarokScript::MetaTrackPrototype( m_engine );
+    new AmarokScript::MetaTrackPrototype( m_engine.data() );
 }
