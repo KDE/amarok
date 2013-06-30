@@ -26,7 +26,7 @@ class AnalyzerApplet : public Context::Applet
     Q_OBJECT
 
 public:
-    enum WidgetHeight { Tiny = 80, Small = 120, Medium = 170, Tall = 220 };
+    enum WidgetHeight { Tiny = 80, Small = 120, Medium = 170, Tall = 220, Default = Small };
 
     AnalyzerApplet( QObject* parent, const QVariantList& args );
     virtual ~AnalyzerApplet();
