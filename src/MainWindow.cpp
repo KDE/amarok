@@ -86,6 +86,7 @@
 #include <plasma/plasma.h>
 
 #include <QCheckBox>
+#include <QClipboard>
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDockWidget>
@@ -716,6 +717,22 @@ MainWindow::slotSeekBackwardLong()
     ec->seekBy( AmarokConfig::seekLong() * -1000 );
 }
 
+void MainWindow::slotPutCurrentTrackToClipboard()
+{
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    if ( currentTrack )
+    {
+        QString text;
+        Meta::ArtistPtr artist = currentTrack->artist();
+        if( artist )
+            text = artist->prettyName() + " - ";
+        text += currentTrack->prettyName();
+
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText( text );
+    }
+}
+
 void
 MainWindow::activate()
 {
@@ -965,6 +982,11 @@ MainWindow::createActions()
     ac->addAction( "queueTrack", action );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_D ) );
     connect( action, SIGNAL(triggered()), SIGNAL(switchQueueStateShortcut()) );
+
+    action = new KAction( i18n( "Put Artist - Title of the current track to the clipboard" ), this  );
+    ac->addAction("artistTitleClipboard", action);
+    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_C ) );
+    connect( action, SIGNAL(triggered()), SLOT(slotPutCurrentTrackToClipboard()) );
 
     action = new KAction( i18n( "Rate Current Track: 1" ), this );
     ac->addAction( "rate1", action );

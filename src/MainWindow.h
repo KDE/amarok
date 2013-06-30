@@ -163,6 +163,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void slotSeekBackwardShort();
         void slotSeekBackwardMedium();
         void slotSeekBackwardLong();
+        void slotPutCurrentTrackToClipboard();
 
 #ifdef DEBUG_BUILD_TYPE
         void showNetworkRequestViewer();
