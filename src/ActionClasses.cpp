@@ -151,13 +151,10 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
     KMenu* menu = s_helpMenu->menu();
 
-    // NOTE: We hide "Report Bug..." because we need to add it on our own to name the dialog
-    // so it can be blacklisted from LikeBack.
-    s_helpMenu->action( KHelpMenu::menuReportBug )->setVisible( false );
-
-    // NOTE: "What's This" isn't currently defined for anything in Amarok, so let's remove that too
+    // "What's This" isn't currently defined for anything in Amarok, so let's remove it
     s_helpMenu->action( KHelpMenu::menuWhatsThis )->setVisible( false );
 
+    // Hide the default "About App" dialog, as we replace it with a custom one
     s_helpMenu->action( KHelpMenu::menuAboutApp )->setVisible( false );
 
     return menu;

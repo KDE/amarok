@@ -48,7 +48,6 @@
 #include "covermanager/CoverManager.h" // for actions
 #include "dialogs/DiagnosticDialog.h"
 #include "dialogs/EqualizerDialog.h"
-#include "likeback/LikeBack.h"
 #include "moodbar/MoodbarManager.h"
 #include "network/NetworkAccessManagerProxy.h"
 #ifdef DEBUG_BUILD_TYPE
@@ -1044,19 +1043,6 @@ MainWindow::createActions()
     ac->addAction( "reportBug", action );
     connect( action, SIGNAL(triggered()), SLOT(showReportBug()) );
 
-    LikeBack *likeBack = new LikeBack( LikeBack::AllButBugs,
-        LikeBack::isDevelopmentVersion( KGlobal::mainComponent().aboutData()->version() ) );
-    likeBack->setServer( "amarok.likeback.kde.org", "/send.php" );
-    likeBack->setAcceptedLanguages( QStringList( "en" ) );
-    likeBack->setWindowNamesListing( LikeBack::WarnUnnamedWindows );    //Notify if a window has no name
-
-    KActionCollection *likeBackActions = new KActionCollection( this, KGlobal::mainComponent() );
-    likeBackActions->addAssociatedWidget( this );
-    likeBack->createActions( likeBackActions );
-
-    ac->addAction( "likeBackSendComment", likeBackActions->action( "likeBackSendComment" ) );
-    ac->addAction( "likeBackShowIcons", likeBackActions->action( "likeBackShowIcons" ) );
-
     PERF_LOG( "MainWindow::createActions 8" )
     new Amarok::MenuAction( ac, this );
     new Amarok::StopAction( ac, this );
@@ -1188,16 +1174,10 @@ MainWindow::createMenus()
     m_menubar.data()->addMenu( m_settingsMenu.data() );
 
     KMenu *helpMenu = Amarok::Menu::helpMenu();
-    helpMenu->insertAction( helpMenu->actions().first(),
-                            Amarok::actionCollection()->action( "reportBug" ) );
     helpMenu->insertAction( helpMenu->actions().last(),
                             Amarok::actionCollection()->action( "extendedAbout" ) );
     helpMenu->insertAction( helpMenu->actions().last(),
                             Amarok::actionCollection()->action( "diagnosticDialog" ) );
-    helpMenu->insertAction( helpMenu->actions().at( 4 ),
-                            Amarok::actionCollection()->action( "likeBackSendComment" ) );
-    helpMenu->insertAction( helpMenu->actions().at( 5 ),
-                            Amarok::actionCollection()->action( "likeBackShowIcons" ) );
 
     m_menubar.data()->addSeparator();
     m_menubar.data()->addMenu( helpMenu );

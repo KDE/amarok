@@ -37,15 +37,6 @@ if ( KDEMULTIMEDIA_FOUND )
 endif ( KDEMULTIMEDIA_FOUND )
 
 #####################################################################
-# LIKEBACK
-#####################################################################
-set(likeback_SRCS
-    likeback/LikeBack.cpp
-    likeback/LikeBackBar.cpp
-    likeback/LikeBackDialog.cpp
-)
-
-#####################################################################
 # PROXYCOLLECTION
 #####################################################################
 set(aggregatecollection_SRCS
@@ -573,7 +564,6 @@ set(amaroklib_LIB_SRCS
     ${libserviceframework_SRCS}
     ${libservicebrowser_SRCS}
     ${libdynamic_SRCS}
-    ${likeback_SRCS}
     ${libmetaimpl_SRCS}
     ${core_interfaces_SRCS}
     ${apg_SRCS}
@@ -825,8 +815,6 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/TagGuessOptions.ui
     dialogs/OrganizeCollectionOptions.ui
     dialogs/OrganizeCollectionDialogBase.ui
-    likeback/LikeBackBar.ui
-    likeback/LikeBackDialog.ui
     playlist/layouts/PlaylistLayoutEditDialog.ui
     core-impl/podcasts/sql/PodcastSettingsBase.ui
     core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui

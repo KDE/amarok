@@ -20,7 +20,8 @@ VERSION 2.8-Beta 1
    * Added support for .asx playlists; patch by Tatjana Gornak. (BR 170207)
    * Add Radio GFM radio streams to Cool Stream Script. (BR 317978)
    * Added options to pause playback on system suspend and to inhibit automatic suspend
-     if playing a track (enabled by default); patch by Anmol Ahuja. (BR 259862, 222571)
+     if playing a track (enabled by default); patch by Anmol Ahuja.
+     (BR 259862) (BR 222571)
    * Playlist files are now read asynchronously when possible; patch and great deal of
      refactoring by Tatjana Gornak. (BR 291934)
    * Added support to filter tracks to scrobble to Last.fm by label. Patch by Vedant
@@ -35,6 +36,7 @@ VERSION 2.8-Beta 1
    * Added Ctrl+H shortcut to randomize playlist, patch by Harsh Gupta. (BR 208061)
 
   CHANGES:
+   * Removed LikeBack (a development feature in debug builds). (BR 312498) (BR 252323)
    * Collection Browser: Artist level was renamed to Track Artist and replaced by Album
      Artist by default. Various Artists item is no longer shown under Track Artist level.
    * Removed the splash screen.
