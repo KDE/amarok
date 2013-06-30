@@ -57,7 +57,7 @@ AnalyzerApplet::init()
     m_analyzerNames["Disco"] = i18nc( "Analyzer name", "Disco" );
 
     KConfigGroup config = Amarok::config( "Analyzer Applet" );
-    setNewHeight( (WidgetHeight)config.readEntry( "Height", 0 ) );
+    setNewHeight( (WidgetHeight)config.readEntry( "Height", int() ) );
 
     setCurrentAnalyzer( config.readEntry( "Current Analyzer", "Blocky" ) );
 }
