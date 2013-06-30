@@ -20,19 +20,19 @@ If you need to contact someone about a particular part it is best to contact the
     To update the authors list, use the following:
     $ cat AUTHORS | sed 's#<#\\<#' | sed 's#>#\\><br/>#'
 -->
-Alejandro Wainzinger \<aikawarazuni@gmail.com\><br/>
 Bart Cerneels \<bart.cerneels@kde.org\><br/>
-Dan Meltzer \<hydrogen@notyetimplemented.com\><br/>
-Ian Monroe \<ian@monroe.nu\><br/>
-Jeff Mitchell \<mitchell@kde.org\><br/>
+Edward Toroshchin \<edward.hades@gmail.com\><br/>
 Leo Franchi \<lfranchi@kde.org\><br/>
-Lydia Pintscher \<lydia@kde.org\><br/>
 Mark Kretschmann \<kretschmann@kde.org\><br/>
-Maximilian Kossick \<maximilian.kossick@gmail.com\><br/>
-Nikolaj Hald Nielsen \<nhnfreespirit@gmail.com\><br/>
+Matěj Laitl \<matej@laitl.cz\><br/>
+Myriam Schweingruber \<myriam@kde.org\><br/>
+Patrick von Reth \<patrick.vonreth@gmail.com\><br/>
+Ralf Engels \<ralf-engels@gmx.de\><br/>
 Rick W. Chen \<stuffcorpse@archlinux.us\><br/>
-Seb Ruiz \<ruiz@kde.org\><br/>
+Sam Lade \<sam@sentynel.com\><br/>
+Sven Krohlas \<sven@asbest-online.de\><br/>
 Téo Mrnjavac \<teo@kde.org\><br/>
+Valorie Zimmerman \<valorie@kde.org\><br/>
 
 @licenses
 @gpl (if not stated otherwise in the source file)
