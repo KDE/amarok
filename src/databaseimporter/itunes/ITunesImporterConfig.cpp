@@ -18,6 +18,7 @@
 #include "ITunesImporterConfig.h"
 
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
 #include <QCompleter>
 #include <QDirModel>
@@ -46,9 +47,14 @@ ITunesImporterConfig::ITunesImporterConfig( QWidget *parent )
     databaseLayout->addWidget( m_databaseLocationInput, 5, 1 );
 
     gridHolder->setLayout( databaseLayout );
-    
+
     QWidget *spacer = new QWidget( this );
     spacer->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+}
+
+Collections::CollectionLocation *ITunesImporterConfig::collectionLocation() const
+{
+    return CollectionManager::instance()->primaryCollection()->location();
 }
 
 #include "ITunesImporterConfig.moc"

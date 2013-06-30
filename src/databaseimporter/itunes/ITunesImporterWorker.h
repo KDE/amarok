@@ -27,6 +27,11 @@
 #include <QSqlDatabase>
 #include <QXmlStreamReader>
 
+namespace Collections
+{
+    class CollectionLocation;
+}
+
 class ITunesImporterWorker : public ThreadWeaver::Job, public QXmlStreamReader
 {
     Q_OBJECT
@@ -36,6 +41,7 @@ class ITunesImporterWorker : public ThreadWeaver::Job, public QXmlStreamReader
         ~ITunesImporterWorker();
 
         void setDatabaseLocation( const QString &location ) { m_databaseLocation = location; }
+        void setCollectionLocation( Collections::CollectionLocation *location ) { m_collectionLocation = location; }
 
         bool failed() const { return m_failed; }
         void abort() { m_aborted = true; }
@@ -43,7 +49,7 @@ class ITunesImporterWorker : public ThreadWeaver::Job, public QXmlStreamReader
         virtual void run();
 
     signals:
-        void importError( QString ); 
+        void importError( QString );
         void showMessage( QString );
         void trackAdded( Meta::TrackPtr );
 
@@ -55,6 +61,7 @@ class ITunesImporterWorker : public ThreadWeaver::Job, public QXmlStreamReader
 
         QMap<Meta::TrackPtr, QString> m_tracksForInsert;
         QString m_databaseLocation;
+        Collections::CollectionLocation *m_collectionLocation;
 };
 
 #endif // multiple inclusion guard

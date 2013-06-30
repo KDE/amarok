@@ -31,7 +31,7 @@ class ITunesImporter : public DatabaseImporter
         virtual ~ITunesImporter();
 
         static QString name() { return QString("iTunes"); }
-        
+
         virtual DatabaseImporterConfig *configWidget( QWidget *parent );
         virtual bool canImportArtwork() const { return false; }
     private slots:
@@ -39,9 +39,9 @@ class ITunesImporter : public DatabaseImporter
 
     protected:
         virtual void import();
-        
-    private:
         ITunesImporterConfig *m_config;
+
+    private:
         ITunesImporterWorker *m_worker;
 };
 

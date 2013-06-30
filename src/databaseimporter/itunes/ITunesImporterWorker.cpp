@@ -81,10 +81,11 @@ ITunesImporterWorker::readTrackElement()
           {
             readNext(); // skip past the </key> and to the data tag
             rating = readElementText().toInt() / 10; // itunes rates 0-100
-        } else if( name() == "key" && text == "Play Date" )
+        } else if( name() == "key" && text == "Play Date UTC" )
         {
             readNext(); // skip past the </key> and to the data tag
-            lastplayed = QDateTime::fromTime_t(readElementText().toInt());
+            lastplayed = QDateTime::fromString( readElementText(),
+                                                "yyyy'-'MM'-'dd'T'hh':'mm':'ss'Z'" );
         } else if( name() == "key" && text == "Location" )
         {
             readNext(); // skip past the </key> and to the data tag
@@ -180,12 +181,10 @@ ITunesImporterWorker::run()
 
     if( m_tracksForInsert.size() > 0 )
     {
-        Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
-
         QMapIterator<Meta::TrackPtr, QString> j(m_tracksForInsert);
         while (j.hasNext()) {
             j.next();
-            location->insert( j.key(), j.value() );
+            m_collectionLocation->insert( j.key(), j.value() );
         }
     }
 

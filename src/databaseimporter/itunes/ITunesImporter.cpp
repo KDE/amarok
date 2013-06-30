@@ -28,7 +28,7 @@ ITunesImporter::ITunesImporter( QObject *parent )
 }
 
 ITunesImporter::~ITunesImporter()
-{    
+{
     DEBUG_BLOCK
     if( m_worker )
     {
@@ -61,9 +61,10 @@ ITunesImporter::import()
         error() << "No configuration exists, bailing out of import";
         return;
     }
-    
+
     m_worker = new ITunesImporterWorker();
     m_worker->setDatabaseLocation( m_config->databaseLocation() );
+    m_worker->setCollectionLocation( m_config->collectionLocation() );
 
     connect( m_worker, SIGNAL(trackAdded(Meta::TrackPtr)),
              this, SIGNAL(trackAdded(Meta::TrackPtr)), Qt::QueuedConnection );
@@ -75,7 +76,7 @@ ITunesImporter::import()
              this, SIGNAL(showMessage(QString)), Qt::QueuedConnection );
 
     ThreadWeaver::Weaver::instance()->enqueue( m_worker );
-    
+
 }
 
 
@@ -86,7 +87,7 @@ ITunesImporter::finishUp()
     m_worker->failed() ?
         emit( importFailed() ) :
         emit( importSucceeded() );
-    
+
     delete m_worker;
 }
 

@@ -51,7 +51,7 @@ DatabaseImporter::~DatabaseImporter()
 DatabaseImporterConfig*
 DatabaseImporter::configWidget( QWidget *parent )
 {
-    return new DatabaseImporterConfig( parent ); 
+    return new DatabaseImporterConfig( parent );
 }
 
 int

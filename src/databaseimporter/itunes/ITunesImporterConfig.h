@@ -24,6 +24,10 @@
 #include <QCheckBox>
 #include <QLineEdit>
 
+namespace Collections
+{
+    class CollectionLocation;
+}
 class QComboBox;
 class QLabel;
 
@@ -35,9 +39,10 @@ class ITunesImporterConfig : public DatabaseImporterConfig
         ITunesImporterConfig( QWidget *parent = 0 );
         virtual ~ITunesImporterConfig() { };
 
-        QString databaseLocation() const { return m_databaseLocationInput->text(); }
+        virtual QString databaseLocation() const { return m_databaseLocationInput->text(); }
+        virtual Collections::CollectionLocation *collectionLocation() const;
     private:
-        
+
         QLabel    *m_databaseLocationLabel;
 
         QLineEdit *m_databaseLocationInput;
