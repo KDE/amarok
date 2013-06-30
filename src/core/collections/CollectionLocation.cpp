@@ -125,33 +125,6 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
 }
 
 void
-CollectionLocation::prepareTranscodeAndCopy( const Meta::TrackList& tracks, CollectionLocation* destination
-                                            , Transcoding::Configuration& configuration )
-{
-    if( !destination->isWritable() )
-    {
-        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
-        delegate->notWriteable( this );
-        destination->deleteLater();
-        deleteLater();
-        return;
-    }
-
-    m_destination = destination;
-    m_destination->setSource( this );
-    m_transcodingConfiguration = configuration;
-    m_removeSources = false;
-    m_sourceTracks = tracks;
-
-    setupConnections();
-
-    if( tracks.size() <= 0 )
-        abort();
-    else
-        QTimer::singleShot( 0, this, SLOT(slotShowSourceDialogDone()) );
-}
-
-void
 CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination )
 {
     DEBUG_BLOCK
@@ -197,33 +170,6 @@ CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocati
     m_destination = destination;
     m_destination->setSource( this );
     startWorkflow( tracks, true );
-}
-
-void
-CollectionLocation::prepareTranscodeAndMove( const Meta::TrackList& tracks, CollectionLocation* destination
-                                            , Transcoding::Configuration& configuration )
-{
-    if( !destination->isWritable() )
-    {
-        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
-        delegate->notWriteable( this );
-        destination->deleteLater();
-        deleteLater();
-        return;
-    }
-
-    m_destination = destination;
-    m_destination->setSource( this );
-    m_transcodingConfiguration = configuration;
-    m_removeSources = true;
-    m_sourceTracks = tracks;
-
-    setupConnections();
-
-    if( tracks.size() <= 0 )
-        abort();
-    else
-        QTimer::singleShot( 0, this, SLOT(slotShowSourceDialogDone()) );
 }
 
 void
@@ -307,7 +253,7 @@ CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
     QMap<Meta::TrackPtr, KUrl> urls;
     foreach( Meta::TrackPtr track, tracks )
     {
-        if( track && track->isPlayable() )
+        if( track->isPlayable() )
         {
             urls.insert( track, track->playableUrl() );
             debug() << "adding url " << track->playableUrl();

@@ -19,19 +19,18 @@
 
 #include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
-#include "core/transcoding/TranscodingConfiguration.h"
+
 #include <QObject>
+#include <QWeakPointer>
 
 namespace Collections
 {
-    class QueryMaker;
     class Collection;
+    class QueryMaker;
 }
+class QIcon;
 class QScriptEngine;
 class QScriptValue;
-class QIcon;
-
-using Transcoding::Configuration;
 
 namespace AmarokScript
 {
@@ -45,12 +44,12 @@ namespace AmarokScript
         Q_OBJECT
 
         /**
-         * Indicated whether user can choose track file path within this collection.
+         * Indicates whether user can choose track file path within this collection.
          */
         Q_PROPERTY( bool isOrganizable READ isOrganizable )
 
         /**
-         * Indicated whether this collection can be written to (tracks added, removed).
+         * Indicates whether this collection can be written to (tracks added, removed).
          */
         Q_PROPERTY( bool isWritable READ isWritable )
 
@@ -60,37 +59,38 @@ namespace AmarokScript
         Q_PROPERTY( QString collectionId READ collectionId )
 
         /**
-         * A user visible name for this collection, to be displayed in the collection-browser and elsewhere
+         * A user visible name for this collection.
          */
         Q_PROPERTY( QString prettyName READ prettyName )
 
         /**
-         * Return the used space on this collection.
+         * The used space on this collection.
          */
         Q_PROPERTY( float usedCapacity READ usedCapacity )
 
         /**
-         * Return the total storage capacity the collection.
+         * The total storage capacity the collection.
          */
         Q_PROPERTY( float totalCapacity READ totalCapacity )
 
         /**
-         *
+         * Indicates whether this collection still exists.
          */
         Q_PROPERTY( bool isValid READ isValid )
 
         /**
-         *
+         * An icon representing this collection.
          */
         Q_PROPERTY( QIcon icon READ icon )
 
         /**
-         *
+         * Indicates whether this collection can be queried using a
+         * QueryMaker object
          */
         Q_PROPERTY( bool isQueryable READ isQueryable )
 
         /**
-         *
+         * Indicates whether the collection is viewable in the browser.
          */
         Q_PROPERTY( bool isViewable READ isViewable )
 
@@ -100,9 +100,9 @@ namespace AmarokScript
         Q_PROPERTY( bool supportsTranscode READ supportsTranscode )
 
         /**
-         * Return a query maker object for querying the collection
+         * A querymaker object for querying the collection.
          */
-        Q_PROPERTY( QueryMaker* queryMaker READ queryMaker )
+        Q_PROPERTY( Collections::QueryMaker* queryMaker READ queryMaker )
 
         public:
             static void init( QScriptEngine *engine );
@@ -112,60 +112,62 @@ namespace AmarokScript
                                          Collections::Collection* &collection );
 
         public slots:
-
             /**
-             * Copy [and optionally transcode] a list of tracks to the destination collection
+             * Copy a list of tracks to the destination collection
              */
-            void copyTracks( const Meta::TrackList &tracks, Collections::Collection *targetCollection,
-                             Configuration tc = Configuration( Transcoding::JUST_COPY ) );
+            void copyTracks( const Meta::TrackList &tracks, Collections::Collection *targetCollection );
 
             /**
-             * Copy [and optionally transcode] a single track to the destination collection
+             * Copy a single track to the destination collection
              */
-            void copyTrack( const Meta::TrackPtr track, Collections::Collection *targetCollection,
-                             Configuration tc = Configuration( Transcoding::JUST_COPY ) );
+            void copyTracks( const Meta::TrackPtr track, Collections::Collection *targetCollection );
 
             /**
-             *
+             * Convenience method for copying tracks based on QueryMaker results,
+             * takes ownership of the @param qm (The querymaker is rendered invalid
+             * after copying).
+             * @see copyTracks( Meta::TrackList, CollectionLocation* )
              */
-            void queryAndcopyTracks( Collections::QueryMaker *queryMaker, Collections::Collection *targetCollection,
-                        Configuration tc = Configuration( Transcoding::JUST_COPY ) );
+            void queryAndCopyTracks( Collections::QueryMaker *queryMaker, Collections::Collection *targetCollection );
 
             /**
-             * Copy [and optionally transcode] a list of tracks to the destination collection.
+             * Copy an array of tracks to the destination collection.
              */
-            void moveTracks( const Meta::TrackList &tracks, Collections::Collection *targetCollection,
-                             Configuration tc = Configuration( Transcoding::JUST_COPY ) );
+            void moveTracks( const Meta::TrackList &tracks, Collections::Collection *targetCollection );
 
             /**
-             * Move [and optionally transcode] a single track to the destination collection.
+             * Move a single track to the destination collection.
              */
-            void moveTrack( const Meta::TrackPtr track, Collections::Collection *targetCollection,
-                             Configuration tc = Configuration( Transcoding::JUST_COPY ) );
+            void moveTracks( const Meta::TrackPtr track, Collections::Collection *targetCollection );
 
             /**
-             *
+             * Convenience method for moving tracks based on QueryMaker results,
+             * takes ownership of the @param qm (The querymaker is rendered invalid
+             * after moving).
+             * @see moveTracks( Meta::TrackList, CollectionLocation* )
              */
-            void queryAndmoveTracks( Collections::QueryMaker *queryMaker, Collections::Collection *targetCollection,
-                        Configuration tc = Configuration( Transcoding::JUST_COPY ) );
+            void queryAndMoveTracks( Collections::QueryMaker *queryMaker, Collections::Collection *targetCollection );
 
             /**
-             * Remove tracks from collection.
+             * Remove an array of tracks from collection.
              */
             void removeTracks( const Meta::TrackList &trackList );
 
             /**
              * Remove single track from collection.
              */
-            void removeTrack( const Meta::TrackPtr track );
+            void removeTracks( const Meta::TrackPtr track );
 
             /**
-             *
+             * Convenience method for removing tracks selected by QueryMaker,
+             * takes ownership of the @param qm (The querymaker is rendered invalid
+             * after the removal).
+             * @see removeTracks( Meta::TrackList )
              */
             void queryAndRemoveTracks( Collections::QueryMaker *qm );
 
         private:
-            Collections::Collection *m_collection;
+            QWeakPointer<Collections::Collection> m_collection;
 
             bool isOrganizable() const;
             bool isWritable() const;
@@ -175,23 +177,45 @@ namespace AmarokScript
             float totalCapacity() const;
             bool isValid() const;
             QIcon icon() const;
-            bool isQueryable();
-            bool isViewable();
-            bool supportsTranscode();
+            bool isQueryable() const;
+            bool isViewable() const ;
+            bool supportsTranscode() const;
             Collections::QueryMaker *queryMaker();
 
-            CollectionPrototype( QScriptEngine *engine,
-                                Collections::Collection *collection );
+            CollectionPrototype( Collections::Collection *collection );
+            Meta::TrackList removeInvalidTracks( const Meta::TrackList &tracks );
 
-        private slots:
-            //set m_collection to null when collection destroyed
-            void slotCollectionDestroyed();
+       signals:
+           /**
+            * This signal will be emitted after major changes to the collection
+            * e.g. new songs where added, or an album changed
+            * from compilation to non-compilation (and vice versa)
+            * it will not be emitted on minor changes (e.g. the tags of a song were changed)
+            *
+            * This means that previously done searches can no longer
+            * be considered valid.
+            */
+           void updated();
 
-        signals:
+            /**
+             * Emited when this collection is removed.
+             */
+            void removed();
+
+            /**
+             * Emitted when a copy operation from/ to this collection has finished.
+             */
             void finishCopy();
+
+            /**
+             * Emitted when a removal operation on this collection has finished.
+             */
             void finishRemove();
+
+            /**
+             * Emitted when a copy/ move operation from/ to this collection was aborted.
+             */
             void aborted();
-            void updated();
     };
 }
 

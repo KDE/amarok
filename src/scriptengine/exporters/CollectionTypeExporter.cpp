@@ -33,7 +33,7 @@ using namespace AmarokScript;
 using Collections::Collection;
 using Collections::QueryMaker;
 
-#define CHECK_COLLECTION( returnVal ) if( !m_collection ) return returnVal;
+#define GET_COLLECTION( returnVal ) Collection *collection = m_collection.data(); if( !collection ) return returnVal;
 
 void
 CollectionPrototype::init( QScriptEngine *engine )
@@ -45,8 +45,8 @@ CollectionPrototype::init( QScriptEngine *engine )
 QScriptValue
 CollectionPrototype::toScriptValue( QScriptEngine *engine, Collection* const &collection )
 {
-    CollectionPrototype *collectionProto = new CollectionPrototype( engine, collection );
-    QScriptValue val = engine->newQObject( collectionProto, QScriptEngine::AutoOwnership);
+    CollectionPrototype *collectionProto = new CollectionPrototype( collection );
+    QScriptValue val = engine->newQObject( collectionProto, QScriptEngine::ScriptOwnership );
     return val;
 }
 
@@ -57,63 +57,67 @@ CollectionPrototype::fromScriptValue( const QScriptValue &obj, Collection* &coll
     if( !collectionProto )
         collection = 0;
     else
-        collection = collectionProto->m_collection;
+        collection = collectionProto->m_collection.data();
 }
 
 //script invokable
 
 void
-CollectionPrototype::copyTrack( const Meta::TrackPtr track, Collection* targetCollection, Configuration tc )
+CollectionPrototype::copyTracks( const Meta::TrackPtr track, Collection* targetCollection )
 {
-    copyTracks( Meta::TrackList() << track, targetCollection, tc );
+    copyTracks( Meta::TrackList() << track, targetCollection );
 }
 
 void
-CollectionPrototype::copyTracks( const Meta::TrackList &tracks, Collection* targetCollection, Configuration tc )
+CollectionPrototype::copyTracks( const Meta::TrackList &tracks, Collection* targetCollection )
 {
-    CHECK_COLLECTION()
+    GET_COLLECTION()
     if( !targetCollection )
         return;
-    m_collection->location()->prepareTranscodeAndCopy( tracks, targetCollection->location(), tc );
+    collection->location()->prepareCopy( removeInvalidTracks( tracks ), targetCollection->location() );
 }
 
 void
-CollectionPrototype::queryAndcopyTracks( QueryMaker *queryMaker, Collection* targetCollection, Configuration tc )
+CollectionPrototype::queryAndCopyTracks( QueryMaker *queryMaker, Collection* targetCollection )
 {
-    Q_UNUSED( queryMaker )
-    Q_UNUSED( targetCollection )
-    Q_UNUSED( tc )
+    GET_COLLECTION()
+    if( !queryMaker || !targetCollection )
+        return;
+    collection->location()->prepareCopy( queryMaker, targetCollection->location() );
 }
 
 void
-CollectionPrototype::moveTrack( const Meta::TrackPtr track, Collection *targetCollection, Configuration tc )
+CollectionPrototype::moveTracks( const Meta::TrackPtr track, Collection *targetCollection )
 {
-    moveTracks( Meta::TrackList() << track, targetCollection, tc );
+    moveTracks( Meta::TrackList() << track, targetCollection );
 }
 
 void
-CollectionPrototype::moveTracks( const Meta::TrackList &tracks, Collection *targetCollection, Configuration tc )
+CollectionPrototype::moveTracks( const Meta::TrackList &tracks, Collection *targetCollection )
 {
+    GET_COLLECTION()
     if( !targetCollection )
         return;
-    m_collection->location()->prepareTranscodeAndMove( tracks, targetCollection->location(), tc );
+    collection->location()->prepareMove( removeInvalidTracks( tracks ), targetCollection->location() );
 }
 
 void
-CollectionPrototype::queryAndmoveTracks( QueryMaker *queryMaker, Collection *targetCollection, Configuration tc )
+CollectionPrototype::queryAndMoveTracks( QueryMaker *queryMaker, Collection *targetCollection )
 {
-    Q_UNUSED( queryMaker )
-    Q_UNUSED( targetCollection )
-    Q_UNUSED( tc )
+    GET_COLLECTION()
+    if( !queryMaker || !targetCollection )
+        return;
+    collection->location()->prepareMove( queryMaker, targetCollection->location() );
 }
 
 void
 CollectionPrototype::removeTracks( const Meta::TrackList &list )
 {
-    Q_UNUSED( list )
+    GET_COLLECTION()
+    collection->location()->prepareRemove( removeInvalidTracks( list ) );
 }
 
-void CollectionPrototype::removeTrack( const Meta::TrackPtr track )
+void CollectionPrototype::removeTracks( const Meta::TrackPtr track )
 {
     removeTracks( Meta::TrackList() << track );
 }
@@ -121,14 +125,17 @@ void CollectionPrototype::removeTrack( const Meta::TrackPtr track )
 void
 CollectionPrototype::queryAndRemoveTracks( QueryMaker* queryMaker )
 {
-    Q_UNUSED( queryMaker )
+    GET_COLLECTION()
+    if( !queryMaker )
+        return;
+    collection->location()->prepareRemove( queryMaker );
 }
 
 QueryMaker*
 CollectionPrototype::queryMaker()
 {
-    CHECK_COLLECTION( 0 );
-    return m_collection->queryMaker();
+    GET_COLLECTION( 0 );
+    return collection->queryMaker();
 }
 
 //private methods
@@ -136,61 +143,61 @@ CollectionPrototype::queryMaker()
 QIcon
 CollectionPrototype::icon() const
 {
-    CHECK_COLLECTION( QIcon() )
-    return m_collection->icon();
+    GET_COLLECTION( QIcon() )
+    return collection->icon();
 }
 
 QString
 CollectionPrototype::collectionId() const
 {
-    CHECK_COLLECTION( QString() );
-    return m_collection->collectionId();
+    GET_COLLECTION( QString() );
+    return collection->collectionId();
 }
 
 bool
 CollectionPrototype::isOrganizable() const
 {
-    CHECK_COLLECTION( false );
-    return m_collection->isOrganizable();
+    GET_COLLECTION( false );
+    return collection->isOrganizable();
 }
 
 bool
 CollectionPrototype::isWritable() const
 {
-    CHECK_COLLECTION( false );
-    return m_collection->isWritable();
+    GET_COLLECTION( false );
+    return collection->isWritable();
 }
 
 QString
 CollectionPrototype::prettyName() const
 {
-    CHECK_COLLECTION( QString() );
-    return m_collection->prettyName();
+    GET_COLLECTION( QString() );
+    return collection->prettyName();
 }
 
 float
 CollectionPrototype::totalCapacity() const
 {
-    CHECK_COLLECTION( 0.0 )
-    return m_collection->totalCapacity();
+    GET_COLLECTION( 0.0 )
+    return collection->totalCapacity();
 }
 
 float
 CollectionPrototype::usedCapacity() const
 {
-    CHECK_COLLECTION( 0.0 )
-    return m_collection->usedCapacity();
+    GET_COLLECTION( 0.0 )
+    return collection->usedCapacity();
 }
 
 bool
 CollectionPrototype::isValid() const
 {
-    CHECK_COLLECTION( false )
+    GET_COLLECTION( false )
     return true;
 }
 
 bool
-CollectionPrototype::isQueryable()
+CollectionPrototype::isQueryable() const
 {
     if( CollectionManager::instance()->collectionStatus( collectionId() ) &
         CollectionManager::CollectionQueryable )
@@ -199,7 +206,7 @@ CollectionPrototype::isQueryable()
 }
 
 bool
-CollectionPrototype::isViewable()
+CollectionPrototype::isViewable() const
 {
     if( CollectionManager::instance()->collectionStatus( collectionId() ) &
         CollectionManager::CollectionViewable )
@@ -208,12 +215,10 @@ CollectionPrototype::isViewable()
 }
 
 bool
-CollectionPrototype::supportsTranscode()
+CollectionPrototype::supportsTranscode() const
 {
-    CHECK_COLLECTION( false )
-    QScopedPointer<Capabilities::TranscodeCapability> tc(
-        m_collection->create<Capabilities::TranscodeCapability>() );
-    if( !tc )
+    GET_COLLECTION( false )
+    if( !collection->has<Capabilities::TranscodeCapability>() )
         return false;
     Transcoding::Controller *tcC = Amarok::Components::transcodingController();
     if( tcC && !tcC->availableEncoders().isEmpty() )
@@ -221,22 +226,29 @@ CollectionPrototype::supportsTranscode()
     return false;
 }
 
-CollectionPrototype::CollectionPrototype( QScriptEngine *engine, Collection *collection )
-: QObject( engine )
+//private
+
+CollectionPrototype::CollectionPrototype( Collection *collection )
+: QObject( 0 ) //script owned
 , m_collection( collection )
 {
     connect( collection, SIGNAL(updated()), SIGNAL(updated()) );
     connect( collection->location(), SIGNAL(aborted()), SIGNAL(aborted()) );
     connect( collection->location(), SIGNAL(finishCopy()), SIGNAL(finishCopy()) );
     connect( collection->location(), SIGNAL(finishRemove()), SIGNAL(finishRemove()) );
-    //I kan haz constructorz?;
-    connect( collection, SIGNAL(destroyed(QObject*)), SLOT(slotCollectionDestroyed()) );
+    connect( collection, SIGNAL(remove()), SIGNAL(removed()) );
 }
 
-void
-CollectionPrototype::slotCollectionDestroyed()
+Meta::TrackList
+CollectionPrototype::removeInvalidTracks(const Meta::TrackList& tracks)
 {
-    m_collection = 0;
+    Meta::TrackList cleaned;
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        if( track )
+            cleaned << track;
+    }
+    return cleaned;
 }
 
-#undef CHECK_COLLECTION
+#undef GET_COLLECTION
