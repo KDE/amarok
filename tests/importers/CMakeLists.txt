@@ -34,3 +34,22 @@ target_link_libraries( testitunesimporter
     ${CMAKE_DL_LIBS}
 )
 
+#------------------------ Test FastForwardImporter-------------------------
+
+set( testfastforwardimporter_SRCS TestFastForwardImporter.cpp TestImportersCommon.cpp )
+
+kde4_add_unit_test( testfastforwardimporter ${testfastforwardimporter_SRCS} )
+
+add_dependencies( testfastforwardimporter amarokcore )
+add_dependencies( testfastforwardimporter amaroklib )
+add_dependencies( testfastforwardimporter importers_files )
+
+target_link_libraries( testfastforwardimporter
+    amarokcore
+    amaroklib
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
+    ${QT_QTTEST_LIBRARY}
+    ${QT_QTCORE_LIBRARY}
+    ${CMAKE_DL_LIBS}
+)
