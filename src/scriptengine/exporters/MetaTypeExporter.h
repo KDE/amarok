@@ -18,14 +18,13 @@
 #define METATYPE_EXPORTER_H
 
 #include "amarok_export.h"
+
 #include <QObject>
 #include <QScriptable>
-#include <QScriptValue>
 
-//class QScriptEngine;
+class QScriptEngine;
+class QScriptValue;
 
-//TEMP
-#include <QScriptEngine>
 namespace AmarokScript
 {
     #ifdef DEBUG

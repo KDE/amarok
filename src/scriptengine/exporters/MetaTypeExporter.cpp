@@ -22,7 +22,6 @@ Image*                                                                          
 #include "core/meta/Statistics.h"
 #include "core/meta/TrackEditor.h"
 
-//#include <QtCore>
 #include <QScriptEngine>
 
 using namespace AmarokScript;
@@ -38,9 +37,7 @@ if( ec ) \
 MetaTrackPrototype::MetaTrackPrototype( QScriptEngine *engine )
     : QObject( engine )
 {
-    //qScriptRegisterMetaType<Meta::TrackPtr>(&eng, toScriptValue, fromScriptValue);
     qScriptRegisterMetaType<Meta::TrackList>(engine, toScriptArray, fromScriptArray );
-
     engine->setDefaultPrototype( qMetaTypeId<Meta::TrackPtr>(),
                                    engine->newQObject( this, QScriptEngine::AutoOwnership) );
 }

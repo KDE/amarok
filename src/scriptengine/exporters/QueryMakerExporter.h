@@ -42,7 +42,7 @@ namespace AmarokScript
         Q_OBJECT
 
         /**
-         * indiactes whether this query maker object is valid.
+         * Indicates whether this query maker object is valid.
          */
         Q_PROPERTY( bool isValid READ isValid )
 
@@ -81,8 +81,8 @@ namespace AmarokScript
         QString m_filter;
 
         QueryMakerPrototype( Collections::QueryMaker *collection );
-        bool isValid();
-        QString filter();
+        bool isValid() const;
+        QString filter() const;
 
     signals:
         /**

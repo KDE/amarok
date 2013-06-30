@@ -280,5 +280,3 @@ AmarokEngineScript::setFadeoutLength( int length )
 {
     Q_UNUSED( length );
 }
-
-

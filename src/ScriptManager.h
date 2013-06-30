@@ -28,12 +28,11 @@
 #include <QScriptValue>
 #include <QSemaphore>
 
-class ScriptItem;
-class ScriptableServiceScript;
 namespace AmarokScript {
     class AmarokScript;
 }
-
+class ScriptItem;
+class ScriptableServiceScript;
 class QScriptContext;
 class QScriptEngine;
 class QTimerEvent;

@@ -88,12 +88,12 @@ QueryMakerPrototype::QueryMakerPrototype( QueryMaker *queryMaker )
 }
 
 QString
-QueryMakerPrototype::filter()
+QueryMakerPrototype::filter() const
 {
     return m_filter;
 }
 
-bool QueryMakerPrototype::isValid()
+bool QueryMakerPrototype::isValid() const
 {
     return m_querymaker;
 }
