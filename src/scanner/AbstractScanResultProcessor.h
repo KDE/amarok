@@ -90,7 +90,7 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
         virtual void message( const QString& message ) = 0;
 
         virtual void commitDirectory( QSharedPointer<CollectionScanner::Directory> dir );
-        virtual void commitPlaylist( CollectionScanner::Playlist *playlist );
+        virtual void commitPlaylist( const CollectionScanner::Playlist &playlist );
         virtual void commitAlbum( CollectionScanner::Album *album ) = 0;
         virtual void commitTrack( CollectionScanner::Track *track, CollectionScanner::Album *srcAlbum ) = 0;
 
@@ -98,10 +98,6 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
         virtual void deleteDeletedDirectories() = 0;
 
         virtual void deleteDeletedTracks( QSharedPointer<CollectionScanner::Directory> directory ) = 0;
-
-        /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks. */
-        virtual void deleteDeletedTracks( int directoryId ) = 0;
-
 
         CollectionScanner::Album* sortTrack( CollectionScanner::Track *track,
                                              const QString &dirName = QString() );

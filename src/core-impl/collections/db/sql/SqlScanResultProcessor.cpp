@@ -114,8 +114,6 @@ SqlScanResultProcessor::message( const QString& message )
 void
 SqlScanResultProcessor::commitDirectory( QSharedPointer<CollectionScanner::Directory> directory )
 {
-    // debug() << "commitDirectory on"<<directory->path()<<directory<<"with"<<directory->tracks().count()<<"tracks."<<"skipped?"<<directory->isSkipped();
-
     QString path = directory->path();
     // a bit of paranoia:
     if( m_foundDirectories.contains( path ) )
@@ -369,28 +367,11 @@ SqlScanResultProcessor::deleteDeletedDirectories()
 {
     SqlStorage *storage = m_collection->sqlStorage();
 
-    // -- get a list of all mounted device ids
-    QList<int> idList = m_collection->mountPointManager()->getMountedDeviceIds();
-    QString deviceIds;
-    foreach( int id, idList )
-    {
-        if ( !deviceIds.isEmpty() )
-            deviceIds += ',';
-        deviceIds += QString::number( id );
-    }
-
-    // -- get all (mounted) directories
-    QString query = QString( "SELECT id, deviceid, dir FROM directories "
-                             "WHERE deviceid IN (%1)" ).arg( deviceIds );
-    QStringList res = storage->query( query );
+    QList<DirectoryEntry> toCheck = mountedDirectories();
 
     // -- check if the have been found during the scan
-    for( int i = 0; i < res.count(); )
+    foreach( const DirectoryEntry &e, toCheck )
     {
-        int dirId = res.at( i++ ).toInt();
-        int deviceId = res.at( i++ ).toInt();
-        QString dir = res.at( i++ );
-
         /* we need to match directories by their (absolute) path, otherwise following
          * scenario triggers statistics loss (bug 298275):
          *
@@ -406,21 +387,21 @@ SqlScanResultProcessor::deleteDeletedDirectories()
          * 5. Tracks disappear from the UI until full rescan, stats, lyrics, labels are
          *    lost forever.
          */
-        QString path = m_collection->mountPointManager()->getAbsolutePath( deviceId, dir );
+        QString path = m_collection->mountPointManager()->getAbsolutePath( e.deviceId, e.dir );
         bool deleteThisDir = false;
         if( !m_foundDirectories.contains( path ) )
             deleteThisDir = true;
-        else if( m_foundDirectories.value( path ) != dirId )
+        else if( m_foundDirectories.value( path ) != e.dirId )
         {
             int newDirId = m_foundDirectories.value( path );
             // as a safety measure, we don't delete the old dir if relocation fails
-            deleteThisDir = relocateTracksToNewDirectory( dirId, newDirId );
+            deleteThisDir = relocateTracksToNewDirectory( e.dirId, newDirId );
         }
 
         if( deleteThisDir )
         {
-            deleteDeletedTracks( dirId );
-            query = QString( "DELETE FROM directories WHERE id = %1;" ).arg( dirId );
+            deleteDeletedTracks( e.dirId );
+            QString query = QString( "DELETE FROM directories WHERE id = %1;" ).arg( e.dirId );
             storage->query( query );
         }
     }
@@ -529,21 +510,49 @@ void
 SqlScanResultProcessor::removeTrack( const UrlEntry &entry )
 {
     debug() << "removeTrack(" << entry << ")";
-    /* That leads to tracks left laying around.
-       So it produces another error.
-
-    if( !m_messages.isEmpty() )
-    {
-        warning() << "removeTrack(): there were errors, skipping destructive operations";
-        return;
-    }
-    */
+    // we used to skip track removal is m_messages wasn't empty, but that lead to to
+    // tracks left laying around. We now hope that the result processor got better and
+    // only removes tracks that should be removed.
 
     SqlRegistry *reg = m_collection->registry();
     // we must get the track by id, uid is not unique
     Meta::SqlTrackPtr track = Meta::SqlTrackPtr::staticCast( reg->getTrack( entry.id ) );
     Q_ASSERT( track->urlId() == entry.id );
     track->remove();
+}
+
+QList<SqlScanResultProcessor::DirectoryEntry>
+SqlScanResultProcessor::mountedDirectories() const
+{
+    SqlStorage *storage = m_collection->sqlStorage();
+
+    // -- get a list of all mounted device ids
+    QList<int> idList = m_collection->mountPointManager()->getMountedDeviceIds();
+    QString deviceIds;
+    foreach( int id, idList )
+    {
+        if ( !deviceIds.isEmpty() )
+            deviceIds += ',';
+        deviceIds += QString::number( id );
+    }
+
+    // -- get all (mounted) directories
+    QString query = QString( "SELECT id, deviceid, dir FROM directories "
+                             "WHERE deviceid IN (%1)" ).arg( deviceIds );
+    QStringList res = storage->query( query );
+
+    QList<DirectoryEntry> result;
+    for( int i = 0; i < res.count(); )
+    {
+        DirectoryEntry e;
+        e.dirId = res.at( i++ ).toInt();
+        e.deviceId = res.at( i++ ).toInt();
+        e.dir = res.at( i++ );
+
+        result << e;
+    }
+
+    return result;
 }
 
 void

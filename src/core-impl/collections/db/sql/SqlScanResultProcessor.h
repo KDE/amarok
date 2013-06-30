@@ -41,6 +41,7 @@ class SqlScanResultProcessor : public AbstractScanResultProcessor
         virtual void scanSucceeded();
 
         virtual void displayMessages();
+
     protected:
         virtual void message( const QString& message );
 
@@ -63,8 +64,7 @@ class SqlScanResultProcessor : public AbstractScanResultProcessor
 
     private:
         // to speed up the scanning we buffer the whole urls table
-        struct UrlEntry
-        {
+        struct UrlEntry {
             int id;
             QString path;
             int directoryId;
@@ -94,6 +94,17 @@ class SqlScanResultProcessor : public AbstractScanResultProcessor
          * call urlsCacheRemove( entry )
          */
         void removeTrack( const UrlEntry &entry );
+
+        struct DirectoryEntry {
+            int dirId;
+            int deviceId;
+            QString dir;
+        };
+
+        /**
+         * Get a list of all mounted directories from the database.
+         */
+        QList<DirectoryEntry> mountedDirectories() const;
 
         Collections::SqlCollection* m_collection;
 
