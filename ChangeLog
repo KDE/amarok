@@ -39,9 +39,10 @@ VERSION 2.8-Beta 1
      Artist by default. Various Artists item is no longer shown under Track Artist level.
    * Removed the splash screen.
    * Playlist-related actions were harmonized, double-clicking or pressing enter will
-     append tracks to playlist, middle-clicking or using any "play media" action will
-     prepend tracks to queue and immediately start playing; append or replace actions will
-     no longer start playback. (BR 145468, BR 145490, BR 194549)
+     append tracks to playlist, using any "play media" action will prepend tracks to queue
+     and immediately start playing; middle-clicking or will append & play while other
+     append or replace actions will no longer start playback. (BR 145468, BR 145490,
+     BR 194549)
    * When a new collection plugin is enabled, its collections appear immediately without a
      need for restart.
    * Update the MusicBrainz tagger to MusicBrainz web service 2, make it show some more

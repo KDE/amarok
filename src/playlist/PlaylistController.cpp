@@ -195,11 +195,23 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
 
     m_undoStack->endMacro();
 
+    bool startPlaying = false;
     EngineController *engine = The::engineController();
     if( options.testFlag( DirectPlay ) ) // implies PrependToQueue
-        Actions::instance()->requestUserNextTrack(); // inserted track will be first in queue
-    if( options.testFlag( Playlist::StartPlay ) && engine && !engine->isPlaying() )
-        engine->play();
+        startPlaying = true;
+    else if( options.testFlag( StartPlay ) && engine && engine->isStopped() )
+    {
+        // if nothing is in the queue, queue the first item we have added so that the call
+        // to ->requestUserNextTrack() pops it. The queueing is therefore invisible to
+        // user. Else we start playing the queue.
+        if( Actions::instance()->queue().isEmpty() )
+            Actions::instance()->queue( QList<quint64>() << m_bottomModel->idAt( bottomModelInsertRow ) );
+
+        startPlaying = true;
+    }
+
+    if( startPlaying )
+        Actions::instance()->requestUserNextTrack(); // desired track will be first in queue
 
     emit changed();
 }
