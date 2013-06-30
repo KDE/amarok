@@ -19,7 +19,6 @@
 #include "AnalyzerApplet.h"
 
 #include "core/support/Amarok.h"
-#include "core/support/Debug.h"
 
 #include "BallsAnalyzer.h"
 #include "BlockAnalyzer.h"
@@ -65,8 +64,6 @@ AnalyzerApplet::init()
 void
 AnalyzerApplet::newGeometry() // SLOT
 {
-    DEBUG_BLOCK
-
     if( !m_analyzer )
         return;
 
@@ -171,18 +168,12 @@ AnalyzerApplet::heightActionTriggered() // SLOT
 void
 AnalyzerApplet::analyzerAction( QAction *action ) // SLOT
 {
-    DEBUG_BLOCK
-
     setCurrentAnalyzer( action->data().toString() );
 }
 
 void
 AnalyzerApplet::setCurrentAnalyzer( const QString &name )
 {
-    DEBUG_BLOCK
-
-    debug() << "name: " << name;
-
     if( m_analyzerName == name )
         return;
 
