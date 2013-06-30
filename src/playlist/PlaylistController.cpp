@@ -199,7 +199,7 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
     EngineController *engine = The::engineController();
     if( options.testFlag( DirectPlay ) ) // implies PrependToQueue
         startPlaying = true;
-    else if( options.testFlag( StartPlay ) && engine && engine->isStopped() )
+    else if( options.testFlag( StartPlay ) && engine && !engine->isPlaying() )
     {
         // if nothing is in the queue, queue the first item we have added so that the call
         // to ->requestUserNextTrack() pops it. The queueing is therefore invisible to
