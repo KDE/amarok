@@ -988,6 +988,14 @@ DatabaseUpdater::deleteAllRedundant( const QString &type )
 }
 
 void
+DatabaseUpdater::deleteOrphanedByDirectory( const QString &table )
+{
+    SqlStorage *storage = m_collection->sqlStorage();
+    QString query( "DELETE FROM %1 WHERE directory NOT IN ( SELECT id FROM directories )" );
+    storage->query( query.arg( table ) );
+}
+
+void
 DatabaseUpdater::deleteOrphanedByUrl( const QString &table )
 {
     SqlStorage *storage = m_collection->sqlStorage();

@@ -82,6 +82,12 @@ public:
     void deleteAllRedundant( const QString &type );
 
     /**
+     * Delete all entries from @p table with broken link to directories table. Currently
+     * had only sense on the urls table.
+     */
+    void deleteOrphanedByDirectory( const QString &table );
+
+    /**
      * Use on tables that link to non-existent entries in the urls table, for example
      * urls_labels, statistics, lyrics. @param table must have a column named url.
      */

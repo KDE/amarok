@@ -43,6 +43,10 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     // to those objects.
     DatabaseUpdater databaseUpdater( m_collection );
 
+    // url entries without associated directory just stick around and cannot be processed
+    // by SqlScanResultProcessor. Delete them before checking tracks
+    databaseUpdater.deleteOrphanedByDirectory( "urls" );
+
     // tracks with no associated url entry are useless, just a bunch of medatada with
     // nothing to associate them to; remove those first
     databaseUpdater.deleteOrphanedByUrl( "tracks" );
