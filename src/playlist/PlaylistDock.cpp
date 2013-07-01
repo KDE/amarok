@@ -257,7 +257,7 @@ Playlist::Dock::paletteChanged( const QPalette &palette )
 
     QString barStyle( "QFrame#PlaylistBarBox { border: 1px ridge %1; background-color: %2; "
                                              " color: %3; border-radius: 3px; } "
-                      "QLabel { color: %3; }" );
+                      "QLabel { color: %4; }" );
     barStyle = barStyle.arg( ridgeColor, backgroundColor, textColor );
 
     m_dynamicHintWidget->setStyleSheet( hintStyle );
