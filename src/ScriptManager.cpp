@@ -315,30 +315,35 @@ void ScriptManager::ServiceScriptRequestInfo( const QString &name, int level, co
 void
 ScriptManager::configChanged( bool changed )
 {
-    DEBUG_BLOCK
-    if( changed )
-    {
-        foreach( ScriptItem *item, m_scripts )
-        {
-            const QString name = item->info().pluginName();
-            bool enabledByDefault = item->info().isPluginEnabledByDefault();
-            bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
-
-            if( !item->running() && enabled )
-            {
-                slotRunScript( name );
-            }
-            else if( item->running() && !enabled )
-            {
-                item->stop();
-            }
-        }
-    }
+    if( !changed )
+        return;
+    //evil scripts may prevent the config dialog from dismissing, delay execution
+    QTimer::singleShot( 0, this, SLOT(slotConfigChanged()) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // private
 ////////////////////////////////////////////////////////////////////////////////
+
+void
+ScriptManager::slotConfigChanged()
+{
+    foreach( ScriptItem *item, m_scripts )
+    {
+        const QString name = item->info().pluginName();
+        bool enabledByDefault = item->info().isPluginEnabledByDefault();
+        bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
+
+        if( !item->running() && enabled )
+        {
+            slotRunScript( name );
+        }
+        else if( item->running() && !enabled )
+        {
+            item->stop();
+        }
+    }
+}
 
 bool
 ScriptManager::loadScript( const QString& path )

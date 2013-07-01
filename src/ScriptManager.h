@@ -107,6 +107,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
         /** Finds installed scripts, updates them, and loads them */
         void updateAllScripts();
         void updaterFinished( const QString &scriptPath );
+        void slotConfigChanged();
 
     private:
         explicit ScriptManager( QObject* parent );
