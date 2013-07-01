@@ -66,9 +66,9 @@ TestImportersCommon::blockingImport()
     QScopedPointer<DatabaseImporter> importer( newInstance() );
     QEventLoop loop;
 
-    connect( importer.data(), SIGNAL(importSucceeded()), &loop, SLOT(quit()) );
-    connect( importer.data(), SIGNAL(importFailed()), &loop, SLOT(quit()) );
-    connect( importer.data(), SIGNAL(importError(QString)), &loop, SLOT(quit()) );
+    connect( importer.data(), SIGNAL(importSucceeded()), &loop, SLOT(quit()), Qt::QueuedConnection );
+    connect( importer.data(), SIGNAL(importFailed()), &loop, SLOT(quit()), Qt::QueuedConnection );
+    connect( importer.data(), SIGNAL(importError(QString)), &loop, SLOT(quit()), Qt::QueuedConnection );
     connect( importer.data(), SIGNAL(importFailed()), this, SLOT(importFailed()) );
     connect( importer.data(), SIGNAL(importError(QString)), this, SLOT(importFailed()) );
 
