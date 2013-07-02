@@ -141,7 +141,6 @@ namespace Playlists
 
             virtual QString name() const = 0;
             virtual QString prettyName() const { return name(); }
-            virtual QString description() const { return QString(); }
 
             virtual PlaylistProvider *provider() const { return 0; }
 

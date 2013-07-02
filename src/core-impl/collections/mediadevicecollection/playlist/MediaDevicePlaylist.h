@@ -37,7 +37,6 @@ namespace Playlists
 
             // Playlist Functions
             virtual QString name() const { return m_name; }
-            virtual QString description() const { return QString(); }
             virtual KUrl uidUrl() const { return KUrl(); }
 
             /**override showing just the filename */
@@ -51,7 +50,6 @@ namespace Playlists
 
     private:
         Meta::TrackList m_tracks;
-        QString m_description;
         QString m_name;
 
     };

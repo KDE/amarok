@@ -47,7 +47,6 @@ namespace Playlists
             /* Playlist methods */
             virtual KUrl uidUrl() const { return m_url; }
             virtual QString name() const { return m_url.fileName(); }
-            virtual QString description() const;
             virtual Meta::TrackList tracks() { return m_tracks; }
             virtual int trackCount() const;
             virtual void addTrack( Meta::TrackPtr track, int position );

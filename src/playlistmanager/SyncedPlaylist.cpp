@@ -52,20 +52,6 @@ SyncedPlaylist::prettyName() const
     return m_playlists.first()->prettyName();
 }
 
-QString
-SyncedPlaylist::description() const
-{
-    if( isEmpty() )
-        return i18n( "<Empty>" );
-    QStringList providerNames;
-    foreach( const Playlists::PlaylistPtr playlist, m_playlists )
-    {
-        if( playlist && playlist->provider() )
-            providerNames << playlist->provider()->prettyName();
-    }
-    return i18n( "Synchronized on: %1", providerNames.join( ", " ) );
-}
-
 Playlists::PlaylistProvider*
 SyncedPlaylist::provider() const
 {

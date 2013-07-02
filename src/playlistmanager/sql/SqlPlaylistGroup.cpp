@@ -178,17 +178,16 @@ SqlPlaylistGroup::childSqlPlaylists() const
 
     if ( !m_hasFetchedChildPlaylists )
     {
-        QString query = "SELECT id, parent_id, name, description, urlid FROM \
+        QString query = "SELECT id, parent_id, name, urlid FROM \
                 playlists where parent_id=%1 ORDER BY name;";
         query = query.arg( QString::number( m_dbId ) );
         QStringList result = sqlStorage->query( query );
 
-        //debug() << "Result: " << result;
-        int resultRows = result.count() / 5;
+        int resultRows = result.count() / 4;
 
         for( int i = 0; i < resultRows; i++ )
         {
-            QStringList row = result.mid( i*5, 5 );
+            QStringList row = result.mid( i*4, 4 );
             SqlPlaylistGroup* mutableThis =
                     const_cast<SqlPlaylistGroup*>( this );
             m_childPlaylists << SqlPlaylistPtr(

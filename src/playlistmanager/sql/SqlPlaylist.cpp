@@ -38,7 +38,6 @@ SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
     , m_tracks( tracks )
     , m_provider( provider)
     , m_name( name )
-    , m_description( i18n( "Playlist in database" ) )
     , m_urlId( urlId )
     , m_tracksLoaded( true )
 {
@@ -54,8 +53,7 @@ SqlPlaylist::SqlPlaylist( const QStringList & resultRow,
 {
     m_dbId = resultRow[0].toInt();
     m_name = resultRow[2];
-    m_description = resultRow[3];
-    m_urlId = resultRow[4];
+    m_urlId = resultRow[3];
 }
 
 
@@ -127,10 +125,9 @@ SqlPlaylist::saveToDb( bool tracks )
     if( m_dbId != -1 )
     {
         //update existing
-        QString query = "UPDATE playlists SET parent_id=%1, name='%2', description='%3' WHERE id=%4;";
+        QString query = "UPDATE playlists SET parent_id=%1, name='%2' WHERE id=%3;";
         query = query.arg( QString::number( parentId ) )
                 .arg( sql->escape( m_name ) )
-                .arg( sql->escape( m_description ) )
                 .arg( QString::number( m_dbId ) );
         CollectionManager::instance()->sqlStorage()->query( query );
 
@@ -146,11 +143,10 @@ SqlPlaylist::saveToDb( bool tracks )
     else
     {
         //insert new
-        QString query = "INSERT INTO playlists ( parent_id, name, description, urlid ) "
-                        "VALUES ( %1, '%2', '%3', '%4' );";
+        QString query = "INSERT INTO playlists ( parent_id, name, urlid ) "
+                        "VALUES ( %1, '%2', '%3' );";
         query = query.arg( QString::number( parentId ) )
                 .arg( sql->escape( m_name ) )
-                .arg( sql->escape( m_description ) )
                 .arg( sql->escape( m_urlId ) );
         m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, "playlists" );
         if( tracks )

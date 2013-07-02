@@ -63,7 +63,6 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
     Playlists::PlaylistPtr playlist = m_playlists.value( row );
 
     QString name;
-    QString description;
     KIcon icon;
     int playlistCount = 0;
     QList<QAction *> providerActions;
@@ -85,7 +84,6 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             else
             {
                 name = playlist->prettyName();
-                description = playlist->description();
                 icon = KIcon( "amarok_playlist" );
             }
             break;
@@ -105,15 +103,13 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             if( providers.count() > 1 )
             {
                 QVariantList nameData;
-                QVariantList descriptionData;
                 QVariantList iconData;
                 QVariantList playlistCountData;
                 QVariantList providerActionsData;
                 foreach( Playlists::PlaylistProvider *provider, providers )
                 {
-                    name = description = provider->prettyName();
+                    name = provider->prettyName();
                     nameData << name;
-                    descriptionData << description;
                     icon = provider->icon();
                     iconData << QVariant( icon );
                     playlistCount = provider->playlists().count();
@@ -132,9 +128,11 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
                 switch( role )
                 {
                 case Qt::DisplayRole:
-                case Qt::EditRole: return nameData;
-                case Qt::ToolTipRole: return descriptionData;
-                case Qt::DecorationRole: return iconData;
+                case Qt::EditRole:
+                case Qt::ToolTipRole:
+                    return nameData;
+                case Qt::DecorationRole:
+                    return iconData;
                 case PrettyTreeRoles::ByLineRole:
                     return playlistCountData;
                 case PrettyTreeRoles::DecoratorRoleCount:
@@ -145,7 +143,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             }
             else if( provider )
             {
-                name = description = provider->prettyName();
+                name = provider->prettyName();
                 icon = provider->icon();
                 playlistCount = provider->playlistCount();
                 providerActions << provider->providerActions();
@@ -161,9 +159,11 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
     switch( role )
     {
         case Qt::DisplayRole:
-        case Qt::EditRole: return name;
-        case Qt::ToolTipRole: return description;
-        case Qt::DecorationRole: return QVariant( icon );
+        case Qt::EditRole:
+        case Qt::ToolTipRole:
+            return name;
+        case Qt::DecorationRole:
+            return QVariant( icon );
         case PrettyTreeRoles::ByLineRole:
             if( IS_TRACK(index) )
                 return QVariant();

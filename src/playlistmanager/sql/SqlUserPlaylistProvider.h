@@ -67,6 +67,10 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         void createTables();
         void deleteTables();
         void checkTables();
+        /**
+         * removes COLUMN "description" from "playlists"
+         */
+        void upgradeVersion2to3();
         void loadFromDb();
 
         bool deleteSqlPlaylists( Playlists::SqlPlaylistList playlistlist );

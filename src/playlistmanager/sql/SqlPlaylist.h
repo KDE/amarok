@@ -50,7 +50,6 @@ class SqlPlaylist : public Playlist
         /* Playlist virtual functions */
         virtual KUrl uidUrl() const;
         virtual QString name() const { return m_name; }
-        virtual QString description() const { return m_description; }
 
         virtual PlaylistProvider *provider() const { return m_provider; }
 
@@ -79,7 +78,6 @@ class SqlPlaylist : public Playlist
         Meta::TrackList m_tracks;
         PlaylistProvider *m_provider;
         QString m_name;
-        QString m_description;
         QString m_urlId;
 
         bool m_tracksLoaded;

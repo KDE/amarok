@@ -28,7 +28,6 @@
 Playlists::MediaDevicePlaylist::MediaDevicePlaylist( const QString & name, const Meta::TrackList
         &tracks )
     : m_tracks( tracks )
-    , m_description( QString() )
 {
     m_name = name;
     // Tell the handler to save it
