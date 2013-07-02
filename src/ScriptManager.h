@@ -151,7 +151,7 @@ public:
     ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginInfo &info );
 
     QScriptEngine* engine() { return m_engine.data(); }
-    ScriptableServiceScript* servicePtr() { return m_servicePtr.data(); }
+    ScriptableServiceScript* service() { return m_service.data(); }
     KUrl url() const{ return m_url; }
     KPluginInfo info() const { return m_info; }
     bool running() const { return m_running; }
@@ -176,7 +176,7 @@ private:
     /** Currently activated in the Script Manager */
     bool                                            m_running;
     bool                                            m_evaluating;
-    QWeakPointer<ScriptableServiceScript>           m_servicePtr;
+    QWeakPointer<ScriptableServiceScript>           m_service;
     QStringList                                     m_log;
     int                                             m_runningTime;
     int                                             m_timerId;

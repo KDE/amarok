@@ -55,13 +55,17 @@ namespace AmarokScript
             /**
              * Returns a query maker that queries all collections.
              */
-            Collections::QueryMaker *queryMaker();
+            Collections::QueryMaker *queryMaker() const;
 
             /**
-             * Return a
+             * Returns a list of collections that can be queried with a querymaker.
              */
-            Collections::CollectionList queryableCollections();
-            Collections::CollectionList viewableCollections();
+            Collections::CollectionList queryableCollections() const;
+
+            /**
+             * Return a list of collections that are viewable in the collection browser.
+             */
+            Collections::CollectionList viewableCollections() const;
 
         signals:
             /**
@@ -80,6 +84,10 @@ namespace AmarokScript
              */
             void collectionDataChanged( Collections::Collection *changedCollection );
 
+            /**
+             * Emitted when a collection is removed.
+             * @param collectionId The collectionID of the collection that was removed.
+             */
             void collectionRemoved( QString collectionId );
     };
 }

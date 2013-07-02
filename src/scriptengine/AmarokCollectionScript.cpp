@@ -134,19 +134,19 @@ AmarokCollectionScript::scanCollectionChanges() const
 }
 
 CollectionList
-AmarokCollectionScript::queryableCollections()
+AmarokCollectionScript::queryableCollections() const
 {
     return CollectionManager::instance()->queryableCollections();
 }
 
 QueryMaker*
-AmarokCollectionScript::queryMaker()
+AmarokCollectionScript::queryMaker() const
 {
     return CollectionManager::instance()->queryMaker();
 }
 
 CollectionList
-AmarokCollectionScript::viewableCollections()
+AmarokCollectionScript::viewableCollections() const
 {
     return CollectionManager::instance()->viewableCollections();
 }

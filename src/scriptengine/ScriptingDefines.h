@@ -24,25 +24,25 @@ namespace AmarokScript
 {
     //from qt docs, any issues?
     template <class Container>
-    QScriptValue toScriptArray( QScriptEngine *engine, const Container &cont )
+    QScriptValue toScriptArray( QScriptEngine *engine, const Container &container )
     {
-        QScriptValue a = engine->newArray();
-        typename Container::const_iterator begin = cont.begin();
-        typename Container::const_iterator end = cont.end();
+        QScriptValue scriptArray = engine->newArray();
+        typename Container::const_iterator begin = container.begin();
+        typename Container::const_iterator end = container.end();
         typename Container::const_iterator it;
         for (it = begin; it != end; ++it)
-            a.setProperty(quint32(it - begin), engine->toScriptValue(*it));
-        return a;
+            scriptArray.setProperty(quint32(it - begin), engine->toScriptValue(*it));
+        return scriptArray;
     }
 
     template <class Container>
-    void fromScriptArray( const QScriptValue &value, Container &cont )
+    void fromScriptArray( const QScriptValue &value, Container &container )
     {
         quint32 len = value.property("length").toUInt32();
         for (quint32 i = 0; i < len; ++i) {
             QScriptValue item = value.property(i);
             typedef typename Container::value_type ContainerValue;
-            cont.push_back(qscriptvalue_cast<ContainerValue>(item));
+            container.push_back(qscriptvalue_cast<ContainerValue>(item));
         }
     }
 }

@@ -198,7 +198,7 @@ ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QScriptContext 
         error() << "The name of the scriptable script should be the same with the one in the script.spec file!";
         return engine->undefinedValue();
     }
-    QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts.value(serviceName)->servicePtr() );
+    QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts.value(serviceName)->service() );
     engine->globalObject().setProperty( "ScriptableServiceScript", obj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
     return engine->undefinedValue();

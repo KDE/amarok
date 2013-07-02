@@ -296,20 +296,20 @@ void
 ScriptManager::ServiceScriptPopulate( const QString &name, int level, int parent_id,
                                       const QString &path, const QString &filter )
 {
-    if( m_scripts.value( name )->servicePtr() )
-        m_scripts.value( name )->servicePtr()->slotPopulate( name, level, parent_id, path, filter );
+    if( m_scripts.value( name )->service() )
+        m_scripts.value( name )->service()->slotPopulate( name, level, parent_id, path, filter );
 }
 
 void ScriptManager::ServiceScriptCustomize( const QString &name )
 {
-    if( m_scripts.value( name )->servicePtr() )
-        m_scripts.value( name )->servicePtr()->slotCustomize( name );
+    if( m_scripts.value( name )->service() )
+        m_scripts.value( name )->service()->slotCustomize( name );
 }
 
 void ScriptManager::ServiceScriptRequestInfo( const QString &name, int level, const QString &callbackString )
 {
-    if( m_scripts.value( name )->servicePtr() )
-        m_scripts.value( name )->servicePtr()->slotRequestInfo( name, level, callbackString );
+    if( m_scripts.value( name )->service() )
+        m_scripts.value( name )->service()->slotRequestInfo( name, level, callbackString );
 }
 
 void
@@ -590,7 +590,7 @@ ScriptItem::start( bool silent )
             return false;
         }
         if( m_info.category() == QLatin1String("Scriptable Service") )
-            m_servicePtr.data()->slotCustomize( m_name );
+            m_service.data()->slotCustomize( m_name );
     }
     else
         stop();
@@ -640,7 +640,7 @@ ScriptItem::initializeScriptEngine()
     else if( category == QLatin1String("Scriptable Service") )
     {
         new StreamItem( m_engine.data() );
-        m_servicePtr = new ScriptableServiceScript( m_engine.data() );
+        m_service = new ScriptableServiceScript( m_engine.data() );
         new AmarokScript::AmarokServicePluginManagerScript( m_engine.data() );
     }
 
