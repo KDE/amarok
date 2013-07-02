@@ -52,7 +52,7 @@ class SqlScanResultProcessor : public AbstractScanResultProcessor
         /** Deletes all directories (and it's tracks) not contained in m_foundDirectories */
         virtual void deleteDeletedDirectories();
 
-        virtual void deleteDeletedTracks( QSharedPointer<CollectionScanner::Directory> directory );
+        virtual void deleteDeletedTracksAndSubdirs( QSharedPointer<CollectionScanner::Directory> directory );
 
         /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks. */
         virtual void deleteDeletedTracks( int directoryId );
@@ -106,13 +106,32 @@ class SqlScanResultProcessor : public AbstractScanResultProcessor
          */
         QList<DirectoryEntry> mountedDirectories() const;
 
-        Collections::SqlCollection* m_collection;
+        /**
+         * Get a list of directories that have been physically removed during the
+         * PartialUpdateScan.
+         */
+        QList<DirectoryEntry> deletedDirectories() const;
 
-        /** Contains all found directories with their absolute path and id */
+        Collections::SqlCollection *m_collection;
+
+        /**
+         * Contains all found directories with their absolute path and id
+         */
         QHash<QString, int> m_foundDirectories;
-        /** Contains all found tracks with the unique id and url id. QMultiHash only
-         *  because it implements contains( key, value ) */
+
+        /**
+         * Contains all found tracks with the unique id and url id. QMultiHash only
+         * because it implements contains( key, value )
+         */
         QMultiHash<QString, int> m_foundTracks;
+
+        /**
+         * In UpdateScan and PartialUpdateScan this set gets filled with directory ids
+         * that have been (non-recursively) fully scanned (not skipped). Direct child
+         * directories from the database that are not contained in m_foundDirectories can
+         * be considered deleted.
+         */
+        QSet<int> m_scannedDirectoryIds;
 
         // never dereference they key, it might be a stale pointer in corner cases
         QHash<CollectionScanner::Directory*, int> m_directoryIds;

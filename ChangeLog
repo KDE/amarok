@@ -70,6 +70,8 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * When you remove whole directories from the Local Collection and have Watch Folders
+     for Changes enabled, the tracks now disappear from Collection Browser. (BR 311078)
    * Fix dynamic playlist bug: When "Automatically scroll playlist to current track"
      was enabled, Amarok would keep scrolling to the bottom. (BR 284214)
    * Fix a problem where ghost tracks would remain in the Local Collection until the

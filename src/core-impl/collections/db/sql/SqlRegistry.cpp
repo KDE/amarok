@@ -93,7 +93,7 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
     // - create new entry
     if( res.isEmpty() )
     {
-        debug() << "SqlRegistry::getDirectory new Directory" << path;
+        debug() << "SqlRegistry::getDirectory(): new directory" << path;
         QString insert = QString( "INSERT INTO directories(deviceid,changedate,dir) "
                                   "VALUES (%1,%2,'%3');" )
                         .arg( QString::number( deviceId ), QString::number( mtime ),
@@ -111,8 +111,8 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
             QString update = QString( "UPDATE directories SET changedate = %1 "
                                       "WHERE id = %2;" )
                 .arg( QString::number( mtime ), res[0] );
-        debug() << "SqlRegistry::getDirectory update Directory"<<res[0]<<"from" << oldMtime << "to" << mtime;
-        debug() << update;
+            debug() << "SqlRegistry::getDirectory(): update directory" << path << "(id" <<
+                    res[0] << ") from" << oldMtime << "to" << mtime << "UNIX time";
             storage->query( update );
         }
     }

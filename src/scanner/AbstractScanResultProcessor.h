@@ -94,10 +94,20 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
         virtual void commitAlbum( CollectionScanner::Album *album ) = 0;
         virtual void commitTrack( CollectionScanner::Track *track, CollectionScanner::Album *srcAlbum ) = 0;
 
-        /** Deletes all directories (and it's tracks) not contained in m_foundDirectories */
+        /**
+         * Delete directories (and their tracks) that have been deleted.
+         *
+         * In FullScan nad UpdateScan mode, it should delete all database directories on
+         * mounted filesystems not encountered in the scan.
+         *
+         * In PartialUpdateScan mode, things are more complicated. It should only delete
+         * not-encountered (direct) subdirectories of directories passed to
+         * deleteDeletedTracksAndSubdirs(). However, if such directory is deleted, all its
+         * subdirectories should be removed too.
+         */
         virtual void deleteDeletedDirectories() = 0;
 
-        virtual void deleteDeletedTracks( QSharedPointer<CollectionScanner::Directory> directory ) = 0;
+        virtual void deleteDeletedTracksAndSubdirs( QSharedPointer<CollectionScanner::Directory> directory ) = 0;
 
         CollectionScanner::Album* sortTrack( CollectionScanner::Track *track,
                                              const QString &dirName = QString() );

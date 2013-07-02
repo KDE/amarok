@@ -205,11 +205,10 @@ AbstractScanResultProcessor::scanSucceeded()
     // -- now check if some of the tracks are not longer used and also not moved to another directory
     foreach( QSharedPointer<CollectionScanner::Directory> dir, m_directories )
         if( !dir->isSkipped() )
-            deleteDeletedTracks( dir );
+            deleteDeletedTracksAndSubdirs( dir );
 
-    // -- delete all not-found directories
-    if( m_type != GenericScanManager::PartialUpdateScan )
-        deleteDeletedDirectories();
+    // -- delete all not-found directories (special handling for PartialUpdateScan):
+    deleteDeletedDirectories();
 
     cleanupMembers();
     emit endProgressOperation( this );

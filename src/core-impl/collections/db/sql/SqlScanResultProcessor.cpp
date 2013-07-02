@@ -367,7 +367,16 @@ SqlScanResultProcessor::deleteDeletedDirectories()
 {
     SqlStorage *storage = m_collection->sqlStorage();
 
-    QList<DirectoryEntry> toCheck = mountedDirectories();
+    QList<DirectoryEntry> toCheck;
+    switch( m_type )
+    {
+        case GenericScanManager::FullScan:
+        case GenericScanManager::UpdateScan:
+            toCheck = mountedDirectories();
+            break;
+        case GenericScanManager::PartialUpdateScan:
+            toCheck = deletedDirectories();
+    }
 
     // -- check if the have been found during the scan
     foreach( const DirectoryEntry &e, toCheck )
@@ -408,11 +417,14 @@ SqlScanResultProcessor::deleteDeletedDirectories()
 }
 
 void
-SqlScanResultProcessor::deleteDeletedTracks( QSharedPointer<CollectionScanner::Directory> directory )
+SqlScanResultProcessor::deleteDeletedTracksAndSubdirs( QSharedPointer<CollectionScanner::Directory> directory )
 {
     Q_ASSERT( m_directoryIds.contains( directory.data() ) );
     int directoryId = m_directoryIds.value( directory.data() );
+    // only deletes tracks directly in this dir
     deleteDeletedTracks( directoryId );
+    // trigger deletion of deleted subdirectories in deleteDeletedDirectories():
+    m_scannedDirectoryIds.insert( directoryId );
 }
 
 void
@@ -548,11 +560,68 @@ SqlScanResultProcessor::mountedDirectories() const
         e.dirId = res.at( i++ ).toInt();
         e.deviceId = res.at( i++ ).toInt();
         e.dir = res.at( i++ );
-
         result << e;
     }
 
     return result;
+}
+
+QList<SqlScanResultProcessor::DirectoryEntry>
+SqlScanResultProcessor::deletedDirectories() const
+{
+    SqlStorage *storage = m_collection->sqlStorage();
+
+    QHash<int, DirectoryEntry> idToDirEntryMap; // for faster processing during filtering
+    foreach( int directoryId, m_scannedDirectoryIds )
+    {
+        QString query = QString( "SELECT deviceid, dir FROM directories WHERE id = %1" )
+                .arg( directoryId );
+        QStringList res = storage->query( query );
+        if( res.count() != 2 )
+        {
+            warning() << "unexpected query result" << res << "in deletedDirectories()";
+            continue;
+        }
+
+        int deviceId = res.at( 0 ).toInt();
+        QString dir = res.at( 1 );
+        // select all child directories
+        query = QString( "SELECT id, deviceid, dir FROM directories WHERE deviceid = %1 "
+                "AND dir LIKE '%2_%'" ).arg( deviceId ).arg( dir );
+        res = storage->query( query );
+        for( int i = 0; i < res.count(); )
+        {
+            DirectoryEntry e;
+            e.dirId = res.at( i++ ).toInt();
+            e.deviceId = res.at( i++ ).toInt();
+            e.dir = res.at( i++ );
+            idToDirEntryMap.insert( e.dirId, e );
+        }
+    }
+
+    // now we must fileter-out all found directories *and their children*, because the
+    // children are *not* in m_foundDirectories and deleteDeletedDirectories() would
+    // remove them errorneously
+    foreach( int foundDirectoryId, m_foundDirectories.values() )
+    {
+        if( idToDirEntryMap.contains( foundDirectoryId ) )
+        {
+            int existingDeviceId = idToDirEntryMap[ foundDirectoryId ].deviceId;
+            QString existingPath = idToDirEntryMap[ foundDirectoryId ].dir;
+            idToDirEntryMap.remove( foundDirectoryId );
+
+            // now remove all children of the existing directory
+            QMutableHashIterator<int, DirectoryEntry> it( idToDirEntryMap );
+            while( it.hasNext() )
+            {
+                const DirectoryEntry &e = it.next().value();
+                if( e.deviceId == existingDeviceId && e.dir.startsWith( existingPath ) )
+                    it.remove();
+            }
+        }
+    }
+
+    return idToDirEntryMap.values();
 }
 
 void
