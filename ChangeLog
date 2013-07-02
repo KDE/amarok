@@ -70,6 +70,8 @@ VERSION 2.8-Beta 1
      not to fool users.
 
   BUGFIXES:
+   * Fix dynamic playlist bug: When "Automatically scroll playlist to current track"
+     was enabled, Amarok would keep scrolling to the bottom. (BR 284214)
    * Fix a problem where ghost tracks would remain in the Local Collection until the
      database is wiped. (BR 319084)
    * Added missing CMake check for QtWebKit. (BR 321598)

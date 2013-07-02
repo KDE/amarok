@@ -975,7 +975,8 @@ Playlist::PrettyListView::bottomModelRowsInserted( const QModelIndex& parent, in
     Q_UNUSED( parent )
     Q_UNUSED( end )
 
-    if( m_rowsInsertedScrollItem == 0 )
+    // skip scrolling if tracks were added while playlist is in dynamicMode
+    if( m_rowsInsertedScrollItem == 0 && !AmarokConfig::dynamicMode() )
     {
         m_rowsInsertedScrollItem = Playlist::ModelStack::instance()->bottom()->idAt( start );
         QTimer::singleShot( 0, this, SLOT(bottomModelRowsInsertedScroll()) );
