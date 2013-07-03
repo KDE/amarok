@@ -20,7 +20,7 @@
 #include "LyricsEngine.h"
 
 #include "EngineController.h"
-#include "ScriptManager.h"
+#include "scriptmanager/ScriptManager.h"
 #include "context/ContextView.h"
 #include "core/meta/Meta.h"
 #include "core/support/Amarok.h"

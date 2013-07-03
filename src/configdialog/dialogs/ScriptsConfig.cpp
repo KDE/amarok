@@ -22,7 +22,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "ScriptSelector.h"
-#include "ScriptManager.h"
+#include "scriptmanager/ScriptManager.h"
 #include "ui_ScriptsConfig.h"
 
 #include <KMessageBox>

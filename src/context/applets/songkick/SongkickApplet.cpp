@@ -20,7 +20,7 @@
 #include "App.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
-#include "dialogs/ScriptManager.h"
+#include "scriptmanager/ScriptManager.h"
 #include "core/meta/Meta.h"
 #include "PaletteHandler.h"
 #include "Theme.h"

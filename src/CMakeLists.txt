@@ -618,7 +618,8 @@ set(amaroklib_LIB_SRCS
     MediaDeviceMonitor.cpp
     PluginManager.cpp
     QStringx.cpp
-    ScriptManager.cpp
+    scriptmanager/ScriptManager.cpp
+    scriptmanager/ScriptItem.cpp
     ScriptUpdater.cpp
     SvgHandler.cpp
     SvgTinter.cpp

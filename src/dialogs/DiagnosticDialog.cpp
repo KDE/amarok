@@ -19,7 +19,7 @@
 
 #include "context/ContextView.h"
 #include "PluginManager.h"
-#include "ScriptManager.h"
+#include "scriptmanager/ScriptManager.h"
 
 #include <KAboutData>
 #include <KApplication>

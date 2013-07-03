@@ -20,7 +20,7 @@
 #include "EngineController.h"
 #include "KNotificationBackend.h"
 #include "PluginManager.h"
-#include "ScriptManager.h"
+#include "scriptmanager/ScriptManager.h"
 #include "TrayIcon.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"

@@ -20,22 +20,20 @@
 #define AMAROK_SCRIPTMANAGER_H
 
 #include "amarok_export.h"
-#include "statusbar/PopupWidget.h"
+#include "ScriptItem.h"
 
 #include <KPluginInfo>
 #include <KUrl>
 
-#include <QScriptValue>
 #include <QSemaphore>
 
 namespace AmarokScript {
     class AmarokScript;
 }
-class ScriptItem;
 class ScriptableServiceScript;
 class QScriptContext;
 class QScriptEngine;
-class QTimerEvent;
+class QScriptValue;
 
 class AMAROK_EXPORT ScriptManager : public QObject
 {
@@ -116,9 +114,6 @@ class AMAROK_EXPORT ScriptManager : public QObject
         /// \return false if loadScript failed.
         bool loadScript( const QString& path );
 
-        static QScriptValue ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine );
-        static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
-
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
@@ -132,60 +127,6 @@ class AMAROK_EXPORT ScriptManager : public QObject
         // memorize how many scripts were found and tried to be updated
         int            m_nScripts;
 
-};
-
-class ScriptTerminatorWidget : public PopupWidget
-{
-    Q_OBJECT
-public:
-    ScriptTerminatorWidget( const QString &message );
-
-signals:
-    void terminate();
-};
-
-class ScriptItem : public QObject
-{
-    Q_OBJECT
-public:
-    ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginInfo &info );
-
-    QScriptEngine* engine() { return m_engine.data(); }
-    ScriptableServiceScript* service() { return m_service.data(); }
-    KUrl url() const{ return m_url; }
-    KPluginInfo info() const { return m_info; }
-    bool running() const { return m_running; }
-    QString specPath() const;
-
-    bool start( bool silent );
-
-public slots:
-    void stop();
-
-private slots:
-        void timerEvent ( QTimerEvent *event );
-
-signals:
-    void signalHandlerException(QScriptValue);
-
-private:
-    QString                                         m_name;
-    KUrl                                            m_url;
-    KPluginInfo                                     m_info;
-    QWeakPointer<QScriptEngine>                     m_engine;
-    /** Currently activated in the Script Manager */
-    bool                                            m_running;
-    bool                                            m_evaluating;
-    QWeakPointer<ScriptableServiceScript>           m_service;
-    QStringList                                     m_log;
-    int                                             m_runningTime;
-    int                                             m_timerId;
-    QWeakPointer<ScriptTerminatorWidget>            m_popupWidget;
-
-    /**
-     * Initialize QScriptEngine and load wrapper classes
-     */
-    void initializeScriptEngine();
 };
 
 #endif /* AMAROK_SCRIPTMANAGER_H */

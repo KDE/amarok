@@ -23,7 +23,7 @@
 #include "mediabrowser.h"
 #include "MediaDevice.h"
 #include "core/support/PluginManager.h"
-#include "ScriptManager.h"
+#include "scriptmanager/ScriptManager.h"
 
 #include <KLocale>
 #include <KVBox>
