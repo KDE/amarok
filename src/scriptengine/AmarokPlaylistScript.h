@@ -18,6 +18,7 @@
 #define AMAROK_PLAYLIST_SCRIPT_H
 
 #include <QObject>
+#include <QStringList>
 #include <QVariant>
 
 class QModelIndex;
