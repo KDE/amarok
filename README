@@ -47,7 +47,7 @@ Required
 
     * TagLib 1.7 (or newer)
       (Metadata tagging library)
-      
+
     * TagLib Extras 1.0.1 (or newer)
       (Support for metadata reading of additional file types)
       http://www.kollide.net/~jefferai/taglib-extras-1.0.1.tar.gz
@@ -71,7 +71,7 @@ Optional
     * Taglib 1.9 for support of Opus files
       http://developer.kde.org/~wheeler/taglib.html
       https://github.com/taglib/taglib
-      
+
     * iPod support requires:
       * libgpod 0.8.2 (or newer)
         http://www.gtkpod.org/libgpod/
@@ -155,27 +155,6 @@ and stutter!" please visit:
 --------------------------------------------------------------------------------
 
 
- INFORMATION FOR PACKAGERS
-===========================
-
-It is possible to build Amarok to use MySQL as the database backend. Using
-MySQL makes the Amarok collection faster.
-
-In order to limit the dependencies the Amarok package demands we suggest
-splitting Amarok into the following packages:
-
-   1. Amarok + Phonon Engine
-   2. iPod media device
-   3. MTP media device
-
-Amarok is modular and will be fully functional as long as one of 2 or 3 is
-also installed. Hence we suggest Amarok + one backend.
-
-If you make packages for Amarok please let us know and we'll link to you on the
-homepage (as long as you don't object).
---------------------------------------------------------------------------------
-
-
  CONTRIBUTING
 ==============
 
@@ -196,4 +175,3 @@ See you on IRC!
 WWW:  http://amarok.kde.org
 MAIL: amarok@kde.org
 IRC:  irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr
-
