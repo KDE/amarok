@@ -20,7 +20,7 @@ Name[tr]=Çözümleyici
 Name[uk]=Аналізатор
 Name[x-test]=xxAnalyzerxx
 Type=Service
-Icon=analyzer-amarok
+Icon=view-media-analyzer-amarok
 ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_analyzer
