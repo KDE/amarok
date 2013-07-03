@@ -285,7 +285,7 @@ SqlUserPlaylistProvider::checkTables()
                     0, // QWidget *parent
                     i18n( "Version %1 of playlist database schema encountered, however this "
                         "Amarok version only supports version %2 (and previous versions "
-                        "starting with %2. Playlists saved in the Amarok Database probably "
+                        "starting with %2). Playlists saved in the Amarok Database probably "
                         "will not work and any write operations with them may result in losing "
                         "them. Perhaps you have started an older version of Amarok with a "
                         "database written by newer version?", dbVersion, USERPLAYLIST_DB_VERSION ),
