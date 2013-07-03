@@ -68,7 +68,7 @@ GenericScanManager::requestScan( QList<KUrl> directories, ScanType type )
     if( m_scannerJob )
     {
         //TODO: add to queue requests
-        error() << "Scanner already running";
+        error() << "Scanner already running, not starting another instance.";
         return;
     }
 
@@ -77,14 +77,14 @@ GenericScanManager::requestScan( QList<KUrl> directories, ScanType type )
     {
         if( !url.isLocalFile() )
         {
-            error() << "scan of non-local directory requested. Skipping.";
+            warning() << "scan of non-local directory" << url << "requested, skipping it.";
             continue;
         }
 
         QString path = url.path( KUrl::RemoveTrailingSlash );
         if( !QFileInfo( path ).isDir() )
         {
-            error() << "scan of a non directory"<<path<<"requested. Skipping.";
+            warning() << "scan of a non-directory" << path << "requested, skipping it.";
             continue;
         }
         //TODO: most local path

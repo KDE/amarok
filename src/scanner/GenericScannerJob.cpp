@@ -139,12 +139,11 @@ GenericScannerJob::run()
     } while( !finished &&
              (!m_reader.hasError() || m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError) );
 
-
     {
         QMutexLocker locker( &m_mutex );
         if( !finished && m_reader.hasError() )
         {
-            warning() << "Aborting ScannerJob with error"<<m_reader.errorString();
+            warning() << "Aborting ScannerJob with error" << m_reader.errorString();
             emit failed( i18n( "Aborting scanner with error: %1", m_reader.errorString() ) );
             closeScannerProcess();
             return;
@@ -381,7 +380,8 @@ GenericScannerJob::getScannerOutput()
 {
     if( !m_scanner->waitForReadyRead( -1 ) )
         return;
-    m_incompleteTagBuffer += m_scanner->readAll();
+    QByteArray newData = m_scanner->readAll();
+    m_incompleteTagBuffer += newData;
 
     int index = m_incompleteTagBuffer.lastIndexOf( "</scanner>" );
     if( index >= 0 )

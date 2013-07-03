@@ -110,12 +110,12 @@ protected:
         return result;
     }
 
-    QString getBatchFile( const QStringList& scanDirsRequested )
+    QString getBatchFile( const QStringList &scanDirsRequested )
     {
         // -- write the batch file
         // the batch file contains the known modification dates so that the scanner only
         // needs to report changed directories
-        QList< QPair<QString, uint> > knownDirs = getKnownDirs();
+        QList<QPair<QString, uint> > knownDirs = getKnownDirs();
         if( !knownDirs.isEmpty() )
         {
             QString path = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchscan.xml";
@@ -123,7 +123,7 @@ protected:
                 path += "_";
 
             CollectionScanner::BatchFile batchfile;
-            batchfile.setTimeDefinitions( getKnownDirs() );
+            batchfile.setTimeDefinitions( knownDirs );
             batchfile.setDirectories( scanDirsRequested );
             if( !batchfile.write( path ) )
             {
