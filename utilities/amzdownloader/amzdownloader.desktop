@@ -68,3 +68,5 @@ Comment[zh_CN]=使用 AMZ 下载器下载
 Comment[zh_TW]=用 AMZ 下載器來下載
 ServiceTypes=audio/x-amzxml,audio/x-amzaudio
 Exec=amzdownloader --amz %f
+Icon=download
+Categories=Qt;KDE;AudioVideo;Audio;
