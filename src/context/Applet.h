@@ -186,7 +186,6 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 
 
     private slots:
-        void paletteChanged( const QPalette & palette );
         void collapseAnimationFinished();
         void collapse( bool on );
 

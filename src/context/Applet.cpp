@@ -52,7 +52,6 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     , m_standardPadding( 6.0 )
 {
     setBackgroundHints( NoBackground );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
 }
 
 Context::Applet::~Applet()
@@ -352,12 +351,6 @@ void
 Context::Applet::setCollapseOffHeight( int h )
 {
     m_heightCollapseOff = h;
-}
-
-void
-Context::Applet::paletteChanged( const QPalette & palette )
-{
-    Q_UNUSED( palette )
 }
 
 bool Context::Applet::canAnimate()
