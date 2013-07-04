@@ -3,6 +3,10 @@ Amarok ChangeLog
 (C) 2002-2013 the Amarok authors.
 
 
+VERSION 2.8
+  BUGFIXES:
+
+
 VERSION 2.8-Beta 1
   FEATURES:
    * Ctrl+C copies the currently playing artist & title to the clipboard. (BR 228872)
