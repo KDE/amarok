@@ -1217,11 +1217,10 @@ MainWindow::showReportBug()
 }
 
 void
-MainWindow::paletteChange( const QPalette & oldPalette )
+MainWindow::changeEvent( QEvent *event )
 {
-    Q_UNUSED( oldPalette )
-
-    The::paletteHandler()->setPalette( palette() );
+    if( event->type() == QEvent::PaletteChange )
+        The::paletteHandler()->setPalette( palette() );
 }
 
 void

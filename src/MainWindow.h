@@ -171,7 +171,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
 
     protected:
         virtual void closeEvent( QCloseEvent* );
-        virtual void paletteChange( const QPalette & oldPalette );
+        virtual void changeEvent( QEvent *event );
         virtual bool queryExit(); 
 
     private slots:
