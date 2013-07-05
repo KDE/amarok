@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
-    <height>48</height>
+    <width>590</width>
+    <height>142</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -67,6 +67,31 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="m_scriptConsoleGroup">
+     <property name="title">
+      <string>Script Console</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="kcfg_EnableScriptConsole">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="statusTip">
+         <string>Enable the script console.</string>
+        </property>
+        <property name="whatsThis">
+         <string>Enable the script console.</string>
+        </property>
+        <property name="text">
+         <string>Enable Script Console</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>

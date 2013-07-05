@@ -20,7 +20,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "ScriptManager"
+#define DEBUG_PREFIX "ScriptItem"
 
 #include "ScriptItem.h"
 
@@ -200,8 +200,9 @@ ScriptItem::start( bool silent )
     QString( "%1 Script started" ).arg( QTime::currentTime().toString() );
 
     m_timerId = startTimer( 100 );
-    m_engine.data()->evaluate( scriptFile.readAll() );
+    m_output = m_engine.data()->evaluate( scriptFile.readAll() ).toString();
     debug() << "After Evaluation "<< m_name;
+    emit evaluated( m_output );
     scriptFile.close();
 
     if ( m_evaluating )
@@ -267,11 +268,11 @@ ScriptItem::initializeScriptEngine()
     AmarokScript::QueryMakerPrototype::init( m_engine.data() );
 
     const QString &category = m_info.category();
-    if( category == QLatin1String("Lyrics") )
+    if( category.contains( QLatin1String("Lyrics") ) )
     {
         new AmarokScript::AmarokLyricsScript( m_engine.data() );
     }
-    else if( category == QLatin1String("Scriptable Service") )
+    if( category.contains( QLatin1String("Scriptable Service") ) )
     {
         new StreamItem( m_engine.data() );
         m_service = new ScriptableServiceScript( m_engine.data() );

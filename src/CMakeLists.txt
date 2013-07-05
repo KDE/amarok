@@ -465,6 +465,17 @@ set(scriptengine_SRCS
     scriptengine/exporters/QueryMakerExporter.cpp
 )
 
+set(scriptconsole_SRCS
+    scriptconsole/ScriptConsole.cpp
+    scriptconsole/ScriptEditorDocument.cpp
+    scriptconsole/ScriptConsoleItem.cpp
+    scriptconsole/ScriptItemDelegate.cpp
+)
+
+kde4_add_ui_files(scriptconsole_SRCS
+    scriptconsole/ScriptConsole.ui
+)
+
 #####################################################################
 # PLAYLIST GENERATOR
 #####################################################################
@@ -593,6 +604,7 @@ set(amaroklib_LIB_SRCS
     ${libplaylistmanager_SRCS}
     ${dbus_SRCS}
     ${scriptengine_SRCS}
+    ${scriptconsole_SRCS}
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
@@ -850,6 +862,7 @@ target_link_libraries(amaroklib
     ${KDE4_PHONON_LIBRARY}
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
+    ${KDE4_KTEXTEDITOR_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}

@@ -52,6 +52,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "scriptconsole/ScriptConsole.h"
 #include "statemanagement/ApplicationController.h"
 #include "statemanagement/DefaultApplicationController.h"
 #include "statsyncing/Controller.h"
@@ -412,6 +413,11 @@ void App::applySettings( bool firstTime )
 
     if( !firstTime )
         emit settingsChanged();
+
+    if( AmarokConfig::enableScriptConsole() && !m_scriptConsole )
+        m_scriptConsole = ScriptConsole::ScriptConsoleDialog::instance();
+    else if( !AmarokConfig::enableScriptConsole() && m_scriptConsole )
+        m_scriptConsole.data()->deleteLater();
 }
 
 //SLOT

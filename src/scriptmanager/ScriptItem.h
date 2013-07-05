@@ -52,23 +52,33 @@ class ScriptItem : public QObject
 public:
     ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginInfo &info );
 
+    QString name() const { return m_name; }
     QScriptEngine* engine() { return m_engine.data(); }
     ScriptableServiceScript* service() { return m_service.data(); }
-    KUrl url() const{ return m_url; }
+    KUrl url() const { return m_url; }
     KPluginInfo info() const { return m_info; }
     bool running() const { return m_running; }
     QString specPath() const;
+    QString output() const { return m_output; }
 
-    bool start( bool silent );
+    virtual bool start( bool silent );
 
 public slots:
     void stop();
 
 private slots:
-        void timerEvent ( QTimerEvent *event );
+    void timerEvent ( QTimerEvent *event );
 
 signals:
     void signalHandlerException(QScriptValue);
+    void evaluated( QString output );
+
+protected:
+    /**
+     * Initialize QScriptEngine and load wrapper classes
+     */
+    virtual void initializeScriptEngine();
+    QStringList                                     m_log;
 
 private:
     QString                                         m_name;
@@ -79,15 +89,10 @@ private:
     bool                                            m_running;
     bool                                            m_evaluating;
     QWeakPointer<ScriptableServiceScript>           m_service;
-    QStringList                                     m_log;
     int                                             m_runningTime;
     int                                             m_timerId;
     QWeakPointer<ScriptTerminatorWidget>            m_popupWidget;
-
-    /**
-     * Initialize QScriptEngine and load wrapper classes
-     */
-    void initializeScriptEngine();
+    QString                                         m_output;
 };
 
-#endif /* AMAROK_SCRIPTMANAGER_H */
+#endif /* AMAROK_SCRIPTITEM_H */
