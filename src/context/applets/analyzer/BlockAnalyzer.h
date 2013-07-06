@@ -31,12 +31,12 @@ public:
     ~BlockAnalyzer();
 
     // Signed ints because most of what we compare them against are ints
-    static const int HEIGHT      = 2;
-    static const int WIDTH       = 4;
-    static const int MIN_ROWS    = 30;  //arbitrary
-    static const int MIN_COLUMNS = 32;  //arbitrary
-    static const int MAX_COLUMNS = 256; //must be 2**n
-    static const int FADE_SIZE   = 90;
+    static const int BLOCK_HEIGHT = 2;
+    static const int BLOCK_WIDTH  = 4;
+    static const int MIN_ROWS     = 30;  //arbitrary
+    static const int MIN_COLUMNS  = 32;  //arbitrary
+    static const int MAX_COLUMNS  = 256; //must be 2**n
+    static const int FADE_SIZE    = 90;
 
 protected:
     virtual void transform( QVector<float>& );
