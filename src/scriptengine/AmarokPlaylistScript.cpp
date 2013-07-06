@@ -37,7 +37,7 @@ AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine *engine )
     : QObject( engine )
     , m_scriptEngine( engine )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership, QScriptEngine::ExcludeSuperClassContents );
     engine->globalObject().property( "Amarok" ).setProperty( "Playlist", scriptObject );
     connect( The::playlist()->qaim(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT (slotTrackInserted(QModelIndex,int,int)) );
     connect( The::playlist()->qaim(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT (slotTrackRemoved(QModelIndex,int,int)) );

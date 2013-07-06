@@ -39,7 +39,8 @@ MetaTrackPrototype::MetaTrackPrototype( QScriptEngine *engine )
 {
     qScriptRegisterMetaType<Meta::TrackList>(engine, toScriptArray, fromScriptArray );
     engine->setDefaultPrototype( qMetaTypeId<Meta::TrackPtr>(),
-                                   engine->newQObject( this, QScriptEngine::AutoOwnership) );
+                                 engine->newQObject( this, QScriptEngine::AutoOwnership,
+                                                    QScriptEngine::ExcludeSuperClassContents ) );
 }
 
 int

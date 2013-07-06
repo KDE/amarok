@@ -46,7 +46,8 @@ QScriptValue
 CollectionPrototype::toScriptValue( QScriptEngine *engine, Collection* const &collection )
 {
     CollectionPrototype *collectionProto = new CollectionPrototype( collection );
-    QScriptValue val = engine->newQObject( collectionProto, QScriptEngine::ScriptOwnership );
+    QScriptValue val = engine->newQObject( collectionProto, QScriptEngine::ScriptOwnership,
+                                            QScriptEngine::ExcludeSuperClassContents );
     return val;
 }
 

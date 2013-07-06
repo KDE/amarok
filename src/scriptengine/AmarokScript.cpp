@@ -30,7 +30,8 @@ AmarokScript::AmarokScript::AmarokScript( const QString &name, QScriptEngine *en
     : QObject( engine )
     , m_name( name )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
+                                                    QScriptEngine::ExcludeSuperClassContents );
     engine->globalObject().setProperty( "Amarok", scriptObject );
 }
 

@@ -30,7 +30,8 @@ AmarokDownloadHelper *AmarokDownloadHelper::s_instance = 0;
 AmarokNetworkScript::AmarokNetworkScript( QScriptEngine *engine )
     : QObject( engine )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
+                                                    QScriptEngine::ExcludeSuperClassContents );
     engine->globalObject().property( "Amarok" ).setProperty( "Network", scriptObject );
 }
 

@@ -26,7 +26,8 @@ using namespace AmarokScript;
 AmarokStatusbarScript::AmarokStatusbarScript( QScriptEngine *engine )
     : QObject( engine )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
+                                                    QScriptEngine::ExcludeSuperClassContents );
     QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
     windowObject.setProperty( "Statusbar", scriptObject );
 }

@@ -36,7 +36,8 @@ QScriptValue
 QueryMakerPrototype::toScriptValue( QScriptEngine *engine, QueryMaker* const &queryMaker ) //move to a template?
 {
     QueryMakerPrototype *prototype = new QueryMakerPrototype( queryMaker );
-    QScriptValue val = engine->newQObject( prototype, QScriptEngine::ScriptOwnership );
+    QScriptValue val = engine->newQObject( prototype, QScriptEngine::ScriptOwnership,
+                                        QScriptEngine::ExcludeSuperClassContents );
     return val;
 }
 

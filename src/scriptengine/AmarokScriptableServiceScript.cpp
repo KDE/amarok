@@ -30,7 +30,8 @@ StreamItem::StreamItem( QScriptEngine *engine )
     : QObject( engine )
     , m_year( 0 )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
+                                                    QScriptEngine::ExcludeSuperClassContents );
     engine->globalObject().property( "Amarok" ).setProperty( "StreamItem", scriptObject );
     engine->setDefaultPrototype( qMetaTypeId<StreamItem*>(), QScriptValue() );
 }
@@ -198,7 +199,8 @@ ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QScriptContext 
         error() << "The name of the scriptable script should be the same with the one in the script.spec file!";
         return engine->undefinedValue();
     }
-    QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts.value(serviceName)->service() );
+    QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts.value(serviceName)->service(),
+                                           QScriptEngine::AutoOwnership, QScriptEngine::ExcludeSuperClassContents );
     engine->globalObject().setProperty( "ScriptableServiceScript", obj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
     return engine->undefinedValue();

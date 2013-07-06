@@ -29,7 +29,8 @@ InfoScript::InfoScript( const KUrl& scriptUrl, QScriptEngine *engine )
     : QObject( engine )
     , m_scriptUrl( scriptUrl )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
+                                                    QScriptEngine::ExcludeSuperClassContents );
     engine->globalObject().property( "Amarok" ).setProperty( "Info", scriptObject );
     QScriptValue iconEnumObject = engine->newQMetaObject( &IconEnum::staticMetaObject );
     scriptObject.setProperty( "IconSizes", iconEnumObject );

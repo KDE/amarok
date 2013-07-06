@@ -32,7 +32,8 @@ ScriptImporter::ScriptImporter( QScriptEngine* scriptEngine, const KUrl &url )
     , m_scriptUrl( url )
     , m_scriptEngine( scriptEngine )
 {
-    QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership );
+    QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership
+                                                        , QScriptEngine::ExcludeSuperClassContents );
     scriptEngine->globalObject().setProperty( "Importer", scriptObject );
 }
 
