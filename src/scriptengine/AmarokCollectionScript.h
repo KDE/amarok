@@ -18,6 +18,7 @@
 #define AMAROK_COLLECTION_SCRIPT_H
 
 #include <QObject>
+#include <QStringList>
 
 class QScriptEngine;
 
