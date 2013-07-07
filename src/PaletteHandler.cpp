@@ -18,8 +18,6 @@
  
 #include "PaletteHandler.h"
 
-#include "App.h"
-
 #include <kglobal.h>
 
 #include <QPainter>
@@ -91,13 +89,13 @@ PaletteHandler::foregroundColor( const QPainter *p, bool selected )
         pal = w->palette();
     }
     else
-        pal = App::instance()->palette();
+        pal = palette();
 
     return pal.color( selected ? QPalette::HighlightedText : fg );
 }
 
 QPalette
-PaletteHandler::palette()
+PaletteHandler::palette() const
 {
     return m_palette;
 }
@@ -105,7 +103,7 @@ PaletteHandler::palette()
 QColor
 PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
 {
-    QColor highlight = QColor( App::instance()->palette().highlight().color() );
+    QColor highlight = QColor( The::paletteHandler()->palette().highlight().color() );
     qreal saturation = highlight.saturationF();
     saturation *= saturationPercent;
     qreal value = highlight.valueF();
@@ -120,7 +118,7 @@ PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
 QColor
 PaletteHandler::backgroundColor()
 {
-    QColor base = App::instance()->palette().base().color();
+    QColor base = The::paletteHandler()->palette().base().color();
     base.setHsvF( highlightColor().hueF(), base.saturationF(), base.valueF() );
     return base;
 }
@@ -128,8 +126,8 @@ PaletteHandler::backgroundColor()
 QColor
 PaletteHandler::alternateBackgroundColor()
 {
-    const QColor alternate = App::instance()->palette().alternateBase().color();
-    const QColor window    = App::instance()->palette().window().color();
+    const QColor alternate = The::paletteHandler()->palette().alternateBase().color();
+    const QColor window    = The::paletteHandler()->palette().window().color();
     const QColor base      = backgroundColor();
 
     const int alternateDist = abs( alternate.value() - base.value() );

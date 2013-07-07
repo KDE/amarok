@@ -42,7 +42,7 @@ friend PaletteHandler* The::paletteHandler();
 public:
     ~PaletteHandler();
 
-    QPalette palette();
+    QPalette palette() const;
 
     void setPalette( const QPalette & palette );
 
