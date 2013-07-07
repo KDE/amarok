@@ -378,7 +378,7 @@ MapChanger::removeTrack( Meta::TrackPtr track )
      * if( entity && entity->tracks().count() == 1 ) because it would be racy: entity could
      * have referenced a track that is no longer in MemoryCollection, but not yet destroyed.
      *
-     * When track to remove is MemoryMeta::Track, copy and reassing Meta:: entities so
+     * When track to remove is MemoryMeta::Track, copy and reassign Meta:: entities so
      * that the track is detached from MemoryCollection completely. */
 
     Meta::ArtistPtr artist = track->artist();

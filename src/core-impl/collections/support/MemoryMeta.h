@@ -290,7 +290,7 @@ class AMAROK_EXPORT MapChanger
          *
          * @return shared pointer to underlying track of the deleted track, i.e. the track
          * that you passed to MapChanger::addTrack() originally. May be null pointer if
-         * @param track is not found in collection ot if in wasn't added using MapChanger.
+         * @param track is not found in collection or if it wasn't added using MapChanger.
          */
         Meta::TrackPtr removeTrack( Meta::TrackPtr track );
 
