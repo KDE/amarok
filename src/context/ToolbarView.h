@@ -45,6 +45,7 @@ class AppletItemOverlay;
 class ToolbarView : public QGraphicsView
 {
     Q_OBJECT
+
     public:
         explicit ToolbarView( Plasma::Containment* cont, QGraphicsScene* scene, QWidget* parent = 0 );
         ~ToolbarView();
@@ -60,13 +61,14 @@ class ToolbarView : public QGraphicsView
         void dragLeaveEvent(QDragLeaveEvent *event);
     
     private slots:
+        void applyStyleSheet();
         void toggleConfigMode();
         void appletRemoved( Plasma::Applet* );
         void appletAdded( Plasma::Applet*, int);
         void refreshOverlays();
         void recreateOverlays();
         void refreshSycoca();
-    
+
     private:
         int m_height;
         QWeakPointer<AppletToolbar> m_toolbar;

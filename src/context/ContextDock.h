@@ -35,6 +35,7 @@ namespace Plasma { class Containment; }
 class ContextDock : public AmarokDockWidget
 {
     Q_OBJECT
+
 public:
     ContextDock( QWidget *parent );
 

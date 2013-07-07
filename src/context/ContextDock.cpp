@@ -75,4 +75,5 @@ ContextDock::createContextView( Plasma::Containment *containment )
     PERF_LOG( "ContexView created" )
 }
 
+
 #include "ContextDock.moc"

@@ -54,15 +54,10 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
     setAutoFillBackground( true );
     setContentsMargins( 0, 0, 0, 0 );
 
-    QPalette palette = QApplication::palette();
     setFrameStyle( QFrame::NoFrame );
-    setStyleSheet( QString( "QFrame#ContextToolbarView { border: 1px ridge %1; " \
-                            "background-color: %2; color: %3; border-radius: 3px; }" \
-                            "QLabel { color: %3; }" )
-                           .arg( palette.color( QPalette::Window ).name() )
-                           .arg( The::paletteHandler()->highlightColor().name() )
-                           .arg( palette.color( QPalette::HighlightedText ).name() )
-                 );
+    applyStyleSheet();
+
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(applyStyleSheet()) );
 
     //Padding required to prevent view scrolling, probably caused by the 1px ridge
     setSceneRect( TOOLBAR_X_OFFSET, 0, size().width()-TOOLBAR_SCENE_PADDING,
@@ -129,6 +124,22 @@ void
 Context::ToolbarView::dragLeaveEvent( QDragLeaveEvent *event )
 {
     Q_UNUSED( event )
+}
+
+void
+Context::ToolbarView::applyStyleSheet() // SLOT
+{
+    DEBUG_BLOCK
+
+    const QPalette palette = QApplication::palette();
+
+    setStyleSheet( QString( "QFrame#ContextToolbarView { border: 1px ridge %1; " \
+                            "background-color: %2; color: %3; border-radius: 3px; }" \
+                            "QLabel { color: %3; }" )
+                           .arg( palette.color( QPalette::Window ).name() )
+                           .arg( The::paletteHandler()->highlightColor().name() )
+                           .arg( palette.color( QPalette::HighlightedText ).name() )
+                 );
 }
 
 void
