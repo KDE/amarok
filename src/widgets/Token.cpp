@@ -124,7 +124,7 @@ QString Token::iconName() const
 
 QColor Token::textColor() const
 {
-    return m_label->palette().color( QPalette::Foreground );
+    return m_label->palette().color( QPalette::WindowText );
 }
 
 void
@@ -134,7 +134,7 @@ Token::setTextColor( QColor textColor )
     if( textColor == this->textColor() )
         return;
     QPalette myPalette( m_label->palette() );
-    myPalette.setColor( QPalette::Foreground, textColor );
+    myPalette.setColor( QPalette::WindowText, textColor );
     m_label->setPalette( myPalette );
 }
 
