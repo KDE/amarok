@@ -19,7 +19,6 @@
 #include "PaletteHandler.h"
 
 #include "App.h"
-#include "core/support/Debug.h"
 
 #include <kglobal.h>
 
@@ -46,8 +45,6 @@ PaletteHandler::PaletteHandler( QObject* parent )
 
 PaletteHandler::~PaletteHandler()
 {
-    DEBUG_BLOCK
-
     The::s_PaletteHandler_instance = 0;
 }
 
