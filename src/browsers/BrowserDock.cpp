@@ -17,7 +17,6 @@
  
 #include "BrowserDock.h"
 
-#include "App.h"
 #include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
@@ -84,9 +83,9 @@ void BrowserDock::polish()
     connect( action, SIGNAL(triggered(bool)), m_categoryList.data(), SLOT(back()) );
     action->setShortcut( KShortcut( Qt::Key_Backspace ) );
 
-    paletteChanged( App::instance()->palette() );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)),
-             SLOT(paletteChanged(QPalette)) );
+    paletteChanged( palette() );
+
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
 }
 
 BrowserCategoryList *BrowserDock::list() const
@@ -113,9 +112,9 @@ BrowserDock::paletteChanged( const QPalette &palette )
                 QString( "QFrame#BrowserMessageArea { border: 1px ridge %1; " \
                          "background-color: %2; color: %3; border-radius: 3px; }" \
                          "QLabel { color: %3; }" )
-                        .arg( palette.color( QPalette::Window ).name() )
+                        .arg( palette.color( QPalette::Active, QPalette::Window ).name() )
                         .arg( The::paletteHandler()->highlightColor().name() )
-                        .arg( palette.color( QPalette::HighlightedText ).name() )
+                        .arg( palette.color( QPalette::Active, QPalette::HighlightedText ).name() )
                 );
 }
 
