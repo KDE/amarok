@@ -125,14 +125,28 @@ character sets used in ID3 tags.</string>
         <item>
          <widget class="QPushButton" name="m_forgetCollectionsButton">
           <property name="text">
-           <string>Forget about Selected Collections</string>
+           <string>Forget</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="m_configureButton">
+          <property name="text">
+           <string>Configure</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="m_addCollectionButton">
+          <property name="text">
+           <string>Add</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="m_synchronizeButton">
           <property name="text">
-           <string>Perform Synchronization...</string>
+           <string>Synchronize</string>
           </property>
          </widget>
         </item>

@@ -62,6 +62,8 @@ MetadataConfig::MetadataConfig( QWidget *parent )
     m_statSyncingProvidersView->setModel( config );
     m_forgetCollectionsButton->setIcon( KIcon( "edit-clear" ) );
     m_synchronizeButton->setIcon( KIcon( "amarok_playcount" ) );
+    m_addCollectionButton->setIcon( KIcon( "folder-new" ) );
+    m_configureButton->setIcon( KIcon( "configure" ) );
     connect( config, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SIGNAL(changed()) );
     connect( config, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(changed()) );
     connect( config, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(changed()) );
