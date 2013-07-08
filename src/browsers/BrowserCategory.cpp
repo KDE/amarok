@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
+#include "PaletteHandler.h"
 
 #include "core/support/Debug.h"
 
@@ -33,7 +34,9 @@ BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
     setObjectName( name );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setFrameShape( QFrame::NoFrame );
+
     connect( App::instance(), SIGNAL(settingsChanged()), SLOT(slotSettingsChanged()) );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(slotSettingsChanged()) );
 }
 
 BrowserCategory::~BrowserCategory()
