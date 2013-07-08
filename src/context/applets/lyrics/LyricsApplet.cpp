@@ -668,6 +668,9 @@ void
 LyricsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     Q_D( LyricsApplet );
+
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     d->ui_settings.setupUi( settings );
@@ -689,7 +692,6 @@ LyricsApplet::createConfigurationInterface( KConfigDialog *parent )
         break;
     }
 
-    parent->enableButtonApply( true );
     parent->addPage( settings, i18n( "Lyrics Settings" ), "preferences-system" );
 
     connect( parent, SIGNAL(accepted()), this, SLOT(_changeLyricsFont()) );

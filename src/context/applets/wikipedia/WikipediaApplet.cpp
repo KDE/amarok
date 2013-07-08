@@ -771,6 +771,9 @@ void
 WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     Q_D( WikipediaApplet );
+
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     KConfigGroup configuration = config();
     QWidget *langSettings = new QWidget;
     d->languageSettingsUi.setupUi( langSettings );
@@ -786,7 +789,6 @@ WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
     d->generalSettingsUi.mobileCheckBox->setCheckState( d->useMobileWikipedia ? Qt::Checked : Qt::Unchecked );
 
     connect( d->languageSettingsUi.downloadButton, SIGNAL(clicked()), this, SLOT(_getLangMap()) );
-    connect( parent, SIGNAL(applyClicked()), this, SLOT(_loadSettings()) );
     connect( parent, SIGNAL(okClicked()), this, SLOT(_loadSettings()) );
 
     parent->addPage( genSettings, i18n( "Wikipedia General Settings" ), "configure" );

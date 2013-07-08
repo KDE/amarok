@@ -244,6 +244,8 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
 void Albums::createConfigurationInterface( KConfigDialog *parent )
 {
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     QSpinBox *spinBox = new QSpinBox;
     spinBox->setRange( 1, 100 );
     spinBox->setValue( m_recentCount );

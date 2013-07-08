@@ -255,6 +255,8 @@ TabsApplet::updateInterface( const AppletState appletState )
 void
 TabsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
 

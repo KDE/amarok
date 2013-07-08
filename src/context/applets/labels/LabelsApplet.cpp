@@ -728,6 +728,9 @@ void
 LabelsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     DEBUG_BLOCK
+
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     KConfigGroup configuration = config();
     QWidget *generalSettings = new QWidget;
     ui_GeneralSettings.setupUi( generalSettings );

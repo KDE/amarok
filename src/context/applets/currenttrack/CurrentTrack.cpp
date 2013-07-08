@@ -659,6 +659,8 @@ CurrentTrack::artistsCounted( QStringList results )
 void
 CurrentTrack::createConfigurationInterface( KConfigDialog *parent )
 {
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );

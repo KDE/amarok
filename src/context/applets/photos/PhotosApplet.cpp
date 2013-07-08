@@ -211,6 +211,8 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
 void
 PhotosApplet::createConfigurationInterface( KConfigDialog *parent )
 {
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );

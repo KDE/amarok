@@ -167,6 +167,8 @@ SimilarArtistsApplet::configure()
 void
 SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     QWidget *settings = new QWidget();
     ui_Settings.setupUi( settings );
