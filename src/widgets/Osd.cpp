@@ -159,7 +159,7 @@ OSDWidget::hide()
 }
 
 bool
-OSDWidget::isTemporaryDisabled()
+OSDWidget::isTemporaryDisabled() const
 {
     // Check if the OSD should not be shown,
     // if a fullscreen window is focused.

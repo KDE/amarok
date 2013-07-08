@@ -102,7 +102,7 @@ class OSDWidget : public QWidget
          * if a fullscreen application is active (@see m_hideWhenFullscreenWindowIsActive)
          * (where the OSD could steal focus).
          */
-        bool isTemporaryDisabled();
+        bool isTemporaryDisabled() const;
 
         /** resets the colours to defaults */
         void unsetColors();
