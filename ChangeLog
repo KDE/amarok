@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.8
   BUGFIXES:
+  * Fix incorrect colors in Context View toolbar when switching themes. (BR 301305)
+  * Many fixes for various bugs with switching desktop color themes at runtime.
 
 
 VERSION 2.8-Beta 1
