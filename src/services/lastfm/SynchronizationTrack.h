@@ -42,11 +42,8 @@ class SynchronizationTrack : public QObject, public StatSyncing::Track
         virtual int rating() const;
         virtual void setRating( int rating );
         virtual QDateTime firstPlayed() const;
-        virtual void setFirstPlayed( const QDateTime &firstPlayed );
         virtual QDateTime lastPlayed() const;
-        virtual void setLastPlayed( const QDateTime &lastPlayed );
         virtual int playCount() const;
-        virtual void setPlayCount( int playCount );
         virtual QSet<QString> labels() const;
         virtual void setLabels( const QSet<QString> &labels );
         virtual void commit();
