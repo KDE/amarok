@@ -36,9 +36,6 @@ class OSDWidget : public QWidget
     public:
         enum Alignment { Left, Middle, Center, Right };
 
-        /** resets the colours to defaults */
-        void unsetColors();
-
         /** shadow size in every direction */
         static const int SHADOW_SIZE = 5;
 
@@ -107,10 +104,13 @@ class OSDWidget : public QWidget
          */
         bool isTemporaryDisabled();
 
+        /** resets the colours to defaults */
+        void unsetColors();
+
         // Reimplemented from QWidget
         virtual void paintEvent( QPaintEvent* );
         virtual void mousePressEvent( QMouseEvent* );
-        virtual bool event( QEvent* );
+        virtual void changeEvent( QEvent* );
 
         /** distance from screen edge */
         static const int MARGIN = 15;

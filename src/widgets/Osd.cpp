@@ -24,6 +24,7 @@
 
 #include "EngineController.h"
 #include "KNotificationBackend.h"
+#include "PaletteHandler.h"
 #include "SvgHandler.h"
 #include "amarokconfig.h"
 #include "core/meta/Meta.h"
@@ -34,7 +35,6 @@
 #include "widgets/StarManager.h"
 
 #include <KApplication>
-#include <KDebug>
 #include <KIcon>
 #include <KLocale>
 #include <KWindowSystem>
@@ -84,7 +84,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     setWindowFlags( flags );
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
-    unsetColors();
 
     #ifdef Q_WS_X11
     KWindowSystem::setType( winId(), NET::Notification );
@@ -430,19 +429,14 @@ OSDWidget::paintEvent( QPaintEvent *e )
                                -SHADOW_SIZE, -SHADOW_SIZE ), align, m_text );
 }
 
-bool
-OSDWidget::event( QEvent *e )
+void
+OSDWidget::changeEvent( QEvent *event )
 {
-    switch( e->type() )
-    {
-    case QEvent::ApplicationPaletteChange:
-        if( !AmarokConfig::osdUseCustomColors() )
-            unsetColors(); //use new palette's colours
-        return true;
+    QWidget::changeEvent( event );
 
-    default:
-        return QWidget::event( e );
-    }
+    if( event->type() == QEvent::PaletteChange )
+        if( !AmarokConfig::osdUseCustomColors() )
+            unsetColors(); // Use new palette's colors
 }
 
 void
@@ -454,12 +448,7 @@ OSDWidget::mousePressEvent( QMouseEvent* )
 void
 OSDWidget::unsetColors()
 {
-    QPalette p = QApplication::palette();
-    QPalette newPal = palette();
-
-    newPal.setColor( QPalette::Active, QPalette::WindowText, p.color( QPalette::Active, QPalette::WindowText ) );
-    newPal.setColor( QPalette::Active, QPalette::Window    , p.color( QPalette::Active, QPalette::Window ) );
-    setPalette( newPal );
+    setPalette( The::paletteHandler()->palette() );
 }
 
 void
