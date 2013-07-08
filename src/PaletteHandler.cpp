@@ -58,12 +58,12 @@ PaletteHandler::updateItemView( QAbstractItemView * view )
 {
     QPalette p = m_palette;
 
-    QColor c = p.color( QPalette::AlternateBase );
+    QColor c = p.color( QPalette::Active, QPalette::AlternateBase );
     c.setAlpha( 77 );
-    p.setColor( QPalette::AlternateBase, c );
+    p.setColor( QPalette::Active, QPalette::AlternateBase, c );
     // to fix hardcoded QPalette::Text usage in Qt classes
-    p.setColor( QPalette::Base, p.color(QPalette::Window) );
-    p.setColor( QPalette::Text, p.color(QPalette::WindowText) );
+    p.setColor( QPalette::Active, QPalette::Base, p.color( QPalette::Window ) );
+    p.setColor( QPalette::Active, QPalette::Text, p.color( QPalette::WindowText ) );
     view->setPalette( p );
     
     if ( QWidget *vp = view->viewport() )
@@ -91,7 +91,10 @@ PaletteHandler::foregroundColor( const QPainter *p, bool selected )
     else
         pal = palette();
 
-    return pal.color( selected ? QPalette::HighlightedText : fg );
+    if( !selected )
+        return pal.color( QPalette::Active, fg );
+
+    return pal.color( QPalette::Active, QPalette::HighlightedText );
 }
 
 QPalette
@@ -103,7 +106,7 @@ PaletteHandler::palette() const
 QColor
 PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
 {
-    QColor highlight = QColor( The::paletteHandler()->palette().highlight().color() );
+    QColor highlight = The::paletteHandler()->palette().color( QPalette::Active, QPalette::Highlight );
     qreal saturation = highlight.saturationF();
     saturation *= saturationPercent;
     qreal value = highlight.valueF();
@@ -118,7 +121,7 @@ PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
 QColor
 PaletteHandler::backgroundColor()
 {
-    QColor base = The::paletteHandler()->palette().base().color();
+    QColor base = The::paletteHandler()->palette().color( QPalette::Active, QPalette::Base );
     base.setHsvF( highlightColor().hueF(), base.saturationF(), base.valueF() );
     return base;
 }
@@ -126,8 +129,8 @@ PaletteHandler::backgroundColor()
 QColor
 PaletteHandler::alternateBackgroundColor()
 {
-    const QColor alternate = The::paletteHandler()->palette().alternateBase().color();
-    const QColor window    = The::paletteHandler()->palette().window().color();
+    const QColor alternate = The::paletteHandler()->palette().color( QPalette::Active, QPalette::AlternateBase );
+    const QColor window    = The::paletteHandler()->palette().color( QPalette::Active, QPalette::Window );
     const QColor base      = backgroundColor();
 
     const int alternateDist = abs( alternate.value() - base.value() );

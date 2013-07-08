@@ -226,7 +226,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
     QPainter p( bar() );
 
     const QColor bg = The::paletteHandler()->backgroundColor();
-    const QColor fg = The::paletteHandler()->palette().color( QPalette::Highlight );
+    const QColor fg = palette().color( QPalette::Active, QPalette::Highlight );
 
     m_topBarPixmap.fill( fg );
 
