@@ -7,7 +7,8 @@ VERSION 2.8
   BUGFIXES:
   * Removed broken Apply button in applets' settings dialog. (BR 322015)
   * Fix incorrect colors in Context View toolbar when switching themes. (BR 301305)
-  * Many fixes for various bugs with switching desktop color themes at runtime.
+  * Many fixes for various bugs with switching desktop color themes at runtime,
+    including OSD, spectrum analyzer, collection browser.
 
 
 VERSION 2.8-Beta 1
