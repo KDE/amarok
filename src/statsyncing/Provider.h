@@ -86,8 +86,8 @@ namespace StatSyncing
                 Never, /// never synchronize automatically
                 NoByDefault, /// don't synchronize automatically by default
                 Ask, /// ask on first appearance whether to synchronize by default
-                YesByDefault, /// enable auto syncing on first appearance without asking
-                              /// intended only for Local Collection
+                YesByDefault /// enable auto syncing on first appearance without asking
+                             /// intended only for Local Collection
             };
 
             /**
