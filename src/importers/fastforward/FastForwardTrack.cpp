@@ -62,8 +62,6 @@ FastForwardTrack::FastForwardTrack( const QString &trackUrl, const QString &prov
         for( int i = 0; i < fields.size(); ++i )
             m_metadata[fields[i]] = query.value( i );
     }
-
-    connect( this, SIGNAL(retrieveAllData()), SLOT(slotRetrieveAllData()), Qt::BlockingQueuedConnection );
 }
 
 FastForwardTrack::~FastForwardTrack()
@@ -156,16 +154,18 @@ FastForwardTrack::checkAllDataRetrieved() const
     if( !m_statistics.empty() )
         return;
 
-    // SQL connection belongs to the main thread, so per QSqlDatabase documentation
-    // we want to make sure that that's where queries will take place
-    if( thread() == QCoreApplication::instance()->thread() )
-        slotRetrieveAllData();
-    else
-        emit retrieveAllData();
+    // SQL queries need to be executed in the main thread, and we can't use
+    // BlockingQueuedConnection if we're already in the main thread
+    const Qt::ConnectionType connectionType =
+            this->thread() == QCoreApplication::instance()->thread()
+            ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
+
+    QMetaObject::invokeMethod( const_cast<FastForwardTrack*>( this ),
+                               "retrievePersonalData", connectionType );
 }
 
 void
-FastForwardTrack::slotRetrieveAllData() const
+FastForwardTrack::retrievePersonalData()
 {
     QSqlDatabase db = QSqlDatabase::database( m_providerUid );
     if( !db.isOpen() )

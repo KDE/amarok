@@ -44,11 +44,6 @@ FastForwardProvider::FastForwardProvider( const FastForwardSettings &settings )
         db.setPassword( m_settings.dbPass );
         db.setPort    ( m_settings.dbPort );
     }
-
-    connect( this, SIGNAL(artistsSearch()), SLOT(slotArtistsSearch()),
-             Qt::BlockingQueuedConnection );
-    connect( this, SIGNAL(artistTracksSearch(QString)),
-             SLOT(slotArtistTracksSearch(QString)), Qt::BlockingQueuedConnection );
 }
 
 FastForwardProvider::~FastForwardProvider()
@@ -104,7 +99,8 @@ FastForwardProvider::defaultPreference()
 QSet<QString>
 FastForwardProvider::artists()
 {
-    emit artistsSearch();
+    // SQL queries need to be executed in the main thread
+    QMetaObject::invokeMethod( this, "artistsSearch", Qt::BlockingQueuedConnection );
 
     QSet<QString> artistSet;
     artistSet.swap( m_artistsResult );
@@ -115,7 +111,9 @@ FastForwardProvider::artists()
 TrackList
 FastForwardProvider::artistTracks( const QString &artistName )
 {
-    emit artistTracksSearch( artistName );
+    // SQL queries need to be executed in the main thread
+    QMetaObject::invokeMethod( this, "artistTracksSearch", Qt::BlockingQueuedConnection,
+                               Q_ARG( QString, artistName ) );
 
     TrackList artistTrackList;
     artistTrackList.swap( m_artistTracksResult );
@@ -124,7 +122,7 @@ FastForwardProvider::artistTracks( const QString &artistName )
 }
 
 void
-FastForwardProvider::slotArtistsSearch()
+FastForwardProvider::artistsSearch()
 {
     QSqlDatabase db = QSqlDatabase::database( m_settings.uid );
     if( !db.isOpen() )
@@ -142,7 +140,7 @@ FastForwardProvider::slotArtistsSearch()
 }
 
 void
-FastForwardProvider::slotArtistTracksSearch( const QString &artistName )
+FastForwardProvider::artistTracksSearch( const QString &artistName )
 {
     QSqlDatabase db = QSqlDatabase::database( m_settings.uid );
     if( !db.isOpen() )

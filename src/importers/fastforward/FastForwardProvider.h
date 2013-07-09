@@ -46,18 +46,14 @@ public:
     /// Only called from non-main thread
     virtual TrackList artistTracks( const QString &artistName );
 
-signals:
-    void artistsSearch();
-    void artistTracksSearch( const QString &artistName );
-
 private:
     const FastForwardSettings m_settings;
     QSet<QString> m_artistsResult;
     TrackList m_artistTracksResult;
 
 private slots:
-    void slotArtistsSearch();
-    void slotArtistTracksSearch( const QString &artistName );
+    void artistsSearch();
+    void artistTracksSearch( const QString &artistName );
 };
 
 } // namespace StatSyncing

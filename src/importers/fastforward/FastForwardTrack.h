@@ -52,9 +52,6 @@ public:
     int playCount() const;
     QSet<QString> labels() const;
 
-signals:
-    void retrieveAllData() const;
-
 private:
     void checkAllDataRetrieved() const;
 
@@ -62,14 +59,13 @@ private:
     QString m_providerUid;
 
     QMap<quint64, QVariant> m_metadata;
+    QMap<quint64, QVariant> m_statistics;
+    QSet<QString> m_labels;
 
-    // The following members are marked mutable, because they are lazily initialized
-    mutable QMap<quint64, QVariant> m_statistics;
-    mutable QSet<QString> m_labels;
     mutable QMutex m_statMutex;
 
 private slots:
-    void slotRetrieveAllData() const;
+    void retrievePersonalData();
 };
 
 } // namespace StatSyncing
