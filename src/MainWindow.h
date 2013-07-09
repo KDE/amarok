@@ -108,9 +108,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
          *    If an audiocd collection is present. Stop current playback, clear playlist,
          *    add cd to playlist and start playback
          */
-        bool playAudioCd();
-
-        bool isWaitingForCd() const;
+        void playAudioCd();
 
         /**
          * @return Whether the application is on the currently active virtual desktop. On non-X11 systems
@@ -212,10 +210,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         int m_searchField;
 
         static QWeakPointer<MainWindow> s_instance;
-
-        bool m_waitingForCd;
 };
-
 
 #endif //AMAROK_PLAYLISTWINDOW_H
 

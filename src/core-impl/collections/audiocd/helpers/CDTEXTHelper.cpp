@@ -1,5 +1,4 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2013 Tatjana Gornak <t.gornak@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -14,40 +13,46 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef AUDIOCDCOLLECTIONLOCATION_H
-#define AUDIOCDCOLLECTIONLOCATION_H
+#include "CDTEXTHelper.h"
+#include "core-impl/collections/audiocd/AudioCdCollection.h"
 
-#include "core/collections/CollectionLocation.h"
-
-#include "AudioCdCollection.h"
-
-#include <KTemporaryFile>
-#include <QWeakPointer>
-
-namespace Collections {
-
-/**
- * A custom CollectionLocation handling the encoding file type and so on for AudioCd collections
- */
-class AudioCdCollectionLocation : public CollectionLocation
+CDTEXTHelper::CDTEXTHelper( CdIo_t *cdio, const QString& encodingPreferences )
+          : MetaDataHelper( encodingPreferences )
 {
-    Q_OBJECT
-public:
-    AudioCdCollectionLocation( QWeakPointer<AudioCdCollection> parentCollection );
-    ~AudioCdCollectionLocation();
+    m_cdtext = cdio_get_cdtext( cdio );
+}
 
-    Collections::Collection* collection() const;
-    virtual void getKIOCopyableUrls( const Meta::TrackList & tracks );
+CDTEXTHelper::~CDTEXTHelper()
+{
+}
 
-private slots:
-    void addToMap( Meta::TrackPtr track, const QString &fileName, bool succesful );
-private:
-    QWeakPointer<AudioCdCollection> m_collection;
-    QMap<Meta::TrackPtr, KUrl> m_resultsMap;
-    int m_tracks;
-};
+bool
+CDTEXTHelper::isAvailable() const
+{
+    return 0 != m_cdtext ;
+}
 
-} //namespace Collections
+EntityInfo
+CDTEXTHelper::getDiscInfo() const
+{
+    return getTrackInfo( ( track_t ) 0 );
+}
 
-#endif
+EntityInfo
+CDTEXTHelper::getTrackInfo( track_t trackNum ) const
+{
+    EntityInfo trackInfo;
+
+    trackInfo.title = encode( cdtext_get_const( m_cdtext, CDTEXT_FIELD_TITLE, trackNum ) );
+    trackInfo.artist = encode( cdtext_get_const( m_cdtext, CDTEXT_FIELD_PERFORMER, trackNum ) );
+    trackInfo.genre = encode( cdtext_get_const( m_cdtext, CDTEXT_FIELD_GENRE, trackNum ) );
+
+    return EntityInfo( trackInfo );
+}
+
+QByteArray
+CDTEXTHelper::getRawDiscTitle() const
+{
+    return QByteArray( cdtext_get_const( m_cdtext, CDTEXT_FIELD_TITLE, ( track_t ) 0 ) );
+
+}

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * copyright (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
+ * Copyright (c) 2013 Tatjana Gornak <t.gornak@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,22 +14,47 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AUDIOCD_DEVICE_INFO_H
-#define AUDIOCD_DEVICE_INFO_H
+#include "MetaDataHelper.h"
 
-#include "MediaDeviceInfo.h"
+#include <KEncodingProber>
+#include <QTextCodec>
 
-class AudioCdDeviceInfo : public MediaDeviceInfo
+MetaDataHelper::MetaDataHelper( const QString& encodingPreferences )
+               : m_encodingPreferences( encodingPreferences )
 {
-    Q_OBJECT
-    public:
-        AudioCdDeviceInfo( QString device, QString udi );
-        ~AudioCdDeviceInfo();
-
-        QString device();
-
-    private:
-        QString m_device;
 };
 
-#endif
+MetaDataHelper::~MetaDataHelper()
+{
+};
+
+QString
+MetaDataHelper::encode( const char* field ) const
+{
+    // collects samples for ecoding guessing
+    m_icu.addSample( field );
+    if ( m_encodingPreferences.isEmpty() )
+    {
+        KEncodingProber prober;
+        KEncodingProber::ProberState result = prober.feed( field );
+        if( result != KEncodingProber::NotMe && prober.confidence() > 0.6 )
+        {
+            QTextCodec* codec = QTextCodec::codecForName( prober.encoding() );
+            if ( codec )
+                return codec->toUnicode( field );
+        }
+    }
+    else
+    {
+        QTextCodec* codec = QTextCodec::codecForName( m_encodingPreferences.toUtf8() );
+        if ( codec )
+            return codec->toUnicode( field );
+    }
+    return QString( field );
+}
+
+void
+MetaDataHelper::getEncodings( QVector<QString> &encodings ) const
+{
+    m_icu.detectAllEncodings( encodings );
+}

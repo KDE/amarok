@@ -500,6 +500,7 @@ void
 CollectionLocation::slotFinishCopy()
 {
     DEBUG_BLOCK
+
     if( m_removeSources )
     {
         removeSourceTracks( m_tracksSuccessfullyTransferred );
@@ -516,6 +517,9 @@ CollectionLocation::slotFinishCopy()
         m_destination = 0;
         this->deleteLater();
     }
+    // notify source collection that copying to
+    // the destination collection is finished
+    emit finishCopy();
 }
 
 void

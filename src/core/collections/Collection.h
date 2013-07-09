@@ -21,7 +21,7 @@
 #include "core/amarokcore_export.h"
 #include "core/interfaces/MetaCapability.h"
 #include "core/support/PluginFactory.h"
-
+#include "core-impl/collections/support/MemoryCollection.h"
 #include <QObject>
 
 namespace Meta {
@@ -133,6 +133,11 @@ namespace Collections
              * Convenience short-cut for calling CollectionLocation's isOrganizable.
              */
             virtual bool isOrganizable() const;
+
+            virtual QSharedPointer<MemoryCollection> memoryCollection() const;
+
+        public slots:
+            virtual void collectionUpdated() { emit updated(); }
 
         signals:
             /**

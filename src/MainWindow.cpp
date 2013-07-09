@@ -44,6 +44,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/audiocd/AudioCdPlaybackStarter.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "dialogs/DiagnosticDialog.h"
@@ -117,7 +118,6 @@ MainWindow::MainWindow()
     : KMainWindow( 0 )
     , m_showMenuBar( 0 )
     , m_lastBrowser( 0 )
-    , m_waitingForCd( false )
 {
     DEBUG_BLOCK
 
@@ -1343,48 +1343,10 @@ MainWindow::setDefaultDockSizes() // SLOT
     m_playlistDock.data()->setMinimumWidth( mins[2] ); m_playlistDock.data()->setMaximumWidth( maxs[2] );
 }
 
-bool
+void
 MainWindow::playAudioCd()
 {
-    DEBUG_BLOCK
-    //drop whatever we are doing and play auidocd
-
-    QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
-
-    // Search a non-empty MemoryCollection with the id: AudioCd
-    foreach( Collections::Collection *collection, collections )
-    {
-        if( collection->collectionId() == "AudioCd" )
-        {
-
-            debug() << "got audiocd collection";
-
-            Collections::MemoryCollection * cdColl = dynamic_cast<Collections::MemoryCollection *>( collection );
-
-            if( !cdColl || cdColl->trackMap().count() == 0 )
-            {
-                debug() << "cd collection not ready yet (track count = 0 )";
-                m_waitingForCd = true;
-                return false;
-            }
-
-            The::playlistController()->insertOptioned( cdColl->trackMap().values(), Playlist::OnPlayMediaAction );
-            m_waitingForCd = false;
-            return true;
-        }
-    }
-
-    debug() << "waiting for cd...";
-    m_waitingForCd = true;
-    return false;
-}
-
-bool
-MainWindow::isWaitingForCd() const
-{
-    DEBUG_BLOCK
-    debug() << "waiting?: " << m_waitingForCd;
-    return m_waitingForCd;
+    new AudioCdPlaybackStarter();
 }
 
 bool

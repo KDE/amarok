@@ -1,5 +1,4 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2013 Tatjana Gornak <t.gornak@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -14,40 +13,34 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef AUDIOCDCOLLECTIONLOCATION_H
-#define AUDIOCDCOLLECTIONLOCATION_H
+#ifndef CDDBHELPER_H
+#define CDDBHELPER_H
 
-#include "core/collections/CollectionLocation.h"
+#include "MetaDataHelper.h"
 
-#include "AudioCdCollection.h"
-
-#include <KTemporaryFile>
-#include <QWeakPointer>
-
-namespace Collections {
-
+#include <cddb/cddb.h>
 /**
- * A custom CollectionLocation handling the encoding file type and so on for AudioCd collections
+ * A wrapper class for fetching cddb info
  */
-class AudioCdCollectionLocation : public CollectionLocation
+class CDDBHelper: public MetaDataHelper
 {
-    Q_OBJECT
-public:
-    AudioCdCollectionLocation( QWeakPointer<AudioCdCollection> parentCollection );
-    ~AudioCdCollectionLocation();
+    public:
+        CDDBHelper( CdIo_t *cdio, track_t i_first_track, track_t i_last_track, const QString& encodingPreferences );
+        ~CDDBHelper();
+        bool isAvailable() const;
 
-    Collections::Collection* collection() const;
-    virtual void getKIOCopyableUrls( const Meta::TrackList & tracks );
+        EntityInfo getDiscInfo() const;
+        EntityInfo getTrackInfo( track_t trackNum ) const;
+        QByteArray getRawDiscTitle() const;
 
-private slots:
-    void addToMap( Meta::TrackPtr track, const QString &fileName, bool succesful );
-private:
-    QWeakPointer<AudioCdCollection> m_collection;
-    QMap<Meta::TrackPtr, KUrl> m_resultsMap;
-    int m_tracks;
+    private:
+        cddb_conn_t *m_conn;
+        cddb_disc_t *m_cddb_disc;
+        bool m_cddbInfoAvaialable;
+        track_t m_i_first_track;
+        int m_cddb_matches;
 };
 
-} //namespace Collections
+typedef KSharedPtr<CDDBHelper> CDDBHelperPtr;
 
 #endif

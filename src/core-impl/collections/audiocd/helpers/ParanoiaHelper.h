@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2013 Tatjana Gornak <t.gornak@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,43 +13,42 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef FORMATSELECTIONDIALOG_H
-#define FORMATSELECTIONDIALOG_H
 
-#include <QDialog>
+#ifndef PARANOIAHELPER_H
+#define PARANOIAHELPER_H
 
-#include "ui_FormatSelectionDialog.h"
+#include "meta/AudioCdTrack.h"
+
+#include <QString>
+
+#include <ThreadWeaver/Job>
+
+#include <cdio/paranoia/cdda.h>
+#include <cdio/paranoia/paranoia.h>
 
 /**
-A dialog for selecting the format of of tracks imported from a AudioCdCollection
-
-	@author 
-*/
-class FormatSelectionDialog
-    : public QDialog
-    , private Ui::FormatSelectionDialog
+ * Helps copy a track out of CD using cdda-paranoia library.
+ * Deletes itself after work is finished.
+ */
+class ParanoiaHelper:  public ThreadWeaver::Job
 {
     Q_OBJECT
 public:
-    FormatSelectionDialog( QWidget *parent = 0 );
-
-    ~FormatSelectionDialog();
-
-public slots:
-    virtual void accept();
-
-    virtual void showAdvancedSettings();
+    ParanoiaHelper( const QString &device, Meta::TrackPtr track, const QString& name );
+    ~ParanoiaHelper()
+    {
+    };
+    void run();
 
 signals:
-    void formatSelected( int );
-
-private slots:
-    void selectionChanged( bool checked );
-
+    /** Notifies that copying has been finished */
+    void copyingDone( Meta::TrackPtr track, const QString &path, bool succesfull = true );
 private:
-    int m_selectedFormat;
-
+    cdrom_drive* openDrive();
+    QString m_device;
+    /** track which has to be copyed*/
+    Meta::TrackPtr m_track;
+    /** filename for track */
+    QString m_name;
 };
-
 #endif

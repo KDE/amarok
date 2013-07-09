@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2013 Tatjana Gornak <t.gornak@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,32 +13,34 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef AUDIOCDHANDLER_H
-#define AUDIOCDHANDLER_H
+#ifndef ENCODINGSELECTIONDIALOG_H
+#define ENCODINGSELECTIONDIALOG_H
 
-#include "core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.h"
+#include <QDialog>
+#include <QRadioButton>
 
-namespace Meta {
 
 /**
-A hander class for the AudioCd collection
-
-	@author 
-*/
-class AudioCdHandler : public MediaDeviceHandler
+ * Asks user to choose an encoding from list
+ * of encoding guessed for collection.
+ */
+class EncodingSelectionDialog
+    : public QDialog
 {
+    Q_OBJECT
 public:
-    AudioCdHandler( QObject *parent );
+    EncodingSelectionDialog( const QVector<QString>& encodings, const QByteArray& sample, QWidget *parent = 0 );
+    ~EncodingSelectionDialog();
 
-    ~AudioCdHandler();
-
-    virtual void init();
-    virtual bool isWritable() const { return false; }
-    virtual QString prettyName() const;
-
+public slots:
+    virtual void accept();
+signals:
+    void encodingSelected( QString& );
+private slots:
+    void selectionChanged( bool checked );
+private:
+    QString m_selectedEncoding;
+    QList<QRadioButton*> m_buttons;
 };
-
-}
 
 #endif

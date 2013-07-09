@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
+ * Copyright (c) 2013 Tatjana Gornak <t.gornak@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,24 +14,35 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "AudioCdDeviceInfo.h"
-#include "MediaDeviceInfo.h"
+#ifndef AMAROK_AUDIOCDPLAYBACKSTARTER_H
+#define AMAROK_AUDIOCDPLAYBACKSTARTER_H
 
-AudioCdDeviceInfo::AudioCdDeviceInfo( QString device, QString udi )
-: MediaDeviceInfo(),
-m_device( device )
+#include "core-impl/collections/support/CollectionManager.h"
+#include <QTimer>
+
+
+/**
+ * Organizes adding the CD to playlist when amarok
+ * was started with --cdplay flag
+ */
+class AudioCdPlaybackStarter: public QObject
 {
-    m_udi = udi;
-}
+    Q_OBJECT
 
-AudioCdDeviceInfo::~AudioCdDeviceInfo()
-{
-}
+    public:
+        AudioCdPlaybackStarter();
 
-QString
-AudioCdDeviceInfo::device()
-{
-    return m_device;
-}
+    private slots:
+        /** If changed collection is AudioCd then launches its playback */
+        void slotCollectionChanged( Collections::Collection* );
+    private:
+        /** Stops playback;
+         *  Clears current playlist;
+         *  Inserts tracks from AudioCd to current playlist
+         */
+        void startPlayback( Collections::Collection* audiocd_collection );
+        QTimer m_deleteTimer;
+        int m_deleteTimeout;
+};
 
-#include "AudioCdDeviceInfo.moc"
+#endif

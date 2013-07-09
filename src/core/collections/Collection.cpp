@@ -19,6 +19,7 @@
 #include "core/collections/CollectionLocation.h"
 #include "core/meta/Meta.h"
 
+
 Collections::CollectionFactory::CollectionFactory( QObject *parent, const QVariantList &args )
     : Plugins::PluginFactory( parent, args )
 {
@@ -92,4 +93,9 @@ Collections::Collection::isOrganizable() const
     return organizable;
 }
 
+QSharedPointer<Collections::MemoryCollection>
+Collections::Collection::memoryCollection() const
+{
+    return QSharedPointer<Collections::MemoryCollection>( 0 );
+}
 #include "Collection.moc"

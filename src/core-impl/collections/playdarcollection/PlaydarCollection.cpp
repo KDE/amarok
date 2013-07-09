@@ -360,7 +360,7 @@ namespace Collections
     }
 
     QSharedPointer< MemoryCollection >
-    PlaydarCollection::memoryCollection()
+    PlaydarCollection::memoryCollection() const
     {
         return m_memoryCollection;
     }

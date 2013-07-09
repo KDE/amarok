@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (C) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>
+ * Copyright (c) 2013 Tatjana Gornak <t.gornak@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,24 +13,23 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+#ifndef ICU_HELPER_H
+#define ICU_HELPER_H
 
-#ifndef AUDIOCDCONNECTIONASSISTANT_H
-#define AUDIOCDCONNECTIONASSISTANT_H
+#include <QByteArray>
+#include <QVector>
+#include <QSet>
 
-#include "ConnectionAssistant.h"
-
-#include <QObject>
-
-class AudioCdConnectionAssistant : public ConnectionAssistant
+class ICUHelper
 {
-    Q_OBJECT
-    
 public:
-    virtual ~AudioCdConnectionAssistant();
+    bool detectAllEncodings( QVector<QString> &encodings ) const;
+    void addSample( const char* sample )
+    {
+        m_samples.append( sample );
+    }
 
-    virtual bool identify( const QString& udi );
-    virtual MediaDeviceInfo* deviceInfo( const QString& udi );
-
+private:
+    QByteArray m_samples;
 };
-
-#endif // AUDIOCDCONNECTIONASSISTANT_H
+#endif

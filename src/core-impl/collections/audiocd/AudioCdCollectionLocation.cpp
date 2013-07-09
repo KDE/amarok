@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2013 Tatjana Gornak <t.gornak@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,74 +17,73 @@
 
 #include "AudioCdCollectionLocation.h"
 
-#include "AudioCdMeta.h"
 #include "core/support/Debug.h"
-#include "FormatSelectionDialog.h"
+#include "meta/AudioCdTrack.h"
+#include "helpers/ParanoiaHelper.h"
+
+#include <ThreadWeaver/Weaver>
 
 using namespace Collections;
 
-AudioCdCollectionLocation::AudioCdCollectionLocation( AudioCdCollection *parentCollection )
-    : CollectionLocation( parentCollection )
-    , m_collection( parentCollection )
+AudioCdCollectionLocation::AudioCdCollectionLocation( QWeakPointer<AudioCdCollection> parentCollection )
+                         : CollectionLocation( )
+                         , m_collection( parentCollection )
+                         , m_tracks( 0 )
 {
 }
 
+Collections::Collection*
+AudioCdCollectionLocation::collection() const
+{
+    return m_collection.data();
+}
 
 AudioCdCollectionLocation::~AudioCdCollectionLocation()
 {
 }
 
-void AudioCdCollectionLocation::getKIOCopyableUrls( const Meta::TrackList & tracks )
+void
+AudioCdCollectionLocation::getKIOCopyableUrls( const Meta::TrackList & tracks )
+{
+    m_tracks = tracks.size();
+    m_resultsMap.clear();
+    foreach( Meta::TrackPtr track, tracks )
+    {
+        QString name;
+        // create a temporal file with a proper name
+        KTemporaryFile* temp = new KTemporaryFile();
+        temp->setSuffix( "." % track.data()->type() );
+        temp->open(); temp->close();
+        debug() << "Temporary file name" << temp->fileName();
+
+        ParanoiaHelper *p = new ParanoiaHelper( m_collection.data()->getDeviceName(), track, temp->fileName() );
+        ThreadWeaver::Weaver::instance()->enqueue( p );
+        connect( p, SIGNAL(copyingDone(Meta::TrackPtr, const QString&, bool)),
+                 this, SLOT(addToMap(Meta::TrackPtr, const QString&, bool)) );
+        // delete temporal file when copying is finished or aborted
+        connect( this, SIGNAL(finishCopy()), temp, SLOT(deleteLater()) );
+        connect( this, SIGNAL(aborted()), temp, SLOT(deleteLater()) );
+    }
+}
+
+void
+AudioCdCollectionLocation::addToMap( Meta::TrackPtr track, const QString &fileName, bool succesfull )
 {
     DEBUG_BLOCK
 
-    QMap<Meta::TrackPtr, KUrl> resultMap;
-    foreach( Meta::TrackPtr trackPtr, tracks )
+    if ( succesfull )
     {
-        Meta::AudioCdTrackPtr cdTrack = Meta::AudioCdTrackPtr::staticCast( trackPtr );
-
-        const QString path = m_collection->copyableFilePath( cdTrack->fileNameBase() + '.' + m_collection->encodingFormat() );
-        resultMap.insert( trackPtr, KUrl( path ) );
+        m_resultsMap.insert( track, KUrl( fileName ) );
+    }
+    else
+    {
+        warning() << "Failed to copy file for track" << track.data()->prettyUrl();
+        --m_tracks; // TODO: proper error message
     }
 
-    slotGetKIOCopyableUrlsDone( resultMap );
+    if ( m_resultsMap.size() == m_tracks )
+        slotGetKIOCopyableUrlsDone( m_resultsMap );
 }
-
-void AudioCdCollectionLocation::showSourceDialog( const Meta::TrackList &tracks, bool removeSources )
-{
-    DEBUG_BLOCK
-    Q_UNUSED( tracks )
-    Q_UNUSED( removeSources )
-    FormatSelectionDialog * dlg = new FormatSelectionDialog();
-
-    connect( dlg, SIGNAL(formatSelected(int)), this, SLOT(onFormatSelected(int)) );
-    connect( dlg, SIGNAL(rejected()), this, SLOT(onCancel()) );
-
-    dlg->show();
-}
-
-void AudioCdCollectionLocation::formatSelected( int format )
-{
-    Q_UNUSED( format )
-}
-
-void AudioCdCollectionLocation::formatSelectionCancelled()
-{
-}
-
-void AudioCdCollectionLocation::onFormatSelected( int format )
-{
-    DEBUG_BLOCK
-    m_collection->setEncodingFormat( format );
-    slotShowSourceDialogDone();
-}
-
-void AudioCdCollectionLocation::onCancel()
-{
-    DEBUG_BLOCK
-    abort();
-}
-
 
 #include "AudioCdCollectionLocation.moc"
 

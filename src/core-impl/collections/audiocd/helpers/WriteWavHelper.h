@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (C) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>
+ * Copyright (c) 2013 Tatjana Gornak <t.gornak@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,45 +14,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "AudioCdConnectionAssistant.h"
-#include "AudioCdDeviceInfo.h"
-
-#include "MediaDeviceCache.h" // for mountpoint
-
-#include "core/support/Debug.h"
+#ifndef WRITEWAVHELPER_H
+#define WRITEWAVHELPER_H
 
 #include <QString>
+#include <QFile>
 
-#include <solid/device.h>
-#include <solid/opticaldisc.h>
-
-AudioCdConnectionAssistant::~AudioCdConnectionAssistant()
+/**
+ * Writes wav-file.
+ */
+class WriteWavHelper
 {
-}
+public:
+    WriteWavHelper( QString filename, int sampleRate = 44100, int channels = 2 );
 
-bool
-AudioCdConnectionAssistant::identify( const QString& udi )
-{
-    const Solid::Device device = Solid::Device(udi);
-    if( device.is<Solid::OpticalDisc>() )
-    {
-        debug() << "OpticalDisc";
-        const Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
-        if ( opt->availableContent() & Solid::OpticalDisc::Audio )
-        {
-            debug() << "AudioCd";
-            return true;
-        }
-    }
-    return false;
-}
+    ~WriteWavHelper();
+    /** @bytes -- size of data from data section in bytes */
+    void writeHeader( int bytes );
+    void writeData( char* data, int size );
 
+private:
+    void putBytes( long num, int bytes );
 
-MediaDeviceInfo*
-AudioCdConnectionAssistant::deviceInfo( const QString& udi )
-{
-    const QString device = MediaDeviceCache::instance()->device(udi);
-    return new AudioCdDeviceInfo( device, udi );
-}
-
-#include "AudioCdConnectionAssistant.moc"
+    QFile m_out;
+    int m_sampleRate;
+    int m_channels;
+    bool m_ok;
+};
+#endif
