@@ -18,6 +18,9 @@
 /* have Qt bindings */
 #cmakedefine QTSCRIPTQTBINDINGS_FOUND 1
 
+/* have QtOpenGL */
+#cmakedefine QT_QTOPENGL_FOUND 1
+
 /* If liblastfm is found */
 #cmakedefine HAVE_LIBLASTFM 1
 

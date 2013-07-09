@@ -66,7 +66,6 @@ Required
       http://delta.affinix.com/qca/
 
 Optional
-
     * Taglib 1.8 for support of MOD, IT, S3M and XM files
     * Taglib 1.9 for support of Opus files
       http://developer.kde.org/~wheeler/taglib.html
@@ -82,6 +81,9 @@ Optional
     * libmtp 1.0.0 (or newer)
       (MTP device support)
       http://libmtp.sourceforge.net/
+
+    * Spectrum analyzer requires:
+      * QtOpenGL
 
     * Mp3tunes.com integration (including syncronization) requires:
       * OpenSSL http://www.openssl.org

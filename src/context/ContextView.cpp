@@ -24,6 +24,8 @@
 
 #include "ContextView.h"
 
+#include "config.h"
+
 #include "Context.h"
 #include "ContextScene.h"
 #include "Svg.h"
@@ -211,7 +213,7 @@ ContextView::loadConfig()
         if( containment )
         {
             KConfigGroup cg( &conf, QString( "Containment %1" ).arg( i ) );
-
+#ifdef QT_QTOPENGL_FOUND
             // Special case: If this is the first time that the user runs an Amarok version
             // containing the Analyzer applet, modify the user's config so that the applet
             // will become active. We do this for discoverability and prettiness.
@@ -235,6 +237,7 @@ ContextView::loadConfig()
                     cg.writeEntry( "plugins", plugins );
                 }
             }
+#endif
             containment->loadConfig( cg );
         }
     }

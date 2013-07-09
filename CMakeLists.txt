@@ -84,7 +84,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/shared
 )
 
-find_package( Qt4 4.8.2 COMPONENTS QtCore QtGui QtOpenGL QtScript QtSvg QtXml QtWebKit REQUIRED )
+find_package( Qt4 4.8.2 COMPONENTS QtCore QtGui QtScript QtSvg QtXml QtWebKit REQUIRED )
 find_package( KDE4 4.8.4 REQUIRED )
 
 include( KDE4Defaults )
@@ -129,6 +129,8 @@ if( WITH_PLAYER )
     include(MacroLogFeature)
 
     macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE ${KDE_MIN_VERSION} "" )
+
+    macro_log_feature( QT_QTOPENGL_FOUND "QtOpenGL" "Required for the spectrum analyzer" "http://qt-project.org" FALSE "" "" )
 
     macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" FALSE "" "" )
 
