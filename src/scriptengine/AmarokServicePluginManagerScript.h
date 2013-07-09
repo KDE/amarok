@@ -18,6 +18,8 @@
 #define AMAROK_SERVICE_PLUGIN_MANAGER_SCRIPT_H
 
 #include <QObject>
+#include <QStringList>
+
 
 class QScriptEngine;
 
