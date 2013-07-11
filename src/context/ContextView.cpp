@@ -221,8 +221,6 @@ ContextView::loadConfig()
             const bool firstTimeWithAnalyzer = Amarok::config( "Context View" ).readEntry( "firstTimeWithAnalyzer", true );
             if( firstTimeWithAnalyzer )
             {
-                Amarok::config( "Context View" ).writeEntry( "firstTimeWithAnalyzer", false );
-
                 // Check if the Phonon backend implements all features required by the analyzer
                 Phonon::AudioDataOutput out;
                 const bool phononCanHandleAnalyzer = out.isValid();
@@ -230,6 +228,8 @@ ContextView::loadConfig()
                 QStringList plugins = cg.readEntry( "plugins", QStringList() );
                 if( phononCanHandleAnalyzer && !plugins.contains( "analyzer" ) )
                 {
+                    Amarok::config( "Context View" ).writeEntry( "firstTimeWithAnalyzer", false );
+
                     // Put the Analyzer applet at position #2, which is most likely below the Currenttrack applet.
                     if( !plugins.empty() )
                         plugins.insert( 1, "analyzer" );
