@@ -10,6 +10,9 @@ VERSION 2.8
   * Many fixes for various bugs with switching desktop color themes at runtime,
     including OSD, spectrum analyzer, collection browser.
 
+  CHANGES:
+   * Amarok now depends on Qt 4.8.3.
+
 
 VERSION 2.8-Beta 1
   FEATURES:

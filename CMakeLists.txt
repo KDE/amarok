@@ -84,7 +84,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/shared
 )
 
-find_package( Qt4 4.8.2 COMPONENTS QtCore QtGui QtScript QtSvg QtXml QtWebKit REQUIRED )
+find_package( Qt4 4.8.3 COMPONENTS QtCore QtGui QtScript QtSvg QtXml QtWebKit REQUIRED )
 find_package( KDE4 4.8.4 REQUIRED )
 
 include( KDE4Defaults )

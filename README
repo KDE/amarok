@@ -42,7 +42,7 @@ Required
       * phonon-gstreamer 4.6.3 (or newer)
       * phonon-vlc 0.6.1 (or newer; as of 0.6.1 doesn't yet play Audio CDs, bug 313046)
 
-    * Qt 4.8.2 (or newer)
+    * Qt 4.8.3 (or newer)
       http://qt-project.org
 
     * TagLib 1.7 (or newer)
