@@ -30,16 +30,6 @@
 class QScriptContext;
 class QScriptEngine;
 
-// TODO: clean this up, move under namespace, don't have multiple classes per one .h file
-
-class AmarokNetworkScript : public QObject
-{
-    Q_OBJECT
-
-    public:
-        AmarokNetworkScript( QScriptEngine* scriptEngine );
-};
-
 class Downloader : public QObject
 {
     Q_OBJECT
