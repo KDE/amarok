@@ -459,6 +459,7 @@ set(scriptengine_SRCS
     scriptengine/AmarokStatusbarScript.cpp
     scriptengine/AmarokWindowScript.cpp
     scriptengine/AmarokLyricsScript.cpp
+    scriptengine/ScriptingDefines.cpp
     scriptengine/ScriptImporter.cpp
     scriptengine/exporters/CollectionTypeExporter.cpp
     scriptengine/exporters/MetaTypeExporter.cpp

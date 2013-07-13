@@ -236,6 +236,7 @@ void
 ScriptItem::initializeScriptEngine()
 {
     DEBUG_BLOCK
+    #define SCRIPTING_DEPRECATION_INIT(prototype) connect( (prototype), SIGNAL(deprecatedCall()), this, SLOT(slotDeprecatedCall()) );
 
     m_engine = new QScriptEngine( this );
     connect( m_engine.data(), SIGNAL(signalHandlerException(QScriptValue)), this,
@@ -254,7 +255,7 @@ ScriptItem::initializeScriptEngine()
     new Downloader( m_engine.data() );
 
     // backend
-    new AmarokScript::AmarokCollectionScript( m_engine.data() );
+    SCRIPTING_DEPRECATION_INIT( new AmarokScript::AmarokCollectionScript( m_engine.data() ) );
     new AmarokScript::AmarokEngineScript( m_engine.data() );
 
     // UI
@@ -280,4 +281,16 @@ ScriptItem::initializeScriptEngine()
     }
 
     new AmarokScript::MetaTrackPrototype( m_engine.data() );
+}
+
+void
+ScriptItem::slotDeprecatedCall()
+{
+    QString message = i18nc( "%1 is the name of the offending script, %2 the name of the script author, and %3 the author's email"
+                            , "The script %1 uses deprecated scripting API calls. Please contact the script"
+                            " author, %2 at %3, and ask him to upgrade it before the next Amarok release."
+                            , m_info.name(), m_info.author(), m_info.email() );
+    Amarok::Components::logger()->longMessage( message );
+
+    Q_ASSERT( disconnect( sender(), SIGNAL(deprecatedCall()), this, 0 ) );
 }

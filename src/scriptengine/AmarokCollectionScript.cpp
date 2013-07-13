@@ -33,7 +33,7 @@ using Collections::CollectionList;
 using Collections::QueryMaker;
 
 AmarokCollectionScript::AmarokCollectionScript( QScriptEngine *engine )
-    : QObject( engine )
+    : ScriptingBase( engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
@@ -104,6 +104,7 @@ AmarokCollectionScript::totalTracks() const
 QStringList
 AmarokCollectionScript::collectionLocation() const
 {
+    SCRIPTING_DEPRECATED
     Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
     QStringList result = location->actualLocation();
     delete location;
@@ -113,12 +114,14 @@ AmarokCollectionScript::collectionLocation() const
 QStringList
 AmarokCollectionScript::query( const QString& sql ) const
 {
+    SCRIPTING_DEPRECATED
     return CollectionManager::instance()->sqlStorage()->query( sql );
 }
 
 QString
 AmarokCollectionScript::escape( const QString& sql ) const
 {
+    SCRIPTING_DEPRECATED
     return CollectionManager::instance()->sqlStorage()->escape( sql );
 }
 

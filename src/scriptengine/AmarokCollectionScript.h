@@ -17,6 +17,8 @@
 #ifndef AMAROK_COLLECTION_SCRIPT_H
 #define AMAROK_COLLECTION_SCRIPT_H
 
+#include "ScriptingDefines.h"
+
 #include <QObject>
 #include <QStringList>
 
@@ -30,13 +32,12 @@ namespace Collections
 
 namespace AmarokScript
 {
-    class AmarokCollectionScript : public QObject
+    class AmarokCollectionScript : public ScriptingBase
     {
         Q_OBJECT
 
         public:
             AmarokCollectionScript( QScriptEngine* scriptEngine );
-
         public slots:
             int totalAlbums() const;
             int totalArtists() const;

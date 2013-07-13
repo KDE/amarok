@@ -17,12 +17,26 @@
 #ifndef AMAROKSCRIPT_SCRIPTING_DEFINES_H
 #define AMAROKSCRIPT_SCRIPTING_DEFINES_H
 
+#include <QObject>
 #include <QScriptValue>
 #include <QScriptEngine>
 
 namespace AmarokScript
 {
-    //from qt docs, any issues?
+    class ScriptingBase : public QObject
+    {
+        Q_OBJECT
+
+        protected:
+            ScriptingBase( QObject *parent = 0 );
+            virtual ~ScriptingBase();
+
+        signals:
+            void deprecatedCall() const;
+    };
+
+    #define SCRIPTING_DEPRECATED emit deprecatedCall();
+
     template <class Container>
     QScriptValue toScriptArray( QScriptEngine *engine, const Container &container )
     {

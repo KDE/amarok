@@ -69,6 +69,11 @@ public slots:
 private slots:
     void timerEvent ( QTimerEvent *event );
 
+    /**
+     * Warn the user about scripts calling deprecated API calls
+     */
+    void slotDeprecatedCall();
+
 signals:
     void signalHandlerException(QScriptValue);
     void evaluated( QString output );
