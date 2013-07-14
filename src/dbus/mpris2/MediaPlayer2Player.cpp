@@ -61,8 +61,11 @@ MediaPlayer2Player::MediaPlayer2Player(QObject* parent)
 {
     connect( The::engineController(), SIGNAL(trackPositionChanged(qint64,bool)),
              this,                    SLOT(trackPositionChanged(qint64,bool)) );
+    // it is important that we receive this signal *after* the playlist code
+    // has dealt with it, in order to get the right value for mpris:trackid
     connect( The::engineController(), SIGNAL(trackChanged(Meta::TrackPtr)),
-             this,                    SLOT(trackChanged(Meta::TrackPtr)) );
+             this,                    SLOT(trackChanged(Meta::TrackPtr)),
+             Qt::QueuedConnection );
     connect( The::engineController(), SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
              this,                    SLOT(trackMetadataChanged(Meta::TrackPtr)) );
     connect( The::engineController(), SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
@@ -366,8 +369,11 @@ void MediaPlayer2Player::volumeChanged( int percent )
 
 void MediaPlayer2Player::trackLengthChanged( qint64 milliseconds )
 {
-    Q_UNUSED( milliseconds )
-    signalPropertyChange( "Metadata", Metadata() );
+    // milliseconds < 0 is not a helpful value, and generally happens
+    // when the track changes or playback is stopped; these cases are
+    // dealt with better by other signal handlers
+    if ( milliseconds >= 0 )
+        signalPropertyChange( "Metadata", Metadata() );
 }
 
 void MediaPlayer2Player::playbackStateChanged()

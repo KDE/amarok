@@ -9,6 +9,7 @@ VERSION 2.8
   * Fix incorrect colors in Context View toolbar when switching themes. (BR 301305)
   * Many fixes for various bugs with switching desktop color themes at runtime,
     including OSD, spectrum analyzer, collection browser.
+  * Avoid updating the MPRIS2 Metadata between tracks. (BR 321602)
 
   CHANGES:
    * Amarok now depends on Qt 4.8.3.
