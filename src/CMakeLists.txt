@@ -728,17 +728,22 @@ if( LIBLASTFM_FOUND )
 endif( LIBLASTFM_FOUND )
 
 if( LIBOFA_FOUND )
+    add_definitions(
+        ${AVCODEC_DEFINITIONS}
+        ${AVFORMAT_DEFINITIONS}
+        ${AVUTIL_DEFINITIONS}
+    )
     include_directories(
-        ${LIBAVCODEC_INCLUDE_DIR}
-        ${LIBAVFORMAT_INCLUDE_DIR}
-        ${LIBAVUTIL_INCLUDE_DIR}
+        ${AVCODEC_INCLUDE_DIRS}
+        ${AVFORMAT_INCLUDE_DIRS}
+        ${AVUTIL_INCLUDE_DIRS}
     )
     set( EXTRA_LIBS
         ${EXTRA_LIBS}
         ${LIBOFA_LIBRARY}
-        ${LIBAVFORMAT_LIBRARY}
-        ${LIBAVCODEC_LIBRARY}
-        ${LIBAVUTIL_LIBRARY}
+        ${AVFORMAT_LIBRARIES}
+        ${AVCODEC_LIBRARIES}
+        ${AVUTIL_LIBRARIES}
     )
     set( amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
