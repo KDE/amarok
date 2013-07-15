@@ -72,7 +72,10 @@ MetadataConfig::MetadataConfig( QWidget *parent )
     connect( m_statSyncingProvidersView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
              SLOT(slotUpdateForgetButton()) );
     if( controller )
+    {
         connect( m_synchronizeButton, SIGNAL(clicked(bool)), controller, SLOT(synchronize()) );
+        connect( m_addCollectionButton, SIGNAL(clicked(bool)), controller, SLOT(createProviderDialog()) );
+    }
     else
         m_synchronizeButton->setEnabled( false );
     slotUpdateForgetButton();
