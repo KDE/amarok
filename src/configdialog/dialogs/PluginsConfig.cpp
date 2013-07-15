@@ -47,6 +47,10 @@ PluginsConfig::PluginsConfig( QWidget *parent )
     m_selector->addPlugins( The::pluginManager()->plugins( key ),
                             KPluginSelector::ReadConfigFile, i18n("Internet Services"), key );
 
+    key = QLatin1String( "Importer" );
+    m_selector->addPlugins( The::pluginManager()->plugins( key ),
+                            KPluginSelector::ReadConfigFile, i18n("Statistics importers"), key );
+
     connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
     connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );
 }

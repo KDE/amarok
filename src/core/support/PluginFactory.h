@@ -33,7 +33,7 @@ class AMAROK_CORE_EXPORT PluginFactory : public QObject
     Q_PROPERTY( Type pluginType READ pluginType )
 
 public:
-    enum Type { Unknown, Collection, Service };
+    enum Type { Unknown, Collection, Importer, Service };
     PluginFactory( QObject *parent, const QVariantList &args );
     virtual ~PluginFactory() = 0;
 
