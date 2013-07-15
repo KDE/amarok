@@ -14,43 +14,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_FASTFORWARD_PROVIDER_H
-#define STATSYNCING_FASTFORWARD_PROVIDER_H
+#ifndef STATSYNCING_FAST_FORWARD_IMPORTER_FACTORY_H
+#define STATSYNCING_FAST_FORWARD_IMPORTER_FACTORY_H
 
-#include "importers/ImporterProvider.h"
+#include "importers/ImporterFactory.h"
 
 namespace StatSyncing
 {
 
-class ImporterFactory;
-
-class FastForwardProvider : public ImporterProvider
+class FastForwardFactory : public ImporterFactory
 {
     Q_OBJECT
 
 public:
-    FastForwardProvider( const QVariantMap &config, ImporterFactory *importer );
-    virtual ~FastForwardProvider();
+    FastForwardFactory( QObject *parent, const QVariantList &args );
+    ~FastForwardFactory();
 
-    virtual QString id() const;
-    virtual qint64 reliableTrackMetaData() const;
-    virtual qint64 writableTrackStatsData() const;
-
-    /// Only called from non-main thread
-    virtual QSet<QString> artists();
-
-    /// Only called from non-main thread
-    virtual TrackList artistTracks( const QString &artistName );
-
-private:
-    QSet<QString> m_artistsResult;
-    TrackList m_artistTracksResult;
-
-private slots:
-    void artistsSearch();
-    void artistTracksSearch( const QString &artistName );
+    QString id() const;
+    KPluginInfo info() const;
+    QString prettyName() const;
+    QString description() const;
+    KIcon icon() const;
+    ProviderPtr createProvider( const QVariantMap &config );
+    ProviderConfigWidget *getConfigWidget( const QVariantMap &config );
 };
 
 } // namespace StatSyncing
 
-#endif // STATSYNCING_FASTFORWARD_PROVIDER_H
+#endif // STATSYNCING_FAST_FORWARD_IMPORTER_FACTORY_H

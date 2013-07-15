@@ -20,7 +20,7 @@
 #include "statsyncing/Provider.h"
 
 #include "MetaValues.h"
-#include "FastForwardConfig.h"
+#include "FastForwardConfigWidget.h"
 
 #include <QObject>
 #include <QMap>

@@ -17,36 +17,34 @@
 #ifndef STATSYNCING_FAST_FORWARD_CONFIG_H
 #define STATSYNCING_FAST_FORWARD_CONFIG_H
 
+#include "ui_FastForwardConfigWidget.h"
+#include "statsyncing/Provider.h"
+
 #include <QObject>
 #include <QString>
 
 namespace StatSyncing
 {
 
-struct FastForwardSettings
-{
-    QString uid;
-    QString name;
-    QString dbDriver;
-    QString dbHost;
-    QString dbName;
-    QString dbPass;
-    QString dbPath;
-    int     dbPort;
-    QString dbUser;
-};
-
-class FastForwardConfig : public QObject
+class FastForwardConfigWidget : public ProviderConfigWidget,
+        public Ui::FastForwardConfigWidget
 {
     Q_OBJECT
 
 public:
-    FastForwardConfig( QObject *parent );
+    FastForwardConfigWidget( const QVariantMap &config, QWidget *parent = 0,
+                             Qt::WindowFlags f = 0 );
+    virtual ~FastForwardConfigWidget();
 
-    const FastForwardSettings settings() const;
+    QVariantMap config() const;
+
+public slots:
+    void connectionTypeChanged( QString connection );
 
 private:
-    FastForwardSettings m_settings;
+    void populateFields();
+
+    QVariantMap m_config;
 };
 
 } // namespace StatSyncing

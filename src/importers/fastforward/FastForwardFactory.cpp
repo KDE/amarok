@@ -14,20 +14,67 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "FastForwardConfig.h"
+#include "FastForwardFactory.h"
+
+#include "FastForwardProvider.h"
+#include "FastForwardConfigWidget.h"
+
+#include <QDebug>
 
 namespace StatSyncing
 {
 
-const FastForwardSettings
-FastForwardConfig::settings() const
+AMAROK_EXPORT_IMPORTER_PLUGIN( fastforward, FastForwardFactory )
+
+FastForwardFactory::FastForwardFactory( QObject *parent, const QVariantList &args )
+    : ImporterFactory( parent, args )
 {
-    FastForwardSettings s;
-    s.uid = "feauirehfjproekg";
-    s.name = "FastForwardSync";
-    s.dbDriver = "SQLITE";
-    s.dbPath = "/home/konrad/kde/src/amarok/tests/importers/files/collection.db";
-    return s;
+
+}
+
+FastForwardFactory::~FastForwardFactory()
+{
+
+}
+
+QString
+FastForwardFactory::id() const
+{
+    return "FastForwardFactory";
+}
+
+KPluginInfo FastForwardFactory::info() const
+{
+    return KPluginInfo( "amarok_importer-fastforward.desktop", "services" );
+}
+
+QString
+FastForwardFactory::prettyName() const
+{
+    return i18n( "Amarok 1.4 (FastForward)" );
+}
+
+QString FastForwardFactory::description() const
+{
+    return i18n( "Amarok FastForward description" );
+}
+
+KIcon
+FastForwardFactory::icon() const
+{
+    return KIcon( "amarok" );
+}
+
+ProviderConfigWidget*
+FastForwardFactory::getConfigWidget( const QVariantMap &config )
+{
+    return new FastForwardConfigWidget( config );
+}
+
+ProviderPtr
+FastForwardFactory::createProvider( const QVariantMap &config )
+{
+    return ProviderPtr( new FastForwardProvider( config, this ) );
 }
 
 } // namespace StatSyncing

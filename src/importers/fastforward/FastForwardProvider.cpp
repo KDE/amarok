@@ -18,6 +18,7 @@
 
 #include "core/support/Debug.h"
 #include "FastForwardTrack.h"
+#include "importers/ImporterFactory.h"
 #include "MetaValues.h"
 
 #include <KLocalizedString>
@@ -30,49 +31,31 @@
 namespace StatSyncing
 {
 
-FastForwardProvider::FastForwardProvider( const FastForwardSettings &settings )
-    : m_settings( settings )
+FastForwardProvider::FastForwardProvider( const QVariantMap &config, ImporterFactory *importer )
+    : ImporterProvider( config, importer )
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase( m_settings.dbDriver, m_settings.uid );
-    db.setDatabaseName( m_settings.dbDriver == "SQLITE"
-                        ? m_settings.dbPath : m_settings.dbName );
+    QSqlDatabase db = QSqlDatabase::addDatabase( m_config["dbDriver"].toString(), m_config["uid"].toString() );
+    db.setDatabaseName( m_config["dbDriver"].toString() == "QSQLITE"
+                        ? m_config["dbPath"].toString() : m_config["dbName"].toString() );
 
-    if( m_settings.dbDriver != "SQLITE" )
+    if( m_config["dbDriver"].toString() != "QSQLITE" )
     {
-        db.setHostName( m_settings.dbHost );
-        db.setUserName( m_settings.dbUser );
-        db.setPassword( m_settings.dbPass );
-        db.setPort    ( m_settings.dbPort );
+        db.setHostName( m_config["dbHost"].toString() );
+        db.setUserName( m_config["dbUser"].toString() );
+        db.setPassword( m_config["dbPass"].toString() );
+        db.setPort    ( m_config["dbPort"].toInt() );
     }
 }
 
 FastForwardProvider::~FastForwardProvider()
 {
-    QSqlDatabase::removeDatabase( m_settings.uid );
+    QSqlDatabase::removeDatabase( m_config["uid"].toString() );
 }
 
 QString
 FastForwardProvider::id() const
 {
-    return m_settings.uid;
-}
-
-QString
-FastForwardProvider::prettyName() const
-{
-    return m_settings.dbName;
-}
-
-QString
-FastForwardProvider::description() const
-{
-    return QString();
-}
-
-KIcon
-FastForwardProvider::icon() const
-{
-    return KIcon( "app-amarok" );
+    return m_config["uid"].toString();
 }
 
 qint64
@@ -82,18 +65,11 @@ FastForwardProvider::reliableTrackMetaData() const
             | Meta::valYear | Meta::valTrackNr | Meta::valDiscNr;
 }
 
-
 qint64
 FastForwardProvider::writableTrackStatsData() const
 {
     //TODO: Write capabilities
     return 0;
-}
-
-Provider::Preference
-FastForwardProvider::defaultPreference()
-{
-    return Ask; // ask on first appearance whether to synchronize by default
 }
 
 QSet<QString>
@@ -124,7 +100,7 @@ FastForwardProvider::artistTracks( const QString &artistName )
 void
 FastForwardProvider::artistsSearch()
 {
-    QSqlDatabase db = QSqlDatabase::database( m_settings.uid );
+    QSqlDatabase db = QSqlDatabase::database( m_config["uid"].toString() );
     if( !db.isOpen() )
     {
         warning() << __PRETTY_FUNCTION__ << "could not open database connection:"
@@ -142,7 +118,7 @@ FastForwardProvider::artistsSearch()
 void
 FastForwardProvider::artistTracksSearch( const QString &artistName )
 {
-    QSqlDatabase db = QSqlDatabase::database( m_settings.uid );
+    QSqlDatabase db = QSqlDatabase::database( m_config["uid"].toString() );
     if( !db.isOpen() )
     {
         warning() << __PRETTY_FUNCTION__ << "could not open database connection:"
@@ -158,15 +134,22 @@ FastForwardProvider::artistTracksSearch( const QString &artistName )
     query.exec();
 
     if( !query.next() )
+    {
+        warning() << __PRETTY_FUNCTION__ << "could not find artist id:"
+                     << db.lastError().text();
         return;
+    }
+
+    const int artistId = query.value( 0 ).toInt();
 
     query.prepare( "SELECT url FROM tags WHERE artist = ?" );
-    query.addBindValue( query.value( 0 ).toInt() );
+    query.addBindValue( artistId );
+    query.exec();
 
     while ( query.next() )
     {
         const QString url = query.value( 0 ).toString();
-        m_artistTracksResult << TrackPtr( new FastForwardTrack( url, m_settings.uid ) );
+        m_artistTracksResult << TrackPtr( new FastForwardTrack( url, m_config["uid"].toString() ) );
     }
 }
 

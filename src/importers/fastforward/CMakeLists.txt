@@ -7,24 +7,29 @@ include_directories(
 
 ########### next target ###############
 
-set( amarok_importer-fastforwardimporter_PART_SRCS
-    FastForwardConfig.cpp
+set( amarok_importer-fastforward_PART_SRCS
+    FastForwardConfigWidget.cpp
+    FastForwardFactory.cpp
     FastForwardProvider.cpp
     FastForwardTrack.cpp
 )
 
-kde4_add_plugin( amarok_importer-fastforwardimporter ${amarok_importer-fastforwardimporter_PART_SRCS} )
+kde4_add_ui_files( amarok_importer-fastforward_PART_SRCS
+    FastForwardConfigWidget.ui
+)
 
-target_link_libraries( amarok_importer-fastforwardimporter
+kde4_add_plugin( amarok_importer-fastforward ${amarok_importer-fastforward_PART_SRCS} )
+
+target_link_libraries( amarok_importer-fastforward
     amarokcore
     amaroklib
     ${KDE4_KIO_LIBS}
     ${QT_QTSQL_LIBRARY}
 )
 
-install(TARGETS amarok_importer-fastforwardimporter DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(TARGETS amarok_importer-fastforward DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 ########### install files ###############
 
-#install( FILES amarok_collection-audiocdcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install( FILES amarok_importer-fastforward.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 

@@ -43,12 +43,12 @@ FastForwardTrack::FastForwardTrack( const QString &trackUrl, const QString &prov
     QSqlQuery query( db );
     query.setForwardOnly( true ); // a hint for the database engine
 
-    query.prepare( "SELECT t.title, al.name, ar.name, c.name, y.name, t.track,"
-                   "t.discnumber FROM tags t"
-                   "LEFT JOIN artist ar ON ar.id = t.artist"
-                   "LEFT JOIN album al ON al.id = t.album"
-                   "LEFT JOIN composer c ON c.id = t.composer"
-                   "LEFT JOIN year y ON y.id = t.year"
+    query.prepare( "SELECT t.title, al.name, ar.name, c.name, y.name, t.track, "
+                   "t.discnumber FROM tags t "
+                   "LEFT JOIN artist ar ON ar.id = t.artist "
+                   "LEFT JOIN album al ON al.id = t.album "
+                   "LEFT JOIN composer c ON c.id = t.composer "
+                   "LEFT JOIN year y ON y.id = t.year "
                    "WHERE t.url = ?" );
     query.addBindValue( m_trackUrl );
     query.exec();
@@ -178,7 +178,7 @@ FastForwardTrack::retrievePersonalData()
     QSqlQuery query( db );
     query.setForwardOnly( true ); // a hint for the database engine
 
-    query.prepare( "SELECT rating, createdate, accessdate, playcounter"
+    query.prepare( "SELECT rating, createdate, accessdate, playcounter "
                    "FROM statistics WHERE url = ?" );
     query.addBindValue( m_trackUrl );
     query.exec();
@@ -193,8 +193,8 @@ FastForwardTrack::retrievePersonalData()
             m_statistics[fields[i]] = query.value( i );
     }
 
-    query.prepare( "SELECT l.name FROM labels l"
-                   "INNER JOIN tags_labels tl ON tl.labelid = l.id"
+    query.prepare( "SELECT l.name FROM labels l "
+                   "INNER JOIN tags_labels tl ON tl.labelid = l.id "
                    "WHERE tl.url = ?");
     query.addBindValue( m_trackUrl );
     query.exec();
