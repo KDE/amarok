@@ -21,6 +21,9 @@
 // for CollectionManager::CollectionStatus that cannont be fwd-declared
 #include "core-impl/collections/support/CollectionManager.h"
 
+#include <KDialog>
+
+#include <QSharedPointer>
 #include <QWeakPointer>
 
 class QTimer;
@@ -28,10 +31,14 @@ class QTimer;
 namespace StatSyncing
 {
     class Config;
+    class CreateProviderDialog;
     class Process;
     class Provider;
     typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
     typedef QList<ProviderPtr> ProviderPtrList;
+    class ProviderFactory;
+    typedef QPointer<ProviderFactory> ProviderFactoryPtr;
+    typedef QMap<QString, ProviderFactoryPtr> ProviderFactoryPtrMap;
     class ScrobblingService;
     typedef QExplicitlySharedDataPointer<ScrobblingService> ScrobblingServicePtr;
 
@@ -65,6 +72,8 @@ namespace StatSyncing
              */
             void unregisterProvider( const ProviderPtr &provider );
 
+            void handleNewFactories( const QList<Plugins::PluginFactory*> &factories );
+
             /**
              * Register ScrobblingService with StatSyncing controller. Controller than
              * listens to EngineController and calls scrobble() etc. when user plays
@@ -92,6 +101,12 @@ namespace StatSyncing
             Config *config();
 
         public slots:
+            /**
+             * Raise a provider creation dialog populated with all provider types
+             * registered through handleNewFactories method.
+             */
+            void createProviderDialog();
+
             /**
              * Start the whole synchronization machinery. This call returns quickly,
              * way before the synchronization is finished.
@@ -148,6 +163,7 @@ namespace StatSyncing
             void slotTrackFinishedPlaying( const Meta::TrackPtr &track, double playedFraction );
             void slotResetLastSubmittedNowPlayingTrack();
             void slotUpdateNowPlayingWithCurrentTrack();
+            void createProvider( QString id, QVariantMap config );
 
         private:
             Q_DISABLE_COPY( Controller )
@@ -156,6 +172,8 @@ namespace StatSyncing
              * Return true if important metadata of both tracks is equal.
              */
             bool tracksVirtuallyEqual( const Meta::TrackPtr &first, const Meta::TrackPtr &second );
+
+            ProviderFactoryPtrMap m_providerFactories;
 
             // synchronization-related
             ProviderPtrList m_providers;

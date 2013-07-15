@@ -18,6 +18,7 @@
 #define STATSYNCING_PROVIDER_H
 
 #include "amarok_export.h"
+#include "core/support/PluginFactory.h"
 #include "statsyncing/Track.h"
 #include "support/QSharedDataPointerMisc.h" // operator<() for ProviderPtr
 
@@ -25,10 +26,30 @@
 
 #include <QMap>
 #include <QSet>
+#include <QSharedPointer>
 #include <QString>
+#include <QVariant>
+#include <QWidget>
 
 namespace StatSyncing
 {
+    /**
+     * A widget class used for configuring providers.
+     */
+    class AMAROK_EXPORT ProviderConfigWidget : public QWidget
+    {
+        Q_OBJECT
+
+        public:
+            ProviderConfigWidget( QWidget *parent, Qt::WindowFlags f = 0 );
+            virtual ~ProviderConfigWidget();
+
+            /**
+             * Return a QVariantMap holding configuration for the provider.
+             */
+            virtual QVariantMap config() const = 0;
+    };
+
     /**
      * A class that can provide tracks for statistics synchronization. It can be backed
      * by local Amarok collections or by online services such as Last.fm.
@@ -66,6 +87,18 @@ namespace StatSyncing
              * Icon of this provider; must be thread-safe
              */
             virtual KIcon icon() const = 0;
+
+            /**
+             * Return true if this provider can be reconfigured after creation. Returns
+             * false by default.
+             */
+            virtual bool isConfigurable() const;
+
+            /**
+             * Return a ProviderConfigWidget of configuration widget for this provider.
+             * Returns a null pointer by default.
+             */
+            virtual ProviderConfigWidget *configWidget();
 
             /**
              * Return binary OR of Meta::val* fields that this provider knows about its
@@ -134,6 +167,57 @@ namespace StatSyncing
      * Container for a set of track frovider lists, one for each provider
      */
     typedef QMap<ProviderPtr, TrackList> PerProviderTrackList;
+
+    /**
+     * A class allowing the creation of multiple providers of the same type.
+     */
+    class AMAROK_EXPORT ProviderFactory : public Plugins::PluginFactory
+    {
+        Q_OBJECT
+
+        public:
+            ProviderFactory( QObject *parent, const QVariantList &args );
+            virtual ~ProviderFactory();
+
+            /**
+             * A string that is unique to this provider factory. It may be used as a key
+             * in associative structures.
+             */
+            virtual QString id() const = 0;
+
+            /**
+             * The name of the type of created provider. This name will be displayed
+             * in the provider creation dialog.
+             */
+            virtual QString prettyName() const = 0;
+
+            /**
+             * User-visible short localized description. This is the default description
+             * of created providers. Default implementation returns an empy string.
+             */
+            virtual QString description() const;
+
+            /**
+             * The icon representing the type of created provider. This icon will be
+             * displayed in the provider creation dialog, and is the default icon
+             * of created providers.
+             */
+            virtual KIcon icon() const = 0;
+
+            /**
+             * New instance of configuration widget for the provider.
+             */
+            virtual ProviderConfigWidget *createConfigWidget() = 0;
+
+            /**
+             * Create a new provider instance using configuration stored in @param config
+             */
+            virtual ProviderPtr createProvider( const QVariantMap &config ) = 0;
+    };
+
+    typedef QPointer<ProviderFactory> ProviderFactoryPtr;
+    typedef QMap<QString, ProviderFactoryPtr> ProviderFactoryPtrMap;
+
 } // namespace StatSyncing
 
 #endif // STATSYNCING_PROVIDER_H

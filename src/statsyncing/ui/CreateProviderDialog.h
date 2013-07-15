@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
+ * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,63 +14,50 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Provider.h"
+#ifndef STATSYNCING_CREATE_PROVIDER_PAGE_H
+#define STATSYNCING_CREATE_PROVIDER_PAGE_H
 
-#include <QCoreApplication>
-#include <QWidget>
-#include <QDebug>
+#include <KAssistantDialog>
 
-using namespace StatSyncing;
+#include <QButtonGroup>
+#include <QMap>
+#include <QSharedPointer>
+#include <QString>
 
-ProviderConfigWidget::ProviderConfigWidget( QWidget *parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
+#include <KIcon>
+
+namespace StatSyncing
 {
-}
 
-ProviderConfigWidget::~ProviderConfigWidget()
+class ProviderConfigWidget;
+
+class CreateProviderDialog : public KAssistantDialog
 {
-}
+    Q_OBJECT
 
-Provider::Provider()
-{
-    // ensure this object is created in a main thread
-    Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
-}
+public:
+    explicit CreateProviderDialog( QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    virtual ~CreateProviderDialog();
 
-Provider::~Provider()
-{
-}
+public slots:
+    void providerTypeAdded( QString id, QString prettyName, KIcon icon,
+                            ProviderConfigWidget *configWidget );
+    void providerTypeRemoved( QString id );
 
-QString
-Provider::description() const
-{
-    return QString();
-}
+signals:
+    void providerConfigured( QString id, QVariantMap config );
 
-bool
-Provider::isConfigurable() const
-{
-    return false;
-}
+private:
+    QButtonGroup m_providerButtons;
+    QMap<QObject*, QString> m_idForButton;
+    QMap<QObject*, KPageWidgetItem*> m_configForButton;
+    KPageWidgetItem *m_providerTypePage;
 
-ProviderConfigWidget*
-Provider::configWidget()
-{
-    return 0;
-}
+private slots:
+    void providerButtonToggled( bool checked );
+    void slotFinished();
+};
 
+} // namespace StatSyncing
 
-ProviderFactory::ProviderFactory( QObject *parent, const QVariantList &args )
-    : Plugins::PluginFactory( parent, args )
-{
-}
-
-ProviderFactory::~ProviderFactory()
-{
-}
-
-QString
-ProviderFactory::description() const
-{
-    return QString();
-}
+#endif // STATSYNCING_CREATE_PROVIDER_PAGE_H

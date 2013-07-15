@@ -28,6 +28,7 @@
 #include "statsyncing/Process.h"
 #include "statsyncing/ScrobblingService.h"
 #include "statsyncing/collection/CollectionProvider.h"
+#include "statsyncing/ui/CreateProviderDialog.h"
 
 #include <KMessageBox>
 
@@ -140,6 +141,43 @@ Controller::unregisterProvider( const ProviderPtr &provider )
         m_config->save();
     }
     m_providers.removeAll( provider );
+}
+
+void
+Controller::handleNewFactories( const QList<Plugins::PluginFactory*> &factories )
+{
+    foreach( Plugins::PluginFactory *pFactory, factories )
+    {
+        ProviderFactory *factory = qobject_cast<ProviderFactory*>( pFactory );
+        if( !factory )
+            continue;
+
+        m_providerFactories.insert( factory->id(), ProviderFactoryPtr( factory ) );
+    }
+}
+
+void
+Controller::createProviderDialog()
+{
+    CreateProviderDialog *createDialog = new CreateProviderDialog( The::mainWindow() );
+    foreach( const ProviderFactoryPtr &factory, m_providerFactories )
+        createDialog->providerTypeAdded( factory->id(), factory->prettyName(),
+                                        factory->icon(), factory->createConfigWidget() );
+
+    connect( createDialog, SIGNAL(providerConfigured(QString, QVariantMap)),
+             SLOT(createProvider(QString, QVariantMap)) );
+
+    createDialog->show();
+    createDialog->activateWindow();
+    createDialog->raise();
+}
+
+void
+Controller::createProvider( QString id, QVariantMap config )
+{
+    sender()->deleteLater();
+    ProviderPtr provider = m_providerFactories[id]->createProvider( config );
+    registerProvider( provider );
 }
 
 void
