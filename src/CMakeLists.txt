@@ -538,13 +538,22 @@ set( statsyncing_SRCS
     statsyncing/models/ProvidersModel.cpp
     statsyncing/models/SingleTracksModel.cpp
     statsyncing/ui/ChooseProvidersPage.cpp
+    statsyncing/ui/CreateProviderDialog.cpp
     statsyncing/ui/MatchedTracksPage.cpp
     statsyncing/ui/TrackDelegate.cpp
 )
 
-kde4_add_ui_files(statsyncing_SRCS
+kde4_add_ui_files( statsyncing_SRCS
     statsyncing/ui/ChooseProvidersPage.ui
     statsyncing/ui/MatchedTracksPage.ui
+)
+
+#####################################################################
+# STATISTICS IMPORTERS
+#####################################################################
+set( importers_SRCS
+    importers/ImporterFactory.cpp
+    importers/ImporterProvider.cpp
 )
 
 #####################################################################
@@ -580,6 +589,7 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
     ${statsyncing_SRCS}
+    ${importers_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
