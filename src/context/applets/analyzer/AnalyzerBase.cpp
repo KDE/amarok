@@ -140,7 +140,7 @@ Analyzer::Base::transform( QVector<float> &scope ) //virtual
 void
 Analyzer::Base::processData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &thescope )
 {
-    if( thescope.isEmpty() )
+    if( thescope.isEmpty() || thescope[Phonon::AudioDataOutput::LeftChannel].size() != m_fht->size() )
         return;
 
     QVector<float> scope( m_fht->size() );
