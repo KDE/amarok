@@ -47,7 +47,11 @@ public:
     ImporterProvider( const QVariantMap &config, ImporterFactory *importer );
     virtual ~ImporterProvider();
 
-    //TODO: add id()
+    /**
+     * Provider's unique id which may be used as a key for configuration storage.
+     * By default returns config["uid"], which - by default - is set by the constructor.
+     */
+    virtual QString id() const;
 
     /**
      * Description of the provider. Returns m_importer->description() by default.

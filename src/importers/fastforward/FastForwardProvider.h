@@ -32,14 +32,13 @@ public:
     FastForwardProvider( const QVariantMap &config, ImporterFactory *importer );
     virtual ~FastForwardProvider();
 
-    virtual QString id() const;
     virtual qint64 reliableTrackMetaData() const;
     virtual qint64 writableTrackStatsData() const;
 
-    /// Only called from non-main thread
+    /// Called only from non-main thread
     virtual QSet<QString> artists();
 
-    /// Only called from non-main thread
+    /// Called only from non-main thread
     virtual TrackList artistTracks( const QString &artistName );
 
 private:

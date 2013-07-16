@@ -35,6 +35,12 @@ ImporterProvider::~ImporterProvider()
 }
 
 QString
+StatSyncing::ImporterProvider::id() const
+{
+    return m_config["uid"].toString();
+}
+
+QString
 ImporterProvider::description() const
 {
     return m_importer->description();

@@ -52,12 +52,6 @@ FastForwardProvider::~FastForwardProvider()
     QSqlDatabase::removeDatabase( m_config["uid"].toString() );
 }
 
-QString
-FastForwardProvider::id() const
-{
-    return m_config["uid"].toString();
-}
-
 qint64
 FastForwardProvider::reliableTrackMetaData() const
 {
