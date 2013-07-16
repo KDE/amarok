@@ -14,40 +14,36 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef SCRIPT_EDITOR_DOCUMENT_H
-#define SCRIPT_EDITOR_DOCUMENT_H
+#ifndef SCRIPTCONSOLE_COMPLETIONMODEL_H
+#define SCRIPTCONSOLE_COMPLETIONMODEL_H
 
-#include <QObject>
-#include <QWeakPointer>
+#include <KTextEditor/CodeCompletionModel>
+#include <KTextEditor/CodeCompletionModelControllerInterface>
 
-namespace KTextEditor
-{
-    class Document;
+namespace KTextEditor {
     class View;
+    class Document;
 }
-class KUrl;
-class QIcon;
-class QWidget;
 
 namespace ScriptConsole
 {
-    class AmarokScriptCodeCompletionModel;
-
-    class ScriptEditorDocument : public QObject
+    class AmarokScriptCodeCompletionModel : public KTextEditor::CodeCompletionModelControllerInterface3
+                                          , public KTextEditor::CodeCompletionModel
     {
         public:
-            ScriptEditorDocument( QObject *parent, KTextEditor::Document* document );
-            virtual ~ScriptEditorDocument();
-            QString text() const;
-            KTextEditor::View *createView( QWidget *editor = 0 );
-            void setText( const QString &text );
-            void save( const KUrl &url );
-            void save();
+            AmarokScriptCodeCompletionModel( QObject *parent );
+            virtual ~AmarokScriptCodeCompletionModel();
 
         private:
-            KTextEditor::Document *m_document;
-            static QWeakPointer<AmarokScriptCodeCompletionModel> s_completionModel;
+            QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+            void completionInvoked( KTextEditor::View *view, const KTextEditor::Range &range, InvocationType invocationType );
+            void executeCompletionItem( KTextEditor::Document *document, const KTextEditor::Range &range, int row ) const;
+            KTextEditor::Range completionRange( KTextEditor::View *view, const KTextEditor::Cursor &position );
+            bool shouldAbortCompletion( KTextEditor::View *view, const KTextEditor::Range &range, const QString &currentCompletion );
+
+            QStringList m_completionList;
+            QStringList m_autoCompleteStrings;
     };
 }
 
-#endif // SCRIPT_EDITOR_DOCUMENT_H
+#endif // SCRIPTCONSOLE_COMPLETIONMODEL_H

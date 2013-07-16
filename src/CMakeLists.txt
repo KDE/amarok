@@ -468,11 +468,16 @@ set(scriptengine_SRCS
 )
 
 set(scriptconsole_SRCS
+    scriptconsole/CompletionModel.cpp
     scriptconsole/ScriptConsole.cpp
     scriptconsole/ScriptEditorDocument.cpp
     scriptconsole/ScriptConsoleItem.cpp
     scriptconsole/ScriptItemDelegate.cpp
 )
+
+set(args ${CMAKE_SOURCE_DIR}/src/scriptengine/  ${DATA_INSTALL_DIR}/amarok/scriptconsole)
+#shouldn't be here
+execute_process(COMMAND python ${CMAKE_SOURCE_DIR}/src/scriptengine/PHAACG2.py ${args})
 
 kde4_add_ui_files(scriptconsole_SRCS
     scriptconsole/ScriptConsole.ui
