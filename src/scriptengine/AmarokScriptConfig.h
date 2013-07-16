@@ -19,6 +19,8 @@
 
 #include <QObject>
 
+#include <QVariant>
+
 class QScriptEngine;
 
 namespace AmarokScript
