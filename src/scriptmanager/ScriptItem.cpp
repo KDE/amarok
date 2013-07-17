@@ -277,7 +277,7 @@ ScriptItem::initializeScriptEngine()
     }
     if( category.contains( QLatin1String("Scriptable Service") ) )
     {
-        new AmarokScript::StreamItem( m_engine.data() );
+        new StreamItem( m_engine.data() );
         m_service = new AmarokScript::ScriptableServiceScript( m_engine.data() );
         new AmarokScript::AmarokServicePluginManagerScript( m_engine.data() );
     }
