@@ -487,14 +487,19 @@ EngineController::playUrl( const KUrl &url, uint offset, bool startPaused )
         connect( seeker, SIGNAL(trackPositionChanged(qint64,bool)),
                  SIGNAL(trackPositionChanged(qint64,bool)) );
     }
-    else {
+    else
+    {
         if( startPaused )
+        {
             m_media.data()->pause();
+        }
         else
+        {
             m_pauseTimer->stop();
             if( supportsFadeout() )
                 m_fader.data()->setVolume( 1.0 );
             m_media.data()->play();
+        }
     }
 }
 
