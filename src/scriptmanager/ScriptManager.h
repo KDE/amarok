@@ -30,7 +30,6 @@
 namespace AmarokScript {
     class AmarokScript;
 }
-class ScriptableServiceScript;
 class QScriptContext;
 class QScriptEngine;
 class QScriptValue;

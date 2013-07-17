@@ -262,7 +262,8 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
     return item->start( silent );
 }
 
-void ScriptManager::handleException( const QScriptValue &value )
+void
+ScriptManager::handleException(const QScriptValue& value)
 {
     DEBUG_BLOCK
 
@@ -281,13 +282,15 @@ ScriptManager::ServiceScriptPopulate( const QString &name, int level, int parent
         m_scripts.value( name )->service()->slotPopulate( name, level, parent_id, path, filter );
 }
 
-void ScriptManager::ServiceScriptCustomize( const QString &name )
+void
+ScriptManager::ServiceScriptCustomize( const QString &name )
 {
     if( m_scripts.value( name )->service() )
         m_scripts.value( name )->service()->slotCustomize( name );
 }
 
-void ScriptManager::ServiceScriptRequestInfo( const QString &name, int level, const QString &callbackString )
+void
+ScriptManager::ServiceScriptRequestInfo( const QString &name, int level, const QString &callbackString )
 {
     if( m_scripts.value( name )->service() )
         m_scripts.value( name )->service()->slotRequestInfo( name, level, callbackString );
@@ -396,7 +399,8 @@ ScriptManager::scripts( const QString &category ) const
     return scripts;
 }
 
-QString ScriptManager::scriptNameForEngine(const QScriptEngine* engine) const
+QString
+ScriptManager::scriptNameForEngine(const QScriptEngine* engine) const
 {
     foreach( const QString& name, m_scripts.keys() ) {
         ScriptItem *script = m_scripts[name];

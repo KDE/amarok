@@ -149,6 +149,7 @@ ScriptItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *model, const
 QWidget*
 ScriptItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    Q_UNUSED( option )
     ScriptConsoleItem *item = qvariant_cast<ScriptConsoleItem*>( index.data(Script) );
     KTextEditor::View *editor = item->createEditorView( parent );
     if( editor )

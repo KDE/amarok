@@ -25,7 +25,7 @@
 #include <QScriptEngine>
 #include <QTextCodec>
 
-// Class Downloader
+AmarokDownloadHelper *AmarokDownloadHelper::s_instance = 0;
 
 Downloader::Downloader( QScriptEngine* engine )
     : QObject( engine )

@@ -54,12 +54,12 @@ public:
 
     QString name() const { return m_name; }
     QScriptEngine* engine() { return m_engine.data(); }
-    ScriptableServiceScript* service() { return m_service.data(); }
+    AmarokScript::ScriptableServiceScript* service() { return m_service.data(); }
     KUrl url() const { return m_url; }
     KPluginInfo info() const { return m_info; }
     bool running() const { return m_running; }
     QString specPath() const;
-    QString output() const { return m_output; }
+    QString output() const { return m_output.join("\n"); }
 
     virtual bool start( bool silent );
 
@@ -84,6 +84,7 @@ protected:
      */
     virtual void initializeScriptEngine();
     QStringList                                     m_log;
+    QStringList                                     m_output;
 
 private:
     QString                                         m_name;
@@ -93,11 +94,10 @@ private:
     /** Currently activated in the Script Manager */
     bool                                            m_running;
     bool                                            m_evaluating;
-    QWeakPointer<ScriptableServiceScript>           m_service;
+    QWeakPointer<AmarokScript::ScriptableServiceScript>           m_service;
     int                                             m_runningTime;
     int                                             m_timerId;
     QWeakPointer<ScriptTerminatorWidget>            m_popupWidget;
-    QString                                         m_output;
 };
 
 #endif /* AMAROK_SCRIPTITEM_H */

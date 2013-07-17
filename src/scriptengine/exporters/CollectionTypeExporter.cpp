@@ -252,4 +252,18 @@ CollectionPrototype::removeInvalidTracks(const Meta::TrackList& tracks)
     return cleaned;
 }
 
+QString
+CollectionPrototype::prettyLocation() const
+{
+    GET_COLLECTION( QString() )
+    return collection->location()->prettyLocation();
+}
+
+QStringList
+CollectionPrototype::actualLocation() const
+{
+    GET_COLLECTION( QStringList() )
+    return collection->location()->actualLocation();
+}
+
 #undef GET_COLLECTION

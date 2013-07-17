@@ -452,6 +452,7 @@ set(scriptengine_SRCS
     scriptengine/AmarokNetworkScript.cpp
     scriptengine/AmarokScriptableServiceScript.cpp
     scriptengine/AmarokServicePluginManagerScript.cpp
+    scriptengine/AmarokStreamItemScript.cpp
     scriptengine/AmarokEngineScript.cpp
     scriptengine/AmarokKNotifyScript.cpp
     scriptengine/AmarokOSDScript.cpp

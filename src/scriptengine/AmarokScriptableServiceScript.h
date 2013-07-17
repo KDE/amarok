@@ -21,112 +21,51 @@
 #include <QMetaType> // for Q_DECLARE_METATYPE
 #include <QObject>
 #include <QScriptable>
-
+namespace AmarokScript{
+    class StreamItem;
+};
 class QPixmap;
 class QScriptContext;
 class QScriptEngine;
 
-// TODO: move to proper namespace, one class per .h file
+namespace AmarokScript{
 
-class StreamItem : public QObject
-{
-    Q_OBJECT
+    class ScriptableServiceScript : public QObject, public QScriptable
+    {
+        Q_OBJECT
 
-    Q_PROPERTY( QString itemName WRITE setItemName READ itemName )
-    Q_PROPERTY( QString infoHtml WRITE setInfoHtml READ infoHtml )
-    Q_PROPERTY( QString playableUrl WRITE setPlayableUrl READ playableUrl )
-    Q_PROPERTY( QString callbackData WRITE setCallbackData READ callbackData )
-    Q_PROPERTY( int level WRITE setLevel READ level )
+        public:
+            ScriptableServiceScript( QScriptEngine* engine );
 
-    Q_PROPERTY( QString album WRITE setAlbum READ album )
-    Q_PROPERTY( QString artist WRITE setArtist READ artist )
-    Q_PROPERTY( QString genre WRITE setGenre READ genre )
-    Q_PROPERTY( QString composer WRITE setComposer READ composer )
-    Q_PROPERTY( int year WRITE setYear READ year )
-    Q_PROPERTY( QString coverUrl WRITE setCoverUrl READ coverUrl )
+            void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
+            void slotRequestInfo( QString name, int level, QString callbackData );
 
-    public:
-        StreamItem( QScriptEngine *engine );
+            void slotCustomize( const QString &name );
 
-        QString itemName() const;
-        QString infoHtml() const;
-        QString playableUrl() const;
-        QString callbackData() const;
-        int level() const;
+        public slots:
+            int insertItem( StreamItem* item );
+            void setCurrentInfo( const QString &infoHtml );
 
-        QString album() const;
-        QString artist() const;
-        QString genre() const;
-        QString composer() const;
-        int year() const;
-        QString coverUrl();
+            int donePopulating() const;
 
-        void setItemName( QString name );
-        void setInfoHtml( QString infoHtml );
-        void setPlayableUrl( QString playableUrl );
-        void setCallbackData( QString callbackData );
-        void setLevel( int level );
+            void setIcon( const QPixmap &icon );
+            void setEmblem( const QPixmap &icon );
+            void setScalableEmblem( const QString &emblemPath );
 
-        void setAlbum( QString album );
-        void setArtist( QString artist );
-        void setGenre( QString genre );
-        void setComposer( QString composer );
-        void setYear( int year );
-        void setCoverUrl( QString url );
+        private:
+            QScriptEngine* m_scriptEngine;
+            int m_currentId;
+            QString m_serviceName;
+            static QScriptValue ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine );
+            static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
 
-    private:
-        QString m_name;
-        QString m_infoHtml;
-        QString m_playableUrl;
-        QString m_callbackData;
-        int m_level;
+        signals:
+            void populate( int, QString, QString );
+            void fetchInfo( int, QString );
+            void customize();
+    };
+}
 
-        //these are not required but can be used to override what is shown in the playlist and elsewhere.
-        QString m_album;
-        QString m_artist;
-        QString m_genre;
-        QString m_composer;
-        int m_year;
-        QString m_coverUrl;
-
-};
-
-class ScriptableServiceScript : public QObject, public QScriptable
-{
-    Q_OBJECT
-
-    public:
-        ScriptableServiceScript( QScriptEngine* engine );
-
-        void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
-        void slotRequestInfo( QString name, int level, QString callbackData );
-
-        void slotCustomize( const QString &name );
-
-    public slots:
-        int insertItem( StreamItem* item );
-        void setCurrentInfo( const QString &infoHtml );
-
-        int donePopulating() const;
-
-        void setIcon( const QPixmap &icon );
-        void setEmblem( const QPixmap &icon );
-        void setScalableEmblem( const QString &emblemPath );
-
-    private:
-        QScriptEngine* m_scriptEngine;
-        int m_currentId;
-        QString m_serviceName;
-        static QScriptValue ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine );
-        static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
-
-    signals:
-        void populate( int, QString, QString );
-        void fetchInfo( int, QString );
-        void customize();
-};
-
-Q_DECLARE_METATYPE( StreamItem* )
-Q_DECLARE_METATYPE( ScriptableServiceScript* )
+Q_DECLARE_METATYPE( AmarokScript::ScriptableServiceScript* )
 
 #endif

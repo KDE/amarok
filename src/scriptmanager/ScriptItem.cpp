@@ -45,6 +45,7 @@
 #include "scriptengine/AmarokScriptableServiceScript.h"
 #include "scriptengine/AmarokServicePluginManagerScript.h"
 #include "scriptengine/AmarokStatusbarScript.h"
+#include "scriptengine/AmarokStreamItemScript.h"
 #include "scriptengine/AmarokWindowScript.h"
 #include "scriptengine/exporters/CollectionTypeExporter.h"
 #include "scriptengine/exporters/MetaTypeExporter.h"
@@ -190,6 +191,7 @@ ScriptItem::start( bool silent )
 {
     DEBUG_BLOCK
     //load the wrapper classes
+    m_output.clear();
     initializeScriptEngine();
 
     QFile scriptFile( m_url.path() );
@@ -197,12 +199,12 @@ ScriptItem::start( bool silent )
     m_running = true;
     m_evaluating = true;
 
-    QString( "%1 Script started" ).arg( QTime::currentTime().toString() );
+    m_log << QString( "%1 Script started" ).arg( QTime::currentTime().toString() );
 
     m_timerId = startTimer( 100 );
-    m_output = m_engine.data()->evaluate( scriptFile.readAll() ).toString();
+    m_output << m_engine.data()->evaluate( scriptFile.readAll() ).toString();
     debug() << "After Evaluation "<< m_name;
-    emit evaluated( m_output );
+    emit evaluated( m_output.join( "\n" ) );
     scriptFile.close();
 
     if ( m_evaluating )
@@ -251,7 +253,7 @@ ScriptItem::initializeScriptEngine()
     new AmarokScript::ScriptImporter( m_engine.data(), m_url );
     new AmarokScript::AmarokScriptConfig( m_name, m_engine.data() );
     new AmarokScript::InfoScript( m_url, m_engine.data() );
-    new AmarokNetworkScript( m_engine.data() );
+    //new AmarokNetworkScript( m_engine.data() );
     new Downloader( m_engine.data() );
 
     // backend
@@ -275,8 +277,8 @@ ScriptItem::initializeScriptEngine()
     }
     if( category.contains( QLatin1String("Scriptable Service") ) )
     {
-        new StreamItem( m_engine.data() );
-        m_service = new ScriptableServiceScript( m_engine.data() );
+        new AmarokScript::StreamItem( m_engine.data() );
+        m_service = new AmarokScript::ScriptableServiceScript( m_engine.data() );
         new AmarokScript::AmarokServicePluginManagerScript( m_engine.data() );
     }
 

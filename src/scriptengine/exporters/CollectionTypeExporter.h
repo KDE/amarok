@@ -19,6 +19,8 @@
 
 #include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
+#include <core/collections/Collection.h>
+#include <core/collections/CollectionLocation.h>
 
 #include <QObject>
 #include <QWeakPointer>
@@ -100,9 +102,20 @@ namespace AmarokScript
         Q_PROPERTY( bool supportsTranscode READ supportsTranscode )
 
         /**
-         * A querymaker object for querying the collection.
+         * A displayable string representation of the collection's location. use the return
+         * value of this method to display the collection location to the user.
+         * @return a string representation of the collection location
          */
-        Q_PROPERTY( Collections::QueryMaker* queryMaker READ queryMaker )
+        Q_PROPERTY( QString prettyLocation READ prettyLocation )
+
+        /**
+         * Returns a list of machine usable string*s representingthe collection location.
+         * For example, a local collection would return a list of paths where tracks are
+         * stored, while an Ampache collection would return a list with one string
+         * containing the URL of an ampache server. Empty for collections like iPod collection and
+         * MTP devices.
+         */
+        Q_PROPERTY( QStringList actualLocation READ actualLocation )
 
         public:
             static void init( QScriptEngine *engine );
@@ -166,6 +179,11 @@ namespace AmarokScript
              */
             void queryAndRemoveTracks( Collections::QueryMaker *qm );
 
+            /**
+             * A querymaker object for querying the collection.
+             */
+            Collections::QueryMaker *queryMaker();
+
         private:
             QWeakPointer<Collections::Collection> m_collection;
 
@@ -180,7 +198,8 @@ namespace AmarokScript
             bool isQueryable() const;
             bool isViewable() const ;
             bool supportsTranscode() const;
-            Collections::QueryMaker *queryMaker();
+            QString prettyLocation() const;
+            QStringList actualLocation() const;
 
             CollectionPrototype( Collections::Collection *collection );
             Meta::TrackList removeInvalidTracks( const Meta::TrackList &tracks );
