@@ -28,8 +28,14 @@ class QPixmap;
 class QScriptContext;
 class QScriptEngine;
 
-namespace AmarokScript{
-
+namespace AmarokScript
+{
+    // SCRIPTDOX: ScriptableServiceScript
+    // make something like ScriptableServiceScript.init() ???
+    /**
+     * Usage: First create the sciprtable service using a call to
+     * ScriptableServiceScript( string name, int levels, string shortDescription,  string rootHtml, bool showSearchBar )
+     */
     class ScriptableServiceScript : public QObject, public QScriptable
     {
         Q_OBJECT

@@ -29,6 +29,7 @@ class QUrl;
 
 namespace AmarokScript
 {
+    // SCRIPTDOX: Amarok.Playlist
     class AmarokPlaylistScript : public QObject
     {
         Q_OBJECT

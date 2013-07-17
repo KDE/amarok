@@ -23,7 +23,7 @@ class QScriptEngine;
 
 namespace AmarokScript
 {
-
+    // SCRIPTDOX: Amarok.Window.Statusbar
     class AmarokStatusbarScript : public QObject
     {
         Q_OBJECT

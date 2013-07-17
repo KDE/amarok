@@ -27,6 +27,7 @@ class QScriptValue;
 
 namespace AmarokScript
 {
+    // SCRIPTDOX PROTOTYPE Meta::TrackPtr Track
     #ifdef DEBUG
         class AMAROK_EXPORT
     #else

@@ -26,7 +26,7 @@ class QScriptEngine;
 
 namespace AmarokScript
 {
-
+    // SCRIPTDOX: Amarok.Window
     class AmarokWindowScript : public QObject
     {
         Q_OBJECT

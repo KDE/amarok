@@ -25,6 +25,7 @@ class QScriptEngine;
 
 namespace AmarokScript
 {
+    // SCRIPTDOX: Amarok.ServicePluginManager
     class AmarokServicePluginManagerScript : public QObject
     {
         Q_OBJECT

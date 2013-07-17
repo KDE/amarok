@@ -37,8 +37,6 @@ ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
     m_scriptEngine = engine;
     engine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QScriptValue() );
     const QScriptValue ctor = engine->newFunction( ScriptableServiceScript_prototype_ctor );
-//    const QScriptValue populate = engine->newFunction( ScriptableServiceScript_prototype_populate );
-//    ctor.property( "prototype" ).setProperty( "populate", populate );
     engine->globalObject().setProperty( "ScriptableServiceScript", ctor );
 //    qScriptConnect( this, SIGNAL(populate(QString,int,int,QString,QString)), QScriptValue() ,populate );
 }
@@ -96,14 +94,6 @@ ScriptableServiceScript::slotPopulate( QString name, int level, int parent_id, Q
     m_currentId = parent_id;
     m_serviceName = name;
     emit( populate( level, callbackData, filter ) );
-
-/*
-    QScriptValueList args;
-    args << m_scriptEngine->toScriptValue( level ) << m_scriptEngine->toScriptValue( callbackData ) << m_scriptEngine->toScriptValue( filter );
-    ScriptManager::instance()->m_script[serviceName].serviceContext.thisObject().property( "prototype" ).property( "populate" ).call( QScriptValue(), args );
-	
-    The::scriptableServiceManager()->donePopulating( name, parent_id );
-*/
 }
 
 void

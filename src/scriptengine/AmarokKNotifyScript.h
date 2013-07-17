@@ -24,6 +24,7 @@ class QScriptEngine;
 
 namespace AmarokScript
 {
+    // SCRIPTDOX Amarok.Window.KNotify
     class AmarokKNotifyScript : public QObject
     {
         Q_OBJECT

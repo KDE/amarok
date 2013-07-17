@@ -32,6 +32,10 @@ namespace Collections
 
 namespace AmarokScript
 {
+    /**
+     * Previously Amarok.Collection
+     */
+    // SCRIPTDOX Amarok.CollectionManager
     class AmarokCollectionScript : public ScriptingBase
     {
         Q_OBJECT

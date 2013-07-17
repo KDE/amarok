@@ -30,6 +30,8 @@
 class QScriptContext;
 class QScriptEngine;
 
+//TODO: namespace...
+// TODO: SCRIPTDOX BROKEN
 class Downloader : public QObject
 {
     Q_OBJECT

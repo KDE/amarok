@@ -36,6 +36,7 @@ class QScriptValue;
 
 namespace AmarokScript
 {
+    // SCRIPTDOX PROTOTYPE Collections::Collection Collection
     #ifdef DEBUG
         class AMAROK_EXPORT
     #else

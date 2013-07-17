@@ -32,6 +32,7 @@ class QScriptValue;
 
 namespace AmarokScript
 {
+    // SCRIPTDOX PROTOTYPE Collections::QueryMaker QueryMaker
     #ifdef DEBUG
     class AMAROK_EXPORT
     #else

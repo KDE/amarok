@@ -25,6 +25,7 @@ class QByteArray;
 
 namespace AmarokScript
 {
+    // SCRIPTDOX Amarok.Lyrics
     class AmarokLyricsScript : public QObject
     {
         Q_OBJECT

@@ -27,6 +27,7 @@ class QScriptEngine;
 
 namespace AmarokScript
 {
+    // SCRIPTDOX: Importer
     class ScriptImporter : public QObject
     {
         Q_OBJECT
