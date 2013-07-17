@@ -23,6 +23,8 @@
 #include <QScriptable>
 
 class QPixmap;
+class QScriptContext;
+class QScriptEngine;
 
 // TODO: move to proper namespace, one class per .h file
 

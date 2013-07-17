@@ -18,6 +18,7 @@
 #ifndef AMAROK_SCRIPT_H
 #define AMAROK_SCRIPT_H
 
+#include <QStringList>
 #include <QObject>
 
 class QScriptEngine;

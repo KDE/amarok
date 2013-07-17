@@ -20,6 +20,10 @@
 
 #include "network/NetworkAccessManagerProxy.h"
 
+#include <KUrl>
+
+#include <QHash>
+#include <QList>
 #include <QObject>
 #include <QScriptValue>
 

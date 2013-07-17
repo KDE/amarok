@@ -22,7 +22,6 @@ Image*                                                                          
 #include "core/meta/TrackEditor.h"
 
 #include <QScriptEngine>
-#include <QScriptValue>
 
 #define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );
 #define GET_TRACK_EC( X ) GET_TRACK \

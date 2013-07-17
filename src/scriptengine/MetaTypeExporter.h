@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QScriptable>
+#include <QScriptValue>
 
 #ifdef DEBUG
     class AMAROK_EXPORT
