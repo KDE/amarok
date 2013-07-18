@@ -159,8 +159,6 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
     DEBUG_BLOCK
     if( !m_configMode )
     {
-        // place add icons in all possible places that the user can add an icon
-
         m_configMode = true;
         emit showAppletExplorer();
     }
