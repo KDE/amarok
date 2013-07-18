@@ -5,8 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.8
   BUGFIXES:
-  * Fixed invalid SQL queries when you have files or folders with an apostrophe in your
-    colleciton. (BR 322415)
+  * Fixed invalid SQL queries when you have files or folders with an apostrophe in
+    your collection. (BR 322415)
   * Fixed organizing/copying/moving tracks to Local Collection on Windows. (BR 279560,
     BR 302251)
   * Various usability improvements for the applet toolbar. (BR 197948)
