@@ -169,6 +169,21 @@ namespace Amarok
     AMAROK_CORE_EXPORT QString asciiPath( const QString &path );
 
     /**
+     * Define how Amarok::vfatPath() should behave wrt path separators:
+     *
+     * AutoBehaviour: use WindowsBehaviour when compiled in Windows and UnixBehaviour
+     * on everything else
+     * UnixBehaviour: treat / as path separator and \ as a valid part of file name
+     * WindowsBehaviour: treat \ as path separator and / as a valid part of file name
+     */
+    enum PathSeparatorBehaviour
+    {
+        AutoBehaviour,
+        UnixBehaviour,
+        WindowsBehaviour
+    };
+
+    /**
      * Transforms path into one valid on VFAT file systems, leaves QDir::separator()s untouched.
      * Beware: Truncates path to 255 characters!
      * Replacement rules: illegal characters are being replaced by '_'
@@ -177,7 +192,8 @@ namespace Amarok
      * @param path The original path.
      * @return The cleaned up path.
      */
-    AMAROK_CORE_EXPORT QString vfatPath( const QString &path );
+    AMAROK_CORE_EXPORT QString vfatPath( const QString &path,
+                                         PathSeparatorBehaviour behaviour = AutoBehaviour );
 
     /* defined in browsers/CollectionTreeItemModel.cpp */
     /**

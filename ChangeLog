@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.8
   BUGFIXES:
+  * Fixed organizing/copying/moving tracks to Local Collection on Windows. (BR 279560,
+    BR 302251)
   * Removed broken Apply button in applets' settings dialog. (BR 322015)
   * Fix incorrect colors in Context View toolbar when switching themes. (BR 301305)
   * Many fixes for various bugs with switching desktop color themes at runtime,

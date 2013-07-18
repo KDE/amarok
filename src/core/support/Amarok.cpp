@@ -329,16 +329,26 @@ namespace Amarok
         return result;
     }
 
-    QString vfatPath( const QString &path )
+    QString vfatPath( const QString &path, PathSeparatorBehaviour behaviour )
     {
         QString s = path;
 
-        if( QDir::separator() == '/' ) // we are on *nix, \ is a valid character in file or directory names, NOT the dir separator
+        if( behaviour == AutoBehaviour )
+            behaviour = ( QDir::separator() == '/' ) ? UnixBehaviour : WindowsBehaviour;
+
+        if( behaviour == UnixBehaviour ) // we are on *nix, \ is a valid character in file or directory names, NOT the dir separator
             s.replace( '\\', '_' );
         else
             s.replace( '/', '_' ); // on windows we have to replace / instead
 
-        for( int i = 0; i < s.length(); i++ )
+        int start = 0;
+#ifdef Q_OS_WIN
+        // exclude the leading "C:/" from special character replecement in the loop below
+        // bug 279560, bug 302251
+        if( QDir::isAbsolutePath( s ) )
+            start = 3;
+#endif
+        for( int i = start; i < s.length(); i++ )
         {
             QChar c = s[ i ];
             if( c < QChar(0x20) || c == QChar(0x7F) // 0x7F = 127 = DEL control character

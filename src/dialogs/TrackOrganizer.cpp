@@ -117,9 +117,6 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
 
     Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );
-    if( !result.startsWith( '/' ) )
-        result.prepend( "/" );
-
     return cleanPath( result );
 }
 
@@ -140,9 +137,10 @@ QString TrackOrganizer::cleanPath( const QString& path ) const
     if( m_UnderscoresNotSpaces )
         result.replace( QRegExp( "\\s" ), "_" );
 
-    // debug()<<"I'm about to do Amarok::vfatPath( result ), this is result: "<<result;
     if( m_vfatSafe )
-        result = Amarok::vfatPath( result );
+        // we use UnixBehaviour even on windows, because even there we use / as directory
+        // separator currently (QFile mangles it internally)
+        result = Amarok::vfatPath( result, Amarok::UnixBehaviour );
 
     QFileInfo info( result ); // Used to polish path string. (e.g. remove '//')
     return info.absoluteFilePath();
