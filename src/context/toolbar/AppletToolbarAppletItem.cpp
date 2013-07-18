@@ -49,7 +49,6 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     if( m_applet )
     {
        m_label->setPlainText( m_applet->name() );
-       setToolTip( m_applet->name() );
     }
     else
     {
