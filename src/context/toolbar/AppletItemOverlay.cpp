@@ -28,12 +28,13 @@
 #include <Plasma/Theme>
 
 #include <QAction>
+#include <QApplication>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsWidget>
+#include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QTimer>
 #include <QToolButton>
-#include <QPainter>
 
 // stolen verbatim and shamelessly from workspace/plasma/shells/desktop/panelappletoverlay
 class AppletMoveSpacer : public QGraphicsWidget
@@ -68,7 +69,7 @@ Context::AppletItemOverlay::AppletItemOverlay( Context::AppletToolbarAppletItem 
       m_layout( layout ),
       m_deleteIcon( 0 ),
       m_index( 0 ),
-      m_clickDrag( false )
+      m_itemHasSwapped( false )
 {
     DEBUG_BLOCK
 
@@ -165,15 +166,9 @@ Context::AppletItemOverlay::mousePressEvent( QMouseEvent *event )
     Q_UNUSED( event )
     DEBUG_BLOCK
     
-    if( m_clickDrag ) {
-        setMouseTracking( false );
-        m_clickDrag = false;
-        m_origin = QPoint();
-        return;
-    }
+    m_itemHasSwapped = false;
 
-    m_clickDrag = false;
-    if( !m_spacer ) 
+    if( !m_spacer )
     {
         m_spacer = new AppletMoveSpacer( m_applet );
     } else 
@@ -190,6 +185,7 @@ Context::AppletItemOverlay::mousePressEvent( QMouseEvent *event )
 
     m_offset = geometry().x() - m_origin.x();
 
+    QApplication::setOverrideCursor( Qt::ClosedHandCursor );
     grabMouse();
 }
 
@@ -215,17 +211,23 @@ Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
     // find position of the config item (always last item)
     QGraphicsLayoutItem *lastItem = m_layout->itemAt( m_layout->count() - 1 );
 
-    // swap items if we pass completely over the next/previous item or cross
-    // more than halfway across it, whichever comes first
-    if( m_prevGeom.isValid() && g.left() <= m_prevGeom.left() )
+    // swap items if we move further than two thirds across the next/previous item
+    if( !m_itemHasSwapped )
     {
-        swapWithPrevious();
+        if( m_prevGeom.isValid() && g.left() <= m_prevGeom.left() + m_prevGeom.width() / 3 )
+        {
+            swapWithPrevious();
+            m_itemHasSwapped = true;
+        }
+        else if( m_nextGeom.isValid() && ( g.right() >= m_nextGeom.right() - m_nextGeom.width() / 3 ) && ( g.right() < lastItem->geometry().left() ) )
+        {
+            swapWithNext();
+            m_itemHasSwapped = true;
+        }
     }
-    else if( m_nextGeom.isValid() && (g.right() >= m_nextGeom.right())
-                                  && (g.right() < lastItem->geometry().left()) )
-    {
-        swapWithNext();
-    }
+
+    if( ( m_prevGeom.isValid() && g.left() <= m_prevGeom.left() ) || ( m_nextGeom.isValid() && g.right() >= m_nextGeom.right() ) )
+        m_itemHasSwapped = false;
 }
 
 void 
@@ -234,35 +236,18 @@ Context::AppletItemOverlay::mouseReleaseEvent( QMouseEvent *event )
     Q_UNUSED( event )
     DEBUG_BLOCK   
     
-    if( !m_spacer ) 
-    {
-        releaseMouse();
-        return;
-    }
-
-    if( !m_origin.isNull() ) 
-    {
-   //     debug() << m_clickDrag << m_origin << mapToParent( event->pos() );
-        m_clickDrag = abs( mapToParent( event->pos() ).x() - m_origin.x() ) < KGlobalSettings::dndEventDelay();
-
-        if( m_clickDrag ) 
-        {
-  //          debug() << "click dragging." << this << mouseGrabber();
-            setMouseTracking( true );
-            event->setAccepted( false );
-            return;
-        }
-    }
-
+    QApplication::restoreOverrideCursor();
     releaseMouse();
-  //  debug() << "m_origin is null, canceling drag and putting applet back";
+
+    if( !m_spacer )
+        return;
+
     m_layout->removeItem( m_spacer );
     m_spacer->deleteLater();
     m_spacer = 0;
 
     m_layout->insertItem( m_index, m_applet );
-    m_applet->setZValue( m_applet->zValue() - 1 );
-    // -1 means not specifying where it is from
+    m_applet->setZValue( m_applet->zValue() - 1 ); // -1 means not specifying where it is from
 
     emit moveApplet( m_applet->applet(), -1, m_index );
 }

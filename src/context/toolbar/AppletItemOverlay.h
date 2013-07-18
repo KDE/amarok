@@ -76,7 +76,7 @@ private:
     QToolButton* m_deleteIcon;
     int m_offset;
     int m_index;
-    bool m_clickDrag;
+    bool m_itemHasSwapped;
 };
 
 }
