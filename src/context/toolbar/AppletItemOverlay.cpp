@@ -50,14 +50,6 @@ protected:
         Q_UNUSED( option )
         Q_UNUSED( widget )
 
-        /*
-           results in odd painting corruption
-        if (collidesWithItem(m_applet, Qt::IntersectsItemBoundingRect)) {
-            painter->fillRect(contentsRect(), Qt::transparent);
-            return;
-        }
-        */
-
         //TODO: make this a pretty gradient?
         painter->setRenderHint( QPainter::Antialiasing );
         QPainterPath p = Plasma::PaintUtils::roundedRectangle( contentsRect().adjusted( 1, 1, -2, -2 ), 4 );
@@ -173,24 +165,13 @@ Context::AppletItemOverlay::mousePressEvent( QMouseEvent *event )
     Q_UNUSED( event )
     DEBUG_BLOCK
     
-    //kDebug() << m_clickDrag;
     if( m_clickDrag ) {
         setMouseTracking( false );
         m_clickDrag = false;
         m_origin = QPoint();
         return;
     }
-/*
-    // check if under the click is the delete icon, if so, delete instead
-    Context::ToolbarView* view = dynamic_cast< Context::ToolbarView* >( parent() );
-    debug() << "icon scene rectt:" << m_applet->delIconSceneRect() << "event scene rect:" << view->mapToScene( event->globalPos() );
-    debug() << "from view:" << view->mapFromScene( m_applet->delIconSceneRect() ).boundingRect() << event->pos();
-    if( view && m_applet->delIconSceneRect().contains( view->mapToScene( event->pos() ) ) )
-    {
-        m_applet->deleteLater();
-        return;
-    }
-*/
+
     m_clickDrag = false;
     if( !m_spacer ) 
     {
@@ -215,43 +196,6 @@ Context::AppletItemOverlay::mousePressEvent( QMouseEvent *event )
 void 
 Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
 {
- //   DEBUG_BLOCK
-//    Plasma::FormFactor f = m_applet->formFactor();
-
-    // todo add in support for dragging an item out of the toolbar area
-    /*
-    if ( ((f != Plasma::Horizontal && f != Plasma::Vertical) && rect().intersects(m_applet->rect().toRect())) ||
-          ((f == Plasma::Horizontal || f == Plasma::Vertical) && !rect().contains(event->globalPos())) ) {
-        Plasma::View *view = Plasma::View::topLevelViewAt(event->globalPos());
-
-        if (!view) {
-            return;
-        }
-
-        QPointF pos = view->mapFromGlobal(event->globalPos());
-        if (view != m_applet->view()) {
-
-            Plasma::Containment *c = view->containment();
-
-            c->addApplet(m_applet, pos);
-            syncOrientation();
-            syncGeometry();
-
-            if (m_spacer) {
-                m_layout->removeItem(m_spacer);
-                m_spacer->deleteLater();
-                m_spacer = 0;
-            }
-
-            QGraphicsLinearLayout *newLayout = dynamic_cast<QGraphicsLinearLayout *>(c->layout());
-            if (newLayout && (c->formFactor() == Plasma::Vertical || c->formFactor() == Plasma::Horizontal)) {
-                m_layout->removeItem(m_applet);
-                m_layout = newLayout;
-                setParent(view);
-            }
-        }
-    } */
-
     if( !m_spacer ) 
     {
         m_spacer = new AppletMoveSpacer( m_applet );
@@ -264,7 +208,6 @@ Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
     QPoint p = mapToParent( event->pos() );
     QRectF g = m_applet->geometry();
 
-  //  debug() << p << g << "<-- movin'?";
     g.moveLeft( p.x() + m_offset );
 
     m_applet->setGeometry( g );
@@ -274,7 +217,6 @@ Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
 
     // swap items if we pass completely over the next/previous item or cross
     // more than halfway across it, whichever comes first
-//     debug() << m_prevGeom << g << m_nextGeom << addItemGeom;
     if( m_prevGeom.isValid() && g.left() <= m_prevGeom.left() )
     {
         swapWithPrevious();
@@ -284,15 +226,12 @@ Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
     {
         swapWithNext();
     }
-
-//     debug() << "=================================";
 }
 
 void 
 Context::AppletItemOverlay::mouseReleaseEvent( QMouseEvent *event )
 {
     Q_UNUSED( event )
- 
     DEBUG_BLOCK   
     
     if( !m_spacer ) 
