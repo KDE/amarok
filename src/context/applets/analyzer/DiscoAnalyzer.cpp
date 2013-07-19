@@ -25,7 +25,7 @@
 
 
 DiscoAnalyzer::DiscoAnalyzer( QWidget *parent ):
-    Analyzer::Base3D( parent )
+    Analyzer::Base( parent )
 {
     setObjectName( "Disco" );
 

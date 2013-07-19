@@ -118,7 +118,7 @@ private:
 
 
 BallsAnalyzer::BallsAnalyzer( QWidget *parent ):
-    Analyzer::Base3D( parent )
+    Analyzer::Base( parent )
 {
     setObjectName( "Balls" );
 

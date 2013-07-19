@@ -24,7 +24,7 @@ class QWidget;
 class Ball;
 class Paddle;
 
-class BallsAnalyzer : public Analyzer::Base3D
+class BallsAnalyzer : public Analyzer::Base
 {
 public:
     BallsAnalyzer( QWidget * );

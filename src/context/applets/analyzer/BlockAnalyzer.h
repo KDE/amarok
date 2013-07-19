@@ -24,7 +24,7 @@ class QMouseEvent;
 class QPalette;
 class QResizeEvent;
 
-class BlockAnalyzer : public Analyzer::Base2D
+class BlockAnalyzer : public Analyzer::Base
 {
 public:
     BlockAnalyzer( QWidget* );
@@ -39,33 +39,32 @@ public:
     static const int FADE_SIZE    = 90;
 
 protected:
+    virtual void initializeGL();
+    virtual void paintGL();
+    virtual void resizeGL( int w, int h );
     virtual void transform( QVector<float>& );
     virtual void analyze( const QVector<float>& );
-    virtual void paintEvent( QPaintEvent* );
-    virtual void resizeEvent( QResizeEvent* );
     virtual void paletteChange( const QPalette& );
 
     void drawBackground();
     void determineStep();
 
 private:
-    QPixmap* bar()
-    {
-        return &m_barPixmap;
-    }
+    void drawTexture( GLuint textureId, int x, int y, int sx, int sy, int w, int h );
 
     int m_columns, m_rows;      //number of rows and columns of blocks
     uint m_y;                    //y-offset from top of widget
+    GLuint m_barTexture;
+    GLuint m_topBarTexture;
     QPixmap m_barPixmap;
-    QPixmap m_topBarPixmap;
     QVector<float> m_scope;      //so we don't create a vector every frame
     QVector<float> m_store;  //current bar heights
     QVector<float> m_yscale;
 
-    QVector<QPixmap> m_fade_bars;
+    QVector<GLuint>  m_fade_bars;
     QVector<uint>    m_fade_pos;
     QVector<int>     m_fade_intensity;
-    QPixmap          m_background;
+    GLuint           m_background;
 
     float m_step; //rows to fall per frame
 };

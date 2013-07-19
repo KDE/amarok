@@ -31,28 +31,47 @@ static inline uint myMax( uint v1, uint v2 )
 }
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
-    : Analyzer::Base2D( parent )
+    : Analyzer::Base( parent )
     , m_columns( 0 )         //int
     , m_rows( 0 )            //int
     , m_y( 0 )               //uint
-    , m_topBarPixmap( BLOCK_WIDTH, BLOCK_HEIGHT )
+    , m_barTexture( 0 )
+    , m_topBarTexture( 0 )
     , m_fade_bars( FADE_SIZE ) //vector<QPixmap>
     , m_fade_pos( MAX_COLUMNS, 50 ) //vector<uint>
     , m_fade_intensity( MAX_COLUMNS, 32 ) //vector<uint>
+    , m_background( 0 )
 {
     setObjectName( "Blocky" );
     setMaximumWidth( MAX_COLUMNS * ( BLOCK_WIDTH + 1 ) - 1 );
+    setFps( 50 );
 }
 
 BlockAnalyzer::~BlockAnalyzer()
-{}
+{
+    deleteTexture( m_barTexture );
+    deleteTexture( m_topBarTexture );
+
+    foreach( GLuint id, m_fade_bars )
+        deleteTexture( id );
+}
 
 void
-BlockAnalyzer::resizeEvent( QResizeEvent *e )
+BlockAnalyzer::initializeGL()
 {
-    Analyzer::Base2D::resizeEvent( e );
+    // Disable depth test (all is drawn on a 2d plane)
+    glDisable( GL_DEPTH_TEST );
+}
 
-    m_background = QPixmap( size() );
+void
+BlockAnalyzer::resizeGL( int w, int h )
+{
+    glViewport( 0, 0, (GLint)w, (GLint)h );
+
+    // Set up a 2D projection matrix
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    glOrtho( 0.0, (GLdouble)w, (GLdouble)h, 0.0, 0.0, 1.0 );
 
     const int oldRows = m_rows;
 
@@ -69,9 +88,6 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
     if( m_rows != oldRows )
     {
         m_barPixmap = QPixmap( BLOCK_WIDTH, m_rows * ( BLOCK_HEIGHT + 1 ) );
-
-        for( int i = 0; i < FADE_SIZE; ++i )
-            m_fade_bars[i] = QPixmap( BLOCK_WIDTH, m_rows * ( BLOCK_HEIGHT + 1 ) );
 
         m_yscale.resize( m_rows + 1 );
 
@@ -123,7 +139,7 @@ BlockAnalyzer::analyze( const QVector<float> &s )
 }
 
 void
-BlockAnalyzer::paintEvent( QPaintEvent* )
+BlockAnalyzer::paintGL()
 {
     // y = 2 3 2 1 0 2
     //     . . . . # .
@@ -138,10 +154,11 @@ BlockAnalyzer::paintEvent( QPaintEvent* )
     // m_yscale looks similar to: { 0.7, 0.5, 0.25, 0.15, 0.1, 0 }
     // if it contains 6 elements there are 5 rows in the analyzer
 
-    QPainter p( this );
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
 
     // Paint the background
-    p.drawPixmap( 0, 0, m_background );
+    drawTexture( m_background, 0, 0, 0, 0, width(), height() );
 
     for( uint y, x = 0; x < (uint)m_scope.size(); ++x )
     {
@@ -169,36 +186,66 @@ BlockAnalyzer::paintEvent( QPaintEvent* )
             const uint offset = --m_fade_intensity[x];
             const uint y = m_y + ( m_fade_pos[x] * ( BLOCK_HEIGHT + 1 ) );
             if( y < (uint)height() )
-                p.drawPixmap( x * ( BLOCK_WIDTH + 1 ), y, m_fade_bars[offset], 0, 0, BLOCK_WIDTH, height() - y );
+                drawTexture( m_fade_bars[offset], x * ( BLOCK_WIDTH + 1 ), y, 0, 0, BLOCK_WIDTH, height() );
         }
 
         if( m_fade_intensity[x] == 0 )
             m_fade_pos[x] = m_rows;
 
         // REMEMBER: y is a number from 0 to m_rows, 0 means all blocks are glowing, m_rows means none are
-        p.drawPixmap( x * ( BLOCK_WIDTH + 1 ), y * ( BLOCK_HEIGHT + 1 ) + m_y, *bar(), 0, y * ( BLOCK_HEIGHT + 1 ), -1, -1 );
+        drawTexture( m_barTexture, x * ( BLOCK_WIDTH + 1 ), y * ( BLOCK_HEIGHT + 1 ) + m_y, 0, y * ( BLOCK_HEIGHT + 1 ), m_barPixmap.width(), m_barPixmap.height() );
 
-        // Draw top pixmaps
-        p.drawPixmap( x * ( BLOCK_WIDTH + 1 ), int( m_store[x] ) * ( BLOCK_HEIGHT + 1 ) + m_y, m_topBarPixmap );
+        // Draw top bar
+        drawTexture( m_topBarTexture, x * ( BLOCK_WIDTH + 1 ), int( m_store[x] ) * ( BLOCK_HEIGHT + 1 ) + m_y, 0, 0, BLOCK_WIDTH, BLOCK_HEIGHT );
     }
+}
+
+void
+BlockAnalyzer::drawTexture( GLuint textureId, int x, int y, int sx, int sy, int w, int h )
+{
+    const GLfloat xf = x;
+    const GLfloat yf = y;
+    const GLfloat sxf = (GLfloat)sx / m_barPixmap.width();
+    const GLfloat syf = (GLfloat)sy / m_barPixmap.height();
+    const GLfloat wf = w - sx;
+    const GLfloat hf = h - sy;
+
+    glEnable( GL_TEXTURE_2D );
+    glBindTexture( GL_TEXTURE_2D, textureId );
+
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+
+    // Draw a textured quad
+    glBegin(GL_QUADS);
+    glTexCoord2f( sxf, syf ); glVertex2f( xf, yf );
+    glTexCoord2f( sxf, 1.0 ); glVertex2f( xf, yf + hf );
+    glTexCoord2f( 1.0, 1.0 ); glVertex2f( xf + wf, yf + hf );
+    glTexCoord2f( 1.0, syf ); glVertex2f( xf + wf, yf );
+    glEnd();
+
+    glDisable( GL_TEXTURE_2D );
 }
 
 void
 BlockAnalyzer::paletteChange( const QPalette& ) //virtual
 {
-    QPainter p( bar() );
+    QPainter p( &m_barPixmap );
 
     const QColor bg = The::paletteHandler()->backgroundColor();
     const QColor fg = palette().color( QPalette::Active, QPalette::Highlight );
 
-    m_topBarPixmap.fill( fg );
+    QPixmap topBar( BLOCK_WIDTH, BLOCK_HEIGHT );
+    topBar.fill( fg );
+    deleteTexture( m_topBarTexture );
+    m_topBarTexture = bindTexture( topBar );
 
     const double dr = 15 * double( bg.red()   - fg.red() )   / ( m_rows * 16 );
     const double dg = 15 * double( bg.green() - fg.green() ) / ( m_rows * 16 );
     const double db = 15 * double( bg.blue()  - fg.blue() )  / ( m_rows * 16 );
     const int r = fg.red(), g = fg.green(), b = fg.blue();
 
-    bar()->fill( bg );
+    m_barPixmap.fill( bg );
 
     for( int y = 0; y < m_rows; ++y )
         //graduate the fg color
@@ -220,13 +267,22 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
         // Precalculate all fade-bar pixmaps
         for( int y = 0; y < FADE_SIZE; ++y )
         {
-            m_fade_bars[y].fill( palette().color( QPalette::Active, QPalette::Window ) );
+            QPixmap fadeBar( BLOCK_WIDTH, m_rows * ( BLOCK_HEIGHT + 1 ) );
+
+            fadeBar.fill( palette().color( QPalette::Active, QPalette::Window ) );
             const double Y = 1.0 - ( log10( ( FADE_SIZE ) - y ) / log10( ( FADE_SIZE ) ) );
-            QPainter f( &m_fade_bars[y] );
+            QPainter f( &fadeBar );
             for( int z = 0; z < m_rows; ++z )
                 f.fillRect( 0, z * ( BLOCK_HEIGHT + 1 ), BLOCK_WIDTH, BLOCK_HEIGHT, QColor( r + int( dr * Y ), g + int( dg * Y ), b + int( db * Y ) ) );
+
+            deleteTexture( m_fade_bars[y] );
+            m_fade_bars[y] = bindTexture( fadeBar );
         }
     }
+
+    const QImage image = m_barPixmap.toImage();
+    deleteTexture( m_barTexture );
+    m_barTexture = bindTexture( image.mirrored() ); // Flip vertically because OpenGL has inverted y coordinates
 
     drawBackground();
 }
@@ -237,11 +293,14 @@ BlockAnalyzer::drawBackground()
     const QColor bg = palette().color( QPalette::Active, QPalette::Window );
     const QColor bgdark = bg.dark( 112 );
 
-    m_background.fill( bg );
+    QPixmap background( size() );
+    background.fill( bg );
 
-    QPainter p( &m_background );
+    QPainter p( &background );
     for( int x = 0; x < m_columns; ++x )
         for( int y = 0; y < m_rows; ++y )
             p.fillRect( x * ( BLOCK_WIDTH + 1 ), y * ( BLOCK_HEIGHT + 1 ) + m_y, BLOCK_WIDTH, BLOCK_HEIGHT, bgdark );
 
+    deleteTexture( m_background );
+    m_background = bindTexture( background );
 }

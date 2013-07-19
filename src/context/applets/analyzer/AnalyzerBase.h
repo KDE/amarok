@@ -36,7 +36,7 @@
 namespace Analyzer
 {
 
-class Base : public QGLWidget
+class Base : public QGLWidget, protected QGLFunctions
 {
     Q_OBJECT
 
@@ -48,6 +48,8 @@ protected:
 
     virtual void transform( QVector<float>& );
     virtual void analyze( const QVector<float>& ) = 0;
+
+    void setFps( int fps );
 
     FHT    *m_fht;
     QTimer *m_renderTimer;
@@ -68,24 +70,6 @@ private:
     void showEvent( QShowEvent* );
 
     QTimer *m_demoTimer;
-};
-
-
-class Base2D : public Base
-{
-    Q_OBJECT
-
-protected:
-    Base2D( QWidget* );
-};
-
-
-class Base3D : public Base, protected QGLFunctions
-{
-    Q_OBJECT
-
-protected:
-    Base3D( QWidget* );
 };
 
 

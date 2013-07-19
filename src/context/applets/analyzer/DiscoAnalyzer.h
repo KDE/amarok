@@ -23,7 +23,7 @@
 
 class QPaintEvent;
 
-class DiscoAnalyzer : public Analyzer::Base3D
+class DiscoAnalyzer : public Analyzer::Base
 {
 public:
     DiscoAnalyzer( QWidget * );
