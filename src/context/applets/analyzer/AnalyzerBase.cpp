@@ -42,13 +42,21 @@ Analyzer::Base::Base( QWidget *parent )
 {
     connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SLOT( playbackStateChanged() ) );
 
-    m_demoTimer->setInterval( 33 );
+    setFps( 60 ); // Default unless changed by subclass
+    m_demoTimer->setInterval( 33 );  // ~30 fps
 
     enableDemo( !EngineController::instance()->isPlaying() );
 
 #ifdef Q_WS_X11
     connect( KWindowSystem::self(), SIGNAL( currentDesktopChanged( int ) ), this, SLOT( currentDesktopChanged() ) );
 #endif
+
+    connect( m_renderTimer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
+
+    //initialize openGL context before managing GL calls
+    makeCurrent();
+
+    initializeGLFunctions();
 
     connectSignals();
 }
@@ -213,28 +221,10 @@ Analyzer::Base::interpolate( const QVector<float> &inVec, QVector<float> &outVec
     }
 }
 
-
-
-
-Analyzer::Base2D::Base2D( QWidget *parent )
-    : Base( parent )
+void
+Analyzer::Base::setFps( int fps )
 {
-    m_renderTimer->setInterval( 20 ); //~50 FPS
-    connect( m_renderTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
-}
-
-
-
-Analyzer::Base3D::Base3D( QWidget *parent )
-    : Base( parent )
-{
-    m_renderTimer->setInterval( 17 ); //~60 FPS
-    connect( m_renderTimer, SIGNAL( timeout() ), this, SLOT( updateGL() ) );
-
-    //initialize openGL context before managing GL calls
-    makeCurrent();
-
-    initializeGLFunctions();
+    m_renderTimer->setInterval( 1000 / fps );
 }
 
 
