@@ -122,8 +122,8 @@ BallsAnalyzer::BallsAnalyzer( QWidget *parent ):
 {
     setObjectName( "Balls" );
 
-    loadTexture( KStandardDirs::locate( "data", "amarok/images/ball.png" ), m_ballTexture );
-    loadTexture( KStandardDirs::locate( "data", "amarok/images/grid.png" ), m_gridTexture );
+    m_ballTexture = bindTexture( QImage( KStandardDirs::locate( "data", "amarok/images/ball.png" ) ) );
+    m_gridTexture = bindTexture( QImage( KStandardDirs::locate( "data", "amarok/images/grid.png" ) ) );
 
     m_leftPaddle = new Paddle( -1.0 );
     m_rightPaddle = new Paddle( 1.0 );
@@ -143,8 +143,8 @@ BallsAnalyzer::BallsAnalyzer( QWidget *parent ):
 
 BallsAnalyzer::~BallsAnalyzer()
 {
-    freeTexture( m_ballTexture );
-    freeTexture( m_gridTexture );
+    deleteTexture( m_ballTexture );
+    deleteTexture( m_gridTexture );
     delete m_leftPaddle;
     delete m_rightPaddle;
 
@@ -445,36 +445,3 @@ void BallsAnalyzer::drawScrollGrid( float scroll, float color[4] )
     glLoadIdentity();
     glMatrixMode( GL_MODELVIEW );
 }
-
-bool BallsAnalyzer::loadTexture( QString fileName, GLuint& textureID )
-{
-    //reset texture ID to the default EMPTY value
-    textureID = 0;
-
-    //load image
-    QImage tmp;
-    if( !tmp.load( fileName ) )
-        return false;
-
-    //convert it to suitable format (flipped RGBA)
-    QImage texture = QGLWidget::convertToGLFormat( tmp );
-    if( texture.isNull() )
-        return false;
-
-    //get texture number and bind loaded image to that texture
-    glGenTextures( 1, &textureID );
-    glBindTexture( GL_TEXTURE_2D, textureID );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexImage2D( GL_TEXTURE_2D, 0, 4, texture.width(), texture.height(),
-                  0, GL_RGBA, GL_UNSIGNED_BYTE, texture.bits() );
-    return true;
-}
-
-void BallsAnalyzer::freeTexture( GLuint& textureID )
-{
-    if( textureID > 0 )
-        glDeleteTextures( 1, &textureID );
-    textureID = 0;
-}
-
