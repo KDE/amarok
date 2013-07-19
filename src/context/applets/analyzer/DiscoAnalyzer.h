@@ -63,9 +63,6 @@ private:
     void drawDot( float x, float y, float size );
     void drawFullDot( float r, float g, float b, float a );
     void setTextureMatrix( float rot, float scale );
-
-    bool loadTexture( QString file, GLuint& textureID );
-    void freeTexture( GLuint& textureID );
 };
 
 #endif

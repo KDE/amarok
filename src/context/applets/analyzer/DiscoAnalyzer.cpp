@@ -29,9 +29,9 @@ DiscoAnalyzer::DiscoAnalyzer( QWidget *parent ):
 {
     setObjectName( "Disco" );
 
-    loadTexture( KStandardDirs::locate( "data", "amarok/images/dot.png" ), m_dotTexture );
-    loadTexture( KStandardDirs::locate( "data", "amarok/images/wirl1.png" ), m_w1Texture );
-    loadTexture( KStandardDirs::locate( "data", "amarok/images/wirl2.png" ), m_w2Texture );
+    m_dotTexture = bindTexture( QImage( KStandardDirs::locate( "data", "amarok/images/dot.png" ) ) );
+    m_w1Texture = bindTexture( QImage( KStandardDirs::locate( "data", "amarok/images/wirl1.png" ) ) );
+    m_w2Texture = bindTexture( QImage( KStandardDirs::locate( "data", "amarok/images/wirl2.png" ) ) );
 
     m_show.paused = true;
     m_show.pauseTimer = 0.0;
@@ -41,9 +41,9 @@ DiscoAnalyzer::DiscoAnalyzer( QWidget *parent ):
 
 DiscoAnalyzer::~DiscoAnalyzer()
 {
-    freeTexture( m_dotTexture );
-    freeTexture( m_w1Texture );
-    freeTexture( m_w2Texture );
+    deleteTexture( m_dotTexture );
+    deleteTexture( m_w1Texture );
+    deleteTexture( m_w2Texture );
 }
 
 void DiscoAnalyzer::demo()
@@ -310,38 +310,5 @@ void DiscoAnalyzer::setTextureMatrix( float rot, float scale )
         glTranslatef( -0.5f, -0.5f, 0.0f );
     }
     glMatrixMode( GL_MODELVIEW );
-}
-
-bool DiscoAnalyzer::loadTexture( QString fileName, GLuint& textureID )
-{
-    //reset texture ID to the default EMPTY value
-    textureID = 0;
-
-    //load image
-    QImage tmp;
-    if( !tmp.load( fileName ) )
-        return false;
-
-    //convert it to suitable format (flipped RGBA)
-    QImage texture = QGLWidget::convertToGLFormat( tmp );
-    if( texture.isNull() )
-        return false;
-
-    //get texture number and bind loaded image to that texture
-    glGenTextures( 1, &textureID );
-    glBindTexture( GL_TEXTURE_2D, textureID );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexImage2D( GL_TEXTURE_2D, 0, 4, texture.width(), texture.height(),
-                  0, GL_RGBA, GL_UNSIGNED_BYTE, texture.bits() );
-    return true;
-}
-
-
-void DiscoAnalyzer::freeTexture( GLuint & textureID )
-{
-    if( textureID > 0 )
-        glDeleteTextures( 1, &textureID );
-    textureID = 0;
 }
 
