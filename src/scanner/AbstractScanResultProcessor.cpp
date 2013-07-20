@@ -72,7 +72,7 @@ void
 AbstractScanResultProcessor::scanDirectoryCount( int count )
 {
     // message( i18np("Found one directory", "Found %1 directories", count ) );
-    debug() << "got"<<count<<"diredtories";
+    debug() << "got" << count << "directories";
     emit totalSteps( count * 2 );
 }
 
