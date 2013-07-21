@@ -695,6 +695,7 @@ SqlScanResultProcessor::cleanupMembers()
 {
     m_foundDirectories.clear();
     m_foundTracks.clear();
+    m_scannedDirectoryIds.clear();
     m_directoryIds.clear();
     m_albumIds.clear();
 
