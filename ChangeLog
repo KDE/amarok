@@ -9,20 +9,20 @@ VERSION 2.8
    * Amarok now uses FindFFMpeg.cmake from kdelibs
 
   BUGFIXES:
-  * Prevent hitting an assertion failure if just removed track from the Local Collection
-    is edited. (BR 322474)
-  * Fixed a regression introduced in 2.8 Beta where tracks in the Local Collection were
-    sometimes forgotten and then found again. (BR 322603)
-  * Fixed invalid SQL queries when you have files or folders with an apostrophe in
-    your collection. (BR 322415)
-  * Fixed organizing/copying/moving tracks to Local Collection on Windows. (BR 279560,
-    BR 302251)
-  * Various usability improvements for the applet toolbar. (BR 197948)
-  * Removed broken Apply button in applets' settings dialog. (BR 322015)
-  * Fix incorrect colors in Context View toolbar when switching themes. (BR 301305)
-  * Many fixes for various bugs with switching desktop color themes at runtime,
-    including OSD, spectrum analyzer, collection browser.
-  * Avoid updating the MPRIS2 Metadata between tracks. (BR 321602)
+   * Prevent hitting an assertion failure if just removed track from the Local Collection
+     is edited. (BR 322474)
+   * Fixed a regression introduced in 2.8 Beta where tracks in the Local Collection were
+     sometimes forgotten and then found again. (BR 322603)
+   * Fixed invalid SQL queries when you have files or folders with an apostrophe in
+     your collection. (BR 322415)
+   * Fixed organizing/copying/moving tracks to Local Collection on Windows. (BR 279560,
+     BR 302251)
+   * Various usability improvements for the applet toolbar. (BR 197948)
+   * Removed broken Apply button in applets' settings dialog. (BR 322015)
+   * Fix incorrect colors in Context View toolbar when switching themes. (BR 301305)
+   * Many fixes for various bugs with switching desktop color themes at runtime,
+     including OSD, spectrum analyzer, collection browser.
+   * Avoid updating the MPRIS2 Metadata between tracks. (BR 321602)
 
 
 VERSION 2.8-Beta 1
