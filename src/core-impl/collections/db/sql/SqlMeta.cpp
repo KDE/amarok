@@ -981,7 +981,9 @@ SqlTrack::commitIfInNonBatchUpdate()
 
     // --- add to the registry dirty list
     SqlRegistry *registry = 0;
-    if( m_urlId > 0 && m_deviceId != 0 && m_directoryId > 0 )
+    // prevent writing to the db when we don't know the directory, bug 322474. Note that
+    // m_urlId is created by registry->commitDirtyTracks() if there is none.
+    if( m_deviceId != 0 && m_directoryId > 0 )
     {
         registry = m_collection->registry();
         QMutexLocker locker2( &registry->m_blockMutex );
