@@ -119,7 +119,9 @@ Context::AppletItemOverlay::AppletItemOverlay( Context::AppletToolbarAppletItem 
 
 Context::AppletItemOverlay::~AppletItemOverlay()
 {
-    if( m_spacer ) 
+    QApplication::restoreOverrideCursor();
+
+    if( m_spacer )
     {
         m_layout->removeItem( m_spacer );
         m_spacer->deleteLater();
