@@ -271,6 +271,10 @@
         <label>Whether Amarok should prevent the system from sleeping if it is playing a track.</label>
         <default>true</default>
     </entry>
+    <entry key="Start Playing On Add" type="Bool">
+        <label>Whether Amarok should start playing if a track is added to playlist (and nothing else is playing).</label>
+        <default>true</default>
+    </entry>
 </group>
 
 <group name="Cover Manager">

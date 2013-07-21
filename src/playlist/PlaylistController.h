@@ -48,20 +48,21 @@ enum AddOption
     DirectPlay = PrependToQueue | 8, ///< start playback of the first item in the list, implies PrependToQueue
     RemotePlaylistsAreStreams = 16, ///< treat remote urls pointing to playlists as streams.
                                     ///  only has sense for methods that accept urls or playlists
-    StartPlay = 32, ///< start playing the first added track if nothing else is already playing
+    StartPlayIfConfigured = 32, ///< start playing the first added track if Amarok is
+                                ///  configured so and nothing else is already playing
 
     // following are "consistency convenience enums" so that it is easy for us to make the
     // bahaviour of similarly-looking UI elements the same. These enums are the preferred
     // ones on calling sites. Feel free to add a new one if you find another UI element
     // that appears on multiple places. Prefix these with On*.
-    OnDoubleClickOnSelectedItems = 0, // append
-    OnMiddleClickOnSelectedItems = StartPlay,
-    OnReturnPressedOnSelectedItems = 0, // append, should be kept same as double-click
+    OnDoubleClickOnSelectedItems = StartPlayIfConfigured,
+    OnMiddleClickOnSelectedItems = DirectPlay,
+    OnReturnPressedOnSelectedItems = StartPlayIfConfigured, // append, should be kept same as double-click
 
     OnPlayMediaAction = DirectPlay,
-    OnAppendToPlaylistAction = 0, // no-brainer, just for consistency, applied to popup-dropper too
-    OnReplacePlaylistAction = Replace, // ditto
-    OnQueueToPlaylistAction = Queue,
+    OnAppendToPlaylistAction = 0, // double-click is always available, so don't add StartPlayIfConfigured here
+    OnReplacePlaylistAction = Replace | StartPlayIfConfigured,
+    OnQueueToPlaylistAction = Queue | StartPlayIfConfigured,
 };
 Q_DECLARE_FLAGS( AddOptions, AddOption )
 

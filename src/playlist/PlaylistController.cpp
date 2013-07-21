@@ -199,7 +199,8 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
     EngineController *engine = The::engineController();
     if( options.testFlag( DirectPlay ) ) // implies PrependToQueue
         startPlaying = true;
-    else if( options.testFlag( StartPlay ) && engine && !engine->isPlaying() )
+    else if( options.testFlag( Playlist::StartPlayIfConfigured )
+             && AmarokConfig::startPlayingOnAdd() && engine && !engine->isPlaying() )
     {
         // if nothing is in the queue, queue the first item we have added so that the call
         // to ->requestUserNextTrack() pops it. The queueing is therefore invisible to
@@ -227,8 +228,11 @@ Controller::insertOptioned( Playlists::PlaylistList list, AddOptions options )
 {
     TrackLoader::Flags flags;
     // if we are going to play, we need full metadata (playable tracks)
-    if( options.testFlag( DirectPlay ) || options.testFlag( StartPlay ) )
+    if( options.testFlag( DirectPlay ) || ( options.testFlag( Playlist::StartPlayIfConfigured )
+        && AmarokConfig::startPlayingOnAdd() ) )
+    {
         flags |= TrackLoader::FullMetadataRequired;
+    }
     if( options.testFlag( Playlist::RemotePlaylistsAreStreams ) )
         flags |= TrackLoader::RemotePlaylistsAreStreams;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
@@ -249,8 +253,11 @@ Controller::insertOptioned( QList<KUrl> &urls, AddOptions options )
 {
     TrackLoader::Flags flags;
     // if we are going to play, we need full metadata (playable tracks)
-    if( options.testFlag( DirectPlay ) || options.testFlag( StartPlay ) )
+    if( options.testFlag( DirectPlay ) || ( options.testFlag( Playlist::StartPlayIfConfigured )
+        && AmarokConfig::startPlayingOnAdd() ) )
+    {
         flags |= TrackLoader::FullMetadataRequired;
+    }
     if( options.testFlag( Playlist::RemotePlaylistsAreStreams ) )
         flags |= TrackLoader::RemotePlaylistsAreStreams;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself

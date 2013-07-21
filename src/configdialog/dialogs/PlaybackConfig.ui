@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>358</width>
-    <height>410</height>
+    <width>404</width>
+    <height>412</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
@@ -16,7 +16,7 @@
      <property name="title">
       <string>General</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QCheckBox" name="kcfg_ResumePlayback">
         <property name="toolTip">
@@ -27,6 +27,19 @@
         </property>
         <property name="text">
          <string>&amp;Resume playback on start</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_StartPlayingOnAdd">
+        <property name="toolTip">
+         <string>&lt;html&gt;Enable this option to start playing whenever a track or more are added to the playlist using mouse, pressing Enter or when the playlist is replaced. Does nothing if something is already playing.&lt;/html&gt;</string>
+        </property>
+        <property name="whatsThis">
+         <string>&lt;html&gt;Enable this option to start playing whenever a track or more are added to the playlist using mouse, pressing Enter or when the playlist is replaced. Does nothing if something is already playing.&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Start playing when tracks are added to playlist</string>
         </property>
        </widget>
       </item>
