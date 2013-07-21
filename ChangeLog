@@ -9,6 +9,8 @@ VERSION 2.8
    * Amarok now uses FindFFMpeg.cmake from kdelibs
 
   BUGFIXES:
+  * Prevent hitting an assertion failure if just removed track from the Local Collection
+    is edited. (BR 322474)
   * Fixed a regression introduced in 2.8 Beta where tracks in the Local Collection were
     sometimes forgotten and then found again. (BR 322603)
   * Fixed invalid SQL queries when you have files or folders with an apostrophe in

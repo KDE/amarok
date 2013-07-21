@@ -980,8 +980,10 @@ SqlTrack::commitIfInNonBatchUpdate()
     }
 
     // --- add to the registry dirty list
-    SqlRegistry *registry = m_collection->registry();
+    SqlRegistry *registry = 0;
+    if( m_urlId > 0 && m_deviceId != 0 && m_directoryId > 0 )
     {
+        registry = m_collection->registry();
         QMutexLocker locker2( &registry->m_blockMutex );
         registry->m_dirtyTracks.insert( Meta::SqlTrackPtr( this ) );
         if( oldArtist )
@@ -1005,6 +1007,12 @@ SqlTrack::commitIfInNonBatchUpdate()
         if( newYear )
             registry->m_dirtyYears.insert( newYear );
     }
+    else
+        error() << Q_FUNC_INFO << "non-positive urlId, zero deviceId or non-positive"
+                << "directoryId encountered in track" << m_url
+                << "urlId:" << m_urlId << "deviceId:" << m_deviceId
+                << "directoryId:" << m_directoryId << "- not writing back metadata"
+                << "changes to the database.";
 
     m_lock.unlock(); // or else we provoke a deadlock
 
@@ -1023,7 +1031,10 @@ SqlTrack::commitIfInNonBatchUpdate()
         newAlbum->setSuppressImageAutoFetch( newSupp );
     }
 
-    registry->commitDirtyTracks(); // calls notifyObservers() as appropriate
+    if( registry )
+        registry->commitDirtyTracks(); // calls notifyObservers() as appropriate
+    else
+        notifyObservers();
     m_lock.lockForWrite(); // reset back to state it was during call
 
     if( m_uid != oldUid )
