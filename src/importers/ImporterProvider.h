@@ -24,7 +24,7 @@
 namespace StatSyncing
 {
 
-class ImporterFactory;
+class ImporterManager;
 
 /**
  * The ImporterProvider class is a base class for every @see StatSyncing::Provider
@@ -41,10 +41,9 @@ class AMAROK_EXPORT ImporterProvider : public Provider
 public:
     /**
      * The constructor stores @param config as a protected @see m_config variable, and
-     * @param importer as @see m_importer. If config["uid"] is not set, it is
-     * automatically generated in the constructor.
+     * @param importer as @see m_importer.
      */
-    ImporterProvider( const QVariantMap &config, ImporterFactory *importer );
+    ImporterProvider( const QVariantMap &config, ImporterManager *importer );
     virtual ~ImporterProvider();
 
     /**
@@ -76,25 +75,33 @@ public:
 
     /**
      * Returns configuration widget used to reconfigure this provider. By default
-     * calls m_importer->getConfigWidget( m_config ). An ImporterFactory subclass
-     * then handles the configuration results, _recreating_ this provider with new
-     * configuration. Please note that config["uid"] will be constant.
+     * calls m_importer->getConfigWidget( m_config ).
      */
     virtual ProviderConfigWidget *configWidget();
 
     /**
+     * Reconfigures current provider. An ImporterManager subclass handles the
+     * task, _recreating_ this provider with new configuration. Please note that
+     * config["uid"] will not change.
+     */
+    virtual void reconfigure( const QVariantMap &config );
+
+    /**
      * Determines if this provider should participate in statistics synchronization
-     * by default. Set to StatSyncing::Provider::Ask .
+     * by default. Set to StatSyncing::Provider::NoByDefault .
      */
     virtual Preference defaultPreference();
 
+signals:
+    void reconfigurationRequested( const QVariantMap &config );
+
 protected:
     /**
-     * Configuration of this provider. It is saved and restored by an ImporterFactory
+     * Configuration of this provider. It is saved and restored by an ImporterManager
      * subclass.
      */
     QVariantMap m_config;
-    ImporterFactory *m_importer;
+    ImporterManager *m_importer;
 };
 
 } // namespace StatSyncing

@@ -553,7 +553,7 @@ kde4_add_ui_files( statsyncing_SRCS
 # STATISTICS IMPORTERS
 #####################################################################
 set( importers_SRCS
-    importers/ImporterFactory.cpp
+    importers/ImporterManager.cpp
     importers/ImporterProvider.cpp
 )
 

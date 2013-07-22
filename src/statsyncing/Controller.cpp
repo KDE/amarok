@@ -153,6 +153,7 @@ Controller::handleNewFactories( const QList<Plugins::PluginFactory*> &factories 
         if( !factory )
             continue;
 
+        factory->init();
         m_providerFactories.insert( factory->id(), ProviderFactoryPtr( factory ) );
     }
 }

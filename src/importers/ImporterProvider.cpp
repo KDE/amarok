@@ -16,18 +16,15 @@
 
 #include "ImporterProvider.h"
 
-#include "ImporterFactory.h"
+#include "ImporterManager.h"
 
-namespace StatSyncing
-{
+using namespace StatSyncing;
 
 ImporterProvider::ImporterProvider( const QVariantMap &config,
-                                    ImporterFactory *importer )
+                                    ImporterManager *importer )
     : m_config( config )
     , m_importer( importer )
 {
-    if( !m_config.contains( "uid" ) )
-        m_config.insert( "uid", qrand() );
 }
 
 ImporterProvider::~ImporterProvider()
@@ -67,13 +64,19 @@ ImporterProvider::isConfigurable() const
 ProviderConfigWidget*
 ImporterProvider::configWidget()
 {
-    return m_importer->getConfigWidget( m_config );
+    Q_ASSERT( m_importer );
+    return m_importer->configWidget( m_config );
+}
+
+void
+ImporterProvider::reconfigure( const QVariantMap &config )
+{
+    Q_ASSERT( config["uid"] == m_config["uid"] );
+    emit reconfigurationRequested( config );
 }
 
 Provider::Preference
 ImporterProvider::defaultPreference()
 {
-    return Ask;
+    return NoByDefault;
 }
-
-} // namespace StatSyncing

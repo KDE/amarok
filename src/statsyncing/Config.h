@@ -36,7 +36,7 @@ namespace StatSyncing
 
         public:
             enum {
-                ProviderIdRole = Qt::UserRole,
+                ProviderIdRole = Qt::UserRole
             };
             virtual ~Config();
 
@@ -65,12 +65,12 @@ namespace StatSyncing
 
             /**
              * @return true if provider with id @param id was already registered sometime
-             * in past (and not forgotten).
+             * in the past (and not forgotten).
              */
             bool providerKnown( const QString &id ) const;
 
             /**
-             * @return true if provider with id @param is is enabled. Returns
+             * @return true if provider with id @param id is enabled. Returns
              * @param aDefault when such provider is not known.
              */
             bool providerEnabled( const QString &id, bool aDefault = false ) const;
@@ -119,6 +119,9 @@ namespace StatSyncing
              * Saves the config back to disk.
              */
             void save();
+
+        signals:
+            void providerForgotten( const QString &id );
 
         private:
             friend class Controller;
