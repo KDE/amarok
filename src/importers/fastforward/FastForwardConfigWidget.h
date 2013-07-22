@@ -14,14 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_FAST_FORWARD_CONFIG_H
-#define STATSYNCING_FAST_FORWARD_CONFIG_H
+#ifndef STATSYNCING_FAST_FORWARD_CONFIG_WIDGET_H
+#define STATSYNCING_FAST_FORWARD_CONFIG_WIDGET_H
 
-#include "ui_FastForwardConfigWidget.h"
 #include "statsyncing/Provider.h"
-
-#include <QObject>
-#include <QString>
+#include "ui_FastForwardConfigWidget.h"
 
 namespace StatSyncing
 {
@@ -34,19 +31,21 @@ class FastForwardConfigWidget : public ProviderConfigWidget,
 public:
     FastForwardConfigWidget( const QVariantMap &config, QWidget *parent = 0,
                              Qt::WindowFlags f = 0 );
-    virtual ~FastForwardConfigWidget();
+    ~FastForwardConfigWidget();
 
     QVariantMap config() const;
-
-public slots:
-    void connectionTypeChanged( QString connection );
 
 private:
     void populateFields();
 
-    QVariantMap m_config;
+    const QVariantMap m_config;
+    QList<QWidget*> m_externalDbSettings;
+    QList<QWidget*> m_embeddedDbSettings;
+
+private slots:
+    void connectionTypeChanged( const QString &connection );
 };
 
 } // namespace StatSyncing
 
-#endif // STATSYNCING_FAST_FORWARD_CONFIG_H
+#endif // STATSYNCING_FAST_FORWARD_CONFIG_WIDGET_H

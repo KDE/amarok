@@ -14,32 +14,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_FASTFORWARD_PROVIDER_H
-#define STATSYNCING_FASTFORWARD_PROVIDER_H
+#ifndef STATSYNCING_FAST_FORWARD_PROVIDER_H
+#define STATSYNCING_FAST_FORWARD_PROVIDER_H
 
 #include "importers/ImporterProvider.h"
 
 namespace StatSyncing
 {
 
-class ImporterFactory;
-
 class FastForwardProvider : public ImporterProvider
 {
     Q_OBJECT
 
 public:
-    FastForwardProvider( const QVariantMap &config, ImporterFactory *importer );
-    virtual ~FastForwardProvider();
+    FastForwardProvider( const QVariantMap &config, ImporterManager *importer );
+    ~FastForwardProvider();
 
-    virtual qint64 reliableTrackMetaData() const;
-    virtual qint64 writableTrackStatsData() const;
+    qint64 reliableTrackMetaData() const;
+    qint64 writableTrackStatsData() const;
 
-    /// Called only from non-main thread
-    virtual QSet<QString> artists();
-
-    /// Called only from non-main thread
-    virtual TrackList artistTracks( const QString &artistName );
+    // Methods called only from non-main thread
+    QSet<QString> artists();
+    TrackList artistTracks( const QString &artistName );
 
 private:
     QSet<QString> m_artistsResult;
@@ -52,4 +48,4 @@ private slots:
 
 } // namespace StatSyncing
 
-#endif // STATSYNCING_FASTFORWARD_PROVIDER_H
+#endif // STATSYNCING_FAST_FORWARD_PROVIDER_H

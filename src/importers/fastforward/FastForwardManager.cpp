@@ -14,31 +14,62 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_FAST_FORWARD_IMPORTER_FACTORY_H
-#define STATSYNCING_FAST_FORWARD_IMPORTER_FACTORY_H
+#include "FastForwardManager.h"
 
-#include "importers/ImporterFactory.h"
+#include "FastForwardConfigWidget.h"
+#include "FastForwardProvider.h"
 
-namespace StatSyncing
+using namespace StatSyncing;
+
+AMAROK_EXPORT_IMPORTER_PLUGIN( fastforward, FastForwardManager )
+
+FastForwardManager::FastForwardManager( QObject *parent, const QVariantList &args )
+    : ImporterManager( parent, args )
 {
+}
 
-class FastForwardFactory : public ImporterFactory
+FastForwardManager::~FastForwardManager()
 {
-    Q_OBJECT
+}
 
-public:
-    FastForwardFactory( QObject *parent, const QVariantList &args );
-    ~FastForwardFactory();
+QString
+FastForwardManager::id() const
+{
+    return "FastForwardImporter";
+}
 
-    QString id() const;
-    KPluginInfo info() const;
-    QString prettyName() const;
-    QString description() const;
-    KIcon icon() const;
-    ProviderPtr createProvider( const QVariantMap &config );
-    ProviderConfigWidget *getConfigWidget( const QVariantMap &config );
-};
+KPluginInfo
+FastForwardManager::info() const
+{
+    return KPluginInfo( "amarok_importer-fastforward.desktop", "services" );
+}
 
-} // namespace StatSyncing
+QString
+FastForwardManager::prettyName() const
+{
+    return i18n( "Amarok 1.4 (FastForward)" );
+}
 
-#endif // STATSYNCING_FAST_FORWARD_IMPORTER_FACTORY_H
+QString
+FastForwardManager::description() const
+{
+    return i18n( "Amarok 1.4 Statistics Importer" );
+}
+
+KIcon
+FastForwardManager::icon() const
+{
+    return KIcon( "amarok" );
+}
+
+ProviderConfigWidget*
+FastForwardManager::configWidget( const QVariantMap &config )
+{
+    return new FastForwardConfigWidget( config );
+}
+
+ImporterProviderPtr
+FastForwardManager::newInstance( const QVariantMap &config )
+{
+    return ProviderPtr( new FastForwardProvider( config, this ) );
+}

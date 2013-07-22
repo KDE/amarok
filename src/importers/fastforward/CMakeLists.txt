@@ -5,18 +5,14 @@ include_directories(
     ${QT_INCLUDES}
 )
 
-########### next target ###############
-
 set( amarok_importer-fastforward_PART_SRCS
     FastForwardConfigWidget.cpp
-    FastForwardFactory.cpp
+    FastForwardManager.cpp
     FastForwardProvider.cpp
     FastForwardTrack.cpp
 )
 
-kde4_add_ui_files( amarok_importer-fastforward_PART_SRCS
-    FastForwardConfigWidget.ui
-)
+kde4_add_ui_files( amarok_importer-fastforward_PART_SRCS FastForwardConfigWidget.ui )
 
 kde4_add_plugin( amarok_importer-fastforward ${amarok_importer-fastforward_PART_SRCS} )
 
@@ -27,9 +23,6 @@ target_link_libraries( amarok_importer-fastforward
     ${QT_QTSQL_LIBRARY}
 )
 
-install(TARGETS amarok_importer-fastforward DESTINATION ${PLUGIN_INSTALL_DIR} )
+install( TARGETS amarok_importer-fastforward DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-########### install files ###############
-
-install( FILES amarok_importer-fastforward.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-
+install( FILES amarok_importer-fastforward.desktop DESTINATION ${SERVICES_INSTALL_DIR} )

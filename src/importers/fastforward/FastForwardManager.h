@@ -14,67 +14,33 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "FastForwardFactory.h"
+#ifndef STATSYNCING_FAST_FORWARD_MANAGER_H
+#define STATSYNCING_FAST_FORWARD_MANAGER_H
 
-#include "FastForwardProvider.h"
-#include "FastForwardConfigWidget.h"
-
-#include <QDebug>
+#include "importers/ImporterManager.h"
 
 namespace StatSyncing
 {
 
-AMAROK_EXPORT_IMPORTER_PLUGIN( fastforward, FastForwardFactory )
-
-FastForwardFactory::FastForwardFactory( QObject *parent, const QVariantList &args )
-    : ImporterFactory( parent, args )
+class FastForwardManager : public ImporterManager
 {
+    Q_OBJECT
 
-}
+public:
+    FastForwardManager( QObject *parent, const QVariantList &args );
+    ~FastForwardManager();
 
-FastForwardFactory::~FastForwardFactory()
-{
+    QString id() const;
+    KPluginInfo info() const;
+    QString prettyName() const;
+    QString description() const;
+    KIcon icon() const;
+    ProviderConfigWidget *configWidget( const QVariantMap &config );
 
-}
-
-QString
-FastForwardFactory::id() const
-{
-    return "FastForwardFactory";
-}
-
-KPluginInfo FastForwardFactory::info() const
-{
-    return KPluginInfo( "amarok_importer-fastforward.desktop", "services" );
-}
-
-QString
-FastForwardFactory::prettyName() const
-{
-    return i18n( "Amarok 1.4 (FastForward)" );
-}
-
-QString FastForwardFactory::description() const
-{
-    return i18n( "Amarok FastForward description" );
-}
-
-KIcon
-FastForwardFactory::icon() const
-{
-    return KIcon( "amarok" );
-}
-
-ProviderConfigWidget*
-FastForwardFactory::getConfigWidget( const QVariantMap &config )
-{
-    return new FastForwardConfigWidget( config );
-}
-
-ProviderPtr
-FastForwardFactory::createProvider( const QVariantMap &config )
-{
-    return ProviderPtr( new FastForwardProvider( config, this ) );
-}
+protected:
+    virtual ImporterProviderPtr newInstance( const QVariantMap &config );
+};
 
 } // namespace StatSyncing
+
+#endif // STATSYNCING_FAST_FORWARD_MANAGER_H

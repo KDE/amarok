@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 #include "FastForwardTrack.h"
-#include "importers/ImporterFactory.h"
+#include "importers/ImporterManager.h"
 #include "MetaValues.h"
 
 #include <KLocalizedString>
@@ -28,15 +28,16 @@
 #include <QSqlError>
 #include <QSqlQuery>
 
-namespace StatSyncing
-{
+using namespace StatSyncing;
 
-FastForwardProvider::FastForwardProvider( const QVariantMap &config, ImporterFactory *importer )
+FastForwardProvider::FastForwardProvider( const QVariantMap &config, ImporterManager *importer )
     : ImporterProvider( config, importer )
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase( m_config["dbDriver"].toString(), m_config["uid"].toString() );
+    QSqlDatabase db = QSqlDatabase::addDatabase( m_config["dbDriver"].toString(),
+            m_config["uid"].toString() );
+
     db.setDatabaseName( m_config["dbDriver"].toString() == "QSQLITE"
-                        ? m_config["dbPath"].toString() : m_config["dbName"].toString() );
+            ? m_config["dbPath"].toString() : m_config["dbName"].toString() );
 
     if( m_config["dbDriver"].toString() != "QSQLITE" )
     {
@@ -98,12 +99,12 @@ FastForwardProvider::artistsSearch()
     if( !db.isOpen() )
     {
         warning() << __PRETTY_FUNCTION__ << "could not open database connection:"
-                     << db.lastError().text();
+                  << db.lastError().text();
         return;
     }
 
     QSqlQuery query( "SELECT name FROM artist", db );
-    query.setForwardOnly( true ); // a hint for the database engine
+    query.setForwardOnly( true );
 
     while( query.next() )
         m_artistsResult.insert( query.value( 0 ).toString() );
@@ -116,12 +117,12 @@ FastForwardProvider::artistTracksSearch( const QString &artistName )
     if( !db.isOpen() )
     {
         warning() << __PRETTY_FUNCTION__ << "could not open database connection:"
-                     << db.lastError().text();
+                  << db.lastError().text();
         return;
     }
 
     QSqlQuery query( db );
-    query.setForwardOnly( true ); // a hint for the database engine
+    query.setForwardOnly( true );
 
     query.prepare( "SELECT id FROM artist WHERE name = ?" );
     query.addBindValue( artistName );
@@ -130,7 +131,7 @@ FastForwardProvider::artistTracksSearch( const QString &artistName )
     if( !query.next() )
     {
         warning() << __PRETTY_FUNCTION__ << "could not find artist id:"
-                     << db.lastError().text();
+                  << query.lastError().text();
         return;
     }
 
@@ -143,8 +144,7 @@ FastForwardProvider::artistTracksSearch( const QString &artistName )
     while ( query.next() )
     {
         const QString url = query.value( 0 ).toString();
-        m_artistTracksResult << TrackPtr( new FastForwardTrack( url, m_config["uid"].toString() ) );
+        m_artistTracksResult
+                << TrackPtr( new FastForwardTrack( url, m_config["uid"].toString() ) );
     }
 }
-
-} // namespace StatSyncing

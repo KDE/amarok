@@ -23,10 +23,8 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-#include <QVariant>
 
-namespace StatSyncing
-{
+using namespace StatSyncing;
 
 FastForwardTrack::FastForwardTrack( const QString &trackUrl, const QString &providerUid )
     : m_trackUrl( trackUrl )
@@ -36,12 +34,12 @@ FastForwardTrack::FastForwardTrack( const QString &trackUrl, const QString &prov
     if( !db.isOpen() )
     {
         warning() << __PRETTY_FUNCTION__ << "could not open database connection:"
-                     << db.lastError().text();
+                  << db.lastError().text();
         return;
     }
 
     QSqlQuery query( db );
-    query.setForwardOnly( true ); // a hint for the database engine
+    query.setForwardOnly( true );
 
     query.prepare( "SELECT t.title, al.name, ar.name, c.name, y.name, t.track, "
                    "t.discnumber FROM tags t "
@@ -61,6 +59,11 @@ FastForwardTrack::FastForwardTrack( const QString &trackUrl, const QString &prov
 
         for( int i = 0; i < fields.size(); ++i )
             m_metadata[fields[i]] = query.value( i );
+    }
+    else
+    {
+        warning() << __PRETTY_FUNCTION__ << "could not fetch track metadata:"
+                  << query.lastError().text();
     }
 }
 
@@ -113,14 +116,14 @@ FastForwardTrack::discNumber() const
 int
 FastForwardTrack::rating() const
 {
-    checkAllDataRetrieved();
+    assureAllDataRetrieved();
     return m_statistics[Meta::valRating].toInt();
 }
 
 QDateTime
 FastForwardTrack::firstPlayed() const
 {
-    checkAllDataRetrieved();
+    assureAllDataRetrieved();
     const QVariant &t = m_statistics[Meta::valFirstPlayed];
     return t.isNull() ? QDateTime() : QDateTime::fromTime_t( t.toUInt() );
 }
@@ -128,7 +131,7 @@ FastForwardTrack::firstPlayed() const
 QDateTime
 FastForwardTrack::lastPlayed() const
 {
-    checkAllDataRetrieved();
+    assureAllDataRetrieved();
     const QVariant &t = m_statistics[Meta::valLastPlayed];
     return t.isNull() ? QDateTime() : QDateTime::fromTime_t( t.toUInt() );
 }
@@ -136,32 +139,32 @@ FastForwardTrack::lastPlayed() const
 int
 FastForwardTrack::playCount() const
 {
-    checkAllDataRetrieved();
+    assureAllDataRetrieved();
     return m_statistics[Meta::valPlaycount].toInt();
 }
 
 QSet<QString>
 FastForwardTrack::labels() const
 {
-    checkAllDataRetrieved();
+    assureAllDataRetrieved();
     return m_labels;
 }
 
 void
-FastForwardTrack::checkAllDataRetrieved() const
+FastForwardTrack::assureAllDataRetrieved() const
 {
     QMutexLocker lock( &m_statMutex );
-    if( !m_statistics.empty() )
-        return;
+    if( m_statistics.empty() )
+    {
+        // SQL queries need to be executed in the main thread, and we can't use
+        // BlockingQueuedConnection if we're already in the main thread
+        const Qt::ConnectionType connectionType =
+                this->thread() == QCoreApplication::instance()->thread()
+                ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-    // SQL queries need to be executed in the main thread, and we can't use
-    // BlockingQueuedConnection if we're already in the main thread
-    const Qt::ConnectionType connectionType =
-            this->thread() == QCoreApplication::instance()->thread()
-            ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
-
-    QMetaObject::invokeMethod( const_cast<FastForwardTrack*>( this ),
-                               "retrievePersonalData", connectionType );
+        QMetaObject::invokeMethod( const_cast<FastForwardTrack*>( this ),
+                                   "retrievePersonalData", connectionType );
+    }
 }
 
 void
@@ -171,12 +174,12 @@ FastForwardTrack::retrievePersonalData()
     if( !db.isOpen() )
     {
         warning() << __PRETTY_FUNCTION__ << "could not open database connection:"
-                     << db.lastError().text();
+                  << db.lastError().text();
         return;
     }
 
     QSqlQuery query( db );
-    query.setForwardOnly( true ); // a hint for the database engine
+    query.setForwardOnly( true );
 
     query.prepare( "SELECT rating, createdate, accessdate, playcounter "
                    "FROM statistics WHERE url = ?" );
@@ -192,6 +195,11 @@ FastForwardTrack::retrievePersonalData()
         for( int i = 0; i < fields.size(); ++i )
             m_statistics[fields[i]] = query.value( i );
     }
+    else
+    {
+        warning() << __PRETTY_FUNCTION__ << "could not retrieve track personal metadata:"
+                  << query.lastError().text();
+    }
 
     query.prepare( "SELECT l.name FROM labels l "
                    "INNER JOIN tags_labels tl ON tl.labelid = l.id "
@@ -202,5 +210,3 @@ FastForwardTrack::retrievePersonalData()
     while( query.next() )
         m_labels.insert( query.value( 0 ).toString() );
 }
-
-} // namespace StatSyncing

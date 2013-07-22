@@ -17,9 +17,9 @@
 #include "FastForwardConfigWidget.h"
 
 #include <QDir>
+#include <QLayout>
 
-namespace StatSyncing
-{
+using namespace StatSyncing;
 
 FastForwardConfigWidget::FastForwardConfigWidget( const QVariantMap &config,
                                                   QWidget *parent, Qt::WindowFlags f )
@@ -28,11 +28,17 @@ FastForwardConfigWidget::FastForwardConfigWidget( const QVariantMap &config,
 {
     setupUi( this );
 
-    connect( connectionType, SIGNAL(activated(QString)), SLOT(connectionTypeChanged(QString)) );
-    embeddedSettings->show();
-    externalSettings->hide();
+    m_embeddedDbSettings << m_databaseLocation << m_databaseLocationLabel;
+    m_externalDbSettings << m_databaseName << m_databaseNameLabel << m_hostname
+                         << m_hostnameLabel << m_password << m_passwordLabel
+                         << m_port << m_portLabel << m_username << m_usernameLabel;
 
+    connect( m_connectionType, SIGNAL(activated(QString)),
+                                                  SLOT(connectionTypeChanged(QString)) );
     populateFields();
+
+    // Manually hide fields at the beginning
+    connectionTypeChanged( m_connectionType->currentText() );
 }
 
 FastForwardConfigWidget::~FastForwardConfigWidget()
@@ -43,60 +49,55 @@ QVariantMap
 FastForwardConfigWidget::config() const
 {
     QVariantMap cfg = m_config;
-    cfg["name"] = targetName->text();
+    cfg["name"] = m_targetName->text();
 
-    if( connectionType->currentText() == "SQLite" )
+    if( m_connectionType->currentText() == "SQLite" )
     {
         cfg["dbDriver"] = "QSQLITE";
-        cfg["dbPath"] = databaseLocation->text();
+        cfg["dbPath"] = m_databaseLocation->text();
     }
     else
     {
         cfg["dbDriver"] =
-                connectionType->currentText() == "MySQL" ? "QMYSQL" : "QPSQL";
-        cfg["dbName"] = databaseName->text();
-        cfg["dbHost"] = hostname->text();
-        cfg["dbUser"] = username->text();
-        cfg["dbPass"] = password->text();
-        cfg["dbPort"] = port->value();
+                m_connectionType->currentText() == "MySQL" ? "QMYSQL" : "QPSQL";
+        cfg["dbName"] = m_databaseName->text();
+        cfg["dbHost"] = m_hostname->text();
+        cfg["dbUser"] = m_username->text();
+        cfg["dbPass"] = m_password->text();
+        cfg["dbPort"] = m_port->value();
     }
 
     return cfg;
 }
 
 void
-FastForwardConfigWidget::connectionTypeChanged( QString connection )
+FastForwardConfigWidget::connectionTypeChanged( const QString &connection )
 {
-    if( connection == "SQLite" )
-    {
-        embeddedSettings->show();
-        externalSettings->hide();
-    }
-    else
-    {
-        embeddedSettings->hide();
-        externalSettings->show();
-    }
+    const bool embedded = connection == "SQLite";
+
+    foreach( QWidget *widget, m_embeddedDbSettings )
+        widget->setVisible( embedded );
+
+    foreach( QWidget *widget, m_externalDbSettings )
+        widget->setVisible( !embedded );
 }
 
 void
 FastForwardConfigWidget::populateFields()
 {
-    targetName->setText( m_config.value( "name", "Amarok 1.4" ).toString() );
+    m_targetName->setText( m_config.value( "name", "Amarok 1.4" ).toString() );
 
     if( m_config.value( "dbDriver", "QSQLITE" ).toString() == "QSQLITE" )
-        connectionType->setCurrentItem( "SQLite" );
+        m_connectionType->setCurrentItem( "SQLite" );
     else
-        connectionType->setCurrentItem( m_config["dbDriver"].toString() == "QMYSQL"
-                ? "MySQL" : "PostgreSQL" );
+        m_connectionType->setCurrentItem(
+                  m_config["dbDriver"].toString() == "QMYSQL" ? "MySQL" : "PostgreSQL" );
 
     const QString defaultPath = QDir::homePath()+"/.kde/share/apps/amarok/collection.db";
-    databaseLocation->setText( m_config.value( "dbPath", defaultPath ).toString() );
-    databaseName->setText( m_config.value( "dbName", "amarok" ).toString() );
-    hostname->setText( m_config.value( "dbHost", "localhost" ).toString() );
-    username->setText( m_config.value( "dbUser", "" ).toString() );
-    password->setText( m_config.value( "dbPass", "" ).toString() );
-    port->setValue( m_config.value( "dbPort", 3306 ).toInt() );
+    m_databaseLocation->setText( m_config.value( "dbPath", defaultPath ).toString() );
+    m_databaseName->setText( m_config.value( "dbName", "amarokdb" ).toString() );
+    m_hostname->setText( m_config.value( "dbHost", "localhost" ).toString() );
+    m_username->setText( m_config.value( "dbUser", "amarokuser" ).toString() );
+    m_password->setText( m_config.value( "dbPass", "" ).toString() );
+    m_port->setValue( m_config.value( "dbPort", 3306 ).toInt() );
 }
-
-} // namespace StatSyncing

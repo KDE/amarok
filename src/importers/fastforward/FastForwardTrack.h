@@ -20,12 +20,11 @@
 #include "statsyncing/Provider.h"
 
 #include "MetaValues.h"
-#include "FastForwardConfigWidget.h"
 
-#include <QObject>
 #include <QMap>
-#include <QVariant>
 #include <QMutex>
+#include <QObject>
+#include <QVariant>
 
 namespace StatSyncing
 {
@@ -36,7 +35,7 @@ class FastForwardTrack : public QObject, public Track
 
 public:
     FastForwardTrack( const QString &trackUrl, const QString &providerUid );
-    virtual ~FastForwardTrack();
+    ~FastForwardTrack();
 
     QString name() const;
     QString album() const;
@@ -53,7 +52,7 @@ public:
     QSet<QString> labels() const;
 
 private:
-    void checkAllDataRetrieved() const;
+    void assureAllDataRetrieved() const;
 
     QString m_trackUrl;
     QString m_providerUid;
