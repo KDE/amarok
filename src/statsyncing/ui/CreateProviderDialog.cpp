@@ -16,7 +16,9 @@
 
 #include "CreateProviderDialog.h"
 
+#include "statsyncing/Controller.h"
 #include "statsyncing/Provider.h"
+#include "core/support/Components.h"
 
 #include <KLocale>
 
@@ -30,21 +32,26 @@ namespace StatSyncing
 CreateProviderDialog::CreateProviderDialog( QWidget *parent, Qt::WindowFlags f )
     : KAssistantDialog( parent, f )
 {
-    setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+    setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
     setWindowTitle( i18n( "Add Synchronization Target" ) );
     setModal( true );
+    showButton( KDialog::Help, false );
 
     m_providerButtons.setExclusive( true );
+    m_layout = new QVBoxLayout;
 
     QWidget *providerTypeWidget = new QWidget;
-    providerTypeWidget->setLayout( new QVBoxLayout );
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->insertLayout( 0, m_layout );
+    mainLayout->insertStretch( -1 );
+    providerTypeWidget->setLayout( mainLayout );
 
     m_providerTypePage = new KPageWidgetItem( providerTypeWidget,
                                               i18n( "Choose Target Type" ) );
     providerTypeWidget->hide();
     addPage( m_providerTypePage );
 
-    connect( this, SIGNAL(accepted()), SLOT(slotFinished()) );
+    connect( this, SIGNAL(accepted()), SLOT(slotAccepted()) );
 }
 
 CreateProviderDialog::~CreateProviderDialog()
@@ -52,7 +59,7 @@ CreateProviderDialog::~CreateProviderDialog()
 }
 
 void
-CreateProviderDialog::providerTypeAdded( QString id, QString prettyName, KIcon icon,
+CreateProviderDialog::addProviderType( QString id, QString prettyName, KIcon icon,
                                          ProviderConfigWidget *configWidget )
 {
     QRadioButton *providerTypeButton = new QRadioButton;
@@ -60,7 +67,7 @@ CreateProviderDialog::providerTypeAdded( QString id, QString prettyName, KIcon i
     providerTypeButton->setIcon( icon );
 
     m_providerButtons.addButton( providerTypeButton );
-    m_providerTypePage->widget()->layout()->addWidget( providerTypeButton );
+    m_layout->addWidget( providerTypeButton );
     m_idForButton.insert( providerTypeButton, id );
 
     KPageWidgetItem *configPage =
@@ -76,13 +83,6 @@ CreateProviderDialog::providerTypeAdded( QString id, QString prettyName, KIcon i
 }
 
 void
-CreateProviderDialog::providerTypeRemoved( QString id )
-{
-    //TODO:
-    Q_UNUSED( id )
-}
-
-void
 CreateProviderDialog::providerButtonToggled( bool checked )
 {
     KPageWidgetItem *configPage = m_configForButton[sender()];
@@ -90,7 +90,7 @@ CreateProviderDialog::providerButtonToggled( bool checked )
 }
 
 void
-CreateProviderDialog::slotFinished()
+CreateProviderDialog::slotAccepted()
 {
     QAbstractButton *checkedButton = m_providerButtons.checkedButton();
     if( !checkedButton ) return;

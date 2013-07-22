@@ -29,6 +29,7 @@
 #include "statsyncing/ScrobblingService.h"
 #include "statsyncing/collection/CollectionProvider.h"
 #include "statsyncing/ui/CreateProviderDialog.h"
+#include "statsyncing/ui/ConfigureProviderDialog.h"
 
 #include <KMessageBox>
 
@@ -156,28 +157,65 @@ Controller::handleNewFactories( const QList<Plugins::PluginFactory*> &factories 
     }
 }
 
-void
-Controller::createProviderDialog()
+bool
+Controller::hasRegisteredProviderTypes() const
 {
-    CreateProviderDialog *createDialog = new CreateProviderDialog( The::mainWindow() );
-    foreach( const ProviderFactoryPtr &factory, m_providerFactories )
-        createDialog->providerTypeAdded( factory->id(), factory->prettyName(),
-                                        factory->icon(), factory->createConfigWidget() );
+    return !m_providerFactories.isEmpty();
+}
 
-    connect( createDialog, SIGNAL(providerConfigured(QString, QVariantMap)),
-             SLOT(createProvider(QString, QVariantMap)) );
+bool
+Controller::isProviderConfigurable( const QString &id ) const
+{
+    ProviderPtr provider = findRegisteredProvider( id );
+    return provider ? provider->isConfigurable() : false;
+}
 
-    createDialog->show();
-    createDialog->activateWindow();
-    createDialog->raise();
+QWidget*
+Controller::providerConfigDialog( const QString &id ) const
+{
+    ProviderPtr provider = findRegisteredProvider( id );
+    if( !provider || !provider->isConfigurable() )
+        return 0;
+
+    ConfigureProviderDialog *dialog
+            = new ConfigureProviderDialog( id, provider->configWidget(),
+                                           The::mainWindow() );
+
+    connect( dialog, SIGNAL(providerConfigured(QString,QVariantMap)),
+             SLOT(reconfigureProvider(QString,QVariantMap)) );
+    connect( dialog, SIGNAL(finished()), dialog, SLOT(deleteLater()) );
+
+    return dialog;
+}
+
+QWidget*
+Controller::providerCreationDialog() const
+{
+    CreateProviderDialog *dialog = new CreateProviderDialog( The::mainWindow() );
+    foreach( ProviderFactoryPtr factory, m_providerFactories )
+        dialog->addProviderType( factory->id(), factory->prettyName(),
+                                 factory->icon(), factory->createConfigWidget() );
+
+    connect( dialog, SIGNAL(providerConfigured(QString,QVariantMap)),
+             SLOT(createProvider(QString,QVariantMap)) );
+    connect( dialog, SIGNAL(finished()), dialog, SLOT(deleteLater()) );
+
+    return dialog;
 }
 
 void
 Controller::createProvider( QString id, QVariantMap config )
 {
-    sender()->deleteLater();
-    ProviderPtr provider = m_providerFactories[id]->createProvider( config );
-    registerProvider( provider );
+    Q_ASSERT( m_providerFactories.contains( id ) );
+    m_providerFactories[id]->createProvider( config );
+}
+
+void
+Controller::reconfigureProvider( QString id, QVariantMap config )
+{
+    ProviderPtr provider = findRegisteredProvider( id );
+    if( provider )
+        provider->reconfigure( config );
 }
 
 void
@@ -274,13 +312,11 @@ Controller::slotCollectionAdded( Collections::Collection *collection,
 void
 Controller::slotCollectionRemoved( const QString &id )
 {
-    foreach( const ProviderPtr &provider, m_providers )
-    {
-        // here we depend on StatSyncing::CollectionProvider returning identical id
-        // as collection
-        if( provider->id() == id )
-            unregisterProvider( provider );
-    }
+    // here we depend on StatSyncing::CollectionProvider returning identical id
+    // as collection
+    ProviderPtr provider = findRegisteredProvider( id );
+    if( provider )
+        unregisterProvider( provider );
 }
 
 void
@@ -375,6 +411,16 @@ Controller::slotUpdateNowPlayingWithCurrentTrack()
     }
 
     m_lastSubmittedNowPlayingTrack = track;
+}
+
+ProviderPtr
+Controller::findRegisteredProvider( const QString &id ) const
+{
+    foreach( const ProviderPtr &provider, m_providers )
+        if( provider->id() == id )
+            return provider;
+
+    return ProviderPtr( 0 );
 }
 
 bool

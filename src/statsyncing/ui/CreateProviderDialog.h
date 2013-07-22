@@ -26,6 +26,8 @@
 
 #include <KIcon>
 
+class QVBoxLayout;
+
 namespace StatSyncing
 {
 
@@ -40,9 +42,8 @@ public:
     virtual ~CreateProviderDialog();
 
 public slots:
-    void providerTypeAdded( QString id, QString prettyName, KIcon icon,
+    void addProviderType( QString id, QString prettyName, KIcon icon,
                             ProviderConfigWidget *configWidget );
-    void providerTypeRemoved( QString id );
 
 signals:
     void providerConfigured( QString id, QVariantMap config );
@@ -52,10 +53,11 @@ private:
     QMap<QObject*, QString> m_idForButton;
     QMap<QObject*, KPageWidgetItem*> m_configForButton;
     KPageWidgetItem *m_providerTypePage;
+    QVBoxLayout *m_layout;
 
 private slots:
     void providerButtonToggled( bool checked );
-    void slotFinished();
+    void slotAccepted();
 };
 
 } // namespace StatSyncing

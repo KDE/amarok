@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
+ * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,46 +14,42 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef METADATACONFIG_H
-#define METADATACONFIG_H
+#ifndef STATSYNCING_CONFIGURE_PROVIDER_DIALOG_H
+#define STATSYNCING_CONFIGURE_PROVIDER_DIALOG_H
 
-#include "ui_MetadataConfig.h"
-#include "configdialog/ConfigDialogBase.h"
+#include <KDialog>
 
-namespace StatSyncing {
-    class Config;
-}
+#include <QButtonGroup>
+#include <QMap>
+#include <QSharedPointer>
+#include <QString>
 
-class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
+#include <KIcon>
+
+namespace StatSyncing
+{
+
+class ProviderConfigWidget;
+
+class ConfigureProviderDialog : public KDialog
 {
     Q_OBJECT
 
-    public:
-        MetadataConfig( QWidget *parent );
-        virtual ~MetadataConfig();
+public:
+    explicit ConfigureProviderDialog( const QString &providerId, QWidget *configWidget,
+                                      QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    virtual ~ConfigureProviderDialog();
 
-        virtual bool isDefault();
-        virtual bool hasChanged();
-        virtual void updateSettings();
+signals:
+    void providerConfigured( QString id, QVariantMap config );
 
-    signals:
-        void changed();
+private:
+    QString m_providerId;
 
-    private slots:
-        void slotForgetCollections();
-        void slotUpdateForgetButton();
-        void slotUpdateConfigureExcludedLabelsLabel();
-        void slotConfigureExcludedLabels();
-        void slotConfigureProvider();
-        void slotUpdateProviderConfigureButton();
-        void slotCreateProviderDialog();
-
-    private:
-        int writeBackCoverDimensions() const;
-        qint64 checkedFields() const;
-
-        QWeakPointer<StatSyncing::Config> m_statSyncingConfig;
-
+private slots:
+    void slotAccepted();
 };
 
-#endif // METADATACONFIG_H
+} // namespace StatSyncing
+
+#endif // STATSYNCING_CONFIGURE_PROVIDER_DIALOG_H

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
+ * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,46 +14,46 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef METADATACONFIG_H
-#define METADATACONFIG_H
+#include "ConfigureProviderDialog.h"
 
-#include "ui_MetadataConfig.h"
-#include "configdialog/ConfigDialogBase.h"
+#include "statsyncing/Provider.h"
 
-namespace StatSyncing {
-    class Config;
+#include <KLocale>
+
+#include <QVBoxLayout>
+#include <QRadioButton>
+#include <QDebug>
+
+namespace StatSyncing
+{
+
+ConfigureProviderDialog::ConfigureProviderDialog( const QString &providerId,
+                                                  QWidget *configWidget, QWidget *parent,
+                                                  Qt::WindowFlags f )
+    : KDialog( parent, f )
+    , m_providerId( providerId )
+{
+    setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+    setWindowTitle( i18n( "Configure Synchronization Target" ) );
+    setModal( true );
+    showButton( KDialog::Help, false );
+
+    setMainWidget( configWidget );
+
+    connect( this, SIGNAL(accepted()), SLOT(slotAccepted()) );
 }
 
-class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
+ConfigureProviderDialog::~ConfigureProviderDialog()
 {
-    Q_OBJECT
+}
 
-    public:
-        MetadataConfig( QWidget *parent );
-        virtual ~MetadataConfig();
+void
+ConfigureProviderDialog::slotAccepted()
+{
+    const ProviderConfigWidget *configWidget =
+            qobject_cast<ProviderConfigWidget*>( mainWidget() );
 
-        virtual bool isDefault();
-        virtual bool hasChanged();
-        virtual void updateSettings();
+    emit providerConfigured( m_providerId, configWidget->config() );
+}
 
-    signals:
-        void changed();
-
-    private slots:
-        void slotForgetCollections();
-        void slotUpdateForgetButton();
-        void slotUpdateConfigureExcludedLabelsLabel();
-        void slotConfigureExcludedLabels();
-        void slotConfigureProvider();
-        void slotUpdateProviderConfigureButton();
-        void slotCreateProviderDialog();
-
-    private:
-        int writeBackCoverDimensions() const;
-        qint64 checkedFields() const;
-
-        QWeakPointer<StatSyncing::Config> m_statSyncingConfig;
-
-};
-
-#endif // METADATACONFIG_H
+} // namespace StatSyncing

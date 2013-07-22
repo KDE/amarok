@@ -539,6 +539,7 @@ set( statsyncing_SRCS
     statsyncing/models/SingleTracksModel.cpp
     statsyncing/ui/ChooseProvidersPage.cpp
     statsyncing/ui/CreateProviderDialog.cpp
+    statsyncing/ui/ConfigureProviderDialog.cpp
     statsyncing/ui/MatchedTracksPage.cpp
     statsyncing/ui/TrackDelegate.cpp
 )

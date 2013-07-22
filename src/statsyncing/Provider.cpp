@@ -59,6 +59,12 @@ Provider::configWidget()
     return 0;
 }
 
+void
+Provider::reconfigure( const QVariantMap &config )
+{
+    Q_UNUSED( config )
+}
+
 
 ProviderFactory::ProviderFactory( QObject *parent, const QVariantList &args )
     : Plugins::PluginFactory( parent, args )

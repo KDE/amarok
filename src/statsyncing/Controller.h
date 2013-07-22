@@ -72,10 +72,37 @@ namespace StatSyncing
              */
             void unregisterProvider( const ProviderPtr &provider );
 
+            /**
+             * Handle plugin factories derived from ProviderFactory, used for creating
+             * multiple provider instances. This method is called by Amarok's plugin
+             * infrastructure.
+             */
             void handleNewFactories( const QList<Plugins::PluginFactory*> &factories );
 
             /**
-             * Register ScrobblingService with StatSyncing controller. Controller than
+             * Returns true if any instantiable provider types are registered with the
+             * controller.
+             */
+            bool hasRegisteredProviderTypes() const;
+
+            /**
+             * Returns true if the provider identified by @param id is configurable
+             */
+            bool isProviderConfigurable( const QString &id ) const;
+
+            /**
+             * Returns a configuration dialog for a provider identified by @param id
+             */
+            QWidget *providerConfigDialog( const QString &id ) const;
+
+            /**
+             * Returns a provider creation dialog, prepopulated with registered provider
+             * types
+             */
+            QWidget *providerCreationDialog() const;
+
+            /**
+             * Register ScrobblingService with StatSyncing controller. Controller then
              * listens to EngineController and calls scrobble() etc. when user plays
              * tracks. Also allows scrobbling for tracks played on just connected iPods.
              *
@@ -101,12 +128,6 @@ namespace StatSyncing
             Config *config();
 
         public slots:
-            /**
-             * Raise a provider creation dialog populated with all provider types
-             * registered through handleNewFactories method.
-             */
-            void createProviderDialog();
-
             /**
              * Start the whole synchronization machinery. This call returns quickly,
              * way before the synchronization is finished.
@@ -145,6 +166,18 @@ namespace StatSyncing
 
         private slots:
             /**
+             * Creates new instance of provider type identified by @param id
+             * with configuration stored in @param config.
+             */
+            void createProvider( QString id, QVariantMap config );
+
+            /**
+             * Reconfigures provider identified by @param id with configuration
+             * stored in @param config.
+             */
+            void reconfigureProvider( QString id, QVariantMap config );
+
+            /**
              * Can only be connected to provider changed() signal
              */
             void slotProviderUpdated();
@@ -163,10 +196,11 @@ namespace StatSyncing
             void slotTrackFinishedPlaying( const Meta::TrackPtr &track, double playedFraction );
             void slotResetLastSubmittedNowPlayingTrack();
             void slotUpdateNowPlayingWithCurrentTrack();
-            void createProvider( QString id, QVariantMap config );
 
         private:
             Q_DISABLE_COPY( Controller )
+
+            ProviderPtr findRegisteredProvider( const QString &id ) const;
 
             /**
              * Return true if important metadata of both tracks is equal.

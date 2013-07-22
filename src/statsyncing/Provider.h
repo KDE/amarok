@@ -96,9 +96,17 @@ namespace StatSyncing
 
             /**
              * Return a ProviderConfigWidget of configuration widget for this provider.
-             * Returns a null pointer by default.
+             * Returns a null pointer by default. Please note that Provider does *not*
+             * retain ownership of this pointer, therefore should always return a new
+             * instance.
              */
             virtual ProviderConfigWidget *configWidget();
+
+            /**
+             * Reconfigure the provider using configuration stored in @param config.
+             * Does nothing by default.
+             */
+            virtual void reconfigure( const QVariantMap &config );
 
             /**
              * Return binary OR of Meta::val* fields that this provider knows about its
@@ -205,14 +213,16 @@ namespace StatSyncing
             virtual KIcon icon() const = 0;
 
             /**
-             * New instance of configuration widget for the provider.
+             * New instance of configuration widget for the provider. Please note that
+             * ProviderFactory does *not* retain ownership of this pointer, therefore
+             * should always return a new instance.
              */
             virtual ProviderConfigWidget *createConfigWidget() = 0;
 
             /**
              * Create a new provider instance using configuration stored in @param config
              */
-            virtual ProviderPtr createProvider( const QVariantMap &config ) = 0;
+            virtual ProviderPtr createProvider( QVariantMap config ) = 0;
     };
 
     typedef QPointer<ProviderFactory> ProviderFactoryPtr;

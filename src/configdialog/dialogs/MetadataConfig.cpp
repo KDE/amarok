@@ -29,6 +29,7 @@ MetadataConfig::MetadataConfig( QWidget *parent )
     connect( this, SIGNAL(changed()), parent, SLOT(updateButtons()) );
 
     setupUi( this );
+
     m_writeBackCoverDimensions->addItem(
         i18nc("Maximum cover size option", "Small (200 px)" ), QVariant( 200 ) );
     m_writeBackCoverDimensions->addItem(
@@ -60,24 +61,36 @@ MetadataConfig::MetadataConfig( QWidget *parent )
     StatSyncing::Config *config = controller ? controller->config() : 0;
     m_statSyncingConfig = config;
     m_statSyncingProvidersView->setModel( config );
-    m_forgetCollectionsButton->setIcon( KIcon( "edit-clear" ) );
+    m_forgetTargetsButton->setIcon( KIcon( "edit-clear" ) );
     m_synchronizeButton->setIcon( KIcon( "amarok_playcount" ) );
-    m_addCollectionButton->setIcon( KIcon( "folder-new" ) );
-    m_configureButton->setIcon( KIcon( "configure" ) );
+    m_addTargetButton->setIcon( KIcon( "folder-new" ) );
+    m_configureTargetButton->setIcon( KIcon( "configure" ) );
     connect( config, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SIGNAL(changed()) );
     connect( config, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(changed()) );
     connect( config, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(changed()) );
     connect( config, SIGNAL(modelReset()), SIGNAL(changed()) );
-    connect( m_forgetCollectionsButton, SIGNAL(clicked(bool)), SLOT(slotForgetCollections()) );
+
+    // Add target button
+    m_addTargetButton->setEnabled( controller && controller->hasRegisteredProviderTypes() );
+    connect( m_addTargetButton, SIGNAL(clicked(bool)), SLOT(slotCreateProviderDialog()) );
+
+    // Configure target button
+    m_configureTargetButton->setEnabled( false );
+    connect( m_statSyncingProvidersView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+             SLOT(slotUpdateProviderConfigureButton()) );
+    connect( m_configureTargetButton, SIGNAL(clicked(bool)), SLOT(slotConfigureProvider()) );
+
+    // Forget target button
     connect( m_statSyncingProvidersView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
              SLOT(slotUpdateForgetButton()) );
+    connect( m_forgetTargetsButton, SIGNAL(clicked(bool)), SLOT(slotForgetCollections()) );
+
+    // Synchronize button
     if( controller )
-    {
         connect( m_synchronizeButton, SIGNAL(clicked(bool)), controller, SLOT(synchronize()) );
-        connect( m_addCollectionButton, SIGNAL(clicked(bool)), controller, SLOT(createProviderDialog()) );
-    }
     else
         m_synchronizeButton->setEnabled( false );
+
     slotUpdateForgetButton();
 
     const qint64 checkedFields = config ? config->checkedFields() : 0;
@@ -178,7 +191,7 @@ MetadataConfig::slotUpdateForgetButton()
 {
     QItemSelectionModel *selectionModel = m_statSyncingProvidersView->selectionModel();
     // note: hasSelection() and selection() gives false positives!
-    m_forgetCollectionsButton->setEnabled( !selectionModel->selectedIndexes().isEmpty() );
+    m_forgetTargetsButton->setEnabled( !selectionModel->selectedIndexes().isEmpty() );
 }
 
 void
@@ -205,6 +218,57 @@ MetadataConfig::slotConfigureExcludedLabels()
     {
         slotUpdateConfigureExcludedLabelsLabel();
         emit changed();
+    }
+}
+
+void
+MetadataConfig::slotConfigureProvider()
+{
+    if( StatSyncing::Controller *controller = Amarok::Components::statSyncingController() )
+    {
+        QModelIndexList selected = m_statSyncingProvidersView->selectionModel()->selectedIndexes();
+        if( selected.size() == 1 )
+        {
+            const QString id = selected.front().data( StatSyncing::Config::ProviderIdRole ).toString();
+
+            if( QWidget *dialog = controller->providerConfigDialog( id ) )
+            {
+                dialog->show();
+                dialog->activateWindow();
+                dialog->raise();
+            }
+        }
+    }
+}
+
+void
+MetadataConfig::slotUpdateProviderConfigureButton()
+{
+    QModelIndexList selected = m_statSyncingProvidersView->selectionModel()->selectedIndexes();
+    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+
+    if( selected.size() != 1 || !controller )
+    {
+        m_configureTargetButton->setEnabled( false );
+    }
+    else
+    {
+        const QString id = selected.front().data( StatSyncing::Config::ProviderIdRole ).toString();
+        m_configureTargetButton->setEnabled( controller->isProviderConfigurable( id ) );
+    }
+}
+
+void
+MetadataConfig::slotCreateProviderDialog()
+{
+    if( StatSyncing::Controller *controller = Amarok::Components::statSyncingController() )
+    {
+        if( QWidget *dialog = controller->providerCreationDialog() )
+        {
+            dialog->show();
+            dialog->activateWindow();
+            dialog->raise();
+        }
     }
 }
 

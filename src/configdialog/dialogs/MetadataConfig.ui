@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>604</width>
-    <height>544</height>
+    <width>602</width>
+    <height>542</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -123,21 +123,21 @@ character sets used in ID3 tags.</string>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QPushButton" name="m_forgetCollectionsButton">
+         <widget class="QPushButton" name="m_forgetTargetsButton">
           <property name="text">
            <string>Forget</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="m_configureButton">
+         <widget class="QPushButton" name="m_configureTargetButton">
           <property name="text">
            <string>Configure</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="m_addCollectionButton">
+         <widget class="QPushButton" name="m_addTargetButton">
           <property name="text">
            <string>Add</string>
           </property>
