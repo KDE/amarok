@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
+ * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,201 +17,217 @@
 
 #define DEBUG_PREFIX "RecentlyPlayedListWidget"
 
-#include "EngineController.h"
 #include "RecentlyPlayedListWidget.h"
+
+#include "EngineController.h"
 #include "core/meta/Meta.h"
-#include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "playlist/PlaylistController.h"
 
-#include <KIcon>
 #include <KSqueezedTextLabel>
 #include <Plasma/IconWidget>
 
-#include <QDateTime>
+#include <QApplication>
 #include <QFontMetricsF>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
+#include <QGraphicsSceneMouseEvent>
 #include <QLabel>
-#include <QTimer>
+#include <QStringList>
+#include <QVariant>
+
+ClickableGraphicsWidget::ClickableGraphicsWidget( const QString &url,
+                                                  QGraphicsItem *parent,
+                                                  Qt::WindowFlags wFlags )
+    : QGraphicsWidget( parent, wFlags )
+    , m_url( url )
+{
+    setAcceptHoverEvents( true );
+    setCursor( Qt::PointingHandCursor );
+}
+
+ClickableGraphicsWidget::~ClickableGraphicsWidget()
+{
+}
+
+void
+ClickableGraphicsWidget::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
+{
+    Q_UNUSED( event )
+    setOpacity( 0.5 );
+    update();
+}
+
+void
+ClickableGraphicsWidget::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
+{
+    Q_UNUSED( event )
+    setOpacity( 1 );
+    update();
+}
+
+void
+ClickableGraphicsWidget::mousePressEvent( QGraphicsSceneMouseEvent *event )
+{
+    Q_UNUSED( event )
+}
+
+void
+ClickableGraphicsWidget::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
+{
+    if( !m_url.isEmpty() )
+    {
+        if( event->button() == Qt::LeftButton )
+            emit leftClicked( m_url );
+        else if( event->button() == Qt::MidButton )
+            emit middleClicked( m_url );
+    }
+}
 
 RecentlyPlayedListWidget::RecentlyPlayedListWidget( QGraphicsWidget *parent )
     : Plasma::ScrollWidget( parent )
-    , m_trackIcon( KIcon( QLatin1String("media-album-track") ) )
+    , m_layout( new QGraphicsLinearLayout( Qt::Vertical ) )
+    , m_trackIcon( KIcon( "media-album-track") )
 {
-    QGraphicsWidget *content = new QGraphicsWidget( this );
-    m_layout = new QGraphicsLinearLayout( Qt::Vertical, content );
+    QGraphicsWidget *content = new QGraphicsWidget;
+    content->setLayout( m_layout );
     setWidget( content );
 
-    EngineController *ec = The::engineController();
-    connect( ec, SIGNAL(trackChanged(Meta::TrackPtr)), SLOT(trackChanged(Meta::TrackPtr)) );
-    QTimer::singleShot( 0, this, SLOT(startQuery()) ); // let engine controller have time to initialize
+    connect( EngineController::instance(), SIGNAL(trackChanged(Meta::TrackPtr)),
+             SLOT(trackChanged(Meta::TrackPtr)) );
+
+    // Load saved data
+    const KConfigGroup group = Amarok::config( "Recently Played" );
+    const QVariantList recentlyPlayed = group.readEntry( "Last Played Dates", QVariantList() );
+    const QStringList displayNames = group.readEntry( "Display Names", QStringList() );
+    const QStringList trackUrls = group.readEntry( "Urls", QStringList() );
+    for( int i = 0; i < trackUrls.size(); ++i )
+        addTrack( recentlyPlayed[i].toDateTime(), displayNames[i], trackUrls[i] );
 }
 
 RecentlyPlayedListWidget::~RecentlyPlayedListWidget()
 {
-    clear();
+    QVariantList recentlyPlayed;
+    QStringList displayNames;
+    QStringList trackUrls;
+    foreach( const RecentlyPlayedTrackData &data, m_recentTracks )
+    {
+        recentlyPlayed.append( data.recentlyPlayed );
+        displayNames.append( data.displayName );
+        trackUrls.append( data.trackUrl );
+    }
+
+    KConfigGroup group = Amarok::config( "Recently Played" );
+    group.writeEntry( "Last Played Dates", recentlyPlayed );
+    group.writeEntry( "Display Names", displayNames );
+    group.writeEntry( "Urls", trackUrls );
+    group.sync();
+}
+
+QGraphicsWidget*
+RecentlyPlayedListWidget::addWidgetItem( const RecentlyPlayedTrackData &data )
+{
+    KSqueezedTextLabel *squeezer = new KSqueezedTextLabel( data.displayName );
+    squeezer->setTextElideMode( Qt::ElideRight );
+    squeezer->setAttribute( Qt::WA_NoSystemBackground );
+    squeezer->setCursor( Qt::PointingHandCursor );
+
+    QGraphicsProxyWidget *labelWidget = new QGraphicsProxyWidget;
+    labelWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    labelWidget->setWidget( squeezer );
+
+    QLabel *lastPlayed = new QLabel( Amarok::verboseTimeSince( data.recentlyPlayed ) );
+    lastPlayed->setAttribute( Qt::WA_NoSystemBackground );
+    lastPlayed->setAlignment( Qt::AlignRight );
+    lastPlayed->setWordWrap( false );
+    lastPlayed->setCursor( Qt::PointingHandCursor );
+
+    QGraphicsProxyWidget *lastPlayedWidget = new QGraphicsProxyWidget;
+    lastPlayedWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    lastPlayedWidget->setWidget( lastPlayed );
+
+    Plasma::IconWidget *icon = new Plasma::IconWidget;
+    QSizeF iconSize = icon->sizeFromIconSize( QFontMetricsF(QFont()).height() );
+    icon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+    icon->setMinimumSize( iconSize );
+    icon->setMaximumSize( iconSize );
+    icon->setIcon( m_trackIcon );
+
+    QGraphicsLinearLayout *itemLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    itemLayout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    itemLayout->setContentsMargins( 0, 0, 0, 0 );
+    itemLayout->addItem( icon );
+    itemLayout->addItem( labelWidget );
+    itemLayout->addItem( lastPlayedWidget );
+
+    ClickableGraphicsWidget *itemWidget = new ClickableGraphicsWidget( data.trackUrl );
+    itemWidget->setLayout( itemLayout );
+    connect( itemWidget, SIGNAL(leftClicked(QString)), SLOT(itemLeftClicked(QString)) );
+    connect( itemWidget, SIGNAL(middleClicked(QString)), SLOT(itemMiddleClicked(QString)) );
+
+    m_layout->insertItem( 0, itemWidget );
+
+    return itemWidget;
 }
 
 void
-RecentlyPlayedListWidget::updateWidget()
+RecentlyPlayedListWidget::itemLeftClicked( const QString &url )
 {
-    DEBUG_BLOCK
-    QFont font;
-    QFontMetricsF fm( font );
-    QMap<uint, Meta::TrackPtr> tracks = m_recentTracks;
-    m_recentTracks.clear();
+    Playlist::Controller::instance()->insertOptioned( KUrl( url ),
+                                                Playlist::OnDoubleClickOnSelectedItems );
+}
 
-    foreach( const Meta::TrackPtr &track, tracks )
-    {
-        QString name = track->prettyName();
-
-        QString labelText;
-        Meta::ArtistPtr artist = track->artist();
-        if( artist && !artist->prettyName().isEmpty() )
-            labelText = QString( "%1 - %2" ).arg( artist->prettyName(), name );
-        else
-            labelText = name;
-
-        KSqueezedTextLabel *squeezer = new KSqueezedTextLabel( labelText );
-        squeezer->setTextElideMode( Qt::ElideRight );
-        squeezer->setAttribute( Qt::WA_NoSystemBackground );
-
-        QGraphicsProxyWidget *labelWidget = new QGraphicsProxyWidget( this );
-        labelWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-        labelWidget->setWidget( squeezer );
-
-        QLabel *lastPlayed = new QLabel( Amarok::verboseTimeSince( track->statistics()->lastPlayed() ) );
-        lastPlayed->setAttribute( Qt::WA_NoSystemBackground );
-        lastPlayed->setAlignment( Qt::AlignRight );
-        lastPlayed->setWordWrap( false );
-
-        QGraphicsProxyWidget *lastPlayedWidget = new QGraphicsProxyWidget( this );
-        lastPlayedWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        lastPlayedWidget->setWidget( lastPlayed );
-
-        Plasma::IconWidget *icon = new Plasma::IconWidget( this );
-        QSizeF iconSize = icon->sizeFromIconSize( fm.height() );
-        icon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-        icon->setMinimumSize( iconSize );
-        icon->setMaximumSize( iconSize );
-        icon->setIcon( m_trackIcon );
-
-        QGraphicsLinearLayout *itemLayout = new QGraphicsLinearLayout( Qt::Horizontal );
-        itemLayout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-        itemLayout->addItem( icon );
-        itemLayout->addItem( labelWidget );
-        itemLayout->addItem( lastPlayedWidget );
-        m_layout->insertItem( 0, itemLayout );
-    }
+void
+RecentlyPlayedListWidget::itemMiddleClicked( const QString &url )
+{
+    Playlist::Controller::instance()->insertOptioned( KUrl( url ),
+                                                Playlist::OnMiddleClickOnSelectedItems );
 }
 
 void
 RecentlyPlayedListWidget::addTrack( const Meta::TrackPtr &track )
 {
-    if( !track )
-        return;
-    if( !track->statistics()->lastPlayed().isValid() )
-        return;
+    const Meta::ArtistPtr artist = track->artist();
+    const QString displayName = !artist || artist->prettyName().isEmpty()
+            ? track->prettyName()
+            : i18nc( "%1 is artist, %2 is title", "%1 - %2",
+                     artist->prettyName(), track->prettyName() );
 
-    if( m_recentTracks.size() > 12 )
-        m_recentTracks.erase( m_recentTracks.begin() );
+    addTrack( QDateTime::currentDateTime(), displayName, track->uidUrl() );
+}
 
-    m_recentTracks.insert( track->statistics()->lastPlayed().toTime_t(), track );
+void RecentlyPlayedListWidget::addTrack( const QDateTime &recentlyPlayed,
+                                         const QString &displayName,
+                                         const QString &trackUrl )
+{
+    while( m_recentTracks.size() >= 10 )
+    {
+        // Get rid of the least recent entry
+        RecentlyPlayedTrackData data = m_recentTracks.dequeue();
+        delete data.widget;
+    }
+
+    RecentlyPlayedTrackData data;
+    data.recentlyPlayed = recentlyPlayed;
+    data.displayName = displayName;
+    data.trackUrl = trackUrl;
+    data.widget = addWidgetItem( data );
+    m_recentTracks.enqueue( data );
 }
 
 void
-RecentlyPlayedListWidget::startQuery()
+RecentlyPlayedListWidget::trackChanged( const Meta::TrackPtr &track )
 {
-    if( The::engineController()->isPlaying() )
+    // Nothing has changed
+    if( m_currentTrack == track )
         return;
 
-    DEBUG_BLOCK
-    PERF_LOG( "Start query recently played tracks" );
-    clear();
-
-    Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
-    connect( qm, SIGNAL(newResultReady(Meta::TrackList)),
-             this, SLOT(tracksReturned(Meta::TrackList)) );
-    connect( qm, SIGNAL(queryDone()), SLOT(setupTracksData()) );
-
-    qm->setAutoDelete( true )
-      ->setQueryType( Collections::QueryMaker::Track )
-      ->excludeFilter( Meta::valTitle, QString(), true, true )
-      ->orderBy( Meta::valLastPlayed, true )
-      ->excludeFilter( Meta::valLastPlayed, "2147483647" )
-      ->limitMaxResultSize( 10 )
-      ->run();
-}
-
-void
-RecentlyPlayedListWidget::trackChanged( Meta::TrackPtr track )
-{
-    // engine controller will give a null track when playback stops
-    if( !track )
-    {
-        addTrack( m_currentTrack );
-        updateWidget();
-        return;
-    }
-
-    // "track" is the new song being played, so it hasn't finished yet.
-    if( track == m_currentTrack )
-        return;
-
-    // a null m_current_track means playback just started for the first time
-    if( !m_currentTrack )
-    {
-        m_currentTrack = track;
-        return;
-    }
-
-    addTrack( m_currentTrack );
+    // lastTrack will be null if we're resuming from a stopped state
+    Meta::TrackPtr lastTrack = m_currentTrack;
     m_currentTrack = track;
 
-    if( !The::engineController()->isPlaying() )
-        updateWidget();
+    if( lastTrack )
+        addTrack( lastTrack );
 }
-
-void
-RecentlyPlayedListWidget::clear()
-{
-    prepareGeometryChange();
-    int count = m_layout->count();
-    while( --count >= 0 )
-        removeItem( m_layout->itemAt( 0 ) );
-    m_recentTracks.clear();
-}
-
-void
-RecentlyPlayedListWidget::tracksReturned( Meta::TrackList tracks )
-{
-    foreach( const Meta::TrackPtr &track, tracks )
-        m_recentTracks.insert( track->statistics()->lastPlayed().toTime_t(), track );
-}
-
-void
-RecentlyPlayedListWidget::setupTracksData()
-{
-    DEBUG_BLOCK
-    foreach( const Meta::TrackPtr &track, m_recentTracks )
-        addTrack( track );
-
-    if( !The::engineController()->isPlaying() )
-        updateWidget();
-    PERF_LOG( "Done setting up recently played tracks" );
-}
-
-void
-RecentlyPlayedListWidget::removeItem( QGraphicsLayoutItem *item )
-{
-    QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout*>( item );
-    m_layout->removeItem( layout );
-    int count = layout->count();
-    while( --count >= 0 )
-        delete layout->itemAt( 0 );
-    delete layout;
-}
-
-#include "RecentlyPlayedListWidget.moc"

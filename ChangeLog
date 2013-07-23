@@ -4,11 +4,17 @@ Amarok ChangeLog
 
 
 VERSION 2.8
+  FEATURES:
+   * Tracks from Recently Played List widget can now directly be added to the
+     playlist. (BR 279263, BR 296090)
+
   CHANGES:
    * Amarok now depends on Qt 4.8.3.
    * Amarok now uses FindFFMpeg.cmake from kdelibs
 
   BUGFIXES:
+   * Recently Played List widget now keeps its own time for tracks instead of relying on
+     the Last Played statistic. (BR 302485)
    * Prevent hitting an assertion failure if just removed track from the Local Collection
      is edited. (BR 322474)
    * Fixed a regression introduced in 2.8 Beta where tracks in the Local Collection were
