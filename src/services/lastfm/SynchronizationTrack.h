@@ -22,24 +22,6 @@
 #include <QSemaphore>
 
 /**
- * Helper class that releases passed QSemaphore upon deletion. Similar to QMutexLocker.
- */
-class SemaphoreReleaser
-{
-    public:
-        SemaphoreReleaser( QSemaphore *semaphore );
-        ~SemaphoreReleaser();
-
-        /**
-         * Tell SemaphoreReleaser not to release the semaphore upon deletion.
-         */
-        void dontRelease();
-
-    private:
-        QSemaphore *m_semaphore;
-};
-
-/**
  * A class that represents a track in Last.fm users library. Can be used to synchronize
  * users's data with Last.fm through StatSyncing.
  */

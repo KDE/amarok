@@ -18,6 +18,7 @@
 
 #include "MetaValues.h"
 #include "core/support/Debug.h"
+#include "core/support/SemaphoreReleaser.h"
 #include "services/lastfm/SynchronizationTrack.h"
 
 #include <KLocalizedString>

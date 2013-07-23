@@ -20,6 +20,7 @@
 #include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
+#include "core/support/SemaphoreReleaser.h"
 
 #include <KLocale>
 #include <KMessageBox>
@@ -30,19 +31,6 @@
 #include <QFileInfo>
 #include <QString>
 #include <QTextStream>
-
-/**
- * RAII approach to safely releasing a QSemaphore
- */
-class SemaphoreReleaser {
-    public:
-        explicit SemaphoreReleaser( QSemaphore *semaphore ) : m_semaphore( semaphore ) {}
-        ~SemaphoreReleaser() { m_semaphore ? m_semaphore->release() : qt_noop(); }
-
-    private:
-        Q_DISABLE_COPY( SemaphoreReleaser );
-        QSemaphore *m_semaphore;
-};
 
 using namespace Playlists;
 

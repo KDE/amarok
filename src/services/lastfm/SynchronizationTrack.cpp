@@ -17,29 +17,13 @@
 #include "SynchronizationTrack.h"
 
 #include "core/support/Debug.h"
+#include "core/support/SemaphoreReleaser.h"
 
 #include <QCoreApplication>
 #include <QNetworkReply>
 
 #include <Track.h>
 #include <XmlQuery.h>
-
-SemaphoreReleaser::SemaphoreReleaser( QSemaphore *semaphore )
-    : m_semaphore( semaphore )
-{
-}
-
-SemaphoreReleaser::~SemaphoreReleaser()
-{
-    if( m_semaphore )
-        m_semaphore->release();
-}
-
-void
-SemaphoreReleaser::dontRelease()
-{
-    m_semaphore = 0;
-}
 
 SynchronizationTrack::SynchronizationTrack( QString artist, QString album, QString name,
                                             int playCount, bool useFancyRatingTags )
