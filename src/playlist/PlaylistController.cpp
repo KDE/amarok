@@ -227,7 +227,7 @@ Controller::insertOptioned( Playlists::PlaylistList list, AddOptions options )
 {
     TrackLoader::Flags flags;
     // if we are going to play, we need full metadata (playable tracks)
-    if( options.testFlag( DirectPlay ) )
+    if( options.testFlag( DirectPlay ) || options.testFlag( StartPlay ) )
         flags |= TrackLoader::FullMetadataRequired;
     if( options.testFlag( Playlist::RemotePlaylistsAreStreams ) )
         flags |= TrackLoader::RemotePlaylistsAreStreams;
@@ -249,7 +249,7 @@ Controller::insertOptioned( QList<KUrl> &urls, AddOptions options )
 {
     TrackLoader::Flags flags;
     // if we are going to play, we need full metadata (playable tracks)
-    if( options.testFlag( DirectPlay ) )
+    if( options.testFlag( DirectPlay ) || options.testFlag( StartPlay ) )
         flags |= TrackLoader::FullMetadataRequired;
     if( options.testFlag( Playlist::RemotePlaylistsAreStreams ) )
         flags |= TrackLoader::RemotePlaylistsAreStreams;
