@@ -2,7 +2,7 @@
 Type=Service
 Icon=amarok
 Name=Amarok 1.4 (FastForward) Importer
-Comment=Amarok 1.4 Importer plugin for Amarok
+Comment=Import statistics from Amarok 1.4 database
 
 ServiceTypes=Amarok/Plugin
 
