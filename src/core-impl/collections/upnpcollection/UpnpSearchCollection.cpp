@@ -49,8 +49,7 @@ UpnpSearchCollection::UpnpSearchCollection( const DeviceInfo& dev, QStringList s
     DEBUG_BLOCK
 
     OrgKdeKDirNotifyInterface *notify = new OrgKdeKDirNotifyInterface("", "", QDBusConnection::sessionBus(), this );
-    Q_ASSERT(connect( notify, SIGNAL(FilesChanged(QStringList)),
-                      this, SLOT(slotFilesChanged(QStringList)) ));
+    connect( notify, SIGNAL(FilesChanged(QStringList)), SLOT(slotFilesChanged(QStringList)) );
 }
 
 UpnpSearchCollection::~UpnpSearchCollection()

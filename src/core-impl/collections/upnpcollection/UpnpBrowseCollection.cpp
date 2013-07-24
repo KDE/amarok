@@ -54,8 +54,7 @@ UpnpBrowseCollection::UpnpBrowseCollection( const DeviceInfo& dev )
 
     // experimental code, will probably be moved to a better place
     OrgKdeKDirNotifyInterface *notify = new OrgKdeKDirNotifyInterface("", "", QDBusConnection::sessionBus(), this );
-    Q_ASSERT(connect( notify, SIGNAL(FilesChanged(QStringList)),
-                      this, SLOT(slotFilesChanged(QStringList)) ));
+    connect( notify, SIGNAL(FilesChanged(QStringList)), SLOT(slotFilesChanged(QStringList)) );
 }
 
 UpnpBrowseCollection::~UpnpBrowseCollection()
