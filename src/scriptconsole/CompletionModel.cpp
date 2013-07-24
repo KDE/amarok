@@ -114,6 +114,6 @@ AmarokScriptCodeCompletionModel::executeCompletionItem( KTextEditor::Document *d
 
 AmarokScriptCodeCompletionModel::~AmarokScriptCodeCompletionModel()
 {
+    DEBUG_BLOCK
     m_completionList.clear();
-    debug() << "CCM Destroyed";
 }

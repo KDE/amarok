@@ -41,10 +41,14 @@ public slots:
 
 private slots:
     void slotManageScripts();
+    void installLocalScript();
+    void slotReloadScriptSelector();
+    void slotUpdateScripts();
 
 private:
     bool m_configChanged;
     ScriptSelector *m_selector;
+    QTimer *m_timer;
 };
 
 #endif // AMAROK_SCRIPTSCONFIG_H

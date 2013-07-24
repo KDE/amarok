@@ -92,17 +92,25 @@ class AMAROK_EXPORT ScriptManager : public QObject
         ScriptMap      m_scripts;
         QString        m_lyricsScript;
 
+    public slots:
+        /** Finds installed scripts, updates them, and loads them */
+        void updateAllScripts();
+
     signals:
         // needed so the lyrics script can connect to this
         void fetchLyrics( const QString&, const QString&, const QString& url );
         void lyricsScriptStarted();
 
+        /**
+         * Emitted when a script is added, removed or updated
+         */
+        void scriptsChanged();
+
+
     private slots:
         bool slotRunScript( const QString &name, bool silent = false );
         void handleException( const QScriptValue &value );
 
-        /** Finds installed scripts, updates them, and loads them */
-        void updateAllScripts();
         void updaterFinished( const QString &scriptPath );
         void slotConfigChanged();
 

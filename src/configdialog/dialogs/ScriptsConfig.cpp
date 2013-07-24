@@ -29,6 +29,11 @@
 #include <KPluginInfo>
 #include <KPluginSelector>
 #include <KNS3/DownloadDialog>
+#include <KPushButton>
+#include <KStandardDirs>
+
+#include <QFileSystemWatcher>
+#include <QTimer>
 
 ScriptsConfig::ScriptsConfig( QWidget *parent )
     : ConfigDialogBase( parent )
@@ -38,13 +43,99 @@ ScriptsConfig::ScriptsConfig( QWidget *parent )
     Ui::ScriptsConfig gui;
     gui.setupUi( this );
 
+    m_timer = new QTimer(this);
+    connect( m_timer, SIGNAL(timeout()), this, SLOT(slotUpdateScripts()) );
+    m_timer->setInterval( 200 );
+
     // Load config
     gui.kcfg_AutoUpdateScripts->setChecked( AmarokConfig::autoUpdateScripts() );
     gui.manageButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     connect( gui.manageButton, SIGNAL(clicked()), SLOT(slotManageScripts()) );
+    connect( gui.installButton, SIGNAL(clicked(bool)), SLOT(installLocalScript()) );
 
     m_selector = gui.scriptSelector;
+    slotReloadScriptSelector();
 
+    connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
+    connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );
+
+    connect( gui.reloadButton, SIGNAL(clicked(bool)), m_timer, SLOT(start()) );
+
+    connect( ScriptManager::instance(), SIGNAL(scriptsChanged()), SLOT(slotReloadScriptSelector()) );
+
+    this->setEnabled( AmarokConfig::enableScripts() );
+}
+
+ScriptsConfig::~ScriptsConfig()
+{
+    ScriptManager::instance()->updateAllScripts();
+}
+
+void
+ScriptsConfig::slotManageScripts()
+{
+    QStringList updateScriptsList;
+    ScriptManager::instance()->stopScript( m_selector->currentItem() );
+    KNS3::DownloadDialog dialog("amarok.knsrc", this);
+    dialog.exec();
+
+    QFileSystemWatcher *watcher = new QFileSystemWatcher( this );
+    watcher->addPath( KStandardDirs::locate( "data", "amarok/scripts/" ) );
+    connect( watcher, SIGNAL(directoryChanged(QString)), m_timer, SLOT(start()) );
+
+    if( !dialog.installedEntries().isEmpty() )
+    {
+        KMessageBox::information( 0, i18n( "<p>Script successfully installed.</p>" ) );
+        m_timer->start();
+    }
+    else if( !dialog.changedEntries().isEmpty() )
+    {
+        KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>" ) );
+        m_timer->start();
+    }
+}
+
+void
+ScriptsConfig::updateSettings()
+{
+    DEBUG_BLOCK
+    if( m_configChanged )
+    {
+        m_selector->save();
+        ScriptManager::instance()->configChanged( true );
+    }
+}
+
+bool
+ScriptsConfig::hasChanged()
+{
+    return m_configChanged;
+}
+
+bool
+ScriptsConfig::isDefault()
+{
+    return false;
+}
+
+void
+ScriptsConfig::slotConfigChanged( bool changed )
+{
+    m_configChanged = changed;
+    if( changed )
+        debug() << "config changed";
+}
+
+void
+ScriptsConfig::installLocalScript()
+{
+
+}
+
+void
+ScriptsConfig::slotReloadScriptSelector()
+{
+    // ANM-TODO clear???
     QString key = QLatin1String( "Generic" );
     m_selector->addScripts( ScriptManager::instance()->scripts( key ),
                             KPluginSelector::ReadConfigFile, i18n("Generic"), key );
@@ -56,56 +147,13 @@ ScriptsConfig::ScriptsConfig( QWidget *parent )
     key = QLatin1String( "Scriptable Service" );
     m_selector->addScripts( ScriptManager::instance()->scripts( key ),
                             KPluginSelector::ReadConfigFile, i18n("Scriptable Service"), key );
-
-    connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
-    connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );
-    this->setEnabled( AmarokConfig::enableScripts() );
 }
-
-ScriptsConfig::~ScriptsConfig()
-{}
 
 void
-ScriptsConfig::slotManageScripts()
+ScriptsConfig::slotUpdateScripts()
 {
-    ScriptManager::instance()->stopScript( m_selector->currentItem() );
-    KNS3::DownloadDialog dialog("amarok.knsrc", this);
-    dialog.exec();
-
-    if (!dialog.installedEntries().isEmpty()) {
-        KMessageBox::information( 0, i18n( "<p>Script successfully installed.</p>"
-                                            "<p>Please restart Amarok to start the script.</p>" ) );
-    } else if (!dialog.changedEntries().isEmpty()) {
-        KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>"
-                                            "<p>Please restart Amarok to totally remove the script.</p>" ) );
-    }
-}
-
-void ScriptsConfig::updateSettings()
-{
-    DEBUG_BLOCK
-    if( m_configChanged )
-    {
-        m_selector->save();
-        ScriptManager::instance()->configChanged( true );
-    }
-}
-
-bool ScriptsConfig::hasChanged()
-{
-    return m_configChanged;
-}
-
-bool ScriptsConfig::isDefault()
-{
-    return false;
-}
-
-void ScriptsConfig::slotConfigChanged( bool changed )
-{
-    m_configChanged = changed;
-    if( changed )
-        debug() << "config changed";
+    m_timer->stop();
+    ScriptManager::instance()->updateAllScripts();
 }
 
 #include "ScriptsConfig.moc"

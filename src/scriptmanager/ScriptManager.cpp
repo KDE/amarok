@@ -183,6 +183,7 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& artist, const QString& tit
 void
 ScriptManager::updateAllScripts() // SLOT
 {
+    PERF_LOG( "Loading scripts" );
 // note: we can't update scripts without the QtCryptoArchitecture, so don't even try
 #ifdef QCA2_FOUND
     DEBUG_BLOCK
@@ -190,6 +191,15 @@ ScriptManager::updateAllScripts() // SLOT
     QStringList foundScripts = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js",
                                                                   KStandardDirs::Recursive |
                                                                   KStandardDirs::NoDuplicates );
+    // remove deleted scripts
+    foreach( const QString &scriptName, m_scripts.keys() )
+    {
+        const QString specPath = QString( "%1/script.spec" )
+                                 .arg( m_scripts[scriptName]->url().path() );
+        if( !KPluginInfo( specPath ).isValid() )
+            m_scripts.remove( scriptName );
+    }
+
     m_nScripts = foundScripts.count();
 
     // get timestamp of the last update check
@@ -299,6 +309,7 @@ ScriptManager::ServiceScriptRequestInfo( const QString &name, int level, const Q
 void
 ScriptManager::configChanged( bool changed )
 {
+    emit scriptsChanged();
     if( !changed )
         return;
     //evil scripts may prevent the config dialog from dismissing, delay execution
@@ -363,13 +374,15 @@ ScriptManager::loadScript( const QString& path )
         return false;
     }
 
-    if( !m_scripts.contains( pluginName ) )
+    ScriptItem *item;
+    if( !m_scripts.contains( pluginName )
+        || ( m_scripts[pluginName]->info().version() < pluginInfo.version() ) )
     {
-        ScriptItem *item = new ScriptItem( this, pluginName, path, pluginInfo );
+        item = new ScriptItem( this, pluginName, path, pluginInfo );
         m_scripts[ pluginName ] = item;
     }
-
-    ScriptItem *item = m_scripts.value( pluginName );
+    else
+        item = m_scripts.value( pluginName );
 
     //assume it is API V1.0.0 if there is no "API V" prefix found
     if( !item->info().dependencies().at(0).startsWith("API V") )
