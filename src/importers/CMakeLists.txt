@@ -4,5 +4,6 @@ include_directories(
     ${Amarok_SOURCE_DIR}/src
 )
 
+add_subdirectory( itunes )
 add_subdirectory( fastforward )
 

@@ -45,7 +45,8 @@ namespace StatSyncing
             virtual ~ProviderConfigWidget();
 
             /**
-             * Return a QVariantMap holding configuration for the provider.
+             * Return a QVariantMap holding configuration for the provider. Types stored
+             * in QVariantMap must be supported by @see KConfigGroup .
              */
             virtual QVariantMap config() const = 0;
     };
