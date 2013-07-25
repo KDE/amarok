@@ -72,8 +72,9 @@ CreateProviderDialog::addProviderType( QString id, QString prettyName, KIcon ico
 
     KPageWidgetItem *configPage =
             new KPageWidgetItem( configWidget, i18n( "Configure Target" ) );
-    configPage->setParent( this );
     m_configForButton.insert( providerTypeButton, configPage );
+    addPage( configPage );
+    setAppropriate( configPage, false );
 
     connect( providerTypeButton, SIGNAL(toggled(bool)),
              SLOT(providerButtonToggled(bool)) );
@@ -86,7 +87,7 @@ void
 CreateProviderDialog::providerButtonToggled( bool checked )
 {
     KPageWidgetItem *configPage = m_configForButton[sender()];
-    checked ? addPage( configPage ) : removePage( configPage );
+    setAppropriate( configPage, checked );
 }
 
 void
