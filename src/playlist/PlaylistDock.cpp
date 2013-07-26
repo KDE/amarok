@@ -169,7 +169,7 @@ Playlist::Dock::polish()
         // action toolbar
         m_barBox = new KHBox( m_mainWidget );
         m_barBox->setObjectName( "PlaylistBarBox" );
-        m_barBox->setContentsMargins( 0, 0, 0, 0 );
+        m_barBox->setContentsMargins( 0, 0, 4, 0 );
         m_barBox->setFixedHeight( 36 );
 
         // Use QToolBar instead of KToolBar, see bug 228390
