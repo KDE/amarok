@@ -20,7 +20,9 @@
 
 #include <KLocale>
 #include <KLineEdit>
+#include <KMessageBox>
 
+// hacky
 ScriptSelector::ScriptSelector( QWidget * parent )
     : KPluginSelector( parent )
     , m_scriptCount( 0 )
@@ -35,11 +37,12 @@ ScriptSelector::ScriptSelector( QWidget * parent )
 ScriptSelector::~ScriptSelector()
 {}
 
-void ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList,
-                                 PluginLoadMethod pluginLoadMethod,
-                                 const QString &categoryName,
-                                 const QString &categoryKey,
-                                 const KSharedConfig::Ptr &config )
+void
+ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList,
+                            PluginLoadMethod pluginLoadMethod,
+                            const QString &categoryName,
+                            const QString &categoryKey,
+                            const KSharedConfig::Ptr &config )
 {
     DEBUG_BLOCK
 
@@ -51,7 +54,8 @@ void ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList,
     }
 }
 
-QString ScriptSelector::currentItem() const
+QString
+ScriptSelector::currentItem() const
 {
     DEBUG_BLOCK
 
@@ -70,6 +74,16 @@ QString ScriptSelector::currentItem() const
     }
 
     return QString();
+}
+
+void
+ScriptSelector::removeScript( const QString &scriptName )
+{
+    DEBUG_BLOCK
+
+    QAbstractItemModel *model = m_listView->model();
+    KMessageBox::warningYesNoCancel( this, i18n( "Delete the script \"%1\"?",  scriptName ) );
+    model->removeRow( m_scripts.key( scriptName ) );
 }
 
 #include "ScriptSelector.moc"

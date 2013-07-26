@@ -32,11 +32,12 @@ class ScriptSelector : public KPluginSelector
 
         QString currentItem() const;
 
-        void addScripts(const QList<KPluginInfo> &pluginInfoList,
-                     PluginLoadMethod pluginLoadMethod = ReadConfigFile,
-                     const QString &categoryName = QString(),
-                     const QString &categoryKey = QString(),
-                     const KSharedConfig::Ptr &config = KSharedConfig::Ptr());
+        void removeScript( const QString &scriptName );
+        void addScripts( const QList<KPluginInfo> &pluginInfoList,
+                         PluginLoadMethod pluginLoadMethod = ReadConfigFile,
+                         const QString &categoryName = QString(),
+                         const QString &categoryKey = QString(),
+                         const KSharedConfig::Ptr &config = KSharedConfig::Ptr() );
 
     private:
         KCategorizedView*          m_listView;

@@ -49,9 +49,6 @@ ScriptEditorDocument::createView( QWidget* parent )
     {
         iface->registerCompletionModel( s_completionModel.data() );
     }
-    // enable the modified on disk warning dialogs if any
-    //if (qobject_cast<KTextEditor::ModificationInterface*>(doc))
-    //qobject_cast<KTextEditor::ModificationInterface*>(doc)->setModifiedOnDiskWarning (true);
     return view;
 }
 

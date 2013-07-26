@@ -192,13 +192,18 @@ ScriptManager::updateAllScripts() // SLOT
                                                                   KStandardDirs::Recursive |
                                                                   KStandardDirs::NoDuplicates );
     // remove deleted scripts
-    foreach( const QString &scriptName, m_scripts.keys() )
+    QStringList removedScripts;
+    foreach( ScriptItem *item, m_scripts )
     {
-        const QString specPath = QString( "%1/script.spec" )
-                                 .arg( m_scripts[scriptName]->url().path() );
+        const QString specPath = QString( "%1/script.spec" ).arg( item->url().path() );
         if( !KPluginInfo( specPath ).isValid() )
-            m_scripts.remove( scriptName );
+        {
+            item->deleteLater();
+            removedScripts << item->info().pluginName();
+            m_scripts.remove( item->info().pluginName() );
+        }
     }
+    emit scriptsRemoved( removedScripts );
 
     m_nScripts = foundScripts.count();
 

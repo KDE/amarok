@@ -19,6 +19,8 @@
 
 #include "configdialog/ConfigDialogBase.h"
 
+#include <QStringList>
+
 class ScriptSelector;
 
 /**
@@ -44,6 +46,7 @@ private slots:
     void installLocalScript();
     void slotReloadScriptSelector();
     void slotUpdateScripts();
+    void slotRemoveScripts( const QStringList &scriptNames );
 
 private:
     bool m_configChanged;

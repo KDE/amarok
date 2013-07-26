@@ -21,9 +21,8 @@
 #include <QMetaType> // for Q_DECLARE_METATYPE
 #include <QObject>
 #include <QScriptable>
-namespace AmarokScript{
-    class StreamItem;
-};
+
+class StreamItem;
 class QPixmap;
 class QScriptContext;
 class QScriptEngine;
@@ -32,6 +31,7 @@ namespace AmarokScript
 {
     // SCRIPTDOX: ScriptableServiceScript
     // make something like ScriptableServiceScript.init() ???
+    // ANM-TODO: Handle docs in script dox
     /**
      * Usage: First create the sciprtable service using a call to
      * ScriptableServiceScript( string name, int levels, string shortDescription,  string rootHtml, bool showSearchBar )

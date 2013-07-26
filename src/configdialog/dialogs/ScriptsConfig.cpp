@@ -62,6 +62,7 @@ ScriptsConfig::ScriptsConfig( QWidget *parent )
     connect( gui.reloadButton, SIGNAL(clicked(bool)), m_timer, SLOT(start()) );
 
     connect( ScriptManager::instance(), SIGNAL(scriptsChanged()), SLOT(slotReloadScriptSelector()) );
+    connect( ScriptManager::instance(), SIGNAL(scriptsRemoved(QStringList)), SLOT(slotRemoveScripts(QStringList)) );
 
     this->setEnabled( AmarokConfig::enableScripts() );
 }
@@ -81,16 +82,12 @@ ScriptsConfig::slotManageScripts()
 
     QFileSystemWatcher *watcher = new QFileSystemWatcher( this );
     watcher->addPath( KStandardDirs::locate( "data", "amarok/scripts/" ) );
-    connect( watcher, SIGNAL(directoryChanged(QString)), m_timer, SLOT(start()) );
+    //connect( watcher, SIGNAL(directoryChanged(QString)), m_timer, SLOT(start()) );
 
-    if( !dialog.installedEntries().isEmpty() )
+    if( !dialog.installedEntries().isEmpty() || !dialog.changedEntries().isEmpty() )
     {
-        KMessageBox::information( 0, i18n( "<p>Script successfully installed.</p>" ) );
-        m_timer->start();
-    }
-    else if( !dialog.changedEntries().isEmpty() )
-    {
-        KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>" ) );
+        // show a dialog?
+        // KMessageBox::information( 0, i18n( "<p>Script successfully installed.</p>" ) );
         m_timer->start();
     }
 }
@@ -154,6 +151,15 @@ ScriptsConfig::slotUpdateScripts()
 {
     m_timer->stop();
     ScriptManager::instance()->updateAllScripts();
+}
+
+void
+ScriptsConfig::slotRemoveScripts( const QStringList &scriptNames )
+{
+    foreach( const QString &scriptName, scriptNames )
+    {
+        m_selector->removeScript( scriptName );
+    }
 }
 
 #include "ScriptsConfig.moc"
