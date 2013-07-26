@@ -59,13 +59,13 @@ private:
     QPixmap m_barPixmap;
     QPixmap m_topBarPixmap;
     QVector<float> m_scope;      //so we don't create a vector every frame
-    std::vector<float> m_store;  //current bar heights
-    std::vector<float> m_yscale;
+    QVector<float> m_store;  //current bar heights
+    QVector<float> m_yscale;
 
-    std::vector<QPixmap> m_fade_bars;
-    std::vector<uint>    m_fade_pos;
-    std::vector<int>     m_fade_intensity;
-    QPixmap              m_background;
+    QVector<QPixmap> m_fade_bars;
+    QVector<uint>    m_fade_pos;
+    QVector<int>     m_fade_intensity;
+    QPixmap          m_background;
 
     float m_step; //rows to fall per frame
 };

@@ -38,10 +38,10 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
     , m_barPixmap( 1, 1 )    //null qpixmaps cause crashes
     , m_topBarPixmap( BLOCK_WIDTH, BLOCK_HEIGHT )
     , m_scope( MIN_COLUMNS ) //Scope
-    , m_store( 1 << 8, 0 )   //vector<uint>
+    , m_store( MAX_COLUMNS, 0 )   //vector<uint>
     , m_fade_bars( FADE_SIZE ) //vector<QPixmap>
-    , m_fade_pos( 1 << 8, 50 ) //vector<uint>
-    , m_fade_intensity( 1 << 8, 32 ) //vector<uint>
+    , m_fade_pos( MAX_COLUMNS, 50 ) //vector<uint>
+    , m_fade_intensity( MAX_COLUMNS, 32 ) //vector<uint>
 {
     setObjectName( "Blocky" );
     setMaximumWidth( MAX_COLUMNS * ( BLOCK_WIDTH + 1 ) - 1 );
@@ -182,42 +182,8 @@ BlockAnalyzer::paintEvent( QPaintEvent* )
         p.drawPixmap( x * ( BLOCK_WIDTH + 1 ), y * ( BLOCK_HEIGHT + 1 ) + m_y, *bar(), 0, y * ( BLOCK_HEIGHT + 1 ), -1, -1 );
     }
 
-    for( uint x = 0; x < m_store.size(); ++x )
+    for( int x = 0; x < m_store.size(); ++x )
         p.drawPixmap( x * ( BLOCK_WIDTH + 1 ), int( m_store[x] ) * ( BLOCK_HEIGHT + 1 ) + m_y, m_topBarPixmap );
-}
-
-static inline void
-adjustToLimits( int &b, int &f, uint &amount )
-{
-    // with a range of 0-255 and maximum adjustment of amount,
-    // maximise the difference between f and b
-
-    if( b < f )
-    {
-        if( b > 255 - f )
-        {
-            amount -= f;
-            f = 0;
-        }
-        else
-        {
-            amount -= ( 255 - f );
-            f = 255;
-        }
-    }
-    else
-    {
-        if( f > 255 - b )
-        {
-            amount -= f;
-            f = 0;
-        }
-        else
-        {
-            amount -= ( 255 - f );
-            f = 255;
-        }
-    }
 }
 
 void
