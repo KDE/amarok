@@ -26,6 +26,7 @@
 
 #include <QDateTime>
 #include <QGraphicsWidget>
+#include <QLabel>
 #include <QQueue>
 
 class QGraphicsLinearLayout;
@@ -51,6 +52,20 @@ protected:
 
 private:
     const QString m_url;
+};
+
+class TimeDifferenceLabel : public QLabel
+{
+public:
+    explicit TimeDifferenceLabel( const QDateTime &eventTime, QWidget *parent = 0,
+                                  Qt::WindowFlags wFlags = 0 );
+    ~TimeDifferenceLabel();
+
+protected:
+    void timerEvent( QTimerEvent *event );
+
+private:
+    QDateTime m_eventTime;
 };
 
 class RecentlyPlayedListWidget : public Plasma::ScrollWidget

@@ -86,6 +86,25 @@ ClickableGraphicsWidget::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
     }
 }
 
+TimeDifferenceLabel::TimeDifferenceLabel( const QDateTime &eventTime , QWidget *parent,
+                                          Qt::WindowFlags wFlags )
+    : QLabel( parent, wFlags )
+    , m_eventTime( eventTime )
+{
+    timerEvent( 0 );
+    startTimer( 60 * 1000 );
+}
+
+TimeDifferenceLabel::~TimeDifferenceLabel()
+{
+}
+
+void TimeDifferenceLabel::timerEvent( QTimerEvent *event )
+{
+    Q_UNUSED( event )
+    setText( Amarok::verboseTimeSince( m_eventTime ) );
+}
+
 RecentlyPlayedListWidget::RecentlyPlayedListWidget( QGraphicsWidget *parent )
     : Plasma::ScrollWidget( parent )
     , m_layout( new QGraphicsLinearLayout( Qt::Vertical ) )
@@ -138,7 +157,7 @@ RecentlyPlayedListWidget::addWidgetItem( const RecentlyPlayedTrackData &data )
     labelWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     labelWidget->setWidget( squeezer );
 
-    QLabel *lastPlayed = new QLabel( Amarok::verboseTimeSince( data.recentlyPlayed ) );
+    QLabel *lastPlayed = new TimeDifferenceLabel( data.recentlyPlayed );
     lastPlayed->setAttribute( Qt::WA_NoSystemBackground );
     lastPlayed->setAlignment( Qt::AlignRight );
     lastPlayed->setWordWrap( false );
