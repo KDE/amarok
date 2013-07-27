@@ -37,6 +37,7 @@
 #include <QLabel>
 #include <QStringList>
 #include <QVariant>
+#include <QTimer>
 
 ClickableGraphicsWidget::ClickableGraphicsWidget( const QString &url,
                                                   QGraphicsItem *parent,
@@ -91,17 +92,16 @@ TimeDifferenceLabel::TimeDifferenceLabel( const QDateTime &eventTime , QWidget *
     : QLabel( parent, wFlags )
     , m_eventTime( eventTime )
 {
-    timerEvent( 0 );
-    startTimer( 60 * 1000 );
+    update();
 }
 
 TimeDifferenceLabel::~TimeDifferenceLabel()
 {
 }
 
-void TimeDifferenceLabel::timerEvent( QTimerEvent *event )
+void
+TimeDifferenceLabel::update()
 {
-    Q_UNUSED( event )
     setText( Amarok::verboseTimeSince( m_eventTime ) );
 }
 
@@ -116,6 +116,9 @@ RecentlyPlayedListWidget::RecentlyPlayedListWidget( QGraphicsWidget *parent )
 
     connect( EngineController::instance(), SIGNAL(trackChanged(Meta::TrackPtr)),
              SLOT(trackChanged(Meta::TrackPtr)) );
+
+    m_updateTimer = new QTimer( this );
+    m_updateTimer->start( 20 * 1000 );
 
     // Load saved data
     const KConfigGroup group = Amarok::config( "Recently Played" );
@@ -157,11 +160,12 @@ RecentlyPlayedListWidget::addWidgetItem( const RecentlyPlayedTrackData &data )
     labelWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     labelWidget->setWidget( squeezer );
 
-    QLabel *lastPlayed = new TimeDifferenceLabel( data.recentlyPlayed );
+    TimeDifferenceLabel *lastPlayed = new TimeDifferenceLabel( data.recentlyPlayed );
     lastPlayed->setAttribute( Qt::WA_NoSystemBackground );
     lastPlayed->setAlignment( Qt::AlignRight );
     lastPlayed->setWordWrap( false );
     lastPlayed->setCursor( Qt::PointingHandCursor );
+    connect( m_updateTimer, SIGNAL(timeout()), lastPlayed, SLOT(update()) );
 
     QGraphicsProxyWidget *lastPlayedWidget = new QGraphicsProxyWidget;
     lastPlayedWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );

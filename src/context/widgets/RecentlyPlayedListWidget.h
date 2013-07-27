@@ -56,16 +56,18 @@ private:
 
 class TimeDifferenceLabel : public QLabel
 {
+    Q_OBJECT
+
 public:
     explicit TimeDifferenceLabel( const QDateTime &eventTime, QWidget *parent = 0,
                                   Qt::WindowFlags wFlags = 0 );
     ~TimeDifferenceLabel();
 
-protected:
-    void timerEvent( QTimerEvent *event );
+public slots:
+    void update();
 
 private:
-    QDateTime m_eventTime;
+    const QDateTime m_eventTime;
 };
 
 class RecentlyPlayedListWidget : public Plasma::ScrollWidget
@@ -101,6 +103,7 @@ private:
     QGraphicsLinearLayout *m_layout;
     QQueue<RecentlyPlayedTrackData> m_recentTracks;
     KIcon m_trackIcon;
+    QTimer *m_updateTimer;
 };
 
 #endif // RECENTLY_PLAYED_LIST_WIDGET_H
