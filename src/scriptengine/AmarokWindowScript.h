@@ -31,6 +31,9 @@ namespace AmarokScript
     {
         Q_OBJECT
 
+        Q_PROPERTY( bool isTrayIconShown READ isTrayIconShown )
+        Q_PROPERTY( QString activeBrowserName READ activeBrowserName )
+
         public:
             AmarokWindowScript( QScriptEngine* scriptEngine );
 
@@ -39,8 +42,9 @@ namespace AmarokScript
             void addToolsSeparator();
             bool addSettingsMenu( QString id, QString menuTitle, QString icon = "amarok" );
             void addSettingsSeparator();
-            void showBrowser( QString browser ) const;
-            //TODO: show Tray Icon
+            void showBrowser( QString browser ) const; // ANM-TODO: works?
+            void showTrayIcon( bool show );
+            // ANM-TODO dock functions
 
         signals:
             void prepareToQuit();
@@ -58,6 +62,9 @@ namespace AmarokScript
               * @return true if adding the action was successful, false otherwise
               */
             bool addMenuAction( QWeakPointer<KMenu> menu, QString id, QString menuTitle, QString menuProperty, QString icon );
+
+            QString activeBrowserName();
+            bool isTrayIconShown();
 
             QWeakPointer<KMenu> m_toolsMenu;
             QWeakPointer<KMenu> m_settingsMenu;

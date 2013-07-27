@@ -17,6 +17,7 @@
 #include "AmarokWindowScript.h"
 
 #include "ActionClasses.h"
+#include "amarokconfig.h"
 #include "core/support/Amarok.h"
 #include "App.h"
 #include "core/support/Debug.h"
@@ -113,4 +114,23 @@ AmarokWindowScript::showBrowser( QString browser ) const
         The::mainWindow()->showBrowser( "Internet" );
     if ( browser == "file" )
         The::mainWindow()->showBrowser( "FileBrowser" );
+}
+
+void
+AmarokWindowScript::showTrayIcon( bool show )
+{
+    AmarokConfig::setShowTrayIcon( show );
+    App::instance()->applySettings();
+}
+
+QString
+AmarokWindowScript::activeBrowserName()
+{
+    return The::mainWindow()->activeBrowserName();
+}
+
+bool
+AmarokWindowScript::isTrayIconShown()
+{
+    return AmarokConfig::showTrayIcon();
 }
