@@ -34,6 +34,9 @@ public:
     ~ITunesConfigWidget();
 
     QVariantMap config() const;
+
+private:
+    const QVariantMap m_config;
 };
 
 } // namespace StatSyncing

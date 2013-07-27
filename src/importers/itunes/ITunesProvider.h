@@ -19,6 +19,8 @@
 
 #include "importers/ImporterProvider.h"
 
+class QXmlStreamReader;
+
 namespace StatSyncing
 {
 
@@ -32,10 +34,18 @@ public:
 
     qint64 reliableTrackMetaData() const;
     qint64 writableTrackStatsData() const;
-
-    // Methods called only from non-main thread
     QSet<QString> artists();
     TrackList artistTracks( const QString &artistName );
+
+private:
+    void readXml( const QString &byArtist );
+    void readPlist( QXmlStreamReader &xml, const QString &byArtist );
+    void readTracks( QXmlStreamReader &xml, const QString &byArtist );
+    void readTrack( QXmlStreamReader &xml, const QString &byArtist );
+    QString readValue( QXmlStreamReader &xml );
+
+    QSet<QString> m_artists;
+    TrackList m_artistTracks;
 };
 
 } // namespace StatSyncing

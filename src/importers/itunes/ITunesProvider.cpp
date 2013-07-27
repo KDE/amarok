@@ -16,6 +16,13 @@
 
 #include "ITunesProvider.h"
 
+#include "ITunesTrack.h"
+#include "MetaValues.h"
+#include "core/support/Debug.h"
+
+#include <QFile>
+#include <QXmlStreamReader>
+
 using namespace StatSyncing;
 
 ITunesProvider::ITunesProvider( const QVariantMap &config, ImporterManager *importer )
@@ -30,23 +37,155 @@ ITunesProvider::~ITunesProvider()
 qint64
 ITunesProvider::reliableTrackMetaData() const
 {
-    return 0;
+    return Meta::valTitle | Meta::valArtist | Meta::valAlbum | Meta::valComposer
+            | Meta::valYear | Meta::valTrackNr | Meta::valDiscNr;
 }
 
 qint64
 ITunesProvider::writableTrackStatsData() const
 {
-    return 0;
+    return Meta::valRating | Meta::valLastPlayed | Meta::valPlaycount;
 }
 
 QSet<QString>
 ITunesProvider::artists()
 {
-    return QSet<QString>();
+    readXml( QString() );
+    QSet<QString> result;
+    result.swap( m_artists );
+    return result;
 }
 
 TrackList
 ITunesProvider::artistTracks( const QString &artistName )
 {
-    return TrackList();
+    readXml( artistName );
+    TrackList result;
+    result.swap( m_artistTracks );
+    return result;
+}
+
+void
+ITunesProvider::readXml( const QString &byArtist )
+{
+    QFile dbFile( m_config["dbPath"].toString() );
+    if( dbFile.open( QIODevice::ReadOnly ) )
+    {
+        QXmlStreamReader xml( &dbFile );
+        if( xml.readNextStartElement() )
+        {
+            if( xml.name() == "plist" && xml.attributes().value("version") == "1.0" )
+                readPlist( xml, byArtist );
+            else
+                xml.raiseError( "the database file is ill-formatted or version unsupported" );
+        }
+
+        if( xml.hasError() )
+            warning() << "There was an error reading" << dbFile.fileName() << ":"
+                      << xml.errorString();
+    }
+    else
+        warning() << __PRETTY_FUNCTION__ << "couldn't open" << dbFile.fileName();
+}
+
+void
+ITunesProvider::readPlist( QXmlStreamReader &xml, const QString &byArtist )
+{
+    Q_ASSERT( xml.isStartElement() && xml.name() == "plist" );
+    xml.readNextStartElement();
+    Q_ASSERT( xml.isStartElement() && xml.name() == "dict" );
+
+    while( xml.readNextStartElement() )
+    {
+        if( xml.name() == "key" )
+        {
+            if( xml.readElementText() == "Tracks" )
+                readTracks( xml, byArtist );
+        }
+        else
+            xml.skipCurrentElement();
+    }
+}
+
+void
+ITunesProvider::readTracks( QXmlStreamReader &xml, const QString &byArtist )
+{
+    Q_ASSERT( xml.isEndElement() && xml.name() == "key" );
+    xml.readNextStartElement();
+    Q_ASSERT( xml.isStartElement() && xml.name() == "dict" );
+
+    while( xml.readNextStartElement() )
+        readTrack( xml, byArtist );
+}
+
+void
+ITunesProvider::readTrack( QXmlStreamReader &xml, const QString &byArtist )
+{
+    Q_ASSERT( xml.isStartElement() && xml.name() == "key" );
+    xml.skipCurrentElement();
+    xml.readNextStartElement();
+    Q_ASSERT( xml.isStartElement() && xml.name() == "dict" );
+
+    QMap<qint64, QString> metadata;
+    QString currentArtist;
+
+    while( xml.readNextStartElement() )
+    {
+        // We're only interested in this track if it's by right artist, or if we haven't
+        // found the artist yet
+        if( xml.name() == "key"
+                 && ( currentArtist.isEmpty() || currentArtist == byArtist ) )
+        {
+            const QString type = xml.readElementText();
+
+            // If byArtist param is not set, we're only interested in track Artist
+            if( byArtist.isEmpty() )
+            {
+                if( type == "Artist" )
+                    currentArtist = readValue( xml );
+            }
+            else
+            {
+                if( type == "Name" )
+                    metadata.insert( Meta::valTitle, readValue( xml ) );
+                else if( type == "Artist" )
+                {
+                    currentArtist = readValue( xml );
+                    metadata.insert( Meta::valArtist, currentArtist );
+                }
+                else if( type == "Album" )
+                    metadata.insert( Meta::valAlbum, readValue( xml ) );
+                else if( type == "Composer" )
+                    metadata.insert( Meta::valComposer, readValue( xml ) );
+                else if( type == "Year" )
+                    metadata.insert( Meta::valYear, readValue( xml ) );
+                else if( type == "Track Number" )
+                    metadata.insert( Meta::valTrackNr, readValue( xml ) );
+                else if( type == "Disc Number" )
+                    metadata.insert( Meta::valDiscNr, readValue( xml ) );
+                else if( type == "Rating" )
+                    metadata.insert( Meta::valRating, readValue( xml ) );
+                else if( type == "Play Date UTC" )
+                    metadata.insert( Meta::valLastPlayed, readValue( xml ) );
+                else if( type == "Play Count" )
+                    metadata.insert( Meta::valLastPlayed, readValue( xml ) );
+            }
+        }
+        else
+            xml.skipCurrentElement();
+    }
+
+    if( !byArtist.isEmpty() && currentArtist == byArtist )
+        m_artistTracks << TrackPtr( new ITunesTrack( metadata ) );
+    else if( byArtist.isEmpty() )
+        m_artists << currentArtist;
+}
+
+QString
+ITunesProvider::readValue( QXmlStreamReader &xml )
+{
+    Q_ASSERT( xml.isEndElement() && xml.name() == "key" );
+    xml.readNextStartElement();
+    Q_ASSERT( xml.isStartElement() );
+    return xml.readElementText();
 }

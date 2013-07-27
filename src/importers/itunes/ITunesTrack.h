@@ -29,7 +29,7 @@ class ITunesTrack : public QObject, public Track
     Q_OBJECT
 
 public:
-    ITunesTrack();
+    ITunesTrack( const QMap<qint64, QString> &metadata );
     ~ITunesTrack();
 
     QString name() const;
@@ -45,6 +45,9 @@ public:
     QDateTime lastPlayed() const;
     int playCount() const;
     QSet<QString> labels() const;
+
+private:
+    QMap<qint64, QString> m_metadata;
 };
 
 } // namespace StatSyncing

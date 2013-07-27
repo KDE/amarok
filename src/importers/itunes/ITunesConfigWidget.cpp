@@ -18,12 +18,15 @@
 
 using namespace StatSyncing;
 
-
 ITunesConfigWidget::ITunesConfigWidget( const QVariantMap &config, QWidget *parent,
                                         Qt::WindowFlags f )
     : ProviderConfigWidget( parent, f )
+    , m_config( config )
 {
     setupUi( this );
+
+    m_targetName->setText( m_config.value( "name", "iTunes" ).toString() );
+    m_databaseLocation->setText( m_config.value( "dbPath", "" ).toString() );
 }
 
 ITunesConfigWidget::~ITunesConfigWidget()
@@ -33,5 +36,8 @@ ITunesConfigWidget::~ITunesConfigWidget()
 QVariantMap
 ITunesConfigWidget::config() const
 {
-    return QVariantMap();
+    QVariantMap cfg = m_config;
+    cfg.insert( "name", m_targetName->text() );
+    cfg.insert( "dbPath", m_databaseLocation->text() );
+    return cfg;
 }

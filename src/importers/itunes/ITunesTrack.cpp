@@ -16,10 +16,13 @@
 
 #include "ITunesTrack.h"
 
+#include "MetaValues.h"
+
 using namespace StatSyncing;
 
-ITunesTrack::ITunesTrack()
+ITunesTrack::ITunesTrack( const QMap<qint64, QString> &metadata )
     : Track()
+    , m_metadata( metadata )
 {
 }
 
@@ -30,49 +33,49 @@ ITunesTrack::~ITunesTrack()
 QString
 ITunesTrack::name() const
 {
-    return QString();
+    return m_metadata[Meta::valTitle];
 }
 
 QString
 ITunesTrack::album() const
 {
-    return QString();
+    return m_metadata[Meta::valAlbum];
 }
 
 QString
 ITunesTrack::artist() const
 {
-    return QString();
+    return m_metadata[Meta::valArtist];
 }
 
 QString
 ITunesTrack::composer() const
 {
-    return QString();
+    return m_metadata[Meta::valComposer];
 }
 
 int
 ITunesTrack::year() const
 {
-    return 0;
+    return m_metadata[Meta::valYear].toInt();
 }
 
 int
 ITunesTrack::trackNumber() const
 {
-    return 0;
+    return m_metadata[Meta::valTrackNr].toInt();
 }
 
 int
 ITunesTrack::discNumber() const
 {
-    return 0;
+    return m_metadata[Meta::valDiscNr].toInt();
 }
 
 int
 ITunesTrack::rating() const
 {
-    return 0;
+    return m_metadata[Meta::valRating].toInt() / 10;
 }
 
 QDateTime
@@ -84,13 +87,14 @@ ITunesTrack::firstPlayed() const
 QDateTime
 ITunesTrack::lastPlayed() const
 {
-    return QDateTime();
+    return QDateTime::fromString( m_metadata[Meta::valLastPlayed],
+                                  "yyyy'-'MM'-'dd'T'hh':'mm':'ss'Z'" ).toLocalTime();
 }
 
 int
 ITunesTrack::playCount() const
 {
-    return 0;
+    return m_metadata[Meta::valPlaycount].toInt();
 }
 
 QSet<QString>
