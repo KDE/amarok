@@ -46,7 +46,6 @@ Playlists::loadPlaylistFile( const KUrl &url, PlaylistFileProvider *provider )
 {
     // note: this function can be called from out of process, so don't do any
     // UI stuff from this thread.
-    DEBUG_BLOCK
     if( !url.isValid() )
     {
         error() << "url is not valid!";
@@ -141,7 +140,6 @@ Playlists::canExpand( Meta::TrackPtr track )
 PlaylistPtr
 Playlists::expand( Meta::TrackPtr track )
 {
-   //this should really be made asyncrhonous
    return Playlists::PlaylistPtr::dynamicCast( loadPlaylistFile( track->uidUrl() ) );
 }
 

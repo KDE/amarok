@@ -42,9 +42,8 @@ struct ScriptableServiceQueryMaker::Private {
 };
 
 ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, QString name )
- : DynamicServiceQueryMaker()
- , d( new Private )
-
+    : DynamicServiceQueryMaker()
+    , d( new Private )
 {
     setParent( collection );
     m_collection = collection;

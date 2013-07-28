@@ -26,13 +26,12 @@
 namespace Collections {
 
 /**
-A query maker for fetching external data
-
-	@author
-*/
+ * A query maker for fetching external data from scripred services.
+ */
 class ScriptableServiceQueryMaker : public DynamicServiceQueryMaker
 {
-Q_OBJECT
+    Q_OBJECT
+
 public:
     ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, QString name );
     ~ScriptableServiceQueryMaker();
@@ -45,9 +44,9 @@ public:
     virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 
     using QueryMaker::addMatch;
-    virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
-    virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
-    virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
+    virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
+    virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
+    virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
 
     virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
 
@@ -55,23 +54,19 @@ public:
 
 
 protected slots:
-
     void slotScriptComplete( );
 
 private slots:
-
     void fetchGenre();
     void fetchArtists();
     void fetchAlbums();
     void fetchTracks();
 
 protected:
-
     void handleResult( const Meta::GenreList &genres );
     void handleResult( const Meta::ArtistList &artists );
     void handleResult( const Meta::AlbumList &albums );
     void handleResult( const Meta::TrackList &tracks );
-
 
     ScriptableServiceCollection * m_collection;
     AmarokProcIO * m_script;
@@ -83,19 +78,8 @@ protected:
     int m_parentAlbumId;
     int m_parentArtistId;
 
-/*public slots:
-
-    void artistInsertionsComplete();
-    void albumInsertionsComplete();
-    void trackInsertionsComplete();
-*/
-
 private:
-    template<class PointerType, class ListType>
-    void emitProperResult( const ListType& list );
-
     QString m_name;
- 
 };
 
 } //namespace Collections

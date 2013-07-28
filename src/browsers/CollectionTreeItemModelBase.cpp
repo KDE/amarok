@@ -435,7 +435,7 @@ CollectionTreeItemModelBase::mimeData( const QModelIndexList &indices ) const
 }
 
 QMimeData*
-CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) const
+CollectionTreeItemModelBase::mimeData( const QList<CollectionTreeItem*> &items ) const
 {
     if ( items.isEmpty() )
         return 0;

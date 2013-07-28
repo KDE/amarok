@@ -45,7 +45,7 @@ ScriptableService::ScriptableService( const QString & name )
 
 }
 
-ScriptableService::~ ScriptableService()
+ScriptableService::~ScriptableService()
 {
     m_collection->deleteLater();
 }
@@ -97,11 +97,10 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
 
         case 0:
         {
-
-            if ( !callbackData.isEmpty() || playableUrl.isEmpty() )
+            if( !callbackData.isEmpty() || playableUrl.isEmpty() )
                 return -1;
-            
-            ScriptableServiceTrack * track = new ScriptableServiceTrack( name );
+
+            ScriptableServiceTrack *track = new ScriptableServiceTrack( name );
             track->setAlbumId( parentId );
             track->setUidUrl( playableUrl );
             track->setServiceName( m_name );

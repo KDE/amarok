@@ -66,8 +66,8 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
         virtual QStringList mimeTypes() const;
-        virtual QMimeData* mimeData( const QList<CollectionTreeItem*> &items ) const;
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
+        virtual QMimeData* mimeData( const QList<CollectionTreeItem *> &items ) const;
 
         virtual void listForLevel( int level, Collections::QueryMaker *qm, CollectionTreeItem* parent );
 
