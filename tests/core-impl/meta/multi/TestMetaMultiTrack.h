@@ -29,12 +29,17 @@ namespace Meta {
     class MultiTrack;
 }
 
-class TestMetaMultiTrack : public QObject
+class TestMetaMultiTrack : public QObject, private Playlists::PlaylistObserver
 {
 Q_OBJECT
 
 public:
     TestMetaMultiTrack();
+
+    virtual void tracksLoaded( Playlists::PlaylistPtr playlist );
+
+signals:
+    void tracksLoadedSignal( Playlists::PlaylistPtr playlist );
 
 private slots:
     void initTestCase();
@@ -66,11 +71,15 @@ class NotifyObserversWaiter : public QObject, private Meta::Observer
     signals:
         void done();
 
+    private slots:
+        void slotFilterResovled();
+
     private:
         using Observer::metadataChanged; // silence gcc warning
-        virtual void metadataChanged(Meta::TrackPtr track);
+        virtual void metadataChanged( Meta::TrackPtr track );
 
         QSet<Meta::TrackPtr> m_tracks;
+        QMutex m_mutex;
 };
 
 #endif // TESTMETAMULTITRACK_H

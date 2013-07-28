@@ -21,6 +21,7 @@
 #include "core/meta/Meta.h"
 #include "core/meta/Observer.h"
 #include "core/playlists/Playlist.h"
+#include "core-impl/meta/default/DefaultMetaTypes.h"
 
 namespace Meta
 {
@@ -30,7 +31,7 @@ namespace Meta
      *
      * @author Nikolaj Hald Nielsen <nhn@kde.org>
      */
-    class MultiTrack : public QObject, public Track, public Meta::Observer
+    class MultiTrack : public QObject, public Track, private Meta::Observer, private Playlists::PlaylistObserver
     {
         Q_OBJECT
 
@@ -46,46 +47,48 @@ namespace Meta
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type );
 
-            //forward lots of stuff:
+            // forward lots of stuff:
+#define FORWARD( Type, method, default ) Type method() const { return m_currentTrack ? m_currentTrack->method() : default; }
+            FORWARD( QString, name, QString() )
+            FORWARD( QString, prettyName, QString() )
+            FORWARD( KUrl, playableUrl, KUrl() )
+            FORWARD( QString, prettyUrl, m_playlist->uidUrl().prettyUrl() )
+            // TODO: change to m_playlist->uidUrl() unconditionally once playlist restorer can cope with it:
+            FORWARD( QString, uidUrl, m_playlist->uidUrl().url() )
+            FORWARD( QString, notPlayableReason, QString( " " ) ) // i18n once string freeze is over
 
-            //TODO: sanity checks on m_currentTrack
-            virtual QString name() const { return m_currentTrack->name(); }
-            virtual QString prettyName() const { return m_currentTrack->prettyName(); }
-            virtual KUrl playableUrl() const { return m_currentTrack->playableUrl(); }
-            virtual QString prettyUrl() const { return m_currentTrack->prettyUrl(); }
-            virtual QString uidUrl() const { return m_currentTrack->uidUrl(); }
-            virtual QString notPlayableReason() const { return m_currentTrack->notPlayableReason(); }
+            FORWARD( AlbumPtr, album, AlbumPtr( new DefaultAlbum() ) );
+            FORWARD( ArtistPtr, artist, ArtistPtr( new DefaultArtist() ) );
+            FORWARD( ComposerPtr, composer, ComposerPtr( new DefaultComposer() ) );
+            FORWARD( GenrePtr, genre, GenrePtr( new DefaultGenre() ) );
+            FORWARD( YearPtr, year, YearPtr( new DefaultYear() ) );
 
-            virtual AlbumPtr album() const { return m_currentTrack->album(); }
-            virtual ArtistPtr artist() const { return m_currentTrack->artist(); }
-            virtual ComposerPtr composer() const { return m_currentTrack->composer(); }
-            virtual GenrePtr genre() const { return m_currentTrack->genre(); }
-            virtual YearPtr year() const { return m_currentTrack->year(); }
-
-            virtual qreal bpm() const { return m_currentTrack->bpm(); }
-            virtual QString comment() const { return m_currentTrack->comment(); }
-            virtual qint64 length() const { return m_currentTrack->length(); }
-            virtual int filesize() const { return m_currentTrack->filesize(); }
-            virtual int sampleRate() const { return m_currentTrack->sampleRate(); }
-            virtual int bitrate() const { return m_currentTrack->bitrate(); }
-            virtual int trackNumber() const { return m_currentTrack->trackNumber(); }
-            virtual int discNumber() const { return m_currentTrack->discNumber(); }
-
-            virtual QString type() const { return m_currentTrack->type(); }
+            FORWARD( qreal, bpm, -1 )
+            FORWARD( QString, comment, QString() )
+            FORWARD( qint64, length, 0 )
+            FORWARD( int, filesize, 0 )
+            FORWARD( int, sampleRate, 0 )
+            FORWARD( int, bitrate, 0 )
+            FORWARD( int, trackNumber, 0 )
+            FORWARD( int, discNumber, 0 )
+            FORWARD( QString, type, QString() )
+#undef FORWARD
 
             virtual StatisticsPtr statistics();
-
-            using Observer::metadataChanged;
-            virtual void metadataChanged( Meta::TrackPtr track );
 
         signals:
             void urlChanged( const KUrl &url );
 
         private:
+            using Observer::metadataChanged;
+            using PlaylistObserver::metadataChanged;
+            virtual void metadataChanged( Meta::TrackPtr track );
+
+            virtual void trackAdded( Playlists::PlaylistPtr playlist, TrackPtr track, int position );
+
             // marked as mutable because many Playlist methods aren't const while they should be
             mutable Playlists::PlaylistPtr m_playlist;
             TrackPtr m_currentTrack;
-            int m_index;
     };
 }
 

@@ -17,7 +17,6 @@
 #include "MultiTrack.h"
 
 #include "core/meta/Statistics.h"
-#include "core/support/Debug.h"
 #include "core-impl/capabilities/multisource/MultiSourceCapabilityImpl.h"
 
 using namespace Meta;
@@ -26,13 +25,16 @@ MultiTrack::MultiTrack( Playlists::PlaylistPtr playlist )
     : QObject()
     , Track()
     , m_playlist( playlist )
-    , m_index( 0 )
 {
-    DEBUG_BLOCK
-    debug() << "playlist size: " << m_playlist->tracks().count();
-    setSource( 0 );
+    Q_ASSERT( playlist );
+    if( playlist->trackCount() < 0 )
+    {
+        PlaylistObserver::subscribeTo( playlist );
+        playlist->triggerTrackLoad();
+    }
+    if( !playlist->tracks().isEmpty() )
+        setSource( 0 );
 }
-
 
 MultiTrack::~MultiTrack()
 {
@@ -57,11 +59,10 @@ MultiTrack::setSource( int source )
         return;
 
     if( m_currentTrack )
-        unsubscribeFrom( m_currentTrack );
+        Observer::unsubscribeFrom( m_currentTrack );
 
-    m_index = source;
-    m_currentTrack = m_playlist->tracks().at( m_index );
-    subscribeTo( m_currentTrack );
+    m_currentTrack = m_playlist->tracks().at( source );
+    Observer::subscribeTo( m_currentTrack );
 
     notifyObservers();
     emit urlChanged( playableUrl() );
@@ -70,13 +71,13 @@ MultiTrack::setSource( int source )
 int
 Meta::MultiTrack::current() const
 {
-    return m_index;
+    return m_playlist->tracks().indexOf( m_currentTrack );
 }
 
 KUrl
 MultiTrack::nextUrl() const
 {
-    int index = m_index + 1;
+    int index = current() + 1;
     Meta::TrackPtr track = m_playlist->tracks().value( index );
     if( track )
     {
@@ -104,15 +105,24 @@ MultiTrack::createCapabilityInterface(Capabilities::Capability::Type type)
     }
 }
 
-Meta::StatisticsPtr Meta::MultiTrack::statistics()
+Meta::StatisticsPtr
+Meta::MultiTrack::statistics()
 {
-    return m_currentTrack->statistics();
+    return m_currentTrack ? m_currentTrack->statistics() : Track::statistics();
 }
 
 void
 Meta::MultiTrack::metadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
-    //forward changes from active tracks
+    // forward changes from active tracks
     notifyObservers();
+}
+
+void
+MultiTrack::trackAdded( Playlists::PlaylistPtr, TrackPtr, int )
+{
+    if( !m_currentTrack )
+        setSource( 0 );
+    PlaylistObserver::unsubscribeFrom( m_playlist );
 }
