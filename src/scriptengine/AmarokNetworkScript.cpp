@@ -25,6 +25,8 @@
 #include <QScriptEngine>
 #include <QTextCodec>
 
+using namespace AmarokScript;
+
 AmarokDownloadHelper *AmarokDownloadHelper::s_instance = 0;
 
 Downloader::Downloader( QScriptEngine* engine )

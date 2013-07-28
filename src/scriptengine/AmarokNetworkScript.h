@@ -30,81 +30,83 @@
 class QScriptContext;
 class QScriptEngine;
 
-//TODO: namespace...
 // TODO: SCRIPTDOX BROKEN
-class Downloader : public QObject
+namespace AmarokScript
 {
-    Q_OBJECT
+    class Downloader : public QObject
+    {
+        Q_OBJECT
 
-    public:
-        Downloader( QScriptEngine* scriptEngine );
+        public:
+            Downloader( QScriptEngine* scriptEngine );
 
-    private:
-        static QScriptValue dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
-        static QScriptValue stringDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
-        static QScriptValue init( QScriptContext* context, QScriptEngine* engine, bool stringResult );
+        private:
+            static QScriptValue dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
+            static QScriptValue stringDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
+            static QScriptValue init( QScriptContext* context, QScriptEngine* engine, bool stringResult );
 
-        QScriptEngine* m_scriptEngine;
-};
+            QScriptEngine* m_scriptEngine;
+    };
 
-Q_DECLARE_METATYPE( Downloader* )
+    // this internal class manages multiple downloads from a script.
+    // keeps track of each unique download
+    class AmarokDownloadHelper : public QObject
+    {
+        Q_OBJECT
 
-// this internal class manages multiple downloads from a script.
-// keeps track of each unique download
-class AmarokDownloadHelper : public QObject
-{
-    Q_OBJECT
+        static AmarokDownloadHelper *s_instance;
 
-    static AmarokDownloadHelper *s_instance;
+        public:
+            AmarokDownloadHelper();
 
-    public:
-        AmarokDownloadHelper();
+            static AmarokDownloadHelper *instance();
 
-        static AmarokDownloadHelper *instance();
+            // called by the wrapper class to register a new download
+            void newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
+            void newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj );
 
-        // called by the wrapper class to register a new download
-        void newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
-        void newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj );
+        private slots:
+            void resultString( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+            void resultData( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
-    private slots:
-        void resultString( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-        void resultData( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+            void requestRedirected( const KUrl &sourceUrl, const KUrl &targetUrl );
 
-        void requestRedirected( const KUrl &sourceUrl, const KUrl &targetUrl );
+        private:
+            void cleanUp( const KUrl &url );
+            void newDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot );
 
-    private:
-        void cleanUp( const KUrl &url );
-        void newDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot );
-
-        /**
-        * Template function which updates the given @p sourceUrl to the given
-        * @p targetUrl. All entries in the given hash will be copied.
-        * The old entries will be removed.
-        *
-        * @param hash The hash which contains all elements.
-        * @param sourceUrl The old URL (= the old key).
-        * @param targetUrl The new URL (= the new key).
-        */
-        template<typename T> void updateUrl( QHash< KUrl, T > &hash, const KUrl &sourceUrl, const KUrl &targetUrl )
-        {
-            // Get all entries with the source URL as key.
-            QList< T > data = hash.values( sourceUrl );
-
-            foreach( T entry, data )
+            /**
+            * Template function which updates the given @p sourceUrl to the given
+            * @p targetUrl. All entries in the given hash will be copied.
+            * The old entries will be removed.
+            *
+            * @param hash The hash which contains all elements.
+            * @param sourceUrl The old URL (= the old key).
+            * @param targetUrl The new URL (= the new key).
+            */
+            template<typename T> void updateUrl( QHash< KUrl, T > &hash, const KUrl &sourceUrl, const KUrl &targetUrl )
             {
-                // Copy each entry to a new one with the
-                // new URL as key.
-                hash[ targetUrl ] = entry;
-            }
+                // Get all entries with the source URL as key.
+                QList< T > data = hash.values( sourceUrl );
 
-            // Remove all entries which are still pointing
-            // to the source URL.
-            hash.remove( sourceUrl );
-        };
+                foreach( T entry, data )
+                {
+                    // Copy each entry to a new one with the
+                    // new URL as key.
+                    hash[ targetUrl ] = entry;
+                }
 
-        QHash<KUrl, QScriptEngine *> m_engines;
-        QHash<KUrl, QScriptValue> m_values;
-        QHash<KUrl, QString> m_encodings;
-};
+                // Remove all entries which are still pointing
+                // to the source URL.
+                hash.remove( sourceUrl );
+            };
+
+            QHash<KUrl, QScriptEngine *> m_engines;
+            QHash<KUrl, QScriptValue> m_values;
+            QHash<KUrl, QString> m_encodings;
+    };
+}
+
+Q_DECLARE_METATYPE( AmarokScript::Downloader* )
 
 #endif

@@ -51,6 +51,7 @@ class ScriptItem : public QObject
     Q_OBJECT
 public:
     ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginInfo &info );
+    virtual ~ScriptItem();
 
     QString name() const { return m_name; }
     QScriptEngine* engine() { return m_engine.data(); }

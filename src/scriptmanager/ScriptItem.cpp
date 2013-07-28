@@ -253,7 +253,7 @@ ScriptItem::initializeScriptEngine()
     new AmarokScript::AmarokScriptConfig( m_name, m_engine.data() );
     new AmarokScript::InfoScript( m_url, m_engine.data() );
     //new AmarokNetworkScript( m_engine.data() );
-    new Downloader( m_engine.data() );
+    new AmarokScript::Downloader( m_engine.data() );
 
     // backend
     SCRIPTING_DEPRECATION_INIT( new AmarokScript::AmarokCollectionScript( m_engine.data() ) );
@@ -294,4 +294,9 @@ ScriptItem::slotDeprecatedCall()
     Amarok::Components::logger()->longMessage( message );
 
     Q_ASSERT( disconnect( sender(), SIGNAL(deprecatedCall()), this, 0 ) );
+}
+
+ScriptItem::~ScriptItem()
+{
+    stop();
 }
