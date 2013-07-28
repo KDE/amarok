@@ -24,6 +24,9 @@
 class KArchiveDirectory;
 class KArchiveFile;
 class ScriptSelector;
+class QPushButton;
+class QVBoxLayout;
+
 /**
   * A widget that allows configuration of scripts
   */
@@ -48,15 +51,19 @@ private slots:
     void slotReloadScriptSelector();
     void slotUpdateScripts();
     // ANM-TODO
-    // problem - 
+    // problem -
     void slotUninstallScript();
 
 private:
     const KArchiveFile *findSpecFile( const KArchiveDirectory *dir ) const;
+    void removeDir( const QString &dirPath ) const;
 
     bool m_configChanged;
     ScriptSelector *m_selector;
     QTimer *m_timer;
+    QVBoxLayout *m_verticalLayout;
+    QPushButton *m_uninstallButton;
+    QObject *m_parent;
 };
 
 #endif // AMAROK_SCRIPTSCONFIG_H

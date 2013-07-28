@@ -193,8 +193,8 @@ ScriptManager::updateAllScripts() // SLOT
     // remove deleted scripts
     foreach( ScriptItem *item, m_scripts )
     {
-        const QString specPath = QString( "%1/script.spec" ).arg( item->url().path() );
-        if( !KPluginInfo( specPath ).isValid() )
+        const QString specPath = QString( "%1/script.spec" ).arg( QFileInfo( item->url().path() ).path() );
+        if( !QFile::exists( specPath ) )
         {
             debug() << "Removing script " << item->info().pluginName();
             item->deleteLater();
@@ -377,9 +377,14 @@ ScriptManager::loadScript( const QString& path )
     }
 
     ScriptItem *item;
-    if( !m_scripts.contains( pluginName )
-        || ( m_scripts[pluginName]->info().version() < pluginInfo.version() ) )
+    if( !m_scripts.contains( pluginName ) )
     {
+        item = new ScriptItem( this, pluginName, path, pluginInfo );
+        m_scripts[ pluginName ] = item;
+    }
+    else if( m_scripts[pluginName]->info().version() < pluginInfo.version() )
+    {
+        m_scripts[ pluginName ]->deleteLater();
         item = new ScriptItem( this, pluginName, path, pluginInfo );
         m_scripts[ pluginName ] = item;
     }
@@ -415,9 +420,10 @@ ScriptManager::scripts( const QString &category ) const
 }
 
 QString
-ScriptManager::scriptNameForEngine(const QScriptEngine* engine) const
+ScriptManager::scriptNameForEngine( const QScriptEngine *engine ) const
 {
-    foreach( const QString& name, m_scripts.keys() ) {
+    foreach( const QString &name, m_scripts.keys() )
+    {
         ScriptItem *script = m_scripts[name];
         if( script->engine() == engine )
             return name;

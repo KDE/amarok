@@ -31,18 +31,22 @@ class ScriptSelector : public KPluginSelector
         ~ScriptSelector();
 
         QString currentItem() const;
-        void addScripts( const QList<KPluginInfo> &pluginInfoList,
+        void addScripts( QList<KPluginInfo> pluginInfoList,
                          PluginLoadMethod pluginLoadMethod = ReadConfigFile,
                          const QString &categoryName = QString(),
                          const QString &categoryKey = QString(),
                          const KSharedConfig::Ptr &config = KSharedConfig::Ptr() );
-        void clear();
 
     private:
         KCategorizedView*          m_listView;
         QMap<int, QString>         m_scripts;
         int                        m_scriptCount;
 
+    private slots:
+        void slotFiltered( const QString &filter );
+
+    signals:
+        void filtered(bool);
 };
 
 #endif

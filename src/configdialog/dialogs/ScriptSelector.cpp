@@ -22,14 +22,17 @@
 #include <KLineEdit>
 #include <KMessageBox>
 
-// hacky
+// uber-hacky, this whole thing, make our own script selector?
 ScriptSelector::ScriptSelector( QWidget * parent )
     : KPluginSelector( parent )
     , m_scriptCount( 0 )
 {
     KLineEdit* lineEdit = this->findChild<KLineEdit*>();
     if( lineEdit )
+    {
         lineEdit->setClickMessage( i18n( "Search Scripts" ) );
+        connect( lineEdit, SIGNAL(textChanged(QString)), SLOT(slotFiltered(QString)) );
+    }
 
     m_listView = this->findChild<KCategorizedView*>();
 }
@@ -38,7 +41,7 @@ ScriptSelector::~ScriptSelector()
 {}
 
 void
-ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList,
+ScriptSelector::addScripts( QList<KPluginInfo> pluginInfoList,
                             PluginLoadMethod pluginLoadMethod,
                             const QString &categoryName,
                             const QString &categoryKey,
@@ -46,6 +49,8 @@ ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList,
 {
     DEBUG_BLOCK
 
+    qSort( pluginInfoList.begin(), pluginInfoList.end()
+         , []( const KPluginInfo &left, const KPluginInfo &right ){ return left.name() < right.name(); } );
     addPlugins( pluginInfoList, pluginLoadMethod, categoryName, categoryKey, config );
     foreach( const KPluginInfo &plugin, pluginInfoList )
     {
@@ -76,11 +81,13 @@ ScriptSelector::currentItem() const
     return QString();
 }
 
-void ScriptSelector::clear()
+void
+ScriptSelector::slotFiltered( const QString &filter )
 {
-    QAbstractItemModel *model = m_listView->model();
-    m_scriptCount = 0;
-    m_scripts.clear();
+    if( filter.isEmpty() )
+        emit filtered( false );
+    else
+        emit filtered( true );
 }
 
 #include "ScriptSelector.moc"
