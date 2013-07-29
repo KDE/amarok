@@ -6,4 +6,4 @@ include_directories(
 
 add_subdirectory( itunes )
 add_subdirectory( fastforward )
-
+add_subdirectory( rhythmbox )
