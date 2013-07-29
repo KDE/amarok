@@ -211,12 +211,6 @@ MetaTrackPrototype::imagePixmap( int size ) const
     return ( track && track->album() ) ? thisObject().engine()->toScriptValue( track->album()->image( size ) ) : QScriptValue();
 }
 
-QScriptValue
-MetaTrackPrototype::imagePixmap() const
-{
-    return imagePixmap( 1 );
-}
-
 bool
 MetaTrackPrototype::isValid() const
 {

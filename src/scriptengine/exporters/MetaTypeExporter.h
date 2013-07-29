@@ -68,8 +68,12 @@ namespace AmarokScript
             MetaTrackPrototype( QScriptEngine *engine );
 
         public slots:
-            QScriptValue imagePixmap( int size ) const;
-            QScriptValue imagePixmap() const;
+
+            /**
+             * Returns the image for the album, usually the cover image, if it has one,
+             * or an undefined value otherwise.
+             */
+            QScriptValue imagePixmap( int size = 1 ) const;
 
         private:
             int sampleRate() const;
