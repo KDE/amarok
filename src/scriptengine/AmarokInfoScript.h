@@ -46,9 +46,31 @@ namespace AmarokScript
             InfoScript( const KUrl& scriptUrl, QScriptEngine *engine );
 
         public slots:
+
+            /**
+             * The directory where the script's main.js file is located
+             */
             QString scriptPath() const;
+
+            /**
+             * Return the location of the specified config
+             */
             QString scriptConfigPath( const QString& name ) const;
+
+            /**
+             * Return the path to the standard icon with the given name.
+             * Icons will be searched in current icon theme and all its base themes.
+             * @param name The name of the icon, without extension. If an absolute
+             * path is supplied for this parameter, iconPath will return it
+             * directly.
+             * @param size Search icons whose size is @param size.
+             * See Info.IconSizes
+             */
             QString iconPath( const QString& name, int size ) const;
+
+            /**
+             * The current Amarok version.
+             */
             QString version() const;
 
         private:

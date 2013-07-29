@@ -42,6 +42,7 @@ namespace AmarokScript
 
         public:
             AmarokCollectionScript( AmarokScriptEngine* scriptEngine );
+
         public slots:
             int totalAlbums() const;
             int totalArtists() const;
@@ -49,12 +50,30 @@ namespace AmarokScript
             int totalGenres() const;
             int totalTracks() const;
 
-            //DEPRECATE
+            /**
+             * DEPRECATED - Use Amarok.CollectionManager.queryableCollections[0].actualLocation instead
+             * A list of locations that are part of the local collection
+             */
             QStringList collectionLocation() const;
 
+            /**
+             * Directly query the Amarok SQLDB
+             */
             QStringList query( const QString& sql ) const;
+
+            /**
+             * Escapes characters in string for use in an SQL statement.
+             */
             QString escape( const QString& sql ) const;
+
+            /**
+             * Perform a full scan.
+             */
             void scanCollection() const;
+
+            /**
+             * Perform an incremental scan.
+             */
             void scanCollectionChanges() const;
 
             /**

@@ -36,15 +36,56 @@ namespace AmarokScript
             AmarokOSDScript( QScriptEngine* scriptEngine );
 
         public slots:
+
+            /**
+             * Show an OSD for the currently playing track, even if the OSD
+             * has been disabled by the user.
+             */
             void showCurrentTrack();
+
+            /**
+             * Forces an OSD update.
+             * OSD settings changes do not take effect until the next time
+             * the OSD is shown.
+             * To show an OSD with the current settings, call show();
+             */
             void show();
+
+            /**
+             * Set the OSD duration
+             */
             void setDuration( int ms );
+
+            /**
+             * Set the OSD textcolor
+             */
             void setTextColor( const QColor &color );
+
+            /**
+             * Set the OSD's y-offset.
+             */
             void setOffset( int y );
+
+            /**
+             * Set the image to be shown in the OSD.
+             */
             void setImage( const QImage &image );
+
+            /**
+             * Set the screen on which to show the OSD.
+             */
             void setScreen( int screen );
+
+            /**
+             * Set the OSD text
+             */
             void setText( const QString &text );
-            void setRating( const short rating ); //what is this?
+
+            /**
+             * Set the number of half-stars to be shown in the OSD.
+             * Amarok must be playing a track for the stars to show.
+             */
+            void setRating( const short rating );
 
         private:
             void setOsdEnabled( bool enable );

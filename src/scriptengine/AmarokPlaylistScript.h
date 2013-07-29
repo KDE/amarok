@@ -38,28 +38,112 @@ namespace AmarokScript
             AmarokPlaylistScript( QScriptEngine* ScriptEngine );
 
         public slots:
+
+            /**
+             * Return the index of the currently playing track in the playlist.
+             */
             int activeIndex();
+
+            /**
+             * Return the number of tracks in the playlist.
+             */
             int totalTrackCount();
+
+            /**
+             * Save the current playlist in the default playlist path.
+             */
             QString saveCurrentPlaylist();
+
+            /**
+             * Load the track represented by the url and append to playlist.
+             */
             void addMedia( const QUrl &url );
+
+            /**
+             * Load the list of tracks represented by the urls and append to playlist.
+             */
             void addMediaList( const QVariantList &urls );
+
+            /**
+             * Clear the current playlist.
+             */
             void clearPlaylist();
+
+            /**
+             * Play the track at the specified index in the playlist.
+             */
             void playByIndex( int index );
+
+            /**
+             * Prepend the the track represented by the passed url and start playing it.
+             */
             void playMedia( const QUrl &url );
+
+            /**
+             * Prepend the the tracks represented by the passed urls and start playing them.
+             */
             void playMediaList( const QVariantList &urls );
+
+            /**
+             * Remove the currently playing track from the playlist.
+             */
             void removeCurrentTrack();
+
+            /**
+             * Remove the track at @param index from the playlist.
+             */
             void removeByIndex( int index );
+
+            /**
+             * Save the current playlist at the absolute path @param path.
+             */
             void savePlaylist( const QString& path );
+
+            /**
+             * Set whether to stop playing after the current track.
+             */
             void setStopAfterCurrent( bool on );
+
+            /*
+             * Indicates whether will stop playing after the current track.
+             */
             bool stopAfterCurrent();
+
+            /**
+             * Show/ Hide the playlist.
+             */
             void togglePlaylist();
+
+            /**
+             * Return a list of urls representing all the tracks in the playlist.
+             */
             QStringList filenames();
+
+            /**
+             * Return the track at the specified position in the playlist.
+             */
             Meta::TrackPtr trackAt( int row );
+
+            /**
+             * Get an unsorted list of indices of the currently selected tracks in the playlist.
+             */
             QList<int> selectedIndexes();
+
+            /**
+             * Get an unsorted list of urls of the currently selected tracks in the playlist.
+             */
             QStringList selectedFilenames();
 
         signals:
+
+            /**
+             * Emitted when tracks are added to the playlist.
+             */
             void trackInserted( int start, int end );
+
+            /**
+             * Emitted when tracks are removed from the playlist.
+             */
             void trackRemoved( int start, int end );
 
         private slots:

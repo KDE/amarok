@@ -18,25 +18,39 @@
 #define AMAROK_KNOTIFY_SCRIPT_H
 
 #include <QObject>
+#include <QPixmap>
 
-class QPixmap;
 class QScriptEngine;
 
 namespace AmarokScript
 {
     // SCRIPTDOX Amarok.Window.KNotify
+    /**
+     * KNotify is the notification subsystem within KDE, which alerts users to
+     * user-configured events within the KDE system.
+     */
     class AmarokKNotifyScript : public QObject
     {
         Q_OBJECT
+        /**
+         * Whether KNotify is enabled
+         */
         Q_PROPERTY( bool kNotifyEnabled READ kNotifyEnabled WRITE setKNotifyEnabled )
 
         public:
             AmarokKNotifyScript( QScriptEngine* scriptEngine );
 
         public slots:
+
+            /**
+             * Show notifications for the currently playing track.
+             */
             void showCurrentTrack();
-            void show(const QString &title, const QString &body);
-            void show(const QString &title, const QString &body, const QPixmap &pixmap);
+
+            /**
+             * Show a custom KNotify notification
+             */
+            void show(const QString &title, const QString &body, const QPixmap &pixmap = QPixmap() );
 
         private:
             void setKNotifyEnabled( bool enable );

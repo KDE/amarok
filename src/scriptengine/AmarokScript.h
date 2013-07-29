@@ -34,6 +34,7 @@ namespace AmarokScript
             AmarokScript( const QString &name, QScriptEngine *engine );
 
         public slots:
+
             /** Shuts down Amarok completely. */
             void quitAmarok();
 
@@ -65,6 +66,10 @@ namespace AmarokScript
               */
             bool stopScript( const QString& name ) const;
 
+            /**
+             * A list of names of the currently running scripts.
+             * Does not list scripts running in the scriptconsole!
+             */
             QStringList listRunningScripts() const;
 
         signals:

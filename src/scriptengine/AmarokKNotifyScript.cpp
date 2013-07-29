@@ -48,12 +48,6 @@ AmarokKNotifyScript::setKNotifyEnabled( bool enable )
 }
 
 void
-AmarokKNotifyScript::show( const QString &title, const QString &body )
-{
-    show( title, body, QPixmap() );
-}
-
-void
 AmarokKNotifyScript::show( const QString &title, const QString &body, const QPixmap &pixmap )
 {
     kNotify->show( title, body, pixmap );
