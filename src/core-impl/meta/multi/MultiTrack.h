@@ -74,6 +74,7 @@ namespace Meta
             FORWARD( QString, type, QString() )
 #undef FORWARD
 
+            void prepareToPlay();
             virtual StatisticsPtr statistics();
 
         signals:
@@ -81,14 +82,25 @@ namespace Meta
 
         private:
             using Observer::metadataChanged;
-            using PlaylistObserver::metadataChanged;
             virtual void metadataChanged( Meta::TrackPtr track );
 
+            using PlaylistObserver::metadataChanged;
             virtual void trackAdded( Playlists::PlaylistPtr playlist, TrackPtr track, int position );
+
+            /**
+             * Implementation for setSource. Must be called with m_lock held for writing.
+             */
+            void setSourceImpl( int source );
 
             // marked as mutable because many Playlist methods aren't const while they should be
             mutable Playlists::PlaylistPtr m_playlist;
             TrackPtr m_currentTrack;
+            /**
+             * Guards access to data members; note that m_playlist methods are considered
+             * thread-safe and the pointer itself does not change throughout life of thhis
+             * object, so mere m_playlist->someMethod() doesn't have to be guarded.
+             */
+            mutable QReadWriteLock m_lock;
     };
 }
 

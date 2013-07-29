@@ -55,14 +55,9 @@ Meta::MultiTrack::sources() const
 void
 MultiTrack::setSource( int source )
 {
-    if( source < 0 || source >= m_playlist->tracks().count() )
-        return;
-
-    if( m_currentTrack )
-        Observer::unsubscribeFrom( m_currentTrack );
-
-    m_currentTrack = m_playlist->tracks().at( source );
-    Observer::subscribeTo( m_currentTrack );
+    QWriteLocker locker( &m_lock );
+    setSourceImpl( source );
+    locker.unlock();
 
     notifyObservers();
     emit urlChanged( playableUrl() );
@@ -71,6 +66,7 @@ MultiTrack::setSource( int source )
 int
 Meta::MultiTrack::current() const
 {
+    QReadLocker locker( &m_lock );
     return m_playlist->tracks().indexOf( m_currentTrack );
 }
 
@@ -105,9 +101,18 @@ MultiTrack::createCapabilityInterface(Capabilities::Capability::Type type)
     }
 }
 
+void
+MultiTrack::prepareToPlay()
+{
+    QReadLocker locker( &m_lock );
+    if( m_currentTrack )
+        m_currentTrack->prepareToPlay();
+}
+
 Meta::StatisticsPtr
 Meta::MultiTrack::statistics()
 {
+    QReadLocker locker( &m_lock );
     return m_currentTrack ? m_currentTrack->statistics() : Track::statistics();
 }
 
@@ -122,7 +127,28 @@ Meta::MultiTrack::metadataChanged( Meta::TrackPtr track )
 void
 MultiTrack::trackAdded( Playlists::PlaylistPtr, TrackPtr, int )
 {
-    if( !m_currentTrack )
-        setSource( 0 );
     PlaylistObserver::unsubscribeFrom( m_playlist );
+
+    QWriteLocker locker( &m_lock );
+    if( !m_currentTrack )
+    {
+        setSourceImpl( 0 );
+        locker.unlock();
+
+        notifyObservers();
+        emit urlChanged( playableUrl() );
+    }
+}
+
+void
+MultiTrack::setSourceImpl( int source )
+{
+    if( source < 0 || source >= m_playlist->tracks().count() )
+        return;
+
+    if( m_currentTrack )
+        Observer::unsubscribeFrom( m_currentTrack );
+
+    m_currentTrack = m_playlist->tracks().at( source );
+    Observer::subscribeTo( m_currentTrack );
 }
