@@ -50,8 +50,13 @@ public:
 
     virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
 
-    void handleResult();
+    // ScriptableServiceQueryMaker-specific methods
 
+    /**
+     * Set to true if ScriptableServiceQueryMaker should convert tracks which are in
+     * fact playlists to Meta::MultiTrack instances to be playable. Defaults to false.
+     */
+    void setConvertToMultiTracks( bool convert );
 
 protected slots:
     void slotScriptComplete( );
@@ -80,6 +85,7 @@ protected:
 
 private:
     QString m_name;
+    bool m_convertToMultiTracks;
 };
 
 } //namespace Collections

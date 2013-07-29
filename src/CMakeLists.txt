@@ -121,6 +121,7 @@ set(libamarokurl_SRCS
 set(libscriptableservice_SRCS
     services/scriptable/ScriptableService.cpp
     services/scriptable/ScriptableServiceCollection.cpp
+    services/scriptable/ScriptableServiceCollectionTreeModel.cpp
     services/scriptable/ScriptableServiceInfoParser.cpp
     services/scriptable/ScriptableServiceManager.cpp
     services/scriptable/ScriptableServiceMeta.cpp

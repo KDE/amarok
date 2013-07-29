@@ -18,11 +18,12 @@
 #include "ScriptableServiceMeta_p.h"
 
 #include "core/meta/support/PrivateMetaRegistry.h"
-#include "ScriptableService.h"
-#include "ScriptableServiceManager.h"
+#include "core-impl/meta/multi/MultiTrack.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "services/scriptable/ScriptableService.h"
+#include "services/scriptable/ScriptableServiceManager.h"
 
 using namespace Meta;
-
 
 ScriptableServiceMetaItem::ScriptableServiceMetaItem( int level )
     : m_callbackString( QString() )
@@ -194,6 +195,25 @@ QPixmap Meta::ScriptableServiceTrack::emblem()
 QString Meta::ScriptableServiceTrack::scalableEmblem()
 {
     return  m_serviceScalableEmblem;
+}
+
+void ScriptableServiceTrack::setUidUrl( const QString &url )
+{
+    Meta::ServiceTrack::setUidUrl( url );
+
+    using namespace Playlists;
+    Meta::TrackPtr track( this );
+    PlaylistPtr playlist = canExpand( track ) ? expand( track ) : PlaylistPtr();
+    if( playlist )
+        // since this is a playlist masqueurading as a single track, make a MultiTrack out of it:
+        m_playableTrack = Meta::TrackPtr( new Meta::MultiTrack( playlist ) );
+    else
+        m_playableTrack = TrackPtr();
+}
+
+TrackPtr ScriptableServiceTrack::playableTrack() const
+{
+    return m_playableTrack ? m_playableTrack : TrackPtr( const_cast<ScriptableServiceTrack *>( this ) );
 }
 
 

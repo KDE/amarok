@@ -22,6 +22,7 @@
 #include "browsers/servicebrowser/ServiceBrowser.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "services/scriptable/ScriptableServiceCollectionTreeModel.h"
 #include "services/scriptable/ScriptableServiceInfoParser.h"
 #include "widgets/SearchWidget.h"
 
@@ -100,7 +101,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             if( !callbackData.isEmpty() || playableUrl.isEmpty() )
                 return -1;
 
-            ScriptableServiceTrack *track = new ScriptableServiceTrack( name );
+            KSharedPtr<ScriptableServiceTrack> track( new ScriptableServiceTrack( name ) );
             track->setAlbumId( parentId );
             track->setUidUrl( playableUrl );
             track->setServiceName( m_name );
@@ -115,7 +116,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
                 track->setServiceScalableEmblem( m_customScalableEmblem );
             else
                 track->setServiceEmblem( KStandardDirs::locate( "data", "amarok/images/emblem-scripted-scalable.svgz" ) );
-            
+
             if ( !albumOverride.isEmpty() )
                 track->setAlbumName( albumOverride );
             if ( !artistOverride.isEmpty() )
@@ -128,8 +129,8 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
                 track->setYearNumber( yearOverride );
             if ( !coverUrl.isEmpty() )
                 track->setCustomAlbumCoverUrl( coverUrl );
-            
-            return addTrack( track );
+
+            return addTrack( track.data() );
             break;
             
         } case 1:
@@ -377,7 +378,7 @@ void ScriptableService::polish()
                 return;
         }
 
-        m_contentView->setModel( new SingleCollectionTreeItemModel( m_collection, viewLevels ) );
+        m_contentView->setModel( new ScriptableServiceCollectionTreeModel( m_collection, viewLevels ) );
         m_polished = true;
 
     }

@@ -81,6 +81,16 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
         void setCustomAlbumCoverUrl( const QString &coverurl );
 
         virtual QString collectionName() const { return m_serviceName; }
+        virtual void setUidUrl( const QString &url );
+
+        /**
+         * If this track is in fact a remote playlist, return Meta::MultiTrack that wraps
+         * it here, else return pointer to self.
+         */
+        Meta::TrackPtr playableTrack() const;
+
+    private:
+        Meta::TrackPtr m_playableTrack;
 };
 
 class ScriptableServiceAlbum : public Meta::ServiceAlbumWithCover, public ScriptableServiceMetaItem
