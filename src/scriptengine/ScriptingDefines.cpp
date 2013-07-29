@@ -16,13 +16,40 @@
 
 #include "ScriptingDefines.h"
 
+#include "core/support/Debug.h"
+
 using namespace AmarokScript;
 
-ScriptingBase::ScriptingBase( QObject *parent )
-: QObject( parent )
-{}
+AmarokScriptEngine::AmarokScriptEngine( QObject *parent )
+: QScriptEngine(parent)
+, internalObject( "UndocumentedAmarokScriptingInternals" )
+{
+    QScriptValue scriptObject = newQObject( this, QtOwnership,
+                                            ExcludeChildObjects | ExcludeSuperClassContents );
+    globalObject().setProperty( internalObject, scriptObject, QScriptValue::ReadOnly );
+}
 
-ScriptingBase::~ScriptingBase()
+void
+AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property )
+{
+    const QString objName = QString( "%1%2" ).arg( name ).arg( qrand() );
+    globalObject().property( internalObject ). setProperty( objName, property, QScriptValue::ReadOnly | QScriptValue::SkipInEnumeration );
+    const QString command = "Object.defineProperty( " + parent +", \"" + name
+                            + "\", {get : function(){ var iobj=" + internalObject+"; iobj.slotDeprecatedCall(\""
+                            + parent + "." + name +"\"); return iobj." + objName + "; },\
+                                                                        enumerable : false,\
+                                                                        configurable : false});";
+    evaluate( command );
+}
+
+void
+AmarokScriptEngine::slotDeprecatedCall( const QString &call )
+{
+    warning() << "Deprecated function " + call;
+    emit deprecatedCall( call );
+}
+
+AmarokScriptEngine::~AmarokScriptEngine()
 {}
 
 #include "ScriptingDefines.moc"

@@ -26,19 +26,23 @@
 
 #include <QScriptEngine>
 
+#define SCRIPTING_DEPRECATED( x ) \
+                                    AmarokScriptEngine *amarokScriptEngine = dynamic_cast<AmarokScriptEngine*>(parent()); \
+                                    if( amarokScriptEngine ) amarokScriptEngine->slotDeprecatedCall( x );
+
 using namespace AmarokScript;
 
 using Collections::Collection;
 using Collections::CollectionList;
 using Collections::QueryMaker;
 
-AmarokCollectionScript::AmarokCollectionScript( QScriptEngine *engine )
-    : ScriptingBase( engine )
+AmarokCollectionScript::AmarokCollectionScript( AmarokScriptEngine *engine )
+    : QObject( engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
     //deprecate
-    engine->globalObject().property( "Amarok" ).setProperty( "Collection", scriptObject );
+    engine->setDeprecatedProperty( "Amarok", "Collection", scriptObject );
 
     engine->globalObject().property( "Amarok" ).setProperty( "CollectionManager", scriptObject );
 
@@ -104,7 +108,7 @@ AmarokCollectionScript::totalTracks() const
 QStringList
 AmarokCollectionScript::collectionLocation() const
 {
-    SCRIPTING_DEPRECATED
+    SCRIPTING_DEPRECATED( "collectionLocation" )
     Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
     QStringList result = location->actualLocation();
     delete location;
@@ -114,14 +118,12 @@ AmarokCollectionScript::collectionLocation() const
 QStringList
 AmarokCollectionScript::query( const QString& sql ) const
 {
-    SCRIPTING_DEPRECATED
     return CollectionManager::instance()->sqlStorage()->query( sql );
 }
 
 QString
 AmarokCollectionScript::escape( const QString& sql ) const
 {
-    SCRIPTING_DEPRECATED
     return CollectionManager::instance()->sqlStorage()->escape( sql );
 }
 

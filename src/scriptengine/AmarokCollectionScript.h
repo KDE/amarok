@@ -36,12 +36,12 @@ namespace AmarokScript
      * Previously Amarok.Collection
      */
     // SCRIPTDOX Amarok.CollectionManager
-    class AmarokCollectionScript : public ScriptingBase
+    class AmarokCollectionScript : public QObject
     {
         Q_OBJECT
 
         public:
-            AmarokCollectionScript( QScriptEngine* scriptEngine );
+            AmarokCollectionScript( AmarokScriptEngine* scriptEngine );
         public slots:
             int totalAlbums() const;
             int totalArtists() const;

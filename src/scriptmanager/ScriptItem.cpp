@@ -51,6 +51,7 @@
 #include "scriptengine/exporters/MetaTypeExporter.h"
 #include "scriptengine/exporters/QueryMakerExporter.h"
 #include "scriptengine/ScriptImporter.h"
+#include "scriptengine/ScriptingDefines.h"
 #include "ScriptManager.h"
 
 #include <KStandardDirs>
@@ -237,9 +238,9 @@ void
 ScriptItem::initializeScriptEngine()
 {
     DEBUG_BLOCK
-    #define SCRIPTING_DEPRECATION_INIT(prototype) connect( (prototype), SIGNAL(deprecatedCall()), this, SLOT(slotDeprecatedCall()) );
 
-    m_engine = new QScriptEngine( this );
+    m_engine = new AmarokScript::AmarokScriptEngine( this );
+    connect( m_engine.data(), SIGNAL(deprecatedCall(QString)), this, SLOT(slotDeprecatedCall(QString)) );
     connect( m_engine.data(), SIGNAL(signalHandlerException(QScriptValue)), this,
              SIGNAL(signalHandlerException(QScriptValue)));
     m_engine.data()->setProcessEventsInterval( 50 );
@@ -256,7 +257,7 @@ ScriptItem::initializeScriptEngine()
     new AmarokScript::Downloader( m_engine.data() );
 
     // backend
-    SCRIPTING_DEPRECATION_INIT( new AmarokScript::AmarokCollectionScript( m_engine.data() ) );
+    new AmarokScript::AmarokCollectionScript( m_engine.data() );
     new AmarokScript::AmarokEngineScript( m_engine.data() );
 
     // UI
@@ -285,15 +286,18 @@ ScriptItem::initializeScriptEngine()
 }
 
 void
-ScriptItem::slotDeprecatedCall()
+ScriptItem::slotDeprecatedCall( const QString &call )
 {
+    Q_UNUSED( call )
+    disconnect( sender(), SIGNAL(deprecatedCall(QString)), this, 0 );
+    if( !AmarokConfig::enableDeprecationWarnings() )
+        return;
+
     QString message = i18nc( "%1 is the name of the offending script, %2 the name of the script author, and %3 the author's email"
                             , "The script %1 uses deprecated scripting API calls. Please contact the script"
                             " author, %2 at %3, and ask him to upgrade it before the next Amarok release."
                             , m_info.name(), m_info.author(), m_info.email() );
     Amarok::Components::logger()->longMessage( message );
-
-    Q_ASSERT( disconnect( sender(), SIGNAL(deprecatedCall()), this, 0 ) );
 }
 
 ScriptItem::~ScriptItem()

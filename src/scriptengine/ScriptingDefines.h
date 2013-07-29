@@ -23,19 +23,26 @@
 
 namespace AmarokScript
 {
-    class ScriptingBase : public QObject
+    class AmarokScriptEngine : public QScriptEngine
     {
         Q_OBJECT
 
-        protected:
-            ScriptingBase( QObject *parent = 0 );
-            virtual ~ScriptingBase();
+        public:
+            AmarokScriptEngine( QObject *parent );
+            virtual ~AmarokScriptEngine();
+
+            void setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property );
+            QString setUndocumentedProperty( const QString &name, const QScriptValue &property );;
+
+        private:
+            const QString internalObject;
+
+        public slots:
+            void slotDeprecatedCall( const QString &call );
 
         signals:
-            void deprecatedCall() const;
+            void deprecatedCall(QString);
     };
-
-    #define SCRIPTING_DEPRECATED emit deprecatedCall();
 
     template <class Container>
     QScriptValue toScriptArray( QScriptEngine *engine, const Container &container )

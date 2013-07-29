@@ -21,6 +21,7 @@
 
 #include "amarok_export.h"
 #include "scriptengine/AmarokScriptableServiceScript.h"
+#include "scriptengine/ScriptingDefines.h"
 #include "statusbar/PopupWidget.h"
 
 #include <KPluginInfo>
@@ -54,7 +55,7 @@ public:
     virtual ~ScriptItem();
 
     QString name() const { return m_name; }
-    QScriptEngine* engine() { return m_engine.data(); }
+    AmarokScript::AmarokScriptEngine* engine() { return m_engine.data(); }
     AmarokScript::ScriptableServiceScript* service() { return m_service.data(); }
     KUrl url() const { return m_url; }
     KPluginInfo info() const { return m_info; }
@@ -67,13 +68,13 @@ public:
 public slots:
     void stop();
 
-private slots:
-    void timerEvent ( QTimerEvent *event );
-
     /**
      * Warn the user about scripts calling deprecated API calls
      */
-    void slotDeprecatedCall();
+    virtual void slotDeprecatedCall( const QString &call );
+
+private slots:
+    void timerEvent ( QTimerEvent *event );
 
 signals:
     void signalHandlerException(QScriptValue);
@@ -84,21 +85,21 @@ protected:
      * Initialize QScriptEngine and load wrapper classes
      */
     virtual void initializeScriptEngine();
-    QStringList                                     m_log;
-    QStringList                                     m_output;
+    QStringList                                         m_log;
+    QStringList                                         m_output;
 
 private:
-    QString                                         m_name;
-    KUrl                                            m_url;
-    KPluginInfo                                     m_info;
-    QWeakPointer<QScriptEngine>                     m_engine;
+    QString                                             m_name;
+    KUrl                                                m_url;
+    KPluginInfo                                         m_info;
+    QWeakPointer<AmarokScript::AmarokScriptEngine>      m_engine;
     /** Currently activated in the Script Manager */
-    bool                                            m_running;
-    bool                                            m_evaluating;
-    QWeakPointer<AmarokScript::ScriptableServiceScript>           m_service;
-    int                                             m_runningTime;
-    int                                             m_timerId;
-    QWeakPointer<ScriptTerminatorWidget>            m_popupWidget;
+    bool                                                m_running;
+    bool                                                m_evaluating;
+    QWeakPointer<AmarokScript::ScriptableServiceScript> m_service;
+    int                                                 m_runningTime;
+    int                                                 m_timerId;
+    QWeakPointer<ScriptTerminatorWidget>                m_popupWidget;
 };
 
 #endif /* AMAROK_SCRIPTITEM_H */
