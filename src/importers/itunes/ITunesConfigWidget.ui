@@ -2,7 +2,7 @@
 <ui version="4.0">
  <class>ITunesConfigWidget</class>
  <widget class="QWidget" name="ITunesConfigWidget">
-  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1" columnminimumwidth="100,200">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1" columnminimumwidth="100,250">
    <item row="2" column="1">
     <widget class="KUrlRequester" name="m_databaseLocation">
      <property name="filter">

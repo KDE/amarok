@@ -47,7 +47,7 @@ ITunesManager::info() const
 QString
 ITunesManager::prettyName() const
 {
-    return i18n( "iTunes" );
+    return i18n( "Apple iTunes" );
 }
 
 QString

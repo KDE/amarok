@@ -44,7 +44,8 @@ ITunesProvider::reliableTrackMetaData() const
 qint64
 ITunesProvider::writableTrackStatsData() const
 {
-    return Meta::valRating | Meta::valLastPlayed | Meta::valPlaycount;
+    //TODO: Write capabilities
+    return 0;
 }
 
 QSet<QString>

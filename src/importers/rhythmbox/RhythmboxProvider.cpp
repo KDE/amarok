@@ -44,7 +44,8 @@ RhythmboxProvider::reliableTrackMetaData() const
 qint64
 RhythmboxProvider::writableTrackStatsData() const
 {
-    return Meta::valRating | Meta::valLastPlayed | Meta::valPlaycount;
+    //TODO: Write capabilities
+    return 0;
 }
 
 QSet<QString>
