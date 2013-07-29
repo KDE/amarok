@@ -156,7 +156,14 @@ LastFmServiceConfig::openWalletToRead()
     if( m_wallet )
         disconnect( m_wallet, 0, this, 0 );
     else
+    {
         openWalletAsync();
+        if( !m_wallet ) // can happen, see bug 322964
+        {
+            slotWalletOpenedToRead( false );
+            return;
+        }
+    }
     connect( m_wallet, SIGNAL(walletOpened(bool)), SLOT(slotWalletOpenedToRead(bool)) );
 }
 
@@ -172,7 +179,14 @@ LastFmServiceConfig::openWalletToWrite()
     if( m_wallet )
         disconnect( m_wallet, 0, this, 0 );
     else
+    {
         openWalletAsync();
+        if( !m_wallet ) // can happen, see bug 322964
+        {
+            slotWalletOpenedToWrite( false );
+            return;
+        }
+    }
     connect( m_wallet, SIGNAL(walletOpened(bool)), SLOT(slotWalletOpenedToWrite(bool)) );
 }
 
@@ -195,17 +209,18 @@ LastFmServiceConfig::prepareOpenedWallet()
 void
 LastFmServiceConfig::slotWalletOpenedToRead( bool success )
 {
-    Q_ASSERT( m_wallet );
     if( !success )
     {
         warning() << __PRETTY_FUNCTION__ << "failed to open wallet";
         QString message = i18n( "Failed to open KDE Wallet to read Last.fm credentials" );
         Amarok::Components::logger()->longMessage( message, Amarok::Logger::Warning );
-        m_wallet->deleteLater(); // no point in having invalid wallet around
+        if( m_wallet )
+            m_wallet->deleteLater(); // no point in having invalid wallet around
         m_wallet = 0;
         return;
     }
 
+    Q_ASSERT( m_wallet );
     prepareOpenedWallet();
 
     if( m_wallet->readPassword( "lastfm_password", m_password ) > 0 )
@@ -221,15 +236,16 @@ LastFmServiceConfig::slotWalletOpenedToRead( bool success )
 void
 LastFmServiceConfig::slotWalletOpenedToWrite( bool success )
 {
-    Q_ASSERT( m_wallet );
     if( !success )
     {
         askAboutMissingKWallet();
-        m_wallet->deleteLater(); // no point in having invalid wallet around
+        if( m_wallet )
+            m_wallet->deleteLater(); // no point in having invalid wallet around
         m_wallet = 0;
         return;
     }
 
+    Q_ASSERT( m_wallet );
     prepareOpenedWallet();
 
     if( m_wallet->writePassword( "lastfm_password", m_password ) > 0 )

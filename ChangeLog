@@ -14,6 +14,8 @@ VERSION 2.8
    * Amarok now uses FindFFMpeg.cmake from kdelibs
 
   BUGFIXES:
+   * Definitely fix a bug where storing Last.fm credentials in plain-text isn't offered
+     when KWallet is disabled. (BR 315306)
    * Radio streams from scripted services are now instantly playable. (BR 320718)
    * Recently Played List widget now keeps its own time for tracks instead of relying on
      the Last Played statistic. (BR 302485)
