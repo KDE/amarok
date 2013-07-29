@@ -34,11 +34,20 @@ AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString 
 {
     const QString objName = QString( "%1%2" ).arg( name ).arg( qrand() );
     globalObject().property( internalObject ). setProperty( objName, property, QScriptValue::ReadOnly | QScriptValue::SkipInEnumeration );
-    const QString command = "Object.defineProperty( " + parent +", \"" + name
+
+    // less readable?
+    /*const QString command = "Object.defineProperty( " + parent +", \"" + name
                             + "\", {get : function(){ var iobj=" + internalObject+"; iobj.slotDeprecatedCall(\""
                             + parent + "." + name +"\"); return iobj." + objName + "; },\
-                                                                        enumerable : false,\
-                                                                        configurable : false});";
+                                                                        enumerable : true,\
+                                                                        configurable : false});";*/
+
+    const QString command = QString( "Object.defineProperty( %1, \"%2\", {get : function(){ var iobj= %3; iobj.slotDeprecatedCall(\""
+                                                                            " %1.%2 \"); return iobj.%4; },\
+                                                                            enumerable : true,\
+                                                                            configurable : false});" )
+                                    .arg( parent ).arg( name ).arg( internalObject ).arg( objName );
+    warning() << command;
     evaluate( command );
 }
 
