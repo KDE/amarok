@@ -68,12 +68,21 @@ SortWidget::SortWidget( QWidget *parent )
         foreach( const QString &level, levels )
         {
             QStringList levelParts = level.split( '_' );
-            if( levelParts.count() > 2 )
+	    /*
+	     * Check whether the configuration is valid. If indexOf
+	     * returns -1, the entry is corrupted. We can't use columnForName
+	     * here, as it will do a static_cast, which is UB when indexOf is -1
+	     * as there's no corresponding enum value
+	     * (C++ standard 5.2.9 Static cast [expr.static.cast] paragraph 7)
+	     */
+            if( levelParts.count() > 2
+	        || ( Playlist::PlaylistColumnInfos::internalNames().
+                               indexOf( levelParts.value(0) ) == -1) )
                 warning() << "Playlist sorting load error: Invalid sort level " << level;
-            if( levelParts.at( 1 ) == QString( "asc" ) )
-                addLevel( levelParts.at( 0 ), Qt::AscendingOrder );
-            else if( levelParts.at( 1 ) == QString( "des" ) )
-                addLevel( levelParts.at( 0 ), Qt::DescendingOrder );
+            else if( levelParts.value( 1 ) == QString( "asc" ) )
+                addLevel( levelParts.value( 0 ), Qt::AscendingOrder );
+            else if( levelParts.value( 1 ) == QString( "des" ) )
+                addLevel( levelParts.value( 0 ), Qt::DescendingOrder );
             else
                 warning() << "Playlist sorting load error: Invalid sort order for level " << level;
         }
