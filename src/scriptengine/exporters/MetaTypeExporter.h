@@ -18,95 +18,101 @@
 #define METATYPE_EXPORTER_H
 
 #include "amarok_export.h"
-
 #include <QObject>
 #include <QScriptable>
 #include <QScriptValue>
 
-#ifdef DEBUG
-    class AMAROK_EXPORT
-#else
-    class
-#endif
-MetaTrackPrototype : public QObject, protected QScriptable
+//class QScriptEngine;
+
+//TEMP
+#include <QScriptEngine>
+namespace AmarokScript
 {
-    Q_OBJECT
+    #ifdef DEBUG
+        class AMAROK_EXPORT
+    #else
+        class
+    #endif
+    MetaTrackPrototype : public QObject, protected QScriptable
+    {
+        Q_OBJECT
 
-    Q_PROPERTY( QString title WRITE setTitle READ title )
-    Q_PROPERTY( int sampleRate READ sampleRate )
-    Q_PROPERTY( int bitrate READ bitrate )
-    Q_PROPERTY( double score WRITE setScore READ score )
-    Q_PROPERTY( int rating WRITE setRating READ rating )
-    Q_PROPERTY( bool inCollection READ inCollection )
-    Q_PROPERTY( QString type READ type )
-    Q_PROPERTY( int length READ length )
-    Q_PROPERTY( int fileSize READ fileSize )
-    Q_PROPERTY( int trackNumber WRITE setTrackNumber READ trackNumber )
-    Q_PROPERTY( int discNumber WRITE setDiscNumber READ discNumber )
-    Q_PROPERTY( int playCount READ playCount )
-    Q_PROPERTY( bool playable READ playable )
-    Q_PROPERTY( QString album WRITE setAlbum READ album )
-    Q_PROPERTY( QString artist WRITE setArtist READ artist )
-    Q_PROPERTY( QString composer WRITE setComposer READ composer )
-    Q_PROPERTY( QString genre WRITE setGenre READ genre )
-    Q_PROPERTY( int year WRITE setYear READ year )
-    Q_PROPERTY( QString comment WRITE setComment READ comment )
-    Q_PROPERTY( QString path READ path )
-    Q_PROPERTY( bool isValid READ isValid )
-    Q_PROPERTY( bool isEditable READ isEditable )
-    Q_PROPERTY( QString lyrics WRITE setLyrics READ lyrics )
-    Q_PROPERTY( QString imageUrl WRITE setImageUrl READ imageUrl )
-    Q_PROPERTY( QString url READ url )
-    Q_PROPERTY( double bpm READ bpm ) // setter not yet available in Meta::Track
+        Q_PROPERTY( QString title WRITE setTitle READ title )
+        Q_PROPERTY( int sampleRate READ sampleRate )
+        Q_PROPERTY( int bitrate READ bitrate )
+        Q_PROPERTY( double score WRITE setScore READ score )
+        Q_PROPERTY( int rating WRITE setRating READ rating )
+        Q_PROPERTY( bool inCollection READ inCollection )
+        Q_PROPERTY( QString type READ type )
+        Q_PROPERTY( int length READ length )
+        Q_PROPERTY( int fileSize READ fileSize )
+        Q_PROPERTY( int trackNumber WRITE setTrackNumber READ trackNumber )
+        Q_PROPERTY( int discNumber WRITE setDiscNumber READ discNumber )
+        Q_PROPERTY( int playCount READ playCount )
+        Q_PROPERTY( bool playable READ playable )
+        Q_PROPERTY( QString album WRITE setAlbum READ album )
+        Q_PROPERTY( QString artist WRITE setArtist READ artist )
+        Q_PROPERTY( QString composer WRITE setComposer READ composer )
+        Q_PROPERTY( QString genre WRITE setGenre READ genre )
+        Q_PROPERTY( int year WRITE setYear READ year )
+        Q_PROPERTY( QString comment WRITE setComment READ comment )
+        Q_PROPERTY( QString path READ path )
+        Q_PROPERTY( bool isValid READ isValid )
+        Q_PROPERTY( bool isEditable READ isEditable )
+        Q_PROPERTY( QString lyrics WRITE setLyrics READ lyrics )
+        Q_PROPERTY( QString imageUrl WRITE setImageUrl READ imageUrl )
+        Q_PROPERTY( QString url READ url )
+        Q_PROPERTY( double bpm READ bpm ) // setter not yet available in Meta::Track
 
-    public:
-        MetaTrackPrototype( QObject *parent );
+        public:
+            MetaTrackPrototype( QScriptEngine *engine );
 
-    public slots:
-        QScriptValue imagePixmap( int size ) const;
-        QScriptValue imagePixmap() const;
+        public slots:
+            QScriptValue imagePixmap( int size ) const;
+            QScriptValue imagePixmap() const;
 
-    private:
-        int sampleRate() const;
-        int bitrate() const;
-        double score() const;
-        int rating() const;
-        bool inCollection() const;
-        QString type() const;
-        qint64 length() const;
-        int fileSize() const;
-        int trackNumber() const;
-        int discNumber() const;
-        int playCount() const;
-        bool playable() const;
-        QString album() const;
-        QString artist() const;
-        QString composer() const;
-        QString genre() const;
-        int year() const;
-        QString comment() const;
-        QString path() const;
-        bool isValid() const;
-        bool isEditable() const;
-        QString lyrics() const;
-        QString title() const;
-        QString imageUrl() const;
-        QString url() const;
-        double bpm() const;
+        private:
+            int sampleRate() const;
+            int bitrate() const;
+            double score() const;
+            int rating() const;
+            bool inCollection() const;
+            QString type() const;
+            qint64 length() const;
+            int fileSize() const;
+            int trackNumber() const;
+            int discNumber() const;
+            int playCount() const;
+            bool playable() const;
+            QString album() const;
+            QString artist() const;
+            QString composer() const;
+            QString genre() const;
+            int year() const;
+            QString comment() const;
+            QString path() const;
+            bool isValid() const;
+            bool isEditable() const;
+            QString lyrics() const;
+            QString title() const;
+            QString imageUrl() const;
+            QString url() const;
+            double bpm() const;
 
-        void setScore( double score );
-        void setRating( int rating );
-        void setTrackNumber( int number );
-        void setDiscNumber( int number );
-        void setAlbum( const QString &album );
-        void setArtist( const QString &artist );
-        void setComposer( const QString &composer );
-        void setGenre( const QString &genre );
-        void setYear( int year );
-        void setComment( const QString &comment );
-        void setLyrics( const QString &lyrics );
-        void setTitle( const QString& name );
-        void setImageUrl( const QString& imageUrl );
-};
+            void setScore( double score );
+            void setRating( int rating );
+            void setTrackNumber( int number );
+            void setDiscNumber( int number );
+            void setAlbum( const QString &album );
+            void setArtist( const QString &artist );
+            void setComposer( const QString &composer );
+            void setGenre( const QString &genre );
+            void setYear( int year );
+            void setComment( const QString &comment );
+            void setLyrics( const QString &lyrics );
+            void setTitle( const QString& name );
+            void setImageUrl( const QString& imageUrl );
+    };
+}
 
 #endif
