@@ -118,12 +118,13 @@ MountPointManager::createDeviceFactories()
             m_remoteFactories.append( factory );
         else //FIXME max: better error message
             debug() << "Unknown DeviceHandlerFactory";
-
-        Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageAccess );
-        QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
-        foreach( const Solid::Device &device, devices )
-            createHandlerFromDevice( device, device.udi() );
     }
+
+    Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageAccess );
+    QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
+    foreach( const Solid::Device &device, devices )
+        createHandlerFromDevice( device, device.udi() );
+
     m_ready = true;
     handleMusicLocation();
 }
