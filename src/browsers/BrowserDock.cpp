@@ -43,6 +43,7 @@ BrowserDock::BrowserDock( QWidget *parent )
     setWidget( m_mainWidget );
     m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
     m_mainWidget->setFrameShape( QFrame::NoFrame );
+    m_mainWidget->setMinimumWidth( 200 );
     m_mainWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
     m_mainWidget->setFocus( Qt::ActiveWindowFocusReason );
 

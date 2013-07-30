@@ -298,6 +298,10 @@ MainWindow::init()
         m_browserDock.data()->list()->addCategory( The::podcastCategory() );
         PERF_LOG( "Created Podcast Category" )
 
+        // If Amarok is started for the first time, set initial dock widget sizes
+        if( !Amarok::config( "MainWindow" ).hasKey( "State" ) )
+            QTimer::singleShot( 0, this, SLOT(setDefaultDockSizes()) );
+
         PERF_LOG( "finished MainWindow::init" )
     }
 
@@ -1287,29 +1291,36 @@ MainWindow::setLayoutLocked( bool locked )
 void
 MainWindow::resetLayout()
 {
-    DEBUG_BLOCK
-
     // Store current state, so that we can undo the operation
     const QByteArray state = saveState();
 
-    { // Remove all dock widgets, then add them again. This resets their state completely.
-        removeDockWidget( m_browserDock.data() );
-        removeDockWidget( m_contextDock.data() );
-        removeDockWidget( m_playlistDock.data() );
+    // Remove all dock widgets, then add them again. This resets their state completely.
+    removeDockWidget( m_browserDock.data() );
+    removeDockWidget( m_contextDock.data() );
+    removeDockWidget( m_playlistDock.data() );
 
-        addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
-        addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
-        addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock.data(), Qt::Horizontal );
+    addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
+    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
+    addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock.data(), Qt::Horizontal );
 
-        m_browserDock.data()->setFloating( false );
-        m_contextDock.data()->setFloating( false );
-        m_playlistDock.data()->setFloating( false );
+    m_browserDock.data()->setFloating( false );
+    m_contextDock.data()->setFloating( false );
+    m_playlistDock.data()->setFloating( false );
 
-        m_browserDock.data()->show();
-        m_contextDock.data()->show();
-        m_playlistDock.data()->show();
-    }
+    m_browserDock.data()->show();
+    m_contextDock.data()->show();
+    m_playlistDock.data()->show();
 
+    // Now set Amarok's default dockwidget sizes
+    setDefaultDockSizes();
+
+    if( KMessageBox::warningContinueCancel( this, i18n( "Apply this layout change?" ), i18n( "Reset Layout" ) ) == KMessageBox::Cancel )
+        restoreState( state );
+}
+
+void
+MainWindow::setDefaultDockSizes() // SLOT
+{
     int totalWidgetWidth = contentsRect().width();
 
     //get the width of the splitter handles, we need to subtract these...
@@ -1328,14 +1339,13 @@ MainWindow::resetLayout()
     m_browserDock.data()->setFixedWidth( widgetWidth * 0.65 );
     m_contextDock.data()->setFixedWidth( widgetWidth * 1.7 + leftover );
     m_playlistDock.data()->setFixedWidth( widgetWidth * 0.65 );
-    this->layout()->activate();
+
+    // Important: We need to activate the layout we have just set
+    layout()->activate();
 
     m_browserDock.data()->setMinimumWidth( mins[0] ); m_browserDock.data()->setMaximumWidth( maxs[0] );
     m_contextDock.data()->setMinimumWidth( mins[1] ); m_contextDock.data()->setMaximumWidth( maxs[1] );
     m_playlistDock.data()->setMinimumWidth( mins[2] ); m_playlistDock.data()->setMaximumWidth( maxs[2] );
-
-    if( KMessageBox::warningContinueCancel( this, i18n( "Apply this layout change?" ), i18n( "Reset Layout" ) ) == KMessageBox::Cancel )
-        restoreState( state );
 }
 
 bool

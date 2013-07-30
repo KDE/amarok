@@ -135,6 +135,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void showReportBug();
 
     private slots:
+        void setDefaultDockSizes();
+
         void slotLoveTrack();
         void slotBanTrack();
 

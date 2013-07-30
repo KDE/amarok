@@ -35,6 +35,7 @@ ContextDock::ContextDock( QWidget *parent )
     setContentsMargins( 0, 0, 0, 0 );
 
     m_mainWidget = new KVBox( this );
+    m_mainWidget->setMinimumWidth( 400 );
     m_mainWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_mainWidget->setSpacing( 0 );
     m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
