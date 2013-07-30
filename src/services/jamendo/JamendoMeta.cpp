@@ -195,6 +195,12 @@ QString JamendoTrack::type() const
     return "ogg";
 }
 
+QString
+JamendoTrack::notPlayableReason() const
+{
+    return QString();
+}
+
 //// JamendoArtist ////
 
 JamendoArtist::JamendoArtist( const QString &name )
