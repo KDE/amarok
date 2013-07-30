@@ -21,6 +21,12 @@
 #include <QStringList>
 
 class QScriptEngine;
+namespace Collections
+{
+    class QueryMaker;
+    class Collection;
+    typedef QList<Collection*> CollectionList;
+}
 
 namespace AmarokScript
 {
@@ -37,20 +43,44 @@ namespace AmarokScript
             int totalComposers() const;
             int totalGenres() const;
             int totalTracks() const;
+
+            //DEPRECATE
             QStringList collectionLocation() const;
+
             QStringList query( const QString& sql ) const;
             QString escape( const QString& sql ) const;
             void scanCollection() const;
             void scanCollectionChanges() const;
 
-            //this method will dump the database content into the user's home directory
-            //debugging only! this is not part of the supported scripting API
-            void dumpDatabaseContent() const;
+            /**
+             * Returns a query maker that queries all collections.
+             */
+            Collections::QueryMaker *queryMaker();
 
-           //TODO: make this a more object oriented way, could make a wrapper class for both the Collection and Collection Manager class.
-           //TODO: probably leave this to Amarok 2.1
+            /**
+             * Return a
+             */
+            Collections::CollectionList queryableCollections();
+            Collections::CollectionList viewableCollections();
+
         signals:
-            void newFileAdded();  //TODO: implement me
+            /**
+             * Emitted when a new collection is added.
+             */
+            void collectionAdded( Collections::Collection *newCollection );
+
+            /**
+             * This signal will be emitted after major changes to the collection
+             * e.g. new songs where added, or an album changed
+             * from compilation to non-compilation (and vice versa)
+             * it will not be emitted on minor changes (e.g. the tags of a song were changed)
+             *
+             * This means that previously done searches can no longer
+             * be considered valid.
+             */
+            void collectionDataChanged( Collections::Collection *changedCollection );
+
+            void collectionRemoved( QString collectionId );
     };
 }
 

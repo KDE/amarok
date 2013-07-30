@@ -18,10 +18,14 @@ Image*                                                                          
 #include "MetaTypeExporter.h"
 
 #include "core/meta/Meta.h"
+#include "scriptengine/ScriptingDefines.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/TrackEditor.h"
 
+//#include <QtCore>
 #include <QScriptEngine>
+
+using namespace AmarokScript;
 
 #define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );
 #define GET_TRACK_EC( X ) GET_TRACK \
@@ -31,9 +35,14 @@ if( ec ) \
     X; \
 }
 
-MetaTrackPrototype::MetaTrackPrototype( QObject *parent )
-    : QObject( parent )
+MetaTrackPrototype::MetaTrackPrototype( QScriptEngine *engine )
+    : QObject( engine )
 {
+    //qScriptRegisterMetaType<Meta::TrackPtr>(&eng, toScriptValue, fromScriptValue);
+    qScriptRegisterMetaType<Meta::TrackList>(engine, toScriptArray, fromScriptArray );
+
+    engine->setDefaultPrototype( qMetaTypeId<Meta::TrackPtr>(),
+                                   engine->newQObject( this, QScriptEngine::AutoOwnership) );
 }
 
 int

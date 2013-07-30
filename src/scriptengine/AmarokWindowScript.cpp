@@ -35,8 +35,11 @@ AmarokWindowScript::AmarokWindowScript( QScriptEngine* scriptEngine )
     , m_settingsMenu( The::mainWindow()->SettingsMenu() )
     , m_scriptEngine( scriptEngine )
 {
-    QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership );
-    scriptEngine->globalObject().property( "Amarok" ).setProperty( "Window", scriptObject );
+    QScriptValue windowObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership );
+    scriptEngine->globalObject().property( "Amarok" ).setProperty( "Window", windowObject );
+
+    windowObject.setProperty( "ToolsMenu", scriptEngine->newObject() );
+    windowObject.setProperty( "SettingsMenu", scriptEngine->newObject() );
 
     connect( App::instance(), SIGNAL(prepareToQuit()),
                 this, SIGNAL(prepareToQuit()) );

@@ -17,6 +17,8 @@
 #ifndef AMAROK_PLAYLIST_SCRIPT_H
 #define AMAROK_PLAYLIST_SCRIPT_H
 
+#include "core/meta/forward_declarations.h"
+
 #include <QObject>
 #include <QStringList>
 #include <QVariant>
@@ -51,7 +53,7 @@ namespace AmarokScript
             bool stopAfterCurrent();
             void togglePlaylist();
             QStringList filenames();
-            QVariant trackAt( int row );
+            Meta::TrackPtr trackAt( int row );
             QList<int> selectedIndexes();
             QStringList selectedFilenames();
 

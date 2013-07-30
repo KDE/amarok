@@ -46,7 +46,8 @@
 #include "scriptengine/AmarokServicePluginManagerScript.h"
 #include "scriptengine/AmarokStatusbarScript.h"
 #include "scriptengine/AmarokWindowScript.h"
-#include "scriptengine/MetaTypeExporter.h"
+#include "scriptengine/exporters/MetaTypeExporter.h"
+#include "scriptengine/exporters/CollectionTypeExporter.h"
 #include "scriptengine/ScriptImporter.h"
 #include "ScriptUpdater.h"
 
@@ -630,9 +631,8 @@ ScriptItem::initializeScriptEngine()
     new AmarokScript::AmarokStatusbarScript( m_engine );
     new AmarokScript::AmarokKNotifyScript( m_engine );
     new AmarokScript::AmarokOSDScript( m_engine );
-    QScriptValue windowObject = m_engine->globalObject().property( "Amarok" ).property( "Window" );
-    windowObject.setProperty( "ToolsMenu", m_engine->newObject() );
-    windowObject.setProperty( "SettingsMenu", m_engine->newObject() );
+
+    AmarokScript::CollectionPrototype::init( m_engine );
 
     const QString &category = m_info.category();
     if( category == QLatin1String("Lyrics") )
@@ -646,7 +646,5 @@ ScriptItem::initializeScriptEngine()
         new AmarokScript::AmarokServicePluginManagerScript( m_engine );
     }
 
-    MetaTrackPrototype* trackProto = new MetaTrackPrototype( this );
-    m_engine->setDefaultPrototype( qMetaTypeId<Meta::TrackPtr>(),
-                                   m_engine->newQObject(trackProto, QScriptEngine::AutoOwnership) );
+    new AmarokScript::MetaTrackPrototype( m_engine );
 }

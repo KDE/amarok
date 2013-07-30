@@ -239,5 +239,7 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
 
 } //namespace Collections
 
+Q_DECLARE_METATYPE( Collections::QueryMaker* )
+
 #endif /* AMAROK_COLLECTION_QUERYMAKER_H */
 

@@ -150,11 +150,11 @@ AmarokEngineScript::engineState() const
         return Stopped;
 }
 
-QVariant
+Meta::TrackPtr
 AmarokEngineScript::currentTrack() const
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    return QVariant::fromValue( track );
+    return track;
 }
 
 void
@@ -280,3 +280,5 @@ AmarokEngineScript::setFadeoutLength( int length )
 {
     Q_UNUSED( length );
 }
+
+

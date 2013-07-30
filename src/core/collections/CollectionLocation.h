@@ -157,12 +157,21 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         */
         void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
         /**
-           Schedule copying of @param tracks to collection location @param destination.
-           This method takes ownership of the @param destination, you may not reference
-           or delete it after this call. This method returns immediately and the actual
-           copy is performed in the event loop and/or another thread.
-        */
+         *           Schedule copying of @param tracks to collection location @param destination.
+         *           This method takes ownership of the @param destination, you may not reference
+         *           or delete it after this call. This method returns immediately and the actual
+         *           copy is performed in the event loop and/or another thread.
+         */
         void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
+        /**
+         *           Schedule copying of @param tracks to collection location @param destination after
+         *           transcoding according to @param config
+         *           This method takes ownership of the @param destination, you may not reference
+         *           or delete it after this call. This method returns immediately and the actual
+         *           copy is performed in the event loop and/or another thread.
+         */
+        void prepareTranscodeAndCopy( const Meta::TrackList &tracks, CollectionLocation *destination
+                                    , Transcoding::Configuration &configuration );
         /**
            Convenience method for copying tracks based on QueryMaker restults,
            takes ownership of the @param qm.
@@ -181,6 +190,14 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
            or delete it after this call. This method returns immediately and the actual
            move is performed in the event loop and/or another thread.
         */
+        /**
+         * Schedule moving of @param tracks to collection location @param destination after
+         * transcoding according to @param config
+         * This method takes ownership of the @param destination, you may not reference
+         * or delete it after this call. This method returns immediately and the actual
+         * copy is performed in the event loop and/or another thread.
+         */
+        void prepareTranscodeAndMove( const Meta::TrackList &tracks, CollectionLocation *destination, Transcoding::Configuration &configuration );
         void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );
         /**
            Convenience method for moving tracks based on QueryMaker restults,

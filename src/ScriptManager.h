@@ -30,6 +30,7 @@
 
 class ScriptItem;
 class ScriptableServiceScript;
+class QTimer;
 namespace AmarokScript {
     class AmarokScript;
 }

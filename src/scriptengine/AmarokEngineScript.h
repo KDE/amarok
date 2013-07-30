@@ -17,6 +17,8 @@
 #ifndef AMAROK_ENGINE_SCRIPT_H
 #define AMAROK_ENGINE_SCRIPT_H
 
+#include "core/meta/forward_declarations.h"
+
 #include <QHash>
 #include <QObject>
 
@@ -70,7 +72,7 @@ namespace AmarokScript
             /** This function returns the current track.
                 The current track might even be valid when not in playing state.
             */
-            QVariant currentTrack() const;
+            Meta::TrackPtr currentTrack() const;
 
         signals:
             void trackFinished(); // when playback stops altogether

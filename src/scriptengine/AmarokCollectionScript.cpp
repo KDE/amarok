@@ -20,17 +20,33 @@
 #include "App.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core/collections/Collection.h"
 #include "core-impl/collections/db/sql/SqlCollectionLocation.h"
+#include "core/collections/QueryMaker.h"
 
 #include <QScriptEngine>
 
 using namespace AmarokScript;
 
+using Collections::Collection;
+using Collections::CollectionList;
+using Collections::QueryMaker;
+
 AmarokCollectionScript::AmarokCollectionScript( QScriptEngine *engine )
     : QObject( engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    //deprecate
     engine->globalObject().property( "Amarok" ).setProperty( "Collection", scriptObject );
+
+    engine->globalObject().property( "Amarok" ).setProperty( "CollectionManager", scriptObject );
+
+    CollectionManager *instance = CollectionManager::instance();
+    connect( instance, SIGNAL(collectionDataChanged(Collections::Collection*)),
+            SIGNAL(collectionDataChanged(Collections::Collection*)) );
+    connect( instance, SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)),
+             SIGNAL(collectionAdded(Collections::Collection*)) );
+    connect( instance, SIGNAL(collectionRemoved(QString)), SIGNAL(collectionRemoved(QString)) );
 }
 
 int
@@ -117,12 +133,20 @@ AmarokCollectionScript::scanCollectionChanges() const
     CollectionManager::instance()->checkCollectionChanges();
 }
 
-void
-AmarokCollectionScript::dumpDatabaseContent() const
+CollectionList
+AmarokCollectionScript::queryableCollections()
 {
-    //this method assumes that CollectionManager::primaryCollection() returns the
-    //SqlCollection instance. It then uses Qt magic to dump the whole database to CSV files
-    //in the user's home directory.
-    //for debugging purposes only! do not ever use code like this for anything else
-    QTimer::singleShot( 0, CollectionManager::instance()->primaryCollection(), SLOT(dumpDatabaseContent()) );
+    return CollectionManager::instance()->queryableCollections();
+}
+
+QueryMaker*
+AmarokCollectionScript::queryMaker()
+{
+    return CollectionManager::instance()->queryMaker();
+}
+
+CollectionList
+AmarokCollectionScript::viewableCollections()
+{
+    return CollectionManager::instance()->viewableCollections();
 }

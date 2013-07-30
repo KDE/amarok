@@ -154,12 +154,12 @@ AmarokPlaylistScript::filenames()
     return fileNames;
 }
 
-QVariant
+Meta::TrackPtr
 AmarokPlaylistScript::trackAt( int row )
 {
     DEBUG_BLOCK
     Meta::TrackPtr track = The::playlist()->trackAt( row );
-    return QVariant::fromValue( track );
+    return track;
 }
 
 QList<int>
