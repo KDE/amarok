@@ -14,6 +14,9 @@ VERSION 2.8
    * Amarok now uses FindFFMpeg.cmake from kdelibs
 
   BUGFIXES:
+   * Work-around Solid UDisks2 backend bug that caused USB Mass Storage devices and iPods
+     not being recognized when connected before Amarok was started. Also fixes a bug where
+     blank devices would appear in Play Media dialog. (BR 322980)
    * Definitely fix a bug where storing Last.fm credentials in plain-text isn't offered
      when KWallet is disabled. (BR 315306)
    * Radio streams from scripted services are now instantly playable. (BR 320718)

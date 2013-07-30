@@ -136,29 +136,6 @@ MediaDeviceCache::refreshCache()
             m_name[device.udi()] = device.vendor() + " - " + device.product();
         }
     }
-    deviceList = Solid::Device::allDevices();
-    foreach( const Solid::Device &device, deviceList )
-    {
-        if( const Solid::GenericInterface *generic = device.as<Solid::GenericInterface>() )
-        {
-            if( m_type.contains( device.udi() ) )
-                continue;
-
-            const QMap<QString, QVariant> properties = generic->allProperties();
-            if( !properties.contains("info.capabilities") )
-                continue;
-
-            const QStringList capabilities = properties["info.capabilities"].toStringList();
-            if( !capabilities.contains("afc") )
-                continue;
-
-            debug() << "Found AFC capable Solid::DeviceInterface::GenericInterface with udi = " << device.udi();
-            debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
-
-            m_type[device.udi()] = MediaDeviceCache::SolidGenericType;
-            m_name[device.udi()] = device.vendor() + " - " + device.product();
-        }
-    }
     KConfigGroup config = Amarok::config( "PortableDevices" );
     const QStringList manualDeviceKeys = config.entryMap().keys();
     foreach( const QString &udi, manualDeviceKeys )
