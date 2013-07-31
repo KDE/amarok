@@ -7,7 +7,7 @@ Name=Free Music Charts
 Comment=Listen to the Darkerradio.com Free Music Charts
 
 X-KDE-PluginInfo-Author=Sven Krohlas
-X-KDE-PluginInfo-Email=sven@getamarok.com
+X-KDE-PluginInfo-Email=sven@asbest-online.de
 X-KDE-PluginInfo-Name=Free Music Charts
 X-KDE-PluginInfo-Version=1.6.0
 X-KDE-PluginInfo-Category=Scriptable Service

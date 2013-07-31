@@ -2,7 +2,7 @@
 *   Copy Cover Script for Amarok 2.0                                      *
 *                                                                         *
 *   Copyright                                                             *
-*   (C) 2009 Sven Krohlas <sven@getamarok.com>                            *
+*   (C) 2009 Sven Krohlas <sven@asbest-online.de>                         *
 *   (C) 2008 Simon Esneault  <simon.esneault@gmail.com>                   *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *

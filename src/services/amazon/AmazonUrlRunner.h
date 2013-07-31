@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>e.org>                           *
+ * Copyright (c) 2011 Sven Krohlas <sven@asbest-online.de>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,7 +26,7 @@
 
 /**
 @author Nikolaj Hald Nielsen <nhn@kde.org>
-@author Sven Krohlas <sven@getamarok.com>
+@author Sven Krohlas <sven@asbest-online.de>
 
 We support URLs like
 amarok://service-amazonstore?asin=B004UQSB8I&command=addToCart&name=The%20Cure%20-%20Disintegration%20(Remastered)&price=989

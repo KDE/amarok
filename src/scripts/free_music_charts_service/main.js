@@ -7,7 +7,7 @@
 #   Copyright                                                             #
 #   (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               #
 #   (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                          #
-#   (C) 2008-2013 Sven Krohlas <sven@getamarok.com>                       #
+#   (C) 2008-2013 Sven Krohlas <sven@asbest-online.de>                    #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2009 Sven Krohlas <sven@asbest-online.de>               *
  *   Copyright (c) 2013 Matěj Laitl <matej@laitl.cz>                       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

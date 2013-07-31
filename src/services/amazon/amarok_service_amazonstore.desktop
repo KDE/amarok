@@ -85,7 +85,7 @@ ServiceTypes=Amarok/Plugin
 X-KDE-Library=amarok_service_amazonstore
 
 X-KDE-Amarok-authors=Sven Krohlas
-X-KDE-Amarok-email=sven@getamarok.com
+X-KDE-Amarok-email=sven@asbest-online.de
 X-KDE-Amarok-framework-version=70
 X-KDE-Amarok-name=AmazonStore
 X-KDE-Amarok-plugintype=service
@@ -93,7 +93,7 @@ X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
 
 X-KDE-PluginInfo-Author=Sven Krohlas
-X-KDE-PluginInfo-Email=sven@getamarok.com
+X-KDE-PluginInfo-Email=sven@asbest-online.de
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Service
 X-KDE-PluginInfo-License=GPL

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2011 Sven Krohlas <sven@asbest-online.de>                              *
  * The Amazon store in based upon the Magnatune store in Amarok,                        *
  * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  *                                                                                      *
@@ -43,7 +43,7 @@ enum Location
 /**
 A KCM module to configure the Amazon service
 
-        @author Sven Krohlas <sven@getamarok.com>
+        @author Sven Krohlas <sven@asbest-online.de>
 */
 class AmazonSettingsModule : public KCModule
 {
