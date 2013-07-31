@@ -304,22 +304,9 @@ MainWindow::init()
     The::amarokUrlHandler(); //Instantiate
     The::coverFetcher(); //Instantiate
 
-    // We delete the layout file once, because of binary incompatibility with older Qt version.
-    // We now depend on Qt >= 4.8, no need to check its version at runtime. Still support
-    // users upgrading from ancient Qt versions.
-    // @see: https://bugs.kde.org/show_bug.cgi?id=213990
-    KConfigGroup config = Amarok::config();
-    if( !config.readEntry( "LayoutFileDeleted", false ) )
-    {
-        QFile::remove( Amarok::saveLocation() + "layout" );
-        config.writeEntry( "LayoutFileDeleted", true );
-        config.sync();
-    }
-
     // we must filter ourself to get mouseevents on the "splitter" - what is us, but filtered by the layouter
     installEventFilter( this );
 }
-
 
 QMenu*
 MainWindow::createPopupMenu()
