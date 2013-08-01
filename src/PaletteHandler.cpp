@@ -58,12 +58,11 @@ PaletteHandler::updateItemView( QAbstractItemView * view )
 {
     QPalette p = m_palette;
 
-    QColor c = p.color( QPalette::Active, QPalette::AlternateBase );
-    c.setAlpha( 77 );
-    p.setColor( QPalette::Active, QPalette::AlternateBase, c );
-    // to fix hardcoded QPalette::Text usage in Qt classes
-    p.setColor( QPalette::Active, QPalette::Base, p.color( QPalette::Window ) );
-    p.setColor( QPalette::Active, QPalette::Text, p.color( QPalette::WindowText ) );
+    // For widgets that don't have keyboard focus reduce the opacity
+    QColor c = p.color( QPalette::Inactive, QPalette::AlternateBase );
+    c.setAlpha( 80 );
+    p.setColor( QPalette::Inactive, QPalette::AlternateBase, c );
+
     view->setPalette( p );
     
     if ( QWidget *vp = view->viewport() )
