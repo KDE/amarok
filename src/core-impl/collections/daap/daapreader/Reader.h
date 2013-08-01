@@ -117,7 +117,6 @@ namespace Daap
             GenreMap m_genreMap;
             ComposerMap m_composerMap;
             YearMap m_yearMap;
-            int m_loadedTracks;
     };
 
     class WorkerThread : public ThreadWeaver::Job

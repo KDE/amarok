@@ -46,7 +46,6 @@ Reader::Reader( Collections::DaapCollection* mc, const QString& host, quint16 po
     , m_port( port )
     , m_sessionId( -1 )
     , m_password( password )
-    , m_loadedTracks( 0 )
 {
     setObjectName( name );
     debug() << "Host: " << host << " port: " << port;
