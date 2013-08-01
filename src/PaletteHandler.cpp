@@ -57,10 +57,16 @@ void
 PaletteHandler::updateItemView( QAbstractItemView * view )
 {
     QPalette p = m_palette;
+    QColor c;
 
-    // For widgets that don't have keyboard focus reduce the opacity
-    QColor c = p.color( QPalette::Inactive, QPalette::AlternateBase );
-    c.setAlpha( 80 );
+    // Widgets with keyboard focus become slightly transparent
+    c = p.color( QPalette::Active, QPalette::AlternateBase );
+    c.setAlpha( 95 );
+    p.setColor( QPalette::Active, QPalette::AlternateBase, c );
+
+    // For widgets that don't have keyboard focus reduce the opacity further
+    c = p.color( QPalette::Inactive, QPalette::AlternateBase );
+    c.setAlpha( 75 );
     p.setColor( QPalette::Inactive, QPalette::AlternateBase, c );
 
     view->setPalette( p );
