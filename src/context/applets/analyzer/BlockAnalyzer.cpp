@@ -61,7 +61,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
     //all is explained in analyze()..
     //+1 to counter -1 in maxSizes, trust me we need this!
-    m_columns = qMin<uint>( uint( double( width() + 1 ) / ( BLOCK_WIDTH + 1 ) ), MAX_COLUMNS );
+    m_columns = qMin<uint>( (uint)ceil( double( width() ) / ( BLOCK_WIDTH + 1 ) ), MAX_COLUMNS );
     m_rows    = uint( double( height() + 1 ) / ( BLOCK_HEIGHT + 1 ) );
 
     //this is the y-offset for drawing from the top of the widget
