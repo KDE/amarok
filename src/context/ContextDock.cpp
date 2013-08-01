@@ -51,14 +51,11 @@ ContextDock::ContextDock( QWidget *parent )
 
 void ContextDock::polish()
 {
-    DEBUG_BLOCK
 }
-
 
 void
 ContextDock::createContextView( Plasma::Containment *containment )
 {
-    DEBUG_BLOCK
     disconnect( m_corona.data(), SIGNAL(containmentAdded(Plasma::Containment*)),
             this, SLOT(createContextView(Plasma::Containment*)) );
 

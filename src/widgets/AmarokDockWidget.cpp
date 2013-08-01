@@ -14,9 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-
 #include "AmarokDockWidget.h"
-#include "core/support/Debug.h"
 
 AmarokDockWidget::AmarokDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
     : QDockWidget( title, parent, flags )
@@ -28,7 +26,6 @@ AmarokDockWidget::AmarokDockWidget( const QString & title, QWidget * parent, Qt:
 
 void AmarokDockWidget::slotVisibilityChanged( bool visible )
 {
-    // DEBUG_BLOCK
     if( visible )
         ensurePolish();
 }

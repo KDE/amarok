@@ -59,8 +59,6 @@ Playlist::Dock::Dock( QWidget* parent )
     : AmarokDockWidget( i18n( "&Playlist" ), parent )
     , m_barBox( 0 )
 {
-    DEBUG_BLOCK
-
     setObjectName( "Playlist dock" );
     setAllowedAreas( Qt::AllDockWidgetAreas );
 }
@@ -89,8 +87,6 @@ Playlist::Dock::searchWidget()
 void
 Playlist::Dock::polish()
 {
-    DEBUG_BLOCK
-
     m_mainWidget = new KVBox( this );
     setWidget( m_mainWidget );
     m_mainWidget->setContentsMargins( 0, 0, 0, 0 );

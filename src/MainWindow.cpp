@@ -195,8 +195,6 @@ MainWindow::~MainWindow()
 void
 MainWindow::init()
 {
-    DEBUG_BLOCK
-
     layout()->setContentsMargins( 0, 0, 0, 0 );
     layout()->setSpacing( 0 );
 
