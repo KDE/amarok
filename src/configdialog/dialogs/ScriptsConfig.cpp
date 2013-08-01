@@ -21,7 +21,7 @@
 #include "amarokconfig.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "scriptmanager/ScriptManager.h"
+#include "scripting/scriptmanager/ScriptManager.h"
 #include "ScriptSelector.h"
 #include "ui_ScriptsConfig.h"
 

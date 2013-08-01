@@ -18,7 +18,7 @@ Image*                                                                          
 #include "MetaTypeExporter.h"
 
 #include "core/meta/Meta.h"
-#include "scriptengine/ScriptingDefines.h"
+#include "scripting/scriptengine/ScriptingDefines.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/TrackEditor.h"
 

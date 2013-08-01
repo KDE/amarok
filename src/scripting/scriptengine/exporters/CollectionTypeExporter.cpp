@@ -22,7 +22,7 @@
 #include "core/collections/CollectionLocation.h"
 #include "core/capabilities/TranscodeCapability.h"
 #include "core/transcoding/TranscodingController.h"
-#include "scriptengine/ScriptingDefines.h"
+#include "scripting/scriptengine/ScriptingDefines.h"
 
 #include <QIcon>
 #include <QScriptEngine>

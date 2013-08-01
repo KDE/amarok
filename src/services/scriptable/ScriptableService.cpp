@@ -16,7 +16,7 @@
 
 #include "ScriptableService.h"
 
-#include "scriptmanager/ScriptManager.h"
+#include "scripting/scriptmanager/ScriptManager.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"

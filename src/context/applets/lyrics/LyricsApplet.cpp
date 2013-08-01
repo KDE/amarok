@@ -27,7 +27,7 @@
 #include "context/LyricsManager.h"
 #include "LyricsBrowser.h"
 #include "LyricsSuggestionsListWidget.h"
-#include "scriptmanager/ScriptManager.h"
+#include "scripting/scriptmanager/ScriptManager.h"
 
 #include <KConfigDialog>
 #include <KStandardDirs>

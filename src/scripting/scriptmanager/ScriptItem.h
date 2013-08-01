@@ -20,8 +20,8 @@
 #define AMAROK_SCRIPTITEM_H
 
 #include "amarok_export.h"
-#include "scriptengine/AmarokScriptableServiceScript.h"
-#include "scriptengine/ScriptingDefines.h"
+#include "scripting/scriptengine/AmarokScriptableServiceScript.h"
+#include "scripting/scriptengine/ScriptingDefines.h"
 #include "statusbar/PopupWidget.h"
 
 #include <KPluginInfo>

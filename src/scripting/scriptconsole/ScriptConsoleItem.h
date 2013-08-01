@@ -17,7 +17,7 @@
 #ifndef SCRIPT_CONSOLE_ITEM_H
 #define SCRIPT_CONSOLE_ITEM_H
 
-#include "scriptmanager/ScriptItem.h"
+#include "scripting/scriptmanager/ScriptItem.h"
 
 namespace KTextEditor{
     class View;

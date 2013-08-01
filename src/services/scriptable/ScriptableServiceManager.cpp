@@ -21,7 +21,7 @@
 #include "core/support/Debug.h"
 #include "ScriptableServiceCollection.h"
 #include "ScriptableServiceMeta.h"
-#include "scriptmanager/ScriptManager.h"
+#include "scripting/scriptmanager/ScriptManager.h"
 #include "../ServiceMetaBase.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 

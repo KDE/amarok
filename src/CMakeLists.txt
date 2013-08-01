@@ -445,42 +445,42 @@ set(dbus_SRCS
 # SCRIPTING INTERFACE
 #####################################################################
 set(scriptengine_SRCS
-    scriptengine/AmarokScript.cpp
-    scriptengine/AmarokCollectionScript.cpp
-    scriptengine/AmarokScriptConfig.cpp
-    scriptengine/AmarokInfoScript.cpp
-    scriptengine/AmarokNetworkScript.cpp
-    scriptengine/AmarokScriptableServiceScript.cpp
-    scriptengine/AmarokServicePluginManagerScript.cpp
-    scriptengine/AmarokStreamItemScript.cpp
-    scriptengine/AmarokEngineScript.cpp
-    scriptengine/AmarokKNotifyScript.cpp
-    scriptengine/AmarokOSDScript.cpp
-    scriptengine/AmarokPlaylistScript.cpp
-    scriptengine/AmarokStatusbarScript.cpp
-    scriptengine/AmarokWindowScript.cpp
-    scriptengine/AmarokLyricsScript.cpp
-    scriptengine/ScriptingDefines.cpp
-    scriptengine/ScriptImporter.cpp
-    scriptengine/exporters/CollectionTypeExporter.cpp
-    scriptengine/exporters/MetaTypeExporter.cpp
-    scriptengine/exporters/QueryMakerExporter.cpp
+    scripting/scriptengine/AmarokScript.cpp
+    scripting/scriptengine/AmarokCollectionScript.cpp
+    scripting/scriptengine/AmarokScriptConfig.cpp
+    scripting/scriptengine/AmarokInfoScript.cpp
+    scripting/scriptengine/AmarokNetworkScript.cpp
+    scripting/scriptengine/AmarokScriptableServiceScript.cpp
+    scripting/scriptengine/AmarokServicePluginManagerScript.cpp
+    scripting/scriptengine/AmarokStreamItemScript.cpp
+    scripting/scriptengine/AmarokEngineScript.cpp
+    scripting/scriptengine/AmarokKNotifyScript.cpp
+    scripting/scriptengine/AmarokOSDScript.cpp
+    scripting/scriptengine/AmarokPlaylistScript.cpp
+    scripting/scriptengine/AmarokStatusbarScript.cpp
+    scripting/scriptengine/AmarokWindowScript.cpp
+    scripting/scriptengine/AmarokLyricsScript.cpp
+    scripting/scriptengine/ScriptingDefines.cpp
+    scripting/scriptengine/ScriptImporter.cpp
+    scripting/scriptengine/exporters/CollectionTypeExporter.cpp
+    scripting/scriptengine/exporters/MetaTypeExporter.cpp
+    scripting/scriptengine/exporters/QueryMakerExporter.cpp
 )
 
 set(scriptconsole_SRCS
-    scriptconsole/CompletionModel.cpp
-    scriptconsole/ScriptConsole.cpp
-    scriptconsole/ScriptEditorDocument.cpp
-    scriptconsole/ScriptConsoleItem.cpp
-    scriptconsole/ScriptItemDelegate.cpp
+    scripting/scriptconsole/CompletionModel.cpp
+    scripting/scriptconsole/ScriptConsole.cpp
+    scripting/scriptconsole/ScriptEditorDocument.cpp
+    scripting/scriptconsole/ScriptConsoleItem.cpp
+    scripting/scriptconsole/ScriptItemDelegate.cpp
 )
 
-set(args ${CMAKE_SOURCE_DIR}/src/scriptengine/  ${DATA_INSTALL_DIR}/amarok/scriptconsole)
+set(args ${CMAKE_SOURCE_DIR}/src/scripting/scriptengine/  ${DATA_INSTALL_DIR}/amarok/scriptconsole)
 #shouldn't be here
-execute_process(COMMAND python ${CMAKE_SOURCE_DIR}/src/scriptengine/PHAACG2.py ${args})
+execute_process(COMMAND python ${CMAKE_SOURCE_DIR}/src/scripting/scriptengine/PHAACG2.py ${args})
 
 kde4_add_ui_files(scriptconsole_SRCS
-    scriptconsole/ScriptConsole.ui
+    scripting/scriptconsole/ScriptConsole.ui
 )
 
 #####################################################################
@@ -637,9 +637,9 @@ set(amaroklib_LIB_SRCS
     MediaDeviceMonitor.cpp
     PluginManager.cpp
     QStringx.cpp
-    scriptmanager/ScriptManager.cpp
-    scriptmanager/ScriptItem.cpp
-    ScriptUpdater.cpp
+    scripting/scriptmanager/ScriptManager.cpp
+    scripting/scriptmanager/ScriptItem.cpp
+    scripting/scriptmanager/ScriptUpdater.cpp
     SvgHandler.cpp
     SvgTinter.cpp
     TrayIcon.cpp

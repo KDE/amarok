@@ -22,8 +22,8 @@
 #include "App.h"
 #include "core/support/Debug.h"
 #include "services/scriptable/ScriptableServiceManager.h"
-#include "scriptengine/AmarokStreamItemScript.h"
-#include "scriptmanager/ScriptManager.h"
+#include "scripting/scriptengine/AmarokStreamItemScript.h"
+#include "scripting/scriptmanager/ScriptManager.h"
 
 #include <QScriptEngine>
 
