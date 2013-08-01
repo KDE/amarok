@@ -86,7 +86,6 @@ public:
     virtual bool isBookmarkable() const { return true; }
     virtual QString collectionName() const { return "Jamendo.com"; }
     virtual bool simpleFiltering() const { return false; }
-    virtual QString notPlayableReason() const;
 
     virtual QList< QAction *> customActions();
     virtual QList< QAction * > currentTrackActions();
