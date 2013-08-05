@@ -457,6 +457,7 @@ set(scriptengine_SRCS
     scripting/scriptengine/AmarokKNotifyScript.cpp
     scripting/scriptengine/AmarokOSDScript.cpp
     scripting/scriptengine/AmarokPlaylistScript.cpp
+    scripting/scriptengine/AmarokPlaylistManagerScript.cpp
     scripting/scriptengine/AmarokStatusbarScript.cpp
     scripting/scriptengine/AmarokWindowScript.cpp
     scripting/scriptengine/AmarokLyricsScript.cpp
@@ -465,6 +466,8 @@ set(scriptengine_SRCS
     scripting/scriptengine/exporters/CollectionTypeExporter.cpp
     scripting/scriptengine/exporters/MetaTypeExporter.cpp
     scripting/scriptengine/exporters/QueryMakerExporter.cpp
+    scripting/scriptengine/exporters/PlaylistExporter.cpp
+    scripting/scriptengine/exporters/PlaylistProviderExporter.cpp
 )
 
 set(scriptconsole_SRCS

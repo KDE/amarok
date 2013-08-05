@@ -30,6 +30,11 @@ namespace Collections
     typedef QList<Collection*> CollectionList;
 }
 
+namespace Playlists
+{
+    class PlaylistProvider;
+}
+
 namespace AmarokScript
 {
     /**

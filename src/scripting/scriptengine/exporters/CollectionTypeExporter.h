@@ -61,6 +61,7 @@ namespace AmarokScript
          */
         Q_PROPERTY( QString collectionId READ collectionId )
 
+        // ANM-TODO use js toString()
         /**
          * A user visible name for this collection.
          */

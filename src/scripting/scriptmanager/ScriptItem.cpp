@@ -41,6 +41,7 @@
 #include "scripting/scriptengine/AmarokNetworkScript.h"
 #include "scripting/scriptengine/AmarokOSDScript.h"
 #include "scripting/scriptengine/AmarokPlaylistScript.h"
+#include "scripting/scriptengine/AmarokPlaylistManagerScript.h"
 #include "scripting/scriptengine/AmarokScript.h"
 #include "scripting/scriptengine/AmarokScriptableServiceScript.h"
 #include "scripting/scriptengine/AmarokServicePluginManagerScript.h"
@@ -263,6 +264,7 @@ ScriptItem::initializeScriptEngine()
     // UI
     new AmarokScript::AmarokWindowScript( m_engine.data() );
     new AmarokScript::AmarokPlaylistScript( m_engine.data() );
+    new AmarokScript::AmarokPlaylistManagerScript( m_engine.data() );
     new AmarokScript::AmarokStatusbarScript( m_engine.data() );
     new AmarokScript::AmarokKNotifyScript( m_engine.data() );
     new AmarokScript::AmarokOSDScript( m_engine.data() );
