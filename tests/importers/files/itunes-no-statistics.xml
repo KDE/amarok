@@ -26,7 +26,6 @@
 			<key>Date Added</key><date>2013-06-28T10:11:35Z</date>
 			<key>Bit Rate</key><integer>320</integer>
 			<key>Sample Rate</key><integer>44100</integer>
-			<key>Play Count</key><integer>4</integer>
 			<key>Play Date</key><integer>3455272636</integer>
 			<key>Play Date UTC</key><date>2013-06-28T13:37:37Z</date>
 			<key>Rating</key><integer>40</integer>
@@ -53,8 +52,6 @@
 			<key>Bit Rate</key><integer>320</integer>
 			<key>Sample Rate</key><integer>44100</integer>
 			<key>Play Count</key><integer>18</integer>
-			<key>Play Date</key><integer>3455272639</integer>
-			<key>Play Date UTC</key><date>2013-06-28T12:57:41Z</date>
 			<key>Rating</key><integer>30</integer>
 			<key>Album Rating</key><integer>60</integer>
 			<key>Album Rating Computed</key><true/>
@@ -82,7 +79,6 @@
 			<key>Play Count</key><integer>15</integer>
 			<key>Play Date</key><integer>3455272606</integer>
 			<key>Play Date UTC</key><date>2013-06-28T13:53:35Z</date>
-			<key>Rating</key><integer>50</integer>
 			<key>Album Rating</key><integer>60</integer>
 			<key>Album Rating Computed</key><true/>
 			<key>Persistent ID</key><string>2BEEB46DF014D71E</string>
@@ -106,9 +102,6 @@
 			<key>Bit Rate</key><integer>320</integer>
 			<key>Sample Rate</key><integer>44100</integer>
 			<key>Play Count</key><integer>17</integer>
-			<key>Play Date</key><integer>3455272633</integer>
-			<key>Play Date UTC</key><date>2013-06-28T13:22:53Z</date>
-			<key>Rating</key><integer>100</integer>
 			<key>Album Rating</key><integer>60</integer>
 			<key>Album Rating Computed</key><true/>
 			<key>Persistent ID</key><string>B596F14BEAEBE873</string>
@@ -131,9 +124,6 @@
 			<key>Date Added</key><date>2013-06-28T10:11:40Z</date>
 			<key>Bit Rate</key><integer>320</integer>
 			<key>Sample Rate</key><integer>44100</integer>
-			<key>Play Count</key><integer>15</integer>
-			<key>Play Date</key><integer>3455272630</integer>
-			<key>Play Date UTC</key><date>2013-06-28T13:46:51Z</date>
 			<key>Rating</key><integer>20</integer>
 			<key>Album Rating</key><integer>60</integer>
 			<key>Album Rating Computed</key><true/>
@@ -158,10 +148,8 @@
 			<key>Date Added</key><date>2013-06-28T10:11:41Z</date>
 			<key>Bit Rate</key><integer>320</integer>
 			<key>Sample Rate</key><integer>44100</integer>
-			<key>Play Count</key><integer>5</integer>
 			<key>Play Date</key><integer>3455272644</integer>
 			<key>Play Date UTC</key><date>2013-06-28T12:57:35Z</date>
-			<key>Rating</key><integer>60</integer>
 			<key>Album Rating</key><integer>60</integer>
 			<key>Album Rating Computed</key><true/>
 			<key>Persistent ID</key><string>4D2CD9F5491B18FF</string>
@@ -212,10 +200,6 @@
 			<key>Date Added</key><date>2013-06-28T10:11:43Z</date>
 			<key>Bit Rate</key><integer>320</integer>
 			<key>Sample Rate</key><integer>44100</integer>
-			<key>Play Count</key><integer>2</integer>
-			<key>Play Date</key><integer>3455272617</integer>
-			<key>Play Date UTC</key><date>2013-06-28T13:27:10Z</date>
-			<key>Rating</key><integer>80</integer>
 			<key>Album Rating</key><integer>60</integer>
 			<key>Album Rating Computed</key><true/>
 			<key>Persistent ID</key><string>1992FCA93E12CC89</string>

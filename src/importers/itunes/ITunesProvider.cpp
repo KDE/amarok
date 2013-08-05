@@ -169,7 +169,7 @@ ITunesProvider::readTrack( QXmlStreamReader &xml, const QString &byArtist )
                 else if( type == "Play Date UTC" )
                     metadata.insert( Meta::valLastPlayed, readValue( xml ) );
                 else if( type == "Play Count" )
-                    metadata.insert( Meta::valLastPlayed, readValue( xml ) );
+                    metadata.insert( Meta::valPlaycount, readValue( xml ) );
             }
         }
         else

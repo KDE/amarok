@@ -57,3 +57,15 @@ target_link_libraries( testfastforwardimporter
     amarok_importer-fastforward
     ${testimporterscommon_LIBS}
 )
+
+#------------------------ Test ITunesImporter -----------------------------
+
+set( testitunesimporter_SRCS TestITunesImporter.cpp )
+kde4_add_ui_files( testitunesimporter_SRCS ${AMAROK_SOURCE_TREE}/importers/itunes/ITunesConfigWidget.ui )
+
+kde4_add_unit_test( testitunesimporter ${testitunesimporter_SRCS} )
+add_dependencies( testitunesimporter importers_files )
+target_link_libraries( testitunesimporter
+    amarok_importer-itunes
+    ${testimporterscommon_LIBS}
+)

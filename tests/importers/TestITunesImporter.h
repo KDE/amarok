@@ -8,27 +8,48 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TEST_ITUNES_IMPORTER_H
-#define TEST_ITUNES_IMPORTER_H
+#ifndef TEST_ITUNES_IMPORTER
+#define TEST_ITUNES_IMPORTER
 
-#include "TestImportersCommon.h"
+#include <QObject>
 
-class TestITunesImporter : public TestImportersCommon
+namespace StatSyncing
 {
-Q_OBJECT
+    class ITunesConfigWidget;
+    class ITunesProvider;
+}
 
-protected:
-    DatabaseImporter *newInstance();
-    QString pathForMetadata( const QString &artist, const QString &album,
-                             const QString &title );
+class TestITunesImporter : public QObject
+{
+    Q_OBJECT
+
+private:
+    StatSyncing::ITunesConfigWidget *m_configWidget;
 
 private slots:
+    void init();
+    void cleanup();
+
+    void configWidgetShouldNotBreakOnNonsenseInitialValues();
+    void configWidgetShouldReadSavedConfig();
+
+    void providerShouldHandleInexistantDbFile();
+    void providerShouldHandleInvalidDbFile();
+    void providerShouldHandleIllFormedDbFile();
+    void providerShouldHandleErroneousConfigValues();
+    void providerShouldHandleInexistantArtist();
+    void artistsShouldReturnExistingArtists();
+    void artistTracksShouldReturnPopulatedTracks_data();
+    void artistTracksShouldReturnPopulatedTracks();
+
+    void artistTracksShoulsHandleNonexistentStatistics_data();
+    void artistTracksShoulsHandleNonexistentStatistics();
 };
 
-#endif // TEST_ITUNES_IMPORTER_H
+#endif // TEST_ITUNES_IMPORTER
