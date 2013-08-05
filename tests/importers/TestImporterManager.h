@@ -14,33 +14,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_RHYTHMBOX_MANAGER_H
-#define STATSYNCING_RHYTHMBOX_MANAGER_H
+#ifndef TEST_IMPORTER_MANAGER
+#define TEST_IMPORTER_MANAGER
 
-#include "importers/ImporterManager.h"
+#include "ImporterMocks.h"
 
-namespace StatSyncing
-{
-
-class RhythmboxManager : public ImporterManager
+class TestImporterManager : public ImporterMocks
 {
     Q_OBJECT
 
-public:
-    RhythmboxManager( QObject *parent, const QVariantList &args );
-    ~RhythmboxManager();
-
-    QString id() const;
-    QString prettyName() const;
-    QString description() const;
-    KIcon icon() const;
-    ProviderConfigWidget *configWidget( const QVariantMap &config );
-
-protected:
-    KPluginInfo pluginInfo() const;
-    virtual ImporterProviderPtr newInstance( const QVariantMap &config );
+private slots:
+    void constructorShouldSetPluginType();
+    void initShouldSetInitialized();
+    void initShouldSetInfo();
+    void initShouldLoadSettings();
+    void creatingProviderShouldSetConfigAndParent();
+    void creatingProviderShouldSaveSettings();
+    void creatingConfigWidgetShouldDelegate();
+    void createConfigWidgetShouldNotCrashOnNull();
+    void createProviderShouldNotCrashOnNull();
+    void createProviderShouldReplaceProviderIfExists();
+    void createProviderShouldRegisterProvider();
+    void forgetProviderShouldUnregisterProvider();
+    void forgetProviderShouldForgetConfig();
+    void forgetProviderShouldHangleInvalidId();
+    void managerShouldHandleMultipleProviders();
 };
 
-} // namespace StatSyncing
-
-#endif // STATSYNCING_RHYTHMBOX_MANAGER_H
+#endif // TEST_IMPORTER_MANAGER

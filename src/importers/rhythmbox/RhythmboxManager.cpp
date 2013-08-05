@@ -39,7 +39,7 @@ RhythmboxManager::id() const
 }
 
 KPluginInfo
-RhythmboxManager::info() const
+RhythmboxManager::pluginInfo() const
 {
     return KPluginInfo( "amarok_importer-rhythmbox.desktop", "services" );
 }

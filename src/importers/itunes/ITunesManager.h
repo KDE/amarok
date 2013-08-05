@@ -31,13 +31,13 @@ public:
     ~ITunesManager();
 
     QString id() const;
-    KPluginInfo info() const;
     QString prettyName() const;
     QString description() const;
     KIcon icon() const;
     ProviderConfigWidget *configWidget( const QVariantMap &config );
 
 protected:
+    KPluginInfo pluginInfo() const;
     virtual ImporterProviderPtr newInstance( const QVariantMap &config );
 };
 

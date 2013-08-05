@@ -41,14 +41,15 @@ class AMAROK_EXPORT ImporterProvider : public Provider
 public:
     /**
      * The constructor stores @param config as a protected @see m_config variable, and
-     * @param importer as @see m_importer.
+     * @param manager as @see m_manager. If config["uid"] is not set, it's generated here
      */
-    ImporterProvider( const QVariantMap &config, ImporterManager *importer );
+    ImporterProvider( const QVariantMap &config, ImporterManager *manager );
     virtual ~ImporterProvider();
 
     /**
      * Provider's unique id which may be used as a key for configuration storage.
-     * By default returns config["uid"], which - by default - is set by the constructor.
+     * By default returns config["uid"], which - by default - is set by the manager
+     * in the ImporterManager::createProvider method.
      */
     virtual QString id() const;
 
@@ -101,7 +102,7 @@ protected:
      * subclass.
      */
     QVariantMap m_config;
-    ImporterManager *m_importer;
+    ImporterManager *m_manager;
 };
 
 } // namespace StatSyncing

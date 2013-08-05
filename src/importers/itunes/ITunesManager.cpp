@@ -39,7 +39,7 @@ ITunesManager::id() const
 }
 
 KPluginInfo
-ITunesManager::info() const
+ITunesManager::pluginInfo() const
 {
     return KPluginInfo( "amarok_importer-itunes.desktop", "services" );
 }

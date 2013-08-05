@@ -17,14 +17,20 @@
 #include "ImporterProvider.h"
 
 #include "ImporterManager.h"
+#include "core/support/Debug.h"
 
 using namespace StatSyncing;
 
 ImporterProvider::ImporterProvider( const QVariantMap &config,
-                                    ImporterManager *importer )
+                                    ImporterManager *manager )
     : m_config( config )
-    , m_importer( importer )
+    , m_manager( manager )
 {
+    if( !m_config.contains( "uid" ) )
+        m_config.insert( "uid", qrand() );
+
+    if( m_manager == 0 )
+        warning() << __PRETTY_FUNCTION__ << "manager pointer is not set";
 }
 
 ImporterProvider::~ImporterProvider()
@@ -40,13 +46,13 @@ StatSyncing::ImporterProvider::id() const
 QString
 ImporterProvider::description() const
 {
-    return m_importer->description();
+    return m_manager ? m_manager->description() : QString();
 }
 
 KIcon
 ImporterProvider::icon() const
 {
-    return m_importer->icon();
+    return m_manager ? m_manager->icon() : KIcon();
 }
 
 QString
@@ -64,15 +70,18 @@ ImporterProvider::isConfigurable() const
 ProviderConfigWidget*
 ImporterProvider::configWidget()
 {
-    Q_ASSERT( m_importer );
-    return m_importer->configWidget( m_config );
+    Q_ASSERT( m_manager );
+    return m_manager ? m_manager->configWidget( m_config ) : 0;
 }
 
 void
 ImporterProvider::reconfigure( const QVariantMap &config )
 {
-    Q_ASSERT( config["uid"] == m_config["uid"] );
-    emit reconfigurationRequested( config );
+    if( config["uid"] == m_config["uid"] )
+        emit reconfigurationRequested( config );
+    else
+        warning() << __PRETTY_FUNCTION__ << "reconfigure called with different provider"
+                  << "uid!";
 }
 
 Provider::Preference

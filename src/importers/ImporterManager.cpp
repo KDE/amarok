@@ -16,9 +16,10 @@
 
 #include "ImporterManager.h"
 
+#include "ImporterProvider.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
-#include "ImporterProvider.h"
+#include "core/support/Debug.h"
 #include "statsyncing/Config.h"
 #include "statsyncing/Controller.h"
 
@@ -43,7 +44,7 @@ ImporterManager::~ImporterManager()
 void
 ImporterManager::init()
 {
-    m_info = info();
+    m_info = pluginInfo();
 
     KConfigGroup group = Amarok::config( "Importers" );
     const QStringList providersIds = group.readEntry( id(), QStringList() );
@@ -80,29 +81,34 @@ ImporterManager::createConfigWidget()
 ProviderPtr
 ImporterManager::createProvider( QVariantMap config )
 {
-    // Generate UID for the provider
-    if( !config.contains( "uid" ) )
-        config.insert( "uid", qrand() );
-
-    const QString providerId = config["uid"].toString();
     Controller *controller = Amarok::Components::statSyncingController();
 
     // First, get rid of the old provider instance. Note: the StatSyncing::Config
     // remembers the provider by the id, even when it's unregistered. After this
     // block, old instance should be destroyed, its destructor called.
-    if( m_providers.contains( providerId ) )
+    if( config.contains( "uid" ) )
     {
-        ProviderPtr oldProvider = m_providers.take( providerId );
-        if( controller )
-            controller->unregisterProvider( oldProvider );
+        const QString providerId = config["uid"].toString();
+        if( m_providers.contains( providerId ) )
+        {
+            ProviderPtr oldProvider = m_providers.take( providerId );
+            if( controller )
+                controller->unregisterProvider( oldProvider );
+        }
     }
 
     // Create a concrete provider using the config. The QueuedConnection in connect()
     // is important, because on reconfigure we *destroy* the old provider instance
     ImporterProviderPtr provider = newInstance( config );
+    if( !provider )
+    {
+        warning() << __PRETTY_FUNCTION__ << "created provider is null!";
+        return provider;
+    }
+
     connect( provider.data(), SIGNAL(reconfigurationRequested(QVariantMap)),
                                 SLOT(createProvider(QVariantMap)), Qt::QueuedConnection);
-    m_providers[providerId] = provider;
+    m_providers[provider->id()] = provider;
 
     // Register the provider
     if( controller )
@@ -121,14 +127,14 @@ ImporterManager::createProvider( QVariantMap config )
     // Save the settings
     KConfigGroup group = Amarok::config( "Importers" );
     QStringList providersIds = group.readEntry( id(), QStringList() );
-    if( !providersIds.toSet().contains( providerId ) )
+    if( !providersIds.toSet().contains( provider->id() ) )
     {
-        providersIds.append( providerId );
+        providersIds.append( provider->id() );
         group.writeEntry( id(), providersIds );
         group.sync();
     }
 
-    group = Amarok::config( "Importers." + id() + "." + providerId );
+    group = Amarok::config( "Importers." + id() + "." + provider->id() );
     group.deleteGroup();
     foreach( const QString &key, config.keys() )
         group.writeEntry( key, config[key] );

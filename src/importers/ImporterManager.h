@@ -56,7 +56,7 @@ public:
     ImporterManager( QObject *parent, const QVariantList &args );
 
     /**
-     * Destructor. Unregisters the provider and saves settings.
+     * Destructor.
      */
     virtual ~ImporterManager();
 
@@ -66,13 +66,6 @@ public:
      * StatSyncing::Controller. This method is called by PluginManager.
      */
     virtual void init();
-
-    /**
-     * Return the KPluginInfo for this importer. The KPluginInfo should contain the
-     * name of this importer's .desktop file and plugin's type (typically a "service").
-     * This function's return value will initialize m_info variable of PluginFactory.
-     */
-    virtual KPluginInfo info() const = 0;
 
     /**
      * Basic implementation for StatSyncing::ProviderFactory createConfigWidget() method,
@@ -86,17 +79,23 @@ public:
      */
     virtual ProviderConfigWidget *configWidget( const QVariantMap &config
                                                                    = QVariantMap() ) = 0;
-
 public slots:
     /**
      * Creates a new provider by calling newInstance and saves the config to the disk.
-     * Also generates the config["uid"] if not set before.
+     * The created provider is registered with the StatSyncing::Controller
      *
      * This method can also be used to replace existing provider instances.
      */
     virtual ProviderPtr createProvider( QVariantMap config );
 
 protected:
+    /**
+     * Return the KPluginInfo for this importer. The KPluginInfo should contain the
+     * name of this importer's .desktop file and plugin's type (typically "services").
+     * This function's return value will initialize m_info variable of PluginFactory.
+     */
+    virtual KPluginInfo pluginInfo() const = 0;
+
     /**
      * Return a new provider instance.
      */

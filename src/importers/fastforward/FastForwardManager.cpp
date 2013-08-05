@@ -39,7 +39,7 @@ FastForwardManager::id() const
 }
 
 KPluginInfo
-FastForwardManager::info() const
+FastForwardManager::pluginInfo() const
 {
     return KPluginInfo( "amarok_importer-fastforward.desktop", "services" );
 }

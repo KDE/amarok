@@ -65,12 +65,12 @@ namespace StatSyncing
              * to call this for Collections that are registered through CollectionManager
              * (and marked as enabled there) as it is done automatically.
              */
-            void registerProvider( const ProviderPtr &provider );
+            virtual void registerProvider( const ProviderPtr &provider );
 
             /**
              * Forget about StatSyncing::Provider @param provider.
              */
-            void unregisterProvider( const ProviderPtr &provider );
+            virtual void unregisterProvider( const ProviderPtr &provider );
 
             /**
              * Handle plugin factories derived from ProviderFactory, used for creating
