@@ -87,7 +87,9 @@ RhythmboxTrack::firstPlayed() const
 QDateTime
 RhythmboxTrack::lastPlayed() const
 {
-    return QDateTime::fromTime_t( m_metadata[Meta::valLastPlayed].toUInt() );
+    return m_metadata[Meta::valLastPlayed].toUInt() != 0
+            ? QDateTime::fromTime_t( m_metadata[Meta::valLastPlayed].toUInt() )
+            : QDateTime();
 }
 
 int

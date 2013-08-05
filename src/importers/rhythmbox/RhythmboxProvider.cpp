@@ -145,7 +145,7 @@ RhythmboxProvider::readSong( QXmlStreamReader &xml, const QString &byArtist )
             else if( xml.name() == "last-played" )
                 metadata.insert( Meta::valLastPlayed, readValue( xml ) );
             else if( xml.name() == "play-count" )
-                metadata.insert( Meta::valLastPlayed, readValue( xml ) );
+                metadata.insert( Meta::valPlaycount, readValue( xml ) );
             else
                 xml.skipCurrentElement();
         }

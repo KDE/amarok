@@ -69,3 +69,15 @@ target_link_libraries( testitunesimporter
     amarok_importer-itunes
     ${testimporterscommon_LIBS}
 )
+
+#------------------------ Test RhythmboxImporter -----------------------------
+
+set( testrhytmboximporter_SRCS TestRhythmboxImporter.cpp )
+kde4_add_ui_files( testrhytmboximporter_SRCS ${AMAROK_SOURCE_TREE}/importers/rhythmbox/RhythmboxConfigWidget.ui )
+
+kde4_add_unit_test( testrhytmboximporter ${testrhytmboximporter_SRCS} )
+add_dependencies( testrhytmboximporter importers_files )
+target_link_libraries( testrhytmboximporter
+    amarok_importer-rhythmbox
+    ${testimporterscommon_LIBS}
+)
