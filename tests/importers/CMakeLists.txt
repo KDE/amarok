@@ -45,3 +45,15 @@ set( testimporterprovider_SRCS
 
 kde4_add_unit_test( testimporterprovider ${testimporterprovider_SRCS} )
 target_link_libraries( testimporterprovider ${testimporterscommon_LIBS} )
+
+#------------------------ Test FastForwardImporter ------------------------
+
+set( testfastforwardimporter_SRCS TestFastForwardImporter.cpp )
+kde4_add_ui_files( testfastforwardimporter_SRCS ${AMAROK_SOURCE_TREE}/importers/fastforward/FastForwardConfigWidget.ui )
+
+kde4_add_unit_test( testfastforwardimporter ${testfastforwardimporter_SRCS} )
+add_dependencies( testfastforwardimporter importers_files )
+target_link_libraries( testfastforwardimporter
+    amarok_importer-fastforward
+    ${testimporterscommon_LIBS}
+)

@@ -23,6 +23,7 @@
 
 #include <KLocalizedString>
 
+#include <QApplication>
 #include <QFile>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -71,7 +72,11 @@ QSet<QString>
 FastForwardProvider::artists()
 {
     // SQL queries need to be executed in the main thread
-    QMetaObject::invokeMethod( this, "artistsSearch", Qt::BlockingQueuedConnection );
+    const Qt::ConnectionType connectionType =
+            this->thread() == QCoreApplication::instance()->thread()
+            ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
+
+    QMetaObject::invokeMethod( this, "artistsSearch", connectionType );
 
     QSet<QString> artistSet;
     artistSet.swap( m_artistsResult );
@@ -83,7 +88,11 @@ TrackList
 FastForwardProvider::artistTracks( const QString &artistName )
 {
     // SQL queries need to be executed in the main thread
-    QMetaObject::invokeMethod( this, "artistTracksSearch", Qt::BlockingQueuedConnection,
+    const Qt::ConnectionType connectionType =
+            this->thread() == QCoreApplication::instance()->thread()
+            ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
+
+    QMetaObject::invokeMethod( this, "artistTracksSearch", connectionType,
                                Q_ARG( QString, artistName ) );
 
     TrackList artistTrackList;

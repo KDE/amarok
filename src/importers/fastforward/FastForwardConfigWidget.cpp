@@ -33,7 +33,7 @@ FastForwardConfigWidget::FastForwardConfigWidget( const QVariantMap &config,
                          << m_hostnameLabel << m_password << m_passwordLabel
                          << m_port << m_portLabel << m_username << m_usernameLabel;
 
-    connect( m_connectionType, SIGNAL(activated(QString)),
+    connect( m_connectionType, SIGNAL(currentIndexChanged(QString)),
                                                   SLOT(connectionTypeChanged(QString)) );
     populateFields();
 
