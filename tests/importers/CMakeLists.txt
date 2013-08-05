@@ -35,3 +35,13 @@ set( testimportermanager_SRCS
 
 kde4_add_unit_test( testimportermanager ${testimportermanager_SRCS} )
 target_link_libraries( testimportermanager ${testimporterscommon_LIBS} )
+
+#------------------------ Test ImporterProvider ---------------------------
+
+set( testimporterprovider_SRCS
+    TestImporterProvider.cpp
+    ImporterMocks.cpp
+)
+
+kde4_add_unit_test( testimporterprovider ${testimporterprovider_SRCS} )
+target_link_libraries( testimporterprovider ${testimporterscommon_LIBS} )
