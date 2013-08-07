@@ -197,8 +197,8 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
                   + QString::number( jAlbum->launchYear() ) + ", '"
                   + sqlDb->escape( jAlbum->genre() )+ "', "
                   + QString::number( jAlbum->artistId() ) + ", '"
-                  + sqlDb->escape( jAlbum->mp3TorrentUrl() ) + "', '"
-                  + sqlDb->escape( jAlbum->oggTorrentUrl() ) + "' );";
+                  + sqlDb->escape( QString() ) + "', '" // Deprecated
+                  + sqlDb->escape( QString() ) + "' );"; // Deprecated
 
     //debug() << "Adding Jamendo album " << queryString;
 

@@ -140,8 +140,6 @@ private:
     QString m_coverURL;
     int m_launchYear;
     QString m_genre;
-    QString m_mp3TorrentUrl;
-    QString m_oggTorrentUrl;
 
 
 public:
@@ -164,12 +162,6 @@ public:
 
     void setGenre( const QString &genre );
     QString genre() const;
-
-    void setMp3TorrentUrl( const QString &url );
-    QString mp3TorrentUrl();
-
-    void setOggTorrentUrl( const QString &url );
-    QString oggTorrentUrl();
 
     virtual QList< QAction *> customActions();
 

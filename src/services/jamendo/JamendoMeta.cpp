@@ -55,8 +55,8 @@ JamendoMetaFactory::getAlbumSqlRows()
     sqlRows += tablePrefix() + "_albums.cover_url, ";
     sqlRows += tablePrefix() + "_albums.launch_year, ";
     sqlRows += tablePrefix() + "_albums.genre, ";
-    sqlRows += tablePrefix() + "_albums.mp3_torrent_url, ";
-    sqlRows += tablePrefix() + "_albums.ogg_torrent_url ";
+    sqlRows += tablePrefix() + "_albums.mp3_torrent_url, "; // Deprecated
+    sqlRows += tablePrefix() + "_albums.ogg_torrent_url "; // Deprecated
 
     return sqlRows;
 }
@@ -275,8 +275,6 @@ JamendoAlbum::JamendoAlbum( const QStringList & resultRow )
     m_coverURL = resultRow[5];
     m_launchYear = resultRow[6].toInt();
     m_genre = resultRow[7];
-    m_mp3TorrentUrl = resultRow[8];
-    m_oggTorrentUrl = resultRow[9];
 }
 
 void
@@ -325,30 +323,6 @@ float
 JamendoAlbum::popularity() const
 {
     return m_popularity;
-}
-
-void
-JamendoAlbum::setMp3TorrentUrl( const QString &url )
-{
-    m_mp3TorrentUrl = url;
-}
-
-QString
-JamendoAlbum::mp3TorrentUrl()
-{
-    return m_mp3TorrentUrl;
-}
-
-void
-JamendoAlbum::setOggTorrentUrl( const QString &url )
-{
-   m_oggTorrentUrl = url;
-}
-
-QString
-JamendoAlbum::oggTorrentUrl()
-{
-    return m_oggTorrentUrl;
 }
 
 void

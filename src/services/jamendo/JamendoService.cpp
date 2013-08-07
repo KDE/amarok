@@ -28,6 +28,7 @@
 #include "widgets/SearchWidget.h"
 
 #include <KAction>
+#include <KFileDialog>
 #include <KMenuBar>
 #include <KRun>
 #include <KShell>
@@ -35,6 +36,7 @@
 #include <KTemporaryFile>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QDesktopServices>
 #include <QToolBar>
 #include <QToolButton>
 
@@ -280,51 +282,12 @@ JamendoService::download()
 void JamendoService::download( JamendoAlbum * album )
 {
     DEBUG_BLOCK
+
     if ( !m_polished )
         polish();
 
-    m_downloadButton->setEnabled( false );
-
-    KTemporaryFile tempFile;
-    tempFile.setSuffix( ".torrent" );
-    tempFile.setAutoRemove( false ); // removed in torrentDownloadComplete()
-    if( !tempFile.open() )
-        return;
-
-    m_torrentFileName = tempFile.fileName();
-    debug() << "downloading " << album->oggTorrentUrl() << " to " << m_torrentFileName;
-    m_torrentDownloadJob = KIO::file_copy( KUrl( album->oggTorrentUrl() ), KUrl( m_torrentFileName ), 0774 , KIO::Overwrite );
-    connect( m_torrentDownloadJob, SIGNAL(result(KJob*)),
-             this, SLOT(torrentDownloadComplete(KJob*)) );
-}
-
-void
-JamendoService::torrentDownloadComplete(KJob * downloadJob)
-{
-    if( downloadJob != m_torrentDownloadJob )
-        return; //not the right job, so let's ignore it
-
-    if( !downloadJob->error() == 0 )
-    {
-        //TODO: error handling here
-        return;
-    }
-
-    debug() << "Torrent downloaded";
-
-    //HACK: since all we get is actually the url of the really real torrent, pass the contents of the file to the system
-    //and not just the filename...
-
-    QFile torrentFile( m_torrentFileName );
-    if ( torrentFile.open( QFile::ReadOnly ) )
-    {
-        QString torrentLink = torrentFile.readAll();
-        KRun::runUrl( KShell::quoteArg( torrentLink ), "application/x-bittorrent", 0, false );
-        torrentFile.close();
-    }
-    torrentFile.remove();
-    downloadJob->deleteLater();
-    m_torrentDownloadJob = 0;
+    CollectionTreeView *treeView = static_cast<CollectionTreeView*>( view() );
+    treeView->copySelectedToLocalCollection();
 }
 
 void

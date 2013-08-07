@@ -60,6 +60,8 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         //Helper function to remove children if their parent is already present
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
 
+        void copySelectedToLocalCollection();
+
     public slots:
         void slotSetFilter( const QString &filter );
 

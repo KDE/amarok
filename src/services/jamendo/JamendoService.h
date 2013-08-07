@@ -58,7 +58,6 @@ private slots:
     void downloadCurrentTrackAlbum();
     void listDownloadComplete( KJob* downloadJob);
     void listDownloadCancelled();
-    void torrentDownloadComplete( KJob* downloadJob);
     void doneParsing();
 
     /**
@@ -75,9 +74,7 @@ private:
     QPushButton *m_updateListButton;
     QPushButton *m_downloadButton;
     KIO::FileCopyJob * m_listDownloadJob;
-    KIO::FileCopyJob *m_torrentDownloadJob;
     QString m_tempFileName;
-    QString m_torrentFileName;
     Collections::ServiceSqlCollection * m_collection;
     Meta::JamendoAlbum * m_currentAlbum;
 

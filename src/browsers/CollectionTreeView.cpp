@@ -745,6 +745,39 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem *> &items ) co
 }
 
 void
+CollectionTreeView::copySelectedToLocalCollection()
+{
+    DEBUG_BLOCK
+
+    // Get the local collection
+    Collections::Collection *collection;
+    foreach( collection, CollectionManager::instance()->collections().keys() )
+    {
+        if ( collection->prettyName() == "Local Collection")
+            break;
+    }
+
+    // Get selected items
+    QModelIndexList indexes = selectedIndexes();
+    if( m_filterModel )
+    {
+        QModelIndexList tmp;
+        foreach( const QModelIndex &idx, indexes )
+            tmp.append( m_filterModel->mapToSource( idx ) );
+        indexes = tmp;
+    }
+
+    m_currentItems.clear();
+    foreach( const QModelIndex &index, indexes )
+    {
+        if( index.isValid() && index.internalPointer() )
+            m_currentItems.insert( static_cast<CollectionTreeItem *>( index.internalPointer() ) );
+    }
+
+    copyTracks( m_currentItems, collection, false );
+}
+
+void
 CollectionTreeView::copyTracks( const QSet<CollectionTreeItem *> &items,
                                 Collection *destination, bool removeSources ) const
 {

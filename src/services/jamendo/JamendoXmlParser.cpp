@@ -29,7 +29,6 @@
 using namespace Meta;
 
 static const QString COVERURL_BASE = "http://api.jamendo.com/get2/image/album/redirect/?id=%1&imagesize=100";
-static const QString TORRENTURL_BASE = "http://api.jamendo.com/get2/bittorrent/file/plain/?album_id=%1&type=archive&class=%2";
 
 JamendoXmlParser::JamendoXmlParser( const QString &filename )
     : ThreadWeaver::Job()
@@ -289,8 +288,6 @@ JamendoXmlParser::readAlbum()
     QString description;
     QStringList tags;
     QString coverUrl;
-    QString mp3TorrentUrl;
-    QString oggTorrentUrl;
     QString releaseDate;
 
    while( !m_reader.atEnd() )
@@ -334,8 +331,6 @@ JamendoXmlParser::readAlbum()
         currentAlbum.setArtistId( m_currentArtistId );
         currentAlbum.setLaunchYear( releaseDate.left( 4 ).toInt() );
         currentAlbum.setCoverUrl( COVERURL_BASE.arg( m_currentAlbumId ) );
-        currentAlbum.setMp3TorrentUrl( TORRENTURL_BASE.arg( QString::number( m_currentAlbumId ), "mp32" ) );
-        currentAlbum.setOggTorrentUrl( TORRENTURL_BASE.arg( QString::number( m_currentAlbumId ), "ogg3" ) );
         m_albumArtistMap.insert( currentAlbum.id(), currentAlbum.artistId() );
 
         int newId = m_dbHandler->insertAlbum( &currentAlbum );
