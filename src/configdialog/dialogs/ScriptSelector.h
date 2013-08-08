@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
-
+ 
 #ifndef SCRIPTSELECTOR_H
 #define SCRIPTSELECTOR_H
 
@@ -28,9 +28,9 @@ class ScriptSelector : public KPluginSelector
 
     public:
         ScriptSelector( QWidget * parent );
-
         ~ScriptSelector();
-        QString currentItem();
+
+        QString currentItem() const;
 
         void addScripts(const QList<KPluginInfo> &pluginInfoList,
                      PluginLoadMethod pluginLoadMethod = ReadConfigFile,

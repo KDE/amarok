@@ -13,31 +13,33 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
-
+ 
 #include "ScriptSelector.h"
 
 #include "core/support/Debug.h"
 
-#include <KLocalizedString>
+#include <KLocale>
 #include <KLineEdit>
 
 ScriptSelector::ScriptSelector( QWidget * parent )
- : KPluginSelector( parent )
+    : KPluginSelector( parent )
+    , m_scriptCount( 0 )
 {
-    KLineEdit* lineEdit;
-    lineEdit = this->findChild<KLineEdit*>();
-
+    KLineEdit* lineEdit = this->findChild<KLineEdit*>();
     if( lineEdit )
         lineEdit->setClickMessage( i18n( "Search Scripts" ) );
 
     m_listView = this->findChild<KCategorizedView*>();
-    m_scriptCount = 0;
 }
 
 ScriptSelector::~ScriptSelector()
 {}
 
-void ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList, PluginLoadMethod pluginLoadMethod, const QString &categoryName, const QString &categoryKey, const KSharedConfig::Ptr &config )
+void ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList,
+                                 PluginLoadMethod pluginLoadMethod,
+                                 const QString &categoryName,
+                                 const QString &categoryKey,
+                                 const KSharedConfig::Ptr &config )
 {
     DEBUG_BLOCK
 
@@ -45,20 +47,20 @@ void ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList, Plugi
     foreach( const KPluginInfo &plugin, pluginInfoList )
     {
         m_scriptCount++;
-        m_scripts[m_scriptCount] = plugin.pluginName();
+        m_scripts[m_scriptCount] = plugin.name();
     }
 }
 
-QString ScriptSelector::currentItem()
+QString ScriptSelector::currentItem() const
 {
     DEBUG_BLOCK
 
-    QItemSelectionModel *SelModel = m_listView->selectionModel();
-    const QModelIndexList SelIndexes = SelModel->selectedIndexes();
+    QItemSelectionModel *selModel = m_listView->selectionModel();
+    const QModelIndexList selIndexes = selModel->selectedIndexes();
 
-    if( !SelIndexes.isEmpty() )
+    if( !selIndexes.isEmpty() )
     {
-        QModelIndex currentIndex = SelIndexes[0];
+        QModelIndex currentIndex = selIndexes[0];
         if( currentIndex.isValid() )
         {
             debug() << "row: " << currentIndex.row() + 1; //the index start from 1
