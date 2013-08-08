@@ -192,7 +192,7 @@ Meta::JamendoTrack::setService(JamendoService * service)
 
 QString JamendoTrack::type() const
 {
-    return "ogg";
+    return "mp3";
 }
 
 //// JamendoArtist ////

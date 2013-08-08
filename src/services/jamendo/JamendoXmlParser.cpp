@@ -388,7 +388,7 @@ JamendoXmlParser::readTrack()
     }
 
     static const QString previewUrl =
-        "http://api.jamendo.com/get2/stream/track/redirect/?id=%1&streamencoding=ogg2";
+        "http://api.jamendo.com/get2/stream/track/redirect/?id=%1&streamencoding=mp32";
 
     JamendoTrack currentTrack( name );
     currentTrack.setId( id.toInt() );
