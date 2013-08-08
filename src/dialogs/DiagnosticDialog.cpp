@@ -36,7 +36,6 @@ DiagnosticDialog::DiagnosticDialog( const KAboutData *aboutData, QWidget *parent
     if( aboutData == 0 )
         aboutData = KGlobal::mainComponent().aboutData();
 
-
     m_textBox = new QPlainTextEdit( generateReport( aboutData ), this );
 
     setPlainCaption( i18nc( "%1 is the program name", "%1 Diagnostics", aboutData->programName() ) );
@@ -50,18 +49,12 @@ DiagnosticDialog::DiagnosticDialog( const KAboutData *aboutData, QWidget *parent
     setInitialSize( QSize( 480, 460 ) );
 
     connect( this, SIGNAL(user1Clicked()), SLOT(slotCopyToClipboard()) );
-    connect( this, SIGNAL(finished()), SLOT(slotFinished()) );
-}
-
-DiagnosticDialog::~DiagnosticDialog()
-{
-    delete m_textBox;
+    connect( this, SIGNAL(finished()), SLOT(deleteLater()) );
 }
 
 const QString
 DiagnosticDialog::generateReport( const KAboutData *aboutData )
 {
-
     // Get scripts -- we have to assemble 3 lists into one
     KPluginInfo::List aScripts;
     const ScriptManager *aScriptManager = ScriptManager::instance();
@@ -73,10 +66,9 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     QString aScriptString;
     foreach( KPluginInfo aInfo, aScripts )
     {
-        aScriptString = aScriptString % aInfo.name() % " " % aInfo.version() %
-                        ( aInfo.isPluginEnabled() ? i18n(" (running)") : i18n(" (stopped)") ) % "\n";
+        if( aInfo.isPluginEnabled() )
+            aScriptString += "   " + aInfo.name() + " " + aInfo.version() + "\n";
     }
-
 
     // Get plugins -- we have to assemble a list again.
     KPluginInfo::List aPlugins;
@@ -87,39 +79,37 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     QString aPluginString;
     foreach( KPluginInfo aInfo, aPlugins )
     {
-        aPluginString = aPluginString % aInfo.name() %          // " " % aInfo.version() %
-                        ( aInfo.isPluginEnabled() ? i18n(" (enabled)") : i18n(" (disabled)") ) % "\n";
+        if( aInfo.isPluginEnabled() )
+            aPluginString += "   " + aInfo.name() + " " + aInfo.version() + "\n";
     }
-
 
     const KService::Ptr aPhononBackend =
         KServiceTypeTrader::self()->preferredService( "PhononBackend" );
 
     const bool hasPulse = Phonon::PulseSupport::getInstance()->isActive();
-    const QString pulse = hasPulse ? i18nc("Usage", "Yes") : i18nc("Usage", "No");
+    const QString pulse = hasPulse ? i18nc( "Usage", "Yes" ) : i18nc( "Usage", "No" );
 
     return i18n(
-               "%1 Diagnostics\n\n%1 Version: %2\n"
-               "KDE Version: %3\n"
-               "Qt Version: %4\n"
-               "Phonon Version: %5\n"
-               "Phonon Backend: %6 (%7)\n"
-               "PulseAudio: %8\n\n",
+               "%1 Diagnostics\n\nGeneral Information:\n"
+               "   %1 Version: %2\n"
+               "   KDE Version: %3\n"
+               "   Qt Version: %4\n"
+               "   Phonon Version: %5\n"
+               "   Phonon Backend: %6 (%7)\n"
+               "   PulseAudio: %8\n\n",
 
                aboutData->programName(), aboutData->version(),      // Amarok
                KDE::versionString(),                                // KDE
                qVersion(),                                          // QT
                Phonon::phononVersion(),                             // Phonon
                aPhononBackend.data()->name(),
-               aPhononBackend.data()->property( "X-KDE-PhononBackendInfo-Version",
-                                                QVariant::String).toString(), // & Backend
+               aPhononBackend.data()->property( "X-KDE-PhononBackendInfo-Version", QVariant::String ).toString(), // & Backend
                pulse                                                // PulseAudio
            ) + i18n(
-               "Amarok Scripts:\n    %1\n"
-               "Amarok Plugins:\n    %2\n",
+               "Enabled Scripts:\n%1\n"
+               "Enabled Plugins:\n%2\n",
                aScriptString, aPluginString
            );
-
 }
 
 void
@@ -127,9 +117,4 @@ DiagnosticDialog::slotCopyToClipboard() const
 {
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText( m_textBox->toPlainText() );
-}
-
-void DiagnosticDialog::slotFinished()
-{
-    deleteLater();
 }

@@ -26,9 +26,9 @@
 class AMAROK_EXPORT DiagnosticDialog : public KDialog
 {
     Q_OBJECT
+
 public:
     explicit DiagnosticDialog( const KAboutData *aboutData, QWidget *parent = 0 );
-    virtual ~DiagnosticDialog();
 
 private:
     QPlainTextEdit *m_textBox;
@@ -37,10 +37,7 @@ private:
 
 private slots:
     void slotCopyToClipboard() const;
-    void slotFinished();
 };
-
-
 
 
 #endif //AMAROK_DIAGNOSTICDIALOG_H
