@@ -250,6 +250,7 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
     startScriptEngine( name );
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
+    item->info.setPluginEnabled( true );
     item->running = true;
     item->evaluating = true;
     if( item->info.category() == "Lyrics" )
