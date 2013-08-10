@@ -17,6 +17,7 @@
 #ifndef COLLECTIONTREEVIEW_H
 #define COLLECTIONTREEVIEW_H
 
+#include "amarok_export.h"
 #include "BrowserDefines.h"
 #include "widgets/PrettyTreeView.h"
 #include "core/meta/forward_declarations.h"
@@ -60,7 +61,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         //Helper function to remove children if their parent is already present
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
 
-        void copySelectedToLocalCollection();
+        AMAROK_EXPORT void copySelectedToLocalCollection();
 
     public slots:
         void slotSetFilter( const QString &filter );
