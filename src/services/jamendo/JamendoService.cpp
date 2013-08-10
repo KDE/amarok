@@ -17,6 +17,7 @@
 #include "JamendoService.h"
 
 #include "browsers/CollectionTreeItem.h"
+#include "browsers/CollectionTreeView.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
