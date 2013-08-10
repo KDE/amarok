@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
  * Copyright (c) 2008 Ian Monroe <ian@monroe.nu>                                        *
-Image*                                                                                      *
+ *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
  * Foundation; either version 2 of the License, or (at your option) any later           *
@@ -18,233 +18,275 @@ Image*                                                                          
 #include "MetaTypeExporter.h"
 
 #include "core/meta/Meta.h"
-#include "scripting/scriptengine/ScriptingDefines.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/TrackEditor.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/meta/proxy/MetaProxy.h"
+#include "scripting/scriptengine/ScriptingDefines.h"
 
+#include <QScriptContext>
 #include <QScriptEngine>
 
 using namespace AmarokScript;
 
-#define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );
-#define GET_TRACK_EC( X ) GET_TRACK \
-Meta::TrackEditorPtr ec = track->editor(); \
-if( ec ) \
-{ \
-    X; \
+#define CHECK_TRACK( X )  if( !m_track ){ warning() << "Invalid track!"; return X; };
+#define GET_TRACK_EC( X ) CHECK_TRACK() \
+                          Meta::TrackEditorPtr ec = m_track->editor(); \
+                          if( ec ) \
+                          { \
+                              X; \
+                          }
+
+void
+MetaTrackPrototype::init( QScriptEngine *engine )
+{
+    qScriptRegisterMetaType<Meta::TrackPtr>( engine, toScriptValue<Meta::TrackPtr, MetaTrackPrototype>, fromScriptValue<Meta::TrackPtr, MetaTrackPrototype> );
+    qScriptRegisterMetaType<Meta::TrackList>( engine, toScriptArray, fromScriptArray );
+    engine->globalObject().setProperty( "Track", engine->newFunction( trackCtor ) );
 }
 
-MetaTrackPrototype::MetaTrackPrototype( QScriptEngine *engine )
-    : QObject( engine )
+QScriptValue
+MetaTrackPrototype::trackCtor( QScriptContext *context, QScriptEngine *engine )
 {
-    qScriptRegisterMetaType<Meta::TrackList>(engine, toScriptArray, fromScriptArray );
-    engine->setDefaultPrototype( qMetaTypeId<Meta::TrackPtr>(),
-                                 engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents ) );
+    if( context->argumentCount() < 1 )
+    {
+        engine->evaluate( "throw \"Not enough arguments! Pass the track url.\"" );
+        // use context->throwError()?
+        return engine->undefinedValue();
+    }
+
+    KUrl url( qscriptvalue_cast<QUrl>( context->argument( 0 ) ) );
+    if( !url.isValid() )
+    {
+        engine->evaluate( "throw \"Invalid QUrl\"" );
+        return engine->undefinedValue();
+    }
+
+    MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
+    proxyTrack->setTitle( url.fileName() ); // set temporary name
+    return engine->newQObject( new MetaTrackPrototype( Meta::TrackPtr( proxyTrack.data() ) )
+                                                , QScriptEngine::ScriptOwnership
+                                                , QScriptEngine::ExcludeSuperClassContents );
+}
+
+MetaTrackPrototype::MetaTrackPrototype( const Meta::TrackPtr &track )
+: QObject( 0 )
+, m_track( track )
+{
 }
 
 int
 MetaTrackPrototype::sampleRate() const
 {
-    GET_TRACK
-    return track ? track->sampleRate() : 0;
+    CHECK_TRACK( 0 )
+    return m_track->sampleRate();
 }
 
 int
 MetaTrackPrototype::bitrate() const
 {
-    GET_TRACK
-    return track ? track->bitrate() : 0;
+    CHECK_TRACK( 0 )
+    return m_track->bitrate();
 }
 
 double
 MetaTrackPrototype::score() const
 {
-    GET_TRACK
-    return track ? track->statistics()->score() : 0.0;
+    CHECK_TRACK( 0.0 )
+    return m_track->statistics()->score();
 }
 
 int
 MetaTrackPrototype::rating() const
 {
-    GET_TRACK
-    return track ? track->statistics()->rating() : 0;
+    CHECK_TRACK( 0 )
+    return m_track->statistics()->rating();
 }
 
 bool
 MetaTrackPrototype::inCollection() const
 {
-    GET_TRACK
-    return track ? track->inCollection() : false;
+    CHECK_TRACK( false )
+    return m_track->inCollection();
 }
 
 QString
 MetaTrackPrototype::type() const
 {
-    GET_TRACK
-    return track ? track->type() : QString();
+    CHECK_TRACK( QString() )
+    return m_track->type();
 }
 
 qint64
 MetaTrackPrototype::length() const
 {
-    GET_TRACK
-    return track ? track->length() : 0;
+    CHECK_TRACK( 0 )
+    return m_track->length();
 }
 
 int
 MetaTrackPrototype::fileSize() const
 {
-    GET_TRACK
-    return track ? track->filesize() : 0;
+    CHECK_TRACK( 0 )
+    return m_track->filesize();
 }
 
 int
 MetaTrackPrototype::trackNumber() const
 {
-    GET_TRACK
-    return track ? track->trackNumber() : 0;
+    CHECK_TRACK( 0 )
+    return m_track->trackNumber();
 }
 
 int
 MetaTrackPrototype::discNumber() const
 {
-    GET_TRACK
-    return track ? track->discNumber() : 0;
+    CHECK_TRACK( 0 )
+    return m_track->discNumber();
 }
 
 int
 MetaTrackPrototype::playCount() const
 {
-    GET_TRACK
-    return track ? track->statistics()->playCount() : 0;
+    CHECK_TRACK( 0 )
+    return m_track->statistics()->playCount();
 }
 
 bool
 MetaTrackPrototype::playable() const
 {
-    GET_TRACK
-    return track ? track->isPlayable() : false;
+    CHECK_TRACK( false )
+    return m_track->isPlayable();
 }
 
 QString
 MetaTrackPrototype::album() const
 {
-    GET_TRACK
-    return ( track && track->album() ) ? track->album()->prettyName() : QString();
+    CHECK_TRACK( m_track->album() ? m_track->album()->prettyName() : QString() )
+    return QString();
 }
 
 QString
 MetaTrackPrototype::artist() const
 {
-    GET_TRACK
-    return ( track && track->artist() ) ? track->artist()->prettyName() : QString();
+    CHECK_TRACK( m_track->artist() ? m_track->artist()->prettyName() : QString() )
+    return QString();
 }
 
 QString
 MetaTrackPrototype::composer() const
 {
-    GET_TRACK
-    return ( track && track->composer() ) ? track->composer()->prettyName() : QString();
+    CHECK_TRACK( m_track->composer() ? m_track->composer()->prettyName() : QString() )
+    return QString();
 }
 
 QString
 MetaTrackPrototype::genre() const
 {
-    GET_TRACK
-    return ( track && track->genre() ) ? track->genre()->prettyName() : QString();
+    CHECK_TRACK( m_track->genre() ? m_track->genre()->prettyName() : QString() )
+    return QString();
 }
 
 int
 MetaTrackPrototype::year() const
 {
-    GET_TRACK
-    return ( track && track->year() ) ? track->year()->year() : 0;
+    CHECK_TRACK( m_track->year() ? m_track->year()->year() : 0 )
+    return 0;
 }
 
 QString
 MetaTrackPrototype::comment() const
 {
-    GET_TRACK
-    return track ? track->comment() : QString();
+    CHECK_TRACK( QString() )
+    return m_track->comment();
 }
 
 QString
 MetaTrackPrototype::path() const
 {
-    GET_TRACK
-    return track ? track->playableUrl().path() : QString();
+    CHECK_TRACK( QString() )
+    return m_track->playableUrl().path();
 }
 
 QString
 MetaTrackPrototype::title() const
 {
-    GET_TRACK
-    return track ? track->prettyName() : QString();
+    CHECK_TRACK ( QString() )
+    return m_track->prettyName();
 }
 
 QString
 MetaTrackPrototype::imageUrl() const
 {
-    GET_TRACK
-    return ( track && track->album() ) ? track->album()->imageLocation().prettyUrl() : QString();
+    CHECK_TRACK( m_track->album() ? m_track->album()->imageLocation().prettyUrl() : QString() )
+    return QString();
 }
 
 QString
 MetaTrackPrototype::url() const
 {
-    GET_TRACK
-    return track ? track->playableUrl().url() : QString();
+    CHECK_TRACK( QString() )
+    return m_track->playableUrl().url();
 }
 
 double
 MetaTrackPrototype::bpm() const
 {
-    GET_TRACK
-    return track ? track->bpm() : 0.0;
+    CHECK_TRACK( 0.0 )
+    return m_track->bpm();
+}
+
+bool
+MetaTrackPrototype::isLoaded()
+{
+    MetaProxy::TrackPtr proxyTrack = MetaProxy::TrackPtr::dynamicCast( m_track );
+    if( proxyTrack && !proxyTrack->isResolved() )
+    {
+        Observer::subscribeTo( m_track );
+        return false;
+    }
+    return true;
 }
 
 QScriptValue
 MetaTrackPrototype::imagePixmap( int size ) const
 {
-    GET_TRACK
-    return ( track && track->album() ) ? thisObject().engine()->toScriptValue( track->album()->image( size ) ) : QScriptValue();
+    CHECK_TRACK( m_track->album() ? m_engine->toScriptValue( m_track->album()->image( size ) ) : QScriptValue() )
+    return QScriptValue();
 }
 
 bool
 MetaTrackPrototype::isValid() const
 {
-    GET_TRACK
-    if ( track ) return true;
-    return false;
+    return m_track;
 }
 
 bool
-MetaTrackPrototype::isEditable() const
+MetaTrackPrototype::isEditable()
 {
-    GET_TRACK
-    return track->editor(); // converts to bool nicely
+    CHECK_TRACK( false )
+    return m_track->editor(); // converts to bool nicely
 }
 
 QString
 MetaTrackPrototype::lyrics() const
 {
-    GET_TRACK
-    return track ? track->cachedLyrics() : QString();
+    CHECK_TRACK( QString() )
+    return m_track->cachedLyrics();
 }
 
 void
 MetaTrackPrototype::setScore( double score )
 {
-    GET_TRACK
-    if ( track ) track->statistics()->setScore( score );
+    CHECK_TRACK()
+    m_track->statistics()->setScore( score );
 }
 
 void
 MetaTrackPrototype::setRating( int rating )
 {
-    GET_TRACK
-    if ( track ) track->statistics()->setRating( rating );
+    CHECK_TRACK()
+    m_track->statistics()->setRating( rating );
 }
 
 void
@@ -298,9 +340,8 @@ MetaTrackPrototype::setComment( const QString &comment )
 void
 MetaTrackPrototype::setLyrics( const QString &lyrics )
 {
-    GET_TRACK
-    if( track )
-        track->setCachedLyrics( lyrics );
+    CHECK_TRACK()
+    m_track->setCachedLyrics( lyrics );
 }
 
 void
@@ -312,9 +353,16 @@ MetaTrackPrototype::setTitle( const QString& title )
 void
 MetaTrackPrototype::setImageUrl( const QString& imageUrl )
 {
-    GET_TRACK
-    if( track && track->album() )
-        track->album()->setImage( QImage(imageUrl) );
+    CHECK_TRACK()
+    if( m_track->album() )
+        m_track->album()->setImage( QImage(imageUrl) );
+}
+
+void
+MetaTrackPrototype::metadataChanged( Meta::TrackPtr track )
+{
+    Observer::unsubscribeFrom( track );
+    emit loaded( track );
 }
 
 #undef GET_TRACK

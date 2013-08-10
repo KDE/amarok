@@ -18,22 +18,26 @@
 #define METATYPE_EXPORTER_H
 
 #include "amarok_export.h"
+#include "core/meta/forward_declarations.h"
+#include "core/meta/Observer.h"
 
 #include <QObject>
 #include <QScriptable>
 
+class QScriptContext;
 class QScriptEngine;
 class QScriptValue;
 
 namespace AmarokScript
 {
+    // ANM-TODO: Expose other meta classes, expand query makers
     // SCRIPTDOX PROTOTYPE Meta::TrackPtr Track
     #ifdef DEBUG
         class AMAROK_EXPORT
     #else
         class
     #endif
-    MetaTrackPrototype : public QObject, protected QScriptable
+    MetaTrackPrototype : public QObject, public Meta::Observer
     {
         Q_OBJECT
 
@@ -64,18 +68,45 @@ namespace AmarokScript
         Q_PROPERTY( QString url READ url )
         Q_PROPERTY( double bpm READ bpm ) // setter not yet available in Meta::Track
 
+        /**
+         * Tracks may be loaded asynchronously, indicates whether the track has been loaded and its full metadata available .
+         * Connect to the trackLoaded signal to be notified when it is.
+         */
+        Q_PROPERTY( bool isLoaded READ isLoaded )
+
         public:
-            MetaTrackPrototype( QScriptEngine *engine );
+            static void init( QScriptEngine *engine );
+            Meta::TrackPtr data() { return m_track; }
+            MetaTrackPrototype( const Meta::TrackPtr &track );
+            static QScriptValue trackCtor( QScriptContext* context, QScriptEngine* engine );
+            // static QScriptValue toScriptValue( QScriptEngine *engine, Meta::TrackPtr const &trackPtr );
+            // static void fromScriptValue( const QScriptValue &obj, Meta::TrackPtr &trackPtr );
 
         public slots:
-
             /**
              * Returns the image for the album, usually the cover image, if it has one,
              * or an undefined value otherwise.
              */
             QScriptValue imagePixmap( int size = 1 ) const;
 
+        signals:
+            /**
+             * Emitted when a track has finished loading.
+             */
+            void loaded( Meta::TrackPtr );
+
         private:
+            Meta::TrackPtr m_track;
+
+            void metadataChanged( Meta::TrackPtr track ) override;
+            void metadataChanged( Meta::ArtistPtr artist ) override {  Q_UNUSED( artist ) }
+            void metadataChanged( Meta::AlbumPtr album ) override { Q_UNUSED( album ) }
+            void metadataChanged( Meta::GenrePtr genre ) override {  Q_UNUSED( genre ) }
+            void metadataChanged( Meta::ComposerPtr composer ) override {  Q_UNUSED( composer ) }
+            void metadataChanged( Meta::YearPtr year ) override {  Q_UNUSED( year ) }
+
+            QScriptEngine *m_engine;
+
             int sampleRate() const;
             int bitrate() const;
             double score() const;
@@ -96,12 +127,13 @@ namespace AmarokScript
             QString comment() const;
             QString path() const;
             bool isValid() const;
-            bool isEditable() const;
+            bool isEditable();
             QString lyrics() const;
             QString title() const;
             QString imageUrl() const;
             QString url() const;
             double bpm() const;
+            bool isLoaded();
 
             void setScore( double score );
             void setRating( int rating );
