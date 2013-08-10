@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Andrzej J. R. Hunt <andrzej at ahunt.org>                         *
+ * Copyright (c) Mark Kretschmann <kretschmann@kde.org>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,18 +17,21 @@
 
 #include "DiagnosticDialog.h"
 
+#include "context/ContextView.h"
 #include "PluginManager.h"
 #include "ScriptManager.h"
 
-#include <kapplication.h>
-#include <KDE/KService>
-#include <KDE/KServiceTypeTrader>
-#include <kglobal.h>
-#include "kplugininfo.h"
-#include <Phonon/Global>
+#include <KAboutData>
+#include <KApplication>
+#include <KGlobal>
+#include <KPluginInfo>
+#include <KService>
+#include <KServiceTypeTrader>
+#include <Plasma/Applet>
 #include <phonon/pulsesupport.h>
 
 #include <QClipboard>
+#include <QPlainTextEdit>
 
 
 DiagnosticDialog::DiagnosticDialog( const KAboutData *aboutData, QWidget *parent )
@@ -67,8 +71,9 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     foreach( KPluginInfo aInfo, aScripts )
     {
         if( aInfo.isPluginEnabled() )
-            aScriptString += "   " + aInfo.name() + " " + aInfo.version() + "\n";
+            aScriptString += "   " + aInfo.name() + " (" + aInfo.version() + ")\n";
     }
+
 
     // Get plugins -- we have to assemble a list again.
     KPluginInfo::List aPlugins;
@@ -80,8 +85,20 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     foreach( KPluginInfo aInfo, aPlugins )
     {
         if( aInfo.isPluginEnabled() )
-            aPluginString += "   " + aInfo.name() + " " + aInfo.version() + "\n";
+            aPluginString += "   " + aInfo.name() + " (" + aInfo.version() + ")\n";
     }
+
+
+    // Get applets
+    const QStringList appletList = Context::ContextView::self()->currentAppletNames();
+    QString appletString;
+
+    foreach( const QString &applet, appletList )
+    {
+        // Currently we cannot extract the applet version number this way
+        appletString += "   " + applet + "\n";
+    }
+
 
     const KService::Ptr aPhononBackend =
         KServiceTypeTrader::self()->preferredService( "PhononBackend" );
@@ -107,8 +124,9 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
                pulse                                                // PulseAudio
            ) + i18n(
                "Enabled Scripts:\n%1\n"
-               "Enabled Plugins:\n%2\n",
-               aScriptString, aPluginString
+               "Enabled Plugins:\n%2\n"
+               "Enabled Applets:\n%3\n",
+               aScriptString, aPluginString, appletString
            );
 }
 

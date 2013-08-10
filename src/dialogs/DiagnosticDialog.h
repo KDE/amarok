@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2012 Andrzej J. R. Hunt <andrzej at ahunt.org>                         *
+ * Copyright (c) Mark Kretschmann <kretschmann@kde.org>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,10 +19,11 @@
 
 #include "amarok_export.h"
 
-#include <KAboutData>
-#include <kdialog.h>
-#include <QPlainTextEdit>
-#include <QWeakPointer>
+#include <KDialog>
+
+class KAboutData;
+class QPlainTextEdit;
+
 
 class AMAROK_EXPORT DiagnosticDialog : public KDialog
 {
