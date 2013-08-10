@@ -70,6 +70,7 @@ PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
     , q( parent )
     {
         hoverTimer.setFrameRange( 0, 30 );
+        hoverTimer.setUpdateInterval( 20 ); // 50 fps
         q->setAcceptDrops( true );
         hoverIndicatorRectFillBrush.setColor( Qt::white );
         hoveredBorderPen.setWidth( borderWidth );

@@ -278,7 +278,9 @@ void PopupDropper::initOverlay( QWidget* parent, PopupDropperPrivate* priv )
     pdp->view->setBackgroundRole( QPalette::Window );
     pdp->view->setAutoFillBackground( true );
     pdp->fadeHideTimer.setFrameRange( 0, pdp->frameMax );
+    pdp->fadeHideTimer.setUpdateInterval( 20 ); // 50 fps
     pdp->fadeShowTimer.setFrameRange( 0, pdp->frameMax );
+    pdp->fadeShowTimer.setUpdateInterval( 20 ); // 50 fps
 }
 
 void PopupDropper::addOverlay()
