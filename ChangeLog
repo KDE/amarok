@@ -9,6 +9,7 @@ VERSION 2.8
      playlist. (BR 279263, BR 296090)
 
   CHANGES:
+   * The Jamendo service now uses a higher quality MP3 format instead of Ogg Vorbis.
    * Added an option whether adding tracks to playlist should start playing. (BR 322428)
    * Amarok now depends on Qt 4.8.3.
    * Amarok now uses FindFFMpeg.cmake from kdelibs
