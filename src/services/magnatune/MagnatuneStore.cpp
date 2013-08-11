@@ -576,51 +576,6 @@ void MagnatuneStore::setStreamType( int type )
     m_streamType = type;
 }
 
-
-void MagnatuneStore::downloadCurrentTrackAlbum()
-{
-    //get current track
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-
-    //check if this is indeed a magnatune track
-    Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
-    if( sic )
-    {
-        //is the source defined
-        QString source = sic->sourceName();
-        if ( source != "Magnatune.com" ) {
-            //not a Magnatune track, so don't bother...
-            delete sic;
-            return;
-        }
-        delete sic;
-    } else {
-        //not a Magnatune track, so don't bother...
-        return;
-    }
-
-    //so far so good...
-    //now the casting begins:
-
-    Meta::MagnatuneTrack * magnatuneTrack = dynamic_cast<Meta::MagnatuneTrack *> ( track.data() );
-    if ( !magnatuneTrack )
-        return;
-
-    Meta::MagnatuneAlbum * magnatuneAlbum = dynamic_cast<Meta::MagnatuneAlbum *> ( magnatuneTrack->album().data() );
-    if ( !magnatuneAlbum )
-        return;
-
-    if ( !m_downloadHandler )
-    {
-        m_downloadHandler = new MagnatuneDownloadHandler();
-        m_downloadHandler->setParent( this );
-        connect( m_downloadHandler, SIGNAL(downloadCompleted(bool)), this, SLOT(downloadCompleted(bool)) );
-    }
-
-    m_downloadHandler->downloadAlbum( magnatuneAlbum );
-}
-
-
 void MagnatuneStore::checkForUpdates()
 {
     m_updateTimestampDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/info/last_update_timestamp" ), KIO::Reload, KIO::HideProgressInfo );

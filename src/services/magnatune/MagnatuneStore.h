@@ -118,8 +118,6 @@ private slots:
     void download();
 
     void download( const QString &sku );
-    
-    void downloadCurrentTrackAlbum();
 
     /**
      * Slot for recieving notification that the update button has been clicked.

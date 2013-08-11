@@ -51,13 +51,6 @@ OpmlDirectoryFeed::OpmlDirectoryFeed( const QStringList & resultRow )
 {
 }
 
-QList< QAction * > Meta::OpmlDirectoryFeed::customActions()
-{
-    QList< QAction * > actions;
-    return actions;
-}
-
-
 OpmlDirectoryCategory::OpmlDirectoryCategory( const QString & name )
     : ServiceAlbum( name )
 {

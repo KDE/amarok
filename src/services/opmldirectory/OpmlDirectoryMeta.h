@@ -52,8 +52,6 @@ class OpmlDirectoryFeed  : public ServiceTrack
 public:
     OpmlDirectoryFeed( const QString &name );
     OpmlDirectoryFeed( const QStringList &resultRow );
-
-        virtual QList< QAction *> customActions();
 };
 
 class OpmlDirectoryCategory : public ServiceAlbum

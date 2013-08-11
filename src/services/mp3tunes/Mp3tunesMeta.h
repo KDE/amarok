@@ -18,7 +18,6 @@
 #ifndef MP3TUNESMETA_H
 #define MP3TUNESMETA_H
 
-
 #include "../ServiceMetaBase.h"
 #include "../ServiceAlbumCoverDownloader.h"
 
@@ -55,7 +54,6 @@ class Mp3TunesAlbum  : public ServiceAlbumWithCover
 private:
     QString m_coverURL;
 
-
 public:
     Mp3TunesAlbum( const QString &name );
     Mp3TunesAlbum( const QStringList &resultRow );
@@ -66,10 +64,6 @@ public:
 
     virtual void setCoverUrl( const QString &coverURL );
     virtual QString coverUrl() const;
-
-    virtual QList< QAction *> customActions();
-
-
 };
 
 }

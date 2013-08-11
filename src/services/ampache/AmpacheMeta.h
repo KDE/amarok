@@ -53,8 +53,6 @@ public:
     virtual QString scalableEmblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-ampache-scalable.svgz" );  }
     virtual QString notPlayableReason() const;
 
-    virtual QList< QAction *> currentTrackActions();
-
     virtual int discNumber() const { return m_discNumber; }
     virtual void setDiscNumber( int newDiscNumber ) { m_discNumber = newDiscNumber; }
 

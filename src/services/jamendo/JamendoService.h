@@ -55,7 +55,6 @@ public:
 private slots:
     void updateButtonClicked();
     void download();
-    void downloadCurrentTrackAlbum();
     void listDownloadComplete( KJob* downloadJob);
     void listDownloadCancelled();
     void doneParsing();
@@ -68,8 +67,6 @@ private slots:
 
 
 private:
-    void download( Meta::JamendoAlbum * album );
-
     //DatabaseDrivenContentModel * m_model;
     QPushButton *m_updateListButton;
     QPushButton *m_downloadButton;

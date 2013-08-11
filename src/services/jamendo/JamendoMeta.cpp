@@ -111,53 +111,13 @@ JamendoMetaFactory::createGenre( const QStringList & rows )
 JamendoTrack::JamendoTrack( const QString &name )
     : ServiceTrack( name )
     , m_service ( 0 )
-    , m_downloadCustomAction( 0 )
-    , m_downloadCurrentTrackAction( 0 )
 {
 }
 
 JamendoTrack::JamendoTrack( const QStringList & resultRow )
     : ServiceTrack( resultRow )
     , m_service ( 0 )
-    , m_downloadCustomAction( 0 )
-    , m_downloadCurrentTrackAction( 0 )
 {
-}
-
-QList< QAction * >
-Meta::JamendoTrack::customActions()
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-
-    if ( !m_downloadCustomAction )
-    {
-        m_downloadCustomAction = new QAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
-        m_downloadCustomAction->setProperty( "popupdropper_svg_id", "download" );
-        JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
-        QObject::connect( m_downloadCustomAction, SIGNAL(activated()), jAlbum->service(), SLOT(download()) );
-    }
-
-    actions.append( m_downloadCustomAction );
-    return actions;
-}
-
-QList< QAction * >
-Meta::JamendoTrack::currentTrackActions()
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-
-    if ( !m_downloadCurrentTrackAction )
-    {
-        m_downloadCurrentTrackAction = new QAction( KIcon("download-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
-        m_downloadCurrentTrackAction->setProperty( "popupdropper_svg_id", "download" );
-        JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
-        QObject::connect( m_downloadCurrentTrackAction, SIGNAL(activated()), jAlbum->service(), SLOT(downloadCurrentTrackAlbum()) );
-    }
-
-    actions.append( m_downloadCurrentTrackAction );
-    return actions;
 }
 
 QString
@@ -335,20 +295,6 @@ JamendoService *
 Meta::JamendoAlbum::service()
 {
     return m_service;
-}
-
-QList< QAction * >
-Meta::JamendoAlbum::customActions()
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-    QAction * action = new QAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
-    action->setProperty( "popupdropper_svg_id", "download" );
-
-    QObject::connect( action, SIGNAL(activated()) , m_service, SLOT(download()) );
-
-    actions.append( action );
-    return actions;
 }
 
 

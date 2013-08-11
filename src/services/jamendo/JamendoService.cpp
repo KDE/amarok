@@ -274,13 +274,7 @@ JamendoService::itemSelected( CollectionTreeItem * selectedItem )
 }
 
 void
-JamendoService::download()
-{
-    if ( m_currentAlbum )
-        download( m_currentAlbum );
-}
-
-void JamendoService::download( JamendoAlbum * album )
+JamendoService::download() // SLOT
 {
     DEBUG_BLOCK
 
@@ -291,44 +285,6 @@ void JamendoService::download( JamendoAlbum * album )
     treeView->copySelectedToLocalCollection();
 }
 
-void
-JamendoService::downloadCurrentTrackAlbum()
-{
-    //get current track
-    Meta::TrackPtr track = The::engineController()->currentTrack();
 
-    //check if this is indeed a Jamendo track
-    Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
-    if( sic )
-    {
-        //is the source defined
-        QString source = sic->sourceName();
-        if ( source != "Jamendo.com" )
-        {
-            //not a Jamendo track, so don't bother...
-            delete sic;
-            return;
-        }
-        delete sic;
-    }
-    else
-    {
-        //not a Jamendo track, so don't bother...
-        return;
-    }
-
-    //so far so good...
-    //now the casting begins:
-
-    JamendoTrack * jamendoTrack = dynamic_cast<JamendoTrack *> ( track.data() );
-    if ( !jamendoTrack )
-        return;
-
-    JamendoAlbum * jamendoAlbum = dynamic_cast<JamendoAlbum *> ( jamendoTrack->album().data() );
-    if ( !jamendoAlbum )
-        return;
-
-    download( jamendoAlbum );
-}
 #include "JamendoService.moc"
 

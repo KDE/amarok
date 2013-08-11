@@ -47,9 +47,6 @@ public:
 
     void setDownloadMembership();
 
-    virtual QList< QAction *> customActions();
-    virtual QList< QAction *> currentTrackActions();
-
     virtual QString sourceName();
     virtual QString sourceDescription();
     virtual QPixmap emblem();
@@ -71,8 +68,6 @@ private:
     QString m_oggUrl;
     bool m_downloadMembership;
     QList<QString> m_moods;
-    QAction * m_downloadAction;
-
 };
 
 
@@ -128,8 +123,6 @@ public:
     void setAlbumCode(  const QString &albumCode );
     QString albumCode();
 
-    virtual QList< QAction *> customActions();
-
     void setStore( MagnatuneStore * store );
     MagnatuneStore * store();
 
@@ -142,9 +135,6 @@ public:
 public slots:
     void download();
     void addToFavorites();
-private:
-    QAction * m_downloadAction;
-    QAction * m_addToFavoritesAction;
 };
 
 class MagnatuneGenre  : public ServiceGenre

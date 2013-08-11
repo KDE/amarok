@@ -62,12 +62,6 @@ AmpacheAlbum::getInfo( int id ) const
     return m_ampacheAlbums.value( id );
 }
 
-QList< QAction * > Meta::AmpacheTrack::currentTrackActions()
-{
-    QList< QAction * > actions;
-    return actions;
-}
-
 QString
 AmpacheTrack::notPlayableReason() const
 {

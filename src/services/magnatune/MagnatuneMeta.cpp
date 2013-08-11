@@ -170,13 +170,11 @@ GenrePtr MagnatuneMetaFactory::createGenre(const QStringList & rows)
 MagnatuneTrack::MagnatuneTrack( const QString &name )
     : ServiceTrack( name )
     , m_downloadMembership ( false )
-    , m_downloadAction( 0 )
 {}
 
 MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
     : ServiceTrack( resultRow )
     , m_downloadMembership ( false )
-    , m_downloadAction( 0 )
 {
     m_lofiUrl = resultRow[7];
     m_oggUrl = resultRow[8];
@@ -205,51 +203,6 @@ void Meta::MagnatuneTrack::setOggUrl( const QString& url )
 void Meta::MagnatuneTrack::setDownloadMembership()
 {
     m_downloadMembership = true;
-}
-
-
-QList< QAction * > Meta::MagnatuneTrack::customActions()
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-
-    if ( !m_downloadAction ) {
-
-        QString text = i18n( "&Download Album" );
-        MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
-        if ( mAlbum ) {
-            m_downloadAction = new MagnatuneDownloadAction( text, mAlbum );
-        }
-    }
-
-    if ( m_downloadAction && m_downloadMembership )
-        actions.append( m_downloadAction );
-
-    return actions;
-
-}
-
-QList< QAction * > Meta::MagnatuneTrack::currentTrackActions()
-{
-
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-
-    if ( !m_downloadAction ) {
-
-        QString text = i18n( "Magnatune.com: &Download Album" );
-
-        MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
-        if ( mAlbum ) {
-            m_downloadAction = new MagnatuneDownloadAction( text, mAlbum );
-        }
-    }
-
-    if ( m_downloadAction && m_downloadMembership )
-        actions.append( m_downloadAction );
-
-    return actions;
-
 }
 
 QString Meta::MagnatuneTrack::sourceName()
@@ -347,16 +300,12 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
     , m_albumCode()
     , m_store( 0 )
     , m_downloadMembership( false )
-    , m_downloadAction( 0 )
-    , m_addToFavoritesAction( 0 )
 
 {}
 
 MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     : ServiceAlbumWithCover( resultRow )
     , m_downloadMembership ( false )
-    , m_downloadAction( 0 )
-    , m_addToFavoritesAction( 0 )
 {
     m_coverUrl = resultRow[4];
     m_launchYear = resultRow[5].toInt();
@@ -414,33 +363,6 @@ void Meta::MagnatuneAlbum::setDownloadMembership()
 {
     DEBUG_BLOCK
     m_downloadMembership = true;
-}
-
-QList< QAction * > MagnatuneAlbum::customActions()
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-
-    if ( !m_downloadAction ) {
-
-        QString text = i18n( "&Download Album" );
-        m_downloadAction = new MagnatuneDownloadAction( text, this );
-    }
-
-    if ( !m_addToFavoritesAction )
-    {
-         QString text = i18n( "Add to Magnatune.com &favorites" );
-         m_addToFavoritesAction = new MagnatuneAddToFavoritesAction( text, this );
-    }
-
-    MagnatuneConfig config;
-    if ( config.isMember() )
-        actions.append( m_addToFavoritesAction );
-
-    if ( m_downloadAction && config.isMember() && config.membershipType() == MagnatuneConfig::DOWNLOAD )
-        actions.append( m_downloadAction );
-
-    return actions;
 }
 
 void Meta::MagnatuneAlbum::download()
