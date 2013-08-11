@@ -30,6 +30,7 @@
 #include "core/support/Debug.h"
 #include "core/collections/QueryMaker.h"
 #include "dynamic/Bias.h"
+#include "scripting/scriptengine/exporters/ScriptableBiasExporter.h"
 
 #include <QFormLayout>
 #include <QLabel>

@@ -51,6 +51,7 @@
 #include "scripting/scriptengine/exporters/CollectionTypeExporter.h"
 #include "scripting/scriptengine/exporters/MetaTypeExporter.h"
 #include "scripting/scriptengine/exporters/QueryMakerExporter.h"
+#include "scripting/scriptengine/exporters/ScriptableBiasExporter.h"
 #include "scripting/scriptengine/ScriptImporter.h"
 #include "scripting/scriptengine/ScriptingDefines.h"
 #include "ScriptManager.h"
@@ -284,7 +285,8 @@ ScriptItem::initializeScriptEngine()
         new AmarokScript::AmarokServicePluginManagerScript( m_engine.data() );
     }
 
-    new AmarokScript::MetaTrackPrototype( m_engine.data() );
+    AmarokScript::MetaTrackPrototype::init( m_engine.data() );
+    AmarokScript::ScriptableBiasFactory::init( m_engine.data() );
 }
 
 void

@@ -468,6 +468,7 @@ set(scriptengine_SRCS
     scripting/scriptengine/exporters/QueryMakerExporter.cpp
     scripting/scriptengine/exporters/PlaylistExporter.cpp
     scripting/scriptengine/exporters/PlaylistProviderExporter.cpp
+    scripting/scriptengine/exporters/ScriptableBiasExporter.cpp
 )
 
 set(scriptconsole_SRCS

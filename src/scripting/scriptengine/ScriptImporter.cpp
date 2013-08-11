@@ -76,6 +76,7 @@ ScriptImporter::include( const QString& relativeFilename )
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
         warning() << "cannot open the include file!";
+        // m_scriptEngine->currentContext()->throwError( QScriptContext::TypeError, "Include file could not be opened!" );
         return false;
     }
     m_scriptEngine->currentContext()->setActivationObject(

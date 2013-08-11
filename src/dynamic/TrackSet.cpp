@@ -37,6 +37,12 @@ Dynamic::TrackCollection::count() const
     return m_uids.count();
 }
 
+QStringList
+Dynamic::TrackCollection::uids() const
+{
+    return m_uids;
+}
+
 Dynamic::TrackSet::TrackSet()
     : m_bits()
     , m_collection( 0 )

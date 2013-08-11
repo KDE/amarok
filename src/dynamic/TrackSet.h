@@ -25,6 +25,7 @@
 #include <QBitArray>
 #include <QExplicitlySharedDataPointer>
 #include <QHash>
+#include <QMetaType>
 #include <QSharedData>
 #include <QString>
 #include <QStringList>
@@ -58,6 +59,7 @@ namespace Dynamic
             TrackCollection( const QStringList& uids );
 
             int count() const;
+            QStringList uids() const;
 
         private:
             QStringList m_uids;
@@ -128,6 +130,8 @@ namespace Dynamic
             TrackCollectionPtr m_collection;
     };
 }
+
+Q_DECLARE_METATYPE( Dynamic::TrackSet )
 
 #endif
 
