@@ -61,6 +61,10 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         //Helper function to remove children if their parent is already present
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
 
+        /**
+         * Copies all selected tracks to the local collection. The user can also
+         * choose to do on-the-fly transcoding.
+         */
         AMAROK_EXPORT void copySelectedToLocalCollection();
 
     public slots:
