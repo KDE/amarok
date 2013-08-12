@@ -32,8 +32,8 @@ static inline uint myMax( uint v1, uint v2 )
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
     : Analyzer::Base2D( parent )
-    , m_columns( 0 )         //uint
-    , m_rows( 0 )            //uint
+    , m_columns( 0 )         //int
+    , m_rows( 0 )            //int
     , m_y( 0 )               //uint
     , m_barPixmap( 1, 1 )    //null qpixmaps cause crashes
     , m_topBarPixmap( BLOCK_WIDTH, BLOCK_HEIGHT )
@@ -57,12 +57,11 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
     m_background = QPixmap( size() );
 
-    const uint oldRows = m_rows;
+    const int oldRows = m_rows;
 
-    //all is explained in analyze()..
-    //+1 to counter -1 in maxSizes, trust me we need this!
-    m_columns = qMin<uint>( (uint)ceil( double( width() ) / ( BLOCK_WIDTH + 1 ) ), MAX_COLUMNS );
-    m_rows    = uint( double( height() + 1 ) / ( BLOCK_HEIGHT + 1 ) );
+    // Rounded up so that the last column/line is covered if partially visible
+    m_columns = qMin<int>( ceil( (double)width() / ( BLOCK_WIDTH + 1 ) ), MAX_COLUMNS );
+    m_rows    = ceil( (double)height() / ( BLOCK_HEIGHT + 1 ) );
 
     //this is the y-offset for drawing from the top of the widget
     m_y = ( height() - ( m_rows * ( BLOCK_HEIGHT + 1 ) ) + 2 ) / 2;
@@ -80,7 +79,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
         const float PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
 
-        for( uint z = 0; z < m_rows; ++z )
+        for( int z = 0; z < m_rows; ++z )
             m_yscale[z] = 1 - ( log10( PRE + z ) / log10( PRE + m_rows + PRO ) );
 
         m_yscale[m_rows] = 0;
@@ -203,7 +202,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
 
     bar()->fill( bg );
 
-    for( int y = 0; ( uint )y < m_rows; ++y )
+    for( int y = 0; y < m_rows; ++y )
         //graduate the fg color
         p.fillRect( 0, y * ( BLOCK_HEIGHT + 1 ), BLOCK_WIDTH, BLOCK_HEIGHT, QColor( r + int( dr * y ), g + int( dg * y ), b + int( db * y ) ) );
 
@@ -226,7 +225,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
             m_fade_bars[y].fill( palette().color( QPalette::Active, QPalette::Window ) );
             const double Y = 1.0 - ( log10( ( FADE_SIZE ) - y ) / log10( ( FADE_SIZE ) ) );
             QPainter f( &m_fade_bars[y] );
-            for( int z = 0; ( uint )z < m_rows; ++z )
+            for( int z = 0; z < m_rows; ++z )
                 f.fillRect( 0, z * ( BLOCK_HEIGHT + 1 ), BLOCK_WIDTH, BLOCK_HEIGHT, QColor( r + int( dr * Y ), g + int( dg * Y ), b + int( db * Y ) ) );
         }
     }
@@ -243,8 +242,8 @@ BlockAnalyzer::drawBackground()
     m_background.fill( bg );
 
     QPainter p( &m_background );
-    for( int x = 0; ( uint )x < m_columns; ++x )
-        for( int y = 0; ( uint )y < m_rows; ++y )
+    for( int x = 0; x < m_columns; ++x )
+        for( int y = 0; y < m_rows; ++y )
             p.fillRect( x * ( BLOCK_WIDTH + 1 ), y * ( BLOCK_HEIGHT + 1 ) + m_y, BLOCK_WIDTH, BLOCK_HEIGHT, bgdark );
 
 }
