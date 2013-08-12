@@ -56,7 +56,8 @@ UmsCollectionLocation::actualLocation() const
 bool
 UmsCollectionLocation::isWritable() const
 {
-    return m_umsCollection->isWritable();
+    const QFileInfo info( m_umsCollection->musicPath().toLocalFile() );
+    return info.isWritable();
 }
 
 bool

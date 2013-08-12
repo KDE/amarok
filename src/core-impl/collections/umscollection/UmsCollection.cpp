@@ -424,13 +424,6 @@ UmsCollection::location()
 }
 
 bool
-UmsCollection::isWritable() const
-{
-    //TODO: check writability of music folder
-    return true;
-}
-
-bool
 UmsCollection::isOrganizable() const
 {
     return isWritable();

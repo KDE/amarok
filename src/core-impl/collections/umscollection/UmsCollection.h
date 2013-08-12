@@ -123,7 +123,6 @@ class UmsCollection : public Collection, public Meta::Observer
 
         virtual CollectionLocation *location();
 
-        virtual bool isWritable() const;
         virtual bool isOrganizable() const;
 
         /* Capability-related methods */
