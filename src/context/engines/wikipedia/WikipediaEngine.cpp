@@ -505,7 +505,7 @@ WikipediaEnginePrivate::_checkRequireUpdate( Meta::TrackPtr track )
         if( track->artist() )
             m_previousTrackMetadata.artist = track->artist()->name();
         if( track->composer() )
-            m_previousTrackMetadata.artist = track->composer()->name();
+            m_previousTrackMetadata.composer = track->composer()->name();
         if( track->album() )
             m_previousTrackMetadata.album = track->album()->name();
         m_previousTrackMetadata.track = track->name();

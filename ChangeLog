@@ -15,6 +15,8 @@ VERSION 2.8
    * Amarok now uses FindFFMpeg.cmake from kdelibs
 
   BUGFIXES:
+   * Don't reload Wikipedia applet content if artist/album have not changed. 
+     Patch by Frank Meerkoetter <frank@meerkoetter.org>. (BR 112044)
    * Jamendo service: Albums are now downloaded directly instead of going via
      BitTorrent. This is far more reliable and also supports on-the-fly transcoding.
      (BR 299434)
