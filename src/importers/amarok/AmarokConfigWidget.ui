@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AmarokConfigWidget</class>
+ <widget class="QWidget" name="AmarokConfigWidget">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1" columnminimumwidth="100,250">
+   <item row="8" column="0">
+    <widget class="QLabel" name="m_usernameLabel">
+     <property name="text">
+      <string>Username</string>
+     </property>
+     <property name="buddy">
+      <cstring>m_username</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="KLineEdit" name="m_username"/>
+   </item>
+   <item row="2" column="1">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="9" column="0" colspan="2">
+    <widget class="QLabel" name="m_passwordLabel">
+     <property name="text">
+      <string>Password</string>
+     </property>
+     <property name="buddy">
+      <cstring>m_password</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLineEdit" name="m_password">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QLabel" name="m_connectionTypeLabel">
+     <property name="text">
+      <string>Database type</string>
+     </property>
+     <property name="buddy">
+      <cstring>m_connectionType</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="KComboBox" name="m_connectionType"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="m_databaseLocationLabel">
+     <property name="text">
+      <string>Database location</string>
+     </property>
+     <property name="buddy">
+      <cstring>m_databaseLocation</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="KIntSpinBox" name="m_port">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>65535</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="m_targetNameLabel">
+     <property name="text">
+      <string>Target name</string>
+     </property>
+     <property name="buddy">
+      <cstring>m_targetName</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="KLineEdit" name="m_targetName"/>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QLabel" name="m_hostnameLabel">
+     <property name="text">
+      <string>Hostname</string>
+     </property>
+     <property name="buddy">
+      <cstring>m_hostname</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="KLineEdit" name="m_hostname"/>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QLabel" name="m_portLabel">
+     <property name="text">
+      <string>Port</string>
+     </property>
+     <property name="buddy">
+      <cstring>m_port</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QLabel" name="m_databaseNameLabel">
+     <property name="text">
+      <string>Database name</string>
+     </property>
+     <property name="buddy">
+      <cstring>m_databaseName</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="KLineEdit" name="m_databaseName"/>
+   </item>
+   <item row="4" column="1">
+    <widget class="KUrlRequester" name="m_databaseLocation">
+     <property name="filter">
+      <string notr="true"/>
+     </property>
+     <property name="mode">
+      <set>KFile::Directory|KFile::ExistingOnly|KFile::LocalOnly</set>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="m_mysqlBinaryLabel">
+     <property name="text">
+      <string>MySQL server binary</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="KUrlRequester" name="m_mysqlBinary">
+     <property name="filter">
+      <string>mysqld</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>klineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KIntSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>knuminput.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KUrlRequester</class>
+   <extends>QFrame</extends>
+   <header>kurlrequester.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

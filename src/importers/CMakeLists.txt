@@ -4,6 +4,7 @@ include_directories(
     ${Amarok_SOURCE_DIR}/src
 )
 
-add_subdirectory( itunes )
+add_subdirectory( amarok )
 add_subdirectory( fastforward )
+add_subdirectory( itunes )
 add_subdirectory( rhythmbox )
