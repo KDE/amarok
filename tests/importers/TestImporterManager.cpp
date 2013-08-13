@@ -113,6 +113,22 @@ TestImporterManager::creatingProviderShouldSaveSettings()
 }
 
 void
+TestImporterManager::creatingProviderShouldSaveGeneratedId()
+{
+    EXPECT_CALL( *m_mockManager, id() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
+
+    m_mockManager->init();
+    m_mockManager->createProvider( QVariantMap() );
+
+    KConfigGroup config = Amarok::config( "Importers.TestMockManager.TestId" );
+    QVERIFY( config.exists() );
+    QVERIFY( !config.readEntry( "uid", QString() ).isEmpty() );
+
+    Amarok::config( "Importers" ).deleteGroup();
+    Amarok::config( "Importers.TestMockManager.TestId" ).deleteGroup();
+}
+
+void
 TestImporterManager::creatingConfigWidgetShouldDelegate()
 {
     StatSyncing::ProviderConfigWidget *ptr = reinterpret_cast<StatSyncing::ProviderConfigWidget*>( 0x19 );

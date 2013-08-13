@@ -26,4 +26,3 @@ target_link_libraries( amarok_importer-itunes
 install( TARGETS amarok_importer-itunes DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 install( FILES amarok_importer-itunes.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
-

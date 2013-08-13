@@ -38,18 +38,20 @@ class AMAROK_EXPORT ImporterProvider : public Provider
 {
     Q_OBJECT
 
+    /// Give ImporterManager access to config field in order to save and restore state.
+    friend class ImporterManager;
+
 public:
     /**
      * The constructor stores @param config as a protected @see m_config variable, and
-     * @param manager as @see m_manager. If config["uid"] is not set, it's generated here
+     * @param manager as @see m_manager. If config["uid"] isn't set, it's generated here.
      */
     ImporterProvider( const QVariantMap &config, ImporterManager *manager );
     virtual ~ImporterProvider();
 
     /**
      * Provider's unique id which may be used as a key for configuration storage.
-     * By default returns config["uid"], which - by default - is set by the manager
-     * in the ImporterManager::createProvider method.
+     * Returns m_config["uid"] by default.
      */
     virtual QString id() const;
 
@@ -76,20 +78,20 @@ public:
 
     /**
      * Returns configuration widget used to reconfigure this provider. By default
-     * calls m_importer->getConfigWidget( m_config ).
+     * delegates to m_importer->getConfigWidget( m_config ).
      */
     virtual ProviderConfigWidget *configWidget();
 
     /**
      * Reconfigures current provider. An ImporterManager subclass handles the
      * task, _recreating_ this provider with new configuration. Please note that
-     * config["uid"] will not change.
+     * m_config["uid"] is not subject to reconfiguration.
      */
     virtual void reconfigure( const QVariantMap &config );
 
     /**
      * Determines if this provider should participate in statistics synchronization
-     * by default. Set to StatSyncing::Provider::NoByDefault .
+     * by default. By default returns StatSyncing::Provider::NoByDefault .
      */
     virtual Preference defaultPreference();
 

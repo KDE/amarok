@@ -30,6 +30,7 @@ private slots:
     void initShouldLoadSettings();
     void creatingProviderShouldSetConfigAndParent();
     void creatingProviderShouldSaveSettings();
+    void creatingProviderShouldSaveGeneratedId();
     void creatingConfigWidgetShouldDelegate();
     void createConfigWidgetShouldNotCrashOnNull();
     void createProviderShouldNotCrashOnNull();
