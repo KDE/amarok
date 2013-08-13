@@ -39,17 +39,14 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
 
         /** Returns the current gain settings */
         QList<int> gains() const;
-        void setGains( QList<int> );
 
     private Q_SLOTS:
         /** Updates the enabled states of different ui components. */
         void updateUi();
 
-        void setActive( bool active );
-
         /** Set the index of the current preset.
             Will update the UI */
-        void setPreset( int index );
+        void presetApplied( int index );
 
         /** Updates the tool tips, labels, configuration and engine */
         void bandsChanged();
@@ -60,6 +57,9 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         void deletePreset();
         void restorePreset();
         void restoreOriginalSettings();
+        void gainsChanged( const QList<int> &gains );
+        void presetsChanged( const QString &name );
+        void toggleEqualizer( bool enabled );
 
     private:
         EqualizerDialog( QWidget *parent = 0 );
@@ -67,10 +67,6 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         void updateToolTips();
         void updateLabels();
         void storeOriginalSettings();
-
-        /** Set's the AmarokConfig and informs the EngineController about the change.
-            As input for this the current Ui state is used. */
-        void updateEngine();
 
         double mValueScale;
         QVector<QSlider*> m_bands;

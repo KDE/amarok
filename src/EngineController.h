@@ -24,6 +24,7 @@
 #include "amarok_export.h"
 #include "core/capabilities/BoundedPlaybackCapability.h"
 #include "core/meta/Observer.h"
+#include "playback/EqualizerController.h"
 
 #include <KUrl>
 
@@ -39,8 +40,6 @@
 #include <Phonon/Effect>
 #include <Phonon/EffectParameter>
 #include <phonon/audiodataoutput.h>
-
-static const int s_equalizerBandsNum = 10; // Number of equalizer parameters excluding Preamp
 
 class Fadeouter;
 namespace Capabilities { class MultiPlayableCapability; class MultiSourceCapability; }
@@ -158,29 +157,9 @@ public:
     bool isSeekable() const;
 
     /**
-     * Phonon equalizer support is required for Amarok to enable equalizer
-     * this method return whatever phonon support kequalizer effect.
-     *
-     * @return @c true if the phonon support equalizer effect, @c false otherwise
+     * Returns the associated EqualizerController object.
      */
-    bool isEqSupported() const;
-
-    /**
-     * Equalizer implementation for different backends may have different
-     * gain scale. To properly display it we need to get a scale from effect
-     *
-     * @return maximum gain value for equalizer parameters.
-     */
-    double eqMaxGain() const;
-
-     /**
-     * Equalizer implementation for different backends may have different
-     * frequency bands. For proper display this will try to extract frequency values
-     * from effect parameters info.
-     *
-     * @return QStringList with band labels (form xxx Hz or xxx kHz).
-     */
-    QStringList eqBandsFreq() const;
+    EqualizerController *equalizerController() const;
 
     /**
      * @return QString with a pretty name for the current track
@@ -296,11 +275,6 @@ public slots:
      * Works like setMuted( !isMuted() );
      */
     void toggleMute();
-
-    /**
-     * Update equalizer status - enabled,disabled,set values
-     */
-    void eqUpdate();
 
     /**
      * Return true if current Phonon back-end supports fade-out.
@@ -548,9 +522,9 @@ private:
 
     Q_DISABLE_COPY( EngineController )
 
+    EqualizerController                     *m_equalizerController;
     QWeakPointer<Phonon::MediaObject>       m_media;
     QWeakPointer<Phonon::VolumeFaderEffect> m_preamp;
-    QWeakPointer<Phonon::Effect>            m_equalizer;
     QWeakPointer<Phonon::AudioOutput>       m_audio;
     QWeakPointer<Phonon::AudioDataOutput>   m_audioDataOutput;
     QWeakPointer<Phonon::MediaController>   m_controller;

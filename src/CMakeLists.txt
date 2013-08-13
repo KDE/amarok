@@ -445,6 +445,8 @@ set(dbus_SRCS
 # SCRIPTING INTERFACE
 #####################################################################
 set(scriptengine_SRCS
+    scripting/scriptengine/AmarokEngineScript.cpp
+    scripting/scriptengine/AmarokEqualizerScript.cpp
     scripting/scriptengine/AmarokScript.cpp
     scripting/scriptengine/AmarokCollectionScript.cpp
     scripting/scriptengine/AmarokScriptConfig.cpp
@@ -453,7 +455,6 @@ set(scriptengine_SRCS
     scripting/scriptengine/AmarokScriptableServiceScript.cpp
     scripting/scriptengine/AmarokServicePluginManagerScript.cpp
     scripting/scriptengine/AmarokStreamItemScript.cpp
-    scripting/scriptengine/AmarokEngineScript.cpp
     scripting/scriptengine/AmarokKNotifyScript.cpp
     scripting/scriptengine/AmarokOSDScript.cpp
     scripting/scriptengine/AmarokPlaylistScript.cpp
@@ -468,7 +469,7 @@ set(scriptengine_SRCS
     scripting/scriptengine/exporters/QueryMakerExporter.cpp
     scripting/scriptengine/exporters/PlaylistExporter.cpp
     scripting/scriptengine/exporters/PlaylistProviderExporter.cpp
-    scripting/scriptengine/exporters/ScriptableBiasExporter.cpp
+    cripting/scriptengine/exporters/ScriptableBiasExporter.cpp
 )
 
 set(scriptconsole_SRCS
@@ -689,6 +690,7 @@ set(amaroklib_LIB_SRCS
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     playback/DelayedDoers.cpp
+    playback/EqualizerController.cpp
     playback/Fadeouter.cpp
     playback/PowerManager.cpp
     statemanagement/ApplicationController.cpp

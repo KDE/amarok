@@ -16,6 +16,7 @@
 
 #include "AmarokEngineScript.h"
 
+#include "AmarokEqualizerScript.h"
 #include "App.h"
 #include "EngineController.h"
 #include "amarokconfig.h"
@@ -48,6 +49,8 @@ AmarokEngineScript::AmarokEngineScript( QScriptEngine* scriptEngine )
     connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
              this, SLOT(slotNewMetaData()) );
     connect( engine, SIGNAL(volumeChanged(int)), this, SIGNAL(volumeChanged(int)) );
+
+    new AmarokEqualizerScript( scriptEngine );
 }
 
 void

@@ -96,6 +96,7 @@ EngineController::EngineController()
 
     m_pauseTimer->setSingleShot( true );
     connect( m_pauseTimer, SIGNAL(timeout()), SLOT(slotPause() ) );
+    m_equalizerController = new EqualizerController( this );
 }
 
 EngineController::~EngineController()
@@ -134,7 +135,6 @@ EngineController::initializePhonon()
     delete m_audio.data();
     delete m_audioDataOutput.data();
     delete m_preamp.data();
-    delete m_equalizer.data();
     delete m_fader.data();
 
     using namespace Phonon;
@@ -153,35 +153,7 @@ EngineController::initializePhonon()
 
     m_controller = new MediaController( m_media.data() );
 
-    // Add an equalizer effect if available
-    QList<EffectDescription> effects = BackendCapabilities::availableAudioEffects();
-    QRegExp equalizerRegExp( QString( "equalizer.*%1.*bands" ).arg( s_equalizerBandsNum ),
-                             Qt::CaseInsensitive );
-    foreach( const EffectDescription &description, effects )
-    {
-        if( !description.name().contains( equalizerRegExp ) )
-            continue;
-
-        QScopedPointer<Effect> equalizer( new Effect( description, this ) );
-        int parameterCount = equalizer->parameters().count();
-        if( parameterCount == s_equalizerBandsNum || parameterCount == s_equalizerBandsNum + 1 )
-        {
-            debug() << "Established Phonon equalizer effect with" << parameterCount
-                    << "parameters.";
-            m_equalizer = equalizer.take(); // accept the effect
-            eqUpdate();
-            break;
-        }
-        else
-        {
-            QStringList paramNames;
-            foreach( const EffectParameter &param, equalizer->parameters() )
-                paramNames << param.name();
-            warning() << "Phonon equalizer effect" << description.name() << "with description"
-                      << description.description() << "has" << parameterCount << "parameters ("
-                      << paramNames << ") - which is unexpected. Trying other effects.";
-        }
-    }
+    m_equalizerController->initialize( m_path );
 
     // HACK we turn off replaygain manually on OSX, until the phonon coreaudio backend is fixed.
     // as the default is specified in the .cfg file, we can't just tell it to be a different default on OSX
@@ -344,6 +316,12 @@ EngineController::endSession()
         emit trackChanged( Meta::TrackPtr( 0 ) );
     }
     emit sessionEnded( AmarokConfig::resumePlayback() && m_currentTrack );
+}
+
+EqualizerController*
+EngineController::equalizerController() const
+{
+    return m_equalizerController;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -810,109 +788,6 @@ qint64
 EngineController::trackPositionMs() const
 {
     return m_media.data()->currentTime();
-}
-
-bool
-EngineController::isEqSupported() const
-{
-    // If effect was created it means we have equalizer support
-    return ( m_equalizer );
-}
-
-double
-EngineController::eqMaxGain() const
-{
-   if( !m_equalizer )
-       return 100;
-   QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
-   if( equalizerParameters.isEmpty() )
-       return 100.0;
-   double mScale;
-   mScale = ( qAbs(equalizerParameters.at(0).maximumValue().toDouble() )
-              + qAbs( equalizerParameters.at(0).minimumValue().toDouble() ) );
-   mScale /= 2.0;
-   return mScale;
-}
-
-QStringList
-EngineController::eqBandsFreq() const
-{
-    // This will extract the bands frequency values from effect parameter name
-    // as long as they follow the rules:
-    // eq-preamp parameter will contain 'pre-amp' string
-    // bands parameters are described using schema 'xxxHz'
-    QStringList bandFrequencies;
-    if( !m_equalizer )
-        return bandFrequencies;
-    QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
-    if( equalizerParameters.isEmpty() )
-        return bandFrequencies;
-    QRegExp rx( "\\d+(?=Hz)" );
-    foreach( const Phonon::EffectParameter &mParam, equalizerParameters )
-    {
-        if( mParam.name().contains( rx ) )
-        {
-            if( rx.cap( 0 ).toInt() < 1000 )
-                bandFrequencies << i18n( "%0\nHz" ).arg( rx.cap( 0 ) );
-            else
-                bandFrequencies << i18n( "%0\nkHz" ).arg( QString::number( rx.cap( 0 ).toInt()/1000 ) );
-        }
-        else
-            bandFrequencies << mParam.name();
-    }
-    return bandFrequencies;
-}
-
-void
-EngineController::eqUpdate() //SLOT
-{
-    // if equalizer not present simply return
-    if( !m_equalizer )
-        return;
-
-    // check if equalizer should be disabled
-    if( AmarokConfig::equalizerMode() <= 0 )
-    {
-        // Remove effect from path
-        if( m_path.effects().indexOf( m_equalizer.data() ) != -1 )
-            m_path.removeEffect( m_equalizer.data() );
-    }
-    else
-    {
-        // Set equalizer parameter according to the gains from settings
-        QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
-        QList<int> equalizerParametersCfg = AmarokConfig::equalizerGains();
-
-        QListIterator<int> equalizerParametersIt( equalizerParametersCfg );
-        double scaledVal; // Scaled value to set from universal -100 - 100 range to plugin scale
-        // Checking if preamp is present in equalizer parameters
-        if( equalizerParameters.size() == s_equalizerBandsNum )
-        {
-            // If pre-amp is not present then skip the first element of equalizer gain
-            if( equalizerParametersIt.hasNext() )
-                equalizerParametersIt.next();
-        }
-        foreach( const Phonon::EffectParameter &mParam, equalizerParameters )
-        {
-            scaledVal = equalizerParametersIt.hasNext() ? equalizerParametersIt.next() : 0;
-            scaledVal *= qAbs(mParam.maximumValue().toDouble() )
-                         + qAbs( mParam.minimumValue().toDouble() );
-            scaledVal /= 200.0;
-            m_equalizer.data()->setParameterValue( mParam, scaledVal );
-        }
-        // Insert effect into path if needed
-        if( m_path.effects().indexOf( m_equalizer.data() ) == -1 )
-        {
-            if( !m_path.effects().isEmpty() )
-            {
-                m_path.insertEffect( m_equalizer.data(), m_path.effects().first() );
-            }
-            else
-            {
-                m_path.insertEffect( m_equalizer.data() );
-            }
-        }
-    }
 }
 
 bool
