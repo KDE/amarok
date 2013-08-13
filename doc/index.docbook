@@ -16,8 +16,8 @@
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
       </authorgroup>
 <legalnotice>&FDLNotice;</legalnotice>
-<date>2013-04-24</date>
-      <releaseinfo>2.7.0</releaseinfo>
+<date>2013-08-13</date>
+      <releaseinfo>2.8.0</releaseinfo>
 <abstract>
 <para>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including &Linux;, &MacOS; and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.4.</para>
       </abstract>
@@ -33,7 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2013-04-24T10:00:01Z</timestamp>-->
+<!--userbase <timestamp>2013-07-30T12:51:14Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -48,7 +48,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_default.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -59,7 +59,7 @@
   </row>
   <row>
     <entry>
-    <para>Amarok 2.7, playing Free Music from Jamendo</para></entry>
+    <para>Amarok 2.8 default layout</para></entry>
   </row>
   </tbody>
   </tgroup>
@@ -174,7 +174,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configuredialogcollection.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialoglocalcollection.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -200,7 +200,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokrightmenu.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_systray_window.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -215,7 +215,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amaroksystray.png" format="PNG"/>
+      <imagedata fileref="amarok_systray_2-8_4-11.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -241,10 +241,10 @@
       <imagedata fileref="amaroknew2-4.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Amarok 2.5, newly installed</phrase>
+      <phrase>Amarok 2.8, newly installed</phrase>
     </textobject>
     <caption>
-      <para>Amarok 2.5, newly installed</para>
+      <para>Amarok 2.8, newly installed</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -282,13 +282,13 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialoglocalcollection2-7.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialoglocalcollection.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Configure Collection Dialog, as of version 2.7</phrase>
+      <phrase>Configure Collection Dialog, as of version 2.8</phrase>
     </textobject>
     <caption>
-      <para>Configure Collection Dialog, as of version 2.7</para>
+      <para>Configure Collection Dialog, as of version 2.8</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -579,13 +579,13 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4collectionsortingmenu.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_collectionsortingmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>The Collection sort options</phrase>
+      <phrase>The Collection sort options for version 2.8</phrase>
     </textobject>
     <caption>
-      <para>The Collection sort options</para>
+      <para>The Collection sort options for version 2.8</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -613,25 +613,29 @@
 </para>
 </sect2>
 <sect2 id="adding-music-to-a-playlist"><title>Adding music to a playlist</title> 
-<para>There are four ways to add music to the playlist.
+<para>There are five ways to add music to the playlist.
 </para>
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7addtoplaylist.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_popupdropperadd.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>Pop-up Dropper when adding a single track</phrase>
     </textobject>
+    <caption>
+      <para>Pop-up Dropper when adding a single track</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
 <orderedlist>
 <listitem><para>Choose some of your music in the content browser and drag it to the right. If you drag it over the <guilabel>Context</guilabel> pane you will see the <emphasis>Pop-Up Dropper</emphasis>, also known as <emphasis>PUD</emphasis>. The image above shows PUD in action. PUD provides three options: <guilabel>Add to Playlist</guilabel>, <guilabel>Replace Playlist</guilabel>, and <guilabel>More...</guilabel>. The option highlighted in the gray area (<guilabel>Add to Playlist</guilabel> in this image) is the active one. Dropping the album there adds it to the playlist in the <guilabel>Playlist</guilabel> pane.  Choose one of the other options to do something else with your selection.  Dragging it over <guilabel>More...</guilabel> brings up a new menu of choices in <emphasis>PUD</emphasis>.</para></listitem>
 <listitem><para>Drag your selection all the way onto the <guilabel>Playlist</guilabel> pane on the right-hand side of the &amarok; screen.</para></listitem>
-<listitem><para><keycap>Double-click</keycap> the album/track you wish to transfer to the playlist.</para></listitem>
+<listitem><para><keycap>Double-click</keycap> the album/track to append to the playlist, doesn't start to play.</para></listitem>
+<listitem><para><keycap>Middle-click</keycap> the album/track to append it to the playlist and play immediately.</para></listitem>
 <listitem><para><keycap>Right-click</keycap> the album or track.  In your right-click menu, you will find similar choices. The image below shows the context menu that appears after an item has been right-clicked. Select <guilabel>Add to Playlist</guilabel>.</para></listitem>
 </orderedlist>
 <para>
@@ -687,11 +691,14 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7removefromplaylist.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_popupdropperremove.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>Pop-up Dropper when removing a track</phrase>
     </textobject>
+    <caption>
+      <para>Pop-up Dropper when removing a track</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -868,13 +875,13 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7saveplaylistchoices.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_savecurrentplaylistoptions.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Click and hold, scroll to save playlist</phrase>
+      <phrase>Current playlist saving options</phrase>
     </textobject>
     <caption>
-      <para>Click and hold, scroll to save playlist</para>
+      <para>Current playlist saving options</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -900,24 +907,27 @@
 <para>The power of &amarok; is in the <emphasis>Context</emphasis> pane (in the center of the default &amarok; window), where you can install various <emphasis>applets</emphasis> to help you enjoy and explore your music. Most of this additional information is obtained from the Internet, so a connection is important to get the most out of your <emphasis>Context</emphasis> pane. By default, three <emphasis>applets</emphasis> are preset: <emphasis>Current Track</emphasis>, <emphasis>Lyrics</emphasis> and <emphasis>Wikipedia</emphasis>.
 </para>
 <sect2 id="default-layout"><title>Default layout</title> 
-<para>The default <emphasis>Context</emphasis> pane searches for the lyrics of the song you are playing. If it finds the lyrics, it displays this in the bottom half of the <emphasis>Context</emphasis> pane, while the top banner of the <emphasis>Context</emphasis> pane displays the album cover and track information for the current music.
+<para>The default <emphasis>Context</emphasis> pane shows the following items: CurrentTrack, Analyzer, Wikipedia and Lyrics. Depending on the screen size the Lyrics might not be visible, but clicking on the button at the bottom will make it visible. When nothing is playing, the CurrentTrack applet will show the last played tracks and information about the Local Collection
 </para>
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok-context.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_contextview_default.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>The default view as of Amarok 2.8</phrase>
     </textobject>
+    <caption>
+      <para>The default view as of Amarok 2.8</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
 </sect2>
 <sect2 id="customizing-the-context-pane"><title>Customizing the Context pane</title> 
-<para>At the bottom of the <emphasis>Context</emphasis> pane are three buttons for the default applets. On the right of these buttons you see <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject>, clicking on it will show <inlinemediaobject> <imageobject> <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject> </inlinemediaobject> allowing you to remove these applets. Click the applets to add them to the pane. Drag the labeled buttons to re-order the applets you have, and click <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject> again to save your selections.
+<para>At the bottom of the <emphasis>Context</emphasis> pane are four buttons for the default applets. On the right of these buttons you see <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject>, clicking on it will show <inlinemediaobject> <imageobject> <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject> </inlinemediaobject> allowing you to remove these applets. Click the applets to add them to the pane. Drag the labeled buttons to re-order the applets you have, and click <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject> again to save your selections.
 </para>
 <para>This makes the <emphasis>Context</emphasis> pane extremely flexible, maximizing the possibility of a custom display that fits your preferences. More <link linkend="the-context-pane">here</link>.
 </para>
@@ -926,7 +936,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="applet_explorer.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_appletexplorer_default.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -1003,18 +1013,21 @@
 </sect1>
 </chapter>
 <chapter id="the-amarok-window0"><title>The Amarok Window</title> 
-<para>When you first open &amarok;, this is what you will see, once the splash screen disappears and &amarok; has fully loaded:
+<para>When you open &amarok;, this is what you will see, once &amarok; has fully loaded:
 </para>
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7aftersplash.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_startwindowdefault.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>Default startup window</phrase>
     </textobject>
+    <caption>
+      <para>Default startup window</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -1068,7 +1081,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7themediasources.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_mediasourcespanedefault.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -1086,7 +1099,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokwindow_context.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_contextview_default.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -1104,7 +1117,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7theplaylist.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistpane.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -1127,7 +1140,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1viewmenu.png" format="PNG"/>
+      <imagedata fileref="amarok2-6viewconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -1302,7 +1315,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1non-mergedviewcollection.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_collectionbrowser_nonmerged.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Regular non-merged view</phrase>
@@ -1319,7 +1332,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1mergedviewcollection.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_collectionbrowser_merged.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Merged view</phrase>
@@ -1341,7 +1354,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="media_sources3.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_collectionsortingmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -1676,13 +1689,13 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="contextpanestopped.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_contextview_default.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Context pane with Current Track, Lyrics and Tabs applets</phrase>
+      <phrase>Context pane when not playing</phrase>
     </textobject>
     <caption>
-      <para>Context pane with Current Track, Lyrics and Tabs applets</para>
+      <para>Context pane when not playing</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -1699,7 +1712,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6appletbrowser.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_appletexplorer_default.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -1712,31 +1725,18 @@
 </sect3>
 </sect2>
 <sect2 id="applets"><title>Applets</title> 
-<para>
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="contextpane.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase>Context pane in action showing lyrics and song information</phrase>
-    </textobject>
-    <caption>
-      <para>Context pane in action showing lyrics and song information</para>
-    </caption>
-  </mediaobject>
-</screenshot>
-</para>
 <para>There are several applets available to dock in your <emphasis>Context</emphasis> pane; below is a description of each.
 </para>
 <para>
 <informaltable>
-  <tgroup cols="2">
+  <tgroup cols="3">
   <tbody>
   <row>
     <entry>
     <para><guilabel>Applet</guilabel></para>
+    </entry>
+    <entry>
+    <para><guilabel>Icon</guilabel></para>
     </entry>
     <entry>
     <para><guilabel>Description</guilabel></para>
@@ -1747,12 +1747,40 @@
     <para><guilabel>Current Track</guilabel></para>
     </entry>
     <entry>
-    <para>Information about the current track. You may rate it by clicking on the stars, add a position marker, or edit track metadata.</para>
+    <para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-current-track-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot></para>
+    </entry>
+    <entry>
+    <para>Information about the current track. You may rate it by clicking on the stars, add a position marker, or edit track metadata. When not playing, the applet displays collection information and <emphasis>Recently Played Tracks</emphasis>, which allows you to view the tracks and add them to the playlist.</para>
     </entry>
   </row>
   <row>
     <entry>
     <para><guilabel>Similar Artists</guilabel></para>
+    </entry>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-similarartists-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot></para>
     </entry>
     <entry>
     <para>Fetches artists similar to the currently playing one, with a short description and options to find them in your collection, or on <emphasis>Last.fm</emphasis>, and add to your current playlist.</para>
@@ -1763,12 +1791,29 @@
     <para><guilabel>Upcoming Events</guilabel></para>
     </entry>
     <entry>
+    <para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-upcomingevents-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot></para>
+    </entry>
+    <entry>
     <para>Displays upcoming events that involve the current artist or group. You can set a venue locale to be watched by entering the applet settings and narrowing it down under the Favorites section.</para>
     </entry>
   </row>
   <row>
     <entry>
     <para><guilabel>Wikipedia</guilabel></para>
+    </entry>
+    <entry>
+    <para></para>
     </entry>
     <entry>
     <para><emphasis>Wikipedia</emphasis> page for the track or artist. Also browse other <emphasis>Wikipedia</emphasis> links, and use the back button to go back to the starting page.</para>
@@ -1779,12 +1824,40 @@
     <para><guilabel>Labels</guilabel></para>
     </entry>
     <entry>
+    <para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-label-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot></para>
+    </entry>
+    <entry>
     <para>View, add and edit Labels for the current song. To add a Label just type it in the text box and press &Enter;. Suggested Labels are user-contributed tags from <emphasis>Last.fm</emphasis>.</para>
     </entry>
   </row>
   <row>
     <entry>
     <para><guilabel>Tabs</guilabel></para>
+    </entry>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-filename-genre-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot></para>
     </entry>
     <entry>
     <para>Fetches and displays guitar and bass tabs (if available). Not editable.</para>
@@ -1795,12 +1868,40 @@
     <para><guilabel>Lyrics</guilabel></para>
     </entry>
     <entry>
+    <para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-amarok_lyrics.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot></para>
+    </entry>
+    <entry>
     <para>Displays the lyrics of the song that is currently playing. Add or change lyrics scripts in the <link linkend="scripts">Script Manager</link>.</para>
     </entry>
   </row>
   <row>
     <entry>
     <para><guilabel>Albums</guilabel></para>
+    </entry>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-filename-album-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot></para>
     </entry>
     <entry>
     <para>View albums from the current artist or band that are available in your local Collection.</para>
@@ -1811,12 +1912,62 @@
     <para><guilabel>Photos</guilabel></para>
     </entry>
     <entry>
-    <para>This applet queries <emphasis>Flickr.com</emphasis> for pictures of the band you're listening to. Open the settings to add more keywords to your query (&eg;: live in tokyo).</para>
+    <para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-image-x-generic.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot></para>
+    </entry>
+    <entry>
+    <para>This applet queries <emphasis>Flickr.com</emphasis> for pictures of the band you're listening to. Open the settings to add more keywords to your query (&eg;: live in tokyo).&gt;</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Analyzer</guilabel></para>
+    </entry>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-view-media-analyzer-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot></para>
+    </entry>
+    <entry>
+    <para>This is a new applet in version 2.8. It provides basic audio visualizations. A right click on it allows to configure the applet settings.</para>
     </entry>
   </row>
   <row>
     <entry>
     <para><guilabel>Info</guilabel></para>
+    </entry>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="hi48-action-info-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot></para>
     </entry>
     <entry>
     <para>Information about the current media source. Allows you to navigate through internet services such as <emphasis>Librivox.org</emphasis>.</para></entry>
@@ -1835,7 +1986,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7theplaylist.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistpane.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>&amarok; Playlist pane</phrase>
@@ -1852,13 +2003,13 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist_manipulation.png" format="PNG"/>
+      <imagedata fileref="amarok2dot8pud.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Playlist context menu</phrase>
+      <phrase>Playlist Pop Up Dropper menu</phrase>
     </textobject>
     <caption>
-      <para>Playlist context menu</para>
+      <para>Playlist Pop Up Dropper menu</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -1871,7 +2022,9 @@
 </para>
 <para>Right-clicking on a track, album, or selected group will bring up a context menu from which you can <guilabel>Add to Playlist</guilabel>, or <guilabel>Replace Playlist</guilabel>.
 </para>
-<para>Double-clicking a selection in the <emphasis>Media Sources</emphasis> pane will perform the same as <guilabel>Add to Playlist</guilabel>.
+<para>Double-clicking a selection or pressing &Enter; while a track is selected in the <emphasis>Media Sources</emphasis> pane will perform the same as <guilabel>Add to Playlist</guilabel>.
+</para>
+<para>Middle-clicking an item will append it to the playlist and begin playing from the start of the playlist.
 </para>
 <para>If you tell the file browser to open a supported multimedia file, &amarok; will append the selected file to the current playlist. Some multimedia files contain playlists themselves or may have playlist files associated by name (&eg; <emphasis>wav</emphasis> with <emphasis>cue</emphasis>).  If &amarok; detects such an association, it may add several items to the playlist.
 </para>
@@ -1949,7 +2102,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="playlistsearch.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistfilteroptions.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Playlist searching options</phrase>
@@ -2010,7 +2163,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="sorting2.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistsortinglevels.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Menu for adding a sorting level</phrase>
@@ -2061,7 +2214,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="albumbar.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistbottombar.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Playlist bottom bar</phrase>
@@ -2297,16 +2450,19 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialoggeneral2-7.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialoggeneral.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>General configuration options</phrase>
     </textobject>
+    <caption>
+      <para>General configuration options</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
 <sect1 id="general"><title>General</title> 
-<para>In the screenshot above, see some <emphasis>General Options</emphasis> you can set. Depending on the distribution, the default settings can vary; sometimes the <emphasis>Splash Screen</emphasis> is disabled for example. When hovering over the options with the mouse pointer, a tooltip will show to explain the individual settings.
+<para>In the screenshot above, see some <emphasis>General Options</emphasis> you can set. Depending on the distribution, the default settings can vary. When hovering over the options with the mouse pointer, a tooltip will show to explain the individual settings.
 </para>
 <para>General options:
 </para>
@@ -2320,14 +2476,6 @@
   </row>
   </thead>
   <tbody>
-  <row>
-    <entry>
-    <para><guilabel>Show splash-screen on startup</guilabel></para>
-    </entry>
-    <entry>
-    <para>Check to enable the splash screen on &amarok; startup.</para>
-    </entry>
-  </row>
   <row>
     <entry>
     <para><guilabel>Show tray icon</guilabel></para>
@@ -2388,11 +2536,14 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialoglocalcollection2-7.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialoglocalcollection.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>Local Collection configuration</phrase>
     </textobject>
+    <caption>
+      <para>Local Collection configuration</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -2585,11 +2736,14 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialog2-7playback.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogplayback.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>Playback configuration dialog</phrase>
     </textobject>
+    <caption>
+      <para>Playback configuration dialog</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -2615,10 +2769,34 @@
   </row>
   <row>
     <entry>
+    <para><guilabel>Fadeout on pause</guilabel></para>
+    </entry>
+    <entry>
+    <para>If checked, &amarok; will slowly fade the volume of the playing track on pausing the current track.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
     <para><guilabel>Fadeout duration</guilabel></para>
     </entry>
     <entry>
     <para>The length of the fadeout, in milliseconds.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Inhibit automatic suspend if playing</guilabel></para>
+    </entry>
+    <entry>
+    <para>If checked, &amarok; will prevent the computer from being suspended will a track is playing.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Pause playback on suspend</guilabel></para>
+    </entry>
+    <entry>
+    <para>If checked, &amarok; will pause playing of the current track when the computer is about to suspend.</para>
     </entry>
   </row>
   <row>
@@ -2702,11 +2880,14 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialog2-7notifications.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialognotifications.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>Notifications configuration dialog</phrase>
     </textobject>
+    <caption>
+      <para>Notifications configuration dialog</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -2802,11 +2983,14 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokconfigurationdialog2-7database.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogdatabase.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>External Database configuration dialog</phrase>
     </textobject>
+    <caption>
+      <para>External Database configuration dialog</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -2886,13 +3070,13 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7settingsplugins.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogplugins.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>Plugins configuration dialog</phrase>
     </textobject>
     <caption>
-      <para></para>
+      <para>Plugins configuration dialog</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -3249,7 +3433,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>The visibility of each of the three &amarok; panes is indicated in the <guilabel>View</guilabel> menu (part of the top-level menu, see above). If you unlock the layout, each of the three panes will show two clickable boxes. These two boxes allow you to rearrange or customize the layout of your &amarok; window. Clicking the <guilabel>X</guilabel> closes that particular pane. Having been closed, a pane can be activated again by checking the appropriate box in the <guilabel>View menu</guilabel>.
+<para>The visibility of each of the three &amarok; panes is indicated in the <guilabel>View</guilabel> menu (part of the top-level menu). If you unlock the layout, each of the three panes will show two clickable boxes. These two boxes allow you to rearrange or customize the layout of your &amarok; window. Clicking the <guilabel>X</guilabel> closes that particular pane. Having been closed, a pane can be activated again by checking the appropriate box in the <guilabel>View menu</guilabel>. Clicking <guilabel>Reset Layout</guilabel> will of course reset the layout back to the default look.
 </para>
 <sect3 id="undocking-amarok-panes"><title>Undocking Amarok panes</title> 
 <para>
@@ -3334,7 +3518,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="playlist-layout-editor-amarok.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistlayouteditor.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -3555,7 +3739,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="searchincollection.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_collectionbrowsersearchfield.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -3565,6 +3749,8 @@
 </para>
 <sect3 id="edit-box"><title>Edit Box</title> 
 <para>When you type in the input field, &amarok; will search for the text in all available tags such as artist, album and title. Your view of the collection will update automatically to display only the matches of the search.
+</para>
+<para>Pressing &Enter; after searching will populate your playlist with all of the found search items and clear the search box. This is a great way to quickly add hundreds or thousands of tracks to a playlist instantly!
 </para>
 <para>To search in a specific tag, type <varname>tag:value</varname> into the search bar. Operators like <quote>&gt;</quote> and <quote>&lt;</quote> can be used to create more general conditions. Several conditions can be used together by separating them by a space character. For time conditions, use the following abbreviations: d=day, w=week, m=month, y=year.
 </para>
@@ -3685,7 +3871,9 @@
 <sect2 id="organize-collection"><title>Organize Collection</title> 
 <para>While organizing your collection in &amarok; is a straight-forward task, you will be manipulating the actual files on your hard drive. Please be sure you have a backup of your files before you begin.
 </para>
-<para>With the <guilabel>Organize Files</guilabel> dialog of &amarok;, you can easily manage the media files on your hard drive. When you change the naming scheme of media files, you will organize them, which is very powerful. To access the <guilabel>Organize Files</guilabel> dialog, right-click <menuchoice><guimenu>Local Collection</guimenu><guimenuitem>Organize Files</guimenuitem></menuchoice> in the <guilabel>Media Sources</guilabel> pane and the menu interface will pop-up.
+<para>With the <guilabel>Organize Files</guilabel> dialog of &amarok; you can easily manage the media files on your hard drive. When you change the naming scheme of media files, you will organize them, which is very powerful. To access the <guilabel>Organize Files</guilabel> dialog, right-click <menuchoice><guimenu>Local Collection</guimenu><guimenuitem>Organize Files</guimenuitem></menuchoice> in the <guilabel>Media Sources</guilabel> pane and the menu interface will pop-up.
+</para>
+<para><warning><para>Using this option will move the files to a new location, so you not only need appropriate rights for both the origin and the destination location, but also enough space, usually the double of the total file size to have the action perform smoothly. If you are unsure, do NOT use this option.</para></warning>
 </para>
 <para>
 <screenshot>
@@ -3703,21 +3891,44 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>If the option of <guilabel>Organize Files</guilabel> does not appear, you may have  Merged View on (toggled by <inlinemediaobject> <imageobject> <imagedata fileref="Icon-view-list-tree.png" format="PNG"/> </imageobject> </inlinemediaobject>). In order to safely organize your files, you need to see your collections separated, not merged.
+<para>If the option <guilabel>Organize Files</guilabel> does not appear, you may have  Merged View on (toggled by <inlinemediaobject> <imageobject> <imagedata fileref="Icon-view-list-tree.png" format="PNG"/> </imageobject> </inlinemediaobject>). In order to safely organize your files, you need to see your collections separated, not merged.
 </para>
 <sect3 id="organizing-files-interface"><title>Organizing Files Interface</title> 
-<para>Organize using the following interface:
+<para>After selecting the option <guilabel>Organize Files</guilabel> you will first see an additional option that allows you to move the files to a new location, as well as transcode them at the same time. Depending on the codecs you have installed on the system, some format options might not be available and will be grayed out:
 </para>
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4organizefilesbasicdialog.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_organizefilestranscode.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>First screen when choosing the Organize Files option</phrase>
     </textobject>
+    <caption>
+      <para>First screen when choosing the Organize Files option</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>For more information about Transcoding, please see the <link linkend="transcoding">Transcoding</link> section.
+</para>
+<para>After clicking on the <guilabel>Move</guilabel> button on top of the screen, the following interface will show:
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok_2-8_organizetracks.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>Organize Tracks dialog</phrase>
+    </textobject>
+    <caption>
+      <para>Organize Tracks dialog</para>
+    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -3818,19 +4029,6 @@
 </para>
 </sect3>
 <sect3 id="advanced-contents"><title>Advanced Contents</title> 
-<para>
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="advancedtok.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
 <para>The code version of the <guilabel>Token Bar</guilabel>, which allows you to code the name format of media files. Activate it by pressing <guilabel>Advanced...</guilabel> in the interface menu. To change back click <guilabel>Basic...</guilabel>.
 </para>
 <para>Enclose conditional inclusion arguments such as CD number in braces, like this:
@@ -3984,20 +4182,20 @@
 </para>
 </sect4>
 <sect4 id="choosing-directories-to-index"><title>Choosing Directories to Index</title> 
+<para>Directories that are to be indexed can be changed in <menuchoice><guimenu>System Settings</guimenu><guisubmenu>Desktop Search</guisubmenu><guimenuitem>Indexing</guimenuitem><guimenuitem>Customizing folders</guimenuitem></menuchoice>. As of KDE 4.11, this is the dialog you will see:
+</para>
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="desktop_search.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_nepomukindexfolders_dialog_kde_4-11.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
     </textobject>
   </mediaobject>
 </screenshot>
-</para>
-<para>Directories that are to be indexed can be changed in <menuchoice><guimenu>System Settings</guimenu><guisubmenu>Desktop Search</guisubmenu><guimenuitem>Desktop Query</guimenuitem><guimenuitem>Customizing index folders</guimenuitem></menuchoice>
 </para>
 </sect4>
 <sect4 id="enabling-nepomuk-collection-in-amarok"><title>Enabling Nepomuk Collection In Amarok</title> 
@@ -4006,7 +4204,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amaroknepomukpluginconfig2-7.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogplugins.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -4064,23 +4262,20 @@
 </para>
 </sect3>
 <sect3 id="ampache-client"><title>Ampache Client</title> 
-<para>Activate the <guilabel>Ampache</guilabel> service using <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Plugins</guimenuitem></menuchoice>.
-</para>
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6pluginsconfigmenu.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogplugins.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Click on the wrench icon to open the configuration dialog</phrase>
+      <phrase></phrase>
     </textobject>
-    <caption>
-      <para>Click on the wrench icon to open the configuration dialog</para>
-    </caption>
   </mediaobject>
 </screenshot>
+</para>
+<para>Activate the <guilabel>Ampache</guilabel> service using <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Plugins</guimenuitem></menuchoice>. Click on the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject> icon to open the configuration dialog.
 </para>
 <para>Select <guilabel>Add Server</guilabel>:
 </para>
@@ -4173,7 +4368,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="remotecollections_samba_server.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_remotecollections_samba_server.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -4181,14 +4376,14 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>Click <guilabel>Configure File Sharing...</guilabel> to open the configuration dialog.
+<para>To share the folder, just check the <guilabel>Share with Samba (Microsoft Windows)</guilabel> field and set the share name under the <guilabel>Name</guilabel> field. Check the <guilabel>Allow Guests</guilabel> checkbox to allow anonymous users access to the folder.
 </para>
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="remotecollections_samba_server1.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_remotecollections_samba_server1.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -4196,43 +4391,41 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>Change the settings to <guilabel>Advanced Sharing</guilabel> and the <guilabel>Allowed Users</guilabel> to <guilabel>Allow all users to share folders</guilabel>.
-</para>
-<para>
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="remotecollections_samba_server2.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para>Then you can add the folder to the shares. Click at <guilabel>Add...</guilabel> and share the desired folder with <guilabel>Samba</guilabel>.
-</para>
-<para>
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="remotecollections_samba_server3.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para>The folder should now be accessible to the network. To tell &amarok; to look for your <guilabel>Samba</guilabel> share, go to <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Plugins</guimenuitem><guimenuitem>Local Collection Backends</guimenuitem></menuchoice> and click the box. Your tracks will show up in <guilabel>Local Collection</guilabel>.
+<para>The folder should now be accessible to the network. Please see the <link linkend="client">Client section</link> for details on how to use it in &amarok;.
 </para>
 </sect3>
 <sect3 id="universal-plug-and-play-upnp---dlna"><title>Universal Plug and Play (UPnP) / DLNA</title> 
 <para><emphasis>UPnP</emphasis> is a set of protocols to share media on the network. It is also supported by a wide range of residential gateways and Network Attached Storage devices. UPnP support is now commonly marketed as <ulink url="http://en.wikipedia.org/wiki/DLNA">DLNA</ulink>.
 </para>
-<para>&amarok; has a built-in UPnP media share client so it can play tracks shared on the network. To enable it, use <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Plugins</guimenuitem><guimenuitem>Collections</guimenuitem></menuchoice> and check the box. When a media share is discovered it will be shown in <guilabel>Local Music</guilabel>.
+<para>&amarok; has a built-in UPnP media share client so it can play tracks shared on the network. To enable it, use <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Plugins</guimenuitem><guimenuitem>Collections</guimenuitem></menuchoice> and check the box by the <guilabel>UPnP Collection</guilabel> plugin.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok_2-8_upnp_collection_plugin.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>When a media share is discovered it will be shown in <guilabel>Local Music</guilabel>.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok_2-8_upnp_collection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
 </para>
 <para>The UPnP feature depends on <guilabel>KDE's</guilabel> UPnP media server support.
 </para>
@@ -4296,7 +4489,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="remotecollections_client.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogdatabaseenabled.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -4509,6 +4702,15 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
   </tgroup>
 </informaltable>
 </para>
+</sect3>
+<sect3 id="troubleshooting-media-device-support"><title>Troubleshooting Media Device support</title> 
+<para>As of Amarok 2.8, the following devices should work with Amarok:
+</para>
+<itemizedlist>
+<listitem><para>Generic Media Players connected through the UMS protocol.</para></listitem>
+<listitem><para>iPods/iPhones, depending on their support by the libgpod library. The status depends on the version of this library installed on your system, please refer to <ulink url="http://www.gtkpod.org/wiki/Home">the libgpod support listing</ulink> on their homepage.</para></listitem>
+<listitem><para>limited support for devices using the MTP protocol, the support for new Android devices is currently implemented for the next Amarok version.</para></listitem>
+</itemizedlist>
 </sect3>
 </sect2>
 </sect1>
@@ -4745,7 +4947,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </sect3>
 </sect2>
 <sect2 id="get-tags-from-musicbrainz"><title>Get Tags from MusicBrainz</title> 
-<para>&amarok; 2.7 has the ability to guess tags from the <guilabel>MusicBrainz</guilabel> database. Click the <guilabel>Get Tags from MusicBrainz</guilabel>, wait a moment for the database to be searched for matches, and then <guilabel>Update Tags</guilabel>, or <guilabel>Cancel</guilabel>.
+<para>&amarok; 2.8 has the ability to guess tags from the <guilabel>MusicBrainz</guilabel> database. Click the <guilabel>Get Tags from MusicBrainz</guilabel>, wait a moment for the database to be searched for matches, and then <guilabel>Update Tags</guilabel>, or <guilabel>Cancel</guilabel>.
 </para>
 <para>If you have the packages <emphasis>libofa</emphasis> and <emphasis>ffmpeg</emphasis> installed, and &amarok; is compiled with them, <guilabel>Musicbrainz</guilabel> will be able to use <quote>fingerprinting</quote> (the <emphasis>MusicDNS</emphasis> service) to search for albums and tracks without good filenames or existing tags.
 </para>
@@ -4806,13 +5008,13 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </para>
 </sect3>
 <sect3 id="example"><title>Example</title> 
-<para>Filename: 03-social_distortion-dont_take_me_for_granted.mp3
+<para>Filename: 01-The Beatles-Hey Jude.mp3
 </para>
-<para>Tracknumber: 03
+<para>Tracknumber: 01
 </para>
-<para>Artist: Social Distortion
+<para>Artist: The Beatles
 </para>
-<para>Title: Don't Take Me For Granted
+<para>Title: Hey Jude
 </para>
 <para>
 <screenshot>
@@ -4846,13 +5048,13 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </para>
 </sect3>
 <sect3 id="example11"><title>Example</title> 
-<para>Filename: 03-social_distortion-dont_take_me_for_granted.mp3
+<para>Filename: 01-The Beatles-Hey Jude.mp3
 </para>
-<para>Tracknumber: 03
+<para>Tracknumber: 01
 </para>
-<para>Artist: Social Distortion
+<para>Artist: The Beatles
 </para>
-<para>Title: Don't Take Me For Granted
+<para>Title: Hey Jude
 </para>
 <para>
 <screenshot>
@@ -4871,21 +5073,21 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </sect2>
 </sect1>
 <sect1 id="transcoding"><title>Transcoding</title> 
-<para><emphasis>Transcoding</emphasis> allows you to encode media files to a variety of formats while copying or moving them to a collection (<guilabel>Local Collection</guilabel>, USB <guilabel>Universal Mass Storage Collection</guilabel> and <guilabel>iPod, iPad &amp; iPhone Collection</guilabel> support transcoding as of &amarok; 2.6). A word of warning: be careful when you use this feature, as you are working with actual files on your hard drive. Have a backup!
+<para><guilabel>Transcoding</guilabel> allows you to encode media files to a variety of formats while copying or moving them to a collection (<guilabel>Local Collection</guilabel>, USB <guilabel>Universal Mass Storage Collection</guilabel> and <guilabel>iPod, iPad &amp; iPhone Collection</guilabel> support transcoding as of &amarok; 2.8). A word of warning: be careful when you use this feature, as you are working with actual files on your hard drive. Have a backup!
 </para>
 <sect2 id="interface"><title>Interface</title> 
-<para>Transcoding dialog will appear whenever you copy or move tracks to one of the collections that support transcoding. You can also transcode tracks within the <emphasis>Local Collection</emphasis> by using the <guilabel>Organize files</guilabel> functionality.
+<para>The <emphasis>Transcoding</emphasis> dialog will appear whenever you copy or move tracks to one of the collections that support transcoding. You can also transcode tracks within the <emphasis>Local Collection</emphasis> by using the <guilabel>Organize files</guilabel> functionality.
 </para>
 </sect2>
-<sect2 id="transcode-dialog"><title>Transcode Dialog</title> 
-<para>If you choose to copy or move files to a supported collection, the following dialog will pop up.
+<sect2 id="transcode-tracks-dialog"><title>Transcode Tracks Dialog</title> 
+<para>If you choose to copy or move files to a supported collection, the following dialog will pop up:
 </para>
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6transcodemenu.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_organizefilestranscode.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -4917,6 +5119,30 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
     </entry>
     <entry>
     <para>List of all your installed codecs; choose among them to be able to transcode. If this list is empty, you need to install <emphasis>FFmpeg</emphasis>.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Transcode all tracks</guilabel></para>
+    </entry>
+    <entry>
+    <para>Transcode every selected track to the chosen codec</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Transcode only when needed for playability</guilabel></para>
+    </entry>
+    <entry>
+    <para>Only transcode tracks which need to be transcoded to play in the destination system</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Transcode only if source and destination formats are different</guilabel></para>
+    </entry>
+    <entry>
+    <para>Transcode only if source and destination file formats are different</para>
     </entry>
   </row>
   <row>
@@ -5002,7 +5228,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-6scriptsconfigmenu.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_configurationdialogscripts.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -5104,7 +5330,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="playlistsearch.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_playlistfilteroptions.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -5386,7 +5612,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 <para>To change the name of a playlist, either use the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-properties.png" format="PNG"/> </imageobject> </inlinemediaobject> button or right click on it and select <guilabel>Rename playlist</guilabel>. A bias can be edited with the same button or by right-clicking and selecting <guilabel>Edit bias</guilabel>, and for biases which have sub-biases, a new sub-bias can be added by right clicking and selecting <guilabel>Add new bias</guilabel>.
 </para>
 <sect3 id="biases"><title>Biases</title> 
-<para>An explanation of each available bias and any options it takes follows.
+<para>Because multiple biases may be defined, &amarok; may at times return an empty playlist. This occurs if it is given a set of impossible-to-fulfill conditions. To avoid this and to better understand each available bias, along with any options it takes, please see below:
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Search</emphasis></term>
@@ -5669,9 +5895,9 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 <sect1 id="the-moodbar"><title>The Moodbar</title> 
 <para>The <emphasis>Moodbar</emphasis> shows you the <quote>mood</quote> of a track, which you can then use to figure out when something interesting happens in the song.
 </para>
-<para>In order for &amarok; to analyze your music files to create moodbars, you will need the <guilabel>Moodbar</guilabel> program (see below for <link linkend="source-downloads">downloads</link> and binary packages).
+<para>In order for &amarok; to display moodbars for your music, you will need the <guilabel>Moodbar</guilabel> program (see below for <link linkend="source-downloads">downloads</link> and binary packages).
 </para>
-<para>The <guilabel>Moodbar</guilabel> package requires <emphasis>GStreamer</emphasis> and various plugins depending on the filetypes you use (see <link linkend="supported-filetypes">Supported filetypes</link>).  You will <emphasis>not</emphasis> need the phonon-backend-gstreamer package to create .mood files.
+<para>The <guilabel>Moodbar</guilabel> package requires <guilabel>GStreamer</guilabel> and various plugins depending on the filetypes you use (see <link linkend="supported-filetypes">Supported filetypes</link>).  You will <emphasis>not</emphasis> need the phonon-backend-gstreamer package to create .mood files.
 </para>
 <para>There are two parts to the new <guilabel>Moodbar</guilabel> implementation: the <guilabel>Moodbar</guilabel> package, which contains a program that takes a music file and generates a .mood file, and support code in the &amarok; source, which runs the binary and displays the Moodbar.  The <guilabel>Moodbar</guilabel> package depends on the <emphasis>GStreamer</emphasis> libraries.  Without the <guilabel>Moodbar</guilabel> package, &amarok; cannot generate the moodbars for your music.
 </para>
@@ -5690,7 +5916,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </para>
 </sect2>
 <sect2 id="usage"><title>Usage</title> 
-<para>Currently .mood files must generated manually. To do this for your entire collection, use the <link linkend="moodbar-file-generation-script">Moodbar File Generation Script</link> described below.
+<para>Currently .mood files <emphasis>must</emphasis> be generated manually. &amarok; cannot do it for you. To do this for your entire collection, use the <link linkend="moodbar-file-generation-script">Moodbar File Generation Script</link> described below.
 </para>
 <para>To enable the display of moodbars in &amarok;, activate it in the configuration: <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>General</guimenuitem><guimenuitem>Show Moodbar in Progress Slider</guimenuitem></menuchoice>. Moodbars should now appear in the track sliders in the player window and <guilabel>Playlist</guilabel>; there will also be a mood field that you may add to your playlist layouts.
 </para>
@@ -6128,7 +6354,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 </sect2>
 <sect2 id="amarok-on-windows"><title>Amarok on Windows</title> 
-<para><warning><para>This pages needs screenshots for the Amarok 2.6 version</para></warning>
+<para><warning><para>This pages needs screenshots for the Amarok 2.8 version</para></warning>
 </para>
 <para>As you already know, a normal Windows install doesn't use KDE, so if you want to install &amarok;, you can't just download the &amarok; package. You must install a compatible compiler first. Here is described how to download, install and run &amarok; in the Windows operating system.
 </para>
@@ -6218,18 +6444,10 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 </sect2>
 <sect2 id="amarok-on-mac-os-x"><title>Amarok on &MacOS; X</title> 
-<para><warning><para>Current Macports 2.1.2 only ships an outdated Amarok 2.4.3 version</para></warning>
+<para><warning><para>Current Macports 2.1.3 only ships an outdated Amarok 2.6.0 version</para></warning>
 </para>
 <para>&amarok; can be installed and used on the &MacOS; X.
 </para>
-<sect3 id="dependencies"><title>Dependencies</title> 
-<para>The following are the dependencies required to install &amarok; on &MacOS; X. These will be automatically installed if one is using MacPorts.
-</para>
-<para><screen>
-automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdelibs4 aspell texinfo xz aspell-dict-en attica phonon glib2 avahi dbus-python26 dbus-glib gtk-doc docbook-xml docbook-xml-4.1.2 docbook-xml-4.2 docbook-xml-4.3 docbook-xml-4.4 docbook-xml-4.5 docbook-xml-5.0 gnome-doc-utils intltool gnome-common p5-getopt-long p5-pathtools p5-scalar-list-utils p5-xml-parser iso-codes py27-libxml2 python27 rarian getopt py26-gobject libffi libdaemon libglade2 gtk2 atk gdk-pixbuf2 jasper pango cairo libpixman shared-mime-info xorg-libXcomposite xorg-compositeproto xorg-libXfixes xorg-fixesproto xorg-libXcursor xorg-libXdamage xorg-damageproto xorg-libXi xorg-libXinerama xorg-xineramaproto xorg-libXrandr xorg-randrproto py26-gtk py26-cairo py26-numpy atlas gcc44 gmp mpfr gzip fftw-3 py26-nose dbusmenu-qt qjson enchant hunspell flex gmake grantlee libart_lgpl liblzma openexr ilmbase gsed pcre qca shared-desktop-ontologies soprano clucene libiodbc redland raptor rasqal strigi virtuoso gawk libssh openslp oxygen-icons qimageblitz libgpod libplist swig-python python_select swig libusb py27-gobject py27-mutagen taglib liblastfm fftw-3-single libsamplerate libsndfile flac libogg libvorbis ruby libmtp libusb-compat loudmouth gnutls libgcrypt libgpg-error libtasn1 lzo qtscriptgenerator taglib-extras
-</screen>
-</para>
-</sect3>
 <sect3 id="installation-using-macports"><title>Installation using MacPorts</title> 
 <para>To install &amarok; on &MacOS; X, first one needs to install MacPorts from <ulink url="http://www.macports.org/install.php">here</ulink>. Once MacPorts is installed one needs to run the following command in the terminal:
 </para>
@@ -6352,12 +6570,14 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <listitem><para>You can edit metadata of one of the files from within &amarok; File browser to differentiate them somehow, perhaps by editing (album) artist, year, composer or a comment</para></listitem>
 </itemizedlist>
 </para></listitem>
-<listitem><para>The files have the same Amarok AFT unique id<itemizedlist><listitem><para>This is often a result of running amarok_afttagger and then creating multiple copies of a tagged file; tag reader such as Kid3 or MP3Diags can be used to verify this, look for <varname>Amarok 2 AFTv1</varname> string in tags</para></listitem>
+<listitem><para>The files have the same Amarok AFT unique id<itemizedlist>
+<listitem><para>This is often a result of running amarok_afttagger and then creating multiple copies of a tagged file; tag reader such as Kid3 or MP3Diags can be used to verify this, look for <varname>Amarok 2 AFTv1</varname> string in tags</para></listitem>
 <listitem><para>You can use <varname>amarok_afttagger</varname> command-line utility to reset unique id of one of the tracks: <userinput>amarok_afttagger --newid --verbose path/to/one/of/the/tracks.mp3</userinput></para></listitem>
 <listitem><para>Alternatively, you can remove the unique id from one of the tracks, loosing the track-even-if-changed-from-outside functionality: <userinput>amarok_afttagger --delete --verbose path/to/one/of/the/tracks.mp3</userinput></para></listitem>
 </itemizedlist>
 </para></listitem>
-<listitem><para>(for Amarok before  <ulink url="http://commits.kde.org/amarok/216c18bdaf1">v2.7.0-96-g216c18b</ulink>) The files have the same MusicBrainz id<itemizedlist><listitem><para>Released versions up to &amarok; 2.7 treated MusizBrainz id embedded in tags (filled in by MusicBrainz-enabled tagger such as Picard) as unique identifiers of tracks. However, MusicBrainz changed the semantics of the id to mean <quote>recording id</quote> since it was originally implemented in &amarok;, which means that you may get false duplicates for example for tracks that appear on the original album and the Best of one. See <emphasis role="strikethrough"><ulink url="https://bugs.kde.org/show_bug.cgi?id=315329">bug #315329</ulink></emphasis> for more info</para></listitem>
+<listitem><para>(for Amarok before  <ulink url="http://commits.kde.org/amarok/216c18bdaf1">v2.7.0-96-g216c18b</ulink>) The files have the same MusicBrainz id<itemizedlist>
+<listitem><para>Released versions up to &amarok; 2.7 treated MusizBrainz id embedded in tags (filled in by MusicBrainz-enabled tagger such as Picard) as unique identifiers of tracks. However, MusicBrainz changed the semantics of the id to mean <quote>recording id</quote> since it was originally implemented in &amarok;, which means that you may get false duplicates for example for tracks that appear on the original album and the Best of one. See <emphasis role="strikethrough"><ulink url="https://bugs.kde.org/show_bug.cgi?id=315329">bug #315329</ulink></emphasis> for more info</para></listitem>
 <listitem><para>You can use any advanced tag reader to verify this (look for <varname>MusicBrainz</varname> string in tags) and to remove the MusicBrainz id from one of the tracks</para></listitem>
 <listitem><para>As an alternative solution, you can use <varname>amarok_afttagger</varname> to add &amarok; AFT id to one of the tracks because &amarok; will then prefer its own id rather than the MusicBrainz one: <userinput>amarok_afttagger --newid --verbose path/to/one/of/the/tracks.mp3</userinput></para></listitem>
 </itemizedlist>
@@ -6475,7 +6695,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </sect2>
 <sect2 id="playback-questions"><title>Playback Questions</title> 
 <sect3 id="how-do-i-play-audio-cds"><title>How do I play audio CDs?</title> 
-<para>When you insert an audio CD, it will be shown as a local collection. Drag to the playlist or <emphasis>Pop-Up Dropper</emphasis>, or right-click the selected tracks and choose <guilabel>Add to Playlist</guilabel> or <guilabel>Replace Playlist</guilabel>.
+<para>Audio CDs are treated differently than data CDs, which are also supported. When you insert an audio CD, it will be shown as a local collection. Drag to the playlist or <emphasis>Pop-Up Dropper</emphasis>, or right-click the selected tracks and choose <guilabel>Add to Playlist</guilabel> or <guilabel>Replace Playlist</guilabel>.
 </para>
 </sect3>
 <sect3 id="what-media-types-does-amarok-support"><title>What media types does Amarok support?</title> 
@@ -6535,11 +6755,11 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 <para> <userinput>flat-volume=yes</userinput>
 </para>
-<para>enabled. Depending on your distribution this is located either in the file <guilabel>$HOME/.pulse/daemon.conf</guilabel> or in the system file <guilabel>/etc/pulse/daemon.conf</guilabel>. More information about Pulseudio-specific settings can be found in <ulink url="http://linux.die.net/man/5/pulse-daemon.conf">pulse-daemon.conf man page</ulink>.
+<para>enabled. Depending on your distribution this is located either in the file <filename>$HOME/.pulse/daemon.conf</filename> or in the system file <filename>/etc/pulse/daemon.conf</filename>. More information about Pulseudio-specific settings can be found in <ulink url="http://linux.die.net/man/5/pulse-daemon.conf">pulse-daemon.conf man page</ulink>.
 </para>
 </sect3>
 <sect3 id="how-do-i-turn-on-visualizations"><title>How do I turn on visualizations?</title> 
-<para>Visualizations are not implemented yet, but they will be very soon.
+<para>Visualizations come in the form of an applet. For more information please see the <link linkend="applets">applets page</link>. Visualizations are currently under development and may be buggy at this time.
 </para>
 </sect3>
 <sect3 id="how-can-i-add-podcasts"><title>How can I add podcasts?</title> 
@@ -6895,7 +7115,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1viewmenu.png" format="PNG"/>
+      <imagedata fileref="amarok2-6viewconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>View Menu</phrase>
@@ -7975,10 +8195,18 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
-    <para>Search in playlist</para>
+    <para>Search in Playlist</para>
     </entry>
     <entry>
     <para><keycombo>&Ctrl;<keycap>J</keycap></keycombo></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para>Shuffle Playlist</para>
+    </entry>
+    <entry>
+    <para><keycombo>&Ctrl;<keycap>H</keycap></keycombo></para>
     </entry>
   </row>
   <row>
@@ -8007,6 +8235,14 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
+    <para>Copy the Currently Playing Artist and Title to the Clipboard</para>
+    </entry>
+    <entry>
+    <para><keycombo>&Ctrl;<keycap>C</keycap></keycombo></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
     <para>Queue Track</para>
     </entry>
     <entry>
@@ -8031,7 +8267,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
-    <para>Seek Forward By 2 seconds</para>
+    <para>Seek Forward By 2 seconds*</para>
     </entry>
     <entry>
     <para><keycombo>&Ctrl;<keycap>Right</keycap></keycombo></para>
@@ -8039,7 +8275,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
-    <para>Seek Forward By 10 seconds</para>
+    <para>Seek Forward By 10 seconds*</para>
     </entry>
     <entry>
     <para><keycap>Right</keycap></para>
@@ -8047,7 +8283,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
-    <para>Seek Forward By 60 seconds</para>
+    <para>Seek Forward By 60 seconds*</para>
     </entry>
     <entry>
     <para><keycombo>&Shift;<keycap>Right</keycap></keycombo></para>
@@ -8055,7 +8291,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
-    <para>Seek Backward by 2 seconds</para>
+    <para>Seek Backward By 2 seconds*</para>
     </entry>
     <entry>
     <para><keycombo>&Ctrl;<keycap>Left</keycap></keycombo></para>
@@ -8063,7 +8299,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
-    <para>Seek Backward By 10 seconds</para>
+    <para>Seek Backward By 10 seconds*</para>
     </entry>
     <entry>
     <para><keycap>Left</keycap></para>
@@ -8071,7 +8307,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
-    <para>Seek Backward by 60 seconds</para>
+    <para>Seek Backward by 60 seconds*</para>
     </entry>
     <entry>
     <para><keycombo>&Shift;<keycap>Left</keycap></keycombo></para>
@@ -8128,6 +8364,9 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </tgroup>
 </informaltable>
 </para>
+<itemizedlist>
+<listitem><para>These durations are configurable in the <filename>amarokrc</filename>.</para></listitem>
+</itemizedlist>
 </sect3>
 <sect3 id="how-to-make-shortcuts"><title>How to make shortcuts</title> 
 <para>You can configure shortcuts from <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure Shortcuts...</guimenuitem></menuchoice> where you can change or make new shortcuts.
@@ -8244,7 +8483,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <sect1 id="program-copyright"><title>Program copyright</title> 
 <para>Copyright 2002, 2003 Mark Kretschmann (kretschmann kde.org).
 </para>
-<para>Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012 The Amarok Development Squad
+<para>Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 The Amarok Development Squad
 </para>
 </sect1>
 <sect1 id="documentation-copyright"><title>Documentation copyright</title> 
@@ -8277,6 +8516,8 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <para>Mayank Madan (mayankmadan live.com)
 </para>
 <para>Myriam Schweingruber (myriam kde.org)
+</para>
+<para>Nick Adams (runey676 gmail.com)
 </para>
 <para>Paul Ivan (bit.alex001 gmail.com)
 </para>
