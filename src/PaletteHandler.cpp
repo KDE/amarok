@@ -69,6 +69,11 @@ PaletteHandler::updateItemView( QAbstractItemView * view )
     c.setAlpha( 75 );
     p.setColor( QPalette::Inactive, QPalette::AlternateBase, c );
 
+    // Base color is used during the expand/shrink animation. We set it
+    // to transparent so that it won't interfere with our custom colors.
+    p.setColor( QPalette::Active, QPalette::Base, Qt::transparent );
+    p.setColor( QPalette::Inactive, QPalette::Base, Qt::transparent );
+
     view->setPalette( p );
     
     if ( QWidget *vp = view->viewport() )
