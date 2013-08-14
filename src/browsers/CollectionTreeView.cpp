@@ -750,12 +750,17 @@ CollectionTreeView::copySelectedToLocalCollection()
     DEBUG_BLOCK
 
     // Get the local collection
-    Collections::Collection *collection;
-    foreach( collection, CollectionManager::instance()->collections().keys() )
+    Collections::Collection *collection = 0;
+    const QList<Collections::Collection*> collections = CollectionManager::instance()->collections().keys();
+
+    foreach( collection, collections )
     {
         if ( collection->prettyName() == "Local Collection")
             break;
     }
+
+    if( !collection )
+        return;
 
     // Get selected items
     QModelIndexList indexes = selectedIndexes();
