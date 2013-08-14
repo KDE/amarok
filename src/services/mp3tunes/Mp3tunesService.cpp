@@ -355,7 +355,7 @@ void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )
         if( coll && coll->isWritable() && m_collection )
         {
             debug() << "got collection" << coll->prettyName();
-            if ( coll->prettyName() == "Local Collection")
+            if ( coll->collectionId() == "localCollection")
             { //TODO Allow user to choose which collection to sync down to.
                 debug() << "got local collection";
                 Collections::CollectionLocation *dest = coll->location();

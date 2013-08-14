@@ -755,7 +755,7 @@ CollectionTreeView::copySelectedToLocalCollection()
 
     foreach( collection, collections )
     {
-        if ( collection->prettyName() == "Local Collection")
+        if ( collection->collectionId() == "localCollection" )
             break;
     }
 
