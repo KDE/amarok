@@ -5,7 +5,7 @@
 #
 # The script should be run once before each release, in order to ensure that
 # no old and perhaps incompatible engines are getting loaded. After running, don't
-# forget to commit to svn. The script must be started from the amarok/ folder.
+# forget to commit and push. The script must be started from the amarok/ folder.
 #
 # (c) 2005-2010 Mark Kretschmann <kretschmann@kde.org>
 # License: GNU General Public License V2
