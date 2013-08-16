@@ -17,54 +17,42 @@
 #ifndef STATSYNCING_FAST_FORWARD_TRACK_H
 #define STATSYNCING_FAST_FORWARD_TRACK_H
 
-#include "statsyncing/Provider.h"
+#include "statsyncing/SimpleTrack.h"
 
 #include "MetaValues.h"
 
-#include <QMap>
 #include <QMutex>
-#include <QObject>
-#include <QVariant>
 
 namespace StatSyncing
 {
 
-class FastForwardTrack : public QObject, public Track
+class FastForwardTrack : public QObject, public SimpleTrack
 {
     Q_OBJECT
 
 public:
-    FastForwardTrack( const QString &trackUrl, const QString &providerUid );
+    FastForwardTrack( const Meta::FieldHash &metadata, const QString &trackUrl,
+                      const QString &providerUid );
     ~FastForwardTrack();
 
-    QString name() const;
-    QString album() const;
-    QString artist() const;
-    QString composer() const;
-    int year() const;
-    int trackNumber() const;
-    int discNumber() const;
-
-    int rating() const;
     QDateTime firstPlayed() const;
     QDateTime lastPlayed() const;
+    int rating() const;
     int playCount() const;
     QSet<QString> labels() const;
 
 private:
-    void assureAllDataRetrieved() const;
+    void assureStatisticsRetrieved() const;
 
-    QString m_trackUrl;
-    QString m_providerUid;
+    const QString m_providerUid;
+    Meta::FieldHash m_statistics;
+    bool m_statisticsRetrieved;
+    const QString m_trackUrl;
 
-    QMap<quint64, QVariant> m_metadata;
-    QMap<quint64, QVariant> m_statistics;
-    QSet<QString> m_labels;
-
-    mutable QMutex m_statMutex;
+    mutable QMutex m_mutex;
 
 private slots:
-    void retrievePersonalData();
+    void retrieveStatistics();
 };
 
 } // namespace StatSyncing

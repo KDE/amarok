@@ -26,179 +26,96 @@
 
 using namespace StatSyncing;
 
-FastForwardTrack::FastForwardTrack( const QString &trackUrl, const QString &providerUid )
-    : m_trackUrl( trackUrl )
+FastForwardTrack::FastForwardTrack( const Meta::FieldHash &metadata,
+                                    const QString &trackUrl, const QString &providerUid )
+    : SimpleTrack( metadata )
     , m_providerUid( providerUid )
+    , m_statisticsRetrieved( false )
+    , m_trackUrl( trackUrl )
 {
-    QSqlDatabase db = QSqlDatabase::database( m_providerUid );
-    if( !db.isOpen() )
-    {
-        warning() << __PRETTY_FUNCTION__ << "could not open database connection:"
-                  << db.lastError().text();
-        return;
-    }
-
-    QSqlQuery query( db );
-    query.setForwardOnly( true );
-
-    query.prepare( "SELECT t.title, al.name, ar.name, c.name, y.name, t.track, "
-                   "t.discnumber FROM tags t "
-                   "LEFT JOIN artist ar ON ar.id = t.artist "
-                   "LEFT JOIN album al ON al.id = t.album "
-                   "LEFT JOIN composer c ON c.id = t.composer "
-                   "LEFT JOIN year y ON y.id = t.year "
-                   "WHERE t.url = ?" );
-    query.addBindValue( m_trackUrl );
-    query.exec();
-
-    if( query.next() )
-    {
-        QList<quint64> fields;
-        fields << Meta::valTitle << Meta::valAlbum << Meta::valArtist << Meta::valComposer
-               << Meta::valYear << Meta::valTrackNr << Meta::valDiscNr;
-
-        for( int i = 0; i < fields.size(); ++i )
-            m_metadata[fields[i]] = query.value( i );
-    }
-    else
-    {
-        warning() << __PRETTY_FUNCTION__ << "could not fetch track metadata:"
-                  << query.lastError().text();
-    }
 }
 
 FastForwardTrack::~FastForwardTrack()
 {
 }
 
-QString
-FastForwardTrack::name() const
-{
-    return m_metadata[Meta::valTitle].toString();
-}
-
-QString
-FastForwardTrack::album() const
-{
-    return m_metadata[Meta::valAlbum].toString();
-}
-
-QString
-FastForwardTrack::artist() const
-{
-    return m_metadata[Meta::valArtist].toString();
-}
-
-QString
-FastForwardTrack::composer() const
-{
-    return m_metadata[Meta::valComposer].toString();
-}
-
-int
-FastForwardTrack::year() const
-{
-    return m_metadata[Meta::valYear].toInt();
-}
-
-int
-FastForwardTrack::trackNumber() const
-{
-    return m_metadata[Meta::valTrackNr].toInt();
-}
-
-int
-FastForwardTrack::discNumber() const
-{
-    return m_metadata[Meta::valDiscNr].toInt();
-}
-
-int
-FastForwardTrack::rating() const
-{
-    assureAllDataRetrieved();
-    return m_statistics[Meta::valRating].toInt();
-}
-
 QDateTime
 FastForwardTrack::firstPlayed() const
 {
-    assureAllDataRetrieved();
-    const QVariant &t = m_statistics[Meta::valFirstPlayed];
-    return t.isNull() ? QDateTime() : QDateTime::fromTime_t( t.toUInt() );
+    assureStatisticsRetrieved();
+    const uint t = m_statistics.value( Meta::valFirstPlayed ).toUInt();
+    return t == 0 ? QDateTime() : QDateTime::fromTime_t( t );
 }
 
 QDateTime
 FastForwardTrack::lastPlayed() const
 {
-    assureAllDataRetrieved();
-    const QVariant &t = m_statistics[Meta::valLastPlayed];
-    return t.isNull() ? QDateTime() : QDateTime::fromTime_t( t.toUInt() );
+    assureStatisticsRetrieved();
+    const uint t = m_statistics.value( Meta::valLastPlayed ).toUInt();
+    return t == 0 ? QDateTime() : QDateTime::fromTime_t( t );
+}
+
+int
+FastForwardTrack::rating() const
+{
+    assureStatisticsRetrieved();
+    return m_statistics.value( Meta::valRating ).toInt();
 }
 
 int
 FastForwardTrack::playCount() const
 {
-    assureAllDataRetrieved();
-    return m_statistics[Meta::valPlaycount].toInt();
+    assureStatisticsRetrieved();
+    return m_statistics.value( Meta::valPlaycount ).toInt();
 }
 
 QSet<QString>
 FastForwardTrack::labels() const
 {
-    assureAllDataRetrieved();
+    assureStatisticsRetrieved();
     return m_labels;
 }
 
 void
-FastForwardTrack::assureAllDataRetrieved() const
+FastForwardTrack::assureStatisticsRetrieved() const
 {
-    QMutexLocker lock( &m_statMutex );
-    if( m_statistics.empty() )
-    {
-        // SQL queries need to be executed in the main thread, and we can't use
-        // BlockingQueuedConnection if we're already in the main thread
-        const Qt::ConnectionType connectionType =
-                this->thread() == QCoreApplication::instance()->thread()
-                ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
+    QMutexLocker lock( &m_mutex );
+    if( m_statisticsRetrieved )
+        return;
 
-        QMetaObject::invokeMethod( const_cast<FastForwardTrack*>( this ),
-                                   "retrievePersonalData", connectionType );
-    }
+    const Qt::ConnectionType connectionType =
+            this->thread() == QCoreApplication::instance()->thread()
+            ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
+
+    QMetaObject::invokeMethod( const_cast<FastForwardTrack*>( this ),
+                               "retrieveStatistics", connectionType );
 }
 
 void
-FastForwardTrack::retrievePersonalData()
+FastForwardTrack::retrieveStatistics()
 {
     QSqlDatabase db = QSqlDatabase::database( m_providerUid );
-    if( !db.isOpen() )
-    {
-        warning() << __PRETTY_FUNCTION__ << "could not open database connection:"
-                  << db.lastError().text();
-        return;
-    }
-
     QSqlQuery query( db );
     query.setForwardOnly( true );
 
     query.prepare( "SELECT rating, createdate, accessdate, playcounter "
-                   "FROM statistics WHERE url = ?" );
+                   "FROM statistics "
+                   "WHERE url = ?" );
     query.addBindValue( m_trackUrl );
     query.exec();
 
     if( query.next() )
     {
-        QList<quint64> fields;
-        fields << Meta::valRating << Meta::valFirstPlayed << Meta::valLastPlayed
-                  << Meta::valPlaycount;
+        const QList<qint64> fields = QList<qint64>() << Meta::valRating
+                    << Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount;
 
         for( int i = 0; i < fields.size(); ++i )
-            m_statistics[fields[i]] = query.value( i );
+            m_statistics.insert( fields[i], query.value( i ) );
     }
     else
     {
-        warning() << __PRETTY_FUNCTION__ << "could not retrieve track personal metadata:"
-                  << query.lastError().text();
+        warning() << __PRETTY_FUNCTION__ << "could not retrieve personal track metadata."
+                  << "track url:" << m_trackUrl << "error:" << query.lastError().text();
     }
 
     query.prepare( "SELECT l.name FROM labels l "
@@ -209,4 +126,6 @@ FastForwardTrack::retrievePersonalData()
 
     while( query.next() )
         m_labels.insert( query.value( 0 ).toString() );
+
+    m_statisticsRetrieved = true;
 }

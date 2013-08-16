@@ -34,8 +34,7 @@ using namespace StatSyncing;
 FastForwardProvider::FastForwardProvider( const QVariantMap &config, ImporterManager *importer )
     : ImporterProvider( config, importer )
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase( m_config["dbDriver"].toString(),
-            m_config["uid"].toString() );
+    QSqlDatabase db = QSqlDatabase::addDatabase( m_config["dbDriver"].toString(), id() );
 
     db.setDatabaseName( m_config["dbDriver"].toString() == "QSQLITE"
             ? m_config["dbPath"].toString() : m_config["dbName"].toString() );
@@ -51,7 +50,7 @@ FastForwardProvider::FastForwardProvider( const QVariantMap &config, ImporterMan
 
 FastForwardProvider::~FastForwardProvider()
 {
-    QSqlDatabase::removeDatabase( m_config["uid"].toString() );
+    QSqlDatabase::removeDatabase( id() );
 }
 
 qint64
@@ -104,16 +103,14 @@ FastForwardProvider::artistTracks( const QString &artistName )
 void
 FastForwardProvider::artistsSearch()
 {
-    QSqlDatabase db = QSqlDatabase::database( m_config["uid"].toString() );
+    QSqlDatabase db = QSqlDatabase::database( id() );
     if( !db.isOpen() )
-    {
-        warning() << __PRETTY_FUNCTION__ << "could not open database connection:"
-                  << db.lastError().text();
         return;
-    }
 
-    QSqlQuery query( "SELECT name FROM artist", db );
+    QSqlQuery query( db );
     query.setForwardOnly( true );
+    query.prepare( "SELECT name FROM artist" );
+    query.exec();
 
     while( query.next() )
         m_artistsResult.insert( query.value( 0 ).toString() );
@@ -122,38 +119,37 @@ FastForwardProvider::artistsSearch()
 void
 FastForwardProvider::artistTracksSearch( const QString &artistName )
 {
-    QSqlDatabase db = QSqlDatabase::database( m_config["uid"].toString() );
+    QSqlDatabase db = QSqlDatabase::database( id() );
     if( !db.isOpen() )
-    {
-        warning() << __PRETTY_FUNCTION__ << "could not open database connection:"
-                  << db.lastError().text();
         return;
-    }
 
     QSqlQuery query( db );
     query.setForwardOnly( true );
 
-    query.prepare( "SELECT id FROM artist WHERE name = ?" );
+    query.prepare( "SELECT t.url, t.title, al.name, ar.name, c.name, y.name, t.track, "
+                   "t.discnumber "
+                   "FROM tags t "
+                   "INNER JOIN artist ar ON ar.id = t.artist "
+                   "LEFT JOIN album al ON al.id = t.album "
+                   "LEFT JOIN composer c ON c.id = t.composer "
+                   "LEFT JOIN year y ON y.id = t.year "
+                   "WHERE ar.name = ?" );
     query.addBindValue( artistName );
     query.exec();
 
-    if( !query.next() )
-    {
-        warning() << __PRETTY_FUNCTION__ << "could not find artist id:"
-                  << query.lastError().text();
-        return;
-    }
-
-    const int artistId = query.value( 0 ).toInt();
-
-    query.prepare( "SELECT url FROM tags WHERE artist = ?" );
-    query.addBindValue( artistId );
-    query.exec();
+    const QList<qint64> fields = QList<qint64>() << Meta::valTitle << Meta::valAlbum
+                                 << Meta::valArtist << Meta::valComposer
+                                 << Meta::valYear << Meta::valTrackNr << Meta::valDiscNr;
 
     while ( query.next() )
     {
-        const QString url = query.value( 0 ).toString();
+        const QString trackUrl = query.value( 0 ).toString();
+
+        Meta::FieldHash metadata;
+        for( int i = 0; i < fields.size(); ++i )
+            metadata.insert( fields[i], query.value( i + 1 ) );
+
         m_artistTracksResult
-                << TrackPtr( new FastForwardTrack( url, m_config["uid"].toString() ) );
+                << TrackPtr( new FastForwardTrack( metadata, trackUrl, id() ) );
     }
 }
