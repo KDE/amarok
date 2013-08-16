@@ -94,7 +94,7 @@ typedef struct {
     char *device_pin;
     char *device_email;
     char *device_formatted_email;
-    char *host;
+    const char *host;
     int port;
     mp3tunes_harmony_sid_state_t sid_state;
     GList *device_attributes;
