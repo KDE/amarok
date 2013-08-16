@@ -527,6 +527,8 @@ set( statsyncing_SRCS
     statsyncing/Process.cpp
     statsyncing/Provider.cpp
     statsyncing/ScrobblingService.cpp
+    statsyncing/SimpleTrack.cpp
+    statsyncing/SimpleWritableTrack.cpp
     statsyncing/Track.cpp
     statsyncing/TrackTuple.cpp
     statsyncing/collection/CollectionProvider.cpp
