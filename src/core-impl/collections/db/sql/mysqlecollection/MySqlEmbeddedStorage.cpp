@@ -26,6 +26,7 @@
 #include <QMutexLocker>
 #include <QThreadStorage>
 #include <QVarLengthArray>
+#include <QVector>
 
 #include <mysql.h>
 
@@ -35,45 +36,33 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
     m_debugIdent = "MySQLe";
 
     QString storagePath = storageLocation;
-    QString defaultsFile;
     QString databaseDir;
     if( storageLocation.isEmpty() )
     {
         storagePath = Amarok::saveLocation();
-        defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", QString(storagePath + "my.cnf") );
         databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", QString(storagePath + "mysqle") );
     }
     else
     {
         QDir dir( storageLocation );
         dir.mkpath( "." );  //ensure directory exists
-        defaultsFile = QDir::cleanPath( dir.absoluteFilePath( "my.cnf" ) );
         databaseDir = dir.absolutePath() + QDir::separator() + "mysqle";
     }
 
-    if( !Amarok::config( "MySQLe" ).readEntry( "keepUserMyCnf", false ) )
-    {
-        QFile df( defaultsFile );
-        if ( !df.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) {
-            error() << "Unable to open " << defaultsFile << " for writing.";
-            reportError( "init" );
-        }
-        QTextStream out( &df );
-        out << "[embedded]" << endl;
-        out << "datadir = " << databaseDir.toLocal8Bit() << endl;
-        // CAUTION: if we ever change the table type we will need to fix a number of MYISAM specific
-        // functions, such as FULLTEXT indexing.
-        out << "default-storage-engine = MyISAM" << endl;
-        out << "loose-innodb = 0" << endl;
-        out << "skip-grant-tables = 1" << endl;
-        out << "myisam-recover = FORCE" << endl;
-        out << "key_buffer_size = 16777216" << endl; // (16Mb)
-        out << "character-set-server = utf8" << endl;
-        out << "collation-server = utf8_bin" << endl;
-        //If the file is world-writable MySQL won't even read it
-        df.setPermissions( QFile::ReadOwner | QFile::WriteOwner | QFile::ReadGroup | QFile::ReadOther );
-        df.close();
-    }
+    QVector<const char*> mysql_args;
+    QByteArray dataDir = QString( "--datadir=%1" ).arg( databaseDir ).toLocal8Bit();
+    mysql_args << "amarok"
+               << dataDir.constData()
+               // CAUTION: if we ever change the table type we will need to fix a number of MYISAM specific
+               // functions, such as FULLTEXT indexing.
+               << "--default-storage-engine=MyISAM"
+               << "--innodb=OFF"
+               << "--skip-grant-tables"
+               << "--myisam-recover-options=FORCE"
+               << "--key-buffer-size=16777216" // (16Mb)
+               << "--character-set-server=utf8"
+               << "--collation-server=utf8_bin";
+
 
     if( !QFile::exists( databaseDir ) )
     {
@@ -81,10 +70,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         dir.mkpath( "." );
     }
 
-    setenv( "MYSQL_HOME", storagePath.toLocal8Bit().data(), 1 );
-    setenv( "DEFAULT_HOME_ENV", storagePath.toLocal8Bit().data(), 1 );
-    char *args[] = { (char*) "amarok" };
-    if( mysql_library_init( 1 , args, 0 ) != 0 )
+    if( mysql_library_init( mysql_args.size() , const_cast<char**>(mysql_args.data()), 0 ) != 0 )
     {
         error() << "MySQL library initialization failed.";
         reportError( "init" );
