@@ -97,6 +97,8 @@ CurrentTrack::init()
     // Call the base implementation.
     Context::Applet::init();
 
+    setToolTip( i18n( "Right-click to configure" ) );
+
     m_ratingWidget = new RatingWidget( this );
     m_ratingWidget->setSpacing( 2 );
     m_ratingWidget->setMinimumSize( m_albumWidth + 10, 30 );
