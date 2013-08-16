@@ -30,7 +30,7 @@ $changelog.gsub!(/BR (\d+)/, '<a href="http://bugs.kde.org/show_bug.cgi?id=\\1">
 # Make bullets
 bullet_item_regexp =
   /
-    ^\s{4}             # Start of line and four whitespace
+    ^\s{3,4}           # Start of line and three to four whitespace
     \*\s               # The actual bullet
     (
       [^\n]*           # Match everything up to the first newline
