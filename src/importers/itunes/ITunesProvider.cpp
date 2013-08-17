@@ -127,7 +127,7 @@ ITunesProvider::readTrack( QXmlStreamReader &xml, const QString &byArtist )
     xml.readNextStartElement();
     Q_ASSERT( xml.isStartElement() && xml.name() == "dict" );
 
-    QMap<qint64, QString> metadata;
+    Meta::FieldHash metadata;
     QString currentArtist;
 
     while( xml.readNextStartElement() )

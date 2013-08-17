@@ -17,37 +17,19 @@
 #ifndef STATSYNCING_ITUNES_TRACK_H
 #define STATSYNCING_ITUNES_TRACK_H
 
-#include "statsyncing/Provider.h"
-
-#include <QObject>
+#include "statsyncing/SimpleTrack.h"
 
 namespace StatSyncing
 {
 
-class ITunesTrack : public QObject, public Track
+class ITunesTrack : public SimpleTrack
 {
-    Q_OBJECT
-
 public:
-    ITunesTrack( const QMap<qint64, QString> &metadata );
+    explicit ITunesTrack( const Meta::FieldHash &metadata );
     ~ITunesTrack();
 
-    QString name() const;
-    QString album() const;
-    QString artist() const;
-    QString composer() const;
-    int year() const;
-    int trackNumber() const;
-    int discNumber() const;
-
     int rating() const;
-    QDateTime firstPlayed() const;
     QDateTime lastPlayed() const;
-    int playCount() const;
-    QSet<QString> labels() const;
-
-private:
-    QMap<qint64, QString> m_metadata;
 };
 
 } // namespace StatSyncing
