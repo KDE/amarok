@@ -113,7 +113,7 @@ RhythmboxProvider::readSong( QXmlStreamReader &xml, const QString &byArtist )
 {
     Q_ASSERT( xml.isStartElement() && xml.name() == "entry" );
 
-    QMap<qint64, QString> metadata;
+    Meta::FieldHash metadata;
     QString currentArtist;
 
     while( xml.readNextStartElement() )

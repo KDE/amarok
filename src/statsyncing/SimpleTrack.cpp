@@ -103,9 +103,9 @@ SimpleTrack::labels() const
 QDateTime
 SimpleTrack::getDateTime( const QVariant &v ) const
 {
-    if( v.canConvert<QDateTime>() )
+    if( v.toDateTime().isValid() )
         return v.toDateTime();
-    else if( v.canConvert<uint>() && v.toUInt() != 0 )
+    else if( v.toUInt() != 0 )
         return QDateTime::fromTime_t( v.toUInt() );
     else
         return QDateTime();

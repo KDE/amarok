@@ -17,37 +17,18 @@
 #ifndef STATSYNCING_RHYTHMBOX_TRACK_H
 #define STATSYNCING_RHYTHMBOX_TRACK_H
 
-#include "statsyncing/Provider.h"
-
-#include <QObject>
+#include "statsyncing/SimpleTrack.h"
 
 namespace StatSyncing
 {
 
-class RhythmboxTrack : public QObject, public Track
+class RhythmboxTrack : public SimpleTrack
 {
-    Q_OBJECT
-
 public:
-    RhythmboxTrack( const QMap<qint64, QString> &metadata );
+    RhythmboxTrack( const Meta::FieldHash &metadata );
     ~RhythmboxTrack();
 
-    QString name() const;
-    QString album() const;
-    QString artist() const;
-    QString composer() const;
-    int year() const;
-    int trackNumber() const;
-    int discNumber() const;
-
     int rating() const;
-    QDateTime firstPlayed() const;
-    QDateTime lastPlayed() const;
-    int playCount() const;
-    QSet<QString> labels() const;
-
-private:
-    QMap<qint64, QString> m_metadata;
 };
 
 } // namespace StatSyncing

@@ -16,13 +16,10 @@
 
 #include "RhythmboxTrack.h"
 
-#include "MetaValues.h"
-
 using namespace StatSyncing;
 
-RhythmboxTrack::RhythmboxTrack( const QMap<qint64, QString> &metadata )
-    : Track()
-    , m_metadata( metadata )
+RhythmboxTrack::RhythmboxTrack( const Meta::FieldHash &metadata )
+    : SimpleTrack( metadata )
 {
 }
 
@@ -30,76 +27,8 @@ RhythmboxTrack::~RhythmboxTrack()
 {
 }
 
-QString
-RhythmboxTrack::name() const
-{
-    return m_metadata[Meta::valTitle];
-}
-
-QString
-RhythmboxTrack::album() const
-{
-    return m_metadata[Meta::valAlbum];
-}
-
-QString
-RhythmboxTrack::artist() const
-{
-    return m_metadata[Meta::valArtist];
-}
-
-QString
-RhythmboxTrack::composer() const
-{
-    return m_metadata[Meta::valComposer];
-}
-
-int
-RhythmboxTrack::year() const
-{
-    return m_metadata[Meta::valYear].toInt();
-}
-
-int
-RhythmboxTrack::trackNumber() const
-{
-    return m_metadata[Meta::valTrackNr].toInt();
-}
-
-int
-RhythmboxTrack::discNumber() const
-{
-    return m_metadata[Meta::valDiscNr].toInt();
-}
-
 int
 RhythmboxTrack::rating() const
 {
-    return m_metadata[Meta::valRating].toInt() * 2;
-}
-
-QDateTime
-RhythmboxTrack::firstPlayed() const
-{
-    return QDateTime();
-}
-
-QDateTime
-RhythmboxTrack::lastPlayed() const
-{
-    return m_metadata[Meta::valLastPlayed].toUInt() != 0
-            ? QDateTime::fromTime_t( m_metadata[Meta::valLastPlayed].toUInt() )
-            : QDateTime();
-}
-
-int
-RhythmboxTrack::playCount() const
-{
-    return m_metadata[Meta::valPlaycount].toInt();
-}
-
-QSet<QString>
-RhythmboxTrack::labels() const
-{
-    return QSet<QString>();
+    return m_metadata.value( Meta::valRating ).toInt() * 2;
 }
