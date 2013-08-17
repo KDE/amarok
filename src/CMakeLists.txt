@@ -557,6 +557,7 @@ kde4_add_ui_files( statsyncing_SRCS
 set( importers_SRCS
     importers/ImporterManager.cpp
     importers/ImporterProvider.cpp
+    importers/ImporterSqlProvider.cpp
 )
 
 #####################################################################
