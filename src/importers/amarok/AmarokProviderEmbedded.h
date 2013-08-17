@@ -30,18 +30,15 @@ namespace StatSyncing
 
 class AmarokProviderEmbedded : public AmarokProvider
 {
-    Q_OBJECT
-
 public:
     AmarokProviderEmbedded( const QVariantMap &config, ImporterManager *importer );
     ~AmarokProviderEmbedded();
 
-    QSet<QString> artists();
-    TrackList artistTracks( const QString &artistName );
+protected:
+    QSet<QString> getArtists( QSqlDatabase db );
+    TrackList getArtistTracks( const QString &artistName, QSqlDatabase db );
 
 private:
-    void startServer();
-
     // Number of msecs after which server will shut down
     static const int SERVER_SHUTDOWN_AFTER = 30000;
     // Number of msecs to wait for server to start
@@ -56,6 +53,7 @@ private:
     QMutex m_srvMutex;
 
 private slots:
+    void startServer();
     void stopServer();
 };
 

@@ -37,13 +37,14 @@ AmarokProviderEmbedded::AmarokProviderEmbedded( const QVariantMap &config, Impor
     m_socket.open();
     m_pidFile.open();
 
-    QSqlDatabase db = QSqlDatabase::database( m_config.value( "uid" ).toString(), /*open*/ false );
+    // Modify connection settings
+    QSqlDatabase db = QSqlDatabase::database( m_connectionName, /*open*/ false );
     db.setConnectOptions( "UNIX_SOCKET=" + QFileInfo( m_socket ).absoluteFilePath() );
-    db.setDatabaseName  ( "amarok" );
+    db.setDatabaseName  ( "amarok"    );
     db.setHostName      ( "localhost" );
-    db.setUserName      ( "root" );
-    db.setPassword      ( "" );
-    db.setPort          ( m_port );
+    db.setUserName      ( "root"      );
+    db.setPassword      ( ""          );
+    db.setPort          ( m_port      );
 
     connect( &m_shutdownTimer, SIGNAL(timeout()), SLOT(stopServer()) );
     m_shutdownTimer.setSingleShot( true );
@@ -55,17 +56,17 @@ AmarokProviderEmbedded::~AmarokProviderEmbedded()
 }
 
 QSet<QString>
-AmarokProviderEmbedded::artists()
+AmarokProviderEmbedded::getArtists( QSqlDatabase db )
 {
     startServer();
-    return AmarokProvider::artists();
+    return AmarokProvider::getArtists( db );
 }
 
 TrackList
-AmarokProviderEmbedded::artistTracks( const QString &artistName )
+AmarokProviderEmbedded::getArtistTracks( const QString &artistName, QSqlDatabase db )
 {
     startServer();
-    return AmarokProvider::artistTracks( artistName );
+    return AmarokProvider::getArtistTracks( artistName, db );
 }
 
 void

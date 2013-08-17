@@ -64,12 +64,16 @@ protected:
      */
     virtual TrackList getArtistTracks( const QString &artistName, QSqlDatabase db ) = 0;
 
+    /**
+     * Name of the connection created in the constructor.
+     */
+    const QString m_connectionName;
+
 private:
     Qt::ConnectionType getConnectionType() const;
 
     QSet<QString> m_artistsResult;
     TrackList m_artistTracksResult;
-    const QString m_connectionName;
 
 private slots:
     void artistsSearch();

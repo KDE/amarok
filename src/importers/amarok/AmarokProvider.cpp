@@ -19,26 +19,17 @@
 #include "MetaValues.h"
 #include "statsyncing/SimpleTrack.h"
 
-#include <QApplication>
-#include <QSqlDatabase>
 #include <QSqlQuery>
 
 using namespace StatSyncing;
 
 AmarokProvider::AmarokProvider( const QVariantMap &config, ImporterManager *importer )
-    : ImporterProvider( config, importer )
+    : ImporterSqlProvider( setDbDriver( config ), importer )
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase( "QMYSQL", m_config.value( "uid" ).toString() );
-    db.setDatabaseName( m_config.value( "dbName" ).toString() );
-    db.setHostName    ( m_config.value( "dbHost" ).toString() );
-    db.setUserName    ( m_config.value( "dbUser" ).toString() );
-    db.setPassword    ( m_config.value( "dbPass" ).toString() );
-    db.setPort        ( m_config.value( "dbPort" ).toInt()    );
 }
 
 AmarokProvider::~AmarokProvider()
 {
-    QSqlDatabase::removeDatabase( m_config.value( "uid" ).toString() );
 }
 
 qint64
@@ -56,60 +47,22 @@ AmarokProvider::writableTrackStatsData() const
 }
 
 QSet<QString>
-AmarokProvider::artists()
+AmarokProvider::getArtists( QSqlDatabase db )
 {
-    // SQL queries need to be executed in the main thread
-    const Qt::ConnectionType connectionType =
-            this->thread() == QCoreApplication::instance()->thread()
-            ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
-
-    QMetaObject::invokeMethod( this, "artistsSearch", connectionType );
-
-    QSet<QString> artistSet;
-    artistSet.swap( m_artistsResult );
-
-    return artistSet;
-}
-
-TrackList
-AmarokProvider::artistTracks( const QString &artistName )
-{
-    // SQL queries need to be executed in the main thread
-    const Qt::ConnectionType connectionType =
-            this->thread() == QCoreApplication::instance()->thread()
-            ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
-
-    QMetaObject::invokeMethod( this, "artistTracksSearch", connectionType,
-                               Q_ARG( QString, artistName ) );
-
-    TrackList artistTrackList;
-    artistTrackList.swap( m_artistTracksResult );
-
-    return artistTrackList;
-}
-
-void
-AmarokProvider::artistsSearch()
-{
-    QSqlDatabase db = QSqlDatabase::database( m_config["uid"].toString() );
-    if( !db.isOpen() )
-        return;
-
     QSqlQuery query( db );
     query.setForwardOnly( true );
     query.exec( "SELECT name FROM artists" );
 
+    QSet<QString> result;
     while( query.next() )
-        m_artistsResult.insert( query.value( 0 ).toString() );
+        result.insert( query.value( 0 ).toString() );
+
+    return result;
 }
 
-void
-AmarokProvider::artistTracksSearch( const QString &artistName )
+TrackList
+AmarokProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
 {
-    QSqlDatabase db = QSqlDatabase::database( m_config["uid"].toString() );
-    if( !db.isOpen() )
-        return;
-
     QSqlQuery query( db );
     query.setForwardOnly( true );
     query.prepare( "SELECT t.url, t.title, ar.name, al.name, c.name, y.name, "
@@ -131,6 +84,7 @@ AmarokProvider::artistTracksSearch( const QString &artistName )
            << Meta::valDiscNr << Meta::valRating << Meta::valFirstPlayed
            << Meta::valLastPlayed << Meta::valPlaycount;
 
+    TrackList result;
     while ( query.next() )
     {
         const qint64 urlId = query.value( 0 ).toInt();
@@ -153,6 +107,16 @@ AmarokProvider::artistTracksSearch( const QString &artistName )
         while( lblQuery.next() )
             labels << lblQuery.value( 0 ).toString();
 
-        m_artistTracksResult << TrackPtr( new SimpleTrack( metadata, labels ) );
+        result << TrackPtr( new SimpleTrack( metadata, labels ) );
     }
+
+    return result;
+}
+
+QVariantMap
+AmarokProvider::setDbDriver( const QVariantMap &config )
+{
+    QVariantMap cfg( config );
+    cfg.insert( "dbDriver", "QMYSQL" );
+    return cfg;
 }
