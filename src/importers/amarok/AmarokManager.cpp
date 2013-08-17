@@ -72,7 +72,7 @@ AmarokManager::configWidget( const QVariantMap &config )
 ImporterProviderPtr
 AmarokManager::newInstance( const QVariantMap &config )
 {
-    return config.value( "connectionType", "external" ).toString() == "external"
-            ? ProviderPtr( new AmarokProvider( config, this ) )
-            : ProviderPtr( new AmarokProviderEmbedded( config, this ) );
+    return config.value( "embedded" ).toBool()
+            ? ProviderPtr( new AmarokProviderEmbedded( config, this ) )
+            : ProviderPtr( new AmarokProvider( config, this ) );
 }

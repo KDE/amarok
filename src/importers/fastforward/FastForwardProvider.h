@@ -17,15 +17,13 @@
 #ifndef STATSYNCING_FAST_FORWARD_PROVIDER_H
 #define STATSYNCING_FAST_FORWARD_PROVIDER_H
 
-#include "importers/ImporterProvider.h"
+#include "importers/ImporterSqlProvider.h"
 
 namespace StatSyncing
 {
 
-class FastForwardProvider : public ImporterProvider
+class FastForwardProvider : public ImporterSqlProvider
 {
-    Q_OBJECT
-
 public:
     FastForwardProvider( const QVariantMap &config, ImporterManager *importer );
     ~FastForwardProvider();
@@ -33,17 +31,9 @@ public:
     qint64 reliableTrackMetaData() const;
     qint64 writableTrackStatsData() const;
 
-    // Methods called only from non-main thread
-    QSet<QString> artists();
-    TrackList artistTracks( const QString &artistName );
-
-private:
-    QSet<QString> m_artistsResult;
-    TrackList m_artistTracksResult;
-
-private slots:
-    void artistsSearch();
-    void artistTracksSearch( const QString &artistName );
+protected:
+    QSet<QString> getArtists( QSqlDatabase db );
+    TrackList getArtistTracks( const QString &artistName, QSqlDatabase db );
 };
 
 } // namespace StatSyncing

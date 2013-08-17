@@ -26,7 +26,9 @@ RhythmboxConfigWidget::RhythmboxConfigWidget( const QVariantMap &config, QWidget
     setupUi( this );
 
     m_targetName->setText( m_config.value( "name", "Rhythmbox" ).toString() );
-    const QString defaultPath = QDir::homePath()+"/.local/share/rhythmbox/rhythmdb.xml";
+
+    const QString defaultPath = QDir::toNativeSeparators(
+                QDir::homePath() + "/.local/share/rhythmbox/rhythmdb.xml" );
     m_databaseLocation->setText( m_config.value( "dbPath", defaultPath ).toString() );
 }
 
@@ -37,8 +39,10 @@ RhythmboxConfigWidget::~RhythmboxConfigWidget()
 QVariantMap
 RhythmboxConfigWidget::config() const
 {
-    QVariantMap cfg = m_config;
+    QVariantMap cfg( m_config );
+
     cfg.insert( "name", m_targetName->text() );
     cfg.insert( "dbPath", m_databaseLocation->text() );
+
     return cfg;
 }

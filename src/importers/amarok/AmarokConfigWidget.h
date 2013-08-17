@@ -36,6 +36,12 @@ public:
     QVariantMap config() const;
 
 private:
+    enum ConnectionType
+    {
+        Embedded,
+        External
+    };
+
     void populateFields();
 
     const QVariantMap m_config;

@@ -46,24 +46,16 @@ AmarokConfigWidget::~AmarokConfigWidget()
 QVariantMap
 AmarokConfigWidget::config() const
 {
-    QVariantMap cfg = m_config;
-    cfg["name"] = m_targetName->text();
-
-    if( m_connectionType->currentIndex() == 0 )
-    {
-        cfg["connectionType"] = "embedded";
-        cfg["mysqlBinary"] = m_mysqlBinary->text();
-        cfg["dbPath"] = m_databaseLocation->text();
-    }
-    else
-    {
-        cfg["connectionType"] = "external";
-        cfg["dbName"] = m_databaseName->text();
-        cfg["dbHost"] = m_hostname->text();
-        cfg["dbUser"] = m_username->text();
-        cfg["dbPass"] = m_password->text();
-        cfg["dbPort"] = m_port->value();
-    }
+    QVariantMap cfg( m_config );
+    cfg.insert( "name", m_targetName->text() );
+    cfg.insert( "embedded", m_connectionType->currentIndex() == Embedded );
+    cfg.insert( "mysqlBinary", m_mysqlBinary->text() );
+    cfg.insert( "dbPath", m_databaseLocation->text() );
+    cfg.insert( "dbName", m_databaseName->text() );
+    cfg.insert( "dbHost", m_hostname->text() );
+    cfg.insert( "dbUser", m_username->text() );
+    cfg.insert( "dbPass", m_password->text() );
+    cfg.insert( "dbPort", m_port->value() );
 
     return cfg;
 }
@@ -71,7 +63,7 @@ AmarokConfigWidget::config() const
 void
 AmarokConfigWidget::connectionTypeChanged( const int index )
 {
-    const bool embedded = (index == 0);
+    const bool embedded = ( index == Embedded );
 
     foreach( QWidget *widget, m_embeddedDbSettings )
         widget->setVisible( embedded );
@@ -85,12 +77,12 @@ AmarokConfigWidget::populateFields()
 {
     m_targetName->setText( m_config.value( "name", "Amarok" ).toString() );
 
-    m_connectionType->insertItem( 0, i18nc( "Database type", "embedded" ) );
-    m_connectionType->insertItem( 1, i18nc( "Database type", "external" ) );
+    m_connectionType->insertItem( Embedded, i18nc( "Database type", "embedded" ) );
+    m_connectionType->insertItem( External, i18nc( "Database type", "external" ) );
 
     m_connectionType->setCurrentIndex(
-                m_config.value( "connectionType", "embedded" ).toString() == "embedded"
-                ? 0 : 1 );
+                m_config.value( "embedded" ).toBool()
+                ? Embedded : External );
 
     const QString defaultPath( "/usr/bin/mysqld" );
     m_mysqlBinary->setText( m_config.value( "mysqlBinary", defaultPath ).toString() );

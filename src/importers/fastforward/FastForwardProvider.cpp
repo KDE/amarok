@@ -32,25 +32,12 @@
 using namespace StatSyncing;
 
 FastForwardProvider::FastForwardProvider( const QVariantMap &config, ImporterManager *importer )
-    : ImporterProvider( config, importer )
+    : ImporterSqlProvider( config, importer )
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase( m_config["dbDriver"].toString(), id() );
-
-    db.setDatabaseName( m_config["dbDriver"].toString() == "QSQLITE"
-            ? m_config["dbPath"].toString() : m_config["dbName"].toString() );
-
-    if( m_config["dbDriver"].toString() != "QSQLITE" )
-    {
-        db.setHostName( m_config["dbHost"].toString() );
-        db.setUserName( m_config["dbUser"].toString() );
-        db.setPassword( m_config["dbPass"].toString() );
-        db.setPort    ( m_config["dbPort"].toInt() );
-    }
 }
 
 FastForwardProvider::~FastForwardProvider()
 {
-    QSqlDatabase::removeDatabase( id() );
 }
 
 qint64
@@ -68,61 +55,23 @@ FastForwardProvider::writableTrackStatsData() const
 }
 
 QSet<QString>
-FastForwardProvider::artists()
+FastForwardProvider::getArtists( QSqlDatabase db )
 {
-    // SQL queries need to be executed in the main thread
-    const Qt::ConnectionType connectionType =
-            this->thread() == QCoreApplication::instance()->thread()
-            ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
-
-    QMetaObject::invokeMethod( this, "artistsSearch", connectionType );
-
-    QSet<QString> artistSet;
-    artistSet.swap( m_artistsResult );
-
-    return artistSet;
-}
-
-TrackList
-FastForwardProvider::artistTracks( const QString &artistName )
-{
-    // SQL queries need to be executed in the main thread
-    const Qt::ConnectionType connectionType =
-            this->thread() == QCoreApplication::instance()->thread()
-            ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
-
-    QMetaObject::invokeMethod( this, "artistTracksSearch", connectionType,
-                               Q_ARG( QString, artistName ) );
-
-    TrackList artistTrackList;
-    artistTrackList.swap( m_artistTracksResult );
-
-    return artistTrackList;
-}
-
-void
-FastForwardProvider::artistsSearch()
-{
-    QSqlDatabase db = QSqlDatabase::database( id() );
-    if( !db.isOpen() )
-        return;
-
     QSqlQuery query( db );
     query.setForwardOnly( true );
     query.prepare( "SELECT name FROM artist" );
     query.exec();
 
+    QSet<QString> result;
     while( query.next() )
-        m_artistsResult.insert( query.value( 0 ).toString() );
+        result.insert( query.value( 0 ).toString() );
+
+    return result;
 }
 
-void
-FastForwardProvider::artistTracksSearch( const QString &artistName )
+TrackList
+FastForwardProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
 {
-    QSqlDatabase db = QSqlDatabase::database( id() );
-    if( !db.isOpen() )
-        return;
-
     QSqlQuery query( db );
     query.setForwardOnly( true );
 
@@ -141,6 +90,7 @@ FastForwardProvider::artistTracksSearch( const QString &artistName )
                                  << Meta::valArtist << Meta::valComposer
                                  << Meta::valYear << Meta::valTrackNr << Meta::valDiscNr;
 
+    TrackList result;
     while ( query.next() )
     {
         const QString trackUrl = query.value( 0 ).toString();
@@ -149,7 +99,8 @@ FastForwardProvider::artistTracksSearch( const QString &artistName )
         for( int i = 0; i < fields.size(); ++i )
             metadata.insert( fields[i], query.value( i + 1 ) );
 
-        m_artistTracksResult
-                << TrackPtr( new FastForwardTrack( metadata, trackUrl, id() ) );
+        result << TrackPtr( new FastForwardTrack( metadata, trackUrl, m_connectionName ) );
     }
+
+    return result;
 }

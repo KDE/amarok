@@ -36,8 +36,10 @@ ITunesConfigWidget::~ITunesConfigWidget()
 QVariantMap
 ITunesConfigWidget::config() const
 {
-    QVariantMap cfg = m_config;
+    QVariantMap cfg( m_config );
+
     cfg.insert( "name", m_targetName->text() );
     cfg.insert( "dbPath", m_databaseLocation->text() );
+
     return cfg;
 }

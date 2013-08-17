@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>FastForwardConfigWidget</class>
  <widget class="QWidget" name="FastForwardConfigWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>366</width>
+    <height>262</height>
+   </rect>
+  </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="0,1" columnminimumwidth="100,250">
    <item row="8" column="0">
     <widget class="QLabel" name="m_usernameLabel">
@@ -47,6 +55,9 @@
      <property name="text">
       <string/>
      </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
     </widget>
    </item>
    <item row="1" column="0" colspan="2">
@@ -60,23 +71,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="KComboBox" name="m_connectionType">
-     <item>
-      <property name="text">
-       <string notr="true">SQLite</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">MySQL</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">PostgreSQL</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="KComboBox" name="m_connectionType"/>
    </item>
    <item row="4" column="0">
     <widget class="QLabel" name="m_databaseLocationLabel">

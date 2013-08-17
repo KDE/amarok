@@ -27,6 +27,7 @@ class FastForwardConfigWidget : public ProviderConfigWidget,
         public Ui::FastForwardConfigWidget
 {
     Q_OBJECT
+    Q_ENUMS( Driver )
 
 public:
     FastForwardConfigWidget( const QVariantMap &config, QWidget *parent = 0,
@@ -35,7 +36,15 @@ public:
 
     QVariantMap config() const;
 
+    enum Driver
+    {
+        QMYSQL,
+        QPSQL,
+        QSQLITE
+    };
+
 private:
+
     void populateFields();
 
     const QVariantMap m_config;
@@ -43,7 +52,7 @@ private:
     QList<QWidget*> m_embeddedDbSettings;
 
 private slots:
-    void connectionTypeChanged( const QString &connection );
+    void connectionTypeChanged( const int index );
 };
 
 } // namespace StatSyncing

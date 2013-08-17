@@ -69,7 +69,7 @@ RhythmboxProvider::artistTracks( const QString &artistName )
 void
 RhythmboxProvider::readXml( const QString &byArtist )
 {
-    QFile dbFile( m_config["dbPath"].toString() );
+    QFile dbFile( m_config.value( "dbPath" ).toString() );
     if( dbFile.open( QIODevice::ReadOnly ) )
     {
         QXmlStreamReader xml( &dbFile );

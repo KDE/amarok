@@ -83,8 +83,8 @@ AmarokProviderEmbedded::startServer()
         return;
     }
 
-    QFileInfo mysqld( m_config["mysqlBinary"].toString() );
-    QDir datadir( m_config["dbPath"].toString() );
+    QFileInfo mysqld( m_config.value( "mysqlBinary" ).toString() );
+    QDir datadir( m_config.value( "dbPath" ).toString() );
 
     if( !mysqld.isExecutable() || !datadir.isReadable() )
         return;

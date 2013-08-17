@@ -28,7 +28,11 @@ ImporterSqlProvider::ImporterSqlProvider( const QVariantMap &config, ImporterMan
     QSqlDatabase db = QSqlDatabase::addDatabase( m_config.value( "dbDriver" ).toString(),
                                                  m_connectionName );
 
-    db.setDatabaseName( m_config.value( "dbName" ).toString() );
+    const QString dbName = m_config.value( "dbDriver" ).toString() == "QSQLITE"
+            ? m_config.value( "dbPath" ).toString()
+            : m_config.value( "dbName" ).toString();
+
+    db.setDatabaseName( dbName );
     db.setHostName    ( m_config.value( "dbHost" ).toString() );
     db.setUserName    ( m_config.value( "dbUser" ).toString() );
     db.setPassword    ( m_config.value( "dbPass" ).toString() );

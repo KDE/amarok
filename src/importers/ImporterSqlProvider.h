@@ -40,6 +40,7 @@ public:
      * config["dbDriver"] - QtSql driver name, see
      *         @link http://qt-project.org/doc/qt-4.8/sql-driver.html#supported-databases
      * config["dbName"] - database name
+     * config["dbPath"] - database path - used only for SQLite connection
      * config["dbHost"] - hostname
      * config["dbUser"] - username
      * config["dbPass"] - user's password

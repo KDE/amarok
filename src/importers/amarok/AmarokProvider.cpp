@@ -92,7 +92,7 @@ AmarokProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
         // Add one to i in query.value(), because the first value is a url id
         Meta::FieldHash metadata;
         for( int i = 0; i < fields.size(); ++i )
-            metadata[fields[i]] = query.value( i + 1 );
+            metadata.insert( fields[i], query.value( i + 1 ) );
 
         QSqlQuery lblQuery( db );
         lblQuery.setForwardOnly( true );
