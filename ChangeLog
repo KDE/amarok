@@ -9,6 +9,8 @@ VERSION 2.9-Beta 1
   CHANGES:
 
   BUGFIXES:
+   * Using Shuffle keyboard shortcut no longer causes Amarok to crash.
+     (BR 323614)
 
 
 VERSION 2.8
