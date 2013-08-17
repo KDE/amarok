@@ -60,8 +60,8 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
     const int oldRows = m_rows;
 
     // Rounded up so that the last column/line is covered if partially visible
-    m_columns = qMin<int>( ceil( (double)width() / ( BLOCK_WIDTH + 1 ) ), MAX_COLUMNS );
-    m_rows    = ceil( (double)height() / ( BLOCK_HEIGHT + 1 ) );
+    m_columns = std::min( std::ceil( (double)width() / ( BLOCK_WIDTH + 1 ) ), (double)MAX_COLUMNS );
+    m_rows    = std::ceil( (double)height() / ( BLOCK_HEIGHT + 1 ) );
 
     //this is the y-offset for drawing from the top of the widget
     m_y = ( height() - ( m_rows * ( BLOCK_HEIGHT + 1 ) ) + 2 ) / 2;
