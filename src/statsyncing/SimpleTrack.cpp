@@ -73,13 +73,13 @@ SimpleTrack::discNumber() const
 QDateTime
 SimpleTrack::firstPlayed() const
 {
-    return m_metadata.value( Meta::valFirstPlayed ).toDateTime();
+    return getDateTime( m_metadata.value( Meta::valFirstPlayed ) );
 }
 
 QDateTime
 SimpleTrack::lastPlayed() const
 {
-    return m_metadata.value( Meta::valLastPlayed ).toDateTime();
+    return getDateTime( m_metadata.value( Meta::valLastPlayed ) );
 }
 
 int
@@ -98,4 +98,15 @@ QSet<QString>
 SimpleTrack::labels() const
 {
     return m_labels;
+}
+
+QDateTime
+SimpleTrack::getDateTime( const QVariant &v ) const
+{
+    if( v.canConvert<QDateTime>() )
+        return v.toDateTime();
+    else if( v.canConvert<uint>() && v.toUInt() != 0 )
+        return QDateTime::fromTime_t( v.toUInt() );
+    else
+        return QDateTime();
 }

@@ -16,8 +16,8 @@
 
 #include "AmarokProvider.h"
 
-#include "AmarokTrack.h"
 #include "MetaValues.h"
+#include "statsyncing/SimpleTrack.h"
 
 #include <QApplication>
 #include <QSqlDatabase>
@@ -126,16 +126,16 @@ AmarokProvider::artistTracksSearch( const QString &artistName )
     query.addBindValue( artistName );
     query.exec();
 
-    QList<qint64> fields;
-    fields << Meta::valTitle << Meta::valArtist << Meta::valAlbum << Meta::valComposer
-           << Meta::valYear << Meta::valTrackNr << Meta::valDiscNr << Meta::valRating
-           << Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount;
+    const QList<qint64> fields = QList<qint64>() << Meta::valTitle << Meta::valArtist
+           << Meta::valAlbum << Meta::valComposer << Meta::valYear << Meta::valTrackNr
+           << Meta::valDiscNr << Meta::valRating << Meta::valFirstPlayed
+           << Meta::valLastPlayed << Meta::valPlaycount;
 
     while ( query.next() )
     {
         const qint64 urlId = query.value( 0 ).toInt();
 
-        // Add one to i in query.value(), because first value is a url id
+        // Add one to i in query.value(), because the first value is a url id
         Meta::FieldHash metadata;
         for( int i = 0; i < fields.size(); ++i )
             metadata[fields[i]] = query.value( i + 1 );
@@ -143,9 +143,9 @@ AmarokProvider::artistTracksSearch( const QString &artistName )
         QSqlQuery lblQuery( db );
         lblQuery.setForwardOnly( true );
         lblQuery.prepare( "SELECT l.label "
-                             "FROM labels l "
-                             "INNER JOIN urls_labels ul ON ul.label = l.id "
-                             "WHERE ul.url = ?");
+                          "FROM labels l "
+                          "INNER JOIN urls_labels ul ON ul.label = l.id "
+                          "WHERE ul.url = ?");
         lblQuery.addBindValue( urlId );
         lblQuery.exec();
 
@@ -153,6 +153,6 @@ AmarokProvider::artistTracksSearch( const QString &artistName )
         while( lblQuery.next() )
             labels << lblQuery.value( 0 ).toString();
 
-        m_artistTracksResult << TrackPtr( new AmarokTrack( metadata, labels ) );
+        m_artistTracksResult << TrackPtr( new SimpleTrack( metadata, labels ) );
     }
 }

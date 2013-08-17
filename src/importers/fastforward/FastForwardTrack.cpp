@@ -43,16 +43,14 @@ QDateTime
 FastForwardTrack::firstPlayed() const
 {
     assureStatisticsRetrieved();
-    const uint t = m_statistics.value( Meta::valFirstPlayed ).toUInt();
-    return t == 0 ? QDateTime() : QDateTime::fromTime_t( t );
+    return getDateTime( m_statistics.value( Meta::valFirstPlayed ) );
 }
 
 QDateTime
 FastForwardTrack::lastPlayed() const
 {
     assureStatisticsRetrieved();
-    const uint t = m_statistics.value( Meta::valLastPlayed ).toUInt();
-    return t == 0 ? QDateTime() : QDateTime::fromTime_t( t );
+    return getDateTime( m_statistics.value( Meta::valLastPlayed ) );
 }
 
 int

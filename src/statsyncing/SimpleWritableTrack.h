@@ -31,7 +31,7 @@ namespace StatSyncing {
  * This class is suitable for read-write operations. If you only need read capabilities,
  * consider using @see StatSyncing::SimpleTrack .
  */
-class SimpleWritableTrack : public SimpleTrack
+class AMAROK_EXPORT SimpleWritableTrack : public SimpleTrack
 {
 public:
     explicit SimpleWritableTrack( const Meta::FieldHash &metadata,

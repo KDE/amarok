@@ -31,7 +31,7 @@ namespace StatSyncing {
  * This class is thread safe only for reading operations. If you need read-write access,
  * @see StatSyncing::SimpleWritableTrack can be used.
  */
-class SimpleTrack : public Track
+class AMAROK_EXPORT SimpleTrack : public Track
 {
 public:
     explicit SimpleTrack( const Meta::FieldHash &metadata,
@@ -54,6 +54,8 @@ public:
     virtual QSet<QString> labels() const;
 
 protected:
+    QDateTime getDateTime( const QVariant &v ) const;
+
     QSet<QString> m_labels;
     Meta::FieldHash m_metadata;
 };
