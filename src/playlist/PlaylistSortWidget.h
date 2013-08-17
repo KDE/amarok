@@ -56,6 +56,11 @@ public:
     QString sortPath() const;
 
     /**
+     * Generate current sort scheme from a sorth path stored in a QString.
+     */
+    void readSortPath( const QString &sortPath );
+
+    /**
      * Generates a user-visible QString usable by a URL runner for the title of a bookmark.
      */
     QString prettySortPath() const;
@@ -66,13 +71,6 @@ public slots:
      * the playlist.
      */
     void updateSortScheme();
-
-    /**
-     * Adds a level to the breadcrumb path.
-     * @param internalColumnName the name of the level.
-     * @param sortOrder the Qt::SortOrder of the level.
-     */
-    void addLevel( QString internalColumnName, Qt::SortOrder sortOrder = Qt::AscendingOrder );
 
     /**
      * Removes items from the breadcrumb path up to a certain level.
@@ -88,6 +86,13 @@ private:
     BreadcrumbUrlMenuButton *m_urlButton;
 
 private slots:
+    /**
+     * Adds a level to the breadcrumb path.
+     * @param internalColumnName the name of the level.
+     * @param sortOrder the Qt::SortOrder of the level.
+     */
+    void addLevel( QString internalColumnName, Qt::SortOrder sortOrder = Qt::AscendingOrder );
+
     /**
      * Handles the (possible) deletion of further levels when an item is clicked.
      */

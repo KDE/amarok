@@ -48,51 +48,31 @@ ViewUrlRunner::run( AmarokUrl url )
 {
     DEBUG_BLOCK
 
-    QMap< QString, QString > args = url.args();
+    const QMap< QString, QString > args = url.args();
     QWeakPointer<Dock> playlistDock = The::mainWindow()->playlistDock();
 
     if( args.keys().contains( "filter" ) )
     {
-        QString filterExpr = args.value( "filter" );
+        const QString filterExpr = args.value( "filter" );
         playlistDock.data()->searchWidget()->setCurrentFilter( filterExpr );
         if( args.keys().contains( "matches" ) )
         {
-            QString onlyMatches = args.value( "matches" );
+            const QString onlyMatches = args.value( "matches" );
             playlistDock.data()->searchWidget()->slotShowOnlyMatches( ( onlyMatches == QString( "true" ) ) );
         }
     }
     if( args.keys().contains( "sort" ) )
     {
-        playlistDock.data()->sortWidget()->trimToLevel();
-
-        QString sortPath = args.value( "sort" );
-
-        QStringList levels = sortPath.split( '-' );
-        foreach( const QString &level, levels )
-        {
-            if( level == QString( "Random" ) || level == QString( "Shuffle" ) ) //we keep "Random" for compatibility
-            {
-                playlistDock.data()->sortWidget()->addLevel( QString( "Shuffle" ) );
-                break;
-            }
-            QStringList levelParts = level.split( '_' );
-            if( levelParts.count() > 2 )
-                warning() << "Playlist view URL parse error: Invalid sort level " << level;
-            if( levelParts.at( 1 ) == QString( "asc" ) )
-                playlistDock.data()->sortWidget()->addLevel( levelParts.at( 0 ), Qt::AscendingOrder );
-            else if( levelParts.at( 1 ) == QString( "des" ) )
-                playlistDock.data()->sortWidget()->addLevel( levelParts.at( 0 ), Qt::DescendingOrder );
-            else
-                warning() << "Playlist view URL parse error: Invalid sort order for level " << level;
-        }
+        const QString sortPath = args.value( "sort" );
+        playlistDock.data()->sortWidget()->readSortPath( sortPath );
     }
 
     if( args.keys().contains( "layout" ) )
     {
-        QString layout = args.value( "layout" );
+        const QString layout = args.value( "layout" );
         LayoutManager::instance()->setActiveLayout( layout );
     }
-    
+
     The::mainWindow()->showDock( MainWindow::AmarokDockPlaylist );
 
     return true;

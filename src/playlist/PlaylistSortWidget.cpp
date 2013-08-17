@@ -62,31 +62,7 @@ SortWidget::SortWidget( QWidget *parent )
     connect( m_addButton->menu(), SIGNAL(shuffleActionClicked()), The::playlistActions(), SLOT(shuffle()) );
 
     QString sortPath = Amarok::config( "Playlist Sorting" ).readEntry( "SortPath", QString() );
-    if( !sortPath.isEmpty() )
-    {
-        QStringList levels = sortPath.split( '-' );
-        foreach( const QString &level, levels )
-        {
-            QStringList levelParts = level.split( '_' );
-	    /*
-	     * Check whether the configuration is valid. If indexOf
-	     * returns -1, the entry is corrupted. We can't use columnForName
-	     * here, as it will do a static_cast, which is UB when indexOf is -1
-	     * as there's no corresponding enum value
-	     * (C++ standard 5.2.9 Static cast [expr.static.cast] paragraph 7)
-	     */
-            if( levelParts.count() > 2
-	        || ( Playlist::PlaylistColumnInfos::internalNames().
-                               indexOf( levelParts.value(0) ) == -1) )
-                warning() << "Playlist sorting load error: Invalid sort level " << level;
-            else if( levelParts.value( 1 ) == QString( "asc" ) )
-                addLevel( levelParts.value( 0 ), Qt::AscendingOrder );
-            else if( levelParts.value( 1 ) == QString( "des" ) )
-                addLevel( levelParts.value( 0 ), Qt::DescendingOrder );
-            else
-                warning() << "Playlist sorting load error: Invalid sort order for level " << level;
-        }
-    }
+    readSortPath( sortPath );
 }
 
 SortWidget::~SortWidget()
@@ -107,7 +83,6 @@ SortWidget::addLevel( QString internalColumnName, Qt::SortOrder sortOrder )  //p
     m_addButton->updateMenu( levels() );
     updateSortScheme();
 }
-
 
 void
 SortWidget::trimToLevel( const int level )
@@ -183,6 +158,35 @@ SortWidget::sortPath() const
         path.append( ( i == m_ribbon->count() - 1 ) ? level : ( level + '-' ) );
     }
     return path;
+}
+
+void
+SortWidget::readSortPath( const QString &sortPath )
+{
+    trimToLevel();
+
+    QStringList levels = sortPath.split( '-' );
+    foreach( const QString &level, levels )
+    {
+        QStringList levelParts = level.split( '_' );
+    /*
+     * Check whether the configuration is valid. If indexOf
+     * returns -1, the entry is corrupted. We can't use columnForName
+     * here, as it will do a static_cast, which is UB when indexOf is -1
+     * as there's no corresponding enum value
+     * (C++ standard 5.2.9 Static cast [expr.static.cast] paragraph 7)
+     */
+        if( levelParts.count() > 2
+        || ( Playlist::PlaylistColumnInfos::internalNames().
+                           indexOf( levelParts.value(0) ) == -1) )
+            warning() << "Playlist sorting load error: Invalid sort level " << level;
+        else if( levelParts.value( 1 ) == QString( "asc" ) )
+            addLevel( levelParts.value( 0 ), Qt::AscendingOrder );
+        else if( levelParts.value( 1 ) == QString( "des" ) )
+            addLevel( levelParts.value( 0 ), Qt::DescendingOrder );
+        else
+            warning() << "Playlist sorting load error: Invalid sort order for level " << level;
+    }
 }
 
 QString
