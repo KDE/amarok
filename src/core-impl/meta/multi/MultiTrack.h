@@ -55,7 +55,8 @@ namespace Meta
             FORWARD( QString, prettyUrl, m_playlist->uidUrl().prettyUrl() )
             // TODO: change to m_playlist->uidUrl() unconditionally once playlist restorer can cope with it:
             FORWARD( QString, uidUrl, m_playlist->uidUrl().url() )
-            FORWARD( QString, notPlayableReason, QString( " " ) ) // i18n once string freeze is over
+            FORWARD( QString, notPlayableReason, i18nc( "Reason why a track is not playable",
+                                                        "Underlying playlist is empty" ) )
 
             FORWARD( AlbumPtr, album, AlbumPtr( new DefaultAlbum() ) );
             FORWARD( ArtistPtr, artist, ArtistPtr( new DefaultArtist() ) );
