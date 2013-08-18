@@ -90,7 +90,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 
     // - the preset buttons
     m_addPresetButton = new QPushButton( i18n("Add preset"), this );
-    m_addPresetButton->setToolTip( i18n("Saves the current scheme/format above as a preset.", 0));
+    m_addPresetButton->setToolTip( i18n("Saves the current scheme/format above as a preset.") );
     presetLayout1->addWidget( m_addPresetButton, 0 );
 
     m_updatePresetButton = new QPushButton( i18n("Update preset"), this );
