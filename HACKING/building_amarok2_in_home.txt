@@ -63,7 +63,7 @@ This document explains how to install Amarok 2 from git in your home directory -
   If you are a regular Amarok contributor, please build with tests enabled. 
   
   Install gmock from http://code.google.com/p/googlemock/
-  Add the following flag to your cmake line: -KDE4_BUILD_TESTS=ON
+  Add the following flag to your cmake line: -DKDE4_BUILD_TESTS=ON
 
   For more information about the test infrastructure, read the Qtestlib Manual: http://doc.trolltech.com/4.5/qtestlib-manual.html
 
