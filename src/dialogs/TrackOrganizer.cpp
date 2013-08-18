@@ -80,7 +80,7 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
     args["albumartist"] = strAlbumArtist;
     args["comment"] = track->comment();
     args["genre"] = genre ? genre->name() : QString();
-    if( m_targetFileExtension == QString() )
+    if( m_targetFileExtension.isEmpty() )
         args["filetype"] = track->type();
     else
         args["filetype"] = m_targetFileExtension;

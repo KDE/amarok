@@ -158,7 +158,7 @@ APG::PresetModel::import()
                                                      QString("*.xml|" + i18n("Preset files (*.xml)") ),
                                                      0,
                                                      i18n("Import preset") );
-    if ( ( filename != QString() ) && ( !filename.isEmpty() ) )
+    if( !filename.isEmpty() )
         loadPresetsFromXml( filename );
 }
 
