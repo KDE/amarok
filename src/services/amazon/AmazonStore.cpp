@@ -113,7 +113,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     polish();
     setPlayableTracks( true );
 
-    m_lastSearch = QString();
+    m_lastSearch.clear();
 
     // add the collection, exclude it from global queries
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );

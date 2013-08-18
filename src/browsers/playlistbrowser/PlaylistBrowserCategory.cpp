@@ -258,7 +258,7 @@ PlaylistBrowserCategory::slotToggleProviderButton()
     }
     //if all are enabled the filter can be completely disabled.
     if( checkedActions.count() == m_providerActions.count() )
-        filter = QString();
+        filter.clear();
 
     m_filterProxy->setFilterRegExp( filter );
 

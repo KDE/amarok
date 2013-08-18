@@ -901,7 +901,7 @@ SqlTrack::commitIfInNonBatchUpdate()
             if( m_cache.contains( Meta::valAlbumArtist ) )
                 newArtistName = m_cache.value( Meta::valAlbumArtist ).toString();
             else if( oldAlbum && oldAlbum->isCompilation() && !oldAlbum->name().isEmpty() )
-                newArtistName = QString();
+                newArtistName.clear();
             else if( oldAlbum && oldAlbum->hasAlbumArtist() )
                 newArtistName = oldAlbum->albumArtist()->name();
 
@@ -1734,7 +1734,7 @@ SqlAlbum::removeImage()
     }
 
     m_imageId = -1;
-    m_imagePath = QString();
+    m_imagePath.clear();
     m_hasImage = false;
     m_hasImageChecked = true;
 
@@ -1883,7 +1883,7 @@ SqlAlbum::largeImagePath()
     }
 
     m_imageId = -1;
-    m_imagePath = QString();
+    m_imagePath.clear();
     return m_imagePath;
 }
 

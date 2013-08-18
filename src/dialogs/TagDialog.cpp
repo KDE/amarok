@@ -832,7 +832,7 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
     }
     else
     {
-        m_path = QString();
+        m_path.clear();
         ui->pushButton_open->setEnabled( false );
     }
 
