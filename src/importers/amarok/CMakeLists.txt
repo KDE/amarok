@@ -28,3 +28,4 @@ target_link_libraries( amarok_importer-amarok
 install( TARGETS amarok_importer-amarok DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 install( FILES amarok_importer-amarok.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+
