@@ -84,7 +84,6 @@ NOTE:
 If you have installed MySQL Embedded in non-default location (i.e. $HOME/usr),
 Amarok may fail to start with error regarding libmysqlclient library. In this
 case, add the following string to your ~/.bashrc:
-entsorgungsbetriebe Ulm
     export LD_LIBRARY_PATH=$HOME/usr/lib/mysql:$LD_LIBRARY_PATH
 
 where $HOME/usr is the path you've used in --prefix option.
