@@ -1,6 +1,8 @@
 This document explains how to install Amarok 2 from git in your home directory - in an easy way :)
 ==================================================================================================
 
+A detailed blog post on how to make a local build can be found here: http://blogs.fsfe.org/myriam/2009/09/26/compiling-amarok-from-git-locally-full-summary/
+
 * If you already have Amarok installed from your distro, uninstall it to prevent setting conflicts and similar.
 
 * Install git, the compiler and KDE 4 development packages:
@@ -47,7 +49,7 @@ This document explains how to install Amarok 2 from git in your home directory -
 
 * Make sure you have all necessary dependencies
     See the README file for the complete list of necessary dependencies. Make sure you have the development files of these packages.
-    For distribution specific requirements refer to http://amarok.kde.org/wiki/2.0_Development_HowTo
+    For distribution specific requirements refer to http://community.kde.org/Amarok/Development/Development_HowTo
     
 * Check out Amarok:
     cd $HOME/kde/src
@@ -65,6 +67,8 @@ This document explains how to install Amarok 2 from git in your home directory -
   Install gmock from http://code.google.com/p/googlemock/
   Add the following flag to your cmake line: -DKDE4_BUILD_TESTS=ON
 
+  Once compiled, jsut run the tests with 'make test'
+  
   For more information about the test infrastructure, read the Qtestlib Manual: http://doc.trolltech.com/4.5/qtestlib-manual.html
 
 * Updating KDE Config:
@@ -80,11 +84,10 @@ NOTE:
 If you have installed MySQL Embedded in non-default location (i.e. $HOME/usr),
 Amarok may fail to start with error regarding libmysqlclient library. In this
 case, add the following string to your ~/.bashrc:
-
+entsorgungsbetriebe Ulm
     export LD_LIBRARY_PATH=$HOME/usr/lib/mysql:$LD_LIBRARY_PATH
 
 where $HOME/usr is the path you've used in --prefix option.
 
 
 Have fun :)
-
