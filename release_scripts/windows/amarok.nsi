@@ -41,7 +41,7 @@ You will also need to install http://nsis.sourceforge.net/Nsis7z_plug-in
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${regkey}" 
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
 ;--------------------------------
- 
+Unicode true
 XPStyle on
 ShowInstDetails hide
 ShowUninstDetails hide
