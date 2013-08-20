@@ -143,7 +143,7 @@ TabsView::showTab( TabsItem *tab )
         QString tabText = tab->getTabData();
         if( tabText.length() > 0 )
         {
-            tabText.replace( "\n", "<br></br>", Qt::CaseInsensitive );
+            tabText.replace( '\n', "<br></br>", Qt::CaseInsensitive );
 
             QFont tabFont( "monospace");
             tabFont.setStyleHint( QFont::Courier );
@@ -163,7 +163,7 @@ TabsView::showTab( TabsItem *tab )
             QString htmlData = "<html>";
                     htmlData += "<body style=\"font-family:'" + tabFont.family() + "';";
                     htmlData += "font-size:" + QString::number( tabFont.pointSize() ) + "pt;";
-                    htmlData += "font-weight:" + QString::number( tabFont.weight() ) + ";";
+                    htmlData += "font-weight:" + QString::number( tabFont.weight() ) + ';';
                     htmlData += "color:" + textColor + ";\">";
 
                     // tab heading + tab source

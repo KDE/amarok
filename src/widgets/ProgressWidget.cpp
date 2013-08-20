@@ -136,7 +136,7 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     int remainingSeconds = qMax(0, int((trackLength - ms) / 1000));
 
     QString sSeconds = Meta::secToPrettyTime( seconds );
-    QString sRemainingSeconds = "-" + Meta::secToPrettyTime( remainingSeconds );
+    QString sRemainingSeconds = '-' + Meta::secToPrettyTime( remainingSeconds );
 
     if( AmarokConfig::leftTimeDisplayRemaining() )
     {

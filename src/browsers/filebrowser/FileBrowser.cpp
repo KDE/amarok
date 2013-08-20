@@ -448,7 +448,7 @@ FileBrowser::setupAddItems()
         callback = workingUrl.left( currentPosition );
         name = callback;
         if( name == "file:///" )
-            name = "/"; // just niceness
+            name = '/'; // just niceness
         else
             name.remove( QRegExp( "/$" ) );
     }

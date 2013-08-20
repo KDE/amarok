@@ -161,7 +161,7 @@ AmzDownloader:: checkAmzList()
         errorMsg = tr( "The following files do not exist: " );
 
         for( int i = 0; i < errorList.size(); i++ )
-            errorMsg += "\n" + errorList.at( i );
+            errorMsg += '\n' + errorList.at( i );
 
         errorBox.warning( this, tr( "Some files are not available" ), errorMsg );
     }

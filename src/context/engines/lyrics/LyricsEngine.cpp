@@ -99,9 +99,9 @@ void LyricsEngine::update()
     // -- clean up title
     const QString magnatunePreviewString = QLatin1String( "PREVIEW: buy it at www.magnatune.com" );
     if( title.contains(magnatunePreviewString, Qt::CaseSensitive) )
-        title = title.remove( " (" + magnatunePreviewString + ")" );
+        title = title.remove( " (" + magnatunePreviewString + ')' );
     if( artist.contains(magnatunePreviewString, Qt::CaseSensitive) )
-        artist = artist.remove( " (" + magnatunePreviewString + ")" );
+        artist = artist.remove( " (" + magnatunePreviewString + ')' );
 
     if( title.isEmpty() && currentTrack )
     {
@@ -114,13 +114,13 @@ void LyricsEngine::update()
         {
             title = prettyTitle.mid( h + 1 ).trimmed();
             if( title.contains(magnatunePreviewString, Qt::CaseSensitive) )
-                title = title.remove( " (" + magnatunePreviewString + ")" );
+                title = title.remove( " (" + magnatunePreviewString + ')' );
 
             if( artist.isEmpty() )
             {
                 artist = prettyTitle.mid( 0, h ).trimmed();
                 if( artist.contains(magnatunePreviewString, Qt::CaseSensitive) )
-                    artist = artist.remove( " (" + magnatunePreviewString + ")" );
+                    artist = artist.remove( " (" + magnatunePreviewString + ')' );
             }
         }
     }

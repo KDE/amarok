@@ -48,7 +48,7 @@ bool ContextUrlRunner::run( AmarokUrl url )
 
     QString appletsString = url.args().value( "applets" );
     debug() << "applet string: " << appletsString;
-    QStringList appletList = appletsString.split( "," );
+    QStringList appletList = appletsString.split( ',' );
 
     Context::ContextView::self()->clearNoSave();
     Context::Containment* cont = dynamic_cast< Context::Containment* >( Context::ContextView::self()->containment() );

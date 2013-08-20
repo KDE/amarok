@@ -80,7 +80,7 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
             m_value = a.value().toInt();
         } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
             if ( m_comparison == CompareDateWithin ) {
-                QStringList parts = a.value().split(" ");
+                QStringList parts = a.value().split(' ');
                 if ( parts.size() == 2 ) {
                     int u = parts.at( 0 ).toInt();
                     int v = 0;

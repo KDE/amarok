@@ -274,5 +274,5 @@ TestSqlCollectionLocation::setupFileInTempDir( const QString &relativeName )
     }
 
     QProcess::execute( "touch", QStringList() << absoluteName );
-    return "." + absoluteName;
+    return '.' + absoluteName;
 }
