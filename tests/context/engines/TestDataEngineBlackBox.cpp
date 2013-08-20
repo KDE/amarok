@@ -21,7 +21,7 @@ TestDataEngineBlackBox::TestDataEngineBlackBox(QString identifier)
 {
     Plasma::DataEngine* engine = 0;
     // load the engine, add it to the engines
-    QString constraint = QString("[X-KDE-PluginInfo-Name] == '"+ identifier +"'").arg(identifier);
+    QString constraint = QString("[X-KDE-PluginInfo-Name] == '" + identifier + '\'').arg(identifier);
     KService::List offers = KServiceTypeTrader::self()->query("Plasma/DataEngine", constraint);
     QString error;
 

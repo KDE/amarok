@@ -250,7 +250,7 @@ PlaylistBrowserCategory::slotToggleProviderButton()
         QAction *action = m_providerActions.value( p );
         if( action->isChecked() )
         {
-            QString escapedName = QRegExp::escape( p->prettyName() ).replace( " ", "\\ " );
+            QString escapedName = QRegExp::escape( p->prettyName() ).replace( ' ', "\\ " );
             filter += QString( filter.isEmpty() ? "%1" : "|%1" ).arg( escapedName );
             checkedActions << action;
             action->setEnabled( true );

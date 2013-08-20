@@ -674,7 +674,7 @@ KUrl
 SqlCollectionLocation::moodFile( const KUrl &track ) const
 {
     KUrl moodPath = track;
-    moodPath.setFileName( "." + moodPath.fileName().replace( QRegExp( "(\\.\\w{2,5})$" ), ".mood" ) );
+    moodPath.setFileName( '.' + moodPath.fileName().replace( QRegExp( "(\\.\\w{2,5})$" ), ".mood" ) );
     return moodPath;
 }
 

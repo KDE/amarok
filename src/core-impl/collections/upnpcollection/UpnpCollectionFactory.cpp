@@ -168,7 +168,7 @@ void UpnpCollectionFactory::slotDeviceAdded( const DeviceTypeMap &map )
 void UpnpCollectionFactory::slotDeviceRemoved( const DeviceTypeMap &map )
 {
     foreach( QString udn, map.keys() ) {
-        udn.replace("uuid:", "");
+        udn.remove("uuid:");
         if( m_devices.contains(udn) ) {
             m_devices[udn]->removeCollection();
             m_devices.remove(udn);

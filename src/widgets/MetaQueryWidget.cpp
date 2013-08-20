@@ -874,7 +874,7 @@ MetaQueryWidget::makeGenericNumberSelection( qint64 field, const QString& unit )
     spin->setMinimum( Filter::minimumValue( field ) );
     spin->setMaximum( Filter::maximumValue( field ) );
     if( !unit.isEmpty() )
-        spin->setSuffix( " " + unit );
+        spin->setSuffix( ' ' + unit );
     spin->setValue( m_filter.numValue );
 
     connect( spin, SIGNAL(valueChanged(int)),
@@ -890,7 +890,7 @@ MetaQueryWidget::makeGenericNumberSelection( qint64 field, const QString& unit )
     spin2->setMinimum( Filter::minimumValue( field ) );
     spin2->setMaximum( Filter::maximumValue( field ) );
     if( !unit.isEmpty() )
-        spin2->setSuffix( " " + unit );
+        spin2->setSuffix( ' ' + unit );
     spin2->setValue( m_filter.numValue2 );
 
     connect( spin2, SIGNAL(valueChanged(int)),

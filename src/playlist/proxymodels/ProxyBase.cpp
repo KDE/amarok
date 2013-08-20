@@ -296,7 +296,7 @@ ProxyBase::rowMatch( int sourceModelRow, const QString &searchTerms, int searchF
 
     Meta::TrackPtr track = m_belowModel->trackAt( sourceModelRow );
 
-    QStringList searchList = searchTerms.split(" ", QString::SkipEmptyParts);
+    QStringList searchList = searchTerms.split(' ', QString::SkipEmptyParts);
 
     foreach( const QString& searchTerm, searchList )
     {

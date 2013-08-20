@@ -272,7 +272,7 @@ NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &r
     QNetworkRequest request = req;
     request.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
     if ( request.hasRawHeader( "User-Agent" ) )
-        request.setRawHeader( "User-Agent", d->userAgent.toLocal8Bit() + " " + request.rawHeader( "User-Agent" ) );
+        request.setRawHeader( "User-Agent", d->userAgent.toLocal8Bit() + ' ' + request.rawHeader( "User-Agent" ) );
     else
         request.setRawHeader( "User-Agent", d->userAgent.toLocal8Bit() );
 

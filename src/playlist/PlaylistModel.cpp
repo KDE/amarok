@@ -110,7 +110,7 @@ breakLongLinesHTML(const QString& text)
                     textInLines += wordPart + "<br/>";
                 }
             }
-            textInLines += word + " ";
+            textInLines += word + ' ';
             lineLength += word.size() + 1;
             words.removeFirst();
         }

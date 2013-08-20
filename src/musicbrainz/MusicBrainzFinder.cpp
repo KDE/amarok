@@ -597,7 +597,7 @@ MusicBrainzFinder::compileTrackRequest( const Meta::TrackPtr &track )
      * We might be tempted to search also by qdur (quantized duration), but this has
      * proved to exclude lots of good results.
      */
-#define VALUE( k ) metadata.value( k ).toString().replace( unsafe, "" ).replace( special, escape ).replace( endOfWord, fuzzy )
+#define VALUE( k ) metadata.value( k ).toString().remove( unsafe ).replace( special, escape ).replace( endOfWord, fuzzy )
     if( metadata.contains( Meta::Field::TITLE ) )
         query += QString( "(\"%1\"^20 %1)" ).arg( VALUE( Meta::Field::TITLE ) );
     if( metadata.contains( Meta::Field::ARTIST ) )

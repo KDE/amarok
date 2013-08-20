@@ -539,7 +539,7 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     m_description = *(iter++);
     m_copyright = *(iter++);
     m_directory = KUrl( *(iter++) );
-    m_labels = QStringList( QString( *(iter++) ).split( ",", QString::SkipEmptyParts ) );
+    m_labels = QStringList( QString( *(iter++) ).split( ',', QString::SkipEmptyParts ) );
     m_subscribeDate = QDate::fromString( *(iter++) );
     m_autoScan = sqlStorage->boolTrue() == *(iter++);
     m_fetchType = (*(iter++)).toInt() == DownloadWhenAvailable ? DownloadWhenAvailable : StreamOrDownloadOnDemand;

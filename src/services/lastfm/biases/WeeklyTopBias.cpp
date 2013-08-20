@@ -467,7 +467,7 @@ Dynamic::WeeklyTopBias::loadFromFile()
     while( !in.atEnd() )
     {
         QString line = in.readLine();
-        m_weeklyArtistMap.insert( line.split( "#" )[ 0 ].toUInt(), line.split( "#" )[ 1 ].split( "^" )  );
+        m_weeklyArtistMap.insert( line.split( '#' )[ 0 ].toUInt(), line.split( '#' )[ 1 ].split( '^' )  );
     }
     file.close();
 }

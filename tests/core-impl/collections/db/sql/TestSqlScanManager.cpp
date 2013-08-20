@@ -783,7 +783,7 @@ TestSqlScanManager::testLargeInsert()
     {
         writer.writeStartElement( "directory" );
         writer.writeTextElement( "path", QString::number(dirId) );
-        writer.writeTextElement( "rpath", "/" + QString::number(dirId) );
+        writer.writeTextElement( "rpath", '/' + QString::number(dirId) );
         writer.writeTextElement( "mtime", QString::number(aDate.toTime_t()) );
 
         for( int trackId = 0; trackId < 20; trackId++ )

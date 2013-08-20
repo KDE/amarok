@@ -917,11 +917,11 @@ Dynamic::DynamicModel::initPlaylists()
     // - a playlist demonstrating the SearchQueryBias
     playlist = new Dynamic::BiasedPlaylist( this );
     playlist->setTitle( i18n("Rock and Pop") );
-    QString query = Meta::shortI18nForField( Meta::valGenre ) + ":" + i18n( "Rock" );
+    QString query = Meta::shortI18nForField( Meta::valGenre ) + ':' + i18n( "Rock" );
     /* following cannot be currently translated, see ExpressionParser::isAdvancedExpression()
      * and ExpressionParser::finishedToken() */
     query += " AND ";
-    query += Meta::shortI18nForField( Meta::valGenre ) + ":" + i18n( "Pop" );
+    query += Meta::shortI18nForField( Meta::valGenre ) + ':' + i18n( "Pop" );
     playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( query ) ) );
     insertPlaylist( 1, playlist );
 
@@ -1120,7 +1120,7 @@ static QString
 biasToString( Dynamic::BiasPtr bias, int level )
 {
     QString result;
-    result += QString(" ").repeated(level) + bias->toString() + " " + QString::number(quintptr(bias.data()), 16) + "\n";
+    result += QString(" ").repeated(level) + bias->toString() + ' ' + QString::number(quintptr(bias.data()), 16) + '\n';
     if( Dynamic::AndBias* aBias = qobject_cast<Dynamic::AndBias*>(bias.data()) )
     {
         foreach( Dynamic::BiasPtr bias2, aBias->biases() )
@@ -1136,7 +1136,7 @@ Dynamic::DynamicModel::toString()
 
     foreach( Dynamic::DynamicPlaylist* playlist, m_playlists )
     {
-        result += playlist->title() + " " + QString::number(quintptr(playlist), 16) + "\n";
+        result += playlist->title() + ' ' + QString::number(quintptr(playlist), 16) + '\n';
         if( Dynamic::BiasedPlaylist* bPlaylist = qobject_cast<Dynamic::BiasedPlaylist*>(playlist ) )
             result += biasToString( bPlaylist->bias(), 1 );
     }

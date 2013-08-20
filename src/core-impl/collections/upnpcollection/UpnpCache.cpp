@@ -28,24 +28,24 @@ static qint64 duration( QString duration ) {
     if( duration.isEmpty() )
         return 0;
 
-    QStringList parts = duration.split(":");
+    QStringList parts = duration.split( ':' );
     int hours = parts.takeFirst().toInt();
     int minutes = parts.takeFirst().toInt();
     QString rest = parts.takeFirst();
     int seconds = 0;
     int mseconds = 0;
-    if( rest.contains(".") ) {
-        int dotIndex = rest.indexOf(".");
+    if( rest.contains( '.' ) ) {
+        int dotIndex = rest.indexOf( "." );
         seconds = rest.left( dotIndex ).toInt();
         QString frac = rest.mid( dotIndex + 1 );
-        if( frac.contains( "/" ) ) {
-            int slashIndex = frac.indexOf("/");
-            int num = frac.left( frac.indexOf("/") ).toInt();
+        if( frac.contains( '/' ) ) {
+            int slashIndex = frac.indexOf( '/' );
+            int num = frac.left( frac.indexOf( '/' ) ).toInt();
             int den = frac.mid( slashIndex + 1 ).toInt();
             mseconds = num * 1000 / den;
         }
         else {
-            mseconds = QString("." + frac).toFloat() * 1000;
+            mseconds = QString( '.' + frac ).toFloat() * 1000;
         }
     }
     else {

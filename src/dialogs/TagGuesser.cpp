@@ -106,13 +106,13 @@ TagGuesser::convertTagCaseType( const QString &tag, int type )
         case 2:
         {
             QString complete;
-            QStringList splitted = tag.toLower().split( " ", QString::SkipEmptyParts );
+            QStringList splitted = tag.toLower().split( ' ', QString::SkipEmptyParts );
 
             foreach( QString word, splitted )
             {
                 if( word.length() > 1 )
                     word.replace( 0, 1, word.left( 1 ).toUpper() );
-                complete += word + " ";
+                complete += word + ' ';
             }
             complete.truncate( complete.length() - 1 );
 

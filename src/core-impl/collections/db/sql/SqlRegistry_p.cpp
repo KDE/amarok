@@ -186,7 +186,7 @@ AbstractTrackTableCommitter::nullDate( const QDateTime &date ) const
 QString
 AbstractTrackTableCommitter::escape( const QString &str ) const
 {
-    return "'"+m_storage->escape(str)+"'";
+    return '\'' + m_storage->escape( str ) + '\'';
 }
 
 

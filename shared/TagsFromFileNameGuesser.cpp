@@ -116,7 +116,7 @@ Meta::Tag::TagGuesser::guessTagsByScheme( const QString &fileName, const QString
     {
         value = rx.cap( i + 1 );
         if( convertUnderscores )
-            value.replace( "_", " " );
+            value.replace( '_', ' ' );
         if( cutTrailingSpaces )
             value = value.trimmed();
         metadata.insert( tokens[i], value );

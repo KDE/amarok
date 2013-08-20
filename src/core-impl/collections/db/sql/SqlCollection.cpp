@@ -120,7 +120,7 @@ protected:
         {
             QString path = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchscan.xml";
             while( QFile::exists( path ) )
-                path += "_";
+                path += '_';
 
             CollectionScanner::BatchFile batchfile;
             batchfile.setTimeDefinitions( knownDirs );

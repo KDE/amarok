@@ -345,7 +345,7 @@ NepomukQueryMakerPrivate::addFilter( QString expression )
 void
 NepomukQueryMakerPrivate::matchNothing()
 {
-    filters = "0";
+    filters = '0';
     filterNeedsConjunction = true;
 }
 

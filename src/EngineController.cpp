@@ -1435,8 +1435,8 @@ QString EngineController::prettyNowPlaying( bool progress ) const
             QString length = Qt::escape( Meta::msToPrettyTime( track->length() ) );
             title += " (";
             if( progress )
-                    title+= Qt::escape( Meta::msToPrettyTime( m_lastTickPosition ) ) + "/";
-            title += length + ")";
+                    title+= Qt::escape( Meta::msToPrettyTime( m_lastTickPosition ) ) + '/';
+            title += length + ')';
         }
 
         return title;
