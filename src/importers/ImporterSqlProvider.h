@@ -66,12 +66,18 @@ protected:
     virtual TrackList getArtistTracks( const QString &artistName, QSqlDatabase db ) = 0;
 
     /**
+     * This method is called before opening the database connection. Like getArtists
+     * and getArtistTracks, this method will be called in the object's main thread.
+     */
+    virtual void prepareConnection();
+
+    /**
      * Name of the connection created in the constructor.
      */
     const QString m_connectionName;
 
 private:
-    Qt::ConnectionType getConnectionType() const;
+    Qt::ConnectionType getBlockingConnectionType() const;
 
     QSet<QString> m_artistsResult;
     TrackList m_artistTracksResult;

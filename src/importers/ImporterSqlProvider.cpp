@@ -16,7 +16,8 @@
 
 #include "ImporterSqlProvider.h"
 
-#include <QApplication>
+#include <ThreadWeaver/Thread>
+
 #include <QUuid>
 
 using namespace StatSyncing;
@@ -47,7 +48,7 @@ ImporterSqlProvider::~ImporterSqlProvider()
 QSet<QString>
 ImporterSqlProvider::artists()
 {
-    QMetaObject::invokeMethod( this, "artistsSearch", getConnectionType() );
+    QMetaObject::invokeMethod( this, "artistsSearch", getBlockingConnectionType() );
 
     QSet<QString> artistSet;
     artistSet.swap( m_artistsResult );
@@ -58,7 +59,7 @@ ImporterSqlProvider::artists()
 TrackList
 ImporterSqlProvider::artistTracks( const QString &artistName )
 {
-    QMetaObject::invokeMethod( this, "artistTracksSearch", getConnectionType(),
+    QMetaObject::invokeMethod( this, "artistTracksSearch", getBlockingConnectionType(),
                                Q_ARG( QString, artistName ) );
 
     TrackList artistTrackList;
@@ -67,18 +68,25 @@ ImporterSqlProvider::artistTracks( const QString &artistName )
     return artistTrackList;
 }
 
+void
+ImporterSqlProvider::prepareConnection()
+{
+}
+
 Qt::ConnectionType
-ImporterSqlProvider::getConnectionType() const
+ImporterSqlProvider::getBlockingConnectionType() const
 {
     // SQL queries need to be executed in the main thread
-    return this->thread() == QCoreApplication::instance()->thread()
+    return this->thread() == ThreadWeaver::Thread::currentThread()
             ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 }
 
 void
 ImporterSqlProvider::artistsSearch()
 {
-    Q_ASSERT( this->thread() == QCoreApplication::instance()->thread() );
+    Q_ASSERT( this->thread() == ThreadWeaver::Thread::currentThread() );
+
+    prepareConnection();
 
     QSqlDatabase db = QSqlDatabase::database( m_connectionName );
     if( !db.isOpen() )
@@ -90,7 +98,9 @@ ImporterSqlProvider::artistsSearch()
 void
 ImporterSqlProvider::artistTracksSearch( const QString &artistName )
 {
-    Q_ASSERT( this->thread() == QCoreApplication::instance()->thread() );
+    Q_ASSERT( this->thread() == ThreadWeaver::Thread::currentThread() );
+
+    prepareConnection();
 
     QSqlDatabase db = QSqlDatabase::database( m_connectionName );
     if( !db.isOpen() )

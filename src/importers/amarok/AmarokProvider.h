@@ -32,8 +32,8 @@ public:
     qint64 writableTrackStatsData() const;
 
 protected:
-    virtual QSet<QString> getArtists( QSqlDatabase db );
-    virtual TrackList getArtistTracks( const QString &artistName, QSqlDatabase db );
+    QSet<QString> getArtists( QSqlDatabase db );
+    TrackList getArtistTracks( const QString &artistName, QSqlDatabase db );
 
 private:
     QVariantMap setDbDriver( const QVariantMap &config );

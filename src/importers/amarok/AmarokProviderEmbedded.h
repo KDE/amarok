@@ -20,40 +20,36 @@
 #include "AmarokProvider.h"
 
 #include <QMutex>
-#include <QTemporaryFile>
+#include <QProcess>
 #include <QTimer>
-
-class QProcess;
 
 namespace StatSyncing
 {
 
 class AmarokProviderEmbedded : public AmarokProvider
 {
+    Q_OBJECT
+
 public:
     AmarokProviderEmbedded( const QVariantMap &config, ImporterManager *importer );
     ~AmarokProviderEmbedded();
 
 protected:
-    QSet<QString> getArtists( QSqlDatabase db );
-    TrackList getArtistTracks( const QString &artistName, QSqlDatabase db );
+    void prepareConnection();
 
 private:
+    bool startServer( const int port, const QString &socketPath, const QString &pidPath );
+
     // Number of msecs after which server will shut down
     static const int SERVER_SHUTDOWN_AFTER = 30000;
-    // Number of msecs to wait for server to start
-    static const int SERVER_START_WAIT = 5000;
-
-    QTemporaryFile m_socket;
-    QTemporaryFile m_pidFile;
-    const int m_port;
+    // Number of msecs to wait for server to start up
+    static const int SERVER_START_TIMEOUT = 30000;
 
     QTimer m_shutdownTimer;
-    QProcess *m_srv;
+    QProcess m_srv;
     QMutex m_srvMutex;
 
 private slots:
-    void startServer();
     void stopServer();
 };
 
