@@ -21,7 +21,7 @@
 #ifndef AMAROK_TAGDIALOG_H
 #define AMAROK_TAGDIALOG_H
 
-#include "config.h"
+#include <config.h>
 
 #include "amarok_export.h"
 #include "playlist/PlaylistItem.h"

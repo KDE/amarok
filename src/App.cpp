@@ -16,7 +16,7 @@
 
 #include "App.h"
 
-#include "config.h"
+#include <config.h>
 #include "EngineController.h"
 #include "KNotificationBackend.h"
 #include "PluginManager.h"

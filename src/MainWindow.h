@@ -18,7 +18,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "config.h"
+#include <config.h>
 
 #include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
@@ -26,7 +26,6 @@
 
 #include <KMainWindow>
 #include <KVBox>
-#include <Phonon/Global>
 #include <Phonon/Global>
 
 #include <QWeakPointer>

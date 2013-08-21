@@ -22,7 +22,7 @@
 #include "CoverManager.h"
 
 #include "amarokconfig.h"
-#include "config.h"
+#include <config.h>
 #include "core/capabilities/ActionsCapability.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"

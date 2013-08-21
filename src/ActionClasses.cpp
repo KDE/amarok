@@ -25,7 +25,7 @@
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
-#include "config.h"
+#include <config.h>
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"

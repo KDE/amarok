@@ -18,7 +18,7 @@
 
 #include "MusicDNSAudioDecoder.h"
 
-#include "config.h"
+#include <config.h>
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 

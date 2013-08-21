@@ -16,7 +16,7 @@
 
 #include "TagHelper.h"
 
-#include "config.h"
+#include <config.h>
 
 #include <QImage>
 #include <QRegExp>

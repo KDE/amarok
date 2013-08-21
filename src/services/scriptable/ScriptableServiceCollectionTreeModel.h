@@ -32,7 +32,7 @@ class ScriptableServiceCollectionTreeModel : public SingleCollectionTreeItemMode
 
         using SingleCollectionTreeItemModel::mimeData; // prevent warning
         /**
-         * Overriden to masquerade playlist tracks as MultiTracks
+         * Overridden to masquerade playlist tracks as MultiTracks
          */
         virtual QMimeData* mimeData( const QList<CollectionTreeItem *> &items ) const;
 };

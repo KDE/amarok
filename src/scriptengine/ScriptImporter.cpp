@@ -17,7 +17,7 @@
 #include "ScriptImporter.h"
 
 #include "App.h"
-#include "config.h"
+#include <config.h>
 #include "core/support/Debug.h"
 
 #include <KUrl>

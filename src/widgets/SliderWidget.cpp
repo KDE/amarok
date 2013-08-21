@@ -18,7 +18,7 @@
 
 #include "SliderWidget.h"
 
-#include "config.h"
+#include <config.h>
 
 #include "core/support/Amarok.h"
 #include "amarokurls/AmarokUrlHandler.h"

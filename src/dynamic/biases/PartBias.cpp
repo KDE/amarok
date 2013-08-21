@@ -37,7 +37,6 @@
 #include <QStyleOption>
 #include <QWidget>
 #include <QXmlStreamReader>
-#include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
 QString

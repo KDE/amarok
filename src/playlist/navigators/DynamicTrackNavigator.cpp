@@ -25,7 +25,6 @@
 #include "core/support/Debug.h"
 #include "dynamic/DynamicPlaylist.h"
 #include "dynamic/DynamicModel.h"
-#include "dynamic/DynamicPlaylist.h"
 #include "playlist/PlaylistController.h"
 
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator()

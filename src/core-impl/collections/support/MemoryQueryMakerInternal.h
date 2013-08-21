@@ -22,7 +22,6 @@
 
 #include <QObject>
 #include <QWeakPointer>
-#include <QWeakPointer>
 
 class CustomReturnFunction;
 class CustomReturnValue;

@@ -22,7 +22,6 @@
 
 #include "amarok_sqlcollection_export.h"
 #include "core/collections/CollectionLocation.h"
-#include "amarok_sqlcollection_export.h"
 
 #include <KJob>
 #include <KCompositeJob>

@@ -17,7 +17,7 @@
 
 #include "FileTypeResolver.h"
 
-#include "config.h"
+#include <config.h>
 
 #include <KMimeType>
 

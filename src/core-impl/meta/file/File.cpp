@@ -19,7 +19,7 @@
 #include "File.h"
 #include "File_p.h"
 
-#include "config.h"
+#include <config.h>
 #ifdef HAVE_LIBLASTFM
 #include "LastfmReadLabelCapability.h"
 #endif

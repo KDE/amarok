@@ -18,7 +18,7 @@
 #ifndef MUSICBRAINZTAGGER_H
 #define MUSICBRAINZTAGGER_H
 
-#include "config.h"
+#include <config.h>
 #include "core/meta/forward_declarations.h"
 
 #include <KDialog>
