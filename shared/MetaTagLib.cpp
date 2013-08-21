@@ -27,7 +27,7 @@
 
 #include "FileType.h"
 #include "TagsFromFileNameGuesser.h"
-#include "config.h"
+#include <config.h>
 
 #include <KEncodingProber>
 

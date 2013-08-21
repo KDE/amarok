@@ -30,7 +30,7 @@
 #include "core/interfaces/Logger.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
-#include "config.h" // for the compile flags
+#include <config.h> // for the compile flags
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "scriptengine/AmarokCollectionScript.h"
 #include "scriptengine/AmarokScriptConfig.h"

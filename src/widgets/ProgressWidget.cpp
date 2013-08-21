@@ -21,7 +21,6 @@
 #include "EngineController.h"
 #include "SliderWidget.h"
 #include "TimeLabel.h"
-#include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "core/meta/Meta.h"

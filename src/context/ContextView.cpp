@@ -24,7 +24,7 @@
 
 #include "ContextView.h"
 
-#include "config.h"
+#include <config.h>
 
 #include "Context.h"
 #include "ContextScene.h"

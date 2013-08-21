@@ -19,7 +19,7 @@
 
 #include "MainWindow.h"
 #include "amarok_export.h"
-#include "config.h"
+#include <config.h>
 #include "aboutdialog/OcsData.h"
 
 #include <KAboutData>

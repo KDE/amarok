@@ -26,7 +26,6 @@
 #include <QtGlobal> // for qRound
 #include <QPainter>
 #include <QXmlStreamReader>
-#include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
 #include <KLocale>

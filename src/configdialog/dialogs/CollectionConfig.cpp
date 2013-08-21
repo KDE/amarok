@@ -17,7 +17,7 @@
 #include "CollectionConfig.h"
 
 #include "amarokconfig.h"
-#include "config.h"
+#include <config.h>
 #include "core/support/Amarok.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "dialogs/CollectionSetup.h"
