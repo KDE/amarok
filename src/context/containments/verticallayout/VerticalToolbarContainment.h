@@ -48,8 +48,8 @@ class VerticalToolbarContainment : public Containment
         virtual ContextView *view();
 
     public slots:
-        Applet* addApplet( const QString& pluginName, const int );
-        void    appletRemoved( Plasma::Applet* );
+        void addApplet( const QString& pluginName, const int );
+        void appletRemoved( Plasma::Applet* );
         // these slots below are forwarded to the layout
         void showApplet( Plasma::Applet* );
         void moveApplet( Plasma::Applet*, int, int );

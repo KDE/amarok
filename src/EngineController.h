@@ -313,6 +313,11 @@ public slots:
      */
     bool supportsGainAdjustments() const;
 
+    /**
+     * Return true if the current Phonon backend supports visualizations.
+     */
+    bool supportsAudioDataOutput() const;
+
 Q_SIGNALS:
     /**
      * Emitted when the playback stops while playing a track.
