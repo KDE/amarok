@@ -9,8 +9,6 @@ VERSION 2.9-Beta 1
   CHANGES:
 
   BUGFIXES:
-   * Ctrl-C for copying text to the clipboard works again when there is
-     text selected in Amarok. (BR 323644)
    * Using Shuffle keyboard shortcut no longer causes Amarok to crash.
      (BR 323614)
 
