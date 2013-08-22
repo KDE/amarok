@@ -63,9 +63,8 @@ namespace AmarokScript
 
     public:
         static void init( QScriptEngine *engine );
-        static QScriptValue toScriptValue( QScriptEngine *engine,
-                                           Playlists::PlaylistPtr const &playlist );
-        static void fromScriptValue( const QScriptValue &obj, Playlists::PlaylistPtr &playlist );
+        PlaylistPrototype( Playlists::PlaylistPtr playlist );
+        Playlists::PlaylistPtr data() { return m_playlist; }
 
     public slots:
             /**
@@ -109,7 +108,6 @@ namespace AmarokScript
             QString toString() const;
 
     private:
-        PlaylistPrototype( Playlists::PlaylistPtr playlist );
         void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position ) override;
         void trackRemoved( Playlists::PlaylistPtr playlist, int position ) override;
 

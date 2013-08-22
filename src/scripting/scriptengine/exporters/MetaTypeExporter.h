@@ -18,7 +18,7 @@
 #define METATYPE_EXPORTER_H
 
 #include "amarok_export.h"
-#include "core/meta/forward_declarations.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Observer.h"
 
 #include <QObject>
@@ -79,8 +79,6 @@ namespace AmarokScript
             Meta::TrackPtr data() { return m_track; }
             MetaTrackPrototype( const Meta::TrackPtr &track );
             static QScriptValue trackCtor( QScriptContext* context, QScriptEngine* engine );
-            // static QScriptValue toScriptValue( QScriptEngine *engine, Meta::TrackPtr const &trackPtr );
-            // static void fromScriptValue( const QScriptValue &obj, Meta::TrackPtr &trackPtr );
 
         public slots:
             /**

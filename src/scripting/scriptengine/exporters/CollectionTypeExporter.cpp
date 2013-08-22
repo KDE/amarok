@@ -38,27 +38,8 @@ using Collections::QueryMaker;
 void
 CollectionPrototype::init( QScriptEngine *engine )
 {
-    qScriptRegisterMetaType<Collection*>( engine, toScriptValue, fromScriptValue );
+    qScriptRegisterMetaType<Collection*>( engine, toScriptValue<Collection*,CollectionPrototype>, fromScriptValue<Collection*,CollectionPrototype> );
     qScriptRegisterMetaType<Collections::CollectionList>( engine, toScriptArray, fromScriptArray );
-}
-
-QScriptValue
-CollectionPrototype::toScriptValue( QScriptEngine *engine, Collection* const &collection )
-{
-    CollectionPrototype *collectionProto = new CollectionPrototype( collection );
-    QScriptValue val = engine->newQObject( collectionProto, QScriptEngine::ScriptOwnership,
-                                            QScriptEngine::ExcludeSuperClassContents );
-    return val;
-}
-
-void
-CollectionPrototype::fromScriptValue( const QScriptValue &obj, Collection* &collection )
-{
-    CollectionPrototype *collectionProto = dynamic_cast<CollectionPrototype*>( obj.toQObject() );
-    if( !collectionProto )
-        collection = 0;
-    else
-        collection = collectionProto->m_collection.data();
 }
 
 //script invokable

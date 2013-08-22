@@ -18,6 +18,7 @@
 
 #include "core-impl/collections/support/TextualQueryFilter.h"
 #include "core/collections/QueryMaker.h"
+#include "scripting/scriptengine/ScriptingDefines.h"
 
 #include <QScriptEngine>
 #include <QScriptValue>
@@ -29,26 +30,7 @@ using Collections::QueryMaker;
 void
 QueryMakerPrototype::init( QScriptEngine *engine )
 {
-    qScriptRegisterMetaType<QueryMaker*>( engine, toScriptValue, fromScriptValue );
-}
-
-QScriptValue
-QueryMakerPrototype::toScriptValue( QScriptEngine *engine, QueryMaker* const &queryMaker ) //move to a template?
-{
-    QueryMakerPrototype *prototype = new QueryMakerPrototype( queryMaker );
-    QScriptValue val = engine->newQObject( prototype, QScriptEngine::ScriptOwnership,
-                                        QScriptEngine::ExcludeSuperClassContents );
-    return val;
-}
-
-void
-QueryMakerPrototype::fromScriptValue( const QScriptValue &obj, QueryMaker* &queryMaker )
-{
-    QueryMakerPrototype *prototype = dynamic_cast<QueryMakerPrototype*>( obj.toQObject() );
-    if( !prototype )
-        queryMaker = 0;
-    else
-        queryMaker = prototype->m_querymaker.data();
+    qScriptRegisterMetaType<QueryMaker*>( engine, toScriptValue<QueryMaker*,QueryMakerPrototype>, fromScriptValue<QueryMaker*,QueryMakerPrototype> );
 }
 
 // script invokable

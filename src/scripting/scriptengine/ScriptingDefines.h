@@ -56,6 +56,8 @@ namespace AmarokScript
         const WrapperType *wrapper = dynamic_cast<WrapperType*>( obj.toQObject() );
         if( wrapper )
             object = wrapper->data();
+        else
+            object = 0;
     }
 
     template <class type, class WrapperType>

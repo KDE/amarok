@@ -121,10 +121,8 @@ namespace AmarokScript
 
         public:
             static void init( QScriptEngine *engine );
-            static QScriptValue toScriptValue( QScriptEngine *engine,
-                                            Collections::Collection* const &collection );
-            static void fromScriptValue( const QScriptValue &obj,
-                                         Collections::Collection* &collection );
+            CollectionPrototype( Collections::Collection *collection );
+            Collections::Collection* data() { return m_collection.data(); }
 
         public slots:
             /**
@@ -203,7 +201,6 @@ namespace AmarokScript
             QString prettyLocation() const;
             QStringList actualLocation() const;
 
-            CollectionPrototype( Collections::Collection *collection );
             Meta::TrackList removeInvalidTracks( const Meta::TrackList &tracks );
 
        signals:

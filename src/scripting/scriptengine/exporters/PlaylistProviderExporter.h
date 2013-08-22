@@ -80,10 +80,8 @@ namespace AmarokScript
 
         public:
             static void init( QScriptEngine *engine );
-            static QScriptValue toScriptValue( QScriptEngine *engine,
-                                            Playlists::PlaylistProvider* const &provider );
-            static void fromScriptValue( const QScriptValue &obj,
-                                         Playlists::PlaylistProvider* &provider );
+            PlaylistProviderPrototype( Playlists::PlaylistProvider *provider );
+            Playlists::PlaylistProvider* data() { return m_provider.data(); }
 
         public slots:
 
@@ -125,8 +123,6 @@ namespace AmarokScript
             QIcon icon() const;
             int category() const;
             int playlistCount() const;
-
-            PlaylistProviderPrototype( Playlists::PlaylistProvider *provider );
 
         signals:
             void updated();

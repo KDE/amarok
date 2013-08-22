@@ -54,9 +54,8 @@ namespace AmarokScript
 
     public:
         static void init( QScriptEngine *engine );
-        static QScriptValue toScriptValue( QScriptEngine *engine,
-                                           Collections::QueryMaker* const &queryMaker );
-        static void fromScriptValue( const QScriptValue &obj, Collections::QueryMaker* &queryMaker );
+        QueryMakerPrototype( Collections::QueryMaker *collection );
+        Collections::QueryMaker *data() { return m_querymaker.data(); }
 
     public slots:
 
@@ -81,7 +80,6 @@ namespace AmarokScript
         QWeakPointer<Collections::QueryMaker> m_querymaker;
         QString m_filter;
 
-        QueryMakerPrototype( Collections::QueryMaker *collection );
         bool isValid() const;
         QString filter() const;
 

@@ -36,27 +36,9 @@ PlaylistProviderPrototype::PlaylistProviderPrototype( Playlists::PlaylistProvide
 void
 PlaylistProviderPrototype::init( QScriptEngine *engine )
 {
-    qScriptRegisterMetaType<Playlists::PlaylistProvider*>( engine, toScriptValue, fromScriptValue );
+    qScriptRegisterMetaType<Playlists::PlaylistProvider*>( engine, toScriptValue<Playlists::PlaylistProvider*,PlaylistProviderPrototype>,
+                                                           fromScriptValue<Playlists::PlaylistProvider*,PlaylistProviderPrototype> );
     qScriptRegisterMetaType< PlaylistProviderList >( engine, toScriptArray, fromScriptArray );
-}
-
-QScriptValue
-PlaylistProviderPrototype::toScriptValue( QScriptEngine *engine, Playlists::PlaylistProvider* const& provider )
-{
-    PlaylistProviderPrototype *prototype = new PlaylistProviderPrototype( provider );
-    QScriptValue scriptValue = engine->newQObject( prototype, QScriptEngine::ScriptOwnership,
-                                            QScriptEngine::ExcludeSuperClassContents );
-    return scriptValue;
-}
-
-void
-PlaylistProviderPrototype::fromScriptValue( const QScriptValue &obj, Playlists::PlaylistProvider* &provider )
-{
-    PlaylistProviderPrototype *playlistProviderPrototype = dynamic_cast<PlaylistProviderPrototype*>( obj.toQObject() );
-    if( !playlistProviderPrototype )
-        provider = 0;
-    else
-        provider = playlistProviderPrototype->m_provider.data();
 }
 
 // script invokable

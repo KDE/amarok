@@ -29,30 +29,10 @@ using namespace AmarokScript;
 void
 PlaylistPrototype::init( QScriptEngine *engine )
 {
-    qScriptRegisterMetaType<Playlists::PlaylistPtr>( engine, toScriptValue, fromScriptValue );
+    qScriptRegisterMetaType<Playlists::PlaylistPtr>( engine,
+                                                     toScriptValue<Playlists::PlaylistPtr,PlaylistPrototype>,
+                                                     fromScriptValue<Playlists::PlaylistPtr,PlaylistPrototype> );
     qScriptRegisterMetaType<Playlists::PlaylistList>( engine, toScriptArray, fromScriptArray );
-}
-
-QScriptValue
-PlaylistPrototype::toScriptValue( QScriptEngine *engine, const Playlists::PlaylistPtr &playlist )
-{
-    if( !playlist )
-        return engine->nullValue();
-
-    PlaylistPrototype *playlistPrototype = new PlaylistPrototype( playlist );
-    QScriptValue val = engine->newQObject( playlistPrototype, QScriptEngine::ScriptOwnership,
-                                        QScriptEngine::ExcludeSuperClassContents );
-    return val;
-}
-
-void
-PlaylistPrototype::fromScriptValue( const QScriptValue &obj, Playlists::PlaylistPtr &playlist )
-{
-    PlaylistPrototype *prototype = dynamic_cast<PlaylistPrototype*>( obj.toQObject() );
-    if( !prototype )
-        playlist = 0;
-    else
-        playlist = prototype->m_playlist;
 }
 
 // script invokable
