@@ -98,11 +98,6 @@ public:
 
 public slots:
     /**
-     * Add the applet with the given plugin name to the context view. Will add in default position, which is at
-     *  the end of the applet list.
-     */
-    Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList());
-    /**
      * Convenience methods to show and hide the applet explorer.
      */
     void hideAppletExplorer();

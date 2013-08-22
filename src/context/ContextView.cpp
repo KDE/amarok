@@ -36,6 +36,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
+#include "EngineController.h"
 
 #include <plasma/dataenginemanager.h>
 
@@ -221,12 +222,8 @@ ContextView::loadConfig()
             const bool firstTimeWithAnalyzer = Amarok::config( "Context View" ).readEntry( "firstTimeWithAnalyzer", true );
             if( firstTimeWithAnalyzer )
             {
-                // Check if the Phonon backend implements all features required by the analyzer
-                Phonon::AudioDataOutput out;
-                const bool phononCanHandleAnalyzer = out.isValid();
-
                 QStringList plugins = cg.readEntry( "plugins", QStringList() );
-                if( phononCanHandleAnalyzer && !plugins.contains( "analyzer" ) )
+                if( EngineController::instance()->supportsAudioDataOutput() && !plugins.contains( "analyzer" ) )
                 {
                     Amarok::config( "Context View" ).writeEntry( "firstTimeWithAnalyzer", false );
 
@@ -242,20 +239,6 @@ ContextView::loadConfig()
         }
     }
     PERF_LOG( "Done loading config" );
-}
-
-Plasma::Applet*
-ContextView::addApplet( const QString& name, const QStringList& args )
-{
-    QVariantList argList;
-    QStringListIterator i(args);
-    while( i.hasNext() )
-        argList << QVariant( i.next() );
-
-    if( !containment() )
-        contextScene()->addContainment( "amarok_containment_vertical" );
-
-    return containment()->addApplet( name, argList );
 }
 
 void

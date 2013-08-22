@@ -19,7 +19,10 @@
 #include "VerticalToolbarContainment.h"
 
 #include "ContextView.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "EngineController.h"
 #include "PaletteHandler.h"
 #include "VerticalAppletLayout.h"
 
@@ -136,19 +139,25 @@ Context::VerticalToolbarContainment::updateGeometry()
     m_applets->refresh();
 }
 
-Plasma::Applet*
+void
 Context::VerticalToolbarContainment::addApplet( const QString& pluginName, const int loc ) // SLOT
 {
     DEBUG_BLOCK
+
+    if( pluginName == "analyzer" && !EngineController::instance()->supportsAudioDataOutput() )
+    {
+        Amarok::Components::logger()->longMessage( i18n( "Error: Visualizations are not supported by your current Phonon backend." ),
+                                                   Amarok::Logger::Error ) ;
+
+        return;
+    }
 
     Plasma::Applet* applet = Plasma::Containment::addApplet( pluginName );
 
     Q_ASSERT_X( applet, "addApplet", "FAILED ADDING APPLET TO CONTAINMENT!! NOT FOUND!!" );
 
     m_applets->addApplet( applet, loc );
-    applet->setFlag(QGraphicsItem::ItemIsMovable, false);
-
-    return applet;
+    applet->setFlag( QGraphicsItem::ItemIsMovable, false );
 }
 
 void
