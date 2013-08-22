@@ -707,10 +707,8 @@ MainWindow::slotSeekBackwardLong()
 
 void MainWindow::slotPutCurrentTrackToClipboard()
 {
-    QClipboard* const clipboard = QApplication::clipboard();
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-
-    if ( currentTrack && !clipboard->ownsSelection() )
+    if ( currentTrack )
     {
         QString text;
         Meta::ArtistPtr artist = currentTrack->artist();
@@ -718,6 +716,7 @@ void MainWindow::slotPutCurrentTrackToClipboard()
             text = artist->prettyName() + " - ";
         text += currentTrack->prettyName();
 
+        QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText( text );
     }
 }
