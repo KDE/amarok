@@ -37,7 +37,8 @@ namespace StatSyncing
      * Abstract representation of a track (either from Amarok or from scrobbling services).
      *
      * This class is used to perform track matching and synchronization. It must be
-     * implemented in a thread-safe way.
+     * implemented in a thread-safe way. For optimal track matching, all string fields
+     * should be trimmed of whitespace.
      *
      * Note: This will be probably morphed into Meta::Track someday, keep the interface
      * compatible as much as possible.
