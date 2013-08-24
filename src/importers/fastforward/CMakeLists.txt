@@ -1,6 +1,4 @@
 include_directories(
-    ${CMAKE_BINARY_DIR}/src
-    ${AMAROK_COLLECTION_SUPPORT_DIR}
     ${KDE4_INCLUDE_DIR}
     ${QT_INCLUDES}
 )
@@ -26,4 +24,3 @@ target_link_libraries( amarok_importer-fastforward
 install( TARGETS amarok_importer-fastforward DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 install( FILES amarok_importer-fastforward.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
-

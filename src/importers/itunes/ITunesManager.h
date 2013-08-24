@@ -24,8 +24,6 @@ namespace StatSyncing
 
 class ITunesManager : public ImporterManager
 {
-    Q_OBJECT
-
 public:
     ITunesManager( QObject *parent, const QVariantList &args );
     ~ITunesManager();

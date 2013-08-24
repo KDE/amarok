@@ -24,8 +24,6 @@ namespace StatSyncing
 
 class BansheeManager : public ImporterManager
 {
-    Q_OBJECT
-
 public:
     BansheeManager( QObject *parent, const QVariantList &args );
     ~BansheeManager();

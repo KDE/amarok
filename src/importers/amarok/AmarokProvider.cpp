@@ -16,7 +16,6 @@
 
 #include "AmarokProvider.h"
 
-#include "MetaValues.h"
 #include "statsyncing/SimpleTrack.h"
 
 #include <QSqlQuery>

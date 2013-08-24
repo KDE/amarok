@@ -26,11 +26,9 @@ namespace StatSyncing
 class RhythmboxConfigWidget : public ProviderConfigWidget,
         public Ui::RhythmboxConfigWidget
 {
-    Q_OBJECT
-
 public:
     RhythmboxConfigWidget( const QVariantMap &config, QWidget *parent = 0,
-                        Qt::WindowFlags f = 0 );
+                           Qt::WindowFlags f = 0 );
     ~RhythmboxConfigWidget();
 
     QVariantMap config() const;

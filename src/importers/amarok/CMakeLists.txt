@@ -1,8 +1,4 @@
-add_definitions(${MYSQL_EMBEDDED_CFLAGS})
-
 include_directories(
-    ${CMAKE_BINARY_DIR}/src
-    ${AMAROK_COLLECTION_SUPPORT_DIR}
     ${KDE4_INCLUDE_DIR}
     ${QT_INCLUDES}
 )
@@ -28,4 +24,3 @@ target_link_libraries( amarok_importer-amarok
 install( TARGETS amarok_importer-amarok DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 install( FILES amarok_importer-amarok.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
-

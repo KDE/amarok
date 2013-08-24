@@ -22,7 +22,8 @@
 
 using namespace StatSyncing;
 
-ImporterSqlProvider::ImporterSqlProvider( const QVariantMap &config, ImporterManager *importer )
+ImporterSqlProvider::ImporterSqlProvider( const QVariantMap &config,
+                                          ImporterManager *importer )
     : ImporterProvider( config, importer )
     , m_connectionName( QUuid::createUuid().toString() )
 {

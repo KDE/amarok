@@ -16,8 +16,6 @@
 
 #include "RhythmboxProvider.h"
 
-#include "RhythmboxTrack.h"
-#include "MetaValues.h"
 #include "core/support/Debug.h"
 
 #include <QFile>
@@ -25,7 +23,8 @@
 
 using namespace StatSyncing;
 
-RhythmboxProvider::RhythmboxProvider( const QVariantMap &config, ImporterManager *importer )
+RhythmboxProvider::RhythmboxProvider( const QVariantMap &config,
+                                      ImporterManager *importer )
     : ImporterProvider( config, importer )
 {
 }
@@ -164,3 +163,20 @@ RhythmboxProvider::readValue( QXmlStreamReader &xml )
 {
     return xml.readElementText();
 }
+
+
+RhythmboxTrack::RhythmboxTrack( const Meta::FieldHash &metadata )
+    : SimpleTrack( metadata )
+{
+}
+
+RhythmboxTrack::~RhythmboxTrack()
+{
+}
+
+int
+RhythmboxTrack::rating() const
+{
+    return SimpleTrack::rating() * 2;
+}
+

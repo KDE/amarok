@@ -16,22 +16,16 @@
 
 #include "FastForwardProvider.h"
 
-#include "core/support/Debug.h"
 #include "FastForwardTrack.h"
+#include "core/support/Debug.h"
 #include "importers/ImporterManager.h"
-#include "MetaValues.h"
 
-#include <KLocalizedString>
-
-#include <QApplication>
-#include <QFile>
-#include <QSqlDatabase>
-#include <QSqlError>
 #include <QSqlQuery>
 
 using namespace StatSyncing;
 
-FastForwardProvider::FastForwardProvider( const QVariantMap &config, ImporterManager *importer )
+FastForwardProvider::FastForwardProvider( const QVariantMap &config,
+                                          ImporterManager *importer )
     : ImporterSqlProvider( config, importer )
 {
 }
@@ -99,7 +93,8 @@ FastForwardProvider::getArtistTracks( const QString &artistName, QSqlDatabase db
         for( int i = 0; i < fields.size(); ++i )
             metadata.insert( fields[i], query.value( i + 1 ) );
 
-        result << TrackPtr( new FastForwardTrack( metadata, trackUrl, m_connectionName ) );
+        result << TrackPtr( new FastForwardTrack( metadata, trackUrl,
+                                                  m_connectionName ) );
     }
 
     return result;

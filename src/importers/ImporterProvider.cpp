@@ -21,8 +21,7 @@
 
 using namespace StatSyncing;
 
-ImporterProvider::ImporterProvider( const QVariantMap &config,
-                                    ImporterManager *manager )
+ImporterProvider::ImporterProvider( const QVariantMap &config, ImporterManager *manager )
     : m_config( config )
     , m_manager( manager )
 {
@@ -40,7 +39,7 @@ ImporterProvider::~ImporterProvider()
 QString
 StatSyncing::ImporterProvider::id() const
 {
-    return m_config["uid"].toString();
+    return m_config.value( "uid" ).toString();
 }
 
 QString
@@ -58,7 +57,7 @@ ImporterProvider::icon() const
 QString
 ImporterProvider::prettyName() const
 {
-    return m_config["name"].toString();
+    return m_config.value( "name" ).toString();
 }
 
 bool
@@ -77,7 +76,7 @@ ImporterProvider::configWidget()
 void
 ImporterProvider::reconfigure( const QVariantMap &config )
 {
-    if( config["uid"] == m_config["uid"] )
+    if( config.value( "uid" ) == m_config.value( "uid" ) )
         emit reconfigurationRequested( config );
     else
         warning() << __PRETTY_FUNCTION__ << "reconfigure called with different provider"

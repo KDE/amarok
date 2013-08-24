@@ -19,8 +19,6 @@
 
 #include "statsyncing/SimpleTrack.h"
 
-#include "MetaValues.h"
-
 #include <QMutex>
 
 namespace StatSyncing

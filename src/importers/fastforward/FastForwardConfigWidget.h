@@ -44,7 +44,6 @@ public:
     };
 
 private:
-
     void populateFields();
 
     const QVariantMap m_config;

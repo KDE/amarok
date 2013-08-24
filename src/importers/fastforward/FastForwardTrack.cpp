@@ -18,7 +18,8 @@
 
 #include "core/support/Debug.h"
 
-#include <QCoreApplication>
+#include <ThreadWeaver/Thread>
+
 #include <QMutexLocker>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -82,7 +83,7 @@ FastForwardTrack::assureStatisticsRetrieved() const
         return;
 
     const Qt::ConnectionType connectionType =
-            this->thread() == QCoreApplication::instance()->thread()
+            this->thread() == ThreadWeaver::Thread::currentThread()
             ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
     QMetaObject::invokeMethod( const_cast<FastForwardTrack*>( this ),

@@ -59,7 +59,7 @@ ITunesManager::description() const
 KIcon
 ITunesManager::icon() const
 {
-    return KIcon( "media-album-track" ); //TODO
+    return KIcon( "media-album-track" );
 }
 
 ProviderConfigWidget*

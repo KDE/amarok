@@ -19,6 +19,8 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 
+#include <QStringList>
+
 #include <qtest_kde.h>
 
 QTEST_KDEMAIN_CORE( TestImporterManager )

@@ -24,8 +24,6 @@ namespace StatSyncing
 
 class RhythmboxManager : public ImporterManager
 {
-    Q_OBJECT
-
 public:
     RhythmboxManager( QObject *parent, const QVariantList &args );
     ~RhythmboxManager();

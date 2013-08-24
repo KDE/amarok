@@ -18,6 +18,7 @@
 #define STATSYNCING_RHYTHMBOX_PROVIDER_H
 
 #include "importers/ImporterProvider.h"
+#include "statsyncing/SimpleTrack.h"
 
 class QXmlStreamReader;
 
@@ -26,8 +27,6 @@ namespace StatSyncing
 
 class RhythmboxProvider : public ImporterProvider
 {
-    Q_OBJECT
-
 public:
     RhythmboxProvider( const QVariantMap &config, ImporterManager *importer );
     ~RhythmboxProvider();
@@ -45,6 +44,15 @@ private:
 
     QSet<QString> m_artists;
     TrackList m_artistTracks;
+};
+
+class RhythmboxTrack : public SimpleTrack
+{
+public:
+    RhythmboxTrack( const Meta::FieldHash &metadata );
+    ~RhythmboxTrack();
+
+    int rating() const;
 };
 
 } // namespace StatSyncing

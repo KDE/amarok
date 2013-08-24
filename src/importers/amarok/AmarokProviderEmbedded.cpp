@@ -16,7 +16,6 @@
 
 #include "AmarokProviderEmbedded.h"
 
-#include "MetaValues.h"
 #include "core/support/Debug.h"
 
 #include <ThreadWeaver/Thread>
@@ -26,6 +25,7 @@
 #include <QFileSystemWatcher>
 #include <QMutexLocker>
 #include <QSqlDatabase>
+#include <QStringList>
 #include <QTemporaryFile>
 
 using namespace StatSyncing;
@@ -114,9 +114,12 @@ AmarokProviderEmbedded::startServer( const int port, const QString &socketPath,
     QTimer timer;
 
     // Set conditions on which we stop waiting for the startup
-    connect( &timer,   SIGNAL(timeout()),                     &loop, SLOT(quit()), Qt::QueuedConnection );
-    connect( &watcher, SIGNAL(fileChanged(QString)),          &loop, SLOT(quit()), Qt::QueuedConnection );
-    connect( &m_srv,   SIGNAL(error(QProcess::ProcessError)), &loop, SLOT(quit()), Qt::QueuedConnection );
+    connect( &timer,   SIGNAL(timeout()),
+             &loop,    SLOT(quit()), Qt::QueuedConnection );
+    connect( &watcher, SIGNAL(fileChanged(QString)),
+             &loop,    SLOT(quit()), Qt::QueuedConnection );
+    connect( &m_srv,   SIGNAL(error(QProcess::ProcessError)),
+             &loop,    SLOT(quit()), Qt::QueuedConnection );
 
     // Important: we use modification of pidfile as a cue that the server is ready
     // This is consistent with behavior of mysqld startup scripts

@@ -71,7 +71,6 @@ set( testitunesimporter_SRCS
     ${AMAROK_SOURCE_TREE}/importers/itunes/ITunesConfigWidget.cpp
     ${AMAROK_SOURCE_TREE}/importers/itunes/ITunesManager.cpp
     ${AMAROK_SOURCE_TREE}/importers/itunes/ITunesProvider.cpp
-    ${AMAROK_SOURCE_TREE}/importers/itunes/ITunesTrack.cpp
 )
 kde4_add_ui_files( testitunesimporter_SRCS ${AMAROK_SOURCE_TREE}/importers/itunes/ITunesConfigWidget.ui )
 
@@ -89,7 +88,6 @@ set( testrhytmboximporter_SRCS
     ${AMAROK_SOURCE_TREE}/importers/rhythmbox/RhythmboxConfigWidget.cpp
     ${AMAROK_SOURCE_TREE}/importers/rhythmbox/RhythmboxManager.cpp
     ${AMAROK_SOURCE_TREE}/importers/rhythmbox/RhythmboxProvider.cpp
-    ${AMAROK_SOURCE_TREE}/importers/rhythmbox/RhythmboxTrack.cpp
 )
 kde4_add_ui_files( testrhytmboximporter_SRCS ${AMAROK_SOURCE_TREE}/importers/rhythmbox/RhythmboxConfigWidget.ui )
 

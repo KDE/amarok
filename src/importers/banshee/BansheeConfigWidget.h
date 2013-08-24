@@ -23,11 +23,8 @@
 namespace StatSyncing
 {
 
-class BansheeConfigWidget : public ProviderConfigWidget,
-        public Ui::BansheeConfigWidget
+class BansheeConfigWidget : public ProviderConfigWidget, public Ui::BansheeConfigWidget
 {
-    Q_OBJECT
-
 public:
     BansheeConfigWidget( const QVariantMap &config, QWidget *parent = 0,
                          Qt::WindowFlags f = 0 );

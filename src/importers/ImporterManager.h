@@ -69,8 +69,8 @@ public:
 
     /**
      * Basic implementation for StatSyncing::ProviderFactory createConfigWidget() method,
-     * used for configuring new providers. By default calls @see getConfigWidget with empty
-     * config.
+     * used for configuring new providers. By default calls @see getConfigWidget with
+     * empty config parameter.
      */
     virtual ProviderConfigWidget *createConfigWidget();
 
@@ -78,7 +78,7 @@ public:
      * Returns a configuration widget prepopulated with given config values.
      */
     virtual ProviderConfigWidget *configWidget( const QVariantMap &config
-                                                                   = QVariantMap() ) = 0;
+                                                                    = QVariantMap() ) = 0;
 public slots:
     /**
      * Creates a new provider by calling newInstance and saves the config to the disk.

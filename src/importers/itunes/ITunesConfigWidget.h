@@ -23,11 +23,8 @@
 namespace StatSyncing
 {
 
-class ITunesConfigWidget : public ProviderConfigWidget,
-        public Ui::ITunesConfigWidget
+class ITunesConfigWidget : public ProviderConfigWidget, public Ui::ITunesConfigWidget
 {
-    Q_OBJECT
-
 public:
     ITunesConfigWidget( const QVariantMap &config, QWidget *parent = 0,
                         Qt::WindowFlags f = 0 );

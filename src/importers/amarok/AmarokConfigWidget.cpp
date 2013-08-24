@@ -22,7 +22,7 @@
 using namespace StatSyncing;
 
 AmarokConfigWidget::AmarokConfigWidget( const QVariantMap &config,
-                                                  QWidget *parent, Qt::WindowFlags f )
+                                        QWidget *parent, Qt::WindowFlags f )
     : ProviderConfigWidget( parent, f )
     , m_config( config )
 {

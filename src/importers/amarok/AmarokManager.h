@@ -24,8 +24,6 @@ namespace StatSyncing
 
 class AmarokManager : public ImporterManager
 {
-    Q_OBJECT
-
 public:
     AmarokManager( QObject *parent, const QVariantList &args );
     ~AmarokManager();

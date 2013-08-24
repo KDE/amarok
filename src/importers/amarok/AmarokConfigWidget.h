@@ -23,8 +23,7 @@
 namespace StatSyncing
 {
 
-class AmarokConfigWidget : public ProviderConfigWidget,
-        public Ui::AmarokConfigWidget
+class AmarokConfigWidget : public ProviderConfigWidget, public Ui::AmarokConfigWidget
 {
     Q_OBJECT
 

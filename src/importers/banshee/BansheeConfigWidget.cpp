@@ -19,7 +19,7 @@
 using namespace StatSyncing;
 
 BansheeConfigWidget::BansheeConfigWidget( const QVariantMap &config, QWidget *parent,
-                                        Qt::WindowFlags f )
+                                          Qt::WindowFlags f )
     : ProviderConfigWidget( parent, f )
     , m_config( config )
 {

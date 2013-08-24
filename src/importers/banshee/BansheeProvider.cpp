@@ -62,12 +62,12 @@ BansheeProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
 {
     QSqlQuery query( db );
     query.setForwardOnly( true );
-    query.prepare( "SELECT t.Title, ar.Name, al.Title, t.Composer, t.Year, t.TrackNumber, "
-                   "t.Disc, t.Rating, t.LastPlayedStamp, t.PlayCount "
+    query.prepare( "SELECT t.Title, ar.Name, al.Title, t.Composer, t.Year, "
+                   "t.TrackNumber, t.Disc, t.Rating, t.LastPlayedStamp, t.PlayCount "
                    "FROM coretracks t "
                    "INNER JOIN coreartists ar USING(ArtistID) "
                    "LEFT JOIN corealbums al USING(AlbumID) "
-                   "WHERE ar.Name = ?");
+                   "WHERE ar.Name = ?" );
     query.addBindValue( artistName );
     query.exec();
 

@@ -24,8 +24,6 @@ namespace StatSyncing
 
 class FastForwardManager : public ImporterManager
 {
-    Q_OBJECT
-
 public:
     FastForwardManager( QObject *parent, const QVariantList &args );
     ~FastForwardManager();

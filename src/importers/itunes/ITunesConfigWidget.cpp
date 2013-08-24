@@ -26,7 +26,7 @@ ITunesConfigWidget::ITunesConfigWidget( const QVariantMap &config, QWidget *pare
     setupUi( this );
 
     m_targetName->setText( m_config.value( "name", "iTunes" ).toString() );
-    m_databaseLocation->setText( m_config.value( "dbPath", "" ).toString() );
+    m_databaseLocation->setText( m_config.value( "dbPath" ).toString() );
 }
 
 ITunesConfigWidget::~ITunesConfigWidget()
