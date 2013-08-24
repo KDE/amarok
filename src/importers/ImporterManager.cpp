@@ -137,7 +137,7 @@ ImporterManager::createProvider( QVariantMap config )
     group = Amarok::config( "Importers." + id() + "." + provider->id() );
     group.deleteGroup();
     foreach( const QString &key, provider->m_config.keys() )
-        group.writeEntry( key, provider->m_config[key] );
+        group.writeEntry( key, provider->m_config.value( key ) );
     group.sync();
 
     return provider;
