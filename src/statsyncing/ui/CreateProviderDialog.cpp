@@ -59,16 +59,18 @@ CreateProviderDialog::~CreateProviderDialog()
 }
 
 void
-CreateProviderDialog::addProviderType( QString id, QString prettyName, KIcon icon,
-                                         ProviderConfigWidget *configWidget )
+CreateProviderDialog::addProviderType( const QString &id, const QString &prettyName,
+                                       const KIcon &icon,
+                                       ProviderConfigWidget *configWidget )
 {
     QRadioButton *providerTypeButton = new QRadioButton;
     providerTypeButton->setText( prettyName );
     providerTypeButton->setIcon( icon );
 
     m_providerButtons.addButton( providerTypeButton );
-    m_layout->addWidget( providerTypeButton );
     m_idForButton.insert( providerTypeButton, id );
+
+    m_layout->insertWidget( buttonInsertPosition( prettyName ), providerTypeButton );
 
     KPageWidgetItem *configPage =
             new KPageWidgetItem( configWidget, i18n( "Configure Target" ) );
@@ -81,6 +83,22 @@ CreateProviderDialog::addProviderType( QString id, QString prettyName, KIcon ico
 
     if( !m_providerButtons.checkedButton() )
         providerTypeButton->setChecked( true );
+}
+
+int
+CreateProviderDialog::buttonInsertPosition( const QString &prettyName )
+{
+    for( int i = 0; i < m_layout->count(); ++i )
+    {
+        const QRadioButton * const button =
+                dynamic_cast<const QRadioButton*>( m_layout->itemAt( i )->widget() );
+
+        if( button != 0 && prettyName.localeAwareCompare( button->text() ) <= 0 )
+            return i;
+    }
+
+    // Nothing found, place the button at the end
+    return -1;
 }
 
 void
