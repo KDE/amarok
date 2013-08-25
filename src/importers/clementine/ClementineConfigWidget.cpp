@@ -18,8 +18,8 @@
 
 using namespace StatSyncing;
 
-ClementineConfigWidget::ClementineConfigWidget( const QVariantMap &config, QWidget *parent,
-                                        Qt::WindowFlags f )
+ClementineConfigWidget::ClementineConfigWidget( const QVariantMap &config,
+                                                QWidget *parent, Qt::WindowFlags f )
     : ProviderConfigWidget( parent, f )
     , m_config( config )
 {

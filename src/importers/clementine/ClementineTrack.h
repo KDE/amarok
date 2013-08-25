@@ -25,7 +25,7 @@ namespace StatSyncing
 class ClementineTrack : public SimpleTrack
 {
 public:
-    ClementineTrack( const Meta::FieldHash &metadata );
+    explicit ClementineTrack( const Meta::FieldHash &metadata );
     ~ClementineTrack();
 
     int year() const;

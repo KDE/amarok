@@ -16,6 +16,7 @@
 
 #include "RhythmboxProvider.h"
 
+#include "RhythmboxTrack.h"
 #include "core/support/Debug.h"
 
 #include <QFile>
@@ -163,20 +164,3 @@ RhythmboxProvider::readValue( QXmlStreamReader &xml )
 {
     return xml.readElementText();
 }
-
-
-RhythmboxTrack::RhythmboxTrack( const Meta::FieldHash &metadata )
-    : SimpleTrack( metadata )
-{
-}
-
-RhythmboxTrack::~RhythmboxTrack()
-{
-}
-
-int
-RhythmboxTrack::rating() const
-{
-    return SimpleTrack::rating() * 2;
-}
-

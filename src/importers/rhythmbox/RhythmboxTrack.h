@@ -14,46 +14,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_FAST_FORWARD_CONFIG_WIDGET_H
-#define STATSYNCING_FAST_FORWARD_CONFIG_WIDGET_H
+#ifndef STATSYNCING_RHYTHMBOX_TRACK_H
+#define STATSYNCING_RHYTHMBOX_TRACK_H
 
-#include "statsyncing/Provider.h"
-#include "ui_FastForwardConfigWidget.h"
+#include "statsyncing/SimpleTrack.h"
 
 namespace StatSyncing
 {
 
-class FastForwardConfigWidget : public ProviderConfigWidget,
-        public Ui::FastForwardConfigWidget
+class RhythmboxTrack : public SimpleTrack
 {
-    Q_OBJECT
-    Q_ENUMS( Driver )
-
 public:
-    explicit FastForwardConfigWidget( const QVariantMap &config, QWidget *parent = 0,
-                                      Qt::WindowFlags f = 0 );
-    ~FastForwardConfigWidget();
+    explicit RhythmboxTrack( const Meta::FieldHash &metadata );
+    ~RhythmboxTrack();
 
-    QVariantMap config() const;
-
-    enum Driver
-    {
-        QMYSQL,
-        QPSQL,
-        QSQLITE
-    };
-
-private:
-    void populateFields();
-
-    const QVariantMap m_config;
-    QList<QWidget*> m_externalDbSettings;
-    QList<QWidget*> m_embeddedDbSettings;
-
-private slots:
-    void connectionTypeChanged( const int index );
+    int rating() const;
 };
 
 } // namespace StatSyncing
 
-#endif // STATSYNCING_FAST_FORWARD_CONFIG_WIDGET_H
+#endif // STATSYNCING_RHYTHMBOX_TRACK_H

@@ -18,7 +18,6 @@
 #define STATSYNCING_ITUNES_PROVIDER_H
 
 #include "importers/ImporterProvider.h"
-#include "statsyncing/SimpleTrack.h"
 
 class QXmlStreamReader;
 
@@ -45,16 +44,6 @@ private:
 
     QSet<QString> m_artists;
     TrackList m_artistTracks;
-};
-
-class ITunesTrack : public SimpleTrack
-{
-public:
-    explicit ITunesTrack( const Meta::FieldHash &metadata );
-    ~ITunesTrack();
-
-    int rating() const;
-    QDateTime lastPlayed() const;
 };
 
 } // namespace StatSyncing

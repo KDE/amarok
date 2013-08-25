@@ -16,6 +16,7 @@
 
 #include "ITunesProvider.h"
 
+#include "ITunesTrack.h"
 #include "core/support/Debug.h"
 
 #include <QFile>
@@ -187,27 +188,4 @@ ITunesProvider::readValue( QXmlStreamReader &xml )
     xml.readNextStartElement();
     Q_ASSERT( xml.isStartElement() );
     return xml.readElementText();
-}
-
-
-ITunesTrack::ITunesTrack( const Meta::FieldHash &metadata )
-    : SimpleTrack( metadata )
-{
-}
-
-ITunesTrack::~ITunesTrack()
-{
-}
-
-int
-ITunesTrack::rating() const
-{
-    return SimpleTrack::rating() / 10;
-}
-
-QDateTime
-ITunesTrack::lastPlayed() const
-{
-    return QDateTime::fromString( m_metadata.value( Meta::valLastPlayed ).toString(),
-                                  "yyyy'-'MM'-'dd'T'hh':'mm':'ss'Z'" ).toLocalTime();
 }

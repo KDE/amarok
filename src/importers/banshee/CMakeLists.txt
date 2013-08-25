@@ -7,6 +7,7 @@ set( amarok_importer-banshee_PART_SRCS
     BansheeConfigWidget.cpp
     BansheeManager.cpp
     BansheeProvider.cpp
+    BansheeTrack.cpp
 )
 
 kde4_add_ui_files( amarok_importer-banshee_PART_SRCS BansheeConfigWidget.ui )

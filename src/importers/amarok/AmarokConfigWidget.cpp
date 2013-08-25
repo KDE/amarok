@@ -35,7 +35,7 @@ AmarokConfigWidget::AmarokConfigWidget( const QVariantMap &config,
                          << m_port << m_portLabel << m_username << m_usernameLabel;
 
     connect( m_connectionType, SIGNAL(currentIndexChanged(int)),
-                                                  SLOT(connectionTypeChanged(int)) );
+                                                       SLOT(connectionTypeChanged(int)) );
     populateFields();
 }
 

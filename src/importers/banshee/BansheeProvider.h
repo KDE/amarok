@@ -18,7 +18,6 @@
 #define STATSYNCING_BANSHEE_PROVIDER_H
 
 #include "importers/ImporterSqlProvider.h"
-#include "statsyncing/SimpleTrack.h"
 
 namespace StatSyncing
 {
@@ -38,15 +37,6 @@ protected:
 
 private:
     QVariantMap setDbDriver( const QVariantMap &config );
-};
-
-class BansheeTrack : public SimpleTrack
-{
-public:
-    BansheeTrack( const Meta::FieldHash &metadata );
-    ~BansheeTrack();
-
-    int rating() const;
 };
 
 } // namespace StatSyncing

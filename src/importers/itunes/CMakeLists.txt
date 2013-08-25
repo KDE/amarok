@@ -7,6 +7,7 @@ set( amarok_importer-itunes_PART_SRCS
     ITunesConfigWidget.cpp
     ITunesManager.cpp
     ITunesProvider.cpp
+    ITunesTrack.cpp
 )
 
 kde4_add_ui_files( amarok_importer-itunes_PART_SRCS ITunesConfigWidget.ui )

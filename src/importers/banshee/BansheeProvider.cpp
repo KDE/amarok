@@ -16,6 +16,8 @@
 
 #include "BansheeProvider.h"
 
+#include "BansheeTrack.h"
+
 #include <QSqlQuery>
 
 using namespace StatSyncing;
@@ -96,20 +98,4 @@ BansheeProvider::setDbDriver( const QVariantMap &config )
     QVariantMap cfg( config );
     cfg.insert( "dbDriver", "QSQLITE" );
     return cfg;
-}
-
-
-BansheeTrack::BansheeTrack( const Meta::FieldHash &metadata )
-    : SimpleTrack( metadata )
-{
-}
-
-BansheeTrack::~BansheeTrack()
-{
-}
-
-int
-BansheeTrack::rating() const
-{
-    return SimpleTrack::rating() * 2;
 }

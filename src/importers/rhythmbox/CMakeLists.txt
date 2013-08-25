@@ -7,6 +7,7 @@ set( amarok_importer-rhythmbox_PART_SRCS
     RhythmboxConfigWidget.cpp
     RhythmboxManager.cpp
     RhythmboxProvider.cpp
+    RhythmboxTrack.cpp
 )
 
 kde4_add_ui_files( amarok_importer-rhythmbox_PART_SRCS RhythmboxConfigWidget.ui )

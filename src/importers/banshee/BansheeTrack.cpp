@@ -14,46 +14,21 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_FAST_FORWARD_CONFIG_WIDGET_H
-#define STATSYNCING_FAST_FORWARD_CONFIG_WIDGET_H
+#include "BansheeTrack.h"
 
-#include "statsyncing/Provider.h"
-#include "ui_FastForwardConfigWidget.h"
+using namespace StatSyncing;
 
-namespace StatSyncing
+BansheeTrack::BansheeTrack( const Meta::FieldHash &metadata )
+    : SimpleTrack( metadata )
 {
+}
 
-class FastForwardConfigWidget : public ProviderConfigWidget,
-        public Ui::FastForwardConfigWidget
+BansheeTrack::~BansheeTrack()
 {
-    Q_OBJECT
-    Q_ENUMS( Driver )
+}
 
-public:
-    explicit FastForwardConfigWidget( const QVariantMap &config, QWidget *parent = 0,
-                                      Qt::WindowFlags f = 0 );
-    ~FastForwardConfigWidget();
-
-    QVariantMap config() const;
-
-    enum Driver
-    {
-        QMYSQL,
-        QPSQL,
-        QSQLITE
-    };
-
-private:
-    void populateFields();
-
-    const QVariantMap m_config;
-    QList<QWidget*> m_externalDbSettings;
-    QList<QWidget*> m_embeddedDbSettings;
-
-private slots:
-    void connectionTypeChanged( const int index );
-};
-
-} // namespace StatSyncing
-
-#endif // STATSYNCING_FAST_FORWARD_CONFIG_WIDGET_H
+int
+BansheeTrack::rating() const
+{
+    return SimpleTrack::rating() * 2;
+}

@@ -27,8 +27,8 @@ class RhythmboxConfigWidget : public ProviderConfigWidget,
         public Ui::RhythmboxConfigWidget
 {
 public:
-    RhythmboxConfigWidget( const QVariantMap &config, QWidget *parent = 0,
-                           Qt::WindowFlags f = 0 );
+    explicit RhythmboxConfigWidget( const QVariantMap &config, QWidget *parent = 0,
+                                    Qt::WindowFlags f = 0 );
     ~RhythmboxConfigWidget();
 
     QVariantMap config() const;

@@ -29,8 +29,8 @@ class ClementineConfigWidget : public ProviderConfigWidget,
     Q_OBJECT
 
 public:
-    ClementineConfigWidget( const QVariantMap &config, QWidget *parent = 0,
-                         Qt::WindowFlags f = 0 );
+    explicit ClementineConfigWidget( const QVariantMap &config, QWidget *parent = 0,
+                                     Qt::WindowFlags f = 0 );
     ~ClementineConfigWidget();
 
     QVariantMap config() const;
