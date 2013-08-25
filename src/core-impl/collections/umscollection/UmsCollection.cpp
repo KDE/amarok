@@ -302,7 +302,7 @@ UmsCollection::init()
     debug() << "Mounted at: " << m_mountPoint << "collection id:" << m_collectionId;
 
     // read .is_audio_player from filesystem
-    KConfig config( m_mountPoint + "/" + s_settingsFileName, KConfig::SimpleConfig );
+    KConfig config( m_mountPoint + '/' + s_settingsFileName, KConfig::SimpleConfig );
     KConfigGroup entries = config.group( QString() ); // default group
     if( entries.hasKey( s_musicFolderKey ) )
     {
@@ -313,7 +313,7 @@ UmsCollection::init()
         {
             QString message = i18n( "File <i>%1</i> suggests that we should use <i>%2</i> "
                     "as music folder on the device, but it doesn't exist. Falling back to "
-                    "<i>%3</i> instead", m_mountPoint + "/" + s_settingsFileName,
+                    "<i>%3</i> instead", m_mountPoint + '/' + s_settingsFileName,
                     m_musicPath.toLocalFile(), m_mountPoint );
             Amarok::Components::logger()->longMessage( message, Amarok::Logger::Warning );
             m_musicPath = m_mountPoint;
@@ -401,7 +401,7 @@ UmsCollection::prettyName() const
     {
         actualName = m_device.vendor().simplified();
         if( !actualName.isEmpty() )
-            actualName += " ";
+            actualName += ' ';
         actualName += m_device.product().simplified();
     }
 
@@ -487,7 +487,7 @@ UmsCollection::createCapabilityInterface( Capabilities::Capability::Type type )
             return new Capabilities::ActionsCapability( actions );
         }
         case Capabilities::Capability::Transcode:
-            return new UmsTranscodeCapability( m_mountPoint + "/" + s_settingsFileName,
+            return new UmsTranscodeCapability( m_mountPoint + '/' + s_settingsFileName,
                                                s_transcodingGroup );
         default:
             return 0;
@@ -705,7 +705,7 @@ UmsCollection::slotConfigure()
             QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
 
         // write the data to the on-disk file
-        KConfig config( m_mountPoint + "/" + s_settingsFileName, KConfig::SimpleConfig );
+        KConfig config( m_mountPoint + '/' + s_settingsFileName, KConfig::SimpleConfig );
         KConfigGroup entries = config.group( QString() ); // default group
         if( !m_musicPath.isEmpty() )
             entries.writePathEntry( s_musicFolderKey, KUrl::relativePath( m_mountPoint,
