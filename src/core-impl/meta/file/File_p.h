@@ -101,6 +101,7 @@ struct MetaData
 
 class Track::Private : public QObject
 {
+    Q_OBJECT
 public:
     Private( Track *t )
         : QObject()
