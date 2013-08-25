@@ -96,7 +96,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     foreach( const QString &applet, appletList )
     {
         // Currently we cannot extract the applet version number this way
-        appletString += "   " + applet + "\n";
+        appletString += "   " + applet + '\n';
     }
 
 
