@@ -14,62 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "RhythmboxManager.h"
+#include "importers/SimpleImporterManager.h"
 
 #include "RhythmboxConfigWidget.h"
 #include "RhythmboxProvider.h"
 
-using namespace StatSyncing;
-
-AMAROK_EXPORT_IMPORTER_PLUGIN( rhythmbox, RhythmboxManager )
-
-RhythmboxManager::RhythmboxManager( QObject *parent, const QVariantList &args )
-    : ImporterManager( parent, args )
-{
-}
-
-RhythmboxManager::~RhythmboxManager()
-{
-}
-
-QString
-RhythmboxManager::id() const
-{
-    return "RhythmboxImporter";
-}
-
-KPluginInfo
-RhythmboxManager::pluginInfo() const
-{
-    return KPluginInfo( "amarok_importer-rhythmbox.desktop", "services" );
-}
-
-QString
-RhythmboxManager::prettyName() const
-{
-    return i18n( "Rhythmbox" );
-}
-
-QString
-RhythmboxManager::description() const
-{
-    return i18n( "Rhythmbox Statistics Importer" );
-}
-
-KIcon
-RhythmboxManager::icon() const
-{
-    return KIcon( "view-importers-rhythmbox-amarok" );
-}
-
-ProviderConfigWidget*
-RhythmboxManager::configWidget( const QVariantMap &config )
-{
-    return new RhythmboxConfigWidget( config );
-}
-
-ImporterProviderPtr
-RhythmboxManager::newInstance( const QVariantMap &config )
-{
-    return ImporterProviderPtr( new RhythmboxProvider( config, this ) );
-}
+AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( rhythmbox,
+                                      "RhythmboxImporter",
+                                      i18n( "Rhythmbox" ),
+                                      i18n( "Rhythmbox Statistics Importer" ),
+                                      KIcon( "view-importers-rhythmbox-amarok" ),
+                                      StatSyncing::RhythmboxConfigWidget,
+                                      StatSyncing::RhythmboxProvider )

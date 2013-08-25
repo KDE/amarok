@@ -14,62 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ClementineManager.h"
+#include "importers/SimpleImporterManager.h"
 
 #include "ClementineConfigWidget.h"
 #include "ClementineProvider.h"
 
-using namespace StatSyncing;
-
-AMAROK_EXPORT_IMPORTER_PLUGIN( clementine, ClementineManager )
-
-ClementineManager::ClementineManager( QObject *parent, const QVariantList &args )
-    : ImporterManager( parent, args )
-{
-}
-
-ClementineManager::~ClementineManager()
-{
-}
-
-QString
-ClementineManager::id() const
-{
-    return "ClementineImporter";
-}
-
-KPluginInfo
-ClementineManager::pluginInfo() const
-{
-    return KPluginInfo( "amarok_importer-clementine.desktop", "services" );
-}
-
-QString
-ClementineManager::prettyName() const
-{
-    return i18n( "Clementine" );
-}
-
-QString
-ClementineManager::description() const
-{
-    return i18n( "Clementine Statistics Importer" );
-}
-
-KIcon
-ClementineManager::icon() const
-{
-    return KIcon( "view-importers-clementine-amarok" );
-}
-
-ProviderConfigWidget*
-ClementineManager::configWidget( const QVariantMap &config )
-{
-    return new ClementineConfigWidget( config );
-}
-
-ImporterProviderPtr
-ClementineManager::newInstance( const QVariantMap &config )
-{
-    return ProviderPtr( new ClementineProvider( config, this ) );
-}
+AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( clementine,
+                                      "ClementineImporter",
+                                      i18n( "Clementine" ),
+                                      i18n( "Clementine Statistics Importer" ),
+                                      KIcon( "view-importers-clementine-amarok" ),
+                                      StatSyncing::ClementineConfigWidget,
+                                      StatSyncing::ClementineProvider )

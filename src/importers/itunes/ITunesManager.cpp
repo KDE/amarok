@@ -14,62 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ITunesManager.h"
+#include "importers/SimpleImporterManager.h"
 
 #include "ITunesConfigWidget.h"
 #include "ITunesProvider.h"
 
-using namespace StatSyncing;
-
-AMAROK_EXPORT_IMPORTER_PLUGIN( itunes, ITunesManager )
-
-ITunesManager::ITunesManager( QObject *parent, const QVariantList &args )
-    : ImporterManager( parent, args )
-{
-}
-
-ITunesManager::~ITunesManager()
-{
-}
-
-QString
-ITunesManager::id() const
-{
-    return "ITunesImporter";
-}
-
-KPluginInfo
-ITunesManager::pluginInfo() const
-{
-    return KPluginInfo( "amarok_importer-itunes.desktop", "services" );
-}
-
-QString
-ITunesManager::prettyName() const
-{
-    return i18n( "Apple iTunes" );
-}
-
-QString
-ITunesManager::description() const
-{
-    return i18n( "iTunes Statistics Importer" );
-}
-
-KIcon
-ITunesManager::icon() const
-{
-    return KIcon( "media-album-track" );
-}
-
-ProviderConfigWidget*
-ITunesManager::configWidget( const QVariantMap &config )
-{
-    return new ITunesConfigWidget( config );
-}
-
-ImporterProviderPtr
-ITunesManager::newInstance( const QVariantMap &config )
-{
-    return ImporterProviderPtr( new ITunesProvider( config, this ) );
-}
+AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( itunes,
+                                      "ITunesImporter",
+                                      i18n( "Apple iTunes" ),
+                                      i18n( "iTunes Statistics Importer" ),
+                                      KIcon( "media-album-track" ),
+                                      StatSyncing::ITunesConfigWidget,
+                                      StatSyncing::ITunesProvider )

@@ -14,62 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "BansheeManager.h"
+#include "importers/SimpleImporterManager.h"
 
 #include "BansheeConfigWidget.h"
 #include "BansheeProvider.h"
 
-using namespace StatSyncing;
-
-AMAROK_EXPORT_IMPORTER_PLUGIN( banshee, BansheeManager )
-
-BansheeManager::BansheeManager( QObject *parent, const QVariantList &args )
-    : ImporterManager( parent, args )
-{
-}
-
-BansheeManager::~BansheeManager()
-{
-}
-
-QString
-BansheeManager::id() const
-{
-    return "BansheeImporter";
-}
-
-KPluginInfo
-BansheeManager::pluginInfo() const
-{
-    return KPluginInfo( "amarok_importer-banshee.desktop", "services" );
-}
-
-QString
-BansheeManager::prettyName() const
-{
-    return i18n( "Banshee" );
-}
-
-QString
-BansheeManager::description() const
-{
-    return i18n( "Banshee Statistics Importer" );
-}
-
-KIcon
-BansheeManager::icon() const
-{
-    return KIcon( "view-importers-banshee-amarok" );
-}
-
-ProviderConfigWidget*
-BansheeManager::configWidget( const QVariantMap &config )
-{
-    return new BansheeConfigWidget( config );
-}
-
-ImporterProviderPtr
-BansheeManager::newInstance( const QVariantMap &config )
-{
-    return ProviderPtr( new BansheeProvider( config, this ) );
-}
+AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( banshee,
+                                      "BansheeImporter",
+                                      i18n( "Banshee" ),
+                                      i18n( "Banshee Statistics Importer" ),
+                                      KIcon( "view-importers-banshee-amarok" ),
+                                      StatSyncing::BansheeConfigWidget,
+                                      StatSyncing::BansheeProvider )

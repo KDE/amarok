@@ -67,7 +67,7 @@
     protected: \
         KPluginInfo pluginInfo() const \
         { \
-            return KPluginInfo( "amarok_importer-" # libname # ".desktop", "services" ); \
+            return KPluginInfo( "amarok_importer-" #libname ".desktop", "services" ); \
         } \
     \
         StatSyncing::ImporterProviderPtr newInstance( const QVariantMap &config ) \
@@ -77,8 +77,6 @@
         } \
     }; \
     \
-    AMAROK_EXPORT_IMPORTER_PLUGIN( libname, libname ## ImporterManager ) \
-    \
-    } // namespace StatSyncing
+    AMAROK_EXPORT_IMPORTER_PLUGIN( libname, libname ## ImporterManager )
 
 #endif // STATSYNCING_SIMPLE_IMPORTER_MANAGER_H
