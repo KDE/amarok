@@ -54,7 +54,7 @@ FastForwardWorker::FastForwardWorker()
         QSharedPointer<Collections::CollectionLocation> location( coll->location() );
         if( location )
         {
-            foreach( QString path , location->actualLocation() )
+            foreach( const QString &path , location->actualLocation() )
             {
                 if( m_collectionFolders.contains( path ) )
                 {
@@ -455,7 +455,7 @@ FastForwardWorker::insertMiscData( const ImporterMiscDataStorage& dataForInsert 
         }
         if( !miscData.labels().isEmpty() )
         {
-            foreach( QString label, miscData.labels() )
+            foreach( const QString &label, miscData.labels() )
             {
                 track->addLabel( label );
             }

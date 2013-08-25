@@ -95,7 +95,7 @@ AacFormat::ffmpegParameters( const Configuration &configuration ) const
                                              FFmpeg's native aac implementation should get
                                              better so libfaac won't be necessary any more.
                                                             -- Teo 5/aug/2010 */
-    foreach( Property property, m_propertyList )
+    foreach( const Property &property, m_propertyList )
     {
         if( !configuration.property( property.name() ).isNull()
             && configuration.property( property.name() ).type() == property.variantType() )

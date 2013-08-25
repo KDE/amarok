@@ -256,7 +256,7 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
                   );
     QListWidget listWidget( &dialog );
     listWidget.setSelectionMode( QAbstractItemView::NoSelection );
-    foreach( KUrl url, urlsToDelete )
+    foreach( const KUrl &url, urlsToDelete )
     {
         new QListWidgetItem( url.toLocalFile(), &listWidget );
     }

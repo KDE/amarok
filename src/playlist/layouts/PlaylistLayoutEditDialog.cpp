@@ -378,7 +378,7 @@ Playlist::PlaylistLayoutEditDialog::toggleUpDownButtons()
 void
 Playlist::PlaylistLayoutEditDialog::apply()  //SLOT
 {
-    foreach( QString layoutName, m_layoutsMap->keys() )
+    foreach( const QString &layoutName, m_layoutsMap->keys() )
     {
         PlaylistLayout layout = m_layoutsMap->value( layoutName );
 
@@ -495,7 +495,7 @@ Playlist::PlaylistLayoutEditDialog::setEnabledTabs()
 void
 Playlist::PlaylistLayoutEditDialog::setupGroupByCombo()
 {
-    foreach( Playlist::Column col, Playlist::groupableCategories() )
+    foreach( const Playlist::Column &col, Playlist::groupableCategories() )
     {
         groupByComboBox->addItem( KIcon( iconName( col ) ),
                                   columnName( col ),

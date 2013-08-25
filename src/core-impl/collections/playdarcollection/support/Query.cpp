@@ -157,7 +157,7 @@ namespace Playdar
         m_album = parsedResults.value( "album" ).toString();
         m_title = parsedResults.value( "track" ).toString();
         
-        foreach( QVariant resultVariant, parsedResults.value( "results" ).toList() )
+        foreach( const QVariant &resultVariant, parsedResults.value( "results" ).toList() )
         {
             QVariantMap result = resultVariant.toMap();
             Meta::PlaydarTrackPtr aTrack;

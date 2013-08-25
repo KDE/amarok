@@ -287,7 +287,7 @@ namespace CollectionFolder {
                     // Recursive, so clear any paths in m_checked that are made
                     // redundant by this new selection
                     QString _path = normalPath( path );
-                    foreach( QString elem, m_checked )
+                    foreach( const QString &elem, m_checked )
                     {
                         if( normalPath( elem ).startsWith( _path ) )
                             m_checked.remove( elem );

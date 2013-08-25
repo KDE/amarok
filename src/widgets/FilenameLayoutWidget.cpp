@@ -365,7 +365,7 @@ FilenameLayoutWidget::populateFormatList()
 
     debug() << "--- got preset for" << m_configCategory << presets_raw;
 
-    foreach( QString str, presets_raw )
+    foreach( const QString &str, presets_raw )
     {
         QStringList items;
         items = str.split( "#DELIM#", QString::SkipEmptyParts );

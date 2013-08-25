@@ -85,7 +85,7 @@ Mp3Format::ffmpegParameters( const Configuration &configuration ) const
 {
     QStringList parameters;
     parameters << "-acodec" << "libmp3lame";
-    foreach( Property property, m_propertyList )
+    foreach( const Property &property, m_propertyList )
     {
         if( !configuration.property( property.name() ).isNull()
             && configuration.property( property.name() ).type() == property.variantType() )

@@ -293,7 +293,7 @@ Config::read()
                           Meta::valPlaycount | Meta::valLabel;
     else
     {
-        foreach( QString fieldName, fieldNames )
+        foreach( const QString &fieldName, fieldNames )
             m_checkedFields |= Meta::fieldForName( fieldName );
     }
 

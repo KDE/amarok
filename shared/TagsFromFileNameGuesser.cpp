@@ -132,7 +132,7 @@ Meta::Tag::TagGuesser::guessTags( const QString &fileName )
     if( ( pos = fileName.lastIndexOf( '/' ) ) != -1 )
             tmpStr = fileName.mid( pos + 1 );
 
-    foreach( QString scheme, m_schemes )
+    foreach( const QString &scheme, m_schemes )
     {
         Meta::FieldHash metadata = guessTagsByScheme( tmpStr, scheme, true, true, true );
         if( !metadata.isEmpty() )

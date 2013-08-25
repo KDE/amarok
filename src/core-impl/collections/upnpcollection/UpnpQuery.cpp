@@ -79,8 +79,8 @@ void UpnpQuery::endAndOr()
             m_expressions = copy;
         }
         else {
-            foreach( QString stackElem, top )
-                foreach( QString copyElem, copy )
+            foreach( const QString &stackElem, top )
+                foreach( const QString &copyElem, copy )
                     m_expressions.append( stackElem + " and " + copyElem );
         }
     }

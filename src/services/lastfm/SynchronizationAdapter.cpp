@@ -193,7 +193,7 @@ SynchronizationAdapter::slotArtistsReceived()
     debug() << __PRETTY_FUNCTION__ << "page" << page << "of" << totalPages;
 
     // following is based on lastfm::Artist::list():
-    foreach( lastfm::XmlQuery xq, lfm.children( "artist" ) )
+    foreach( const lastfm::XmlQuery &xq, lfm.children( "artist" ) )
     {
         lastfm::Artist artist( xq );
         m_artists.insert( artist.name() );
@@ -247,7 +247,7 @@ SynchronizationAdapter::slotTracksReceived()
     }
 
     // following is based on lastfm::Track::list():
-    foreach( lastfm::XmlQuery xq, lfm.children( "track" ) )
+    foreach( const lastfm::XmlQuery &xq, lfm.children( "track" ) )
     {
         QString name = xq[ "name" ].text();
         int playCount = xq[ "playcount" ].text().toInt();
@@ -290,7 +290,7 @@ SynchronizationAdapter::slotTagsReceived()
         return;
     }
     QSet<QString> tags;
-    foreach( lastfm::XmlQuery xq, lfm.children( "tag" ) )
+    foreach( const lastfm::XmlQuery &xq, lfm.children( "tag" ) )
     {
         tags.insert( xq[ "name" ].text() );
     }

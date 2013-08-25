@@ -1297,7 +1297,7 @@ EngineController::slotMetaDataChanged()
             << FieldPair( Phonon::GenreMetaData, Meta::Field::GENRE )
             << FieldPair( Phonon::TracknumberMetaData, Meta::Field::TRACKNUMBER )
             << FieldPair( Phonon::DescriptionMetaData, Meta::Field::COMMENT );
-    foreach( FieldPair pair, fieldPairs )
+    foreach( const FieldPair &pair, fieldPairs )
     {
         QStringList values = m_media.data()->metaData( pair.first );
         if( !values.isEmpty() )

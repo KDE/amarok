@@ -96,7 +96,7 @@ void UpnpBrowseCollection::invalidateTracksIn( const QString &dir )
      * If performance is really affected we can use some
      * kind of a prefix tree instead of a hash.
      */
-    foreach( QString key, m_tracksInContainer.keys() ) {
+    foreach( const QString &key, m_tracksInContainer.keys() ) {
         if( key.startsWith( dir ) ) {
             debug() << key << " matches " << dir;
             foreach( TrackPtr track, m_tracksInContainer[dir] ) {
@@ -157,7 +157,7 @@ UpnpBrowseCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
     DEBUG_BLOCK;
     int count = 0;
     KIO::SimpleJob *sj = static_cast<KIO::SimpleJob *>( job );
-    foreach( KIO::UDSEntry entry, list ) {
+    foreach( const KIO::UDSEntry &entry, list ) {
         if( entry.contains( KIO::UPNP_CLASS )
             && entry.stringValue( KIO::UPNP_CLASS ).startsWith( "object.item.audioItem" ) ) {
             createTrack( entry, sj->url().prettyUrl() );

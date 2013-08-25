@@ -277,7 +277,7 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
         debug() << "Warning, newCollection in slotNewCollection is 0";
         return;
     }
-    foreach( CollectionPair p, d->collections )
+    foreach( const CollectionPair &p, d->collections )
     {
         if( p.first == newCollection )
         {
