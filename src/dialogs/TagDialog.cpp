@@ -1017,7 +1017,7 @@ TagDialog::getTagsFromMultipleTracks() const
         mismatchingTags |= tags.keys().toSet() - map.keys().toSet();
 
         // - not the same in every file
-        foreach( QString key, (map.keys().toSet() & tags.keys().toSet()) )
+        foreach( const QString &key, (map.keys().toSet() & tags.keys().toSet()) )
         {
             if( map.value( key ) != tags.value( key ) )
                 mismatchingTags.insert( key );

@@ -91,7 +91,7 @@ VorbisFormat::ffmpegParameters( const Configuration &configuration ) const
     QStringList parameters;
     parameters << "-acodec" << "libvorbis";   //libvorbis is better than FFmpeg's
                                               //vorbis implementation in many ways
-    foreach( Property property, m_propertyList )
+    foreach( const Property &property, m_propertyList )
     {
         if( !configuration.property( property.name() ).isNull()
             && configuration.property( property.name() ).type() == property.variantType() )

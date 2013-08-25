@@ -119,8 +119,7 @@ void NetworkAccessViewer::requestFinished( QObject *replyObject )
 
     // Record the reply headers
     QList<QByteArray> headerValues;
-    QByteArray header;
-    foreach( header, reply->rawHeaderList() ) {
+    foreach( const QByteArray &header, reply->rawHeaderList() ) {
         headerValues += reply->rawHeader( header );
     }
     QPair< QList<QByteArray>, QList<QByteArray> > replyHeaders;

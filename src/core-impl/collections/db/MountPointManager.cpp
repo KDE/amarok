@@ -342,7 +342,7 @@ MountPointManager::deviceAdded( const QString &udi )
     //takes any time, so just be safe
     bool found = false;
     debug() << "looking for udi " << udi;
-    foreach( Solid::Device device, devices )
+    foreach( const Solid::Device &device, devices )
     {
         if( device.udi() == udi )
         {

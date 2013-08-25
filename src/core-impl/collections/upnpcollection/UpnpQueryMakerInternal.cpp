@@ -92,7 +92,7 @@ void UpnpQueryMakerInternal::runStat( const QString& id )
 void UpnpQueryMakerInternal::slotEntries( KIO::Job *job, const KIO::UDSEntryList &list )
 {
     debug() << "+-+- JOB DONE" << static_cast<KIO::SimpleJob*>(job)->url() << job->error();
-    foreach( KIO::UDSEntry entry, list )
+    foreach( const KIO::UDSEntry &entry, list )
         debug() << "GOT ENTRY " << entry.stringValue( KIO::UDSEntry::UDS_NAME );
     // actually iterate over the list, check for cache hits
     // if hit, get the relevant Meta::*Ptr object and pass it on
@@ -167,7 +167,7 @@ void UpnpQueryMakerInternal::slotStatDone( KJob *job )
 void UpnpQueryMakerInternal::handleArtists( const KIO::UDSEntryList &list )
 {
     Meta::ArtistList ret;
-    foreach( KIO::UDSEntry entry, list ) {
+    foreach( const KIO::UDSEntry &entry, list ) {
         if( entry.stringValue( KIO::UPNP_CLASS ) == "object.container.person.musicArtist" ) {
             debug() << this << "ARTIST" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME );
             ret << m_collection->cache()->getArtist( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) );
@@ -189,7 +189,7 @@ void UpnpQueryMakerInternal::handleAlbums( const KIO::UDSEntryList &list )
 DEBUG_BLOCK
     debug() << "HANDLING ALBUMS" << list.length();
     Meta::AlbumList ret;
-    foreach( KIO::UDSEntry entry, list ) {
+    foreach( const KIO::UDSEntry &entry, list ) {
         if( entry.stringValue( KIO::UPNP_CLASS ) == "object.container.album.musicAlbum" ) {
             debug() << this << "ALBUM" << entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ) << entry.stringValue(KIO::UPNP_ARTIST);
             ret << m_collection->cache()->getAlbum( entry.stringValue( KIO::UDSEntry::UDS_DISPLAY_NAME ), entry.stringValue( KIO::UPNP_ARTIST ) );
@@ -211,7 +211,7 @@ void UpnpQueryMakerInternal::handleTracks( const KIO::UDSEntryList &list )
 DEBUG_BLOCK
     debug() << "HANDLING TRACKS" << list.length();
     Meta::TrackList ret;
-    foreach( KIO::UDSEntry entry, list ) {
+    foreach( const KIO::UDSEntry &entry, list ) {
         // If we did a list job with an attempt to check the cache (ie. no meta-data requested from server )
         // we might have an incomplete cache entry for the track.
         // if we have an incomplete entry, we queue a stat job which fetches

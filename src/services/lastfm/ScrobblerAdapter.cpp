@@ -43,7 +43,7 @@ ScrobblerAdapter::ScrobblerAdapter( const QString &clientId, const LastFmService
     // tries to write the track cache, it fails silently. Last check: liblastfm 1.0.!
     QList<QDir> dirs;
     dirs << lastfm::dir::runtimeData() << lastfm::dir::cache() << lastfm::dir::logs();
-    foreach( QDir dir, dirs )
+    foreach( const QDir &dir, dirs )
     {
         if( !dir.exists() )
         {

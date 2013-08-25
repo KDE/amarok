@@ -157,7 +157,7 @@ bool UpnpCollectionFactory::cagibi0_2_0Init( QDBusConnection bus )
 
 void UpnpCollectionFactory::slotDeviceAdded( const DeviceTypeMap &map )
 {
-    foreach( QString udn, map.keys() ) {
+    foreach( const QString &udn, map.keys() ) {
         QString type = map[udn];
         debug() << "|||| DEVICE" << udn << type;
         if( type.startsWith("urn:schemas-upnp-org:device:MediaServer") )
@@ -214,7 +214,7 @@ bool UpnpCollectionFactory::cagibi0_2_0DeviceDetails( const QString &udn, Device
         return false;
     }
 
-    foreach( QString k, reply.value().keys() )
+    foreach( const QString &k, reply.value().keys() )
         debug() << k << reply.value()[k];
     DeviceInfo0_2_0 v( reply.value() );
     *info = v;
@@ -225,7 +225,7 @@ void UpnpCollectionFactory::slotSearchEntries( KIO::Job *job, const KIO::UDSEntr
 {
     Q_UNUSED( job );
     KIO::ListJob *lj = static_cast<KIO::ListJob*>( job );
-    foreach( KIO::UDSEntry entry, list )
+    foreach( const KIO::UDSEntry &entry, list )
         m_capabilities[lj->url().host()] << entry.stringValue( KIO::UDSEntry::UDS_NAME );
 }
 

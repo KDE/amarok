@@ -31,13 +31,13 @@ KConfigSyncRelStore::KConfigSyncRelStore()
 {
     DEBUG_BLOCK
 
-    foreach( QString key, syncedPlaylistsConfig().keyList() )
+    foreach( const QString &key, syncedPlaylistsConfig().keyList() )
     {
         KUrl masterUrl( key );
 
         m_syncMasterMap.insert( masterUrl, SyncedPlaylistPtr() );
 
-        foreach( QString value, syncedPlaylistsConfig().readEntry( key ).split( ',' ) )
+        foreach( const QString &value, syncedPlaylistsConfig().readEntry( key ).split( ',' ) )
         {
             m_syncSlaveMap.insert( KUrl( value ), masterUrl );
         }

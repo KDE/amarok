@@ -175,7 +175,7 @@ DaapCollectionFactory::slotCollectionDownloadFailed()
     if( !collection )
         return;
     disconnect( collection, SIGNAL(collectionReady()), this, SLOT(slotCollectionReady()) );
-    foreach( QWeakPointer< DaapCollection > it, m_collectionMap )
+    foreach( const QWeakPointer< DaapCollection > &it, m_collectionMap )
     {
         if( it.data() == collection )
         {

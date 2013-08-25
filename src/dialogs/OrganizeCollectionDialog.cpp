@@ -253,7 +253,7 @@ OrganizeCollectionDialog::commonPrefix( const QStringList &list ) const
     while( length > 0 )
     {
         bool found = true;
-        foreach( QString string, list )
+        foreach( const QString &string, list )
         {
             if( string.left(length).toLower() != option )
             {

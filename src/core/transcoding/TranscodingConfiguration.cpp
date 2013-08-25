@@ -59,7 +59,7 @@ Configuration::fromConfigGroup( const KConfigGroup &serialized )
         return ret; // return ret, so that its trackSelection value may be used
 
     Format *format = controller->format( ret.encoder() );
-    foreach( Property property, format->propertyList() )
+    foreach( const Property &property, format->propertyList() )
     {
         QString key = QString( "Parameter ").append( property.name() );
         QVariant value = serialized.readEntry( key, QString() /* does not work with QVariant() */ );

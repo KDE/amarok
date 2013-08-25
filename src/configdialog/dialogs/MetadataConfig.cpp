@@ -161,7 +161,7 @@ MetadataConfig::slotForgetCollections()
 {
     if( !m_statSyncingConfig )
         return;
-    foreach( QModelIndex idx, m_statSyncingProvidersView->selectionModel()->selectedIndexes() )
+    foreach( const QModelIndex &idx, m_statSyncingProvidersView->selectionModel()->selectedIndexes() )
     {
         QString id = idx.data( StatSyncing::Config::ProviderIdRole ).toString();
         m_statSyncingConfig.data()->forgetProvider( id );

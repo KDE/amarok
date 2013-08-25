@@ -338,7 +338,7 @@ IpodPlaylistProvider::slotCopyAndInsertToPlaylists()
 void IpodPlaylistProvider::copyAndInsertToPlaylist( const TrackPositionList &tracks, Playlists::PlaylistPtr destPlaylist )
 {
     QMap<Collections::Collection*, TrackPositionList> sourceCollections;
-    foreach( TrackPosition pair, tracks )
+    foreach( const TrackPosition &pair, tracks )
     {
         Collections::Collection *coll = pair.first->collection();
         if( coll == m_coll )
@@ -354,7 +354,7 @@ void IpodPlaylistProvider::copyAndInsertToPlaylist( const TrackPositionList &tra
     {
         Meta::TrackList sourceTracks;
         QMap<Meta::TrackPtr, int> trackPlaylistPositions;
-        foreach( TrackPosition pair, sourceCollections.value( coll ) )
+        foreach( const TrackPosition &pair, sourceCollections.value( coll ) )
         {
             sourceTracks << pair.first;
             trackPlaylistPositions.insert( pair.first, pair.second );

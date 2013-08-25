@@ -139,7 +139,7 @@ Meta::TrackList IpodParseTracksJob::findOrphanedTracks(const QSet< QString >& kn
     musicDirChar = 0;
 
     QStringList trackPatterns;
-    foreach( QString suffix, m_coll->supportedFormats() )
+    foreach( const QString &suffix, m_coll->supportedFormats() )
     {
         trackPatterns << QString( "*.%1" ).arg( suffix );
     }
@@ -151,7 +151,7 @@ Meta::TrackList IpodParseTracksJob::findOrphanedTracks(const QSet< QString >& kn
         if( m_aborted )
             return Meta::TrackList();
         subdir = musicDir.absoluteFilePath( subdir ); // make the path absolute
-        foreach( QFileInfo info, QDir( subdir ).entryInfoList( trackPatterns ) )
+        foreach( const QFileInfo &info, QDir( subdir ).entryInfoList( trackPatterns ) )
         {
             QString canonPath = info.canonicalFilePath();
             if( knownPaths.contains( canonPath ) )

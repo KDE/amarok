@@ -207,7 +207,7 @@ CollectionScanner::Scanner::doJob() //SLOT
     }
 
     // --- now do the scanning
-    foreach( QString path, entries )
+    foreach( const QString &path, entries )
     {
         CollectionScanner::Directory dir( path, &m_scanningState,
                                           m_incremental && !isModified( path ) );

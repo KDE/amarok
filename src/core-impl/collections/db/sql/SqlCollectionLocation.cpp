@@ -88,7 +88,7 @@ SqlCollectionLocation::isWritable() const
     bool path_exists_with_space = false;
     bool path_exists_writable = false;
     QStringList folders = actualLocation();
-    foreach(QString path, folders)
+    foreach( const QString &path, folders )
     {
         float used = KDiskFreeSpaceInfo::freeSpaceInfo( path ).used();
         float total = KDiskFreeSpaceInfo::freeSpaceInfo( path ).size();

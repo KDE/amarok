@@ -512,7 +512,7 @@ QString UpnpQueryMaker::propertyForValue( qint64 value )
 bool UpnpQueryMaker::postFilter( const KIO::UDSEntry &entry )
 {
     //numeric filters
-    foreach( NumericFilter filter, m_numericFilters ) {
+    foreach( const NumericFilter &filter, m_numericFilters ) {
         // should be set by the filter based on filter.type
         qint64 aValue = 0;
 

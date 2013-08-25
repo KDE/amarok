@@ -34,7 +34,7 @@ OptionsStackedWidget::OptionsStackedWidget( QWidget *parent )
     : QStackedWidget( parent )
 {
     initWelcomePage();
-    foreach( Encoder encoder, Amarok::Components::transcodingController()->availableEncoders() )
+    foreach( const Encoder &encoder, Amarok::Components::transcodingController()->availableEncoders() )
     {
         Format *format = Amarok::Components::transcodingController()->format( encoder );
         m_pagesMap.insert( encoder, initCodecPage( format ) );
