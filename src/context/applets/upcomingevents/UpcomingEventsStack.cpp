@@ -92,7 +92,7 @@ UpcomingEventsStack::clear()
         QGraphicsLayoutItem *child = d->layout->itemAt( 0 );
         d->layout->removeItem( child );
     }
-    foreach( QWeakPointer<UpcomingEventsStackItem> item, d->items.values() )
+    foreach( QWeakPointer<UpcomingEventsStackItem> item, d->items )
         item.data()->deleteLater();
     d->items.clear();
 }
