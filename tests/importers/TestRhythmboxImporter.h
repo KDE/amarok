@@ -18,26 +18,17 @@
 #define TEST_RHYTHMBOX_IMPORTER
 
 #include <QObject>
-
-namespace StatSyncing
-{
-    class RhythmboxConfigWidget;
-    class RhythmboxProvider;
-}
+#include <QVariantMap>
 
 class TestRhythmboxImporter : public QObject
 {
     Q_OBJECT
 
 private:
-    StatSyncing::RhythmboxConfigWidget *m_configWidget;
+    QVariantMap m_cfg;
 
 private slots:
     void init();
-    void cleanup();
-
-    void configWidgetShouldNotBreakOnNonsenseInitialValues();
-    void configWidgetShouldReadSavedConfig();
 
     void providerShouldHandleInexistantDbFile();
     void providerShouldHandleInvalidDbFile();

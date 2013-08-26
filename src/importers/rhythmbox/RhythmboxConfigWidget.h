@@ -17,24 +17,17 @@
 #ifndef STATSYNCING_RHYTHMBOX_CONFIG_WIDGET_H
 #define STATSYNCING_RHYTHMBOX_CONFIG_WIDGET_H
 
-#include "statsyncing/Provider.h"
-#include "ui_RhythmboxConfigWidget.h"
+#include "importers/SimpleImporterConfigWidget.h"
 
 namespace StatSyncing
 {
 
-class RhythmboxConfigWidget : public ProviderConfigWidget,
-        public Ui::RhythmboxConfigWidget
+class RhythmboxConfigWidget : public SimpleImporterConfigWidget
 {
 public:
     explicit RhythmboxConfigWidget( const QVariantMap &config, QWidget *parent = 0,
                                     Qt::WindowFlags f = 0 );
     ~RhythmboxConfigWidget();
-
-    QVariantMap config() const;
-
-private:
-    const QVariantMap m_config;
 };
 
 } // namespace StatSyncing

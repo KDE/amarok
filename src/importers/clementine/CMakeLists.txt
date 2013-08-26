@@ -1,6 +1,4 @@
 include_directories(
-    ${CMAKE_BINARY_DIR}/src
-    ${AMAROK_COLLECTION_SUPPORT_DIR}
     ${KDE4_INCLUDE_DIR}
     ${QT_INCLUDES}
 )
@@ -11,8 +9,6 @@ set( amarok_importer-clementine_PART_SRCS
     ClementineProvider.cpp
     ClementineTrack.cpp
 )
-
-kde4_add_ui_files( amarok_importer-clementine_PART_SRCS ClementineConfigWidget.ui )
 
 kde4_add_plugin( amarok_importer-clementine ${amarok_importer-clementine_PART_SRCS} )
 

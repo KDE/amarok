@@ -16,33 +16,24 @@
 
 #include "BansheeConfigWidget.h"
 
+#include <KUrlRequester>
+
+#include <QDir>
+
 using namespace StatSyncing;
 
 BansheeConfigWidget::BansheeConfigWidget( const QVariantMap &config, QWidget *parent,
                                           Qt::WindowFlags f )
-    : ProviderConfigWidget( parent, f )
-    , m_config( config )
+    : SimpleImporterConfigWidget( "Banshee", config, parent, f )
 {
-    setupUi( this );
-
-    m_targetName->setText( m_config.value( "name", "Banshee" ).toString() );
-
     const QString defaultPath = QDir::toNativeSeparators(
                 QDir::homePath() + "/.config/banshee-1/banshee.db" );
-    m_databaseLocation->setText( m_config.value( "dbPath", defaultPath ).toString() );
+
+    KUrlRequester *dbField = new KUrlRequester( defaultPath );
+    dbField->setFilter( "banshee.db" );
+    addField( "dbPath", i18n( "Database location" ), dbField, "text" );
 }
 
 BansheeConfigWidget::~BansheeConfigWidget()
 {
-}
-
-QVariantMap
-BansheeConfigWidget::config() const
-{
-    QVariantMap cfg( m_config );
-
-    cfg.insert( "name", m_targetName->text() );
-    cfg.insert( "dbPath", m_databaseLocation->text() );
-
-    return cfg;
 }

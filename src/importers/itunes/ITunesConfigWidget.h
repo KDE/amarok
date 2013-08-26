@@ -17,23 +17,17 @@
 #ifndef STATSYNCING_ITUNES_CONFIG_WIDGET_H
 #define STATSYNCING_ITUNES_CONFIG_WIDGET_H
 
-#include "statsyncing/Provider.h"
-#include "ui_ITunesConfigWidget.h"
+#include "importers/SimpleImporterConfigWidget.h"
 
 namespace StatSyncing
 {
 
-class ITunesConfigWidget : public ProviderConfigWidget, public Ui::ITunesConfigWidget
+class ITunesConfigWidget : public SimpleImporterConfigWidget
 {
 public:
     explicit ITunesConfigWidget( const QVariantMap &config, QWidget *parent = 0,
                                  Qt::WindowFlags f = 0 );
     ~ITunesConfigWidget();
-
-    QVariantMap config() const;
-
-private:
-    const QVariantMap m_config;
 };
 
 } // namespace StatSyncing

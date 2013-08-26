@@ -30,93 +30,65 @@ using namespace StatSyncing;
 void
 TestITunesImporter::init()
 {
-    m_configWidget = new ITunesConfigWidget( QVariantMap() );
-}
-
-void
-TestITunesImporter::cleanup()
-{
-    delete m_configWidget;
-    m_configWidget = 0;
-}
-
-void
-TestITunesImporter::configWidgetShouldNotBreakOnNonsenseInitialValues()
-{
-    QVariantMap cfg;
-    cfg["dbPath"] = QString( "\\wd%aw@d/sdsd2'vodk0-=$$" );
-    cfg["name"] = QColor( Qt::white );
-
-    QScopedPointer<ITunesConfigWidget> widget( new ITunesConfigWidget( cfg ) );
-    QVERIFY( !widget->m_databaseLocation->text().isEmpty() );
-    QVERIFY( !widget->m_targetName->text().isEmpty() );
-}
-
-void
-TestITunesImporter::configWidgetShouldReadSavedConfig()
-{
-    QVariantMap cfg;
-    cfg["name"] = QString( "iTunes Provider" );
-    cfg["dbPath"] = QApplication::applicationFilePath();
-
-    QScopedPointer<ITunesConfigWidget> widget( new ITunesConfigWidget( cfg ) );
-    QCOMPARE( widget->m_databaseLocation->text(), cfg["dbPath"].toString() );
-    QCOMPARE( widget->m_targetName->text(), cfg["name"].toString() );
+    // Set a default config
+    m_cfg = ITunesConfigWidget( QVariantMap() ).config();
 }
 
 void
 TestITunesImporter::providerShouldHandleInexistantDbFile()
 {
-    m_configWidget->m_databaseLocation->setText( "/wdawd\\wdadwgd/das4hutyf" );
+    m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
 
-    ITunesProvider provider( m_configWidget->config(), 0 );
+    ITunesProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().isEmpty() );
 }
 
 void
 TestITunesImporter::providerShouldHandleInvalidDbFile()
 {
-    m_configWidget->m_databaseLocation->setText( QApplication::applicationFilePath() );
+    m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
 
-    ITunesProvider provider( m_configWidget->config(), 0 );
+    ITunesProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().isEmpty() );
 }
 
 void
 TestITunesImporter::providerShouldHandleIllFormedDbFile()
 {
-    m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/illFormedLibrary.xml" );
+    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
+                  "/importers_files/illFormedLibrary.xml" );
 
-    ITunesProvider provider( m_configWidget->config(), 0 );
+    ITunesProvider provider( m_cfg, 0 );
     QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
 }
 
 void
 TestITunesImporter::providerShouldHandleErroneousConfigValues()
 {
-    QVariantMap cfg;
-    cfg["dbPath"] = QString( "\\wd%aw@d/sdsd2'vodk0-=$$" );
-    cfg["name"] = QColor( Qt::white );
+    m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
+    m_cfg.insert( "name", QColor( Qt::white ) );
 
-    ITunesProvider provider( cfg, 0 );
+    ITunesProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().isEmpty() );
 }
 
 void
 TestITunesImporter::providerShouldHandleInexistantArtist()
 {
-    m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/iTunes Music Library.xml" );
+    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
+                  "/importers_files/iTunes Music Library.xml" );
 
-    ITunesProvider provider( m_configWidget->config(), 0 );
+    ITunesProvider provider( m_cfg, 0 );
     QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
 }
 
 void
 TestITunesImporter::artistsShouldReturnExistingArtists()
 {
-    m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/iTunes Music Library.xml" );
+    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
+                  "/importers_files/iTunes Music Library.xml" );
 
-    ITunesProvider provider( m_configWidget->config(), 0 );
+    ITunesProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().contains( "Metallica" ) );
 }
 
@@ -130,37 +102,50 @@ TestITunesImporter::artistTracksShouldReturnPopulatedTracks_data()
     QTest::addColumn<int>       ( "playCount" );
     QTest::addColumn<int>       ( "rating" );
 
-    QTest::newRow( "Enter Sandman" ) << "Metallica" << "Metallica" << "James Hetfield, Kirk Hammett, Lars Ulrich"
+    QTest::newRow( "Enter Sandman" )
+            << "Metallica" << "Metallica" << "James Hetfield, Kirk Hammett, Lars Ulrich"
             << QDateTime::fromTime_t( 1372418184 ) << 14 << 9;
-    QTest::newRow( "Sad but True" ) << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
-            << QDateTime::fromTime_t( 1372417063 ) << 7 << 5;
-    QTest::newRow( "Holier Than Thou" ) << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
-            << QDateTime::fromTime_t( 1372417055 ) << 5 << 6;
-    QTest::newRow( "The Unforgiven" ) << "Metallica" << "Metallica" << "James Hetfield, Kirk Hammett, Lars Ulrich"
-            << QDateTime::fromTime_t( 1372419217 ) << 5 << 10;
-    QTest::newRow( "Wherever I May Roam" ) << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
+    QTest::newRow( "Sad but True" )
+            << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
+            << QDateTime::fromTime_t( 1372417063 ) << 7  << 5;
+    QTest::newRow( "Holier Than Thou" )
+            << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
+            << QDateTime::fromTime_t( 1372417055 ) << 5  << 6;
+    QTest::newRow( "The Unforgiven" )
+            << "Metallica" << "Metallica" << "James Hetfield, Kirk Hammett, Lars Ulrich"
+            << QDateTime::fromTime_t( 1372419217 ) << 5  << 10;
+    QTest::newRow( "Wherever I May Roam" )
+            << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
             << QDateTime::fromTime_t( 1372420415 ) << 15 << 5;
-    QTest::newRow( "Don't Tread on Me" ) << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
-            << QDateTime::fromTime_t( 1372419457 ) << 4 << 4;
-    QTest::newRow( "Through the Never" ) << "Metallica" << "Metallica" << "James Hetfield, Kirk Hammett, Lars Ulrich"
+    QTest::newRow( "Don't Tread on Me" )
+            << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
+            << QDateTime::fromTime_t( 1372419457 ) << 4  << 4;
+    QTest::newRow( "Through the Never" )
+            << "Metallica" << "Metallica" << "James Hetfield, Kirk Hammett, Lars Ulrich"
             << QDateTime::fromTime_t( 1372419702 ) << 20 << 7;
-    QTest::newRow( "Nothing Else Matters" ) << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
+    QTest::newRow( "Nothing Else Matters" )
+            << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
             << QDateTime::fromTime_t( 1372418573 ) << 17 << 10;
-    QTest::newRow( "Of Wolf and Man" ) << "Metallica" << "Metallica" << "James Hetfield, Kirk Hammett, Lars Ulrich"
-            << QDateTime::fromTime_t( 1372418830 ) << 2 << 8;
-    QTest::newRow( "The God That Failed" ) << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
+    QTest::newRow( "Of Wolf and Man" )
+            << "Metallica" << "Metallica" << "James Hetfield, Kirk Hammett, Lars Ulrich"
+            << QDateTime::fromTime_t( 1372418830 ) << 2  << 8;
+    QTest::newRow( "The God That Failed" )
+            << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
             << QDateTime::fromTime_t( 1372420011 ) << 15 << 2;
-    QTest::newRow( "My Friend of Misery" ) << "Metallica" << "Metallica" << "James Hetfield, Kirk Hammett, Lars Ulrich"
-            << QDateTime::fromTime_t( 1372417060 ) << 6 << 1;
-    QTest::newRow( "The Struggle Within" ) << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
+    QTest::newRow( "My Friend of Misery" )
+            << "Metallica" << "Metallica" << "James Hetfield, Kirk Hammett, Lars Ulrich"
+            << QDateTime::fromTime_t( 1372417060 ) << 6  << 1;
+    QTest::newRow( "The Struggle Within" )
+            << "Metallica" << "Metallica" << "James Hetfield, Lars Ulrich"
             << QDateTime::fromTime_t( 1372417061 ) << 18 << 3;
 }
 
 void
 TestITunesImporter::artistTracksShouldReturnPopulatedTracks()
 {
-    m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/iTunes Music Library.xml" );
-    ITunesProvider provider( m_configWidget->config(), 0 );
+    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
+                  "/importers_files/iTunes Music Library.xml" );
+    ITunesProvider provider( m_cfg, 0 );
 
     QMap<QString, TrackPtr> trackForName;
     foreach( const TrackPtr &track, provider.artistTracks(  "Metallica" ) )
@@ -187,25 +172,38 @@ TestITunesImporter::artistTracksShoulsHandleNonexistentStatistics_data()
     QTest::addColumn<int>       ( "playCount" );
     QTest::addColumn<int>       ( "rating" );
 
-    QTest::newRow( "Enter Sandman" ) << QDateTime::fromTime_t( 1372418184 ) << 14 << 9;
-    QTest::newRow( "Sad but True" ) << QDateTime::fromTime_t( 1372417063 ) << 7 << 5;
-    QTest::newRow( "Holier Than Thou" ) << QDateTime::fromTime_t( 1372417055 ) << 0 << 0;
-    QTest::newRow( "The Unforgiven" ) << QDateTime::fromTime_t( 1372419217 ) << 5 << 10;
-    QTest::newRow( "Wherever I May Roam" ) << QDateTime::fromTime_t( 1372420415 ) << 15 << 0;
-    QTest::newRow( "Don't Tread on Me" ) << QDateTime::fromTime_t( 1372419457 ) << 0 << 4;
-    QTest::newRow( "Through the Never" ) << QDateTime::fromTime_t( 1372419702 ) << 20 << 7;
-    QTest::newRow( "Nothing Else Matters" ) << QDateTime() << 17 << 0;
-    QTest::newRow( "Of Wolf and Man" ) << QDateTime() << 0 << 0;
-    QTest::newRow( "The God That Failed" ) << QDateTime() << 0 << 2;
-    QTest::newRow( "My Friend of Misery" ) << QDateTime::fromTime_t( 1372417060 ) << 6 << 1;
-    QTest::newRow( "The Struggle Within" ) << QDateTime() << 18 << 3;
+    QTest::newRow( "Enter Sandman" )
+            << QDateTime::fromTime_t( 1372418184 ) << 14 << 9;
+    QTest::newRow( "Sad but True" )
+            << QDateTime::fromTime_t( 1372417063 ) << 7  << 5;
+    QTest::newRow( "Holier Than Thou" )
+            << QDateTime::fromTime_t( 1372417055 ) << 0  << 0;
+    QTest::newRow( "The Unforgiven" )
+            << QDateTime::fromTime_t( 1372419217 ) << 5  << 10;
+    QTest::newRow( "Wherever I May Roam" )
+            << QDateTime::fromTime_t( 1372420415 ) << 15 << 0;
+    QTest::newRow( "Don't Tread on Me" )
+            << QDateTime::fromTime_t( 1372419457 ) << 0  << 4;
+    QTest::newRow( "Through the Never" )
+            << QDateTime::fromTime_t( 1372419702 ) << 20 << 7;
+    QTest::newRow( "Nothing Else Matters" )
+            << QDateTime()                         << 17 << 0;
+    QTest::newRow( "Of Wolf and Man" )
+            << QDateTime()                         << 0  << 0;
+    QTest::newRow( "The God That Failed" )
+            << QDateTime()                         << 0  << 2;
+    QTest::newRow( "My Friend of Misery" )
+            << QDateTime::fromTime_t( 1372417060 ) << 6  << 1;
+    QTest::newRow( "The Struggle Within" )
+            << QDateTime()                         << 18 << 3;
 }
 
 void
 TestITunesImporter::artistTracksShoulsHandleNonexistentStatistics()
 {
-    m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/itunes-no-statistics.xml" );
-    ITunesProvider provider( m_configWidget->config(), 0 );
+    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
+                  "/importers_files/itunes-no-statistics.xml" );
+    ITunesProvider provider( m_cfg, 0 );
 
     QMap<QString, TrackPtr> trackForName;
     foreach( const TrackPtr &track, provider.artistTracks(  "Metallica" ) )

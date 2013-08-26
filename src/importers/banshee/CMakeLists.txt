@@ -10,8 +10,6 @@ set( amarok_importer-banshee_PART_SRCS
     BansheeTrack.cpp
 )
 
-kde4_add_ui_files( amarok_importer-banshee_PART_SRCS BansheeConfigWidget.ui )
-
 kde4_add_plugin( amarok_importer-banshee ${amarok_importer-banshee_PART_SRCS} )
 
 target_link_libraries( amarok_importer-banshee

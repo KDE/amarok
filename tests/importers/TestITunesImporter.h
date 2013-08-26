@@ -18,6 +18,7 @@
 #define TEST_ITUNES_IMPORTER
 
 #include <QObject>
+#include <QVariantMap>
 
 namespace StatSyncing
 {
@@ -30,14 +31,10 @@ class TestITunesImporter : public QObject
     Q_OBJECT
 
 private:
-    StatSyncing::ITunesConfigWidget *m_configWidget;
+    QVariantMap m_cfg;
 
 private slots:
     void init();
-    void cleanup();
-
-    void configWidgetShouldNotBreakOnNonsenseInitialValues();
-    void configWidgetShouldReadSavedConfig();
 
     void providerShouldHandleInexistantDbFile();
     void providerShouldHandleInvalidDbFile();

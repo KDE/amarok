@@ -30,93 +30,65 @@ using namespace StatSyncing;
 void
 TestRhythmboxImporter::init()
 {
-    m_configWidget = new RhythmboxConfigWidget( QVariantMap() );
-}
-
-void
-TestRhythmboxImporter::cleanup()
-{
-    delete m_configWidget;
-    m_configWidget = 0;
-}
-
-void
-TestRhythmboxImporter::configWidgetShouldNotBreakOnNonsenseInitialValues()
-{
-    QVariantMap cfg;
-    cfg["dbPath"] = QString( "\\wd%aw@d/sdsd2'vodk0-=$$" );
-    cfg["name"] = QColor( Qt::white );
-
-    QScopedPointer<RhythmboxConfigWidget> widget( new RhythmboxConfigWidget( cfg ) );
-    QVERIFY( !widget->m_databaseLocation->text().isEmpty() );
-    QVERIFY( !widget->m_targetName->text().isEmpty() );
-}
-
-void
-TestRhythmboxImporter::configWidgetShouldReadSavedConfig()
-{
-    QVariantMap cfg;
-    cfg["name"] = QString( "Rhythmbox Provider" );
-    cfg["dbPath"] = QApplication::applicationFilePath();
-
-    QScopedPointer<RhythmboxConfigWidget> widget( new RhythmboxConfigWidget( cfg ) );
-    QCOMPARE( widget->m_databaseLocation->text(), cfg["dbPath"].toString() );
-    QCOMPARE( widget->m_targetName->text(), cfg["name"].toString() );
+    // Set a default config
+    m_cfg = RhythmboxConfigWidget( QVariantMap() ).config();
 }
 
 void
 TestRhythmboxImporter::providerShouldHandleInexistantDbFile()
 {
-    m_configWidget->m_databaseLocation->setText( "/wdawd\\wdadwgd/das4hutyf" );
+    m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
 
-    RhythmboxProvider provider( m_configWidget->config(), 0 );
+    RhythmboxProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().isEmpty() );
 }
 
 void
 TestRhythmboxImporter::providerShouldHandleInvalidDbFile()
 {
-    m_configWidget->m_databaseLocation->setText( QApplication::applicationFilePath() );
+    m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
 
-    RhythmboxProvider provider( m_configWidget->config(), 0 );
+    RhythmboxProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().isEmpty() );
 }
 
 void
 TestRhythmboxImporter::providerShouldHandleIllFormedDbFile()
 {
-    m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/illFormedLibrary.xml" );
+    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
+                  "/importers_files/illFormedLibrary.xml" );
 
-    RhythmboxProvider provider( m_configWidget->config(), 0 );
+    RhythmboxProvider provider( m_cfg, 0 );
     QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
 }
 
 void
 TestRhythmboxImporter::providerShouldHandleErroneousConfigValues()
 {
-    QVariantMap cfg;
-    cfg["dbPath"] = QString( "\\wd%aw@d/sdsd2'vodk0-=$$" );
-    cfg["name"] = QColor( Qt::white );
+    m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
+    m_cfg.insert( "name", QColor( Qt::white ) );
 
-    RhythmboxProvider provider( cfg, 0 );
+    RhythmboxProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().isEmpty() );
 }
 
 void
 TestRhythmboxImporter::providerShouldHandleInexistantArtist()
 {
-    m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/rhythmdb.xml" );
+    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
+                  "/importers_files/rhythmdb.xml" );
 
-    RhythmboxProvider provider( m_configWidget->config(), 0 );
+    RhythmboxProvider provider( m_cfg, 0 );
     QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
 }
 
 void
 TestRhythmboxImporter::artistsShouldReturnExistingArtists()
 {
-    m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/rhythmdb.xml" );
+    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
+                  "/importers_files/rhythmdb.xml" );
 
-    RhythmboxProvider provider( m_configWidget->config(), 0 );
+    RhythmboxProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().contains( "Metallica" ) );
 }
 
@@ -129,25 +101,38 @@ TestRhythmboxImporter::artistTracksShouldReturnPopulatedTracks_data()
     QTest::addColumn<int>       ( "playCount" );
     QTest::addColumn<int>       ( "rating" );
 
-    QTest::newRow( "Enter Sandman" ) << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372418184 ) << 14 << 8;
-    QTest::newRow( "Sad but True" ) << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372417063 ) << 7 << 4;
-    QTest::newRow( "Holier Than Thou" ) << "Metallica" << "Metallica"  << QDateTime::fromTime_t( 1372417055 ) << 5 << 6;
-    QTest::newRow( "The Unforgiven" ) << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372419217 ) << 5 << 10;
-    QTest::newRow( "Wherever I May Roam" ) << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372420415 ) << 15 << 4;
-    QTest::newRow( "Don't Tread on Me" ) << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372419457 ) << 4 << 4;
-    QTest::newRow( "Through the Never" ) << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372419702 ) << 20 << 6;
-    QTest::newRow( "Nothing Else Matters" ) << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372418573 ) << 17 << 10;
-    QTest::newRow( "Of Wolf and Man" ) << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372418830 ) << 2 << 8;
-    QTest::newRow( "The God That Failed" ) << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372420011 ) << 15 << 2;
-    QTest::newRow( "My Friend of Misery" ) << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372417060 ) << 6 << 2;
-    QTest::newRow( "The Struggle Within" ) << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372417061 ) << 18 << 4;
+    QTest::newRow( "Enter Sandman" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372418184 ) << 14 << 8;
+    QTest::newRow( "Sad but True" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372417063 ) << 7  << 4;
+    QTest::newRow( "Holier Than Thou" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372417055 ) << 5  << 6;
+    QTest::newRow( "The Unforgiven" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372419217 ) << 5  << 10;
+    QTest::newRow( "Wherever I May Roam" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372420415 ) << 15 << 4;
+    QTest::newRow( "Don't Tread on Me" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372419457 ) << 4  << 4;
+    QTest::newRow( "Through the Never" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372419702 ) << 20 << 6;
+    QTest::newRow( "Nothing Else Matters" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372418573 ) << 17 << 10;
+    QTest::newRow( "Of Wolf and Man" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372418830 ) << 2  << 8;
+    QTest::newRow( "The God That Failed" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372420011 ) << 15 << 2;
+    QTest::newRow( "My Friend of Misery" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372417060 ) << 6  << 2;
+    QTest::newRow( "The Struggle Within" )
+         << "Metallica" << "Metallica" << QDateTime::fromTime_t( 1372417061 ) << 18 << 4;
 }
 
 void
 TestRhythmboxImporter::artistTracksShouldReturnPopulatedTracks()
 {
-    m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/rhythmdb.xml" );
-    RhythmboxProvider provider( m_configWidget->config(), 0 );
+    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
+                  "/importers_files/rhythmdb.xml" );
+    RhythmboxProvider provider( m_cfg, 0 );
 
     QMap<QString, TrackPtr> trackForName;
     foreach( const TrackPtr &track, provider.artistTracks(  "Metallica" ) )
@@ -173,25 +158,38 @@ TestRhythmboxImporter::artistTracksShoulsHandleNonexistentStatistics_data()
     QTest::addColumn<int>       ( "playCount" );
     QTest::addColumn<int>       ( "rating" );
 
-    QTest::newRow( "Enter Sandman" ) << QDateTime::fromTime_t( 1372418184 ) << 0 << 8;
-    QTest::newRow( "Sad but True" ) << QDateTime::fromTime_t( 1372417063 ) << 7 << 0;
-    QTest::newRow( "Holier Than Thou" )  << QDateTime() << 5 << 6;
-    QTest::newRow( "The Unforgiven" ) << QDateTime() << 0 << 0;
-    QTest::newRow( "Wherever I May Roam" ) << QDateTime() << 15 << 0;
-    QTest::newRow( "Don't Tread on Me" ) << QDateTime::fromTime_t( 1372419457 ) << 4 << 4;
-    QTest::newRow( "Through the Never" ) << QDateTime() << 20 << 0;
-    QTest::newRow( "Nothing Else Matters" ) << QDateTime() << 0 << 10;
-    QTest::newRow( "Of Wolf and Man" ) << QDateTime::fromTime_t( 1372418830 ) << 0 << 0;
-    QTest::newRow( "The God That Failed" ) << QDateTime::fromTime_t( 1372420011 ) << 15 << 2;
-    QTest::newRow( "My Friend of Misery" ) << QDateTime() << 6 << 2;
-    QTest::newRow( "The Struggle Within" ) << QDateTime::fromTime_t( 1372417061 ) << 18 << 4;
+    QTest::newRow( "Enter Sandman" )
+            << QDateTime::fromTime_t( 1372418184 ) << 0  << 8;
+    QTest::newRow( "Sad but True" )
+            << QDateTime::fromTime_t( 1372417063 ) << 7  << 0;
+    QTest::newRow( "Holier Than Thou" )
+            << QDateTime()                         << 5  << 6;
+    QTest::newRow( "The Unforgiven" )
+            << QDateTime()                         << 0  << 0;
+    QTest::newRow( "Wherever I May Roam" )
+            << QDateTime()                         << 15 << 0;
+    QTest::newRow( "Don't Tread on Me" )
+            << QDateTime::fromTime_t( 1372419457 ) << 4  << 4;
+    QTest::newRow( "Through the Never" )
+            << QDateTime()                         << 20 << 0;
+    QTest::newRow( "Nothing Else Matters" )
+            << QDateTime()                         << 0  << 10;
+    QTest::newRow( "Of Wolf and Man" )
+            << QDateTime::fromTime_t( 1372418830 ) << 0 << 0;
+    QTest::newRow( "The God That Failed" )
+            << QDateTime::fromTime_t( 1372420011 ) << 15 << 2;
+    QTest::newRow( "My Friend of Misery" )
+            << QDateTime()                         << 6  << 2;
+    QTest::newRow( "The Struggle Within" )
+            << QDateTime::fromTime_t( 1372417061 ) << 18 << 4;
 }
 
 void
 TestRhythmboxImporter::artistTracksShoulsHandleNonexistentStatistics()
 {
-    m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/rhythmbox-no-statistics.xml" );
-    RhythmboxProvider provider( m_configWidget->config(), 0 );
+    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
+                  "/importers_files/rhythmbox-no-statistics.xml" );
+    RhythmboxProvider provider( m_cfg, 0 );
 
     QMap<QString, TrackPtr> trackForName;
     foreach( const TrackPtr &track, provider.artistTracks(  "Metallica" ) )

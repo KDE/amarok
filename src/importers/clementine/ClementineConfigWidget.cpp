@@ -16,33 +16,24 @@
 
 #include "ClementineConfigWidget.h"
 
+#include <KUrlRequester>
+
+#include <QDir>
+
 using namespace StatSyncing;
 
 ClementineConfigWidget::ClementineConfigWidget( const QVariantMap &config,
                                                 QWidget *parent, Qt::WindowFlags f )
-    : ProviderConfigWidget( parent, f )
-    , m_config( config )
+    : SimpleImporterConfigWidget( "Clementine", config, parent, f )
 {
-    setupUi( this );
-
-    m_targetName->setText( m_config.value( "name", "Clementine" ).toString() );
-
     const QString defaultPath = QDir::toNativeSeparators(
                 QDir::homePath() + "/.config/Clementine/clementine.db" );
-    m_databaseLocation->setText( m_config.value( "dbPath", defaultPath ).toString() );
+
+    KUrlRequester *dbField = new KUrlRequester( defaultPath );
+    dbField->setFilter( "clementine.db" );
+    addField( "dbPath", i18n( "Database location" ), dbField, "text" );
 }
 
 ClementineConfigWidget::~ClementineConfigWidget()
 {
-}
-
-QVariantMap
-ClementineConfigWidget::config() const
-{
-    QVariantMap cfg( m_config );
-
-    cfg.insert( "name", m_targetName->text() );
-    cfg.insert( "dbPath", m_databaseLocation->text() );
-
-    return cfg;
 }

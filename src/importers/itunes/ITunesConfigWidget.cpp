@@ -16,30 +16,19 @@
 
 #include "ITunesConfigWidget.h"
 
+#include <KUrlRequester>
+
 using namespace StatSyncing;
 
 ITunesConfigWidget::ITunesConfigWidget( const QVariantMap &config, QWidget *parent,
                                         Qt::WindowFlags f )
-    : ProviderConfigWidget( parent, f )
-    , m_config( config )
+    : SimpleImporterConfigWidget( "iTunes", config, parent, f )
 {
-    setupUi( this );
-
-    m_targetName->setText( m_config.value( "name", "iTunes" ).toString() );
-    m_databaseLocation->setText( m_config.value( "dbPath" ).toString() );
+    KUrlRequester *dbField = new KUrlRequester;
+    dbField->setFilter( "iTunes Music Library.xml" );
+    addField( "dbPath", i18n( "Database location" ), dbField, "text" );
 }
 
 ITunesConfigWidget::~ITunesConfigWidget()
 {
-}
-
-QVariantMap
-ITunesConfigWidget::config() const
-{
-    QVariantMap cfg( m_config );
-
-    cfg.insert( "name", m_targetName->text() );
-    cfg.insert( "dbPath", m_databaseLocation->text() );
-
-    return cfg;
 }

@@ -17,23 +17,17 @@
 #ifndef STATSYNCING_BANSHEE_CONFIG_WIDGET_H
 #define STATSYNCING_BANSHEE_CONFIG_WIDGET_H
 
-#include "statsyncing/Provider.h"
-#include "ui_BansheeConfigWidget.h"
+#include "importers/SimpleImporterConfigWidget.h"
 
 namespace StatSyncing
 {
 
-class BansheeConfigWidget : public ProviderConfigWidget, public Ui::BansheeConfigWidget
+class BansheeConfigWidget : public SimpleImporterConfigWidget
 {
 public:
     explicit BansheeConfigWidget( const QVariantMap &config, QWidget *parent = 0,
                                   Qt::WindowFlags f = 0 );
     ~BansheeConfigWidget();
-
-    QVariantMap config() const;
-
-private:
-    const QVariantMap m_config;
 };
 
 } // namespace StatSyncing

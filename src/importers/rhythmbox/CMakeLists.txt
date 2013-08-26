@@ -10,8 +10,6 @@ set( amarok_importer-rhythmbox_PART_SRCS
     RhythmboxTrack.cpp
 )
 
-kde4_add_ui_files( amarok_importer-rhythmbox_PART_SRCS RhythmboxConfigWidget.ui )
-
 kde4_add_plugin( amarok_importer-rhythmbox ${amarok_importer-rhythmbox_PART_SRCS} )
 
 target_link_libraries( amarok_importer-rhythmbox

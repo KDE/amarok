@@ -17,26 +17,17 @@
 #ifndef STATSYNCING_CLEMENTINE_CONFIG_WIDGET_H
 #define STATSYNCING_CLEMENTINE_CONFIG_WIDGET_H
 
-#include "statsyncing/Provider.h"
-#include "ui_ClementineConfigWidget.h"
+#include "importers/SimpleImporterConfigWidget.h"
 
 namespace StatSyncing
 {
 
-class ClementineConfigWidget : public ProviderConfigWidget,
-        public Ui::ClementineConfigWidget
+class ClementineConfigWidget : public SimpleImporterConfigWidget
 {
-    Q_OBJECT
-
 public:
     explicit ClementineConfigWidget( const QVariantMap &config, QWidget *parent = 0,
                                      Qt::WindowFlags f = 0 );
     ~ClementineConfigWidget();
-
-    QVariantMap config() const;
-
-private:
-    const QVariantMap m_config;
 };
 
 } // namespace StatSyncing
