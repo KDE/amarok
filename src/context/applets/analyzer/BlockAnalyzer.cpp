@@ -35,10 +35,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
     , m_columns( 0 )         //int
     , m_rows( 0 )            //int
     , m_y( 0 )               //uint
-    , m_barPixmap( 1, 1 )    //null qpixmaps cause crashes
     , m_topBarPixmap( BLOCK_WIDTH, BLOCK_HEIGHT )
-    , m_scope( MIN_COLUMNS ) //Scope
-    , m_store( MAX_COLUMNS, 0 )   //vector<uint>
     , m_fade_bars( FADE_SIZE ) //vector<QPixmap>
     , m_fade_pos( MAX_COLUMNS, 50 ) //vector<uint>
     , m_fade_intensity( MAX_COLUMNS, 32 ) //vector<uint>
@@ -67,6 +64,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
     m_y = ( height() - ( m_rows * ( BLOCK_HEIGHT + 1 ) ) + 2 ) / 2;
 
     m_scope.resize( m_columns );
+    m_store.resize( m_columns );
 
     if( m_rows != oldRows )
     {
@@ -179,10 +177,10 @@ BlockAnalyzer::paintEvent( QPaintEvent* )
 
         // REMEMBER: y is a number from 0 to m_rows, 0 means all blocks are glowing, m_rows means none are
         p.drawPixmap( x * ( BLOCK_WIDTH + 1 ), y * ( BLOCK_HEIGHT + 1 ) + m_y, *bar(), 0, y * ( BLOCK_HEIGHT + 1 ), -1, -1 );
-    }
 
-    for( int x = 0; x < m_store.size(); ++x )
+        // Draw top pixmaps
         p.drawPixmap( x * ( BLOCK_WIDTH + 1 ), int( m_store[x] ) * ( BLOCK_HEIGHT + 1 ) + m_y, m_topBarPixmap );
+    }
 }
 
 void
