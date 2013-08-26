@@ -1122,7 +1122,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
         return;
     }
 
-    foreach( struct PodcastEpisodeDownload download, m_downloadJobMap.values() )
+    foreach( struct PodcastEpisodeDownload download, m_downloadJobMap )
     {
         if( download.episode == sqlEpisode )
         {

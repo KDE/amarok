@@ -153,7 +153,7 @@ PlaylistBrowserCategory::setFilter( const QString &filter )
     debug() << "Setting filter " << filter;
     m_filterProxy->setFilterRegExp( QRegExp( QUrl::fromPercentEncoding( filter.toUtf8() ) ) );
     //disable all other provider-buttons
-    foreach( QAction * const providerAction, m_providerActions.values() )
+    foreach( QAction * const providerAction, m_providerActions )
     {
         const Playlists::PlaylistProvider *provider =
                 providerAction->data().value<const Playlists::PlaylistProvider *>();

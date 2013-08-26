@@ -602,7 +602,7 @@ SqlScanResultProcessor::deletedDirectories() const
     // now we must fileter-out all found directories *and their children*, because the
     // children are *not* in m_foundDirectories and deleteDeletedDirectories() would
     // remove them errorneously
-    foreach( int foundDirectoryId, m_foundDirectories.values() )
+    foreach( int foundDirectoryId, m_foundDirectories )
     {
         if( idToDirEntryMap.contains( foundDirectoryId ) )
         {
