@@ -171,5 +171,9 @@ AmarokProviderEmbedded::stopServer()
 
     m_srv.terminate();
     if( !m_srv.waitForFinished() )
+    {
         m_srv.kill();
+        m_srv.waitForFinished();
+    }
+
 }
