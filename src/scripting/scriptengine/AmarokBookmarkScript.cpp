@@ -22,6 +22,7 @@
 #include "amarokurls/BookmarkModel.h"
 #include "amarokurls/ContextUrlGenerator.h"
 #include "amarokurls/NavigationUrlGenerator.h"
+#include <amarokurls/PlayUrlGenerator.h>
 #include "playlist/PlaylistViewUrlGenerator.h"
 #include "scripting/scriptengine/ScriptingDefines.h"
 
@@ -38,7 +39,6 @@ AmarokBookmarkScript::AmarokBookmarkScript( QScriptEngine *engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    //deprecate
     engine->globalObject().property( "Amarok" ).setProperty( "Bookmark", scriptObject );
     qScriptRegisterMetaType<BookmarkGroupPtr>( engine, toScriptValue<BookmarkGroupPtr, BookmarkGroupPrototype>, fromScriptValue<BookmarkGroupPtr, BookmarkGroupPrototype> );
     qScriptRegisterMetaType<AmarokUrlPtr>( engine, toScriptValue<AmarokUrlPtr, BookmarkPrototype>, fromScriptValue<AmarokUrlPtr, BookmarkPrototype> );
@@ -65,6 +65,12 @@ AmarokUrlPtr
 AmarokBookmarkScript::browserView()
 {
     return AmarokUrlPtr( new AmarokUrl( NavigationUrlGenerator::instance()->CreateAmarokUrl() ) );
+}
+
+AmarokUrlPtr
+AmarokBookmarkScript::createCurrentTrackBookmark()
+{
+    return AmarokUrlPtr( new AmarokUrl( PlayUrlGenerator::instance()->createCurrentTrackBookmark() ) );
 }
 
 /*
@@ -224,8 +230,7 @@ BookmarkPrototype::save()
 QScriptValue
 BookmarkPrototype::bookmarkCtor( QScriptContext *context, QScriptEngine *engine )
 {
-    QString urlString;
-    BookmarkGroupPtr parent;
+    AmarokUrlPtr url;
     switch( context->argumentCount() )
     {
         case 0:
@@ -233,23 +238,28 @@ BookmarkPrototype::bookmarkCtor( QScriptContext *context, QScriptEngine *engine 
 
         case 1:
             if( context->argument( 0 ).isString() )
-                urlString = context->argument( 0 ).toString();
-            else
-                return context->throwError( QScriptContext::TypeError, "Invalid arguments!" );
+                url = new AmarokUrl( context->argument( 0 ).toString() );
             break;
 
         case 2:
-            BookmarkGroupPrototype *proto = dynamic_cast<BookmarkGroupPrototype*>( context->argument(1).toQObject() );
-            if( context->argument( 0 ).isString() && proto )
+            if( context->argument( 0 ).isString() )
             {
-                urlString = context->argument( 0 ).toString();
-                parent = proto->data();
+                BookmarkGroupPrototype *proto = dynamic_cast<BookmarkGroupPrototype*>( context->argument(1).toQObject() );
+                if( proto )
+                    url = new AmarokUrl( context->argument( 0 ).toString(), proto->data() );
             }
             else
-                return context->throwError( QScriptContext::TypeError, "Invalid arguments!" );
+            {
+                Meta::TrackPtr track = engine->fromScriptValue<Meta::TrackPtr>( context->argument( 0 ) );
+                if( track && context->argument( 1 ).toVariant().canConvert( QVariant::LongLong ) )
+                    url = new AmarokUrl( PlayUrlGenerator::instance()->createTrackBookmark( track, context->argument(1).toVariant().toLongLong() ) );
+            }
             break;
     }
-    return engine->newQObject( new BookmarkPrototype( AmarokUrlPtr( new AmarokUrl( urlString, parent ) ) ),
+    if( !url )
+        return context->throwError( QScriptContext::TypeError, "Invalid arguments!" );
+
+    return engine->newQObject( new BookmarkPrototype( url ),
                                QScriptEngine::ScriptOwnership,
                                QScriptEngine::ExcludeSuperClassContents );
 }

@@ -18,8 +18,7 @@
 #define AMAROK_BOOKMARK_SCRIPT_H
 
 #include "amarokurls/BookmarkGroup.h"
-
-#include <KSharedPtr>
+#include "core/meta/Meta.h"
 
 #include <QObject>
 #include <QMap>
@@ -33,7 +32,7 @@ typedef QMap< QString, QString > StringMap;
 
 namespace AmarokScript
 {
-    // SCRIPTDOX Amarok.CollectionView
+    // SCRIPTDOX Amarok.Bookmark
     class AmarokBookmarkScript : public QObject
     {
         Q_OBJECT
@@ -43,12 +42,24 @@ namespace AmarokScript
 
         public slots:
             /**
-             * Returns a bookmark for the current context view.
+             * @return bookmark for the current context view.
              */
             AmarokUrlPtr contextView();
+
+            /**
+             * @return bookmark for the current playlist view.
+             */
             AmarokUrlPtr currentPlaylistView();
+
+            /**
+             * * @return bookmark for the current browser view.
+             */
             AmarokUrlPtr browserView();
-            // ANM-TODO Timecodes
+
+            /**
+             * Bookmark the current track at the currrent position.
+             */
+            AmarokUrlPtr createCurrentTrackBookmark();
             // AmarokUrlPtr artist( Meta::AlbumPtr album );
     };
 
