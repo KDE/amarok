@@ -25,7 +25,7 @@ add_subdirectory( core-impl/collections )
 #don't use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( services )
-add_subdirectory( scripts )
+add_subdirectory( scripting/scripts )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
@@ -479,16 +479,11 @@ set(scriptconsole_SRCS
     scripting/scriptconsole/ScriptConsole.cpp
     scripting/scriptconsole/ScriptEditorDocument.cpp
     scripting/scriptconsole/ScriptConsoleItem.cpp
-    scripting/scriptconsole/ScriptItemDelegate.cpp
 )
 
 set(args ${CMAKE_SOURCE_DIR}/src/scripting/scriptengine/  ${DATA_INSTALL_DIR}/amarok/scriptconsole)
 #shouldn't be here
 execute_process(COMMAND python ${CMAKE_SOURCE_DIR}/src/scripting/scriptengine/PHAACG2.py ${args})
-
-kde4_add_ui_files(scriptconsole_SRCS
-    scripting/scriptconsole/ScriptConsole.ui
-)
 
 #####################################################################
 # PLAYLIST GENERATOR
@@ -880,6 +875,7 @@ target_link_libraries(amaroklib
     ${KDE4_KTEXTEDITOR_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
+    ${QT_QTSCRIPTTOOLS_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}

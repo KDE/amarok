@@ -64,6 +64,7 @@ public:
     QString output() const { return m_output.join("\n"); }
 
     virtual bool start( bool silent );
+    virtual void pause();
 
 public slots:
     void stop();
@@ -74,7 +75,7 @@ public slots:
     virtual void slotDeprecatedCall( const QString &call );
 
 private slots:
-    void timerEvent ( QTimerEvent *event );
+    virtual void timerEvent( QTimerEvent *event );
 
 signals:
     void signalHandlerException(QScriptValue);
@@ -85,8 +86,7 @@ protected:
      * Initialize QScriptEngine and load wrapper classes
      */
     virtual void initializeScriptEngine();
-    QStringList                                         m_log;
-    QStringList                                         m_output;
+    virtual QString handleError( QScriptEngine *engine );
 
 private:
     QString                                             m_name;
@@ -96,7 +96,9 @@ private:
     /** Currently activated in the Script Manager */
     bool                                                m_running;
     bool                                                m_evaluating;
+    QStringList                                         m_log;
     QWeakPointer<AmarokScript::ScriptableServiceScript> m_service;
+    QStringList                                         m_output;
     int                                                 m_runningTime;
     int                                                 m_timerId;
     QWeakPointer<ScriptTerminatorWidget>                m_popupWidget;

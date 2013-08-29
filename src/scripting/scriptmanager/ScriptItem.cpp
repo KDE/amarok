@@ -115,10 +115,11 @@ ScriptItem::ScriptItem( QObject *parent, const QString &name, const QString &pat
 {}
 
 void
-ScriptItem::stop()
+ScriptItem::pause()
 {
     DEBUG_BLOCK
-    if( !m_engine ) {
+    if( !m_engine )
+    {
         warning() << "Script has no script engine attached:" << m_name;
         return;
     }
@@ -147,7 +148,6 @@ ScriptItem::stop()
     }
 
     m_log << QString( "%1 Script ended" ).arg( QTime::currentTime().toString() );
-    m_engine.data()->deleteLater();
     m_running = false;
     m_evaluating = false;
 }
@@ -188,6 +188,19 @@ ScriptItem::timerEvent( QTimerEvent* event )
     }
 }
 
+QString
+ScriptItem::handleError( QScriptEngine *engine )
+{
+    QString errorString = QString( "Script Error: %1 (line: %2)" )
+                          .arg( engine->uncaughtException().toString() )
+                          .arg( engine->uncaughtExceptionLineNumber() );
+    error() << errorString;
+    engine->clearExceptions();
+    stop();
+    return errorString;
+}
+
+
 bool
 ScriptItem::start( bool silent )
 {
@@ -204,6 +217,7 @@ ScriptItem::start( bool silent )
     m_log << QString( "%1 Script started" ).arg( QTime::currentTime().toString() );
 
     m_timerId = startTimer( 100 );
+    Q_ASSERT( m_engine );
     m_output << m_engine.data()->evaluate( scriptFile.readAll() ).toString();
     debug() << "After Evaluation "<< m_name;
     emit evaluated( m_output.join( "\n" ) );
@@ -214,14 +228,7 @@ ScriptItem::start( bool silent )
         m_evaluating = false;
         if ( m_engine.data()->hasUncaughtException() )
         {
-            QString errorString = QString( "Script Error: %1 (line: %2)" )
-                            .arg( m_engine.data()->uncaughtException().toString() )
-                            .arg( m_engine.data()->uncaughtExceptionLineNumber() );
-            m_log << errorString;
-            error() << errorString;
-            m_engine.data()->clearExceptions();
-            stop();
-
+            m_log << handleError( m_engine.data() );
             if( !silent )
             {
                 debug() << "The Log For the script that is the borked: " << m_log;
@@ -240,6 +247,9 @@ void
 ScriptItem::initializeScriptEngine()
 {
     DEBUG_BLOCK
+
+    if( m_engine )
+        return;
 
     m_engine = new AmarokScript::AmarokScriptEngine( this );
     connect( m_engine.data(), SIGNAL(deprecatedCall(QString)), this, SLOT(slotDeprecatedCall(QString)) );
@@ -288,6 +298,14 @@ ScriptItem::initializeScriptEngine()
     AmarokScript::MetaTrackPrototype::init( m_engine.data() );
     AmarokScript::ScriptableBiasFactory::init( m_engine.data() );
 }
+
+void
+ScriptItem::stop()
+{
+    pause();
+    m_engine.data()->deleteLater();
+}
+
 
 void
 ScriptItem::slotDeprecatedCall( const QString &call )

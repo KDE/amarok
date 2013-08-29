@@ -15,19 +15,21 @@
  ****************************************************************************************/
 
 #include "ScriptConsole.h"
+#define DEBUG_PREFIX "ScriptConsole"
 
+#include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "ScriptEditorDocument.h"
-#include "ScriptItemDelegate.h"
 #include "ScriptConsoleItem.h"
 
+#include <QApplication>
 #include <QFileDialog>
 #include <QListWidget>
+#include <QMenuBar>
 #include <QScriptEngine>
-#include <QShortcut>
 #include <QSettings>
-#include <QSplitter>
 #include <QTemporaryFile>
+#include <QToolBar>
 
 #include <KAction>
 #include <KMessageBox>
@@ -38,221 +40,178 @@
 #include <KTextEditor/View>
 
 using namespace AmarokScript;
-using namespace ScriptConsole;
+using namespace ScriptConsoleNS;
 
-QWeakPointer<ScriptConsoleDialog> ScriptConsoleDialog::s_instance;
+QWeakPointer<ScriptConsole> ScriptConsole::s_instance;
 
-ScriptConsoleDialog*
-ScriptConsoleDialog::instance()
+ScriptConsole*
+ScriptConsole::instance()
 {
     if( !s_instance )
-        s_instance = new ScriptConsoleDialog( The::mainWindow() );
+        s_instance = new ScriptConsole( The::mainWindow() );
     return s_instance.data();
 }
 
 //private
 
-ScriptConsoleDialog::ScriptConsoleDialog( QWidget *parent )
-    : KDialog( parent, 0 )
-    , m_currentItemIndex( -1 )
+ScriptConsole::ScriptConsole( QWidget *parent )
+    : QMainWindow( parent, Qt::Window )
 {
-    setModal( false );
-    setCaption( i18n( "Script Console" ) );
-    setButtons( None );
-    setWindowFlags( Qt::Window );
-    setupUi( mainWidget() );
     m_editor = KTextEditor::EditorChooser::editor();
     if ( !m_editor )
     {
-        KMessageBox::error(0, i18n("A KDE text-editor component could not be found.\n"
-                                   "Please check your KDE installation."));
+        KMessageBox::error( 0, i18n("A KDE text-editor component could not be found.\n"
+                                   "Please check your KDE installation.  Exiting the console!") );
         return;
     }
     m_editor->readConfig( KGlobal::config().data() );
+    m_scriptListDock = new ScriptListDockWidget( this );
+    m_debugger = new QScriptEngineDebugger( this );
+
+    setDockNestingEnabled( true );
+    setWindowTitle( i18n( "Script Console" ) );
+    setObjectName( "scriptconsole" );
+
+    m_debugger->setAutoShowStandardWindow( false );
+    m_codeWidget = getWidget( "Code", QScriptEngineDebugger::CodeWidget );
+    addDockWidget( Qt::BottomDockWidgetArea, m_codeWidget );
+    QList<QDockWidget*> debugWidgets = QList<QDockWidget*>() << getWidget( i18n( "Console" ), QScriptEngineDebugger::ConsoleWidget )
+                    << getWidget( i18n( "Error" ), QScriptEngineDebugger::ErrorLogWidget )
+                    << getWidget( i18n( "Debug Output" ), QScriptEngineDebugger::DebugOutputWidget )
+                    << getWidget( i18n( "Loaded Scripts" ), QScriptEngineDebugger::ScriptsWidget )
+                    << getWidget( i18n( "Breakpoints" ), QScriptEngineDebugger::BreakpointsWidget )
+                    << getWidget( i18n( "Stack" ), QScriptEngineDebugger::StackWidget )
+                    << getWidget( i18n( "Locals" ), QScriptEngineDebugger::LocalsWidget );
+    foreach( QDockWidget *widget, debugWidgets )
+    {
+      addDockWidget( Qt::BottomDockWidgetArea, widget );
+    }
+    addDockWidget( Qt::BottomDockWidgetArea, m_scriptListDock );
+    tabifyDockWidget( debugWidgets[0], debugWidgets[1] );
+    tabifyDockWidget( debugWidgets[1], debugWidgets[2] );
+    tabifyDockWidget( debugWidgets[3], debugWidgets[4] );
+    tabifyDockWidget( debugWidgets[5], debugWidgets[6] );
+
+    QMenuBar *bar = new QMenuBar( this );
+    setMenuBar( bar );
+    bar->addMenu( m_debugger->createStandardMenu( this ) );
+    QToolBar *toolBar = m_debugger->createStandardToolBar( this );
+    QAction *action = new QAction( i18n( "Stop" ), this );
+    action->setIcon( QApplication::style()->standardIcon( QStyle::SP_MediaStop ) );
+    connect( action, SIGNAL(toggled(bool)), SLOT(abortEvaluation()) );
+    toolBar->addAction( action );
+    action = new KAction( KIcon( "media-playback-start" ), i18n("Execute Script"), this );
+    action->setShortcut( Qt::CTRL + Qt::Key_Enter );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotExecuteNewScript()) );
+    toolBar->addAction( action );
+    action = new KAction( KIcon( "document-new" ), i18n( "&New Script" ), this );
+    action->setShortcut( Qt::CTRL + Qt::Key_N );
+    toolBar->addAction( action );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotNewScript()) );
+    action = new KAction( KIcon( "edit-delete" ), i18n( "&Delete Script" ), this );
+    //action->setShortcut( Qt::CTRL + Qt::Key_X );
+    toolBar->addAction( action );
+    connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(removeCurrentScript()) );
+    action = new KAction( i18n( "&Clear All Scripts" ), this );
+    toolBar->addAction( action );
+    connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(clear()) );
+    /* action = new KAction( i18n("Previous Script"), this );
+    action->setShortcut( QKeySequence::MoveToPreviousPage );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotBackHistory()) );
+    toolBar->addAction( action );
+    action = new KAction( i18n("Next Script"), this );
+    action->setShortcut( QKeySequence::MoveToNextPage );
+    connect( action, SIGNAL(triggered(bool)), SLOT(slotForwardHistory()) );
+    toolBar->addAction( action );*/
+
+    addToolBar( toolBar );
+
+    QMenu *viewMenu = new QMenu( this );
+    viewMenu->setTitle( i18n( "&View" ) );
+    foreach( QDockWidget *dockWidget, findChildren<QDockWidget*>() )
+    {
+        if( dockWidget->parentWidget() == this )
+            viewMenu->addAction( dockWidget->toggleViewAction() );
+    }
+    menuBar()->addMenu( viewMenu );
+
     KTextEditor::ContainerInterface *iface = qobject_cast<KTextEditor::ContainerInterface*>( m_editor );
     if (iface)
         iface->setContainer( parent );
-    ScriptEditorDocument *document = new ScriptEditorDocument( this, m_editor->createDocument( this ) );
-    m_view = document->createView( m_splitter );
-    m_splitter->insertWidget( 1, m_view );
-    m_splitter->setStretchFactor( 1, 5 );
-    setMinimumSize( 600, 600 );
-    show();
 
-    ScriptItemDelegate *delegate = new ScriptItemDelegate( m_outputListWidget );
-    m_outputListWidget->setItemDelegate( delegate );
-    m_outputListWidget->setEditTriggers( QAbstractItemView::DoubleClicked );
-    m_outputListWidget->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    addDockWidget( Qt::BottomDockWidgetArea, m_scriptListDock );
+    connect( m_scriptListDock, SIGNAL(edit(ScriptConsoleItem*)), SLOT(slotEditScript(ScriptConsoleItem*)) );
+    connect( m_scriptListDock, SIGNAL(currentItemChanged(ScriptConsoleItem*)), SLOT(setCurrentScriptItem(ScriptConsoleItem*)) );
+
     QListWidgetItem *item = new QListWidgetItem( "The Amarok Script Console allows you to easily execute"
                                                 "JavaScript with access to all functions\nand methods you would"
                                                 "have in an Amarok script.\nInformation on scripting for Amarok is"
                                                 "available at:\nhttp://community.kde.org/Amarok/Development#Scripting"
                                                 "\nExecute code: CTRL-Enter\nBack in code history: Page Up"
                                                 "\nForward in code history: Page Down"
-                                               , m_outputListWidget );
+                                                "See the debugger manual at: <link here>"
+                                               , 0 );
     item->setFlags( Qt::NoItemFlags );
-
-    connect( delegate, SIGNAL(killAndClearButtonClicked(QModelIndex)), SLOT(slotKillAndClearScript(QModelIndex)) );
-    connect( delegate, SIGNAL(toggleRunButtonClicked(QModelIndex)), SLOT(slotToggleScript(QModelIndex)) );
-
-    KAction *action = new KAction( i18n("Execute Script"), this );
-    action->setShortcut( Qt::CTRL + Qt::Key_Enter );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotExecuteNewScript()) );
-    m_executeButton->setDefaultAction( action );
-    addAction( action );
-    action = new KAction( i18n("Kill and Clear All Scripts"), this );
-    action->setShortcut( Qt::CTRL + Qt::Key_X );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotKillAllAndClear()) );
-    m_killAndClearButton->setDefaultAction( action );
-    addAction( action );
-    action = new KAction( i18n("Previous Script"), this );
-    action->setShortcut( QKeySequence::MoveToPreviousPage );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotBackHistory()) );
-    addAction( action );
-    action = new KAction( i18n("Next Script"), this );
-    action->setShortcut( QKeySequence::MoveToNextPage );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotForwardHistory()) );
-    addAction( action );
-
-    connect( m_outputListWidget->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged()) );
+    m_scriptListDock->addItem( item );
 
     QSettings settings( "KDE", "Amarok" );
     settings.beginGroup( "ScriptConsole" );
     restoreGeometry( settings.value("geometry").toByteArray() );
-    m_splitter->restoreState( settings.value("splitter").toByteArray() );
     m_savePath = settings.value("savepath").toString();
     settings.endGroup();
 
     if( m_savePath.isEmpty() )
-    {
         m_savePath = KUrl( KStandardDirs::locate( "data", "amarok/scriptconsole/" ) ).path();
-    }
+
+    slotNewScript();
+    connect( m_debugger, SIGNAL(evaluationSuspended()), SLOT(slotEvaluationSuspended()) );
+    connect( m_debugger, SIGNAL(evaluationResumed()), SLOT(slotEvaluationResumed()) );
+    show();
+    raise();
 }
 
 void
-ScriptConsoleDialog::slotExecuteNewScript()
+ScriptConsole::slotExecuteNewScript()
 {
-    QString script = m_view->document()->text();
-    if( script.isEmpty() )
+    // check script syntax, highlight lines?
+    /*QScriptSyntaxCheckResult syntaxResult = m_scriptItem->engine()->checkSyntax( m_scriptItem->document()->text() );
+    if( QScriptSyntaxCheckResult::Valid != syntaxResult.state() )
+        debug() << "Syntax error: " << syntaxResult.errorLineNumber() << syntaxResult.errorMessage();*/
+
+    if( m_scriptItem.data()->document()->text().isEmpty() )
         return;
-    ScriptItem *item = addItem( script );
-    if( item )
-        item->start( false );
+    m_scriptItem.data()->document()->save();
+    m_codeWidget->setWidget( m_debugger->widget( QScriptEngineDebugger::CodeWidget ) );
+    m_scriptItem.data()->start( false );
+    //dynamic_cast<QAction*>( sender() )->;
+
 }
 
 void
-ScriptConsoleDialog::slotKillAllAndClear()
-{
-    if( KMessageBox::warningContinueCancel( 0, i18n("Are you absolutely certain?") ) == KMessageBox::Cancel )
-        return;
-    m_outputListWidget->clear();
-}
-
-void
-ScriptConsoleDialog::keyPressEvent(QKeyEvent* event)
-{
-    if( event->key() == Qt::Key_Escape )
-        return;
-    KDialog::keyPressEvent( event );
-}
-
-void
-ScriptConsoleDialog::closeEvent( QCloseEvent *event )
+ScriptConsole::closeEvent( QCloseEvent *event )
 {
     QSettings settings( "Amarok", "Script Console" );
     settings.beginGroup( "ScriptConsole" );
     settings.setValue( "geometry", saveGeometry() );
-    settings.setValue( "splitter", m_splitter->saveState() );
     settings.setValue( "savepath", m_savePath );
     settings.endGroup();
-    KDialog::closeEvent( event );
+    QMainWindow::closeEvent( event );
     deleteLater();
 }
 
 void
-ScriptConsoleDialog::slotKillAndClearScript( const QModelIndex &index )
+ScriptConsole::slotEditScript( ScriptConsoleItem *item )
 {
-    ScriptConsoleItem *scriptItem = qvariant_cast<ScriptConsoleItem*>( index.data( ScriptItemDelegate::Script ) );
-    switch( KMessageBox::warningYesNoCancel( this, i18n( "Remove script file from disk?" ), i18n( "Remove Script" ) ) )
-    {
-        case KMessageBox::Cancel:
-            return;
-        case KMessageBox::Yes:
-            scriptItem->setClearOnDeletion( true );
-        default:
-            break;
-    }
-    scriptItem->stop();
-    scriptItem->deleteLater();
-    delete m_outputListWidget->takeItem( index.row() );
-}
-
-void
-ScriptConsoleDialog::slotToggleScript( const QModelIndex &index )
-{
-    ScriptConsoleItem *item = qvariant_cast<ScriptConsoleItem*>( index.data( ScriptItemDelegate::Script ) );
-    if( !item )
+    if( m_scriptItem.data()->running() && KMessageBox::warningContinueCancel( this, i18n( "This will stop this script! Continue?" ), QString(), KStandardGuiItem::cont()
+                                        , KStandardGuiItem::cancel(), "stopRunningScriptWarning" ) == KMessageBox::Cancel )
         return;
-    if( item->engine() && item->engine()->isEvaluating() )
-        item->stop();
-    else
-        item->start();
-    m_outputListWidget->repaint();
-}
 
-void
-ScriptConsoleDialog::slotBackHistory()
-{
-    if( m_currentItemIndex == 1 || m_outputListWidget->count() < 2 )
-        return;
-    if( !m_view->document()->text().isEmpty() )
-    {
-        if( m_currentItemIndex == -1 || qvariant_cast<ScriptConsoleItem*>(
-                m_outputListWidget->item( m_currentItemIndex )->data( ScriptItemDelegate::Script ) )->document()->text() != m_view->document()->text() )
-            if( KMessageBox::questionYesNo( 0, i18n("Discard the current script?") ) == KMessageBox::No )
-                return;
-    }
-    --m_currentItemIndex;
-    if( m_currentItemIndex < 0 )
-        m_currentItemIndex = m_outputListWidget->count()-1;
-    ScriptConsoleItem* item = qvariant_cast<ScriptConsoleItem*>(
-                m_outputListWidget->item( m_currentItemIndex )->data( ScriptItemDelegate::Script ) );
-    m_view->document()->clear();
-    m_view->document()->setText( item->document()->text() );
+    item->pause();
+    setCurrentScriptItem( item );
 }
-
-void
-ScriptConsoleDialog::slotForwardHistory()
-{
-    if( m_currentItemIndex < 0 || m_currentItemIndex == m_outputListWidget->count() )
-        return;
-    if( !m_view->document()->text().isEmpty() )
-    {
-        if( qvariant_cast<ScriptConsoleItem*>( m_outputListWidget->item( m_currentItemIndex )->data( ScriptItemDelegate::Script ) )->document()->text() != m_view->document()->text() )
-        {
-            if( KMessageBox::questionYesNo( 0, i18n("Discard the current script?") ) == KMessageBox::No )
-                return;
-        }
-    }
-    if( ++m_currentItemIndex == m_outputListWidget->count() )
-        m_view->document()->clear();
-    else
-    {
-        ScriptConsoleItem *item = qvariant_cast<ScriptConsoleItem*>(
-                                        m_outputListWidget->item( m_currentItemIndex )->data( ScriptItemDelegate::Script ) );
-        m_view->document()->setText( item->document()->text() );
-    }
-}
-
-void
-ScriptConsoleDialog::dataChanged()
-{
-    m_currentItemIndex = -1;
-}
-
 
 ScriptConsoleItem*
-ScriptConsoleDialog::addItem( const QString &script )
+ScriptConsole::createScriptItem( const QString &script )
 {
     if( ( m_savePath.isEmpty() || !QDir( m_savePath ).exists() )
         && ( m_savePath = QFileDialog::getExistingDirectory(this, i18n( "Choose where to save your scripts" ), "~",
@@ -267,19 +226,267 @@ ScriptConsoleDialog::addItem( const QString &script )
     }while ( QDir( scriptPath ).exists() );
     QDir().mkdir( scriptPath );
 
-    QListWidgetItem *item = new QListWidgetItem( m_outputListWidget );
     ScriptEditorDocument *document = new ScriptEditorDocument( this, m_editor->createDocument( 0 ) );
     document->setText( script );
-    ScriptConsoleItem *scriptItem = new ScriptConsoleItem( this, scriptName, "Generic"
-    , scriptPath, document );
-    item->setFlags( item->flags() | Qt::ItemIsEditable );
-    item->setData( ScriptItemDelegate::Script, QVariant::fromValue<ScriptConsoleItem*>(scriptItem) );
-    m_outputListWidget->scrollToItem( item );
-    connect( scriptItem, SIGNAL(logChanged()), m_outputListWidget, SLOT(update()) );
-    connect( scriptItem, SIGNAL(evaluated(QString)), m_outputListWidget, SLOT(update()) );
-    m_view->document()->clear();
+    ScriptConsoleItem *scriptItem = new ScriptConsoleItem( this, scriptName, "Generic", scriptPath, document );
     return scriptItem;
 }
 
-ScriptConsoleDialog::~ScriptConsoleDialog()
-{}
+ScriptConsole::~ScriptConsole()
+{
+    m_debugger->detach();
+}
+
+void
+ScriptConsole::slotEvaluationSuspended()
+{
+    if( !m_scriptItem )
+    {
+        slotNewScript();
+        return;
+    }
+    debug() << "Is Evaluating() " << m_scriptItem.data()->engine()->isEvaluating();
+    debug() << "Exception isValid()" << m_scriptItem.data()->engine()->uncaughtException().isValid();
+    if( m_scriptItem.data()->engine() && m_scriptItem.data()->engine()->uncaughtException().isValid() )
+        return;
+
+    KTextEditor::View *view = m_scriptItem.data()->createEditorView( m_codeWidget );
+    view->installEventFilter( this );
+    m_codeWidget->setWidget( view );
+}
+
+void
+ScriptConsole::slotEvaluationResumed()
+{
+    debug() << "Is Evaluating() " << m_scriptItem.data()->engine()->isEvaluating();
+    debug() << "Exception isValid()" << m_scriptItem.data()->engine()->uncaughtException().isValid();
+    if( !m_scriptItem.data()->engine() || !m_scriptItem.data()->engine()->isEvaluating() )
+        return;
+
+    KTextEditor::View *view = m_scriptItem.data()->createEditorView( m_codeWidget );
+    view->installEventFilter( this );
+    m_codeWidget->setWidget( view );
+}
+
+void
+ScriptConsole::abortEvaluation()
+{
+    m_scriptItem.data()->pause();
+}
+
+QDockWidget*
+ScriptConsole::getWidget( const QString &title, QScriptEngineDebugger::DebuggerWidget widget )
+{
+    QDockWidget *debugWidget = new QDockWidget( title, this );
+    debugWidget->setWidget( m_debugger->widget( widget ) );
+    return debugWidget;
+}
+
+void
+ScriptConsole::setCurrentScriptItem( ScriptConsoleItem *item )
+{
+    if( !item || m_scriptItem.data() == item )
+        return;
+    m_debugger->detach();
+    m_debugger->attachTo( item->engine() );
+    m_scriptItem = item;
+    //new DebuggerProxyAgent( item->engine() );
+    if( item->engine() && item->engine()->isEvaluating() )
+    {
+        m_codeWidget->setWidget( m_debugger->widget( QScriptEngineDebugger::CodeWidget ) );
+    }
+    else
+    {
+        KTextEditor::View *view = item->createEditorView( m_codeWidget );
+        view->installEventFilter( this );
+        m_codeWidget->setWidget( view );
+    }
+}
+
+void
+ScriptConsole::slotNewScript()
+{
+    ScriptConsoleItem *item = createScriptItem( "" );
+    m_scriptListDock->addScript( item );
+    setCurrentScriptItem( item );
+}
+
+bool
+ScriptConsole::eventFilter( QObject *watched, QEvent *event )
+{
+    Q_UNUSED( watched )
+    if( event->type() == QEvent::KeyPress )
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>( event );
+        if( keyEvent == QKeySequence::MoveToNextPage )
+        {
+            m_scriptListDock->next();
+            return true;
+        }
+        else if( keyEvent == QKeySequence::MoveToPreviousPage )
+        {
+            m_scriptListDock->prev();
+            return true;
+        }
+    }
+    return false;
+}
+
+ScriptListDockWidget::ScriptListDockWidget( QWidget *parent )
+: QDockWidget( i18n( "Scripts" ), parent )
+{
+    QWidget *widget = new KVBox( this );
+    setWidget( widget );
+    m_scriptListWidget = new QListWidget( widget );
+    // new HorizontalDivider( widget );
+    //QToolBar *toolbar = new QToolBar( widget );
+    m_scriptListWidget->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    connect( m_scriptListWidget, SIGNAL(doubleClicked(QModelIndex)), SLOT(slotDoubleClicked(QModelIndex)) );
+    connect( m_scriptListWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
+             SLOT(slotCurrentItemChanged(QListWidgetItem*,QListWidgetItem*)) );
+}
+
+void
+ScriptListDockWidget::addScript( ScriptConsoleItem *script )
+{
+    QListWidgetItem *item = new QListWidgetItem( script->name(), 0 );
+    item->setData( ScriptRole, QVariant::fromValue<ScriptConsoleItem*>( script ) );
+    m_scriptListWidget->addItem( item );
+    m_scriptListWidget->setCurrentItem( item );
+}
+
+void
+ScriptListDockWidget::removeCurrentScript()
+{
+    QListWidgetItem *item = m_scriptListWidget->takeItem( m_scriptListWidget->currentRow() );
+    ScriptConsoleItem *scriptItem = qvariant_cast<ScriptConsoleItem*>( item->data( ScriptRole ) );
+    switch( KMessageBox::warningYesNoCancel( this, i18n( "Remove script file from disk?" ), i18n( "Remove Script" ) ) )
+    {
+        case KMessageBox::Cancel:
+            return;
+        case KMessageBox::Yes:
+            scriptItem->setClearOnDeletion( true );
+        default:
+            break;
+    }
+    scriptItem->stop();
+    scriptItem->deleteLater();
+    delete item;
+}
+
+void
+ScriptListDockWidget::slotCurrentItemChanged( QListWidgetItem *newItem, QListWidgetItem *oldItem )
+{
+    Q_UNUSED( oldItem )
+    emit currentItemChanged( newItem ? qvariant_cast<ScriptConsoleItem*>( newItem->data(ScriptRole) ) : 0 );
+}
+
+void
+ScriptListDockWidget::slotDoubleClicked( const QModelIndex &index )
+{
+    emit edit( qvariant_cast<ScriptConsoleItem*>( index.data(ScriptRole) ) );
+}
+
+void
+ScriptListDockWidget::clear()
+{
+    if( KMessageBox::warningContinueCancel( 0, i18n("Are you absolutely certain?") ) == KMessageBox::Cancel )
+        return;
+    for( int i = 0; i<m_scriptListWidget->count(); ++i )
+        delete qvariant_cast<ScriptConsoleItem*>( m_scriptListWidget->item( i )->data( ScriptRole ) );
+    m_scriptListWidget->clear();
+
+}
+
+void
+ScriptListDockWidget::addItem( QListWidgetItem *item )
+{
+    m_scriptListWidget->addItem( item );
+}
+
+ScriptListDockWidget::~ScriptListDockWidget()
+{
+    clear();
+}
+
+void
+ScriptListDockWidget::next()
+{
+    int currentRow = m_scriptListWidget->currentRow();
+    m_scriptListWidget->setCurrentRow( currentRow > 1 ? currentRow - 1 : currentRow );
+}
+
+void
+ScriptListDockWidget::prev()
+{
+    int currentRow = m_scriptListWidget->currentRow();
+    m_scriptListWidget->setCurrentRow( currentRow + 1 < m_scriptListWidget->count() ? currentRow + 1 : currentRow );
+}
+
+/*
+DebuggerProxyAgent::DebuggerProxyAgent( QScriptEngine *engine )
+: QScriptEngineAgent( engine )
+{
+    d = engine->agent();
+    engine->setAgent( this );
+    if( !d )
+        return;
+}
+
+DebuggerProxyAgent::~DebuggerProxyAgent()
+{
+    delete d;
+}
+
+void
+DebuggerProxyAgent::contextPop()
+{
+    d->contextPop();
+}
+
+void
+DebuggerProxyAgent::contextPush()
+{
+    d->contextPush();
+}
+
+void
+DebuggerProxyAgent::exceptionCatch( qint64 scriptId, const QScriptValue &exception )
+{
+    d->exceptionCatch( scriptId, exception );
+}
+
+void
+DebuggerProxyAgent::exceptionThrow( qint64 scriptId, const QScriptValue &exception, bool hasHandler )
+{
+    d->exceptionThrow( scriptId, exception, hasHandler );
+}
+
+void
+DebuggerProxyAgent::functionEntry( qint64 scriptId )
+{
+    d->functionEntry( scriptId );
+}
+
+void
+DebuggerProxyAgent::functionExit( qint64 scriptId, const QScriptValue &returnValue )
+{
+    d->functionExit( scriptId, returnValue );
+}
+
+void
+DebuggerProxyAgent::positionChange( qint64 scriptId, int lineNumber, int columnNumber )
+{
+    d->positionChange( scriptId, lineNumber, columnNumber );
+}
+
+void DebuggerProxyAgent::scriptLoad( qint64 id, const QString &program, const QString &fileName, int baseLineNumber )
+{
+    d->scriptLoad( id, program, fileName, baseLineNumber );
+}
+
+void DebuggerProxyAgent::scriptUnload( qint64 id )
+{
+    d->scriptUnload( id );
+}
+*/

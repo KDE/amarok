@@ -25,7 +25,7 @@ namespace KTextEditor {
     class Document;
 }
 
-namespace ScriptConsole
+namespace ScriptConsoleNS
 {
     class AmarokScriptCodeCompletionModel : public KTextEditor::CodeCompletionModelControllerInterface3
                                           , public KTextEditor::CodeCompletionModel

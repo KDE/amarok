@@ -34,8 +34,8 @@ namespace Amarok {
     class TrayIcon;
 }
 
-namespace ScriptConsole{
-    class ScriptConsoleDialog;
+namespace ScriptConsoleNS{
+    class ScriptConsole;
 }
 
 class OcsData;
@@ -97,7 +97,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
         QWeakPointer<MainWindow>    m_mainWindow;
         Amarok::TrayIcon            *m_tray;
         MediaDeviceManager          *m_mediaDeviceManager;
-        QWeakPointer<ScriptConsole::ScriptConsoleDialog> m_scriptConsole;
+        QWeakPointer<ScriptConsoleNS::ScriptConsole> m_scriptConsole;
 
         static QStringList       s_delayedAmarokUrls;
 };

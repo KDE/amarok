@@ -17,10 +17,10 @@
 #ifndef SCRIPTCONSOLE_H
 #define SCRIPTCONSOLE_H
 
-#include "ui_ScriptConsole.h"
-
-#include <KDialog>
-
+#include <QMainWindow>
+#include <QDockWidget>
+#include <QScriptEngineAgent>
+#include <QtScriptTools/QScriptEngineDebugger>
 #include <QWeakPointer>
 
 namespace KTextEditor{
@@ -29,43 +29,99 @@ namespace KTextEditor{
 }
 class QEvent;
 class QListWidget;
+class QListWidgetItem;
 class QModelIndex;
 class QScriptEngine;
 class QSplitter;
 
-namespace ScriptConsole
+namespace ScriptConsoleNS
 {
-    class ScriptConsoleItem;
+class ScriptConsoleItem;
+class ScriptListDockWidget;
 
-    class ScriptConsoleDialog : public KDialog, private Ui_ScriptConsole
+    class ScriptConsole : public QMainWindow
     {
         Q_OBJECT
 
         public slots:
-            static ScriptConsoleDialog *instance();
+            static ScriptConsole *instance();
+            void abortEvaluation();
 
         private slots:
             void slotExecuteNewScript();
-            void slotKillAllAndClear();
-            void slotToggleScript( const QModelIndex &index );
-            void slotKillAndClearScript( const QModelIndex &index );
-            void slotBackHistory();
-            void slotForwardHistory();
-            void dataChanged();
+            void slotNewScript();
+            void setCurrentScriptItem( ScriptConsoleItem *item );
+            void slotEvaluationSuspended();
+            void slotEvaluationResumed();
+            void slotEditScript( ScriptConsoleItem *item );
 
         private:
-            explicit ScriptConsoleDialog( QWidget *parent );
-            virtual ~ScriptConsoleDialog();
-            void closeEvent( QCloseEvent *event );
-            void keyPressEvent( QKeyEvent *event );
-            ScriptConsoleItem* addItem( const QString &script );
+            explicit ScriptConsole( QWidget *parent );
+            virtual ~ScriptConsole();
 
-            KTextEditor::Editor *m_editor;
-            KTextEditor::View *m_view;
+            bool eventFilter( QObject *watched, QEvent *event );
+            QDockWidget *getWidget( const QString &title, QScriptEngineDebugger::DebuggerWidget widget );
+            void closeEvent( QCloseEvent *event );
+            ScriptConsoleItem* createScriptItem( const QString &script );
+
+            QScriptEngineDebugger *m_debugger;
+            QWeakPointer<ScriptConsoleItem> m_scriptItem;
+            QDockWidget *m_codeWidget;
             QString m_savePath;
-            static QWeakPointer<ScriptConsoleDialog> s_instance;
-            int m_currentItemIndex;
+            KTextEditor::Editor *m_editor;
+            ScriptListDockWidget *m_scriptListDock;
+            static QWeakPointer<ScriptConsole> s_instance;
     };
+
+    class ScriptListDockWidget : public QDockWidget
+    {
+        Q_OBJECT
+
+        public:
+            ScriptListDockWidget( QWidget *parent );
+            ~ScriptListDockWidget();
+            void addScript( ScriptConsoleItem *script );
+            void addItem( QListWidgetItem *item );
+            void prev();
+            void next();
+
+        public slots:
+            void clear();
+            void removeCurrentScript();
+
+        signals:
+            void edit( ScriptConsoleItem *item );
+            void executeScript( ScriptConsoleItem *item );
+            void currentItemChanged( ScriptConsoleItem *newItem );
+            void newScript();
+
+        private slots:
+            void slotDoubleClicked( const QModelIndex &index );
+            void slotCurrentItemChanged( QListWidgetItem *newItem, QListWidgetItem *oldItem );
+
+        private:
+            QListWidget *m_scriptListWidget;
+            const int ScriptRole = 1002;
+    };
+
+    /*
+    class DebuggerProxyAgent : public QScriptEngineAgent
+    {
+            DebuggerProxyAgent( QScriptEngine *engine );
+            ~DebuggerProxyAgent();
+            void contextPop();
+            void contextPush();
+            void exceptionCatch( qint64 scriptId, const QScriptValue &exception );
+            void exceptionThrow( qint64 scriptId, const QScriptValue &exception, bool hasHandler );
+            void functionEntry( qint64 scriptId );
+            void functionExit( qint64 scriptId, const QScriptValue &returnValue );
+            void positionChange( qint64 scriptId, int lineNumber, int columnNumber );
+            void scriptLoad( qint64 id, const QString &program, const QString &fileName, int baseLineNumber );
+            void scriptUnload( qint64 id );
+
+        private:
+            QScriptEngineAgent *d;
+    };*/
 }
 
 #endif // SCRIPTCONSOLE_H

@@ -26,25 +26,12 @@ class KUrl;
 class QIcon;
 class QScriptContext;
 class QScriptEngine;
+class QScriptEngineDebugger;
 class QWidget;
 
-namespace ScriptConsole
+namespace ScriptConsoleNS
 {
     class ScriptEditorDocument;
-
-    class ScriptingMethods : public QObject
-    {
-        Q_OBJECT
-
-        public:
-            ScriptingMethods( QObject *parent );
-
-        public slots:
-            void print( const QScriptValue &value );
-
-        signals:
-            void output( QString );
-    };
 
     class ScriptConsoleItem : public ScriptItem
     {
@@ -55,7 +42,6 @@ namespace ScriptConsole
                             , const QString &category, ScriptEditorDocument *document );
             virtual ~ScriptConsoleItem();
             ScriptEditorDocument* document() { return m_viewFactory; }
-            QStringList log() { return m_log; }
             bool start( bool silent = false );
             KTextEditor::View *createEditorView( QWidget *parent );
 
@@ -63,22 +49,20 @@ namespace ScriptConsole
              * Clear script files on disk upon object deletion
              */
             void setClearOnDeletion( bool clearOnDelete );
+            void pause();
 
         private:
-            ScriptEditorDocument *m_viewFactory;
             bool m_clearOnDelete;
-            ScriptingMethods *m_scriptMethods;
+            ScriptEditorDocument *m_viewFactory;
+            QWeakPointer<KTextEditor::View> m_view;
 
+            void timerEvent(QTimerEvent* event);
             void initializeScriptEngine();
             static KPluginInfo createSpecFile( const QString &name, const QString &category, const QString &path );
-
-        signals:
-            void logChanged();
-
-        private slots:
-            void slotOutput( const QString &string );
+            QString handleError( QScriptEngine *engine );
     };
 }
-Q_DECLARE_METATYPE( ScriptConsole::ScriptConsoleItem* )
+
+Q_DECLARE_METATYPE( ScriptConsoleNS::ScriptConsoleItem* )
 
 #endif // SCRIPT_CONSOLE_ITEM_H

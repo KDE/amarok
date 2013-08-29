@@ -19,11 +19,17 @@
 #include "CompletionModel.h"
 #include "ScriptConsole.h"
 
+#include <KTextEditor/Attribute>
 #include <KTextEditor/CodeCompletionInterface>
+#include <KTextEditor/ConfigInterface>
+#include <KTextEditor/HighlightInterface>
 #include <KTextEditor/Document>
+#include <KTextEditor/MovingInterface>
+#include <KTextEditor/MovingRange>
+#include <KTextEditor/SmartInterface>
 #include <KTextEditor/View>
 
-using namespace ScriptConsole;
+using namespace ScriptConsoleNS;
 
 QWeakPointer<AmarokScriptCodeCompletionModel> ScriptEditorDocument::s_completionModel;
 
@@ -33,22 +39,23 @@ ScriptEditorDocument::ScriptEditorDocument( QObject *parent, KTextEditor::Docume
     m_document = document;
     m_document->setParent( this );
     m_document->setHighlightingMode("JavaScript");
-    if( !s_completionModel )
-    {
-        s_completionModel = new AmarokScriptCodeCompletionModel( parent );
-    }
 }
 
 KTextEditor::View*
 ScriptEditorDocument::createView( QWidget* parent )
 {
-    KTextEditor::View *view = qobject_cast<KTextEditor::View*>( m_document->createView( parent ) );
-    KTextEditor::CodeCompletionInterface *iface = qobject_cast<KTextEditor::CodeCompletionInterface*>( view );
-    Q_ASSERT( iface );
-    if( iface )
+    KTextEditor::View *view = m_document->createView( parent );
+    KTextEditor::CodeCompletionInterface *codeCompletionIf = qobject_cast<KTextEditor::CodeCompletionInterface*>( view );
+    if( codeCompletionIf )
     {
-        iface->registerCompletionModel( s_completionModel.data() );
+        if( !s_completionModel )
+            s_completionModel = new AmarokScriptCodeCompletionModel( parent );
+        codeCompletionIf->registerCompletionModel( s_completionModel.data() );
+        codeCompletionIf->setAutomaticInvocationEnabled( true );
     }
+    KTextEditor::ConfigInterface *configIface = qobject_cast<KTextEditor::ConfigInterface*>( view );
+    if( configIface )
+        configIface->setConfigValue( "line-numbers", true );
     return view;
 }
 
@@ -73,7 +80,40 @@ ScriptEditorDocument::save( const KUrl &url )
 ScriptEditorDocument::~ScriptEditorDocument()
 {}
 
-void ScriptEditorDocument::save()
+void
+ScriptEditorDocument::save()
 {
     m_document->save();
+}
+
+void
+ScriptEditorDocument::setReadWrite( bool readWrite )
+{
+    m_document->setReadWrite( readWrite );
+}
+
+void
+ScriptEditorDocument::highlight( KTextEditor::View *view, int line, const QColor &color )
+{
+    KTextEditor::MovingInterface *movingIf = qobject_cast<KTextEditor::MovingInterface*>( view->document() );
+    if( !movingIf )
+      return;
+
+    clearHighlights( view );
+
+    KTextEditor::MovingRange *movingRange = movingIf->newMovingRange( KTextEditor::Range( line, 0, line, 500 ) );
+    movingRange->setView( view );
+    movingRange->setZDepth( -999 );
+    //use highlightinterface::default styles?
+    KTextEditor::Attribute::Ptr attrb( new KTextEditor::Attribute() );
+    attrb->setBackground( color );
+    movingRange->setAttribute( attrb );
+}
+
+void
+ScriptEditorDocument::clearHighlights( KTextEditor::View *view )
+{
+    KTextEditor::SmartInterface *smartIf = qobject_cast<KTextEditor::SmartInterface*>( view->document() );
+    if( smartIf )
+        smartIf->clearDocumentHighlights();
 }

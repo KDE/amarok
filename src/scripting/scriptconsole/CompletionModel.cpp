@@ -25,7 +25,7 @@
 #include <KTextEditor/Document>
 #include <KTextEditor/TemplateInterface2>
 
-using namespace ScriptConsole;
+using namespace ScriptConsoleNS;
 
 AmarokScriptCodeCompletionModel::AmarokScriptCodeCompletionModel( QObject *parent )
 : CodeCompletionModel( parent )

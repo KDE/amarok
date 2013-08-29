@@ -415,7 +415,7 @@ void App::applySettings( bool firstTime )
         emit settingsChanged();
 
     if( AmarokConfig::enableScriptConsole() && !m_scriptConsole )
-        m_scriptConsole = ScriptConsole::ScriptConsoleDialog::instance();
+        m_scriptConsole = ScriptConsoleNS::ScriptConsole::instance();
     else if( !AmarokConfig::enableScriptConsole() && m_scriptConsole )
         m_scriptConsole.data()->deleteLater();
 }

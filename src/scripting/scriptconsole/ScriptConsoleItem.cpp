@@ -23,26 +23,27 @@
 #include "ScriptEditorDocument.h"
 
 #include <KMessageBox>
+#include <KTextEditor/View>
 
 #include <QFile>
 #include <QFileInfo>
 #include <QScriptEngine>
 #include <QTextStream>
 #include <QDir>
+#include <QScriptEngineDebugger>
+#include <QMainWindow>
 
-using namespace ScriptConsole;
+using namespace ScriptConsoleNS;
 
 ScriptConsoleItem::ScriptConsoleItem( QObject *parent, const QString &name, const QString &category
                                     , const QString &path, ScriptEditorDocument *document )
 : ScriptItem( parent, name, QString("%1/main.js").arg(path), createSpecFile( name, category, path ) )
-, m_viewFactory( document )
 , m_clearOnDelete( false )
+, m_viewFactory( document )
 {
-    connect( this, SIGNAL(signalHandlerException(QScriptValue)), SIGNAL(logChanged()) );
     document->setParent( this );
     document->save( url().path() );
-    m_scriptMethods = new ScriptingMethods( this );
-    connect( m_scriptMethods, SIGNAL(output(QString)), this, SLOT(slotOutput(QString)) );
+    initializeScriptEngine();
 }
 
 ScriptConsoleItem::~ScriptConsoleItem()
@@ -60,6 +61,8 @@ ScriptConsoleItem::~ScriptConsoleItem()
         if( !dir.rmdir( dir.absolutePath() ) )
             debug() << "Directory %1 not removed, contains other files";
     }
+    if( m_view )
+        m_view.data()->deleteLater();
 }
 
 KPluginInfo
@@ -91,33 +94,41 @@ ScriptConsoleItem::createSpecFile( const QString &name, const QString &category,
 bool
 ScriptConsoleItem::start( bool silent )
 {
+    if( running() )
+        return false;
     if( !info().isValid() )
     {
         debug() << "Invalid spec";
         return false;
     }
     m_viewFactory->save();
+    Q_ASSERT( engine() );
+    engine()->pushContext();
     return ScriptItem::start( silent );
 }
 
 KTextEditor::View*
 ScriptConsoleItem::createEditorView( QWidget *parent )
 {
-    if( engine() && engine()->isEvaluating() && KMessageBox::warningContinueCancel(0, i18n("Stop the current evaluation?")) == KMessageBox::Cancel )
-        return 0;
-    stop();
-    return m_viewFactory->createView( parent );
+    if( !m_view )
+        m_view = m_viewFactory->createView( parent );
+    else
+        m_view.data()->setParent( parent );
+    return m_view.data();
 }
 
 void
 ScriptConsoleItem::initializeScriptEngine()
 {
     ScriptItem::initializeScriptEngine();
-    QScriptValue scriptConsoleMethods = engine()->newQObject( m_scriptMethods, QScriptEngine::QtOwnership
-                                                            , QScriptEngine::ExcludeSuperClassContents );
-    engine()->globalObject().setProperty( "UndocumentedScriptConsoleInternals", scriptConsoleMethods );
-    engine()->evaluate("function print(str){ return UndocumentedScriptConsoleInternals.print( str ); };");
 }
+
+void
+ScriptConsoleItem::timerEvent( QTimerEvent *event )
+{
+    Q_UNUSED( event )
+}
+
 
 void
 ScriptConsoleItem::setClearOnDeletion( bool clearOnDelete )
@@ -125,17 +136,20 @@ ScriptConsoleItem::setClearOnDeletion( bool clearOnDelete )
     m_clearOnDelete = clearOnDelete;
 }
 
-void ScriptConsoleItem::slotOutput( const QString &string )
+QString
+ScriptConsoleItem::handleError( QScriptEngine *engine )
 {
-    m_output << string;
+    QString errorString = QString( "Script Error: %1 (line: %2)" )
+                        .arg( engine->uncaughtException().toString() )
+                        .arg( engine->uncaughtExceptionLineNumber() );
+    return errorString;
 }
 
-ScriptingMethods::ScriptingMethods( QObject *parent )
-: QObject( parent )
-{}
-
 void
-ScriptingMethods::print( const QScriptValue &value )
+ScriptConsoleItem::pause()
 {
-    emit output( value.toString() );
+    if( !running() )
+        return;
+    engine()->popContext();
+    ScriptItem::pause();
 }
