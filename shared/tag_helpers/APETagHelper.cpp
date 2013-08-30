@@ -30,11 +30,11 @@ APETagHelper::APETagHelper( TagLib::Tag *tag, TagLib::APE::Tag *apeTag, Amarok::
             : TagHelper( tag, fileType )
             , m_tag( apeTag )
 {
-    m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "Album Artist" ) );
+    m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "ALBUM ARTIST" ) );
     m_fieldMap.insert( Meta::valBpm,         TagLib::String( "BPM" ) );
-    m_fieldMap.insert( Meta::valCompilation, TagLib::String( "Compilation" ) );
+    m_fieldMap.insert( Meta::valCompilation, TagLib::String( "COMPILATION" ) );
     m_fieldMap.insert( Meta::valComposer,    TagLib::String( "Composer" ) );
-    m_fieldMap.insert( Meta::valDiscNr,      TagLib::String( "Disc" ) );
+    m_fieldMap.insert( Meta::valDiscNr,      TagLib::String( "DISC" ) );
     m_fieldMap.insert( Meta::valPlaycount,   TagLib::String( "FMPS_PLAYCOUNT" ) );
     m_fieldMap.insert( Meta::valRating,      TagLib::String( "FMPS_RATING" ) );
     m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS_RATING_AMAROK_SCORE" ) );
@@ -58,6 +58,11 @@ APETagHelper::tags() const
                 data.insert( field, qRound( value.toFloat() * 10.0 ) );
             else if( field == Meta::valScore )
                 data.insert( field, value.toFloat() * 100.0 );
+            else if( field == Meta::valDiscNr ) {
+                int disc;
+                disc = splitDiscNr( value ).first;
+                data.insert( field, disc );
+            }
             else
                 data.insert( field, value );
         }
