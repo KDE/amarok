@@ -25,6 +25,7 @@
 #include "MainWindow.h"
 #include "PaletteHandler.h"
 #include "ScriptingDefines.h"
+#include <browsers/collectionbrowser/CollectionWidget.h>
 
 #include <KAction>
 #include <KActionCollection>
@@ -168,4 +169,17 @@ QString
 AmarokWindowScript::styleSheet() const
 {
     return The::mainWindow()->styleSheet();
+}
+
+QFont
+AmarokWindowScript::font() const
+{
+    return The::mainWindow()->font();
+}
+
+void
+AmarokWindowScript::setFont( const QFont &font )
+{
+    The::mainWindow()->setFont( font );
+    The::mainWindow()->collectionBrowser()->update();
 }

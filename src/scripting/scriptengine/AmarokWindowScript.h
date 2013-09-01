@@ -41,6 +41,8 @@ namespace AmarokScript
          * Convenience method for mainWindow.styleSheet and setStyleSheet
          */
         Q_PROPERTY( QString styleSheet READ styleSheet WRITE setStyleSheet )
+        Q_PROPERTY( QFont font READ font WRITE setFont )
+        Q_PROPERTY( QPalette palette READ palette WRITE setPalette )
 
         public:
             AmarokWindowScript( AmarokScriptEngine* scriptEngine );
@@ -52,8 +54,6 @@ namespace AmarokScript
             void addSettingsSeparator();
             void showBrowser( QString browser ) const; // ANM-TODO: works?
             void showTrayIcon( bool show );
-            QPalette palette() const;
-            void setPalette( const QPalette & palette );
 
         signals:
             void prepareToQuit();
@@ -78,6 +78,10 @@ namespace AmarokScript
             QMainWindow* mainWindow();
             void setStyleSheet( const QString &styleSheet );
             QString styleSheet() const;
+            QFont font() const;
+            void setFont( const QFont &font );
+            QPalette palette() const;
+            void setPalette( const QPalette & palette );
 
             QWeakPointer<KMenu> m_toolsMenu;
             QWeakPointer<KMenu> m_settingsMenu;
