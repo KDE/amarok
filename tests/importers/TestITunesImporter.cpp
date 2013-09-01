@@ -35,7 +35,7 @@ TestITunesImporter::init()
 }
 
 void
-TestITunesImporter::providerShouldHandleInexistantDbFile()
+TestITunesImporter::providerShouldHandleNonexistentDbFile()
 {
     m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
 
@@ -73,7 +73,7 @@ TestITunesImporter::providerShouldHandleErroneousConfigValues()
 }
 
 void
-TestITunesImporter::providerShouldHandleInexistantArtist()
+TestITunesImporter::providerShouldHandleNonexistentArtist()
 {
     m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
                   "/importers_files/iTunes Music Library.xml" );
@@ -166,7 +166,7 @@ TestITunesImporter::artistTracksShouldReturnPopulatedTracks()
 }
 
 void
-TestITunesImporter::artistTracksShoulsHandleNonexistentStatistics_data()
+TestITunesImporter::artistTracksShouldHandleNonexistentStatistics_data()
 {
     QTest::addColumn<QDateTime> ( "lastPlayed" );
     QTest::addColumn<int>       ( "playCount" );
@@ -199,7 +199,7 @@ TestITunesImporter::artistTracksShoulsHandleNonexistentStatistics_data()
 }
 
 void
-TestITunesImporter::artistTracksShoulsHandleNonexistentStatistics()
+TestITunesImporter::artistTracksShouldHandleNonexistentStatistics()
 {
     m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
                   "/importers_files/itunes-no-statistics.xml" );

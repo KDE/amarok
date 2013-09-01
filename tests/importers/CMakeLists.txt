@@ -97,3 +97,20 @@ target_link_libraries( testrhytmboximporter
     amarok_importer-rhythmbox
     ${testimporterscommon_LIBS}
 )
+
+#------------------------ Test BansheeImporter -------------------------------
+
+set( testbansheeimporter_SRCS
+    TestBansheeImporter.cpp
+    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeConfigWidget.cpp
+    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeManager.cpp
+    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeProvider.cpp
+    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeTrack.cpp
+)
+
+kde4_add_unit_test( testbansheeimporter ${testbansheeimporter_SRCS} )
+add_dependencies( testbansheeimporter importers_files )
+target_link_libraries( testbansheeimporter
+    amarok_importer-banshee
+    ${testimporterscommon_LIBS}
+)

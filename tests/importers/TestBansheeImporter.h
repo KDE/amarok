@@ -14,45 +14,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TEST_FAST_FORWARD_IMPORTER
-#define TEST_FAST_FORWARD_IMPORTER
+#ifndef TEST_BANSHEE_IMPORTER
+#define TEST_BANSHEE_IMPORTER
 
 #include <QObject>
+#include <QVariantMap>
 
-namespace StatSyncing
-{
-    class FastForwardConfigWidget;
-    class FastForwardProvider;
-}
-
-class TestFastForwardImporter : public QObject
+class TestBansheeImporter : public QObject
 {
     Q_OBJECT
 
 private:
-    StatSyncing::FastForwardConfigWidget *m_configWidget;
+    QVariantMap m_cfg;
 
 private slots:
     void init();
-    void cleanup();
-
-    void configWidgetShouldOnlyShowFieldsRelevantToConnection();
-    void configWidgetShouldSetDriverNameAsConfigResult();
-    void configWidgetShouldShowSqliteAsDefault();
-    void configWidgetShouldNotBreakOnNonsenseInitialValues();
-    void configWidgetShouldReadSavedConfig();
 
     void providerShouldHandleNonexistentDbFile();
     void providerShouldHandleInvalidDbFile();
-    void providerShouldHandleExternalConnectionError();
     void providerShouldHandleErroneousConfigValues();
     void providerShouldHandleNonexistentArtist();
+
     void artistsShouldReturnExistingArtists();
+
     void artistTracksShouldReturnPopulatedTracks_data();
     void artistTracksShouldReturnPopulatedTracks();
-
+    void artistTracksStringsShouldBeTrimmed();
     void artistTracksShouldHandleNonexistentStatistics_data();
     void artistTracksShouldHandleNonexistentStatistics();
 };
 
-#endif // TEST_FAST_FORWARD_IMPORTER
+#endif // TEST_BANSHEE_IMPORTER

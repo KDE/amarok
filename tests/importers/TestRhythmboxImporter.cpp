@@ -35,7 +35,7 @@ TestRhythmboxImporter::init()
 }
 
 void
-TestRhythmboxImporter::providerShouldHandleInexistantDbFile()
+TestRhythmboxImporter::providerShouldHandleNonexistentDbFile()
 {
     m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
 
@@ -73,7 +73,7 @@ TestRhythmboxImporter::providerShouldHandleErroneousConfigValues()
 }
 
 void
-TestRhythmboxImporter::providerShouldHandleInexistantArtist()
+TestRhythmboxImporter::providerShouldHandleNonexistentArtist()
 {
     m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
                   "/importers_files/rhythmdb.xml" );
@@ -152,7 +152,7 @@ TestRhythmboxImporter::artistTracksShouldReturnPopulatedTracks()
 }
 
 void
-TestRhythmboxImporter::artistTracksShoulsHandleNonexistentStatistics_data()
+TestRhythmboxImporter::artistTracksShouldHandleNonexistentStatistics_data()
 {
     QTest::addColumn<QDateTime> ( "lastPlayed" );
     QTest::addColumn<int>       ( "playCount" );
@@ -185,7 +185,7 @@ TestRhythmboxImporter::artistTracksShoulsHandleNonexistentStatistics_data()
 }
 
 void
-TestRhythmboxImporter::artistTracksShoulsHandleNonexistentStatistics()
+TestRhythmboxImporter::artistTracksShouldHandleNonexistentStatistics()
 {
     m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
                   "/importers_files/rhythmbox-no-statistics.xml" );

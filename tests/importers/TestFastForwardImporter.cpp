@@ -116,7 +116,7 @@ TestFastForwardImporter::configWidgetShouldReadSavedConfig()
 }
 
 void
-TestFastForwardImporter::providerShouldHandleInexistantDbFile()
+TestFastForwardImporter::providerShouldHandleNonexistentDbFile()
 {
     m_configWidget->m_databaseLocation->setText( "/Im/sure/this/wont/exist" );
 
@@ -156,7 +156,7 @@ TestFastForwardImporter::providerShouldHandleErroneousConfigValues()
 }
 
 void
-TestFastForwardImporter::providerShouldHandleInexistantArtist()
+TestFastForwardImporter::providerShouldHandleNonexistentArtist()
 {
     m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/collection.db" );
 
@@ -238,7 +238,7 @@ TestFastForwardImporter::artistTracksShouldReturnPopulatedTracks()
 }
 
 void
-TestFastForwardImporter::artistTracksShoulsHandleNonexistentStatistics_data()
+TestFastForwardImporter::artistTracksShouldHandleNonexistentStatistics_data()
 {
     QTest::addColumn<QDateTime> ( "firstPlayed" );
     QTest::addColumn<QDateTime> ( "lastPlayed" );
@@ -260,7 +260,7 @@ TestFastForwardImporter::artistTracksShoulsHandleNonexistentStatistics_data()
 }
 
 void
-TestFastForwardImporter::artistTracksShoulsHandleNonexistentStatistics()
+TestFastForwardImporter::artistTracksShouldHandleNonexistentStatistics()
 {
     m_configWidget->m_databaseLocation->setText( QCoreApplication::applicationDirPath() + "/importers_files/fastforward-no-statistics.db" );
     FastForwardProvider provider( m_configWidget->config(), 0 );

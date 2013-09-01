@@ -30,17 +30,17 @@ private:
 private slots:
     void init();
 
-    void providerShouldHandleInexistantDbFile();
+    void providerShouldHandleNonexistentDbFile();
     void providerShouldHandleInvalidDbFile();
     void providerShouldHandleIllFormedDbFile();
     void providerShouldHandleErroneousConfigValues();
-    void providerShouldHandleInexistantArtist();
+    void providerShouldHandleNonexistentArtist();
     void artistsShouldReturnExistingArtists();
     void artistTracksShouldReturnPopulatedTracks_data();
     void artistTracksShouldReturnPopulatedTracks();
 
-    void artistTracksShoulsHandleNonexistentStatistics_data();
-    void artistTracksShoulsHandleNonexistentStatistics();
+    void artistTracksShouldHandleNonexistentStatistics_data();
+    void artistTracksShouldHandleNonexistentStatistics();
 };
 
 #endif // TEST_RHYTHMBOX_IMPORTER
