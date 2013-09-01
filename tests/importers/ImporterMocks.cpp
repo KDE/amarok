@@ -17,6 +17,7 @@
 #include "ImporterMocks.h"
 
 #include "EngineController.h"
+#include "core/support/Amarok.h"
 #include "core/support/Components.h"
 
 using namespace ::testing;
@@ -104,6 +105,8 @@ ImporterMocks::cleanup()
     Amarok::Components::setStatSyncingController( 0 );
     delete m_mockController;
     m_mockController = 0;
+
+    Amarok::config( "Importers" ).deleteGroup();
 }
 
 void

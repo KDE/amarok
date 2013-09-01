@@ -39,6 +39,7 @@ private slots:
     void forgetProviderShouldUnregisterProvider();
     void forgetProviderShouldForgetConfig();
     void forgetProviderShouldHangleInvalidId();
+    void forgetProviderShouldNotCauseOtherProvidersToBeForgotten();
     void managerShouldHandleMultipleProviders();
 };
 

@@ -51,6 +51,9 @@ public:
     StatSyncing::ImporterProviderPtr concreteNewInstance( const QVariantMap &cfg );
     void providerForgottenProxy( const QString &providerId );
 
+    using StatSyncing::ImporterManager::managerConfig;
+    using StatSyncing::ImporterManager::providerConfig;
+
     MOCK_CONST_METHOD0( id, QString() );
     MOCK_CONST_METHOD0( description, QString() );
     MOCK_CONST_METHOD0( prettyName, QString() );

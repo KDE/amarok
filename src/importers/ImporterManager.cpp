@@ -46,28 +46,22 @@ ImporterManager::init()
 {
     m_info = pluginInfo();
 
-    KConfigGroup group = Amarok::config( "Importers" );
-    const QStringList providersIds = group.readEntry( id(), QStringList() );
-
-    foreach( const QString &providerUid, providersIds )
+    foreach( const QString &providerId, managerConfig().groupList() )
     {
-        group = Amarok::config( "Importers." + id() + "." + providerUid );
+        KConfigGroup group = providerConfig( providerId );
 
-        QVariantMap providerConfig;
+        QVariantMap config;
         foreach( const QString &key, group.keyList() )
-            providerConfig.insert( key, group.readEntry( key, QVariant(QString()) ) );
+            config.insert( key, group.readEntry( key, QVariant( QString() ) ) );
 
-        if( !providerConfig["uid"].toString().isEmpty() )
-        {
-            ProviderPtr provider = createProvider( providerConfig );
-            m_providers.insert( provider->id(), provider );
-        }
+        ProviderPtr provider = createProvider( config );
+        m_providers.insert( provider->id(), provider );
     }
 
     if( Controller *controller = Amarok::Components::statSyncingController() )
         if( Config *config = controller->config() )
             connect( config, SIGNAL(providerForgotten(QString)),
-                                                  SLOT(slotProviderForgotten(QString)) );
+                                                   SLOT(slotProviderForgotten(QString)) );
 
     m_initialized = true;
 }
@@ -88,7 +82,7 @@ ImporterManager::createProvider( QVariantMap config )
     // block, old instance should be destroyed, its destructor called.
     if( config.contains( "uid" ) )
     {
-        const QString providerId = config["uid"].toString();
+        const QString providerId = config.value( "uid" ).toString();
         if( m_providers.contains( providerId ) )
         {
             ProviderPtr oldProvider = m_providers.take( providerId );
@@ -108,7 +102,7 @@ ImporterManager::createProvider( QVariantMap config )
 
     connect( provider.data(), SIGNAL(reconfigurationRequested(QVariantMap)),
                                 SLOT(createProvider(QVariantMap)), Qt::QueuedConnection);
-    m_providers[provider->id()] = provider;
+    m_providers.insert( provider->id(), provider );
 
     // Register the provider
     if( controller )
@@ -125,22 +119,31 @@ ImporterManager::createProvider( QVariantMap config )
     }
 
     // Save the settings
-    KConfigGroup group = Amarok::config( "Importers" );
-    QStringList providersIds = group.readEntry( id(), QStringList() );
-    if( !providersIds.toSet().contains( provider->id() ) )
-    {
-        providersIds.append( provider->id() );
-        group.writeEntry( id(), providersIds );
-        group.sync();
-    }
-
-    group = Amarok::config( "Importers." + id() + "." + provider->id() );
+    KConfigGroup group = providerConfig( provider );
     group.deleteGroup();
     foreach( const QString &key, provider->m_config.keys() )
         group.writeEntry( key, provider->m_config.value( key ) );
     group.sync();
 
     return provider;
+}
+
+KConfigGroup
+ImporterManager::managerConfig() const
+{
+    return Amarok::config( "Importers" ).group( id() );
+}
+
+KConfigGroup
+ImporterManager::providerConfig( const QString &providerId ) const
+{
+    return managerConfig().group( providerId );
+}
+
+KConfigGroup
+ImporterManager::providerConfig( const ProviderPtr &provider ) const
+{
+    return providerConfig( provider->id() );
 }
 
 void
@@ -155,13 +158,7 @@ ImporterManager::slotProviderForgotten( const QString &providerId )
         controller->unregisterProvider( provider );
 
     // Remove configuration
-    KConfigGroup group = Amarok::config( "Importers" );
-    QStringList providersIds = group.readEntry( id(), QStringList() );
-    providersIds.removeAll( providerId );
-    providersIds.empty() ? group.deleteGroup() : group.writeEntry( id(), providersIds );
-    group.sync();
-
-    group = Amarok::config( "Importers." + id() + "." + providerId );
+    KConfigGroup group = providerConfig( providerId );
     group.deleteGroup();
     group.sync();
 }

@@ -71,9 +71,6 @@ TestImporterManager::initShouldLoadSettings()
     EXPECT_CALL( *m_mockManager, id() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
 
     m_mockManager->init();
-
-    Amarok::config( "Importers" ).deleteGroup();
-    Amarok::config( "Importers.TestMockManager.TestId" ).deleteGroup();
 }
 
 void
@@ -101,17 +98,10 @@ TestImporterManager::creatingProviderShouldSaveSettings()
     m_mockManager->init();
     m_mockManager->createProvider( cfg );
 
-    KConfigGroup config = Amarok::config( "Importers" );
-    QVERIFY( config.exists() );
-    QVERIFY( config.readEntry( "TestMockManager", QStringList() ).contains( "TestId" ) );
-
-    config = Amarok::config( "Importers.TestMockManager.TestId" );
-    QVERIFY( config.exists() );
-    QCOMPARE( config.readEntry( "uid", QString() ), QString( "TestId" ) );
-    QCOMPARE( config.readEntry( "custom", QString() ), QString( "custom" ) );
-
-    Amarok::config( "Importers" ).deleteGroup();
-    Amarok::config( "Importers.TestMockManager.TestId" ).deleteGroup();
+    KConfigGroup group = m_mockManager->providerConfig( "TestId" );
+    QVERIFY( group.exists() );
+    QCOMPARE( group.readEntry( "uid", QString() ), QString( "TestId" ) );
+    QCOMPARE( group.readEntry( "custom", QString() ), QString( "custom" ) );
 }
 
 void
@@ -119,23 +109,18 @@ TestImporterManager::creatingProviderShouldSaveGeneratedId()
 {
     EXPECT_CALL( *m_mockManager, id() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
 
-    QVERIFY( !Amarok::config( "Importers" ).exists() );
+    QVERIFY( !m_mockManager->managerConfig().exists() );
 
     m_mockManager->init();
-    m_mockManager->createProvider( QVariantMap() );
+    StatSyncing::ProviderPtr provider = m_mockManager->createProvider( QVariantMap() );
 
-    KConfigGroup config = Amarok::config( "Importers" );
-    QVERIFY( config.exists() );
-    QVERIFY( !config.readEntry( "TestMockManager", QStringList() ).empty() );
+    KConfigGroup group = m_mockManager->managerConfig();
+    QVERIFY( group.exists() );
+    QVERIFY( !group.groupList().empty() );
 
-    const QString createdId = config.readEntry( "TestMockManager", QStringList() ).back();
-
-    config = Amarok::config( "Importers.TestMockManager." + createdId );
-    QVERIFY( config.exists() );
-    QCOMPARE( config.readEntry( "uid", QString() ), createdId );
-
-    Amarok::config( "Importers" ).deleteGroup();
-    Amarok::config( "Importers.TestMockManager." + createdId ).deleteGroup();
+    group = m_mockManager->providerConfig( provider );
+    QVERIFY( group.exists() );
+    QCOMPARE( group.readEntry( "uid", QString() ), provider->id() );
 }
 
 void
@@ -223,22 +208,20 @@ TestImporterManager::forgetProviderShouldForgetConfig()
     QVariantMap cfg;
     cfg.insert( "uid", "TestId" );
 
-    EXPECT_CALL( *m_mockManager, id() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
+    EXPECT_CALL( *m_mockManager, id() ).WillRepeatedly(
+                                                 Return( QString( "TestMockManager" ) ) );
 
     m_mockManager->init();
     StatSyncing::ProviderPtr providerPtr = m_mockManager->createProvider( cfg );
 
-    KConfigGroup config = Amarok::config( "Importers" );
-    QVERIFY( config.exists() );
-    QVERIFY( config.hasKey( "TestMockManager" ) );
-    config = Amarok::config( "Importers.TestMockManager.TestId" );
-    QVERIFY( config.exists() );
-    QVERIFY( config.hasKey( "uid" ) );
+    KConfigGroup group = m_mockManager->providerConfig( providerPtr );
+    QVERIFY( group.exists() );
+    QVERIFY( group.hasKey( "uid" ) );
 
     m_mockManager->providerForgottenProxy( providerPtr->id() );
 
-    QVERIFY( !Amarok::config( "Importers" ).exists() );
-    QVERIFY( !Amarok::config( "Importers.TestMockManager.TestId" ).exists() );
+    QVERIFY( !m_mockManager->providerConfig( providerPtr ).exists() );
+    QVERIFY( !m_mockManager->managerConfig().exists() );
 }
 
 void
@@ -248,6 +231,23 @@ TestImporterManager::forgetProviderShouldHangleInvalidId()
 
     m_mockManager->init();
     m_mockManager->providerForgottenProxy( QString() );
+}
+
+void
+TestImporterManager::forgetProviderShouldNotCauseOtherProvidersToBeForgotten()
+{
+    m_mockManager->init();
+
+    StatSyncing::ProviderPtr providerPtr1 = m_mockManager->createProvider( QVariantMap() );
+    StatSyncing::ProviderPtr providerPtr2 = m_mockManager->createProvider( QVariantMap() );
+
+    QVERIFY( m_mockManager->providerConfig( providerPtr1 ).exists() );
+    QVERIFY( m_mockManager->providerConfig( providerPtr2 ).exists() );
+
+    m_mockManager->providerForgottenProxy( providerPtr1->id() );
+
+    QVERIFY( !m_mockManager->providerConfig( providerPtr1 ).exists() );
+    QVERIFY( m_mockManager->providerConfig( providerPtr2 ).exists() );
 }
 
 void

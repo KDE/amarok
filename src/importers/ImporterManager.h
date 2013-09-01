@@ -90,6 +90,21 @@ public slots:
 
 protected:
     /**
+     * Convenience method returning a config group for this manager.
+     */
+    KConfigGroup managerConfig() const;
+
+    /**
+     * Convenience method returning a config group for a given @param providerId .
+     */
+    KConfigGroup providerConfig( const QString &providerId ) const;
+
+    /**
+     * Overload of @see ImporterManager::providerConfig( const QString ) .
+     */
+    KConfigGroup providerConfig( const ProviderPtr &provider ) const;
+
+    /**
      * Return the KPluginInfo for this importer. The KPluginInfo should contain the
      * name of this importer's .desktop file and plugin's type (typically "services").
      * This function's return value will initialize m_info variable of PluginFactory.
