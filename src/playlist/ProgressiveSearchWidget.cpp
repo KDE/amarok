@@ -150,7 +150,9 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
 ProgressiveSearchWidget::~ProgressiveSearchWidget()
 {
-    Amarok::config( "Playlist Search" ).writeEntry( "ShowOnlyMatches", m_showOnlyMatches );
+    KConfigGroup cg = Amarok::config( "Playlist Search" );
+    cg.writeEntry( "ShowOnlyMatches", m_showOnlyMatches );
+    cg.sync();
 }
 
 void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
