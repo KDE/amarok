@@ -147,12 +147,6 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     connect( Amarok::actionCollection()->action( "playlist_clear" ), SIGNAL(triggered()), this, SLOT(slotFilterClear()) );
 }
 
-
-ProgressiveSearchWidget::~ProgressiveSearchWidget()
-{
-    Amarok::config( "Playlist Search" ).writeEntry( "ShowOnlyMatches", m_showOnlyMatches );
-}
-
 void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
 {
     DEBUG_BLOCK
@@ -350,6 +344,11 @@ void ProgressiveSearchWidget::slotShowOnlyMatches( bool onlyMatches )
     m_showOnlyMatches = onlyMatches;
     m_nextAction->setVisible( !onlyMatches );
     m_previousAction->setVisible( !onlyMatches );
+
+    KConfigGroup cg = Amarok::config( "Playlist Search" );
+    cg.writeEntry( "ShowOnlyMatches", m_showOnlyMatches );
+    cg.sync();
+
     emit( showOnlyMatches( onlyMatches ) );
 }
 

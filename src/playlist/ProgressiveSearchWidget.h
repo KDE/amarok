@@ -52,11 +52,6 @@ public:
      */
     ProgressiveSearchWidget( QWidget * parent );
 
-    /**
-     * Destructor.
-     */
-    ~ProgressiveSearchWidget();
-
     QString currentFilter() const { return m_searchEdit->text(); }
 
     void focusInputLine();
