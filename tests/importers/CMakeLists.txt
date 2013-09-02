@@ -55,7 +55,9 @@ set( testfastforwardimporter_SRCS
     ${AMAROK_SOURCE_TREE}/importers/fastforward/FastForwardProvider.cpp
     ${AMAROK_SOURCE_TREE}/importers/fastforward/FastForwardTrack.cpp
 )
-kde4_add_ui_files( testfastforwardimporter_SRCS ${AMAROK_SOURCE_TREE}/importers/fastforward/FastForwardConfigWidget.ui )
+kde4_add_ui_files( testfastforwardimporter_SRCS
+    ${AMAROK_SOURCE_TREE}/importers/fastforward/FastForwardConfigWidget.ui
+)
 
 kde4_add_unit_test( testfastforwardimporter ${testfastforwardimporter_SRCS} )
 add_dependencies( testfastforwardimporter importers_files )
@@ -112,5 +114,22 @@ kde4_add_unit_test( testbansheeimporter ${testbansheeimporter_SRCS} )
 add_dependencies( testbansheeimporter importers_files )
 target_link_libraries( testbansheeimporter
     amarok_importer-banshee
+    ${testimporterscommon_LIBS}
+)
+
+#------------------------ Test ClementineImporter ----------------------------
+
+set( testclementineimporter_SRCS
+    TestClementineImporter.cpp
+    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineConfigWidget.cpp
+    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineManager.cpp
+    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineProvider.cpp
+    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineTrack.cpp
+)
+
+kde4_add_unit_test( testclementineimporter ${testclementineimporter_SRCS} )
+add_dependencies( testclementineimporter importers_files )
+target_link_libraries( testclementineimporter
+    amarok_importer-clementine
     ${testimporterscommon_LIBS}
 )

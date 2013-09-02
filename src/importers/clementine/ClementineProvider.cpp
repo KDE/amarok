@@ -64,7 +64,7 @@ ClementineProvider::getArtistTracks( const QString &artistName, QSqlDatabase db 
 {
     QSqlQuery query( db );
     query.setForwardOnly( true );
-    query.prepare( "SELECT title, artist, album, composer, year, track, disc, rating "
+    query.prepare( "SELECT title, artist, album, composer, year, track, disc, rating, "
                    "lastplayed, playcount "
                    "FROM songs "
                    "WHERE artist = ?" );
