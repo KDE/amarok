@@ -112,6 +112,7 @@ TestClementineImporter::artistTracksShouldReturnPopulatedTracks()
     QTEST( track->album(), "album" );
     QTEST( track->artist(), "artist" );
     QTEST( track->composer(), "composer" );
+    QTEST( track->year(), "year" );
     QTEST( track->trackNumber(), "trackNumber" );
     QTEST( track->discNumber(), "discNumber" );
     QTEST( track->lastPlayed(), "lastPlayed" );
@@ -181,19 +182,19 @@ TestClementineImporter::artistTracksShouldHandleNonexistentData_data()
     QTest::newRow( "Mother, I'm Here (Zulf's Theme)" )
             << "Darren Korb" << "TestComposer" << 2011 << 17 << 0;
     QTest::newRow( "Pale Watchers" )
-            << "Darren Korb" << "TestComposer" << 2011 << 18 << 0;
+            << "Darren Korb" << "TestComposer" <<    0 << 18 << 0;
     QTest::newRow( "The Bottom Feeders" )
             << "Darren Korb" << ""             << 2011 << 19 << 0;
     QTest::newRow( "From Wharf to Wilds" )
-            << "Darren Korb" << "TestComposer" << 2011 <<  0 << 0;
+            << "Darren Korb" << "TestComposer" <<    0 <<  0 << 0;
     QTest::newRow( "Setting Sail, Coming Home (End Theme)" )
             << "Darren Korb" << ""             << 2011 << 21 << 0;
     QTest::newRow( "The Pantheon (Ain't Gonna Catch You)" )
-            << "Darren Korb" << "TestComposer" << 2011 <<  0 << 0;
+            << "Darren Korb" << "TestComposer" <<    0 <<  0 << 0;
     QTest::newRow( "Down the Rabbit Hole" )
             << "Star One"    << "TestComposer" << 2010 <<  1 << 0;
     QTest::newRow( "Digital Rain" )
-            << "Star One"    << ""             << 2010 <<  2 << 0;
+            << "Star One"    << ""             <<    0 <<  2 << 0;
     QTest::newRow( "Earth That Was" )
             << "Star One"    << "TestComposer" << 2010 <<  0 << 0;
     QTest::newRow( "Victim of the Modern Age" )
@@ -217,6 +218,7 @@ TestClementineImporter::artistTracksShouldHandleNonexistentData()
     const TrackPtr &track = trackForName[name];
     QTEST( track->artist(), "artist" );
     QTEST( track->composer(), "composer" );
+    QTEST( track->year(), "year" );
     QTEST( track->trackNumber(), "trackNumber" );
     QTEST( track->discNumber(), "discNumber" );
 }
