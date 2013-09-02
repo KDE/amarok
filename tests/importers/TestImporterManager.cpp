@@ -221,7 +221,6 @@ TestImporterManager::forgetProviderShouldForgetConfig()
     m_mockManager->providerForgottenProxy( providerPtr->id() );
 
     QVERIFY( !m_mockManager->providerConfig( providerPtr ).exists() );
-    QVERIFY( !m_mockManager->managerConfig().exists() );
 }
 
 void

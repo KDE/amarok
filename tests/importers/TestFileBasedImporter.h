@@ -14,30 +14,56 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TEST_BANSHEE_IMPORTER
-#define TEST_BANSHEE_IMPORTER
+#ifndef TEST_FILE_BASED_IMPORTER
+#define TEST_FILE_BASED_IMPORTER
 
-#include "TestFileBasedImporter.h"
-#include "importers/banshee/BansheeProvider.h"
-
+#include <QApplication>
+#include <QExplicitlySharedDataPointer>
+#include <QFileInfo>
+#include <QObject>
 #include <QVariantMap>
 
-class TestBansheeImporter : public TestFileBasedImporter<StatSyncing::BansheeProvider>
+namespace StatSyncing
+{
+    class Provider;
+    typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
+}
+
+class TestFileBasedImporterPrivate : public QObject
 {
     Q_OBJECT
 
+protected:
+    virtual StatSyncing::ProviderPtr getProvider( const QString &db ) = 0;
+    virtual StatSyncing::ProviderPtr getProvider() = 0;
+
+    QVariantMap m_cfg;
+
 private slots:
-    void init();
-
-    void providerShouldHandleNonexistentArtist();
-
-    void artistsShouldReturnExistingArtists();
-
-    void artistTracksShouldReturnPopulatedTracks_data();
-    void artistTracksShouldReturnPopulatedTracks();
-    void artistTracksStringsShouldBeTrimmed();
-    void artistTracksShouldHandleNonexistentStatistics_data();
-    void artistTracksShouldHandleNonexistentStatistics();
+    void providerShouldHandleNonexistentDbFile();
+    void providerShouldHandleInvalidDbFile();
+    void providerShouldHandleErroneousConfigValues();
 };
 
-#endif // TEST_BANSHEE_IMPORTER
+template<typename T>
+class TestFileBasedImporter : public TestFileBasedImporterPrivate
+{
+protected:
+    StatSyncing::ProviderPtr getProvider( const QString &db )
+    {
+        QVariantMap cfg( m_cfg );
+        cfg.insert( "dbPath",
+                    QFileInfo( db ).exists()
+                    ? db
+                    : QCoreApplication::applicationDirPath() + "/importers_files/" + db );
+
+        return StatSyncing::ProviderPtr( new T( cfg, 0 ) );
+    }
+
+    StatSyncing::ProviderPtr getProvider()
+    {
+        return StatSyncing::ProviderPtr( new T( m_cfg, 0 ) );
+    }
+};
+
+#endif // TEST_FILE_BASED_IMPORTER

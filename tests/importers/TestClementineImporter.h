@@ -17,22 +17,19 @@
 #ifndef TEST_CLEMENTINE_IMPORTER
 #define TEST_CLEMENTINE_IMPORTER
 
-#include <QObject>
+#include "TestFileBasedImporter.h"
+#include "importers/clementine/ClementineProvider.h"
+
 #include <QVariantMap>
 
-class TestClementineImporter : public QObject
+class TestClementineImporter
+        : public TestFileBasedImporter<StatSyncing::ClementineProvider>
 {
     Q_OBJECT
-
-private:
-    QVariantMap m_cfg;
 
 private slots:
     void init();
 
-    void providerShouldHandleNonexistentDbFile();
-    void providerShouldHandleInvalidDbFile();
-    void providerShouldHandleErroneousConfigValues();
     void providerShouldHandleNonexistentArtist();
 
     void artistsShouldReturnExistingArtists();

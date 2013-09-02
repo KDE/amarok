@@ -17,9 +17,6 @@
 #include "TestBansheeImporter.h"
 
 #include "importers/banshee/BansheeConfigWidget.h"
-#include "importers/banshee/BansheeProvider.h"
-
-#include <QApplication>
 
 #include <qtest_kde.h>
 
@@ -30,56 +27,21 @@ using namespace StatSyncing;
 void
 TestBansheeImporter::init()
 {
-    // Set a default config
     m_cfg = BansheeConfigWidget( QVariantMap() ).config();
-}
-
-void
-TestBansheeImporter::providerShouldHandleNonexistentDbFile()
-{
-    m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
-
-    BansheeProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
-}
-
-void
-TestBansheeImporter::providerShouldHandleInvalidDbFile()
-{
-    m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
-
-    BansheeProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
-}
-
-void
-TestBansheeImporter::providerShouldHandleErroneousConfigValues()
-{
-    m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
-    m_cfg.insert( "name", QColor( Qt::white ) );
-
-    BansheeProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
 }
 
 void
 TestBansheeImporter::providerShouldHandleNonexistentArtist()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/banshee.db" );
-
-    BansheeProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
+    ProviderPtr provider( getProvider( "banshee.db" ) );
+    QVERIFY( provider->artistTracks( "NonSuch" ).empty() );
 }
 
 void
 TestBansheeImporter::artistsShouldReturnExistingArtists()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/banshee.db" );
-
-    BansheeProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().contains( "Daft Punk" ) );
+    ProviderPtr provider( getProvider( "banshee.db" ) );
+    QVERIFY( provider->artists().contains( "Daft Punk" ) );
 }
 
 
@@ -141,12 +103,10 @@ TestBansheeImporter::artistTracksShouldReturnPopulatedTracks_data()
 void
 TestBansheeImporter::artistTracksShouldReturnPopulatedTracks()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/banshee.db" );
-    BansheeProvider provider( m_cfg, 0 );
+    ProviderPtr provider( getProvider( "banshee.db" ) );
 
     QMap<QString, TrackPtr> trackForName;
-    foreach( const TrackPtr &track, provider.artistTracks(  "Daft Punk" ) )
+    foreach( const TrackPtr &track, provider->artistTracks( "Daft Punk" ) )
         trackForName.insert( track->name(), track );
 
     QCOMPARE( trackForName.size(), 14 );
@@ -159,7 +119,6 @@ TestBansheeImporter::artistTracksShouldReturnPopulatedTracks()
     QTEST( track->artist(), "artist" );
     QTEST( track->trackNumber(), "trackNumber" );
     QTEST( track->discNumber(), "discNumber" );
-    QTEST( track->artist(), "artist" );
     QTEST( track->lastPlayed(), "lastPlayed" );
     QTEST( track->playCount(), "playCount" );
     QTEST( track->rating(), "rating" );
@@ -168,11 +127,9 @@ TestBansheeImporter::artistTracksShouldReturnPopulatedTracks()
 void
 TestBansheeImporter::artistTracksStringsShouldBeTrimmed()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/banshee-trim.db" );
-    BansheeProvider provider( m_cfg, 0 );
+    ProviderPtr provider( getProvider( "banshee-trim.db" ) );
 
-    const TrackList &tracks = provider.artistTracks( "Nirvana" );
+    const TrackList &tracks = provider->artistTracks( "Nirvana" );
     QCOMPARE( tracks.size(), 1 );
 
     const TrackPtr &track = tracks.first();
@@ -220,12 +177,10 @@ TestBansheeImporter::artistTracksShouldHandleNonexistentStatistics_data()
 void
 TestBansheeImporter::artistTracksShouldHandleNonexistentStatistics()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/banshee-no-statistics.db" );
-    BansheeProvider provider( m_cfg, 0 );
+    ProviderPtr provider( getProvider( "banshee-no-statistics.db" ) );
 
     QMap<QString, TrackPtr> trackForName;
-    foreach( const TrackPtr &track, provider.artistTracks(  "Daft Punk" ) )
+    foreach( const TrackPtr &track, provider->artistTracks( "Daft Punk" ) )
         trackForName.insert( track->name(), track );
 
     const QString name( QTest::currentDataTag() );

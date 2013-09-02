@@ -17,9 +17,6 @@
 #include "TestRhythmboxImporter.h"
 
 #include "importers/rhythmbox/RhythmboxConfigWidget.h"
-#include "importers/rhythmbox/RhythmboxProvider.h"
-
-#include <QApplication>
 
 #include <qtest_kde.h>
 
@@ -30,66 +27,28 @@ using namespace StatSyncing;
 void
 TestRhythmboxImporter::init()
 {
-    // Set a default config
     m_cfg = RhythmboxConfigWidget( QVariantMap() ).config();
-}
-
-void
-TestRhythmboxImporter::providerShouldHandleNonexistentDbFile()
-{
-    m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
-
-    RhythmboxProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
-}
-
-void
-TestRhythmboxImporter::providerShouldHandleInvalidDbFile()
-{
-    m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
-
-    RhythmboxProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
 }
 
 void
 TestRhythmboxImporter::providerShouldHandleIllFormedDbFile()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/illFormedLibrary.xml" );
-
-    RhythmboxProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
-}
-
-void
-TestRhythmboxImporter::providerShouldHandleErroneousConfigValues()
-{
-    m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
-    m_cfg.insert( "name", QColor( Qt::white ) );
-
-    RhythmboxProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
+    ProviderPtr provider( getProvider( "illFormedLibrary.xml" ) );
+    QVERIFY( provider->artistTracks( "NonSuch" ).empty() );
 }
 
 void
 TestRhythmboxImporter::providerShouldHandleNonexistentArtist()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/rhythmdb.xml" );
-
-    RhythmboxProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
+    ProviderPtr provider( getProvider( "rhythmdb.xml" ) );
+    QVERIFY( provider->artistTracks( "NonSuch" ).empty() );
 }
 
 void
 TestRhythmboxImporter::artistsShouldReturnExistingArtists()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/rhythmdb.xml" );
-
-    RhythmboxProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().contains( "Metallica" ) );
+    ProviderPtr provider( getProvider( "rhythmdb.xml" ) );
+    QVERIFY( provider->artists().contains( "Metallica" ) );
 }
 
 void
@@ -130,12 +89,10 @@ TestRhythmboxImporter::artistTracksShouldReturnPopulatedTracks_data()
 void
 TestRhythmboxImporter::artistTracksShouldReturnPopulatedTracks()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/rhythmdb.xml" );
-    RhythmboxProvider provider( m_cfg, 0 );
+    ProviderPtr provider( getProvider( "rhythmdb.xml" ) );
 
     QMap<QString, TrackPtr> trackForName;
-    foreach( const TrackPtr &track, provider.artistTracks(  "Metallica" ) )
+    foreach( const TrackPtr &track, provider->artistTracks( "Metallica" ) )
         trackForName.insert( track->name(), track );
 
     QCOMPARE( trackForName.size(), 12 );
@@ -175,7 +132,7 @@ TestRhythmboxImporter::artistTracksShouldHandleNonexistentStatistics_data()
     QTest::newRow( "Nothing Else Matters" )
             << QDateTime()                         << 0  << 10;
     QTest::newRow( "Of Wolf and Man" )
-            << QDateTime::fromTime_t( 1372418830 ) << 0 << 0;
+            << QDateTime::fromTime_t( 1372418830 ) << 0  << 0;
     QTest::newRow( "The God That Failed" )
             << QDateTime::fromTime_t( 1372420011 ) << 15 << 2;
     QTest::newRow( "My Friend of Misery" )
@@ -187,12 +144,10 @@ TestRhythmboxImporter::artistTracksShouldHandleNonexistentStatistics_data()
 void
 TestRhythmboxImporter::artistTracksShouldHandleNonexistentStatistics()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/rhythmbox-no-statistics.xml" );
-    RhythmboxProvider provider( m_cfg, 0 );
+    ProviderPtr provider( getProvider( "rhythmbox-no-statistics.xml" ) );
 
     QMap<QString, TrackPtr> trackForName;
-    foreach( const TrackPtr &track, provider.artistTracks(  "Metallica" ) )
+    foreach( const TrackPtr &track, provider->artistTracks(  "Metallica" ) )
         trackForName.insert( track->name(), track );
 
     const QString name( QTest::currentDataTag() );

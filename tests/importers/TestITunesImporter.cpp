@@ -17,9 +17,6 @@
 #include "TestITunesImporter.h"
 
 #include "importers/itunes/ITunesConfigWidget.h"
-#include "importers/itunes/ITunesProvider.h"
-
-#include <QApplication>
 
 #include <qtest_kde.h>
 
@@ -30,66 +27,28 @@ using namespace StatSyncing;
 void
 TestITunesImporter::init()
 {
-    // Set a default config
     m_cfg = ITunesConfigWidget( QVariantMap() ).config();
-}
-
-void
-TestITunesImporter::providerShouldHandleNonexistentDbFile()
-{
-    m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
-
-    ITunesProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
-}
-
-void
-TestITunesImporter::providerShouldHandleInvalidDbFile()
-{
-    m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
-
-    ITunesProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
 }
 
 void
 TestITunesImporter::providerShouldHandleIllFormedDbFile()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/illFormedLibrary.xml" );
-
-    ITunesProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
-}
-
-void
-TestITunesImporter::providerShouldHandleErroneousConfigValues()
-{
-    m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
-    m_cfg.insert( "name", QColor( Qt::white ) );
-
-    ITunesProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
+    ProviderPtr provider( getProvider( "illFormedLibrary.xml" ) );
+    QVERIFY( provider->artistTracks( "NonSuch" ).empty() );
 }
 
 void
 TestITunesImporter::providerShouldHandleNonexistentArtist()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/iTunes Music Library.xml" );
-
-    ITunesProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
+    ProviderPtr provider( getProvider( "iTunes Music Library.xml" ) );
+    QVERIFY( provider->artistTracks( "NonSuch" ).empty() );
 }
 
 void
 TestITunesImporter::artistsShouldReturnExistingArtists()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/iTunes Music Library.xml" );
-
-    ITunesProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().contains( "Metallica" ) );
+    ProviderPtr provider( getProvider( "iTunes Music Library.xml" ) );
+    QVERIFY( provider->artists().contains( "Metallica" ) );
 }
 
 void
@@ -143,12 +102,10 @@ TestITunesImporter::artistTracksShouldReturnPopulatedTracks_data()
 void
 TestITunesImporter::artistTracksShouldReturnPopulatedTracks()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/iTunes Music Library.xml" );
-    ITunesProvider provider( m_cfg, 0 );
+    ProviderPtr provider( getProvider( "iTunes Music Library.xml" ) );
 
     QMap<QString, TrackPtr> trackForName;
-    foreach( const TrackPtr &track, provider.artistTracks(  "Metallica" ) )
+    foreach( const TrackPtr &track, provider->artistTracks( "Metallica" ) )
         trackForName.insert( track->name(), track );
 
     QCOMPARE( trackForName.size(), 12 );
@@ -201,12 +158,10 @@ TestITunesImporter::artistTracksShouldHandleNonexistentStatistics_data()
 void
 TestITunesImporter::artistTracksShouldHandleNonexistentStatistics()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/itunes-no-statistics.xml" );
-    ITunesProvider provider( m_cfg, 0 );
+    ProviderPtr provider( getProvider( "itunes-no-statistics.xml" ) );
 
     QMap<QString, TrackPtr> trackForName;
-    foreach( const TrackPtr &track, provider.artistTracks(  "Metallica" ) )
+    foreach( const TrackPtr &track, provider->artistTracks( "Metallica" ) )
         trackForName.insert( track->name(), track );
 
     const QString name( QTest::currentDataTag() );

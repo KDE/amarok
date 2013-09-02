@@ -14,30 +14,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TEST_BANSHEE_IMPORTER
-#define TEST_BANSHEE_IMPORTER
-
 #include "TestFileBasedImporter.h"
-#include "importers/banshee/BansheeProvider.h"
 
-#include <QVariantMap>
+#include "importers/ImporterProvider.h"
 
-class TestBansheeImporter : public TestFileBasedImporter<StatSyncing::BansheeProvider>
+#include <qtest_kde.h>
+
+using namespace StatSyncing;
+
+void
+TestFileBasedImporterPrivate::providerShouldHandleNonexistentDbFile()
 {
-    Q_OBJECT
+    ProviderPtr provider( getProvider( "/wdawd\\wdadwgd/das4hutyf" ) );
+    QVERIFY( provider->artists().isEmpty() );
+}
 
-private slots:
-    void init();
+void
+TestFileBasedImporterPrivate::providerShouldHandleInvalidDbFile()
+{
+    ProviderPtr provider( getProvider( QApplication::applicationFilePath() ) );
+    QVERIFY( provider->artists().isEmpty() );
+}
 
-    void providerShouldHandleNonexistentArtist();
+void
+TestFileBasedImporterPrivate::providerShouldHandleErroneousConfigValues()
+{
+    m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
+    m_cfg.insert( "name", QColor( Qt::white ) );
 
-    void artistsShouldReturnExistingArtists();
-
-    void artistTracksShouldReturnPopulatedTracks_data();
-    void artistTracksShouldReturnPopulatedTracks();
-    void artistTracksStringsShouldBeTrimmed();
-    void artistTracksShouldHandleNonexistentStatistics_data();
-    void artistTracksShouldHandleNonexistentStatistics();
-};
-
-#endif // TEST_BANSHEE_IMPORTER
+    ProviderPtr provider( getProvider() );
+    QVERIFY( provider->artists().isEmpty() );
+}

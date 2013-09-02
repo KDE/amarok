@@ -17,9 +17,6 @@
 #include "TestClementineImporter.h"
 
 #include "importers/clementine/ClementineConfigWidget.h"
-#include "importers/clementine/ClementineProvider.h"
-
-#include <QApplication>
 
 #include <qtest_kde.h>
 
@@ -30,57 +27,24 @@ using namespace StatSyncing;
 void
 TestClementineImporter::init()
 {
-    // Set a default config
     m_cfg = ClementineConfigWidget( QVariantMap() ).config();
-}
-
-void
-TestClementineImporter::providerShouldHandleNonexistentDbFile()
-{
-    m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
-
-    ClementineProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
-}
-
-void
-TestClementineImporter::providerShouldHandleInvalidDbFile()
-{
-    m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
-
-    ClementineProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
-}
-
-void
-TestClementineImporter::providerShouldHandleErroneousConfigValues()
-{
-    m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
-    m_cfg.insert( "name", QColor( Qt::white ) );
-
-    ClementineProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().isEmpty() );
 }
 
 void
 TestClementineImporter::providerShouldHandleNonexistentArtist()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/clementine.db" );
-
-    ClementineProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
+    ProviderPtr provider( getProvider( "clementine.db" ) );
+    QVERIFY( provider->artistTracks( "NonSuch" ).empty() );
 }
 
 void
 TestClementineImporter::artistsShouldReturnExistingArtists()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/clementine.db" );
+    ProviderPtr provider( getProvider( "clementine.db" ) );
 
-    ClementineProvider provider( m_cfg, 0 );
-    QVERIFY( provider.artists().contains( "Darren Korb" ) );
-    QVERIFY( provider.artists().contains( "Star One" ) );
+    const QSet<QString> artists = provider->artists();
+    QVERIFY( artists.contains( "Darren Korb" ) );
+    QVERIFY( artists.contains( "Star One" ) );
 }
 
 void
@@ -115,30 +79,28 @@ TestClementineImporter::artistTracksShouldReturnPopulatedTracks_data()
             << "Bastion Original Soundtrack" << "Darren Korb" << "TestComposer"
             << 2011 << 22 << 0 << QDateTime::fromTime_t( 1378111482 ) <<  6 << 1;
     QTest::newRow( "Down the Rabbit Hole" )
-            << "Victims of the Modern Age" << "Star One" << "TestComposer"
+            << "Victims of the Modern Age"   << "Star One" << "TestComposer"
             << 2010 <<  1 << 0 << QDateTime::fromTime_t( 1378111475 ) <<  6 << 5;
     QTest::newRow( "Digital Rain" )
-            << "Victims of the Modern Age" << "Star One" << "TestComposer"
+            << "Victims of the Modern Age"   << "Star One" << "TestComposer"
             << 2010 <<  2 << 0 << QDateTime::fromTime_t( 1378111479 ) <<  7 << 4;
     QTest::newRow( "Earth That Was" )
-            << "Victims of the Modern Age" << "Star One" << "TestComposer"
+            << "Victims of the Modern Age"   << "Star One" << "TestComposer"
             << 2010 <<  3 << 0 << QDateTime::fromTime_t( 1378111480 ) << 10 << 3;
     QTest::newRow( "Victim of the Modern Age" )
-            << "Victims of the Modern Age" << "Star One" << "TestComposer"
+            << "Victims of the Modern Age"   << "Star One" << "TestComposer"
             << 2010 <<  4 << 0 << QDateTime::fromTime_t( 1378111477 ) <<  1 << 2;
 }
 
 void
 TestClementineImporter::artistTracksShouldReturnPopulatedTracks()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/clementine.db" );
-    ClementineProvider provider( m_cfg, 0 );
+    ProviderPtr provider( getProvider( "clementine.db" ) );
 
     QFETCH( QString, artist );
 
     QMap<QString, TrackPtr> trackForName;
-    foreach( const TrackPtr &track, provider.artistTracks( artist ) )
+    foreach( const TrackPtr &track, provider->artistTracks( artist ) )
         trackForName.insert( track->name(), track );
 
     QVERIFY( trackForName.size() > 1 );
@@ -190,14 +152,12 @@ TestClementineImporter::artistTracksShouldHandleNonexistentStatistics_data()
 void
 TestClementineImporter::artistTracksShouldHandleNonexistentStatistics()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/clementine-no-statistics.db" );
-    ClementineProvider provider( m_cfg, 0 );
+    ProviderPtr provider( getProvider( "clementine-no-statistics.db" ) );
 
     QFETCH( QString, artist );
 
     QMap<QString, TrackPtr> trackForName;
-    foreach( const TrackPtr &track, provider.artistTracks( artist ) )
+    foreach( const TrackPtr &track, provider->artistTracks( artist ) )
         trackForName.insert( track->name(), track );
 
     const QString name( QTest::currentDataTag() );
@@ -243,14 +203,12 @@ TestClementineImporter::artistTracksShouldHandleNonexistentData_data()
 void
 TestClementineImporter::artistTracksShouldHandleNonexistentData()
 {
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                  "/importers_files/clementine-no-data.db" );
-    ClementineProvider provider( m_cfg, 0 );
+    ProviderPtr provider( getProvider( "clementine-no-data.db" ) );
 
     QFETCH( QString, artist );
 
     QMap<QString, TrackPtr> trackForName;
-    foreach( const TrackPtr &track, provider.artistTracks( artist ) )
+    foreach( const TrackPtr &track, provider->artistTracks( artist ) )
         trackForName.insert( track->name(), track );
 
     const QString name( QTest::currentDataTag() );

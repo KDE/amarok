@@ -17,28 +17,25 @@
 #ifndef TEST_RHYTHMBOX_IMPORTER
 #define TEST_RHYTHMBOX_IMPORTER
 
-#include <QObject>
+#include "TestFileBasedImporter.h"
+#include "importers/rhythmbox/RhythmboxProvider.h"
+
 #include <QVariantMap>
 
-class TestRhythmboxImporter : public QObject
+class TestRhythmboxImporter : public TestFileBasedImporter<StatSyncing::RhythmboxProvider>
 {
     Q_OBJECT
-
-private:
-    QVariantMap m_cfg;
 
 private slots:
     void init();
 
-    void providerShouldHandleNonexistentDbFile();
-    void providerShouldHandleInvalidDbFile();
     void providerShouldHandleIllFormedDbFile();
-    void providerShouldHandleErroneousConfigValues();
     void providerShouldHandleNonexistentArtist();
+
     void artistsShouldReturnExistingArtists();
+
     void artistTracksShouldReturnPopulatedTracks_data();
     void artistTracksShouldReturnPopulatedTracks();
-
     void artistTracksShouldHandleNonexistentStatistics_data();
     void artistTracksShouldHandleNonexistentStatistics();
 };
