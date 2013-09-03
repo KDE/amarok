@@ -49,6 +49,7 @@ target_link_libraries( testimporterprovider ${testimporterscommon_LIBS} )
 #------------------------ Test FastForwardImporter ------------------------
 
 set( testfastforwardimporter_SRCS
+    TestImporterBase.cpp
     TestFastForwardImporter.cpp
     ${AMAROK_SOURCE_TREE}/importers/fastforward/FastForwardConfigWidget.cpp
     ${AMAROK_SOURCE_TREE}/importers/fastforward/FastForwardManager.cpp
@@ -69,7 +70,7 @@ target_link_libraries( testfastforwardimporter
 #------------------------ Test ITunesImporter -----------------------------
 
 set( testitunesimporter_SRCS
-    TestFileBasedImporter.cpp
+    TestImporterBase.cpp
     TestITunesImporter.cpp
     ${AMAROK_SOURCE_TREE}/importers/itunes/ITunesConfigWidget.cpp
     ${AMAROK_SOURCE_TREE}/importers/itunes/ITunesManager.cpp
@@ -87,7 +88,7 @@ target_link_libraries( testitunesimporter
 #------------------------ Test RhythmboxImporter -----------------------------
 
 set( testrhytmboximporter_SRCS
-    TestFileBasedImporter.cpp
+    TestImporterBase.cpp
     TestRhythmboxImporter.cpp
     ${AMAROK_SOURCE_TREE}/importers/rhythmbox/RhythmboxConfigWidget.cpp
     ${AMAROK_SOURCE_TREE}/importers/rhythmbox/RhythmboxManager.cpp
@@ -105,7 +106,7 @@ target_link_libraries( testrhytmboximporter
 #------------------------ Test BansheeImporter -------------------------------
 
 set( testbansheeimporter_SRCS
-    TestFileBasedImporter.cpp
+    TestImporterBase.cpp
     TestBansheeImporter.cpp
     ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeConfigWidget.cpp
     ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeManager.cpp
@@ -123,7 +124,7 @@ target_link_libraries( testbansheeimporter
 #------------------------ Test ClementineImporter ----------------------------
 
 set( testclementineimporter_SRCS
-    TestFileBasedImporter.cpp
+    TestImporterBase.cpp
     TestClementineImporter.cpp
     ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineConfigWidget.cpp
     ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineManager.cpp

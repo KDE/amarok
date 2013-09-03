@@ -17,27 +17,29 @@
 #ifndef TEST_ITUNES_IMPORTER
 #define TEST_ITUNES_IMPORTER
 
-#include "TestFileBasedImporter.h"
-#include "importers/itunes/ITunesProvider.h"
+#include "TestImporterBase.h"
 
 #include <QVariantMap>
 
-class TestITunesImporter : public TestFileBasedImporter<StatSyncing::ITunesProvider>
+class TestITunesImporter : public TestImporterBase
 {
     Q_OBJECT
+
+protected:
+    StatSyncing::ProviderPtr getProvider();
+    qint64 reliableStatistics() const;
+    bool hasOddRatings() const;
+
+private:
+    QVariantMap m_cfg;
 
 private slots:
     void init();
 
+    void providerShouldHandleNonexistentDbFile();
+    void providerShouldHandleInvalidDbFile();
+    void providerShouldHandleErroneousConfigValues();
     void providerShouldHandleIllFormedDbFile();
-    void providerShouldHandleNonexistentArtist();
-
-    void artistsShouldReturnExistingArtists();
-
-    void artistTracksShouldReturnPopulatedTracks_data();
-    void artistTracksShouldReturnPopulatedTracks();
-    void artistTracksShouldHandleNonexistentStatistics_data();
-    void artistTracksShouldHandleNonexistentStatistics();
 };
 
 #endif // TEST_ITUNES_IMPORTER

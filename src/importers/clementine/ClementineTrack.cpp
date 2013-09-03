@@ -65,5 +65,6 @@ ClementineTrack::playCount() const
 int
 ClementineTrack::rating() const
 {
-    return qRound( m_metadata.value( Meta::valRating ).toReal() * 10 );
+    const qreal rt = m_metadata.value( Meta::valRating ).toReal();
+    return rt < 0 ? 0 : qRound( rt * 10 );
 }

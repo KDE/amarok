@@ -17,27 +17,28 @@
 #ifndef TEST_BANSHEE_IMPORTER
 #define TEST_BANSHEE_IMPORTER
 
-#include "TestFileBasedImporter.h"
-#include "importers/banshee/BansheeProvider.h"
+#include "TestImporterBase.h"
 
 #include <QVariantMap>
 
-class TestBansheeImporter : public TestFileBasedImporter<StatSyncing::BansheeProvider>
+class TestBansheeImporter : public TestImporterBase
 {
     Q_OBJECT
+
+protected:
+    StatSyncing::ProviderPtr getProvider();
+    qint64 reliableStatistics() const;
+    bool hasOddRatings() const;
+
+private:
+    QVariantMap m_cfg;
 
 private slots:
     void init();
 
-    void providerShouldHandleNonexistentArtist();
-
-    void artistsShouldReturnExistingArtists();
-
-    void artistTracksShouldReturnPopulatedTracks_data();
-    void artistTracksShouldReturnPopulatedTracks();
-    void artistTracksStringsShouldBeTrimmed();
-    void artistTracksShouldHandleNonexistentStatistics_data();
-    void artistTracksShouldHandleNonexistentStatistics();
+    void providerShouldHandleNonexistentDbFile();
+    void providerShouldHandleInvalidDbFile();
+    void providerShouldHandleErroneousConfigValues();
 };
 
 #endif // TEST_BANSHEE_IMPORTER

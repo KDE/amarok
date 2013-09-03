@@ -17,7 +17,7 @@
 #ifndef TEST_FAST_FORWARD_IMPORTER
 #define TEST_FAST_FORWARD_IMPORTER
 
-#include <QObject>
+#include "TestImporterBase.h"
 
 namespace StatSyncing
 {
@@ -25,12 +25,16 @@ namespace StatSyncing
     class FastForwardProvider;
 }
 
-class TestFastForwardImporter : public QObject
+class TestFastForwardImporter : public TestImporterBase
 {
     Q_OBJECT
 
 private:
     StatSyncing::FastForwardConfigWidget *m_configWidget;
+
+protected:
+    virtual StatSyncing::ProviderPtr getProvider();
+    virtual qint64 reliableStatistics() const;
 
 private slots:
     void init();
@@ -46,13 +50,6 @@ private slots:
     void providerShouldHandleInvalidDbFile();
     void providerShouldHandleExternalConnectionError();
     void providerShouldHandleErroneousConfigValues();
-    void providerShouldHandleNonexistentArtist();
-    void artistsShouldReturnExistingArtists();
-    void artistTracksShouldReturnPopulatedTracks_data();
-    void artistTracksShouldReturnPopulatedTracks();
-
-    void artistTracksShouldHandleNonexistentStatistics_data();
-    void artistTracksShouldHandleNonexistentStatistics();
 };
 
 #endif // TEST_FAST_FORWARD_IMPORTER

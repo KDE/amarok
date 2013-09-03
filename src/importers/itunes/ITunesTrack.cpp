@@ -36,6 +36,10 @@ ITunesTrack::rating() const
 QDateTime
 ITunesTrack::lastPlayed() const
 {
-    return QDateTime::fromString( m_metadata.value( Meta::valLastPlayed ).toString(),
-                                  "yyyy'-'MM'-'dd'T'hh':'mm':'ss'Z'" ).toLocalTime();
+    QDateTime date = QDateTime::fromString(
+                                m_metadata.value( Meta::valLastPlayed ).toString(),
+                                "yyyy'-'MM'-'dd'T'hh':'mm':'ss'Z'" );
+
+    date.setTimeSpec( Qt::UTC );
+    return date;
 }

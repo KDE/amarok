@@ -17,29 +17,27 @@
 #ifndef TEST_CLEMENTINE_IMPORTER
 #define TEST_CLEMENTINE_IMPORTER
 
-#include "TestFileBasedImporter.h"
-#include "importers/clementine/ClementineProvider.h"
+#include "TestImporterBase.h"
 
 #include <QVariantMap>
 
-class TestClementineImporter
-        : public TestFileBasedImporter<StatSyncing::ClementineProvider>
+class TestClementineImporter : public TestImporterBase
 {
     Q_OBJECT
+
+protected:
+    StatSyncing::ProviderPtr getProvider();
+    qint64 reliableStatistics() const;
+
+private:
+    QVariantMap m_cfg;
 
 private slots:
     void init();
 
-    void providerShouldHandleNonexistentArtist();
-
-    void artistsShouldReturnExistingArtists();
-
-    void artistTracksShouldReturnPopulatedTracks_data();
-    void artistTracksShouldReturnPopulatedTracks();
-    void artistTracksShouldHandleNonexistentStatistics_data();
-    void artistTracksShouldHandleNonexistentStatistics();
-    void artistTracksShouldHandleNonexistentData_data();
-    void artistTracksShouldHandleNonexistentData();
+    void providerShouldHandleNonexistentDbFile();
+    void providerShouldHandleInvalidDbFile();
+    void providerShouldHandleErroneousConfigValues();
 };
 
 #endif // TEST_CLEMENTINE_IMPORTER
