@@ -61,11 +61,10 @@ namespace AmarokScript
          */
         Q_PROPERTY( QString collectionId READ collectionId )
 
-        // ANM-TODO use js toString()
         /**
          * A user visible name for this collection.
          */
-        Q_PROPERTY( QString prettyName READ prettyName )
+        Q_PROPERTY( QString prettyName READ toString )
 
         /**
          * The used space on this collection.
@@ -190,7 +189,7 @@ namespace AmarokScript
             bool isOrganizable() const;
             bool isWritable() const;
             QString collectionId() const;
-            QString prettyName() const;
+            QString toString() const;
             float usedCapacity() const;
             float totalCapacity() const;
             bool isValid() const;

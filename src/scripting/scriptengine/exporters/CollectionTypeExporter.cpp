@@ -151,7 +151,7 @@ CollectionPrototype::isWritable() const
 }
 
 QString
-CollectionPrototype::prettyName() const
+CollectionPrototype::toString() const
 {
     GET_COLLECTION( QString() );
     return collection->prettyName();
