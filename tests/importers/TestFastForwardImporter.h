@@ -19,17 +19,14 @@
 
 #include "TestImporterBase.h"
 
-namespace StatSyncing
-{
-    class FastForwardConfigWidget;
-}
+#include <QVariantMap>
 
 class TestFastForwardImporter : public TestImporterBase
 {
     Q_OBJECT
 
 private:
-    StatSyncing::FastForwardConfigWidget *m_configWidget;
+    QVariantMap m_cfg;
 
 protected:
     virtual StatSyncing::ProviderPtr getProvider();
@@ -37,7 +34,6 @@ protected:
 
 private slots:
     void init();
-    void cleanup();
 
     void configWidgetShouldOnlyShowFieldsRelevantToConnection();
     void configWidgetShouldSetDriverNameAsConfigResult();
