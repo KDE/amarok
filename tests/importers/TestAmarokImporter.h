@@ -14,44 +14,41 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_AMAROK_CONFIG_WIDGET_H
-#define STATSYNCING_AMAROK_CONFIG_WIDGET_H
+#ifndef TEST_AMAROK_IMPORTER
+#define TEST_AMAROK_IMPORTER
 
-#include "statsyncing/Provider.h"
-#include "ui_AmarokConfigWidget.h"
+#include "TestImporterBase.h"
 
-namespace StatSyncing
-{
+#include <QVariantMap>
 
-class AmarokConfigWidget : public ProviderConfigWidget, public Ui::AmarokConfigWidget
+class TestAmarokImporter : public TestImporterBase
 {
     Q_OBJECT
 
-public:
-    explicit AmarokConfigWidget( const QVariantMap &config, QWidget *parent = 0,
-                                 Qt::WindowFlags f = 0 );
-    ~AmarokConfigWidget();
-
-    QVariantMap config() const;
-
-    enum ConnectionType
-    {
-        Embedded,
-        External
-    };
-
 private:
+    QVariantMap m_cfg;
 
-    void populateFields();
-
-    const QVariantMap m_config;
-    QList<QWidget*> m_externalDbSettings;
-    QList<QWidget*> m_embeddedDbSettings;
+protected:
+    virtual StatSyncing::ProviderPtr getProvider();
+    virtual qint64 reliableStatistics() const;
 
 private slots:
-    void connectionTypeChanged( const int index );
+    void initTestCase();
+    void init();
+
+    void configWidgetShouldOnlyShowFieldsRelevantToConnection();
+    void configWidgetShouldNotSetDriver();
+    void configWidgetShouldShowExternalAsDefault();
+    void configWidgetShouldNotBreakOnNonsenseInitialValues();
+    void configWidgetShouldReadSavedConfig();
+
+    void providerShouldIgnoreConfigsDbDriver();
+    void providerShouldHandleNonexistentDbDir();
+    void providerShouldHandleInvalidDbDir();
+    void providerShouldHandleExternalConnectionError();
+    void providerShouldHandleErroneousConfigValues();
+
+    void managerShouldReturnProviderAdequateToConnectionType();
 };
 
-} // namespace StatSyncing
-
-#endif // STATSYNCING_AMAROK_CONFIG_WIDGET_H
+#endif // TEST_AMAROK_IMPORTER

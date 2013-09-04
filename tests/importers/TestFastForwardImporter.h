@@ -22,7 +22,6 @@
 namespace StatSyncing
 {
     class FastForwardConfigWidget;
-    class FastForwardProvider;
 }
 
 class TestFastForwardImporter : public TestImporterBase

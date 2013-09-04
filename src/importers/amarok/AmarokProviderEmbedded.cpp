@@ -136,6 +136,7 @@ AmarokProviderEmbedded::startServer( const int port, const QString &socketPath,
          << "--key-buffer-size=16777216"
          << "--character-set-server=utf8"
          << "--collation-server=utf8_bin"
+         << "--skip-innodb"
          << "--bind-address=localhost"
          << "--socket=" + socketPath
          << "--pid-file=" + pidPath;

@@ -46,6 +46,63 @@ set( testimporterprovider_SRCS
 kde4_add_unit_test( testimporterprovider ${testimporterprovider_SRCS} )
 target_link_libraries( testimporterprovider ${testimporterscommon_LIBS} )
 
+#------------------------ Test AmarokImporter -----------------------------
+
+set( testamarokimporter_SRCS
+    TestImporterBase.cpp
+    TestAmarokImporter.cpp
+    ${AMAROK_SOURCE_TREE}/importers/amarok/AmarokConfigWidget.cpp
+    ${AMAROK_SOURCE_TREE}/importers/amarok/AmarokManager.cpp
+    ${AMAROK_SOURCE_TREE}/importers/amarok/AmarokProvider.cpp
+    ${AMAROK_SOURCE_TREE}/importers/amarok/AmarokProviderEmbedded.cpp
+)
+kde4_add_ui_files( testamarokimporter_SRCS
+    ${AMAROK_SOURCE_TREE}/importers/amarok/AmarokConfigWidget.ui
+)
+
+kde4_add_unit_test( testamarokimporter ${testamarokimporter_SRCS} )
+add_dependencies( testamarokimporter importers_files )
+target_link_libraries( testamarokimporter
+    amarok_importer-amarok
+    ${testimporterscommon_LIBS}
+)
+
+#------------------------ Test BansheeImporter -------------------------------
+
+set( testbansheeimporter_SRCS
+    TestImporterBase.cpp
+    TestBansheeImporter.cpp
+    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeConfigWidget.cpp
+    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeManager.cpp
+    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeProvider.cpp
+    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeTrack.cpp
+)
+
+kde4_add_unit_test( testbansheeimporter ${testbansheeimporter_SRCS} )
+add_dependencies( testbansheeimporter importers_files )
+target_link_libraries( testbansheeimporter
+    amarok_importer-banshee
+    ${testimporterscommon_LIBS}
+)
+
+#------------------------ Test ClementineImporter ----------------------------
+
+set( testclementineimporter_SRCS
+    TestImporterBase.cpp
+    TestClementineImporter.cpp
+    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineConfigWidget.cpp
+    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineManager.cpp
+    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineProvider.cpp
+    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineTrack.cpp
+)
+
+kde4_add_unit_test( testclementineimporter ${testclementineimporter_SRCS} )
+add_dependencies( testclementineimporter importers_files )
+target_link_libraries( testclementineimporter
+    amarok_importer-clementine
+    ${testimporterscommon_LIBS}
+)
+
 #------------------------ Test FastForwardImporter ------------------------
 
 set( testfastforwardimporter_SRCS
@@ -100,41 +157,5 @@ kde4_add_unit_test( testrhytmboximporter ${testrhytmboximporter_SRCS} )
 add_dependencies( testrhytmboximporter importers_files )
 target_link_libraries( testrhytmboximporter
     amarok_importer-rhythmbox
-    ${testimporterscommon_LIBS}
-)
-
-#------------------------ Test BansheeImporter -------------------------------
-
-set( testbansheeimporter_SRCS
-    TestImporterBase.cpp
-    TestBansheeImporter.cpp
-    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeConfigWidget.cpp
-    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeManager.cpp
-    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeProvider.cpp
-    ${AMAROK_SOURCE_TREE}/importers/banshee/BansheeTrack.cpp
-)
-
-kde4_add_unit_test( testbansheeimporter ${testbansheeimporter_SRCS} )
-add_dependencies( testbansheeimporter importers_files )
-target_link_libraries( testbansheeimporter
-    amarok_importer-banshee
-    ${testimporterscommon_LIBS}
-)
-
-#------------------------ Test ClementineImporter ----------------------------
-
-set( testclementineimporter_SRCS
-    TestImporterBase.cpp
-    TestClementineImporter.cpp
-    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineConfigWidget.cpp
-    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineManager.cpp
-    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineProvider.cpp
-    ${AMAROK_SOURCE_TREE}/importers/clementine/ClementineTrack.cpp
-)
-
-kde4_add_unit_test( testclementineimporter ${testclementineimporter_SRCS} )
-add_dependencies( testclementineimporter importers_files )
-target_link_libraries( testclementineimporter
-    amarok_importer-clementine
     ${testimporterscommon_LIBS}
 )
