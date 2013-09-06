@@ -68,6 +68,9 @@ class TestImporterBase : public QObject
 {
     Q_OBJECT
 
+public:
+    TestImporterBase();
+
 protected:
     /**
      * This method should return provider already configured for testing.

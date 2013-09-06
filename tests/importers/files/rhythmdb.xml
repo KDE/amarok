@@ -48,7 +48,7 @@
   <entry type="song">
     <title>title</title>
     <genre>Nieznany</genre>
-    <artist>utf&#x1D538;&#x1D563;&#x1D565;&#x1D55A;&#x1D564;&#x1D565;</artist>
+    <artist>utf&#xF909;&#xF90A;&#xF90B;</artist>
     <album>album</album>
     <track-number>1</track-number>
     <disc-number>1</disc-number>
@@ -409,7 +409,7 @@
     <media-type>audio/mpeg</media-type>
   </entry>
   <entry type="song">
-    <title>&#x1D565;&#x1D55A;&#x1D565;&#x1D55D;&#x1D556;</title>
+    <title>&#xF906;&#xF907;&#xF908;</title>
     <genre>Nieznany</genre>
     <artist>utfTitle</artist>
     <album>album</album>
@@ -874,7 +874,7 @@
     <title>title</title>
     <genre>Nieznany</genre>
     <artist>utfAlbum</artist>
-    <album>&#x1D552;&#x1D55D;&#x1D553;&#x1D566;&#x1D55E;</album>
+    <album>&#xF903;&#xF904;&#xF905;</album>
     <track-number>1</track-number>
     <disc-number>1</disc-number>
     <file-size>2048</file-size>

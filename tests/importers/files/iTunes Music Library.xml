@@ -40,7 +40,7 @@
 			<key>Track ID</key><integer>118</integer>
 			<key>Name</key><string>title</string>
 			<key>Artist</key><string>utfComposer</string>
-			<key>Composer</key><string>𝕔𝕠𝕞𝕡𝕠𝕤𝕖𝕣</string>
+			<key>Composer</key><string>豈更車</string>
 			<key>Album</key><string>album</string>
 			<key>Kind</key><string>MPEG audio file</string>
 			<key>Size</key><integer>2176</integer>
@@ -286,7 +286,7 @@
 			<key>Name</key><string>title</string>
 			<key>Artist</key><string>utfAlbum</string>
 			<key>Composer</key><string>composer</string>
-			<key>Album</key><string>𝕒𝕝𝕓𝕦𝕞</string>
+			<key>Album</key><string>賈滑串</string>
 			<key>Kind</key><string>MPEG audio file</string>
 			<key>Size</key><integer>2048</integer>
 			<key>Total Time</key><integer>216</integer>
@@ -654,7 +654,7 @@
 		<key>168</key>
 		<dict>
 			<key>Track ID</key><integer>168</integer>
-			<key>Name</key><string>𝕥𝕚𝕥𝕝𝕖</string>
+			<key>Name</key><string>句龜龜</string>
 			<key>Artist</key><string>utfTitle</string>
 			<key>Composer</key><string>composer</string>
 			<key>Album</key><string>album</string>
@@ -1016,7 +1016,7 @@
 		<dict>
 			<key>Track ID</key><integer>198</integer>
 			<key>Name</key><string>title</string>
-			<key>Artist</key><string>utf𝔸𝕣𝕥𝕚𝕤𝕥</string>
+			<key>Artist</key><string>utf契金喇</string>
 			<key>Composer</key><string>composer</string>
 			<key>Album</key><string>album</string>
 			<key>Kind</key><string>MPEG audio file</string>

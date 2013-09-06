@@ -25,6 +25,13 @@
 
 using namespace StatSyncing;
 
+TestImporterBase::TestImporterBase()
+{
+    // This is normally set in App.cpp
+    QTextCodec *utf8codec = QTextCodec::codecForName( "UTF-8" );
+    QTextCodec::setCodecForCStrings( utf8codec );
+}
+
 bool
 TestImporterBase::hasOddRatings() const
 {
@@ -112,10 +119,6 @@ TestImporterBase::composerShouldBeCaseSensitive()
     QVERIFY( trackComposers.contains( "comPoser" ) );
 }
 
-#define EXPECT_FAIL_ON_AMAROK_UNICODE \
-    if( QString( getProvider()->metaObject()->className() ).contains( "Amarok" ) ) \
-        QEXPECT_FAIL( "", "Amarok doesn't work properly with unicode tags", Abort );
-
 void
 TestImporterBase::titleShouldSupportUTF()
 {
@@ -126,9 +129,7 @@ TestImporterBase::titleShouldSupportUTF()
 
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 1 );
-
-    EXPECT_FAIL_ON_AMAROK_UNICODE
-    QCOMPARE( tracks.front()->name(), QString::fromWCharArray( L"𝕥𝕚𝕥𝕝𝕖" ) );
+    QCOMPARE( tracks.front()->name(), QString::fromWCharArray( L"\xF906\xF907\xF908" ) );
 }
 
 void
@@ -136,17 +137,11 @@ TestImporterBase::artistShouldSupportUTF()
 {
     ProviderPtr provider( getProvider() );
 
-    const QString artist = QString::fromWCharArray( L"utf𝔸𝕣𝕥𝕚𝕤𝕥" );
-
-    EXPECT_FAIL_ON_AMAROK_UNICODE
+    const QString artist = QString::fromWCharArray( L"utf\xF909\xF90A\xF90B" );
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
-
-    EXPECT_FAIL_ON_AMAROK_UNICODE
     QCOMPARE( tracks.size(), 1 );
-
-    EXPECT_FAIL_ON_AMAROK_UNICODE
     QCOMPARE( tracks.front()->artist(), artist );
 }
 
@@ -160,9 +155,7 @@ TestImporterBase::albumShouldSupportUTF()
 
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 1 );
-
-    EXPECT_FAIL_ON_AMAROK_UNICODE
-    QCOMPARE( tracks.front()->album(), QString::fromWCharArray( L"𝕒𝕝𝕓𝕦𝕞" ) );
+    QCOMPARE( tracks.front()->album(), QString::fromWCharArray( L"\xF903\xF904\xF905" ) );
 }
 
 void
@@ -176,9 +169,8 @@ TestImporterBase::composerShouldSupportUTF()
 
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 1 );
-
-    EXPECT_FAIL_ON_AMAROK_UNICODE
-    QCOMPARE( tracks.front()->composer(), QString::fromWCharArray( L"𝕔𝕠𝕞𝕡𝕠𝕤𝕖𝕣" ) );
+    QCOMPARE( tracks.front()->composer(),
+              QString::fromWCharArray( L"\xF900\xF901\xF902" ) );
 }
 
 void
@@ -516,9 +508,7 @@ TestImporterBase::tracksShouldWorkWithUTFLabels()
     labels( "title3" );
 
     QCOMPARE( m_lbl.size(), 1 );
-
-    EXPECT_FAIL_ON_AMAROK_UNICODE
-    QVERIFY( m_lbl.contains( QString::fromWCharArray( L"☢" ) ) );
+    QVERIFY( m_lbl.contains( QString::fromWCharArray( L"\x2622" ) ) );
 }
 
 void
