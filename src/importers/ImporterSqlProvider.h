@@ -55,13 +55,13 @@ public:
 protected:
     /**
      * This method must behave in the same way @see StatSyncing::Provider::artists() .
-     * db is QSqlDatabase object *connected* to database specified in the config.
+     * @param db is QSqlDatabase object *connected* to database specified in the config.
      */
     virtual QSet<QString> getArtists( QSqlDatabase db ) = 0;
 
     /**
      * This method must behave in the same way @see StatSyncing::Provider::artistTracks()
-     * db is QSqlDatabase object *connected* to database specified in the config.
+     * @param db is QSqlDatabase object *connected* to database specified in the config.
      */
     virtual TrackList getArtistTracks( const QString &artistName, QSqlDatabase db ) = 0;
 

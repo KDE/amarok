@@ -46,6 +46,12 @@ set( testimporterprovider_SRCS
 kde4_add_unit_test( testimporterprovider ${testimporterprovider_SRCS} )
 target_link_libraries( testimporterprovider ${testimporterscommon_LIBS} )
 
+#------------------------ Test ImporterSqlProvider ------------------------
+
+set( testimportersqlprovider_SRCS TestImporterSqlProvider.cpp )
+kde4_add_unit_test( testimportersqlprovider ${testimportersqlprovider_SRCS} )
+target_link_libraries( testimportersqlprovider ${testimporterscommon_LIBS} )
+
 #------------------------ Test SimpleImporterConfigWidget -----------------
 
 set( testsimpleimporterconfigwidget_SRCS TestSimpleImporterConfigWidget.cpp )
