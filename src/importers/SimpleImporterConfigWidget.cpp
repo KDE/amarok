@@ -16,6 +16,8 @@
 
 #include "SimpleImporterConfigWidget.h"
 
+#include "core/support/Debug.h"
+
 #include <KLineEdit>
 
 #include <QBoxLayout>
@@ -55,6 +57,12 @@ void
 SimpleImporterConfigWidget::addField( const QString &configName, const QString &label,
                                       QWidget * const field, const QString &property )
 {
+    if( !field )
+    {
+        warning() << __PRETTY_FUNCTION__ << "Attempted to add null field";
+        return;
+    }
+
     QLabel *lwidget = new QLabel( label );
     lwidget->setBuddy( field );
 

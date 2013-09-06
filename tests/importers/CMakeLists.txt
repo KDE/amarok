@@ -46,6 +46,13 @@ set( testimporterprovider_SRCS
 kde4_add_unit_test( testimporterprovider ${testimporterprovider_SRCS} )
 target_link_libraries( testimporterprovider ${testimporterscommon_LIBS} )
 
+#------------------------ Test SimpleImporterConfigWidget -----------------
+
+set( testsimpleimporterconfigwidget_SRCS TestSimpleImporterConfigWidget.cpp )
+kde4_add_unit_test( testsimpleimporterconfigwidget
+                    ${testsimpleimporterconfigwidget_SRCS} )
+target_link_libraries( testsimpleimporterconfigwidget ${testimporterscommon_LIBS} )
+
 #------------------------ Test AmarokImporter -----------------------------
 
 set( testamarokimporter_SRCS

@@ -26,16 +26,42 @@ class QGridLayout;
 namespace StatSyncing
 {
 
+/**
+ * SimpleImporterConfigWidget is a helper class for creating non-sophisticated config
+ * widgets for importers.
+ */
 class AMAROK_EXPORT SimpleImporterConfigWidget : public ProviderConfigWidget
 {
 public:
+    /**
+     * Constructor. Creates a widget with one label: "Target name," and one text field
+     * with its default value specified in @param targetName . @param config contains
+     * configuration for this widget.
+     */
     SimpleImporterConfigWidget( const QString &targetName, const QVariantMap &config,
                                 QWidget *parent = 0, Qt::WindowFlags f = 0 );
+
+    /**
+      * Destructor.
+      */
     ~SimpleImporterConfigWidget();
 
+    /**
+     * addField adds a new row to the widget. @param configName is the name of the config
+     * value associated with this field. The row contains a label initialized with
+     * @param label and a QWidget @param field initialized with config[configName]
+     * (if set). @param property must specify the name of field's property that contains
+     * value we want to configure; e.g. for a text field property will be "text", and for
+     * a combo box the property may be "currentText" .
+     *
+     * The ownership of field is transferred to SimpleImporterConfigWidget.
+     */
     void addField( const QString &configName, const QString &label,
                    QWidget * const field, const QString &property );
 
+    /**
+     * Returns a config generated from this widget's fields.
+     */
     QVariantMap config() const;
 
 private:
