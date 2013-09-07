@@ -64,13 +64,15 @@ BansheeProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
 {
     QSqlQuery query( db );
     query.setForwardOnly( true );
-    query.prepare( "SELECT TRIM(t.Title), TRIM(ar.Name), TRIM(al.Title), "
-                   "TRIM(t.Composer), t.Year, t.TrackNumber, t.Disc, t.Rating, "
-                   "t.LastPlayedStamp, t.PlayCount "
+    // Due to Banshee's peculiar track info storage, to avoid massive amount of confusion
+    // we only take tracks from PrimarySource: MusicLibrarySource-Library (always ID 1)
+    query.prepare( "SELECT TRIM(t.Title), ar.Name, al.Title, TRIM(t.Composer), "
+                   "t.Year, t.TrackNumber, t.Disc, t.Rating, t.LastPlayedStamp, "
+                   "t.PlayCount "
                    "FROM coretracks t "
                    "INNER JOIN coreartists ar USING(ArtistID) "
                    "LEFT JOIN corealbums al USING(AlbumID) "
-                   "WHERE TRIM(ar.Name) = ?" );
+                   "WHERE ar.Name = ? AND t.PrimarySourceID = 1" );
     query.addBindValue( artistName );
     query.exec();
 

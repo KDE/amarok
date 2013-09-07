@@ -1,15 +1,3 @@
-include_directories(
-    ${AMAROK_TEST_TREE}
-    ${AMAROK_SOURCE_TREE}
-    ${AMAROK_UTILITY_TREE}
-    ${CMAKE_BINARY_DIR}/src
-    ${CMAKE_BINARY_DIR}/tests
-    ${AMAROK_COLLECTION_SUPPORT_DIR}
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES}
-    ${GOOGLEMOCK_INCLUDE_DIR}
-)
-
 add_custom_target( importers_files
     ${CMAKE_COMMAND} -E copy_directory "${AMAROK_TEST_TREE}/importers/files" "${CMAKE_BINARY_DIR}/tests/importers_files"
     VERBATIM
