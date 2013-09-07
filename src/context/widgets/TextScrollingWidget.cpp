@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #define DEBUG_PREFIX "TextScrollingWidget"
+
 #include "TextScrollingWidget.h"
 
 #include "core/support/Debug.h"
@@ -26,7 +27,6 @@
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
-#include <QTextDocument>
 #include <QTimer>
 #include <QPropertyAnimation>
 
@@ -81,22 +81,16 @@ public:
 
     void setScrollingText( const QString &str )
     {
-        if( text != str )
-        {
-            doc.setHtml( str );
-            text = doc.toPlainText();
-            doc.clear();
-        }
+        text = str;
     }
 
     void setText( const QString &str )
     {
-        doc.setHtml( str );
-        text = doc.toPlainText();
+        text = str;
         textItem->setText( text );
+
         if( animation )
             animation.data()->stop();
-        doc.clear();
 
     }
 
@@ -109,7 +103,6 @@ public:
     Plasma::FrameSvg *textBackground; // background svg for text
     QWeakPointer<QPropertyAnimation> animation; // scroll animation
     QGraphicsSimpleTextItem *textItem;
-    QTextDocument doc;
 
 private:
     TextScrollingWidget *const q_ptr;
