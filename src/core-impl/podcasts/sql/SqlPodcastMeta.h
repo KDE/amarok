@@ -155,6 +155,8 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         bool m_episodesLoaded;
 
         SqlPodcastEpisodeList m_episodes;
+        bool m_trackCacheIsValid;
+        Meta::TrackList m_episodesAsTracksCache;
         SqlPodcastProvider *m_provider;
         QString m_filenameLayout; //specifies filename layout for episodes
 };

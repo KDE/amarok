@@ -527,6 +527,7 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
                                             const QStringList &result )
     : Podcasts::PodcastChannel()
     , m_episodesLoaded( false )
+    , m_trackCacheIsValid( false )
     , m_provider( provider )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
@@ -553,6 +554,7 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
                                             Podcasts::PodcastChannelPtr channel )
     : Podcasts::PodcastChannel()
     , m_dbId( 0 )
+    , m_trackCacheIsValid( false )
     , m_provider( provider )
     , m_filenameLayout( "%default%" )
 {
@@ -731,7 +733,7 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     notifyObserversTrackAdded( Meta::TrackPtr::dynamicCast( sqlEpisode ), i );
 
     applyPurge();
-
+    m_trackCacheIsValid = false;
     return PodcastEpisodePtr::dynamicCast( sqlEpisode );
 }
 
@@ -759,6 +761,7 @@ SqlPodcastChannel::applyPurge()
                     purgeIndex++;
             }
         }
+        m_trackCacheIsValid = false;
     }
 }
 
@@ -813,6 +816,7 @@ SqlPodcastChannel::deleteFromDb()
        sqlEpisode->deleteFromDb();
        m_episodes.removeOne( sqlEpisode );
     }
+    m_trackCacheIsValid = false;
 
     sqlStorage->query(
         QString( "DELETE FROM podcastchannels WHERE id = %1;" ).arg( dbId() ) );
@@ -868,12 +872,17 @@ SqlPodcastChannel::loadEpisodes()
     }
 
     m_episodesLoaded = true;
+    m_trackCacheIsValid = false;
 }
 
 Meta::TrackList
 Podcasts::SqlPodcastChannel::tracks()
 {
-    return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes );
+    if ( !m_trackCacheIsValid ) {
+        m_episodesAsTracksCache = Podcasts::SqlPodcastEpisode::toTrackList( m_episodes );
+        m_trackCacheIsValid = true;
+    }
+    return m_episodesAsTracksCache;
 }
 
 void

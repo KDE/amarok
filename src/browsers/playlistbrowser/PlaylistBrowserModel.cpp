@@ -308,7 +308,7 @@ PlaylistBrowserModel::rowCount( const QModelIndex &parent ) const
     else if( !IS_TRACK(parent) )
     {
         Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
-        return playlist->tracks().count();
+        return playlist->trackCount();
     }
 
     return 0;
