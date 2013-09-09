@@ -6751,7 +6751,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 </sect3>
 <sect3 id="how-can-i-control-the-volume-in-amarok-only-without-having-to-change-in-kmix"><title>How can I control the volume in Amarok only without having to change in KMix?</title> 
-<para> Most distributions ship the <guilabel>Pulseuadio</guilabel> sound-daemon nowadays which handles the sound settings system-wide. If you can't change the volume in &amarok; independently of &kmix;, then your <application>PulseAudio</application> settings have the option
+<para> Most distributions ship the <guilabel>PulseAudio</guilabel> sound-daemon nowadays which handles the sound settings system-wide. If you can't change the volume in &amarok; independently of &kmix;, then your <application>PulseAudio</application> settings have the option
 </para>
 <para> <userinput>flat-volume=yes</userinput>
 </para>
