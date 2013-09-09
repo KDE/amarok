@@ -81,3 +81,13 @@ TestBansheeImporter::providerShouldHandleErroneousConfigValues()
     BansheeProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().isEmpty() );
 }
+
+void
+TestBansheeImporter::artistTracksShouldNotReturnTracksNotFromPrimarySource()
+{
+    ProviderPtr provider( getProvider() );
+
+    const QString artist = "wrongSource";
+    QVERIFY( provider->artists().contains( artist ) );
+    QVERIFY( provider->artistTracks( artist ).isEmpty() );
+}

@@ -39,6 +39,8 @@ private slots:
     void providerShouldHandleNonexistentDbFile();
     void providerShouldHandleInvalidDbFile();
     void providerShouldHandleErroneousConfigValues();
+
+    void artistTracksShouldNotReturnTracksNotFromPrimarySource();
 };
 
 #endif // TEST_BANSHEE_IMPORTER
