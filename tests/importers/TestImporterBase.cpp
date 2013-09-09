@@ -46,12 +46,19 @@ TestImporterBase::hasOddRatings() const
                                                 .arg( Meta::nameForField( metavalue ) ); \
         QSKIP( msg.toLocal8Bit().constData(), SkipAll ); \
     } \
-}
+} do {} while(false)
+
+#define amarokProviderSkipIfNoMysqld( provider ) \
+    if( QString( provider->metaObject()->className() ).contains( "Amarok" ) ) \
+        if( !QFileInfo( "/usr/bin/mysqld" ).isExecutable() ) \
+            QSKIP( "/usr/bin/mysqld not executable, skipping Amarok provider tests", \
+                   SkipAll )
 
 void
 TestImporterBase::titleShouldBeCaseSensitive()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "caseSensitiveTitle";
     QVERIFY( provider->artists().contains( artist ) );
@@ -70,6 +77,7 @@ void
 TestImporterBase::artistShouldBeCaseSensitive()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QVector<QString> artists = QVector<QString>()
             << "caseSensitiveArtist" << "casesensitiveartist" << "caseSensitiveartist";
@@ -86,6 +94,7 @@ void
 TestImporterBase::albumShouldBeCaseSensitive()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "caseSensitiveAlbum";
     QVERIFY( provider->artists().contains( artist ) );
@@ -104,6 +113,7 @@ void
 TestImporterBase::composerShouldBeCaseSensitive()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valComposer );
 
     const QString artist = "caseSensitiveComposer";
@@ -123,6 +133,7 @@ void
 TestImporterBase::titleShouldSupportUTF()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "utfTitle";
     QVERIFY( provider->artists().contains( artist ) );
@@ -136,6 +147,7 @@ void
 TestImporterBase::artistShouldSupportUTF()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = QString::fromWCharArray( L"utf\xF909\xF90A\xF90B" );
     QVERIFY( provider->artists().contains( artist ) );
@@ -149,6 +161,7 @@ void
 TestImporterBase::albumShouldSupportUTF()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "utfAlbum";
     QVERIFY( provider->artists().contains( artist ) );
@@ -162,6 +175,7 @@ void
 TestImporterBase::composerShouldSupportUTF()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valComposer );
 
     const QString artist = "utfComposer";
@@ -177,6 +191,7 @@ void
 TestImporterBase::titleShouldSupportMultipleWords()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "multiWordTitle";
     QVERIFY( provider->artists().contains( artist ) );
@@ -190,6 +205,7 @@ void
 TestImporterBase::artistShouldSupportMultipleWords()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "multi Word Artist";
     QVERIFY( provider->artists().contains( artist ) );
@@ -203,6 +219,7 @@ void
 TestImporterBase::albumShouldSupportMultipleWords()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "multiWordAlbum";
     QVERIFY( provider->artists().contains( artist ) );
@@ -216,6 +233,7 @@ void
 TestImporterBase::composerShouldSupportMultipleWords()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valComposer );
 
     const QString artist = "multiWordComposer";
@@ -230,6 +248,7 @@ void
 TestImporterBase::titleShouldBeWhitespaceTrimmed()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "trimTitle";
     QVERIFY( provider->artists().contains( artist ) );
@@ -248,6 +267,7 @@ void
 TestImporterBase::artistShouldBeWhitespaceTrimmed()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "trimArtist";
     QVERIFY( provider->artists().contains( artist ) );
@@ -263,6 +283,7 @@ void
 TestImporterBase::albumShouldBeWhitespaceTrimmed()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "trimAlbum";
     QVERIFY( provider->artists().contains( artist ) );
@@ -278,6 +299,7 @@ void
 TestImporterBase::composerShouldBeWhitespaceTrimmed()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valComposer );
 
     const QString artist = "trimComposer";
@@ -294,6 +316,7 @@ void
 TestImporterBase::albumShouldBeUnsetIfTagIsUnset()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "albumUnset";
     QVERIFY( provider->artists().contains( artist ) );
@@ -307,6 +330,7 @@ void
 TestImporterBase::composerShouldBeUnsetIfTagIsUnset()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valComposer );
 
     const QString artist = "composerUnset";
@@ -321,6 +345,7 @@ void
 TestImporterBase::yearShouldBeUnsetIfTagIsUnset()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valYear );
 
     const QString artist = "yearUnset";
@@ -335,6 +360,7 @@ void
 TestImporterBase::trackShouldBeUnsetIfTagIsUnset()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valTrackNr );
 
     const QString artist = "trackUnset";
@@ -349,6 +375,7 @@ void
 TestImporterBase::discShouldBeUnsetIfTagIsUnset()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valDiscNr );
 
     const QString artist = "discUnset";
@@ -363,6 +390,7 @@ void
 TestImporterBase::checkStatistics( const QString &artist )
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     QVERIFY( provider->artists().contains( artist ) );
 
     QMap<QString, TrackPtr> trackForName;
@@ -452,18 +480,20 @@ TestImporterBase::tracksShouldBehaveNicelyWithNoStatistics()
     checkStatistics( "testStatisticsNotSet" );
 }
 
-void TestImporterBase::labels( const QString &trackName )
+void TestImporterBase::labels( const ProviderPtr &provider, const QString &trackName )
 {
     m_lbl.clear();
 
-    ProviderPtr provider( getProvider() );
     const QString artist = "testStatistics";
 
     QVERIFY( provider->artists().contains( artist ) );
 
     QMap<QString, TrackPtr> trackForName;
     foreach( const TrackPtr &track, provider->artistTracks( artist ) )
+    {
+        QVERIFY( !trackForName.contains( track->name() ) );
         trackForName.insert( track->name(), track );
+    }
 
     QVERIFY( trackForName.contains( trackName ) );
     m_lbl = trackForName.value( trackName )->labels();
@@ -472,8 +502,11 @@ void TestImporterBase::labels( const QString &trackName )
 void
 TestImporterBase::tracksShouldWorkWithSingleLabel()
 {
+    ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( reliableStatistics(), Meta::valLabel );
-    labels( "title0" );
+
+    labels( provider, "title0" );
 
     QCOMPARE( m_lbl.size(), 1 );
     QVERIFY( m_lbl.contains( "singleTag" ) );
@@ -482,8 +515,11 @@ TestImporterBase::tracksShouldWorkWithSingleLabel()
 void
 TestImporterBase::tracksShouldWorkWithMultipleLabels()
 {
+    ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( reliableStatistics(), Meta::valLabel );
-    labels( "title1" );
+
+    labels( provider, "title1" );
 
     QCOMPARE( m_lbl.size(), 2 );
     QVERIFY( m_lbl.contains( "multiple" ) );
@@ -493,8 +529,11 @@ TestImporterBase::tracksShouldWorkWithMultipleLabels()
 void
 TestImporterBase::tracksShouldWorkWithCaseSensitiveLabels()
 {
+    ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( reliableStatistics(), Meta::valLabel );
-    labels( "title2" );
+
+    labels( provider, "title2" );
 
     QCOMPARE( m_lbl.size(), 2 );
     QVERIFY( m_lbl.contains( "caseSensitive" ) );
@@ -504,8 +543,11 @@ TestImporterBase::tracksShouldWorkWithCaseSensitiveLabels()
 void
 TestImporterBase::tracksShouldWorkWithUTFLabels()
 {
+    ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( reliableStatistics(), Meta::valLabel );
-    labels( "title3" );
+
+    labels( provider, "title3" );
 
     QCOMPARE( m_lbl.size(), 1 );
     QVERIFY( m_lbl.contains( QString::fromWCharArray( L"\x2622" ) ) );
@@ -515,6 +557,7 @@ void
 TestImporterBase::providerShouldReturnNoTracksForNonexistentArtist()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "I'mNotHere";
     QVERIFY( !provider->artists().contains( artist ) );
@@ -525,6 +568,7 @@ void
 TestImporterBase::providerShouldNotBreakOnLittleBobbyTables()
 {
     ProviderPtr provider( getProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
 
     const QString artist = "Robert'); DROP TABLE students;--";
     QVERIFY( !provider->artists().contains( artist ) );

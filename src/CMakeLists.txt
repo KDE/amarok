@@ -558,6 +558,7 @@ set( importers_SRCS
     importers/ImporterManager.cpp
     importers/ImporterProvider.cpp
     importers/ImporterSqlProvider.cpp
+    importers/ImporterSqlTrack.cpp
     importers/SimpleImporterConfigWidget.cpp
 )
 

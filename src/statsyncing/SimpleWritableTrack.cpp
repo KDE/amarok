@@ -52,7 +52,7 @@ QDateTime
 SimpleWritableTrack::firstPlayed() const
 {
     QReadLocker lock( &m_lock );
-    return m_statistics.value( Meta::valFirstPlayed ).toDateTime();
+    return getDateTime( m_statistics.value( Meta::valFirstPlayed ) );
 }
 
 void
@@ -67,7 +67,7 @@ QDateTime
 SimpleWritableTrack::lastPlayed() const
 {
     QReadLocker lock( &m_lock );
-    return m_statistics.value( Meta::valLastPlayed ).toDateTime();
+    return getDateTime( m_statistics.value( Meta::valLastPlayed ) );
 }
 
 void

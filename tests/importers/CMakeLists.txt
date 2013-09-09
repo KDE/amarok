@@ -56,6 +56,7 @@ set( testamarokimporter_SRCS
     ${AMAROK_SOURCE_TREE}/importers/amarok/AmarokManager.cpp
     ${AMAROK_SOURCE_TREE}/importers/amarok/AmarokProvider.cpp
     ${AMAROK_SOURCE_TREE}/importers/amarok/AmarokProviderEmbedded.cpp
+    ${AMAROK_SOURCE_TREE}/importers/amarok/AmarokTrack.cpp
 )
 kde4_add_ui_files( testamarokimporter_SRCS
     ${AMAROK_SOURCE_TREE}/importers/amarok/AmarokConfigWidget.ui

@@ -136,6 +136,9 @@ TestAmarokImporter::configWidgetShouldReadSavedConfig()
 void
 TestAmarokImporter::providerShouldIgnoreConfigsDbDriver()
 {
+    if( !QFileInfo( "/usr/bin/mysqld" ).isExecutable() )
+        QSKIP( "/usr/bin/mysqld is not executable", SkipAll );
+
     m_cfg.insert( "dbDriver", "QPSQL" );
     m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
                             "/importers_files/mysqle" );

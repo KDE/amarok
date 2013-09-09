@@ -92,7 +92,7 @@ protected:
 
 private:
     void checkStatistics( const QString &artist );
-    void labels( const QString &trackName );
+    void labels( const StatSyncing::ProviderPtr &provider, const QString &trackName );
 
     QSet<QString> m_lbl;
 

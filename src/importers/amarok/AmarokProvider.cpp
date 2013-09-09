@@ -16,7 +16,7 @@
 
 #include "AmarokProvider.h"
 
-#include "statsyncing/SimpleTrack.h"
+#include "AmarokTrack.h"
 
 #include <QSqlQuery>
 
@@ -41,8 +41,8 @@ AmarokProvider::reliableTrackMetaData() const
 qint64
 AmarokProvider::writableTrackStatsData() const
 {
-    //TODO: Write capabilities
-    return 0;
+    return Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed
+            | Meta::valPlaycount | Meta::valLabel;
 }
 
 QSet<QString>
@@ -73,7 +73,6 @@ AmarokProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
                    "LEFT  JOIN composers   c  ON c.id   = t.composer "
                    "LEFT  JOIN years       y  ON y.id   = t.year "
                    "LEFT  JOIN statistics  s  ON s.id   = t.id "
-                   "LEFT  JOIN urls_labels ul ON ul.url = t.url "
                    "WHERE ar.name = ?" );
     query.addBindValue( artistName );
     query.exec();
@@ -84,7 +83,7 @@ AmarokProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
            << Meta::valLastPlayed << Meta::valPlaycount;
 
     TrackList result;
-    while ( query.next() )
+    while( query.next() )
     {
         const qint64 urlId = query.value( 0 ).toInt();
 
@@ -106,7 +105,8 @@ AmarokProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
         while( lblQuery.next() )
             labels << lblQuery.value( 0 ).toString();
 
-        result << TrackPtr( new SimpleTrack( metadata, labels ) );
+        result << TrackPtr( new AmarokTrack( urlId, ImporterSqlProviderPtr( this ),
+                                             metadata, labels ) );
     }
 
     return result;

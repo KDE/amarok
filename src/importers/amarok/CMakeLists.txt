@@ -8,6 +8,7 @@ set( amarok_importer-amarok_PART_SRCS
     AmarokManager.cpp
     AmarokProvider.cpp
     AmarokProviderEmbedded.cpp
+    AmarokTrack.cpp
 )
 
 kde4_add_ui_files( amarok_importer-amarok_PART_SRCS AmarokConfigWidget.ui )

@@ -19,6 +19,7 @@
 
 #include "importers/ImporterProvider.h"
 
+#include <QExplicitlySharedDataPointer>
 #include <QSqlDatabase>
 
 namespace StatSyncing
@@ -32,6 +33,8 @@ namespace StatSyncing
 class AMAROK_EXPORT ImporterSqlProvider : public ImporterProvider
 {
     Q_OBJECT
+
+    friend class ImporterSqlTrack;
 
 public:
     /**
@@ -66,18 +69,24 @@ protected:
     virtual TrackList getArtistTracks( const QString &artistName, QSqlDatabase db ) = 0;
 
     /**
-     * This method is called before opening the database connection. Like getArtists
-     * and getArtistTracks, this method will be called in the object's main thread.
+     * Return connection type that ensures a slot will be called in the object's main
+     * thread and in a blocking manner.
      */
-    virtual void prepareConnection();
+    Qt::ConnectionType getBlockingConnectionType() const;
 
     /**
      * Name of the connection created in the constructor.
      */
     const QString m_connectionName;
 
+protected slots:
+    /**
+     * This method is called before opening the database connection. Like getArtists
+     * and getArtistTracks, this method will be called in the object's main thread.
+     */
+    virtual void prepareConnection();
+
 private:
-    Qt::ConnectionType getBlockingConnectionType() const;
 
     QSet<QString> m_artistsResult;
     TrackList m_artistTracksResult;
@@ -86,6 +95,8 @@ private slots:
     void artistsSearch();
     void artistTracksSearch( const QString &artistName );
 };
+
+typedef QExplicitlySharedDataPointer<ImporterSqlProvider> ImporterSqlProviderPtr;
 
 } // namespace StatSyncing
 
