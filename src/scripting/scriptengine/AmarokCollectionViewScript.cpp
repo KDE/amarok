@@ -14,12 +14,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CollectionViewScript"
 #include "AmarokCollectionViewScript.h"
 
+#include "core/support/Debug.h"
 #include "ScriptingDefines.h"
-#include <scripting/scriptmanager/ScriptManager.h>
 #include "browsers/CollectionTreeView.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
+#include <browsers/collectionbrowser/CollectionBrowserTreeView.h>
 #include "browsers/CollectionTreeItem.h"
 #include "MainWindow.h"
 
@@ -30,27 +32,37 @@
 #include <QMetaEnum>
 #include <QScriptEngine>
 
+Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
 
 using namespace AmarokScript;
 
-QMap< QString, QWeakPointer<AmarokCollectionViewScript> > AmarokCollectionViewScript::s_instances;
+QMap<QString, AmarokCollectionViewScript*> AmarokCollectionViewScript::s_instances;
 Selection *AmarokCollectionViewScript::s_selection = 0;
 
-AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engine )
+AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engine, const QString &scriptName )
     : QObject( engine )
     , m_collectionWidget( The::mainWindow()->collectionBrowser() )
     , m_engine( engine )
-    , m_scriptName( ScriptManager::instance()->scriptNameForEngine(engine) )
+    , m_scriptName( scriptName )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    engine->globalObject().property( "Amarok" ).setProperty( "CollectionView", scriptObject );
+    QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
+    Q_ASSERT( !windowObject.isUndefined() );
+    windowObject.setProperty( "CollectionView", scriptObject );
     /*const QMetaEnum categoryEnum = metaObject()->enumerator( metaObject()->indexOfEnumerator("Category") );
     Q_ASSERT( categoryEnum.isValid() );
     scriptObject.setProperty( "Category", engine->enumObject( categoryEnum ) );*/
     qScriptRegisterMetaType<CollectionTreeItem*>( engine, CollectionViewItem::toScriptValue, fromScriptValue<CollectionTreeItem*, CollectionViewItem> );
-    s_instances[m_scriptName] = QWeakPointer<AmarokCollectionViewScript>( this );
+    engine->registerArrayType< QList<CollectionTreeItem*> >();
+    engine->registerArrayType<QActionList>();
+    s_instances[m_scriptName] = this;
+}
+
+AmarokCollectionViewScript::~AmarokCollectionViewScript()
+{
+    s_instances.remove( m_scriptName );
 }
 
 void
@@ -68,8 +80,10 @@ AmarokCollectionViewScript::filter() const
 QActionList
 AmarokCollectionViewScript::actions()
 {
-    QScriptValue actions = m_actionFunction.call( QScriptValue(), selectionScriptValue() );
-    return m_engine->fromScriptValue<QActionList>( actions );
+    QScriptValue actions = m_actionFunction.call( QScriptValue(), QScriptValueList() << selectionScriptValue() );
+    QActionList actionList = m_engine->fromScriptValue<QActionList>( actions );
+    debug() << "Received " << actionList.size() << " actions";
+    return actionList;
 }
 
 void
@@ -81,17 +95,30 @@ AmarokCollectionViewScript::setAction( const QScriptValue &value )
 void
 AmarokCollectionViewScript::createScriptedActions( KMenu &menu, const QModelIndexList &indices )
 {
+    debug() << "Checking for scripted actions";
     if( s_selection ) delete s_selection;
+    debug() << "here";
     if( s_instances.isEmpty() )
         return;
-    s_selection = new Selection( indices, 0 );
+    s_selection = new Selection( indices );
 
+    debug() << "here2";
     foreach( const QString &scriptName, s_instances.keys() )
     {
         if( s_instances[scriptName] )
         {
+            debug() << "Adding actions for script " << scriptName;
             menu.addSeparator();
-            menu.addActions( s_instances[scriptName].data()->actions() );
+            foreach( QAction *action, s_instances[scriptName]->actions() )
+            {
+                if( !action )
+                {
+                    debug() << "Null action received from script " << scriptName;
+                    continue;
+                }
+                action->setParent( &menu );
+                menu.addAction( action );
+            }
         }
     }
 }
@@ -99,7 +126,7 @@ AmarokCollectionViewScript::createScriptedActions( KMenu &menu, const QModelInde
 QScriptValue
 AmarokCollectionViewScript::selectionScriptValue()
 {
-    return m_engine->newQObject( s_selection, QScriptEngine::AutoOwnership,
+    return m_engine->newQObject( s_selection, QScriptEngine::QtOwnership,
                                 QScriptEngine::ExcludeSuperClassContents );
 }
 
@@ -178,12 +205,6 @@ CollectionViewItem::CollectionViewItem( CollectionTreeItem *item, QObject *paren
     , m_item( item )
 {}
 
-Meta::TrackList
-CollectionViewItem::descendentTracks()
-{
-    return m_item->descendentTracks();
-}
-
 bool
 CollectionViewItem::isTrackItem() const
 {
@@ -251,18 +272,24 @@ Selection::collectionCount() const
     return 0; // ANM-TODO
 }
 
-QList<CollectionViewItem*>
+QList<CollectionTreeItem*>
 Selection::selectedItems()
 {
-    QList<CollectionViewItem*> collectionItems;
+    QList<CollectionTreeItem*> collectionItems;
     foreach( const QModelIndex &index, m_indices )
     {
-        collectionItems << new CollectionViewItem( static_cast<CollectionTreeItem*>( index.internalPointer() ), this );
+        collectionItems << static_cast<CollectionTreeItem*>( index.internalPointer() );
     }
     return collectionItems;
 }
 
-Selection::Selection( const QModelIndexList &indices, QObject *parent )
-    : QObject( parent )
+Selection::Selection( const QModelIndexList &indices )
+    : QObject( 0 )
     , m_indices( indices )
 {}
+
+Collections::QueryMaker*
+Selection::queryMaker()
+{
+    return The::mainWindow()->collectionBrowser()->currentView()->createMetaQueryFromItems( selectedItems().toSet(), true );
+}

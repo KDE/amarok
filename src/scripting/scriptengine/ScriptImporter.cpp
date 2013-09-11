@@ -21,15 +21,16 @@
 #include "AmarokCollectionViewScript.h"
 #include "config.h"
 #include "core/support/Debug.h"
+#include "ScriptingDefines.h"
+#include "scripting/scriptmanager/ScriptManager.h"
 
 #include <KUrl>
 
-#include <QScriptEngine>
 #include <QSet>
 
 using namespace AmarokScript;
 
-ScriptImporter::ScriptImporter( QScriptEngine* scriptEngine, const KUrl &url )
+ScriptImporter::ScriptImporter( AmarokScriptEngine *scriptEngine, const KUrl &url )
     : QObject( scriptEngine )
     , m_scriptUrl( url )
     , m_scriptEngine( scriptEngine )
@@ -96,6 +97,8 @@ ScriptImporter::availableBindings() const
 void
 ScriptImporter::loadAmarokBinding( const QString &name )
 {
-    if( name == "amarok.bookmarks" )
+    if( name == "bookmarks" )
         new AmarokBookmarkScript( m_scriptEngine );
+    else if( name == "collectionview" )
+        new AmarokCollectionViewScript( m_scriptEngine, ScriptManager::instance()->scriptNameForEngine( m_scriptEngine ) );
 }

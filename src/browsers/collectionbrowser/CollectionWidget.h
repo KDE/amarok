@@ -22,6 +22,7 @@
 #include "browsers/BrowserCategory.h"
 
 class QAction;
+class CollectionBrowserTreeView;
 
 class CollectionWidget : public BrowserCategory
 {
@@ -55,6 +56,7 @@ class CollectionWidget : public BrowserCategory
         void setLevels( const QList<CategoryId::CatMenuId> &levels );
 
         void focusInputLine();
+        CollectionBrowserTreeView *currentView();
 
     public slots:
         void sortLevelSelected( QAction * );

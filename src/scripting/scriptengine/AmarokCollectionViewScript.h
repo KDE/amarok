@@ -33,6 +33,7 @@ class CollectionTreeItem;
 namespace Collections
 {
     class Collection;
+    class QueryMaker;
 }
 class KMenu;
 class QScriptEngine;
@@ -45,6 +46,9 @@ namespace AmarokScript
     class CollectionViewItem;
 
     // SCRIPTDOX Amarok.Window.CollectionView
+    /**
+     * Must call Importer.loadAmarokBinding( "collectionview" ); first;
+     */
     class AmarokCollectionViewScript : public QObject
     {
         Q_OBJECT
@@ -59,7 +63,8 @@ namespace AmarokScript
         // Q_PROPERTY( QList<Category> levels READ levels WRITE setLevels )
 
         public:
-            AmarokCollectionViewScript( AmarokScriptEngine *scriptEngine );
+            AmarokCollectionViewScript( AmarokScriptEngine *scriptEngine, const QString &scriptName );
+            ~AmarokCollectionViewScript();
             static void createScriptedActions( KMenu &menu, const QModelIndexList &indices );
             QActionList actions();
             static Selection *selection();
@@ -106,7 +111,7 @@ namespace AmarokScript
             bool showCovers();
 
 
-            static QMap< QString, QWeakPointer<AmarokCollectionViewScript> > s_instances;
+            static QMap< QString, AmarokCollectionViewScript*> s_instances;
             static Selection *s_selection;
             QScriptValue m_actionFunction;
             CollectionWidget *m_collectionWidget;
@@ -129,12 +134,7 @@ namespace AmarokScript
         Q_PROPERTY( int level READ level )
         Q_PROPERTY( int childCount READ childCount )
         Q_PROPERTY( bool isCollection READ isCollection )
-
-        /**
-         * Return the children tracks of this item, or the track represnted by the item
-         * if it is a track itself.
-         */
-        Q_PROPERTY( Meta::TrackList descendentTracks READ descendentTracks )
+        Q_PROPERTY( bool isTrack READ isTrackItem )
         Q_PROPERTY( Collections::Collection* parentCollection READ parentCollection )
 
         public:
@@ -177,23 +177,24 @@ namespace AmarokScript
         /**
          * Get the selected lis tof items.
          */
-        Q_PROPERTY( QList<CollectionViewItem*> selectedItems READ selectedItems )
+        Q_PROPERTY( QList<CollectionTreeItem*> selectedItems READ selectedItems )
+
+        public slots:
+            /**
+             * Get a QueryMaker for the selected items.
+             */
+            Collections::QueryMaker* queryMaker();
 
         private:
-            Selection( const QModelIndexList &indices, QObject *parent );
+            Selection( const QModelIndexList &indices );
             bool singleCollection() const;
             int collectionCount() const;
-            QList<CollectionViewItem*> selectedItems();
+            QList<CollectionTreeItem*> selectedItems();
 
             QModelIndexList m_indices;
 
         friend AmarokCollectionViewScript;
     };
 }
-
-Q_DECLARE_METATYPE( AmarokScript::CollectionViewItem* )
-Q_DECLARE_METATYPE( QList<AmarokScript::CollectionViewItem*> )
-// Q_DECLARE_METATYPE( QAction* )
-// Q_DECLARE_METATYPE( QActionList )
 
 #endif

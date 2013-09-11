@@ -131,5 +131,6 @@ class AMAROK_EXPORT CollectionTreeItem : public QObject
 };
 
 Q_DECLARE_METATYPE( CollectionTreeItem* )
+Q_DECLARE_METATYPE( QList<CollectionTreeItem*> )
 
 #endif

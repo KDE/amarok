@@ -27,13 +27,15 @@ class QScriptEngine;
 
 namespace AmarokScript
 {
+    class AmarokScriptEngine;
+
     // SCRIPTDOX: Importer
     class ScriptImporter : public QObject
     {
         Q_OBJECT
 
         public:
-            ScriptImporter( QScriptEngine* ScriptEngine, const KUrl &url );
+            ScriptImporter( AmarokScriptEngine *scriptEngine, const KUrl &url );
 
         public slots:
             QStringList availableBindings() const;
@@ -44,7 +46,7 @@ namespace AmarokScript
 
         private:
             const KUrl m_scriptUrl;
-            QScriptEngine *m_scriptEngine;
+            AmarokScriptEngine *m_scriptEngine;
             QSet<QString> m_importedBindings;
     };
 }
