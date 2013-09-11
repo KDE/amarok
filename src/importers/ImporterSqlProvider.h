@@ -72,7 +72,7 @@ protected:
      * Return connection type that ensures a slot will be called in the object's main
      * thread and in a blocking manner.
      */
-    Qt::ConnectionType getBlockingConnectionType() const;
+    Qt::ConnectionType blockingConnectionType() const;
 
     /**
      * Name of the connection created in the constructor.

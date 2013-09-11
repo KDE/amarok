@@ -17,20 +17,18 @@
 #ifndef STATSYNCING_FAST_FORWARD_TRACK_H
 #define STATSYNCING_FAST_FORWARD_TRACK_H
 
-#include "statsyncing/SimpleTrack.h"
-
-#include <QMutex>
+#include "importers/ImporterSqlTrack.h"
 
 namespace StatSyncing
 {
 
-class FastForwardTrack : public QObject, public SimpleTrack
+class FastForwardTrack : public ImporterSqlTrack
 {
     Q_OBJECT
 
 public:
-    FastForwardTrack( const Meta::FieldHash &metadata, const QString &trackUrl,
-                      const QString &providerUid );
+    FastForwardTrack( const ImporterSqlProviderPtr &provider,
+                      const Meta::FieldHash &metadata, const QString &trackUrl );
     ~FastForwardTrack();
 
     QDateTime firstPlayed() const;
@@ -39,15 +37,14 @@ public:
     int playCount() const;
     QSet<QString> labels() const;
 
+protected:
+    virtual void sqlCommit(QSqlDatabase db, const QSet<qint64> &fields);
+
 private:
     void assureStatisticsRetrieved() const;
 
-    const QString m_providerUid;
-    Meta::FieldHash m_statistics;
     bool m_statisticsRetrieved;
     const QString m_trackUrl;
-
-    mutable QMutex m_mutex;
 
 private slots:
     void retrieveStatistics();

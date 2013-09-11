@@ -35,16 +35,33 @@ ImporterSqlTrack::~ImporterSqlTrack()
 void
 ImporterSqlTrack::doCommit( const QSet<qint64> &fields )
 {
-    QMetaObject::invokeMethod( this, "slotSqlCommit",
-                               m_provider->getBlockingConnectionType(),
+    QMetaObject::invokeMethod( this, "slotSqlCommit", blockingConnectionType(),
                                Q_ARG( QSet<qint64>, fields ) );
+}
+
+inline void
+ImporterSqlTrack::prepareConnection()
+{
+    if( m_provider )
+        m_provider->prepareConnection();
+}
+
+inline QString
+ImporterSqlTrack::connectionName()
+{
+    return m_provider ? m_provider->m_connectionName : QString();
+}
+
+inline Qt::ConnectionType
+ImporterSqlTrack::blockingConnectionType() const
+{
+    return m_provider ? m_provider->blockingConnectionType() : Qt::AutoConnection;
 }
 
 void ImporterSqlTrack::slotSqlCommit( const QSet<qint64> &fields )
 {
-    m_provider->prepareConnection();
-    QSqlDatabase db = QSqlDatabase::database( m_provider->m_connectionName );
-
-    if( db.open() )
+    prepareConnection();
+    QSqlDatabase db = QSqlDatabase::database( connectionName() );
+    if( db.isOpen() )
         sqlCommit( db, fields );
 }

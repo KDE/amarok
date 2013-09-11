@@ -17,6 +17,7 @@
 #include "AmarokTrack.h"
 
 #include <QSqlQuery>
+#include <QStringList>
 
 using namespace StatSyncing;
 
@@ -36,21 +37,34 @@ AmarokTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &fields )
 {
     db.transaction();
 
-    QSqlQuery query( db );
-    query.prepare( "UPDATE statistics SET createdate = ?, accessdate = ?, rating = ?, "
-                   "playcount = ? WHERE url = ?" );
-    query.addBindValue( m_statistics.value( Meta::valFirstPlayed )
-                                                               .toDateTime().toTime_t() );
-    query.addBindValue( m_statistics.value( Meta::valLastPlayed )
-                                                               .toDateTime().toTime_t() );
-    query.addBindValue( m_statistics.value( Meta::valRating ).toInt() );
-    query.addBindValue( m_statistics.value( Meta::valPlaycount ).toInt() );
-    query.addBindValue( m_urlId );
+    QStringList updates;
+    if( fields.contains( Meta::valFirstPlayed ) )
+        updates << "createdate = :createdate";
+    if( fields.contains( Meta::valLastPlayed ) )
+        updates << "accessdate = :accessdate";
+    if( fields.contains( Meta::valRating ) )
+        updates << "rating = :rating";
+    if( fields.contains( Meta::valPlaycount ) )
+        updates << "playcount = :playcount";
 
-    if( !query.exec() )
+    QSqlQuery query( db );
+
+    if( !updates.isEmpty() )
     {
-        db.rollback();
-        return;
+        query.prepare( "UPDATE statistics SET "+updates.join(", ")+" WHERE url = :url" );
+        query.bindValue( ":createdate", m_statistics.value( Meta::valFirstPlayed )
+                                                               .toDateTime().toTime_t() );
+        query.bindValue( ":accessdate", m_statistics.value( Meta::valLastPlayed )
+                                                               .toDateTime().toTime_t() );
+        query.bindValue( ":rating", m_statistics.value( Meta::valRating ).toInt() );
+        query.bindValue( ":playcount", m_statistics.value( Meta::valPlaycount ).toInt() );
+        query.bindValue( ":url", m_urlId );
+
+        if( !query.exec() )
+        {
+            db.rollback();
+            return;
+        }
     }
 
     if( fields.contains( Meta::valLabel ) )

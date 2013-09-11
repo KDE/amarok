@@ -34,7 +34,7 @@ typedef QExplicitlySharedDataPointer<ImporterSqlProvider> ImporterSqlProviderPtr
  * @link http://qt-project.org/doc/qt-4.8/threads-modules.html#threads-and-the-sql-module
  *
  * This class is meant to be used along with ImporterSqlProvider and it uses its
- * non-private methods through friend declaration.
+ * protected methods through friend declaration.
  */
 class AMAROK_EXPORT ImporterSqlTrack : public QObject, public SimpleWritableTrack
 {
@@ -59,10 +59,25 @@ protected:
      *
      * This method is guaranteed to be called in the main thread. Before it's called,
      * provider's ImporterSqlProvider::prepareConnection() is called.
-     * @param db is a result of QSqlDatabase::database( connectionName ), where
-     * connectionName is ImporterSqlTrack's construction parameter.
+     * @param db is a result of QSqlDatabase::database( connectionName() )
      */
     virtual void sqlCommit( QSqlDatabase db, const QSet<qint64> &fields ) = 0;
+
+    /**
+     * Wrapper for StatSyncing::ImporterSqlProvider::prepareConnection() protected method.
+     */
+    void prepareConnection();
+
+    /**
+     * Wrapper for StatSyncing::ImporterSqlProvider::m_connectionName protected memeber.
+     */
+    QString connectionName();
+
+    /**
+     * Wrapper for StatSyncing::ImporterSqlProvider::blockingConnectionType() protected
+     * method.
+     */
+    Qt::ConnectionType blockingConnectionType() const;
 
 private:
     ImporterSqlProviderPtr m_provider;

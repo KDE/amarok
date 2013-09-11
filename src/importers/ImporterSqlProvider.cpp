@@ -49,7 +49,7 @@ ImporterSqlProvider::~ImporterSqlProvider()
 QSet<QString>
 ImporterSqlProvider::artists()
 {
-    QMetaObject::invokeMethod( this, "artistsSearch", getBlockingConnectionType() );
+    QMetaObject::invokeMethod( this, "artistsSearch", blockingConnectionType() );
 
     QSet<QString> artistSet;
     artistSet.swap( m_artistsResult );
@@ -60,7 +60,7 @@ ImporterSqlProvider::artists()
 TrackList
 ImporterSqlProvider::artistTracks( const QString &artistName )
 {
-    QMetaObject::invokeMethod( this, "artistTracksSearch", getBlockingConnectionType(),
+    QMetaObject::invokeMethod( this, "artistTracksSearch", blockingConnectionType(),
                                Q_ARG( QString, artistName ) );
 
     TrackList artistTrackList;
@@ -75,7 +75,7 @@ ImporterSqlProvider::prepareConnection()
 }
 
 Qt::ConnectionType
-ImporterSqlProvider::getBlockingConnectionType() const
+ImporterSqlProvider::blockingConnectionType() const
 {
     // SQL queries need to be executed in the main thread
     return this->thread() == ThreadWeaver::Thread::currentThread()

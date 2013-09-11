@@ -44,8 +44,8 @@ FastForwardProvider::reliableTrackMetaData() const
 qint64
 FastForwardProvider::writableTrackStatsData() const
 {
-    //TODO: Write capabilities
-    return 0;
+    return Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed
+            | Meta::valPlaycount | Meta::valLabel;
 }
 
 QSet<QString>
@@ -93,8 +93,8 @@ FastForwardProvider::getArtistTracks( const QString &artistName, QSqlDatabase db
         for( int i = 0; i < fields.size(); ++i )
             metadata.insert( fields[i], query.value( i + 1 ) );
 
-        result << TrackPtr( new FastForwardTrack( metadata, trackUrl,
-                                                  m_connectionName ) );
+        result << TrackPtr( new FastForwardTrack( ImporterSqlProviderPtr( this ),
+                                                  metadata, trackUrl ) );
     }
 
     return result;
