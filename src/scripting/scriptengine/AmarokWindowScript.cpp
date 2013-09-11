@@ -21,16 +21,21 @@
 #include "core/support/Amarok.h"
 #include "App.h"
 #include "AmarokCollectionViewScript.h"
+#include "browsers/collectionbrowser/CollectionWidget.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "PaletteHandler.h"
 #include "ScriptingDefines.h"
-#include <browsers/collectionbrowser/CollectionWidget.h>
 
 #include <KAction>
 #include <KActionCollection>
 
+#include <QClipboard>
+#include <QToolTip>
+
 using namespace AmarokScript;
+
+QWeakPointer<ToolTipEventFilter> ToolTipEventFilter::s_instance;
 
 AmarokWindowScript::AmarokWindowScript( AmarokScriptEngine* scriptEngine )
     : QObject( scriptEngine )
@@ -182,4 +187,34 @@ AmarokWindowScript::setFont( const QFont &font )
 {
     The::mainWindow()->setFont( font );
     The::mainWindow()->collectionBrowser()->update();
+}
+
+void
+AmarokWindowScript::showToolTip()
+{
+    foreach( QWidget *widget, The::mainWindow()->findChildren<QWidget*>() )
+    {
+        widget->setToolTip( widget->objectName() );
+        widget->installEventFilter( ToolTipEventFilter::instance() );
+    }
+}
+
+ToolTipEventFilter*
+ToolTipEventFilter::instance()
+{
+    if( !s_instance )
+        s_instance = new ToolTipEventFilter();
+    return s_instance.data();
+}
+
+ToolTipEventFilter::ToolTipEventFilter()
+: QObject( The::mainWindow() )
+{}
+
+bool
+ToolTipEventFilter::eventFilter( QObject *object, QEvent *event )
+{
+    if( event->type() == QEvent::ToolTip )
+        QApplication::clipboard()->setText( object->objectName() );
+    return false;
 }

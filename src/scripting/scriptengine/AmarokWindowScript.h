@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QSharedPointer>
 
+class EventFilter;
 class QMainWindow;
 class QPalette;
 class QScriptEngine;
@@ -55,6 +56,16 @@ namespace AmarokScript
             void showBrowser( QString browser ) const; // ANM-TODO: works?
             void showTrayIcon( bool show );
 
+            /**
+             * Show tooltips with the widget's name on mouseover.
+             * @param showDelay the duration after which toolTip appears.
+             * @param copyDelay the duration after
+             *
+             * Must restart Amarok afetr invoking this function to revert tooltips
+             * to normal.
+             */
+            void showToolTip();
+
         signals:
             void prepareToQuit();
             void newPalette( QPalette );
@@ -87,6 +98,18 @@ namespace AmarokScript
             QWeakPointer<KMenu> m_settingsMenu;
             AmarokScriptEngine*   m_scriptEngine;
             QList<QObject*> m_guiPtrList;
+    };
+
+    class ToolTipEventFilter : public QObject
+    {
+        public:
+            static ToolTipEventFilter *instance();
+
+        private:
+            ToolTipEventFilter();
+            bool eventFilter( QObject *object, QEvent *event );
+
+            static QWeakPointer<ToolTipEventFilter> s_instance;
     };
 }
 
