@@ -89,7 +89,10 @@ namespace AmarokScript
         }
     }
 
-   class AmarokScriptEngine : public QScriptEngine
+    /**
+     * SCRIPTDOX _
+     */
+    class AmarokScriptEngine : public QScriptEngine
     {
         Q_OBJECT
 
@@ -98,7 +101,6 @@ namespace AmarokScript
             virtual ~AmarokScriptEngine();
 
             void setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property );
-            QString setUndocumentedProperty( const QString &name, const QScriptValue &property );
             // exposing the metaobject directly also exposes >900 other values
             QScriptValue enumObject( const QMetaEnum &metaEnum );
 
@@ -120,21 +122,27 @@ namespace AmarokScript
             {
                 qScriptRegisterMetaType<Map>( this, toScriptMap, fromScriptMap );
             }
+            Q_INVOKABLE void invokableDeprecatedCall( const QString &call );
 
         public slots:
-            void slotDeprecatedCall( const QString &call );
-            void setTimeout( const QScriptValue &value, int time );
+            /**
+             * @param function The function to invoke after time @param time in milliseconds.
+             * @param thisObject [Optional] The this object this function is invoked with.
+             * @param args [Optional] An array containing arguments this function is to be invoked with.
+             */
+            void setTimeout( const QScriptValue &function, int time,
+                             const QScriptValue &thisObject = QScriptValue(),
+                             const QScriptValue &args = QScriptValue() );
 
         private slots:
             void slotTimeout();
 
         signals:
             void deprecatedCall(QString);
-            void timeout( QScriptValue );
 
         private:
             const QString internalObject;
-            QHash<QObject*, QScriptValue> m_callbacks;
+            QHash<QObject*, QScriptValueList> m_callbacks;
     };
 }
 

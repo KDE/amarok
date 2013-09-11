@@ -30,7 +30,7 @@
 
 #define SCRIPTING_DEPRECATED( x ) \
                                     AmarokScriptEngine *amarokScriptEngine = dynamic_cast<AmarokScriptEngine*>(parent()); \
-                                    if( amarokScriptEngine ) amarokScriptEngine->slotDeprecatedCall( x );
+                                    if( amarokScriptEngine ) amarokScriptEngine->invokableDeprecatedCall( x );
 
 using namespace AmarokScript;
 

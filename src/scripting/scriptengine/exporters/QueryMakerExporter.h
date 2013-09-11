@@ -18,7 +18,7 @@
 #define QUERYMAKER_EXPORTER_H
 
 #include "amarok_export.h"
-#include "core/meta/forward_declarations.h"
+#include "core/meta/Meta.h"
 
 #include <QObject>
 #include <QWeakPointer>
@@ -55,6 +55,7 @@ namespace AmarokScript
     public:
         static void init( QScriptEngine *engine );
         QueryMakerPrototype( Collections::QueryMaker *collection );
+        ~QueryMakerPrototype();
         Collections::QueryMaker *data() { return m_querymaker.data(); }
 
     public slots:
@@ -65,6 +66,11 @@ namespace AmarokScript
          *  followed by the queryDone() signal exactly once.
          */
         void run();
+
+        /**
+         * Block until the query completes, returns the tracklist..
+         */
+        Meta::TrackList blockingRun();
 
         /**
          *  Aborts a running query.
@@ -79,9 +85,13 @@ namespace AmarokScript
     private:
         QWeakPointer<Collections::QueryMaker> m_querymaker;
         QString m_filter;
+        Meta::TrackList m_result;
 
         bool isValid() const;
         QString filter() const;
+
+    private slots:
+        void slotResult( const Meta::TrackList &tracks );
 
     signals:
         /**

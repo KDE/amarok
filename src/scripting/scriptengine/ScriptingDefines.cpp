@@ -30,7 +30,10 @@ AmarokScriptEngine::AmarokScriptEngine( QObject *parent )
     QScriptValue scriptObject = newQObject( this, QtOwnership,
                                             ExcludeChildObjects | ExcludeSuperClassContents );
     globalObject().setProperty( internalObject, scriptObject, QScriptValue::ReadOnly );
-    globalObject().setProperty( "setTimeout", scriptObject.property( "setTimeout" ) );
+    QScriptValue setTimeoutObject = scriptObject.property( "setTimeout" );
+    Q_ASSERT( !setTimeoutObject.isUndefined() );
+    Q_ASSERT( !globalObject().property( internalObject ).property( "invokableDeprecatedCall" ).isUndefined() );
+    globalObject().setProperty( "setTimeout", setTimeoutObject );
 }
 
 void
@@ -41,12 +44,12 @@ AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString 
 
     // less readable?
     /*const QString command = "Object.defineProperty( " + parent +", \"" + name
-                            + "\", {get : function(){ var iobj=" + internalObject+"; iobj.slotDeprecatedCall(\""
+                            + "\", {get : function(){ var iobj=" + internalObject+"; iobj.invokableDeprecatedCall(\""
                             + parent + "." + name +"\"); return iobj." + objName + "; },\
                                                                         enumerable : true,\
                                                                         configurable : false});";*/
 
-    const QString command = QString( "Object.defineProperty( %1, \"%2\", {get : function(){ var iobj= %3; iobj.slotDeprecatedCall(\""
+    const QString command = QString( "Object.defineProperty( %1, \"%2\", {get : function(){ var iobj= %3; iobj.invokableDeprecatedCall(\""
                                                                             " %1.%2 \"); return iobj.%4; },\
                                                                             enumerable : true,\
                                                                             configurable : false});" )
@@ -55,19 +58,19 @@ AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString 
 }
 
 void
-AmarokScriptEngine::slotDeprecatedCall( const QString &call )
+AmarokScriptEngine::invokableDeprecatedCall( const QString &call )
 {
     warning() << "Deprecated function " + call;
     emit deprecatedCall( call );
 }
 
 void
-AmarokScriptEngine::setTimeout( const QScriptValue &value, int time )
+AmarokScriptEngine::setTimeout( const QScriptValue &function, int time, const QScriptValue &thisObject, const QScriptValue &args )
 {
     QTimer *timer = new QTimer( this );
     timer->setSingleShot( true );
     timer->setInterval( time );
-    m_callbacks[timer] = value;
+    m_callbacks[timer] = QScriptValueList() << function << thisObject << args;
     connect( timer, SIGNAL(timeout()), this, SLOT(slotTimeout()) );
     timer->start();
 }
@@ -76,21 +79,32 @@ void
 AmarokScriptEngine::slotTimeout()
 {
     QObject *timer = sender();
-    if( timer )
+    if( !timer )
+        return;
+
+    QScriptValueList args;
+    QScriptValue thisObject;
+    if( m_callbacks[timer].size() > 1 )
     {
-        m_callbacks[timer].call();
-        m_callbacks.remove( timer );
-        timer->deleteLater();
+        thisObject = m_callbacks[timer][1];
+        if( m_callbacks[timer].size() == 3 )
+            for ( quint32 i = 0; i < m_callbacks[timer][2].property("length").toUInt32(); ++i )
+                args << m_callbacks[timer][2].property( i );
     }
+    m_callbacks[timer][0].call( thisObject, args );
+    m_callbacks.remove( timer );
+    timer->deleteLater();
 }
 
-QScriptValue AmarokScriptEngine::enumObject( const QMetaEnum &metaEnum )
+QScriptValue
+AmarokScriptEngine::enumObject( const QMetaEnum &metaEnum )
 {
     QScriptValue enumObj = newObject();
     for( int i = 0; i< metaEnum.keyCount(); ++i )
         enumObj.setProperty( metaEnum.key(i), QScriptEngine::toScriptValue( metaEnum.value(i) ) );
     return enumObj;
 }
+
 
 AmarokScriptEngine::~AmarokScriptEngine()
 {}

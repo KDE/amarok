@@ -22,6 +22,7 @@
 
 #include <QScriptEngine>
 #include <QScriptValue>
+#include <QEventLoop>
 
 using namespace AmarokScript;
 
@@ -53,6 +54,17 @@ QueryMakerPrototype::run()
     m_querymaker.data()->run();
 }
 
+Meta::TrackList
+QueryMakerPrototype::blockingRun()
+{
+    QEventLoop loop;
+    connect( m_querymaker.data(), SIGNAL(newResultReady(Meta::TrackList)), SLOT(slotResult(Meta::TrackList)) );
+    connect( m_querymaker.data(), SIGNAL(queryDone()), &loop, SLOT(quit()) );
+    run();
+    loop.exec();
+    return m_result;
+}
+
 void
 QueryMakerPrototype::abort()
 {
@@ -68,6 +80,8 @@ QueryMakerPrototype::QueryMakerPrototype( QueryMaker *queryMaker )
 {
     connect( m_querymaker.data(), SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)) );
     connect( m_querymaker.data(), SIGNAL(queryDone()), SIGNAL(queryDone()) );
+    connect( m_querymaker.data(), SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
+    m_querymaker.data()->setAutoDelete( true );
 }
 
 QString
@@ -76,7 +90,20 @@ QueryMakerPrototype::filter() const
     return m_filter;
 }
 
-bool QueryMakerPrototype::isValid() const
+bool
+QueryMakerPrototype::isValid() const
 {
     return m_querymaker;
+}
+
+void
+QueryMakerPrototype::slotResult( const Meta::TrackList &tracks )
+{
+    m_result << tracks;
+}
+
+QueryMakerPrototype::~QueryMakerPrototype()
+{
+    if( m_querymaker )
+        m_querymaker.data()->deleteLater();
 }
