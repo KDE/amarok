@@ -171,8 +171,13 @@ namespace AmarokScript
             */
             void replace( Dynamic::BiasPtr newBias ) override;
 
+            /**
+             * Call after an outstanding result is completed
+             */
+            void ready( const Dynamic::TrackSet &trackSet );
+
         private:
-            ScriptableBiasFactory *m_scriptBias;
+            QWeakPointer<ScriptableBiasFactory> m_scriptBias;
             QScriptEngine *m_engine;
             QScriptValue m_biasObject;
     };
@@ -221,9 +226,9 @@ namespace AmarokScript
             /**
              * Returns true if the @param uid is included in the set
              */
-            bool contains( const QString& uid ) const;
+            bool containsUid( const QString& uid ) const;
 
-            bool contains( const Meta::TrackPtr track ) const;
+            bool containsTrack( const Meta::TrackPtr track ) const;
 
             /**
              * Returns the uids of a random track contains in this set

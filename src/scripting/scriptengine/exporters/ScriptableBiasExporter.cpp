@@ -22,10 +22,12 @@
 #include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
+#include <QApplication>
+#include <QCoreApplication>
 #include <QScriptEngine>
+#include <QThread>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-#include <QCoreApplication>
 
 using namespace AmarokScript;
 
@@ -243,8 +245,8 @@ ScriptableBiasFactory::toStringFunction() const
 void
 ScriptableBias::toXml( QXmlStreamWriter *writer ) const
 {
-    if( m_scriptBias->toXmlFunction().isFunction() )
-        m_scriptBias->fromXmlFunction().call( m_biasObject,
+    if( m_scriptBias.data()->toXmlFunction().isFunction() )
+        m_scriptBias.data()->fromXmlFunction().call( m_biasObject,
                                               QScriptValueList() << m_engine->toScriptValue<QXmlStreamWriter*>( writer ) );
     else
         Dynamic::AbstractBias::toXml( writer );
@@ -253,8 +255,8 @@ ScriptableBias::toXml( QXmlStreamWriter *writer ) const
 void
 ScriptableBias::fromXml( QXmlStreamReader *reader )
 {
-    if( m_scriptBias->fromXmlFunction().isFunction() )
-        m_scriptBias->fromXmlFunction().call( m_biasObject,
+    if( m_scriptBias.data()->fromXmlFunction().isFunction() )
+        m_scriptBias.data()->fromXmlFunction().call( m_biasObject,
                                               QScriptValueList() << m_engine->toScriptValue<QXmlStreamReader*>( reader ) );
     else
         Dynamic::AbstractBias::fromXml( reader );
@@ -263,8 +265,8 @@ ScriptableBias::fromXml( QXmlStreamReader *reader )
 QWidget*
 ScriptableBias::widget( QWidget *parent )
 {
-    QWidget *widget = dynamic_cast<QWidget*>( m_scriptBias->widgetFunction().call( m_biasObject,
-                                                                                   m_scriptBias->engine()->newQObject( parent ) ).toQObject() );
+    QWidget *widget = dynamic_cast<QWidget*>( m_scriptBias.data()->widgetFunction().call( m_biasObject,
+                                                                                   m_scriptBias.data()->engine()->newQObject( parent ) ).toQObject() );
     if( widget )
         return widget;
     return Dynamic::AbstractBias::widget( parent );
@@ -279,7 +281,8 @@ ScriptableBias::invalidate()
 Dynamic::TrackSet
 ScriptableBias::matchingTracks( const Meta::TrackList &playlist, int contextCount, int finalCount, const Dynamic::TrackCollectionPtr universe ) const
 {
-    if( thread() == QCoreApplication::instance()->thread() )
+    DEBUG_BLOCK
+    if( QThread::currentThread() == QCoreApplication::instance()->thread() )
         return slotMatchingTracks( playlist, contextCount, finalCount, universe );
 
     Dynamic::TrackSet retVal;
@@ -290,15 +293,17 @@ ScriptableBias::matchingTracks( const Meta::TrackList &playlist, int contextCoun
                                          Q_ARG( int, finalCount ),
                                          Q_ARG( Dynamic::TrackCollectionPtr, universe )
                                        ) );
+    debug() << "Returning trackSet, trackCount " << retVal.trackCount() << ", isOutstanding " << retVal.isOutstanding();
     return retVal;
 }
 
 Dynamic::TrackSet
 ScriptableBias::slotMatchingTracks( const Meta::TrackList &playlist, int contextCount, int finalCount, const Dynamic::TrackCollectionPtr universe ) const
 {
-    if( m_scriptBias->matchingTracksFunction().isFunction() )
+    Q_ASSERT( QThread::currentThread() == QCoreApplication::instance()->thread() );
+    if( m_scriptBias.data()->matchingTracksFunction().isFunction() )
     {
-        QScriptValue trackSetVal = m_scriptBias->matchingTracksFunction().call( m_biasObject,
+        QScriptValue trackSetVal = m_scriptBias.data()->matchingTracksFunction().call( m_biasObject,
                                                                                 QScriptValueList() << m_engine->toScriptValue<Meta::TrackList>( playlist )
                                                                                                    << contextCount
                                                                                                    << finalCount
@@ -307,14 +312,24 @@ ScriptableBias::slotMatchingTracks( const Meta::TrackList &playlist, int context
         if( trackSetExporter )
             return Dynamic::TrackSet( *trackSetExporter );
     }
-    return Dynamic::TrackSet( universe, true );
+    debug() << "Invalid trackSet received";
+    return Dynamic::TrackSet( universe, false );
 }
 
 QString
 ScriptableBias::name() const
 {
-    const QString name = m_scriptBias->name();
+    QString name;
+    if( m_scriptBias )
+        name = m_scriptBias.data()->name();
     return name.isEmpty() ? Dynamic::AbstractBias::name() : name;
+}
+
+void
+ScriptableBias::ready( const Dynamic::TrackSet &trackSet )
+{
+    debug() << "Received trackset, count: " << trackSet.trackCount() << "Is outstanding:" << trackSet.isOutstanding();
+    emit resultReady( trackSet );
 }
 
 void
@@ -332,14 +347,14 @@ ScriptableBias::replace( Dynamic::BiasPtr newBias )
 QString
 ScriptableBias::toString() const
 {
-    return m_scriptBias->toStringFunction().call( m_biasObject ).toString();
+    return m_scriptBias.data()->toStringFunction().call( m_biasObject ).toString();
 }
 
 bool
 ScriptableBias::trackMatches( int position, const Meta::TrackList& playlist, int contextCount ) const
 {
-    if( m_scriptBias->trackMatchesFunction().isFunction() )
-        return m_scriptBias->trackMatchesFunction().call( m_biasObject,
+    if( m_scriptBias.data()->trackMatchesFunction().isFunction() )
+        return m_scriptBias.data()->trackMatchesFunction().call( m_biasObject,
                                                           QScriptValueList() << position
                                                                              << m_engine->toScriptValue<Meta::TrackList>( playlist )
                                                                              << contextCount
@@ -351,9 +366,7 @@ ScriptableBias::ScriptableBias( ScriptableBiasFactory *biasProto )
 : m_scriptBias( biasProto )
 , m_engine( biasProto->engine() )
 {
-    // dangerous if user caches it
     m_biasObject = m_engine->newQObject( this, QScriptEngine::QtOwnership, QScriptEngine::ExcludeDeleteLater );
-    // m_engine->newVariant( QVariant::fromValue( biasPtr ) );
     connect( m_engine, SIGNAL(destroyed(QObject*)), SLOT(removeBias()) );
 }
 
@@ -381,9 +394,11 @@ TrackSetExporter::init( QScriptEngine *engine )
 void
 TrackSetExporter::fromScriptValue( const QScriptValue &obj, Dynamic::TrackSet &trackSet )
 {
+    DEBUG_BLOCK
     TrackSetExporter *trackSetProto = dynamic_cast<TrackSetExporter*>( obj.toQObject() );
     if( !trackSetProto )
-        trackSet = Dynamic::TrackSet();
+        //trackSet = Dynamic::TrackSet();
+        trackSet = Dynamic::TrackSet( Dynamic::TrackCollectionPtr( new Dynamic::TrackCollection( QStringList() ) ), false );
     else
         trackSet = *trackSetProto;
 }
@@ -391,6 +406,7 @@ TrackSetExporter::fromScriptValue( const QScriptValue &obj, Dynamic::TrackSet &t
 QScriptValue
 TrackSetExporter::toScriptValue( QScriptEngine *engine, const Dynamic::TrackSet &trackSet )
 {
+    DEBUG_BLOCK
     TrackSetExporter *trackProto = new TrackSetExporter( trackSet );
     QScriptValue val = engine->newQObject( trackProto, QScriptEngine::ScriptOwnership,
                                             QScriptEngine::ExcludeSuperClassContents );
@@ -398,7 +414,7 @@ TrackSetExporter::toScriptValue( QScriptEngine *engine, const Dynamic::TrackSet 
 }
 
 bool
-TrackSetExporter::contains( const QString &uid ) const
+TrackSetExporter::containsUid( const QString &uid ) const
 {
     return Dynamic::TrackSet::contains( uid );
 }
@@ -442,6 +458,7 @@ TrackSetExporter::trackSetConstructor( QScriptContext *context, QScriptEngine *e
                 }
                 else if( arg0.toVariant().canConvert<Meta::TrackList>() )
                 {
+                    debug() << "In Meta::Tracklist TrackSet ctor";
                     trackList = qscriptvalue_cast<Meta::TrackList>( arg0 );
                     foreach( const Meta::TrackPtr &track, trackList )
                     {
@@ -531,7 +548,7 @@ TrackSetExporter::getRandomTrack() const
 }
 
 bool
-TrackSetExporter::contains( const Meta::TrackPtr track ) const
+TrackSetExporter::containsTrack( const Meta::TrackPtr track ) const
 {
     return Dynamic::TrackSet::contains( track );
 }
