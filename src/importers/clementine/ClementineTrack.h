@@ -17,23 +17,34 @@
 #ifndef STATSYNCING_CLEMENTINE_TRACK_H
 #define STATSYNCING_CLEMENTINE_TRACK_H
 
-#include "statsyncing/SimpleTrack.h"
+#include "importers/ImporterSqlTrack.h"
 
 namespace StatSyncing
 {
 
-class ClementineTrack : public SimpleTrack
+class ClementineTrack : public ImporterSqlTrack
 {
 public:
-    explicit ClementineTrack( const Meta::FieldHash &metadata );
+    ClementineTrack( const ImporterSqlProviderPtr &provider, const QVariant &filename,
+                     const Meta::FieldHash &metadata );
     ~ClementineTrack();
 
     int year() const;
     int trackNumber() const;
     int discNumber() const;
+
     QDateTime lastPlayed() const;
+    void setLastPlayed( const QDateTime &lastPlayed );
     int playCount() const;
+    void setPlayCount( int playCount );
     int rating() const;
+    void setRating( int rating );
+
+protected:
+    void sqlCommit( QSqlDatabase db, const QSet<qint64> &fields );
+
+private:
+    const QVariant m_filename;
 };
 
 }

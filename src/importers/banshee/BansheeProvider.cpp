@@ -41,8 +41,7 @@ BansheeProvider::reliableTrackMetaData() const
 qint64
 BansheeProvider::writableTrackStatsData() const
 {
-    //TODO: Write capabilities
-    return 0;
+    return Meta::valRating | Meta::valLastPlayed | Meta::valPlaycount;
 }
 
 QSet<QString>
@@ -66,7 +65,7 @@ BansheeProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
     query.setForwardOnly( true );
     // Due to Banshee's peculiar track info storage, to avoid massive amount of confusion
     // we only take tracks from PrimarySource: MusicLibrarySource-Library (always ID 1)
-    query.prepare( "SELECT TRIM(t.Title), ar.Name, al.Title, TRIM(t.Composer), "
+    query.prepare( "SELECT TrackID, TRIM(t.Title), ar.Name, al.Title, TRIM(t.Composer), "
                    "t.Year, t.TrackNumber, t.Disc, t.Rating, t.LastPlayedStamp, "
                    "t.PlayCount "
                    "FROM coretracks t "
@@ -84,11 +83,14 @@ BansheeProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
     TrackList result;
     while ( query.next() )
     {
+        const qint64 trackId = query.value( 0 ).toLongLong();
+
         Meta::FieldHash metadata;
         for( int i = 0; i < fields.size(); ++i )
-            metadata.insert( fields[i], query.value( i ) );
+            metadata.insert( fields[i], query.value( i + 1 ) );
 
-        result << TrackPtr( new BansheeTrack( metadata ) );
+        result << TrackPtr( new BansheeTrack( ImporterSqlProviderPtr( this ), trackId,
+                                              metadata ) );
     }
 
     return result;

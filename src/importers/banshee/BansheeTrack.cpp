@@ -16,10 +16,15 @@
 
 #include "BansheeTrack.h"
 
+#include <QSqlQuery>
+#include <QStringList>
+
 using namespace StatSyncing;
 
-BansheeTrack::BansheeTrack( const Meta::FieldHash &metadata )
-    : SimpleTrack( metadata )
+BansheeTrack::BansheeTrack( const ImporterSqlProviderPtr &provider, const qint64 trackId,
+                            const Meta::FieldHash &metadata )
+    : ImporterSqlTrack( provider, metadata )
+    , m_trackId( trackId )
 {
 }
 
@@ -30,5 +35,43 @@ BansheeTrack::~BansheeTrack()
 int
 BansheeTrack::rating() const
 {
-    return SimpleTrack::rating() * 2;
+    return ImporterSqlTrack::rating() * 2;
+}
+
+void
+BansheeTrack::setRating( int rating )
+{
+    ImporterSqlTrack::setRating( (rating + 1) / 2 );
+}
+
+void
+BansheeTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &fields )
+{
+    QStringList updates;
+    if( fields.contains( Meta::valLastPlayed ) )
+        updates << "LastPlayedStamp = :lastplayed";
+    if( fields.contains( Meta::valRating ) )
+        updates << "Rating = :rating";
+    if( fields.contains( Meta::valPlaycount ) )
+        updates << "PlayCount = :playcount";
+
+    if( !updates.empty() )
+    {
+        db.transaction();
+        QSqlQuery query( db );
+
+        query.prepare( "UPDATE coretracks SET "+updates.join(",")+"WHERE TrackID = :id" );
+        query.bindValue( ":lastplayed", m_statistics.value( Meta::valLastPlayed ) );
+        query.bindValue( ":rating", m_statistics.value( Meta::valRating ) );
+        query.bindValue( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+        query.bindValue( ":id", m_trackId );
+
+        if( !query.exec() )
+        {
+            db.rollback();
+            return;
+        }
+
+        db.commit();
+    }
 }

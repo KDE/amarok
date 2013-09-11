@@ -41,8 +41,7 @@ ClementineProvider::reliableTrackMetaData() const
 qint64
 ClementineProvider::writableTrackStatsData() const
 {
-    //TODO: Write capabilities
-    return 0;
+    return Meta::valLastPlayed | Meta::valRating | Meta::valPlaycount;
 }
 
 QSet<QString>
@@ -64,8 +63,8 @@ ClementineProvider::getArtistTracks( const QString &artistName, QSqlDatabase db 
 {
     QSqlQuery query( db );
     query.setForwardOnly( true );
-    query.prepare( "SELECT title, artist, album, composer, year, track, disc, rating, "
-                   "lastplayed, playcount "
+    query.prepare( "SELECT filename, title, artist, album, composer, year, track, disc, "
+                   "rating, lastplayed, playcount "
                    "FROM songs "
                    "WHERE artist = ?" );
     query.addBindValue( artistName );
@@ -81,9 +80,10 @@ ClementineProvider::getArtistTracks( const QString &artistName, QSqlDatabase db 
     {
         Meta::FieldHash metadata;
         for( int i = 0; i < fields.size(); ++i )
-            metadata.insert( fields[i], query.value( i ) );
+            metadata.insert( fields[i], query.value( i + 1 ) );
 
-        result << TrackPtr( new ClementineTrack( metadata ) );
+        result << TrackPtr( new ClementineTrack( ImporterSqlProviderPtr( this ),
+                                                 query.value( 0 ), metadata ) );
     }
 
     return result;

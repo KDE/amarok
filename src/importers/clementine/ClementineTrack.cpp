@@ -16,10 +16,17 @@
 
 #include "ClementineTrack.h"
 
+#include <QSqlQuery>
+#include <QStringList>
+#include <QWriteLocker>
+
 using namespace StatSyncing;
 
-ClementineTrack::ClementineTrack( const Meta::FieldHash &metadata )
-    : SimpleTrack( metadata )
+ClementineTrack::ClementineTrack( const ImporterSqlProviderPtr &provider,
+                                  const QVariant &filename,
+                                  const Meta::FieldHash &metadata )
+    : ImporterSqlTrack( provider, metadata )
+    , m_filename( filename )
 {
 }
 
@@ -55,6 +62,17 @@ ClementineTrack::lastPlayed() const
     return lp == -1 ? QDateTime() : SimpleTrack::lastPlayed();
 }
 
+void
+ClementineTrack::setLastPlayed( const QDateTime &lastPlayed )
+{
+    QWriteLocker lock( &m_lock );
+
+    if( !lastPlayed.isValid() )
+        m_metadata.insert( Meta::valLastPlayed, -1 );
+    else
+        m_metadata.insert( Meta::valLastPlayed, lastPlayed );
+}
+
 int
 ClementineTrack::playCount() const
 {
@@ -62,9 +80,55 @@ ClementineTrack::playCount() const
     return pc == -1 ? 0 : pc;
 }
 
+void
+ClementineTrack::setPlayCount( int playCount )
+{
+    QWriteLocker lock( &m_lock );
+    m_metadata.insert( Meta::valLastPlayed, playCount == 0 ? -1 : playCount );
+}
+
 int
 ClementineTrack::rating() const
 {
     const qreal rt = m_metadata.value( Meta::valRating ).toReal();
     return rt < 0 ? 0 : qRound( rt * 10 );
+}
+
+void
+ClementineTrack::setRating( int rating )
+{
+    QWriteLocker lock( &m_lock );
+    m_metadata.insert( Meta::valRating, rating == 0 ? -1.0 : 0.1 * rating );
+}
+
+void
+ClementineTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &fields )
+{
+    QStringList updates;
+    if( fields.contains( Meta::valLastPlayed ) )
+        updates << "lastplayed = :lastplayed";
+    if( fields.contains( Meta::valRating ) )
+        updates << "rating = :rating";
+    if( fields.contains( Meta::valPlaycount ) )
+        updates << "playcount = :playcount";
+
+    if( !updates.empty() )
+    {
+        db.transaction();
+        QSqlQuery query( db );
+
+        query.prepare( "UPDATE songs SET "+updates.join(", ")+"WHERE filename = :name" );
+        query.bindValue( ":lastplayed", m_statistics.value( Meta::valLastPlayed ) );
+        query.bindValue( ":rating", m_statistics.value( Meta::valRating ) );
+        query.bindValue( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+        query.bindValue( ":name", m_filename );
+
+        if( !query.exec() )
+        {
+            db.rollback();
+            return;
+        }
+
+        db.commit();
+    }
 }
