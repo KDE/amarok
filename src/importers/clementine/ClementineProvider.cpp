@@ -17,13 +17,14 @@
 #include "ClementineProvider.h"
 
 #include "ClementineTrack.h"
-
-#include <QSqlQuery>
+#include "importers/ImporterSqlConnection.h"
 
 using namespace StatSyncing;
 
-ClementineProvider::ClementineProvider( const QVariantMap &config, ImporterManager *importer )
-    : ImporterSqlProvider( setDbDriver( config ), importer )
+ClementineProvider::ClementineProvider( const QVariantMap &config,
+                                        ImporterManager *importer )
+    : ImporterProvider( config, importer )
+    , m_connection( new ImporterSqlConnection( config.value( "dbPath" ).toString() ) )
 {
 }
 
@@ -45,30 +46,26 @@ ClementineProvider::writableTrackStatsData() const
 }
 
 QSet<QString>
-ClementineProvider::getArtists( QSqlDatabase db )
+ClementineProvider::artists()
 {
-    QSqlQuery query( db );
-    query.setForwardOnly( true );
-    query.exec( "SELECT DISTINCT(artist) FROM songs" );
+    m_connection->query( "SELECT DISTINCT(artist) FROM songs" );
 
     QSet<QString> result;
-    while( query.next() )
-        result.insert( query.value( 0 ).toString() );
+    foreach( const QVariantList &row,
+             m_connection->query( "SELECT DISTINCT(artist) FROM songs" ) )
+        result.insert( row[0].toString() );
 
     return result;
 }
 
 TrackList
-ClementineProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
+ClementineProvider::artistTracks( const QString &artistName )
 {
-    QSqlQuery query( db );
-    query.setForwardOnly( true );
-    query.prepare( "SELECT filename, title, artist, album, composer, year, track, disc, "
-                   "rating, lastplayed, playcount "
-                   "FROM songs "
-                   "WHERE artist = ?" );
-    query.addBindValue( artistName );
-    query.exec();
+    const QString query = "SELECT filename, title, artist, album, composer, year, track, "
+            "disc, rating, lastplayed, playcount FROM songs WHERE artist = :artist";
+
+    QVariantMap bindValues;
+    bindValues.insert( ":artist", artistName );
 
     const QList<qint64> fields = QList<qint64>() << Meta::valTitle << Meta::valArtist
            << Meta::valAlbum << Meta::valComposer << Meta::valYear << Meta::valTrackNr
@@ -76,23 +73,16 @@ ClementineProvider::getArtistTracks( const QString &artistName, QSqlDatabase db 
            << Meta::valPlaycount;
 
     TrackList result;
-    while ( query.next() )
+    foreach( const QVariantList &row, m_connection->query( query, bindValues ) )
     {
+        const QVariant &filename = row[0];
+
         Meta::FieldHash metadata;
         for( int i = 0; i < fields.size(); ++i )
-            metadata.insert( fields[i], query.value( i + 1 ) );
+            metadata.insert( fields[i], row[i + 1] );
 
-        result << TrackPtr( new ClementineTrack( ImporterSqlProviderPtr( this ),
-                                                 query.value( 0 ), metadata ) );
+        result << TrackPtr( new ClementineTrack( filename, m_connection, metadata ) );
     }
 
     return result;
-}
-
-QVariantMap
-ClementineProvider::setDbDriver( const QVariantMap &config )
-{
-    QVariantMap cfg( config );
-    cfg.insert( "dbDriver", "QSQLITE" );
-    return cfg;
 }

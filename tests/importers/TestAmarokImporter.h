@@ -47,8 +47,6 @@ private slots:
     void providerShouldHandleInvalidDbDir();
     void providerShouldHandleExternalConnectionError();
     void providerShouldHandleErroneousConfigValues();
-
-    void managerShouldReturnProviderAdequateToConnectionType();
 };
 
 #endif // TEST_AMAROK_IMPORTER

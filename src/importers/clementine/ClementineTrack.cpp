@@ -16,16 +16,19 @@
 
 #include "ClementineTrack.h"
 
-#include <QSqlQuery>
+#include "importers/ImporterSqlConnection.h"
+
+#include <QReadLocker>
 #include <QStringList>
 #include <QWriteLocker>
 
 using namespace StatSyncing;
 
-ClementineTrack::ClementineTrack( const ImporterSqlProviderPtr &provider,
-                                  const QVariant &filename,
+ClementineTrack::ClementineTrack( const QVariant &filename,
+                                  const ImporterSqlConnectionPtr &connection,
                                   const Meta::FieldHash &metadata )
-    : ImporterSqlTrack( provider, metadata )
+    : SimpleWritableTrack( metadata )
+    , m_connection( connection )
     , m_filename( filename )
 {
 }
@@ -37,29 +40,29 @@ ClementineTrack::~ClementineTrack()
 int
 ClementineTrack::year() const
 {
-    const int yr = SimpleTrack::year();
+    const int yr = SimpleWritableTrack::year();
     return yr == -1 ? 0 : yr;
 }
 
 int
 ClementineTrack::trackNumber() const
 {
-    const int tn = SimpleTrack::trackNumber();
+    const int tn = SimpleWritableTrack::trackNumber();
     return tn == -1 ? 0 : tn;
 }
 
 int
 ClementineTrack::discNumber() const
 {
-    const int dn = SimpleTrack::discNumber();
+    const int dn = SimpleWritableTrack::discNumber();
     return dn == -1 ? 0 : dn;
 }
 
 QDateTime
 ClementineTrack::lastPlayed() const
 {
-    const int lp = m_metadata.value( Meta::valLastPlayed ).toInt();
-    return lp == -1 ? QDateTime() : SimpleTrack::lastPlayed();
+    const int lp = m_statistics.value( Meta::valLastPlayed ).toInt();
+    return lp == -1 ? QDateTime() : SimpleWritableTrack::lastPlayed();
 }
 
 void
@@ -68,15 +71,15 @@ ClementineTrack::setLastPlayed( const QDateTime &lastPlayed )
     QWriteLocker lock( &m_lock );
 
     if( !lastPlayed.isValid() )
-        m_metadata.insert( Meta::valLastPlayed, -1 );
+        m_statistics.insert( Meta::valLastPlayed, -1 );
     else
-        m_metadata.insert( Meta::valLastPlayed, lastPlayed );
+        m_statistics.insert( Meta::valLastPlayed, lastPlayed );
 }
 
 int
 ClementineTrack::playCount() const
 {
-    const int pc = SimpleTrack::playCount();
+    const int pc = SimpleWritableTrack::playCount();
     return pc == -1 ? 0 : pc;
 }
 
@@ -84,13 +87,14 @@ void
 ClementineTrack::setPlayCount( int playCount )
 {
     QWriteLocker lock( &m_lock );
-    m_metadata.insert( Meta::valLastPlayed, playCount == 0 ? -1 : playCount );
+    m_statistics.insert( Meta::valLastPlayed, playCount == 0 ? -1 : playCount );
 }
 
 int
 ClementineTrack::rating() const
 {
-    const qreal rt = m_metadata.value( Meta::valRating ).toReal();
+    QReadLocker lock( &m_lock );
+    const qreal rt = m_statistics.value( Meta::valRating ).toReal();
     return rt < 0 ? 0 : qRound( rt * 10 );
 }
 
@@ -98,11 +102,11 @@ void
 ClementineTrack::setRating( int rating )
 {
     QWriteLocker lock( &m_lock );
-    m_metadata.insert( Meta::valRating, rating == 0 ? -1.0 : 0.1 * rating );
+    m_statistics.insert( Meta::valRating, rating == 0 ? -1.0 : 0.1 * rating );
 }
 
 void
-ClementineTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &fields )
+ClementineTrack::doCommit( const QSet<qint64> &fields )
 {
     QStringList updates;
     if( fields.contains( Meta::valLastPlayed ) )
@@ -114,21 +118,16 @@ ClementineTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &fields )
 
     if( !updates.empty() )
     {
-        db.transaction();
-        QSqlQuery query( db );
+        const QString query = "UPDATE songs SET " + updates.join(", ") +
+                "WHERE filename = :name";
 
-        query.prepare( "UPDATE songs SET "+updates.join(", ")+"WHERE filename = :name" );
-        query.bindValue( ":lastplayed", m_statistics.value( Meta::valLastPlayed ) );
-        query.bindValue( ":rating", m_statistics.value( Meta::valRating ) );
-        query.bindValue( ":playcount", m_statistics.value( Meta::valPlaycount ) );
-        query.bindValue( ":name", m_filename );
+        QVariantMap bindValues;
+        bindValues.insert( ":lastplayed",
+                    getDateTime( m_statistics.value( Meta::valLastPlayed ) ).toTime_t() );
+        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+        bindValues.insert( ":name", m_filename );
 
-        if( !query.exec() )
-        {
-            db.rollback();
-            return;
-        }
-
-        db.commit();
+        m_connection->query( query, bindValues );
     }
 }

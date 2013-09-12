@@ -17,26 +17,28 @@
 #ifndef STATSYNCING_AMAROK_PROVIDER_H
 #define STATSYNCING_AMAROK_PROVIDER_H
 
-#include "importers/ImporterSqlProvider.h"
+#include "importers/ImporterProvider.h"
 
 namespace StatSyncing
 {
 
-class AmarokProvider : public ImporterSqlProvider
+class ImporterSqlConnection;
+typedef QSharedPointer<ImporterSqlConnection> ImporterSqlConnectionPtr;
+
+class AmarokProvider : public ImporterProvider
 {
 public:
     AmarokProvider( const QVariantMap &config, ImporterManager *importer );
-    virtual ~AmarokProvider();
+    ~AmarokProvider();
 
     qint64 reliableTrackMetaData() const;
     qint64 writableTrackStatsData() const;
 
-protected:
-    QSet<QString> getArtists( QSqlDatabase db );
-    TrackList getArtistTracks( const QString &artistName, QSqlDatabase db );
+    QSet<QString> artists();
+    TrackList artistTracks( const QString &artistName );
 
 private:
-    QVariantMap setDbDriver( const QVariantMap &config );
+    ImporterSqlConnectionPtr m_connection;
 };
 
 } // namespace StatSyncing

@@ -19,7 +19,7 @@
 #include "MetaValues.h"
 #include "importers/amarok/AmarokConfigWidget.h"
 #include "importers/amarok/AmarokManager.h"
-#include "importers/amarok/AmarokProviderEmbedded.h"
+#include "importers/amarok/AmarokProvider.h"
 
 #include <qtest_kde.h>
 
@@ -32,10 +32,11 @@ ProviderPtr
 TestAmarokImporter::getProvider()
 {
     QVariantMap cfg = AmarokConfigWidget( QVariantMap() ).config();
+    cfg.insert( "embedded", true );
     cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
                           "/importers_files/mysqle" );
 
-    return ProviderPtr( new AmarokProviderEmbedded( cfg, 0 ) );
+    return ProviderPtr( new AmarokProvider( cfg, 0 ) );
 }
 
 qint64
@@ -55,6 +56,7 @@ void
 TestAmarokImporter::init()
 {
     m_cfg = AmarokConfigWidget( QVariantMap() ).config();
+    m_cfg.insert( "embedded", true );
 }
 
 void
@@ -92,7 +94,8 @@ TestAmarokImporter::configWidgetShouldNotSetDriver()
 void
 TestAmarokImporter::configWidgetShouldShowExternalAsDefault()
 {
-    AmarokConfigWidget widget( m_cfg );
+    QVariantMap cfg;
+    AmarokConfigWidget widget( cfg );
     QCOMPARE( widget.m_connectionType->currentIndex(),
               static_cast<int>( AmarokConfigWidget::External ) );
 }
@@ -143,7 +146,7 @@ TestAmarokImporter::providerShouldIgnoreConfigsDbDriver()
     m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
                             "/importers_files/mysqle" );
 
-    AmarokProviderEmbedded provider( m_cfg, 0 );
+    AmarokProvider provider( m_cfg, 0 );
 
     // The database isn't accessible by QPSQL driver, but it still should work
     QVERIFY( !provider.artists().empty() );
@@ -154,7 +157,7 @@ TestAmarokImporter::providerShouldHandleNonexistentDbDir()
 {
     m_cfg.insert( "dbPath", "/Im/sure/this/wont/exist" );
 
-    AmarokProviderEmbedded provider( m_cfg, 0 );
+    AmarokProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -163,7 +166,7 @@ TestAmarokImporter::providerShouldHandleInvalidDbDir()
 {
     m_cfg.insert( "dbPath", QApplication::applicationDirPath() );
 
-    AmarokProviderEmbedded provider( m_cfg, 0 );
+    AmarokProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -185,18 +188,6 @@ TestAmarokImporter::providerShouldHandleErroneousConfigValues()
 
     AmarokProvider provider( m_cfg, 0 );
     QVERIFY( provider.artists().isEmpty() );
-}
-
-void
-TestAmarokImporter::managerShouldReturnProviderAdequateToConnectionType()
-{
-    AmarokManager am( 0, QVariantList() );
-
-    m_cfg.insert( "embedded", true );
-    QVERIFY( dynamic_cast<AmarokProviderEmbedded*>( am.createProvider( m_cfg ).data() ) );
-
-    m_cfg.insert( "embedded", false );
-    QVERIFY( dynamic_cast<AmarokProvider*>( am.createProvider( m_cfg ).data() ) );
 }
 
 #include "TestAmarokImporter.moc"

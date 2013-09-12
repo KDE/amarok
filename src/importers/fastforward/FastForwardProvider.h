@@ -17,12 +17,15 @@
 #ifndef STATSYNCING_FAST_FORWARD_PROVIDER_H
 #define STATSYNCING_FAST_FORWARD_PROVIDER_H
 
-#include "importers/ImporterSqlProvider.h"
+#include "importers/ImporterProvider.h"
 
 namespace StatSyncing
 {
 
-class FastForwardProvider : public ImporterSqlProvider
+class ImporterSqlConnection;
+typedef QSharedPointer<ImporterSqlConnection> ImporterSqlConnectionPtr;
+
+class FastForwardProvider : public ImporterProvider
 {
 public:
     FastForwardProvider( const QVariantMap &config, ImporterManager *importer );
@@ -31,9 +34,11 @@ public:
     qint64 reliableTrackMetaData() const;
     qint64 writableTrackStatsData() const;
 
-protected:
-    QSet<QString> getArtists( QSqlDatabase db );
-    TrackList getArtistTracks( const QString &artistName, QSqlDatabase db );
+    QSet<QString> artists();
+    TrackList artistTracks( const QString &artistName );
+
+private:
+    ImporterSqlConnectionPtr m_connection;
 };
 
 } // namespace StatSyncing

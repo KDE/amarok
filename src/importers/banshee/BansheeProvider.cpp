@@ -17,13 +17,13 @@
 #include "BansheeProvider.h"
 
 #include "BansheeTrack.h"
-
-#include <QSqlQuery>
+#include "importers/ImporterSqlConnection.h"
 
 using namespace StatSyncing;
 
 BansheeProvider::BansheeProvider( const QVariantMap &config, ImporterManager *importer )
-    : ImporterSqlProvider( setDbDriver( config ), importer )
+    : ImporterProvider( config, importer )
+    , m_connection( new ImporterSqlConnection( m_config.value( "dbPath" ).toString() ) )
 {
 }
 
@@ -45,35 +45,31 @@ BansheeProvider::writableTrackStatsData() const
 }
 
 QSet<QString>
-BansheeProvider::getArtists( QSqlDatabase db )
+BansheeProvider::artists()
 {
-    QSqlQuery query( db );
-    query.setForwardOnly( true );
-    query.exec( "SELECT Name FROM coreartists" );
-
     QSet<QString> result;
-    while( query.next() )
-        result.insert( query.value( 0 ).toString() );
+    foreach( const QVariantList &row,
+             m_connection->query( "SELECT Name FROM coreartists" ) )
+        result.insert( row[0].toString() );
 
     return result;
 }
 
 TrackList
-BansheeProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
+BansheeProvider::artistTracks( const QString &artistName )
 {
-    QSqlQuery query( db );
-    query.setForwardOnly( true );
     // Due to Banshee's peculiar track info storage, to avoid massive amount of confusion
     // we only take tracks from PrimarySource: MusicLibrarySource-Library (always ID 1)
-    query.prepare( "SELECT TrackID, TRIM(t.Title), ar.Name, al.Title, TRIM(t.Composer), "
-                   "t.Year, t.TrackNumber, t.Disc, t.Rating, t.LastPlayedStamp, "
-                   "t.PlayCount "
-                   "FROM coretracks t "
-                   "INNER JOIN coreartists ar USING(ArtistID) "
-                   "LEFT JOIN corealbums al USING(AlbumID) "
-                   "WHERE ar.Name = ? AND t.PrimarySourceID = 1" );
-    query.addBindValue( artistName );
-    query.exec();
+    const QString query = "SELECT TrackID, TRIM(t.Title), ar.Name, al.Title, "
+            "TRIM(t.Composer), t.Year, t.TrackNumber, t.Disc, t.Rating, "
+            "t.LastPlayedStamp, t.PlayCount "
+            "FROM coretracks t "
+            "INNER JOIN coreartists ar USING(ArtistID) "
+            "LEFT JOIN corealbums al USING(AlbumID) "
+            "WHERE ar.Name = :artist AND t.PrimarySourceID = 1";
+
+    QVariantMap bindValues;
+    bindValues.insert( ":artist", artistName );
 
     const QList<qint64> fields = QList<qint64>() << Meta::valTitle << Meta::valArtist
            << Meta::valAlbum << Meta::valComposer << Meta::valYear << Meta::valTrackNr
@@ -81,25 +77,16 @@ BansheeProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
            << Meta::valPlaycount;
 
     TrackList result;
-    while ( query.next() )
+    foreach( const QVariantList &row, m_connection->query( query, bindValues ) )
     {
-        const qint64 trackId = query.value( 0 ).toLongLong();
+        const qint64 trackId = row[0].toLongLong();
 
         Meta::FieldHash metadata;
         for( int i = 0; i < fields.size(); ++i )
-            metadata.insert( fields[i], query.value( i + 1 ) );
+            metadata.insert( fields[i], row[i + 1] );
 
-        result << TrackPtr( new BansheeTrack( ImporterSqlProviderPtr( this ), trackId,
-                                              metadata ) );
+        result << TrackPtr( new BansheeTrack( trackId, m_connection, metadata ) );
     }
 
     return result;
-}
-
-QVariantMap
-BansheeProvider::setDbDriver( const QVariantMap &config )
-{
-    QVariantMap cfg( config );
-    cfg.insert( "dbDriver", "QSQLITE" );
-    return cfg;
 }

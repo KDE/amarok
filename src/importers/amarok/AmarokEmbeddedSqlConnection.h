@@ -14,45 +14,50 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TEST_IMPORTER_SQL_PROVIDER
-#define TEST_IMPORTER_SQL_PROVIDER
+#ifndef STATSYNCING_AMAROK_EMBEDDED_SQL_CONNECTION_H
+#define STATSYNCING_AMAROK_EMBEDDED_SQL_CONNECTION_H
 
-#include <QObject>
+#include "importers/ImporterSqlConnection.h"
 
-class MockImporterSqlProvider;
+#include <QDir>
+#include <QFileInfo>
+#include <QMutex>
+#include <QProcess>
+#include <QTimer>
 
-class TestImporterSqlProvider : public QObject
+namespace StatSyncing
+{
+
+class AmarokEmbeddedSqlConnection : public ImporterSqlConnection
 {
     Q_OBJECT
 
-private:
-    void checkThread();
+public:
+    AmarokEmbeddedSqlConnection( const QFileInfo &mysqld, const QDir &datadir );
+    ~AmarokEmbeddedSqlConnection();
 
-    MockImporterSqlProvider *m_mock;
+protected:
+    QSqlDatabase connection();
+
+private:
+    bool startServer( const int port, const QString &socketPath, const QString &pidPath );
+
+    const QFileInfo m_mysqld;
+    const QDir m_datadir;
+
+    QProcess m_srv;
+    QMutex m_srvMutex;
+    QTimer m_shutdownTimer;
+
+    /// Number of msecs after which server will shut down
+    static const int SERVER_SHUTDOWN_AFTER = 30000;
+    /// Number of msecs to wait for server to start up
+    static const int SERVER_START_TIMEOUT = 30000;
 
 private slots:
-    void init();
-    void cleanup();
-
-    void constructorShouldCreateDatabaseConnection();
-    void createdConnectionShouldHaveProperSettings();
-    void createdSQLiteConnectionShouldHavePathSet();
-    void createdNonSQLiteConnectionShouldHaveNameSet();
-    void createdConnectionIsObjectUnique();
-
-    void destructorShouldRemoveDatabaseConnection();
-
-    void getArtistsShouldReceiveCreatedConnection();
-    void getArtistTracksShouldReceiveCreatedConnection();
-
-    void getArtistsShouldBeCalledInObjectsThread();
-    void getArtistTracksShouldBeCalledInObjectsThread();
-
-    void artistsShouldDelegateToGetArtists();
-    void artistTracksShouldDelegateToGetArtistTracks();
-
-    void artistsShouldCallPrepareConnectionBeforeGetArtists();
-    void artistTracksShouldCallPrepareConnectionBeforeGetArtistTracks();
+    void stopServer();
 };
 
-#endif // TEST_IMPORTER_SQL_PROVIDER
+} // namespace StatSyncing
+
+#endif // STATSYNCING_AMAROK_EMBEDDED_SQL_CONNECTION_H

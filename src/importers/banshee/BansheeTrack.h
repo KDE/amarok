@@ -17,15 +17,18 @@
 #ifndef STATSYNCING_BANSHEE_TRACK_H
 #define STATSYNCING_BANSHEE_TRACK_H
 
-#include "importers/ImporterSqlTrack.h"
+#include "statsyncing/SimpleWritableTrack.h"
 
 namespace StatSyncing
 {
 
-class BansheeTrack : public ImporterSqlTrack
+class ImporterSqlConnection;
+typedef QSharedPointer<ImporterSqlConnection> ImporterSqlConnectionPtr;
+
+class BansheeTrack : public SimpleWritableTrack
 {
 public:
-    BansheeTrack( const ImporterSqlProviderPtr &provider, const qint64 trackId,
+    BansheeTrack( const qint64 trackId, const ImporterSqlConnectionPtr &connection,
                   const Meta::FieldHash &metadata );
     ~BansheeTrack();
 
@@ -33,9 +36,10 @@ public:
     void setRating( int rating );
 
 protected:
-    virtual void sqlCommit( QSqlDatabase db, const QSet<qint64> &fields );
+    virtual void doCommit( const QSet<qint64> &fields );
 
 private:
+    const ImporterSqlConnectionPtr m_connection;
     const qint64 m_trackId;
 };
 

@@ -7,7 +7,7 @@ set( amarok_importer-amarok_PART_SRCS
     AmarokConfigWidget.cpp
     AmarokManager.cpp
     AmarokProvider.cpp
-    AmarokProviderEmbedded.cpp
+    AmarokEmbeddedSqlConnection.cpp
     AmarokTrack.cpp
 )
 

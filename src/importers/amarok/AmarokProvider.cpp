@@ -17,14 +17,32 @@
 #include "AmarokProvider.h"
 
 #include "AmarokTrack.h"
-
-#include <QSqlQuery>
+#include "AmarokEmbeddedSqlConnection.h"
+#include "importers/ImporterSqlConnection.h"
 
 using namespace StatSyncing;
 
 AmarokProvider::AmarokProvider( const QVariantMap &config, ImporterManager *importer )
-    : ImporterSqlProvider( setDbDriver( config ), importer )
+    : ImporterProvider( config, importer )
 {
+    if( config.value( "embedded" ).toBool() )
+    {
+        QFileInfo mysqld( m_config.value( "mysqlBinary" ).toString() );
+        QDir datadir( m_config.value( "dbPath" ).toString() );
+        m_connection = ImporterSqlConnectionPtr(
+                                     new AmarokEmbeddedSqlConnection( mysqld, datadir ) );
+    }
+    else
+    {
+        m_connection = ImporterSqlConnectionPtr( new ImporterSqlConnection(
+             "MYSQL",
+             m_config.value( "dbHost" ).toString(),
+             m_config.value( "dbPort" ).toUInt(),
+             m_config.value( "dbName" ).toString(),
+             m_config.value( "dbUser" ).toString(),
+             m_config.value( "dbPass" ).toString()
+        ) );
+    }
 }
 
 AmarokProvider::~AmarokProvider()
@@ -46,36 +64,31 @@ AmarokProvider::writableTrackStatsData() const
 }
 
 QSet<QString>
-AmarokProvider::getArtists( QSqlDatabase db )
+AmarokProvider::artists()
 {
-    QSqlQuery query( db );
-    query.setForwardOnly( true );
-    query.exec( "SELECT name FROM artists" );
-
     QSet<QString> result;
-    while( query.next() )
-        result.insert( query.value( 0 ).toString() );
+    foreach( const QVariantList &row, m_connection->query( "SELECT name FROM artists" ) )
+        result.insert( row[0].toString() );
 
     return result;
 }
 
 TrackList
-AmarokProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
+AmarokProvider::artistTracks( const QString &artistName )
 {
-    QSqlQuery query( db );
-    query.setForwardOnly( true );
-    query.prepare( "SELECT t.url, t.title, ar.name, al.name, c.name, y.name, "
-                   "t.tracknumber, t.discnumber, s.rating, s.createdate, "
-                   "s.accessdate, s.playcount "
-                   "FROM tracks t "
-                   "INNER JOIN artists     ar ON ar.id  = t.artist "
-                   "LEFT  JOIN albums      al ON al.id  = t.album "
-                   "LEFT  JOIN composers   c  ON c.id   = t.composer "
-                   "LEFT  JOIN years       y  ON y.id   = t.year "
-                   "LEFT  JOIN statistics  s  ON s.id   = t.id "
-                   "WHERE ar.name = ?" );
-    query.addBindValue( artistName );
-    query.exec();
+    const QString query = "SELECT t.url, t.title, ar.name, al.name, c.name, y.name, "
+                          "t.tracknumber, t.discnumber, s.rating, s.createdate, "
+                          "s.accessdate, s.playcount "
+                          "FROM tracks t "
+                          "INNER JOIN artists     ar ON ar.id  = t.artist "
+                          "LEFT  JOIN albums      al ON al.id  = t.album "
+                          "LEFT  JOIN composers   c  ON c.id   = t.composer "
+                          "LEFT  JOIN years       y  ON y.id   = t.year "
+                          "LEFT  JOIN statistics  s  ON s.id   = t.id "
+                          "WHERE ar.name = :artist";
+
+    QVariantMap bindValues;
+    bindValues.insert( ":artist", artistName );
 
     const QList<qint64> fields = QList<qint64>() << Meta::valTitle << Meta::valArtist
            << Meta::valAlbum << Meta::valComposer << Meta::valYear << Meta::valTrackNr
@@ -83,39 +96,27 @@ AmarokProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
            << Meta::valLastPlayed << Meta::valPlaycount;
 
     TrackList result;
-    while( query.next() )
+    foreach( const QVariantList &row, m_connection->query( query, bindValues ) )
     {
-        const qint64 urlId = query.value( 0 ).toInt();
+        const qint64 urlId = row[0].toInt();
 
         // Add one to i in query.value(), because the first value is a url id
         Meta::FieldHash metadata;
         for( int i = 0; i < fields.size(); ++i )
-            metadata.insert( fields[i], query.value( i + 1 ) );
+            metadata.insert( fields[i], row[i + 1] );
 
-        QSqlQuery lblQuery( db );
-        lblQuery.setForwardOnly( true );
-        lblQuery.prepare( "SELECT l.label "
-                          "FROM labels l "
-                          "INNER JOIN urls_labels ul ON ul.label = l.id "
-                          "WHERE ul.url = ?");
-        lblQuery.addBindValue( urlId );
-        lblQuery.exec();
+        const QString lblQuery = "SELECT l.label FROM labels l "
+                                 "INNER JOIN urls_labels ul ON ul.label = l.id "
+                                 "WHERE ul.url = :url";
+        QVariantMap lblBindValues;
+        lblBindValues.insert( ":url", urlId );
 
         QSet<QString> labels;
-        while( lblQuery.next() )
-            labels << lblQuery.value( 0 ).toString();
+        foreach( const QVariantList &lbl, m_connection->query( lblQuery, lblBindValues ) )
+            labels.insert( lbl[0].toString() );
 
-        result << TrackPtr( new AmarokTrack( urlId, ImporterSqlProviderPtr( this ),
-                                             metadata, labels ) );
+        result << TrackPtr( new AmarokTrack( urlId, m_connection, metadata, labels ) );
     }
 
     return result;
-}
-
-QVariantMap
-AmarokProvider::setDbDriver( const QVariantMap &config )
-{
-    QVariantMap cfg( config );
-    cfg.insert( "dbDriver", "QMYSQL" );
-    return cfg;
 }

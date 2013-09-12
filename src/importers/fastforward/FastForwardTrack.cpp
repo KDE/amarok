@@ -17,21 +17,16 @@
 #include "FastForwardTrack.h"
 
 #include "core/support/Debug.h"
-
-#include <ThreadWeaver/Thread>
-
-#include <QWriteLocker>
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QSqlQuery>
+#include "importers/ImporterSqlConnection.h"
 
 using namespace StatSyncing;
 
-FastForwardTrack::FastForwardTrack( const ImporterSqlProviderPtr &provider,
+FastForwardTrack::FastForwardTrack( const QString &trackUrl,
+                                    const ImporterSqlConnectionPtr &connection,
                                     const Meta::FieldHash &metadata,
-                                    const QString &trackUrl )
-    : ImporterSqlTrack( provider, metadata )
-    , m_statisticsRetrieved( false )
+                                    const QSet<QString> labels )
+    : SimpleWritableTrack( metadata, labels )
+    , m_connection( connection )
     , m_trackUrl( trackUrl )
 {
 }
@@ -40,113 +35,25 @@ FastForwardTrack::~FastForwardTrack()
 {
 }
 
-QDateTime
-FastForwardTrack::firstPlayed() const
-{
-    QWriteLocker lock( &m_lock );
-    assureStatisticsRetrieved();
-    return getDateTime( m_statistics.value( Meta::valFirstPlayed ) );
-}
-
-QDateTime
-FastForwardTrack::lastPlayed() const
-{
-    QWriteLocker lock( &m_lock );
-    assureStatisticsRetrieved();
-    return getDateTime( m_statistics.value( Meta::valLastPlayed ) );
-}
-
-int
-FastForwardTrack::rating() const
-{
-    QWriteLocker lock( &m_lock );
-    assureStatisticsRetrieved();
-    return m_statistics.value( Meta::valRating ).toInt();
-}
-
-int
-FastForwardTrack::playCount() const
-{
-    QWriteLocker lock( &m_lock );
-    assureStatisticsRetrieved();
-    return m_statistics.value( Meta::valPlaycount ).toInt();
-}
-
-QSet<QString>
-FastForwardTrack::labels() const
-{
-    QWriteLocker lock( &m_lock );
-    assureStatisticsRetrieved();
-    return m_labels;
-}
-
 void
-FastForwardTrack::assureStatisticsRetrieved() const
+StatSyncing::FastForwardTrack::doCommit( const QSet<qint64> &fields )
 {
-    if( !m_statisticsRetrieved )
-        QMetaObject::invokeMethod( const_cast<FastForwardTrack*>( this ),
-                                   "retrieveStatistics", blockingConnectionType() );
-}
+    m_connection->transaction();
+    bool ok = true;
 
-void
-FastForwardTrack::retrieveStatistics()
-{
-    prepareConnection();
-    QSqlDatabase db = QSqlDatabase::database( connectionName() );
+    const QString query = "SELECT deviceid, uniqueid FROM uniqueid WHERE url = :url";
+    QVariantMap bindValues;
+    bindValues.insert( ":url", m_trackUrl );
 
-    QSqlQuery query( db );
-    query.setForwardOnly( true );
-
-    query.prepare( "SELECT rating, createdate, accessdate, playcounter "
-                   "FROM statistics "
-                   "WHERE url = ?" );
-    query.addBindValue( m_trackUrl );
-    query.exec();
-
-    if( query.next() )
+    const QList<QVariantList> result = m_connection->query( query, bindValues, &ok );
+    if( !ok )
     {
-        const QList<qint64> fields = QList<qint64>() << Meta::valRating
-                    << Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount;
-
-        for( int i = 0; i < fields.size(); ++i )
-            m_statistics.insert( fields[i], query.value( i ) );
-    }
-    else
-    {
-        warning() << __PRETTY_FUNCTION__ << "could not retrieve personal track metadata."
-                  << "track url:" << m_trackUrl << "error:" << query.lastError().text();
-    }
-
-    query.prepare( "SELECT l.name FROM labels l "
-                   "INNER JOIN tags_labels tl ON tl.labelid = l.id "
-                   "WHERE tl.url = ?");
-    query.addBindValue( m_trackUrl );
-    query.exec();
-
-    while( query.next() )
-        m_labels.insert( query.value( 0 ).toString() );
-
-    m_statisticsRetrieved = true;
-}
-
-void
-StatSyncing::FastForwardTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &fields )
-{
-    db.transaction();
-    QSqlQuery query( db );
-
-    query.prepare( "SELECT deviceid, uniqueid FROM uniqueid WHERE url = ?" );
-    query.addBindValue( m_trackUrl );
-    query.exec();
-
-    if( !query.next() )
-    {
-        db.rollback();
+        m_connection->rollback();
         return;
     }
 
-    const int deviceId = query.value( 0 ).toInt();
-    const QString uniqueId = query.value( 1 ).toString();
+    const int deviceId = result.front()[0].toInt();
+    const QString uniqueId = result.front()[1].toString();
 
     QStringList updates;
     if( fields.contains( Meta::valFirstPlayed ) )
@@ -160,45 +67,51 @@ StatSyncing::FastForwardTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &f
 
     if( !updates.isEmpty() )
     {
-        query.prepare( "SELECT COUNT(*) FROM statistics WHERE url = ?" );
-        query.addBindValue( m_trackUrl );
-        query.exec();
+        const QString query = "SELECT COUNT(*) FROM statistics WHERE url = :url";
+        QVariantMap bindValues;
+        bindValues.insert( ":url", m_trackUrl );
 
-        if( !query.next() )
+        const QList<QVariantList> result = m_connection->query( query, bindValues, &ok );
+        if( !ok )
         {
-            db.rollback();
+            m_connection->rollback();
             return;
         }
 
         // Statistic row doesn't exist
-        if( !query.value( 0 ).toInt() )
+        if( !result.front()[0].toInt() )
         {
-            query.prepare( "INSERT INTO statistics (url, deviceid, uniqueid) "
-                           "VALUES (?, ?, ?)" );
-            query.addBindValue( m_trackUrl );
-            query.addBindValue( deviceId );
-            query.addBindValue( uniqueId );
+            const QString query = "INSERT INTO statistics (url, deviceid, uniqueid) "
+                                  "VALUES ( :url, :devid, :uniqid )";
+            QVariantMap bindValues;
+            bindValues.insert( ":url", m_trackUrl );
+            bindValues.insert( ":devid", deviceId );
+            bindValues.insert( ":url", uniqueId );
 
-            if( !query.exec() )
+            m_connection->query( query, bindValues, &ok );
+            if( !ok )
             {
-                db.rollback();
+                m_connection->rollback();
                 return;
             }
         }
 
         // Update statistics
-        query.prepare( "UPDATE statistics SET "+updates.join(", ")+" WHERE url = :url" );
-        query.bindValue( ":createdate", m_statistics.value( Meta::valFirstPlayed )
-                                                               .toDateTime().toTime_t() );
-        query.bindValue( ":accessdate", m_statistics.value( Meta::valLastPlayed )
-                                                               .toDateTime().toTime_t() );
-        query.bindValue( ":rating", m_statistics.value( Meta::valRating ).toInt() );
-        query.bindValue( ":playcount", m_statistics.value( Meta::valPlaycount ).toInt() );
-        query.bindValue( ":url", m_trackUrl );
+        const QString uQuery = "UPDATE statistics SET " + updates.join(", ") +
+                               " WHERE url = :url";
+        QVariantMap uBindValues;
+        uBindValues.insert( ":createdate",
+                   getDateTime( m_statistics.value( Meta::valFirstPlayed ) ).toTime_t() );
+        uBindValues.insert( ":accessdate",
+                    getDateTime( m_statistics.value( Meta::valLastPlayed ) ).toTime_t() );
+        uBindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+        uBindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+        uBindValues.insert( ":url", m_trackUrl );
 
-        if( !query.exec() )
+        m_connection->query( uQuery, uBindValues, &ok );
+        if( !ok )
         {
-            db.rollback();
+            m_connection->rollback();
             return;
         }
     }
@@ -207,73 +120,90 @@ StatSyncing::FastForwardTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &f
     {
         foreach( const QString &label, m_labels )
         {
-            // Check if a label exists
-            query.prepare( "SELECT COUNT(*) FROM labels WHERE name = ?" );
-            query.addBindValue( label );
-            query.exec();
-
-            if( !query.next() )
             {
-                db.rollback();
-                return;
-            }
+                // Check if the label exists
+                const QString query = "SELECT COUNT(*) FROM labels WHERE name = :name";
+                QVariantMap bindValues;
+                bindValues.insert( ":name", label );
 
-            // Insert label
-            if( !query.value( 0 ).toInt() )
-            {
-                query.prepare( "INSERT INTO labels (name, type) VALUES (?, 1)" );
-                query.addBindValue( label );
-
-                if( !query.exec() )
+                const QList<QVariantList> result = m_connection->query( query, bindValues,
+                                                                        &ok );
+                if( !ok )
                 {
-                    db.rollback();
+                    m_connection->rollback();
                     return;
+                }
+
+                // Insert label if it doesn't
+                if( !result.front()[0].toInt() )
+                {
+                    const QString query = "INSERT INTO labels (name, type) "
+                                          "VALUES (:name, 1)";
+                    QVariantMap bindValues;
+                    bindValues.insert( ":name", label );
+
+                    m_connection->query( query, bindValues, &ok );
+                    if( !ok )
+                    {
+                        m_connection->rollback();
+                        return;
+                    }
                 }
             }
 
             // We can't use lastInsertId because we can't be sure if driver supports it,
             // so to simplify logic we use check if exists -> insert if not -> select
-            query.prepare( "SELECT id FROM labels WHERE name = ?" );
-            query.addBindValue( label );
-            query.exec();
 
-            if( !query.next() )
+            // Select label's id
+            const QString query = "SELECT id FROM labels WHERE name = :name";
+            QVariantMap bindValues;
+            bindValues.insert( ":name", label );
+
+            const QList<QVariantList> result = m_connection->query( query, bindValues,
+                                                                    &ok );
+            if( !ok )
             {
-                db.rollback();
+                m_connection->rollback();
                 return;
             }
 
-            const qint64 labelId = query.value( 0 ).toLongLong();
+            const qint64 labelId = result.front()[0].toLongLong();
 
-            query.prepare( "SELECT COUNT(*) FROM tags_labels WHERE url=? AND labelid=?" );
-            query.addBindValue( m_trackUrl );
-            query.addBindValue( labelId );
-            query.exec();
+            // Check if the current song isn't already associated with the label
+            const QString sQuery = "SELECT COUNT(*) FROM tags_labels WHERE url = :url "
+                                   "AND labelid = :labelid";
+            QVariantMap sBindValues;
+            sBindValues.insert( ":url", m_trackUrl );
+            sBindValues.insert( ":labelid", labelId );
 
-            if( !query.next() )
+            const QList<QVariantList> sResult = m_connection->query( sQuery, sBindValues,
+                                                                     &ok );
+            if( !ok )
             {
-                db.rollback();
+                m_connection->rollback();
                 return;
             }
 
-            // Insert track <-> label connection
-            if( !query.value( 0 ).toInt() )
+            // If not, insert track <-> label association
+            if( !sResult.front()[0].toInt() )
             {
-                query.prepare( "INSERT INTO tags_labels (deviceid, url, uniqueid, "
-                               "labelid) VALUES (?, ?, ?, ?)" );
-                query.addBindValue( deviceId );
-                query.addBindValue( m_trackUrl );
-                query.addBindValue( uniqueId );
-                query.addBindValue( labelId );
+                const QString query = "INSERT INTO tags_labels (deviceid, url, uniqueid, "
+                                      "labelid) VALUES ( :devid, :url, :uniqid, :lblid )";
+                QVariantMap bindValues;
+                bindValues.insert( ":devid", deviceId );
+                bindValues.insert( ":url", m_trackUrl );
+                bindValues.insert( ":uniqid", uniqueId );
+                bindValues.insert( ":lblid", labelId );
 
-                if( !query.exec() )
+                m_connection->query( query, bindValues, &ok );
+                if( !ok )
                 {
-                    db.rollback();
+                    m_connection->rollback();
                     return;
                 }
             }
         }
     }
 
-    db.commit();
+    m_connection->commit();
 }

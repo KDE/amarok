@@ -14,50 +14,49 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "AmarokProviderEmbedded.h"
+#include "AmarokEmbeddedSqlConnection.h"
 
 #include "core/support/Debug.h"
 
 #include <ThreadWeaver/Thread>
 
-#include <QDir>
 #include <QEventLoop>
 #include <QFileSystemWatcher>
 #include <QMutexLocker>
-#include <QSqlDatabase>
 #include <QStringList>
 #include <QTemporaryFile>
 
 using namespace StatSyncing;
 
-AmarokProviderEmbedded::AmarokProviderEmbedded( const QVariantMap &config,
-                                                ImporterManager *importer )
-    : AmarokProvider( config, importer )
+AmarokEmbeddedSqlConnection::AmarokEmbeddedSqlConnection( const QFileInfo &mysqld,
+                                                          const QDir &datadir )
+    : ImporterSqlConnection()
+    , m_mysqld( mysqld )
+    , m_datadir( datadir )
 {
-    // Remove the default connection, QSqlDatabase doesn't play well with a restarting
-    // server. This is the reason for which a new connection is created in
-    // prepareConnection(), and removed in stopServer().
-    QSqlDatabase::removeDatabase( m_connectionName );
-
     connect( &m_shutdownTimer, SIGNAL(timeout()), SLOT(stopServer()) );
     m_shutdownTimer.setSingleShot( true );
 }
 
-AmarokProviderEmbedded::~AmarokProviderEmbedded()
+AmarokEmbeddedSqlConnection::~AmarokEmbeddedSqlConnection()
 {
+    if( isTransaction() )
+        rollback();
     stopServer();
 }
 
-void
-AmarokProviderEmbedded::prepareConnection()
+QSqlDatabase
+AmarokEmbeddedSqlConnection::connection()
 {
+    Q_ASSERT( this->thread() == ThreadWeaver::Thread::currentThread() );
+
     QMutexLocker lock( &m_srvMutex );
 
     // The server's already running; only refresh its shutdown timer
     if( m_srv.state() == QProcess::Running )
     {
         m_shutdownTimer.start( SERVER_SHUTDOWN_AFTER );
-        return;
+        return QSqlDatabase::database( m_connectionName );
     }
 
     QTemporaryFile pidFile( QDir::temp().filePath( "amarok_importer-XXXXXX.pid" ) );
@@ -85,27 +84,28 @@ AmarokProviderEmbedded::prepareConnection()
 
         m_shutdownTimer.start( SERVER_SHUTDOWN_AFTER );
     }
+
+    db.open();
+    return db;
 }
 
 bool
-AmarokProviderEmbedded::startServer( const int port, const QString &socketPath,
-                                     const QString &pidPath )
+AmarokEmbeddedSqlConnection::startServer( const int port, const QString &socketPath,
+                                          const QString &pidPath )
 {
     DEBUG_BLOCK
     Q_ASSERT( this->thread() == ThreadWeaver::Thread::currentThread() );
 
-    QFileInfo mysqld( m_config.value( "mysqlBinary" ).toString() );
-    if( !mysqld.isExecutable() )
+    if( !m_mysqld.isExecutable() )
     {
-        warning() << __PRETTY_FUNCTION__ << mysqld.absoluteFilePath()
+        warning() << __PRETTY_FUNCTION__ << m_mysqld.absoluteFilePath()
                   << "is not executable";
         return false;
     }
 
-    QDir datadir( m_config.value( "dbPath" ).toString() );
-    if( !datadir.isReadable() )
+    if( !m_datadir.isReadable() )
     {
-        warning() << __PRETTY_FUNCTION__ << datadir.absolutePath() << "is not readable";
+        warning() << __PRETTY_FUNCTION__ << m_datadir.absolutePath() << "is not readable";
         return false;
     }
 
@@ -129,7 +129,7 @@ AmarokProviderEmbedded::startServer( const int port, const QString &socketPath,
     const QStringList args = QStringList()
          << "--no-defaults"
          << "--port=" + QString::number( port )
-         << "--datadir=" + datadir.absolutePath()
+         << "--datadir=" + m_datadir.absolutePath()
          << "--default-storage-engine=MyISAM"
          << "--skip-grant-tables"
          << "--myisam-recover-options=FORCE"
@@ -141,8 +141,8 @@ AmarokProviderEmbedded::startServer( const int port, const QString &socketPath,
          << "--socket=" + socketPath
          << "--pid-file=" + pidPath;
 
-    m_srv.start( mysqld.absoluteFilePath(), args );
-    debug() << __PRETTY_FUNCTION__ << mysqld.absoluteFilePath() + " " + args.join(" ");
+    m_srv.start( m_mysqld.absoluteFilePath(), args );
+    debug() << __PRETTY_FUNCTION__ << m_mysqld.absoluteFilePath() + " " + args.join(" ");
 
     // Wait for any of the startup conditions to be true
     loop.exec();
@@ -158,13 +158,13 @@ AmarokProviderEmbedded::startServer( const int port, const QString &socketPath,
 }
 
 void
-AmarokProviderEmbedded::stopServer()
+AmarokEmbeddedSqlConnection::stopServer()
 {
     DEBUG_BLOCK
     Q_ASSERT( this->thread() == ThreadWeaver::Thread::currentThread() );
 
     QMutexLocker lock( &m_srvMutex );
-    if( m_srv.state() == QProcess::NotRunning )
+    if( isTransaction() || m_srv.state() == QProcess::NotRunning )
         return;
 
     m_shutdownTimer.stop();
@@ -176,5 +176,4 @@ AmarokProviderEmbedded::stopServer()
         m_srv.kill();
         m_srv.waitForFinished();
     }
-
 }

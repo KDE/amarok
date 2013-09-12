@@ -19,15 +19,30 @@
 #include "FastForwardTrack.h"
 #include "core/support/Debug.h"
 #include "importers/ImporterManager.h"
-
-#include <QSqlQuery>
+#include "importers/ImporterSqlConnection.h"
 
 using namespace StatSyncing;
 
 FastForwardProvider::FastForwardProvider( const QVariantMap &config,
                                           ImporterManager *importer )
-    : ImporterSqlProvider( config, importer )
+    : ImporterProvider( config, importer )
 {
+    if( config.value( "dbDriver" ).toString() == "QSQLITE" )
+    {
+        m_connection = ImporterSqlConnectionPtr(
+                    new ImporterSqlConnection( config.value( "dbPath" ).toString() ) );
+    }
+    else
+    {
+        m_connection = ImporterSqlConnectionPtr( new ImporterSqlConnection(
+             m_config.value( "dbDriver" ).toString(),
+             m_config.value( "dbHost" ).toString(),
+             m_config.value( "dbPort" ).toUInt(),
+             m_config.value( "dbName" ).toString(),
+             m_config.value( "dbUser" ).toString(),
+             m_config.value( "dbPass" ).toString()
+        ) );
+    }
 }
 
 FastForwardProvider::~FastForwardProvider()
@@ -49,52 +64,58 @@ FastForwardProvider::writableTrackStatsData() const
 }
 
 QSet<QString>
-FastForwardProvider::getArtists( QSqlDatabase db )
+FastForwardProvider::artists()
 {
-    QSqlQuery query( db );
-    query.setForwardOnly( true );
-    query.prepare( "SELECT name FROM artist" );
-    query.exec();
-
     QSet<QString> result;
-    while( query.next() )
-        result.insert( query.value( 0 ).toString() );
+    foreach( const QVariantList &row, m_connection->query( "SELECT name FROM artist" ) )
+        result.insert( row[0].toString() );
 
     return result;
 }
 
 TrackList
-FastForwardProvider::getArtistTracks( const QString &artistName, QSqlDatabase db )
+FastForwardProvider::artistTracks( const QString &artistName )
 {
-    QSqlQuery query( db );
-    query.setForwardOnly( true );
+    const QString query = "SELECT t.url, t.title, al.name, ar.name, c.name, y.name, "
+            "t.track, t.discnumber, s.rating, s.createdate, s.accessdate, s.playcounter "
+            "FROM tags t "
+            "INNER JOIN artist ar ON ar.id = t.artist "
+            "LEFT JOIN album al ON al.id = t.album "
+            "LEFT JOIN composer c ON c.id = t.composer "
+            "LEFT JOIN year y ON y.id = t.year "
+            "LEFT JOIN statistics s ON s.url = t.url "
+            "WHERE ar.name = :artist";
 
-    query.prepare( "SELECT t.url, t.title, al.name, ar.name, c.name, y.name, t.track, "
-                   "t.discnumber "
-                   "FROM tags t "
-                   "INNER JOIN artist ar ON ar.id = t.artist "
-                   "LEFT JOIN album al ON al.id = t.album "
-                   "LEFT JOIN composer c ON c.id = t.composer "
-                   "LEFT JOIN year y ON y.id = t.year "
-                   "WHERE ar.name = ?" );
-    query.addBindValue( artistName );
-    query.exec();
+    QVariantMap bindValues;
+    bindValues.insert( ":artist", artistName );
 
     const QList<qint64> fields = QList<qint64>() << Meta::valTitle << Meta::valAlbum
-                                 << Meta::valArtist << Meta::valComposer
-                                 << Meta::valYear << Meta::valTrackNr << Meta::valDiscNr;
+                << Meta::valArtist << Meta::valComposer << Meta::valYear
+                << Meta::valTrackNr << Meta::valDiscNr << Meta::valRating
+                << Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount;
 
     TrackList result;
-    while ( query.next() )
+    foreach( const QVariantList &row, m_connection->query( query, bindValues ) )
     {
-        const QString trackUrl = query.value( 0 ).toString();
+        const QString trackUrl = row[0].toString();
 
         Meta::FieldHash metadata;
         for( int i = 0; i < fields.size(); ++i )
-            metadata.insert( fields[i], query.value( i + 1 ) );
+            metadata.insert( fields[i], row[i + 1] );
 
-        result << TrackPtr( new FastForwardTrack( ImporterSqlProviderPtr( this ),
-                                                  metadata, trackUrl ) );
+        const QString lblQuery = "SELECT l.name FROM labels l "
+                                 "INNER JOIN tags_labels tl ON tl.labelid = l.id "
+                                 "WHERE tl.url = :url";
+
+        QVariantMap lblBindValues;
+        lblBindValues.insert( ":url", trackUrl );
+
+        QSet<QString> labels;
+        foreach( const QVariantList &row, m_connection->query( lblQuery, lblBindValues ) )
+            labels.insert( row[0].toString() );
+
+        result << TrackPtr( new FastForwardTrack( trackUrl, m_connection, metadata,
+                                                  labels ) );
     }
 
     return result;

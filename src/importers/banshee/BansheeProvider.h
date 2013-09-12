@@ -17,12 +17,17 @@
 #ifndef STATSYNCING_BANSHEE_PROVIDER_H
 #define STATSYNCING_BANSHEE_PROVIDER_H
 
-#include "importers/ImporterSqlProvider.h"
+#include "importers/ImporterProvider.h"
+
+#include <QSharedPointer>
 
 namespace StatSyncing
 {
 
-class BansheeProvider : public ImporterSqlProvider
+class ImporterSqlConnection;
+typedef QSharedPointer<ImporterSqlConnection> ImporterSqlConnectionPtr;
+
+class BansheeProvider : public ImporterProvider
 {
 public:
     BansheeProvider( const QVariantMap &config, ImporterManager *importer );
@@ -31,12 +36,11 @@ public:
     qint64 reliableTrackMetaData() const;
     qint64 writableTrackStatsData() const;
 
-protected:
-    QSet<QString> getArtists( QSqlDatabase db );
-    TrackList getArtistTracks( const QString &artistName, QSqlDatabase db );
+    QSet<QString> artists();
+    TrackList artistTracks( const QString &artistName );
 
 private:
-    QVariantMap setDbDriver( const QVariantMap &config );
+    const ImporterSqlConnectionPtr m_connection;
 };
 
 } // namespace StatSyncing

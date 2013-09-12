@@ -18,7 +18,6 @@
 
 #include "AmarokConfigWidget.h"
 #include "AmarokProvider.h"
-#include "AmarokProviderEmbedded.h"
 
 using namespace StatSyncing;
 
@@ -72,7 +71,5 @@ AmarokManager::configWidget( const QVariantMap &config )
 ImporterProviderPtr
 AmarokManager::newInstance( const QVariantMap &config )
 {
-    return config.value( "embedded" ).toBool()
-            ? ProviderPtr( new AmarokProviderEmbedded( config, this ) )
-            : ProviderPtr( new AmarokProvider( config, this ) );
+    return ProviderPtr( new AmarokProvider( config, this ) );
 }

@@ -16,14 +16,16 @@
 
 #include "AmarokTrack.h"
 
-#include <QSqlQuery>
+#include "importers/ImporterSqlConnection.h"
+
 #include <QStringList>
 
 using namespace StatSyncing;
 
-AmarokTrack::AmarokTrack( const qint64 urlId, const ImporterSqlProviderPtr &provider,
+AmarokTrack::AmarokTrack( const qint64 urlId, const ImporterSqlConnectionPtr &connection,
                           const Meta::FieldHash &metadata, const QSet<QString> &labels )
-    : ImporterSqlTrack( provider, metadata, labels )
+    : SimpleWritableTrack( metadata, labels )
+    , m_connection( connection )
     , m_urlId( urlId )
 {
 }
@@ -33,9 +35,10 @@ AmarokTrack::~AmarokTrack()
 }
 
 void
-AmarokTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &fields )
+AmarokTrack::doCommit( const QSet<qint64> &fields )
 {
-    db.transaction();
+    bool ok = true;
+    m_connection->transaction();
 
     QStringList updates;
     if( fields.contains( Meta::valFirstPlayed ) )
@@ -47,61 +50,76 @@ AmarokTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &fields )
     if( fields.contains( Meta::valPlaycount ) )
         updates << "playcount = :playcount";
 
-    QSqlQuery query( db );
-
     if( !updates.isEmpty() )
     {
-        query.prepare( "UPDATE statistics SET "+updates.join(", ")+" WHERE url = :url" );
-        query.bindValue( ":createdate", m_statistics.value( Meta::valFirstPlayed )
-                                                               .toDateTime().toTime_t() );
-        query.bindValue( ":accessdate", m_statistics.value( Meta::valLastPlayed )
-                                                               .toDateTime().toTime_t() );
-        query.bindValue( ":rating", m_statistics.value( Meta::valRating ).toInt() );
-        query.bindValue( ":playcount", m_statistics.value( Meta::valPlaycount ).toInt() );
-        query.bindValue( ":url", m_urlId );
+        const QString query = "UPDATE statistics SET " + updates.join(", ") +
+                " WHERE url = :url";
 
-        if( !query.exec() )
+        QVariantMap bindValues;
+        bindValues.insert( ":createdate",
+                   getDateTime( m_statistics.value( Meta::valFirstPlayed ) ).toTime_t() );
+        bindValues.insert( ":accessdate",
+                   getDateTime( m_statistics.value( Meta::valLastPlayed ) ).toTime_t() );
+        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+        bindValues.insert( ":url", m_urlId );
+
+        m_connection->query( query, bindValues, &ok );
+        if( !ok )
         {
-            db.rollback();
+            m_connection->rollback();
             return;
         }
     }
 
     if( fields.contains( Meta::valLabel ) )
     {
-        QVariantList vlabels;
-        foreach( const QString &label, m_labels )
-            vlabels.append( QVariant( label ) );
-
         // Try to insert all labels. Since the 'label' field's unique, nothing will happen
         // if the label already exists
-        query.prepare( "INSERT IGNORE INTO labels (label) VALUES (?)" );
-        query.addBindValue( vlabels );
-        if( !query.execBatch() )
+        foreach( const QString &label, m_labels )
         {
-            db.rollback();
-            return;
+            QVariantMap bindValues;
+            bindValues.insert( ":label", label );
+            m_connection->query( "INSERT IGNORE INTO labels (label) VALUES ( :label )",
+                                 bindValues, &ok );
+            if( !ok )
+            {
+                m_connection->rollback();
+                return;
+            }
         }
 
         // Drop all labels for the track
-        query.prepare( "DELETE QUICK FROM urls_labels WHERE url = ?" );
-        query.addBindValue( m_urlId );
-        if( !query.exec() )
         {
-            db.rollback();
-            return;
+            QVariantMap bindValues;
+            bindValues.insert( ":url", m_urlId );
+            m_connection->query( "DELETE QUICK FROM urls_labels WHERE url = ?", bindValues,
+                                 &ok );
+            if( !ok )
+            {
+                m_connection->rollback();
+                return;
+            }
         }
 
-        // Add labels. Note that QString::arg is used due to limitation in execBatch
-        query.prepare( QString( "INSERT INTO urls_labels (url, label) VALUES (%1, "
-                       "(SELECT id FROM labels WHERE label = ?))" ).arg( m_urlId ) );
-        query.addBindValue( vlabels );
-        if( !query.execBatch() )
+        // Add labels
+        foreach( const QString &label, m_labels )
         {
-            db.rollback();
-            return;
+            const QString query = "INSERT INTO urls_labels (url, label) VALUES ( :url, "
+                                  "(SELECT id FROM labels WHERE label = :label ))";
+
+            QVariantMap bindValues;
+            bindValues.insert( ":url", m_urlId );
+            bindValues.insert( ":label", label );
+
+            m_connection->query( query, bindValues, &ok );
+            if( !ok )
+            {
+                m_connection->rollback();
+                return;
+            }
         }
     }
 
-    db.commit();
+    m_connection->commit();
 }

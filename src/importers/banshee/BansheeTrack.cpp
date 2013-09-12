@@ -16,14 +16,17 @@
 
 #include "BansheeTrack.h"
 
-#include <QSqlQuery>
+#include "importers/ImporterSqlConnection.h"
+
 #include <QStringList>
 
 using namespace StatSyncing;
 
-BansheeTrack::BansheeTrack( const ImporterSqlProviderPtr &provider, const qint64 trackId,
+BansheeTrack::BansheeTrack( const qint64 trackId,
+                            const ImporterSqlConnectionPtr &connection,
                             const Meta::FieldHash &metadata )
-    : ImporterSqlTrack( provider, metadata )
+    : SimpleWritableTrack( metadata )
+    , m_connection( connection )
     , m_trackId( trackId )
 {
 }
@@ -35,17 +38,17 @@ BansheeTrack::~BansheeTrack()
 int
 BansheeTrack::rating() const
 {
-    return ImporterSqlTrack::rating() * 2;
+    return SimpleWritableTrack::rating() * 2;
 }
 
 void
 BansheeTrack::setRating( int rating )
 {
-    ImporterSqlTrack::setRating( (rating + 1) / 2 );
+    SimpleWritableTrack::setRating( (rating + 1) / 2 );
 }
 
 void
-BansheeTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &fields )
+BansheeTrack::doCommit( const QSet<qint64> &fields )
 {
     QStringList updates;
     if( fields.contains( Meta::valLastPlayed ) )
@@ -57,21 +60,16 @@ BansheeTrack::sqlCommit( QSqlDatabase db, const QSet<qint64> &fields )
 
     if( !updates.empty() )
     {
-        db.transaction();
-        QSqlQuery query( db );
+        const QString query = "UPDATE coretracks SET " + updates.join(", ") +
+                "WHERE TrackID = :id";
 
-        query.prepare( "UPDATE coretracks SET "+updates.join(",")+"WHERE TrackID = :id" );
-        query.bindValue( ":lastplayed", m_statistics.value( Meta::valLastPlayed ) );
-        query.bindValue( ":rating", m_statistics.value( Meta::valRating ) );
-        query.bindValue( ":playcount", m_statistics.value( Meta::valPlaycount ) );
-        query.bindValue( ":id", m_trackId );
+        QVariantMap bindValues;
+        bindValues.insert( ":lastplayed",
+                    getDateTime( m_statistics.value( Meta::valLastPlayed ) ).toTime_t() );
+        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+        bindValues.insert( ":id", m_trackId );
 
-        if( !query.exec() )
-        {
-            db.rollback();
-            return;
-        }
-
-        db.commit();
+        m_connection->query( query, bindValues );
     }
 }

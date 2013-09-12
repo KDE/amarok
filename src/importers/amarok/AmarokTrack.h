@@ -17,22 +17,26 @@
 #ifndef STATSYNCING_AMAROK_TRACK_H
 #define STATSYNCING_AMAROK_TRACK_H
 
-#include "importers/ImporterSqlTrack.h"
+#include "statsyncing/SimpleWritableTrack.h"
 
 namespace StatSyncing
 {
 
-class AmarokTrack : public ImporterSqlTrack
+class ImporterSqlConnection;
+typedef QSharedPointer<ImporterSqlConnection> ImporterSqlConnectionPtr;
+
+class AmarokTrack : public SimpleWritableTrack
 {
 public:
-    AmarokTrack( const qint64 urlId, const ImporterSqlProviderPtr &provider,
+    AmarokTrack( const qint64 urlId, const ImporterSqlConnectionPtr &connection,
                  const Meta::FieldHash &metadata, const QSet<QString> &labels );
     ~AmarokTrack();
 
 protected:
-    void sqlCommit( QSqlDatabase db, const QSet<qint64> &fields );
+    void doCommit( const QSet<qint64> &fields );
 
 private:
+    const ImporterSqlConnectionPtr m_connection;
     const qint64 m_urlId;
 };
 

@@ -17,15 +17,18 @@
 #ifndef STATSYNCING_CLEMENTINE_TRACK_H
 #define STATSYNCING_CLEMENTINE_TRACK_H
 
-#include "importers/ImporterSqlTrack.h"
+#include "statsyncing/SimpleWritableTrack.h"
 
 namespace StatSyncing
 {
 
-class ClementineTrack : public ImporterSqlTrack
+class ImporterSqlConnection;
+typedef QSharedPointer<ImporterSqlConnection> ImporterSqlConnectionPtr;
+
+class ClementineTrack : public SimpleWritableTrack
 {
 public:
-    ClementineTrack( const ImporterSqlProviderPtr &provider, const QVariant &filename,
+    ClementineTrack( const QVariant &filename, const ImporterSqlConnectionPtr &connection,
                      const Meta::FieldHash &metadata );
     ~ClementineTrack();
 
@@ -41,9 +44,10 @@ public:
     void setRating( int rating );
 
 protected:
-    void sqlCommit( QSqlDatabase db, const QSet<qint64> &fields );
+    void doCommit( const QSet<qint64> &fields );
 
 private:
+    const ImporterSqlConnectionPtr m_connection;
     const QVariant m_filename;
 };
 
