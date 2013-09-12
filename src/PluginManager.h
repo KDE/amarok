@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2004-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -50,8 +50,8 @@ class AMAROK_EXPORT PluginManager : public QObject
         ServicePluginManager *servicePluginManager();
 
     private:
-        void findAllPlugins();
-        void handleEmptyCollectionFactories();
+        int findPlugins();
+        void handleNoPluginsFound();
 
         QList<PluginFactory*> createFactories( const QString &category );
         PluginFactory* createFactory( const KPluginInfo &plugin );

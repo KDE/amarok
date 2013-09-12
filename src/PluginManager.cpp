@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2004-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -24,16 +24,19 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "services/ServicePluginManager.h"
 
-#include <KBuildSycocaProgressDialog>
 #include <KLocalizedString>
 #include <KMessageBox>
+#include <KProcess>
 #include <KServiceTypeTrader>
+#include <KStandardDirs>
 
 #include <QApplication>
 #include <QFile>
 #include <QMetaEnum>
 
 #include <cstdlib>
+#include <unistd.h>
+
 
 const int Plugins::PluginManager::s_pluginFrameworkVersion = 71;
 Plugins::PluginManager* Plugins::PluginManager::s_instance = 0;
@@ -73,13 +76,14 @@ Plugins::PluginManager::~PluginManager()
 void
 Plugins::PluginManager::init()
 {
-    findAllPlugins();
+    if( !findPlugins() )
+        handleNoPluginsFound();
+
     QString key;
 
     PERF_LOG( "Loading collection plugins" )
     key = QLatin1String( "Collection" );
     m_factories[ key ] = createFactories( key );
-    handleEmptyCollectionFactories();
     CollectionManager::instance()->init();
     CollectionManager::instance()->handleNewFactories( m_factories.value( key ) );
     PERF_LOG( "Loaded collection plugins" )
@@ -107,7 +111,6 @@ Plugins::PluginManager::servicePluginManager()
 void
 Plugins::PluginManager::checkPluginEnabledStates()
 {
-    DEBUG_BLOCK
     QList<PluginFactory*> newFactories;
     foreach( const KPluginInfo::List &plugins, m_pluginInfos )
     {
@@ -206,10 +209,9 @@ Plugins::PluginManager::createFactories( const QString &category )
     return factories;
 }
 
-void
-Plugins::PluginManager::findAllPlugins()
+int
+Plugins::PluginManager::findPlugins()
 {
-    DEBUG_BLOCK
     QString query = QString::fromLatin1( "[X-KDE-Amarok-framework-version] == %1"
                                          " and [X-KDE-Amarok-rank] > 0" )
                     .arg( s_pluginFrameworkVersion );
@@ -227,30 +229,37 @@ Plugins::PluginManager::findAllPlugins()
         debug() << "found plugin:" << name << "enabled:" << info.isPluginEnabled();
     }
     debug() << plugins.count() << "plugins in total";
+
+    return plugins.count();
 }
 
 void
-Plugins::PluginManager::handleEmptyCollectionFactories()
+Plugins::PluginManager::handleNoPluginsFound()
 {
-    const QString key = QLatin1String( "Collection" );
-    if( !m_factories.value( key ).isEmpty() )
-        return;
+    DEBUG_BLOCK
 
-    debug() << "No Amarok collection plugins found, running kbuildsycoca4.";
-    KBuildSycocaProgressDialog::rebuildKSycoca( 0 );
+    debug() << "No Amarok plugins found, running kbuildsycoca4.";
 
-    debug() << "Second attempt at finding collection plugins";
-    m_factories[ key ] = createFactories( key );
+    // Run kbuildsycoca4 in a blocking fashion
+    KProcess::execute( KStandardDirs::findExe( "kbuildsycoca4" ), QStringList( "--noincremental" ) );
 
-    if( m_factories.value( key ).isEmpty() )
+    // Wait a bit until ksycoca has fully updated
+    for( int i = 0; i < 3; i++ ) {
+        sleep( 1 );
+        QApplication::processEvents();
+    }
+
+    debug() << "Second attempt at finding plugins";
+
+    if( !findPlugins() )
     {
         if( QApplication::type() != QApplication::Tty )
         {
-            KMessageBox::information( 0, i18n( "Amarok has updated its plugin configuration. Please restart Amarok now." ) );
+            KMessageBox::error( 0, i18n( "Amarok could not find any plugins. This indicates an installation problem." ) );
         }
         else
         {
-            warning() << "Amarok could not find any collection plugins. Bailing out.";
+            warning() << "Amarok could not find any plugins. Bailing out.";
         }
         // don't use QApplication::exit, as the eventloop may not have started yet
         std::exit( EXIT_SUCCESS );
