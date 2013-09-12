@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>244</width>
-    <height>23</height>
+    <width>253</width>
+    <height>62</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,6 +29,13 @@
       <widget class="QCheckBox" name="mobileCheckBox">
        <property name="text">
         <string>Use Wikipedia &amp;mobile version</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QCheckBox" name="sslCheckBox">
+       <property name="text">
+        <string>Use &amp;SSL</string>
        </property>
       </widget>
      </item>

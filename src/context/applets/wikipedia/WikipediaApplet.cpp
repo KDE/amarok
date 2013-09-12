@@ -250,11 +250,14 @@ WikipediaAppletPrivate::_loadSettings()
     }
     langList = list;
     useMobileWikipedia = (generalSettingsUi.mobileCheckBox->checkState() == Qt::Checked);
+    useSSL = (generalSettingsUi.sslCheckBox->checkState() == Qt::Checked);
     Amarok::config("Wikipedia Applet").writeEntry( "PreferredLang", list );
     Amarok::config("Wikipedia Applet").writeEntry( "UseMobile", useMobileWikipedia );
+    Amarok::config( "Wikipedia Applet" ).writeEntry( "UseSSL", useSSL );
     _paletteChanged( App::instance()->palette() );
     dataContainer->setData( "lang", langList );
     dataContainer->setData( "mobile", useMobileWikipedia );
+    dataContainer->setData( "ssl", useSSL );
     scheduleEngineUpdate();
 }
 
@@ -656,9 +659,11 @@ WikipediaApplet::init()
     // Read config and inform the engine.
     d->langList = Amarok::config("Wikipedia Applet").readEntry( "PreferredLang", QStringList() << "en" );
     d->useMobileWikipedia = Amarok::config("Wikipedia Applet").readEntry( "UseMobile", false );
+    d->useSSL = Amarok::config( "Wikipedia Applet" ).readEntry( "UseSSL", true );
     d->_paletteChanged( App::instance()->palette() );
     d->dataContainer->setData( "lang", d->langList );
     d->dataContainer->setData( "mobile", d->useMobileWikipedia );
+    d->dataContainer->setData( "ssl", d->useSSL );
     d->scheduleEngineUpdate();
 
     updateConstraints();
@@ -787,6 +792,7 @@ WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
     QWidget *genSettings = new QWidget;
     d->generalSettingsUi.setupUi( genSettings );
     d->generalSettingsUi.mobileCheckBox->setCheckState( d->useMobileWikipedia ? Qt::Checked : Qt::Unchecked );
+    d->generalSettingsUi.sslCheckBox->setCheckState( d->useSSL ? Qt::Checked : Qt::Unchecked );
 
     connect( d->languageSettingsUi.downloadButton, SIGNAL(clicked()), this, SLOT(_getLangMap()) );
     connect( parent, SIGNAL(okClicked()), this, SLOT(_loadSettings()) );
