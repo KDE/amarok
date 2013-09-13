@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.9-Beta 1
   FEATURES:
+   * Wikipedia can now be also used over SSL.
 
   CHANGES:
 
