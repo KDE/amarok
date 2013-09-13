@@ -9,6 +9,8 @@ VERSION 2.9-Beta 1
   CHANGES:
 
   BUGFIXES:
+   * Fixed performance problem with large podcast feeds.
+     Patch by Frank Meerkoetter <frank@meerkoetter.org>. (BR 283022)
    * Fixed issue with Amarok sometimes not finding its plugins after an upgrade.
    * Album Artist / Compilation / Disc Number tags are now read correctly
      from APE tags. Patch by Bruno Léon <bruno.leon@nividic.org>. (BR 323735)
