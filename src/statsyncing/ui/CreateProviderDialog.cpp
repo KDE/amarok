@@ -22,9 +22,9 @@
 
 #include <KLocale>
 
+#include <QLabel>
 #include <QVBoxLayout>
 #include <QRadioButton>
-#include <QDebug>
 
 namespace StatSyncing
 {
@@ -42,8 +42,17 @@ CreateProviderDialog::CreateProviderDialog( QWidget *parent, Qt::WindowFlags f )
 
     QWidget *providerTypeWidget = new QWidget;
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->insertLayout( 0, m_layout );
-    mainLayout->insertStretch( -1 );
+
+    QLabel *warning = new QLabel( i18n( "<span style=\"color:red; font-weight:bold;\">"
+                                  "Important:</span> before synchronizing tracks with a "
+                                  "file-based target always make sure that "
+                                  "the database file is not currently in use!" ) );
+    warning->setWordWrap( true );
+    mainLayout->addLayout( m_layout );
+    mainLayout->addSpacing( 10 );
+    mainLayout->addStretch();
+    mainLayout->addWidget( warning );
+
     providerTypeWidget->setLayout( mainLayout );
 
     m_providerTypePage = new KPageWidgetItem( providerTypeWidget,
