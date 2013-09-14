@@ -36,7 +36,7 @@ public:
     void setRating( int rating );
 
 protected:
-    virtual void doCommit( const QSet<qint64> &fields );
+    virtual void doCommit( const qint64 fields );
 
 private:
     const ImporterSqlConnectionPtr m_connection;

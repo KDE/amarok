@@ -35,19 +35,19 @@ AmarokTrack::~AmarokTrack()
 }
 
 void
-AmarokTrack::doCommit( const QSet<qint64> &fields )
+AmarokTrack::doCommit( const qint64 fields )
 {
     bool ok = true;
     m_connection->transaction();
 
     QStringList updates;
-    if( fields.contains( Meta::valFirstPlayed ) )
+    if( fields & Meta::valFirstPlayed )
         updates << "createdate = :createdate";
-    if( fields.contains( Meta::valLastPlayed ) )
+    if( fields & Meta::valLastPlayed )
         updates << "accessdate = :accessdate";
-    if( fields.contains( Meta::valRating ) )
+    if( fields & Meta::valRating )
         updates << "rating = :rating";
-    if( fields.contains( Meta::valPlaycount ) )
+    if( fields & Meta::valPlaycount )
         updates << "playcount = :playcount";
 
     if( !updates.isEmpty() )
@@ -70,7 +70,7 @@ AmarokTrack::doCommit( const QSet<qint64> &fields )
         }
     }
 
-    if( fields.contains( Meta::valLabel ) )
+    if( fields & Meta::valLabel )
     {
         // Try to insert all labels. Since the 'label' field's unique, nothing will happen
         // if the label already exists

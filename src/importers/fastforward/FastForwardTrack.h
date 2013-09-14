@@ -33,7 +33,7 @@ public:
     ~FastForwardTrack();
 
 protected:
-    void doCommit( const QSet<qint64> &fields );
+    void doCommit( const qint64 fields );
 
 private:
     const ImporterSqlConnectionPtr m_connection;

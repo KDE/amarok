@@ -60,7 +60,7 @@ SimpleWritableTrack::setFirstPlayed( const QDateTime &firstPlayed )
 {
     QWriteLocker lock( &m_lock );
     m_statistics.insert( Meta::valFirstPlayed, firstPlayed.toTime_t() );
-    m_changes.insert( Meta::valFirstPlayed );
+    m_changes |= Meta::valFirstPlayed;
 }
 
 QDateTime
@@ -75,7 +75,7 @@ SimpleWritableTrack::setLastPlayed( const QDateTime &lastPlayed )
 {
     QWriteLocker lock( &m_lock );
     m_statistics.insert( Meta::valLastPlayed, lastPlayed.toTime_t() );
-    m_changes.insert( Meta::valLastPlayed );
+    m_changes |= Meta::valLastPlayed;
 }
 
 int
@@ -90,7 +90,7 @@ SimpleWritableTrack::setRating( int rating )
 {
     QWriteLocker lock( &m_lock );
     m_statistics.insert( Meta::valRating, rating );
-    m_changes.insert( Meta::valRating );
+    m_changes |= Meta::valRating;
 }
 
 int
@@ -105,7 +105,7 @@ SimpleWritableTrack::setPlayCount( int playCount )
 {
     QWriteLocker lock( &m_lock );
     m_statistics.insert( Meta::valPlaycount, playCount );
-    m_changes.insert( Meta::valPlaycount );
+    m_changes |= Meta::valPlaycount;
 }
 
 QSet<QString>
@@ -120,7 +120,7 @@ SimpleWritableTrack::setLabels( const QSet<QString> &labels )
 {
     QWriteLocker lock( &m_lock );
     m_labels = labels;
-    m_changes.insert( Meta::valLabel );
+    m_changes |= Meta::valLabel;
 }
 
 void
@@ -128,5 +128,5 @@ SimpleWritableTrack::commit()
 {
     QWriteLocker lock( &m_lock );
     doCommit( m_changes );
-    m_changes.clear();
+    m_changes = 0;
 }

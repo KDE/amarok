@@ -48,14 +48,14 @@ BansheeTrack::setRating( int rating )
 }
 
 void
-BansheeTrack::doCommit( const QSet<qint64> &fields )
+BansheeTrack::doCommit( const qint64 fields )
 {
     QStringList updates;
-    if( fields.contains( Meta::valLastPlayed ) )
+    if( fields & Meta::valLastPlayed )
         updates << "LastPlayedStamp = :lastplayed";
-    if( fields.contains( Meta::valRating ) )
+    if( fields & Meta::valRating )
         updates << "Rating = :rating";
-    if( fields.contains( Meta::valPlaycount ) )
+    if( fields & Meta::valPlaycount )
         updates << "PlayCount = :playcount";
 
     if( !updates.empty() )

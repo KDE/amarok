@@ -37,7 +37,7 @@ public:
     void setRating( int rating );
 
 protected:
-    void doCommit( const QSet<qint64> &fields );
+    void doCommit( const qint64 fields );
 
 signals:
     void trackUpdated( const QString &location, const qint64 type, const QVariant &stat );

@@ -57,7 +57,7 @@ RhythmboxTrack::setRating( int rating )
 }
 
 void
-RhythmboxTrack::doCommit( const QSet<qint64> &fields )
+RhythmboxTrack::doCommit( const qint64 fields )
 {
     Q_UNUSED( fields );
     emit commitCalled();

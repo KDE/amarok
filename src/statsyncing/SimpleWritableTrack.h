@@ -68,14 +68,14 @@ public:
 protected:
     /**
      * You must reimplement this method to save statistics to the database.
-     * @param changes holds fields changed since last doCommit() call.
+     * @param changes holds a bitmask of fields changed since last doCommit() call.
      * Note that the changes already are visible in the track through getter methods.
      * Label changes will be indicated by Meta::valLabel field.
      *
      * Also note that m_changeLock will already be write-locked when this method
      * is called.
      */
-    virtual void doCommit( const QSet<qint64> &fields ) = 0;
+    virtual void doCommit( const qint64 fields ) = 0;
 
     Meta::FieldHash m_statistics;
 
@@ -86,7 +86,7 @@ protected:
     mutable QReadWriteLock m_lock;
 
 private:
-    QSet<qint64> m_changes;
+    qint64 m_changes;
 };
 
 } // namespace StatSyncing

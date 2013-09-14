@@ -36,7 +36,7 @@ FastForwardTrack::~FastForwardTrack()
 }
 
 void
-StatSyncing::FastForwardTrack::doCommit( const QSet<qint64> &fields )
+StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
 {
     m_connection->transaction();
     bool ok = true;
@@ -56,13 +56,13 @@ StatSyncing::FastForwardTrack::doCommit( const QSet<qint64> &fields )
     const QString uniqueId = result.front()[1].toString();
 
     QStringList updates;
-    if( fields.contains( Meta::valFirstPlayed ) )
+    if( fields & Meta::valFirstPlayed )
         updates << "createdate = :createdate";
-    if( fields.contains( Meta::valLastPlayed ) )
+    if( fields & Meta::valLastPlayed )
         updates << "accessdate = :accessdate";
-    if( fields.contains( Meta::valRating ) )
+    if( fields & Meta::valRating )
         updates << "rating = :rating";
-    if( fields.contains( Meta::valPlaycount ) )
+    if( fields & Meta::valPlaycount )
         updates << "playcounter = :playcount";
 
     if( !updates.isEmpty() )
@@ -114,7 +114,7 @@ StatSyncing::FastForwardTrack::doCommit( const QSet<qint64> &fields )
         }
     }
 
-    if( fields.contains( Meta::valLabel ) )
+    if( fields & Meta::valLabel )
     {
         foreach( const QString &label, m_labels )
         {
