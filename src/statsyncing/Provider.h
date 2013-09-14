@@ -161,6 +161,16 @@ namespace StatSyncing
              */
             virtual TrackList artistTracks( const QString &artistName ) = 0;
 
+            /**
+             * Write back statistics to the underlying storage for all updated tracks
+             * managed by this provider that weren't yet saved. Default implementation
+             * does nothing.
+             *
+             * Guaranteed to be (and must be) called from non-main thread. Can block for
+             * a longer time.
+             */
+            virtual void commitTracks();
+
         signals:
             /**
              * Emitted when some data such as prettyName() were updated.

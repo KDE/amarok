@@ -82,18 +82,25 @@ SynchronizeTracksJob::run()
         }
     }
 
+    ProviderPtrSet updatedProviders;
     int i = 0;
-    foreach( TrackTuple tuple, m_tuples )
+    foreach( const TrackTuple &tuple, m_tuples )
     {
         if( m_abort )
             break;
 
         // no point in checking for hasUpdate() here, synchronize() is witty enough
-        m_updatedTracksCount += tuple.synchronize( m_options );
+        const ProviderPtrSet tupleUpdatedProviders = tuple.synchronize( m_options );
+        updatedProviders |= tupleUpdatedProviders;
+        m_updatedTracksCount += tupleUpdatedProviders.count();
         if( ( i + fuzz ) % denom == 0 )
             emit incrementProgress();
         i++;
     }
+
+    foreach( ProviderPtr provider, updatedProviders )
+        provider->commitTracks();
+
 
     // we need to reset playCount of scrobbled tracks to reset their recent play count
     foreach( Meta::TrackPtr track, m_scrobbledTracks )

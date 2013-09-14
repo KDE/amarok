@@ -75,7 +75,7 @@ protected:
      * Also note that m_changeLock will already be write-locked when this method
      * is called.
      */
-    virtual void doCommit( const qint64 fields ) = 0;
+    virtual void doCommit( const qint64 changes ) = 0;
 
     Meta::FieldHash m_statistics;
 

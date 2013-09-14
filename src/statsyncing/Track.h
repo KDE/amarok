@@ -174,9 +174,10 @@ namespace StatSyncing
 
             /**
              * Write back statistics to the underlying storage. You must call this function
-             * after calling any of the set* methods. The track may decide whether the
-             * actual writeback happens in set* or in commit(). Default implementation does
-             * nothing.
+             * after calling any of the set* methods *and* you must you must call
+             * Provider::commitTracks() at some later point. The implementation may decide
+             * whether the actual writeback happens in set*, in commit() or in
+             * Provider::commitTracks() . Default implementation does nothing.
              *
              * Guaranteed to be (and must be) called from non-main thread. Can block for
              * a longer time.

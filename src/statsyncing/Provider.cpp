@@ -65,6 +65,11 @@ Provider::reconfigure( const QVariantMap &config )
     Q_UNUSED( config )
 }
 
+void
+Provider::commitTracks()
+{
+}
+
 
 ProviderFactory::ProviderFactory( QObject *parent, const QVariantList &args )
     : Plugins::PluginFactory( parent, args )

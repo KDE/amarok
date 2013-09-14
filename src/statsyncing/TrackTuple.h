@@ -136,9 +136,9 @@ namespace StatSyncing
              * ratings or labels if there's unresolved rating/label conflict. Can only be
              * called from non-main thread and may block for longer time.
              *
-             * @return number of tracks that were updated
+             * @return a set of providers that had their track updated
              */
-            int synchronize( const Options &options );
+            ProviderPtrSet synchronize( const Options &options ) const;
 
         private:
             int syncedRating( const Options &options, ProviderPtr ratingProvider ) const;
