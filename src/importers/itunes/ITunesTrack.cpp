@@ -16,10 +16,14 @@
 
 #include "ITunesTrack.h"
 
+#include <QReadLocker>
+#include <QWriteLocker>
+
 using namespace StatSyncing;
 
-ITunesTrack::ITunesTrack( const Meta::FieldHash &metadata )
-    : SimpleTrack( metadata )
+ITunesTrack::ITunesTrack( const int trackId, const Meta::FieldHash &metadata )
+    : SimpleWritableTrack( metadata )
+    , m_trackId( trackId )
 {
 }
 
@@ -30,16 +34,31 @@ ITunesTrack::~ITunesTrack()
 int
 ITunesTrack::rating() const
 {
-    return SimpleTrack::rating() / 10;
+    return SimpleWritableTrack::rating() / 10;
+}
+
+void
+ITunesTrack::setRating( int rating )
+{
+    SimpleWritableTrack::setRating( rating * 10 );
 }
 
 QDateTime
 ITunesTrack::lastPlayed() const
 {
+    QReadLocker lock( &m_lock );
+
     QDateTime date = QDateTime::fromString(
-                                m_metadata.value( Meta::valLastPlayed ).toString(),
+                                m_statistics.value( Meta::valLastPlayed ).toString(),
                                 "yyyy'-'MM'-'dd'T'hh':'mm':'ss'Z'" );
 
     date.setTimeSpec( Qt::UTC );
     return date;
+}
+
+void
+ITunesTrack::doCommit( const qint64 changes )
+{
+    Q_UNUSED( changes );
+    emit commitCalled( m_trackId, m_statistics );
 }

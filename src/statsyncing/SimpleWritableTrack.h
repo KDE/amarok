@@ -85,7 +85,10 @@ protected:
      */
     mutable QReadWriteLock m_lock;
 
-private:
+    /**
+     * A bitmask containing changed fields. Only modify this in set* methods, and only
+     * using bitwise-OR.
+     */
     qint64 m_changes;
 };
 

@@ -20,7 +20,9 @@
 #include "core/support/Debug.h"
 
 #include <QFile>
+#include <QTemporaryFile>
 #include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 using namespace StatSyncing;
 
@@ -43,8 +45,7 @@ ITunesProvider::reliableTrackMetaData() const
 qint64
 ITunesProvider::writableTrackStatsData() const
 {
-    //TODO: Write capabilities
-    return 0;
+    return Meta::valRating | Meta::valPlaycount;
 }
 
 QSet<QString>
@@ -128,6 +129,7 @@ ITunesProvider::readTrack( QXmlStreamReader &xml, const QString &byArtist )
 
     Meta::FieldHash metadata;
     QString currentArtist;
+    int trackId = -1;
 
     while( xml.readNextStartElement() )
     {
@@ -146,7 +148,11 @@ ITunesProvider::readTrack( QXmlStreamReader &xml, const QString &byArtist )
             }
             else
             {
-                if( type == "Name" )
+                if( type == "Track ID" )
+                {
+                    trackId = readValue( xml ).toInt();
+                }
+                else if( type == "Name" )
                     metadata.insert( Meta::valTitle, readValue( xml ) );
                 else if( type == "Artist" )
                 {
@@ -175,8 +181,13 @@ ITunesProvider::readTrack( QXmlStreamReader &xml, const QString &byArtist )
             xml.skipCurrentElement();
     }
 
-    if( !byArtist.isEmpty() && currentArtist == byArtist )
-        m_artistTracks << TrackPtr( new ITunesTrack( metadata ) );
+    if( !byArtist.isEmpty() && currentArtist == byArtist && trackId != -1 )
+    {
+        ITunesTrack *track = new ITunesTrack( trackId, metadata );
+        connect( track, SIGNAL(commitCalled(int,Meta::FieldHash)),
+                 SLOT(trackUpdated(int,Meta::FieldHash)), Qt::DirectConnection );
+        m_artistTracks << TrackPtr( track );
+    }
     else if( byArtist.isEmpty() )
         m_artists << currentArtist;
 }
@@ -188,4 +199,167 @@ ITunesProvider::readValue( QXmlStreamReader &xml )
     xml.readNextStartElement();
     Q_ASSERT( xml.isStartElement() );
     return xml.readElementText();
+}
+
+void
+ITunesProvider::writeTracks( QXmlStreamReader &reader, QXmlStreamWriter &writer,
+                             const QMap<int, Meta::FieldHash> &dirtyData )
+{
+    int dictDepth = 0;
+    while( !reader.isEndElement() || reader.name() != "dict" || dictDepth != 0 )
+    {
+        reader.readNext();
+
+        if( reader.error() )
+        {
+            warning() << __PRETTY_FUNCTION__ << reader.errorString();
+            return;
+        }
+
+        writer.writeCurrentToken( reader );
+
+        if( reader.isStartElement() && reader.name() == "key" && dictDepth == 1 )
+        {
+            int trackId = reader.readElementText().toInt();
+            writer.writeCharacters( QString::number( trackId ) );
+            writer.writeCurrentToken( reader );
+
+            if( dirtyData.contains( trackId ) )
+                writeTrack( reader, writer, dirtyData.value( trackId ) );
+        }
+        else if( reader.isStartElement() && reader.name() == "dict" )
+            ++dictDepth;
+        else if( reader.isEndElement() && reader.name() == "dict" )
+            --dictDepth;
+    }
+}
+
+void
+ITunesProvider::writeTrack( QXmlStreamReader &reader, QXmlStreamWriter &writer,
+                            const Meta::FieldHash &dirtyData )
+{
+    QString keyWhitespace;
+    QString lastWhitespace;
+
+    while( !reader.isEndElement() || reader.name() != "dict" )
+    {
+        reader.readNext();
+
+        if( reader.error() )
+        {
+            warning() << __PRETTY_FUNCTION__ << reader.errorString();
+            return;
+        }
+
+        if( reader.isWhitespace() ) // control whitespace, we want nicely formatted file
+        {
+            lastWhitespace = reader.text().toString();
+        }
+        else if( reader.isStartElement() && reader.name() == "key" )
+        {
+            keyWhitespace = lastWhitespace;
+            const QString type = reader.readElementText();
+
+            if( type == "Rating" || type == "Play Count" )
+            {
+                reader.readNextStartElement(); // <integer>
+                reader.skipCurrentElement();
+            }
+            else
+            {
+                writer.writeCharacters( lastWhitespace );
+                writer.writeTextElement( "key", type );
+            }
+
+            lastWhitespace.clear();
+        }
+        else if( !reader.isEndElement() || reader.name() != "dict" )
+        {
+            writer.writeCharacters( lastWhitespace );
+            writer.writeCurrentToken( reader );
+            lastWhitespace.clear();
+        }
+    }
+
+    if( const int rating = dirtyData.value( Meta::valRating ).toInt() )
+    {
+        writer.writeCharacters( keyWhitespace );
+        writer.writeTextElement( "key", "Rating" );
+        writer.writeTextElement( "integer", QString::number( rating ) );
+    }
+    if( const int playCount = dirtyData.value( Meta::valPlaycount ).toInt() )
+    {
+        writer.writeCharacters( keyWhitespace );
+        writer.writeTextElement( "key", "Play Count" );
+        writer.writeTextElement( "integer", QString::number( playCount ) );
+    }
+
+    writer.writeCharacters( lastWhitespace );
+    writer.writeCurrentToken( reader );
+    reader.readNext();
+}
+
+void
+ITunesProvider::trackUpdated( const int trackId, const Meta::FieldHash &statistics )
+{
+    QMutexLocker lock( &m_dirtyMutex );
+    m_dirtyData.insert( trackId, statistics );
+}
+
+void
+ITunesProvider::commitTracks()
+{
+    QMutexLocker lock( &m_dirtyMutex );
+    if( m_dirtyData.empty() )
+        return;
+
+    QMap<int, Meta::FieldHash> dirtyData;
+    dirtyData.swap( m_dirtyData );
+
+    QFile dbFile( m_config.value( "dbPath" ).toString() );
+    if( !dbFile.open( QIODevice::ReadOnly ) )
+    {
+        warning() << __PRETTY_FUNCTION__ << dbFile.fileName() << "is not readable";
+        return;
+    }
+
+    QTemporaryFile tmpFile;
+    if( !tmpFile.open() )
+    {
+        warning() << __PRETTY_FUNCTION__ << tmpFile.fileName() << "is not writable";
+        return;
+    }
+
+    QXmlStreamReader reader( &dbFile );
+    QXmlStreamWriter writer( &tmpFile );
+
+    while( !reader.atEnd() )
+    {
+        reader.readNext();
+
+        if( reader.error() )
+        {
+            warning() << __PRETTY_FUNCTION__ << "Error reading" << dbFile.fileName();
+            return;
+        }
+
+        if( reader.isStartElement() && reader.name() == "key" )
+        {
+            const QString text = reader.readElementText();
+            writer.writeTextElement( "key", text );
+
+            if( text == "Tracks" )
+                writeTracks( reader, writer, dirtyData );
+        }
+        else if( reader.isStartDocument() )
+            writer.writeStartDocument( reader.documentVersion().toString(),
+                                       reader.isStandaloneDocument() );
+        else
+            writer.writeCurrentToken( reader );
+    }
+
+    const QString dbName = dbFile.fileName();
+    QFile::remove( dbName + ".bak" );
+    dbFile.rename( dbName + ".bak" );
+    tmpFile.copy( dbName );
 }

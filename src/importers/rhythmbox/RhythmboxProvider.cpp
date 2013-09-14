@@ -282,7 +282,8 @@ RhythmboxProvider::commitTracks()
             return;
         }
 
-        if( reader.name() == "entry" && reader.attributes().value( "type" ) == "song" )
+        if( reader.isStartElement() && reader.name() == "entry" &&
+            reader.attributes().value( "type" ) == "song" )
             writeSong( reader, writer, dirtyData );
         else if( reader.isStartDocument() ) // writeCurrentToken doesn't add 'standalone'
             writer.writeStartDocument( reader.documentVersion().toString(),
@@ -291,8 +292,8 @@ RhythmboxProvider::commitTracks()
             writer.writeCurrentToken( reader );
     }
 
-    if( dbFile.remove() )
-        tmpFile.copy( dbFile.fileName() );
-    else
-        warning() << "couldn't remove" << dbFile.fileName();
+    const QString dbName = dbFile.fileName();
+    QFile::remove( dbName + ".bak" );
+    dbFile.rename( dbName + ".bak" );
+    tmpFile.copy( dbName );
 }

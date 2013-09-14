@@ -19,13 +19,20 @@
 
 #include "importers/ImporterProvider.h"
 
+#include "MetaValues.h"
+
+#include <QMutex>
+
 class QXmlStreamReader;
+class QXmlStreamWriter;
 
 namespace StatSyncing
 {
 
 class ITunesProvider : public ImporterProvider
 {
+    Q_OBJECT
+
 public:
     ITunesProvider( const QVariantMap &config, ImporterManager *importer );
     ~ITunesProvider();
@@ -35,6 +42,8 @@ public:
     QSet<QString> artists();
     TrackList artistTracks( const QString &artistName );
 
+    void commitTracks();
+
 private:
     void readXml( const QString &byArtist );
     void readPlist( QXmlStreamReader &xml, const QString &byArtist );
@@ -42,8 +51,18 @@ private:
     void readTrack( QXmlStreamReader &xml, const QString &byArtist );
     QString readValue( QXmlStreamReader &xml );
 
+    void writeTracks( QXmlStreamReader &reader, QXmlStreamWriter &writer,
+                      const QMap<int, Meta::FieldHash> &dirtyData );
+    void writeTrack( QXmlStreamReader &reader, QXmlStreamWriter &writer,
+                     const Meta::FieldHash &dirtyData );
+
     QSet<QString> m_artists;
     TrackList m_artistTracks;
+    QMap<int, Meta::FieldHash> m_dirtyData;
+    QMutex m_dirtyMutex;
+
+private slots:
+    void trackUpdated( const int trackId, const Meta::FieldHash &statistics );
 };
 
 } // namespace StatSyncing

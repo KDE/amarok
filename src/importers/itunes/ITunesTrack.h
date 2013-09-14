@@ -17,21 +17,33 @@
 #ifndef STATSYNCING_ITUNES_TRACK_H
 #define STATSYNCING_ITUNES_TRACK_H
 
-#include "statsyncing/SimpleTrack.h"
+#include "statsyncing/SimpleWritableTrack.h"
 
-class QXmlStreamReader;
+#include <QObject>
 
 namespace StatSyncing
 {
 
-class ITunesTrack : public SimpleTrack
+class ITunesTrack : public QObject, public SimpleWritableTrack
 {
+    Q_OBJECT
+
 public:
-    explicit ITunesTrack( const Meta::FieldHash &metadata );
+    explicit ITunesTrack( const int trackId, const Meta::FieldHash &metadata );
     ~ITunesTrack();
 
     int rating() const;
+    void setRating( int rating );
     QDateTime lastPlayed() const;
+
+signals:
+    void commitCalled( const int trackId, const Meta::FieldHash &statistics );
+
+protected:
+    void doCommit( const qint64 changes );
+
+private:
+    const int m_trackId;
 };
 
 } // namespace StatSyncing
