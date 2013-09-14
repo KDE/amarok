@@ -100,10 +100,8 @@ StatSyncing::FastForwardTrack::doCommit( const QSet<qint64> &fields )
         const QString uQuery = "UPDATE statistics SET " + updates.join(", ") +
                                " WHERE url = :url";
         QVariantMap uBindValues;
-        uBindValues.insert( ":createdate",
-                   getDateTime( m_statistics.value( Meta::valFirstPlayed ) ).toTime_t() );
-        uBindValues.insert( ":accessdate",
-                    getDateTime( m_statistics.value( Meta::valLastPlayed ) ).toTime_t() );
+        uBindValues.insert( ":createdate", m_statistics.value( Meta::valFirstPlayed ) );
+        uBindValues.insert( ":accessdate", m_statistics.value( Meta::valLastPlayed ) );
         uBindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
         uBindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
         uBindValues.insert( ":url", m_trackUrl );

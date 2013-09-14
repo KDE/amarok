@@ -59,7 +59,7 @@ void
 SimpleWritableTrack::setFirstPlayed( const QDateTime &firstPlayed )
 {
     QWriteLocker lock( &m_lock );
-    m_statistics.insert( Meta::valFirstPlayed, firstPlayed );
+    m_statistics.insert( Meta::valFirstPlayed, firstPlayed.toTime_t() );
     m_changes.insert( Meta::valFirstPlayed );
 }
 
@@ -74,7 +74,7 @@ void
 SimpleWritableTrack::setLastPlayed( const QDateTime &lastPlayed )
 {
     QWriteLocker lock( &m_lock );
-    m_statistics.insert( Meta::valLastPlayed, lastPlayed );
+    m_statistics.insert( Meta::valLastPlayed, lastPlayed.toTime_t() );
     m_changes.insert( Meta::valLastPlayed );
 }
 

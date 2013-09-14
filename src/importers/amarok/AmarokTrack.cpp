@@ -56,10 +56,8 @@ AmarokTrack::doCommit( const QSet<qint64> &fields )
                 " WHERE url = :url";
 
         QVariantMap bindValues;
-        bindValues.insert( ":createdate",
-                   getDateTime( m_statistics.value( Meta::valFirstPlayed ) ).toTime_t() );
-        bindValues.insert( ":accessdate",
-                   getDateTime( m_statistics.value( Meta::valLastPlayed ) ).toTime_t() );
+        bindValues.insert( ":createdate", m_statistics.value( Meta::valFirstPlayed ) );
+        bindValues.insert( ":accessdate", m_statistics.value( Meta::valLastPlayed ) );
         bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
         bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
         bindValues.insert( ":url", m_urlId );

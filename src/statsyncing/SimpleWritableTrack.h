@@ -39,9 +39,19 @@ public:
     virtual ~SimpleWritableTrack();
 
     virtual QDateTime firstPlayed() const;
+
+    /**
+     * Sets the First Played statistic. This method saves @param firstPlayed in the form
+     * of unix timestamp.
+     */
     virtual void setFirstPlayed( const QDateTime &firstPlayed );
 
     virtual QDateTime lastPlayed() const;
+
+    /**
+     * Sets the Last Played statistic. This method saves @param lastPlayed in the form
+     * of unix timestamp.
+     */
     virtual void setLastPlayed( const QDateTime &lastPlayed );
 
     virtual int playCount() const;

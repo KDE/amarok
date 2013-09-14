@@ -122,8 +122,7 @@ ClementineTrack::doCommit( const QSet<qint64> &fields )
                 "WHERE filename = :name";
 
         QVariantMap bindValues;
-        bindValues.insert( ":lastplayed",
-                    getDateTime( m_statistics.value( Meta::valLastPlayed ) ).toTime_t() );
+        bindValues.insert( ":lastplayed", m_statistics.value( Meta::valLastPlayed ) );
         bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
         bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
         bindValues.insert( ":name", m_filename );
