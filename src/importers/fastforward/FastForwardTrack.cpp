@@ -56,14 +56,28 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
     const QString uniqueId = result.front()[1].toString();
 
     QStringList updates;
+    QVariantMap uBindValues;
+
     if( fields & Meta::valFirstPlayed )
+    {
         updates << "createdate = :createdate";
+        uBindValues.insert( ":createdate", m_statistics.value( Meta::valFirstPlayed ) );
+    }
     if( fields & Meta::valLastPlayed )
+    {
         updates << "accessdate = :accessdate";
+        uBindValues.insert( ":accessdate", m_statistics.value( Meta::valLastPlayed ) );
+    }
     if( fields & Meta::valRating )
+    {
         updates << "rating = :rating";
+        uBindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+    }
     if( fields & Meta::valPlaycount )
+    {
         updates << "playcounter = :playcount";
+        uBindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+    }
 
     if( !updates.isEmpty() )
     {
@@ -99,13 +113,8 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
         // Update statistics
         const QString uQuery = "UPDATE statistics SET " + updates.join(", ") +
                                " WHERE url = :url";
-        QVariantMap uBindValues;
-        uBindValues.insert( ":createdate", m_statistics.value( Meta::valFirstPlayed ) );
-        uBindValues.insert( ":accessdate", m_statistics.value( Meta::valLastPlayed ) );
-        uBindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
-        uBindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
-        uBindValues.insert( ":url", m_trackUrl );
 
+        uBindValues.insert( ":url", m_trackUrl );
         m_connection->query( uQuery, uBindValues, &ok );
         if( !ok )
         {

@@ -61,8 +61,9 @@ ClementineTrack::discNumber() const
 QDateTime
 ClementineTrack::lastPlayed() const
 {
+    QReadLocker lock( &m_lock );
     const int lp = m_statistics.value( Meta::valLastPlayed ).toInt();
-    return lp == -1 ? QDateTime() : SimpleWritableTrack::lastPlayed();
+    return lp == -1 ? QDateTime() : getDateTime( lp );
 }
 
 void
@@ -74,6 +75,8 @@ ClementineTrack::setLastPlayed( const QDateTime &lastPlayed )
         m_statistics.insert( Meta::valLastPlayed, -1 );
     else
         m_statistics.insert( Meta::valLastPlayed, lastPlayed );
+
+    m_changes |= Meta::valLastPlayed;
 }
 
 int
@@ -86,8 +89,7 @@ ClementineTrack::playCount() const
 void
 ClementineTrack::setPlayCount( int playCount )
 {
-    QWriteLocker lock( &m_lock );
-    m_statistics.insert( Meta::valLastPlayed, playCount == 0 ? -1 : playCount );
+    SimpleWritableTrack::setPlayCount( playCount == 0 ? -1 : playCount );
 }
 
 int
@@ -103,30 +105,37 @@ ClementineTrack::setRating( int rating )
 {
     QWriteLocker lock( &m_lock );
     m_statistics.insert( Meta::valRating, rating == 0 ? -1.0 : 0.1 * rating );
+    m_changes |= Meta::valRating;
 }
 
 void
 ClementineTrack::doCommit( const qint64 fields )
 {
     QStringList updates;
+    QVariantMap bindValues;
+
     if( fields & Meta::valLastPlayed )
+    {
         updates << "lastplayed = :lastplayed";
+        bindValues.insert( ":lastplayed", m_statistics.value( Meta::valLastPlayed ) );
+    }
     if( fields & Meta::valRating )
+    {
         updates << "rating = :rating";
+        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+    }
     if( fields & Meta::valPlaycount )
+    {
         updates << "playcount = :playcount";
+        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+    }
 
     if( !updates.empty() )
     {
         const QString query = "UPDATE songs SET " + updates.join(", ") +
-                "WHERE filename = :name";
+                              " WHERE filename = :name";
 
-        QVariantMap bindValues;
-        bindValues.insert( ":lastplayed", m_statistics.value( Meta::valLastPlayed ) );
-        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
-        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
         bindValues.insert( ":name", m_filename );
-
         m_connection->query( query, bindValues );
     }
 }

@@ -188,6 +188,8 @@ ImporterSqlConnection::slotQuery( const QString &query, const QVariantMap &bindV
             m_result.append( row );
         }
     }
+    else
+        warning() << __PRETTY_FUNCTION__ << q.lastError().text();
 
     // This is a stupid QSqlDatabase connection manager; we don't want to leave connection
     // open unless we're inside a transaction.

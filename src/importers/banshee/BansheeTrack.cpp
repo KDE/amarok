@@ -51,24 +51,29 @@ void
 BansheeTrack::doCommit( const qint64 fields )
 {
     QStringList updates;
+    QVariantMap bindValues;
     if( fields & Meta::valLastPlayed )
+    {
         updates << "LastPlayedStamp = :lastplayed";
+        bindValues.insert( ":lastplayed", m_statistics.value( Meta::valLastPlayed ) );
+    }
     if( fields & Meta::valRating )
+    {
         updates << "Rating = :rating";
+        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+    }
     if( fields & Meta::valPlaycount )
+    {
         updates << "PlayCount = :playcount";
+        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+    }
 
     if( !updates.empty() )
     {
         const QString query = "UPDATE coretracks SET " + updates.join(", ") +
-                "WHERE TrackID = :id";
+                              " WHERE TrackID = :id";
 
-        QVariantMap bindValues;
-        bindValues.insert( ":lastplayed", m_statistics.value( Meta::valLastPlayed ) );
-        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
-        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
         bindValues.insert( ":id", m_trackId );
-
         m_connection->query( query, bindValues );
     }
 }

@@ -41,27 +41,34 @@ AmarokTrack::doCommit( const qint64 fields )
     m_connection->transaction();
 
     QStringList updates;
+    QVariantMap bindValues;
     if( fields & Meta::valFirstPlayed )
+    {
         updates << "createdate = :createdate";
+        bindValues.insert( ":createdate", m_statistics.value( Meta::valFirstPlayed ) );
+    }
     if( fields & Meta::valLastPlayed )
+    {
         updates << "accessdate = :accessdate";
+        bindValues.insert( ":accessdate", m_statistics.value( Meta::valLastPlayed ) );
+    }
     if( fields & Meta::valRating )
+    {
         updates << "rating = :rating";
+        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+    }
     if( fields & Meta::valPlaycount )
+    {
         updates << "playcount = :playcount";
+        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+    }
 
     if( !updates.isEmpty() )
     {
         const QString query = "UPDATE statistics SET " + updates.join(", ") +
-                " WHERE url = :url";
+                              " WHERE url = :url";
 
-        QVariantMap bindValues;
-        bindValues.insert( ":createdate", m_statistics.value( Meta::valFirstPlayed ) );
-        bindValues.insert( ":accessdate", m_statistics.value( Meta::valLastPlayed ) );
-        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
-        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
         bindValues.insert( ":url", m_urlId );
-
         m_connection->query( query, bindValues, &ok );
         if( !ok )
         {
