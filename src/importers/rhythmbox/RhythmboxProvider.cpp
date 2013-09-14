@@ -20,7 +20,9 @@
 #include "core/support/Debug.h"
 
 #include <QFile>
+#include <QTemporaryFile>
 #include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 using namespace StatSyncing;
 
@@ -44,8 +46,7 @@ RhythmboxProvider::reliableTrackMetaData() const
 qint64
 RhythmboxProvider::writableTrackStatsData() const
 {
-    //TODO: Write capabilities
-    return 0;
+    return Meta::valRating | Meta::valLastPlayed | Meta::valPlaycount;
 }
 
 QSet<QString>
@@ -115,6 +116,7 @@ RhythmboxProvider::readSong( QXmlStreamReader &xml, const QString &byArtist )
 
     Meta::FieldHash metadata;
     QString currentArtist;
+    QString location;
 
     while( xml.readNextStartElement() )
     {
@@ -146,6 +148,8 @@ RhythmboxProvider::readSong( QXmlStreamReader &xml, const QString &byArtist )
                 metadata.insert( Meta::valLastPlayed, readValue( xml ) );
             else if( xml.name() == "play-count" )
                 metadata.insert( Meta::valPlaycount, readValue( xml ) );
+            else if( xml.name() == "location" )
+                location = readValue( xml );
             else
                 xml.skipCurrentElement();
         }
@@ -154,7 +158,14 @@ RhythmboxProvider::readSong( QXmlStreamReader &xml, const QString &byArtist )
     }
 
     if( !byArtist.isEmpty() && currentArtist == byArtist )
-        m_artistTracks << TrackPtr( new RhythmboxTrack( metadata ) );
+    {
+        RhythmboxTrack *track = new RhythmboxTrack( location, metadata );
+        connect( track, SIGNAL(trackUpdated(QString,qint64,QVariant)),
+                 SLOT(trackUpdated(QString,qint64,QVariant)) );
+        connect( track, SIGNAL(commitCalled()),
+                 SLOT(commit()), Qt::BlockingQueuedConnection );
+        m_artistTracks << TrackPtr( track );
+    }
     else if( byArtist.isEmpty() )
         m_artists << currentArtist;
 }
@@ -163,4 +174,123 @@ QString
 RhythmboxProvider::readValue( QXmlStreamReader &xml )
 {
     return xml.readElementText();
+}
+
+void
+RhythmboxProvider::writeSong( QXmlStreamReader &reader, QXmlStreamWriter &writer,
+                              const QMap<QString, Meta::FieldHash> &dirtyData )
+{
+    Q_ASSERT( reader.isStartElement() && reader.name() == "entry" );
+
+    Meta::FieldHash metadata;
+    QString location;
+
+    writer.writeCurrentToken( reader );
+    while( !reader.isEndElement() || reader.name() != "entry" )
+    {
+        reader.readNext();
+
+        if( reader.error() )
+        {
+            warning() << __PRETTY_FUNCTION__ << "Error reading song:"
+                      << reader.errorString();
+            return;
+        }
+
+        if( reader.isWhitespace() )
+            continue; // autoformat will deal with whitespace for us
+
+        if( reader.isStartElement() )
+        {
+            if( reader.name() == "rating" )
+                metadata.insert( Meta::valRating, readValue( reader ) );
+            else if( reader.name() == "last-played" )
+                metadata.insert( Meta::valLastPlayed, readValue( reader ) );
+            else if( reader.name() == "play-count" )
+                metadata.insert( Meta::valPlaycount, readValue( reader ) );
+            else if( reader.name() == "location" )
+            {
+                location = readValue( reader );
+                writer.writeTextElement( "location", location );
+            }
+            else
+                writer.writeCurrentToken( reader );
+        }
+        else if( !reader.isEndElement() || reader.name() != "entry" )
+            writer.writeCurrentToken( reader );
+    }
+
+    // Override read statistics - QMap::value reads the most recently added one
+    metadata.unite( dirtyData.value( location ) );
+
+    if( metadata.value( Meta::valRating ).toInt() != 0 )
+        writer.writeTextElement( "rating", metadata.value( Meta::valRating ).toString() );
+    if( metadata.value( Meta::valLastPlayed ).toUInt() != 0 )
+        writer.writeTextElement( "last-played",
+                                 metadata.value( Meta::valLastPlayed ).toString() );
+    if( metadata.value( Meta::valPlaycount ).toInt() != 0 )
+        writer.writeTextElement( "play-count",
+                                 metadata.value( Meta::valPlaycount ).toString() );
+
+    writer.writeCurrentToken( reader );
+}
+
+void
+RhythmboxProvider::trackUpdated( const QString &location, const qint64 type,
+                                 const QVariant &stat )
+{
+    m_dirtyData[location].insert( type, stat );
+}
+
+void
+RhythmboxProvider::commit()
+{
+    if( m_dirtyData.empty() )
+        return;
+
+    QMap<QString, Meta::FieldHash> dirtyData;
+    dirtyData.swap( m_dirtyData );
+
+    QFile dbFile( m_config.value( "dbPath" ).toString() );
+    if( !dbFile.open( QIODevice::ReadOnly ) )
+    {
+        warning() << __PRETTY_FUNCTION__ << dbFile.fileName() << "is not readable";
+        return;
+    }
+
+    QTemporaryFile tmpFile;
+    if( !tmpFile.open() )
+    {
+        warning() << __PRETTY_FUNCTION__ << tmpFile.fileName() << "is not writable";
+        return;
+    }
+
+    QXmlStreamReader reader( &dbFile );
+    QXmlStreamWriter writer( &tmpFile );
+    writer.setAutoFormatting( true );
+    writer.setAutoFormattingIndent( 2 );
+
+    while( !reader.atEnd() )
+    {
+        reader.readNext();
+
+        if( reader.error() )
+        {
+            warning() << __PRETTY_FUNCTION__ << "Error reading" << dbFile.fileName();
+            return;
+        }
+
+        if( reader.name() == "entry" && reader.attributes().value( "type" ) == "song" )
+            writeSong( reader, writer, dirtyData );
+        else if( reader.isStartDocument() ) // writeCurrentToken doesn't add 'standalone'
+            writer.writeStartDocument( reader.documentVersion().toString(),
+                                       reader.isStandaloneDocument() );
+        else
+            writer.writeCurrentToken( reader );
+    }
+
+    if( dbFile.remove() )
+        tmpFile.copy( dbFile.fileName() );
+    else
+        warning() << "couldn't remove" << dbFile.fileName();
 }

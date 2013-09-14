@@ -17,18 +17,34 @@
 #ifndef STATSYNCING_RHYTHMBOX_TRACK_H
 #define STATSYNCING_RHYTHMBOX_TRACK_H
 
-#include "statsyncing/SimpleTrack.h"
+#include "statsyncing/SimpleWritableTrack.h"
+#include <QObject>
 
 namespace StatSyncing
 {
 
-class RhythmboxTrack : public SimpleTrack
+class RhythmboxTrack : public QObject, public SimpleWritableTrack
 {
+    Q_OBJECT
+
 public:
-    explicit RhythmboxTrack( const Meta::FieldHash &metadata );
+    RhythmboxTrack( const QString &location, const Meta::FieldHash &metadata );
     ~RhythmboxTrack();
 
     int rating() const;
+    void setLastPlayed( const QDateTime &lastPlayed );
+    void setPlayCount( int playCount );
+    void setRating( int rating );
+
+protected:
+    void doCommit( const QSet<qint64> &fields );
+
+signals:
+    void trackUpdated( const QString &location, const qint64 type, const QVariant &stat );
+    void commitCalled();
+
+private:
+    const QString m_location;
 };
 
 } // namespace StatSyncing

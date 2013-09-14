@@ -19,13 +19,18 @@
 
 #include "importers/ImporterProvider.h"
 
+#include "MetaValues.h"
+
 class QXmlStreamReader;
+class QXmlStreamWriter;
 
 namespace StatSyncing
 {
 
 class RhythmboxProvider : public ImporterProvider
 {
+    Q_OBJECT
+
 public:
     RhythmboxProvider( const QVariantMap &config, ImporterManager *importer );
     ~RhythmboxProvider();
@@ -41,8 +46,16 @@ private:
     void readSong( QXmlStreamReader &xml, const QString &byArtist );
     QString readValue( QXmlStreamReader &xml );
 
+    void writeSong( QXmlStreamReader &reader, QXmlStreamWriter &writer,
+                    const QMap<QString, Meta::FieldHash> &dirtyData );
+
     QSet<QString> m_artists;
     TrackList m_artistTracks;
+    QMap<QString, Meta::FieldHash> m_dirtyData;
+
+private slots:
+    void trackUpdated( const QString &location, const qint64 type, const QVariant &stat );
+    void commit();
 };
 
 } // namespace StatSyncing

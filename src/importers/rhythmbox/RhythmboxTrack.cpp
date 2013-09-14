@@ -18,8 +18,9 @@
 
 using namespace StatSyncing;
 
-RhythmboxTrack::RhythmboxTrack( const Meta::FieldHash &metadata )
-    : SimpleTrack( metadata )
+RhythmboxTrack::RhythmboxTrack( const QString &location, const Meta::FieldHash &metadata )
+    : SimpleWritableTrack( metadata )
+    , m_location( location )
 {
 }
 
@@ -30,5 +31,34 @@ RhythmboxTrack::~RhythmboxTrack()
 int
 RhythmboxTrack::rating() const
 {
-    return SimpleTrack::rating() * 2;
+    return SimpleWritableTrack::rating() * 2;
+}
+
+void
+RhythmboxTrack::setLastPlayed( const QDateTime &lastPlayed )
+{
+    SimpleWritableTrack::setLastPlayed( lastPlayed );
+    emit trackUpdated( m_location, Meta::valLastPlayed, lastPlayed.toTime_t() );
+}
+
+void
+RhythmboxTrack::setPlayCount( int playCount )
+{
+    SimpleWritableTrack::setPlayCount( playCount );
+    emit trackUpdated( m_location, Meta::valPlaycount, playCount );
+}
+
+void
+RhythmboxTrack::setRating( int rating )
+{
+    rating = (rating + 1)/2;
+    SimpleWritableTrack::setRating( rating );
+    emit trackUpdated( m_location, Meta::valRating, rating );
+}
+
+void
+RhythmboxTrack::doCommit( const QSet<qint64> &fields )
+{
+    Q_UNUSED( fields );
+    emit commitCalled();
 }
