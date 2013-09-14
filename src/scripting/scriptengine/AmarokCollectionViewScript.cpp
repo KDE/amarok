@@ -17,15 +17,18 @@
 #define DEBUG_PREFIX "CollectionViewScript"
 #include "AmarokCollectionViewScript.h"
 
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
-#include "ScriptingDefines.h"
 #include "browsers/CollectionTreeView.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
-#include <browsers/collectionbrowser/CollectionBrowserTreeView.h>
+#include "browsers/collectionbrowser/CollectionBrowserTreeView.h"
 #include "browsers/CollectionTreeItem.h"
+#include "browsers/CollectionTreeItemModelBase.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/TextualQueryFilter.h"
 #include "MainWindow.h"
-
-#include "amarokconfig.h"
+#include "ScriptingDefines.h"
+#include "widgets/SearchWidget.h"
 
 #include <KMenu>
 
@@ -38,31 +41,37 @@ Q_DECLARE_METATYPE( QList<QAction*> )
 using namespace AmarokScript;
 
 QMap<QString, AmarokCollectionViewScript*> AmarokCollectionViewScript::s_instances;
-Selection *AmarokCollectionViewScript::s_selection = 0;
+QWeakPointer<Selection> AmarokCollectionViewScript::s_selection;
 
 AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engine, const QString &scriptName )
     : QObject( engine )
     , m_collectionWidget( The::mainWindow()->collectionBrowser() )
     , m_engine( engine )
     , m_scriptName( scriptName )
+    , m_categoryEnum( metaObject()->enumerator( metaObject()->indexOfEnumerator("Category") ) )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
     QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
     Q_ASSERT( !windowObject.isUndefined() );
     windowObject.setProperty( "CollectionView", scriptObject );
-    /*const QMetaEnum categoryEnum = metaObject()->enumerator( metaObject()->indexOfEnumerator("Category") );
-    Q_ASSERT( categoryEnum.isValid() );
-    scriptObject.setProperty( "Category", engine->enumObject( categoryEnum ) );*/
+    const QMetaEnum typeEnum = CollectionTreeItem::staticMetaObject.enumerator( CollectionTreeItem::staticMetaObject.indexOfEnumerator( "Type" ) );
+    Q_ASSERT( typeEnum.isValid() );
+    scriptObject.setProperty( "Type", engine->enumObject( typeEnum ) );
+    Q_ASSERT( m_categoryEnum.isValid() );
+    scriptObject.setProperty( "Category", engine->enumObject( m_categoryEnum ) );
     qScriptRegisterMetaType<CollectionTreeItem*>( engine, CollectionViewItem::toScriptValue, fromScriptValue<CollectionTreeItem*, CollectionViewItem> );
     engine->registerArrayType< QList<CollectionTreeItem*> >();
     engine->registerArrayType<QActionList>();
     s_instances[m_scriptName] = this;
+    connect( The::mainWindow()->collectionBrowser()->searchWidget(), SIGNAL(filterChanged(QString)), SIGNAL(filterChanged(QString)) );
 }
 
 AmarokCollectionViewScript::~AmarokCollectionViewScript()
 {
     s_instances.remove( m_scriptName );
+    if( s_instances.isEmpty() )
+        delete s_selection.data();
 }
 
 void
@@ -96,13 +105,12 @@ void
 AmarokCollectionViewScript::createScriptedActions( KMenu &menu, const QModelIndexList &indices )
 {
     debug() << "Checking for scripted actions";
-    if( s_selection ) delete s_selection;
-    debug() << "here";
+    if( s_selection )
+        delete s_selection.data();
     if( s_instances.isEmpty() )
         return;
     s_selection = new Selection( indices );
 
-    debug() << "here2";
     foreach( const QString &scriptName, s_instances.keys() )
     {
         if( s_instances[scriptName] )
@@ -126,14 +134,14 @@ AmarokCollectionViewScript::createScriptedActions( KMenu &menu, const QModelInde
 QScriptValue
 AmarokCollectionViewScript::selectionScriptValue()
 {
-    return m_engine->newQObject( s_selection, QScriptEngine::QtOwnership,
+    return m_engine->newQObject( s_selection.data(), QScriptEngine::QtOwnership,
                                 QScriptEngine::ExcludeSuperClassContents );
 }
 
 Selection*
 AmarokCollectionViewScript::selection()
 {
-    return s_selection;
+    return s_selection.data();
 }
 
 void
@@ -172,10 +180,49 @@ AmarokCollectionViewScript::showYears()
     return AmarokConfig::showYears();
 }
 
+bool
+AmarokCollectionViewScript::mergedView() const
+{
+    return m_collectionWidget->viewMode() == CollectionWidget::UnifiedCollection;
+}
+
 void
-AmarokCollectionViewScript::toggleView( bool merged )
+AmarokCollectionViewScript::setMergedView( bool merged )
 {
     CollectionWidget::instance()->toggleView( merged );
+}
+
+QList<int>
+AmarokCollectionViewScript::levels() const
+{
+    QList<int> levels;
+    foreach( CategoryId::CatMenuId level, m_collectionWidget->currentView()->levels() )
+        levels << level;
+    return levels;
+}
+
+void
+AmarokCollectionViewScript::setLevel( int level, int type )
+{
+    if( m_categoryEnum.valueToKey( type ) )
+        return m_collectionWidget->currentView()->setLevel( level, CategoryId::CatMenuId( type ) );
+    m_engine->currentContext()->throwError( QScriptContext::TypeError, "Invalid category!" );
+}
+
+void
+AmarokCollectionViewScript::setLevels( const QList<int> &levels )
+{
+    QList<CategoryId::CatMenuId> catLevels;
+    foreach( int level, levels )
+    {
+        if( !m_categoryEnum.valueToKey( level ) )
+        {
+            m_engine->currentContext()->throwError( QScriptContext::TypeError, "Invalid category!" );
+            return;
+        }
+        catLevels << CategoryId::CatMenuId( level );
+    }
+    m_collectionWidget->setLevels( catLevels );
 }
 
 ///////////////////////////////////////////////////////////
@@ -242,7 +289,7 @@ CollectionViewItem::isCollection() const
 }
 
 CollectionTreeItem*
-CollectionViewItem::data()
+CollectionViewItem::data() const
 {
     return m_item;
 }
@@ -256,6 +303,92 @@ CollectionViewItem::toScriptValue( QScriptEngine *engine, CollectionTreeItem* co
     return val;
 }
 
+Meta::TrackPtr
+CollectionViewItem::track()
+{
+    return Meta::TrackPtr::dynamicCast( m_item->data() );
+}
+
+bool
+CollectionViewItem::isAlbumItem() const
+{
+    return m_item->isAlbumItem();
+}
+
+bool
+CollectionViewItem::isDataItem() const
+{
+    return m_item->isDataItem();
+}
+
+bool
+CollectionViewItem::isNoLabelItem() const
+{
+    return m_item->isNoLabelItem();
+}
+
+bool
+CollectionViewItem::isVariousArtistItem() const
+{
+    return m_item->isVariousArtistItem();
+}
+
+bool
+CollectionViewItem::childrenLoaded() const
+{
+    return m_item->isTrackItem() || !m_item->requiresUpdate();
+}
+
+void
+CollectionViewItem::loadChildren()
+{
+    if( !m_item->requiresUpdate() )
+        return;
+    CollectionTreeItemModelBase *model = getModel();
+    connect( model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(slotDataChanged(QModelIndex,QModelIndex)) );
+    model->ensureChildrenLoaded( m_item );
+}
+
+void
+CollectionViewItem::slotDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight )
+{
+    Q_UNUSED( bottomRight )
+    if( static_cast<CollectionTreeItem*>( topLeft.internalPointer() ) != m_item )
+        return;
+    emit loaded( m_item );
+    Q_ASSERT( disconnect( sender(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, 0 ) );
+}
+
+Collections::QueryMaker*
+CollectionViewItem::queryMaker()
+{
+    Collections::QueryMaker *qm = 0;
+    if( The::mainWindow()->collectionBrowser()->viewMode() == CollectionWidget::NormalCollections )
+        qm = m_item->queryMaker();
+    else
+        qm = CollectionManager::instance()->queryMaker();
+    addFilter( qm );
+    return qm;
+}
+
+void
+CollectionViewItem::addFilter( Collections::QueryMaker *queryMaker )
+{
+    if( !queryMaker )
+        return;
+    CollectionTreeItemModelBase *model = getModel();
+    for( CollectionTreeItem *tmp = m_item; tmp; tmp = tmp->parent() )
+        tmp->addMatch( queryMaker, model->levelCategory( tmp->level() - 1 ) );
+    Collections::addTextualFilter( queryMaker, model->currentFilter() );
+}
+
+CollectionTreeItemModelBase*
+CollectionViewItem::getModel()
+{
+    QSortFilterProxyModel *proxyModel = dynamic_cast<QSortFilterProxyModel*>( The::mainWindow()->collectionBrowser()->currentView()->model() );
+    return dynamic_cast<CollectionTreeItemModelBase*>( proxyModel ? proxyModel->sourceModel() : 0 );
+}
+
 ///////////////////////////////////////////////////////////
 // Selection
 ///////////////////////////////////////////////////////////
@@ -266,20 +399,12 @@ Selection::singleCollection() const
     return CollectionTreeView::onlyOneCollection( m_indices );
 }
 
-int
-Selection::collectionCount() const
-{
-    return 0; // ANM-TODO
-}
-
 QList<CollectionTreeItem*>
 Selection::selectedItems()
 {
     QList<CollectionTreeItem*> collectionItems;
     foreach( const QModelIndex &index, m_indices )
-    {
         collectionItems << static_cast<CollectionTreeItem*>( index.internalPointer() );
-    }
     return collectionItems;
 }
 
