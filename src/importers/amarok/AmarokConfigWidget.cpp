@@ -64,12 +64,13 @@ void
 AmarokConfigWidget::connectionTypeChanged( const int index )
 {
     const bool embedded = ( index == Embedded );
+    const QList<QWidget*> &hide = embedded ? m_externalDbSettings : m_embeddedDbSettings;
+    const QList<QWidget*> &show = embedded ? m_embeddedDbSettings : m_externalDbSettings;
 
-    foreach( QWidget *widget, m_embeddedDbSettings )
-        widget->setVisible( embedded );
-
-    foreach( QWidget *widget, m_externalDbSettings )
-        widget->setVisible( !embedded );
+    foreach( QWidget *widget, hide )
+        widget->hide();
+    foreach( QWidget *widget, show )
+        widget->show();
 }
 
 void
