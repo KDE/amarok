@@ -32,16 +32,13 @@ public:
     ~RhythmboxTrack();
 
     int rating() const;
-    void setLastPlayed( const QDateTime &lastPlayed );
-    void setPlayCount( int playCount );
     void setRating( int rating );
 
 protected:
     void doCommit( const qint64 fields );
 
 signals:
-    void trackUpdated( const QString &location, const qint64 type, const QVariant &stat );
-    void commitCalled();
+    void commitCalled( const QString &location, const Meta::FieldHash &statistics );
 
 private:
     const QString m_location;

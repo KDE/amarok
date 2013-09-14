@@ -20,6 +20,7 @@
 #include "core/support/Debug.h"
 
 #include <QFile>
+#include <QMutexLocker>
 #include <QTemporaryFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -160,10 +161,8 @@ RhythmboxProvider::readSong( QXmlStreamReader &xml, const QString &byArtist )
     if( !byArtist.isEmpty() && currentArtist == byArtist )
     {
         RhythmboxTrack *track = new RhythmboxTrack( location, metadata );
-        connect( track, SIGNAL(trackUpdated(QString,qint64,QVariant)),
-                 SLOT(trackUpdated(QString,qint64,QVariant)) );
-        connect( track, SIGNAL(commitCalled()),
-                 SLOT(commit()), Qt::BlockingQueuedConnection );
+        connect( track, SIGNAL(commitCalled(QString,Meta::FieldHash)),
+                 SLOT(trackUpdated(QString,Meta::FieldHash)), Qt::DirectConnection );
         m_artistTracks << TrackPtr( track );
     }
     else if( byArtist.isEmpty() )
@@ -220,8 +219,9 @@ RhythmboxProvider::writeSong( QXmlStreamReader &reader, QXmlStreamWriter &writer
             writer.writeCurrentToken( reader );
     }
 
-    // Override read statistics - QMap::value reads the most recently added one
-    metadata.unite( dirtyData.value( location ) );
+    // Override read statistics
+    if( dirtyData.contains( location ) )
+        metadata = dirtyData.value( location );
 
     if( metadata.value( Meta::valRating ).toInt() != 0 )
         writer.writeTextElement( "rating", metadata.value( Meta::valRating ).toString() );
@@ -236,15 +236,17 @@ RhythmboxProvider::writeSong( QXmlStreamReader &reader, QXmlStreamWriter &writer
 }
 
 void
-RhythmboxProvider::trackUpdated( const QString &location, const qint64 type,
-                                 const QVariant &stat )
+RhythmboxProvider::trackUpdated( const QString &location,
+                                 const Meta::FieldHash &statistics )
 {
-    m_dirtyData[location].insert( type, stat );
+    QMutexLocker lock( &m_dirtyMutex );
+    m_dirtyData.insert( location, statistics );
 }
 
 void
-RhythmboxProvider::commit()
+RhythmboxProvider::commitTracks()
 {
+    QMutexLocker lock( &m_dirtyMutex );
     if( m_dirtyData.empty() )
         return;
 

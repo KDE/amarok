@@ -35,30 +35,14 @@ RhythmboxTrack::rating() const
 }
 
 void
-RhythmboxTrack::setLastPlayed( const QDateTime &lastPlayed )
-{
-    SimpleWritableTrack::setLastPlayed( lastPlayed );
-    emit trackUpdated( m_location, Meta::valLastPlayed, lastPlayed.toTime_t() );
-}
-
-void
-RhythmboxTrack::setPlayCount( int playCount )
-{
-    SimpleWritableTrack::setPlayCount( playCount );
-    emit trackUpdated( m_location, Meta::valPlaycount, playCount );
-}
-
-void
 RhythmboxTrack::setRating( int rating )
 {
-    rating = (rating + 1)/2;
-    SimpleWritableTrack::setRating( rating );
-    emit trackUpdated( m_location, Meta::valRating, rating );
+    SimpleWritableTrack::setRating( (rating + 1)/2 );
 }
 
 void
 RhythmboxTrack::doCommit( const qint64 fields )
 {
     Q_UNUSED( fields );
-    emit commitCalled();
+    emit commitCalled( m_location, m_statistics );
 }

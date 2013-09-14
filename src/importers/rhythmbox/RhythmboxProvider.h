@@ -21,6 +21,8 @@
 
 #include "MetaValues.h"
 
+#include <QMutex>
+
 class QXmlStreamReader;
 class QXmlStreamWriter;
 
@@ -40,6 +42,8 @@ public:
     QSet<QString> artists();
     TrackList artistTracks( const QString &artistName );
 
+    void commitTracks();
+
 private:
     void readXml( const QString &byArtist );
     void readRhythmdb( QXmlStreamReader &xml, const QString &byArtist );
@@ -52,10 +56,10 @@ private:
     QSet<QString> m_artists;
     TrackList m_artistTracks;
     QMap<QString, Meta::FieldHash> m_dirtyData;
+    QMutex m_dirtyMutex;
 
 private slots:
-    void trackUpdated( const QString &location, const qint64 type, const QVariant &stat );
-    void commit();
+    void trackUpdated( const QString &location, const Meta::FieldHash &statistics );
 };
 
 } // namespace StatSyncing
