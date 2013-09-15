@@ -99,8 +99,8 @@ VorbisFormat::ffmpegParameters( const Configuration &configuration ) const
             if( property.name() == "quality" )
             {
                 int ffmpegQuality = configuration.property( "quality" ).toInt() - 1;
-                parameters << "-aq"
-                           << QString::number( ffmpegQuality );
+                parameters << "-aq" << QString::number( ffmpegQuality );
+                parameters << "-vn"; // -vn == no video stream (some devices can't handle that)
             }
         }
     }
