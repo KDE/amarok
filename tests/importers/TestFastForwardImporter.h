@@ -30,6 +30,7 @@ private:
 
 protected:
     virtual StatSyncing::ProviderPtr getProvider();
+    virtual StatSyncing::ProviderPtr getWritableProvider();
     virtual qint64 reliableStatistics() const;
 
 private slots:

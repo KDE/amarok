@@ -36,6 +36,22 @@ TestRhythmboxImporter::getProvider()
     return ProviderPtr( new RhythmboxProvider( cfg, 0 ) );
 }
 
+ProviderPtr
+TestRhythmboxImporter::getWritableProvider()
+{
+    QDir base( QCoreApplication::applicationDirPath() );
+    base.mkpath( "importers_tmp" );
+
+    const QString dst = base.filePath( "importers_tmp/rhythmdb.xml" );
+    QFile( dst ).remove();
+    QFile( base.filePath( "importers_files/rhythmdb.xml" ) ).copy( dst );
+
+    QVariantMap cfg = RhythmboxConfigWidget( QVariantMap() ).config();
+    cfg.insert( "dbPath", dst );
+
+    return ProviderPtr( new RhythmboxProvider( cfg, 0 ) );
+}
+
 qint64
 TestRhythmboxImporter::reliableStatistics() const
 {

@@ -78,6 +78,12 @@ protected:
     virtual StatSyncing::ProviderPtr getProvider() = 0;
 
     /**
+     * This method should return a provider ready for writing. The database used should
+     * be a temporary copy.
+     */
+    virtual StatSyncing::ProviderPtr getWritableProvider();
+
+    /**
      * Return a binary or of Meta::val* representing statistics suported
      * by the provider being tested.
      */
@@ -136,6 +142,20 @@ private slots:
 
     void providerShouldReturnNoTracksForNonexistentArtist();
     void providerShouldNotBreakOnLittleBobbyTables();
+
+    // Write capabilities
+    void commitAfterSettingAllStatisticsShouldSaveThem_data();
+    void commitAfterSettingAllStatisticsShouldSaveThem();
+    void commitAfterSettingFirstPlayedShouldSaveIt_data();
+    void commitAfterSettingFirstPlayedShouldSaveIt();
+    void commitAfterSettingLastPlayedShouldSaveIt_data();
+    void commitAfterSettingLastPlayedShouldSaveIt();
+    void commitAfterSettingRatingShouldSaveIt_data();
+    void commitAfterSettingRatingShouldSaveIt();
+    void commitAfterSettingPlaycountShouldSaveIt_data();
+    void commitAfterSettingPlaycountShouldSaveIt();
+    void commitAfterSettingLabelsShouldSaveThem_data();
+    void commitAfterSettingLabelsShouldSaveThem();
 };
 
 #endif // TEST_IMPORTER_BASE

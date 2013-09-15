@@ -37,6 +37,23 @@ TestFastForwardImporter::getProvider()
     return ProviderPtr( new FastForwardProvider( cfg, 0 ) );
 }
 
+ProviderPtr
+TestFastForwardImporter::getWritableProvider()
+{
+    QDir base( QCoreApplication::applicationDirPath() );
+    base.mkpath( "importers_tmp" );
+
+    const QString dst = base.filePath( "importers_tmp/collection.db" );
+    QFile( dst ).remove();
+    QFile( base.filePath( "importers_files/collection.db" ) ).copy( dst );
+
+    QVariantMap cfg = FastForwardConfigWidget( QVariantMap() ).config();
+    cfg.insert( "dbDriver", "QSQLITE" );
+    cfg.insert( "dbPath", dst );
+
+    return ProviderPtr( new FastForwardProvider( cfg, 0 ) );
+}
+
 qint64
 TestFastForwardImporter::reliableStatistics() const
 {

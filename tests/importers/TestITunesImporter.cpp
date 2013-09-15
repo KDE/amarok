@@ -36,6 +36,22 @@ TestITunesImporter::getProvider()
     return ProviderPtr( new ITunesProvider( cfg, 0 ) );
 }
 
+ProviderPtr
+TestITunesImporter::getWritableProvider()
+{
+    QDir base( QCoreApplication::applicationDirPath() );
+    base.mkpath( "importers_tmp" );
+
+    const QString dst = base.filePath( "importers_tmp/iTunes Music Library.xml" );
+    QFile( dst ).remove();
+    QFile( base.filePath( "importers_files/iTunes Music Library.xml" ) ).copy( dst );
+
+    QVariantMap cfg = ITunesConfigWidget( QVariantMap() ).config();
+    cfg.insert( "dbPath", dst);
+
+    return ProviderPtr( new ITunesProvider( cfg, 0 ) );
+}
+
 qint64
 TestITunesImporter::reliableStatistics() const
 {

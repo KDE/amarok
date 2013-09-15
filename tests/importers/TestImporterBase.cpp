@@ -32,6 +32,12 @@ TestImporterBase::TestImporterBase()
     QTextCodec::setCodecForCStrings( utf8codec );
 }
 
+ProviderPtr
+TestImporterBase::getWritableProvider()
+{
+    return getProvider();
+}
+
 bool
 TestImporterBase::hasOddRatings() const
 {
@@ -573,4 +579,392 @@ TestImporterBase::providerShouldNotBreakOnLittleBobbyTables()
     const QString artist = "Robert'); DROP TABLE students;--";
     QVERIFY( !provider->artists().contains( artist ) );
     QVERIFY( provider->artistTracks( artist ).isEmpty() );
+}
+
+static TrackPtr
+trackForName( ProviderPtr &provider, const QString &name, const QString &artist )
+{
+    foreach( const TrackPtr &track, provider->artistTracks( artist ) )
+        if( track->name() == name )
+            return track;
+
+    return TrackPtr( 0 );
+}
+
+static Meta::FieldHash
+saveData( const TrackPtr &track )
+{
+    Meta::FieldHash data;
+    data.insert( Meta::valTitle, track->name() );
+    data.insert( Meta::valArtist, track->artist() );
+    data.insert( Meta::valAlbum, track->album() );
+    data.insert( Meta::valComposer, track->composer() );
+    data.insert( Meta::valTrackNr, track->trackNumber() );
+    data.insert( Meta::valDiscNr, track->discNumber() );
+    data.insert( Meta::valFirstPlayed, track->firstPlayed() );
+    data.insert( Meta::valLastPlayed, track->lastPlayed() );
+    data.insert( Meta::valRating, track->rating() );
+    data.insert( Meta::valPlaycount, track->playCount() );
+    data.insert( Meta::valLabel, QStringList( track->labels().toList() ) );
+    return data;
+}
+
+static void
+verifyEqualExcept( const Meta::FieldHash &lhs, const TrackPtr &track,
+                   const qint64 except )
+{
+    const QList<qint64> fields = QList<qint64>() << Meta::valTitle << Meta::valArtist
+                              << Meta::valAlbum << Meta::valComposer << Meta::valTrackNr
+                              << Meta::valDiscNr << Meta::valFirstPlayed
+                              << Meta::valLastPlayed << Meta::valRating
+                              << Meta::valPlaycount << Meta::valLabel;
+
+    const Meta::FieldHash rhs = saveData( track );
+    foreach( const qint64 field, fields )
+        if( !( except & field ) )
+            QCOMPARE( lhs.value( field ), rhs.value( field ) );
+}
+
+void
+TestImporterBase::commitAfterSettingAllStatisticsShouldSaveThem_data()
+{
+    QTest::addColumn<QString>( "title" );
+    QTest::addColumn<QString>( "artist" );
+    QTest::addColumn<QDateTime>( "newFirstPlayed" );
+    QTest::addColumn<QDateTime>( "newLastPlayed" );
+    QTest::addColumn<int>( "newRating" );
+    QTest::addColumn<int>( "newPlayCount" );
+    QTest::addColumn<QStringList>( "newLabels" );
+
+    const uint now = QDateTime::currentDateTime().toTime_t();
+
+    QTest::newRow( "Replace all" ) << "title0" << "testStatistics"
+                                   << QDateTime::fromTime_t( now - 100 )
+                                   << QDateTime::fromTime_t( now + 100 )
+                                   << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
+
+    QTest::newRow( "Add all" ) << "title0" << "testStatisticsNotSet"
+                               << QDateTime::fromTime_t( now - 100 )
+                               << QDateTime::fromTime_t( now + 100 )
+                               << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
+
+    QTest::newRow( "Add some 1" ) << "title2" << "testStatisticsNotSet"
+                                  << QDateTime::fromTime_t( now - 100 )
+                                  << QDateTime::fromTime_t( now + 100 )
+                                  << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
+
+    QTest::newRow( "Add some 1" ) << "title4" << "testStatisticsNotSet"
+                                  << QDateTime::fromTime_t( now - 100 )
+                                  << QDateTime::fromTime_t( now + 100 )
+                                  << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
+
+    QTest::newRow( "Add some 1" ) << "title6" << "testStatisticsNotSet"
+                                  << QDateTime::fromTime_t( now - 100 )
+                                  << QDateTime::fromTime_t( now + 100 )
+                                  << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
+}
+
+void
+TestImporterBase::commitAfterSettingAllStatisticsShouldSaveThem()
+{
+    ProviderPtr provider( getWritableProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
+
+    QFETCH( QString, title );
+    QFETCH( QString, artist );
+    TrackPtr track = trackForName( provider, title, artist );
+    QVERIFY( track );
+
+    const Meta::FieldHash data = saveData( track );
+
+    if( provider->writableTrackStatsData() & Meta::valFirstPlayed )
+    {
+        QFETCH( QDateTime, newFirstPlayed );
+        track->setFirstPlayed( newFirstPlayed );
+    }
+    if( provider->writableTrackStatsData() & Meta::valLastPlayed )
+    {
+        QFETCH( QDateTime, newLastPlayed );
+        track->setLastPlayed( newLastPlayed );
+    }
+    if( provider->writableTrackStatsData() & Meta::valRating )
+    {
+        QFETCH( int, newRating );
+        track->setRating( newRating );
+    }
+    if( provider->writableTrackStatsData() & Meta::valPlaycount )
+    {
+        QFETCH( int, newPlayCount );
+        track->setPlayCount( newPlayCount );
+    }
+    if( provider->writableTrackStatsData() & Meta::valLabel )
+    {
+        QFETCH( QStringList, newLabels );
+        track->setLabels( newLabels.toSet() );
+    }
+
+    track->commit();
+    provider->commitTracks();
+
+    track = trackForName( provider, title, artist );
+    QVERIFY( track );
+
+    if( provider->writableTrackStatsData() & Meta::valFirstPlayed )
+    {
+        QFETCH( QDateTime, newFirstPlayed );
+        QCOMPARE( track->firstPlayed(), newFirstPlayed );
+    }
+    if( provider->writableTrackStatsData() & Meta::valLastPlayed )
+    {
+        QFETCH( QDateTime, newLastPlayed );
+        QCOMPARE( track->lastPlayed(), newLastPlayed );
+    }
+    if( provider->writableTrackStatsData() & Meta::valRating )
+    {
+        QFETCH( int, newRating );
+        if( !hasOddRatings() && (newRating & 1) )
+            ++newRating;
+        QCOMPARE( track->rating(), newRating );
+    }
+    if( provider->writableTrackStatsData() & Meta::valPlaycount )
+    {
+        QFETCH( int, newPlayCount );
+        QCOMPARE( track->playCount(), newPlayCount );
+    }
+    if( provider->writableTrackStatsData() & Meta::valLabel )
+    {
+        QFETCH( QStringList, newLabels );
+        QCOMPARE( track->labels(), newLabels.toSet() );
+    }
+
+    verifyEqualExcept( data, track, Meta::valFirstPlayed | Meta::valLastPlayed |
+                       Meta::valRating | Meta::valPlaycount | Meta::valLabel );
+}
+
+void
+TestImporterBase::commitAfterSettingFirstPlayedShouldSaveIt_data()
+{
+     QTest::addColumn<QString>( "title" );
+     QTest::addColumn<QDateTime>( "newFirstPlayed" );
+
+     const uint now = QDateTime::currentDateTime().toTime_t();
+
+     QTest::newRow( "Add stat 1" ) << "title0" << QDateTime::fromTime_t( now );
+     QTest::newRow( "Add stat 2" ) << "title1" << QDateTime::fromTime_t( now + 2 );
+     QTest::newRow( "Add stat 3" ) << "title2" << QDateTime::fromTime_t( now + 3 );
+
+     QTest::newRow( "Replace stat 1" ) << "title5" << QDateTime::fromTime_t( now + 11 );
+     QTest::newRow( "Replace stat 2" ) << "title6" << QDateTime::fromTime_t( now + 13 );
+     QTest::newRow( "Replace stat 3" ) << "title7" << QDateTime::fromTime_t( now + 17 );
+
+     QTest::newRow( "Remove stat 1" ) << "title5" << QDateTime();
+     QTest::newRow( "Remove stat 2" ) << "title6" << QDateTime();
+     QTest::newRow( "Remove stat 3" ) << "title7" << QDateTime();
+}
+
+void
+TestImporterBase::commitAfterSettingFirstPlayedShouldSaveIt()
+{
+    ProviderPtr provider( getWritableProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
+    skipIfNoSupport( provider->writableTrackStatsData(), Meta::valFirstPlayed );
+
+    QFETCH( QString, title );
+    QFETCH( QDateTime, newFirstPlayed );
+
+    TrackPtr track = trackForName( provider, title, "testStatisticsNotSet" );
+    QVERIFY( track );
+
+    const Meta::FieldHash data = saveData( track );
+    track->setFirstPlayed( newFirstPlayed );
+    track->commit();
+    provider->commitTracks();
+
+    track = trackForName( provider, title, "testStatisticsNotSet" );
+    QVERIFY( track );
+    QCOMPARE( track->firstPlayed(), newFirstPlayed );
+    verifyEqualExcept( data, track, Meta::valFirstPlayed );
+}
+
+void
+TestImporterBase::commitAfterSettingLastPlayedShouldSaveIt_data()
+{
+    QTest::addColumn<QString>( "title" );
+    QTest::addColumn<QDateTime>( "newLastPlayed" );
+
+    const uint now = QDateTime::currentDateTime().toTime_t();
+
+    QTest::newRow( "Add stat 1" ) << "title0" << QDateTime::fromTime_t( now );
+    QTest::newRow( "Add stat 2" ) << "title2" << QDateTime::fromTime_t( now + 2 );
+    QTest::newRow( "Add stat 3" ) << "title4" << QDateTime::fromTime_t( now + 3 );
+
+    QTest::newRow( "Replace stat 1" ) << "title1" << QDateTime::fromTime_t( now + 11 );
+    QTest::newRow( "Replace stat 2" ) << "title3" << QDateTime::fromTime_t( now + 13 );
+    QTest::newRow( "Replace stat 3" ) << "title5" << QDateTime::fromTime_t( now + 17 );
+
+    QTest::newRow( "Remove stat 1" ) << "title1" << QDateTime();
+    QTest::newRow( "Remove stat 2" ) << "title3" << QDateTime();
+    QTest::newRow( "Remove stat 3" ) << "title5" << QDateTime();
+}
+
+void
+TestImporterBase::commitAfterSettingLastPlayedShouldSaveIt()
+{
+    ProviderPtr provider( getWritableProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
+    skipIfNoSupport( provider->writableTrackStatsData(), Meta::valLastPlayed );
+
+    QFETCH( QString, title );
+    QFETCH( QDateTime, newLastPlayed );
+
+    TrackPtr track = trackForName( provider, title, "testStatisticsNotSet" );
+    QVERIFY( track );
+
+    const Meta::FieldHash data = saveData( track );
+    track->setLastPlayed( newLastPlayed );
+    track->commit();
+    provider->commitTracks();
+
+    track = trackForName( provider, title, "testStatisticsNotSet" );
+    QVERIFY( track );
+    QCOMPARE( track->lastPlayed(), newLastPlayed );
+    verifyEqualExcept( data, track, Meta::valLastPlayed );
+}
+
+void
+TestImporterBase::commitAfterSettingRatingShouldSaveIt_data()
+{
+    QTest::addColumn<QString>( "title" );
+    QTest::addColumn<int>( "newRating" );
+
+    QTest::newRow( "Add stat 1" ) << "title0" << 2;
+    QTest::newRow( "Add stat 2" ) << "title3" << 3;
+    QTest::newRow( "Add stat 3" ) << "title6" << 5;
+
+    QTest::newRow( "Replace stat 1" ) << "title1" << 1;
+    QTest::newRow( "Replace stat 2" ) << "title2" << 3;
+    QTest::newRow( "Replace stat 3" ) << "title4" << 6;
+
+    QTest::newRow( "Remove stat 1" ) << "title1" << 0;
+    QTest::newRow( "Remove stat 2" ) << "title2" << 0;
+    QTest::newRow( "Remove stat 3" ) << "title4" << 0;
+}
+
+void
+TestImporterBase::commitAfterSettingRatingShouldSaveIt()
+{
+    ProviderPtr provider( getWritableProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
+    skipIfNoSupport( provider->writableTrackStatsData(), Meta::valRating );
+
+    QFETCH( QString, title );
+    QFETCH( int, newRating );
+
+    TrackPtr track = trackForName( provider, title, "testStatisticsNotSet" );
+    QVERIFY( track );
+
+    const Meta::FieldHash data = saveData( track );
+    track->setRating( newRating );
+    track->commit();
+    provider->commitTracks();
+
+    if( !hasOddRatings() && (newRating & 1) )
+        ++newRating;
+
+    track = trackForName( provider, title, "testStatisticsNotSet" );
+    QVERIFY( track );
+    QCOMPARE( track->rating(), newRating );
+    verifyEqualExcept( data, track, Meta::valRating );
+}
+
+void
+TestImporterBase::commitAfterSettingPlaycountShouldSaveIt_data()
+{
+    QTest::addColumn<QString>( "title" );
+    QTest::addColumn<int>( "newPlayCount" );
+
+    QTest::newRow( "Add stat 1" ) << "title0" << 13;
+    QTest::newRow( "Add stat 2" ) << "title4" << 17;
+    QTest::newRow( "Add stat 3" ) << "title8" << 23;
+
+    QTest::newRow( "Replace stat 1" ) << "title1" << 1;
+    QTest::newRow( "Replace stat 2" ) << "title2" << 3;
+    QTest::newRow( "Replace stat 3" ) << "title3" << 6;
+
+    QTest::newRow( "Remove stat 1" ) << "title1" << 0;
+    QTest::newRow( "Remove stat 2" ) << "title2" << 0;
+    QTest::newRow( "Remove stat 3" ) << "title3" << 0;
+}
+
+void
+TestImporterBase::commitAfterSettingPlaycountShouldSaveIt()
+{
+    ProviderPtr provider( getWritableProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
+    skipIfNoSupport( provider->writableTrackStatsData(), Meta::valPlaycount );
+
+    QFETCH( QString, title );
+    QFETCH( int, newPlayCount );
+
+    TrackPtr track = trackForName( provider, title, "testStatisticsNotSet" );
+    QVERIFY( track );
+
+    const Meta::FieldHash data = saveData( track );
+    track->setPlayCount( newPlayCount );
+    track->commit();
+    provider->commitTracks();
+
+    track = trackForName( provider, title, "testStatisticsNotSet" );
+    QVERIFY( track );
+    QCOMPARE( track->playCount(), newPlayCount );
+    verifyEqualExcept( data, track, Meta::valPlaycount );
+}
+
+void
+TestImporterBase::commitAfterSettingLabelsShouldSaveThem_data()
+{
+    QTest::addColumn<QString>( "title" );
+    QTest::addColumn<QStringList>( "newLabels" );
+
+    QTest::newRow( "Add new label" ) << "title4" << ( QStringList() << "singleTag2" );
+    QTest::newRow( "Add existing label" ) << "title5" << ( QStringList() << "singleTag" );
+    QTest::newRow( "Add labels" ) << "title6" << ( QStringList() << "multi" << "labels" );
+    QTest::newRow( "Add existing labels" ) << "title7"
+                                           << ( QStringList() << "multiple" << "labels" );
+    QTest::newRow( "Add case-sensitive labels" ) << "title8"
+                                                 << ( QStringList() << "cs" << "Cs" );
+
+    QTest::newRow( "Replace all labels" ) << "title1" << ( QStringList() << "a" << "l" );
+    QTest::newRow( "Replace some labels" ) << "title1"
+                                           << ( QStringList() << "a" << "tags" );
+    QTest::newRow( "Add additional labels" ) << "title1"
+                                      << ( QStringList() << "multiple" << "tags" << "2" );
+
+    QTest::newRow( "Remove labels 1" ) << "title0" << QStringList();
+    QTest::newRow( "Remove labels 2" ) << "title1" << QStringList();
+    QTest::newRow( "Remove labels 3" ) << "title2" << QStringList();
+}
+
+void
+TestImporterBase::commitAfterSettingLabelsShouldSaveThem()
+{
+    ProviderPtr provider( getWritableProvider() );
+    amarokProviderSkipIfNoMysqld( provider );
+    skipIfNoSupport( provider->writableTrackStatsData(), Meta::valLabel );
+
+    QFETCH( QString, title );
+    QFETCH( QStringList, newLabels );
+
+    TrackPtr track = trackForName( provider, title, "testStatistics" );
+    QVERIFY( track );
+
+    const Meta::FieldHash data = saveData( track );
+    track->setLabels( newLabels.toSet() );
+    track->commit();
+    provider->commitTracks();
+
+    track = trackForName( provider, title, "testStatistics" );
+    QVERIFY( track );
+    QCOMPARE( track->labels(), newLabels.toSet() );
+    verifyEqualExcept( data, track, Meta::valLabel );
 }

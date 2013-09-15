@@ -36,6 +36,22 @@ TestBansheeImporter::getProvider()
     return ProviderPtr( new BansheeProvider( cfg, 0 ) );
 }
 
+ProviderPtr
+TestBansheeImporter::getWritableProvider()
+{
+    QDir base( QCoreApplication::applicationDirPath() );
+    base.mkpath( "importers_tmp" );
+
+    const QString dst = base.filePath( "importers_tmp/banshee.db" );
+    QFile( dst ).remove();
+    QFile( base.filePath( "importers_files/banshee.db" ) ).copy( dst );
+
+    QVariantMap cfg = BansheeConfigWidget( QVariantMap() ).config();
+    cfg.insert( "dbPath", dst );
+
+    return ProviderPtr( new BansheeProvider( cfg, 0 ) );
+}
+
 qint64
 TestBansheeImporter::reliableStatistics() const
 {

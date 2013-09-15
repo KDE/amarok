@@ -40,6 +40,9 @@ ITunesTrack::rating() const
 void
 ITunesTrack::setRating( int rating )
 {
+    if( rating & 1 )
+        ++rating;
+
     SimpleWritableTrack::setRating( rating * 10 );
 }
 

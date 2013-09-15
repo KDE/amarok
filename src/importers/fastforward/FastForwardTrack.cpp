@@ -125,6 +125,17 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
 
     if( fields & Meta::valLabel )
     {
+        // Drop old label associations
+        const QString query = "DELETE FROM tags_labels WHERE url = :url";
+        QVariantMap bindValues;
+        bindValues.insert( ":url", m_trackUrl );
+        m_connection->query( query, bindValues, &ok );
+        if( !ok )
+        {
+            m_connection->rollback();
+            return;
+        }
+
         foreach( const QString &label, m_labels )
         {
             {
@@ -158,56 +169,21 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
                 }
             }
 
-            // We can't use lastInsertId because we can't be sure if driver supports it,
-            // so to simplify logic we use check if exists -> insert if not -> select
-
-            // Select label's id
-            const QString query = "SELECT id FROM labels WHERE name = :name";
+            // Insert track <-> label association
+            const QString query = "INSERT INTO tags_labels (deviceid, url, uniqueid, "
+                                  "labelid) VALUES ( :devid, :url, :uniqid, "
+                                  "(SELECT id FROM labels WHERE name = :name) )";
             QVariantMap bindValues;
+            bindValues.insert( ":devid", deviceId );
+            bindValues.insert( ":url", m_trackUrl );
+            bindValues.insert( ":uniqid", uniqueId );
             bindValues.insert( ":name", label );
 
-            const QList<QVariantList> result = m_connection->query( query, bindValues,
-                                                                    &ok );
+            m_connection->query( query, bindValues, &ok );
             if( !ok )
             {
                 m_connection->rollback();
                 return;
-            }
-
-            const qint64 labelId = result.front()[0].toLongLong();
-
-            // Check if the current song isn't already associated with the label
-            const QString sQuery = "SELECT COUNT(*) FROM tags_labels WHERE url = :url "
-                                   "AND labelid = :labelid";
-            QVariantMap sBindValues;
-            sBindValues.insert( ":url", m_trackUrl );
-            sBindValues.insert( ":labelid", labelId );
-
-            const QList<QVariantList> sResult = m_connection->query( sQuery, sBindValues,
-                                                                     &ok );
-            if( !ok )
-            {
-                m_connection->rollback();
-                return;
-            }
-
-            // If not, insert track <-> label association
-            if( !sResult.front()[0].toInt() )
-            {
-                const QString query = "INSERT INTO tags_labels (deviceid, url, uniqueid, "
-                                      "labelid) VALUES ( :devid, :url, :uniqid, :lblid )";
-                QVariantMap bindValues;
-                bindValues.insert( ":devid", deviceId );
-                bindValues.insert( ":url", m_trackUrl );
-                bindValues.insert( ":uniqid", uniqueId );
-                bindValues.insert( ":lblid", labelId );
-
-                m_connection->query( query, bindValues, &ok );
-                if( !ok )
-                {
-                    m_connection->rollback();
-                    return;
-                }
             }
         }
     }

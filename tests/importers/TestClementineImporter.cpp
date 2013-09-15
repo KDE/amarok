@@ -36,6 +36,22 @@ TestClementineImporter::getProvider()
     return ProviderPtr( new ClementineProvider( cfg, 0 ) );
 }
 
+ProviderPtr
+TestClementineImporter::getWritableProvider()
+{
+    QDir base( QCoreApplication::applicationDirPath() );
+    base.mkpath( "importers_tmp" );
+
+    const QString dst = base.filePath( "importers_tmp/clementine.db" );
+    QFile( dst ).remove();
+    QFile( base.filePath( "importers_files/clementine.db" ) ).copy( dst );
+
+    QVariantMap cfg = ClementineConfigWidget( QVariantMap() ).config();
+    cfg.insert( "dbPath", dst );
+
+    return ProviderPtr( new ClementineProvider( cfg, 0 ) );
+}
+
 qint64
 TestClementineImporter::reliableStatistics() const
 {

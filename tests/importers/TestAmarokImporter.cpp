@@ -39,6 +39,34 @@ TestAmarokImporter::getProvider()
     return ProviderPtr( new AmarokProvider( cfg, 0 ) );
 }
 
+ProviderPtr
+TestAmarokImporter::getWritableProvider()
+{
+    QDir base( QCoreApplication::applicationDirPath() );
+    QDir files( base.filePath( "importers_files" ) );
+    QDir tmp( base.filePath( "importers_tmp" ) );
+
+    foreach( const QString &subdir, QList<QString>() << "mysqle" << "mysqle/amarok" )
+    {
+        tmp.mkpath( subdir );
+
+        QDir src( files.filePath( subdir ) );
+        QDir dst( tmp.filePath( subdir ) );
+
+        foreach( const QString &filename, src.entryList( QStringList(), QDir::Files ) )
+        {
+            QFile( dst.filePath( filename ) ).remove();
+            QFile( src.filePath( filename ) ).copy( dst.filePath( filename ) );
+        }
+    }
+
+    QVariantMap cfg = AmarokConfigWidget( QVariantMap() ).config();
+    cfg.insert( "embedded", true );
+    cfg.insert( "dbPath", tmp.filePath( "mysqle" ) );
+
+    return ProviderPtr( new AmarokProvider( cfg, 0 ) );
+}
+
 qint64
 TestAmarokImporter::reliableStatistics() const
 {

@@ -67,6 +67,7 @@ AmarokEmbeddedSqlConnection::connection()
     // Get random port in range 3307 - 65535
     const int port = ( qrand() % ( 65536 - 3307 ) ) + 3307;
 
+    QSqlDatabase::removeDatabase( m_connectionName );
     QSqlDatabase db = QSqlDatabase::addDatabase( "QMYSQL", m_connectionName );
     db.setDatabaseName  ( "amarok"    );
     db.setHostName      ( "localhost" );

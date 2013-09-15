@@ -27,6 +27,7 @@ class TestBansheeImporter : public TestImporterBase
 
 protected:
     StatSyncing::ProviderPtr getProvider();
+    StatSyncing::ProviderPtr getWritableProvider();
     qint64 reliableStatistics() const;
     bool hasOddRatings() const;
 
