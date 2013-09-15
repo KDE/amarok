@@ -867,13 +867,11 @@ EngineController::eqUpdate() //SLOT
     // if equalizer not present simply return
     if( !m_equalizer )
         return;
-    // check if equalizer should be disabled ??
+
+    // check if equalizer should be disabled
     if( AmarokConfig::equalizerMode() <= 0 )
     {
         // Remove effect from path
-//         if( m_path.effects().indexOf( m_equalizer.data() ) != -1 )
-//             m_path.removeEffect( m_equalizer.data() );
-
         if( m_path.effects().indexOf( m_equalizer.data() ) != -1 )
             m_path.removeEffect( m_equalizer.data() );
     }
