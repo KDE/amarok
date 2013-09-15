@@ -17,15 +17,23 @@
 
 #include "MetaTypeExporter.h"
 
+#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
+#include "core/meta/support/MetaConstants.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/TrackEditor.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
+#include "MetaTagLib.h"
 #include "scripting/scriptengine/ScriptingDefines.h"
+
+#include <ThreadWeaver/Weaver>
 
 #include <QScriptContext>
 #include <QScriptEngine>
+
+Q_DECLARE_METATYPE( StringMap )
 
 using namespace AmarokScript;
 
@@ -42,6 +50,8 @@ MetaTrackPrototype::init( QScriptEngine *engine )
 {
     qScriptRegisterMetaType<Meta::TrackPtr>( engine, toScriptValue<Meta::TrackPtr, MetaTrackPrototype>, fromScriptValue<Meta::TrackPtr, MetaTrackPrototype> );
     qScriptRegisterMetaType<Meta::TrackList>( engine, toScriptArray, fromScriptArray );
+    qScriptRegisterMetaType<StringMap>( engine, toScriptMap, fromScriptMap );
+    qScriptRegisterMetaType<Meta::FieldHash>( engine, toScriptTagMap, fromScriptTagMap );
     engine->globalObject().setProperty( "Track", engine->newFunction( trackCtor ) );
 }
 
@@ -49,18 +59,11 @@ QScriptValue
 MetaTrackPrototype::trackCtor( QScriptContext *context, QScriptEngine *engine )
 {
     if( context->argumentCount() < 1 )
-    {
-        engine->evaluate( "throw \"Not enough arguments! Pass the track url.\"" );
-        // use context->throwError()?
-        return engine->undefinedValue();
-    }
+        return context->throwError( QScriptContext::SyntaxError, "Not enough arguments! Pass the track url." );
 
     KUrl url( qscriptvalue_cast<QUrl>( context->argument( 0 ) ) );
     if( !url.isValid() )
-    {
-        engine->evaluate( "throw \"Invalid QUrl\"" );
-        return engine->undefinedValue();
-    }
+        return context->throwError( QScriptContext::TypeError, "Invalid QUrl" );
 
     MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
     proxyTrack->setTitle( url.fileName() ); // set temporary name
@@ -73,6 +76,15 @@ MetaTrackPrototype::MetaTrackPrototype( const Meta::TrackPtr &track )
 : QObject( 0 )
 , m_track( track )
 {
+}
+
+Meta::FieldHash
+MetaTrackPrototype::tags() const
+{
+    if( !isLoadedAndLocal() )
+        return  Meta::FieldHash();
+
+    return Meta::Tag::readTags( m_track->playableUrl().path() );
 }
 
 int
@@ -237,12 +249,12 @@ MetaTrackPrototype::bpm() const
 }
 
 bool
-MetaTrackPrototype::isLoaded()
+MetaTrackPrototype::isLoaded() const
 {
     MetaProxy::TrackPtr proxyTrack = MetaProxy::TrackPtr::dynamicCast( m_track );
     if( proxyTrack && !proxyTrack->isResolved() )
     {
-        Observer::subscribeTo( m_track );
+        const_cast<MetaTrackPrototype*>( this )->Observer::subscribeTo( m_track );
         return false;
     }
     return true;
@@ -362,10 +374,80 @@ void
 MetaTrackPrototype::metadataChanged( Meta::TrackPtr track )
 {
     Observer::unsubscribeFrom( track );
+    debug() << "Loaded track: " << track->prettyName();
     emit loaded( track );
 }
 
+void
+MetaTrackPrototype::fromScriptTagMap( const QScriptValue &value, Meta::FieldHash &map )
+{
+    QScriptValueIterator it( value );
+    while( it.hasNext() )
+    {
+        it.next();
+        map[Meta::fieldForName( it.name() )] = it.value().toVariant();
+    }
+}
+
+QScriptValue
+MetaTrackPrototype::toScriptTagMap( QScriptEngine *engine, const Meta::FieldHash &map )
+{
+    QScriptValue scriptMap = engine->newObject();
+    for( typename Meta::FieldHash::const_iterator it( map.constBegin() ); it != map.constEnd(); ++it )
+        scriptMap.setProperty( Meta::nameForField( it.key() ), engine->toScriptValue( it.value() ) );
+    return scriptMap;
+}
+
+void
+MetaTrackPrototype::changeTags( const Meta::FieldHash &changes, bool respectConfig )
+{
+    CHECK_TRACK()
+    if( !isLoadedAndLocal() )
+        return;
+
+    if( changes.isEmpty() )
+        return;
+    WriteTagsJob *job = new WriteTagsJob( m_track->playableUrl().path(), changes, respectConfig );
+    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+    ThreadWeaver::Weaver::instance()->enqueue( job );
+}
+
+QImage
+MetaTrackPrototype::embeddedCover() const
+{
+    if( isLoadedAndLocal() )
+        return QImage();
+
+    return Meta::Tag::embeddedCover( m_track->playableUrl().path() );
+}
+
+void
+MetaTrackPrototype::setEmbeddedCover( const QImage &image )
+{
+    if( image.isNull() )
+        return;
+}
+
+bool
+MetaTrackPrototype::isLoadedAndLocal() const
+{
+    CHECK_TRACK( false );
+    if( !isLoaded() )
+    {
+        debug() << "Track for url " << m_track->prettyUrl() << " not loaded yet!";
+        return false;
+    }
+    if( !m_track->playableUrl().isLocalFile() )
+    {
+        debug() << m_track->prettyName() + " is not a local file!";
+        return false;
+    }
+
+    return true;
+}
+
 #undef GET_TRACK
+#undef CHECK_TRACK
 #undef GET_TRACK_EC
 
 #include "MetaTypeExporter.moc"

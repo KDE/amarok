@@ -27,11 +27,37 @@
 class QScriptContext;
 class QScriptEngine;
 class QScriptValue;
+class QScriptValue;
+
+typedef QMap<QString,QString> StringMap;
+namespace Meta
+{
+    typedef QHash<qint64, QVariant> FieldHash;
+}
 
 namespace AmarokScript
 {
     // ANM-TODO: Expose other meta classes, expand query makers
     // SCRIPTDOX PROTOTYPE Meta::TrackPtr Track
+    /**
+     * Represents track objects.
+     * Create new tracks using:
+     *     new Track( <QUrl> )
+     *
+     * Tracks are loaded asynchronously. If you wish to read or write a track's metadata, you must ensure that it has loaded.
+     * This can my done as follows:
+     *
+     * function myFunction( track )
+     * {
+     *     // do stuff here
+     * }
+     * var track = new Track( new QUrl("file:///my/track/url/MyTrack.ext") );
+     * if( !track.isLoaded )
+     *     track.loaded.connect( myFunction );
+     * else
+     *     myFunction( track );
+     * 
+     */
     #ifdef DEBUG
         class AMAROK_EXPORT
     #else
@@ -67,18 +93,22 @@ namespace AmarokScript
         Q_PROPERTY( QString imageUrl WRITE setImageUrl READ imageUrl )
         Q_PROPERTY( QString url READ url )
         Q_PROPERTY( double bpm READ bpm ) // setter not yet available in Meta::Track
+        Q_PROPERTY( Meta::FieldHash tags READ tags )
 
         /**
          * Tracks may be loaded asynchronously, indicates whether the track has been loaded and its full metadata available .
          * Connect to the trackLoaded signal to be notified when it is.
          */
         Q_PROPERTY( bool isLoaded READ isLoaded )
+        Q_PROPERTY( QImage embeddedCover READ embeddedCover WRITE setEmbeddedCover )
 
         public:
             static void init( QScriptEngine *engine );
             Meta::TrackPtr data() { return m_track; }
             MetaTrackPrototype( const Meta::TrackPtr &track );
-            static QScriptValue trackCtor( QScriptContext* context, QScriptEngine* engine );
+            static QScriptValue trackCtor( QScriptContext *context, QScriptEngine *engine );
+            static QScriptValue toScriptTagMap( QScriptEngine *engine, const Meta::FieldHash &map );
+            static void fromScriptTagMap( const QScriptValue &value, Meta::FieldHash &map );
 
         public slots:
             /**
@@ -86,6 +116,24 @@ namespace AmarokScript
              * or an undefined value otherwise.
              */
             QScriptValue imagePixmap( int size = 1 ) const;
+
+            /**
+             * Asynchronously write the passed tags to the track.
+             * Fields like title, artist, etc. except for lyrics are already written to tags
+             * depending on user preferences. Use this to override preferences or for
+             * external tracks.
+             *
+             * @param changes The tags you'd like to write to the track. The existing tag for
+             * that field will be deleted.
+             * @param respectConfig Whether to respect the user's preferences of writing tags to tracks.
+             *
+             * For example,
+             * var tags = {};
+             * tags["lyrics"] = "My lyrics";
+             * tags["title"]= "My Song";
+             * track.changeTags( tags );
+             */
+            void changeTags( const Meta::FieldHash &changes, bool respectConfig = true );
 
         signals:
             /**
@@ -131,7 +179,9 @@ namespace AmarokScript
             QString imageUrl() const;
             QString url() const;
             double bpm() const;
-            bool isLoaded();
+            bool isLoaded() const;
+            Meta::FieldHash tags() const;
+            QImage embeddedCover() const;
 
             void setScore( double score );
             void setRating( int rating );
@@ -146,7 +196,15 @@ namespace AmarokScript
             void setLyrics( const QString &lyrics );
             void setTitle( const QString& name );
             void setImageUrl( const QString& imageUrl );
+
+            /**
+             * Check if the track has loaded and is local.
+             */
+            bool isLoadedAndLocal() const;
+            void setEmbeddedCover( const QImage &image );
     };
 }
+
+Q_DECLARE_METATYPE( Meta::FieldHash )
 
 #endif

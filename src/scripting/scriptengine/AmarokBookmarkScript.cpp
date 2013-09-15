@@ -28,9 +28,7 @@
 
 #include <QScriptEngine>
 
-#define SCRIPTING_DEPRECATED( x ) \
-                                    AmarokScriptEngine *amarokScriptEngine = dynamic_cast<AmarokScriptEngine*>(parent()); \
-                                    if( amarokScriptEngine ) amarokScriptEngine->invokableDeprecatedCall( x );
+Q_DECLARE_METATYPE( StringMap )
 
 using namespace AmarokScript;
 
@@ -44,7 +42,6 @@ AmarokBookmarkScript::AmarokBookmarkScript( QScriptEngine *engine )
     qScriptRegisterMetaType<AmarokUrlPtr>( engine, toScriptValue<AmarokUrlPtr, BookmarkPrototype>, fromScriptValue<AmarokUrlPtr, BookmarkPrototype> );
     engine->globalObject().setProperty( "BookmarkGroup", engine->newFunction( BookmarkGroupPrototype::bookmarkGroupCtor ) );
     engine->globalObject().setProperty( "Bookmark", engine->newFunction( BookmarkPrototype::bookmarkCtor ) );
-    qScriptRegisterMetaType<StringMap>( engine, toScriptMap, fromScriptMap );
     qScriptRegisterMetaType<BookmarkGroupList>( engine, toScriptArray, fromScriptArray );
     qScriptRegisterMetaType<BookmarkList>( engine, toScriptArray, fromScriptArray );
 }

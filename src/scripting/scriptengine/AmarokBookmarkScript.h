@@ -159,6 +159,4 @@ namespace AmarokScript
     };
 }
 
-Q_DECLARE_METATYPE( StringMap )
-
 #endif
