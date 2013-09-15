@@ -158,23 +158,23 @@ public:
     bool isSeekable() const;
 
     /**
-     * Phonon kequalizer support is required for Amarok to enable equalizer
+     * Phonon equalizer support is required for Amarok to enable equalizer
      * this method return whatever phonon support kequalizer effect.
      *
-     * @return @c true if the phonon support kequalizer effect, @c false otherwise
+     * @return @c true if the phonon support equalizer effect, @c false otherwise
      */
     bool isEqSupported() const;
 
     /**
-     * kequalizer implementation for different backends may have different
+     * Equalizer implementation for different backends may have different
      * gain scale. To properly display it we need to get a scale from effect
      *
-     * @return maximum gain value for kequalizer parameters.
+     * @return maximum gain value for equalizer parameters.
      */
     double eqMaxGain() const;
 
      /**
-     * kequalizer implementation for different backends may have different
+     * Equalizer implementation for different backends may have different
      * frequency bands. For proper display this will try to extract frequency values
      * from effect parameters info.
      *
