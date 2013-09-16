@@ -53,6 +53,7 @@ private slots:
     // ANM-TODO
     // problem -
     void slotUninstallScript();
+    void restoreScrollBar();
 
 private:
     const KArchiveFile *findSpecFile( const KArchiveDirectory *dir ) const;
@@ -64,6 +65,7 @@ private:
     QVBoxLayout *m_verticalLayout;
     QPushButton *m_uninstallButton;
     QObject *m_parent;
+    ScriptSelector *m_oldSelector;
 };
 
 #endif // AMAROK_SCRIPTSCONFIG_H

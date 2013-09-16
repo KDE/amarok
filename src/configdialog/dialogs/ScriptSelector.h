@@ -17,10 +17,13 @@
 #ifndef SCRIPTSELECTOR_H
 #define SCRIPTSELECTOR_H
 
-#include <KCategorizedView>
 #include <KPluginSelector>
-#include <ksharedconfig.h>
-#include <KPluginInfo>
+#include <KSharedConfig>
+
+class KCategorizedView;
+class KLineEdit;
+class KPluginInfo;
+class QScrollBar;
 
 class ScriptSelector : public KPluginSelector
 {
@@ -36,11 +39,16 @@ class ScriptSelector : public KPluginSelector
                          const QString &categoryName = QString(),
                          const QString &categoryKey = QString(),
                          const KSharedConfig::Ptr &config = KSharedConfig::Ptr() );
+        int verticalPosition();
+        void setVerticalPosition( int position );
+        QString filter();
+        void setFilter( const QString &filter );
 
     private:
-        KCategorizedView*          m_listView;
+        KCategorizedView          *m_listView;
         QMap<int, QString>         m_scripts;
         int                        m_scriptCount;
+        KLineEdit                 *m_lineEdit;
 
     private slots:
         void slotFiltered( const QString &filter );

@@ -18,20 +18,23 @@
 
 #include "core/support/Debug.h"
 
+#include <KCategorizedView>
 #include <KLocale>
 #include <KLineEdit>
+#include <KPluginInfo>
 #include <KMessageBox>
+#include <QScrollBar>
 
 // uber-hacky, this whole thing, make our own script selector?
 ScriptSelector::ScriptSelector( QWidget * parent )
     : KPluginSelector( parent )
     , m_scriptCount( 0 )
 {
-    KLineEdit* lineEdit = this->findChild<KLineEdit*>();
-    if( lineEdit )
+    m_lineEdit = this->findChild<KLineEdit*>();
+    if( m_lineEdit )
     {
-        lineEdit->setClickMessage( i18n( "Search Scripts" ) );
-        connect( lineEdit, SIGNAL(textChanged(QString)), SLOT(slotFiltered(QString)) );
+        m_lineEdit->setClickMessage( i18n( "Search Scripts" ) );
+        connect( m_lineEdit, SIGNAL(textChanged(QString)), SLOT(slotFiltered(QString)) );
     }
 
     m_listView = this->findChild<KCategorizedView*>();
@@ -39,6 +42,30 @@ ScriptSelector::ScriptSelector( QWidget * parent )
 
 ScriptSelector::~ScriptSelector()
 {}
+
+void
+ScriptSelector::setVerticalPosition( int position )
+{
+    m_listView->verticalScrollBar()->setSliderPosition( position );
+}
+
+int
+ScriptSelector::verticalPosition()
+{
+    return m_listView->verticalScrollBar()->sliderPosition();
+}
+
+QString
+ScriptSelector::filter()
+{
+    return m_lineEdit->text();
+}
+
+void
+ScriptSelector::setFilter( const QString &filter )
+{
+    m_lineEdit->setText( filter );
+}
 
 void
 ScriptSelector::addScripts( QList<KPluginInfo> pluginInfoList,
