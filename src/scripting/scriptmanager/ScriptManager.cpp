@@ -159,17 +159,10 @@ ScriptManager::lyricsScriptRunning() const
 }
 
 void
-ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
+ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title, const QString& url, Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    emit fetchLyrics( artist, title, QString() );
-}
-
-void
-ScriptManager::notifyFetchLyricsByUrl( const QString& artist, const QString& title, const QString& url )
-{
-    DEBUG_BLOCK
-    emit fetchLyrics( artist, title, url );
+    emit fetchLyrics( artist, title, url, track );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

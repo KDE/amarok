@@ -161,7 +161,7 @@ void LyricsEngine::update()
         // fetch by lyrics script
         removeAllData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
-        ScriptManager::instance()->notifyFetchLyrics( lyrics.artist, lyrics.title );
+        ScriptManager::instance()->notifyFetchLyrics( lyrics.artist, lyrics.title, "", currentTrack );
     }
     m_isUpdateInProgress = false;
 }

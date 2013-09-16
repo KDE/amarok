@@ -18,6 +18,8 @@
 #ifndef AMAROK_LYRICS_SCRIPT_H
 #define AMAROK_LYRICS_SCRIPT_H
 
+#include "core/meta/forward_declarations.h"
+
 #include <QObject>
 
 class QScriptEngine;
@@ -48,7 +50,7 @@ namespace AmarokScript
             QByteArray fromUtf8( const QString& str, const QString& encoding );
 
         signals:
-            void fetchLyrics( const QString& artist, const QString& title, const QString& );
+            void fetchLyrics( const QString& artist, const QString& title, const QString&, Meta::TrackPtr );
     };
 }
 

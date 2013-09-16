@@ -20,6 +20,7 @@
 #define AMAROK_SCRIPTMANAGER_H
 
 #include "amarok_export.h"
+#include "core/meta/forward_declarations.h"
 #include "ScriptItem.h"
 
 #include <KPluginInfo>
@@ -71,10 +72,8 @@ class AMAROK_EXPORT ScriptManager : public QObject
 
         QString scriptNameForEngine( const QScriptEngine *engine ) const;
 
-        /** Notifies any running lyric scripts to fetch lyrics */
-        void notifyFetchLyrics( const QString& artist, const QString& title );
         /** Notifies any running lyric scripts to fetch desired lyric from given URL */
-        void notifyFetchLyricsByUrl( const QString& artist, const QString& title, const QString& url );
+        void notifyFetchLyrics( const QString& artist, const QString& title, const QString& url, Meta::TrackPtr track );
 
         void ServiceScriptPopulate( const QString &name,
                                     int level,
@@ -98,7 +97,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
 
     signals:
         // needed so the lyrics script can connect to this
-        void fetchLyrics( const QString&, const QString&, const QString& url );
+        void fetchLyrics( const QString&, const QString&, const QString& url, Meta::TrackPtr );
         void lyricsScriptStarted();
 
         /**

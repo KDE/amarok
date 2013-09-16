@@ -41,8 +41,8 @@ AmarokLyricsScript::AmarokLyricsScript( QScriptEngine *engine )
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
     engine->globalObject().property( "Amarok" ).setProperty( "Lyrics", scriptObject );
-    connect( ScriptManager::instance(), SIGNAL(fetchLyrics(QString,QString,QString)),
-             SIGNAL(fetchLyrics(QString,QString,QString)) );
+    connect( ScriptManager::instance(), SIGNAL(fetchLyrics(QString,QString,QString,Meta::TrackPtr)),
+             SIGNAL(fetchLyrics(QString,QString,QString,Meta::TrackPtr)) );
 }
 
 void
