@@ -20,22 +20,23 @@
 #include "core/meta/forward_declarations.h"
 
 #include <QObject>
+#include <QMetaType>
 #include <QStringList>
-#include <QVariant>
 
 class QModelIndex;
-class QScriptEngine;
 class QUrl;
 
 namespace AmarokScript
 {
+    class AmarokScriptEngine;
+
     // SCRIPTDOX: Amarok.Playlist
     class AmarokPlaylistScript : public QObject
     {
         Q_OBJECT
 
         public:
-            AmarokPlaylistScript( QScriptEngine* ScriptEngine );
+            AmarokPlaylistScript( AmarokScriptEngine *engine );
 
         public slots:
 
@@ -60,9 +61,19 @@ namespace AmarokScript
             void addMedia( const QUrl &url );
 
             /**
+             * Append @param track to playlist.
+             */
+            void addTrack( Meta::TrackPtr track );
+
+            /**
              * Load the list of tracks represented by the urls and append to playlist.
              */
-            void addMediaList( const QVariantList &urls );
+            void addMediaList( const QList<QUrl> &urls );
+
+            /**
+             * Append the list of tracks to playlist.
+             */
+            void addTrackList( const Meta::TrackList &tracks );
 
             /**
              * Clear the current playlist.
@@ -80,9 +91,19 @@ namespace AmarokScript
             void playMedia( const QUrl &url );
 
             /**
+             * Prepend @param track and start playing it.
+             */
+            void playTrack( Meta::TrackPtr track );
+
+            /**
              * Prepend the the tracks represented by the passed urls and start playing them.
              */
-            void playMediaList( const QVariantList &urls );
+            void playMediaList( const QList<QUrl> &urls );
+
+            /**
+             * Prepend tracks in @param trackList and start playing them.
+             */
+            void playTrackList( const Meta::TrackList &trackList );
 
             /**
              * Remove the currently playing track from the playlist.
@@ -151,8 +172,10 @@ namespace AmarokScript
             void slotTrackRemoved( const QModelIndex&, int start, int end );
 
         private:
-            QScriptEngine* m_scriptEngine;
+            AmarokScriptEngine* m_scriptEngine;
     };
 }
+
+Q_DECLARE_METATYPE( QList<QUrl> )
 
 #endif

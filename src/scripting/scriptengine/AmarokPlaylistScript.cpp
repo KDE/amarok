@@ -28,12 +28,13 @@
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/view/listview/PrettyListView.h"
 #include "playlist/PlaylistDock.h"
+#include "ScriptingDefines.h"
 
 #include <QScriptEngine>
 
 using namespace AmarokScript;
 
-AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine *engine )
+AmarokPlaylistScript::AmarokPlaylistScript( AmarokScriptEngine *engine )
     : QObject( engine )
     , m_scriptEngine( engine )
 {
@@ -41,6 +42,7 @@ AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine *engine )
     engine->globalObject().property( "Amarok" ).setProperty( "Playlist", scriptObject );
     connect( The::playlist()->qaim(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT (slotTrackInserted(QModelIndex,int,int)) );
     connect( The::playlist()->qaim(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT (slotTrackRemoved(QModelIndex,int,int)) );
+    engine->registerArrayType< QList<QUrl> >();
 }
 
 int
@@ -70,12 +72,24 @@ AmarokPlaylistScript::addMedia( const QUrl &url )
 }
 
 void
-AmarokPlaylistScript::addMediaList( const QVariantList &urls )
+AmarokPlaylistScript::addTrack( Meta::TrackPtr track )
+{
+    The::playlistController()->insertOptioned( track );
+}
+
+void
+AmarokPlaylistScript::addMediaList( const QList<QUrl> &urls )
 {
     QList<KUrl> list;
-    foreach( const QVariant &url, urls )
-        list << url.toUrl();
+    foreach( const QUrl &url, urls )
+        list << url;
     The::playlistController()->insertOptioned( list );
+}
+
+void
+AmarokPlaylistScript::addTrackList( const Meta::TrackList &tracks )
+{
+    The::playlistController()->insertOptioned( tracks );
 }
 
 void
@@ -97,12 +111,24 @@ AmarokPlaylistScript::playMedia( const QUrl &url )
 }
 
 void
-AmarokPlaylistScript::playMediaList(const QVariantList& urls)
+AmarokPlaylistScript::playTrack( Meta::TrackPtr track )
+{
+    The::playlistController()->insertOptioned( track, Playlist::OnPlayMediaAction );
+}
+
+void
+AmarokPlaylistScript::playMediaList( const QList<QUrl> &urls )
 {
     QList<KUrl> list;
-    foreach( const QVariant &url, urls )
-        list << url.toUrl();
+    foreach( const QUrl &url, urls )
+        list << url;
     The::playlistController()->insertOptioned( list, Playlist::OnPlayMediaAction );
+}
+
+void
+AmarokPlaylistScript::playTrackList( const Meta::TrackList &trackList )
+{
+    The::playlistController()->insertOptioned( trackList, Playlist::OnPlayMediaAction );
 }
 
 void
