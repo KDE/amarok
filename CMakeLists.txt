@@ -95,8 +95,6 @@ add_definitions( ${QT_DEFINITIONS} ${KDE4_DEFINITIONS} )
 # QCA2 is required for the Script Updater
 find_package( QCA2 )
 
-find_package( QtScriptQtBindings )
-
 macro_optional_find_package( LibLastFm )
 set( LIBLASTFM_MIN_VERSION "1.0.0" )
 if( LIBLASTFM_FOUND )
@@ -131,8 +129,6 @@ if( WITH_PLAYER )
     macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE ${KDE_MIN_VERSION} "" )
 
     macro_log_feature( QT_QTOPENGL_FOUND "QtOpenGL" "Required for the spectrum analyzer" "http://qt-project.org" FALSE "" "" )
-
-    macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" FALSE "" "" )
 
     find_package(MySQLAmarok REQUIRED)
     if( WITH_MYSQL_EMBEDDED )

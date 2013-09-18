@@ -24,6 +24,7 @@
 
 #include <QScriptEngine>
 #include <QSet>
+#include <QStringList>
 
 using namespace AmarokScript;
 
@@ -46,16 +47,13 @@ ScriptImporter::loadExtension( const QString& src )
 bool
 ScriptImporter::loadQtBinding( const QString& binding )
 {
-    QSet<QString> allowedBindings;
-#ifdef QTSCRIPTQTBINDINGS_FOUND
-    allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
-#endif
-    if( allowedBindings.contains( binding ) )
+    QStringList availableBindings = m_scriptEngine->availableExtensions();
+    if( availableBindings.contains( binding ) )
     {
         if( !m_importedBindings.contains( binding ) )
         {
             if( m_scriptEngine->importExtension( binding ).isUndefined() )
-            { // undefined indiciates success
+            { // undefined indicates success
                 m_importedBindings << binding;
                 return true;
             }
@@ -65,7 +63,7 @@ ScriptImporter::loadQtBinding( const QString& binding )
             return true;
     }
     else
-        warning() << __PRETTY_FUNCTION__ << "Qt Binding" << binding << "not allowed!";
+        warning() << __PRETTY_FUNCTION__ << "Binding \"" << binding << "\" could not be found!";
     return false;
 }
 
@@ -84,4 +82,10 @@ ScriptImporter::include( const QString& relativeFilename )
                             m_scriptEngine->currentContext()->parentContext()->activationObject() );
     m_scriptEngine->evaluate( file.readAll(), relativeFilename );
     return true;
+}
+
+QStringList
+ScriptImporter::availableBindings() const
+{
+    return m_scriptEngine->availableExtensions();
 }

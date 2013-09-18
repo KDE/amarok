@@ -34,6 +34,7 @@ namespace AmarokScript
             ScriptImporter( QScriptEngine* ScriptEngine, const KUrl &url );
 
         public slots:
+            QStringList availableBindings() const;
             void loadExtension( const QString &src );
             bool loadQtBinding( const QString &binding );
             bool include( const QString &relativeFile );
