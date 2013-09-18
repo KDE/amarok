@@ -578,6 +578,11 @@
 </group>
 
 <group name="ScriptManager">
+    <entry key="Enable Scripts" type="Bool">
+        <label>Whether to enable Amarok's scripting module.</label>
+        <whatsthis>Enable/Disable Amarok's scripting module.</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="AutoUpdateScripts" type="Bool">
         <label>Whether to automatically update built-in scripts</label>
         <whatsthis>Enable/Disable automatic update for built-in scripts.</whatsthis>

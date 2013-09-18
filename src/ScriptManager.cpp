@@ -50,6 +50,7 @@
 #include "scriptengine/ScriptImporter.h"
 #include "ScriptUpdater.h"
 
+#include <KMessageBox>
 #include <KStandardDirs>
 
 #include <QFileInfo>
@@ -73,8 +74,41 @@ ScriptManager::ScriptManager( QObject* parent )
 
     s_instance = this;
 
+    if( AmarokConfig::enableScripts() == false )
+    {
+        if( !minimumBindingsAvailable() )
+        {
+            KMessageBox::error( 0,
+                                i18n( "Scripts have been disabled since you are missing the QtScriptQtBindings "
+                                      "package. Please install the package and restart Amarok for scripts to work." ),
+                                i18n( "Scripts Disabled!" )  );
+            return;
+        }
+        AmarokConfig::setEnableScripts( true );
+    }
+
     // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, SLOT(updateAllScripts()) );
+}
+
+bool
+ScriptManager::minimumBindingsAvailable()
+{
+    QStringList minimumBindings;
+    minimumBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
+    QScriptEngine engine;
+    foreach( const QString &binding, minimumBindings )
+    {
+        // simply compare with availableExtensions()? Or can import still fail?
+        QScriptValue error = engine.importExtension( binding );
+        if( error.isUndefined() )
+            continue; // undefined indicates success
+
+        debug() << "Extension" << binding <<  "not found:" << error.toString();
+        debug() << "Available extensions:" << engine.availableExtensions();
+        return false;
+    }
+    return true;
 }
 
 ScriptManager::~ScriptManager()
@@ -294,7 +328,7 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
     return true;
 }
 
-void ScriptManager::handleException(const QScriptValue& value)
+void ScriptManager::handleException( const QScriptValue &value )
 {
     DEBUG_BLOCK
 

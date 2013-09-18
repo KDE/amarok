@@ -59,6 +59,7 @@ ScriptsConfig::ScriptsConfig( QWidget *parent )
 
     connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
     connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );
+    this->setEnabled( AmarokConfig::enableScripts() );
 }
 
 ScriptsConfig::~ScriptsConfig()

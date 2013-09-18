@@ -1123,9 +1123,6 @@ MainWindow::createMenus()
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("bookmark_manager") );
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("cover_manager") );
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("equalizer_dialog") );
-#ifdef QTSCRIPTQTBINDINGS_FOUND
-    m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("script_manager") );
-#endif
 #ifdef DEBUG_BUILD_TYPE
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("network_request_viewer") );
 #endif // DEBUG_BUILD_TYPE

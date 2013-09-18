@@ -17,6 +17,8 @@ VERSION 2.9-Beta 1
      from APE tags. Patch by Bruno Léon <bruno.leon@nividic.org>. (BR 323735)
    * Using Shuffle keyboard shortcut no longer causes Amarok to crash.
      (BR 323614)
+   * Check for QtBindings at runtime instead. Disable scripts and display error message
+     if missing. (BR 325006)
 
 
 VERSION 2.8
