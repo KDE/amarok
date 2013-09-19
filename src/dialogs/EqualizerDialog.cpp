@@ -89,16 +89,21 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
 
     // Ask engine for maximum gain value and compute scale to display values
     mValueScale = The::engineController()->eqMaxGain();
-    QString mlblText = i18n( "%0\ndB" ).arg( QString::number( mValueScale, 'f', 1 ) );
+    const QString mlblText = i18n( "%0\ndB" ).arg( QString::number( mValueScale, 'f', 1 ) );
     eqMaxEq->setText( QString("+") + mlblText );
     eqMinEq->setText( QString("-") + mlblText );
 
     // Ask engine for band frequencies and set labels
-    QStringList equalizerBandFreq = The::engineController()->eqBandsFreq();
+    const QStringList equalizerBandFreq = The::engineController()->eqBandsFreq();
     QStringListIterator i( equalizerBandFreq );
-    // Checking if preamp is present
-    if( equalizerBandFreq.size() == s_equalizerBandsCount )
-        eqPreampSlider->setDisabled( true );
+
+    // Check if preamp is supported by Phonon backend
+    if( equalizerBandFreq.size() == s_equalizerBandsNum ) {
+        // Preamp not supported, so hide its slider
+        eqPreampLabel->hide();
+        eqPreampSlider->hide();
+        eqPreampValue->hide();
+    }
     else if( i.hasNext() ) // If preamp is present then skip its label as it is hard-coded in UI
         i.next();
     foreach( QLabel* mLabel, m_bandLabels )

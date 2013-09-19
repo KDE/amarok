@@ -156,7 +156,7 @@ EngineController::initializePhonon()
 
     // Add an equalizer effect if available
     QList<EffectDescription> effects = BackendCapabilities::availableAudioEffects();
-    QRegExp equalizerRegExp( QString( "equalizer.*%1.*bands" ).arg( s_equalizerBandsCount ),
+    QRegExp equalizerRegExp( QString( "equalizer.*%1.*bands" ).arg( s_equalizerBandsNum ),
                              Qt::CaseInsensitive );
     foreach( const EffectDescription &description, effects )
     {
@@ -165,7 +165,7 @@ EngineController::initializePhonon()
 
         QScopedPointer<Effect> equalizer( new Effect( description, this ) );
         int parameterCount = equalizer->parameters().count();
-        if( parameterCount == s_equalizerBandsCount || parameterCount == s_equalizerBandsCount + 1 )
+        if( parameterCount == s_equalizerBandsNum || parameterCount == s_equalizerBandsNum + 1 )
         {
             debug() << "Established Phonon equalizer effect with" << parameterCount
                     << "parameters.";
@@ -884,7 +884,7 @@ EngineController::eqUpdate() //SLOT
         QListIterator<int> equalizerParametersIt( equalizerParametersCfg );
         double scaledVal; // Scaled value to set from universal -100 - 100 range to plugin scale
         // Checking if preamp is present in equalizer parameters
-        if( equalizerParameters.size() == s_equalizerBandsCount )
+        if( equalizerParameters.size() == s_equalizerBandsNum )
         {
             // If pre-amp is not present then skip the first element of equalizer gain
             if( equalizerParametersIt.hasNext() )
