@@ -74,14 +74,18 @@ fitsInOneLineHTML(const QString& text)
 }
 
 static QString
-breakLongLinesHTML(const QString& text)
+breakLongLinesHTML( const QString &origText )
 {
+    // filter-out HTML tags..
+    QString text( origText );
+    text.replace( '&', "&amp;" ); // needs to be first, obviously
+    text.replace( '<', "&lt;" );
+    text.replace( '>', "&gt;" );
+
     // Now let's break up long lines so that the tooltip doesn't become hideously large
-    if (fitsInOneLineHTML(text))
-    {
+    if( fitsInOneLineHTML( text ) )
         // If the text is not too long, return it as it is
         return text;
-    }
     else
     {
         const int lnSize = TOOLTIP_STATIC_LINEBREAK;
