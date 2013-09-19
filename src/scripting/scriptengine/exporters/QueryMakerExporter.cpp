@@ -57,6 +57,8 @@ QueryMakerPrototype::run()
 Meta::TrackList
 QueryMakerPrototype::blockingRun()
 {
+    if( !m_querymaker )
+        return Meta::TrackList();
     QEventLoop loop;
     connect( m_querymaker.data(), SIGNAL(newResultReady(Meta::TrackList)), SLOT(slotResult(Meta::TrackList)) );
     connect( m_querymaker.data(), SIGNAL(queryDone()), &loop, SLOT(quit()) );
@@ -78,10 +80,11 @@ QueryMakerPrototype::QueryMakerPrototype( QueryMaker *queryMaker )
 : QObject( 0 ) //engine ownership
 , m_querymaker( queryMaker )
 {
-    connect( m_querymaker.data(), SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)) );
-    connect( m_querymaker.data(), SIGNAL(queryDone()), SIGNAL(queryDone()) );
-    connect( m_querymaker.data(), SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
-    m_querymaker.data()->setAutoDelete( true );
+    if( !queryMaker )
+        return;
+    connect( queryMaker, SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)) );
+    connect( queryMaker, SIGNAL(queryDone()), SIGNAL(queryDone()) );
+    queryMaker->setAutoDelete( true );
 }
 
 QString
