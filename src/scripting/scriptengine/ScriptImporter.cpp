@@ -79,7 +79,6 @@ ScriptImporter::include( const QString& relativeFilename )
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
         warning() << "cannot open the include file!";
-        // m_scriptEngine->currentContext()->throwError( QScriptContext::TypeError, "Include file could not be opened!" );
         return false;
     }
     m_scriptEngine->currentContext()->setActivationObject(
@@ -94,11 +93,17 @@ ScriptImporter::availableBindings() const
     return m_scriptEngine->availableExtensions();
 }
 
-void
+bool
 ScriptImporter::loadAmarokBinding( const QString &name )
 {
     if( name == "bookmarks" )
         new AmarokBookmarkScript( m_scriptEngine );
     else if( name == "collectionview" )
         new AmarokCollectionViewScript( m_scriptEngine, ScriptManager::instance()->scriptNameForEngine( m_scriptEngine ) );
+    else
+    {
+        warning() << "\"" << name << "\" doesn't exist!";
+        return false;
+    }
+    return true;
 }

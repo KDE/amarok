@@ -24,6 +24,7 @@
 #include <QStringList>
 
 class QScriptEngine;
+class QStringList;
 
 namespace AmarokScript
 {
@@ -39,7 +40,7 @@ namespace AmarokScript
 
         public slots:
             QStringList availableBindings() const;
-            void loadAmarokBinding( const QString &name );
+            bool loadAmarokBinding( const QString &name );
             void loadExtension( const QString &src );
             bool loadQtBinding( const QString &binding );
             bool include( const QString &relativeFile );
