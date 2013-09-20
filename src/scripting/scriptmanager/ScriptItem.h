@@ -65,6 +65,7 @@ public:
 
     virtual bool start( bool silent );
     virtual void pause();
+    void uninstall();
 
 public slots:
     void stop();
@@ -80,6 +81,7 @@ private slots:
 signals:
     void signalHandlerException(QScriptValue);
     void evaluated( QString output );
+    void uninstalled();
 
 protected:
     /**

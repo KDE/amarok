@@ -172,8 +172,6 @@ ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title, c
 void
 ScriptManager::updateAllScripts() // SLOT
 {
-// note: we can't update scripts without the QtCryptoArchitecture, so don't even try
-#ifdef QCA2_FOUND
     DEBUG_BLOCK
     // find all scripts (both in $KDEHOME and /usr)
     QStringList foundScripts = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js",
@@ -186,7 +184,7 @@ ScriptManager::updateAllScripts() // SLOT
         if( !QFile::exists( specPath ) )
         {
             debug() << "Removing script " << item->info().pluginName();
-            item->deleteLater();
+            item->uninstall();
             m_scripts.remove( item->info().pluginName() );
         }
     }
@@ -197,9 +195,14 @@ ScriptManager::updateAllScripts() // SLOT
     KConfigGroup config = Amarok::config( "ScriptManager" );
     const uint lastCheck = config.readEntry( "LastUpdateCheck", QVariant( 0 ) ).toUInt();
     const uint now = QDateTime::currentDateTime().toTime_t();
+    bool autoUpdateScripts = AmarokConfig::autoUpdateScripts();
+    // note: we can't update scripts without the QtCryptoArchitecture, so don't even try
+    #ifndef QCA2_FOUND
+    autoUpdateScripts = false;
+    #endif
 
     // last update was at least 7 days ago -> check now if auto update is enabled
-    if( AmarokConfig::autoUpdateScripts() && (now - lastCheck > 7*24*60*60) )
+    if( autoUpdateScripts && (now - lastCheck > 7*24*60*60) )
     {
         debug() << "ScriptUpdater: Performing script update check now!";
         for( int i = 0; i < m_nScripts; ++i )
@@ -227,7 +230,6 @@ ScriptManager::updateAllScripts() // SLOT
         }
         configChanged( true );
     }
-#endif
 }
 
 void

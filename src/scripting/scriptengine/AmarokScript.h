@@ -73,6 +73,11 @@ namespace AmarokScript
             QStringList listRunningScripts() const;
 
         signals:
+            /**
+             * Emitted when this script is uninstalled.
+             */
+            void uninstalled();
+
             // TODO: actaully emit this signal
             void configured();
 

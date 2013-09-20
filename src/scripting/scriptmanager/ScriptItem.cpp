@@ -322,6 +322,13 @@ ScriptItem::slotDeprecatedCall( const QString &call )
     Amarok::Components::logger()->longMessage( message );
 }
 
+void
+ScriptItem::uninstall()
+{
+    emit uninstalled();
+    deleteLater();
+}
+
 ScriptItem::~ScriptItem()
 {
     stop();
