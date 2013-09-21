@@ -298,11 +298,14 @@ MapChanger::addExistingTrack( Meta::TrackPtr track, Track *memoryTrack )
     if( !album )
     {
         Meta::ArtistPtr albumArtist;
-        if( !albumArtistName.isEmpty() )
+        const bool isCompilation = trackAlbum ? trackAlbum->isCompilation() : false;
+        // we create even empty-named album artists if the album is not compilation
+        // because Collection Browser wouldn't show these otherwise
+        if( !albumArtistName.isEmpty() || !isCompilation )
         {
             /* Even if MemoryQueryMaker doesn't need albumArtists to be in MemoryCollection
-            * maps, we add her into artist map so that album artist has the same instance as
-            * indentically-named artist (of potentially different tracks) */
+             * maps, we add her into artist map so that album artist has the same instance as
+             * indentically-named artist (of potentially different tracks) */
             albumArtist = m_mc->artistMap().value( albumArtistName );
             if( !albumArtist )
             {
