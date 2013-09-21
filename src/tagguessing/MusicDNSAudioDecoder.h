@@ -24,25 +24,42 @@
 #define DEFAULT_SAMPLE_LENGTH 135000
 #define MIN_SAMPLE_LENGTH 10000
 
+namespace TagGuessing {
+    class DecodedAudioData;
+    class MusicDNSAudioDecoder;
+}
+
+/**
+ * Some methods are virtual so that this class can be properly extended
+ */
 class DecodedAudioData
 {
     public:
         DecodedAudioData();
-        ~DecodedAudioData();
+        virtual ~DecodedAudioData();
 
-        int sRate();
-        void setSampleRate( const int sampleRate );
+        int sRate() const;
+        quint8 channels() const;
 
-        quint8 channels();
-        void setChannels( const quint8 channels );
+        /**
+         * sets up the initial @param sampleRate and @param channels.
+         * Also, serves as a marker for the beginning of decoding of audio
+         * @return error code. Base implementation always returns 0 (no error)
+         */
+        virtual int setupInitial(const int sampleRate, const quint8 &channels );
 
-        int length();
-        qint64 duration();
-        void addTime( const qint64 ms );
+        int length() const;
+        qint64 duration() const;
+        void addTime(const qint64 &ms );
 
-        const char *data();
+        const char *data() const;
 
-        void appendData( const quint8 *data, int length );
+        /**
+         * appends the first @param length in @param data to m_data
+         * Also, servers as a marker for every data packet read from audio file
+         * @return error code. Base implementation always returns 0 (no error)
+         */
+        virtual int appendData( const quint8 *data, int length );
         DecodedAudioData &operator<< ( const quint8 &byte );
 
         void flush();
@@ -62,12 +79,12 @@ class MusicDNSAudioDecoder : public ThreadWeaver::Job
         MusicDNSAudioDecoder( const Meta::TrackList &tracks, const int sampleLength = DEFAULT_SAMPLE_LENGTH );
         virtual ~MusicDNSAudioDecoder();
 
-        void run();
+        virtual void run();
 
     signals:
         void trackDecoded( const Meta::TrackPtr, const QString );
 
-    private:
+    protected:
         int decode( const QString &fileName, DecodedAudioData *data, const int length );
 
         Meta::TrackList m_tracks;

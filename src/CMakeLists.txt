@@ -31,6 +31,7 @@ endif( QTSCRIPTQTBINDINGS_FOUND )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
+add_subdirectory( tagguessing )
 
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
@@ -643,12 +644,6 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/DirPlaylistTrackFilterProxyModel.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/FileView.cpp
-    musicbrainz/MusicBrainzFinder.cpp
-    musicbrainz/MusicBrainzTagsItem.cpp
-    musicbrainz/MusicBrainzTagsModel.cpp
-    musicbrainz/MusicBrainzTagsModelDelegate.cpp
-    musicbrainz/MusicBrainzTagsView.cpp
-    musicbrainz/MusicBrainzXmlParser.cpp
     OpmlOutline.cpp
     OpmlParser.cpp
     OpmlWriter.cpp
@@ -745,12 +740,6 @@ if( LIBOFA_FOUND )
         ${AVFORMAT_LIBRARIES}
         ${AVCODEC_LIBRARIES}
         ${AVUTIL_LIBRARIES}
-    )
-    set( amaroklib_LIB_SRCS
-        ${amaroklib_LIB_SRCS}
-        musicbrainz/MusicDNSAudioDecoder.cpp
-        musicbrainz/MusicDNSFinder.cpp
-        musicbrainz/MusicDNSXmlParser.cpp
     )
 endif( LIBOFA_FOUND )
 

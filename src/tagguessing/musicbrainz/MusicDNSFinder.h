@@ -19,8 +19,8 @@
 
 #include "Version.h"
 #include "core/meta/forward_declarations.h"
-#include "musicbrainz/MusicDNSAudioDecoder.h"
-#include "musicbrainz/MusicDNSXmlParser.h"
+#include "MusicDNSAudioDecoder.h"
+#include "MusicDNSXmlParser.h"
 #include "network/NetworkAccessManagerProxy.h"
 
 #include <QTimer>

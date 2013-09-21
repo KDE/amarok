@@ -19,13 +19,10 @@
 #define MUSICBRAINZFINDER_H
 
 #include "Version.h"
-#include "core/meta/forward_declarations.h"
-#include "musicbrainz/MusicBrainzXmlParser.h"
-#include "network/NetworkAccessManagerProxy.h"
+#include "tagguessing/Provider.h"
+#include "tagguessing/musicbrainz/MusicBrainzXmlParser.h"
 
-typedef QPair<Meta::TrackPtr, QVariantMap> TrackInfo;
-
-class MusicBrainzFinder : public QObject
+class MusicBrainzFinder : public TagGuessing::Provider
 {
     Q_OBJECT
 
@@ -77,7 +74,6 @@ class MusicBrainzFinder : public QObject
         QString mb_username;
         QString mb_password;
 
-        QNetworkAccessManager *net;
         QList<QPair<Meta::TrackPtr, QNetworkRequest> > m_requests;
         QMap<QNetworkReply *, Meta::TrackPtr> m_replies;
         QMap<MusicBrainzXmlParser *, Meta::TrackPtr> m_parsers;
@@ -85,7 +81,7 @@ class MusicBrainzFinder : public QObject
         QMap<Meta::TrackPtr, QVariantMap> m_parsedMetadata;
 
         QMap<QString, QVariantMap> mb_releaseGroups;
-        QMap<QString, QList<TrackInfo> > mb_queuedTracks;
+        QMap<QString, QList<TagGuessing::TrackInfo> > mb_queuedTracks;
 };
 
 #endif // MUSICBRAINZFINDER_H

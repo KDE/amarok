@@ -51,22 +51,18 @@ DecodedAudioData::sRate()
     return m_sRate;
 }
 
-void
-DecodedAudioData::setSampleRate( const int sampleRate )
-{
-    m_sRate = sampleRate;
-}
-
 quint8
 DecodedAudioData::channels()
 {
     return m_channels;
 }
 
-void
-DecodedAudioData::setChannels( const quint8 channels )
+int
+DecodedAudioData::setupInitial( const int sampleRate, const quint8 channels )
 {
+    m_sRate = sampleRate;
     m_channels = channels;
+    return 0;
 }
 
 const char *
@@ -93,10 +89,11 @@ DecodedAudioData::length()
     return m_data->length();
 }
 
-void
+int
 DecodedAudioData::appendData( const quint8 *data, int length )
 {
     m_data->append( (const char *)data, length );
+    return 0;
 }
 
 DecodedAudioData &DecodedAudioData::operator<< ( const quint8 &byte )
@@ -122,7 +119,6 @@ MusicDNSAudioDecoder::MusicDNSAudioDecoder( const Meta::TrackList &tracks, const
 
 MusicDNSAudioDecoder::~MusicDNSAudioDecoder()
 {
-
 }
 
 void
@@ -209,8 +205,9 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
 
     streamTimeBase = pFormatCtx->streams[audioStream]->time_base;
 
-    data->setSampleRate( pCodecCtx->sample_rate );
-    data->setChannels( ( pCodecCtx->channels > 1 )? 1 : 0 );
+    if( data->setupInitial( pCodecCtx->sample_rate,
+                            ( pCodecCtx->channels > 1 )? 1 : 0 ) )
+        return 0;
 
     av_init_packet( &avpkt );
     while( !av_read_frame( pFormatCtx, &packet ) && isOk )
@@ -247,7 +244,11 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
 
                     av_samples_get_buffer_size( &planeSize, pCodecCtx->channels, decodedFrame->nb_samples, pCodecCtx->sample_fmt, 1);
                     for( int i = 0; i < qMin( pCodecCtx->channels, 2 ); i++ )
-                        data->appendData( const_cast<const quint8 *>( decodedFrame->extended_data[i] ), planeSize );
+                        if( data->appendData( const_cast<const quint8 *>( decodedFrame->extended_data[i] ), planeSize ) )
+                        {
+                            isOk = false;
+                            break;
+                        }
                 }
 
                 avpkt.size -= decoderRet;
@@ -327,8 +328,9 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
 
     streamTimeBase = pFormatCtx->streams[audioStream]->time_base;
 
-    data->setSampleRate( pCodecCtx->sample_rate );
-    data->setChannels( ( pCodecCtx->channels > 1 )? 1 : 0 );
+    if( data->setupInitial( pCodecCtx->sample_rate,
+                            ( pCodecCtx->channels > 1 )? 1 : 0 ) )
+        return 0;
 
     av_init_packet( &avpkt );
     while( !av_read_frame( pFormatCtx, &packet ) && isOk )
@@ -365,7 +367,11 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
                     
                     av_samples_get_buffer_size( &planeSize, pCodecCtx->channels, decodedFrame->nb_samples, pCodecCtx->sample_fmt, 1);
                     for( int i = 0; i < qMin( pCodecCtx->channels, 2 ); i++ )
-                        data->appendData( const_cast<const quint8 *>( decodedFrame->extended_data[i] ), planeSize );
+                        if( data->appendData( const_cast<const quint8 *>( decodedFrame->extended_data[i] ), planeSize ) )
+                        {
+                            isOk = false;
+                            break;
+                        }
                 }
 
                 avpkt.size -= decoderRet;
@@ -445,8 +451,9 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
 
     streamTimeBase = pFormatCtx->streams[audioStream]->time_base;
 
-    data->setSampleRate( pCodecCtx->sample_rate );
-    data->setChannels( ( pCodecCtx->channels > 1 )? 1 : 0 );
+    if( data->setupInitial( pCodecCtx->sample_rate,
+                            ( pCodecCtx->channels > 1 )? 1 : 0 ) )
+        return 0;
 
     av_init_packet( &avpkt );
     while( !av_read_frame( pFormatCtx, &packet ) && isOk )
@@ -483,7 +490,11 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
 
                     av_samples_get_buffer_size( &planeSize, pCodecCtx->channels, decodedFrame->nb_samples, pCodecCtx->sample_fmt, 1);
                     for( int i = 0; i < qMin( pCodecCtx->channels, 2 ); i++ )
-                        data->appendData( const_cast<const quint8 *>( decodedFrame->extended_data[i] ), planeSize );
+                        if( data->appendData( const_cast<const quint8 *>( decodedFrame->extended_data[i] ), planeSize ) )
+                        {
+                            isOk = false;
+                            break;
+                        }
                 }
 
                 avpkt.size -= decoderRet;
@@ -565,8 +576,9 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
 
     streamTimeBase = pFormatCtx->streams[audioStream]->time_base;
 
-    data->setSampleRate( pCodecCtx->sample_rate );
-    data->setChannels( ( pCodecCtx->channels > 1 )? 1 : 0 );
+    if( data->setupInitial( pCodecCtx->sample_rate,
+                            ( pCodecCtx->channels > 1 )? 1 : 0 ) )
+        return 0;
 
     av_init_packet( &avpkt );
     while( !av_read_frame( pFormatCtx, &packet ) && isOk )
@@ -594,9 +606,11 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
                 }
 
                 if( outSize > 0 )
-                {
-                    data->appendData( ( const quint8 *)buffer, outSize );
-                }
+                    if( data->appendData( ( const quint8 *)buffer, outSize ) )
+                    {
+                        isOk = false;
+                        break;
+                    }
 
                 avpkt.size -= decoderRet;
                 avpkt.data += decoderRet;
@@ -678,8 +692,9 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
 
     streamTimeBase = pFormatCtx->streams[audioStream]->time_base;
 
-    data->setSampleRate( pCodecCtx->sample_rate );
-    data->setChannels( ( pCodecCtx->channels > 1 )? 1 : 0 );
+    if( data->setupInitial( pCodecCtx->sample_rate,
+                            ( pCodecCtx->channels > 1 )? 1 : 0 ) )
+        return 0;
 
     av_init_packet( &avpkt );
     while( !av_read_frame( pFormatCtx, &packet ) && isOk )
@@ -707,9 +722,11 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
                 }
 
                 if( outSize > 0 )
-                {
-                    data->appendData( ( const quint8 *)buffer, outSize );
-                }
+                    if( data->appendData( ( const quint8 *)buffer, outSize ) )
+                    {
+                        isOk = false;
+                        break;
+                    }
 
                 avpkt.size -= decoderRet;
                 avpkt.data += decoderRet;

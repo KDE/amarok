@@ -527,3 +527,5 @@ MusicBrainzXmlParser::parseArtist( const QDomElement &e )
 
     return idList;
 }
+
+#include "MusicBrainzXmlParser.moc"

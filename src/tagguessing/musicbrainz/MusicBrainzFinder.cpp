@@ -60,7 +60,7 @@ similarity( const QString &s1, const QString &s2 )
 MusicBrainzFinder::MusicBrainzFinder( QObject *parent, const QString &host,
                                       const int port, const QString &pathPrefix,
                                       const QString &username, const QString &password )
-    : QObject( parent )
+    : Provider( parent )
     , mb_host( host )
     , mb_port( port )
     , mb_pathPrefix( pathPrefix )
@@ -76,14 +76,14 @@ MusicBrainzFinder::MusicBrainzFinder( QObject *parent, const QString &host,
     debug() << "\tusername:\t" << mb_username;
     debug() << "\tpassword:\t" << mb_password;
 
-    net = The::networkAccessManager();
+    m_net= The::networkAccessManager();
 
     m_timer = new QTimer( this );
     m_timer->setInterval( 1000 );
 
-    connect( net, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
+    connect( m_net, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
              SLOT(gotAuthenticationRequest(QNetworkReply*,QAuthenticator*)) );
-    connect( net, SIGNAL(finished(QNetworkReply*)),
+    connect( m_net, SIGNAL(finished(QNetworkReply*)),
              SLOT(gotReply(QNetworkReply*)) );
     connect( m_timer, SIGNAL(timeout()), SLOT(sendNewRequest()) );
 }
@@ -123,7 +123,7 @@ MusicBrainzFinder::sendNewRequest()
         return;
     }
     QPair<Meta::TrackPtr, QNetworkRequest> req = m_requests.takeFirst();
-    QNetworkReply *reply = net->get( req.second );
+    QNetworkReply *reply = m_net->get( req.second );
     m_replies.insert( reply, req.first );
     connect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
              this, SLOT(gotReplyError(QNetworkReply::NetworkError)) );
