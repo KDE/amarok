@@ -18,9 +18,8 @@
 
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
-#include "databaseimporter/sqlbatch/SqlBatchImporter.h"
-#include "databaseimporter/amarok14/FastForwardImporter.h"
-#include "databaseimporter/itunes/ITunesImporter.h"
+#include "databaseimporter/SqlBatchImporter.h"
+#include "databaseimporter/SqlBatchImporterConfig.h"
 
 #include <KLocale>
 #include <KPageWidgetItem>
@@ -42,52 +41,27 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     KVBox *importerBox = new KVBox( this );
     importerBox->setSpacing( KDialog::spacingHint() );
 
-    QString text = i18n("This tool allows you to import track information and<br>"
-                        "statistical data from another music application.<br><br>"
-                        "Any statistical data in your database will be <i>overwritten</i>" );
-    QLabel *label = new QLabel( text, importerBox );
-    label->setTextFormat( Qt::RichText );
-    label->setAlignment( Qt::AlignHCenter );
-    label->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ); // Don't stretch vertically
-
-    m_buttons = new QButtonGroup( importerBox );
-    m_buttons->setExclusive( true );
-
-    QRadioButton *scanner = new QRadioButton( i18n("Amarok collection scanner"), importerBox );
-    QRadioButton *amarok = new QRadioButton( i18n("Amarok 1.4"), importerBox );
-    QRadioButton *itunes = new QRadioButton( i18n("iTunes"), importerBox );
-    QRadioButton *banshee = new QRadioButton( i18n("Banshee"), importerBox );
-    QRadioButton *rhythmbox = new QRadioButton( i18n("Rhythmbox"), importerBox );
-
-    scanner->setChecked( true );
-    banshee->setEnabled( false );
-    rhythmbox->setEnabled( false );
-
-    banshee->setHidden( true );
-    rhythmbox->setHidden( true );
-
-    m_buttons->addButton( scanner );
-    m_buttons->addButton( amarok );
-    m_buttons->addButton( itunes );
-    m_buttons->addButton( banshee );
-    m_buttons->addButton( rhythmbox );
-
-    m_buttonHash.insert( scanner, SqlBatchImporter::name() );
-    m_buttonHash.insert( amarok, FastForwardImporter::name() );
-    m_buttonHash.insert( itunes, ITunesImporter::name() );
-    m_buttonHash.insert( banshee, "" );
-    m_buttonHash.insert( rhythmbox, "" );
-    
-    m_selectImporterPage = addPage( importerBox, i18n("Select Importer") );
-
     m_configBox = new KVBox( this );
     m_configBox->setSpacing( KDialog::spacingHint() );
 
-    m_configPage = addPage( m_configBox, i18n("Configuration") );
+    m_configPage = addPage( m_configBox, i18n("Import configuration") );
+
+    m_importer = new SqlBatchImporter( this );
+    connect( m_importer, SIGNAL(importSucceeded()), this, SLOT(importSucceeded()) );
+    connect( m_importer, SIGNAL(importFailed()), this, SLOT(importFailed()) );
+    connect( m_importer, SIGNAL(trackAdded(Meta::TrackPtr)), this, SLOT(importedTrack(Meta::TrackPtr)) );
+    connect( m_importer, SIGNAL(trackDiscarded(QString)), this, SLOT(discardedTrack(QString)) );
+    connect( m_importer, SIGNAL(trackMatchFound(Meta::TrackPtr,QString)),
+             this, SLOT(matchedTrack(Meta::TrackPtr,QString)) );
+    connect( m_importer, SIGNAL(trackMatchMultiple(Meta::TrackList,QString)),
+             this, SLOT(ambigousTrack(Meta::TrackList,QString)) );
+    connect( m_importer, SIGNAL(importError(QString)), this, SLOT(importError(QString)) );
+    connect( m_importer, SIGNAL(showMessage(QString)), this, SLOT(showMessage(QString)) );
+    m_importerConfig = m_importer->configWidget( m_configBox );
 
     KVBox *resultBox = new KVBox( this );
     resultBox->setSpacing( KDialog::spacingHint() );
-   
+
     m_results = new QPlainTextEdit( resultBox );
     m_results->setReadOnly( true );
     m_results->setTabChangesFocus( true );
@@ -107,12 +81,6 @@ DatabaseImporterDialog::pageChanged( KPageWidgetItem *current, KPageWidgetItem *
 {
     DEBUG_BLOCK
 
-    if( before == m_selectImporterPage && current == m_configPage )
-    {
-        selectImporter();
-        return;
-    }
-
     if( before == m_configPage && current == m_resultsPage )
     {
         if( m_importer && !m_importer->importing() )
@@ -124,36 +92,6 @@ DatabaseImporterDialog::pageChanged( KPageWidgetItem *current, KPageWidgetItem *
 }
 
 void
-DatabaseImporterDialog::selectImporter()
-{
-    DEBUG_BLOCK
-
-    QRadioButton *button = dynamic_cast<QRadioButton*>(m_buttons->checkedButton());
-    if( !button )
-        return;
-
-    QString name = m_buttonHash.value( button, QString() );
-    if( name.isEmpty() )
-        return;
-
-    delete m_importer;
-    m_importer = DatabaseImporterFactory::createImporter( name, this );
-    connect( m_importer, SIGNAL(importSucceeded()), this, SLOT(importSucceeded()) );
-    connect( m_importer, SIGNAL(importFailed()), this, SLOT(importFailed()) );
-    connect( m_importer, SIGNAL(trackAdded(Meta::TrackPtr)), this, SLOT(importedTrack(Meta::TrackPtr)) );
-    connect( m_importer, SIGNAL(trackDiscarded(QString)), this, SLOT(discardedTrack(QString)) );
-    connect( m_importer, SIGNAL(trackMatchFound(Meta::TrackPtr,QString)),
-             this, SLOT(matchedTrack(Meta::TrackPtr,QString)) );
-    connect( m_importer, SIGNAL(trackMatchMultiple(Meta::TrackList,QString)),
-             this, SLOT(ambigousTrack(Meta::TrackList,QString)) );
-    connect( m_importer, SIGNAL(importError(QString)), this, SLOT(importError(QString)) );
-    connect( m_importer, SIGNAL(showMessage(QString)), this, SLOT(showMessage(QString)) );
-
-    delete m_importerConfig;
-    m_importerConfig = m_importer->configWidget( m_configBox );
-}
-
-void
 DatabaseImporterDialog::importSucceeded()
 {
     // Special case the 0 import track count as it is really a failure
@@ -161,7 +99,7 @@ DatabaseImporterDialog::importSucceeded()
     if( !m_importer->importedCount() )
         text = i18n( "<b><font color='red'>Failed:</font></b> No tracks were imported" );
     else
-        text = i18np( "<b><font color='green'>Success:</font></b> Imported %1 track", 
+        text = i18np( "<b><font color='green'>Success:</font></b> Imported %1 track",
                       "<b><font color='green'>Success:</font></b> Imported %1 tracks", m_importer->importedCount() );
 
     m_results->appendHtml( text );

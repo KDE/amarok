@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
- * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,34 +14,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_ITUNES_IMPORTER_H
-#define AMAROK_ITUNES_IMPORTER_H
+#ifndef AMAROK_SQLBATCH_IMPORTER_CONFIG_H
+#define AMAROK_SQLBATCH_IMPORTER_CONFIG_H
 
-#include "databaseimporter/DatabaseImporter.h"
-#include "ITunesImporterConfig.h"
-#include "ITunesImporterWorker.h"
+#include <KVBox>
 
-class ITunesImporter : public DatabaseImporter
+#include <QString>
+
+class QLabel;
+class QLineEdit;
+
+class SqlBatchImporterConfig : public KVBox
 {
     Q_OBJECT
 
     public:
-        ITunesImporter( QObject *parent );
-        virtual ~ITunesImporter();
+        SqlBatchImporterConfig( QWidget *parent = 0 );
+        virtual ~SqlBatchImporterConfig() { }
 
-        static QString name() { return QString("iTunes"); }
-
-        virtual DatabaseImporterConfig *configWidget( QWidget *parent );
-        virtual bool canImportArtwork() const { return false; }
-    private slots:
-        void finishUp();
-
-    protected:
-        virtual void import();
-        ITunesImporterConfig *m_config;
+        QString inputFilePath() const;
 
     private:
-        ITunesImporterWorker *m_worker;
+        QLineEdit *m_inputFilePathInput;
 };
 
-#endif // multiple inclusion guard
+#endif

@@ -632,15 +632,8 @@ set(amaroklib_LIB_SRCS
     covermanager/CoverFoundDialog.cpp
     covermanager/CoverManager.cpp
     covermanager/CoverViewDialog.cpp
-    databaseimporter/DatabaseImporter.cpp
-    databaseimporter/amarok14/FastForwardImporter.cpp
-    databaseimporter/amarok14/FastForwardImporterConfig.cpp
-    databaseimporter/amarok14/FastForwardWorker.cpp
-    databaseimporter/itunes/ITunesImporterConfig.cpp
-    databaseimporter/itunes/ITunesImporter.cpp
-    databaseimporter/itunes/ITunesImporterWorker.cpp
-    databaseimporter/sqlbatch/SqlBatchImporter.cpp
-    databaseimporter/sqlbatch/SqlBatchImporterConfig.cpp
+    databaseimporter/SqlBatchImporter.cpp
+    databaseimporter/SqlBatchImporterConfig.cpp
     dialogs/CollectionSetup.cpp
     dialogs/DatabaseImporterDialog.cpp
     dialogs/DiagnosticDialog.cpp

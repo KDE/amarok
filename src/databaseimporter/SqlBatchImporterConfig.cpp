@@ -28,7 +28,7 @@
 #include <QLineEdit>
 
 SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )
-    : DatabaseImporterConfig( parent )
+    : KVBox( parent )
 {
     QWidget *gridHolder = new QWidget( this );
 
@@ -39,6 +39,7 @@ SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )
     explanationLabel->setTextFormat( Qt::RichText );
     explanationLabel->setAlignment( Qt::AlignHCenter );
     explanationLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ); // Don't stretch vertically
+    explanationLabel->setMargin( 10 );
 
     QLabel *label = new QLabel( i18n( "Input file" ), gridHolder );
     m_inputFilePathInput = new QLineEdit( gridHolder );
@@ -58,5 +59,8 @@ SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )
     spacer->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 }
 
-#include "SqlBatchImporterConfig.moc"
-
+QString
+SqlBatchImporterConfig::inputFilePath() const
+{
+    return m_inputFilePathInput->text();
+}

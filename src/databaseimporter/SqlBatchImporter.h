@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,54 +14,66 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_ITUNES_IMPORTER_WORKER_H
-#define AMAROK_ITUNES_IMPORTER_WORKER_H
+#ifndef AMAROK_SQLBATCH_IMPORTER_H
+#define AMAROK_SQLBATCH_IMPORTER_H
 
-#include "databaseimporter/DatabaseImporter.h"
+#include <QObject>
+
 #include "core/meta/forward_declarations.h"
 
-#include <threadweaver/Job.h>
-#include <threadweaver/ThreadWeaver.h>
+class SqlBatchImporterConfig;
 
-#include <QMap>
-#include <QSqlDatabase>
-#include <QXmlStreamReader>
-
-namespace Collections
-{
-    class CollectionLocation;
-}
-
-class ITunesImporterWorker : public ThreadWeaver::Job, public QXmlStreamReader
+/**
+ * This importer will use the CollectionImportCapability to import a file.
+ * Currently only used for the SqlCollection.
+ */
+class SqlBatchImporter : public QObject
 {
     Q_OBJECT
 
     public:
-        ITunesImporterWorker();
-        ~ITunesImporterWorker();
+        SqlBatchImporter( QObject *parent );
+        ~SqlBatchImporter();
 
-        void setDatabaseLocation( const QString &location ) { m_databaseLocation = location; }
-        void setCollectionLocation( Collections::CollectionLocation *location ) { m_collectionLocation = location; }
+        SqlBatchImporterConfig *configWidget( QWidget *parent );
 
-        bool failed() const { return m_failed; }
-        void abort() { m_aborted = true; }
+        /**
+         * @return whether the importer is running
+         */
+        bool importing() const;
 
-        virtual void run();
+        /**
+         * Starts the importing process
+         */
+        void startImporting();
+
+        /**
+         * @returns the number of tracks imported
+         */
+        int importedCount() const;
 
     signals:
+        void importFailed();
+        void importSucceeded();
         void importError( QString );
         void showMessage( QString );
         void trackAdded( Meta::TrackPtr );
+        void trackDiscarded( QString );
+        void trackMatchFound( Meta::TrackPtr, QString );
+        void trackMatchMultiple( Meta::TrackList, QString );
+
+    protected:
+        void import();
+
+    protected slots:
+        void importingFinished();
+        void trackImported( Meta::TrackPtr track );
+        void trackMatched( Meta::TrackPtr track, QString oldUrl );
 
     private:
-        void readTrackElement();
-
-        bool m_aborted;
-        bool m_failed;
-
-        QMap<Meta::TrackPtr, QString> m_tracksForInsert;
-        QString m_databaseLocation;
-        Collections::CollectionLocation *m_collectionLocation;
+        SqlBatchImporterConfig *m_config;
+        int m_count;
+        bool m_importing;
 };
 
 #endif // multiple inclusion guard

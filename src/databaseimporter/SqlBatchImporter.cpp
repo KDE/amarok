@@ -26,15 +26,22 @@
 #include <QFile>
 
 SqlBatchImporter::SqlBatchImporter( QObject *parent )
-    : DatabaseImporter( parent )
+    : QObject( parent )
     , m_config( 0 )
+    , m_count( 0 )
+    , m_importing( false )
 {
+    connect( this, SIGNAL(importSucceeded()), SLOT(importingFinished()) );
+    connect( this, SIGNAL(importFailed()), SLOT(importingFinished()) );
+    connect( this, SIGNAL(trackAdded(Meta::TrackPtr)), SLOT(trackImported(Meta::TrackPtr)) );
+    connect( this, SIGNAL(trackMatchFound(Meta::TrackPtr,QString)), SLOT(trackMatched(Meta::TrackPtr,QString)) );
 }
 
 SqlBatchImporter::~SqlBatchImporter()
-{ }
+{
+}
 
-DatabaseImporterConfig*
+SqlBatchImporterConfig*
 SqlBatchImporter::configWidget( QWidget *parent )
 {
     if( !m_config )
@@ -81,3 +88,43 @@ SqlBatchImporter::import()
         emit importFailed();
 }
 
+int
+SqlBatchImporter::importedCount() const
+{
+    return m_count;
+}
+
+void
+SqlBatchImporter::trackImported( Meta::TrackPtr track )
+{
+    Q_UNUSED( track )
+    ++m_count;
+}
+
+void
+SqlBatchImporter::trackMatched( Meta::TrackPtr track, QString oldUrl )
+{
+    Q_UNUSED( track )
+    Q_UNUSED( oldUrl )
+    ++m_count;
+}
+
+bool
+SqlBatchImporter::importing() const
+{
+    return m_importing;
+}
+
+void
+SqlBatchImporter::startImporting()
+{
+    DEBUG_BLOCK
+    m_importing = true;
+    import();
+}
+
+void
+SqlBatchImporter::importingFinished()
+{
+    m_importing = false;
+}
