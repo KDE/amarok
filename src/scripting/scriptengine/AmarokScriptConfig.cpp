@@ -40,20 +40,8 @@ AmarokScriptConfig::readConfig( const QString &name, const QVariant &defaultValu
     return KGlobal::config()->group( m_name ).readEntry( name, defaultValue );
 }
 
-QString
-AmarokScriptConfig::readConfig( const QString &name, const QString &defaultValue ) const
-{
-    return KGlobal::config()->group( m_name ).readEntry( name, defaultValue );
-}
-
 void
 AmarokScriptConfig::writeConfig( const QString &name, const QVariant &content )
-{
-    KGlobal::config()->group( m_name ).writeEntry( name, content );
-}
-
-void
-AmarokScriptConfig::writeConfig( const QString &name, const QString &content )
 {
     KGlobal::config()->group( m_name ).writeEntry( name, content );
 }

@@ -50,8 +50,6 @@ private slots:
     void installLocalScript();
     void slotReloadScriptSelector();
     void slotUpdateScripts();
-    // ANM-TODO
-    // problem -
     void slotUninstallScript();
     void restoreScrollBar();
 
