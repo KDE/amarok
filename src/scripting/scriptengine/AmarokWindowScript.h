@@ -17,13 +17,15 @@
 #ifndef AMAROK_WINDOW_SCRIPT_H
 #define AMAROK_WINDOW_SCRIPT_H
 
-#include <KMenu>
-
 #include <QObject>
-#include <QSharedPointer>
+#include <QMetaType>
+#include <QWeakPointer>
 
 class EventFilter;
+class KMenu;
+class QFont;
 class QMainWindow;
+class QMenu;
 class QPalette;
 class QScriptEngine;
 
@@ -49,6 +51,8 @@ namespace AmarokScript
             AmarokWindowScript( AmarokScriptEngine* scriptEngine );
 
         public slots:
+            void addToolsMenu( QMenu *menu );
+            void addSettingsMenu( QMenu *menu );
             bool addToolsMenu( QString id, QString menuTitle, QString icon = "amarok" );
             void addToolsSeparator();
             bool addSettingsMenu( QString id, QString menuTitle, QString icon = "amarok" );
@@ -97,19 +101,6 @@ namespace AmarokScript
             QWeakPointer<KMenu> m_toolsMenu;
             QWeakPointer<KMenu> m_settingsMenu;
             AmarokScriptEngine*   m_scriptEngine;
-            QList<QObject*> m_guiPtrList;
-    };
-
-    class ToolTipEventFilter : public QObject
-    {
-        public:
-            static ToolTipEventFilter *instance();
-
-        private:
-            ToolTipEventFilter();
-            bool eventFilter( QObject *object, QEvent *event );
-
-            static QWeakPointer<ToolTipEventFilter> s_instance;
     };
 }
 

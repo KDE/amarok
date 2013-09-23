@@ -34,7 +34,41 @@
 
 using namespace AmarokScript;
 
+class ToolTipEventFilter : public QObject
+{
+    public:
+        static ToolTipEventFilter *instance();
+
+    private:
+        ToolTipEventFilter();
+        bool eventFilter( QObject *object, QEvent *event );
+
+        static QWeakPointer<ToolTipEventFilter> s_instance;
+};
+
 QWeakPointer<ToolTipEventFilter> ToolTipEventFilter::s_instance;
+
+ToolTipEventFilter*
+ToolTipEventFilter::instance()
+{
+    if( !s_instance )
+        s_instance = new ToolTipEventFilter();
+    return s_instance.data();
+}
+
+ToolTipEventFilter::ToolTipEventFilter()
+: QObject( The::mainWindow() )
+{}
+
+bool
+ToolTipEventFilter::eventFilter( QObject *object, QEvent *event )
+{
+    if( event->type() == QEvent::ToolTip )
+        QApplication::clipboard()->setText( object->objectName() );
+    return false;
+}
+
+// AmarokWindowScript
 
 AmarokWindowScript::AmarokWindowScript( AmarokScriptEngine* scriptEngine )
     : QObject( scriptEngine )
@@ -53,6 +87,18 @@ AmarokWindowScript::AmarokWindowScript( AmarokScriptEngine* scriptEngine )
                 this, SIGNAL(prepareToQuit()) );
 }
 
+void
+AmarokWindowScript::addToolsMenu( QMenu *menu )
+{
+    m_toolsMenu.data()->addMenu( menu );
+}
+
+void
+AmarokWindowScript::addSettingsMenu( QMenu *menu )
+{
+    m_settingsMenu.data()->addMenu( menu );
+}
+
 bool
 AmarokWindowScript::addToolsMenu( QString id, QString menuTitle, QString icon )
 {
@@ -62,8 +108,7 @@ AmarokWindowScript::addToolsMenu( QString id, QString menuTitle, QString icon )
 void
 AmarokWindowScript::addToolsSeparator()
 {
-    QAction* action = m_toolsMenu.data()->addSeparator();
-    m_guiPtrList.append( action );
+    m_toolsMenu.data()->addSeparator();
 }
 
 bool
@@ -75,38 +120,29 @@ AmarokWindowScript::addSettingsMenu( QString id, QString menuTitle, QString icon
 void
 AmarokWindowScript::addSettingsSeparator()
 {
-    QAction* action = m_settingsMenu.data()->addSeparator();
-    m_guiPtrList.append( action );
+    m_settingsMenu.data()->addSeparator();
 }
 
 bool
 AmarokWindowScript::addMenuAction( QWeakPointer<KMenu> menu, QString id, QString menuTitle, QString menuProperty, QString icon )
 {
-    bool retVal = true;
-
     KActionCollection* const ac = Amarok::actionCollection();
+    if( ac->action( id ) )
+        return false;
 
-    if ( !ac->action( id ) )
-    {
-        KAction *action = new KAction( KIcon( icon ), menuTitle, this );
-        ac->addAction( id, action );
+    KAction *action = new KAction( KIcon( icon ), menuTitle, this );
+    ac->addAction( id, action );
 
-        // don't forget to read the shortcut settings from the config file so
-        // the shortcuts for the actions are updated
-        ac->readSettings();
+    // don't forget to read the shortcut settings from the config file so
+    // the shortcuts for the actions are updated
+    ac->readSettings();
 
-        // add the action to the given menu
-        menu.data()->addAction( ac->action( id ) );
+    // add the action to the given menu
+    menu.data()->addAction( ac->action( id ) );
 
-        m_guiPtrList.append( action );
-
-        QScriptValue newMenu = m_scriptEngine->newQObject( action );
-        m_scriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( menuProperty ).setProperty( id, newMenu );
-    }
-    else
-        retVal = false;
-
-    return retVal;
+    QScriptValue newMenu = m_scriptEngine->newQObject( action );
+    m_scriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( menuProperty ).setProperty( id, newMenu );
+    return true;
 }
 
 void
@@ -192,24 +228,4 @@ AmarokWindowScript::showToolTip()
         widget->setToolTip( widget->objectName() );
         widget->installEventFilter( ToolTipEventFilter::instance() );
     }
-}
-
-ToolTipEventFilter*
-ToolTipEventFilter::instance()
-{
-    if( !s_instance )
-        s_instance = new ToolTipEventFilter();
-    return s_instance.data();
-}
-
-ToolTipEventFilter::ToolTipEventFilter()
-: QObject( The::mainWindow() )
-{}
-
-bool
-ToolTipEventFilter::eventFilter( QObject *object, QEvent *event )
-{
-    if( event->type() == QEvent::ToolTip )
-        QApplication::clipboard()->setText( object->objectName() );
-    return false;
 }
