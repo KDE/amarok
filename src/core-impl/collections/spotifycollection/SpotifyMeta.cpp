@@ -253,6 +253,12 @@ Meta::SpotifyTrack::type() const
 }
 
 QString
+Meta::SpotifyTrack::notPlayableReason() const
+{
+    return QString();
+}
+
+QString
 Meta::SpotifyTrack::mimetype() const
 {
     return m_mimetype;

@@ -97,6 +97,7 @@ namespace Meta
             int playCount() const;
 
             QString type() const;
+            QString notPlayableReason() const;
 
             void prepareToPlay();
 

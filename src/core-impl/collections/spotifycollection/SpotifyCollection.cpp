@@ -295,11 +295,10 @@ namespace Collections
         }
         else
         {
-
             MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
             proxyTrack->setArtist( url.queryItem( "artist" ) );
             proxyTrack->setAlbum( url.queryItem( "album" ) );
-            proxyTrack->setName( url.queryItem( "title" ) );
+            proxyTrack->setTitle( url.queryItem( "title" ) );
             Spotify::TrackProxy *proxy = new Spotify::TrackProxy( url, proxyTrack, this );
 
             connect( proxy, SIGNAL( spotifyError( const Spotify::Controller::ErrorState ) ),

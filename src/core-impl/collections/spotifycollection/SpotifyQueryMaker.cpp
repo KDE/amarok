@@ -221,12 +221,12 @@ namespace Collections
     }
 
     QueryMaker*
-    SpotifyQueryMaker::addMatch( const Meta::ArtistPtr &artist )
+    SpotifyQueryMaker::addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behavior )
     {
         DEBUG_BLOCK
         debug() << "Match artist: " << artist->prettyName();
-        CurriedUnaryQMFunction< const Meta::ArtistPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
-        CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::ArtistPtr& >( funPtr, artist );
+        CurriedBinaryQMFunction< const Meta::ArtistPtr&, ArtistMatchBehaviour >::FunPtr funPtr = &QueryMaker::addMatch;
+        CurriedQMFunction *curriedFun = new CurriedBinaryQMFunction< const Meta::ArtistPtr&, ArtistMatchBehaviour >( funPtr, artist, behavior );
         m_queryMakerFunctions.append( curriedFun );
 
         (*curriedFun)( m_memoryQueryMaker.data() );
