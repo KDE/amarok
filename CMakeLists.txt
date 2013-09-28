@@ -95,6 +95,8 @@ add_definitions( ${QT_DEFINITIONS} ${KDE4_DEFINITIONS} )
 # QCA2 is required for the Script Updater
 find_package( QCA2 )
 
+find_package( QtScriptQtBindings REQUIRED )
+
 macro_optional_find_package( LibLastFm )
 set( LIBLASTFM_MIN_VERSION "1.0.0" )
 if( LIBLASTFM_FOUND )
