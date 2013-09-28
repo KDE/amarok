@@ -28,15 +28,15 @@ int main(int argc, char **argv)
     QApplication app( argc, argv, false );
 
     QStringList allowedBindings;
-    allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.xml" << "qt.network";
+    allowedBindings << "qt.core" << "qt.dbus" << "qt.gui" << "qt.network" << "qt.opengl"
+                    << "qt.phonon" << "qt.sql" << "qt.svg" << "qt.uitools" << "qt.webkit"
+                    << "qt.xml" << "qt.xmlpatterns";
     QScriptEngine engine;
-    foreach( QString binding, allowedBindings )
+    foreach( const QString &binding, allowedBindings )
     {
         QScriptValue error = engine.importExtension( binding );
         if( error.isUndefined() )
-        { // undefined indiciates success
-            continue;
-        }
+            continue; // undefined indicates success
 
         qDebug() << "Extension" << binding <<  "not found:" << error.toString();
         qDebug() << "Available extensions:" << engine.availableExtensions();

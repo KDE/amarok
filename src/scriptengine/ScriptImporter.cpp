@@ -63,7 +63,7 @@ ScriptImporter::loadQtBinding( const QString& binding )
             return true;
     }
     else
-        warning() << __PRETTY_FUNCTION__ << "Binding \"" << binding << "\" could not be found!";
+        warning() << "Importer.loadQtBinding: Binding \"" << binding << "\" could not be found!";
     return false;
 }
 
