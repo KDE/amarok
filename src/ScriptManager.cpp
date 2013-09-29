@@ -76,7 +76,7 @@ ScriptManager::ScriptManager( QObject* parent )
 
     if( AmarokConfig::enableScripts() == false )
     {
-        if( !minimalBindingsAvailable() )
+        if( !minimumBindingsAvailable() )
         {
             KMessageBox::error( 0,
                                 i18n( "Scripts have been disabled since you are missing the QtScriptQtBindings "
@@ -92,10 +92,10 @@ ScriptManager::ScriptManager( QObject* parent )
 }
 
 bool
-ScriptManager::minimalBindingsAvailable()
+ScriptManager::minimumBindingsAvailable()
 {
-    QStringList minimumBindings; // bindings used by bundled amarok scripts
-    minimumBindings << "qt.core" << "qt.gui" << "qt.network" << "qt.uitools" << "qt.xml";
+    QStringList minimumBindings;
+    minimumBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
     QScriptEngine engine;
     foreach( const QString &binding, minimumBindings )
     {
