@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MUSICDNSAUDIODECODER_H
-#define MUSICDNSAUDIODECODER_H
+#ifndef AUDIOTOQSTRINGDECODER_H
+#define AUDIOTOQSTRINGDECODER_H
 
 #include "core/meta/forward_declarations.h"
 
@@ -26,7 +26,7 @@
 
 namespace TagGuessing {
     class DecodedAudioData;
-    class MusicDNSAudioDecoder;
+    class AudioToQStringDecoder;
 }
 
 /**
@@ -72,12 +72,12 @@ class DecodedAudioData
         QByteArray *m_data;
 };
 
-class MusicDNSAudioDecoder : public ThreadWeaver::Job
+class AudioToQStringDecoder : public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
-        MusicDNSAudioDecoder( const Meta::TrackList &tracks, const int sampleLength = DEFAULT_SAMPLE_LENGTH );
-        virtual ~MusicDNSAudioDecoder();
+        AudioToQStringDecoder( const Meta::TrackList &tracks, const int sampleLength = DEFAULT_SAMPLE_LENGTH );
+        virtual ~AudioToQStringDecoder();
 
         virtual void run();
 
@@ -91,4 +91,4 @@ class MusicDNSAudioDecoder : public ThreadWeaver::Job
         int m_sampleLength;
 };
 
-#endif // MUSICDNSAUDIODECODER_H
+#endif // AUDIOTOQSTRINGDECODER_H

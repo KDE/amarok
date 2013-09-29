@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "MusicDNSAudioDecoder"
+#define DEBUG_PREFIX "AudioToQStringDecoder"
 
-#include "MusicDNSAudioDecoder.h"
+#include "AudioToQStringDecoder.h"
 
 #include <config.h>
 #include "core/support/Debug.h"
@@ -110,19 +110,19 @@ void DecodedAudioData::flush()
     m_data->clear();
 }
 
-MusicDNSAudioDecoder::MusicDNSAudioDecoder( const Meta::TrackList &tracks, const int sampleLength )
+AudioToQStringDecoder::AudioToQStringDecoder( const Meta::TrackList &tracks, const int sampleLength )
                     : Job()
                     , m_tracks( tracks )
                     , m_sampleLength( sampleLength )
 {
 }
 
-MusicDNSAudioDecoder::~MusicDNSAudioDecoder()
+AudioToQStringDecoder::~AudioToQStringDecoder()
 {
 }
 
 void
-MusicDNSAudioDecoder::run()
+AudioToQStringDecoder::run()
 {
     DecodedAudioData data;
 
@@ -148,7 +148,7 @@ MusicDNSAudioDecoder::run()
 
 // Function below has separate implementation for each ffmpeg API version
 int
-MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, const int length )
+AudioToQStringDecoder::decode( const QString &fileName, DecodedAudioData *data, const int length )
 #if LIBAVCODEC_VERSION_MAJOR >= 54  // ffmpeg 0.11
 {
     AVFormatContext *pFormatCtx = NULL;
@@ -762,4 +762,4 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
 #endif
 
 
-#include "MusicDNSAudioDecoder.moc"
+#include "AudioToQStringDecoder.moc"

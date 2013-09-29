@@ -29,3 +29,5 @@ AcustIdProvider::computeFingerpint( const Meta::TrackPtr &track )
 {
 
 }
+
+#include "Acustidprovider.moc"
