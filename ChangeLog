@@ -19,6 +19,7 @@ VERSION 2.9-Beta 1
      (BR 323614)
    * Check for QtBindings at runtime instead. Disable scripts and display error message
      if missing. (BR 325006)
+   * Print playlist download errors to the debug log. (BR 325120)
 
 
 VERSION 2.8

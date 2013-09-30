@@ -20,6 +20,7 @@
 #include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
+#include "core/support/Debug.h"
 #include "core/support/SemaphoreReleaser.h"
 
 #include <KLocale>
@@ -102,7 +103,7 @@ PlaylistFileLoaderJob::slotDonwloadFinished( KJob *job )
     if( job->error() )
     {
         using namespace Amarok;
-        Components::logger()->longMessage( job->errorString(), Logger::Error );
+        warning() << job->errorString();
     }
     else
         m_actualPlaylistFile = m_tempFile.fileName();
