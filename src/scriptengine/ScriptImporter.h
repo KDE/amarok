@@ -21,9 +21,9 @@
 
 #include <QObject>
 #include <QSet>
+#include <QStringList>
 
 class QScriptEngine;
-class QStringList;
 
 namespace AmarokScript
 {

@@ -24,7 +24,6 @@
 
 #include <QScriptEngine>
 #include <QSet>
-#include <QStringList>
 
 using namespace AmarokScript;
 
