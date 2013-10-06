@@ -131,28 +131,6 @@ UmsCollectionFactory::slotCollectionDestroyed( QObject *collection )
 }
 
 bool
-UmsCollectionFactory::isNonFilesystemVolume( const Solid::Device &device ) const
-{
-    using namespace Solid;
-    const StorageVolume *sv = device.as<StorageVolume>();
-    if( !sv )
-        return false;
-
-    switch( sv->usage() )
-    {
-        case StorageVolume::Other:
-        case StorageVolume::Unused:
-        case StorageVolume::PartitionTable:
-        case StorageVolume::Encrypted:
-        case StorageVolume::Raid:
-            return true;
-        case StorageVolume::FileSystem:
-            return false;
-    }
-    return false;
-}
-
-bool
 UmsCollectionFactory::identifySolidDevice( const QString &udi ) const
 {
     Solid::Device device( udi );
@@ -170,9 +148,6 @@ UmsCollectionFactory::identifySolidDevice( const QString &udi ) const
             return true;
         return false;
     }
-
-    if( isNonFilesystemVolume( device ) )
-        return false;
 
     // check whether there is parent USB StorageDrive device
     while( device.isValid() )

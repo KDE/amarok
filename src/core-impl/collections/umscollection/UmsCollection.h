@@ -85,11 +85,6 @@ class UmsCollectionFactory : public CollectionFactory
         bool identifySolidDevice( const QString &udi ) const;
 
         /**
-         * Returns true if this is a volume that isn't containing a filesystem.
-         */
-        bool isNonFilesystemVolume( const Solid::Device &device ) const;
-
-        /**
          * Attempts to create appropriate collection for already identified solid device
          * @param udi. Should emit newCollection() if the collection was successfully
          * created and should become visible to the user.
