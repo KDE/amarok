@@ -151,6 +151,7 @@ Action=Popup
 [Event/message]
 Name=Message
 Name[ca]=Missatge
+Name[ca@valencia]=Missatge
 Name[cs]=Zpráva
 Name[da]=Besked
 Name[de]=Nachricht
@@ -187,6 +188,7 @@ Name[zh_CN]=消息
 Name[zh_TW]=訊息
 Comment=Amarok issued an uncategorized text message
 Comment[ca]=L'Amarok ha emès un missatge de text sense categoria
+Comment[ca@valencia]=L'Amarok ha emés un missatge de text sense categoria
 Comment[cs]=Amarok vyvolal nezařazenou textovou zprávu
 Comment[da]=Amarok udsendte en ikke-kategoriseret tekstmeddelelse
 Comment[de]=Amarok hat eine nicht kategorisierte Textnachricht ausgegeben
