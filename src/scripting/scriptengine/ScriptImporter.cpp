@@ -22,6 +22,7 @@
 #include "config.h"
 #include "core/support/Debug.h"
 #include "ScriptingDefines.h"
+#include "AmarokPlaylistManagerScript.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
 #include <KUrl>
@@ -100,6 +101,8 @@ ScriptImporter::loadAmarokBinding( const QString &name )
         new AmarokBookmarkScript( m_scriptEngine );
     else if( name == "collectionview" )
         new AmarokCollectionViewScript( m_scriptEngine, ScriptManager::instance()->scriptNameForEngine( m_scriptEngine ) );
+    else if( name == "playlistmanager" )
+        new AmarokPlaylistManagerScript( m_scriptEngine );
     else
     {
         warning() << "\"" << name << "\" doesn't exist!";

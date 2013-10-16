@@ -26,8 +26,6 @@
 
 using namespace AmarokScript;
 
-//ANM-TODO
-// use amarok binding import
 AmarokPlaylistManagerScript::AmarokPlaylistManagerScript( AmarokScriptEngine* engine )
     : QObject( engine )
 {

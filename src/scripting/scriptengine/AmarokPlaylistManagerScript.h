@@ -42,6 +42,9 @@ namespace AmarokScript
     {
         Q_OBJECT
 
+        // SCRIPTDOX ENUM Amarok.PlaylistManager.PlaylistCategory
+        // enum PlaylistCategory { UserPlaylist, PodcastChannel };
+
         /**
          * @returns all available categories registered at that moment
          */
