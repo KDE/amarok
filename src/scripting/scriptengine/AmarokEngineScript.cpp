@@ -226,12 +226,6 @@ AmarokEngineScript::setRandomMode( bool enable )
 }
 
 void
-AmarokEngineScript::setDynamicMode( bool enable )
-{
-    Q_UNUSED( enable );
-}
-
-void
 AmarokEngineScript::setRepeatPlaylist( bool enable )
 {
     if( enable )

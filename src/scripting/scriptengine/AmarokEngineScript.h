@@ -31,7 +31,7 @@ namespace AmarokScript
     {
         Q_OBJECT
         Q_PROPERTY( bool randomMode READ randomMode WRITE setRandomMode )
-        Q_PROPERTY( bool dynamicMode READ dynamicMode WRITE setDynamicMode )
+        Q_PROPERTY( bool dynamicMode READ dynamicMode )
         Q_PROPERTY( bool repeatPlaylist READ repeatPlaylist WRITE setRepeatPlaylist )
         Q_PROPERTY( bool repeatTrack READ repeatTrack WRITE setRepeatTrack )
         Q_PROPERTY( int volume READ volume WRITE setVolume )
@@ -120,7 +120,6 @@ namespace AmarokScript
             bool repeatPlaylist() const;
             bool repeatTrack() const;
             void setRandomMode( bool enable );
-            void setDynamicMode( bool enable ); //TODO: implement
             void setRepeatPlaylist( bool enable );
             void setRepeatTrack( bool enable );
             int  volume() const;
