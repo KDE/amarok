@@ -26,7 +26,7 @@ Importer.loadQtBinding( "qt.xml" );
 Importer.loadQtBinding( "qt.network" );
 Importer.loadQtBinding( "qt.gui" ); //for QPixmap
 
-QByteArray.prototype.toString = function() 
+QByteArray.prototype.toString = function()
 {
     ts = new QTextStream( this, QIODevice.ReadOnly );
     return ts.readAll();
@@ -34,13 +34,13 @@ QByteArray.prototype.toString = function()
 
 function Librivox()
 {
-
     var currentDir = Amarok.Info.scriptPath() + "/";
 
     var file = new QFile( currentDir + "LibrivoxService.html" );
     file.open( QIODevice.OpenMode( QIODevice.ReadOnly, QIODevice.Text ) );
 
-    while ( !file.atEnd() ) {
+    while ( !file.atEnd() )
+    {
         html += file.readLine().toString();
     }
 
@@ -68,12 +68,10 @@ function onCustomize()
 
 function bookFetchResult( reply )
 {
-
     try
     {
-
         var cover = Amarok.Info.scriptPath() + "/audio_book128.png";
-    
+
         doc.setContent( reply );
 
         bookElements = doc.elementsByTagName( "book" );
@@ -83,11 +81,9 @@ function bookFetchResult( reply )
         var titles = new Array( bookElements.length() );
         var links = new Array( bookElements.length() );
 
-
         var i = 0;
         for ( ; i < bookElements.length(); i++ )
         {
-
             elt = bookElements.at( i );
             elt2 = elt.firstChildElement( "title" );
 
@@ -96,21 +92,20 @@ function bookFetchResult( reply )
             var rx = new RegExp( ".*\\(in\\s\\\"(.*)\\\"\\).*" );
             var list = title.match( rx );
 
-            if ( list != null ) {
+            if ( list != null )
+        {
                 Amarok.debug( "got a match: " + list[0] );
                 title = list[1];
             }
 
             titles[i] = title;
 
-            elt2 = elt.firstChildElement( "rssurl" );
+            elt2 = elt.firstChildElement( "url_rss" );
             links[i] = elt2.text();
-
         }
 
         for( i = 0; i < bookElements.length(); i++ )
         {
-
             title = titles[i];
             link = links[i];
 
@@ -125,7 +120,6 @@ function bookFetchResult( reply )
 
             script.insertItem( item );
         }
-
     }
     catch( err )
     {
@@ -133,15 +127,12 @@ function bookFetchResult( reply )
     }
 
     script.donePopulating();
-
 }
 
 function episodeFetchResult( result )
 {
-
     try
     {
-
         var cover = Amarok.Info.scriptPath() + "/audio_book128.png";
         doc.setContent( result );
 
@@ -149,17 +140,17 @@ function episodeFetchResult( result )
 
         elt = doc.firstChildElement("rss");
         elt = elt.firstChildElement("channel");
-        
+
         elt2 = elt.firstChildElement( "title" );
         var bookTitle = elt2.text();
-
 
         //give propper book titles for chpters in a compilation
         Amarok.debug( "Book title: " + bookTitle );
         var rx = new RegExp( ".*\\(in\\s\\\"(.*)\\\"\\).*" );
         var list = bookTitle.match( rx );
 
-        if ( list != null ) {
+        if ( list != null )
+        {
             Amarok.debug( "got a match: " + list[0] );
             bookTitle = list[1];
         }
@@ -170,12 +161,11 @@ function episodeFetchResult( result )
         chapterElements = doc.elementsByTagName( "item" );
 
         Amarok.debug( "got " + chapterElements.length() + " items..." );
-        
+
         for ( var i = 0; i < chapterElements.length(); i++ )
         {
-            
             elt = chapterElements.at( i );
-            
+
             elt2 = elt.firstChildElement( "link" );
             var url = elt2.text();
 
@@ -194,7 +184,6 @@ function episodeFetchResult( result )
             if ( list != null )
                 title = "Chapter " + list[1];
 
-
             item = Amarok.StreamItem;
             item.level = 0;
             item.callbackData = "";
@@ -208,8 +197,6 @@ function episodeFetchResult( result )
             script.insertItem( item );
 
         }
-
-
     }
     catch( err )
     {
@@ -217,12 +204,14 @@ function episodeFetchResult( result )
     }
 
     script.donePopulating();
-
 }
 
 function onPopulate( level, callback, filter )
 {
     offset = 0;
+
+    filter = filter.replace(/^%20+|\%20+$/g,'');
+    filter.trim();
 
     if ( filter != "" )
     {
@@ -230,10 +219,11 @@ function onPopulate( level, callback, filter )
     }
     else
     {
-        name = "Enter Query..."
+        name = "Enter Query...(use \"Author-<last name>\" to search by author)";
     }
 
-    if ( level == 2 ) {
+    if ( level == 2 )
+    {
 
         if ( offset > 0 )
             name = name + " ( " + offset + " - " + (offset + 100) + " )";
@@ -247,7 +237,6 @@ function onPopulate( level, callback, filter )
         script.insertItem( item );
 
         script.donePopulating();
-
     }
     else if ( level == 1 )
     {
@@ -255,8 +244,18 @@ function onPopulate( level, callback, filter )
 
         try
         {
-
-            path = "http://librivox.org/newcatalog/search_xml.php?simple=" + filter;
+            var list = filter.match( /^[\s]*author[\s]*-[\s]*(.*)/i );
+            var path;
+            if( list !=null )
+            {
+                Amarok.debug( "Searching by author: " + list[1] );
+                path = "http://librivox.org/api/feed/audiobooks/?offset=0&limit=1000&format=xml&author=%5E" + list[1];
+            }
+            else
+            {
+                Amarok.debug("Searching by title: " + filter );
+                path = "http://librivox.org/api/feed/audiobooks/?offset=0&limit=1000&format=xml&title=%5E" + filter;
+            }
             qurl = new QUrl( path );
             a = new Downloader( qurl, bookFetchResult );
         }
@@ -271,8 +270,8 @@ function onPopulate( level, callback, filter )
         Amarok.debug( " Populating episode level..." );
         Amarok.debug( " url: " +  callback );
 
-        try{
-
+        try
+        {
             path = callback;
             qurl = new QUrl( path );
             b = new Downloader( qurl, episodeFetchResult );
@@ -281,21 +280,20 @@ function onPopulate( level, callback, filter )
         {
             Amarok.debug( err );
         }
-
     }
 }
 
-function onFetchInfo( level, callback ) {
-
-    if ( level == 1 ) {
+function onFetchInfo( level, callback )
+{
+    if ( level == 1 )
+    {
         qurl = new QUrl( callback );
         b = new Downloader( qurl, parseInfo );
     }
-
 }
 
-function parseInfo( result ) {
-
+function parseInfo( result )
+{
     Amarok.debug( result );
 
     rx = new RegExp( "<description>(.*)<\\/description>" );
@@ -306,7 +304,6 @@ function parseInfo( result ) {
     info = info.replace( "]]>", "" );
 
     script.setCurrentInfo( info );
-
 }
 
 
