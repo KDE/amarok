@@ -35,12 +35,9 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
     , m_columns( 0 )         //int
     , m_rows( 0 )            //int
     , m_y( 0 )               //uint
-    , m_barTexture( 0 )
-    , m_topBarTexture( 0 )
     , m_fade_bars( FADE_SIZE ) //vector<QPixmap>
     , m_fade_pos( MAX_COLUMNS, 50 ) //vector<uint>
     , m_fade_intensity( MAX_COLUMNS, 32 ) //vector<uint>
-    , m_background( 0 )
 {
     setObjectName( "Blocky" );
     setMaximumWidth( MAX_COLUMNS * ( BLOCK_WIDTH + 1 ) - 1 );
@@ -49,11 +46,11 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
 
 BlockAnalyzer::~BlockAnalyzer()
 {
-    deleteTexture( m_barTexture );
-    deleteTexture( m_topBarTexture );
+    deleteTexture( m_barTexture.id );
+    deleteTexture( m_topBarTexture.id );
 
-    foreach( GLuint id, m_fade_bars )
-        deleteTexture( id );
+    foreach( Texture texture, m_fade_bars )
+        deleteTexture( texture.id );
 }
 
 void
@@ -158,7 +155,7 @@ BlockAnalyzer::paintGL()
     glLoadIdentity();
 
     // Paint the background
-    drawTexture( m_background, 0, 0, 0, 0, width(), height() );
+    drawTexture( m_background, 0, 0, 0, 0 );
 
     for( uint y, x = 0; x < (uint)m_scope.size(); ++x )
     {
@@ -186,32 +183,32 @@ BlockAnalyzer::paintGL()
             const uint offset = --m_fade_intensity[x];
             const uint y = m_y + ( m_fade_pos[x] * ( BLOCK_HEIGHT + 1 ) );
             if( y < (uint)height() )
-                drawTexture( m_fade_bars[offset], x * ( BLOCK_WIDTH + 1 ), y, 0, 0, BLOCK_WIDTH, height() );
+                drawTexture( m_fade_bars[offset], x * ( BLOCK_WIDTH + 1 ), y, 0, 0 );
         }
 
         if( m_fade_intensity[x] == 0 )
             m_fade_pos[x] = m_rows;
 
         // REMEMBER: y is a number from 0 to m_rows, 0 means all blocks are glowing, m_rows means none are
-        drawTexture( m_barTexture, x * ( BLOCK_WIDTH + 1 ), y * ( BLOCK_HEIGHT + 1 ) + m_y, 0, y * ( BLOCK_HEIGHT + 1 ), m_barPixmap.width(), m_barPixmap.height() );
+        drawTexture( m_barTexture, x * ( BLOCK_WIDTH + 1 ), y * ( BLOCK_HEIGHT + 1 ) + m_y, 0, y * ( BLOCK_HEIGHT + 1 ) );
 
         // Draw top bar
-        drawTexture( m_topBarTexture, x * ( BLOCK_WIDTH + 1 ), int( m_store[x] ) * ( BLOCK_HEIGHT + 1 ) + m_y, 0, 0, BLOCK_WIDTH, BLOCK_HEIGHT );
+        drawTexture( m_topBarTexture, x * ( BLOCK_WIDTH + 1 ), int( m_store[x] ) * ( BLOCK_HEIGHT + 1 ) + m_y, 0, 0 );
     }
 }
 
 void
-BlockAnalyzer::drawTexture( GLuint textureId, int x, int y, int sx, int sy, int w, int h )
+BlockAnalyzer::drawTexture( Texture texture, int x, int y, int sx, int sy )
 {
     const GLfloat xf = x;
     const GLfloat yf = y;
-    const GLfloat sxf = (GLfloat)sx / m_barPixmap.width();
-    const GLfloat syf = (GLfloat)sy / m_barPixmap.height();
-    const GLfloat wf = w - sx;
-    const GLfloat hf = h - sy;
+    const GLfloat wf = texture.size.width() - sx;
+    const GLfloat hf = texture.size.height() - sy;
+    const GLfloat sxf = (GLfloat)sx / texture.size.width();
+    const GLfloat syf = (GLfloat)sy / texture.size.height();
 
     glEnable( GL_TEXTURE_2D );
-    glBindTexture( GL_TEXTURE_2D, textureId );
+    glBindTexture( GL_TEXTURE_2D, texture.id );
 
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
@@ -237,8 +234,8 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
 
     QPixmap topBar( BLOCK_WIDTH, BLOCK_HEIGHT );
     topBar.fill( fg );
-    deleteTexture( m_topBarTexture );
-    m_topBarTexture = bindTexture( topBar );
+    deleteTexture( m_topBarTexture.id );
+    m_topBarTexture = Texture( bindTexture( topBar ), topBar.size() );
 
     const double dr = 15 * double( bg.red()   - fg.red() )   / ( m_rows * 16 );
     const double dg = 15 * double( bg.green() - fg.green() ) / ( m_rows * 16 );
@@ -275,14 +272,14 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
             for( int z = 0; z < m_rows; ++z )
                 f.fillRect( 0, z * ( BLOCK_HEIGHT + 1 ), BLOCK_WIDTH, BLOCK_HEIGHT, QColor( r + int( dr * Y ), g + int( dg * Y ), b + int( db * Y ) ) );
 
-            deleteTexture( m_fade_bars[y] );
-            m_fade_bars[y] = bindTexture( fadeBar );
+            deleteTexture( m_fade_bars[y].id );
+            m_fade_bars[y] = Texture( bindTexture( fadeBar ), fadeBar.size() );
         }
     }
 
     const QImage image = m_barPixmap.toImage();
-    deleteTexture( m_barTexture );
-    m_barTexture = bindTexture( image.mirrored() ); // Flip vertically because OpenGL has inverted y coordinates
+    deleteTexture( m_barTexture.id );
+    m_barTexture = Texture( bindTexture( image.mirrored() ), image.size() ); // Flip vertically because OpenGL has inverted y coordinates
 
     drawBackground();
 }
@@ -301,6 +298,6 @@ BlockAnalyzer::drawBackground()
         for( int y = 0; y < m_rows; ++y )
             p.fillRect( x * ( BLOCK_WIDTH + 1 ), y * ( BLOCK_HEIGHT + 1 ) + m_y, BLOCK_WIDTH, BLOCK_HEIGHT, bgdark );
 
-    deleteTexture( m_background );
-    m_background = bindTexture( background );
+    deleteTexture( m_background.id );
+    m_background = Texture( bindTexture( background ), background.size() );
 }

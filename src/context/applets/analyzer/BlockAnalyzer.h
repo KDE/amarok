@@ -20,6 +20,8 @@
 
 #include "AnalyzerBase.h"
 
+#include <QSize>
+
 class QMouseEvent;
 class QPalette;
 class QResizeEvent;
@@ -50,21 +52,40 @@ protected:
     void determineStep();
 
 private:
-    void drawTexture( GLuint textureId, int x, int y, int sx, int sy, int w, int h );
+    struct Texture
+    {
+        Texture() :
+            id( 0 ),
+            size( QSize() )
+        {}
+        Texture( const GLuint id_, const QSize size_ ) :
+            id( id_ ),
+            size( size_ )
+        {}
+        Texture( const Texture& texture )
+        {
+            id = texture.id;
+            size = texture.size;
+        }
+        GLuint id;
+        QSize size;
+    };
+
+    void drawTexture( Texture texture, int x, int y, int sx, int sy );
 
     int m_columns, m_rows;      //number of rows and columns of blocks
     uint m_y;                    //y-offset from top of widget
-    GLuint m_barTexture;
-    GLuint m_topBarTexture;
+    Texture m_barTexture;
+    Texture m_topBarTexture;
     QPixmap m_barPixmap;
     QVector<float> m_scope;      //so we don't create a vector every frame
     QVector<float> m_store;  //current bar heights
     QVector<float> m_yscale;
 
-    QVector<GLuint>  m_fade_bars;
+    QVector<Texture> m_fade_bars;
     QVector<uint>    m_fade_pos;
     QVector<int>     m_fade_intensity;
-    GLuint           m_background;
+    Texture           m_background;
 
     float m_step; //rows to fall per frame
 };
