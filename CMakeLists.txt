@@ -16,6 +16,8 @@ option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNI
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")  # Require C++11
+
 
 ############### Taglib
 set(TAGLIB_MIN_VERSION "1.7")
