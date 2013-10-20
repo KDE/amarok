@@ -20,12 +20,15 @@
 
 #include <config.h>
 #include "core/meta/forward_declarations.h"
+#include "tagguessing/Finder.h"
 
 #include <KDialog>
 
+using namespace TagGuessing;
+
 namespace Ui
 {
-    class MusicBrainzTagger;
+    class WebServicesTagger;
 }
 
 class MusicBrainzFinder;
@@ -37,7 +40,7 @@ class MusicDNSFinder;
 
 class QSortFilterProxyModel;
 
-class MusicBrainzTagger : public KDialog
+class WebServicesTagger : public KDialog
 {
     Q_OBJECT
 
@@ -45,9 +48,9 @@ class MusicBrainzTagger : public KDialog
         /**
          * @arg tracks Track list for search
          */
-        explicit MusicBrainzTagger( const Meta::TrackList &tracks,
+        explicit WebServicesTagger( const Meta::TrackList &tracks,
                                     QWidget *parent = 0 );
-        virtual ~MusicBrainzTagger();
+        virtual ~WebServicesTagger();
 
     signals:
         void sendResult( const QMap<Meta::TrackPtr, QVariantMap> result );
@@ -64,11 +67,11 @@ class MusicBrainzTagger : public KDialog
     private:
         void init();
 
-        Ui::MusicBrainzTagger *ui;
+        Ui::WebServicesTagger *ui;
 
         Meta::TrackList m_tracks;
 
-        MusicBrainzFinder *mb_finder;
+        Finder *m_tagFinder;
 #ifdef HAVE_LIBOFA
         MusicDNSFinder *mdns_finder;
         bool mdns_searchDone;

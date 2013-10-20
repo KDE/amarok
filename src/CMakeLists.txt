@@ -631,7 +631,7 @@ set(amaroklib_LIB_SRCS
     dialogs/DiagnosticDialog.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/EqualizerDialog.cpp
-    dialogs/MusicBrainzTagger.cpp
+    dialogs/WebServicesTagger.cpp
     dialogs/OrganizeCollectionDialog.cpp
     dialogs/TrackOrganizer.cpp
     dialogs/TagDialog.cpp
@@ -803,7 +803,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui
     dialogs/EditFilterDialog.ui
     dialogs/EqualizerDialog.ui
-    dialogs/MusicBrainzTagger.ui
+    dialogs/WebServicesTagger.ui
     dialogs/TagDialogBase.ui
     dialogs/TagGuessOptions.ui
     dialogs/OrganizeCollectionOptions.ui

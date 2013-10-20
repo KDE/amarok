@@ -104,6 +104,13 @@ if( LIBLASTFM_FOUND )
 endif( LIBLASTFM_FOUND )
 macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
+macro_optional_find_package( LibChromaprint )
+set( LIBCHROMAPRINT_MIN_VERSION "0.6" )
+if( LIBCHROMAPRINT_FOUND )
+    macro_ensure_version( ${LIBCHROMAPRINT_MIN_VERSION} ${LIBCHROMAPRINT_VERSION} LIBCHROMAPRINT_FOUND )
+endif( LIBCHROMAPRINT_FOUND )
+macro_bool_to_01( LIBCHROMAPRINT_FOUND HAVE_LIBCHROMAPRINT )
+
 macro_optional_find_package( FFmpeg )
 
 if( FFMPEG_FOUND )
@@ -158,9 +165,14 @@ if( WITH_PLAYER )
     macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists"
                        "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" FALSE ${LIBLASTFM_MIN_VERSION} "" )
 
-    macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.7" "" )
+    macro_log_feature( LIBCHROMAPRINT_FOUND "libchromaprint"
+                       "Required for the AcustID tag guessing serivce"
+                       "http:://" #TODO enter the appropriate web address
+                       FALSE ${LIBCHROMAPRINT_MIN_VERSION} "" )
 
-    if( FFMPEG_FOUND )
+    macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data, and for tag guessing services" "http://www.ffmpeg.org/" FALSE "0.7" "" )
+
+    if( FFMPEG_FOUND ) #TODO check for viability this if statement
         macro_log_feature( LIBOFA_FOUND "libofa" "Enable MusicDNS service" "http://code.google.com/p/musicip-libofa/" FALSE "0.9.x" "" )
     endif( FFMPEG_FOUND )
 

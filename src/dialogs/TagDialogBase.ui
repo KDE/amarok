@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>668</width>
-    <height>429</height>
+    <height>436</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,7 +20,16 @@
    <string>Track Information</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -872,7 +881,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Get Tags from MusicBrain&amp;z</string>
+            <string>Get Tags from &amp;Web Services</string>
            </property>
           </widget>
          </item>
@@ -947,13 +956,13 @@
                <property name="editable">
                 <bool>true</bool>
                </property>
-               <property name="duplicatesEnabled">
-                <bool>false</bool>
-               </property>
                <property name="autoCompletion">
                 <bool>false</bool>
                </property>
-               <property name="trapReturnKey">
+               <property name="duplicatesEnabled">
+                <bool>false</bool>
+               </property>
+               <property name="trapReturnKey" stdset="0">
                 <bool>true</bool>
                </property>
               </widget>
@@ -1165,11 +1174,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>KRichTextEdit</class>
-   <extends>KTextEdit</extends>
-   <header>krichtextedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>KComboBox</class>
    <extends>QComboBox</extends>
    <header>kcombobox.h</header>
@@ -1194,6 +1198,7 @@
    <class>KRatingWidget</class>
    <extends>QFrame</extends>
    <header>kratingwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>CoverLabel</class>
@@ -1204,6 +1209,11 @@
    <class>ClearSpinBox</class>
    <extends>QSpinBox</extends>
    <header>widgets/ClearSpinBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KRichTextEdit</class>
+   <extends>KTextEdit</extends>
+   <header>krichtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

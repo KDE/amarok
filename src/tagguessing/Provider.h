@@ -34,11 +34,6 @@ namespace TagGuessing{
         Q_OBJECT
 
     public:
-        Provider();
-        /**
-         * destructor needs to be virtual so that when this is called on the the base class pointer,
-         * the correct destructor is called.
-         */
         virtual ~Provider();
 
         virtual bool isRunning() const = 0;
@@ -54,6 +49,10 @@ namespace TagGuessing{
         virtual void lookUpByPUID( const Meta::TrackPtr &track, const QString &puid );
 
     protected:
+        /**
+         * This class should never be instantized. Only subclasses can call the constructor
+         */
+        Provider();
         QNetworkAccessManager *m_net;
 
     };

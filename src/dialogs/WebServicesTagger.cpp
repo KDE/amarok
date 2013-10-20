@@ -17,7 +17,7 @@
 
 #define DEBUG_PREFIX "MusicBrainzTagDialog"
 
-#include "MusicBrainzTagger.h"
+#include "WebServicesTagger.h"
 
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
@@ -30,7 +30,7 @@
 #ifdef HAVE_LIBOFA
 #include "musicbrainz/MusicDNSFinder.h"
 #endif
-#include "ui_MusicBrainzTagger.h"
+#include "ui_WebServicesTagger.h"
 
 #include <KIcon>
 
@@ -38,10 +38,10 @@
 #include <QToolBar>
 #include <QToolButton>
 
-MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
+WebServicesTagger::WebServicesTagger( const Meta::TrackList &tracks,
                                       QWidget *parent )
     : KDialog( parent )
-    , ui( new Ui::MusicBrainzTagger() )
+    , ui( new Ui::WebServicesTagger() )
 {
     DEBUG_BLOCK
     foreach( Meta::TrackPtr track, tracks )
@@ -56,7 +56,7 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
     search();
 }
 
-MusicBrainzTagger::~MusicBrainzTagger()
+WebServicesTagger::~WebServicesTagger()
 {
     KConfigGroup group = Amarok::config( "MusicBrainzTagDialog" );
     saveDialogSize( group );
@@ -64,7 +64,7 @@ MusicBrainzTagger::~MusicBrainzTagger()
 }
 
 void
-MusicBrainzTagger::init()
+WebServicesTagger::init()
 {
     DEBUG_BLOCK
     setButtons( KDialog::None );
@@ -123,27 +123,27 @@ MusicBrainzTagger::init()
 
     ui->progressBar->hide();
 
-    mb_finder = new MusicBrainzFinder( this );
+    m_tagFinder = new MusicBrainzFinder( this );
 #ifdef HAVE_LIBOFA
     mdns_finder = new MusicDNSFinder( this );
     connect( mdns_finder, SIGNAL(trackFound(Meta::TrackPtr,QString)),
-             mb_finder, SLOT(lookUpByPUID(Meta::TrackPtr,QString)) );
+             m_tagFinder, SLOT(lookUpByPUID(Meta::TrackPtr,QString)) );
     connect( mdns_finder, SIGNAL(progressStep()), SLOT(progressStep()) );
     connect( mdns_finder, SIGNAL(done()), this, SLOT(mdnsSearchDone()) );
 #endif
-    connect( mb_finder, SIGNAL(done()), SLOT(searchDone()) );
-    connect( mb_finder, SIGNAL(trackFound(Meta::TrackPtr,QVariantMap)),
+    connect( m_tagFinder, SIGNAL(done()), SLOT(searchDone()) );
+    connect( m_tagFinder, SIGNAL(trackFound(Meta::TrackPtr,QVariantMap)),
              m_resultsModel, SLOT(addTrack(Meta::TrackPtr,QVariantMap)) );
-    connect( mb_finder, SIGNAL(progressStep()), SLOT(progressStep()) );
+    connect( m_tagFinder, SIGNAL(progressStep()), SLOT(progressStep()) );
     connect( ui->pushButton_saveAndClose, SIGNAL(clicked(bool)), SLOT(saveAndExit()) );
     connect( ui->pushButton_cancel, SIGNAL(clicked(bool)), SLOT(reject()) );
 }
 
 void
-MusicBrainzTagger::search()
+WebServicesTagger::search()
 {
     int barSize = m_tracks.count();
-    mb_finder->run( m_tracks );
+    m_tagFinder->run( m_tracks );
 #ifdef HAVE_LIBOFA
     barSize *= 2;
     mdns_searchDone = false;
@@ -156,7 +156,7 @@ MusicBrainzTagger::search()
 }
 
 void
-MusicBrainzTagger::saveAndExit()
+WebServicesTagger::saveAndExit()
 {
     QMap<Meta::TrackPtr, QVariantMap> result = m_resultsModel->chosenItems();
 
@@ -167,7 +167,7 @@ MusicBrainzTagger::saveAndExit()
 }
 
 void
-MusicBrainzTagger::searchDone()
+WebServicesTagger::searchDone()
 {
     DEBUG_BLOCK
 #ifdef HAVE_LIBOFA
@@ -182,19 +182,19 @@ MusicBrainzTagger::searchDone()
 
 #ifdef HAVE_LIBOFA
 void
-MusicBrainzTagger::mdnsSearchDone()
+WebServicesTagger::mdnsSearchDone()
 {
     DEBUG_BLOCK
     mdns_searchDone = true;
-    if( !mb_finder->isRunning() )
+    if( !m_tagFinder->isRunning() )
         searchDone();
 }
 #endif
 
 void
-MusicBrainzTagger::progressStep()
+WebServicesTagger::progressStep()
 {
     ui->progressBar->setValue( ui->progressBar->value() + 1 );
 }
 
-#include "MusicBrainzTagger.moc"
+#include "WebServicesTagger.moc"

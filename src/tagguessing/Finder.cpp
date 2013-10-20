@@ -16,9 +16,34 @@
 
 #include "Finder.h"
 
+#include "musicbrainz/MusicBrainzFinder.h"
+
+#ifdef LIBCHROMAPRINT_FOUND
+    #include "acustid/Acustidprovider.h"
+#endif
+
 using namespace TagGuessing;
 
 Finder::Finder(QObject *parent) :
-    QObject(parent)
+    QObject( parent )
 {
+    addProviders();
+    foreach ( const &ProviderPtr, m_providers ) {
+
+    }
 }
+
+Finder::~Finder()
+{
+    // the individual providers will be freed as "this" is their parent.
+}
+
+Finder::addProviders()
+{
+    m_providers.append( new MusicBrainzFinder( this ) );
+#ifdef LIBCHROMAPRINT_FOUND
+    m_providers.append( new AcustIDFinder( this ) );
+#endif
+}
+
+#include "Finder.moc"
