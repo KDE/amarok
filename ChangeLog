@@ -8,6 +8,8 @@ VERSION 2.9-Beta 1
    * Wikipedia can now be also used over SSL.
 
   CHANGES:
+   * Amarok now uses some C++11 features. The subset used is defined by the 
+     compilers currently supported by KDE.
 
   BUGFIXES:
    * Fixed crashes with Intel drivers due to Analyzer applet. (BR 323635)
