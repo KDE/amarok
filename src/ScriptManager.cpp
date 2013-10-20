@@ -95,7 +95,7 @@ bool
 ScriptManager::minimumBindingsAvailable()
 {
     QStringList minimumBindings;
-    minimumBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
+    minimumBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.xml" << "qt.uitools" << "qt.network";
     QScriptEngine engine;
     foreach( const QString &binding, minimumBindings )
     {
