@@ -34,6 +34,9 @@ namespace Playlists
 
 namespace AmarokScript
 {
+    class AmarokScriptEngine;
+
+    //ANM-TODO podcasts!
     // SCRIPTDOX Amarok.PlaylistManager
     class AmarokPlaylistManagerScript : public QObject
     {
@@ -45,7 +48,7 @@ namespace AmarokScript
         Q_PROPERTY( QList<int> availableCategories READ availableCategories )
 
         public:
-            AmarokPlaylistManagerScript( QScriptEngine* engine );
+            AmarokPlaylistManagerScript( AmarokScriptEngine* engine );
 
         public slots:
 

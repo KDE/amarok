@@ -26,15 +26,17 @@ class QScriptEngine;
 
 namespace AmarokScript
 {
+    class AmarokScriptEngine;
 
     // SCRIPTDOX Amarok.Info
     class InfoScript : public QObject
     {
         Q_OBJECT
-        Q_ENUMS( StdSizes )
+        Q_ENUMS( IconSizes )
 
         public:
-            enum StdSizes {
+            // SCRIPTDOX enum Amarok.Info.IconSizes
+            enum IconSizes {
                 Small=16,
                 SmallMedium=22,
                 Medium=32,
@@ -43,7 +45,7 @@ namespace AmarokScript
                 Enormous=128
             };
 
-            InfoScript( const KUrl& scriptUrl, QScriptEngine *engine );
+            InfoScript( const KUrl& scriptUrl, AmarokScriptEngine *engine );
 
         public slots:
 

@@ -17,20 +17,31 @@
 #include "AmarokPlaylistManagerScript.h"
 
 #include "playlistmanager/PlaylistManager.h"
+#include "scripting/scriptengine/exporters/PlaylistExporter.h"
+#include "scripting/scriptengine/exporters/PlaylistProviderExporter.h"
+#include "scripting/scriptengine/ScriptingDefines.h"
 
+#include <QMetaEnum>
 #include <QScriptEngine>
 
 using namespace AmarokScript;
 
-AmarokPlaylistManagerScript::AmarokPlaylistManagerScript( QScriptEngine* engine )
+//ANM-TODO
+// use amarok binding import
+AmarokPlaylistManagerScript::AmarokPlaylistManagerScript( AmarokScriptEngine* engine )
     : QObject( engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
     engine->globalObject().property( "Amarok" ).setProperty( "PlaylistManager", scriptObject );
-    //Exposes a whole bunch of other stuff, any other way of doing this?
-    QScriptValue categoryEnum = engine->newQMetaObject( &PlaylistManager::staticMetaObject );
-    scriptObject.setProperty( "PlaylistCategory", categoryEnum );
+
+    const QMetaObject *metaObject = &PlaylistManager::staticMetaObject;
+    const QMetaEnum categoryEnum = metaObject->enumerator( metaObject->indexOfEnumerator("PlaylistCategory") );
+    Q_ASSERT( categoryEnum.isValid() );
+    scriptObject.setProperty( "PlaylistCategory", engine->enumObject( categoryEnum ) );
+
+    PlaylistPrototype::init( engine );
+    PlaylistProviderPrototype::init( engine );
 
     PlaylistManager *instance =  PlaylistManager::instance();
     connect( instance, SIGNAL(categoryAdded(int)), SIGNAL(categoryAdded(int)) );

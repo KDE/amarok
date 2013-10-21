@@ -17,43 +17,16 @@
 #ifndef AMAROKSCRIPT_SCRIPTING_DEFINES_H
 #define AMAROKSCRIPT_SCRIPTING_DEFINES_H
 
-#include <QObject>
 #include <QHash>
+#include <QObject>
 #include <QScriptEngine>
 #include <QScriptValue>
- #include <QScriptValueIterator>
+#include <QScriptValueIterator>
+
+class QMetaEnum;
 
 namespace AmarokScript
 {
-    class AmarokScriptEngine : public QScriptEngine
-    {
-        Q_OBJECT
-
-        public:
-            AmarokScriptEngine( QObject *parent );
-            virtual ~AmarokScriptEngine();
-
-            void setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property );
-            QString setUndocumentedProperty( const QString &name, const QScriptValue &property );;
-            // bool isFunction( const QString &name );
-            // bool isSignal( const QString &name );
-
-        public slots:
-            void slotDeprecatedCall( const QString &call );
-            void setTimeout( const QScriptValue &value, int time );
-
-        private slots:
-            void slotTimeout();
-
-        signals:
-            void deprecatedCall(QString);
-            void timeout( QScriptValue );
-
-        private:
-            const QString internalObject;
-            QHash<QObject*, QScriptValue> m_callbacks;
-    };
-
     template <class type, class WrapperType>
     void fromScriptValue( const QScriptValue &obj, type &object )
     {
@@ -101,7 +74,7 @@ namespace AmarokScript
     {
         QScriptValue scriptMap = engine->newObject();
         for( typename Map::const_iterator it( map.begin() ); it != map.end(); ++it )
-            scriptMap.setProperty( it.key(), qScriptValueFromValue( engine, it.value()) );
+            scriptMap.setProperty( it.key(), engine->toScriptValue( it.value() ) );
         return scriptMap;
     }
 
@@ -116,6 +89,53 @@ namespace AmarokScript
         }
     }
 
+   class AmarokScriptEngine : public QScriptEngine
+    {
+        Q_OBJECT
+
+        public:
+            AmarokScriptEngine( QObject *parent );
+            virtual ~AmarokScriptEngine();
+
+            void setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property );
+            QString setUndocumentedProperty( const QString &name, const QScriptValue &property );
+            // exposing the metaobject directly also exposes >900 other values
+            QScriptValue enumObject( const QMetaEnum &metaEnum );
+
+            template <class Pointer, class Wrapper>
+            void registerPointerType()
+            {
+                 qScriptRegisterMetaType<Pointer>( this,
+                                                   toScriptValue<Pointer, Wrapper>,
+                                                   fromScriptValue<Pointer, Wrapper> );
+            }
+
+            template <class T>
+            void registerArrayType()
+            {
+                qScriptRegisterMetaType<T>( this, toScriptArray, fromScriptArray );
+            }
+            template <class Map>
+            void registerMapType()
+            {
+                qScriptRegisterMetaType<Map>( this, toScriptMap, fromScriptMap );
+            }
+
+        public slots:
+            void slotDeprecatedCall( const QString &call );
+            void setTimeout( const QScriptValue &value, int time );
+
+        private slots:
+            void slotTimeout();
+
+        signals:
+            void deprecatedCall(QString);
+            void timeout( QScriptValue );
+
+        private:
+            const QString internalObject;
+            QHash<QObject*, QScriptValue> m_callbacks;
+    };
 }
 
 #endif // AMAROKSCRIPT_SCRIPTING_DEFINES_H

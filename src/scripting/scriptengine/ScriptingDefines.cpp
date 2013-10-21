@@ -18,6 +18,7 @@
 
 #include "core/support/Debug.h"
 
+#include <QMetaEnum>
 #include <QTimer>
 
 using namespace AmarokScript;
@@ -81,6 +82,14 @@ AmarokScriptEngine::slotTimeout()
         m_callbacks.remove( timer );
         timer->deleteLater();
     }
+}
+
+QScriptValue AmarokScriptEngine::enumObject( const QMetaEnum &metaEnum )
+{
+    QScriptValue enumObj = newObject();
+    for( int i = 0; i< metaEnum.keyCount(); ++i )
+        enumObj.setProperty( metaEnum.key(i), QScriptEngine::toScriptValue( metaEnum.value(i) ) );
+    return enumObj;
 }
 
 AmarokScriptEngine::~AmarokScriptEngine()

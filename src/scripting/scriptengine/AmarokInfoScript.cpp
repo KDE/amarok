@@ -19,21 +19,26 @@
 #include "AmarokInfoScript.h"
 
 #include "core/support/Amarok.h"
+#include "scripting/scriptengine/ScriptingDefines.h"
 
 #include <KIconLoader>
+
+#include <QMetaEnum>
 #include <QScriptEngine>
 
 using namespace AmarokScript;
 
-InfoScript::InfoScript( const KUrl& scriptUrl, QScriptEngine *engine )
+InfoScript::InfoScript( const KUrl& scriptUrl, AmarokScriptEngine *engine )
     : QObject( engine )
     , m_scriptUrl( scriptUrl )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
     engine->globalObject().property( "Amarok" ).setProperty( "Info", scriptObject );
-    QScriptValue iconEnumObject = engine->newQMetaObject( &IconEnum::staticMetaObject );
-    scriptObject.setProperty( "IconSizes", iconEnumObject );
+
+    const QMetaEnum iconEnum = metaObject()->enumerator( metaObject()->indexOfEnumerator("IconSizes") );
+    Q_ASSERT( iconEnum.isValid() );
+    scriptObject.setProperty( "IconSizes", engine->enumObject( iconEnum ) );
 }
 
 QString
