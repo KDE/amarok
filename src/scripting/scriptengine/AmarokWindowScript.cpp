@@ -22,15 +22,15 @@
 #include "App.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
+#include "PaletteHandler.h"
+#include "ScriptingDefines.h"
 
 #include <KAction>
 #include <KActionCollection>
 
-#include <QScriptEngine>
-
 using namespace AmarokScript;
 
-AmarokWindowScript::AmarokWindowScript( QScriptEngine* scriptEngine )
+AmarokWindowScript::AmarokWindowScript( AmarokScriptEngine* scriptEngine )
     : QObject( scriptEngine )
     , m_toolsMenu( The::mainWindow()->ToolsMenu() )
     , m_settingsMenu( The::mainWindow()->SettingsMenu() )
@@ -133,4 +133,34 @@ bool
 AmarokWindowScript::isTrayIconShown()
 {
     return AmarokConfig::showTrayIcon();
+}
+
+QMainWindow*
+AmarokWindowScript::mainWindow()
+{
+    return The::mainWindow();
+}
+
+QPalette
+AmarokWindowScript::palette() const
+{
+    return The::paletteHandler()->palette();
+}
+
+void
+AmarokWindowScript::setPalette( const QPalette &palette )
+{
+    The::paletteHandler()->setPalette( palette );
+}
+
+void
+AmarokWindowScript::setStyleSheet( const QString &styleSheet )
+{
+    The::mainWindow()->setStyleSheet( styleSheet );
+}
+
+QString
+AmarokWindowScript::styleSheet() const
+{
+    return The::mainWindow()->styleSheet();
 }

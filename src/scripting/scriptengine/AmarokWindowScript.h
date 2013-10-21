@@ -22,10 +22,13 @@
 #include <QObject>
 #include <QSharedPointer>
 
+class QMainWindow;
+class QPalette;
 class QScriptEngine;
 
 namespace AmarokScript
 {
+    class AmarokScriptEngine;
     // SCRIPTDOX: Amarok.Window
     class AmarokWindowScript : public QObject
     {
@@ -33,9 +36,14 @@ namespace AmarokScript
 
         Q_PROPERTY( bool isTrayIconShown READ isTrayIconShown )
         Q_PROPERTY( QString activeBrowserName READ activeBrowserName )
+        Q_PROPERTY( QMainWindow* mainWindow READ mainWindow )
+        /**
+         * Convenience method for mainWindow.styleSheet and setStyleSheet
+         */
+        Q_PROPERTY( QString styleSheet READ styleSheet WRITE setStyleSheet )
 
         public:
-            AmarokWindowScript( QScriptEngine* scriptEngine );
+            AmarokWindowScript( AmarokScriptEngine* scriptEngine );
 
         public slots:
             bool addToolsMenu( QString id, QString menuTitle, QString icon = "amarok" );
@@ -44,10 +52,12 @@ namespace AmarokScript
             void addSettingsSeparator();
             void showBrowser( QString browser ) const; // ANM-TODO: works?
             void showTrayIcon( bool show );
-            // ANM-TODO dock functions
+            QPalette palette() const;
+            void setPalette( const QPalette & palette );
 
         signals:
             void prepareToQuit();
+            void newPalette( QPalette );
 
         private:
             /**
@@ -65,12 +75,18 @@ namespace AmarokScript
 
             QString activeBrowserName();
             bool isTrayIconShown();
+            QMainWindow* mainWindow();
+            void setStyleSheet( const QString &styleSheet );
+            QString styleSheet() const;
 
             QWeakPointer<KMenu> m_toolsMenu;
             QWeakPointer<KMenu> m_settingsMenu;
-            QScriptEngine*   m_scriptEngine;
+            AmarokScriptEngine*   m_scriptEngine;
             QList<QObject*> m_guiPtrList;
     };
 }
+
+Q_DECLARE_METATYPE( QMainWindow* )
+Q_DECLARE_METATYPE( QPalette )
 
 #endif
