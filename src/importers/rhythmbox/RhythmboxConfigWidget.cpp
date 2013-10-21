@@ -16,6 +16,7 @@
 
 #include "RhythmboxConfigWidget.h"
 
+#include <KLocalizedString>
 #include <KUrlRequester>
 
 #include <QDir>

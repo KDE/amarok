@@ -29,26 +29,26 @@
 namespace StatSyncing
 {
 
-class ProviderConfigWidget;
+    class ProviderConfigWidget;
 
-class ConfigureProviderDialog : public KDialog
-{
-    Q_OBJECT
+    class ConfigureProviderDialog : public KDialog
+    {
+        Q_OBJECT
 
-public:
-    explicit ConfigureProviderDialog( const QString &providerId, QWidget *configWidget,
-                                      QWidget *parent = 0, Qt::WindowFlags f = 0 );
-    virtual ~ConfigureProviderDialog();
+    public:
+        explicit ConfigureProviderDialog( const QString &providerId, QWidget *configWidget,
+                                          QWidget *parent = 0, Qt::WindowFlags f = 0 );
+        virtual ~ConfigureProviderDialog();
 
-signals:
-    void providerConfigured( QString id, QVariantMap config );
+    signals:
+        void providerConfigured( QString id, QVariantMap config );
 
-private:
-    QString m_providerId;
+    private:
+        QString m_providerId;
 
-private slots:
-    void slotAccepted();
-};
+    private slots:
+        void slotAccepted();
+    };
 
 } // namespace StatSyncing
 

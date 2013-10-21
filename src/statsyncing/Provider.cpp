@@ -17,8 +17,6 @@
 #include "Provider.h"
 
 #include <QCoreApplication>
-#include <QWidget>
-#include <QDebug>
 
 using namespace StatSyncing;
 
@@ -68,20 +66,4 @@ Provider::reconfigure( const QVariantMap &config )
 void
 Provider::commitTracks()
 {
-}
-
-
-ProviderFactory::ProviderFactory( QObject *parent, const QVariantList &args )
-    : Plugins::PluginFactory( parent, args )
-{
-}
-
-ProviderFactory::~ProviderFactory()
-{
-}
-
-QString
-ProviderFactory::description() const
-{
-    return QString();
 }

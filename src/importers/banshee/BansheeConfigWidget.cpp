@@ -16,6 +16,7 @@
 
 #include "BansheeConfigWidget.h"
 
+#include <KLocalizedString>
 #include <KUrlRequester>
 
 #include <QDir>

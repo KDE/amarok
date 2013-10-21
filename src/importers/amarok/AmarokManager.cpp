@@ -33,7 +33,7 @@ AmarokManager::~AmarokManager()
 }
 
 QString
-AmarokManager::id() const
+AmarokManager::type() const
 {
     return "AmarokImporter";
 }

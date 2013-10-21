@@ -54,7 +54,7 @@ public:
     using StatSyncing::ImporterManager::managerConfig;
     using StatSyncing::ImporterManager::providerConfig;
 
-    MOCK_CONST_METHOD0( id, QString() );
+    MOCK_CONST_METHOD0( type, QString() );
     MOCK_CONST_METHOD0( description, QString() );
     MOCK_CONST_METHOD0( prettyName, QString() );
     MOCK_CONST_METHOD0( icon, KIcon() );

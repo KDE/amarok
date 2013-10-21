@@ -61,9 +61,7 @@ MetadataConfig::MetadataConfig( QWidget *parent )
     StatSyncing::Config *config = controller ? controller->config() : 0;
     m_statSyncingConfig = config;
     m_statSyncingProvidersView->setModel( config );
-    m_forgetTargetsButton->setIcon( KIcon( "edit-clear" ) );
     m_synchronizeButton->setIcon( KIcon( "amarok_playcount" ) );
-    m_addTargetButton->setIcon( KIcon( "folder-new" ) );
     m_configureTargetButton->setIcon( KIcon( "configure" ) );
     connect( config, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SIGNAL(changed()) );
     connect( config, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(changed()) );
@@ -71,7 +69,7 @@ MetadataConfig::MetadataConfig( QWidget *parent )
     connect( config, SIGNAL(modelReset()), SIGNAL(changed()) );
 
     // Add target button
-    m_addTargetButton->setEnabled( controller && controller->hasRegisteredProviderTypes() );
+    m_addTargetButton->setEnabled( controller && controller->hasProviderFactories() );
     connect( m_addTargetButton, SIGNAL(clicked(bool)), SLOT(slotCreateProviderDialog()) );
 
     // Configure target button
@@ -224,14 +222,16 @@ MetadataConfig::slotConfigureExcludedLabels()
 void
 MetadataConfig::slotConfigureProvider()
 {
-    if( StatSyncing::Controller *controller = Amarok::Components::statSyncingController() )
+    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+    if( controller )
     {
         QModelIndexList selected = m_statSyncingProvidersView->selectionModel()->selectedIndexes();
         if( selected.size() == 1 )
         {
             const QString id = selected.front().data( StatSyncing::Config::ProviderIdRole ).toString();
 
-            if( QWidget *dialog = controller->providerConfigDialog( id ) )
+            QWidget *dialog = controller->providerConfigDialog( id );
+            if( dialog )
             {
                 dialog->show();
                 dialog->activateWindow();
@@ -254,16 +254,18 @@ MetadataConfig::slotUpdateProviderConfigureButton()
     else
     {
         const QString id = selected.front().data( StatSyncing::Config::ProviderIdRole ).toString();
-        m_configureTargetButton->setEnabled( controller->isProviderConfigurable( id ) );
+        m_configureTargetButton->setEnabled( controller->providerIsConfigurable( id ) );
     }
 }
 
 void
 MetadataConfig::slotCreateProviderDialog()
 {
-    if( StatSyncing::Controller *controller = Amarok::Components::statSyncingController() )
+    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+    if( controller )
     {
-        if( QWidget *dialog = controller->providerCreationDialog() )
+        QWidget *dialog = controller->providerCreationDialog();
+        if( dialog )
         {
             dialog->show();
             dialog->activateWindow();

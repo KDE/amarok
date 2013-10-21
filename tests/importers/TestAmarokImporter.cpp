@@ -34,7 +34,7 @@ TestAmarokImporter::getProvider()
     QVariantMap cfg = AmarokConfigWidget( QVariantMap() ).config();
     cfg.insert( "embedded", true );
     cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                          "/importers_files/mysqle" );
+                          "/importers_files/amarok2_mysqle" );
 
     return ProviderPtr( new AmarokProvider( cfg, 0 ) );
 }
@@ -46,7 +46,8 @@ TestAmarokImporter::getWritableProvider()
     QDir files( base.filePath( "importers_files" ) );
     QDir tmp( base.filePath( "importers_tmp" ) );
 
-    foreach( const QString &subdir, QList<QString>() << "mysqle" << "mysqle/amarok" )
+    foreach( const QString &subdir,
+             QList<QString>() << "amarok2_mysqle" << "amarok2_mysqle/amarok" )
     {
         tmp.mkpath( subdir );
 
@@ -62,7 +63,7 @@ TestAmarokImporter::getWritableProvider()
 
     QVariantMap cfg = AmarokConfigWidget( QVariantMap() ).config();
     cfg.insert( "embedded", true );
-    cfg.insert( "dbPath", tmp.filePath( "mysqle" ) );
+    cfg.insert( "dbPath", tmp.filePath( "amarok2_mysqle" ) );
 
     return ProviderPtr( new AmarokProvider( cfg, 0 ) );
 }
@@ -172,7 +173,7 @@ TestAmarokImporter::providerShouldIgnoreConfigsDbDriver()
 
     m_cfg.insert( "dbDriver", "QPSQL" );
     m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                            "/importers_files/mysqle" );
+                            "/importers_files/amarok2_mysqle" );
 
     AmarokProvider provider( m_cfg, 0 );
 

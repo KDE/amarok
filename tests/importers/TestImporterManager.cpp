@@ -61,14 +61,14 @@ TestImporterManager::initShouldLoadSettings()
         NiceMock<MockManager> mock;
 
         EXPECT_CALL( mock, newInstance( Eq(config) ) ).WillOnce( Invoke( &mock, &MockManager::concreteNewInstance ) );
-        EXPECT_CALL( mock, id() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
+        EXPECT_CALL( mock, type() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
 
         mock.init();
         mock.createProvider( config );
     }
 
     EXPECT_CALL( *m_mockManager, newInstance( Eq(config) ) );
-    EXPECT_CALL( *m_mockManager, id() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
+    EXPECT_CALL( *m_mockManager, type() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
 
     m_mockManager->init();
 }
@@ -93,7 +93,7 @@ TestImporterManager::creatingProviderShouldSaveSettings()
     cfg["uid"] = QString( "TestId" );
     cfg["custom"] = QString( "custom" );
 
-    EXPECT_CALL( *m_mockManager, id() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
+    EXPECT_CALL( *m_mockManager, type() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
 
     m_mockManager->init();
     m_mockManager->createProvider( cfg );
@@ -107,7 +107,7 @@ TestImporterManager::creatingProviderShouldSaveSettings()
 void
 TestImporterManager::creatingProviderShouldSaveGeneratedId()
 {
-    EXPECT_CALL( *m_mockManager, id() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
+    EXPECT_CALL( *m_mockManager, type() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
 
     QVERIFY( !m_mockManager->managerConfig().exists() );
 
@@ -208,7 +208,7 @@ TestImporterManager::forgetProviderShouldForgetConfig()
     QVariantMap cfg;
     cfg.insert( "uid", "TestId" );
 
-    EXPECT_CALL( *m_mockManager, id() ).WillRepeatedly(
+    EXPECT_CALL( *m_mockManager, type() ).WillRepeatedly(
                                                  Return( QString( "TestMockManager" ) ) );
 
     m_mockManager->init();

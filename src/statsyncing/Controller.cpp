@@ -18,6 +18,7 @@
 
 #include "EngineController.h"
 #include "MainWindow.h"
+#include "ProviderFactory.h"
 #include "amarokconfig.h"
 #include "core/interfaces/Logger.h"
 #include "core/meta/Meta.h"
@@ -154,18 +155,18 @@ Controller::handleNewFactories( const QList<Plugins::PluginFactory*> &factories 
             continue;
 
         factory->init();
-        m_providerFactories.insert( factory->id(), ProviderFactoryPtr( factory ) );
+        m_providerFactories.insert( factory->type(), factory );
     }
 }
 
 bool
-Controller::hasRegisteredProviderTypes() const
+Controller::hasProviderFactories() const
 {
     return !m_providerFactories.isEmpty();
 }
 
 bool
-Controller::isProviderConfigurable( const QString &id ) const
+Controller::providerIsConfigurable( const QString &id ) const
 {
     ProviderPtr provider = findRegisteredProvider( id );
     return provider ? provider->isConfigurable() : false;
@@ -193,8 +194,8 @@ QWidget*
 Controller::providerCreationDialog() const
 {
     CreateProviderDialog *dialog = new CreateProviderDialog( The::mainWindow() );
-    foreach( ProviderFactoryPtr factory, m_providerFactories )
-        dialog->addProviderType( factory->id(), factory->prettyName(),
+    foreach( ProviderFactory * const factory, m_providerFactories )
+        dialog->addProviderType( factory->type(), factory->prettyName(),
                                  factory->icon(), factory->createConfigWidget() );
 
     connect( dialog, SIGNAL(providerConfigured(QString,QVariantMap)),
@@ -205,10 +206,10 @@ Controller::providerCreationDialog() const
 }
 
 void
-Controller::createProvider( QString id, QVariantMap config )
+Controller::createProvider( QString type, QVariantMap config )
 {
-    Q_ASSERT( m_providerFactories.contains( id ) );
-    m_providerFactories[id]->createProvider( config );
+    Q_ASSERT( m_providerFactories.contains( type ) );
+    m_providerFactories[type]->createProvider( config );
 }
 
 void

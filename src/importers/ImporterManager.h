@@ -17,7 +17,7 @@
 #ifndef STATSYNCING_IMPORTER_MANAGER_H
 #define STATSYNCING_IMPORTER_MANAGER_H
 
-#include "statsyncing/Provider.h"
+#include "statsyncing/ProviderFactory.h"
 
 #include "amarok_export.h"
 

@@ -16,6 +16,7 @@
 
 #include "ClementineConfigWidget.h"
 
+#include <KLocalizedString>
 #include <KUrlRequester>
 
 #include <QDir>

@@ -142,7 +142,7 @@ void
 Config::updateProvider( const QString &id, const QString &name, const QIcon &icon,
                         bool online, bool enabled )
 {
-    ProviderData providerData( id, name, icon, online, enabled);
+    ProviderData providerData( id, name, icon, online, enabled );
     for( int i = 0; i < m_providerData.count(); i++ )
     {
         if( m_providerData.at( i ).id == id )

@@ -19,6 +19,7 @@
 #include "core/support/Debug.h"
 
 #include <KLineEdit>
+#include <KLocalizedString>
 
 #include <QBoxLayout>
 #include <QGridLayout>

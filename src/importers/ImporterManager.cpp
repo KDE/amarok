@@ -131,7 +131,7 @@ ImporterManager::createProvider( QVariantMap config )
 KConfigGroup
 ImporterManager::managerConfig() const
 {
-    return Amarok::config( "Importers" ).group( id() );
+    return Amarok::config( "Importers" ).group( type() );
 }
 
 KConfigGroup

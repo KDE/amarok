@@ -28,7 +28,7 @@ public:
     AmarokManager( QObject *parent, const QVariantList &args );
     ~AmarokManager();
 
-    QString id() const;
+    QString type() const;
     QString prettyName() const;
     QString description() const;
     KIcon icon() const;

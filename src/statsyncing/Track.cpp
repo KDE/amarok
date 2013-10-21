@@ -125,7 +125,7 @@ Track::setPlayCount( int playCount )
 }
 
 void
-Track::setLabels(const QSet<QString> &labels)
+Track::setLabels( const QSet<QString> &labels )
 {
     Q_UNUSED( labels )
 }

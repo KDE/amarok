@@ -18,7 +18,6 @@
 #define STATSYNCING_PROVIDER_H
 
 #include "amarok_export.h"
-#include "core/support/PluginFactory.h"
 #include "statsyncing/Track.h"
 #include "support/QSharedDataPointerMisc.h" // operator<() for ProviderPtr
 
@@ -26,9 +25,8 @@
 
 #include <QMap>
 #include <QSet>
-#include <QSharedPointer>
 #include <QString>
-#include <QVariant>
+#include <QVariantMap>
 #include <QWidget>
 
 namespace StatSyncing
@@ -186,58 +184,6 @@ namespace StatSyncing
      * Container for a set of track frovider lists, one for each provider
      */
     typedef QMap<ProviderPtr, TrackList> PerProviderTrackList;
-
-    /**
-     * A class allowing the creation of multiple providers of the same type.
-     */
-    class AMAROK_EXPORT ProviderFactory : public Plugins::PluginFactory
-    {
-        Q_OBJECT
-
-        public:
-            ProviderFactory( QObject *parent, const QVariantList &args );
-            virtual ~ProviderFactory();
-
-            /**
-             * A string that is unique to this provider factory. It may be used as a key
-             * in associative structures.
-             */
-            virtual QString id() const = 0;
-
-            /**
-             * The name of the type of created provider. This name will be displayed
-             * in the provider creation dialog.
-             */
-            virtual QString prettyName() const = 0;
-
-            /**
-             * User-visible short localized description. This is the default description
-             * of created providers. Default implementation returns an empy string.
-             */
-            virtual QString description() const;
-
-            /**
-             * The icon representing the type of created provider. This icon will be
-             * displayed in the provider creation dialog, and is the default icon
-             * of created providers.
-             */
-            virtual KIcon icon() const = 0;
-
-            /**
-             * New instance of configuration widget for the provider. Please note that
-             * ProviderFactory does *not* retain ownership of this pointer, therefore
-             * should always return a new instance.
-             */
-            virtual ProviderConfigWidget *createConfigWidget() = 0;
-
-            /**
-             * Create a new provider instance using configuration stored in @param config
-             */
-            virtual ProviderPtr createProvider( QVariantMap config ) = 0;
-    };
-
-    typedef QPointer<ProviderFactory> ProviderFactoryPtr;
-    typedef QMap<QString, ProviderFactoryPtr> ProviderFactoryPtrMap;
 
 } // namespace StatSyncing
 

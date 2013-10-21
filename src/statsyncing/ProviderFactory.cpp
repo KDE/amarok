@@ -14,22 +14,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ITunesConfigWidget.h"
+#include "ProviderFactory.h"
 
-#include <KLocalizedString>
-#include <KUrlRequester>
+#include "Provider.h"
 
 using namespace StatSyncing;
 
-ITunesConfigWidget::ITunesConfigWidget( const QVariantMap &config, QWidget *parent,
-                                        Qt::WindowFlags f )
-    : SimpleImporterConfigWidget( "iTunes", config, parent, f )
+ProviderFactory::ProviderFactory( QObject *parent, const QVariantList &args )
+    : Plugins::PluginFactory( parent, args )
 {
-    KUrlRequester *dbField = new KUrlRequester;
-    dbField->setFilter( "iTunes Music Library.xml" );
-    addField( "dbPath", i18n( "Database location" ), dbField, "text" );
 }
 
-ITunesConfigWidget::~ITunesConfigWidget()
+ProviderFactory::~ProviderFactory()
 {
+}
+
+QString
+ProviderFactory::description() const
+{
+    return QString();
 }

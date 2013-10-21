@@ -132,7 +132,7 @@ namespace StatSyncing
             /**
              * Set date when the track was last played. Default implementation does
              * nothing.
-             * @param lastPlayed() the date the track was last played
+             * @param lastPlayed the date the track was last played
              */
             virtual void setLastPlayed( const QDateTime &lastPlayed );
 
@@ -148,7 +148,7 @@ namespace StatSyncing
             /**
              * Set count of the track plays. Setting playcount must reset recent
              * playcount to 0. Default implementation does nothing.
-             * @param playCount() the count of the track plays
+             * @param playCount the count of the track plays
              */
             virtual void setPlayCount( int playCount );
 

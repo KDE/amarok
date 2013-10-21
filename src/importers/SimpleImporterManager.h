@@ -25,7 +25,7 @@
   * anything other than give static info, you can replace the whole class with this macro.
   * See iTunes importer for usage example (ITunesManager.cpp file).
   */
-#define AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( libname, ID, PRETTY_NAME, DESCRIPTION, \
+#define AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( libname, TYPE, PRETTY_NAME, DESCRIPTION, \
                                               ICON, ConfigWidget_T, ImporterProvider_T ) \
     class libname ## ImporterManager : public StatSyncing::ImporterManager \
     { \
@@ -39,9 +39,9 @@
         { \
         } \
     \
-        QString id() const \
+        QString type() const \
         { \
-            return ID; \
+            return TYPE; \
         } \
     \
         QString prettyName() const \

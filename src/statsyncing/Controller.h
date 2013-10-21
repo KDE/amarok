@@ -21,9 +21,6 @@
 // for CollectionManager::CollectionStatus that cannont be fwd-declared
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <KDialog>
-
-#include <QSharedPointer>
 #include <QWeakPointer>
 
 class QTimer;
@@ -37,8 +34,6 @@ namespace StatSyncing
     typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
     typedef QList<ProviderPtr> ProviderPtrList;
     class ProviderFactory;
-    typedef QPointer<ProviderFactory> ProviderFactoryPtr;
-    typedef QMap<QString, ProviderFactoryPtr> ProviderFactoryPtrMap;
     class ScrobblingService;
     typedef QExplicitlySharedDataPointer<ScrobblingService> ScrobblingServicePtr;
 
@@ -83,21 +78,28 @@ namespace StatSyncing
              * Returns true if any instantiable provider types are registered with the
              * controller.
              */
-            bool hasRegisteredProviderTypes() const;
+            bool hasProviderFactories() const;
 
             /**
              * Returns true if the provider identified by @param id is configurable
              */
-            bool isProviderConfigurable( const QString &id ) const;
+            bool providerIsConfigurable( const QString &id ) const;
 
             /**
-             * Returns a configuration dialog for a provider identified by @param id
+             * Returns a configuration dialog for a provider identified by @param id .
+             * @returns 0 if there's no provider identified by id or the provider is not
+             * configurable, otherwise a pointer to the dialog constructed as a child of
+             * The::mainWindow
              */
             QWidget *providerConfigDialog( const QString &id ) const;
 
             /**
              * Returns a provider creation dialog, prepopulated with registered provider
-             * types
+             * types.
+             * @returns a pointer to the dialog constructed as a child of The::mainWindow,
+             * and is a subclass of KAssistantDialog.
+             *
+             * @see StatSyncing::CreateProviderDialog
              */
             QWidget *providerCreationDialog() const;
 
@@ -166,10 +168,10 @@ namespace StatSyncing
 
         private slots:
             /**
-             * Creates new instance of provider type identified by @param id
+             * Creates new instance of provider type identified by @param type
              * with configuration stored in @param config.
              */
-            void createProvider( QString id, QVariantMap config );
+            void createProvider( QString type, QVariantMap config );
 
             /**
              * Reconfigures provider identified by @param id with configuration
@@ -206,8 +208,7 @@ namespace StatSyncing
              * Return true if important metadata of both tracks is equal.
              */
             bool tracksVirtuallyEqual( const Meta::TrackPtr &first, const Meta::TrackPtr &second );
-
-            ProviderFactoryPtrMap m_providerFactories;
+            QMap<QString, ProviderFactory*> m_providerFactories;
 
             // synchronization-related
             ProviderPtrList m_providers;
