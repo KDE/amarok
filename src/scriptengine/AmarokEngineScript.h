@@ -126,7 +126,11 @@ namespace AmarokScript
             int  volume() const;
             void setVolume( int percent );
             int  fadeoutLength() const;
-            void setFadeoutLength( int length ); //TODO:implement
+
+            /**
+             * Set the fadeout length. Must be >= 400.
+             */
+            void setFadeoutLength( int length );
     };
 }
 

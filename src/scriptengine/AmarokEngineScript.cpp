@@ -279,5 +279,8 @@ AmarokEngineScript::fadeoutLength() const
 void
 AmarokEngineScript::setFadeoutLength( int length )
 {
-    Q_UNUSED( length );
+    if( length < 400 )
+        debug() << "Fadeout length must be >= 400";
+    else
+        AmarokConfig::setFadeoutLength( length );
 }
