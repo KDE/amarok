@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "core/support/Amarok.h"
 #include "App.h"
+#include "AmarokCollectionViewScript.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "PaletteHandler.h"
@@ -42,6 +43,10 @@ AmarokWindowScript::AmarokWindowScript( AmarokScriptEngine* scriptEngine )
 
     windowObject.setProperty( "ToolsMenu", scriptEngine->newObject() );
     windowObject.setProperty( "SettingsMenu", scriptEngine->newObject() );
+    QScriptValue collectionViewObject = scriptEngine->newQObject( new AmarokCollectionViewScript( scriptEngine ),
+                                                                  QScriptEngine::AutoOwnership,
+                                                                  QScriptEngine::ExcludeSuperClassContents );
+    windowObject.setProperty( "CollectionView", collectionViewObject );
 
     connect( App::instance(), SIGNAL(prepareToQuit()),
                 this, SIGNAL(prepareToQuit()) );

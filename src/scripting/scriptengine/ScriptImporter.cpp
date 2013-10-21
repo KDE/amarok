@@ -18,6 +18,7 @@
 
 #include "App.h"
 #include "AmarokBookmarkScript.h"
+#include "AmarokCollectionViewScript.h"
 #include "config.h"
 #include "core/support/Debug.h"
 

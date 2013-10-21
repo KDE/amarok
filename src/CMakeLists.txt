@@ -446,31 +446,32 @@ set(dbus_SRCS
 #####################################################################
 set(scriptengine_SRCS
     scripting/scriptengine/AmarokBookmarkScript.cpp
+    scripting/scriptengine/AmarokCollectionScript.cpp
+    scripting/scriptengine/AmarokCollectionViewScript.cpp
     scripting/scriptengine/AmarokEngineScript.cpp
     scripting/scriptengine/AmarokEqualizerScript.cpp
-    scripting/scriptengine/AmarokScript.cpp
-    scripting/scriptengine/AmarokCollectionScript.cpp
-    scripting/scriptengine/AmarokScriptConfig.cpp
     scripting/scriptengine/AmarokInfoScript.cpp
+    scripting/scriptengine/AmarokKNotifyScript.cpp
+    scripting/scriptengine/AmarokLyricsScript.cpp
     scripting/scriptengine/AmarokNetworkScript.cpp
+    scripting/scriptengine/AmarokOSDScript.cpp
+    scripting/scriptengine/AmarokPlaylistManagerScript.cpp
+    scripting/scriptengine/AmarokPlaylistScript.cpp
+    scripting/scriptengine/AmarokScript.cpp
+    scripting/scriptengine/AmarokScriptConfig.cpp
     scripting/scriptengine/AmarokScriptableServiceScript.cpp
     scripting/scriptengine/AmarokServicePluginManagerScript.cpp
-    scripting/scriptengine/AmarokStreamItemScript.cpp
-    scripting/scriptengine/AmarokKNotifyScript.cpp
-    scripting/scriptengine/AmarokOSDScript.cpp
-    scripting/scriptengine/AmarokPlaylistScript.cpp
-    scripting/scriptengine/AmarokPlaylistManagerScript.cpp
     scripting/scriptengine/AmarokStatusbarScript.cpp
+    scripting/scriptengine/AmarokStreamItemScript.cpp
     scripting/scriptengine/AmarokWindowScript.cpp
-    scripting/scriptengine/AmarokLyricsScript.cpp
-    scripting/scriptengine/ScriptingDefines.cpp
     scripting/scriptengine/ScriptImporter.cpp
+    scripting/scriptengine/ScriptingDefines.cpp
     scripting/scriptengine/exporters/CollectionTypeExporter.cpp
     scripting/scriptengine/exporters/MetaTypeExporter.cpp
-    scripting/scriptengine/exporters/QueryMakerExporter.cpp
     scripting/scriptengine/exporters/PlaylistExporter.cpp
     scripting/scriptengine/exporters/PlaylistProviderExporter.cpp
-    cripting/scriptengine/exporters/ScriptableBiasExporter.cpp
+    scripting/scriptengine/exporters/QueryMakerExporter.cpp
+    scripting/scriptengine/exporters/ScriptableBiasExporter.cpp
 )
 
 set(scriptconsole_SRCS

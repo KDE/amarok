@@ -340,7 +340,7 @@ CollectionTreeItem::data() const
     return m_data;
 }
 
-QList<Meta::TrackPtr>
+Meta::TrackList
 CollectionTreeItem::descendentTracks()
 {
     QList<Meta::TrackPtr> descendentTracks;
