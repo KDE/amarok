@@ -123,6 +123,11 @@ void
 AssistantDialog::populateFormatList()
 {
     QSet<Encoder> available = Amarok::Components::transcodingController()->availableEncoders();
+
+    // Add a note if no encoder is found
+    ui.groupBox->setEnabled( !available.isEmpty() );
+    ui.encoderNotFoundLabel->setVisible( available.isEmpty() );
+
     foreach( Encoder encoder, Amarok::Components::transcodingController()->allEncoders() )
     {
         if( encoder == INVALID || encoder == JUST_COPY )

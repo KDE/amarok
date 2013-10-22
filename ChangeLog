@@ -8,6 +8,8 @@ VERSION 2.9-Beta 1
    * Wikipedia can now be also used over SSL.
 
   CHANGES:
+   * When ffmpeg is not available, the Transcode dialog is no longer skipped; info message
+     is shown instead. Patch by Jai Luthra. (BR 317902)
    * Amarok now uses some C++11 features. The subset used is defined by the 
      compilers currently supported by KDE.
 

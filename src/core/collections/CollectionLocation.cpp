@@ -315,12 +315,6 @@ CollectionLocation::getDestinationTranscodingConfig()
     if( tcC )
         availableEncoders = tcC->availableEncoders();
 
-    if( availableEncoders.isEmpty() )
-    {
-        debug() << "FFmpeg is not installed or does not support any of the required formats.";
-        return configuration;
-    }
-
     Transcoding::Configuration saved = tc->savedConfiguration();
     if( saved.isValid() && ( saved.isJustCopy() || availableEncoders.contains( saved.encoder() ) ) )
         return saved;
