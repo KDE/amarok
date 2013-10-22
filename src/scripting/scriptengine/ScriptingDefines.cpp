@@ -17,6 +17,7 @@
 #include "ScriptingDefines.h"
 
 #include "core/support/Debug.h"
+
 #include <QTimer>
 
 using namespace AmarokScript;
@@ -49,7 +50,6 @@ AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString 
                                                                             enumerable : true,\
                                                                             configurable : false});" )
                                     .arg( parent ).arg( name ).arg( internalObject ).arg( objName );
-    warning() << command;
     evaluate( command );
 }
 
@@ -60,19 +60,27 @@ AmarokScriptEngine::slotDeprecatedCall( const QString &call )
     emit deprecatedCall( call );
 }
 
-QScriptValue
-AmarokScriptEngine::setTimeout( QScriptContext* ctx, QScriptEngine* engine )
+void
+AmarokScriptEngine::setTimeout( const QScriptValue &value, int time )
 {
-    QScriptValue callback = ctx->argument(0);
-    int time = ctx->argument(1).toInt32();
-    QTimer::singleShot( time, this, SLOT(slotTimeout()) );
-    return engine->undefinedValue();
+    QTimer *timer = new QTimer( this );
+    timer->setSingleShot( true );
+    timer->setInterval( time );
+    m_callbacks[timer] = value;
+    connect( timer, SIGNAL(timeout()), this, SLOT(slotTimeout()) );
+    timer->start();
 }
 
 void
-AmarokScriptEngine::slotTimeout( QScriptValue &function )
+AmarokScriptEngine::slotTimeout()
 {
-    function.call();
+    QObject *timer = sender();
+    if( timer )
+    {
+        m_callbacks[timer].call();
+        m_callbacks.remove( timer );
+        timer->deleteLater();
+    }
 }
 
 AmarokScriptEngine::~AmarokScriptEngine()

@@ -18,6 +18,7 @@
 #define AMAROKSCRIPT_SCRIPTING_DEFINES_H
 
 #include <QObject>
+#include <QHash>
 #include <QScriptEngine>
 #include <QScriptValue>
  #include <QScriptValueIterator>
@@ -34,20 +35,23 @@ namespace AmarokScript
 
             void setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property );
             QString setUndocumentedProperty( const QString &name, const QScriptValue &property );;
-
-        private:
-            const QString internalObject;
+            // bool isFunction( const QString &name );
+            // bool isSignal( const QString &name );
 
         public slots:
             void slotDeprecatedCall( const QString &call );
-            QScriptValue setTimeout( QScriptContext* ctx, QScriptEngine* engine );
+            void setTimeout( const QScriptValue &value, int time );
 
         private slots:
-            void slotTimeout( QScriptValue &function );
+            void slotTimeout();
 
         signals:
             void deprecatedCall(QString);
             void timeout( QScriptValue );
+
+        private:
+            const QString internalObject;
+            QHash<QObject*, QScriptValue> m_callbacks;
     };
 
     template <class type, class WrapperType>
