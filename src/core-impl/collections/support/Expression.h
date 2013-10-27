@@ -20,6 +20,8 @@
 #include <QList>
 #include <QString>
 
+#include <utility>
+
 struct expression_element
 {
     QString field;
