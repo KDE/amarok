@@ -199,6 +199,8 @@ TestSqlCollectionLocation::testOrganizingCopiesLabels()
     {
         Collections::MockCollectionLocationDelegate *d = new Collections::MockCollectionLocationDelegate();
         EXPECT_CALL( *d, reallyMove( _, _ ) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+        EXPECT_CALL( *d, transcode( _, _, _, _, _ ) ).WillOnce( Return(
+                Transcoding::Configuration( Transcoding::INVALID ) ) );
         Amarok::Components::setCollectionLocationDelegate( d );
     }
 
