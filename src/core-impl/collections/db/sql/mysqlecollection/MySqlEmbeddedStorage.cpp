@@ -60,7 +60,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
                << "--default-storage-engine=MyISAM"
                << "--innodb=OFF"
                << "--skip-grant-tables"
-               << "--myisam-recover-options=FORCE"
+               << "--myisam-recover=FORCE"
                << "--key-buffer-size=16777216" // (16Mb)
                << "--character-set-server=utf8"
                << "--collation-server=utf8_bin";
