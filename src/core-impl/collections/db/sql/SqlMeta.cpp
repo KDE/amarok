@@ -72,6 +72,7 @@ QString
 SqlTrack::getTrackReturnValues()
 {
     //do not use any weird column names that contains commas: this will break getTrackReturnValuesCount()
+    // NOTE: when changing this, always check that SqlTrack::TrackReturnIndex enum remains valid
     return "urls.id, urls.deviceid, urls.rpath, urls.directory, urls.uniqueid, "
            "tracks.id, tracks.title, tracks.comment, "
            "tracks.tracknumber, tracks.discnumber, "
