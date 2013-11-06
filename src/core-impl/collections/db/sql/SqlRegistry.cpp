@@ -139,18 +139,32 @@ SqlRegistry::getTrack( int urlId )
 
     QMutexLocker locker( &m_trackMutex );
     if( m_trackMap.contains( id ) )
-        return m_trackMap.value( id );
-    else if( m_uidMap.contains( uid ) )
-        return m_uidMap.value( uid );
-    else
     {
-        Meta::SqlTrack *sqlTrack = new Meta::SqlTrack( m_collection, rowData );
-        Meta::TrackPtr trackPtr( sqlTrack );
-
-        m_trackMap.insert( id, trackPtr );
-        m_uidMap.insert( sqlTrack->uidUrl(), trackPtr );
-        return trackPtr;
+        Meta::SqlTrackPtr track = Meta::SqlTrackPtr::staticCast( m_trackMap[ id ] );
+        // yes, it may happen that we get a different track in corner cases, see bug 323156
+        if( track->urlId() == urlId )
+            return Meta::TrackPtr::staticCast( track );
+        warning() << Q_FUNC_INFO << "track with (deviceId, rpath)" << id << "found in"
+                  << "m_trackMap, but it had different urlId (" << track->urlId() << ")"
+                  << "than requested (" << urlId << "). This may happen in corner-cases.";
     }
+    if( m_uidMap.contains( uid ) )
+    {
+        Meta::SqlTrackPtr track = Meta::SqlTrackPtr::staticCast( m_uidMap[ uid ] );
+        // yes, it may happen that we get a different track in corner cases, see bug 323156
+        if( track->urlId() == urlId )
+            return Meta::TrackPtr::staticCast( track );
+        warning() << Q_FUNC_INFO << "track with uid" << uid << "found in m_uidMap, but it"
+                  << "had different urlId (" << track->urlId() << ") than requested ("
+                  << urlId << "). This may happen in corner-cases.";
+    }
+
+    Meta::SqlTrack *sqlTrack = new Meta::SqlTrack( m_collection, rowData );
+    Meta::TrackPtr trackPtr( sqlTrack );
+
+    m_trackMap.insert( id, trackPtr );
+    m_uidMap.insert( sqlTrack->uidUrl(), trackPtr );
+    return trackPtr;
 }
 
 Meta::TrackPtr
