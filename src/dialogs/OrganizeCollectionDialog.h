@@ -118,9 +118,6 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
 
         Ui::OrganizeCollectionDialogBase *ui;
 
-        OrganizeCollectionWidget *m_organizeCollectionWidget;
-        OrganizeCollectionOptionWidget* m_optionsWidget;
-
         TrackOrganizer *m_trackOrganizer;
         bool m_detailed;
         Meta::TrackList m_allTracks;
