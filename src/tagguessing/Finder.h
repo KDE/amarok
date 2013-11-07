@@ -27,18 +27,21 @@ namespace TagGuessing {
     /**
      * Handles the finding of tags from the available providers.
      * It calls the various methods of Provider objects, always on the main thread
-     * To create a new Provider, subclass Provider and add edit the private function addProviders()
+     * To create a new Provider, subclass Provider and add edit the private function Finder::addProviders()
      */
     class Finder : public QObject
     {
         Q_OBJECT
 
     public:
-        Finder(QObject *parent = 0);
-
+        Finder( QObject *parent );
+        ~Finder();
     signals:
 
     public slots:
+        void run( const Meta::TrackList &tracks );
+
+        void lookUpByPUID( const Meta::TrackPtr &track, const QString &puid );
 
     private:
         void addProviders();

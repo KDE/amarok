@@ -15,26 +15,43 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MUSICBRAINZMETA_H
-#define MUSICBRAINZMETA_H
+#ifndef TAGGUESSINGTAGSVIEW_H
+#define TAGGUESSINGTAGSVIEW_H
 
-#include <QString>
+#include <KIcon>
 
-namespace MusicBrainz
-{
-    static const QString ARTISTID       = "mb:ArtistID";
-    static const QString RELEASEGROUPID = "mb:ReleaseGroupID";
-    static const QString RELEASEID      = "mb:ReleaseID";
-    static const QString RELEASELIST    = "mb:ReleaseList";
-    static const QString TRACKCOUNT     = "mb:TrackCount";
-    static const QString TRACKID        = "mb:TrackID";
-    static const QString TRACKINFO      = "mb:TrackInfo";
+#include <QTreeView>
 
-    static const QString MUSICBRAINZ    = "mb:musicbrainz";
-    static const QString MUSICDNS       = "mb:musicdns";
+namespace TagGuessing {
+    class TagsModel;
 
-    static const QString SIMILARITY     = "mb:similarity";
-    static const qreal   MINSIMILARITY  = 0.6;
+    class TagsView : public QTreeView
+    {
+        Q_OBJECT
+
+    public:
+        explicit TagsView( QWidget *parent = 0 );
+
+        TagGuessing::TagsModel *sourceModel() const;
+
+    public slots:
+        void collapseChosen();
+        void expandUnchosen();
+
+    protected:
+        virtual void contextMenuEvent( QContextMenuEvent *event );
+
+    private slots:
+        void chooseBestMatchesFromRelease() const;
+        void openArtistPage() const;
+        void openReleasePage() const;
+        void openTrackPage() const;
+
+    private:
+        KIcon m_artistIcon;
+        KIcon m_releaseIcon;
+        KIcon m_trackIcon;
+    };
 }
 
-#endif // MUSICBRAINZMETA_H
+#endif // TAGGUESSINGTAGSVIEW_H

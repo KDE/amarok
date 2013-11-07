@@ -836,6 +836,7 @@ target_link_libraries(amaroklib
     amarokocsclient
     amarok-transcoding
     amarokshared
+    tagguessing_core
 )
 
 include_directories(${TAGLIB_INCLUDES})

@@ -22,7 +22,7 @@
 
 #define AMAROK_MUSICDNS_CLIENT_ID "0c6019606b1d8a54d0985e448f3603ca"
 
-class MusicDNSFinder : public WebRequestsHandler
+class MusicDNSFinder : public TagGuessing::WebRequestsHandler
 {
     public:
         MusicDNSFinder( QObject *parent = 0,
@@ -33,9 +33,12 @@ class MusicDNSFinder : public WebRequestsHandler
                         const QString &clientVersion = AMAROK_VERSION );
         ~MusicDNSFinder();
 
+    private:
         void gotReply( QNetworkReply *reply );
-
         void parsingDone( Threadweaver::Job *_parser );
+        void checkDone();
+
+        QMap < MusicDNSXmlParser *, Meta::TrackPtr > m_parsers;
 };
 
 #endif // MUSICDNSFINDER_H

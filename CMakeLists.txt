@@ -105,10 +105,11 @@ endif( LIBLASTFM_FOUND )
 macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
 macro_optional_find_package( LibChromaprint )
-set( LIBCHROMAPRINT_MIN_VERSION "0.6" )
-if( LIBCHROMAPRINT_FOUND )
-    macro_ensure_version( ${LIBCHROMAPRINT_MIN_VERSION} ${LIBCHROMAPRINT_VERSION} LIBCHROMAPRINT_FOUND )
-endif( LIBCHROMAPRINT_FOUND )
+# TODO: (currently LIBCHROMAPRINT_VERSION is not defined
+# set( LIBCHROMAPRINT_MIN_VERSION "0.6" )
+# if( LIBCHROMAPRINT_FOUND )
+#    macro_ensure_version( ${LIBCHROMAPRINT_MIN_VERSION} ${LIBCHROMAPRINT_VERSION} LIBCHROMAPRINT_FOUND )
+# endif( LIBCHROMAPRINT_FOUND )
 macro_bool_to_01( LIBCHROMAPRINT_FOUND HAVE_LIBCHROMAPRINT )
 
 macro_optional_find_package( FFmpeg )
@@ -167,7 +168,7 @@ if( WITH_PLAYER )
 
     macro_log_feature( LIBCHROMAPRINT_FOUND "libchromaprint"
                        "Required for the AcustID tag guessing serivce"
-                       "http:://" #TODO enter the appropriate web address
+                       "http://acoustid.org/chromaprint"
                        FALSE ${LIBCHROMAPRINT_MIN_VERSION} "" )
 
     macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data, and for tag guessing services" "http://www.ffmpeg.org/" FALSE "0.7" "" )

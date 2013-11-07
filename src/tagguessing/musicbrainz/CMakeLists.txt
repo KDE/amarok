@@ -7,8 +7,6 @@
 #
 # Macros related to external libraries (like LIBCHROMAPRINT_FOUND) should be added in amarok/cmake/modules/
 
-set( Amarok_TAGGUESSING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
-
 include_directories(
                     ${KDE4_INCLUDE_DIR}
                     ${QT_INCLUDES}
@@ -17,23 +15,22 @@ include_directories(
 
 set( tagguessing_musicbrainz_SRCS
     MusicBrainzFinder.cpp
-    MusicBrainzTagsItem.cpp
-    MusicBrainzTagsItem.cpp
-    MusicBrainzTagsModel.cpp
-    MusicBrainzTagsModelDelegate.cpp
-    MusicBrainzTagsView.cpp
-    MusicDNSXmlParser.cpp
-    )
+    MusicBrainzXmlParser.cpp )
 
 if ( LIBOFA_FOUND )
     set( tagguessing_musicbrainz_SRCS
         MusicDNSFinder.cpp
-        MusicDNSXmlParser.cpp
-    )
+        MusicDNSXmlParser.cpp )
 endif ( LIBOFA_FOUND )
 
 kde4_add_library( tagguessing_musicbrainz SHARED ${tagguessing_musicbrainz_SRCS} )
 
 target_link_libraries( tagguessing_musicbrainz
-    amaroklib
+    tagguessing_support
+    amarokcore
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
+    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${QT_QTNETWORK_LIBRARY}
+    ${QT_QTXML_LIBRARY}
 )

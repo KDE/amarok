@@ -15,51 +15,53 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "MusicBrainzTagsModel"
+#define DEBUG_PREFIX "TagsModel"
 
-#include "MusicBrainzTagsModel.h"
+#include "TagsModel.h"
 
 #include "AmarokMimeData.h"
 #include "core/support/Debug.h"
-#include "MusicBrainzMeta.h"
-#include "MusicBrainzTagsItem.h"
+#include "Meta.h"
+#include "TagsItem.h"
 
 #include <KLocalizedString>
 
 #include <QFont>
 
-MusicBrainzTagsModel::MusicBrainzTagsModel( QObject *parent )
+using namespace TagGuessing;
+
+TagsModel::TagsModel( QObject *parent )
     : QAbstractItemModel( parent )
 {
     QVariantMap headerData;
-    headerData.insert( MusicBrainz::SIMILARITY, "%" );
+    headerData.insert( ::SIMILARITY, "%" );
     headerData.insert( Meta::Field::TITLE, i18n( "Title" ) );
     headerData.insert( Meta::Field::ARTIST, i18n( "Artist" ) );
     headerData.insert( Meta::Field::ALBUM, i18n( "Album" ) );
     headerData.insert( Meta::Field::ALBUMARTIST, i18n( "Album Artist" ) );
     headerData.insert( Meta::Field::YEAR, i18n( "Year" ) );
-    m_rootItem = new MusicBrainzTagsItem( 0, Meta::TrackPtr(), headerData );
+    m_rootItem = new TagsItem( 0, Meta::TrackPtr(), headerData );
 }
 
-MusicBrainzTagsModel::~MusicBrainzTagsModel()
+TagsModel::~TagsModel()
 {
     delete m_rootItem;
 }
 
 QModelIndex
-MusicBrainzTagsModel::index( int row, int column, const QModelIndex &parent ) const
+TagsModel::index( int row, int column, const QModelIndex &parent ) const
 {
     if( !hasIndex( row, column, parent ) )
         return QModelIndex();
 
-    MusicBrainzTagsItem *parentItem;
+    TagsItem *parentItem;
 
     if( !parent.isValid() )
         parentItem = m_rootItem;
     else
-        parentItem = static_cast<MusicBrainzTagsItem *>( parent.internalPointer() );
+        parentItem = static_cast<TagsItem *>( parent.internalPointer() );
 
-    MusicBrainzTagsItem *childItem = parentItem->child( row );
+    TagsItem *childItem = parentItem->child( row );
 
     if( childItem )
         return createIndex( row, column, childItem );
@@ -68,13 +70,13 @@ MusicBrainzTagsModel::index( int row, int column, const QModelIndex &parent ) co
 }
 
 QModelIndex
-MusicBrainzTagsModel::parent( const QModelIndex &index ) const
+TagsModel::parent( const QModelIndex &index ) const
 {
     if( !index.isValid() )
         return QModelIndex();
 
-    MusicBrainzTagsItem *childItem = static_cast<MusicBrainzTagsItem *>( index.internalPointer() );
-    MusicBrainzTagsItem *parentItem = childItem->parent();
+    TagsItem *childItem = static_cast<TagsItem *>( index.internalPointer() );
+    TagsItem *parentItem = childItem->parent();
 
     if( parentItem == m_rootItem )
         return QModelIndex();
@@ -83,16 +85,16 @@ MusicBrainzTagsModel::parent( const QModelIndex &index ) const
 }
 
 QVariant
-MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
+TagsModel::data( const QModelIndex &index, int role ) const
 {
     if( !index.isValid() )
         return QVariant();
 
-    MusicBrainzTagsItem *item = static_cast<MusicBrainzTagsItem *>( index.internalPointer() );
+    TagsItem *item = static_cast<TagsItem *>( index.internalPointer() );
 
     if( role == Qt::DisplayRole )
         return item->data( index.column() );
-    else if( role == MusicBrainzTagsModel::SortRole )
+    else if( role == TagsModel::SortRole )
     {
         if( item->parent() == m_rootItem )
             return item->track()->prettyUrl();
@@ -105,20 +107,20 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
             return item->score() * -1;
         }
     }
-    else if( role == MusicBrainzTagsModel::TracksRole )
+    else if( role == TagsModel::TracksRole )
     {
-        QStringList trackList = item->dataValue( MusicBrainz::TRACKID ).toStringList();
+        QStringList trackList = item->dataValue( ::TRACKID ).toStringList();
         trackList.removeDuplicates();
         return trackList;
     }
-    else if( role == MusicBrainzTagsModel::ArtistsRole )
+    else if( role == TagsModel::ArtistsRole )
     {
-        QVariantList artistList = item->dataValue( MusicBrainz::ARTISTID ).toList();
+        QVariantList artistList = item->dataValue( ::ARTISTID ).toList();
         return artistList;
     }
-    else if( role == MusicBrainzTagsModel::ReleasesRole )
+    else if( role == TagsModel::ReleasesRole )
     {
-        QStringList releaseList = item->dataValue( MusicBrainz::RELEASEID ).toStringList();
+        QStringList releaseList = item->dataValue( ::RELEASEID ).toStringList();
         releaseList.removeDuplicates();
         return releaseList;
     }
@@ -126,18 +128,18 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
              index.column() == 0 &&
              index.flags() & Qt::ItemIsUserCheckable )
         return item->isChosen()? Qt::Checked : Qt::Unchecked;
-    else if( role == MusicBrainzTagsModel::ChosenStateRole &&
+    else if( role == TagsModel::ChosenStateRole &&
              item->parent() == m_rootItem )
-        return item->isChosen()? MusicBrainzTagsModel::Chosen : MusicBrainzTagsModel::Unchosen;
+        return item->isChosen()? TagsModel::Chosen : TagsModel::Unchosen;
     else if( role == Qt::BackgroundRole &&
-             item->dataContains( MusicBrainz::SIMILARITY ) )
+             item->dataContains( ::SIMILARITY ) )
     {
-        if( item->dataContains( MusicBrainz::MUSICBRAINZ ) &&
-            item->dataContains( MusicBrainz::MUSICDNS ) )
+        if( item->dataContains( ::MUSICBRAINZ ) &&
+            item->dataContains( ::MUSICDNS ) )
             return QColor( Qt::green );
 
-        float sim = ( item->dataValue( MusicBrainz::SIMILARITY ).toFloat() - MusicBrainz::MINSIMILARITY ) /
-                    ( 1.0 - MusicBrainz::MINSIMILARITY );
+        float sim = ( item->dataValue( ::SIMILARITY ).toFloat() - ::MINSIMILARITY ) /
+                    ( 1.0 - ::MINSIMILARITY );
 
         quint8 c1 = 255, c2 = 255;
         if( sim < 0.5 )
@@ -145,7 +147,7 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
         else
             c1 = ( 255 - 170 * ( sim - 0.5 ) );
 
-        if( item->dataContains( MusicBrainz::MUSICDNS ) )
+        if( item->dataContains( ::MUSICDNS ) )
             return QColor( 0, c2, c1 );
         else
             return QColor( c1, c2, 0 );
@@ -157,12 +159,12 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
             toolTip.append( item->track()->prettyUrl() );
         else
         {
-            if( item->dataContains( MusicBrainz::MUSICBRAINZ ) )
-                toolTip.append( i18n( "MusicBrainz match ratio: %1%",
-                                      100 * item->dataValue( MusicBrainz::MUSICBRAINZ ).toFloat() ) );
-            if( item->dataContains( MusicBrainz::MUSICDNS ) )
+            if( item->dataContains( ::MUSICBRAINZ ) )
+                toolTip.append( i18n( " match ratio: %1%",
+                                      100 * item->dataValue( ::MUSICBRAINZ ).toFloat() ) );
+            if( item->dataContains( ::MUSICDNS ) )
                 toolTip.append( i18n( "MusicDNS match ratio: %1%",
-                                      100 * item->dataValue( MusicBrainz::MUSICDNS ).toFloat() ) );
+                                      100 * item->dataValue( ::MUSICDNS ).toFloat() ) );
         }
 
         return toolTip.join( "\n" );
@@ -183,13 +185,13 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
 }
 
 bool
-MusicBrainzTagsModel::setData( const QModelIndex &index, const QVariant &value, int role )
+TagsModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
     if( !index.isValid() || role != Qt::CheckStateRole || index.column() != 0 )
         return false;
 
-    MusicBrainzTagsItem *item = static_cast<MusicBrainzTagsItem *>( index.internalPointer() );
-    MusicBrainzTagsItem *parentItem = item->parent();
+    TagsItem *item = static_cast<TagsItem *>( index.internalPointer() );
+    TagsItem *parentItem = item->parent();
     if( item == m_rootItem || parentItem == m_rootItem )
         return false;
 
@@ -202,19 +204,19 @@ MusicBrainzTagsModel::setData( const QModelIndex &index, const QVariant &value, 
 }
 
 Qt::ItemFlags
-MusicBrainzTagsModel::flags( const QModelIndex &index ) const
+TagsModel::flags( const QModelIndex &index ) const
 {
     if( !index.isValid() || !parent( index ).isValid() )
         // Disable items with no children.
         return QAbstractItemModel::flags( index ) ^
-               ( ( !static_cast<MusicBrainzTagsItem *>( index.internalPointer() )->childCount() )?
+               ( ( !static_cast<TagsItem *>( index.internalPointer() )->childCount() )?
                  Qt::ItemIsEnabled : Qt::NoItemFlags );
 
     return QAbstractItemModel::flags( index ) | Qt::ItemIsUserCheckable;
 }
 
 QVariant
-MusicBrainzTagsModel::headerData( int section, Qt::Orientation orientation, int role ) const
+TagsModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
     if( orientation == Qt::Horizontal && role == Qt::DisplayRole )
         return m_rootItem->data( section );
@@ -223,9 +225,9 @@ MusicBrainzTagsModel::headerData( int section, Qt::Orientation orientation, int 
 }
 
 int
-MusicBrainzTagsModel::rowCount( const QModelIndex &parent ) const
+TagsModel::rowCount( const QModelIndex &parent ) const
 {
-    MusicBrainzTagsItem *parentItem;
+    TagsItem *parentItem;
 
     if( parent.column() > 0 )
         return 0;
@@ -233,26 +235,26 @@ MusicBrainzTagsModel::rowCount( const QModelIndex &parent ) const
     if( !parent.isValid() )
         parentItem = m_rootItem;
     else
-        parentItem = static_cast<MusicBrainzTagsItem *>( parent.internalPointer() );
+        parentItem = static_cast<TagsItem *>( parent.internalPointer() );
 
     return parentItem->childCount();
 }
 
 int
-MusicBrainzTagsModel::columnCount( const QModelIndex &parent ) const
+TagsModel::columnCount( const QModelIndex &parent ) const
 {
     Q_UNUSED( parent );
     return 5;
 }
 
 void
-MusicBrainzTagsModel::addTrack( const Meta::TrackPtr track, const QVariantMap tags )
+TagsModel::addTrack( const Meta::TrackPtr track, const QVariantMap tags )
 {
     QModelIndex parent;
     int row = rowCount();
     for( int i = 0; i < m_rootItem->childCount(); i++ )
     {
-        MusicBrainzTagsItem *item = m_rootItem->child( i );
+        TagsItem *item = m_rootItem->child( i );
         if( track == item->track() )
         {
             parent = index( i, 0 );
@@ -262,28 +264,28 @@ MusicBrainzTagsModel::addTrack( const Meta::TrackPtr track, const QVariantMap ta
     }
 
     beginInsertRows( parent, row, row );
-    m_rootItem->appendChild( new MusicBrainzTagsItem( m_rootItem, track, tags ) );
+    m_rootItem->appendChild( new TagsItem( m_rootItem, track, tags ) );
     endInsertRows();
 }
 
 QMap<Meta::TrackPtr, QVariantMap>
-MusicBrainzTagsModel::chosenItems() const
+TagsModel::chosenItems() const
 {
     QMap<Meta::TrackPtr, QVariantMap> result;
 
     for( int i = 0; i < m_rootItem->childCount(); i++ )
     {
-        MusicBrainzTagsItem *item = m_rootItem->child( i )->chosenItem();
+        TagsItem *item = m_rootItem->child( i )->chosenItem();
         if( item )
         {
             QVariantMap data = item->data();
-            data.remove( MusicBrainz::ARTISTID );
-            data.remove( MusicBrainz::MUSICBRAINZ );
-            data.remove( MusicBrainz::MUSICDNS );
-            data.remove( MusicBrainz::RELEASEID );
-            data.remove( MusicBrainz::SIMILARITY );
-            data.remove( MusicBrainz::TRACKCOUNT );
-            data.remove( MusicBrainz::TRACKID );
+            data.remove( ::ARTISTID );
+            data.remove( ::MUSICBRAINZ );
+            data.remove( ::MUSICDNS );
+            data.remove( ::RELEASEID );
+            data.remove( ::SIMILARITY );
+            data.remove( ::TRACKCOUNT );
+            data.remove( ::TRACKID );
             result.insert( item->track(), data );
         }
     }
@@ -292,11 +294,11 @@ MusicBrainzTagsModel::chosenItems() const
 }
 
 void
-MusicBrainzTagsModel::chooseBestMatches()
+TagsModel::chooseBestMatches()
 {
     for( int i = 0; i < m_rootItem->childCount(); i++ )
     {
-        MusicBrainzTagsItem *item = m_rootItem->child( i );
+        TagsItem *item = m_rootItem->child( i );
         if( item->chooseBestMatch() )
         {
             QModelIndex parent = index( i, 0 );
@@ -307,11 +309,11 @@ MusicBrainzTagsModel::chooseBestMatches()
 }
 
 void
-MusicBrainzTagsModel::chooseBestMatchesFromRelease( const QStringList &releases )
+TagsModel::chooseBestMatchesFromRelease( const QStringList &releases )
 {
     for( int i = 0; i < m_rootItem->childCount(); i++ )
     {
-        MusicBrainzTagsItem *item = m_rootItem->child( i );
+        TagsItem *item = m_rootItem->child( i );
         if( item->chooseBestMatchFromRelease( releases ) )
         {
             QModelIndex parent = index( i, 0 );
@@ -322,11 +324,11 @@ MusicBrainzTagsModel::chooseBestMatchesFromRelease( const QStringList &releases 
 }
 
 void
-MusicBrainzTagsModel::clearChoices()
+TagsModel::clearChoices()
 {
     for( int i = 0; i < m_rootItem->childCount(); i++ )
     {
-        MusicBrainzTagsItem *item = m_rootItem->child( i );
+        TagsItem *item = m_rootItem->child( i );
         item->clearChoices();
         QModelIndex parent = index( i, 0 );
         emit dataChanged( index( 0, 0, parent ),
@@ -334,4 +336,4 @@ MusicBrainzTagsModel::clearChoices()
     }
 }
 
-#include "MusicBrainzTagsModel.moc"
+#include "TagsModel.moc"

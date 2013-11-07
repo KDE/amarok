@@ -15,18 +15,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MUSICBRAINZTAGSMODEL_H
-#define MUSICBRAINZTAGSMODEL_H
+#ifndef TAGGUESSINGTAGSMODEL_H
+#define TAGGUESSINGTAGSMODEL_H
 
 #include "core/meta/forward_declarations.h"
 
 #include <QAbstractItemModel>
 
-class MusicBrainzTagsItem;
+namespace TagGuessing {
+    class TagsItem;
 
-class MusicBrainzTagsModel : public QAbstractItemModel
-{
-    Q_OBJECT
+    class TagsModel : public QAbstractItemModel
+    {
+        Q_OBJECT
 
     public:
         enum {
@@ -42,8 +43,8 @@ class MusicBrainzTagsModel : public QAbstractItemModel
             Chosen
         };
 
-        explicit MusicBrainzTagsModel( QObject *parent = 0 );
-        ~MusicBrainzTagsModel();
+        explicit TagsModel( QObject *parent = 0 );
+        ~TagsModel();
 
         QModelIndex index( int row, int column,
                            const QModelIndex &parent = QModelIndex() ) const;
@@ -68,7 +69,9 @@ class MusicBrainzTagsModel : public QAbstractItemModel
         void clearChoices();
 
     private:
-        MusicBrainzTagsItem *m_rootItem;
-};
+        TagGuessing::TagsItem *m_rootItem;
+    };
 
-#endif // MUSICBRAINZTAGSMDOEL_H
+}
+
+#endif // TAGGUESSINGTAGSMDOEL_H

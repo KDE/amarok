@@ -40,7 +40,7 @@ namespace TagGuessing{
 
     signals:
         void progressStep();
-        void trackFound( const Meta::TrackPtr track, const QVariantMap tags );
+        void trackFound( const Meta::TrackPtr &track, const QVariantMap &tags );
         void done();
 
     public slots:
@@ -50,9 +50,10 @@ namespace TagGuessing{
 
     protected:
         /**
-         * This class should never be instantized. Only subclasses can call the constructor
+         * This class should never be instantized. Only subclasses can call the constructor.
+         * Also, make sure this object is created on the main thread
          */
-        Provider();
+        Provider( QObject *parent );
         QNetworkAccessManager *m_net;
 
     };

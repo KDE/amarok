@@ -15,19 +15,43 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MUSICBRAINZTAGSMODELDELEGATE_H
-#define MUSICBRAINZTAGSMODELDELEGATE_H
+#define DEBUG_PREFIX "TagsModelDelegate"
 
-#include <QItemDelegate>
+#include "TagsModelDelegate.h"
 
-class MusicBrainzTagsModelDelegate : public QItemDelegate
+#include <QApplication>
+
+using namespace TagGuessing;
+
+TagsModelDelegate::TagsModelDelegate( QObject *parent )
+    : QItemDelegate( parent )
 {
-    public:
-        explicit MusicBrainzTagsModelDelegate( QObject *parent = 0 );
+}
 
-    protected:
-        virtual void drawCheck( QPainter *painter, const QStyleOptionViewItem &option,
-                                const QRect &rect, Qt::CheckState state ) const;
-};
+void
+TagsModelDelegate::drawCheck( QPainter *painter,
+                                         const QStyleOptionViewItem &option,
+                                         const QRect &rect, Qt::CheckState state ) const
+{
+    if( !rect.isValid() )
+        return;
 
-#endif // MUSICBRAINZTAGSMODELDELEGATE_H
+    QStyleOptionViewItem opt( option );
+    opt.rect = rect;
+    opt.state &= ~QStyle::State_HasFocus;
+
+    switch( state )
+    {
+    case Qt::Unchecked:
+        opt.state |= QStyle::State_Off;
+        break;
+    case Qt::PartiallyChecked:
+        opt.state |= QStyle::State_NoChange;
+        break;
+    case Qt::Checked:
+        opt.state |= QStyle::State_On;
+        break;
+    }
+
+    QApplication::style()->drawPrimitive( QStyle::PE_IndicatorRadioButton, &opt, painter );
+}

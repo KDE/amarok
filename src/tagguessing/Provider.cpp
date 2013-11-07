@@ -20,8 +20,8 @@
 
 using namespace TagGuessing;
 
-Provider::Provider()
-  : QObject()
+Provider::Provider( QObject *parent )
+  : QObject( parent )
   , m_net( The::networkAccessManager() )
 {
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );

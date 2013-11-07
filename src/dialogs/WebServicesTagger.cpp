@@ -24,11 +24,11 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "musicbrainz/MusicBrainzFinder.h"
-#include "musicbrainz/MusicBrainzTagsModel.h"
-#include "musicbrainz/MusicBrainzTagsModelDelegate.h"
+#include "tagguessing/Finder.h"
+#include "tagguessing/TagsModel.h"
+#include "tagguessing/TagsModelDelegate.h"
 #ifdef HAVE_LIBOFA
-#include "musicbrainz/MusicDNSFinder.h"
+#include "tagguessing/musicbrainz/MusicDNSFinder.h"
 #endif
 #include "ui_WebServicesTagger.h"
 
@@ -71,12 +71,12 @@ WebServicesTagger::init()
     setAttribute( Qt::WA_DeleteOnClose );
     setMinimumSize( 550, 300 );
 
-    m_resultsModel = new MusicBrainzTagsModel( this );
-    m_resultsModelDelegate = new MusicBrainzTagsModelDelegate( this );
+    m_resultsModel = new TagGuessing::TagsModel( this );
+    m_resultsModelDelegate = new TagGuessing::TagsModelDelegate( this );
     m_resultsProxyModel = new QSortFilterProxyModel( this );
 
     m_resultsProxyModel->setSourceModel( m_resultsModel );
-    m_resultsProxyModel->setSortRole( MusicBrainzTagsModel::SortRole );
+    m_resultsProxyModel->setSortRole( TagGuessing::TagsModel::SortRole );
     m_resultsProxyModel->setDynamicSortFilter( true );
 
     ui->resultsView->setModel( m_resultsProxyModel );
@@ -123,7 +123,7 @@ WebServicesTagger::init()
 
     ui->progressBar->hide();
 
-    m_tagFinder = new MusicBrainzFinder( this );
+    m_tagFinder = new TagGuessing::Finder( this );
 #ifdef HAVE_LIBOFA
     mdns_finder = new MusicDNSFinder( this );
     connect( mdns_finder, SIGNAL(trackFound(Meta::TrackPtr,QString)),

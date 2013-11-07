@@ -873,7 +873,7 @@
           <widget class="QPlainTextEdit" name="qPlainTextEdit_comment"/>
          </item>
          <item row="8" column="1">
-          <widget class="QPushButton" name="pushButton_musicbrainz">
+          <widget class="QPushButton" name="pushButton_webTagGuesser">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
              <horstretch>3</horstretch>
@@ -1230,7 +1230,7 @@
   <tabstop>qSpinBox_year</tabstop>
   <tabstop>kLineEdit_Bpm</tabstop>
   <tabstop>qPlainTextEdit_comment</tabstop>
-  <tabstop>pushButton_musicbrainz</tabstop>
+  <tabstop>pushButton_webTagGuesser</tabstop>
   <tabstop>pushButton_guessTags</tabstop>
   <tabstop>kRichTextEdit_lyrics</tabstop>
   <tabstop>kComboBox_label</tabstop>

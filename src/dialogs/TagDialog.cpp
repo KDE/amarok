@@ -37,7 +37,7 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverFetchingActions.h"
-#include "dialogs/MusicBrainzTagger.h"
+#include "dialogs/WebServicesTagger.h"
 #include "widgets/CoverLabel.h"
 #include "widgets/FilenameLayoutWidget.h"
 #include "ui_TagDialogBase.h" // needs to be after including CoverLabel, silly
@@ -341,7 +341,7 @@ TagDialog::addLabelPressed() //SLOT
 void
 TagDialog::cancelPressed() //SLOT
 {
-    QApplication::restoreOverrideCursor(); // restore the cursor before closing the dialog (The musicbrainz dialog might have set it)
+    QApplication::restoreOverrideCursor(); // restore the cursor before closing the dialog (The webServices dialog might have set it)
     reject();
 }
 
@@ -577,7 +577,7 @@ void TagDialog::initUi()
     ui->pixmap_cover->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( ui->pixmap_cover, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showCoverMenu(QPoint)) );
 
-    connect( ui->pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzTagger()) );
+    connect( ui->pushButton_webTagGuesser, SIGNAL(clicked()), SLOT(webServicesTagger()) );
 
     if( m_tracks.count() > 1 )
         setPerTrack( false );
@@ -1273,7 +1273,7 @@ TagDialog::setControlsAccessability()
 
     ui->qPlainTextEdit_comment->setEnabled( editable );
     ui->pushButton_guessTags->setEnabled( m_perTrack && editable );
-    ui->pushButton_musicbrainz->setEnabled( editable );
+    ui->pushButton_webTagGuesser->setEnabled( editable );
 }
 
 void
@@ -1380,19 +1380,19 @@ TagDialog::selectOrInsertText( const QString &text, QComboBox *comboBox )
 }
 
 void
-TagDialog::musicbrainzTagger()
+TagDialog::webServicesTagger()
 {
     DEBUG_BLOCK
 
-    MusicBrainzTagger *dialog = new MusicBrainzTagger( m_tracks, this );
-    dialog->setWindowTitle( i18n( "MusicBrainz Tagger" ) );
+    WebServicesTagger *dialog = new WebServicesTagger( m_tracks, this );
+    dialog->setWindowTitle( i18n( "Web Services Tagger" ) );
     connect( dialog, SIGNAL(sendResult(QMap<Meta::TrackPtr,QVariantMap>)),
-             this, SLOT(musicbrainzTaggerResult(QMap<Meta::TrackPtr,QVariantMap>)) );
+             this, SLOT(webServicesTaggerResult(QMap<Meta::TrackPtr,QVariantMap>)) );
     dialog->show();
 }
 
 void
-TagDialog::musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap> result )
+TagDialog::webServicesTaggerResult( const QMap<Meta::TrackPtr, QVariantMap> result )
 {
     if( result.isEmpty() )
         return;

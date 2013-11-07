@@ -23,7 +23,7 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
-#include "MusicBrainzMeta.h"
+#include "tagguessing/Meta.h"
 #include "TagsFromFileNameGuesser.h"
 
 #include <ThreadWeaver/Weaver>
@@ -214,14 +214,14 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
         {
             QVariantMap metadata = m_parsedMetadata.value( trackPtr );
 
-            QString scoreType = MusicBrainz::MUSICBRAINZ;
+            QString scoreType = TagGuessing::MUSICBRAINZ;
             // Maximum allowed error in track length (seconds).
             qlonglong lengthTolerance = 30;
 
             // If there is no parsed metadata, a fingerprint lookup was done.
             if( !m_parsedMetadata.contains( trackPtr ) )
             {
-                scoreType = MusicBrainz::MUSICDNS;
+                scoreType = TagGuessing::MUSICDNS;
                 lengthTolerance = 10;
             }
 
@@ -248,11 +248,11 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                     maxScore += 6;
                 }
 
-                if( track.contains( MusicBrainz::RELEASELIST ) )
+                if( track.contains( TagGuessing::RELEASELIST ) )
                 {
                     // We try to send as many tracks as are the related releases.
                     foreach( const QString &releaseID,
-                             track.value( MusicBrainz::RELEASELIST ).toStringList() )
+                             track.value( TagGuessing::RELEASELIST ).toStringList() )
                     {
                         /*
                          * The album artist could be parsed and inserted here, but since
@@ -267,9 +267,9 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                         float releaseScore = score;
                         int maxReleaseScore = maxScore;
 
-                        track.insert( MusicBrainz::RELEASEID, releaseID );
-                        track.insert( MusicBrainz::RELEASEGROUPID,
-                                      release.value( MusicBrainz::RELEASEGROUPID ) );
+                        track.insert( TagGuessing::RELEASEID, releaseID );
+                        track.insert( TagGuessing::RELEASEGROUPID,
+                                      release.value( TagGuessing::RELEASEGROUPID ) );
 
                         track.insert( Meta::Field::ALBUM,
                                       release.value( Meta::Field::TITLE ) );
@@ -279,11 +279,11 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                             maxReleaseScore += 12;
                         }
 
-                        int trackCount = release.value( MusicBrainz::TRACKCOUNT ).toInt();
+                        int trackCount = release.value( TagGuessing::TRACKCOUNT ).toInt();
                         if( trackCount > 0 )
-                            track.insert( MusicBrainz::TRACKCOUNT, trackCount );
+                            track.insert( TagGuessing::TRACKCOUNT, trackCount );
                         else
-                            track.remove( MusicBrainz::TRACKCOUNT );
+                            track.remove( TagGuessing::TRACKCOUNT );
 
                         /*
                          * A track can appear more than once in a release (on different
@@ -295,7 +295,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                          * reasons).
                          */
                         foreach( const QVariant &info,
-                                 track.value( MusicBrainz::TRACKINFO ).toMap().value( releaseID ).toList() )
+                                 track.value( TagGuessing::TRACKINFO ).toMap().value( releaseID ).toList() )
                         {
                             QVariantMap trackInfo = info.toMap();
                             float currentReleaseScore = releaseScore;
@@ -375,7 +375,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                                 continue;
 
                             float sim = currentReleaseScore / maxCurrentReleaseScore;
-                            if( sim > MusicBrainz::MINSIMILARITY )
+                            if( sim > TagGuessing::MINSIMILARITY )
                             {
                                 found = true;
                                 track.insert( scoreType, sim );
@@ -405,7 +405,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                         continue;
 
                     float sim = score / maxScore;
-                    if( sim > MusicBrainz::MINSIMILARITY )
+                    if( sim > TagGuessing::MINSIMILARITY )
                     {
                         found = true;
                         track.insert( scoreType, sim );
@@ -433,7 +433,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
         QString releaseGroupID = parser->releaseGroups.keys().first();
         mb_releaseGroups.insert( releaseGroupID,
                                  parser->releaseGroups.value( releaseGroupID ) );
-        foreach( const TrackInfo &trackInfo, mb_queuedTracks.value( releaseGroupID ) )
+        foreach( const TagGuessing::TrackInfo &trackInfo, mb_queuedTracks.value( releaseGroupID ) )
             sendTrack( trackInfo.first, trackInfo.second );
         mb_queuedTracks.remove( releaseGroupID );
     }
@@ -449,9 +449,9 @@ MusicBrainzFinder::sendTrack( const Meta::TrackPtr &track, QVariantMap tags )
 {
     if( !tags.isEmpty() )
     {
-        if( tags.contains( MusicBrainz::RELEASEGROUPID ) )
+        if( tags.contains( TagGuessing::RELEASEGROUPID ) )
         {
-            QString releaseGroupID = tags.value( MusicBrainz::RELEASEGROUPID ).toString();
+            QString releaseGroupID = tags.value( TagGuessing::RELEASEGROUPID ).toString();
             if( mb_releaseGroups.contains( releaseGroupID ) )
             {
                 QVariantMap releaseGroup = mb_releaseGroups.value( releaseGroupID );
@@ -473,7 +473,7 @@ MusicBrainzFinder::sendTrack( const Meta::TrackPtr &track, QVariantMap tags )
                  */
                 if( !mb_queuedTracks.contains( releaseGroupID ) )
                 {
-                    QList<TrackInfo> trackList;
+                    QList<TagGuessing::TrackInfo> trackList;
                     trackList.append( qMakePair( track, tags ) );
                     mb_queuedTracks.insert( releaseGroupID, trackList );
                     m_requests.prepend( qMakePair( Meta::TrackPtr(),
@@ -489,8 +489,8 @@ MusicBrainzFinder::sendTrack( const Meta::TrackPtr &track, QVariantMap tags )
         // Clean metadata from unused fields.
         tags.remove( Meta::Field::LENGTH );
         tags.remove( Meta::Field::SCORE );
-        tags.remove( MusicBrainz::RELEASELIST );
-        tags.remove( MusicBrainz::TRACKINFO );
+        tags.remove( TagGuessing::RELEASELIST );
+        tags.remove( TagGuessing::TRACKINFO );
     }
 
     emit trackFound( track, tags );
@@ -507,9 +507,9 @@ MusicBrainzFinder::checkDone()
          * Sending an empty result makes the user aware of the fact that the track will
          * not be tagged.
          */
-        foreach( const QList<TrackInfo> &trackInfoList,
+        foreach( const QList<TagGuessing::TrackInfo> &trackInfoList,
                  mb_queuedTracks.values() )
-            foreach( const TrackInfo &trackInfo, trackInfoList )
+            foreach( const TagGuessing::TrackInfo &trackInfo, trackInfoList )
                 sendTrack( trackInfo.first, QVariantMap() );
 
         debug() << "There is no queued request. Stopping timer.";

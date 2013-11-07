@@ -26,19 +26,16 @@
 
 namespace TagGuessing
 {
-    class WebRequestsHandler;
-}
-
-class WebRequestsHandler : public QObject
-{
-    Q_OBJECT
+    class WebRequestsHandler : public QObject
+    {
+        Q_OBJECT
     public:
         WebRequestsHandler( QObject *parent,
-                        const QString &host,
-                        const int port,
-                        const QString &pathPrefix,
-                        const QString &clietnId,
-                        const QString &clientVersion);
+                            const QString &host,
+                            const int port,
+                            const QString &pathPrefix,
+                            const QString &clietnId,
+                            const QString &clientVersion);
         virtual ~WebRequestsHandler();
     public slots:
         virtual void run( const Meta::TrackList &tracks );
@@ -48,7 +45,7 @@ class WebRequestsHandler : public QObject
         void progressStep();
         void done();
 
-    private slots:
+    protected slots:
         virtual void sendNewRequest();
         virtual void gotReply( QNetworkReply *reply ) = 0;
         virtual void replyError( QNetworkReply::NetworkError code );
@@ -60,7 +57,7 @@ class WebRequestsHandler : public QObject
 
     protected:
         virtual QNetworkRequest compileRequest( const QString &fingerprint, const Meta::TrackPtr track );
-        virtual void checkDone();
+        virtual void checkDone() = 0;
 
         QString m_host;
         int m_port;
@@ -72,11 +69,10 @@ class WebRequestsHandler : public QObject
         QList < QPair < Meta::TrackPtr, QNetworkRequest > > m_requests;
         QMap < QNetworkReply *, Meta::TrackPtr > m_replyes;
 
-        QMap < MusicDNSXmlParser *, Meta::TrackPtr > m_parsers;
-
         bool decodingComplete;
 
         QTimer *_timer;
-};
+    };
+}
 
 #endif // WEBREQUESTSHANDLER_H

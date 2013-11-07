@@ -15,41 +15,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "MusicBrainzTagsModelDelegate"
+#ifndef TAGGUESSINGMETA_H
+#define TAGGUESSINGMETA_H
 
-#include "MusicBrainzTagsModelDelegate.h"
+#include <QString>
 
-#include <QApplication>
-
-MusicBrainzTagsModelDelegate::MusicBrainzTagsModelDelegate( QObject *parent )
-    : QItemDelegate( parent )
+namespace TagGuessing
 {
+    static const QString ARTISTID       = "tg:ArtistID";
+    static const QString RELEASEGROUPID = "tg:ReleaseGroupID";
+    static const QString RELEASEID      = "tg:ReleaseID";
+    static const QString RELEASELIST    = "tg:ReleaseList";
+    static const QString TRACKCOUNT     = "tg:TrackCount";
+    static const QString TRACKID        = "tg:TrackID";
+    static const QString TRACKINFO      = "tg:TrackInfo";
+
+    static const QString MUSICBRAINZ    = "tg:musicbrainz";
+    static const QString MUSICDNS       = "tg:musicdns";
+
+    static const QString SIMILARITY     = "tg:similarity";
+    static const qreal   MINSIMILARITY  = 0.6;
 }
 
-void
-MusicBrainzTagsModelDelegate::drawCheck( QPainter *painter,
-                                         const QStyleOptionViewItem &option,
-                                         const QRect &rect, Qt::CheckState state ) const
-{
-    if( !rect.isValid() )
-        return;
-
-    QStyleOptionViewItem opt( option );
-    opt.rect = rect;
-    opt.state &= ~QStyle::State_HasFocus;
-
-    switch( state )
-    {
-    case Qt::Unchecked:
-        opt.state |= QStyle::State_Off;
-        break;
-    case Qt::PartiallyChecked:
-        opt.state |= QStyle::State_NoChange;
-        break;
-    case Qt::Checked:
-        opt.state |= QStyle::State_On;
-        break;
-    }
-
-    QApplication::style()->drawPrimitive( QStyle::PE_IndicatorRadioButton, &opt, painter );
-}
+#endif // TAGGUESSINGMETA_H

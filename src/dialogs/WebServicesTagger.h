@@ -15,8 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MUSICBRAINZTAGGER_H
-#define MUSICBRAINZTAGGER_H
+#ifndef WEBSERVICESTAGGER_H
+#define WEBSERVICESTAGGER_H
 
 #include <config.h>
 #include "core/meta/forward_declarations.h"
@@ -24,21 +24,21 @@
 
 #include <KDialog>
 
-using namespace TagGuessing;
-
 namespace Ui
 {
     class WebServicesTagger;
 }
 
-class MusicBrainzFinder;
-class MusicBrainzTagsModel;
-class MusicBrainzTagsModelDelegate;
 #ifdef HAVE_LIBOFA
 class MusicDNSFinder;
 #endif
 
 class QSortFilterProxyModel;
+namespace TagGuessing {
+    class TagsModel;
+    class Finder;
+    class TagsModelDelegate;
+}
 
 class WebServicesTagger : public KDialog
 {
@@ -71,14 +71,14 @@ class WebServicesTagger : public KDialog
 
         Meta::TrackList m_tracks;
 
-        Finder *m_tagFinder;
+        TagGuessing::Finder *m_tagFinder;
 #ifdef HAVE_LIBOFA
         MusicDNSFinder *mdns_finder;
         bool mdns_searchDone;
 #endif
-        MusicBrainzTagsModel *m_resultsModel;
-        MusicBrainzTagsModelDelegate *m_resultsModelDelegate;
+        TagGuessing::TagsModel *m_resultsModel;
+        TagGuessing::TagsModelDelegate *m_resultsModelDelegate;
         QSortFilterProxyModel *m_resultsProxyModel;
 };
 
-#endif // MUSICBRAINZTAGGER_H
+#endif // WEBSERVICESTAGGER_H

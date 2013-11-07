@@ -15,41 +15,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MUSICBRAINZTAGSVIEW_H
-#define MUSICBRAINZTAGSVIEW_H
+#ifndef TAGGUESSINGTAGSMODELDELEGATE_H
+#define TAGGUESSINGTAGSMODELDELEGATE_H
 
-#include <KIcon>
+#include <QItemDelegate>
 
-#include <QTreeView>
+namespace TagGuessing {
 
-class MusicBrainzTagsModel;
-
-class MusicBrainzTagsView : public QTreeView
-{
-    Q_OBJECT
-
+    class TagsModelDelegate : public QItemDelegate
+    {
     public:
-        explicit MusicBrainzTagsView( QWidget *parent = 0 );
-
-        MusicBrainzTagsModel *sourceModel() const;
-
-    public slots:
-        void collapseChosen();
-        void expandUnchosen();
+        explicit TagsModelDelegate( QObject *parent = 0 );
 
     protected:
-        virtual void contextMenuEvent( QContextMenuEvent *event );
+        virtual void drawCheck( QPainter *painter, const QStyleOptionViewItem &option,
+                                const QRect &rect, Qt::CheckState state ) const;
+    };
 
-    private slots:
-        void chooseBestMatchesFromRelease() const;
-        void openArtistPage() const;
-        void openReleasePage() const;
-        void openTrackPage() const;
+}
 
-    private:
-        KIcon m_artistIcon;
-        KIcon m_releaseIcon;
-        KIcon m_trackIcon;
-};
-
-#endif // MUSICBRAINZTAGSVIEW_H
+#endif // TAGGUESSINGMODELDELEGATE_H

@@ -8,12 +8,20 @@
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>335</width>
+    <height>241</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>MusicBrainz Tagger</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="MusicBrainzTagsView" name="resultsView">
+    <widget class="TagGuessing::TagsView" name="resultsView">
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
@@ -75,9 +83,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MusicBrainzTagsView</class>
+   <class>TagGuessing::TagsView</class>
    <extends>QTreeView</extends>
-   <header>musicbrainz/MusicBrainzTagsView.h</header>
+   <header>tagguessing/TagsView.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

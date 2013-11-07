@@ -26,18 +26,16 @@
 #define MIN_SAMPLE_LENGTH 10000
 
 /**
- * NOTE: these classes will be compiled only if libofa is found
+ * NOTE: these classes will be compiled only if libofa is found so be sure to
+ * add the check for LIBOFA_FOUND macro in any code using the classes below
  */
 namespace TagGuessing {
-    class DecodedAudioData;
-    class AudioToQStringDecoder;
-}
-
-/**
- * Some methods are virtual so that this class can be properly extended
- */
-class DecodedAudioData
-{
+    /**
+    * Some methods are virtual so that this class can be properly extended
+    * Beware this class doesn't superclass QObject
+    */
+    class DecodedAudioData
+    {
     public:
         DecodedAudioData();
         virtual ~DecodedAudioData();
@@ -74,11 +72,11 @@ class DecodedAudioData
         qint64 m_duration;
 
         QByteArray *m_data;
-};
+    };
 
-class AudioToQStringDecoder : public ThreadWeaver::Job
-{
-    Q_OBJECT
+    class AudioToQStringDecoder : public ThreadWeaver::Job
+    {
+        Q_OBJECT
     public:
         AudioToQStringDecoder( const Meta::TrackList &tracks, const int sampleLength = DEFAULT_SAMPLE_LENGTH );
         virtual ~AudioToQStringDecoder();
@@ -89,10 +87,12 @@ class AudioToQStringDecoder : public ThreadWeaver::Job
         void trackDecoded( const Meta::TrackPtr, const QString );
 
     protected:
-        int decode( const QString &fileName, DecodedAudioData *data, const int length );
+        virtual int decode( const QString &fileName, DecodedAudioData *data, const int length );
 
         Meta::TrackList m_tracks;
         int m_sampleLength;
-};
+    };
+
+}
 
 #endif // AUDIOTOQSTRINGDECODER_H

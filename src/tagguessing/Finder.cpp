@@ -19,7 +19,7 @@
 #include "musicbrainz/MusicBrainzFinder.h"
 
 #ifdef LIBCHROMAPRINT_FOUND
-    #include "acustid/Acustidprovider.h"
+#include "acustid/Acustidprovider.h"
 #endif
 
 using namespace TagGuessing;
@@ -28,9 +28,6 @@ Finder::Finder(QObject *parent) :
     QObject( parent )
 {
     addProviders();
-    foreach ( const &ProviderPtr, m_providers ) {
-
-    }
 }
 
 Finder::~Finder()
@@ -38,6 +35,21 @@ Finder::~Finder()
     // the individual providers will be freed as "this" is their parent.
 }
 
+void
+Finder::run( const Meta::TrackList &tracks )
+{
+    foreach( const ProviderPtr &provider, m_providers )
+        provider->run( tracks );
+}
+
+void
+Finder::lookUpByPUID( const Meta::TrackPtr &track, const QString &puid )
+{
+    foreach ( const ProviderPtr &provider, m_providers)
+        provider->lookUpByPUID( track, puid );
+}
+
+void
 Finder::addProviders()
 {
     m_providers.append( new MusicBrainzFinder( this ) );

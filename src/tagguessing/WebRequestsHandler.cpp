@@ -18,12 +18,15 @@
 
 #include "WebRequestsHandler.h"
 
+#include "AudioToQStringDecoder.h"
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 
 #include <ThreadWeaver/Weaver>
 
 #include <QNetworkAccessManager>
+
+using namespace TagGuessing;
 
 WebRequestsHandler::WebRequestsHandler( QObject *parent,
                                         const QString &host,
@@ -87,26 +90,6 @@ void WebRequestsHandler::sendNewRequest()
 }
 
 void
-WebRequestsHandler::gotReply( QNetworkReply *reply )
-{
-    DEBUG_BLOCK
-    if( reply->error() == QNetworkReply::NoError && m_replyes.contains( reply ) )
-    {
-        QString document( reply->readAll() );
-        MusicDNSXmlParser *parser = new MusicDNSXmlParser( document );
-        if( !m_replyes.value( reply ).isNull() )
-            m_parsers.insert( parser, m_replyes.value( reply ) );
-
-        connect( parser, SIGNAL(done(ThreadWeaver::Job*)), SLOT(parsingDone(ThreadWeaver::Job*)) );
-        ThreadWeaver::Weaver::instance()->enqueue( parser );
-    }
-
-    m_replyes.remove( reply );
-    reply->deleteLater();
-    checkDone();
-}
-
-void
 WebRequestsHandler::replyError( QNetworkReply::NetworkError code )
 {
     DEBUG_BLOCK
@@ -123,34 +106,6 @@ WebRequestsHandler::replyError( QNetworkReply::NetworkError code )
     debug() << "Error occurred during network request: " << reply->errorString();
     m_replyes.remove( reply );
     reply->deleteLater();
-    checkDone();
-}
-
-void
-WebRequestsHandler::parsingDone( ThreadWeaver::Job *_parser )
-{
-    DEBUG_BLOCK
-
-    MusicDNSXmlParser *parser = qobject_cast< MusicDNSXmlParser * >( _parser );
-    disconnect( parser, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(parsingDone(ThreadWeaver::Job*)) );
-    if( m_parsers.contains( parser ) )
-    {
-        bool found = false;
-        foreach( QString PUID, parser->puid() )
-            if( PUID != "00000000-0000-0000-0000-000000000000" )
-            {
-                found = true;
-                emit trackFound( m_parsers.value( parser ), PUID );
-                break;
-            }
-
-        if( !found )
-            emit progressStep();
-
-        m_parsers.remove( parser );
-    }
-
-    parser->deleteLater();
     checkDone();
 }
 
@@ -175,17 +130,6 @@ WebRequestsHandler::decodingDone( ThreadWeaver::Job *_decoder )
     decoder->deleteLater();
     decodingComplete = true;
     checkDone();
-}
-
-void
-WebRequestsHandler::checkDone()
-{
-    if( m_parsers.isEmpty() && m_requests.isEmpty() && m_replyes.isEmpty() && decodingComplete )
-    {
-        debug() << "There is no any queued requests. Stopping timer.";
-        _timer->stop();
-        emit done();
-    }
 }
 
 QNetworkRequest

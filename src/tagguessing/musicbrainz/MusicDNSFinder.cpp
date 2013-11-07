@@ -16,6 +16,8 @@
 
 #include "MusicDNSFinder.h"
 
+#include "core/support/Debug.h"
+
 MusicDNSFinder::MusicDNSFinder( QObject *parent,
                                 const QString &host,
                                 const int port,
@@ -30,6 +32,65 @@ MusicDNSFinder::MusicDNSFinder( QObject *parent,
           clietnId,
           clientVersion )
 {
+}
+
+void
+MusicDNSFinder::gotReply( QNetworkReply *reply )
+{
+    DEBUG_BLOCK
+    if( reply->error() == QNetworkReply::NoError && m_replyes.contains( reply ) )
+    {
+        QString document( reply->readAll() );
+        MusicDNSXmlParser *parser = new MusicDNSXmlParser( document );
+        if( !m_replyes.value( reply ).isNull() )
+            m_parsers.insert( parser, m_replyes.value( reply ) );
+
+        connect( parser, SIGNAL(done(ThreadWeaver::Job*)), SLOT(parsingDone(ThreadWeaver::Job*)) );
+        ThreadWeaver::Weaver::instance()->enqueue( parser );
+    }
+
+    m_replyes.remove( reply );
+    reply->deleteLater();
+    checkDone();
+}
+
+void
+MusicDNSFinder::parsingDone( ThreadWeaver::Job *_parser )
+{
+    DEBUG_BLOCK
+
+    MusicDNSXmlParser *parser = qobject_cast< MusicDNSXmlParser * >( _parser );
+    disconnect( parser, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(parsingDone(ThreadWeaver::Job*)) );
+    if( m_parsers.contains( parser ) )
+    {
+        bool found = false;
+        foreach( QString PUID, parser->puid() )
+            if( PUID != "00000000-0000-0000-0000-000000000000" )
+            {
+                found = true;
+                emit trackFound( m_parsers.value( parser ), PUID );
+                break;
+            }
+
+        if( !found )
+            emit progressStep();
+
+        m_parsers.remove( parser );
+    }
+
+    parser->deleteLater();
+    checkDone();
+}
+
+void
+MusicDNSFinder::checkDone()
+{
+    if( m_parsers.isEmpty() && m_requests.isEmpty() && m_replyes.isEmpty() && decodingComplete )
+    {
+        debug() << "There is no any queued requests. Stopping timer.";
+        _timer->stop();
+        emit done();
+    }
 }
 
 #include "MusicDNSFinder.moc"

@@ -15,25 +15,27 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MUSICBRAINZTAGSITEM_H
-#define MUSICBRAINZTAGSITEM_H
+#ifndef TAGGUESSINGTAGSITEM_H
+#define TAGGUESSINGTAGSITEM_H
 
 #include "core/meta/forward_declarations.h"
 
 #include <QReadWriteLock>
 #include <QVariant>
 
-class MusicBrainzTagsItem
-{
-    public:
-        explicit MusicBrainzTagsItem( MusicBrainzTagsItem *parent = 0,
-                                      const Meta::TrackPtr track = Meta::TrackPtr(),
-                                      const QVariantMap tags = QVariantMap() );
-        ~MusicBrainzTagsItem();
+namespace TagGuessing {
 
-        MusicBrainzTagsItem *parent() const;
-        MusicBrainzTagsItem *child( const int row ) const;
-        void appendChild( MusicBrainzTagsItem *child );
+    class TagsItem
+    {
+    public:
+        explicit TagsItem( TagsItem *parent = 0,
+                           const Meta::TrackPtr track = Meta::TrackPtr(),
+                           const QVariantMap tags = QVariantMap() );
+        ~TagsItem();
+
+        TagsItem *parent() const;
+        TagsItem *child( const int row ) const;
+        void appendChild( TagsItem *child );
         int childCount() const;
         int row() const;
 
@@ -47,20 +49,20 @@ class MusicBrainzTagsItem
 
         bool isChosen() const;
         void setChosen( bool chosen );
-        MusicBrainzTagsItem *chosenItem() const;
+        TagsItem *chosenItem() const;
         bool chooseBestMatch();
         bool chooseBestMatchFromRelease( const QStringList &releases );
         void clearChoices();
 
-        bool operator==( const MusicBrainzTagsItem *item ) const;
+        bool operator==( const TagsItem *item ) const;
 
     private:
-        void setParent( MusicBrainzTagsItem *parent );
-        void mergeWith( MusicBrainzTagsItem *item );
+        void setParent( TagsItem *parent );
+        void mergeWith( TagsItem *item );
         void dataInsert( const QString &key, const QVariant &value );
 
-        MusicBrainzTagsItem *m_parent;
-        QList<MusicBrainzTagsItem *> m_childItems;
+        TagsItem *m_parent;
+        QList<TagsItem *> m_childItems;
 
         Meta::TrackPtr m_track;
         QVariantMap m_data;
@@ -70,6 +72,7 @@ class MusicBrainzTagsItem
         mutable QReadWriteLock m_dataLock;
         mutable QReadWriteLock m_parentLock;
         mutable QReadWriteLock m_childrenLock;
-};
+    };
+}
 
-#endif // MUSICBRAINZTAGSITEM_H
+#endif // TAGGUESSINGTAGSITEM_H
