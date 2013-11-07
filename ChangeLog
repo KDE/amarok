@@ -14,6 +14,8 @@ VERSION 2.9-Beta 1
      compilers currently supported by KDE.
 
   BUGFIXES:
+   * Fix a bug in Organize Collection functionality that could lead to assertion failures
+     later on. (BR 322474)
    * Fix an assertion failure when a track in Local Collection is replaced by another
      already tracked one. (BR 323156)
    * Fix failure to start embedded MySQL (with version 5.1 and MariaDB). (BR 323802)

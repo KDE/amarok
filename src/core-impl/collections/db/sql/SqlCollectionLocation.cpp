@@ -167,6 +167,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     // -- the track uid (we can't use the original one from the old collection)
     Meta::FieldHash fileTags = Meta::Tag::readTags( url );
     QString uid = fileTags.value( Meta::valUniqueId ).toString();
+    uid = m_collection->generateUidUrl( uid ); // add the right prefix
 
     // -- the track from the registry
     KSharedPtr<Meta::SqlTrack> metaTrack;
