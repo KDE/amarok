@@ -29,7 +29,6 @@ add_subdirectory( scripts )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
-add_subdirectory( tagguessing )
 
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
@@ -548,6 +547,43 @@ kde4_add_ui_files(statsyncing_SRCS
 )
 
 #####################################################################
+# TAG GUESSING
+#####################################################################
+set( tagguessing_core_SRCS
+    tagguessing/Finder.cpp
+    tagguessing/Provider.cpp
+    tagguessing/TagsItem.cpp
+    tagguessing/TagsModel.cpp
+    tagguessing/TagsModelDelegate.cpp
+    tagguessing/TagsView.cpp
+    tagguessing/WebRequestsHandler.cpp )
+if( LIBOFA_FOUND )
+    set( tagguessing_core_SRCS
+        tagguessing/AudioToQStringDecoder.cpp )
+endif( LIBOFA_FOUND )
+
+# MusicBrainz Provider:
+set( tagguessing_core_SRCS
+    tagguessing/musicbrainz/MusicBrainzFinder.cpp
+    tagguessing/musicbrainz/MusicBrainzXmlParser.cpp )
+
+if ( LIBOFA_FOUND )
+    set( tagguessing_core_SRCS
+        tagguessing/musicbrainz/MusicDNSFinder.cpp
+        tagguessing/musicbrainz/MusicDNSXmlParser.cpp )
+endif ( LIBOFA_FOUND )
+
+# AcustID Provider:
+if ( LIBOFA_FOUND )
+    set( tagguessing_core_SRCS
+    tagguessing/acustid/Acustidprovider.cpp
+    tagguessing/acustid/Fingerprintcalculator.cpp
+    tagguessing/acustid/Webservicequeryer.cpp)
+endif ( LIBOFA_FOUND )
+
+# tagguessing_core_SRCS is added to amaroklib
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -580,6 +616,7 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
     ${statsyncing_SRCS}
+    ${tagguessing_core_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
@@ -836,7 +873,6 @@ target_link_libraries(amaroklib
     amarokocsclient
     amarok-transcoding
     amarokshared
-    tagguessing_core
 )
 
 include_directories(${TAGLIB_INCLUDES})

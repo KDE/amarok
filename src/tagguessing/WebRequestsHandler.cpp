@@ -18,7 +18,6 @@
 
 #include "WebRequestsHandler.h"
 
-#include "AudioToQStringDecoder.h"
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 

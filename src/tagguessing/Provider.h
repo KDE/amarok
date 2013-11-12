@@ -44,9 +44,9 @@ namespace TagGuessing{
         void done();
 
     public slots:
-        virtual void run( const Meta::TrackList &tracks );
+        virtual void run( const Meta::TrackList &tracks ) = 0;
 
-        virtual void lookUpByPUID( const Meta::TrackPtr &track, const QString &puid );
+        virtual void lookUpByPUID( const Meta::TrackPtr &track, const QString &puid ) = 0;
 
     protected:
         /**
@@ -54,7 +54,6 @@ namespace TagGuessing{
          * Also, make sure this object is created on the main thread
          */
         Provider( QObject *parent );
-        QNetworkAccessManager *m_net;
 
     };
 

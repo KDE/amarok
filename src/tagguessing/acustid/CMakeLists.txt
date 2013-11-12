@@ -1,25 +1,20 @@
-# Copyright (c) 2013, Vedant Agarwala <vedant.kota@gmail.com>
-#
-# Redistribution and use is allowed according to the terms of the GNU license.
+## Copyright (c) 2013, Vedant Agarwala <vedant.kota@gmail.com>
+##
+## Redistribution and use is allowed according to the terms of the GNU license.
 
-# New library "tagguessing_acustid" is created
+## New library "tagguessing_acustid" is created
 
-include_directories(
-    ${LIBCHROMAPRINT_INCLUDE_DIR}
-)
+#include_directories(
+#    ${LIBCHROMAPRINT_INCLUDE_DIR}
+#)
 
-########### next target ###############
+############ next target ###############
 
-set( tagguessing_acustid_SRCS
-    Acustidprovider.cpp
-    Fingerprintcalculator.cpp
-    Webservicequeryer.cpp
-)
 
-kde4_add_library( tagguessing_acustid SHARED ${tagguessing_acustid_SRCS} )
+#kde4_add_library( tagguessing_acustid SHARED ${tagguessing_acustid_SRCS} )
 
-target_link_libraries( tagguessing_acustid
-    amarokcore
-    ${KDE4_KDECORE_LIBS}
-    ${QT_QTNETWORK_LIBRARY}
-)
+#target_link_libraries( tagguessing_acustid
+#    amarokcore
+#    ${KDE4_KDECORE_LIBS}
+#    ${QT_QTNETWORK_LIBRARY}
+#)
