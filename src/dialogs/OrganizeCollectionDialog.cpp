@@ -180,16 +180,17 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->optionsWidget->setRegexpText( AmarokConfig::replacementRegexp() );
     ui->optionsWidget->setReplaceText( AmarokConfig::replacementString() );
 
-    // save some space if the screensize is too small (BR: 283361)
-    const QRect screenRect = QApplication::desktop()->screenGeometry();
-    if( screenRect.height() < 800 )
-        ui->previewTableWidget->hide();
-
     ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
     ui->conflictLabel->setText("");
     QPalette p = ui->conflictLabel->palette();
     KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
     ui->conflictLabel->setPalette( p );
+
+    // only show the options when the Options button is checked
+    connect( ui->optionsButton, SIGNAL(toggled(bool)), ui->organizeCollectionWidget, SLOT(setVisible(bool)) );
+    connect( ui->optionsButton, SIGNAL(toggled(bool)), ui->optionsWidget, SLOT(setVisible(bool)) );
+    ui->organizeCollectionWidget->hide();
+    ui->optionsWidget->hide();
 
     // to show the conflict error
     connect( ui->overwriteCheck, SIGNAL(stateChanged(int)),

@@ -14,6 +14,8 @@ VERSION 2.9-Beta 1
      compilers currently supported by KDE.
 
   BUGFIXES:
+   * Always show preview in Organize Files dialog, hide complicated options behind
+     a button. (BR 327201)
    * Fix sound glitch with fade-out on pause and GStreamer. (BR 323729)
    * Fix a bug in Organize Collection functionality that could lead to assertion failures
      later on. (BR 322474)
