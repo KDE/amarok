@@ -509,7 +509,7 @@ EngineController::pause() //SLOT
     if( supportsFadeout() && AmarokConfig::fadeoutOnPause() )
     {
         m_fader.data()->fadeOut( AmarokConfig::fadeoutLength() );
-        m_pauseTimer->start( AmarokConfig::fadeoutLength() );
+        m_pauseTimer->start( AmarokConfig::fadeoutLength() + 500 );
         return;
     }
 
