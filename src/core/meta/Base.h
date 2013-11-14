@@ -116,4 +116,6 @@ namespace Meta {
 Q_DECLARE_METATYPE( Meta::DataPtr )
 Q_DECLARE_METATYPE( Meta::DataList )
 
+AMAROK_CORE_EXPORT QDebug &operator<<( QDebug dbg, const Meta::Base &base );
+
 #endif // META_BASE_H

@@ -20,6 +20,9 @@
 
 #include "AnalyzerBase.h"
 
+#include <QImage>
+#include <QPixmap>
+#include <QSharedPointer>
 #include <QSize>
 
 class QMouseEvent;
@@ -30,7 +33,9 @@ class BlockAnalyzer : public Analyzer::Base
 {
 public:
     BlockAnalyzer( QWidget* );
-    ~BlockAnalyzer();
+
+    static GLuint createTexture( const QImage &image ) { return instance->bindTexture( image ); }
+    static void freeTexture( GLuint id ) { instance->deleteTexture( id ); }
 
     // Signed ints because most of what we compare them against are ints
     static const int BLOCK_HEIGHT = 2;
@@ -54,38 +59,40 @@ protected:
 private:
     struct Texture
     {
-        Texture() :
-            id( 0 ),
-            size( QSize() )
-        {}
-        Texture( const GLuint id_, const QSize size_ ) :
-            id( id_ ),
-            size( size_ )
+        Texture( const QPixmap &pixmap ) :
+            id( BlockAnalyzer::createTexture( pixmap.toImage().mirrored() ) ), // Flip texture vertically for OpenGL bottom-left coordinate system
+            size( pixmap.size() )
         {}
         Texture( const Texture& texture )
         {
             id = texture.id;
             size = texture.size;
         }
+        ~Texture()
+        {
+            BlockAnalyzer::freeTexture( id );
+        }
         GLuint id;
         QSize size;
     };
 
-    void drawTexture( Texture texture, int x, int y, int sx, int sy );
+    void drawTexture( Texture* texture, int x, int y, int sx, int sy );
+
+    static BlockAnalyzer* instance;
 
     int m_columns, m_rows;      //number of rows and columns of blocks
-    uint m_y;                    //y-offset from top of widget
-    Texture m_barTexture;
-    Texture m_topBarTexture;
     QPixmap m_barPixmap;
     QVector<float> m_scope;      //so we don't create a vector every frame
     QVector<float> m_store;  //current bar heights
     QVector<float> m_yscale;
 
-    QVector<Texture> m_fade_bars;
-    QVector<uint>    m_fade_pos;
-    QVector<int>     m_fade_intensity;
-    Texture           m_background;
+    QSharedPointer<Texture> m_barTexture;
+    QSharedPointer<Texture> m_topBarTexture;
+    QSharedPointer<Texture> m_background;
+    QVector<QSharedPointer<Texture>> m_fade_bars;
+
+    QVector<uint>     m_fade_pos;
+    QVector<int>      m_fade_intensity;
 
     float m_step; //rows to fall per frame
 };

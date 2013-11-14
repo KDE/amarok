@@ -121,6 +121,7 @@ ProxyLogger::newProgressOperation( QObject *sender, const QString &text, int max
     data.slot = slot;
     data.type = type;
     m_progressQueue.enqueue( data );
+    connect( sender, SIGNAL(totalSteps(int)), SLOT(slotTotalSteps(int)) );
     emit startTimer();
 }
 
@@ -155,11 +156,32 @@ ProxyLogger::forwardNotifications()
         }
         else if( d.sender )
         {
+            // m_logger handles the signals from now on
+            disconnect( d.sender.data(), 0, this, 0 );
             m_logger->newProgressOperation( d.sender.data(), d.text, d.maximum,
                                             d.cancelObject.data(),
                                             d.cancelObject.data() ? d.slot : 0 , d.type );
         }
     }
+}
+
+void
+ProxyLogger::slotTotalSteps( int totalSteps )
+{
+    QObject *operation = sender();
+    if( !operation )
+        // warning, slotTotalSteps can only be connected to progress operation QObject signal
+        return;
+    QMutableListIterator<ProgressData> it( m_progressQueue );
+    while( it.hasNext() )
+    {
+        ProgressData &data = it.next();
+        if( data.sender.data() != operation )
+            continue;
+        data.maximum = totalSteps;
+        return;
+    }
+    // warning, operation not found in m_progressQueue
 }
 
 #include "ProxyLogger.moc"

@@ -193,7 +193,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics, pu
             returnIndex_urlId = 0,
             returnIndex_urlDeviceId = 1,
             returnIndex_urlRPath = 2,
-            returnIndex_urlUid = 3,
+            returnIndex_urlUid = 4,
             returnIndex_trackId = 5
         };
 

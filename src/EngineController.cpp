@@ -149,7 +149,6 @@ EngineController::initializePhonon()
     m_audioDataOutput = new AudioDataOutput( this );
     m_audioDataOutput.data()->setDataSize( DATAOUTPUT_DATA_SIZE ); // The number of samples that Phonon sends per signal
 
-    m_dataPath = createPath( m_media.data(), m_audioDataOutput.data() );
     m_path = createPath( m_media.data(), m_audio.data() );
 
     m_controller = new MediaController( m_media.data() );
@@ -206,7 +205,10 @@ EngineController::initializePhonon()
         fader->setFadeCurve( VolumeFaderEffect::Fade9Decibel );
         m_fader = fader.take();
         m_path.insertEffect( m_fader.data() );
+        m_dataPath = createPath( m_fader.data(), m_audioDataOutput.data() );
     }
+    else
+        m_dataPath = createPath( m_media.data(), m_audioDataOutput.data() );
 
     m_media.data()->setTickInterval( 100 );
     m_tickInterval = m_media.data()->tickInterval();
@@ -509,7 +511,7 @@ EngineController::pause() //SLOT
     if( supportsFadeout() && AmarokConfig::fadeoutOnPause() )
     {
         m_fader.data()->fadeOut( AmarokConfig::fadeoutLength() );
-        m_pauseTimer->start( AmarokConfig::fadeoutLength() );
+        m_pauseTimer->start( AmarokConfig::fadeoutLength() + 500 );
         return;
     }
 

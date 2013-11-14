@@ -89,6 +89,7 @@ public slots:
 private slots:
     void forwardNotifications();
     void slotStartTimer();
+    void slotTotalSteps( int totalSteps );
 
 signals:
     // timer can only be started from its thread, use signals & slots to pass thread barrier

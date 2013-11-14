@@ -21,6 +21,8 @@
 
 #include "core/meta/Observer.h"
 
+#include <QDebug>
+
 using namespace Meta;
 
 Base::Base()
@@ -52,4 +54,11 @@ Base::unsubscribe( Observer *observer )
 {
     QWriteLocker locker( &m_observersLock );
     m_observers.remove( observer );
+}
+
+QDebug &
+operator<<( QDebug dbg, const Base &base )
+{
+    dbg.nospace() << "Meta::Base(" << base.name() << " at " << &base << ")";
+    return dbg.space();
 }

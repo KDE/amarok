@@ -8,10 +8,21 @@ VERSION 2.9-Beta 1
    * Wikipedia can now be also used over SSL.
 
   CHANGES:
+   * When ffmpeg is not available, the Transcode dialog is no longer skipped; info message
+     is shown instead. Patch by Jai Luthra. (BR 317902)
    * Amarok now uses some C++11 features. The subset used is defined by the 
      compilers currently supported by KDE.
 
   BUGFIXES:
+   * Always show preview in Organize Files dialog, hide complicated options behind
+     a button. (BR 327201)
+   * Fix sound glitch with fade-out on pause and GStreamer. (BR 323729)
+   * Fix a bug in Organize Collection functionality that could lead to assertion failures
+     later on. (BR 322474)
+   * Fix an assertion failure when a track in Local Collection is replaced by another
+     already tracked one. (BR 323156)
+   * Fix failure to start embedded MySQL (with version 5.1 and MariaDB). (BR 323802)
+   * Fixed compilation with libc++ (used on OSX and FreeBSD). (BR 324075)
    * Fixed crashes with Intel drivers due to Analyzer applet. (BR 323635)
    * Fixed performance problem with large podcast feeds.
      Patch by Frank Meerkoetter <frank@meerkoetter.org>. (BR 283022)

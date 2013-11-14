@@ -20,6 +20,8 @@
 #include <QList>
 #include <QString>
 
+#include <utility>
+
 struct expression_element
 {
     QString field;
@@ -27,6 +29,24 @@ struct expression_element
     bool negate: 1;
     enum { Contains, Equals, Less, More } match: 2;
     expression_element(): negate( false ), match( Contains ) { }
+
+    // workaround for gcc bug 56235
+    expression_element(const expression_element&) = default;
+    expression_element& operator=(const expression_element&) = default;
+    expression_element(expression_element&& o)
+        : field(std::move(o.field))
+        , text(std::move(o.text))
+        , negate(o.negate)
+        , match(o.match)
+        {}
+    expression_element& operator=(expression_element&& o)
+    {
+        field = std::move(o.field);
+        text = std::move(o.text);
+        negate = o.negate;
+        match = o.match;
+        return *this;
+    }
 };
 typedef QList<expression_element> or_list;
 

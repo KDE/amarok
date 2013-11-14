@@ -151,35 +151,33 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
 bool
 SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 {
-    debug() << "SqlCollectionLocation::insert from:"<<track->playableUrl()<<"to"<<url;
-
     if( !QFile::exists( url ) )
-        return false; // won't insert bogus file information
-
-    debug() << "File on disk, insert to dbase"<<track->name()<<"uid:"<<track->uidUrl();
+    {
+        warning() << Q_FUNC_INFO << "file" << url << "does not exist, not inserting into db";
+        return false;
+    }
 
     // -- the target url
     SqlRegistry *registry = m_collection->registry();
     int deviceId = m_collection->mountPointManager()->getIdForUrl( url );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, url );
-    int directoryId = registry->getDirectory( QFileInfo(url).path() );
+    int directoryId = registry->getDirectory( QFileInfo( url ).path() );
 
     // -- the track uid (we can't use the original one from the old collection)
     Meta::FieldHash fileTags = Meta::Tag::readTags( url );
     QString uid = fileTags.value( Meta::valUniqueId ).toString();
+    uid = m_collection->generateUidUrl( uid ); // add the right prefix
 
     // -- the track from the registry
-    KSharedPtr<Meta::SqlTrack> metaTrack;
-    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrackFromUid( uid ) );
+    Meta::SqlTrackPtr metaTrack;
+    metaTrack = Meta::SqlTrackPtr::staticCast( registry->getTrackFromUid( uid ) );
 
-    if( metaTrack ) {
+    if( metaTrack )
+    {
         warning() << "Location is inserting a file with the same uid as an already existing one.";
-        // TODO: in addition another file with the same url could already exist.
         metaTrack->setUrl( deviceId, rpath, directoryId );
-
-    } else {
-        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrack( deviceId, rpath, directoryId, uid ) );
-    }
+    } else
+        metaTrack = Meta::SqlTrackPtr::staticCast( registry->getTrack( deviceId, rpath, directoryId, uid ) );
 
     Meta::ConstStatisticsPtr origStats = track->statistics();
 
@@ -268,7 +266,6 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 
         if( track->album()->hasImage() && !metaTrack->album()->hasImage() )
             metaTrack->album()->setImage( track->album()->image() );
-
     }
 
     metaTrack->endUpdate();

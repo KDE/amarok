@@ -260,6 +260,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="encoderNotFoundLabel">
+     <property name="text">
+      <string>&lt;b&gt;Note:&lt;/b&gt; No encoder is available. If you want to transcode tracks please install &lt;i&gt;ffmpeg&lt;/i&gt; or &lt;i&gt;libav&lt;/i&gt; package (with &lt;i&gt;ffmpeg&lt;/i&gt; wrapper) with appropriate encoders. Otherwise you may check &lt;i&gt;Remember this choice for the next time&lt;/i&gt; option in order to skip this dialog for future transfers.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="rememberCheckBox">
      <property name="text">
       <string>Remember this choice for the next time</string>

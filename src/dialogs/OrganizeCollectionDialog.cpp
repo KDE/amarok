@@ -165,10 +165,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     m_trackOrganizer = new TrackOrganizer( m_allTracks, this );
 
-    m_organizeCollectionWidget = new OrganizeCollectionWidget( mainContainer );
-    connect( this, SIGNAL(accepted()),  m_organizeCollectionWidget, SLOT(onAccept()) );
-    ui->verticalLayout->insertWidget( 1, m_organizeCollectionWidget );
-
     ui->folderCombo->insertItems( 0, folders );
     if( ui->folderCombo->contains( AmarokConfig::organizeDirectory() ) )
         ui->folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
@@ -177,20 +173,12 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
 
-    m_optionsWidget = new OrganizeCollectionOptionWidget();
-    ui->verticalLayout->insertWidget( 2, m_optionsWidget );
-
-    m_optionsWidget->setReplaceSpaces( AmarokConfig::replaceSpace() );
-    m_optionsWidget->setPostfixThe( AmarokConfig::ignoreThe() );
-    m_optionsWidget->setVfatCompatible( AmarokConfig::vfatCompatible() );
-    m_optionsWidget->setAsciiOnly( AmarokConfig::asciiOnly() );
-    m_optionsWidget->setRegexpText( AmarokConfig::replacementRegexp() );
-    m_optionsWidget->setReplaceText( AmarokConfig::replacementString() );
-
-    // save some space if the screensize is too small (BR: 283361)
-    const QRect screenRect = QApplication::desktop()->screenGeometry();
-    if( screenRect.height() < 800 )
-        ui->previewTableWidget->hide();
+    ui->optionsWidget->setReplaceSpaces( AmarokConfig::replaceSpace() );
+    ui->optionsWidget->setPostfixThe( AmarokConfig::ignoreThe() );
+    ui->optionsWidget->setVfatCompatible( AmarokConfig::vfatCompatible() );
+    ui->optionsWidget->setAsciiOnly( AmarokConfig::asciiOnly() );
+    ui->optionsWidget->setRegexpText( AmarokConfig::replacementRegexp() );
+    ui->optionsWidget->setReplaceText( AmarokConfig::replacementString() );
 
     ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
     ui->conflictLabel->setText("");
@@ -198,17 +186,24 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
     ui->conflictLabel->setPalette( p );
 
+    // only show the options when the Options button is checked
+    connect( ui->optionsButton, SIGNAL(toggled(bool)), ui->organizeCollectionWidget, SLOT(setVisible(bool)) );
+    connect( ui->optionsButton, SIGNAL(toggled(bool)), ui->optionsWidget, SLOT(setVisible(bool)) );
+    ui->organizeCollectionWidget->hide();
+    ui->optionsWidget->hide();
+
     // to show the conflict error
     connect( ui->overwriteCheck, SIGNAL(stateChanged(int)),
              SLOT(slotUpdatePreview()) );
     connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)),
              SLOT(slotUpdatePreview()) );
-    connect( m_organizeCollectionWidget, SIGNAL(schemeChanged()),
+    connect( ui->organizeCollectionWidget, SIGNAL(schemeChanged()),
              SLOT(slotUpdatePreview()) );
-    connect( m_optionsWidget, SIGNAL(optionsChanged()),
+    connect( ui->optionsWidget, SIGNAL(optionsChanged()),
              SLOT(slotUpdatePreview()));
 
-    connect( this, SIGNAL(finished(int)), m_organizeCollectionWidget, SLOT(slotSaveFormatList()) );
+    connect( this, SIGNAL(finished(int)), ui->organizeCollectionWidget, SLOT(slotSaveFormatList()) );
+    connect( this, SIGNAL(accepted()), ui->organizeCollectionWidget, SLOT(onAccept()) );
     connect( this, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
     connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)),
              SLOT(slotEnableOk(QString)) );
@@ -240,9 +235,9 @@ OrganizeCollectionDialog::overwriteDestinations() const
 QString
 OrganizeCollectionDialog::buildFormatString() const
 {
-    if( m_organizeCollectionWidget->getParsableScheme().simplified().isEmpty() )
+    if( ui->organizeCollectionWidget->getParsableScheme().simplified().isEmpty() )
         return "";
-    return "%collectionroot%/" + m_organizeCollectionWidget->getParsableScheme() + ".%filetype%";
+    return "%collectionroot%/" + ui->organizeCollectionWidget->getParsableScheme() + ".%filetype%";
 }
 
 QString
@@ -298,15 +293,15 @@ OrganizeCollectionDialog::slotUpdatePreview()
 
     QString formatString = buildFormatString();
 
-    m_trackOrganizer->setAsciiOnly( m_optionsWidget->asciiOnly() );
+    m_trackOrganizer->setAsciiOnly( ui->optionsWidget->asciiOnly() );
     m_trackOrganizer->setFolderPrefix( ui->folderCombo->currentText() );
     m_trackOrganizer->setFormatString( formatString );
     m_trackOrganizer->setTargetFileExtension( m_targetFileExtension );
-    m_trackOrganizer->setPostfixThe( m_optionsWidget->postfixThe() );
-    m_trackOrganizer->setReplaceSpaces( m_optionsWidget->replaceSpaces() );
-    m_trackOrganizer->setReplace( m_optionsWidget->regexpText(),
-                                  m_optionsWidget->replaceText() );
-    m_trackOrganizer->setVfatSafe( m_optionsWidget->vfatCompatible() );
+    m_trackOrganizer->setPostfixThe( ui->optionsWidget->postfixThe() );
+    m_trackOrganizer->setReplaceSpaces( ui->optionsWidget->replaceSpaces() );
+    m_trackOrganizer->setReplace( ui->optionsWidget->regexpText(),
+                                  ui->optionsWidget->replaceText() );
+    m_trackOrganizer->setVfatSafe( ui->optionsWidget->vfatCompatible() );
 
     //empty the table, not only it's contents
     ui->previewTableWidget->setRowCount( 0 );
@@ -374,14 +369,14 @@ OrganizeCollectionDialog::slotDialogAccepted()
 {
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
 
-    AmarokConfig::setIgnoreThe( m_optionsWidget->postfixThe() );
-    AmarokConfig::setReplaceSpace( m_optionsWidget->replaceSpaces() );
-    AmarokConfig::setVfatCompatible( m_optionsWidget->vfatCompatible() );
-    AmarokConfig::setAsciiOnly( m_optionsWidget->asciiOnly() );
-    AmarokConfig::setReplacementRegexp( m_optionsWidget->regexpText() );
-    AmarokConfig::setReplacementString( m_optionsWidget->replaceText() );
+    AmarokConfig::setIgnoreThe( ui->optionsWidget->postfixThe() );
+    AmarokConfig::setReplaceSpace( ui->optionsWidget->replaceSpaces() );
+    AmarokConfig::setVfatCompatible( ui->optionsWidget->vfatCompatible() );
+    AmarokConfig::setAsciiOnly( ui->optionsWidget->asciiOnly() );
+    AmarokConfig::setReplacementRegexp( ui->optionsWidget->regexpText() );
+    AmarokConfig::setReplacementString( ui->optionsWidget->replaceText() );
 
-    m_organizeCollectionWidget->onAccept();
+    ui->organizeCollectionWidget->onAccept();
 }
 
 //The Ok button should be disabled when there's no collection root selected, and when there is no .%filetype in format string

@@ -256,4 +256,13 @@ namespace Debug
     typedef QList<QVariant> List;
 }
 
+template<class T> class KSharedPtr;
+
+template<class T> QDebug &
+operator<<( QDebug dbg, const KSharedPtr<T> &ptr )
+{
+    dbg.nospace() << "KSharedPtr(" << *ptr.data() << ")";
+    return dbg.space();
+}
+
 #endif

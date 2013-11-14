@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MySqlEmbeddedStorage"
+
 #include "MySqlEmbeddedStorage.h"
 
 #include "core/support/Amarok.h"
@@ -58,7 +60,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
                << "--default-storage-engine=MyISAM"
                << "--innodb=OFF"
                << "--skip-grant-tables"
-               << "--myisam-recover-options=FORCE"
+               << "--myisam-recover=FORCE"
                << "--key-buffer-size=16777216" // (16Mb)
                << "--character-set-server=utf8"
                << "--collation-server=utf8_bin";
@@ -70,10 +72,16 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         dir.mkpath( "." );
     }
 
-    if( mysql_library_init( mysql_args.size() , const_cast<char**>(mysql_args.data()), 0 ) != 0 )
+    int ret = mysql_library_init( mysql_args.size(), const_cast<char**>(mysql_args.data()), 0 );
+    if( ret != 0 )
     {
-        error() << "MySQL library initialization failed.";
-        reportError( "init" );
+        // it has no sense to call reportError here because m_db is not yet initialized
+        QMutexLocker locker( &m_mutex );
+        QString errorMessage( "GREPME " + m_debugIdent + " library initialization "
+                              "failed, return code " + QString::number( ret ) );
+        m_lastErrors.append( errorMessage );
+        error() << errorMessage.toLocal8Bit().constData();
+        error() << "mysqle arguments were:" << mysql_args;
         return;
     }
 
