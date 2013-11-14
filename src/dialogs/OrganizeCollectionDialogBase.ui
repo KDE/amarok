@@ -55,10 +55,10 @@
      <item>
       <widget class="QToolButton" name="optionsButton">
        <property name="toolTip">
-        <string>&lt;html&gt;Show/hide additional controls to speficy destination track paths based on their metadata.&lt;/html&gt;</string>
+        <string>&lt;html&gt;Show/hide additional controls to specify destination track paths based on their metadata.&lt;/html&gt;</string>
        </property>
        <property name="whatsThis">
-        <string>&lt;html&gt;Show/hide additional controls to speficy destination track paths based on their metadata.&lt;/html&gt;</string>
+        <string>&lt;html&gt;Show/hide additional controls to specify destination track paths based on their metadata.&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Options</string>
