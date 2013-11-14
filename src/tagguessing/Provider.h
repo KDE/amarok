@@ -27,9 +27,9 @@ namespace TagGuessing{
     /**
      * Base abstract class for all "providers" of the Tag Guessing
      * Every Provider will be created on the main thread by the TagGuessing::Finder
-     * Providers will have to create their own threads/jobs as required so as not to block the main thread
+     * Providers will have to create their own threads/jobs as required so as to not block the main thread
      */
-    class AMAROK_EXPORT Provider : public QObject
+    class Provider : public QObject
     {
         Q_OBJECT
 
@@ -55,6 +55,7 @@ namespace TagGuessing{
          */
         Provider( QObject *parent );
 
+        NetworkAccessManagerProxy *m_net;
     };
 
     typedef QPointer<Provider> ProviderPtr; // TODO check the need to change this to a, say, QExplicitlySharedDataPointer
