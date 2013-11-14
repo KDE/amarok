@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.9-Beta 1
   FEATURES:
+   * Usability of the Organize Files dialog has been improved.
    * Wikipedia can now be also used over SSL.
 
   CHANGES:

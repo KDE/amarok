@@ -106,15 +106,12 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         void slotDialogAccepted();
 
     private slots:
+        void processPreviewPaths();
         void previewNextBatch();
+        void slotOverwriteModeChanged();
 
     private:
         QString buildFormatString() const;
-        QString commonPrefix( const QStringList &list ) const;
-        void toggleDetails();
-        void update( int dummy );
-        void update( const QString &dummy );
-        void init();
 
         Ui::OrganizeCollectionDialogBase *ui;
 
@@ -124,6 +121,9 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         QString m_targetFileExtension;
         bool m_schemeModified;
 
+        QStringList m_originals;
+        QStringList m_previews;
+        QString m_previewPrefix;
         bool m_conflict;
 
     private slots:
