@@ -70,20 +70,6 @@ ScanningState::setLastDirectory( const QString &dir )
 }
 
 QStringList
-ScanningState::directories() const
-{ return m_directories; }
-
-void
-ScanningState::setDirectories( const QStringList &directories )
-{
-    if( directories == m_directories )
-        return;
-
-    m_directories = directories;
-    writeFull();
-}
-
-QStringList
 ScanningState::badFiles() const
 {
     return m_badFiles;
@@ -154,7 +140,6 @@ ScanningState::readFull()
     buffer.open(QBuffer::ReadOnly);
 
     in >> m_lastDirectory;
-    in >> m_directories;
     in >> m_badFiles;
     m_lastFilePos = buffer.pos();
     in >> m_lastFile;
@@ -170,17 +155,15 @@ ScanningState::writeFull()
 
     QBuffer buffer;
     QDataStream out(&buffer);
-
-    m_sharedMemory->lock();
     buffer.open(QBuffer::WriteOnly);
 
     out << m_lastDirectory;
-    out << m_directories;
     out << m_badFiles;
     m_lastFilePos = buffer.pos();
     out << m_lastFile;
     int size = buffer.size();
 
+    m_sharedMemory->lock();
     if( size < m_sharedMemory->size() )
     {
         char *to = (char*)m_sharedMemory->data();

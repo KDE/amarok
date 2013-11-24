@@ -42,25 +42,23 @@ class AMAROKSHARED_EXPORT ScanningState
 
         void setKey( const QString &key );
         bool isValid() const;
-        void readFull();
 
         QString lastDirectory() const;
         void setLastDirectory( const QString &dir );
-        QStringList directories() const;
-        void setDirectories( const QStringList &directories );
 
         QStringList badFiles() const;
         void setBadFiles( const QStringList &badFiles );
+
         QString lastFile() const;
         void setLastFile( const QString &file );
 
-    private:
+        void readFull();
         void writeFull();
 
+    private:
         QSharedMemory *m_sharedMemory;
 
         QString m_lastDirectory;
-        QStringList m_directories;
         QStringList m_badFiles;
         QString m_lastFile;
         qint64 m_lastFilePos;

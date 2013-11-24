@@ -150,52 +150,51 @@ CollectionScanner::Scanner::doJob() //SLOT
     QXmlStreamWriter xmlWriter( &xmlFile );
     xmlWriter.setAutoFormatting( true );
 
-    // --- determine the directories we have to scan
+    // get a list of folders to scan. We do it even if resuming because we don't want
+    // to save the (perhaps very big) list of directories into shared memory, bug 327812
     QStringList entries;
-
-    // -- when restarting read them from the shared memory
-    if( m_restart && m_scanningState.isValid() )
-    {
-        m_scanningState.readFull();
-        QString lastEntry = m_scanningState.lastDirectory();
-        entries = m_scanningState.directories();
-
-        // remove the entries we already scanned
-        while( entries.front() != lastEntry && !entries.empty() )
-            entries.pop_front();
-    }
-
-    // -- else use m_folders and do recursive
-    else
     {
         QSet<QString> entriesSet;
 
-        foreach( const QString &dir, m_folders ) // krazy:exclude=foreach
+        foreach( QString dir, m_folders ) // krazy:exclude=foreach
         {
             if( dir.isEmpty() )
                 //apparently somewhere empty strings get into the mix
                 //which results in a full-system scan! Which we can't allow
                 continue;
 
-            QString newdir( dir );
-
             // Make sure that all paths are absolute, not relative
             if( QDir::isRelativePath( dir ) )
-                newdir = QDir::cleanPath( QDir::currentPath() + '/' + dir );
+                dir = QDir::cleanPath( QDir::currentPath() + '/' + dir );
 
             if( !dir.endsWith( '/' ) )
-                newdir += '/';
+                dir += '/';
 
-            addDir( newdir, &entriesSet );
+            addDir( dir, &entriesSet ); // checks m_recursively
         }
 
         entries = entriesSet.toList();
-        m_scanningState.setLastDirectory( QString() );
-        m_scanningState.setDirectories( entries );
+        qSort( entries ); // the sort is crucial because of restarts and lastDirectory handling
     }
 
-    if( !m_restart )
+    if( m_restart )
     {
+        m_scanningState.readFull();
+        QString lastEntry = m_scanningState.lastDirectory();
+
+        int index = entries.indexOf( lastEntry );
+        if( index >= 0 )
+            // strip already processed entries, but *keep* the lastEntry
+            entries = entries.mid( index );
+        else
+            qWarning() << Q_FUNC_INFO << "restarting scan after a crash, but lastDirectory"
+                       << lastEntry << "not found in folders to scan (size" << entries.size()
+                       << "). Starting scanning from the beginning.";
+    }
+    else // first attempt
+    {
+        m_scanningState.writeFull(); // just trigger write to initialise memory
+
         xmlWriter.writeStartDocument();
         xmlWriter.writeStartElement("scanner");
         xmlWriter.writeAttribute("count", QString::number( entries.count() ) );
