@@ -83,11 +83,7 @@ ScriptsConfig::slotManageScripts()
     dialog.exec();
 
     if( !dialog.installedEntries().isEmpty() || !dialog.changedEntries().isEmpty() )
-    {
-        // show a dialog?
-        // KMessageBox::information( 0, i18n( "<p>Script successfully installed.</p>" ) );
         m_timer->start();
-    }
 }
 
 void
@@ -147,7 +143,7 @@ ScriptsConfig::installLocalScript()
 
     if( !archive || !archive->open( QIODevice::ReadOnly ) )
     {
-        KMessageBox::error( this, i18n( "Invalid Archive!" ) );
+        KMessageBox::error( this, i18n( "Invalid Archive" ) );
         return;
     }
 
@@ -157,7 +153,7 @@ ScriptsConfig::installLocalScript()
     const KArchiveFile *specFile = findSpecFile( archiveDir );
     if( !specFile )
     {
-        KMessageBox::error( this, i18n( "Invalid Script File!" ) );
+        KMessageBox::error( this, i18n( "Invalid Script File" ) );
         return;
     }
 
@@ -171,7 +167,7 @@ ScriptsConfig::installLocalScript()
     KPluginInfo newScriptInfo( tempFile.fileName() );
     if( !newScriptInfo.isValid() )
     {
-        KMessageBox::error( this, i18n( "Invalid Script File!" ) );
+        KMessageBox::error( this, i18n( "Invalid Script File" ) );
         return;
     }
 
@@ -189,7 +185,7 @@ ScriptsConfig::installLocalScript()
         destination += i;
     dir.mkpath( destination );
     archiveDir->copyTo( destination );
-    KMessageBox::information( this, i18n( "The script %1 was successfully installed!", newScriptInfo.name() ) );
+    KMessageBox::information( this, i18n( "The script %1 was successfully installed", newScriptInfo.name() ) );
     m_timer->start();
 }
 
@@ -240,14 +236,11 @@ ScriptsConfig::slotUninstallScript()
 {
     DEBUG_BLOCK
     if( !ScriptManager::instance()->m_scripts.contains( m_selector->currentItem() ) )
-    {
-        KMessageBox::error( this, i18n( "Please select a script!" ) );
         return;
-    }
 
     ScriptItem *item = ScriptManager::instance()->m_scripts.value( m_selector->currentItem() );
     int response = KMessageBox::warningContinueCancel( this, i18n( "You are advised to only uninstall manually "
-                                                                    "installed scripts using this button!" ) );
+                                                                    "installed scripts using this button." ) );
     if( response == KMessageBox::Cancel )
         return;
 
