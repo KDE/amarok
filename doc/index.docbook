@@ -9,7 +9,9 @@
 <authorgroup>
 <author>
 <personname>
-      <firstname>This documentation was converted from the KDE UserBase <ulink url=" http://userbase.kde.org/Amarok/Manual">Amarok/Manual</ulink> page.</firstname>
+      <firstname>This documentation was converted from the &kde; UserBase 
+<ulink url=" http://userbase.kde.org/Amarok/Manual">Amarok/Manual</ulink> 
+page.</firstname>
 <surname></surname>
 </personname>
       </author>
@@ -19,7 +21,10 @@
 <date>2013-08-13</date>
       <releaseinfo>2.8.0</releaseinfo>
 <abstract>
-<para>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including &Linux;, &MacOS; and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.4.</para>
+<para>&amarok; is a free, versatile and powerful music player for &Linux; and
+&Microsoft; &Windows;, helping you to organize your music collection and 
+rediscover your music. The current stable release is version 2.8 that brings 
+back all the important features known from the 1.x series.</para>
       </abstract>
 <keywordset>
  <keyword>KDE</keyword>
