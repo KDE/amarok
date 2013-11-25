@@ -83,36 +83,34 @@ namespace AmarokScript
             PlaylistProviderPrototype( Playlists::PlaylistProvider *provider );
             Playlists::PlaylistProvider* data() const { return m_provider.data(); }
 
-        public slots:
-
-            QString toString() const;
+            Q_INVOKABLE QString toString() const;
 
             /**
              * @returns a list of playlists of this provider. If playlistCount is negative,
              * this list may be incomplete.
              */
-            Playlists::PlaylistList playlists();
+            Q_INVOKABLE Playlists::PlaylistList playlists();
 
             /**
              * Copy a playlist to the provider.
              */
-            Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
+            Q_INVOKABLE Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
 
             /**
              * Rename a playlist of this provider.
              */
-            void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName );
+            Q_INVOKABLE void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName );
 
             /**
              * Deletes a list of playlists.
              * @returns true if successful, false otherwise.
              */
-            bool deletePlaylists( const Playlists::PlaylistList &playlistlist );
+            Q_INVOKABLE bool deletePlaylists( const Playlists::PlaylistList &playlistlist );
 
             /**
              * UserPlaylistProvider function
              */
-            Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString &name = QString() );
+            Q_INVOKABLE Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString &name = QString() );
 
 
         private:

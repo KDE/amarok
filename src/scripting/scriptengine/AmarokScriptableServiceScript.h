@@ -46,15 +46,15 @@ namespace AmarokScript
 
             void slotCustomize( const QString &name );
 
-        SCRIPT_INVOKABLE:
-            int insertItem( StreamItem* item );
-            void setCurrentInfo( const QString &infoHtml );
+            /** Script Invokable **/
+            Q_INVOKABLE int insertItem( StreamItem* item );
+            Q_INVOKABLE void setCurrentInfo( const QString &infoHtml );
 
-            int donePopulating() const;
+            Q_INVOKABLE int donePopulating() const;
 
-            void setIcon( const QPixmap &icon );
-            void setEmblem( const QPixmap &icon );
-            void setScalableEmblem( const QString &emblemPath );
+            Q_INVOKABLE void setIcon( const QPixmap &icon );
+            Q_INVOKABLE void setEmblem( const QPixmap &icon );
+            Q_INVOKABLE void setScalableEmblem( const QString &emblemPath );
 
         private:
             QScriptEngine* m_scriptEngine;

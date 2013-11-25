@@ -40,17 +40,15 @@ namespace AmarokScript
         public:
             AmarokKNotifyScript( QScriptEngine* scriptEngine );
 
-        public slots:
-
             /**
              * Show notifications for the currently playing track.
              */
-            void showCurrentTrack();
+            Q_INVOKABLE void showCurrentTrack();
 
             /**
              * Show a custom KNotify notification
              */
-            void show(const QString &title, const QString &body, const QPixmap &pixmap = QPixmap() );
+            Q_INVOKABLE void show(const QString &title, const QString &body, const QPixmap &pixmap = QPixmap() );
 
         private:
             void setKNotifyEnabled( bool enable );

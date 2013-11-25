@@ -35,13 +35,11 @@ namespace AmarokScript
         public:
             AmarokOSDScript( QScriptEngine* scriptEngine );
 
-        public slots:
-
             /**
              * Show an OSD for the currently playing track, even if the OSD
              * has been disabled by the user.
              */
-            void showCurrentTrack();
+            Q_INVOKABLE void showCurrentTrack();
 
             /**
              * Forces an OSD update.
@@ -49,43 +47,43 @@ namespace AmarokScript
              * the OSD is shown.
              * To show an OSD with the current settings, call show();
              */
-            void show();
+            Q_INVOKABLE void show();
 
             /**
              * Set the OSD duration
              */
-            void setDuration( int ms );
+            Q_INVOKABLE void setDuration( int ms );
 
             /**
              * Set the OSD textcolor
              */
-            void setTextColor( const QColor &color );
+            Q_INVOKABLE void setTextColor( const QColor &color );
 
             /**
              * Set the OSD's y-offset.
              */
-            void setOffset( int y );
+            Q_INVOKABLE void setOffset( int y );
 
             /**
              * Set the image to be shown in the OSD.
              */
-            void setImage( const QImage &image );
+            Q_INVOKABLE void setImage( const QImage &image );
 
             /**
              * Set the screen on which to show the OSD.
              */
-            void setScreen( int screen );
+            Q_INVOKABLE void setScreen( int screen );
 
             /**
              * Set the OSD text
              */
-            void setText( const QString &text );
+            Q_INVOKABLE void setText( const QString &text );
 
             /**
              * Set the number of half-stars to be shown in the OSD.
              * Amarok must be playing a track for the stars to show.
              */
-            void setRating( const short rating );
+            Q_INVOKABLE void setRating( const short rating );
 
         private:
             void setOsdEnabled( bool enable );

@@ -78,22 +78,22 @@ namespace AmarokScript
 
         Q_PROPERTY( QStringList bandFrequencies READ bandFrequencies )
 
-        public slots:
+        public:
             /**
             * Will return a "user" preset if present. Else a "global".
             */
-            QList<int> getPresetGains( const QString &presetName );
+            Q_INVOKABLE QList<int> getPresetGains( const QString &presetName );
 
             /**
             * Returns true if the preset was deleted.
             * @param presetName The untranslated preset name.
             */
-            bool deletePreset( const QString &presetName );
+            Q_INVOKABLE bool deletePreset( const QString &presetName );
 
             /**
              * Save the @param presetGains as a preset with name @param name.
              */
-            void savePreset( const QString &name, const QList<int> &presetGains );
+            Q_INVOKABLE void savePreset( const QString &name, const QList<int> &presetGains );
 
         signals:
             /**

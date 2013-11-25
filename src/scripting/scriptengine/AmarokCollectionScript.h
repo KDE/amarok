@@ -48,53 +48,52 @@ namespace AmarokScript
         public:
             AmarokCollectionScript( AmarokScriptEngine* scriptEngine );
 
-        public slots:
-            int totalAlbums() const;
-            int totalArtists() const;
-            int totalComposers() const;
-            int totalGenres() const;
-            int totalTracks() const;
+            Q_INVOKABLE int totalAlbums() const;
+            Q_INVOKABLE int totalArtists() const;
+            Q_INVOKABLE int totalComposers() const;
+            Q_INVOKABLE int totalGenres() const;
+            Q_INVOKABLE int totalTracks() const;
 
             /**
              * DEPRECATED - Use Amarok.CollectionManager.queryableCollections[0].actualLocation instead
              * A list of locations that are part of the local collection
              */
-            QStringList collectionLocation() const;
+            Q_INVOKABLE QStringList collectionLocation() const;
 
             /**
              * Directly query the Amarok SQLDB
              */
-            QStringList query( const QString& sql ) const;
+            Q_INVOKABLE QStringList query( const QString& sql ) const;
 
             /**
              * Escapes characters in string for use in an SQL statement.
              */
-            QString escape( const QString& sql ) const;
+            Q_INVOKABLE QString escape( const QString& sql ) const;
 
             /**
              * Perform a full scan.
              */
-            void scanCollection() const;
+            Q_INVOKABLE void scanCollection() const;
 
             /**
              * Perform an incremental scan.
              */
-            void scanCollectionChanges() const;
+            Q_INVOKABLE void scanCollectionChanges() const;
 
             /**
              * Returns a query maker that queries all collections.
              */
-            Collections::QueryMaker *queryMaker() const;
+            Q_INVOKABLE Collections::QueryMaker *queryMaker() const;
 
             /**
              * Returns a list of collections that can be queried with a querymaker.
              */
-            Collections::CollectionList queryableCollections() const;
+            Q_INVOKABLE Collections::CollectionList queryableCollections() const;
 
             /**
              * Return a list of collections that are viewable in the collection browser.
              */
-            Collections::CollectionList viewableCollections() const;
+            Q_INVOKABLE Collections::CollectionList viewableCollections() const;
 
         signals:
             /**

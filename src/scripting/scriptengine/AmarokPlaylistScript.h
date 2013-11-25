@@ -38,125 +38,122 @@ namespace AmarokScript
         public:
             AmarokPlaylistScript( AmarokScriptEngine *engine );
 
-        public slots:
-
             /**
              * Return the index of the currently playing track in the playlist.
              */
-            int activeIndex();
+            Q_INVOKABLE int activeIndex();
 
             /**
              * Return the number of tracks in the playlist.
              */
-            int totalTrackCount();
+            Q_INVOKABLE int totalTrackCount();
 
             /**
              * Save the current playlist in the default playlist path.
              */
-            QString saveCurrentPlaylist();
+            Q_INVOKABLE QString saveCurrentPlaylist();
 
             /**
              * Load the track represented by the url and append to playlist.
              */
-            void addMedia( const QUrl &url );
+            Q_INVOKABLE void addMedia( const QUrl &url );
 
             /**
              * Append @param track to playlist.
              */
-            void addTrack( Meta::TrackPtr track );
+            Q_INVOKABLE void addTrack( Meta::TrackPtr track );
 
             /**
              * Load the list of tracks represented by the urls and append to playlist.
              */
-            void addMediaList( const QList<QUrl> &urls );
+            Q_INVOKABLE void addMediaList( const QList<QUrl> &urls );
 
             /**
              * Append the list of tracks to playlist.
              */
-            void addTrackList( const Meta::TrackList &tracks );
+            Q_INVOKABLE void addTrackList( const Meta::TrackList &tracks );
 
             /**
              * Clear the current playlist.
              */
-            void clearPlaylist();
+            Q_INVOKABLE void clearPlaylist();
 
             /**
              * Play the track at the specified index in the playlist.
              */
-            void playByIndex( int index );
+            Q_INVOKABLE void playByIndex( int index );
 
             /**
              * Prepend the the track represented by the passed url and start playing it.
              */
-            void playMedia( const QUrl &url );
+            Q_INVOKABLE void playMedia( const QUrl &url );
 
             /**
              * Prepend @param track and start playing it.
              */
-            void playTrack( Meta::TrackPtr track );
+            Q_INVOKABLE void playTrack( Meta::TrackPtr track );
 
             /**
              * Prepend the the tracks represented by the passed urls and start playing them.
              */
-            void playMediaList( const QList<QUrl> &urls );
+            Q_INVOKABLE void playMediaList( const QList<QUrl> &urls );
 
             /**
              * Prepend tracks in @param trackList and start playing them.
              */
-            void playTrackList( const Meta::TrackList &trackList );
+            Q_INVOKABLE void playTrackList( const Meta::TrackList &trackList );
 
             /**
              * Remove the currently playing track from the playlist.
              */
-            void removeCurrentTrack();
+            Q_INVOKABLE void removeCurrentTrack();
 
             /**
              * Remove the track at @param index from the playlist.
              */
-            void removeByIndex( int index );
+            Q_INVOKABLE void removeByIndex( int index );
 
             /**
              * Save the current playlist at the absolute path @param path.
              */
-            void savePlaylist( const QString& path );
+            Q_INVOKABLE void savePlaylist( const QString& path );
 
             /**
              * Set whether to stop playing after the current track.
              */
-            void setStopAfterCurrent( bool on );
+            Q_INVOKABLE void setStopAfterCurrent( bool on );
 
             /*
              * Indicates whether will stop playing after the current track.
              */
-            bool stopAfterCurrent();
+            Q_INVOKABLE bool stopAfterCurrent();
 
             /**
              * Show/ Hide the playlist.
              */
-            void togglePlaylist();
+            Q_INVOKABLE void togglePlaylist();
 
             /**
              * Return a list of urls representing all the tracks in the playlist.
              */
-            QStringList filenames();
+            Q_INVOKABLE QStringList filenames();
 
             /**
              * Return the track at the specified position in the playlist.
              */
-            Meta::TrackPtr trackAt( int row );
+            Q_INVOKABLE Meta::TrackPtr trackAt( int row );
 
             /**
              * Get an unsorted list of indices of the currently selected tracks in the playlist.
              */
-            QList<int> selectedIndexes();
+            Q_INVOKABLE QList<int> selectedIndexes();
 
             /**
              * Get an unsorted list of urls of the currently selected tracks in the playlist.
              */
-            QStringList selectedFilenames();
+            Q_INVOKABLE QStringList selectedFilenames();
 
         signals:
-
             /**
              * Emitted when tracks are added to the playlist.
              */

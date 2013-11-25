@@ -38,12 +38,11 @@ namespace AmarokScript
         public:
             ScriptImporter( AmarokScriptEngine *scriptEngine, const KUrl &url );
 
-        public slots:
-            QStringList availableBindings() const;
-            bool loadAmarokBinding( const QString &name );
-            void loadExtension( const QString &src );
-            bool loadQtBinding( const QString &binding );
-            bool include( const QString &relativeFile );
+            Q_INVOKABLE QStringList availableBindings() const;
+            Q_INVOKABLE bool loadAmarokBinding( const QString &name );
+            Q_INVOKABLE void loadExtension( const QString &src );
+            Q_INVOKABLE bool loadQtBinding( const QString &binding );
+            Q_INVOKABLE bool include( const QString &relativeFile );
 
         private:
             const KUrl m_scriptUrl;

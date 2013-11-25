@@ -123,16 +123,15 @@ namespace AmarokScript
             CollectionPrototype( Collections::Collection *collection );
             Collections::Collection* data() const { return m_collection.data(); }
 
-        public slots:
             /**
              * Copy a list of tracks to the destination collection
              */
-            void copyTracks( const Meta::TrackList &tracks, Collections::Collection *targetCollection );
+            Q_INVOKABLE void copyTracks( const Meta::TrackList &tracks, Collections::Collection *targetCollection );
 
             /**
              * Copy a single track to the destination collection
              */
-            void copyTracks( const Meta::TrackPtr track, Collections::Collection *targetCollection );
+            Q_INVOKABLE void copyTracks( const Meta::TrackPtr track, Collections::Collection *targetCollection );
 
             /**
              * Convenience method for copying tracks based on QueryMaker results,
@@ -140,17 +139,17 @@ namespace AmarokScript
              * after copying).
              * @see copyTracks( Meta::TrackList, CollectionLocation* )
              */
-            void queryAndCopyTracks( Collections::QueryMaker *queryMaker, Collections::Collection *targetCollection );
+            Q_INVOKABLE void queryAndCopyTracks( Collections::QueryMaker *queryMaker, Collections::Collection *targetCollection );
 
             /**
              * Copy an array of tracks to the destination collection.
              */
-            void moveTracks( const Meta::TrackList &tracks, Collections::Collection *targetCollection );
+            Q_INVOKABLE void moveTracks( const Meta::TrackList &tracks, Collections::Collection *targetCollection );
 
             /**
              * Move a single track to the destination collection.
              */
-            void moveTracks( const Meta::TrackPtr track, Collections::Collection *targetCollection );
+            Q_INVOKABLE void moveTracks( const Meta::TrackPtr track, Collections::Collection *targetCollection );
 
             /**
              * Convenience method for moving tracks based on QueryMaker results,
@@ -158,17 +157,17 @@ namespace AmarokScript
              * after moving).
              * @see moveTracks( Meta::TrackList, CollectionLocation* )
              */
-            void queryAndMoveTracks( Collections::QueryMaker *queryMaker, Collections::Collection *targetCollection );
+            Q_INVOKABLE void queryAndMoveTracks( Collections::QueryMaker *queryMaker, Collections::Collection *targetCollection );
 
             /**
              * Remove an array of tracks from collection.
              */
-            void removeTracks( const Meta::TrackList &trackList );
+            Q_INVOKABLE void removeTracks( const Meta::TrackList &trackList );
 
             /**
              * Remove single track from collection.
              */
-            void removeTracks( const Meta::TrackPtr track );
+            Q_INVOKABLE void removeTracks( const Meta::TrackPtr track );
 
             /**
              * Convenience method for removing tracks selected by QueryMaker,
@@ -176,12 +175,12 @@ namespace AmarokScript
              * after the removal).
              * @see removeTracks( Meta::TrackList )
              */
-            void queryAndRemoveTracks( Collections::QueryMaker *qm );
+            Q_INVOKABLE void queryAndRemoveTracks( Collections::QueryMaker *qm );
 
             /**
              * A querymaker object for querying the collection.
              */
-            Collections::QueryMaker *queryMaker();
+            Q_INVOKABLE Collections::QueryMaker *queryMaker();
 
         private:
             QWeakPointer<Collections::Collection> m_collection;

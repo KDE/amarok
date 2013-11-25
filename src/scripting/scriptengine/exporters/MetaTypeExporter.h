@@ -109,12 +109,11 @@ namespace AmarokScript
             static QScriptValue toScriptTagMap( QScriptEngine *engine, const Meta::FieldHash &map );
             static void fromScriptTagMap( const QScriptValue &value, Meta::FieldHash &map );
 
-        public slots:
             /**
              * Returns the image for the album, usually the cover image, if it has one,
              * or an undefined value otherwise.
              */
-            QScriptValue imagePixmap( int size = 1 ) const;
+            Q_INVOKABLE QScriptValue imagePixmap( int size = 1 ) const;
 
             /**
              * Asynchronously write the passed tags to the track.
@@ -132,7 +131,7 @@ namespace AmarokScript
              * tags["title"]= "My Song";
              * track.changeTags( tags );
              */
-            void changeTags( const Meta::FieldHash &changes, bool respectConfig = true );
+            Q_INVOKABLE void changeTags( const Meta::FieldHash &changes, bool respectConfig = true );
 
         signals:
             /**

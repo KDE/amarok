@@ -31,9 +31,8 @@ namespace AmarokScript
         public:
             AmarokStatusbarScript( QScriptEngine* scriptEngine );
 
-        public slots:
-            void longMessage( const QString &text );
-            void shortMessage( const QString &text );
+            Q_INVOKABLE void longMessage( const QString &text );
+            Q_INVOKABLE void shortMessage( const QString &text );
     };
 }
 

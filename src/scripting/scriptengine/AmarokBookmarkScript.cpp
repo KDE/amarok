@@ -70,20 +70,6 @@ AmarokBookmarkScript::createCurrentTrackBookmark()
     return AmarokUrlPtr( new AmarokUrl( PlayUrlGenerator::instance()->createCurrentTrackBookmark() ) );
 }
 
-/*
-void
-AmarokBookmarkScript::album( Meta::AlbumPtr album )
-{
-    return NavigationUrlGenerator::instance()->urlFromAlbum( album );
-}
-
-void
-AmarokBookmarkScript::artist( Meta::ArtistPtr artist )
-{
-    return AmarokUrlPtr( NavigationUrlGenerator::instance()->urlFromArtist( artist ) );
-}
-*/
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // BookmarkGroupPrototype
 //////////////////////////////////////////////////////////////////////////////////////////////////

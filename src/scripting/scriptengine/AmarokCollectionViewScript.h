@@ -158,34 +158,33 @@ namespace AmarokScript
             CollectionTreeItem* data() const;
             static QScriptValue toScriptValue( QScriptEngine *engine, CollectionTreeItem* const &item );
 
-        public slots:
             /**
              * @return QueryMaker representing this item's descendant tracks ( or just the item if a track )
              */
-            Collections::QueryMaker* queryMaker();
+            Q_INVOKABLE Collections::QueryMaker* queryMaker();
 
             /**
              * Add a filter representing this item to @param queryMaker.
              * For example, for obtaining a specific collection's items in the merged view.
              */
-            void addFilter( Collections::QueryMaker *queryMaker );
+            Q_INVOKABLE void addFilter( Collections::QueryMaker *queryMaker );
 
             /**
              * Return the child item at @param row.
              */
-            CollectionTreeItem* child( int row );
+            Q_INVOKABLE CollectionTreeItem* child( int row );
 
             /**
              * Load children if they haven't already been loaded.
              * Emit loaded( CollectionTreeItem* ) on completion.
              */
-            void loadChildren();
+            Q_INVOKABLE void loadChildren();
 
             /**
              * Return the track item represented by this collection item,
              * invalid track if !isTrack
              */
-            Meta::TrackPtr track();
+            Q_INVOKABLE Meta::TrackPtr track();
 
         private slots:
             void slotDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight );

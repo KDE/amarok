@@ -48,32 +48,31 @@ namespace AmarokScript
                 Error    = -1 // deprecated. reason: Amarok will try to resolve the error by itself and never stay in the error state. In the worst case it will stop
             };
 
-        public slots:
-            void Play() const;
-            void Stop( bool forceInstant = false ) const;
-            void Pause() const;
-            void Next() const;
-            void Prev() const;
-            void PlayPause() const;
-            void Seek( int ms ) const;
-            void SeekRelative( int ms ) const;
-            void SeekForward( int ms = 10000 ) const;
-            void SeekBackward( int ms = 10000 ) const;
-            int  IncreaseVolume( int ticks = 100/25 );
-            int  DecreaseVolume( int ticks = 100/25 );
-            void Mute();
+            Q_INVOKABLE void Play() const;
+            Q_INVOKABLE void Stop( bool forceInstant = false ) const;
+            Q_INVOKABLE void Pause() const;
+            Q_INVOKABLE void Next() const;
+            Q_INVOKABLE void Prev() const;
+            Q_INVOKABLE void PlayPause() const;
+            Q_INVOKABLE void Seek( int ms ) const;
+            Q_INVOKABLE void SeekRelative( int ms ) const;
+            Q_INVOKABLE void SeekForward( int ms = 10000 ) const;
+            Q_INVOKABLE void SeekBackward( int ms = 10000 ) const;
+            Q_INVOKABLE int  IncreaseVolume( int ticks = 100/25 );
+            Q_INVOKABLE int  DecreaseVolume( int ticks = 100/25 );
+            Q_INVOKABLE void Mute();
             /** This function returns the track position in seconds */
-            int  trackPosition() const;
+            Q_INVOKABLE int  trackPosition() const;
             /** This function returns the track position in milliseconds */
-            int  trackPositionMs() const;
+            Q_INVOKABLE int  trackPositionMs() const;
             /** This function returns the current engine state.
                 @returns 0 when playing or buffering, 1 when paused, 2 when stopped or loading and -1 in case of an error.
             */
-            int  engineState() const;
+            Q_INVOKABLE int  engineState() const;
             /** This function returns the current track.
                 The current track might even be valid when not in playing state.
             */
-            Meta::TrackPtr currentTrack() const;
+            Q_INVOKABLE Meta::TrackPtr currentTrack() const;
 
         signals:
             void trackFinished(); // when playback stops altogether

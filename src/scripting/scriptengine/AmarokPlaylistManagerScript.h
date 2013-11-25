@@ -53,17 +53,15 @@ namespace AmarokScript
         public:
             AmarokPlaylistManagerScript( AmarokScriptEngine* engine );
 
-        public slots:
-
             /**
              * @returns playlists of a certain category from all registered PlaylistProviders
              */
-            Playlists::PlaylistList playlistsOfCategory( int playlistCategory );
+            Q_INVOKABLE Playlists::PlaylistList playlistsOfCategory( int playlistCategory );
 
             /**
              * @returns all PlaylistProviders that provide a certain playlist category.
              **/
-            Playlists::PlaylistProviderList providersForCategory( int playlistCategory );
+            Q_INVOKABLE Playlists::PlaylistProviderList providersForCategory( int playlistCategory );
 
             // ANM-TODO synced playlists
             /**
@@ -77,7 +75,7 @@ namespace AmarokScript
             /**
              * Return provider with name @param name and category @param category.
              */
-            Playlists::PlaylistProvider *playlistProvider( int category, QString name );
+            Q_INVOKABLE Playlists::PlaylistProvider *playlistProvider( int category, QString name );
 
             /**
              *   Saves a list of tracks to a new playlist. Used in the Playlist save button.
@@ -85,29 +83,29 @@ namespace AmarokScript
              *   @arg name of playlist to save
              *   @arg toProvider If 0 (default) will save to the default UserPlaylistProvider ( SQLPlaylistProvider )
              */
-            bool save( Meta::TrackList tracks, const QString &name = QString(),
+            Q_INVOKABLE bool save( Meta::TrackList tracks, const QString &name = QString(),
                        Playlists::PlaylistProvider *toProvider = 0 );
 
             /**
              *  Saves a playlist from a file to the database.
              *  @arg fromLocation Saved playlist file to load
              */
-            bool import( const QString &fromLocation );
+            Q_INVOKABLE bool import( const QString &fromLocation );
 
             /**
              * Rename @param playlist to @param newName, return true if renaming was successful,
              * false otherwise.
              */
-            bool rename( Playlists::PlaylistPtr playlist, const QString &newName );
+            Q_INVOKABLE bool rename( Playlists::PlaylistPtr playlist, const QString &newName );
 
-            bool deletePlaylists( Playlists::PlaylistList playlistList );
+            Q_INVOKABLE bool deletePlaylists( Playlists::PlaylistList playlistList );
 
             /**
              *  Retrieves the provider owning the given playlist.
              *  Will only return multiple providers if this is a synced playlist
              *  @arg playlist the playlist whose provider we want
              */
-            QList<Playlists::PlaylistProvider*>
+            Q_INVOKABLE QList<Playlists::PlaylistProvider*>
             getProvidersForPlaylist( const Playlists::PlaylistPtr playlist );
 
             /**
@@ -115,7 +113,7 @@ namespace AmarokScript
              *  @arg playlist the playlist we are testing for writability
              *  @return whether or not the playlist is writable
              */
-            bool isWritable( const Playlists::PlaylistPtr &playlist );
+            Q_INVOKABLE bool isWritable( const Playlists::PlaylistPtr &playlist );
 
         private:
             QList<int> availableCategories();

@@ -213,65 +213,63 @@ namespace AmarokScript
             static void fromScriptValue( const QScriptValue &obj, Dynamic::TrackSet &trackSet );
             static QScriptValue trackSetConstructor( QScriptContext* context, QScriptEngine* engine );
 
-        public slots:
-
             /**
              * Includes or excludes all tracks in the set.
              * @param value If true set is set to "full". Else to "empty".
              */
-            void reset( bool value );
+            Q_INVOKABLE void reset( bool value );
 
             /**
              * Returns true if the @param uid is included in the set
              */
-            bool containsUid( const QString& uid ) const;
+            Q_INVOKABLE bool containsUid( const QString& uid ) const;
 
-            bool containsTrack( const Meta::TrackPtr track ) const;
+            Q_INVOKABLE bool containsTrack( const Meta::TrackPtr track ) const;
 
             /**
              * Returns the uids of a random track contains in this set
              */
-            Meta::TrackPtr getRandomTrack() const;
+            Q_INVOKABLE Meta::TrackPtr getRandomTrack() const;
 
             /**
              * Add the track @param track to the trackset.
              */
-            void uniteTrack( const Meta::TrackPtr &track );
+            Q_INVOKABLE void uniteTrack( const Meta::TrackPtr &track );
 
             /**
              * Add the track @param track to the trackset.
              */
-            void uniteTrackSet( const Dynamic::TrackSet &trackSet );
+            Q_INVOKABLE void uniteTrackSet( const Dynamic::TrackSet &trackSet );
 
             /**
              * Add the track @param track to the trackset.
              */
-            void uniteUids( const QStringList &uids );
+            Q_INVOKABLE void uniteUids( const QStringList &uids );
 
             /**
              * Perform an intersection of the trackset with the set @param trackSet
              */
-            void intersectTrackSet( const Dynamic::TrackSet &trackSet );
+            Q_INVOKABLE void intersectTrackSet( const Dynamic::TrackSet &trackSet );
 
             /**
              * Perform an intersection on this trackset with the tracksset represtente by @param uids
              */
-            void intersectUids( const QStringList &uids );
+            Q_INVOKABLE void intersectUids( const QStringList &uids );
 
             /**
              * Subtraact the track @param track from this trackset.
              */
-            void subtractTrack( const Meta::TrackPtr &track );
+            Q_INVOKABLE void subtractTrack( const Meta::TrackPtr &track );
 
             /**
              * Subtract the trackset @param trackSet from this trackset
              */
-            void subtractTrackSet( const Dynamic::TrackSet &trackSet );
+            Q_INVOKABLE void subtractTrackSet( const Dynamic::TrackSet &trackSet );
 
             /**
              * Subtract the set represented by @param uids from this trackset
              */
-            void subtractUids( const QStringList &uids );
+            Q_INVOKABLE void subtractUids( const QStringList &uids );
 
         private:
             static void init( QScriptEngine *engine );
@@ -279,25 +277,6 @@ namespace AmarokScript
 
             friend class ScriptableBiasFactory;
     };
-
-    /*
-    class ScriptableGroupBias : public Dynamic::AndBias
-    {
-        Q_OBJECT
-
-        public:
-            ScriptableGroupBias();
-            virtual ~ScriptableGroupBias();
-
-            void appendBias( Dynamic::BiasPtr bias ) override;
-            virtual void moveBias( int from, int to );
-
-        public slots:
-            virtual void invalidate();
-
-        private:
-
-    };*/
 }
 
 Q_DECLARE_METATYPE( QXmlStreamReader* )

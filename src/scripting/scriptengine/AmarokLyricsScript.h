@@ -35,19 +35,18 @@ namespace AmarokScript
         public:
             AmarokLyricsScript( QScriptEngine* scriptEngine );
 
-        public slots:
-            void showLyrics( const QString& lyrics ) const;
+            Q_INVOKABLE void showLyrics( const QString& lyrics ) const;
 
-            void showLyricsHtml( const QString& lyrics ) const;
-            void showLyricsError( const QString& error ) const;
-            void showLyricsNotFound( const QString& msg ) const;
+            Q_INVOKABLE void showLyricsHtml( const QString& lyrics ) const;
+            Q_INVOKABLE void showLyricsError( const QString& error ) const;
+            Q_INVOKABLE void showLyricsNotFound( const QString& msg ) const;
 
-            QString escape( const QString& str );
+            Q_INVOKABLE QString escape( const QString& str );
 
-            void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
-            QString toUtf8( const QByteArray& lyrics, const QString& encoding = "UTF-8" );
-            QString QStringtoUtf8( const QString& lyrics, const QString& encoding = "UTF-8" );
-            QByteArray fromUtf8( const QString& str, const QString& encoding );
+            Q_INVOKABLE void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
+            Q_INVOKABLE QString toUtf8( const QByteArray& lyrics, const QString& encoding = "UTF-8" );
+            Q_INVOKABLE QString QStringtoUtf8( const QString& lyrics, const QString& encoding = "UTF-8" );
+            Q_INVOKABLE QByteArray fromUtf8( const QString& str, const QString& encoding );
 
         signals:
             void fetchLyrics( const QString& artist, const QString& title, const QString&, Meta::TrackPtr );

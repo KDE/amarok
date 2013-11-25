@@ -63,46 +63,45 @@ namespace AmarokScript
         PlaylistPrototype( Playlists::PlaylistPtr playlist );
         Playlists::PlaylistPtr data() const { return m_playlist; }
 
-    public slots:
-            /**
-             * Returns loaded tracks in this playlist. Note that the list may be incomplete,
-             * to be sure, check that trackCount() is non-negative. Otherwise you have to call
-             * {@link #triggerFullLoad triggerFullLoad} or {@link #triggerQuickLoad triggerQuickLoad}.
-             */
-            Meta::TrackList tracks();
+        /**
+        * Returns loaded tracks in this playlist. Note that the list may be incomplete,
+        * to be sure, check that trackCount() is non-negative. Otherwise you have to call
+        * {@link #triggerFullLoad triggerFullLoad} or {@link #triggerQuickLoad triggerQuickLoad}.
+        */
+        Q_INVOKABLE Meta::TrackList tracks();
 
-            /**
-             * Trigger asynchronous loading of this playlist.
-             * Postpone the finished() signal until the all constituent tracks have resolved
-             * and their full metadata is available. Also use this flag when you need to immediately play
-             * the tracks.
-             * Note: This means you'll just get the finished signal a bit later.
-             */
-            void triggerFullLoad();
+        /**
+        * Trigger asynchronous loading of this playlist.
+        * Postpone the finished() signal until the all constituent tracks have resolved
+        * and their full metadata is available. Also use this flag when you need to immediately play
+        * the tracks.
+        * Note: This means you'll just get the finished signal a bit later.
+        */
+        Q_INVOKABLE void triggerFullLoad();
 
-            /**
-             * Trigger asynchronous loading of this playlist.
-             * Don't wait for constituent tracks to fully load before emitting the finished signal.
-             */
-            void triggerQuickLoad();
+        /**
+        * Trigger asynchronous loading of this playlist.
+        * Don't wait for constituent tracks to fully load before emitting the finished signal.
+        */
+        Q_INVOKABLE void triggerQuickLoad();
 
-            /**
-             * Add the track to a certain position in the playlist
-             *
-             * @param position place to add this track. The default value -1 appends to
-             * the end.
-             *
-             * @note if the position is larger then the size of the playlist append to the
-             * end without generating an error.
-             */
-            void addTrack( Meta::TrackPtr track, int position = -1 );
+        /**
+        * Add the track to a certain position in the playlist
+        *
+        * @param position place to add this track. The default value -1 appends to
+        * the end.
+        *
+        * @note if the position is larger then the size of the playlist append to the
+        * end without generating an error.
+        */
+        Q_INVOKABLE void addTrack( Meta::TrackPtr track, int position = -1 );
 
-            /**
-             * Remove track at the specified position
-             */
-            void removeTrack( int position );
+        /**
+        * Remove track at the specified position
+        */
+        Q_INVOKABLE void removeTrack( int position );
 
-            QString toString() const;
+        Q_INVOKABLE QString toString() const;
 
     private:
         void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position ) override;

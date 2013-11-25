@@ -50,14 +50,13 @@ namespace AmarokScript
         public:
             AmarokWindowScript( AmarokScriptEngine* scriptEngine );
 
-        public slots:
-            void addToolsMenu( QMenu *menu );
-            void addSettingsMenu( QMenu *menu );
-            bool addToolsMenu( QString id, QString menuTitle, QString icon = "amarok" );
-            void addToolsSeparator();
-            bool addSettingsMenu( QString id, QString menuTitle, QString icon = "amarok" );
-            void addSettingsSeparator();
-            void showTrayIcon( bool show );
+            Q_INVOKABLE void addToolsMenu( QMenu *menu );
+            Q_INVOKABLE void addSettingsMenu( QMenu *menu );
+            Q_INVOKABLE bool addToolsMenu( QString id, QString menuTitle, QString icon = "amarok" );
+            Q_INVOKABLE void addToolsSeparator();
+            Q_INVOKABLE bool addSettingsMenu( QString id, QString menuTitle, QString icon = "amarok" );
+            Q_INVOKABLE void addSettingsSeparator();
+            Q_INVOKABLE void showTrayIcon( bool show );
 
             /**
              * Show tooltips with the widget's name on mouseover.
@@ -67,7 +66,7 @@ namespace AmarokScript
              * Must restart Amarok afetr invoking this function to revert tooltips
              * to normal.
              */
-            void showToolTip();
+            Q_INVOKABLE void showToolTip();
 
         signals:
             void prepareToQuit();

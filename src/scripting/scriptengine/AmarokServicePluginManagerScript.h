@@ -33,12 +33,11 @@ namespace AmarokScript
         public:
             AmarokServicePluginManagerScript( QScriptEngine* scriptEngine );
 
-        public slots:
-            QStringList loadedServices();
-            QStringList loadedServiceNames();
-            QString serviceDescription( const QString &service );
-            QString serviceMessages( const QString &service );
-            QString sendMessage( const QString &service, const QString &message );
+            Q_INVOKABLE QStringList loadedServices();
+            Q_INVOKABLE QStringList loadedServiceNames();
+            Q_INVOKABLE QString serviceDescription( const QString &service );
+            Q_INVOKABLE QString serviceMessages( const QString &service );
+            Q_INVOKABLE QString sendMessage( const QString &service, const QString &message );
     };
 }
 

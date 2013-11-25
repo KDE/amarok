@@ -122,15 +122,16 @@ namespace AmarokScript
             {
                 qScriptRegisterMetaType<Map>( this, toScriptMap, fromScriptMap );
             }
+
+            // SCRIPTDOX exclude
             Q_INVOKABLE void invokableDeprecatedCall( const QString &call );
 
-        public slots:
             /**
              * @param function The function to invoke after time @param time in milliseconds.
              * @param thisObject [Optional] The this object this function is invoked with.
              * @param args [Optional] An array containing arguments this function is to be invoked with.
              */
-            void setTimeout( const QScriptValue &function, int time,
+            Q_INVOKABLE void setTimeout( const QScriptValue &function, int time,
                              const QScriptValue &thisObject = QScriptValue(),
                              const QScriptValue &args = QScriptValue() );
 

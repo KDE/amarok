@@ -58,29 +58,27 @@ namespace AmarokScript
         ~QueryMakerPrototype();
         Collections::QueryMaker *data() const { return m_querymaker.data(); }
 
-    public slots:
-
         /**
          *  Starts the query. This method returns immediately. All processing is done in one or more
          *  separate worker thread(s). One of the newResultReady signals will be emitted at least once,
          *  followed by the queryDone() signal exactly once.
          */
-        void run();
+        Q_INVOKABLE void run();
 
         /**
          * Block until the query completes, returns the tracklist..
          */
-        Meta::TrackList blockingRun();
+        Q_INVOKABLE Meta::TrackList blockingRun();
 
         /**
          *  Aborts a running query.
          */
-        void abort();
+        Q_INVOKABLE void abort();
 
         /**
          * Add a filter query to this query maker.
          */
-        void addFilter( const QString &filter );
+        Q_INVOKABLE void addFilter( const QString &filter );
 
     private:
         QWeakPointer<Collections::QueryMaker> m_querymaker;

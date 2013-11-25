@@ -40,27 +40,25 @@ namespace AmarokScript
         public:
             AmarokBookmarkScript( QScriptEngine* scriptEngine );
 
-        public slots:
             /**
              * @return bookmark for the current context view.
              */
-            AmarokUrlPtr contextView();
+            Q_INVOKABLE AmarokUrlPtr contextView();
 
             /**
              * @return bookmark for the current playlist view.
              */
-            AmarokUrlPtr currentPlaylistView();
+            Q_INVOKABLE AmarokUrlPtr currentPlaylistView();
 
             /**
              * * @return bookmark for the current browser view.
              */
-            AmarokUrlPtr browserView();
+            Q_INVOKABLE AmarokUrlPtr browserView();
 
             /**
              * Bookmark the current track at the currrent position.
              */
-            AmarokUrlPtr createCurrentTrackBookmark();
-            // AmarokUrlPtr artist( Meta::AlbumPtr album );
+            Q_INVOKABLE AmarokUrlPtr createCurrentTrackBookmark();
     };
 
     class BookmarkPrototype : public QObject
@@ -82,21 +80,21 @@ namespace AmarokScript
             BookmarkPrototype( AmarokUrlPtr bookmark );
             AmarokUrlPtr data() const { return m_url; }
 
-        public slots:
             /**
              * Save the bookmark to db. Must not be null.
              */
-            bool save();
-            void initFromString( const QString & urlString );
-            bool run();
-            void removeFromDb();
-            QString prettyCommand() const;
-            StringMap args() const;
+            Q_INVOKABLE bool save();
+            Q_INVOKABLE void initFromString( const QString & urlString );
+            Q_INVOKABLE bool run();
+            Q_INVOKABLE void removeFromDb();
+            Q_INVOKABLE QString prettyCommand() const;
+            Q_INVOKABLE StringMap args() const;
+
             /**
             * Sets the url argument named @param name to @param value. Overrides any possible
             * previous value.
             */
-            void setArg( const QString &name, const QString &value );
+            Q_INVOKABLE void setArg( const QString &name, const QString &value );
 
         private:
             void setId( int id );
@@ -134,16 +132,15 @@ namespace AmarokScript
             static QScriptValue bookmarkGroupCtor( QScriptContext *context, QScriptEngine *engine );
             BookmarkGroupPtr data() const { return m_group; }
 
-        public slots:
             /**
             * Save the bookmark group to db.
             */
-            void save();
-            BookmarkGroupList childGroups() const;
-            BookmarkList childBookmarks() const;
-            void clear();
-            void deleteChildBookmark( AmarokUrlPtr bookmark );
-            void deleteChildBookmarkgroup( BookmarkGroupPtr bookmarkGroup );
+            Q_INVOKABLE void save();
+            Q_INVOKABLE BookmarkGroupList childGroups() const;
+            Q_INVOKABLE BookmarkList childBookmarks() const;
+            Q_INVOKABLE void clear();
+            Q_INVOKABLE void deleteChildBookmark( AmarokUrlPtr bookmark );
+            Q_INVOKABLE void deleteChildBookmarkgroup( BookmarkGroupPtr bookmarkGroup );
 
         private:
             int id() const;
