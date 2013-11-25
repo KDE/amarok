@@ -78,6 +78,7 @@ namespace Meta
     static const qint64 valCompilation  = 1LL << 40;
     static const qint64 valHasCover     = (1LL << 40) + 1;
     static const qint64 valImage        = (1LL << 40) + 2;
+    static const qint64 valLyrics       = (1LL << 40) + 3;
 
     // start for custom numbers
     static const qint64 valCustom       = 1LL << 60;

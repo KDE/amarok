@@ -48,6 +48,7 @@ VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::X
     m_fieldMap.insert( Meta::valPlaycount,   TagLib::String( "FMPS_PLAYCOUNT" ) );
     m_fieldMap.insert( Meta::valRating,      TagLib::String( "FMPS_RATING" ) );
     m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS_RATING_AMAROK_SCORE" ) );
+    m_fieldMap.insert( Meta::valLyrics,      TagLib::String( "LYRICS" ) );
 
     m_uidFieldMap.insert( UIDAFT,            TagLib::String( "AMAROK 2 AFTV1 - AMAROK.KDE.ORG" ) );
 }

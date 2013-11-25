@@ -39,6 +39,7 @@ ASFTagHelper::ASFTagHelper( TagLib::Tag *tag, TagLib::ASF::Tag *asfTag, Amarok::
     m_fieldMap.insert( Meta::valPlaycount,   TagLib::String( "FMPS/Playcount" ) );
     m_fieldMap.insert( Meta::valRating,      TagLib::String( "FMPS/Rating" ) );
     m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS/Rating_Amarok_Score" ) );
+    m_fieldMap.insert( Meta::valLyrics,      TagLib::String( "WM/Lyrics" ) );
 
     m_uidFieldMap.insert( UIDAFT,            TagLib::String( "Amarok/AFTv1" ) );
 }
