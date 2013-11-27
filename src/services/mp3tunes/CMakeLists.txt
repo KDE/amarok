@@ -12,7 +12,6 @@ if(LIBXML2_FOUND AND CURL_FOUND)
             ${CURL_INCLUDE_DIRS}
             ${CMAKE_CURRENT_BINARY_DIR}/../../..
             ${KDE4_INCLUDE_DIR}
-            ${STRIGI_INCLUDE_DIR}
             ${QT_INCLUDES}
         )
     ########### next target ###############
