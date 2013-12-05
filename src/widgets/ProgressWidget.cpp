@@ -117,8 +117,8 @@ ProgressWidget::updateTimeLabelTooltips()
     TimeLabel *elapsedLabel = AmarokConfig::leftTimeDisplayRemaining() ? m_timeLabelRight : m_timeLabelLeft;
     TimeLabel *remainingLabel = AmarokConfig::leftTimeDisplayRemaining() ? m_timeLabelLeft : m_timeLabelRight;
 
-    elapsedLabel->setToolTip( i18n( "The amount of time elapsed in current song" ) );
-    remainingLabel->setToolTip( i18n( "The amount of time remaining in current song" ) );
+    elapsedLabel->setToolTip( i18n( "The amount of time elapsed in current track" ) );
+    remainingLabel->setToolTip( i18n( "The amount of time remaining in current track" ) );
 }
 
 void
