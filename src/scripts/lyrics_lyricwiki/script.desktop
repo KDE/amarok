@@ -4,7 +4,19 @@ Type=script
 ServiceTypes=KPluginInfo
 
 Name=Lyricwiki
+Name[it]=Lyricwiki
+Name[nl]=Lyricwiki
+Name[pt_BR]=Lyricwiki
+Name[sv]=Lyricwiki
+Name[uk]=Lyricwiki
+Name[x-test]=xxLyricwikixx
 Comment=A script to fetch lyrics from lyricwiki.org
+Comment[it]=Uno script per scaricare i testi da lyricwiki.org
+Comment[nl]=Een script om liedteksten op te halen uit lyricwiki.org
+Comment[pt_BR]=Um script para baixar letras de músicas a partir do lyricwiki.org
+Comment[sv]=Ett skript för att hämta sångtexter från lyricwiki.org
+Comment[uk]=Скрипт для отримання слів пісень з lyricwiki.org
+Comment[x-test]=xxA script to fetch lyrics from lyricwiki.orgxx
 
 X-KDE-PluginInfo-Author=Aaron Reichman
 X-KDE-PluginInfo-Email=reldruh@gmail.com

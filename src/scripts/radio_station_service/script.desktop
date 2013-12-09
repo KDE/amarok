@@ -4,7 +4,19 @@ Type=script
 ServiceTypes=KPluginInfo
 
 Name=Cool Streams
+Name[it]=Cool Stream
+Name[nl]=Cool Streams
+Name[pt_BR]=Cool Streams
+Name[sv]=Cool Streams
+Name[uk]=Cool Streams
+Name[x-test]=xxCool Streamsxx
 Comment=A script that sets up a service with a few cool internet radio stations
+Comment[it]=Uno script che configura un servizio con alcune fantastiche stazioni radio in rete
+Comment[nl]=Een script dat een service met een paar coole internet-radio-stations instelt
+Comment[pt_BR]=Um script que configura um serviço com algumas estações de rádio legais
+Comment[sv]=Ett skript som ställer in en tjänst med ett antal häftiga Internet-radiostationer
+Comment[uk]=Скрипт для налаштовування служби прослуховування декількох чудових інтернет-радіостанцій
+Comment[x-test]=xxA script that sets up a service with a few cool internet radio stationsxx
 
 X-KDE-PluginInfo-Author=Nikolaj Hald Nielsen
 X-KDE-PluginInfo-Email=nhnFreespirit@gmail.com
