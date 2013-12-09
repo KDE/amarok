@@ -17,7 +17,6 @@
 #ifndef WEBREQUESTSHANDLER_H
 #define WEBREQUESTSHANDLER_H
 
-#include "Version.h"
 #include "core/meta/forward_declarations.h"
 #include "AudioToQStringDecoder.h"
 #include "network/NetworkAccessManagerProxy.h"
@@ -34,7 +33,7 @@ namespace TagGuessing
                             const QString &host,
                             const int port,
                             const QString &pathPrefix,
-                            const QString &clietnId,
+                            const QString &clientId,
                             const QString &clientVersion);
         virtual ~WebRequestsHandler();
     public slots:
@@ -49,10 +48,8 @@ namespace TagGuessing
         virtual void sendNewRequest();
         virtual void gotReply( QNetworkReply *reply ) = 0;
         virtual void replyError( QNetworkReply::NetworkError code );
-
         virtual void trackDecoded( const Meta::TrackPtr track, const QString fingerprint );
         virtual void decodingDone( ThreadWeaver::Job *_decoder ); // TODO check viability of being a non-zero virtual
-
         virtual void parsingDone( ThreadWeaver::Job *_parser ) = 0;
 
     protected:

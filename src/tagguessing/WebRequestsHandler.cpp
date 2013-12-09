@@ -31,13 +31,13 @@ WebRequestsHandler::WebRequestsHandler( QObject *parent,
                                         const QString &host,
                                         const int port,
                                         const QString &pathPrefix,
-                                        const QString &clietnId,
+                                        const QString &clientId,
                                         const QString &clientVersion )
                : QObject( parent )
                , m_host( host )
                , m_port( port )
                , m_pathPrefix( pathPrefix )
-               , m_clientId( clietnId )
+               , m_clientId( clientId )
                , m_clientVersion( clientVersion )
 {
     DEBUG_BLOCK

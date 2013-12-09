@@ -32,6 +32,8 @@ extern "C" {
 
 #include <ofa1/ofa.h>
 
+using namespace TagGuessing;
+
 DecodedAudioData::DecodedAudioData()
                  : m_sRate( 0 )
                  , m_channels( 0 )

@@ -17,11 +17,25 @@
 #ifndef WEBSERVICEQUERYER_H
 #define WEBSERVICEQUERYER_H
 
-class WebserviceQueryer
+#include "tagguessing/WebRequestsHandler.h"
+#include "Version.h"
+
+class WebserviceQueryer : public TagGuessing::WebRequestsHandler
 {
     public:
-        WebserviceQueryer();
+        WebserviceQueryer( QObject *parent,
+                           const QString &host,
+                           const int port,
+                           const QString &pathPrefix,
+                           const QString &clientId,
+                           const QString &clientVersion = AMAROK_VERSION );
         ~WebserviceQueryer();
+    private slots:
+        void gotReply( QNetworkReply *reply );
+        void parsingDone( ThreadWeaver::Job *_parser );
+
+    private:
+        void checkDone();
 };
 
 #endif // WEBSERVICEQUERYER_H

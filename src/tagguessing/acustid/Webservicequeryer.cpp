@@ -16,6 +16,19 @@
 
 #include "Webservicequeryer.h"
 
-WebserviceQueryer::WebserviceQueryer()
+WebserviceQueryer::WebserviceQueryer( QObject *parent,
+                                      const QString &host,
+                                      const int port,
+                                      const QString &pathPrefix,
+                                      const QString &clientId,
+                                      const QString &clientVersion )
+    : TagGuessing::WebRequestsHandler( parent,
+                                       host,
+                                       port,
+                                       pathPrefix,
+                                       clientId,
+                                       clientVersion )
 {
 }
+
+#include "Webservicequeryer.moc"

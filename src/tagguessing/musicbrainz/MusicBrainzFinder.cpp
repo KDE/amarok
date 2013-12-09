@@ -76,8 +76,6 @@ MusicBrainzFinder::MusicBrainzFinder( QObject *parent, const QString &host,
     debug() << "\tusername:\t" << mb_username;
     debug() << "\tpassword:\t" << mb_password;
 
-    m_net= The::networkAccessManager();
-
     m_timer = new QTimer( this );
     m_timer->setInterval( 1000 );
 

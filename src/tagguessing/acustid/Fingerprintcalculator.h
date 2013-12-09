@@ -18,7 +18,7 @@
 #define FINGERPRINTCALCULATOR_H
 
 #include "libchromaprint.h"
-#include "tagguessing/MusicDNSAudioDecoder.h"
+#include "tagguessing/AudioToQStringDecoder.h"
 
 class AudioDataFeeder : public TagGuessing::DecodedAudioData
 {
@@ -36,13 +36,13 @@ class AudioDataFeeder : public TagGuessing::DecodedAudioData
          * private function "decode". This is required by libchromaprint.
          * Does not enter this data to the base class' m_data since its not needed at any time in the future
          */
-        int appendData(const quint8 *data, const int length );
+        int appendData( const quint8 *data, const int length );
 
     private:
         const ChromaprintContext *m_chromarpintContext;
 };
 
-class FingerprintCalculator : public TagGuessing::MusicDNSAudioDecoder
+class FingerprintCalculator : public TagGuessing::AudioToQStringDecoder
 {
     public:
         FingerprintCalculator( const Meta::TrackList &tracks, const int sampleLength = DEFAULT_SAMPLE_LENGTH );

@@ -50,7 +50,7 @@ namespace TagGuessing{
 
     protected:
         /**
-         * This class should never be instantized. Only subclasses can call the constructor.
+         * Protected since this class should never be instantized. Only subclasses can call the constructor.
          * Also, make sure this object is created on the main thread
          */
         Provider( QObject *parent );
