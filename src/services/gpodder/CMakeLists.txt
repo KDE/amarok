@@ -10,7 +10,6 @@ include_directories(
         ../../browsers/playlistbrowser # for DynamicBiasWidgets
         ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
         ${KDE4_INCLUDE_DIR}
-        ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES}
         ${LIBMYGPO_QT_INCLUDE_DIRS}
         ${LIBMYGPO_QT_INCLUDE_DIRS}/../

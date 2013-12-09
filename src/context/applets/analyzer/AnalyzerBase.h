@@ -25,7 +25,6 @@
 
 #include "fht.h"     //stack allocated
 
-#include <QGLFunctions>
 #include <QGLWidget>
 
 #include <vector>    //included for convenience
@@ -36,7 +35,7 @@
 namespace Analyzer
 {
 
-class Base : public QGLWidget, protected QGLFunctions
+class Base : public QGLWidget
 {
     Q_OBJECT
 

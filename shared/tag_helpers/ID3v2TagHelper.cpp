@@ -31,6 +31,7 @@
 #include <popularimeterframe.h>
 #include <textidentificationframe.h>
 #include <uniquefileidentifierframe.h>
+#include <unsynchronizedlyricsframe.h>
 
 const TagLib::ByteVector TXXX_Frame = "TXXX";
 const TagLib::ByteVector POPM_Frame = "POPM";
@@ -48,6 +49,8 @@ ID3v2TagHelper::ID3v2TagHelper( TagLib::Tag *tag, TagLib::ID3v2::Tag *id3v2Tag, 
     m_fieldMap.insert( Meta::valDiscNr,      TagLib::String( "TPOS" ) );
     m_fieldMap.insert( Meta::valHasCover,    TagLib::String( "APIC" ) );
     m_fieldMap.insert( Meta::valUniqueId,    TagLib::String( "UFID" ) );
+
+    m_fieldMap.insert( Meta::valLyrics,      TagLib::String( "USLT" ) );
 
     m_fmpsFieldMap.insert( FMPSPlayCount,    TagLib::String( "FMPS_Playcount" ) );
     m_fmpsFieldMap.insert( FMPSRating,       TagLib::String( "FMPS_Rating" ) );
@@ -99,6 +102,14 @@ ID3v2TagHelper::tags() const
                 {
                     data.insert( Meta::valHasCover, true );
                 }
+                continue;
+            }
+            else if( field == Meta::valLyrics )
+            {
+                TagLib::ID3v2::UnsynchronizedLyricsFrame *lyricsFrame =
+                    dynamic_cast<TagLib::ID3v2::UnsynchronizedLyricsFrame*>( *it );
+                if( lyricsFrame && !data.contains( Meta::valLyrics ) ) // only read the first frame for valLyrics
+                    data.insert( Meta::valLyrics, TStringToQString( lyricsFrame->text() ) );
                 continue;
             }
 
@@ -213,6 +224,22 @@ ID3v2TagHelper::setTags( const Meta::FieldHash &changes )
                     m_tag->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame( owner, uid ) );
                     modified = true;
                 }
+                continue;
+            }
+            else if( key == Meta::valLyrics )
+            {
+                if( !m_tag->frameList( field ).isEmpty() )
+                {
+                    m_tag->removeFrames( field );
+                    modified = true;
+                }
+                QString lyrics = changes.value( key ).toString();
+                if( lyrics.isEmpty() )
+                    continue;
+                TagLib::ID3v2::UnsynchronizedLyricsFrame *frame = new TagLib::ID3v2::UnsynchronizedLyricsFrame( TagLib::String::UTF8 );
+                frame->setText( Qt4QStringToTString( lyrics ) );
+                m_tag->addFrame( frame );
+                modified = true;
                 continue;
             }
 

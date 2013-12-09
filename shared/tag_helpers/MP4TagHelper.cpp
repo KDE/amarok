@@ -43,6 +43,7 @@ MP4TagHelper::MP4TagHelper( TagLib::Tag *tag, TagLib::MP4::Tag *mp4Tag, Amarok::
     m_fieldMap.insert( Meta::valPlaycount,   TagLib::String( "----:com.apple.iTunes:FMPS_Playcount" ) );
     m_fieldMap.insert( Meta::valRating,      TagLib::String( "----:com.apple.iTunes:FMPS_Rating" ) );
     m_fieldMap.insert( Meta::valScore,       TagLib::String( "----:com.apple.iTunes:FMPS_Rating_Amarok_Score" ) );
+    m_fieldMap.insert( Meta::valLyrics,      TagLib::String( "\xa9lyr" ) );
 
     m_uidFieldMap.insert( UIDAFT,            TagLib::String( "----:com.apple.iTunes:Amarok 2 AFTv1 - amarok.kde.org" ) );
 }

@@ -17,22 +17,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H
-#define AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H
+#define DEBUG_PREFIX "OrganizeCollectionDialog"
 
 #include "OrganizeCollectionDialog.h"
-#include "../widgets/TokenPool.h"
 
 #include "amarokconfig.h"
-
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/meta/file/File.h"
-
+#include "dialogs/TrackOrganizer.h"
+#include "widgets/TokenPool.h"
 #include "ui_OrganizeCollectionDialogBase.h"
-#include "TrackOrganizer.h"
 
-#include <kcolorscheme.h>
+#include <KColorScheme>
 #include <KInputDialog>
 
 #include <QApplication>
@@ -185,6 +182,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     QPalette p = ui->conflictLabel->palette();
     KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
     ui->conflictLabel->setPalette( p );
+    ui->previewTableWidget->sortItems( 0, Qt::AscendingOrder );
 
     // only show the options when the Options button is checked
     connect( ui->optionsButton, SIGNAL(toggled(bool)), ui->organizeCollectionWidget, SLOT(setVisible(bool)) );
@@ -192,15 +190,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->organizeCollectionWidget->hide();
     ui->optionsWidget->hide();
 
+    connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)), SLOT(slotUpdatePreview()) );
+    connect( ui->organizeCollectionWidget, SIGNAL(schemeChanged()), SLOT(slotUpdatePreview()) );
+    connect( ui->optionsWidget, SIGNAL(optionsChanged()), SLOT(slotUpdatePreview()));
     // to show the conflict error
-    connect( ui->overwriteCheck, SIGNAL(stateChanged(int)),
-             SLOT(slotUpdatePreview()) );
-    connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)),
-             SLOT(slotUpdatePreview()) );
-    connect( ui->organizeCollectionWidget, SIGNAL(schemeChanged()),
-             SLOT(slotUpdatePreview()) );
-    connect( ui->optionsWidget, SIGNAL(optionsChanged()),
-             SLOT(slotUpdatePreview()));
+    connect( ui->overwriteCheck, SIGNAL(stateChanged(int)), SLOT(slotOverwriteModeChanged()) );
 
     connect( this, SIGNAL(finished(int)), ui->organizeCollectionWidget, SLOT(slotSaveFormatList()) );
     connect( this, SIGNAL(accepted()), ui->organizeCollectionWidget, SLOT(onAccept()) );
@@ -209,12 +203,16 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
              SLOT(slotEnableOk(QString)) );
 
     slotEnableOk( ui->folderCombo->currentText() );
+    restoreDialogSize( Amarok::config( "OrganizeCollectionDialog" ) );
 
-    init();
+    QTimer::singleShot( 0, this, SLOT(slotUpdatePreview()) );
 }
 
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
 {
+    KConfigGroup group = Amarok::config( "OrganizeCollectionDialog" );
+    saveDialogSize( group );
+
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     delete ui;
 }
@@ -240,57 +238,9 @@ OrganizeCollectionDialog::buildFormatString() const
     return "%collectionroot%/" + ui->organizeCollectionWidget->getParsableScheme() + ".%filetype%";
 }
 
-QString
-OrganizeCollectionDialog::commonPrefix( const QStringList &list ) const
-{
-    QString option = list.first().toLower();
-    int length = option.length();
-    while( length > 0 )
-    {
-        bool found = true;
-        foreach( const QString &string, list )
-        {
-            if( string.left(length).toLower() != option )
-            {
-                found = false;
-                break;
-            }
-        }
-        if( found )
-            break;
-        --length;
-        option = option.left( length );
-    }
-    return option;
-
-}
-
-void
-OrganizeCollectionDialog::update( int dummy )   //why the dummy?
-{
-    Q_UNUSED( dummy );
-}
-
-
-void
-OrganizeCollectionDialog::update( const QString & dummy )
-{
-    Q_UNUSED( dummy );
-
-    update( 0 );
-}
-
-void
-OrganizeCollectionDialog::init()
-{
-    slotUpdatePreview();
-}
-
 void
 OrganizeCollectionDialog::slotUpdatePreview()
 {
-    DEBUG_BLOCK;
-
     QString formatString = buildFormatString();
 
     m_trackOrganizer->setAsciiOnly( ui->optionsWidget->asciiOnly() );
@@ -303,41 +253,102 @@ OrganizeCollectionDialog::slotUpdatePreview()
                                   ui->optionsWidget->replaceText() );
     m_trackOrganizer->setVfatSafe( ui->optionsWidget->vfatCompatible() );
 
-    //empty the table, not only it's contents
+    // empty the table, not only its contents
+    ui->previewTableWidget->clearContents();
     ui->previewTableWidget->setRowCount( 0 );
+    ui->previewTableWidget->setSortingEnabled( false ); // intereferes with inserting
     m_trackOrganizer->resetTrackOffset();
     m_conflict = false;
-
     setCursor( Qt::BusyCursor );
 
-    previewNextBatch();
+    // be nice do the UI, try not to block for too long
+    QTimer::singleShot( 0, this, SLOT(processPreviewPaths()) );
 }
 
 void
-OrganizeCollectionDialog::previewNextBatch() //private slot
+OrganizeCollectionDialog::processPreviewPaths()
 {
-    const int batchSize = 10;
+    QStringList originals;
+    QStringList previews;
+    QStringList commonOriginalPrefix; // common initial directories
+    QStringList commonPreviewPrefix; // common initial directories
 
-    QMap<Meta::TrackPtr, QString> dests = m_trackOrganizer->getDestinations( batchSize );
-    QMapIterator<Meta::TrackPtr, QString> it( dests );
-    while( it.hasNext() )
+    QMap<Meta::TrackPtr, QString> destinations = m_trackOrganizer->getDestinations();
+    for( auto it = destinations.constBegin(); it != destinations.constEnd(); ++it )
     {
-        it.next();
-        Meta::TrackPtr track = it.key();
+        originals << it.key()->prettyUrl();
+        previews << it.value();
 
-        QString originalPath = track->prettyUrl();
-        QString newPath = it.value();
+        QStringList originalPrefix = originals.last().split( '/' );
+        originalPrefix.removeLast(); // we never include file name in the common prefix
+        QStringList previewPrefix = previews.last().split( '/' );
+        previewPrefix.removeLast();
+
+        if( it == destinations.constBegin() )
+        {
+            commonOriginalPrefix = originalPrefix;
+            commonPreviewPrefix = previewPrefix;
+        } else {
+            int commonLength = 0;
+            while( commonOriginalPrefix.size() > commonLength &&
+                   originalPrefix.size() > commonLength &&
+                   commonOriginalPrefix[ commonLength ] == originalPrefix[ commonLength ] )
+            {
+                commonLength++;
+            }
+            commonOriginalPrefix = commonOriginalPrefix.mid( 0, commonLength );
+
+            commonLength = 0;
+            while( commonPreviewPrefix.size() > commonLength &&
+                   previewPrefix.size() > commonLength &&
+                   commonPreviewPrefix[ commonLength ] == previewPrefix[ commonLength ] )
+            {
+                commonLength++;
+            }
+            commonPreviewPrefix = commonPreviewPrefix.mid( 0, commonLength );
+        }
+    }
+
+    QString originalPrefix = commonOriginalPrefix.isEmpty() ? QString() : commonOriginalPrefix.join( "/" ) + '/';
+    m_previewPrefix = commonPreviewPrefix.isEmpty() ? QString() : commonPreviewPrefix.join( "/" ) + '/';
+    ui->previewTableWidget->horizontalHeaderItem( 1 )->setText( i18n( "Original: %1", originalPrefix ) );
+    ui->previewTableWidget->horizontalHeaderItem( 0 )->setText( i18n( "Preview: %1", m_previewPrefix ) );
+
+    m_originals.clear();
+    m_originals.reserve( originals.size() );
+    m_previews.clear();
+    m_previews.reserve( previews.size() );
+    for( int i = 0; i < qMin( originals.size(), previews.size() ); i++ )
+    {
+        m_originals << originals.at( i ).mid( originalPrefix.length() );
+        m_previews << previews.at( i ).mid( m_previewPrefix.length() );
+    }
+
+    QTimer::singleShot( 0, this, SLOT(previewNextBatch()) );
+}
+
+void
+OrganizeCollectionDialog::previewNextBatch()
+{
+    const int batchSize = 100;
+
+    QPalette negativePalette = ui->previewTableWidget->palette();
+    KColorScheme::adjustBackground( negativePalette, KColorScheme::NegativeBackground );
+
+    int processed = 0;
+    while( !m_originals.isEmpty() && !m_previews.isEmpty() )
+    {
+        QString originalPath = m_originals.takeFirst();
+        QString newPath = m_previews.takeFirst();
 
         int newRow = ui->previewTableWidget->rowCount();
         ui->previewTableWidget->insertRow( newRow );
 
-        //new path preview in the 1st column
-        QPalette p = ui->previewTableWidget->palette();
+        // new path preview in the 1st column
         QTableWidgetItem *item = new QTableWidgetItem( newPath );
-        KColorScheme::adjustBackground( p, KColorScheme::NegativeBackground );
-        if( QFileInfo( newPath ).exists() )
+        if( QFileInfo( m_previewPrefix + newPath ).exists() )
         {
-            item->setBackgroundColor( p.color( QPalette::Base ) );
+            item->setBackgroundColor( negativePalette.color( QPalette::Base ) );
             m_conflict = true;
         }
         ui->previewTableWidget->setItem( newRow, 0, item );
@@ -345,8 +356,25 @@ OrganizeCollectionDialog::previewNextBatch() //private slot
         //original in the second column
         item = new QTableWidgetItem( originalPath );
         ui->previewTableWidget->setItem( newRow, 1, item );
+
+        processed++;
+        if( processed >= batchSize )
+        {
+            // yield some room to the other events in the main loop
+            QTimer::singleShot( 0, this, SLOT(previewNextBatch()) );
+            return;
+        }
     }
 
+    // finished
+    unsetCursor();
+    ui->previewTableWidget->setSortingEnabled( true );
+    slotOverwriteModeChanged(); // in fact, m_conflict may have changed
+}
+
+void
+OrganizeCollectionDialog::slotOverwriteModeChanged()
+{
     if( m_conflict )
     {
         if( ui->overwriteCheck->isChecked() )
@@ -356,12 +384,6 @@ OrganizeCollectionDialog::previewNextBatch() //private slot
     }
     else
         ui->conflictLabel->setText(""); // we clear the text instead of hiding it to retain the layout spacing
-
-    //non-blocking way of updating the preview table.
-    if( dests.count() == batchSize )
-        QTimer::singleShot( 10, this, SLOT(previewNextBatch()) );
-    else
-        unsetCursor(); // finished
 }
 
 void
@@ -388,5 +410,3 @@ OrganizeCollectionDialog::slotEnableOk( const QString & currentCollectionRoot )
     else
         enableButtonOk( true );
 }
-
-#endif  //AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H

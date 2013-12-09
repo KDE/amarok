@@ -6,7 +6,6 @@
             ${Amarok_SOURCE_DIR}/src/statusbar
             ${CMAKE_CURRENT_BINARY_DIR}/../../..
             ${KDE4_INCLUDE_DIR}
-            ${STRIGI_INCLUDE_DIR}
             ${QT_INCLUDES}
             )
 

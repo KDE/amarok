@@ -56,8 +56,6 @@ Analyzer::Base::Base( QWidget *parent )
     //initialize openGL context before managing GL calls
     makeCurrent();
 
-    initializeGLFunctions();
-
     connectSignals();
 }
 

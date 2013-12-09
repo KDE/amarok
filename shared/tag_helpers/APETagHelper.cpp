@@ -38,6 +38,7 @@ APETagHelper::APETagHelper( TagLib::Tag *tag, TagLib::APE::Tag *apeTag, Amarok::
     m_fieldMap.insert( Meta::valPlaycount,   TagLib::String( "FMPS_PLAYCOUNT" ) );
     m_fieldMap.insert( Meta::valRating,      TagLib::String( "FMPS_RATING" ) );
     m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS_RATING_AMAROK_SCORE" ) );
+    m_fieldMap.insert( Meta::valLyrics,      TagLib::String( "UNSYNCED LYRICS" ) );
 
     m_uidFieldMap.insert( UIDAFT,            TagLib::String( "Amarok 2 AFTv1 - amarok.kde.org" ) );
 }
