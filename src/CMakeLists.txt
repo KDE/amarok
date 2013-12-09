@@ -573,15 +573,13 @@ if ( LIBOFA_FOUND )
         tagguessing/musicbrainz/MusicDNSXmlParser.cpp )
 endif ( LIBOFA_FOUND )
 
-# AcustID Provider:
-if ( LIBOFA_FOUND )
-    set( tagguessing_core_SRCS
-    tagguessing/acustid/Acustidprovider.cpp
-    tagguessing/acustid/Fingerprintcalculator.cpp
-    tagguessing/acustid/Webservicequeryer.cpp)
-endif ( LIBOFA_FOUND )
-
-# tagguessing_core_SRCS is added to amaroklib
+## AcustID Provider:
+#if ( LIBOFA_FOUND )
+#    set( tagguessing_core_SRCS
+#    tagguessing/acustid/Acustidprovider.cpp
+#    tagguessing/acustid/Fingerprintcalculator.cpp
+#    tagguessing/acustid/Webservicequeryer.cpp)
+#endif ( LIBOFA_FOUND )
 
 #####################################################################
 # LIBAMAROK
