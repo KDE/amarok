@@ -573,12 +573,12 @@ if ( LIBOFA_FOUND )
         tagguessing/musicbrainz/MusicDNSXmlParser.cpp )
 endif ( LIBOFA_FOUND )
 
-## AcustID Provider:
+## AcoustID Provider:
 #if ( LIBOFA_FOUND )
 #    set( tagguessing_core_SRCS
-#    tagguessing/acustid/Acustidprovider.cpp
-#    tagguessing/acustid/Fingerprintcalculator.cpp
-#    tagguessing/acustid/Webservicequeryer.cpp)
+#    tagguessing/acoustid/Acoustidprovider.cpp
+#    tagguessing/acoustid/Fingerprintcalculator.cpp
+#    tagguessing/acoustid/Webservicequeryer.cpp)
 #endif ( LIBOFA_FOUND )
 
 #####################################################################

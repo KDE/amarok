@@ -176,7 +176,7 @@ if( WITH_PLAYER )
                        "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" FALSE ${LIBLASTFM_MIN_VERSION} "" )
 
     macro_log_feature( LIBCHROMAPRINT_FOUND "libchromaprint"
-                       "Required for the AcustID tag guessing serivce"
+                       "Required for the AcoustID tag guessing serivce"
                        "http://acoustid.org/chromaprint"
                        FALSE ${LIBCHROMAPRINT_MIN_VERSION} "" )
 

@@ -19,7 +19,7 @@
 #include "musicbrainz/MusicBrainzFinder.h"
 
 #ifdef LIBCHROMAPRINT_FOUND
-#include "acustid/Acustidprovider.h"
+#include "acoustid/Acoustidprovider.h"
 #endif
 
 using namespace TagGuessing;
@@ -54,7 +54,7 @@ Finder::addProviders()
 {
     m_providers.append( new MusicBrainzFinder( this ) );
 #ifdef LIBCHROMAPRINT_FOUND
-    m_providers.append( new AcustIDFinder( this ) );
+    m_providers.append( new AcoustIDFinder( this ) );
 #endif
 }
 
