@@ -33,7 +33,6 @@ class MusicBrainzFinder : public TagGuessing::Provider
                                     const QString &pathPrefix = "/ws/2",
                                     const QString &username = QString(),
                                     const QString &password = QString() );
-
         bool isRunning() const;
 
     signals:

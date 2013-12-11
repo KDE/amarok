@@ -14,21 +14,43 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Webservicequeryer.h"
+#ifndef FINGERPRINTCALCULATOR_H
+#define FINGERPRINTCALCULATOR_H
 
-WebserviceQueryer::WebserviceQueryer( QObject *parent,
-                                      const QString &host,
-                                      const int port,
-                                      const QString &pathPrefix,
-                                      const QString &clientId,
-                                      const QString &clientVersion )
-    : TagGuessing::WebRequestsHandler( parent,
-                                       host,
-                                       port,
-                                       pathPrefix,
-                                       clientId,
-                                       clientVersion )
+#include "libchromaprint.h"
+#include "tagguessing/AudioToQStringDecoder.h"
+
+class AudioDataFeeder : public TagGuessing::DecodedAudioData
 {
-}
+    public:
+        AudioDataFeeder();
+        ~AudioDataFeeder();
 
-#include "Webservicequeryer.moc"
+        /**
+         * Overrides base class' function and starts the computation of fingerprint
+         */
+        int setupInitial( const int sampleRate, const quint8 channels );
+
+        /**
+         * Overrides the base class' function since this is called by MusicDNSAudioDecoder's
+         * private function "decode". This is required by libchromaprint.
+         * Does not enter this data to the base class' m_data since its not needed at any time in the future
+         */
+        int appendData( const quint8 *data, const int length );
+
+    private:
+        const ChromaprintContext *m_chromarpintContext;
+};
+
+class FingerprintCalculator : public TagGuessing::AudioToQStringDecoder
+{
+    Q_OBJECT
+    public:
+        FingerprintCalculator( const Meta::TrackList &tracks, const int sampleLength = DEFAULT_SAMPLE_LENGTH );
+        ~FingerprintCalculator();
+
+    protected:
+        void run();
+};
+
+#endif // FINGERPRINTCALCULATOR_H

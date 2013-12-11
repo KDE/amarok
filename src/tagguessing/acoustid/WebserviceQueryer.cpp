@@ -14,26 +14,21 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef ACOUSTIDFINDER_H
-#define ACOUSTIDFINDER_H
+#include "WebserviceQueryer.h"
 
-#include "Fingerprintcalculator.h"
-#include "tagguessing/Provider.h"
-
-class AcoustIdProvider : public TagGuessing::Provider
+WebserviceQueryer::WebserviceQueryer( QObject *parent,
+                                      const QString &host,
+                                      const int port,
+                                      const QString &pathPrefix,
+                                      const QString &clientId,
+                                      const QString &clientVersion )
+    : TagGuessing::WebRequestsHandler( parent,
+                                       host,
+                                       port,
+                                       pathPrefix,
+                                       clientId,
+                                       clientVersion )
 {
-public:
-    AcoustIdProvider();
-    ~AcoustIdProvider();
-    bool isRunning() const;
+}
 
-public slots:
-    void run( const Meta::TrackList &tracks );
-
-    void lookUpByPUID( const Meta::TrackPtr &track, const QString &puid );
-
-private:
-    FingerprintCalculator m_fingerprintCalculator;
-};
-
-#endif // ACOUSTIDFINDER_H
+#include "WebserviceQueryer.moc"

@@ -14,20 +14,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Acoustidprovider.h"
+#ifndef ACOUSTIDPROVIDER_H
+#define ACOUSTIDPROVIDER_H
 
-AcoustIdProvider::AcoustIdProvider()
+#include "FingerprintCalculator.h"
+#include "tagguessing/Provider.h"
+
+class AcoustIdProvider : public TagGuessing::Provider
 {
-}
+    Q_OBJECT
+public:
+    AcoustIdProvider();
+    ~AcoustIdProvider();
+    bool isRunning() const;
 
-AcoustIdProvider::~AcoustIdProvider()
-{
-}
+public slots:
+    void run( const Meta::TrackList &tracks );
+    void lookUpByPUID( const Meta::TrackPtr &track, const QString &puid );
 
-char **
-AcoustIdProvider::computeFingerpint( const Meta::TrackPtr &track )
-{
+    void fingerprintCalculated( const Meta::TrackPtr &track, const QString &fingerprint );
 
-}
+private:
+    FingerprintCalculator* m_fingerprintCalculator;
+};
 
-#include "Acoustidprovider.moc"
+#endif // ACOUSTIDPROVIDER_H

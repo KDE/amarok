@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Fingerprintcalculator.h"
+#include "FingerprintCalculator.h"
 
 #include "support/Debug.h"
 
@@ -54,7 +54,7 @@ AudioDataFeeder::appendData( const quint8 *data, const int length )
 }
 
 FingerprintCalculator::FingerprintCalculator( const Meta::TrackList &tracks, const int sampleLength )
-    : TagGuessing::MusicDNSAudioDecoder( tracks, sampleLength )
+    : TagGuessing::AudioToQStringDecoder( tracks, sampleLength )
 {
 }
 
@@ -62,6 +62,7 @@ FingerprintCalculator::~FingerprintCalculator()
 {
 }
 
+void
 FingerprintCalculator::run()
 {
     const ChromaprintContext * const chromaprintContext = chromaprint_new( CHROMAPRINT_ALGORITHM_DEFAULT );
@@ -92,3 +93,5 @@ FingerprintCalculator::run()
 
     chromaprint_free( chromaprintContext );
 }
+
+#include "FingerprintCalculator.moc"

@@ -81,16 +81,15 @@ namespace TagGuessing {
         AudioToQStringDecoder( const Meta::TrackList &tracks, const int sampleLength = DEFAULT_SAMPLE_LENGTH );
         virtual ~AudioToQStringDecoder();
 
-        virtual void run();
-
     signals:
         void trackDecoded( const Meta::TrackPtr, const QString );
 
     protected:
+        virtual void run();
         virtual int decode( const QString &fileName, DecodedAudioData *data, const int length );
 
-        Meta::TrackList m_tracks;
-        int m_sampleLength;
+        const Meta::TrackList m_tracks;
+        const int m_sampleLength;
     };
 
 }

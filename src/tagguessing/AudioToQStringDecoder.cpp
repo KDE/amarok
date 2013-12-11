@@ -132,7 +132,7 @@ AudioToQStringDecoder::run()
     avcodec_register_all();
     av_register_all();
 
-    foreach( Meta::TrackPtr track, m_tracks )
+    foreach( const Meta::TrackPtr track, m_tracks )
     {
         decode( track->playableUrl().toLocalFile(), &data, m_sampleLength );
         if( data.duration() > MIN_SAMPLE_LENGTH )
