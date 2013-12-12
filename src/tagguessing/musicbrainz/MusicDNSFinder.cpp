@@ -17,6 +17,7 @@
 #include "MusicDNSFinder.h"
 
 #include "core/support/Debug.h"
+#include "ThreadWeaver/Weaver"
 
 MusicDNSFinder::MusicDNSFinder( QObject *parent,
                                 const QString &host,

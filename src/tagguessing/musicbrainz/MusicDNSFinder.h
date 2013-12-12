@@ -17,9 +17,9 @@
 #ifndef MUSICDNSFINDER_H
 #define MUSICDNSFINDER_H
 
-#include "MusicDNSXmlParser.h"
-#include "tagguessing/WebRequestsHandler.h"
 #include "Version.h"
+#include "tagguessing/WebRequestsHandler.h"
+#include "MusicDNSXmlParser.h"
 #include "ThreadWeaver/Job"
 
 #define AMAROK_MUSICDNS_CLIENT_ID "0c6019606b1d8a54d0985e448f3603ca"
@@ -35,9 +35,11 @@ class MusicDNSFinder : public TagGuessing::WebRequestsHandler
                         const QString &clientVersion = AMAROK_VERSION );
         ~MusicDNSFinder();
 
-    private:
+    private slots:
         void gotReply( QNetworkReply *reply );
-        void parsingDone( Threadweaver::Job *_parser );
+        void parsingDone( ThreadWeaver::Job *_parser );
+
+    private:
         void checkDone();
 
         QMap < MusicDNSXmlParser *, Meta::TrackPtr > m_parsers;
