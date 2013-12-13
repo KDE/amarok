@@ -4,6 +4,7 @@ Type=script
 ServiceTypes=KPluginInfo
 
 Name=Cool Streams
+Name[cs]=Skvělé proudy
 Name[de]=Coole Streams
 Name[es]=Cool Streams
 Name[it]=Cool Stream
@@ -14,6 +15,7 @@ Name[sv]=Cool Streams
 Name[uk]=Cool Streams
 Name[x-test]=xxCool Streamsxx
 Comment=A script that sets up a service with a few cool internet radio stations
+Comment[cs]=Skvělé proudy
 Comment[es]=Un guion que configura un servicio con unas pocas emisoras de radio de Internet interesantes
 Comment[it]=Uno script che configura un servizio con alcune fantastiche stazioni radio in rete
 Comment[nl]=Een script dat een service met een paar coole internet-radio-stations instelt
