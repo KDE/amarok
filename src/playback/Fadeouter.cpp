@@ -27,13 +27,13 @@ Fadeouter::Fadeouter( const QWeakPointer<Phonon::MediaObject> &media,
                       const QWeakPointer<Phonon::VolumeFaderEffect> &fader,
                       int fadeOutLength )
     : QObject( fader.data() )
-    , m_fader( fader.data() )
+    , m_fader( fader )
 {
     Q_ASSERT( media );
     Q_ASSERT( fader );
     Q_ASSERT( fadeOutLength > 0 );
 
-    m_fader->fadeOut( fadeOutLength );
+    m_fader.data()->fadeOut( fadeOutLength );
     // add a bit of a second so that the effect is not cut even if there are some delays
     QTimer::singleShot( fadeOutLength + safetyDelay, this, SLOT(slotFinalizeFadeout()) );
 
@@ -50,7 +50,7 @@ Fadeouter::~Fadeouter()
     if( m_fader )
         // warning: phonon-gstreamer bug 313551 (still present in 4.6.2) prevents
         // following call to succeed if a fade is still in progress
-        m_fader->fadeIn( safetyDelay ); // fade-in, just in case, be nice to ears
+        m_fader.data()->fadeIn( safetyDelay ); // fade-in, just in case, be nice to ears
 }
 
 void

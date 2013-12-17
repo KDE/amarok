@@ -64,7 +64,7 @@ class AMAROK_EXPORT Fadeouter : public QObject
         void slotFinalizeFadeout();
 
     private:
-        Phonon::VolumeFaderEffect *m_fader; // our parent, can never become null
+        QWeakPointer<Phonon::VolumeFaderEffect> m_fader;
 };
 
 #endif // FADEOUTER_H
