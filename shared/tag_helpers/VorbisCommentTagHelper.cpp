@@ -253,7 +253,10 @@ VorbisCommentTagHelper::embeddedCover() const
     }
     else if( m_tag->fieldListMap().contains( VORBIS_PICTURE_TAG ) )
     {
-        parsePictureBlock( m_tag->fieldListMap()[ VORBIS_PICTURE_TAG ] );
+        QImage resultCover;
+        parsePictureBlock( m_tag->fieldListMap()[ VORBIS_PICTURE_TAG ], &resultCover );
+        if( cover.isNull() && !resultCover.isNull() )
+            cover = resultCover;
     }
     else if( !fieldName( Meta::valHasCover ).isEmpty() )
     {

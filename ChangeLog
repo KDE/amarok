@@ -15,6 +15,8 @@ VERSION 2.9-Beta 1
      compilers currently supported by KDE.
 
   BUGFIXES:
+   * Also fetch cover art from xiph-comments with METADATA_BLOCK_PICTURE tag.
+     Patch by Martin Brodbeck <martin@brodbeck-online.de>. (BR 328451)
    * Fix crash on quit when Amarok is in the middle of fadeout. (BR 325723)
    * Prevent shared memory size errors for very large collections. (BR 327812)
    * Fix OpenGL related crash. (BR 327150)
