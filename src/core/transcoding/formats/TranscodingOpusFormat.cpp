@@ -100,8 +100,8 @@ OpusFormat::ffmpegParameters( const Configuration &configuration ) const
             if( property.name() == "bitrate" )
             {
                 int ffmpegBitrate = toFfmpegBitrate( configuration.property( "bitrate" ).toInt() );
-                parameters << "-ab"
-                           << QString::number( ffmpegBitrate );
+                parameters << "-ab" << QString::number( ffmpegBitrate );
+                parameters << "-vn"; // -vn == no video stream
             }
         }
     }

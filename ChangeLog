@@ -15,6 +15,7 @@ VERSION 2.9-Beta 1
      compilers currently supported by KDE.
 
   BUGFIXES:
+   * Prevent creation of video stream when transcoding to Opus. Patch by Martin Brodbeck.
    * Fix crash when starting Amarok with an iPod mounted. (BR 329498)
    * Also fetch cover art from xiph-comments with METADATA_BLOCK_PICTURE tag.
      Patch by Martin Brodbeck <martin@brodbeck-online.de>. (BR 328451)
