@@ -48,9 +48,6 @@ Configuration::property( QByteArray name ) const
 Configuration
 Configuration::fromConfigGroup( const KConfigGroup &serialized )
 {
-    Configuration invalid( INVALID );
-    Controller *controller = Amarok::Components::transcodingController();
-
     QString encoderName = serialized.readEntry( "Encoder", QString() );
     Encoder encoder = encoderNames().key( encoderName, INVALID );
     TrackSelection trackSelection = TrackSelection( serialized.readEntry( "TrackSelection", int( TranscodeAll ) ) );
@@ -58,11 +55,19 @@ Configuration::fromConfigGroup( const KConfigGroup &serialized )
     if( !ret.isValid() )
         return ret; // return ret, so that its trackSelection value may be used
 
-    Format *format = controller->format( ret.encoder() );
-    foreach( const Property &property, format->propertyList() )
+    Controller *controller = Amarok::Components::transcodingController();
+    // reset controller to 0 if it doesn't contain encoder to prevent bogus format() call
+    if( controller && !controller->allEncoders().contains( ret.encoder() ) )
+        controller = 0;
+    Format *format = controller ? controller->format( ret.encoder() ) : 0;
+
+    PropertyList emptyList;
+    foreach( const Property &property, format ? format->propertyList() : emptyList )
     {
+        Configuration invalid( INVALID );
         QString key = QString( "Parameter ").append( property.name() );
         QVariant value = serialized.readEntry( key, QString() /* does not work with QVariant() */ );
+
         if( !value.isValid() )
             return invalid;
         if( !value.convert( property.variantType() ) )
