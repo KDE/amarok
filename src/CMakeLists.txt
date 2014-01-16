@@ -549,6 +549,17 @@ kde4_add_ui_files(statsyncing_SRCS
 #####################################################################
 # TAG GUESSING
 #####################################################################
+# MusicBrainz Provider:
+set( tagguessing_core_SRCS
+    tagguessing/musicbrainz/MusicBrainzFinder.cpp
+    tagguessing/musicbrainz/MusicBrainzXmlParser.cpp )
+
+if ( LIBOFA_FOUND )
+    set( tagguessing_core_SRCS
+        tagguessing/musicbrainz/MusicDNSFinder.cpp
+        tagguessing/musicbrainz/MusicDNSXmlParser.cpp )
+endif ( LIBOFA_FOUND )
+
 set( tagguessing_core_SRCS
     tagguessing/Finder.cpp
     tagguessing/Provider.cpp
@@ -561,17 +572,6 @@ if( LIBOFA_FOUND )
     set( tagguessing_core_SRCS
         tagguessing/AudioToQStringDecoder.cpp )
 endif( LIBOFA_FOUND )
-
-# MusicBrainz Provider:
-set( tagguessing_core_SRCS
-    tagguessing/musicbrainz/MusicBrainzFinder.cpp
-    tagguessing/musicbrainz/MusicBrainzXmlParser.cpp )
-
-if ( LIBOFA_FOUND )
-    set( tagguessing_core_SRCS
-        tagguessing/musicbrainz/MusicDNSFinder.cpp
-        tagguessing/musicbrainz/MusicDNSXmlParser.cpp )
-endif ( LIBOFA_FOUND )
 
 ## AcoustID Provider:
 #if ( LIBOFA_FOUND )

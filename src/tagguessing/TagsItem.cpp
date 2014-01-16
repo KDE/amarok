@@ -491,10 +491,8 @@ TagsItem::operator==( const TagsItem* item ) const
            MATCH( Meta::Field::ALBUM, toString ) &&
            MATCH( Meta::Field::ALBUMARTIST, toString ) &&
            MATCH( Meta::Field::YEAR, toInt ) &&
-           MATCH( ::TRACKCOUNT, toInt ) &&
+           MATCH( TRACKCOUNT, toInt ) &&
            MATCH( Meta::Field::DISCNUMBER, toInt ) &&
            MATCH( Meta::Field::TRACKNUMBER, toInt );
 #undef MATCH
 }
-
-#include "TagsItem.moc"
