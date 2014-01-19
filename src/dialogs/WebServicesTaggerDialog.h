@@ -16,8 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef WEBSERVICESTAGGERDIALOG_H
-#define WEBSERVICESTAGGERDIALOG_H
+#ifndef WEB_SERVICES_TAGGER_DIALOG_H
+#define WEB_SERVICES_TAGGER_DIALOG_H
 
 #include <config.h>
 
@@ -84,4 +84,4 @@ class AMAROK_EXPORT WebServicesTaggerDialog : public KDialog
         QSortFilterProxyModel *m_resultsProxyModel;
 };
 
-#endif // WEBSERVICESTAGGERDIALOG_H
+#endif // WEB_SERVICES_TAGGER_DIALOG_H
