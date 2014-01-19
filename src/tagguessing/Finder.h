@@ -18,6 +18,7 @@
 #define FINDER_H
 
 #include "Provider.h"
+#include "Meta.h"
 
 #include <QObject>
 #include <QList>
@@ -36,6 +37,7 @@ namespace TagGuessing {
     public:
         Finder( QObject *parent );
         ~Finder();
+        bool isRunning();
     signals:
 
     public slots:

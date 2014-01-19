@@ -49,19 +49,19 @@ DecodedAudioData::~DecodedAudioData()
 }
 
 int
-DecodedAudioData::sRate()
+DecodedAudioData::sRate() const
 {
     return m_sRate;
 }
 
 quint8
-DecodedAudioData::channels()
+DecodedAudioData::channels() const
 {
     return m_channels;
 }
 
 int
-DecodedAudioData::setupInitial( const int sampleRate, const quint8 channels )
+DecodedAudioData::setupInitial( const int sampleRate, const quint8 &channels )
 {
     m_sRate = sampleRate;
     m_channels = channels;
@@ -69,25 +69,25 @@ DecodedAudioData::setupInitial( const int sampleRate, const quint8 channels )
 }
 
 const char *
-DecodedAudioData::data()
+DecodedAudioData::data() const
 {
     return m_data->data();
 }
 
 qint64
-DecodedAudioData::duration()
+DecodedAudioData::duration() const
 {
     return m_duration;
 }
 
 void
-DecodedAudioData::addTime( const qint64 ms )
+DecodedAudioData::addTime( const qint64 &ms )
 {
     m_duration += ms;
 }
 
 int
-DecodedAudioData::length()
+DecodedAudioData::length() const
 {
     return m_data->length();
 }

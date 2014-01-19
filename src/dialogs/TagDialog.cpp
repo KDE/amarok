@@ -37,7 +37,7 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverFetchingActions.h"
-#include "dialogs/WebServicesTagger.h"
+#include "dialogs/WebServicesTaggerDialog.h"
 #include "widgets/CoverLabel.h"
 #include "widgets/FilenameLayoutWidget.h"
 #include "ui_TagDialogBase.h" // needs to be after including CoverLabel, silly
@@ -1384,7 +1384,7 @@ TagDialog::webServicesTagger()
 {
     DEBUG_BLOCK
 
-    WebServicesTagger *dialog = new WebServicesTagger( m_tracks, this );
+    WebServicesTaggerDialog *dialog = new WebServicesTaggerDialog( m_tracks, this );
     dialog->setWindowTitle( i18n( "Web Services Tagger" ) );
     connect( dialog, SIGNAL(sendResult(QMap<Meta::TrackPtr,QVariantMap>)),
              this, SLOT(webServicesTaggerResult(QMap<Meta::TrackPtr,QVariantMap>)) );

@@ -20,8 +20,6 @@
 #include "core/meta/forward_declarations.h"
 #include "network/NetworkAccessManagerProxy.h"
 
-#include <QPointer>
-
 namespace TagGuessing{
 
     /**
@@ -57,9 +55,6 @@ namespace TagGuessing{
 
         NetworkAccessManagerProxy *m_net;
     };
-
-    typedef QPointer<Provider> ProviderPtr; // TODO check the need to change this to a, say, QExplicitlySharedDataPointer
-    typedef QPair<Meta::TrackPtr, QVariantMap> TrackInfo;
 }
 
 #endif // TAGGUESSING_PROVIDER_H

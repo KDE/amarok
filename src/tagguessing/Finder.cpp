@@ -35,6 +35,15 @@ Finder::~Finder()
     // the individual providers will be freed as "this" is their parent.
 }
 
+bool
+Finder::isRunning()
+{
+    foreach( const ProviderPtr &provider, m_providers )
+        if( provider->isRunning() )
+            return true;
+    return false;
+}
+
 void
 Finder::run( const Meta::TrackList &tracks )
 {

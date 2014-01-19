@@ -666,7 +666,7 @@ set(amaroklib_LIB_SRCS
     dialogs/DiagnosticDialog.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/EqualizerDialog.cpp
-    dialogs/WebServicesTagger.cpp
+    dialogs/WebServicesTaggerDialog.cpp
     dialogs/OrganizeCollectionDialog.cpp
     dialogs/TrackOrganizer.cpp
     dialogs/TagDialog.cpp

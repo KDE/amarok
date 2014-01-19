@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  * Copyright (c) 2013 Alberto Villa <avilla@FreeBSD.org>                                *
+ * Copyright (c) 2013 Vedant Agarwala <vedant.kota@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,7 +19,9 @@
 #ifndef TAGGUESSINGMETA_H
 #define TAGGUESSINGMETA_H
 
-#include <QString>
+#include "Provider.h"
+
+#include <QPointer>
 
 namespace TagGuessing
 {
@@ -35,6 +38,9 @@ namespace TagGuessing
 
     static const QString SIMILARITY     = "tg:similarity";
     static const qreal   MINSIMILARITY  = 0.6;
+
+    typedef QPointer<Provider> ProviderPtr; // TODO check the need to change this to a, say, QExplicitlySharedDataPointer
+    typedef QPair<Meta::TrackPtr, QVariantMap> TrackInfo;
 }
 
 #endif // TAGGUESSINGMETA_H

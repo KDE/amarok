@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  * Copyright (c) 2013 Alberto Villa <avilla@FreeBSD.org>                                *
+ * Copyright (c) 2013 Vedant Agarwala <vedant.kota@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,10 +16,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef WEBSERVICESTAGGER_H
-#define WEBSERVICESTAGGER_H
+#ifndef WEBSERVICESTAGGERDIALOG_H
+#define WEBSERVICESTAGGERDIALOG_H
 
 #include <config.h>
+
+#include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
 #include "tagguessing/Finder.h"
 
@@ -40,7 +43,7 @@ namespace TagGuessing {
     class TagsModelDelegate;
 }
 
-class WebServicesTagger : public KDialog
+class AMAROK_EXPORT WebServicesTaggerDialog : public KDialog
 {
     Q_OBJECT
 
@@ -48,9 +51,9 @@ class WebServicesTagger : public KDialog
         /**
          * @arg tracks Track list for search
          */
-        explicit WebServicesTagger( const Meta::TrackList &tracks,
+        explicit WebServicesTaggerDialog( const Meta::TrackList &tracks,
                                     QWidget *parent = 0 );
-        virtual ~WebServicesTagger();
+        virtual ~WebServicesTaggerDialog();
 
     signals:
         void sendResult( const QMap<Meta::TrackPtr, QVariantMap> result );
@@ -81,4 +84,4 @@ class WebServicesTagger : public KDialog
         QSortFilterProxyModel *m_resultsProxyModel;
 };
 
-#endif // WEBSERVICESTAGGER_H
+#endif // WEBSERVICESTAGGERDIALOG_H

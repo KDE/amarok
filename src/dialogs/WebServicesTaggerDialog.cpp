@@ -17,7 +17,7 @@
 
 #define DEBUG_PREFIX "MusicBrainzTagDialog"
 
-#include "WebServicesTagger.h"
+#include "WebServicesTaggerDialog.h"
 
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
@@ -38,7 +38,7 @@
 #include <QToolBar>
 #include <QToolButton>
 
-WebServicesTagger::WebServicesTagger( const Meta::TrackList &tracks,
+WebServicesTaggerDialog::WebServicesTaggerDialog( const Meta::TrackList &tracks,
                                       QWidget *parent )
     : KDialog( parent )
     , ui( new Ui::WebServicesTagger() )
@@ -56,7 +56,7 @@ WebServicesTagger::WebServicesTagger( const Meta::TrackList &tracks,
     search();
 }
 
-WebServicesTagger::~WebServicesTagger()
+WebServicesTaggerDialog::~WebServicesTaggerDialog()
 {
     KConfigGroup group = Amarok::config( "MusicBrainzTagDialog" );
     saveDialogSize( group );
@@ -64,7 +64,7 @@ WebServicesTagger::~WebServicesTagger()
 }
 
 void
-WebServicesTagger::init()
+WebServicesTaggerDialog::init()
 {
     DEBUG_BLOCK
     setButtons( KDialog::None );
@@ -140,7 +140,7 @@ WebServicesTagger::init()
 }
 
 void
-WebServicesTagger::search()
+WebServicesTaggerDialog::search()
 {
     int barSize = m_tracks.count();
     m_tagFinder->run( m_tracks );
@@ -156,7 +156,7 @@ WebServicesTagger::search()
 }
 
 void
-WebServicesTagger::saveAndExit()
+WebServicesTaggerDialog::saveAndExit()
 {
     QMap<Meta::TrackPtr, QVariantMap> result = m_resultsModel->chosenItems();
 
@@ -167,7 +167,7 @@ WebServicesTagger::saveAndExit()
 }
 
 void
-WebServicesTagger::searchDone()
+WebServicesTaggerDialog::searchDone()
 {
     DEBUG_BLOCK
 #ifdef HAVE_LIBOFA
@@ -182,7 +182,7 @@ WebServicesTagger::searchDone()
 
 #ifdef HAVE_LIBOFA
 void
-WebServicesTagger::mdnsSearchDone()
+WebServicesTaggerDialog::mdnsSearchDone()
 {
     DEBUG_BLOCK
     mdns_searchDone = true;
@@ -192,9 +192,9 @@ WebServicesTagger::mdnsSearchDone()
 #endif
 
 void
-WebServicesTagger::progressStep()
+WebServicesTaggerDialog::progressStep()
 {
     ui->progressBar->setValue( ui->progressBar->value() + 1 );
 }
 
-#include "WebServicesTagger.moc"
+#include "WebServicesTaggerDialog.moc"
