@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
+ * Copyright (c) 2013 Vedant Agarwala <vedant.kota@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

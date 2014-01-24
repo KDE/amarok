@@ -50,7 +50,7 @@ WebServicesTaggerDialog::WebServicesTaggerDialog( const Meta::TrackList &tracks,
             m_tracks << track;
     }
     ui->setupUi( mainWidget() );
-    restoreDialogSize( Amarok::config( "MusicBrainzTagDialog" ) );
+    restoreDialogSize( Amarok::config( "MusicBrainzTagDialog" ) ); // TODO change name in Amarok 3.0
 
     init();
     search();
@@ -58,7 +58,7 @@ WebServicesTaggerDialog::WebServicesTaggerDialog( const Meta::TrackList &tracks,
 
 WebServicesTaggerDialog::~WebServicesTaggerDialog()
 {
-    KConfigGroup group = Amarok::config( "MusicBrainzTagDialog" );
+    KConfigGroup group = Amarok::config( "MusicBrainzTagDialog" ); // TODO change name in Amarok 3.0
     saveDialogSize( group );
     delete ui;
 }
@@ -124,13 +124,6 @@ WebServicesTaggerDialog::init()
     ui->progressBar->hide();
 
     m_tagFinder = new TagGuessing::Finder( this );
-#ifdef HAVE_LIBOFA
-    mdns_finder = new MusicDNSFinder( this );
-    connect( mdns_finder, SIGNAL(trackFound(Meta::TrackPtr,QString)),
-             m_tagFinder, SLOT(lookUpByPUID(Meta::TrackPtr,QString)) );
-    connect( mdns_finder, SIGNAL(progressStep()), SLOT(progressStep()) );
-    connect( mdns_finder, SIGNAL(done()), this, SLOT(mdnsSearchDone()) );
-#endif
     connect( m_tagFinder, SIGNAL(done()), SLOT(searchDone()) );
     connect( m_tagFinder, SIGNAL(trackFound(Meta::TrackPtr,QVariantMap)),
              m_resultsModel, SLOT(addTrack(Meta::TrackPtr,QVariantMap)) );
@@ -142,13 +135,8 @@ WebServicesTaggerDialog::init()
 void
 WebServicesTaggerDialog::search()
 {
-    int barSize = m_tracks.count();
     m_tagFinder->run( m_tracks );
-#ifdef HAVE_LIBOFA
-    barSize *= 2;
-    mdns_searchDone = false;
-    mdns_finder->run( m_tracks );
-#endif
+    int barSize = m_tagFinder->getProgressBarSizeMultiplier()*m_tracks.size();
     ui->progressBar->setRange( 0, barSize );
     ui->progressBar->setValue( 0 );
     ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Ignored );
@@ -169,27 +157,11 @@ WebServicesTaggerDialog::saveAndExit()
 void
 WebServicesTaggerDialog::searchDone()
 {
-    DEBUG_BLOCK
-#ifdef HAVE_LIBOFA
-    if( !mdns_searchDone )
-        return;
-#endif
     ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Expanding );
     ui->progressBar->hide();
     ui->resultsView->expandAll();
     ui->resultsView->header()->resizeSections( QHeaderView::ResizeToContents );
 }
-
-#ifdef HAVE_LIBOFA
-void
-WebServicesTaggerDialog::mdnsSearchDone()
-{
-    DEBUG_BLOCK
-    mdns_searchDone = true;
-    if( !m_tagFinder->isRunning() )
-        searchDone();
-}
-#endif
 
 void
 WebServicesTaggerDialog::progressStep()

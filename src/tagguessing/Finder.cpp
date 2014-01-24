@@ -44,6 +44,16 @@ Finder::isRunning()
     return false;
 }
 
+int
+Finder::getProgressBarSizeMultiplier()
+{
+    int multiplier = m_providers.size();
+#ifdef LIBOFA_FOUND
+    multiplier++;
+#endif
+    return multiplier;
+}
+
 void
 Finder::run( const Meta::TrackList &tracks )
 {

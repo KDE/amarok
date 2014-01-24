@@ -84,6 +84,12 @@ MusicBrainzFinder::MusicBrainzFinder( QObject *parent, const QString &host,
     connect( m_net, SIGNAL(finished(QNetworkReply*)),
              SLOT(gotReply(QNetworkReply*)) );
     connect( m_timer, SIGNAL(timeout()), SLOT(sendNewRequest()) );
+#ifdef HAVE_LIBOFA
+    m_musicDnsFinder = new MusicDNSFinder( this );
+    connect( m_musicDnsFinder, SIGNAL(trackFound(Meta::TrackPtr,QString)), SLOT(lookUpByPUID(Meta::TrackPtr,QString)) );
+    connect( m_musicDnsFinder, SIGNAL(progressStep()), SLOT(progressStep()) );
+    connect( m_musicDnsFinder, SIGNAL(done()), SLOT(mdnsSearchDone()) );
+#endif
 }
 
 bool
@@ -96,6 +102,10 @@ MusicBrainzFinder::isRunning() const
 void
 MusicBrainzFinder::run( const Meta::TrackList &tracks )
 {
+#ifdef HAVE_LIBOFA
+    m_musicDnsSearchDone = false;
+    m_musicDnsFinder->run( m_tracks );
+#endif
     foreach( const Meta::TrackPtr &track, tracks )
         m_requests.append( qMakePair( track, compileTrackRequest( track ) ) );
 
@@ -441,6 +451,15 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
     checkDone();
 }
 
+#ifdef HAVE_LIBOFA
+void
+MusicBrainzFinder::mdnsSearchDone()
+{
+    DEBUG_BLOCK
+    m_musicDnsSearchDone = true;
+    checkDone();
+}
+#endif
 
 void
 MusicBrainzFinder::sendTrack( const Meta::TrackPtr &track, QVariantMap tags )
@@ -497,6 +516,11 @@ MusicBrainzFinder::sendTrack( const Meta::TrackPtr &track, QVariantMap tags )
 void
 MusicBrainzFinder::checkDone()
 {
+    DEBUG_BLOCK
+#ifdef HAVE_LIBOFA
+    if( !m_musicDnsSearchDone )
+        return;
+#endif
     if( m_requests.isEmpty() && m_replies.isEmpty() && m_parsers.isEmpty() )
     {
         /*

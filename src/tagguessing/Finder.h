@@ -38,6 +38,7 @@ namespace TagGuessing {
         Finder( QObject *parent );
         ~Finder();
         bool isRunning();
+        int getProgressBarSizeMultiplier() const;
     signals:
 
     public slots:

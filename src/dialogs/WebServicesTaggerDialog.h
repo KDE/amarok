@@ -62,9 +62,6 @@ class AMAROK_EXPORT WebServicesTaggerDialog : public KDialog
         void search();
         void progressStep();
         void searchDone();
-#ifdef HAVE_LIBOFA
-        void mdnsSearchDone();
-#endif
         void saveAndExit();
 
     private:
@@ -75,10 +72,6 @@ class AMAROK_EXPORT WebServicesTaggerDialog : public KDialog
         Meta::TrackList m_tracks;
 
         TagGuessing::Finder *m_tagFinder;
-#ifdef HAVE_LIBOFA
-        MusicDNSFinder *mdns_finder;
-        bool mdns_searchDone;
-#endif
         TagGuessing::TagsModel *m_resultsModel;
         TagGuessing::TagsModelDelegate *m_resultsModelDelegate;
         QSortFilterProxyModel *m_resultsProxyModel;

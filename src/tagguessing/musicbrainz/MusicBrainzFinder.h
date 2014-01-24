@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  * Copyright (c) 2013 Alberto Villa <avilla@FreeBSD.org>                                *
+ * Copyright (c) 2013 Vedant Agarwala <vedant.kota@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,6 +22,7 @@
 #include "Version.h"
 #include "tagguessing/Provider.h"
 #include "tagguessing/musicbrainz/MusicBrainzXmlParser.h"
+#include "MusicDNSFinder.h"
 
 class MusicBrainzFinder : public TagGuessing::Provider
 {
@@ -53,6 +55,9 @@ class MusicBrainzFinder : public TagGuessing::Provider
         void gotReply( QNetworkReply *reply );
 
         void parsingDone( ThreadWeaver::Job *_parser );
+#ifdef HAVE_LIBOFA
+        void mdnsSearchDone();
+#endif
 
     private:
         QVariantMap guessMetadata( const Meta::TrackPtr &track ) const;
@@ -81,6 +86,11 @@ class MusicBrainzFinder : public TagGuessing::Provider
 
         QMap<QString, QVariantMap> mb_releaseGroups;
         QMap<QString, QList<TagGuessing::TrackInfo> > mb_queuedTracks;
+
+#ifdef HAVE_LIBOFA
+        MusicDNSFinder *m_musicDnsFinder;
+        bool m_musicDnsSearchDone;
+#endif
 };
 
 #endif // MUSICBRAINZFINDER_H
