@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=AMZ Downloader
+Name[bs]=AMZ Downloader
 Name[ca]=AMZ Downloader
 Name[ca@valencia]=AMZ Downloader
 Name[cs]=Stahovač AMZ
@@ -37,6 +38,7 @@ Name[x-test]=xxAMZ Downloaderxx
 Name[zh_CN]=AMZ 下载器
 Name[zh_TW]=AMZ 下載器
 Comment=Download with AMZ Downloader
+Comment[bs]=Skini sa AMZ Downloaderom
 Comment[ca]=Baixa amb AMZ Downloader
 Comment[ca@valencia]=Baixa amb AMZ Downloader
 Comment[cs]=Stáhnout stahovačem AMZ

@@ -9,6 +9,7 @@ X-KDE-ParentApp=amarok_service_amazonstore
 X-KDE-ParentComponents=amarok_service_amazonstore
 
 Name=Amazon Store Service Config
+Name[bs]=Postavke usluga Amazon prodavnice
 Name[ca]=Configuració del servei d'Amazon Store
 Name[ca@valencia]=Configuració del servei d'Amazon Store
 Name[cs]=Nastavení služby Amazon Store
