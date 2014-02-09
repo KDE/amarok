@@ -19,10 +19,12 @@
 #include "PluginManager.h"
 
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "services/ServicePluginManager.h"
+#include "statsyncing/Controller.h"
 
 #include <KLocalizedString>
 #include <KMessageBox>
@@ -94,6 +96,14 @@ Plugins::PluginManager::init()
     m_factories[ key ] = createFactories( key );
     m_servicePluginManager->init( m_factories.value( key ) );
     PERF_LOG( "Loaded service plugins" )
+
+    PERF_LOG( "Loading importer plugins" )
+    key = QLatin1String( "Importer" );
+    m_factories[ key ] = createFactories( key );
+    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+    if( controller )
+        controller->handleNewFactories( m_factories.value( key ) );
+    PERF_LOG( "Loaded importer plugins" )
 }
 
 QList<Plugins::PluginFactory*>

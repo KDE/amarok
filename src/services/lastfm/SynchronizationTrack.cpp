@@ -80,34 +80,16 @@ SynchronizationTrack::firstPlayed() const
     return QDateTime(); // no support on Last.fm side yet
 }
 
-void
-SynchronizationTrack::setFirstPlayed( const QDateTime &firstPlayed )
-{
-    Q_UNUSED( firstPlayed );
-}
-
 QDateTime
 SynchronizationTrack::lastPlayed() const
 {
     return QDateTime(); // no support on Last.fm side yet
 }
 
-void
-SynchronizationTrack::setLastPlayed( const QDateTime &lastPlayed )
-{
-    Q_UNUSED( lastPlayed );
-}
-
 int
 SynchronizationTrack::playCount() const
 {
     return m_playCount;
-}
-
-void
-SynchronizationTrack::setPlayCount( int playCount )
-{
-    Q_UNUSED( playCount ); // we would have to scrobble, but we wouldn't know time
 }
 
 QSet<QString>

@@ -383,8 +383,8 @@ TrackTuple::syncedLabels( const Options &options, const ProviderPtrSet &labelPro
     return labelsCandidate;
 }
 
-int
-TrackTuple::synchronize( const Options &options )
+ProviderPtrSet
+TrackTuple::synchronize( const Options &options ) const
 {
     ProviderPtrSet updatedProviders;
     foreach( qint64 field, s_fields )
@@ -450,6 +450,6 @@ TrackTuple::synchronize( const Options &options )
     }
 
     foreach( const ProviderPtr &provider, updatedProviders )
-        track( provider )->commit();;
-    return updatedProviders.count();
+        track( provider )->commit();
+    return updatedProviders;
 }

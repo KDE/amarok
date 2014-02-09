@@ -5,10 +5,18 @@ Amarok ChangeLog
 
 VERSION 2.9-Beta 1
   FEATURES:
+   * Statistics synchronization between Amarok collections and
+     Amarok 1.4, Amarok 2.x, Apple iTunes, Banshee, Clementine, and
+     Rhythmbox track databases.
    * Usability of the Organize Files dialog has been improved.
    * Wikipedia can now be also used over SSL.
 
   CHANGES:
+   * "Import" button under Configure Amarok -> Local Collection no longer
+     serves to import statistics from Amarok 1.4 and iTunes, and has been
+     renamed to "Import batch file" to reflect the change.
+   * Configure Amarok -> Metadata tab includes new buttons to add and
+     reconfigure synchronization targets.
    * When ffmpeg is not available, the Transcode dialog is no longer skipped; info message
      is shown instead. Patch by Jai Luthra. (BR 317902)
    * Amarok now uses some C++11 features. The subset used is defined by the 

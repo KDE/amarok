@@ -44,12 +44,16 @@ class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
         void slotUpdateForgetButton();
         void slotUpdateConfigureExcludedLabelsLabel();
         void slotConfigureExcludedLabels();
+        void slotConfigureProvider();
+        void slotUpdateProviderConfigureButton();
+        void slotCreateProviderDialog();
 
     private:
         int writeBackCoverDimensions() const;
         qint64 checkedFields() const;
 
         QWeakPointer<StatSyncing::Config> m_statSyncingConfig;
+
 };
 
 #endif // METADATACONFIG_H

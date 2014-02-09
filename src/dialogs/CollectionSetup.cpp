@@ -67,8 +67,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
     connect( rescan, SIGNAL(clicked()), CollectionManager::instance(), SLOT(startFullScan()) );
 
-    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import" ), m_ui.buttonContainer );
-    import->setToolTip( i18n( "Import collection and/or statistics from older Amarok versions, the batch scanner or media players." ) );
+    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import batch file" ), m_ui.buttonContainer );
+    import->setToolTip( i18n( "Import collection from file produced by amarokcollectionscanner." ) );
     connect( import, SIGNAL(clicked()), this, SLOT(importCollection()) );
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();

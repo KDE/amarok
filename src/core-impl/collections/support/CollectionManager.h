@@ -67,6 +67,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
          */
         QList<Collections::Collection*> queryableCollections() const;
 
+        //TODO: Remove
         /**
           * Allows access to one of Amarok's collection.
           *

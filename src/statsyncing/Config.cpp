@@ -181,6 +181,7 @@ Config::forgetProvider( const QString &id )
             it.remove();
             m_hasChanged = true;
             endRemoveRows();
+            emit providerForgotten( id );
             return true;
         }
         i++;

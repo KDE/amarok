@@ -20,6 +20,15 @@
 
 using namespace StatSyncing;
 
+ProviderConfigWidget::ProviderConfigWidget( QWidget *parent, Qt::WindowFlags f )
+    : QWidget( parent, f )
+{
+}
+
+ProviderConfigWidget::~ProviderConfigWidget()
+{
+}
+
 Provider::Provider()
 {
     // ensure this object is created in a main thread
@@ -34,4 +43,27 @@ QString
 Provider::description() const
 {
     return QString();
+}
+
+bool
+Provider::isConfigurable() const
+{
+    return false;
+}
+
+ProviderConfigWidget*
+Provider::configWidget()
+{
+    return 0;
+}
+
+void
+Provider::reconfigure( const QVariantMap &config )
+{
+    Q_UNUSED( config )
+}
+
+void
+Provider::commitTracks()
+{
 }

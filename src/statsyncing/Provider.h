@@ -26,9 +26,29 @@
 #include <QMap>
 #include <QSet>
 #include <QString>
+#include <QVariantMap>
+#include <QWidget>
 
 namespace StatSyncing
 {
+    /**
+     * A widget class used for configuring providers.
+     */
+    class AMAROK_EXPORT ProviderConfigWidget : public QWidget
+    {
+        Q_OBJECT
+
+        public:
+            explicit ProviderConfigWidget( QWidget *parent, Qt::WindowFlags f = 0 );
+            virtual ~ProviderConfigWidget();
+
+            /**
+             * Return a QVariantMap holding configuration for the provider. Types stored
+             * in QVariantMap must be supported by @see KConfigGroup .
+             */
+            virtual QVariantMap config() const = 0;
+    };
+
     /**
      * A class that can provide tracks for statistics synchronization. It can be backed
      * by local Amarok collections or by online services such as Last.fm.
@@ -68,6 +88,26 @@ namespace StatSyncing
             virtual KIcon icon() const = 0;
 
             /**
+             * Return true if this provider can be reconfigured after creation. Returns
+             * false by default.
+             */
+            virtual bool isConfigurable() const;
+
+            /**
+             * Return a ProviderConfigWidget of configuration widget for this provider.
+             * Returns a null pointer by default. Please note that Provider does *not*
+             * retain ownership of this pointer, therefore should always return a new
+             * instance.
+             */
+            virtual ProviderConfigWidget *configWidget();
+
+            /**
+             * Reconfigure the provider using configuration stored in @param config.
+             * Does nothing by default.
+             */
+            virtual void reconfigure( const QVariantMap &config );
+
+            /**
              * Return binary OR of Meta::val* fields that this provider knows about its
              * tracks. Must include at least: Meta::valTitle, Meta::valArtist and
              * Meta::valAlbum. Optional fields: Meta::valComposer, Meta::valYear
@@ -86,8 +126,8 @@ namespace StatSyncing
                 Never, /// never synchronize automatically
                 NoByDefault, /// don't synchronize automatically by default
                 Ask, /// ask on first appearance whether to synchronize by default
-                YesByDefault, /// enable auto syncing on first appearance without asking
-                              /// intended only for Local Collection
+                YesByDefault /// enable auto syncing on first appearance without asking
+                             /// intended only for Local Collection
             };
 
             /**
@@ -119,6 +159,16 @@ namespace StatSyncing
              */
             virtual TrackList artistTracks( const QString &artistName ) = 0;
 
+            /**
+             * Write back statistics to the underlying storage for all updated tracks
+             * managed by this provider that weren't yet saved. Default implementation
+             * does nothing.
+             *
+             * Guaranteed to be (and must be) called from non-main thread. Can block for
+             * a longer time.
+             */
+            virtual void commitTracks();
+
         signals:
             /**
              * Emitted when some data such as prettyName() were updated.
@@ -134,6 +184,7 @@ namespace StatSyncing
      * Container for a set of track frovider lists, one for each provider
      */
     typedef QMap<ProviderPtr, TrackList> PerProviderTrackList;
+
 } // namespace StatSyncing
 
 #endif // STATSYNCING_PROVIDER_H

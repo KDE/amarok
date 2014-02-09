@@ -37,7 +37,8 @@ namespace StatSyncing
      * Abstract representation of a track (either from Amarok or from scrobbling services).
      *
      * This class is used to perform track matching and synchronization. It must be
-     * implemented in a thread-safe way.
+     * implemented in a thread-safe way. For optimal track matching, all string fields
+     * should be trimmed of whitespace.
      *
      * Note: This will be probably morphed into Meta::Track someday, keep the interface
      * compatible as much as possible.
@@ -104,21 +105,36 @@ namespace StatSyncing
              * rated - return this value if you don't know the rating
              */
             virtual int rating() const = 0;
-            virtual void setRating( int rating ) = 0;
+            /**
+             * Set user-assigned rating on scale from 0 to 10. Default implementation
+             * does nothing.
+             * @param rating the user-assigned rating
+             */
+            virtual void setRating( int rating );
 
             /**
              * Get date when the track was first played or invalid date if this is not
              * known or the track was not yet played
              */
             virtual QDateTime firstPlayed() const = 0;
-            virtual void setFirstPlayed( const QDateTime &firstPlayed ) = 0;
+            /**
+             * Set date when the track was first played. Default implementation does
+             * nothing.
+             * @param firstPlayed the date the track was first played
+             */
+            virtual void setFirstPlayed( const QDateTime &firstPlayed );
 
             /**
              * Get date when the track was last played or invalid date if this is not
              * known or the track was not yet played
              */
             virtual QDateTime lastPlayed() const = 0;
-            virtual void setLastPlayed( const QDateTime &lastPlayed ) = 0;
+            /**
+             * Set date when the track was last played. Default implementation does
+             * nothing.
+             * @param lastPlayed the date the track was last played
+             */
+            virtual void setLastPlayed( const QDateTime &lastPlayed );
 
             /**
              * Get count of the track plays; return 0 in doubt
@@ -126,17 +142,25 @@ namespace StatSyncing
             virtual int playCount() const = 0;
             /**
              * Return play count on device since it has been last connected to a computer.
-             * This number is _already_ _included_ in playcount()! Setting playcount
-             * must reset recent playcount to 0.
+             * This number is _already_ _included_ in playcount()!
              */
             virtual int recentPlayCount() const;
-            virtual void setPlayCount( int playCount ) = 0;
+            /**
+             * Set count of the track plays. Setting playcount must reset recent
+             * playcount to 0. Default implementation does nothing.
+             * @param playCount the count of the track plays
+             */
+            virtual void setPlayCount( int playCount );
 
             /**
              * Get user-assigned track labels or empty set if there are none
              */
             virtual QSet<QString> labels() const = 0;
-            virtual void setLabels( const QSet<QString> &labels ) = 0;
+            /**
+             * Set user-assigned track labels. Default implementation does nothing.
+             * @param labels the track labels
+             */
+            virtual void setLabels( const QSet<QString> &labels );
 
             /**
              * If this StatSyncing::Track represents a Meta::Track, this method returns a
@@ -150,13 +174,15 @@ namespace StatSyncing
 
             /**
              * Write back statistics to the underlying storage. You must call this function
-             * after calling any of the set* methods. The track may decide whether the
-             * actual writeback happens in set* or in commit().
+             * after calling any of the set* methods *and* you must you must call
+             * Provider::commitTracks() at some later point. The implementation may decide
+             * whether the actual writeback happens in set*, in commit() or in
+             * Provider::commitTracks() . Default implementation does nothing.
              *
              * Guaranteed to be (and must be) called from non-main thread. Can block for
              * a longer time.
              */
-            virtual void commit() = 0;
+            virtual void commit();
 
         private:
             Q_DISABLE_COPY(Track)

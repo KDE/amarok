@@ -1,0 +1,17 @@
+The files in this directory are used for importers' acceptance tests.
+These are database files created by different media players, describing
+music files found in ./testcollection directory.
+Because the database files all describe the same set of tracks,
+associated importers can be tested by the same set of generic tests
+(contained in ../TestImporterBase.cpp).
+
+Music files contained in ./testcollection/ are only stored to ease
+creation of database files for any future importing targets, or
+modification of current database files in case of schema changes, etc.
+These files are tiny (< the block size) mp3 tracks containing various
+id3v2 tags.
+
+When creating a new database file, in addition to importing files
+from ./testcollection/ , please follow the directions outlined in
+../TestImporterBase.h
+

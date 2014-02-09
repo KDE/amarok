@@ -1,0 +1,2165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Major Version</key><integer>1</integer>
+	<key>Minor Version</key><integer>1</integer>
+	<key>Date</key><date>2013-09-02T15:29:20Z</date>
+	<key>Application Version</key><string>11.0.4</string>
+	<key>Features</key><integer>5</integer>
+	<key>Show Content Ratings</key><true/>
+	<key>Music Folder</key><string>file://localhost/C:/Documents%20and%20Settings/Konrad/My%20Documents/My%20Music/iTunes/iTunes%20Media/</string>
+	<key>Library Persistent ID</key><string>16428B78086CAFA8</string>
+	<key>Tracks</key>
+	<dict>
+		<key>116</key>
+		<dict>
+			<key>Track ID</key><integer>116</integer>
+			<key>Name</key><string>tiTle</string>
+			<key>Artist</key><string>caseSensitiveTitle</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>9C4544E092B77348</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveTitle3.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>118</key>
+		<dict>
+			<key>Track ID</key><integer>118</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>utfComposer</string>
+			<key>Composer</key><string>豈更車</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>410455F247B2741E</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/utfComposer.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>120</key>
+		<dict>
+			<key>Track ID</key><integer>120</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>caseSensitiveartist</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>4F76B4B39B505439</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveArtist3.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>122</key>
+		<dict>
+			<key>Track ID</key><integer>122</integer>
+			<key>Name</key><string>title1</string>
+			<key>Artist</key><string>trimAlbum</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>C4C27279B7563A02</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimAlbum1.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>124</key>
+		<dict>
+			<key>Track ID</key><integer>124</integer>
+			<key>Name</key><string>title0</string>
+			<key>Artist</key><string>testStatistics</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>20</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:01Z</date>
+			<key>Play Count</key><integer>20</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>310D1121DBB1D083</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatistics0.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>126</key>
+		<dict>
+			<key>Track ID</key><integer>126</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>casesensitiveartist</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>872D683092CF2F10</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveArtist2.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>128</key>
+		<dict>
+			<key>Track ID</key><integer>128</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>caseSensitiveTitle</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>F57A1400408D8B55</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveTitle1.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>130</key>
+		<dict>
+			<key>Track ID</key><integer>130</integer>
+			<key>Name</key><string>title8</string>
+			<key>Artist</key><string>testStatistics</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>100</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:17Z</date>
+			<key>Play Count</key><integer>3</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>02F109EA912BAB55</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatistics8.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>132</key>
+		<dict>
+			<key>Track ID</key><integer>132</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>caseSensitiveComposer</string>
+			<key>Composer</key><string>comPoser</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>3A2577A9FDCE5B30</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveComposer3.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>134</key>
+		<dict>
+			<key>Track ID</key><integer>134</integer>
+			<key>Name</key><string>title9</string>
+			<key>Artist</key><string>testStatistics</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>100</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:19Z</date>
+			<key>Play Count</key><integer>2</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>DCA1B1B3822A3C37</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatistics9.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>136</key>
+		<dict>
+			<key>Track ID</key><integer>136</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>multiWordAlbum</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>al b um</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2048</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:58:09Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>E65FC558CA37254A</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/multiWordAlbum.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>138</key>
+		<dict>
+			<key>Track ID</key><integer>138</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>utfAlbum</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>賈滑串</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2048</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:58:09Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>8BB83BA2541524DC</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/utfAlbum.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>140</key>
+		<dict>
+			<key>Track ID</key><integer>140</integer>
+			<key>Name</key><string>title3</string>
+			<key>Artist</key><string>trimTitle</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>974D0661D5521111</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimTitle3.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>142</key>
+		<dict>
+			<key>Track ID</key><integer>142</integer>
+			<key>Name</key><string>title1</string>
+			<key>Artist</key><string>testStatisticsNotSet</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>20</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:03Z</date>
+			<key>Play Count</key><integer>15</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>AFB3F7B03639127A</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatisticsNotSet1.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>144</key>
+		<dict>
+			<key>Track ID</key><integer>144</integer>
+			<key>Name</key><string>title0</string>
+			<key>Artist</key><string>testStatisticsNotSet</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>E17AA29323D46DAC</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatisticsNotSet0.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>146</key>
+		<dict>
+			<key>Track ID</key><integer>146</integer>
+			<key>Name</key><string>title3</string>
+			<key>Artist</key><string>testStatisticsNotSet</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:07Z</date>
+			<key>Play Count</key><integer>13</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>564482C866A43259</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatisticsNotSet3.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>148</key>
+		<dict>
+			<key>Track ID</key><integer>148</integer>
+			<key>Name</key><string>title6</string>
+			<key>Artist</key><string>testStatisticsNotSet</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Play Count</key><integer>7</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>85BF17C2FB7200CF</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatisticsNotSet6.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>150</key>
+		<dict>
+			<key>Track ID</key><integer>150</integer>
+			<key>Name</key><string>title2</string>
+			<key>Artist</key><string>trimTitle</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>61B53817E34E9B29</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimTitle2.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>152</key>
+		<dict>
+			<key>Track ID</key><integer>152</integer>
+			<key>Name</key><string>title7</string>
+			<key>Artist</key><string>testStatisticsNotSet</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>80</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:15Z</date>
+			<key>Play Count</key><integer>5</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>6740FCCC0F8AB121</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatisticsNotSet7.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>154</key>
+		<dict>
+			<key>Track ID</key><integer>154</integer>
+			<key>Name</key><string>title2</string>
+			<key>Artist</key><string>trimComposer</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>7118F54A65FA31FA</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimComposer2.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>156</key>
+		<dict>
+			<key>Track ID</key><integer>156</integer>
+			<key>Name</key><string>title2</string>
+			<key>Artist</key><string>testStatisticsNotSet</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>40</integer>
+			<key>Play Count</key><integer>14</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>359EBF1851185CFB</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatisticsNotSet2.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>158</key>
+		<dict>
+			<key>Track ID</key><integer>158</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>multi Word Artist</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>413668C3831F9C2C</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/multiWordArtist.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>160</key>
+		<dict>
+			<key>Track ID</key><integer>160</integer>
+			<key>Name</key><string>title3</string>
+			<key>Artist</key><string>trimAlbum</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:24Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>4C7FBD31700F9A4E</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimAlbum3.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>162</key>
+		<dict>
+			<key>Track ID</key><integer>162</integer>
+			<key>Name</key><string>title3</string>
+			<key>Artist</key><string>trimComposer</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>048E7935566E891F</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimComposer3.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>164</key>
+		<dict>
+			<key>Track ID</key><integer>164</integer>
+			<key>Name</key><string>title4</string>
+			<key>Artist</key><string>testStatisticsNotSet</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>60</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>A057EFC447490F91</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatisticsNotSet4.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>166</key>
+		<dict>
+			<key>Track ID</key><integer>166</integer>
+			<key>Name</key><string>Title</string>
+			<key>Artist</key><string>caseSensitiveTitle</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>8D4546409D4DB84E</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveTitle2.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>168</key>
+		<dict>
+			<key>Track ID</key><integer>168</integer>
+			<key>Name</key><string>句龜龜</string>
+			<key>Artist</key><string>utfTitle</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>20ECA6634A854A3A</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/utfTitle.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>170</key>
+		<dict>
+			<key>Track ID</key><integer>170</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>composerUnset</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>AB28F650F3137E7E</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/composerUnset.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>172</key>
+		<dict>
+			<key>Track ID</key><integer>172</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>caseSensitiveComposer</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>18F4C584EE4EE369</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveComposer1.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>174</key>
+		<dict>
+			<key>Track ID</key><integer>174</integer>
+			<key>Name</key><string>title3</string>
+			<key>Artist</key><string>testStatistics</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>40</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:07Z</date>
+			<key>Play Count</key><integer>13</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>A27AC4A0DABDF01A</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatistics3.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>176</key>
+		<dict>
+			<key>Track ID</key><integer>176</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>caseSensitiveAlbum</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>B81D1487AD4061FC</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveAlbum1.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>178</key>
+		<dict>
+			<key>Track ID</key><integer>178</integer>
+			<key>Name</key><string>title9</string>
+			<key>Artist</key><string>testStatisticsNotSet</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:19Z</date>
+			<key>Play Count</key><integer>2</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>AC94F88145ED0B7E</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatisticsNotSet9.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>180</key>
+		<dict>
+			<key>Track ID</key><integer>180</integer>
+			<key>Name</key><string>title1</string>
+			<key>Artist</key><string>testStatistics</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>20</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:03Z</date>
+			<key>Play Count</key><integer>15</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>0F0CFF42836492BD</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatistics1.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>182</key>
+		<dict>
+			<key>Track ID</key><integer>182</integer>
+			<key>Name</key><string>title1</string>
+			<key>Artist</key><string>trimComposer</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>EBDFA6DBF5583054</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimComposer1.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>184</key>
+		<dict>
+			<key>Track ID</key><integer>184</integer>
+			<key>Name</key><string>title5</string>
+			<key>Artist</key><string>testStatistics</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>60</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:11Z</date>
+			<key>Play Count</key><integer>10</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>8BD228EE500E23C6</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatistics5.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>186</key>
+		<dict>
+			<key>Track ID</key><integer>186</integer>
+			<key>Name</key><string>title3</string>
+			<key>Artist</key><string>trimArtist</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>D248FA28468B9DD1</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimArtist3.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>188</key>
+		<dict>
+			<key>Track ID</key><integer>188</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>trackUnset</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>1FFF8E518949072A</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trackUnset.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>190</key>
+		<dict>
+			<key>Track ID</key><integer>190</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>caseSensitiveAlbum</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>alBum</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2048</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:58:09Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>BCDBC923E4C2AE23</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveAlbum3.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>192</key>
+		<dict>
+			<key>Track ID</key><integer>192</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>caseSensitiveAlbum</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>Album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2048</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:58:09Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>3D5E436DECDB9A71</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveAlbum2.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>194</key>
+		<dict>
+			<key>Track ID</key><integer>194</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>albumUnset</string>
+			<key>Composer</key><string>composer</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2048</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:58:09Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>2682D6CCAB1DEA9A</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/albumUnset.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>196</key>
+		<dict>
+			<key>Track ID</key><integer>196</integer>
+			<key>Name</key><string>title1</string>
+			<key>Artist</key><string>trimTitle</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>B37C19B0DBC3CCA1</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimTitle1.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>198</key>
+		<dict>
+			<key>Track ID</key><integer>198</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>utf契金喇</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>D7A3616513CBF735</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/utfArtist.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>200</key>
+		<dict>
+			<key>Track ID</key><integer>200</integer>
+			<key>Name</key><string>title6</string>
+			<key>Artist</key><string>testStatistics</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>80</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:13Z</date>
+			<key>Play Count</key><integer>7</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>FAAB8DBCBA3187B6</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatistics6.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>202</key>
+		<dict>
+			<key>Track ID</key><integer>202</integer>
+			<key>Name</key><string>title2</string>
+			<key>Artist</key><string>trimAlbum</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>F3D5775B7C35FE2E</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimAlbum2.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>204</key>
+		<dict>
+			<key>Track ID</key><integer>204</integer>
+			<key>Name</key><string>title7</string>
+			<key>Artist</key><string>testStatistics</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>80</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:15Z</date>
+			<key>Play Count</key><integer>5</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>227AAAED879E849C</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatistics7.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>206</key>
+		<dict>
+			<key>Track ID</key><integer>206</integer>
+			<key>Name</key><string>title2</string>
+			<key>Artist</key><string>testStatistics</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>40</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:05Z</date>
+			<key>Play Count</key><integer>14</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>D90761E0075E2144</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatistics2.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>208</key>
+		<dict>
+			<key>Track ID</key><integer>208</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>discUnset</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>75D999FB49869085</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/discUnset.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>210</key>
+		<dict>
+			<key>Track ID</key><integer>210</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>multiWordComposer</string>
+			<key>Composer</key><string>com po ser</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>F416FD4E792C7C6B</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/multiWordComposer.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>212</key>
+		<dict>
+			<key>Track ID</key><integer>212</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>yearUnset</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>15D669AE232ACE72</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/yearUnset.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>214</key>
+		<dict>
+			<key>Track ID</key><integer>214</integer>
+			<key>Name</key><string>title1</string>
+			<key>Artist</key><string>trimArtist</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>C3F535D470DF1082</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimArtist1.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>216</key>
+		<dict>
+			<key>Track ID</key><integer>216</integer>
+			<key>Name</key><string>ti tl e</string>
+			<key>Artist</key><string>multiWordTitle</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>04B7CD0859D15BDD</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/multiWordTitle.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>218</key>
+		<dict>
+			<key>Track ID</key><integer>218</integer>
+			<key>Name</key><string>title5</string>
+			<key>Artist</key><string>testStatisticsNotSet</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>60</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:11Z</date>
+			<key>Play Count</key><integer>10</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>2D7623288F33DD38</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatisticsNotSet5.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>220</key>
+		<dict>
+			<key>Track ID</key><integer>220</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>caseSensitiveArtist</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>2FCAB01EA3725FD0</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveArtist1.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>222</key>
+		<dict>
+			<key>Track ID</key><integer>222</integer>
+			<key>Name</key><string>title4</string>
+			<key>Artist</key><string>testStatistics</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>60</integer>
+			<key>Play Date UTC</key><date>2013-09-02T12:43:09Z</date>
+			<key>Play Count</key><integer>11</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>CC635B1EA661E29C</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatistics4.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>224</key>
+		<dict>
+			<key>Track ID</key><integer>224</integer>
+			<key>Name</key><string>title2</string>
+			<key>Artist</key><string>trimArtist</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>B42F5B676CE1136D</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/trimArtist2.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>226</key>
+		<dict>
+			<key>Track ID</key><integer>226</integer>
+			<key>Name</key><string>title</string>
+			<key>Artist</key><string>caseSensitiveComposer</string>
+			<key>Composer</key><string>Composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Persistent ID</key><string>4D7DA3EC7BC180E7</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/caseSensitiveComposer2.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+		<key>228</key>
+		<dict>
+			<key>Track ID</key><integer>228</integer>
+			<key>Name</key><string>title8</string>
+			<key>Artist</key><string>testStatisticsNotSet</string>
+			<key>Composer</key><string>composer</string>
+			<key>Album</key><string>album</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>2176</integer>
+			<key>Total Time</key><integer>216</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2000</integer>
+			<key>Date Modified</key><date>2013-09-02T14:59:23Z</date>
+			<key>Date Added</key><date>2013-09-02T15:22:25Z</date>
+			<key>Bit Rate</key><integer>8</integer>
+			<key>Sample Rate</key><integer>8000</integer>
+			<key>Rating</key><integer>100</integer>
+			<key>Album Rating</key><integer>60</integer>
+			<key>Album Rating Computed</key><true/>
+			<key>Persistent ID</key><string>8F27E3D579B1E1E3</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/E:/testcollection/testStatisticsNotSet8.mp3</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+		</dict>
+	</dict>
+	<key>Playlists</key>
+	<array>
+		<dict>
+			<key>Name</key><string>Library</string>
+			<key>Master</key><true/>
+			<key>Playlist ID</key><integer>230</integer>
+			<key>Playlist Persistent ID</key><string>58AA79A7B403AD56</string>
+			<key>Visible</key><false/>
+			<key>All Items</key><true/>
+			<key>Playlist Items</key>
+			<array>
+				<dict>
+					<key>Track ID</key><integer>194</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>176</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>190</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>192</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>120</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>126</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>220</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>132</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>172</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>226</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>116</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>128</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>166</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>170</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>208</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>158</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>136</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>210</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>216</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>124</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>180</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>206</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>174</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>222</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>184</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>200</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>204</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>130</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>134</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>144</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>142</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>156</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>146</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>164</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>218</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>148</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>152</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>228</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>178</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>188</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>122</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>202</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>160</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>214</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>224</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>186</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>182</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>154</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>162</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>196</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>150</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>140</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>138</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>118</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>168</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>198</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>212</integer>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Name</key><string>Music</string>
+			<key>Playlist ID</key><integer>381</integer>
+			<key>Playlist Persistent ID</key><string>0C0DCD261FA17D1B</string>
+			<key>Distinguished Kind</key><integer>4</integer>
+			<key>Music</key><true/>
+			<key>All Items</key><true/>
+			<key>Playlist Items</key>
+			<array>
+				<dict>
+					<key>Track ID</key><integer>194</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>176</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>190</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>192</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>120</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>126</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>220</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>132</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>172</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>226</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>116</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>128</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>166</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>170</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>208</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>158</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>136</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>210</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>216</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>124</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>180</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>206</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>174</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>222</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>184</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>200</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>204</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>130</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>134</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>144</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>142</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>156</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>146</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>164</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>218</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>148</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>152</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>228</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>178</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>188</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>122</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>202</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>160</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>214</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>224</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>186</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>182</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>154</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>162</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>196</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>150</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>140</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>138</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>118</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>168</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>198</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>212</integer>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Name</key><string>Movies</string>
+			<key>Playlist ID</key><integer>441</integer>
+			<key>Playlist Persistent ID</key><string>5C5B1D16B9E2AD4E</string>
+			<key>Distinguished Kind</key><integer>2</integer>
+			<key>Movies</key><true/>
+			<key>All Items</key><true/>
+		</dict>
+		<dict>
+			<key>Name</key><string>TV Shows</string>
+			<key>Playlist ID</key><integer>444</integer>
+			<key>Playlist Persistent ID</key><string>48F67A8CF036AF31</string>
+			<key>Distinguished Kind</key><integer>3</integer>
+			<key>TV Shows</key><true/>
+			<key>All Items</key><true/>
+		</dict>
+		<dict>
+			<key>Name</key><string>90’s Music</string>
+			<key>Playlist ID</key><integer>290</integer>
+			<key>Playlist Persistent ID</key><string>C7893A49EE16332A</string>
+			<key>Distinguished Kind</key><integer>200</integer>
+			<key>All Items</key><true/>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAEAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAB8YAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAB88AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgFNMc3QAAQAB
+			AAAAAgAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAB
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAABAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEQAAAAAAAAAIAAAAAAAAAAA
+			AAAAAAAAAAEAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+			</data>
+		</dict>
+		<dict>
+			<key>Name</key><string>Classical Music</string>
+			<key>Playlist ID</key><integer>368</integer>
+			<key>Playlist Persistent ID</key><string>6696E6DE6401D610</string>
+			<key>Distinguished Kind</key><integer>206</integer>
+			<key>All Items</key><true/>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAU0xzdAABAAEAAAACAAAAAQAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAABEAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAg
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVxTTHN0AAEAAQAAABEAAAAB
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAACAEAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAABIAQwBsAGEAcwBzAGkAYwBhAGwAAAAIAQAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEABLAGwAYQBzAHMAaQBlAGsAAAAI
+			AQAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgBD
+			AGwAYQBzAHMAaQBxAHUAZQAAAAgBAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAOAEsAbABhAHMAcwBpAGsAAAAIAQAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEABDAGwAYQBzAHMAaQBjAGEAAAAI
+			AQAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACjCv
+			MOkwtzDDMK8AAAAIAQAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAADgBDAGwA4QBzAGkAYwBhAAAACAEAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAASwBsAGEAcwBzAGkAcwBrAAAACAEAAAEAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAQwBsAOEAcwBz
+			AGkAYwBhAAAACAEAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAABIASwBsAGEAcwBzAGkAcwBrAHQAAAAIAQAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAQaBDsEMARBBEEEOARHBDUEQQQ6BDAETwAA
+			AAgBAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAS
+			AEsAbABhAHMAeQBjAHoAbgBhAAAACAEAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAABIASwBsAGEAcwBzAGkAbgBlAG4AAAAIAQAAAQAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADABLAGwAYQBzAGkAawAA
+			AAgBAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU
+			AEsAbABhAHMAcwB6AGkAawB1AHMAAAAIAQAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAFgBWAOEBfgBuAOEAIABoAHUAZABiAGEAAAAIAQAAAQAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgZDBkQGJwYz
+			BkoGQwZK
+			</data>
+		</dict>
+		<dict>
+			<key>Name</key><string>My Top Rated</string>
+			<key>Playlist ID</key><integer>293</integer>
+			<key>Playlist Persistent ID</key><string>997D9D4371BACF41</string>
+			<key>Distinguished Kind</key><integer>201</integer>
+			<key>All Items</key><true/>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkAAAAQAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAADwAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+			</data>
+			<key>Playlist Items</key>
+			<array>
+				<dict>
+					<key>Track ID</key><integer>200</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>204</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>130</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>134</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>152</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>228</integer>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Name</key><string>Recently Added</string>
+			<key>Playlist ID</key><integer>308</integer>
+			<key>Playlist Persistent ID</key><string>CD8CEBBEF1172C3A</string>
+			<key>Distinguished Kind</key><integer>204</integer>
+			<key>All Items</key><true/>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABELa4tri2uLa7//////////gAAAAAACTqA
+			La4tri2uLa4AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5AgAAAQAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAB
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+			<key>Playlist Items</key>
+			<array>
+				<dict>
+					<key>Track ID</key><integer>194</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>176</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>190</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>192</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>120</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>126</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>220</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>132</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>172</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>226</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>116</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>128</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>166</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>170</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>208</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>158</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>136</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>210</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>216</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>124</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>180</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>206</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>174</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>222</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>184</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>200</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>204</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>130</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>134</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>144</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>142</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>156</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>146</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>164</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>218</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>148</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>152</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>228</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>178</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>188</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>122</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>202</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>160</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>214</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>224</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>186</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>182</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>154</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>162</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>196</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>150</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>140</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>138</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>118</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>168</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>198</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>212</integer>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Name</key><string>Recently Played</string>
+			<key>Playlist ID</key><integer>305</integer>
+			<key>Playlist Persistent ID</key><string>366EB5723D65A254</string>
+			<key>Distinguished Kind</key><integer>203</integer>
+			<key>All Items</key><true/>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABcAAAIAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABELa4tri2uLa7//////////gAAAAAACTqA
+			La4tri2uLa4AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5AgAAAQAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAB
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Name</key><string>Top 25 Most Played</string>
+			<key>Playlist ID</key><integer>302</integer>
+			<key>Playlist Persistent ID</key><string>4A32BAEF5CDA7558</string>
+			<key>Distinguished Kind</key><integer>202</integer>
+			<key>All Items</key><true/>
+			<key>Smart Info</key>
+			<data>
+			AQEBAwAAABkAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkCAAABAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWAAAAEAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+	</array>
+</dict>
+</plist>

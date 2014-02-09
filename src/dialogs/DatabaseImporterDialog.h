@@ -19,7 +19,6 @@
 
 #include <KAssistantDialog>    //baseclass
 
-#include "databaseimporter/DatabaseImporter.h"
 #include "core/meta/forward_declarations.h"
 
 #include <QHash>
@@ -30,6 +29,8 @@ class QRadioButton;
 class QPlainTextEdit;
 class KPageWidgetItem;
 class KVBox;
+class SqlBatchImporter;
+class SqlBatchImporterConfig;
 
 class DatabaseImporterDialog : public KAssistantDialog
 {
@@ -38,7 +39,7 @@ class DatabaseImporterDialog : public KAssistantDialog
     public:
         DatabaseImporterDialog( QWidget *parent = 0 );
         ~DatabaseImporterDialog();
-        
+
     private slots:
         void importFailed();
         void importSucceeded();
@@ -49,14 +50,10 @@ class DatabaseImporterDialog : public KAssistantDialog
         void ambigousTrack( Meta::TrackList tracks, QString oldUrl );
         void pageChanged( KPageWidgetItem *current, KPageWidgetItem *before );
         void showMessage( QString message );
-    
-    private:
-        void selectImporter();
 
-        QHash<QRadioButton*,QString> m_buttonHash;
-        QButtonGroup     *m_buttons;
-        DatabaseImporter *m_importer;
-        DatabaseImporterConfig *m_importerConfig;
+    private:
+        SqlBatchImporter *m_importer;
+        SqlBatchImporterConfig *m_importerConfig;
 
         KVBox            *m_configBox;
         KPageWidgetItem  *m_selectImporterPage;

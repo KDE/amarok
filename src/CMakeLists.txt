@@ -29,6 +29,7 @@ add_subdirectory( scripts )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
+add_subdirectory( importers )
 
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
@@ -525,7 +526,10 @@ set( statsyncing_SRCS
     statsyncing/Options.cpp
     statsyncing/Process.cpp
     statsyncing/Provider.cpp
+    statsyncing/ProviderFactory.cpp
     statsyncing/ScrobblingService.cpp
+    statsyncing/SimpleTrack.cpp
+    statsyncing/SimpleWritableTrack.cpp
     statsyncing/Track.cpp
     statsyncing/TrackTuple.cpp
     statsyncing/collection/CollectionProvider.cpp
@@ -537,13 +541,25 @@ set( statsyncing_SRCS
     statsyncing/models/ProvidersModel.cpp
     statsyncing/models/SingleTracksModel.cpp
     statsyncing/ui/ChooseProvidersPage.cpp
+    statsyncing/ui/CreateProviderDialog.cpp
+    statsyncing/ui/ConfigureProviderDialog.cpp
     statsyncing/ui/MatchedTracksPage.cpp
     statsyncing/ui/TrackDelegate.cpp
 )
 
-kde4_add_ui_files(statsyncing_SRCS
+kde4_add_ui_files( statsyncing_SRCS
     statsyncing/ui/ChooseProvidersPage.ui
     statsyncing/ui/MatchedTracksPage.ui
+)
+
+#####################################################################
+# STATISTICS IMPORTERS
+#####################################################################
+set( importers_SRCS
+    importers/ImporterManager.cpp
+    importers/ImporterProvider.cpp
+    importers/ImporterSqlConnection.cpp
+    importers/SimpleImporterConfigWidget.cpp
 )
 
 #####################################################################
@@ -579,6 +595,7 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
     ${statsyncing_SRCS}
+    ${importers_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
@@ -616,15 +633,8 @@ set(amaroklib_LIB_SRCS
     covermanager/CoverFoundDialog.cpp
     covermanager/CoverManager.cpp
     covermanager/CoverViewDialog.cpp
-    databaseimporter/DatabaseImporter.cpp
-    databaseimporter/amarok14/FastForwardImporter.cpp
-    databaseimporter/amarok14/FastForwardImporterConfig.cpp
-    databaseimporter/amarok14/FastForwardWorker.cpp
-    databaseimporter/itunes/ITunesImporterConfig.cpp
-    databaseimporter/itunes/ITunesImporter.cpp
-    databaseimporter/itunes/ITunesImporterWorker.cpp
-    databaseimporter/sqlbatch/SqlBatchImporter.cpp
-    databaseimporter/sqlbatch/SqlBatchImporterConfig.cpp
+    databaseimporter/SqlBatchImporter.cpp
+    databaseimporter/SqlBatchImporterConfig.cpp
     dialogs/CollectionSetup.cpp
     dialogs/DatabaseImporterDialog.cpp
     dialogs/DiagnosticDialog.cpp

@@ -94,14 +94,49 @@ Track::lessThan( const Track &other, qint64 fieldMask ) const
     return false;
 }
 
+void
+Track::setRating( int rating )
+{
+    Q_UNUSED( rating )
+}
+
+void
+Track::setFirstPlayed( const QDateTime &firstPlayed )
+{
+    Q_UNUSED( firstPlayed )
+}
+
+void
+Track::setLastPlayed( const QDateTime &lastPlayed )
+{
+    Q_UNUSED( lastPlayed )
+}
+
 int
 Track::recentPlayCount() const
 {
     return 0;
 }
 
+void
+Track::setPlayCount( int playCount )
+{
+    Q_UNUSED( playCount )
+}
+
+void
+Track::setLabels( const QSet<QString> &labels )
+{
+    Q_UNUSED( labels )
+}
+
 Meta::TrackPtr
 Track::metaTrack() const
 {
     return Meta::TrackPtr();
+}
+
+void
+Track::commit()
+{
 }

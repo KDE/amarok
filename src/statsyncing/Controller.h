@@ -28,10 +28,12 @@ class QTimer;
 namespace StatSyncing
 {
     class Config;
+    class CreateProviderDialog;
     class Process;
     class Provider;
     typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
     typedef QList<ProviderPtr> ProviderPtrList;
+    class ProviderFactory;
     class ScrobblingService;
     typedef QExplicitlySharedDataPointer<ScrobblingService> ScrobblingServicePtr;
 
@@ -58,15 +60,51 @@ namespace StatSyncing
              * to call this for Collections that are registered through CollectionManager
              * (and marked as enabled there) as it is done automatically.
              */
-            void registerProvider( const ProviderPtr &provider );
+            virtual void registerProvider( const ProviderPtr &provider );
 
             /**
              * Forget about StatSyncing::Provider @param provider.
              */
-            void unregisterProvider( const ProviderPtr &provider );
+            virtual void unregisterProvider( const ProviderPtr &provider );
 
             /**
-             * Register ScrobblingService with StatSyncing controller. Controller than
+             * Handle plugin factories derived from ProviderFactory, used for creating
+             * multiple provider instances. This method is called by Amarok's plugin
+             * infrastructure.
+             */
+            void handleNewFactories( const QList<Plugins::PluginFactory*> &factories );
+
+            /**
+             * Returns true if any instantiable provider types are registered with the
+             * controller.
+             */
+            bool hasProviderFactories() const;
+
+            /**
+             * Returns true if the provider identified by @param id is configurable
+             */
+            bool providerIsConfigurable( const QString &id ) const;
+
+            /**
+             * Returns a configuration dialog for a provider identified by @param id .
+             * @returns 0 if there's no provider identified by id or the provider is not
+             * configurable, otherwise a pointer to the dialog constructed as a child of
+             * The::mainWindow
+             */
+            QWidget *providerConfigDialog( const QString &id ) const;
+
+            /**
+             * Returns a provider creation dialog, prepopulated with registered provider
+             * types.
+             * @returns a pointer to the dialog constructed as a child of The::mainWindow,
+             * and is a subclass of KAssistantDialog.
+             *
+             * @see StatSyncing::CreateProviderDialog
+             */
+            QWidget *providerCreationDialog() const;
+
+            /**
+             * Register ScrobblingService with StatSyncing controller. Controller then
              * listens to EngineController and calls scrobble() etc. when user plays
              * tracks. Also allows scrobbling for tracks played on just connected iPods.
              *
@@ -130,6 +168,18 @@ namespace StatSyncing
 
         private slots:
             /**
+             * Creates new instance of provider type identified by @param type
+             * with configuration stored in @param config.
+             */
+            void createProvider( QString type, QVariantMap config );
+
+            /**
+             * Reconfigures provider identified by @param id with configuration
+             * stored in @param config.
+             */
+            void reconfigureProvider( QString id, QVariantMap config );
+
+            /**
              * Can only be connected to provider changed() signal
              */
             void slotProviderUpdated();
@@ -152,10 +202,13 @@ namespace StatSyncing
         private:
             Q_DISABLE_COPY( Controller )
 
+            ProviderPtr findRegisteredProvider( const QString &id ) const;
+
             /**
              * Return true if important metadata of both tracks is equal.
              */
             bool tracksVirtuallyEqual( const Meta::TrackPtr &first, const Meta::TrackPtr &second );
+            QMap<QString, ProviderFactory*> m_providerFactories;
 
             // synchronization-related
             ProviderPtrList m_providers;

@@ -62,12 +62,19 @@ public:
 
     virtual Meta::StatisticsPtr statistics() { return Meta::StatisticsPtr( this ); }
 
-    // Meta::Statistics methods
+    // Meta::Statistics getters
     double score() const { return m_data.value( Meta::Field::SCORE ).toDouble(); }
     int rating() const { return m_data.value( Meta::Field::RATING ).toInt(); }
     QDateTime firstPlayed() const { return m_data.value( Meta::Field::FIRST_PLAYED ).toDateTime(); }
     QDateTime lastPlayed() const { return m_data.value( Meta::Field::LAST_PLAYED ).toDateTime(); }
     int playCount() const { return m_data.value( Meta::Field::PLAYCOUNT ).toInt(); }
+
+    // Meta::Statistics setters
+    void setScore( double newScore ) { m_data[Meta::Field::SCORE].setValue( newScore ); }
+    void setRating( int newRating ) { m_data[Meta::Field::RATING].setValue( newRating ); }
+    void setFirstPlayed( const QDateTime &date ) { m_data[Meta::Field::FIRST_PLAYED].setValue( date ); }
+    void setLastPlayed( const QDateTime &date ) { m_data[Meta::Field::LAST_PLAYED].setValue( date ); }
+    void setPlayCount( int newPlayCount ) { m_data[Meta::Field::PLAYCOUNT].setValue( newPlayCount ); }
 
 public:
     QVariantMap m_data;
