@@ -4,6 +4,7 @@ Type=script
 ServiceTypes=KPluginInfo
 
 Name=Lyricwiki
+Name[ca]=Lyricwiki
 Name[cs]=Lyricwiki
 Name[de]=Lyricwiki
 Name[es]=Lyricwiki
@@ -23,6 +24,7 @@ Name[sv]=Lyricwiki
 Name[uk]=Lyricwiki
 Name[x-test]=xxLyricwikixx
 Comment=A script to fetch lyrics from lyricwiki.org
+Comment[ca]=Un script per recuperar lletres des de lyricwiki.org
 Comment[cs]=Skript pro stažení textů písní z lyricwiki.org
 Comment[de]=Ein Skript, um Liedtexte von lyricwiki.org zu holen
 Comment[es]=Un guion para recuperar letras desde lyricwiki.org

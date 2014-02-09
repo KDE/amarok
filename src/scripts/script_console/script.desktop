@@ -4,6 +4,7 @@ Type=script
 ServiceTypes=KPluginInfo
 
 Name=Amarok Script Console
+Name[ca]=Consola d'scripts de l'Amarok
 Name[cs]=Konzole skriptu pro Amarok
 Name[de]=Amarok-Skript-Konsole
 Name[es]=Consola de guiones de Amarok
@@ -23,6 +24,7 @@ Name[sv]=Amarok skriptterminal
 Name[uk]=Скриптова консоль Amarok
 Name[x-test]=xxAmarok Script Consolexx
 Comment=Amarok Script Console
+Comment[ca]=Consola d'scripts de l'Amarok
 Comment[cs]=Konzole skriptu pro Amarok
 Comment[de]=Amarok-Skript-Konsole
 Comment[es]=Consola de guiones de Amarok

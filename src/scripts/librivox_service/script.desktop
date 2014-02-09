@@ -4,6 +4,7 @@ Type=script
 ServiceTypes=KPluginInfo
 
 Name=Librivox.org
+Name[ca]=Librivox.org
 Name[cs]=Librivox.org
 Name[de]=Librivox.org
 Name[es]=Librivox.org
@@ -23,6 +24,7 @@ Name[sv]=Librivox.org
 Name[uk]=Librivox.org
 Name[x-test]=xxLibrivox.orgxx
 Comment=A scripted service that lets you search, stream and download free, public domain, audio books from Librivox.org
+Comment[ca]=Un servei amb scripts que que us permet cercar, escoltar i baixar audio llibres lliures de domini públic des de Librivox.org
 Comment[cs]=Skriptovaná služba, jenž vám umožní hledat, přehrávat a stahovat svobodné a public domain audio knihy z Librivox.org
 Comment[de]=Ein Skriptdienst, mit dem Sie freie und gemeinfreie Hörbücher auf Librivox.org suchen, streamen und herunterladen können
 Comment[es]=Un servicio mediante guiones que le permite buscar, transmitir o descargar audio-libros libres, de dominio público desde Librivox.org
