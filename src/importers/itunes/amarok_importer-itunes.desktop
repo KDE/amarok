@@ -2,7 +2,21 @@
 Type=Service
 Icon=media-album-track
 Name=Apple iTunes Importer
+Name[cs]=Import Apple iTunes
+Name[de]=Apple iTunes Import
+Name[nl]=Programma voor importeren van iTunes
+Name[pt]=Importação do Apple iTunes
+Name[sv]=Apple iTunes-importverktyg
+Name[uk]=Засіб імпортування даних Apple iTunes
+Name[x-test]=xxApple iTunes Importerxx
 Comment=Import statistics from Apple iTunes database
+Comment[cs]=Importovat statistiky z databáze Apple iTunes
+Comment[de]=Importiert die Statistik von Datenbanken von Apple iTunes 
+Comment[nl]=Statistieken uit de Apple iTunes database importeren
+Comment[pt]=Importa as estatísticas da base de dados do iTunes da Apple
+Comment[sv]=Importera statistik från Apple iTunes-databas
+Comment[uk]=Імпортування статистичних даних з бази даних Apple iTunes
+Comment[x-test]=xxImport statistics from Apple iTunes databasexx
 
 ServiceTypes=Amarok/Plugin
 

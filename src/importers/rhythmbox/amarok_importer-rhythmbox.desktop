@@ -2,7 +2,21 @@
 Type=Service
 Icon=view-importers-rhythmbox-amarok
 Name=Rhythmbox Importer
+Name[cs]=Import Rhythmbox
+Name[de]=Rhythmbox-Import
+Name[nl]=Programma voor importeren van Rhythmbox
+Name[pt]=Importação do Rhythmbox
+Name[sv]=Rhythmbox-importverktyg
+Name[uk]=Засіб імпортування даних Rhythmbox
+Name[x-test]=xxRhythmbox Importerxx
 Comment=Import statistics from Rhythmbox database
+Comment[cs]=Importovat statistiky z databáze Rhythmbox
+Comment[de]=Importiert die Statistik von Datenbanken von Rhythmbox 
+Comment[nl]=Statistieken uit de Rhythmbox database importeren
+Comment[pt]=Importa as estatísticas da base de dados do Rhythmbox
+Comment[sv]=Importera statistik från Rhythmbox-databas
+Comment[uk]=Імпортування статистичних даних з бази даних Rhythmbox
+Comment[x-test]=xxImport statistics from Rhythmbox databasexx
 
 ServiceTypes=Amarok/Plugin
 

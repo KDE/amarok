@@ -2,7 +2,21 @@
 Type=Service
 Icon=view-importers-banshee-amarok
 Name=Banshee Importer
+Name[cs]=Import Banshee
+Name[de]=Banshee-Import
+Name[nl]=Programma voor importeren van Banshee
+Name[pt]=Importação do Banshee
+Name[sv]=Banshee-importverktyg
+Name[uk]=Засіб імпортування даних Banshee
+Name[x-test]=xxBanshee Importerxx
 Comment=Import statistics from Banshee database
+Comment[cs]=Importovat statistiky z databáze Banshee
+Comment[de]=Importiert die Statistik von Datenbanken von Banshee
+Comment[nl]=Statistieken uit de Banshee database importeren
+Comment[pt]=Importa as estatísticas da base de dados do Banshee
+Comment[sv]=Importera statistik från Banshee-databas
+Comment[uk]=Імпортування статистичних даних з бази даних Banshee
+Comment[x-test]=xxImport statistics from Banshee databasexx
 
 ServiceTypes=Amarok/Plugin
 

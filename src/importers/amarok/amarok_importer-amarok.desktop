@@ -2,7 +2,21 @@
 Type=Service
 Icon=amarok
 Name=Amarok 2.x Importer
+Name[cs]=Import Amarok 2.x
+Name[de]=Amarok 2.x Import
+Name[nl]=Programma voor importeren van Amarok 2.x
+Name[pt]=Importação do Amarok 2.x
+Name[sv]=Amarok 2.x-importverktyg
+Name[uk]=Засіб імпортування даних Amarok 2.x
+Name[x-test]=xxAmarok 2.x Importerxx
 Comment=Import statistics from Amarok 2.x database
+Comment[cs]=Importovat statistiky z databáze Amarok 2.x
+Comment[de]=Importiert die Statistik von Datenbanken von Amarok 2.x
+Comment[nl]=Statistieken uit de Amarok 2.x database importeren
+Comment[pt]=Importa as estatísticas da base de dados do Amarok 2.x
+Comment[sv]=Importera statistik från Amarok 2.x-databas
+Comment[uk]=Імпортування статистичних даних з бази даних Amarok 2.x
+Comment[x-test]=xxImport statistics from Amarok 2.x databasexx
 
 ServiceTypes=Amarok/Plugin
 
