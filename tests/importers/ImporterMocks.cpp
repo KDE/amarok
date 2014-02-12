@@ -85,6 +85,8 @@ ImporterMocks::init()
     ON_CALL( *m_mockManager, newInstance( _ ) )
             .WillByDefault( Invoke( m_mockManager, &MockManager::concreteNewInstance ) );
 
+    ON_CALL( *m_mockManager, type() ).WillByDefault( Return( "randomType" ) );
+
     QVariantMap cfg;
     cfg["uid"] = QString( "providerUid" );
     m_mockProvider = new NiceMock<MockProvider>( cfg, m_mockManager );

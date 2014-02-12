@@ -149,19 +149,21 @@ TestImporterManager::createConfigWidgetShouldNotCrashOnNull()
 void
 TestImporterManager::createProviderShouldNotCrashOnNull()
 {
+    m_mockManager->init();
+
     EXPECT_CALL( *m_mockManager, newInstance(_) )
             .WillOnce( Return( StatSyncing::ProviderPtr( 0 ) ) );
 
-    m_mockManager->init();
     QVERIFY( !m_mockManager->createProvider( QVariantMap() ) );
 }
 
 void
 TestImporterManager::createProviderShouldReplaceProviderIfExists()
 {
+    m_mockManager->init();
+
     EXPECT_CALL( *m_mockController, registerProvider(_) ).Times( 2 );
 
-    m_mockManager->init();
     StatSyncing::ProviderPtr provider = m_mockManager->createProvider( QVariantMap() );
 
     QVERIFY( m_mockManager->providers().contains( provider->id() ) );
@@ -183,19 +185,21 @@ TestImporterManager::createProviderShouldRegisterProvider()
     cfg["uid"] = "uid";
     StatSyncing::ImporterProviderPtr providerPtr( new NiceMock<MockProvider>( cfg, m_mockManager ) );
 
+    m_mockManager->init();
+
     EXPECT_CALL( *m_mockManager, newInstance(_) ).WillOnce( Return( providerPtr ) );
     EXPECT_CALL( *m_mockController, registerProvider( Eq(providerPtr) ) );
 
-    m_mockManager->init();
     m_mockManager->createProvider( QVariantMap() );
 }
 
 void
 TestImporterManager::forgetProviderShouldUnregisterProvider()
 {
+    m_mockManager->init();
+
     EXPECT_CALL( *m_mockController, registerProvider(_) );
 
-    m_mockManager->init();
     StatSyncing::ProviderPtr providerPtr = m_mockManager->createProvider( QVariantMap() );
 
     EXPECT_CALL( *m_mockController, unregisterProvider( Eq(providerPtr) ) );

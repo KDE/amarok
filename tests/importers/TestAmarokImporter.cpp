@@ -32,6 +32,7 @@ ProviderPtr
 TestAmarokImporter::getProvider()
 {
     QVariantMap cfg = AmarokConfigWidget( QVariantMap() ).config();
+    cfg.insert( "name", "Amarok2Test" );
     cfg.insert( "embedded", true );
     cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
                           "/importers_files/amarok2_mysqle" );
@@ -62,6 +63,7 @@ TestAmarokImporter::getWritableProvider()
     }
 
     QVariantMap cfg = AmarokConfigWidget( QVariantMap() ).config();
+    cfg.insert( "name", "Amarok2Test" );
     cfg.insert( "embedded", true );
     cfg.insert( "dbPath", tmp.filePath( "amarok2_mysqle" ) );
 
