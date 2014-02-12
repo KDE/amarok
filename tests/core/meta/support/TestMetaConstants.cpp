@@ -204,7 +204,7 @@ TestMetaConstants::testI18nForField_data()
     QTest::newRow( "albumartist" )   << Meta::valAlbumArtist   << i18n( "Album Artist" );
     QTest::newRow( "label" )         << Meta::valLabel         << i18n( "Label" );
     QTest::newRow( "modified" )      << Meta::valModified      << i18n( "Last Modified" );
-    QTest::newRow( "default" )       << qint64( -1 )           << i18n( "" );
+    QTest::newRow( "default" )       << qint64( -1 )           << QString();
 }
 
 void
@@ -255,7 +255,7 @@ TestMetaConstants::testShortI18nForField_data()
     QTest::newRow( "albumartist" )   << Meta::valAlbumArtist   << i18nc("One word translation used in the collection filter", "albumartist");
     QTest::newRow( "label" )         << Meta::valLabel         << i18nc("One word translation used in the collection filter", "label");
     QTest::newRow( "modified" )      << Meta::valModified      << i18nc("One word translation used in the collection filter", "modified");
-    QTest::newRow( "default" )       << qint64( -1 )           << i18n( "" );
+    QTest::newRow( "default" )       << qint64( -1 )           << QString();
 }
 
 void
