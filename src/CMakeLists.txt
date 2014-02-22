@@ -25,13 +25,10 @@ add_subdirectory( core-impl/collections )
 #don't use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( services )
-if( QTSCRIPTQTBINDINGS_FOUND )
-    add_subdirectory( scripts )
-endif( QTSCRIPTQTBINDINGS_FOUND )
+add_subdirectory( scripts )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
-add_subdirectory( tagguessing )
 
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
@@ -550,6 +547,41 @@ kde4_add_ui_files(statsyncing_SRCS
 )
 
 #####################################################################
+# TAG GUESSING
+#####################################################################
+# MusicBrainz Provider:
+set( tagguessing_core_SRCS
+    tagguessing/musicbrainz/MusicBrainzFinder.cpp
+    tagguessing/musicbrainz/MusicBrainzXmlParser.cpp )
+
+if ( LIBOFA_FOUND )
+    set( tagguessing_core_SRCS
+        tagguessing/musicbrainz/MusicDNSFinder.cpp
+        tagguessing/musicbrainz/MusicDNSXmlParser.cpp )
+endif ( LIBOFA_FOUND )
+
+set( tagguessing_core_SRCS
+    tagguessing/Finder.cpp
+    tagguessing/Provider.cpp
+    tagguessing/musicbrainz/MusicBrainzTagsItem.cpp
+    tagguessing/musicbrainz/MusicBrainzTagsModel.cpp
+    tagguessing/musicbrainz/MusicBrainzTagsModelDelegate.cpp
+    tagguessing/musicbrainz/MusicBrainzTagsView.cpp
+    tagguessing/WebRequestsHandler.cpp )
+if( LIBOFA_FOUND )
+    set( tagguessing_core_SRCS
+        tagguessing/MusicDNSAudioDecoder.cpp )
+endif( LIBOFA_FOUND )
+
+## AcoustID Provider:
+#if ( LIBOFA_FOUND )
+#    set( tagguessing_core_SRCS
+#    tagguessing/acoustid/Acoustidprovider.cpp
+#    tagguessing/acoustid/Fingerprintcalculator.cpp
+#    tagguessing/acoustid/Webservicequeryer.cpp)
+#endif ( LIBOFA_FOUND )
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -582,6 +614,7 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
     ${statsyncing_SRCS}
+    ${tagguessing_core_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp

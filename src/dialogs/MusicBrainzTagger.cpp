@@ -24,11 +24,11 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "musicbrainz/MusicBrainzFinder.h"
-#include "musicbrainz/MusicBrainzTagsModel.h"
-#include "musicbrainz/MusicBrainzTagsModelDelegate.h"
+#include "tagguessing/musicbrainz/MusicBrainzFinder.h"
+#include "tagguessing/musicbrainz/MusicBrainzTagsModel.h"
+#include "tagguessing/musicbrainz/MusicBrainzTagsModelDelegate.h"
 #ifdef HAVE_LIBOFA
-#include "musicbrainz/MusicDNSFinder.h"
+#include "tagguessing/musicbrainz/MusicDNSFinder.h"
 #endif
 #include "ui_MusicBrainzTagger.h"
 

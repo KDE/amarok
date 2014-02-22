@@ -19,7 +19,7 @@
 
 #include "Version.h"
 #include "core/meta/forward_declarations.h"
-#include "MusicDNSAudioDecoder.h"
+#include "tagguessing/MusicDNSAudioDecoder.h"
 #include "MusicDNSXmlParser.h"
 #include "network/NetworkAccessManagerProxy.h"
 
