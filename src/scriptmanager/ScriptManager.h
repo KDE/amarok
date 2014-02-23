@@ -106,11 +106,6 @@ class AMAROK_EXPORT ScriptManager : public QObject
          */
         void scriptsChanged();
 
-        /**
-         * Emitted when scripts removed
-         */
-        void scriptsRemoved(QStringList);
-
     private slots:
         bool slotRunScript( const QString &name, bool silent = false );
         void handleException( const QScriptValue &value );

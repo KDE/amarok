@@ -39,9 +39,6 @@ class ScriptUpdater : public QObject
     signals:
         void finished( const QString &scriptPath );
 
-    /*protected:
-        virtual void run();*/
-
     private slots:
         void phase2( KJob * job );
         void phase3( KJob * job );

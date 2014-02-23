@@ -50,7 +50,7 @@ ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList,
     foreach( const KPluginInfo &plugin, pluginInfoList )
     {
         m_scriptCount++;
-        m_scripts[m_scriptCount] = plugin.name();
+        m_scripts[m_scriptCount] = plugin.pluginName();
     }
 }
 
@@ -76,14 +76,11 @@ ScriptSelector::currentItem() const
     return QString();
 }
 
-void
-ScriptSelector::removeScript( const QString &scriptName )
+void ScriptSelector::clear()
 {
-    DEBUG_BLOCK
-
     QAbstractItemModel *model = m_listView->model();
-    KMessageBox::warningYesNoCancel( this, i18n( "Delete the script \"%1\"?",  scriptName ) );
-    model->removeRow( m_scripts.key( scriptName ) );
+    m_scriptCount = 0;
+    m_scripts.clear();
 }
 
 #include "ScriptSelector.moc"

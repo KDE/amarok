@@ -21,8 +21,9 @@
 
 #include <QStringList>
 
+class KArchiveDirectory;
+class KArchiveFile;
 class ScriptSelector;
-
 /**
   * A widget that allows configuration of scripts
   */
@@ -46,9 +47,13 @@ private slots:
     void installLocalScript();
     void slotReloadScriptSelector();
     void slotUpdateScripts();
-    void slotRemoveScripts( const QStringList &scriptNames );
+    // ANM-TODO
+    // problem - 
+    void slotUninstallScript();
 
 private:
+    const KArchiveFile *findSpecFile( const KArchiveDirectory *dir ) const;
+
     bool m_configChanged;
     ScriptSelector *m_selector;
     QTimer *m_timer;

@@ -25,15 +25,18 @@
 #include "scriptmanager/ScriptManager.h"
 #include "ui_ScriptsConfig.h"
 
+#include <KFileDialog>
 #include <KMessageBox>
 #include <KPluginInfo>
 #include <KPluginSelector>
 #include <KNS3/DownloadDialog>
 #include <KPushButton>
 #include <KStandardDirs>
+#include <KTar>
 
 #include <QFileSystemWatcher>
 #include <QTimer>
+#include <QTemporaryFile>
 
 ScriptsConfig::ScriptsConfig( QWidget *parent )
     : ConfigDialogBase( parent )
@@ -62,7 +65,6 @@ ScriptsConfig::ScriptsConfig( QWidget *parent )
     connect( gui.reloadButton, SIGNAL(clicked(bool)), m_timer, SLOT(start()) );
 
     connect( ScriptManager::instance(), SIGNAL(scriptsChanged()), SLOT(slotReloadScriptSelector()) );
-    connect( ScriptManager::instance(), SIGNAL(scriptsRemoved(QStringList)), SLOT(slotRemoveScripts(QStringList)) );
 
     this->setEnabled( AmarokConfig::enableScripts() );
 }
@@ -126,13 +128,80 @@ ScriptsConfig::slotConfigChanged( bool changed )
 void
 ScriptsConfig::installLocalScript()
 {
+    DEBUG_BLOCK
+    // where's this config stored anyway, use amarokconfig?
+    // the script can actually be updated if the extracted folder's name is the same
+    // as archive name on kde download website
+    int response =  KMessageBox::warningContinueCancel( this, i18n( "Manually installed scripts "
+                                        "cannot be automatically updated, continue?" ), QString(), KStandardGuiItem::cont()
+                                        , KStandardGuiItem::cancel(), "manualScriptInstallWarning" );
+    if( response == KMessageBox::Cancel )
+    {
+        return;
+    }
 
+    QString filePath = KFileDialog::getOpenFileName( KUrl(), QString(), this, i18n( "Select Archived Script" ) );
+    if( filePath.isEmpty() )
+        return;
+
+    QString fileName = QFileInfo( filePath ).fileName();
+    KTar archive( filePath );
+    if( !archive.open( QIODevice::ReadOnly ) )
+    {
+        KMessageBox::error( this, i18n( "Invalid Archive!" ) );
+        return;
+    }
+
+    QString destination = KGlobal::dirs()->saveLocation( "data", QString("amarok/scripts/") + fileName + "/"  , false );
+    const KArchiveDirectory* const archiveDir = archive.directory();
+    const QDir dir( destination );
+    const KArchiveFile *specFile = findSpecFile( archiveDir );
+    if( !specFile )
+    {
+        KMessageBox::error( this, i18n( "Invalid Script File!" ) );
+        return;
+    }
+
+    QTemporaryFile tempFile;
+    tempFile.open();
+    QIODevice *device = specFile->createDevice();
+    tempFile.write( device->readAll() );
+    delete device;
+    tempFile.close();
+
+    KPluginInfo newScriptInfo( tempFile.fileName() );
+    if( !newScriptInfo.isValid() )
+    {
+        KMessageBox::error( this, i18n( "Invalid Script File!" ) );
+        return;
+    }
+
+    if( ScriptManager::instance()->m_scripts.contains( newScriptInfo.pluginName() ) )
+    {
+        QString existingVersion = ScriptManager::instance()->m_scripts[ newScriptInfo.pluginName() ]->info().version();
+        QString message = i18n( "Another script with the name %1 already exists\nExisting Script's "
+                                "Version: %1\nSelected Script's Version: %2", newScriptInfo.pluginName()
+                                , existingVersion, newScriptInfo.version() );
+        KMessageBox::error( this, message );
+        return;
+    }
+
+    int i = 1;
+    while( dir.exists( destination ) )
+    {
+        destination += i;
+        ++i;
+    }
+    dir.mkpath( destination );
+    archiveDir->copyTo( destination );
+    KMessageBox::information( this, i18n( "The script %1 was successfully installed!", newScriptInfo.name() ) );
+    m_timer->start();
 }
 
 void
 ScriptsConfig::slotReloadScriptSelector()
 {
-    // ANM-TODO clear???
+    m_selector->clear();
     QString key = QLatin1String( "Generic" );
     m_selector->addScripts( ScriptManager::instance()->scripts( key ),
                             KPluginSelector::ReadConfigFile, i18n("Generic"), key );
@@ -154,12 +223,44 @@ ScriptsConfig::slotUpdateScripts()
 }
 
 void
-ScriptsConfig::slotRemoveScripts( const QStringList &scriptNames )
+ScriptsConfig::slotUninstallScript()
 {
-    foreach( const QString &scriptName, scriptNames )
+    if( !ScriptManager::instance()->m_scripts.contains( m_selector->currentItem() ) )
     {
-        m_selector->removeScript( scriptName );
+        KMessageBox::error( this, i18n( "Please select a script!" ) );
+        return;
     }
+
+    ScriptItem *item = ScriptManager::instance()->m_scripts.value( m_selector->currentItem() );
+    const KPluginInfo selectedScriptInfo = item->info();
+}
+
+const KArchiveFile*
+ScriptsConfig::findSpecFile( const KArchiveDirectory *dir ) const
+{
+    foreach( const QString &entry, dir->entries() )
+    {
+        if( dir->entry( entry )->isFile() )
+        {
+            if( entry == "script.spec" )
+                return static_cast<const KArchiveFile*>( dir->entry( entry ) );
+        }
+        else
+        {
+            if( entry != "." && entry != ".." )
+            {
+                const KArchiveDirectory *subDir = static_cast<const KArchiveDirectory*>( dir->entry( entry ) );
+                if( subDir )
+                {
+                    const KArchiveFile *file = findSpecFile( subDir );
+                    if( !file )
+                        continue;
+                    return file;
+                }
+            }
+        }
+    }
+    return 0;
 }
 
 #include "ScriptsConfig.moc"

@@ -183,7 +183,6 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& artist, const QString& tit
 void
 ScriptManager::updateAllScripts() // SLOT
 {
-    PERF_LOG( "Loading scripts" );
 // note: we can't update scripts without the QtCryptoArchitecture, so don't even try
 #ifdef QCA2_FOUND
     DEBUG_BLOCK
@@ -192,18 +191,16 @@ ScriptManager::updateAllScripts() // SLOT
                                                                   KStandardDirs::Recursive |
                                                                   KStandardDirs::NoDuplicates );
     // remove deleted scripts
-    QStringList removedScripts;
     foreach( ScriptItem *item, m_scripts )
     {
         const QString specPath = QString( "%1/script.spec" ).arg( item->url().path() );
         if( !KPluginInfo( specPath ).isValid() )
         {
+            debug() << "Removing script " << item->info().pluginName();
             item->deleteLater();
-            removedScripts << item->info().pluginName();
             m_scripts.remove( item->info().pluginName() );
         }
     }
-    emit scriptsRemoved( removedScripts );
 
     m_nScripts = foundScripts.count();
 

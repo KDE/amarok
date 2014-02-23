@@ -52,7 +52,6 @@
 #include "scriptengine/exporters/QueryMakerExporter.h"
 #include "scriptengine/ScriptImporter.h"
 #include "ScriptManager.h"
-#include "ScriptUpdater.h"
 
 #include <KStandardDirs>
 #include <KPushButton>

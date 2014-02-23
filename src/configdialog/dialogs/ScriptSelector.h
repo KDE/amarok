@@ -31,13 +31,12 @@ class ScriptSelector : public KPluginSelector
         ~ScriptSelector();
 
         QString currentItem() const;
-
-        void removeScript( const QString &scriptName );
         void addScripts( const QList<KPluginInfo> &pluginInfoList,
                          PluginLoadMethod pluginLoadMethod = ReadConfigFile,
                          const QString &categoryName = QString(),
                          const QString &categoryKey = QString(),
                          const KSharedConfig::Ptr &config = KSharedConfig::Ptr() );
+        void clear();
 
     private:
         KCategorizedView*          m_listView;
