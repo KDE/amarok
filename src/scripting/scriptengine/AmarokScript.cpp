@@ -79,8 +79,7 @@ AmarokScript::AmarokScript::alert( const QString& text, const QString& type ) co
     else if( type == "warningYesNoCancel" )
         return KMessageBox::warningYesNoCancel( 0, text );
 
-    warning() << "alert type not found!";
-    //TODO: write to error log since it's a script error
+    debug( "alert type not found!" );
     return -1;
 }
 

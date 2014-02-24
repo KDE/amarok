@@ -30,7 +30,6 @@
 class QScriptContext;
 class QScriptEngine;
 
-// TODO: SCRIPTDOX BROKEN
 namespace AmarokScript
 {
     class Downloader : public QObject

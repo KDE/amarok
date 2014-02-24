@@ -40,19 +40,11 @@ void
 AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property )
 {
     const QString objName = QString( "%1%2" ).arg( name ).arg( qrand() );
-    globalObject().property( internalObject ). setProperty( objName, property, QScriptValue::ReadOnly | QScriptValue::SkipInEnumeration );
-
-    // less readable?
-    /*const QString command = "Object.defineProperty( " + parent +", \"" + name
-                            + "\", {get : function(){ var iobj=" + internalObject+"; iobj.invokableDeprecatedCall(\""
-                            + parent + "." + name +"\"); return iobj." + objName + "; },\
-                                                                        enumerable : true,\
-                                                                        configurable : false});";*/
-
+    globalObject().property( internalObject ).setProperty( objName, property, QScriptValue::ReadOnly | QScriptValue::SkipInEnumeration );
     const QString command = QString( "Object.defineProperty( %1, \"%2\", {get : function(){ var iobj= %3; iobj.invokableDeprecatedCall(\""
                                                                             " %1.%2 \"); return iobj.%4; },\
                                                                             enumerable : true,\
-                                                                            configurable : false});" )
+                                                                            configurable : false} );" )
                                     .arg( parent ).arg( name ).arg( internalObject ).arg( objName );
     evaluate( command );
 }

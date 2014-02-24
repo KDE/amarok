@@ -146,19 +146,6 @@ AmarokWindowScript::addMenuAction( QWeakPointer<KMenu> menu, QString id, QString
 }
 
 void
-AmarokWindowScript::showBrowser( QString browser ) const
-{
-    if ( browser == "collection" )
-        The::mainWindow()->showBrowser( "CollectionBrowser" );
-    if ( browser == "playlist" )
-        The::mainWindow()->showBrowser( "PlaylistBrowser" );
-    if ( browser == "internet" )
-        The::mainWindow()->showBrowser( "Internet" );
-    if ( browser == "file" )
-        The::mainWindow()->showBrowser( "FileBrowser" );
-}
-
-void
 AmarokWindowScript::showTrayIcon( bool show )
 {
     AmarokConfig::setShowTrayIcon( show );

@@ -81,7 +81,7 @@ namespace AmarokScript
         public:
             static void init( QScriptEngine *engine );
             PlaylistProviderPrototype( Playlists::PlaylistProvider *provider );
-            Playlists::PlaylistProvider* data() { return m_provider.data(); }
+            Playlists::PlaylistProvider* data() const { return m_provider.data(); }
 
         public slots:
 

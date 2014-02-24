@@ -56,7 +56,7 @@ namespace AmarokScript
         static void init( QScriptEngine *engine );
         QueryMakerPrototype( Collections::QueryMaker *collection );
         ~QueryMakerPrototype();
-        Collections::QueryMaker *data() { return m_querymaker.data(); }
+        Collections::QueryMaker *data() const { return m_querymaker.data(); }
 
     public slots:
 

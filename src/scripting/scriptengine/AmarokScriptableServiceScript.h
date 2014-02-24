@@ -30,8 +30,6 @@ class QScriptEngine;
 namespace AmarokScript
 {
     // SCRIPTDOX: ScriptableServiceScript
-    // make something like ScriptableServiceScript.init() ???
-    // ANM-TODO: Handle docs in script dox
     /**
      * Usage: First create the sciprtable service using a call to
      * ScriptableServiceScript( string name, int levels, string shortDescription,  string rootHtml, bool showSearchBar )
@@ -48,7 +46,7 @@ namespace AmarokScript
 
             void slotCustomize( const QString &name );
 
-        public slots:
+        SCRIPT_INVOKABLE:
             int insertItem( StreamItem* item );
             void setCurrentInfo( const QString &infoHtml );
 

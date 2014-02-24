@@ -397,7 +397,6 @@ TrackSetExporter::fromScriptValue( const QScriptValue &obj, Dynamic::TrackSet &t
     DEBUG_BLOCK
     TrackSetExporter *trackSetProto = dynamic_cast<TrackSetExporter*>( obj.toQObject() );
     if( !trackSetProto )
-        //trackSet = Dynamic::TrackSet();
         trackSet = Dynamic::TrackSet( Dynamic::TrackCollectionPtr( new Dynamic::TrackCollection( QStringList() ) ), false );
     else
         trackSet = *trackSetProto;

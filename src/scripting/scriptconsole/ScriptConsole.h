@@ -43,11 +43,11 @@ class ScriptListDockWidget;
     {
         Q_OBJECT
 
-        public slots:
+        public:
             static ScriptConsole *instance();
-            void abortEvaluation();
 
         private slots:
+            void slotAbortEvaluation();
             void slotExecuteNewScript();
             void slotNewScript();
             void setCurrentScriptItem( ScriptConsoleItem *item );
@@ -82,12 +82,12 @@ class ScriptListDockWidget;
             ~ScriptListDockWidget();
             void addScript( ScriptConsoleItem *script );
             void addItem( QListWidgetItem *item );
-            void prev();
-            void next();
 
         public slots:
             void clear();
             void removeCurrentScript();
+            void prev();
+            void next();
 
         signals:
             void edit( ScriptConsoleItem *item );
@@ -103,25 +103,6 @@ class ScriptListDockWidget;
             QListWidget *m_scriptListWidget;
             const int ScriptRole = 1002;
     };
-
-    /*
-    class DebuggerProxyAgent : public QScriptEngineAgent
-    {
-            DebuggerProxyAgent( QScriptEngine *engine );
-            ~DebuggerProxyAgent();
-            void contextPop();
-            void contextPush();
-            void exceptionCatch( qint64 scriptId, const QScriptValue &exception );
-            void exceptionThrow( qint64 scriptId, const QScriptValue &exception, bool hasHandler );
-            void functionEntry( qint64 scriptId );
-            void functionExit( qint64 scriptId, const QScriptValue &returnValue );
-            void positionChange( qint64 scriptId, int lineNumber, int columnNumber );
-            void scriptLoad( qint64 id, const QString &program, const QString &fileName, int baseLineNumber );
-            void scriptUnload( qint64 id );
-
-        private:
-            QScriptEngineAgent *d;
-    };*/
 }
 
 #endif // SCRIPTCONSOLE_H

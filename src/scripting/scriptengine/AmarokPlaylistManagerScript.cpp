@@ -52,7 +52,7 @@ AmarokPlaylistManagerScript::AmarokPlaylistManagerScript( AmarokScriptEngine* en
     connect( instance, SIGNAL(updated(int)), SIGNAL(updated(int)) );
 }
 
-// script incokable
+// script invokable
 
 bool
 AmarokPlaylistManagerScript::deletePlaylists( Playlists::PlaylistList playlistList )

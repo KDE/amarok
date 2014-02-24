@@ -38,7 +38,6 @@ ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
     engine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QScriptValue() );
     const QScriptValue ctor = engine->newFunction( ScriptableServiceScript_prototype_ctor );
     engine->globalObject().setProperty( "ScriptableServiceScript", ctor );
-//    qScriptConnect( this, SIGNAL(populate(QString,int,int,QString,QString)), QScriptValue() ,populate );
 }
 
 QScriptValue
@@ -67,7 +66,7 @@ ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QScriptCont
 {
     Q_UNUSED( context );
     debug() << "prototype populating here!";
-    return engine->undefinedValue(); // Fixme: return something.
+    return engine->undefinedValue();
 }
 
 int

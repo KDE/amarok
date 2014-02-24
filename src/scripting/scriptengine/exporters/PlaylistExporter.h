@@ -58,13 +58,10 @@ namespace AmarokScript
          */
         Q_PROPERTY( Playlists::PlaylistProvider* provider READ provider )
 
-        // only different from name() for empty synced playlist
-        // QString prettyName() const { return name(); }
-
     public:
         static void init( QScriptEngine *engine );
         PlaylistPrototype( Playlists::PlaylistPtr playlist );
-        Playlists::PlaylistPtr data() { return m_playlist; }
+        Playlists::PlaylistPtr data() const { return m_playlist; }
 
     public slots:
             /**

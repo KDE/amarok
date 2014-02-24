@@ -121,7 +121,7 @@ namespace AmarokScript
         public:
             static void init( QScriptEngine *engine );
             CollectionPrototype( Collections::Collection *collection );
-            Collections::Collection* data() { return m_collection.data(); }
+            Collections::Collection* data() const { return m_collection.data(); }
 
         public slots:
             /**

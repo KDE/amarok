@@ -78,8 +78,6 @@ namespace AmarokScript
 
         Q_PROPERTY( QScriptValue init READ initFunction WRITE setInitFunction )
 
-        // Q_PROPERTY( QScriptValue paintOperator READ paintOperatorFunction WRITE setPaintOperatorFunction )
-
         public:
             static void init( QScriptEngine *engine );
 

@@ -62,6 +62,7 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     {
         KMessageBox::error( 0, i18n("A KDE text-editor component could not be found.\n"
                                    "Please check your KDE installation.  Exiting the console!") );
+        deleteLater();
         return;
     }
     m_editor->readConfig( KGlobal::config().data() );
@@ -98,7 +99,7 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     QToolBar *toolBar = m_debugger->createStandardToolBar( this );
     QAction *action = new QAction( i18n( "Stop" ), this );
     action->setIcon( QApplication::style()->standardIcon( QStyle::SP_MediaStop ) );
-    connect( action, SIGNAL(toggled(bool)), SLOT(abortEvaluation()) );
+    connect( action, SIGNAL(toggled(bool)), SLOT(slotAbortEvaluation()) );
     toolBar->addAction( action );
     action = new KAction( KIcon( "media-playback-start" ), i18n("Execute Script"), this );
     action->setShortcut( Qt::CTRL + Qt::Key_Enter );
@@ -109,20 +110,19 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     toolBar->addAction( action );
     connect( action, SIGNAL(triggered(bool)), SLOT(slotNewScript()) );
     action = new KAction( KIcon( "edit-delete" ), i18n( "&Delete Script" ), this );
-    //action->setShortcut( Qt::CTRL + Qt::Key_X );
     toolBar->addAction( action );
     connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(removeCurrentScript()) );
     action = new KAction( i18n( "&Clear All Scripts" ), this );
     toolBar->addAction( action );
     connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(clear()) );
-    /* action = new KAction( i18n("Previous Script"), this );
+    action = new KAction( i18n("Previous Script"), this );
     action->setShortcut( QKeySequence::MoveToPreviousPage );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotBackHistory()) );
+    connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(prev()) );
     toolBar->addAction( action );
     action = new KAction( i18n("Next Script"), this );
     action->setShortcut( QKeySequence::MoveToNextPage );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotForwardHistory()) );
-    toolBar->addAction( action );*/
+    connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(next()) );
+    toolBar->addAction( action );
 
     addToolBar( toolBar );
 
@@ -173,18 +173,26 @@ ScriptConsole::ScriptConsole( QWidget *parent )
 void
 ScriptConsole::slotExecuteNewScript()
 {
-    // check script syntax, highlight lines?
-    /*QScriptSyntaxCheckResult syntaxResult = m_scriptItem->engine()->checkSyntax( m_scriptItem->document()->text() );
-    if( QScriptSyntaxCheckResult::Valid != syntaxResult.state() )
-        debug() << "Syntax error: " << syntaxResult.errorLineNumber() << syntaxResult.errorMessage();*/
-
     if( m_scriptItem.data()->document()->text().isEmpty() )
         return;
+
+    QScriptSyntaxCheckResult syntaxResult = m_scriptItem.data()->engine()->checkSyntax( m_scriptItem.data()->document()->text() );
+    if( QScriptSyntaxCheckResult::Valid != syntaxResult.state() )
+    {
+        debug() << "Syntax error: " << syntaxResult.errorLineNumber() << syntaxResult.errorMessage();
+        KTextEditor::View *view = dynamic_cast<KTextEditor::View*>( m_codeWidget->widget() );
+        ScriptEditorDocument::highlight( view, syntaxResult.errorLineNumber(), QColor( 255, 0, 0 ) );
+        int response = KMessageBox::warningContinueCancel( this, i18n( "Syntax error at line %1, continue anyway?\nError: %2",
+                                                  syntaxResult.errorLineNumber(), syntaxResult.errorMessage() ),
+                                            i18n( "Syntax Error" ) );
+        ScriptEditorDocument::clearHighlights( view );
+        if( response == KMessageBox::Cancel )
+            return;
+    }
+
     m_scriptItem.data()->document()->save();
     m_codeWidget->setWidget( m_debugger->widget( QScriptEngineDebugger::CodeWidget ) );
     m_scriptItem.data()->start( false );
-    //dynamic_cast<QAction*>( sender() )->;
-
 }
 
 void
@@ -220,10 +228,11 @@ ScriptConsole::createScriptItem( const QString &script )
 
     QString scriptPath;
     QString scriptName;
-    do{
+    do
+    {
         scriptName = QString( "Script-%1" ).arg( qrand() );
         scriptPath =  QString( "%1/%2" ).arg( m_savePath ).arg( scriptName );
-    }while ( QDir( scriptPath ).exists() );
+    } while ( QDir( scriptPath ).exists() );
     QDir().mkdir( scriptPath );
 
     ScriptEditorDocument *document = new ScriptEditorDocument( this, m_editor->createDocument( 0 ) );
@@ -252,6 +261,7 @@ ScriptConsole::slotEvaluationSuspended()
 
     KTextEditor::View *view = m_scriptItem.data()->createEditorView( m_codeWidget );
     view->installEventFilter( this );
+    view->document()->installEventFilter( this );
     m_codeWidget->setWidget( view );
 }
 
@@ -269,7 +279,7 @@ ScriptConsole::slotEvaluationResumed()
 }
 
 void
-ScriptConsole::abortEvaluation()
+ScriptConsole::slotAbortEvaluation()
 {
     m_scriptItem.data()->pause();
 }
@@ -290,7 +300,6 @@ ScriptConsole::setCurrentScriptItem( ScriptConsoleItem *item )
     m_debugger->detach();
     m_debugger->attachTo( item->engine() );
     m_scriptItem = item;
-    //new DebuggerProxyAgent( item->engine() );
     if( item->engine() && item->engine()->isEvaluating() )
     {
         m_codeWidget->setWidget( m_debugger->widget( QScriptEngineDebugger::CodeWidget ) );
@@ -338,8 +347,6 @@ ScriptListDockWidget::ScriptListDockWidget( QWidget *parent )
     QWidget *widget = new KVBox( this );
     setWidget( widget );
     m_scriptListWidget = new QListWidget( widget );
-    // new HorizontalDivider( widget );
-    //QToolBar *toolbar = new QToolBar( widget );
     m_scriptListWidget->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
     connect( m_scriptListWidget, SIGNAL(doubleClicked(QModelIndex)), SLOT(slotDoubleClicked(QModelIndex)) );
     connect( m_scriptListWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
@@ -390,10 +397,10 @@ ScriptListDockWidget::slotDoubleClicked( const QModelIndex &index )
 void
 ScriptListDockWidget::clear()
 {
-    if( KMessageBox::warningContinueCancel( 0, i18n("Are you absolutely certain?") ) == KMessageBox::Cancel )
+    if( sender() && KMessageBox::warningContinueCancel( 0, i18n("Are you absolutely certain?") ) == KMessageBox::Cancel )
         return;
     for( int i = 0; i<m_scriptListWidget->count(); ++i )
-        delete qvariant_cast<ScriptConsoleItem*>( m_scriptListWidget->item( i )->data( ScriptRole ) );
+        qvariant_cast<ScriptConsoleItem*>( m_scriptListWidget->item( i )->data( ScriptRole ) )->deleteLater();
     m_scriptListWidget->clear();
 
 }
@@ -422,71 +429,3 @@ ScriptListDockWidget::prev()
     int currentRow = m_scriptListWidget->currentRow();
     m_scriptListWidget->setCurrentRow( currentRow + 1 < m_scriptListWidget->count() ? currentRow + 1 : currentRow );
 }
-
-/*
-DebuggerProxyAgent::DebuggerProxyAgent( QScriptEngine *engine )
-: QScriptEngineAgent( engine )
-{
-    d = engine->agent();
-    engine->setAgent( this );
-    if( !d )
-        return;
-}
-
-DebuggerProxyAgent::~DebuggerProxyAgent()
-{
-    delete d;
-}
-
-void
-DebuggerProxyAgent::contextPop()
-{
-    d->contextPop();
-}
-
-void
-DebuggerProxyAgent::contextPush()
-{
-    d->contextPush();
-}
-
-void
-DebuggerProxyAgent::exceptionCatch( qint64 scriptId, const QScriptValue &exception )
-{
-    d->exceptionCatch( scriptId, exception );
-}
-
-void
-DebuggerProxyAgent::exceptionThrow( qint64 scriptId, const QScriptValue &exception, bool hasHandler )
-{
-    d->exceptionThrow( scriptId, exception, hasHandler );
-}
-
-void
-DebuggerProxyAgent::functionEntry( qint64 scriptId )
-{
-    d->functionEntry( scriptId );
-}
-
-void
-DebuggerProxyAgent::functionExit( qint64 scriptId, const QScriptValue &returnValue )
-{
-    d->functionExit( scriptId, returnValue );
-}
-
-void
-DebuggerProxyAgent::positionChange( qint64 scriptId, int lineNumber, int columnNumber )
-{
-    d->positionChange( scriptId, lineNumber, columnNumber );
-}
-
-void DebuggerProxyAgent::scriptLoad( qint64 id, const QString &program, const QString &fileName, int baseLineNumber )
-{
-    d->scriptLoad( id, program, fileName, baseLineNumber );
-}
-
-void DebuggerProxyAgent::scriptUnload( qint64 id )
-{
-    d->scriptUnload( id );
-}
-*/

@@ -37,7 +37,6 @@ namespace Meta
 
 namespace AmarokScript
 {
-    // ANM-TODO: Expose other meta classes, expand query makers
     // SCRIPTDOX PROTOTYPE Meta::TrackPtr Track
     /**
      * Represents track objects.
@@ -104,7 +103,7 @@ namespace AmarokScript
 
         public:
             static void init( QScriptEngine *engine );
-            Meta::TrackPtr data() { return m_track; }
+            Meta::TrackPtr data() const { return m_track; }
             MetaTrackPrototype( const Meta::TrackPtr &track );
             static QScriptValue trackCtor( QScriptContext *context, QScriptEngine *engine );
             static QScriptValue toScriptTagMap( QScriptEngine *engine, const Meta::FieldHash &map );

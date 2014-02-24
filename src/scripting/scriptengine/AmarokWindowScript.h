@@ -57,7 +57,6 @@ namespace AmarokScript
             void addToolsSeparator();
             bool addSettingsMenu( QString id, QString menuTitle, QString icon = "amarok" );
             void addSettingsSeparator();
-            void showBrowser( QString browser ) const; // ANM-TODO: works?
             void showTrayIcon( bool show );
 
             /**
