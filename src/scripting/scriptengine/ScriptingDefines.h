@@ -18,8 +18,9 @@
 #define AMAROKSCRIPT_SCRIPTING_DEFINES_H
 
 #include <QObject>
-#include <QScriptValue>
 #include <QScriptEngine>
+#include <QScriptValue>
+ #include <QScriptValueIterator>
 
 namespace AmarokScript
 {
@@ -39,10 +40,31 @@ namespace AmarokScript
 
         public slots:
             void slotDeprecatedCall( const QString &call );
+            QScriptValue setTimeout( QScriptContext* ctx, QScriptEngine* engine );
+
+        private slots:
+            void slotTimeout( QScriptValue &function );
 
         signals:
             void deprecatedCall(QString);
+            void timeout( QScriptValue );
     };
+
+    template <class type, class WrapperType>
+    void fromScriptValue( const QScriptValue &obj, type &object )
+    {
+        const WrapperType *wrapper = dynamic_cast<WrapperType*>( obj.toQObject() );
+        if( wrapper )
+            object = wrapper->data();
+    }
+
+    template <class type, class WrapperType>
+    QScriptValue toScriptValue( QScriptEngine *engine, type const &object )
+    {
+        WrapperType *wrapper = new WrapperType( object );
+        return engine->newQObject( wrapper, QScriptEngine::ScriptOwnership,
+                                                QScriptEngine::ExcludeSuperClassContents );
+    }
 
     template <class Container>
     QScriptValue toScriptArray( QScriptEngine *engine, const Container &container )
@@ -51,21 +73,43 @@ namespace AmarokScript
         typename Container::const_iterator begin = container.begin();
         typename Container::const_iterator end = container.end();
         typename Container::const_iterator it;
-        for (it = begin; it != end; ++it)
-            scriptArray.setProperty(quint32(it - begin), engine->toScriptValue(*it));
+        for( it = begin; it != end; ++it )
+            scriptArray.setProperty( quint32(it - begin), engine->toScriptValue(*it) );
         return scriptArray;
     }
 
     template <class Container>
     void fromScriptArray( const QScriptValue &value, Container &container )
     {
-        quint32 len = value.property("length").toUInt32();
-        for (quint32 i = 0; i < len; ++i) {
-            QScriptValue item = value.property(i);
+        quint32 len = value.property( "length" ).toUInt32();
+        for( quint32 i = 0; i < len; ++i )
+        {
+            QScriptValue item = value.property( i );
             typedef typename Container::value_type ContainerValue;
-            container.push_back(qscriptvalue_cast<ContainerValue>(item));
+            container.push_back( qscriptvalue_cast<ContainerValue>(item) );
         }
     }
+
+    template <class Map>
+    QScriptValue toScriptMap( QScriptEngine *engine, const Map &map )
+    {
+        QScriptValue scriptMap = engine->newObject();
+        for( typename Map::const_iterator it( map.begin() ); it != map.end(); ++it )
+            scriptMap.setProperty( it.key(), qScriptValueFromValue( engine, it.value()) );
+        return scriptMap;
+    }
+
+    template <class Map>
+    void fromScriptMap( const QScriptValue &value, Map &map )
+    {
+        QScriptValueIterator it( value );
+        while( it.hasNext() )
+        {
+            it.next();
+            map[it.name()] = qscriptvalue_cast<typename Map::mapped_type>( it.value() );
+        }
+    }
+
 }
 
 #endif // AMAROKSCRIPT_SCRIPTING_DEFINES_H

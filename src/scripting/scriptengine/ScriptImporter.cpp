@@ -17,7 +17,8 @@
 #include "ScriptImporter.h"
 
 #include "App.h"
-#include <config.h>
+#include "AmarokBookmarkScript.h"
+#include "config.h"
 #include "core/support/Debug.h"
 
 #include <KUrl>
@@ -89,4 +90,11 @@ QStringList
 ScriptImporter::availableBindings() const
 {
     return m_scriptEngine->availableExtensions();
+}
+
+void
+ScriptImporter::loadAmarokBinding( const QString &name )
+{
+    if( name == "amarok.bookmarks" )
+        new AmarokBookmarkScript( m_scriptEngine );
 }

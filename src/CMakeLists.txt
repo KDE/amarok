@@ -445,6 +445,7 @@ set(dbus_SRCS
 # SCRIPTING INTERFACE
 #####################################################################
 set(scriptengine_SRCS
+    scripting/scriptengine/AmarokBookmarkScript.cpp
     scripting/scriptengine/AmarokEngineScript.cpp
     scripting/scriptengine/AmarokEqualizerScript.cpp
     scripting/scriptengine/AmarokScript.cpp
