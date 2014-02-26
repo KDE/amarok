@@ -60,6 +60,9 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         //Helper function to remove children if their parent is already present
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
+        static bool onlyOneCollection( const QModelIndexList &indices );
+        static Collections::Collection *getCollection( const QModelIndex &index );
+        Collections::QueryMaker* createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems=true ) const;
 
         /**
          * Copies all selected tracks to the local collection. The user can also
@@ -131,12 +134,9 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         QActionList createCollectionActions( const QModelIndexList &indices );
         QActionList createCustomActions( const QModelIndexList &indices );
 
-        bool onlyOneCollection( const QModelIndexList &indices );
-        Collections::Collection *getCollection( const QModelIndex &index );
         QHash<QAction*, Collections::Collection*> getCopyActions( const QModelIndexList &indcies );
         QHash<QAction*, Collections::Collection*> getMoveActions( const QModelIndexList &indcies );
 
-        Collections::QueryMaker* createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems=true ) const;
         CollectionTreeItem* getItemFromIndex( QModelIndex &index );
 
         CollectionSortFilterProxyModel *m_filterModel;

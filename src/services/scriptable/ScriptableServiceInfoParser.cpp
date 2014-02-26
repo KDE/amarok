@@ -16,7 +16,7 @@
 
 #include "ScriptableServiceInfoParser.h"
 
-#include "ScriptManager.h"
+#include "scripting/scriptmanager/ScriptManager.h"
 #include "services/ServiceMetaBase.h"
 
 using namespace Meta;

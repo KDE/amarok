@@ -20,7 +20,7 @@
 #include "EngineController.h"
 #include "KNotificationBackend.h"
 #include "PluginManager.h"
-#include "ScriptManager.h"
+#include "scripting/scriptmanager/ScriptManager.h"
 #include "TrayIcon.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
@@ -52,6 +52,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "scripting/scriptconsole/ScriptConsole.h"
 #include "statemanagement/ApplicationController.h"
 #include "statemanagement/DefaultApplicationController.h"
 #include "statsyncing/Controller.h"
@@ -412,6 +413,11 @@ void App::applySettings( bool firstTime )
 
     if( !firstTime )
         emit settingsChanged();
+
+    if( AmarokConfig::enableScriptConsole() && !m_scriptConsole )
+        m_scriptConsole = ScriptConsoleNS::ScriptConsole::instance();
+    else if( !AmarokConfig::enableScriptConsole() && m_scriptConsole )
+        m_scriptConsole.data()->deleteLater();
 }
 
 //SLOT

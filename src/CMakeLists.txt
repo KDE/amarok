@@ -25,7 +25,7 @@ add_subdirectory( core-impl/collections )
 #don't use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( services )
-add_subdirectory( scripts )
+add_subdirectory( scripting/scripts )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
@@ -445,23 +445,45 @@ set(dbus_SRCS
 # SCRIPTING INTERFACE
 #####################################################################
 set(scriptengine_SRCS
-    scriptengine/AmarokScript.cpp
-    scriptengine/AmarokCollectionScript.cpp
-    scriptengine/AmarokScriptConfig.cpp
-    scriptengine/AmarokInfoScript.cpp
-    scriptengine/AmarokNetworkScript.cpp
-    scriptengine/AmarokScriptableServiceScript.cpp
-    scriptengine/AmarokServicePluginManagerScript.cpp
-    scriptengine/AmarokEngineScript.cpp
-    scriptengine/AmarokKNotifyScript.cpp
-    scriptengine/AmarokOSDScript.cpp
-    scriptengine/AmarokPlaylistScript.cpp
-    scriptengine/AmarokStatusbarScript.cpp
-    scriptengine/AmarokWindowScript.cpp
-    scriptengine/AmarokLyricsScript.cpp
-    scriptengine/MetaTypeExporter.cpp
-    scriptengine/ScriptImporter.cpp
+    scripting/scriptengine/AmarokBookmarkScript.cpp
+    scripting/scriptengine/AmarokCollectionScript.cpp
+    scripting/scriptengine/AmarokCollectionViewScript.cpp
+    scripting/scriptengine/AmarokEngineScript.cpp
+    scripting/scriptengine/AmarokEqualizerScript.cpp
+    scripting/scriptengine/AmarokInfoScript.cpp
+    scripting/scriptengine/AmarokKNotifyScript.cpp
+    scripting/scriptengine/AmarokLyricsScript.cpp
+    scripting/scriptengine/AmarokNetworkScript.cpp
+    scripting/scriptengine/AmarokOSDScript.cpp
+    scripting/scriptengine/AmarokPlaylistManagerScript.cpp
+    scripting/scriptengine/AmarokPlaylistScript.cpp
+    scripting/scriptengine/AmarokScript.cpp
+    scripting/scriptengine/AmarokScriptConfig.cpp
+    scripting/scriptengine/AmarokScriptableServiceScript.cpp
+    scripting/scriptengine/AmarokServicePluginManagerScript.cpp
+    scripting/scriptengine/AmarokStatusbarScript.cpp
+    scripting/scriptengine/AmarokStreamItemScript.cpp
+    scripting/scriptengine/AmarokWindowScript.cpp
+    scripting/scriptengine/ScriptImporter.cpp
+    scripting/scriptengine/ScriptingDefines.cpp
+    scripting/scriptengine/exporters/CollectionTypeExporter.cpp
+    scripting/scriptengine/exporters/MetaTypeExporter.cpp
+    scripting/scriptengine/exporters/PlaylistExporter.cpp
+    scripting/scriptengine/exporters/PlaylistProviderExporter.cpp
+    scripting/scriptengine/exporters/QueryMakerExporter.cpp
+    scripting/scriptengine/exporters/ScriptableBiasExporter.cpp
 )
+
+set(scriptconsole_SRCS
+    scripting/scriptconsole/CompletionModel.cpp
+    scripting/scriptconsole/ScriptConsole.cpp
+    scripting/scriptconsole/ScriptEditorDocument.cpp
+    scripting/scriptconsole/ScriptConsoleItem.cpp
+)
+
+set(args ${CMAKE_SOURCE_DIR}/src/scripting/scriptengine/  ${DATA_INSTALL_DIR}/amarok/scriptconsole)
+#shouldn't be here
+execute_process(COMMAND python ${CMAKE_SOURCE_DIR}/src/scripting/scriptengine/PHAACG2.py ${args})
 
 #####################################################################
 # PLAYLIST GENERATOR
@@ -591,6 +613,7 @@ set(amaroklib_LIB_SRCS
     ${libplaylistmanager_SRCS}
     ${dbus_SRCS}
     ${scriptengine_SRCS}
+    ${scriptconsole_SRCS}
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
@@ -616,8 +639,9 @@ set(amaroklib_LIB_SRCS
     MediaDeviceMonitor.cpp
     PluginManager.cpp
     QStringx.cpp
-    ScriptManager.cpp
-    ScriptUpdater.cpp
+    scripting/scriptmanager/ScriptManager.cpp
+    scripting/scriptmanager/ScriptItem.cpp
+    scripting/scriptmanager/ScriptUpdater.cpp
     SvgHandler.cpp
     SvgTinter.cpp
     TrayIcon.cpp
@@ -663,6 +687,7 @@ set(amaroklib_LIB_SRCS
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     playback/DelayedDoers.cpp
+    playback/EqualizerController.cpp
     playback/Fadeouter.cpp
     playback/PowerManager.cpp
     statemanagement/ApplicationController.cpp
@@ -847,8 +872,10 @@ target_link_libraries(amaroklib
     ${KDE4_PHONON_LIBRARY}
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
+    ${KDE4_KTEXTEDITOR_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
+    ${QT_QTSCRIPTTOOLS_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}

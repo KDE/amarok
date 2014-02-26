@@ -460,4 +460,22 @@ CollectionWidget::readLevelsFromConfig() const
     return levels;
 }
 
+CollectionBrowserTreeView*
+CollectionWidget::currentView()
+{
+    return d->view( d->viewMode );
+}
+
+CollectionWidget::ViewMode
+CollectionWidget::viewMode() const
+{
+    return d->viewMode;
+}
+
+SearchWidget*
+CollectionWidget::searchWidget()
+{
+    return d->searchWidget;
+}
+
 #include "CollectionWidget.moc"

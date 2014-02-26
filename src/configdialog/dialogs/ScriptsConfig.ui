@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
-    <height>48</height>
+    <width>590</width>
+    <height>115</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -27,6 +27,24 @@
       </sizepolicy>
      </property>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="KPushButton" name="uninstallButton">
+       <property name="text">
+        <string>Uninstall Script</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="KPushButton" name="installButton">
+       <property name="text">
+        <string>Install Local Script</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -66,13 +84,58 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="KPushButton" name="reloadButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="icon">
+        <iconset theme="view-refresh">
+         <normaloff/>
+        </iconset>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="m_scriptConsoleGroup">
+     <property name="title">
+      <string>Script Console</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="kcfg_EnableScriptConsole">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="statusTip">
+         <string>Enable the script console.</string>
+        </property>
+        <property name="whatsThis">
+         <string>Enable the script console.</string>
+        </property>
+        <property name="text">
+         <string>Enable Script Console</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="0"/>
  <layoutfunction spacing="KDialog::spacingHint"/>
  <customwidgets>
+  <customwidget>
+   <class>KPushButton</class>
+   <extends>QPushButton</extends>
+   <header>kpushbutton.h</header>
+  </customwidget>
   <customwidget>
    <class>ScriptSelector</class>
    <extends>QWidget</extends>

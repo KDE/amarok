@@ -57,6 +57,7 @@ typedef QList<Playlists::PlaylistProvider *> PlaylistProviderList;
 class AMAROK_EXPORT PlaylistManager : public QObject
 {
     Q_OBJECT
+    Q_ENUMS( PlaylistCategory )
 
     public:
         enum PlaylistCategory
@@ -206,5 +207,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
 
         QMap<KJob *, Playlists::PlaylistFilePtr> m_downloadJobMap;
 };
+
+Q_DECLARE_METATYPE( PlaylistProviderList )
 
 #endif

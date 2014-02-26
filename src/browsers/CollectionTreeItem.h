@@ -51,7 +51,7 @@ class AMAROK_EXPORT CollectionTreeItem : public QObject
 
         ~CollectionTreeItem();
 
-        CollectionTreeItem* parent() { return m_parent; }
+        CollectionTreeItem* parent() const { return m_parent; }
 
         void appendChild( CollectionTreeItem *child );
         void removeChild( int index );
@@ -93,7 +93,7 @@ class AMAROK_EXPORT CollectionTreeItem : public QObject
         Collections::Collection* parentCollection() const { return m_parentCollection ? m_parentCollection : (m_parent ? m_parent->parentCollection() : 0); }
 
         KUrl::List urls() const;
-        QList<Meta::TrackPtr> descendentTracks();
+        Meta::TrackList descendentTracks();
 
         bool allDescendentTracksLoaded() const;
 
@@ -129,5 +129,8 @@ class AMAROK_EXPORT CollectionTreeItem : public QObject
         //QString m_name;
         mutable bool m_isCounting;
 };
+
+Q_DECLARE_METATYPE( CollectionTreeItem* )
+Q_DECLARE_METATYPE( QList<CollectionTreeItem*> )
 
 #endif

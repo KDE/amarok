@@ -18,10 +18,10 @@
 
 #include "ScriptableServiceQueryMaker.h"
 
-#include "ScriptManager.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/MemoryMatcher.h"
+#include "scripting/scriptmanager/ScriptManager.h"
 #include "services/scriptable/ScriptableServiceMeta.h"
 
 #include <QTimer>

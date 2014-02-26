@@ -84,5 +84,9 @@ class BookmarkGroup : public BookmarkViewItem
         mutable bool m_hasFetchedChildPlaylists;
 };
 
+Q_DECLARE_METATYPE( BookmarkGroupPtr )
+Q_DECLARE_METATYPE( AmarokUrlPtr )
+Q_DECLARE_METATYPE( BookmarkList )
+Q_DECLARE_METATYPE( BookmarkGroupList )
 
 #endif

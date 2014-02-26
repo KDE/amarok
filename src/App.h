@@ -34,6 +34,10 @@ namespace Amarok {
     class TrayIcon;
 }
 
+namespace ScriptConsoleNS{
+    class ScriptConsole;
+}
+
 class OcsData;
 
 namespace KIO { class Job; }
@@ -89,10 +93,11 @@ class AMAROK_EXPORT App : public KUniqueApplication
         void handleFirstRun();
 
         // ATTRIBUTES
-        bool                    m_isUniqueInstance;
+        bool                        m_isUniqueInstance;
         QWeakPointer<MainWindow>    m_mainWindow;
-        Amarok::TrayIcon        *m_tray;
-        MediaDeviceManager      *m_mediaDeviceManager;
+        Amarok::TrayIcon            *m_tray;
+        MediaDeviceManager          *m_mediaDeviceManager;
+        QWeakPointer<ScriptConsoleNS::ScriptConsole> m_scriptConsole;
 
         static QStringList       s_delayedAmarokUrls;
 };

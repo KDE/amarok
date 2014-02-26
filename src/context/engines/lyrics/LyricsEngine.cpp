@@ -20,7 +20,7 @@
 #include "LyricsEngine.h"
 
 #include "EngineController.h"
-#include "ScriptManager.h"
+#include "scripting/scriptmanager/ScriptManager.h"
 #include "context/ContextView.h"
 #include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
@@ -161,7 +161,7 @@ void LyricsEngine::update()
         // fetch by lyrics script
         removeAllData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
-        ScriptManager::instance()->notifyFetchLyrics( lyrics.artist, lyrics.title );
+        ScriptManager::instance()->notifyFetchLyrics( lyrics.artist, lyrics.title, "", currentTrack );
     }
     m_isUpdateInProgress = false;
 }

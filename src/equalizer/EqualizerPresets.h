@@ -58,6 +58,15 @@ namespace EqualizerPresets
     */
     void eqCfgSetPresetVal( const QString &presetName, const QList<int> &presetValues );
 
+    /**
+     * Will return a list of all default preset names untranslated.
+     */
+    QStringList eqDefaultPresetsList();
+
+    /**
+     * Will return a list of all default preset names translated.
+     */
+    QStringList eqDefaultTranslatedPresetsList();
 };
 
 #endif // EQUALIZERPRESETS_H

@@ -27,7 +27,7 @@
 #include "context/LyricsManager.h"
 #include "LyricsBrowser.h"
 #include "LyricsSuggestionsListWidget.h"
-#include "ScriptManager.h"
+#include "scripting/scriptmanager/ScriptManager.h"
 
 #include <KConfigDialog>
 #include <KStandardDirs>
@@ -170,7 +170,7 @@ LyricsAppletPrivate::refetchLyrics()
 {
     DEBUG_BLOCK
     ScriptManager::instance()->notifyFetchLyrics( currentTrack->artist()->name(),
-                                                  currentTrack->name() );
+                                                  currentTrack->name(), "", currentTrack );
 }
 
 void
@@ -356,7 +356,7 @@ LyricsAppletPrivate::_suggestionChosen( const LyricsSuggestion &suggestion )
 
     Q_Q( LyricsApplet );
     debug() << "clicked suggestion" << url;
-    ScriptManager::instance()->notifyFetchLyricsByUrl( artist, title, url.url() );
+    ScriptManager::instance()->notifyFetchLyrics( artist, title, url.url(), Meta::TrackPtr() );
     suggestView->setCursor( Qt::BusyCursor );
     QTimer::singleShot( 10000, q, SLOT(_unsetCursor()) );
 }

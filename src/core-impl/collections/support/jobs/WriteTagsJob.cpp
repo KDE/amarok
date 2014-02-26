@@ -21,21 +21,22 @@
 
 #include <QImage>
 
-WriteTagsJob::WriteTagsJob(const QString& path, const Meta::FieldHash& changes)
+WriteTagsJob::WriteTagsJob( const QString &path, const Meta::FieldHash &changes, bool respectConfig )
     : Job()
     , m_path( path )
     , m_changes( changes )
+    , m_respectConfig( respectConfig )
 {
 }
 
 void WriteTagsJob::run()
 {
-    if( !AmarokConfig::writeBack() )
+    if( !AmarokConfig::writeBack() && m_respectConfig )
         return;
 
     Meta::Tag::writeTags( m_path, m_changes, AmarokConfig::writeBackStatistics() );
 
-    if( m_changes.contains( Meta::valImage ) && AmarokConfig::writeBackCover() )
+    if( m_changes.contains( Meta::valImage ) && ( AmarokConfig::writeBackCover() || !m_respectConfig ) )
         Meta::Tag::setEmbeddedCover( m_path, m_changes.value( Meta::valImage ).value<QImage>() );
 }
 

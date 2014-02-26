@@ -588,6 +588,24 @@
         <whatsthis>Enable/Disable automatic update for built-in scripts.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="EnableScriptConsole" type="Bool">
+        <label>Whether to enable the script console.</label>
+        <whatsthis>Whether to enable the script console.</whatsthis>
+        <default>false</default>
+    </entry>
+    <entry key="EnableDeprecationWarnings" type="Bool">
+        <label>Whether to display a warning about scripts accessing deprecated APIs.</label>
+        <whatsthis>Whether to display a warning about scripts accessing deprecated APIs.</whatsthis>
+        <default>true</default>
+    </entry>
+</group>
+
+<group name="ScriptConsole">
+    <entry key="SaveSession" type="Bool">
+        <label>Whether to save the current session on exit.</label>
+        <whatsthis>Whether to save the current session on exit.</whatsthis>
+        <default>false</default>
+    </entry>
 </group>
 
 <group name="Moodbar">

@@ -39,6 +39,7 @@ namespace Collections
     class Collection;
     class CollectionLocation;
     class QueryMaker;
+    typedef QList<Collection*> CollectionList;
 
     class AMAROK_CORE_EXPORT CollectionFactory : public Plugins::PluginFactory
     {
@@ -167,8 +168,10 @@ namespace Collections
              */
             void updated();
     };
-
 }
+
+Q_DECLARE_METATYPE( Collections::Collection* )
+Q_DECLARE_METATYPE( Collections::CollectionList )
 
 #define AMAROK_EXPORT_COLLECTION( classname, libname ) \
     K_PLUGIN_FACTORY( factory, registerPlugin<classname>(); ) \

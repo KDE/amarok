@@ -100,6 +100,8 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         static QIcon iconForCategory( CategoryId::CatMenuId category );
         static QString nameForCategory( CategoryId::CatMenuId category, bool showYears = false );
 
+        void ensureChildrenLoaded( CollectionTreeItem *item );
+
     signals:
         void expandIndex( const QModelIndex &index );
         void allQueriesFinished();
@@ -138,7 +140,6 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual QVariant dataForItem( CollectionTreeItem *item, int role, int level = -1 ) const;
 
         virtual void filterChildren() = 0;
-        void ensureChildrenLoaded( CollectionTreeItem *item );
 
         void markSubTreeAsDirty( CollectionTreeItem *item );
 

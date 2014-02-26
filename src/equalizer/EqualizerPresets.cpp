@@ -22,11 +22,6 @@
 
 #include <KLocale>
 
-/** Will return a list of all default preset names untranslated */
-static QStringList eqDefaultPresetsList();
-/** Will return a list of all default preset names translated */
-static QStringList eqDefaultTranslatedPresetsList();
-
 #define NUM_EQ_VALUES 11
 
 static int DEFAULT_PRESET_VALUES[][NUM_EQ_VALUES] =
@@ -53,7 +48,7 @@ static int DEFAULT_PRESET_VALUES[][NUM_EQ_VALUES] =
 };
 
 QStringList
-eqDefaultPresetsList()
+EqualizerPresets::eqDefaultPresetsList()
 {
     QStringList presets;
     presets << "Manual"
@@ -79,7 +74,7 @@ eqDefaultPresetsList()
 }
 
 QStringList
-eqDefaultTranslatedPresetsList()
+EqualizerPresets::eqDefaultTranslatedPresetsList()
 {
     QStringList strings;
     strings << i18n( "Manual" );

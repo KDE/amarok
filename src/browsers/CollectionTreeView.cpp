@@ -43,6 +43,7 @@
 #include "core-impl/collections/support/TrashCollectionLocation.h"
 #include "dialogs/TagDialog.h"
 #include "playlist/PlaylistModelStack.h"
+#include "scripting/scriptengine/AmarokCollectionViewScript.h"
 
 #include <KAction>
 #include <KGlobalSettings>
@@ -310,6 +311,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     foreach( QAction *action, actions ) {
         menu.addAction( action );
     }
+    AmarokScript::AmarokCollectionViewScript::createScriptedActions( menu, indices );
 
     menu.exec( event->globalPos() );
 }

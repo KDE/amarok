@@ -42,8 +42,9 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     layout->addWidget( EqualizerWidget );
     setMainWidget( EqualizerWidget );
 
+    EqualizerController *equalizer = The::engineController()->equalizerController();
     // Check if equalizer is supported - disable controls if not
-    if( !The::engineController()->isEqSupported() )
+    if( !equalizer->isEqSupported() )
     {
         EqualizerWidget->setDisabled( true );
         activeCheckBox->setEnabled( false );
@@ -88,13 +89,13 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     m_bandLabels.append( eqBand9Label );
 
     // Ask engine for maximum gain value and compute scale to display values
-    mValueScale = The::engineController()->eqMaxGain();
+    mValueScale = equalizer->eqMaxGain();
     const QString mlblText = i18n( "%0\ndB" ).arg( QString::number( mValueScale, 'f', 1 ) );
     eqMaxEq->setText( QString("+") + mlblText );
     eqMinEq->setText( QString("-") + mlblText );
 
     // Ask engine for band frequencies and set labels
-    const QStringList equalizerBandFreq = The::engineController()->eqBandsFreq();
+    const QStringList equalizerBandFreq = equalizer->eqBandsFreq();
     QStringListIterator i( equalizerBandFreq );
 
     // Check if preamp is supported by Phonon backend
@@ -111,13 +112,19 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
             mLabel->setText( i.hasNext() ?  i.next() : "N/A" );
 
     updatePresets();
-    activeCheckBox->setChecked( AmarokConfig::equalizerMode() > 0 );
-    setPreset( AmarokConfig::equalizerMode() - 1 );
-    setGains( AmarokConfig::equalizerGains() );
+    activeCheckBox->setChecked( equalizer->enabled() );
+
+    equalizer->applyEqualizerPreset( AmarokConfig::equalizerMode() - 1 );
+    equalizer->setGains( equalizer->gains() );
+    updateUi();
+
+    connect( equalizer, SIGNAL(presetsChanged(QString)), SLOT(presetsChanged(QString)) );
+    connect( equalizer, SIGNAL(gainsChanged(QList<int>)), SLOT(gainsChanged(QList<int>)) );
+    connect( equalizer, SIGNAL(presetApplied(int)), SLOT(presetApplied(int)) );
 
     // Configure signal and slots to handle presets
-    connect( activeCheckBox, SIGNAL(toggled(bool)), SLOT(setActive(bool)) );
-    connect( eqPresets, SIGNAL(currentIndexChanged(int)), SLOT(setPreset(int)) );
+    connect( activeCheckBox, SIGNAL(toggled(bool)), SLOT(toggleEqualizer(bool)) );
+    connect( eqPresets, SIGNAL(currentIndexChanged(int)), equalizer, SLOT(applyEqualizerPreset(int)) );
     connect( eqPresets, SIGNAL(editTextChanged(QString)), SLOT(updateUi()) );
     foreach( QSlider* mSlider, m_bands )
         connect( mSlider, SIGNAL(valueChanged(int)), SLOT(bandsChanged()) );
@@ -158,7 +165,7 @@ EqualizerDialog::gains() const
 }
 
 void
-EqualizerDialog::setGains( QList<int> eqGains )
+EqualizerDialog::gainsChanged( const QList<int> &eqGains )
 {
     for( int i = 0; i < m_bands.count() && i < eqGains.count(); i++ )
     {
@@ -167,8 +174,9 @@ EqualizerDialog::setGains( QList<int> eqGains )
         m_bands[i]->setValue( eqGains[ i ] );
         m_bands[i]->blockSignals( false );
     }
-
-    bandsChanged();
+    updateToolTips();
+    updateLabels();
+    updateUi();
 }
 
 void
@@ -184,25 +192,16 @@ EqualizerDialog::restoreOriginalSettings()
 {
     activeCheckBox->setChecked( m_originalActivated );
     int originalPresetIndex = EqualizerPresets::eqGlobalList().indexOf( m_originalPreset );
-    setPreset( originalPresetIndex );
+    The::engineController()->equalizerController()->applyEqualizerPreset( originalPresetIndex );
     eqPresets->setEditText( m_originalPreset );
-    setGains( m_originalGains );
+    The::engineController()->equalizerController()->setGains( m_originalGains );
 }
 
 void
-EqualizerDialog::setActive( bool active ) //SLOT
-{
-    Q_UNUSED( active );
-
-    updateUi();
-    updateEngine();
-}
-
-void
-EqualizerDialog::setPreset( int index ) //SLOT
+EqualizerDialog::presetApplied( int index ) //SLOT
 {
     if( index < 0 )
-        index = 0;
+        return;
 
     // if not called from the eqPreset->indexChanged signal we need
     // to update the combo box too.
@@ -212,8 +211,6 @@ EqualizerDialog::setPreset( int index ) //SLOT
         eqPresets->setCurrentIndex( index );
         eqPresets->blockSignals( false );
     }
-
-    setGains( EqualizerPresets::eqCfgGetPresetVal( selectedPresetName() ) ); // this also does updatUi and updateEngine
 }
 
 void
@@ -222,7 +219,9 @@ EqualizerDialog::bandsChanged() //SLOT
     updateToolTips();
     updateLabels();
     updateUi();
-    updateEngine();
+    // The::engineController()->equalizerController()->blockSignals( true );
+    The::engineController()->equalizerController()->setGains( gains() );
+    // The::engineController()->equalizerController()->blockSignals( false );
 }
 
 void
@@ -258,24 +257,25 @@ EqualizerDialog::updatePresets()
 }
 
 void
+EqualizerDialog::presetsChanged( const QString &name )
+{
+    Q_UNUSED( name )
+    updatePresets();
+    if( EqualizerPresets::eqGlobalList().indexOf( selectedPresetName() ) == -1 )
+        presetApplied( 0 );
+    updateUi();
+}
+
+void
 EqualizerDialog::savePreset() //SLOT
 {
-    DEBUG_BLOCK
-
-    EqualizerPresets::eqCfgSetPresetVal( selectedPresetName(), gains() );
-
-    updatePresets(); // we might have a new one
-    updateUi();
+    The::engineController()->equalizerController()->savePreset( selectedPresetName(), gains() );
 }
 
 void
 EqualizerDialog::deletePreset() //SLOT
 {
-    if( EqualizerPresets::eqCfgDeletePreset( selectedPresetName() ) )
-    {
-        updatePresets();
-        setPreset( 0 );
-    }
+    The::engineController()->equalizerController()->deletePreset( selectedPresetName() );
 }
 
 QString
@@ -295,7 +295,7 @@ EqualizerDialog::restorePreset() //SLOT
     DEBUG_BLOCK
 
     EqualizerPresets::eqCfgRestorePreset( selectedPresetName() );
-    setGains( EqualizerPresets::eqCfgGetPresetVal( selectedPresetName() ) );
+    The::engineController()->equalizerController()->setGains( EqualizerPresets::eqCfgGetPresetVal( selectedPresetName() ) );
 }
 
 void
@@ -313,15 +313,15 @@ EqualizerDialog::updateLabels()
 }
 
 void
-EqualizerDialog::updateEngine() //SLOT
+EqualizerDialog::toggleEqualizer( bool enabled )
 {
     DEBUG_BLOCK
 
-    AmarokConfig::setEqualizerMode( activeCheckBox->isChecked() ?
-                                    eqPresets->currentIndex() + 1 : 0 ); // equalizer mode 0 is off
-    AmarokConfig::setEqualizerGains( gains() );
-    The::engineController()->eqUpdate();
+    EqualizerController *eq = The::engineController()->equalizerController();
+    if( !enabled )
+        eq->applyEqualizerPreset( -1 );
+    else
+        eq->applyEqualizerPreset( eqPresets->currentIndex() );
 }
-
 
 #include "EqualizerDialog.moc"

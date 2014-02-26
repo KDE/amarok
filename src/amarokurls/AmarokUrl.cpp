@@ -226,7 +226,7 @@ QString AmarokUrl::unescape( const QString & in )
     return QUrl::fromPercentEncoding( in.toUtf8() );
 }
 
-bool AmarokUrl::isNull()
+bool AmarokUrl::isNull() const
 {
     return m_command.isEmpty();
 }

@@ -38,12 +38,13 @@ class AMAROK_EXPORT WriteTagsJob : public ThreadWeaver::Job
     Q_OBJECT
 
     public:
-        WriteTagsJob( const QString &path, const Meta::FieldHash &changes );
+        WriteTagsJob( const QString &path, const Meta::FieldHash &changes, bool respectConfig = true );
         virtual void run();
 
     private:
         const QString m_path;
         const Meta::FieldHash m_changes;
+        const bool m_respectConfig;
 };
 
 #endif // WRITETAGSJOB_H
