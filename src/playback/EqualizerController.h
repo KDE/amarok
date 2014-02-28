@@ -22,6 +22,8 @@
 #ifndef AMAROK_EQUALIZERCONTROLLER_H
 #define AMAROK_EQUALIZERCONTROLLER_H
 
+#include "amarok_export.h"
+
 #include <QWeakPointer>
 
 #include <Phonon/Path>
@@ -29,7 +31,7 @@
 
 static const int s_equalizerBandsNum = 10; // Number of equalizer parameters excluding Preamp
 
-class EqualizerController : public QObject
+class AMAROK_EXPORT EqualizerController : public QObject
 {
     Q_OBJECT
 
