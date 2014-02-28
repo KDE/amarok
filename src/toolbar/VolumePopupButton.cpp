@@ -104,7 +104,8 @@ VolumePopupButton::volumeChanged( int newVolume )
     if ( newVolume )
         m_muteAction->setChecked( false );
 
-    setToolTip( i18n( "Volume: %1% %2", newVolume, ( m_muteAction->isChecked() ? i18n( "(muted)" ) : "" ) ) );
+    const KLocalizedString tip = m_muteAction->isChecked() ? ki18n( "Volume: %1% (muted)" ) : ki18n( "Volume: %1%" );
+    setToolTip( tip.subs( newVolume ).toString() );
 }
 
 void
@@ -115,7 +116,7 @@ VolumePopupButton::muteStateChanged( bool muted )
     if ( muted )
     {
         setIcon( KIcon( "audio-volume-muted" ) );
-        setToolTip( i18n( "Volume: %1% %2", volume, ( muted ? i18n( "(muted)" ) : "" ) ) );
+        setToolTip( i18n( "Volume: %1% (muted)", volume ) );
     }
     else
     {
