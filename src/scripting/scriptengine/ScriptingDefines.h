@@ -104,14 +104,6 @@ namespace AmarokScript
             // exposing the metaobject directly also exposes >900 other values
             QScriptValue enumObject( const QMetaEnum &metaEnum );
 
-            template <class Pointer, class Wrapper>
-            void registerPointerType()
-            {
-                 qScriptRegisterMetaType<Pointer>( this,
-                                                   toScriptValue<Pointer, Wrapper>,
-                                                   fromScriptValue<Pointer, Wrapper> );
-            }
-
             template <class T>
             void registerArrayType()
             {
