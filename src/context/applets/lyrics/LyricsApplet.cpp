@@ -487,7 +487,7 @@ LyricsApplet::init()
     d->settingsIcon = addRightHeaderAction( settingsAction );
     connect( d->settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
 
-    d->browser = new LyricsBrowser( this );
+    d->browser = new LyricsBrowser( this ); // change here
     d->browser->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     d->browser->hide();
 
