@@ -42,6 +42,8 @@
  **
  ****************************************************************************/
 
+#include "arthurwidgets.h"
+
  #include <QPainterPath>
  #include <QBasicTimer>
  #include <QDateTime>
