@@ -7625,13 +7625,6 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
     <para>Opens the Statistics Synchronization dialog.</para>
     </entry>
   </row>
-  <row>
-    <entry>
-    <para><guilabel>Free Music Charts Voting</guilabel></para>
-    </entry>
-    <entry>
-    <para>Opens an external webpage to vote on the Free Music Charts.</para></entry>
-  </row>
   </tbody>
   </tgroup>
 </informaltable>
@@ -7755,10 +7748,6 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </sect3>
 <sect3 id="synchronize-statistics"><title>Synchronize Statistics</title> 
 <para>This option allows you to synchronize statistics of your various collections. This is a new feature in &amarok; since version 2.7 For more information, see also <link linkend="statistics-synchronization">Statistics Synchronization Between Collections and with Last.fm</link> in the handbook.
-</para>
-</sect3>
-<sect3 id="free-music-charts-voting"><title>Free Music Charts Voting</title> 
-<para>Selecting this menu option will open the external <ulink url="http://www.darkerradio.com/free-music-charts/free-music-charts-voting/">Free Music Charts Voting</ulink> website that allows you to vote on the most recent Free Music charts. This option is new since <guilabel>Amarok 2.6</guilabel>
 </para>
 </sect3>
 </sect2>
