@@ -7556,7 +7556,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-7menutools.png" format="PNG"/>
+      <imagedata fileref="amarok2-8menutools.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>The Tools Menu</phrase>
