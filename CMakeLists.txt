@@ -91,9 +91,9 @@ find_package( KDE4 4.8.4 REQUIRED )
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")  # Require C++11
 
 # WORKAROUND for Clang bug: http://llvm.org/bugs/show_bug.cgi?id=15651
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-delayed-template-parsing")
-endif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+endif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
 
 
 include( KDE4Defaults )
