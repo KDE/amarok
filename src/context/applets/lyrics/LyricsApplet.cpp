@@ -80,7 +80,8 @@ public:
     void _toggleAutoScroll();
     void _suggestionChosen( const LyricsSuggestion &suggestion );
     void _unsetCursor();
-    void _trackDataChanged( Meta::TrackPtr );
+    void _trackChanged( Meta::TrackPtr );
+    void _trackMetadataChanged( Meta::TrackPtr );
     void _trackPositionChanged( qint64 position, bool userSeek );
 
     void _lyricsChangedMessageButtonPressed( const Plasma::MessageButton button );
@@ -369,7 +370,7 @@ LyricsAppletPrivate::_unsetCursor()
 }
 
 void
-LyricsAppletPrivate::_trackDataChanged( Meta::TrackPtr track )
+LyricsAppletPrivate::_trackChanged( Meta::TrackPtr track )
 {
     userAutoScrollOffset = 0;
     oldSliderPosition = 0;
@@ -388,6 +389,12 @@ LyricsAppletPrivate::_trackDataChanged( Meta::TrackPtr track )
 
     // Update the current track.
     currentTrack = track;
+}
+
+void
+LyricsAppletPrivate::_trackMetadataChanged( Meta::TrackPtr )
+{
+
 }
 
 void
@@ -512,8 +519,8 @@ LyricsApplet::init()
 
     EngineController* engine = The::engineController();
 
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)), this, SLOT(_trackDataChanged(Meta::TrackPtr)) );
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), this, SLOT(_trackDataChanged(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)), this, SLOT(_trackChanged(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), this, SLOT(_trackMetadataChanged(Meta::TrackPtr)) );
     connect( engine, SIGNAL(trackPositionChanged(qint64,bool)), this, SLOT(_trackPositionChanged(qint64,bool)) );
     connect( d->suggestView, SIGNAL(selected(LyricsSuggestion)), SLOT(_suggestionChosen(LyricsSuggestion)) );
     connect( dataEngine("amarok-lyrics"), SIGNAL(sourceAdded(QString)), this, SLOT(connectSource(QString)) );
