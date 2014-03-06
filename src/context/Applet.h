@@ -172,7 +172,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
          *  Background is *no longer a gradient*. However, please use this to
          *  stay consistent with other applets.
          */
-        void addGradientToAppletBackground( QPainter* p );
+        void addGradientToAppletBackground( QPainter* p ); // TODO check the applets for this
 
         Plasma::IconWidget* addAction( QGraphicsItem *parent, QAction *action, const int size = 16 );
         bool canAnimate();
