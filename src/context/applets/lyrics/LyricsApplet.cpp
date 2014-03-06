@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
  * Copyright (c) 2009 simon.esneault <simon.esneault@gmail.com>                         *
+ * Copyright (c) 2014 Yash Ladia <yashladia1@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -374,7 +375,13 @@ LyricsAppletPrivate::_trackChanged( Meta::TrackPtr track )
 {
     userAutoScrollOffset = 0;
     oldSliderPosition = 0;
+    // meta data also changed, so to avoid code duplication
+    _trackMetadataChanged( track );
+}
 
+void
+LyricsAppletPrivate::_trackMetadataChanged( Meta::TrackPtr track )
+{
     // Check if we previously had a track.
     // If the lyrics currently shown in the browser (which
     // additionally is in edit mode) are different from the
@@ -389,12 +396,6 @@ LyricsAppletPrivate::_trackChanged( Meta::TrackPtr track )
 
     // Update the current track.
     currentTrack = track;
-}
-
-void
-LyricsAppletPrivate::_trackMetadataChanged( Meta::TrackPtr )
-{
-
 }
 
 void
@@ -527,7 +528,7 @@ LyricsApplet::init()
 
     // This is needed as a track might be playing when the lyrics applet
     // is added to the ContextView.
-    d->_trackDataChanged( engine->currentTrack() );
+    d->_trackChanged( engine->currentTrack() );
     d->_trackPositionChanged( engine->trackPositionMs(), false );
 
     d->determineActionIconsState();
