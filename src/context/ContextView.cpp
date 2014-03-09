@@ -26,6 +26,7 @@
 
 #include <config.h>
 
+#include "App.h"
 #include "Context.h"
 #include "ContextScene.h"
 #include "Svg.h"
@@ -104,9 +105,11 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     EngineController* const engine = The::engineController();
 
     connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
-             this, SLOT(slotTrackChanged(Meta::TrackPtr)) );
+             this, SLOT(updateNeeded()) );
+//    connect( App::instance()->mainWindow(), SIGNAL(windowRestored()),
+//             this, SLOT(updateNeeded()) );
     connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
-             this, SLOT(slotMetadataChanged(Meta::TrackPtr)) );
+             this, SLOT(updateNeeded()) );
 
     // keep this assignment at bottom so that premature usage of ::self() asserts out
     s_self = this;
@@ -170,23 +173,14 @@ void ContextView::clearNoSave()
 }
 
 
-void ContextView::slotTrackChanged( Meta::TrackPtr track )
+void ContextView::updateNeeded()
 {
-    if( track )
+    DEBUG_BLOCK
+    if( !The::engineController()->isStopped() || The::engineController()->isStream() )
         messageNotify( Current );
     else
         messageNotify( Home );
-}
-
-
-void
-ContextView::slotMetadataChanged( Meta::TrackPtr track )
-{
-    DEBUG_BLOCK
-
-    // if we are listening to a stream, take the new metadata as a "new track"
-    if( track && The::engineController()->isStream() )
-        messageNotify( Current );
+    adjustSize();
 }
 
 void ContextView::showHome()

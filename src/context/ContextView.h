@@ -102,6 +102,7 @@ public slots:
      */
     void hideAppletExplorer();
     void showAppletExplorer();
+    void updateNeeded();
 
 signals:
     void appletExplorerHid();
@@ -111,8 +112,6 @@ protected:
     void wheelEvent(QWheelEvent *event);
 
 private slots:
-    void slotTrackChanged( Meta::TrackPtr track );
-    void slotMetadataChanged( Meta::TrackPtr track );
     void slotPositionAppletExplorer();
     void slotStartCollapseAnimations();
     void slotCollapseAnimationsFinished();

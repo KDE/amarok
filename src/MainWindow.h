@@ -123,6 +123,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void banTrack( Meta::TrackPtr track );
         void skipTrack();
         void switchQueueStateShortcut();
+        void windowRestored();
 
     public slots:
         void showHide();

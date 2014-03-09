@@ -40,6 +40,7 @@
 #include "browsers/playlistbrowser/PodcastCategory.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 #include "context/ContextDock.h"
+#include "context/ContextView.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
@@ -1205,8 +1206,18 @@ MainWindow::showReportBug()
 void
 MainWindow::changeEvent( QEvent *event )
 {
-    if( event->type() == QEvent::PaletteChange )
+    switch( event->type() )
+    {
+    case QEvent::PaletteChange:
         The::paletteHandler()->setPalette( palette() );
+        break;
+    case QEvent::WindowStateChange:
+        if( !windowState().testFlag( Qt::WindowMinimized ) )
+//            emit windowRestored();
+            Context::ContextView::self()->updateNeeded();
+    default:
+        ;
+    }
 }
 
 void
