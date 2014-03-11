@@ -28,7 +28,7 @@
 #include <QXmlStreamReader>
 
 /**
-* Parser for the XML file from http://img.jamendo.com/data/dbdump.en.xml.gz
+* Parser for the XML file from http://imgjam.com/data/dbdump_artistalbumtrack.xml.gz
 *
 * @author Nikolaj Hald Nielsen
 */
