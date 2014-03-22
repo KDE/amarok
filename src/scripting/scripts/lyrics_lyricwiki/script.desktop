@@ -24,6 +24,7 @@ Name[sr@ijekavian]=Лириквики
 Name[sr@ijekavianlatin]=LyricWiki
 Name[sr@latin]=LyricWiki
 Name[sv]=Lyricwiki
+Name[tr]=Lyricwiki
 Name[uk]=Lyricwiki
 Name[x-test]=xxLyricwikixx
 Comment=A script to fetch lyrics from lyricwiki.org
@@ -47,6 +48,7 @@ Comment[sr@ijekavian]=Скрипта за добављање стихова са
 Comment[sr@ijekavianlatin]=Skripta za dobavljanje stihova sa LyricWikija
 Comment[sr@latin]=Skripta za dobavljanje stihova sa LyricWikija
 Comment[sv]=Ett skript för att hämta sångtexter från lyricwiki.org
+Comment[tr]=Lyricwiki.org şarkı sözleri getirmek için bir betik
 Comment[uk]=Скрипт для отримання слів пісень з lyricwiki.org
 Comment[x-test]=xxA script to fetch lyrics from lyricwiki.orgxx
 

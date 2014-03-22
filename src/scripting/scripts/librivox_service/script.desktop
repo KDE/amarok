@@ -24,6 +24,7 @@ Name[sr@ijekavian]=Либривокс
 Name[sr@ijekavianlatin]=LibriVox
 Name[sr@latin]=LibriVox
 Name[sv]=Librivox.org
+Name[tr]=Librivox.org
 Name[uk]=Librivox.org
 Name[x-test]=xxLibrivox.orgxx
 Comment=A scripted service that lets you search, stream and download free, public domain, audio books from Librivox.org
@@ -46,6 +47,7 @@ Comment[sr@ijekavian]=Скриптовани сервис који омогућ�
 Comment[sr@ijekavianlatin]=Skriptovani servis koji omogućava traženje, strujanje i preuzimanje besplatnih (javno vlasništvo) audio knjiga sa LibriVoxa
 Comment[sr@latin]=Skriptovani servis koji omogućava traženje, strujanje i preuzimanje besplatnih (javno vlasništvo) audio knjiga sa LibriVoxa
 Comment[sv]=En skriptbaserad tjänst som låter dig söka efter, strömma och ladda ner fria, allmänt tillgängliga, ljudböcker från Librivox.org
+Comment[tr]=Librivox.org sitesinden ücretsiz, kamuya açık alan adından, ses kitapları aramanızı, göndermenizi veya indirmenizi sağlayan bir betik hizmeti.
 Comment[uk]=Керована скриптами служба, за допомогою якої ви можете шукати, слухати і отримувати вільні, доступні усім звукові книги з Librivox.org
 Comment[x-test]=xxA scripted service that lets you search, stream and download free, public domain, audio books from Librivox.orgxx
 

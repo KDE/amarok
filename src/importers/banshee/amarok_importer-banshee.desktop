@@ -21,6 +21,7 @@ Name[sr@ijekavian]=Увозник из Злослутнице
 Name[sr@ijekavianlatin]=Uvoznik iz Zloslutnice
 Name[sr@latin]=Uvoznik iz Zloslutnice
 Name[sv]=Banshee-importverktyg
+Name[tr]=Banshee İçe Aktarıcı
 Name[uk]=Засіб імпортування даних Banshee
 Name[x-test]=xxBanshee Importerxx
 Comment=Import statistics from Banshee database
@@ -43,6 +44,7 @@ Comment[sr@ijekavian]=Увоз статистике из Злослутници�
 Comment[sr@ijekavianlatin]=Uvoz statistike iz Zloslutnicine baze
 Comment[sr@latin]=Uvoz statistike iz Zloslutnicine baze
 Comment[sv]=Importera statistik från Banshee-databas
+Comment[tr]=İstatistikleri Banshee veritabanından al
 Comment[uk]=Імпортування статистичних даних з бази даних Banshee
 Comment[x-test]=xxImport statistics from Banshee databasexx
 

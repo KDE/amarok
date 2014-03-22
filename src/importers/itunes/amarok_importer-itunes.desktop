@@ -21,6 +21,7 @@ Name[sr@ijekavian]=Увозник из Епловог и‑Тјунса
 Name[sr@ijekavianlatin]=Uvoznik iz Appleovog iTunesa
 Name[sr@latin]=Uvoznik iz Appleovog iTunesa
 Name[sv]=Apple iTunes-importverktyg
+Name[tr]=Apple iTunes İçe Aktarıcı
 Name[uk]=Засіб імпортування даних Apple iTunes
 Name[x-test]=xxApple iTunes Importerxx
 Comment=Import statistics from Apple iTunes database
@@ -43,6 +44,7 @@ Comment[sr@ijekavian]=Увозник статистике из базе Епло
 Comment[sr@ijekavianlatin]=Uvoznik statistike iz baze Appleovog iTunesa
 Comment[sr@latin]=Uvoznik statistike iz baze Appleovog iTunesa
 Comment[sv]=Importera statistik från Apple iTunes-databas
+Comment[tr]=İstatistikleri Apple iTunes veritabanından al
 Comment[uk]=Імпортування статистичних даних з бази даних Apple iTunes
 Comment[x-test]=xxImport statistics from Apple iTunes databasexx
 

@@ -24,6 +24,7 @@ Name[sr@ijekavian]=Добри токови
 Name[sr@ijekavianlatin]=Dobri tokovi
 Name[sr@latin]=Dobri tokovi
 Name[sv]=Cool Streams
+Name[tr]=Güzel Akışlar
 Name[uk]=Cool Streams
 Name[x-test]=xxCool Streamsxx
 Comment=A script that sets up a service with a few cool internet radio stations
@@ -47,6 +48,7 @@ Comment[sr@ijekavian]=Скрипта која поставља сервис са
 Comment[sr@ijekavianlatin]=Skripta koja postavlja servis sa nekoliko dobrih internet radio-stanica
 Comment[sr@latin]=Skripta koja postavlja servis sa nekoliko dobrih internet radio-stanica
 Comment[sv]=Ett skript som ställer in en tjänst med ett antal häftiga Internet-radiostationer
+Comment[tr]=Birkaç güzel internet radyo istasyonu ile hizmet kuran bir betik
 Comment[uk]=Скрипт для налаштовування служби прослуховування декількох чудових інтернет-радіостанцій
 Comment[x-test]=xxA script that sets up a service with a few cool internet radio stationsxx
 

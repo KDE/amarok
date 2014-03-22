@@ -21,6 +21,7 @@ Name[sr@ijekavian]=Увозник из Амарока 1.4 (FastForward)
 Name[sr@ijekavianlatin]=Uvoznik iz Amaroka 1.4 (FastForward)
 Name[sr@latin]=Uvoznik iz Amaroka 1.4 (FastForward)
 Name[sv]=Amarok 1.4 (FastForward)-importverktyg
+Name[tr]=Amarok 1.4 (FastForward) İçe Aktarıcı
 Name[uk]=Засіб імпортування даних Amarok 1.4 (FastForward)
 Name[x-test]=xxAmarok 1.4 (FastForward) Importerxx
 Comment=Import statistics from Amarok 1.4 database
@@ -43,6 +44,7 @@ Comment[sr@ijekavian]=Увозник статистике из базе Амар
 Comment[sr@ijekavianlatin]=Uvoznik statistike iz baze Amaroka 1.4
 Comment[sr@latin]=Uvoznik statistike iz baze Amaroka 1.4
 Comment[sv]=Importera statistik från Amarok 1.4-databas
+Comment[tr]=İstatistikleri Amarok 1.4 veritabanından al
 Comment[uk]=Імпортування статистичних даних з бази даних Amarok 1.4
 Comment[x-test]=xxImport statistics from Amarok 1.4 databasexx
 
