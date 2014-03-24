@@ -202,6 +202,7 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
         return ; //not the right job, so let's ignore it
     debug() << "JamendoService: xml file download complete";
 
+    m_listDownloadJob = 0;
     //testing
     if ( !downloadJob->error() == 0 )
     {
@@ -219,7 +220,6 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
 
     ThreadWeaver::Weaver::instance()->enqueue( m_xmlParser );
     downloadJob->deleteLater();
-    m_listDownloadJob = 0;
 }
 
 void
