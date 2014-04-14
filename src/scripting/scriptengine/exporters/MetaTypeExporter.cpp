@@ -174,36 +174,36 @@ MetaTrackPrototype::playable() const
 QString
 MetaTrackPrototype::album() const
 {
-    CHECK_TRACK( m_track->album() ? m_track->album()->prettyName() : QString() )
-    return QString();
+    CHECK_TRACK( QString() )
+    return m_track->album() ? m_track->album()->prettyName() : QString();
 }
 
 QString
 MetaTrackPrototype::artist() const
 {
-    CHECK_TRACK( m_track->artist() ? m_track->artist()->prettyName() : QString() )
-    return QString();
+    CHECK_TRACK( QString() )
+    return m_track->artist() ? m_track->artist()->prettyName() : QString();
 }
 
 QString
 MetaTrackPrototype::composer() const
 {
-    CHECK_TRACK( m_track->composer() ? m_track->composer()->prettyName() : QString() )
-    return QString();
+    CHECK_TRACK( QString() )
+    return m_track->composer() ? m_track->composer()->prettyName() : QString();
 }
 
 QString
 MetaTrackPrototype::genre() const
 {
-    CHECK_TRACK( m_track->genre() ? m_track->genre()->prettyName() : QString() )
-    return QString();
+    CHECK_TRACK( QString() )
+    return m_track->genre() ? m_track->genre()->prettyName() : QString();
 }
 
 int
 MetaTrackPrototype::year() const
 {
-    CHECK_TRACK( m_track->year() ? m_track->year()->year() : 0 )
-    return 0;
+    CHECK_TRACK( 0 )
+    return m_track->year() ? m_track->year()->year() : 0;
 }
 
 QString
@@ -230,8 +230,8 @@ MetaTrackPrototype::title() const
 QString
 MetaTrackPrototype::imageUrl() const
 {
-    CHECK_TRACK( m_track->album() ? m_track->album()->imageLocation().prettyUrl() : QString() )
-    return QString();
+    CHECK_TRACK( QString() )
+    return m_track->album() ? m_track->album()->imageLocation().prettyUrl() : QString();
 }
 
 QString
@@ -263,8 +263,8 @@ MetaTrackPrototype::isLoaded() const
 QScriptValue
 MetaTrackPrototype::imagePixmap( int size ) const
 {
-    CHECK_TRACK( m_track->album() ? m_engine->toScriptValue( m_track->album()->image( size ) ) : QScriptValue() )
-    return QScriptValue();
+    CHECK_TRACK( QScriptValue() )
+    return m_track->album() ? m_engine->toScriptValue( m_track->album()->image( size ) ) : QScriptValue();
 }
 
 bool
@@ -401,7 +401,6 @@ MetaTrackPrototype::toScriptTagMap( QScriptEngine *engine, const Meta::FieldHash
 void
 MetaTrackPrototype::changeTags( const Meta::FieldHash &changes, bool respectConfig )
 {
-    CHECK_TRACK()
     if( !isLoadedAndLocal() )
         return;
 
