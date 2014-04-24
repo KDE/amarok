@@ -26,6 +26,7 @@ Name[sv]=Rhythmbox-importverktyg
 Name[tr]=Rhythmbox İçe Aktarıcı
 Name[uk]=Засіб імпортування даних Rhythmbox
 Name[x-test]=xxRhythmbox Importerxx
+Name[zh_TW]=Rhythmbox 匯入器
 Comment=Import statistics from Rhythmbox database
 Comment[ca]=Importa estadístiques des de base de dades del Rhythmbox
 Comment[ca@valencia]=Importa estadístiques des de base de dades del Rhythmbox
@@ -51,6 +52,7 @@ Comment[sv]=Importera statistik från Rhythmbox-databas
 Comment[tr]=İstatistikleri Rhythmbox veritabanından al
 Comment[uk]=Імпортування статистичних даних з бази даних Rhythmbox
 Comment[x-test]=xxImport statistics from Rhythmbox databasexx
+Comment[zh_TW]=從 Rhythmbox 資料庫中匯入統計資料
 
 ServiceTypes=Amarok/Plugin
 
