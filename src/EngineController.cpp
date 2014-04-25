@@ -159,7 +159,7 @@ EngineController::initializePhonon()
     // as the default is specified in the .cfg file, we can't just tell it to be a different default on OSX
 #ifdef Q_WS_MAC
     AmarokConfig::setReplayGainMode( AmarokConfig::EnumReplayGainMode::Off );
-    AmarokConfig::setFadeout( false );
+    AmarokConfig::setFadeoutOnStop( false );
 #endif
 
     // we now try to create pre-amp unconditionally, however we check that it is valid.
