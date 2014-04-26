@@ -440,14 +440,6 @@ MainWindow::closeEvent( QCloseEvent *e )
 #endif
 }
 
-bool
-MainWindow::queryExit()
-{
-    DEBUG_BLOCK
-
-    return true; // KMainWindow API expects us to always return true
-}
-
 void
 MainWindow::exportPlaylist() //SLOT
 {

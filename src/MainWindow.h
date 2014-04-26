@@ -173,7 +173,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
     protected:
         virtual void closeEvent( QCloseEvent* );
         virtual void changeEvent( QEvent *event );
-        virtual bool queryExit(); 
 
     private slots:
         void setRating1() { setRating( 1 ); }
