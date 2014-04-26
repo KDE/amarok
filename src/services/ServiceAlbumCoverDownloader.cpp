@@ -156,7 +156,7 @@ ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
         return;
     }
 
-    if( !downloadJob || !downloadJob->error() == 0 )
+    if( !downloadJob || downloadJob->error() != 0 )
     {
         debug() << "Download Job failed!";
 
