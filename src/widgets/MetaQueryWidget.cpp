@@ -45,6 +45,8 @@
 
 using namespace Amarok;
 
+static const int maxHours = 24;
+
 TimeDistanceWidget::TimeDistanceWidget( QWidget *parent )
     : QWidget( parent )
 {
@@ -212,7 +214,7 @@ MetaQueryWidget::Filter::maximumValue( quint64 field )
     case Meta::valScore: return 100;
     case Meta::valPlaycount: return 1000;
     case Meta::valRating: return 10;
-    case Meta::valLength: return 60 * 60 + 59;
+    case Meta::valLength: return maxHours * 60 * 60 - 1;
     default: return 0;
     }
 }
@@ -841,10 +843,11 @@ MetaQueryWidget::makeRatingSelection()
 void
 MetaQueryWidget::makeLengthSelection()
 {
+    QString displayFormat = i18nc( "time format for specifying track length - hours, minutes, seconds", "h:m:ss" );
     QTimeEdit* timeSpin = new QTimeEdit();
-    timeSpin->setDisplayFormat( "m:ss" );
+    timeSpin->setDisplayFormat( displayFormat );
     timeSpin->setMinimumTime( QTime( 0, 0, 0 ) );
-    timeSpin->setMaximumTime( QTime( 0, 60, 59) );
+    timeSpin->setMaximumTime( QTime( maxHours - 1, 59, 59 ) );
     timeSpin->setTime( QTime().addSecs( m_filter.numValue ) );
 
     connect( timeSpin, SIGNAL(timeChanged(QTime)),
@@ -856,9 +859,9 @@ MetaQueryWidget::makeLengthSelection()
         return;
 
     QTimeEdit* timeSpin2 = new QTimeEdit();
-    timeSpin2->setDisplayFormat( "m:ss" );
+    timeSpin2->setDisplayFormat( displayFormat );
     timeSpin2->setMinimumTime( QTime( 0, 0, 0 ) );
-    timeSpin2->setMaximumTime( QTime( 0, 60, 59) );
+    timeSpin2->setMaximumTime( QTime( maxHours - 1, 59, 59 ) );
     timeSpin2->setTime( QTime().addSecs( m_filter.numValue2 ) );
 
     connect( timeSpin2, SIGNAL(timeChanged(QTime)),
