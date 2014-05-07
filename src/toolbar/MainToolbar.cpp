@@ -757,6 +757,7 @@ MainToolbar::showEvent( QShowEvent *ev )
     layoutTrackBar();
     layoutProgressBar();
     m_playPause->setPlaying( The::engineController()->isPlaying() );
+    trackPositionChanged( engine->trackPositionMs(), false ); // Refresh slider on restore
 }
 
 

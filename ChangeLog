@@ -23,8 +23,10 @@ VERSION 2.9-Beta 1
      compilers currently supported by KDE.
 
   BUGFIXES:
+   * Update Progress Slider when restoring from System Tray. Patch By Abhay
+     Sombanshi <abhaysombanshi92@gmail.com> (BR 299883)
    * Update Jamendo to use new website. Patch By Yash Ladia
-   <yashladia1@gmail.com>
+     <yashladia1@gmail.com> (BR 331934)
    * Allows CollectionBrowser filter to have length of almost 24 hours. (BR 291400)
    * Prevent creation of video stream when transcoding to Opus. Patch by Martin Brodbeck.
    * Fix crash when starting Amarok with an iPod mounted. (BR 329498)
