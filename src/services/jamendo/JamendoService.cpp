@@ -185,14 +185,14 @@ JamendoService::updateButtonClicked()
     if( !tempFile.open() )
         return; //error
     m_tempFileName = tempFile.fileName();
-    m_listDownloadJob = KIO::file_copy( KUrl( "http://img.jamendo.com/data/dbdump_artistalbumtrack.xml.gz" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
+    m_listDownloadJob = KIO::file_copy(
+                /* Deprecated */ KUrl( "http://imgjam.com/data/dbdump_artistalbumtrack.xml.gz" ),
+                KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
     Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com database..." ), this, SLOT(listDownloadCancelled()) );
 
     connect( m_listDownloadJob, SIGNAL(result(KJob*)),
             this, SLOT(listDownloadComplete(KJob*)) );
-
-
 }
 
 void
@@ -202,10 +202,12 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
         return ; //not the right job, so let's ignore it
     debug() << "JamendoService: xml file download complete";
 
+    m_listDownloadJob = 0;
     //testing
     if ( !downloadJob->error() == 0 )
     {
         //TODO: error handling here
+        m_updateListButton->setEnabled( true ); // otherwise button will remain inactive in case of error
         return;
     }
 
@@ -218,7 +220,6 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
 
     ThreadWeaver::Weaver::instance()->enqueue( m_xmlParser );
     downloadJob->deleteLater();
-    m_listDownloadJob = 0;
 }
 
 void
