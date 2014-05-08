@@ -711,7 +711,7 @@ AmpacheServiceQueryMaker::limitMaxResultSize( int size )
 KUrl
 AmpacheServiceQueryMaker::getRequestUrl( const QString &action ) const
 {
-    QString path = d->server + "/server/xml.server.php";
+    QString path = d->server;
 
     if( !path.startsWith("http://") && !path.startsWith("https://") )
         path = "http://" + path;
