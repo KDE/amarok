@@ -616,8 +616,8 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
         for( TagLib::MP4::ItemListMap::Iterator it = itemsMap.begin(); it != itemsMap.end(); ++it )
         {
             TagLib::String key = it->first;
-            TagLib::String ukey = key.upper();
-            if( ukey.find( "AMAROK - REDISCOVER YOUR MUSIC" ) != -1 )
+            const QString qkey = TStringToQString( key ).toUpper();
+            if( qkey.contains( "AMAROK - REDISCOVER YOUR MUSIC" ) )
             {
                 nothingfound = false;
 
@@ -628,7 +628,7 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
                 if( !m_delete )
                     newUid = true;
             }
-            else if( ukey.find( "AMAROK 2 AFT" ) != -1 )
+            else if( qkey.contains( "AMAROK 2 AFT" ) )
             {
                 nothingfound = false;
 
@@ -643,13 +643,15 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
                 }
                 else
                 {
-                    int version = TStringToQString( ukey ).at( 13 ).digitValue();
+                    int version = qkey.at( qkey.indexOf( "AMAROK 2 AFT" ) + 13 ).digitValue();
                     if( m_verbose )
                         m_textStream << tr( "INFO: AFT identifier is version %1" ).arg( version ) << endl;
                     if( version < s_currentVersion )
                     {
                         if( m_verbose )
-                            m_textStream << tr( "INFO: Upgrading AFT identifier from version %1 to version %2" ).arg( version, s_currentVersion ) << endl;
+                            m_textStream << tr( "INFO: Upgrading AFT identifier from version %1 to version %2" )
+                            .arg( QString::number( version ), QString::number( s_currentVersion ) ) 
+                            << endl;
                         uid = upgradeUID( version, TStringToQString( itemsMap[ key ].toStringList().toString() ) );
                         if( m_verbose )
                             m_textStream << tr( "INFO: Removing current AFT frame" ) << endl;

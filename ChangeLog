@@ -23,6 +23,8 @@ VERSION 2.8.1
      compilers currently supported by KDE.
 
   BUGFIXES:
+   * Properly calculate and store Aft tags in mp4 files.  Patch By Stefano
+     Pettini <stefano.pettini@gmail.com> (BR 332811)
    * Update Progress Slider when restoring from System Tray. Patch By Abhay
      Sombanshi <abhaysombanshi92@gmail.com> (BR 299883)
    * Update Jamendo to use new website. Patch By Yash Ladia
