@@ -224,37 +224,4 @@ namespace Amarok
     inline const char* flickrApiKey() { return "9c5a288116c34c17ecee37877397fe31"; }
 }
 
-/**
- * Use this to const-iterate over QStringLists, if you like.
- * Watch out for the definition of last in the scope of your for.
- *
- *     QStringList strings;
- *     oldForeach( strings )
- *         debug() << *it << endl;
- */
-#define oldForeach( x ) \
-    for( QStringList::ConstIterator it = x.constBegin(), end = x.constEnd(); it != end; ++it )
-
-/**
- * You can use this for lists that aren't QStringLists.
- * Watch out for the definition of last in the scope of your for.
- *
- *     BundleList bundles;
- *     oldForeachType( BundleList, bundles )
- *         debug() << *it.url() << endl;
- */
-#define oldForeachType( Type, x ) \
-    for( Type::ConstIterator it = x.constBegin(), end = x.constEnd(); it != end; ++it )
-
-/**
- * Creates iterators of type @p Type.
- * Watch out for the definitions of last and end in your scope.
- *
- *     BundleList bundles;
- *     for( for_iterators( BundleList, bundles ); it != end; ++it )
- *         debug() << *it.url() << endl;
- */
-#define for_iterators( Type, x ) \
-    Type::ConstIterator it = x.constBegin(), end = x.constEnd(), last = x.fromLast()
-
 #endif
