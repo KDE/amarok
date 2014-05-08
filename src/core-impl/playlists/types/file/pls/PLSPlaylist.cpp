@@ -43,12 +43,15 @@ PLSPlaylist::loadPls( QTextStream &textStream )
     QString tmp;
     QStringList lines;
 
-    const QRegExp regExp_NumberOfEntries("^NumberOfEntries\\s*=\\s*\\d+$");
+    QRegExp regExp_NumberOfEntries("^NumberOfEntries\\s*=\\s*\\d+$");
+    regExp_NumberOfEntries.setCaseSensitivity( Qt::CaseInsensitive ); // It seems many playlists use numberofentries
     const QRegExp regExp_File("^File\\d+\\s*=");
     const QRegExp regExp_Title("^Title\\d+\\s*=");
-    const QRegExp regExp_Length("^Length\\d+\\s*=\\s*\\d+$");
+    const QRegExp regExp_Length("^Length\\d+\\s*=\\s*-?\\d+$"); // Length Can be -1
     const QRegExp regExp_Version("^Version\\s*=\\s*\\d+$");
     const QString section_playlist("[playlist]");
+
+
 
     /* Preprocess the input data.
     * Read the lines into a buffer; Cleanup the line strings;
