@@ -90,7 +90,6 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
 
     case CoverFetch::Discogs:
     case CoverFetch::Google:
-    case CoverFetch::Yahoo:
         queueQueryForAlbum( album );
         break;
 
@@ -180,8 +179,10 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
 void
 CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
+    DEBUG_BLOCK
     if( !m_urls.contains( url ) )
         return;
+    debug() << "Data dump from the result: " << data;
 
     const CoverFetchUnit::Ptr unit( m_urls.take( url ) );
     if( !unit )
@@ -470,10 +471,8 @@ CoverFetcher::fetchSource() const
         source = CoverFetch::LastFm;
     else if( sourceEntry == "Google" )
         source = CoverFetch::Google;
-    else if( sourceEntry == "Discogs" )
-        source = CoverFetch::Discogs;
     else
-        source = CoverFetch::Yahoo;
+        source = CoverFetch::Discogs;
     return source;
 }
 

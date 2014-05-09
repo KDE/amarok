@@ -48,7 +48,6 @@ namespace CoverFetch
         Discogs,        //!< Use Discogs as provider for cover images
         Google,         //!< Use Google image search as provider
         LastFm,         //!< Use Last.fm as provider for cover images
-        Yahoo           //!< Use Yahoo! BOSS image search as provider
     };
 
     typedef QHash<QString, QString> Metadata;
@@ -212,9 +211,6 @@ private:
 
     /// prepare urls from xml provided by Last.fm
     void prepareLastFmUrls( QXmlStreamReader &xml );
-
-    /// prepare urls from xml provided by Yahoo! Image Search
-    void prepareYahooUrls( QXmlStreamReader &xml );
 
     /// prepare urls from xml provided by Google Image Search
     void prepareGoogleUrls();

@@ -182,9 +182,6 @@ CoverFetchPayload::sourceString() const
     case CoverFetch::LastFm:
         source = "Last.fm";
         break;
-    case CoverFetch::Yahoo:
-        source = "Yahoo!";
-        break;
     case CoverFetch::Google:
         source = "Google";
         break;
@@ -366,6 +363,7 @@ CoverFetchSearchPayload::prepareUrls()
         break;
 
     case CoverFetch::Discogs:
+        debug() << "Setting up a Discogs fetch";
         url.setHost( "www.discogs.com" );
         url.setPath( "/search" );
         url.addQueryItem( "api_key", Amarok::discogsApiKey() );
@@ -373,17 +371,8 @@ CoverFetchSearchPayload::prepareUrls()
         url.addQueryItem( "type", "all" );
         url.addQueryItem( "q", sanitizeQuery( m_query ) );
         url.addQueryItem( "f", "xml" );
+        debug() << "Discogs Url: " << url;
         metadata[ "source" ] = "Discogs";
-        break;
-
-    case CoverFetch::Yahoo:
-        url.setHost( "boss.yahooapis.com" );
-        url.setPath( "/ysearch/images/v1/" + sanitizeQuery( m_query ) );
-        url.addQueryItem( "appid", Amarok::yahooBossApiKey() );
-        url.addQueryItem( "count", QString::number( 20 ) );
-        url.addQueryItem( "start", QString::number( 20 * m_page ) );
-        url.addQueryItem( "format", "xml" );
-        metadata[ "source" ] = "Yahoo!";
         break;
 
     case CoverFetch::Google:
@@ -396,7 +385,7 @@ CoverFetchSearchPayload::prepareUrls()
         metadata[ "source" ] = "Google";
         break;
     }
-
+    debug() << "Fetching From URL: " << url;
     if( url.isValid() )
         m_urls.insert( url, metadata );
 }
@@ -463,9 +452,6 @@ CoverFetchArtPayload::prepareUrls()
     default:
     case CoverFetch::LastFm:
         prepareLastFmUrls( xml );
-        break;
-    case CoverFetch::Yahoo:
-        prepareYahooUrls( xml );
         break;
     case CoverFetch::Discogs:
         prepareDiscogsUrls( xml );
@@ -679,58 +665,6 @@ CoverFetchArtPayload::firstAvailableValue( const QStringList &keys, const QHash<
             return value;
     }
     return QString();
-}
-
-void
-CoverFetchArtPayload::prepareYahooUrls( QXmlStreamReader &xml )
-{
-    while( !xml.atEnd() && !xml.hasError() )
-    {
-        xml.readNext();
-        if( !xml.isStartElement() || xml.name() != "resultset_images" )
-            continue;
-
-        while( !xml.atEnd() && !xml.hasError() )
-        {
-            xml.readNext();
-            if( xml.isEndElement() && xml.name() == "resultset_images" )
-                break;
-            if( !xml.isStartElement() )
-                continue;
-
-            CoverFetch::Metadata metadata;
-            metadata[ "source" ] = "Yahoo!";
-            if( xml.name() == "result" )
-            {
-                while( !xml.atEnd() && !xml.hasError() )
-                {
-                    xml.readNext();
-                    const QStringRef &n = xml.name();
-                    if( xml.isEndElement() && n == "result" )
-                        break;
-                    if( !xml.isStartElement() )
-                        continue;
-
-                    if( n == "abstract" )
-                        metadata[ "notes" ] = xml.readElementText();
-                    else if( n == "thumbnail_url" )
-                        metadata[ "thumbarturl" ] = xml.readElementText();
-                    else if( n == "url" )
-                        metadata[ "normalarturl" ] = xml.readElementText();
-                    else
-                        metadata[ xml.name().toString() ] = xml.readElementText();
-                }
-
-                KUrl url = (imageSize() == CoverFetch::ThumbSize)
-                    ? KUrl( metadata["thumbarturl"] )
-                    : KUrl( metadata["normalarturl"] );
-                if( url.isValid() )
-                    m_urls.insert( url, metadata );
-            }
-            else
-                xml.skipCurrentElement();
-        }
-    }
 }
 
 QString

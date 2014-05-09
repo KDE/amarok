@@ -127,15 +127,12 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     QMenu *sourceMenu = new QMenu( sourceButton );
     QAction *lastFmAct = new QAction( i18n( "Last.fm" ), sourceMenu );
     QAction *googleAct = new QAction( i18n( "Google" ), sourceMenu );
-    QAction *yahooAct = new QAction( i18n( "Yahoo!" ), sourceMenu );
     QAction *discogsAct = new QAction( i18n( "Discogs" ), sourceMenu );
     lastFmAct->setCheckable( true );
     googleAct->setCheckable( true );
-    yahooAct->setCheckable( true );
     discogsAct->setCheckable( true );
     connect( lastFmAct, SIGNAL(triggered()), this, SLOT(selectLastFm()) );
     connect( googleAct, SIGNAL(triggered()), this, SLOT(selectGoogle()) );
-    connect( yahooAct, SIGNAL(triggered()), this, SLOT(selectYahoo()) );
     connect( discogsAct, SIGNAL(triggered()), this, SLOT(selectDiscogs()) );
 
     m_sortAction = new QAction( i18n( "Sort by size" ), sourceMenu );
@@ -145,7 +142,6 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     QActionGroup *ag = new QActionGroup( sourceButton );
     ag->addAction( lastFmAct );
     ag->addAction( googleAct );
-    ag->addAction( yahooAct );
     ag->addAction( discogsAct );
     sourceMenu->addActions( ag->actions() );
     sourceMenu->addSeparator();
@@ -192,8 +188,6 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
 
     if( source == "LastFm" )
         lastFmAct->setChecked( true );
-    else if( source == "Yahoo" )
-        yahooAct->setChecked( true );
     else if( source == "Discogs" )
         discogsAct->setChecked( true );
     else
@@ -610,16 +604,6 @@ void CoverFoundDialog::selectLastFm()
     debug() << "Select Last.fm as source";
 }
 
-void CoverFoundDialog::selectYahoo()
-{
-    KConfigGroup config = Amarok::config( "Cover Fetcher" );
-    config.writeEntry( "Interactive Image Source", "Yahoo" );
-    m_sortAction->setEnabled( true );
-    m_queryPage = 0;
-    processQuery();
-    debug() << "Select Yahoo! as source";
-}
-
 void CoverFoundDialog::selectGoogle()
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
@@ -826,7 +810,6 @@ void CoverFoundSideBar::updateMetaTable()
     }
 
     QString refUrl;
-    QString refShowUrl; // only used by Yahoo atm
 
     const QString source = m_metadata.value( "source" );
     if( source == "Last.fm" || source == "Discogs" )
@@ -837,17 +820,12 @@ void CoverFoundSideBar::updateMetaTable()
     {
         refUrl = m_metadata.value( "imgrefurl" );
     }
-    else if( source == "Yahoo!" )
-    {
-        refUrl = m_metadata.value( "refererclickurl" );
-        refShowUrl = m_metadata.value( "refererurl" );
-    }
 
     if( !refUrl.isEmpty() )
     {
         QFont font;
         QFontMetrics qfm( font );
-        const QString &toolUrl = refShowUrl.isEmpty() ? refUrl : refShowUrl;
+        const QString &toolUrl = refUrl;
         const QString &tooltip = qfm.elidedText( toolUrl, Qt::ElideMiddle, 350 );
         const QString &decoded = QUrl::fromPercentEncoding( refUrl.toLocal8Bit() );
         const QString &url     = QString( "<a href=\"%1\">%2</a>" )
@@ -928,8 +906,6 @@ void CoverFoundItem::setCaption()
     if( size )
     {
         const QString source = m_metadata.value( QLatin1String("source") );
-        if( source == QLatin1String("Yahoo!") )
-            size /= 1024;
 
         captions << ( QString::number( size ) + QLatin1Char('k') );
     }

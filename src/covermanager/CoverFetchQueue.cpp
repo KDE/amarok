@@ -68,7 +68,6 @@ CoverFetchQueue::add( const CoverFetch::Option opt,
     {
         default:
         case CoverFetch::Google:
-        case CoverFetch::Yahoo:
         case CoverFetch::LastFm:
         {
             typedef CoverFetchArtPayload CFAP;

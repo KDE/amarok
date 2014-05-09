@@ -220,7 +220,6 @@ namespace Amarok
     inline const char* discogsApiKey() { return "91734dd989"; }
     inline const char* lastfmApiKey() { return "402d3ca8e9bc9d3cf9b85e1202944ca5"; }
     inline const char* lastfmApiSharedSecret() { return "fe0dcde9fcd14c2d1d50665b646335e9"; }
-    inline const char* yahooBossApiKey() { return "oQepTNrV34G9Satb1dgRZ8hdl1uhJvguDSU5Knl2Xd4ALK85knYt6ylr.FTA57XMRBA-"; }
     inline const char* flickrApiKey() { return "9c5a288116c34c17ecee37877397fe31"; }
 }
 

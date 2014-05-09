@@ -96,7 +96,6 @@ private slots:
     void selectDiscogs();
     void selectLastFm();
     void selectGoogle();
-    void selectYahoo();
     void sortingTriggered( bool checked );
     void updateSearchButton( const QString &text );
 
