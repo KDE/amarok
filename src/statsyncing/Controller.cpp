@@ -85,6 +85,7 @@ Controller::~Controller()
 QList<qint64>
 Controller::availableFields()
 {
+    // when fields are changed, please update translations in MetadataConfig::MetadataConfig()
     return QList<qint64>() << Meta::valRating << Meta::valFirstPlayed
             << Meta::valLastPlayed << Meta::valPlaycount << Meta::valLabel;
 }

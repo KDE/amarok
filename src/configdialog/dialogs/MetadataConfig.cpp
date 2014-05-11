@@ -92,15 +92,32 @@ MetadataConfig::MetadataConfig( QWidget *parent )
     slotUpdateForgetButton();
 
     const qint64 checkedFields = config ? config->checkedFields() : 0;
+    QMap<qint64, QString> i18nSyncLabels; // to avoid word puzzles, bug 334561
+    i18nSyncLabels.insert( Meta::valRating, i18nc( "Statistics sync checkbox label",
+                                                   "Synchronize Ratings" ) );
+    i18nSyncLabels.insert( Meta::valFirstPlayed, i18nc( "Statistics sync checkbox label",
+                                                        "Synchronize First Played Times" ) );
+    i18nSyncLabels.insert( Meta::valLastPlayed, i18nc( "Statistics sync checkbox label",
+                                                       "Synchronize Last Played Times" ) );
+    i18nSyncLabels.insert( Meta::valPlaycount, i18nc( "Statistics sync checkbox label",
+                                                      "Synchronize Playcounts" ) );
+    i18nSyncLabels.insert( Meta::valLabel, i18nc( "Statistics sync checkbox label",
+                                                  "Synchronize Labels" ) );
 
     foreach( qint64 field, StatSyncing::Controller::availableFields() )
     {
-        QCheckBox *checkBox;
+        QString name = i18nSyncLabels.value( field );
+        if( name.isEmpty() )
+        {
+            name = i18nc( "%1 is field name such as Play Count (this string is only used "
+                          "as a fallback)", "Synchronize %1", Meta::i18nForField( field ) );
+            warning() << Q_FUNC_INFO << "no explicit traslation for" << name << "using fallback";
+        }
+        QCheckBox *checkBox = new QCheckBox( name );
+
         if( field == Meta::valLabel ) // special case, we want plural:
         {
-            QString name = i18n( "Synchronize Labels" );
             QHBoxLayout *lineLayout = new QHBoxLayout();
-            checkBox = new QCheckBox( name );
             QLabel *button = new QLabel();
             button->setObjectName( "configureLabelExceptions" );
             connect( button, SIGNAL(linkActivated(QString)),
@@ -115,9 +132,6 @@ MetadataConfig::MetadataConfig( QWidget *parent )
         }
         else
         {
-            QString name = Meta::i18nForField( field );
-            name = i18nc( "%1 is field name such as Play Count", "Synchronize %1", name );
-            checkBox = new QCheckBox( name );
             m_statSyncingFieldsLayout->addWidget( checkBox );
         }
         checkBox->setCheckState( ( field & checkedFields ) ? Qt::Checked : Qt::Unchecked );
