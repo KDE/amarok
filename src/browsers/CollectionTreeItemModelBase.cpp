@@ -1071,6 +1071,12 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
     }
 }
 
+QString
+CollectionTreeItemModelBase::currentFilter() const
+{
+    return m_currentFilter;
+}
+
 void
 CollectionTreeItemModelBase::setCurrentFilter( const QString &filter )
 {
@@ -1082,14 +1088,12 @@ void
 CollectionTreeItemModelBase::slotFilter()
 {
     filterChildren();
-    if ( !m_expandedCollections.isEmpty() )
+
+    foreach( Collections::Collection *expanded, m_expandedCollections )
     {
-        foreach( Collections::Collection *expanded, m_expandedCollections )
-        {
-            CollectionTreeItem *expandedItem = m_collections.value( expanded->collectionId() ).second;
-            if( expandedItem )
-                emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
-        }
+        CollectionTreeItem *expandedItem = m_collections.value( expanded->collectionId() ).second;
+        if( expandedItem )
+            emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
     }
 }
 

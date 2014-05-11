@@ -50,10 +50,9 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     m_sw->completionObject()->setIgnoreCase( true );
     m_sw->setToolTip( i18n( "Enter space-separated terms to search." ) );
     m_sw->addItem( KStandardGuiItem::find().icon(), QString() );
-    connect( m_sw, SIGNAL(returnPressed(QString)), SLOT(addCompletion(QString)) );
     connect( m_sw, SIGNAL(activated(int)), SLOT(onComboItemActivated(int)) );
     connect( m_sw, SIGNAL(editTextChanged(QString)), SLOT(resetFilterTimeout()) );
-    connect( m_sw, SIGNAL(returnPressed()), SLOT(filterNow()) );
+    connect( m_sw, SIGNAL(returnPressed()), SLOT(filterNow()) ); // filterNow() calls addCompletion()
     connect( m_sw, SIGNAL(returnPressed()), SIGNAL(returnPressed()) );
     connect( m_sw, SIGNAL(downPressed()), SLOT(advanceFocus()) );
 

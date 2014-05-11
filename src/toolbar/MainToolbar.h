@@ -61,7 +61,6 @@ private slots:
     void muteStateChanged( bool mute );
     void volumeChanged( int percent );
     void addBookmark( const QString &name, int milliSeconds );
-    void filter( const QString &string );
     void layoutProgressBar();
     void layoutTrackBar();
     void setLabelTime( int ms );

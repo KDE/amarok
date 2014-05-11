@@ -49,7 +49,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         Q_OBJECT
 
     public:
-        CollectionTreeItemModelBase( );
+        CollectionTreeItemModelBase();
         virtual ~CollectionTreeItemModelBase();
 
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -75,13 +75,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual QList<CategoryId::CatMenuId> levels() const { return m_levelType; }
         virtual CategoryId::CatMenuId levelCategory( const int level ) const;
 
-        QString currentFilter() const
-        { return m_currentFilter; }
-
-        /** Adds the query maker to the running queries and connects the slots */
-        void addQueryMaker( CollectionTreeItem* item,
-                            Collections::QueryMaker *qm ) const;
-
+        QString currentFilter() const;
         void setCurrentFilter( const QString &filter );
 
         void itemAboutToBeDeleted( CollectionTreeItem *item );
@@ -117,7 +111,9 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void newResultReady( Meta::LabelList );
         virtual void newResultReady( Meta::DataList data );
 
-        /** Apply the current filter */
+        /**
+         * Apply the current filter.
+         */
         void slotFilter();
 
         void slotCollapsed( const QModelIndex &index );
@@ -130,6 +126,10 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         Collections::QueryMaker::QueryType mapCategoryToQueryType( int levelType ) const;
 
     protected:
+        /** Adds the query maker to the running queries and connects the slots */
+        void addQueryMaker( CollectionTreeItem* item,
+                            Collections::QueryMaker *qm ) const;
+
         virtual void populateChildren(const Meta::DataList &dataList, CollectionTreeItem *parent, const QModelIndex &parentIndex );
         virtual void updateHeaderText();
 

@@ -30,7 +30,6 @@
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
-#include "browsers/collectionbrowser/CollectionWidget.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/meta/Meta.h"
@@ -278,13 +277,6 @@ void
 MainToolbar::muteStateChanged( bool mute )
 {
     m_volume->setMuted( mute );
-}
-
-void
-MainToolbar::filter( const QString &string )
-{
-    if( CollectionWidget::instance() )
-        CollectionWidget::instance()->setFilter( string );
 }
 
 void

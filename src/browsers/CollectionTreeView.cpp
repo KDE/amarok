@@ -88,6 +88,9 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 void
 CollectionTreeView::setModel( QAbstractItemModel *model )
 {
+    if( m_treeModel )
+        disconnect( m_treeModel, 0, this, 0);
+
     m_treeModel = qobject_cast<CollectionTreeItemModelBase *>( model );
     if( !m_treeModel )
         return;
@@ -651,27 +654,27 @@ CollectionTreeView::slotExpandIndex( const QModelIndex &index )
 void
 CollectionTreeView::slotCheckAutoExpand()
 {
-    if( m_filterModel )
+    if( !m_filterModel )
+        return;
+
+    // Cases where root is not collections but
+    // for example magnatunes's plethora of genres, don't expand by default
+    if( m_filterModel->rowCount() > 6 )
+        return;
+
+    QModelIndexList indicesToCheck;
+    for( int i = 0; i < m_filterModel->rowCount(); i++ ) //need something to start for'ing with
+        indicesToCheck += m_filterModel->index( i, 0 ); //lowest level is fine for that
+
+    QModelIndex current;
+    for( int j = 0; j < indicesToCheck.size(); j++)
     {
-        // Cases where root is not collections but
-        // for example magnatunes's plethora of genres, don't expand by default
-        if( m_filterModel->rowCount() > 6 )
-            return;
-
-        QModelIndexList indicesToCheck;
-        for( int i = 0; i < m_filterModel->rowCount(); i++ ) //need something to start for'ing with
-            indicesToCheck += m_filterModel->index( i, 0 ); //lowest level is fine for that
-
-        QModelIndex current;
-        for( int j = 0; j < indicesToCheck.size(); j++)
-        {
-            current = indicesToCheck.at( j );
-            if( m_filterModel->rowCount( current ) < 4 )
-            { //don't expand if many results
-                expand( current );
-                for( int i = 0; i < m_filterModel->rowCount( current ); i++ )
-                    indicesToCheck += m_filterModel->index( i, 0, current );
-            }
+        current = indicesToCheck.at( j );
+        if( m_filterModel->rowCount( current ) < 4 )
+        { //don't expand if many results
+            expand( current );
+            for( int i = 0; i < m_filterModel->rowCount( current ); i++ )
+                indicesToCheck += m_filterModel->index( i, 0, current );
         }
     }
 }
