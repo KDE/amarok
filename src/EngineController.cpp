@@ -1162,7 +1162,6 @@ EngineController::slotTrackLengthChanged( qint64 milliseconds )
 void
 EngineController::slotMetaDataChanged()
 {
-    DEBUG_BLOCK
     QVariantMap meta;
     meta.insert( Meta::Field::URL, m_media.data()->currentSource().url() );
     static const QList<FieldPair> fieldPairs = QList<FieldPair>()
@@ -1184,8 +1183,8 @@ EngineController::slotMetaDataChanged()
     // which currently sets correct m_currentTrack.
     if( isInRecentMetaDataHistory( meta ) )
     {
-        debug() << "slotMetaDataChanged() triggered by phonon, but we've already seen"
-                << "exactly the same metadata recently. Ignoring for now.";
+        // slotMetaDataChanged() triggered by phonon, but we've already seen
+        // exactly the same metadata recently. Ignoring for now.
         return;
     }
 
