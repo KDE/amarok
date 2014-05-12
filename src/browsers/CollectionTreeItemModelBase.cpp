@@ -68,6 +68,7 @@ CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     , m_loading1( QPixmap( KStandardDirs::locate("data", "amarok/images/loading1.png" ) ) )
     , m_loading2( QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
     , m_currentAnimPixmap( m_loading1 )
+    , m_autoExpand( false )
 {
     m_timeLine = new QTimeLine( 10000, this );
     m_timeLine->setFrameRange( 0, 20 );
@@ -644,7 +645,8 @@ CollectionTreeItemModelBase::queryDone()
     //stop timer if there are no more animations active
     if( m_runningQueries.isEmpty() )
     {
-        emit allQueriesFinished();
+        emit allQueriesFinished( m_autoExpand );
+        m_autoExpand = false; // reset to default value
         m_timeLine->stop();
     }
     qm->deleteLater();
@@ -850,10 +852,6 @@ CollectionTreeItemModelBase::handleNormalQueryResult( Collections::QueryMaker *q
             else
                 //simply insert the item, nothing will change if it is already in the set
                 m_expandedItems.insert( parent->data() );
-        }
-        else
-        {
-            m_expandedCollections.insert( parent->parentCollection() );
         }
     }
 }
@@ -1081,14 +1079,16 @@ void
 CollectionTreeItemModelBase::setCurrentFilter( const QString &filter )
 {
     m_currentFilter = filter;
-    slotFilter();
+    slotFilter( /* autoExpand */ true );
 }
 
 void
-CollectionTreeItemModelBase::slotFilter()
+CollectionTreeItemModelBase::slotFilter( bool autoExpand )
 {
+    m_autoExpand = autoExpand;
     filterChildren();
 
+    // following is not auto-expansion, it is restoring the state before filtering
     foreach( Collections::Collection *expanded, m_expandedCollections )
     {
         CollectionTreeItem *expandedItem = m_collections.value( expanded->collectionId() ).second;
@@ -1127,22 +1127,27 @@ CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
 void
 CollectionTreeItemModelBase::slotExpanded( const QModelIndex &index )
 {
-    if( index.isValid() )
+    if( !index.isValid() )
+        return;
+
+    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+    // we are really only interested in the special nodes here.
+    // we have to remember whether the user expanded a various artists/no labels node or not.
+    // otherwise we won't be able to automatically expand the special node after filtering again
+    // there is exactly one special node per type per collection, so use the collection to store that information
+
+    // we also need to store collection expansion state here as they are no longer
+    // added to th expanded set in handleNormalQueryResult()
+    switch( item->type() )
     {
-        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-        //we are really only interested in the special nodes here.
-        //we have to remember whether the user expanded a various artists/no labels node or not.
-        //otherwise we won't be able to automatically expand the special node after filtering again
-        //there is exactly one special node per type per collection, so use the collection to store that information
-        switch( item->type() )
-        {
         case CollectionTreeItem::VariousArtist:
         case CollectionTreeItem::NoLabel:
             m_expandedSpecialNodes.insert( item->parentCollection() );
             break;
+        case CollectionTreeItem::Collection:
+            m_expandedCollections.insert( item->parentCollection() );
         default:
             break;
-        }
     }
 }
 

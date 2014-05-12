@@ -23,6 +23,7 @@ VERSION 2.8.1
      compilers currently supported by KDE.
 
   BUGFIXES:
+   * Collection Browser no longer excessively expands the tree. (BR 300557)
    * Properly calculate and store Aft tags in mp4 files.  Patch By Stefano
      Pettini <stefano.pettini@gmail.com> (BR 332811)
    * Update Progress Slider when restoring from System Tray. Patch By Abhay

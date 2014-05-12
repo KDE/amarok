@@ -104,7 +104,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotExpanded( const QModelIndex &index );
         void slotExpandIndex( const QModelIndex &index );
 
-        void slotCheckAutoExpand();
+        void slotCheckAutoExpand( bool reallyExpand = true );
 
         void slotReplacePlaylistWithChildTracks();
         void slotAppendChildTracks();

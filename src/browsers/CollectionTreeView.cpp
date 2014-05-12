@@ -95,7 +95,7 @@ CollectionTreeView::setModel( QAbstractItemModel *model )
     if( !m_treeModel )
         return;
 
-    connect( m_treeModel, SIGNAL(allQueriesFinished()), SLOT(slotCheckAutoExpand()) );
+    connect( m_treeModel, SIGNAL(allQueriesFinished(bool)), SLOT(slotCheckAutoExpand(bool)) );
     connect( m_treeModel, SIGNAL(expandIndex(QModelIndex)),
              SLOT(slotExpandIndex(QModelIndex)) );
 
@@ -652,9 +652,9 @@ CollectionTreeView::slotExpandIndex( const QModelIndex &index )
 }
 
 void
-CollectionTreeView::slotCheckAutoExpand()
+CollectionTreeView::slotCheckAutoExpand( bool reallyExpand )
 {
-    if( !m_filterModel )
+    if( !m_filterModel || !reallyExpand )
         return;
 
     // Cases where root is not collections but
@@ -911,12 +911,12 @@ CollectionTreeView::slotAddFilteredTracksToPlaylist()
         return;
 
     // disconnect any possible earlier connection we've done
-    disconnect( m_treeModel, SIGNAL(allQueriesFinished()),
+    disconnect( m_treeModel, SIGNAL(allQueriesFinished(bool)),
                 this, SLOT(slotAddFilteredTracksToPlaylist()) );
 
     if( m_treeModel->hasRunningQueries() )
         // wait for the queries to finish
-        connect( m_treeModel, SIGNAL(allQueriesFinished()),
+        connect( m_treeModel, SIGNAL(allQueriesFinished(bool)),
                  this, SLOT(slotAddFilteredTracksToPlaylist()) );
     else
     {

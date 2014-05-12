@@ -141,7 +141,7 @@ TestSingleCollectionTreeItemModel::initTestCase()
 { \
     if( itemModel->canFetchMore( idx ) ) { \
         itemModel->fetchMore( idx ); \
-        QVERIFY( QTest::kWaitForSignal( itemModel, SIGNAL(allQueriesFinished()), 5000 ) ); \
+        QVERIFY( QTest::kWaitForSignal( itemModel, SIGNAL(allQueriesFinished(bool)), 5000 ) ); \
     } \
 }
 

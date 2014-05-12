@@ -87,7 +87,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         /**
          * Return true if there are any queries still running. If this returns true,
-         * you can expect allQueriesFinished() signal in some time.
+         * you can expect allQueriesFinished(bool) signal in some time.
          */
         bool hasRunningQueries() const;
 
@@ -98,7 +98,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
     signals:
         void expandIndex( const QModelIndex &index );
-        void allQueriesFinished();
+        void allQueriesFinished( bool autoExpand );
 
     public slots:
         virtual void queryDone();
@@ -113,8 +113,12 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         /**
          * Apply the current filter.
+         *
+         * @param autoExpand whether to trigger automatic expansion of the tree after
+         * filtering is done. This should be set to true only if filter is run after
+         * user has actually just typed something and defaults to false.
          */
-        void slotFilter();
+        void slotFilter( bool autoExpand = false );
 
         void slotCollapsed( const QModelIndex &index );
         void slotExpanded( const QModelIndex &index );
@@ -174,6 +178,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         mutable QHash<Collections::QueryMaker* , CollectionTreeItem* > m_compilationQueries;
         mutable QHash<Collections::QueryMaker* , CollectionTreeItem* > m_noLabelsQueries;
         mutable QMultiHash<CollectionTreeItem*, Collections::QueryMaker*> m_runningQueries;
+        bool m_autoExpand; // whether to expand tree after queries are done
 
     protected slots:
         void startAnimationTick();
