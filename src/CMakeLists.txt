@@ -916,10 +916,6 @@ if(LIBDL_FOUND)
     target_link_libraries(amaroklib dl)
 endif(LIBDL_FOUND)
 
-if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SYSTEM_NAME MATCHES Linux)
-    set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=iso9899:1999" )
-endif(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SYSTEM_NAME MATCHES Linux)
-
 set_target_properties(amaroklib PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
@@ -934,25 +930,18 @@ kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../images/hi*-app-amar
 
 find_package(X11)
 
-if(Q_WS_MAC)
-    kde4_add_executable(Amarok ${amarok_SRCS})
-    target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amarokcore amaroklib )
-    SET_TARGET_PROPERTIES(Amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-    set_target_properties(Amarok PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MAC_FILES_DIR}/Info.plist.template)
-    set_target_properties(Amarok PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "org.kde.amarok")
-    set_target_properties(Amarok PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Amarok 2")
-    #the following line was copied from KDE4Macros.cmake. kde4_add_app_icon fails to actually copy the .icns file
-    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/amarok.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-    install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
-elseif(X11_FOUND)
-    kde4_add_executable(amarok ${amarok_SRCS})
-    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${X11_LIBRARIES})
-    install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
-else(Q_WS_MAC)
-    kde4_add_executable(amarok ${amarok_SRCS})
-    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib)
-    install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
-endif(Q_WS_MAC)
+kde4_add_executable(amarok ${amarok_SRCS})
+if(APPLE)
+    set_target_properties(amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    set(MACOSX_BUNDLE_BUNDLE_NAME "Amarok 2")
+    set(MACOSX_BUNDLE_BUNDLE_VERSION "2.8.0-git")
+    set(MACOSX_BUNDLE_COPYRIGHT "Amarok Team")
+    set_target_properties(amarok PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MAC_FILES_DIR/Info.plist.template)
+    set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/amarok.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+endif(APPLE)
+
+target_link_libraries(amarok ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${X11_LIBRARIES})
+install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
