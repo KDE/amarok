@@ -31,10 +31,6 @@ add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
 add_subdirectory( importers )
 
-if ( KDEMULTIMEDIA_FOUND )
-    include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
-endif ( KDEMULTIMEDIA_FOUND )
-
 #####################################################################
 # PROXYCOLLECTION
 #####################################################################
@@ -916,12 +912,6 @@ if(APPLE)
     SET_TARGET_PROPERTIES(amaroklib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
-if(KDEMULTIMEDIA_FOUND)
-    target_link_libraries(amaroklib
-        ${KCDDB_LIBRARY}
-        ${KCOMPACTDISC_LIBRARY}
-    )
-endif(KDEMULTIMEDIA_FOUND)
 if(LIBDL_FOUND)
     target_link_libraries(amaroklib dl)
 endif(LIBDL_FOUND)
