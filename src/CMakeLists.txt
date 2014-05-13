@@ -936,7 +936,7 @@ if(APPLE)
     set(MACOSX_BUNDLE_BUNDLE_NAME "Amarok 2")
     set(MACOSX_BUNDLE_BUNDLE_VERSION "2.8.0-git")
     set(MACOSX_BUNDLE_COPYRIGHT "Amarok Team")
-    set_target_properties(amarok PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MAC_FILES_DIR/Info.plist.template)
+    set_target_properties(amarok PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MAC_FILES_DIR}/Info.plist.template)
     set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/amarok.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 endif(APPLE)
 
