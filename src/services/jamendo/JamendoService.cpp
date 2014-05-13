@@ -204,7 +204,7 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
 
     m_listDownloadJob = 0;
     //testing
-    if ( !downloadJob->error() == 0 )
+    if ( downloadJob->error() != 0 )
     {
         //TODO: error handling here
         m_updateListButton->setEnabled( true ); // otherwise button will remain inactive in case of error

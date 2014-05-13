@@ -348,7 +348,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
 
     m_updateAction->setEnabled( true );
 
-    if ( !downLoadJob->error() == 0 )
+    if ( downLoadJob->error() != 0 )
     {
         debug() << "Got an error, bailing out: " << downLoadJob->errorString();
         //TODO: error handling here
@@ -587,7 +587,7 @@ void MagnatuneStore::timestampDownloadComplete( KJob *  job )
 {
     DEBUG_BLOCK
 
-    if ( !job->error() == 0 )
+    if ( job->error() != 0 )
     {
         //TODO: error handling here
         return ;
