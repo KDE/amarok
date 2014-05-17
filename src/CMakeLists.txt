@@ -9,6 +9,7 @@ if(APPLE)
     set(mac_SRCS
         app_mac.cpp
         mac/GrowlInterface.cpp
+        mac/MacSystemNotify.mm
     )
 
     include_directories ( services/lastfm/ )
