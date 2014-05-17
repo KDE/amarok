@@ -29,12 +29,11 @@
 #include <KUrl>
 
 #include <QObject>
+#include <QSharedPointer>
 #include <QString>
 #include <QMutex>
 
 class GenericScannerJob;
-template<class T >
-class QSharedPointer;
 
 /**
  * The ScanManager manages the scanning and directory watching.
