@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.8.1
   FEATURES:
+   * Notification Center support on Mac OS X.
    * Statistics synchronization between Amarok collections and
      Amarok 1.4, Amarok 2.x, Apple iTunes, Banshee, Clementine, and
      Rhythmbox track databases.

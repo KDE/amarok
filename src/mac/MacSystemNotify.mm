@@ -18,6 +18,7 @@
 
 #include "amarokconfig.h"
 #include "App.h"
+#include "CoverManager/CoverCache.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "core/meta/Meta.h"
@@ -25,16 +26,15 @@
 #include "SvgHandler.h"
 #include "TrayIcon.h"
 
-#import <Foundation/NSUserNotifiaction.h>
-#import <Foundation/CGImage>
-#import <Foundation/CGImageRef>
+#import <Foundation/NSUserNotification.h>
+#import <ApplicationServices/ApplicationServices.h>
 
 namespace {
     void SendNotifactionCenterMessage(NSString* title, NSString* subtitle, NSImage *image) {
-        NSUserNotifiactionCenter* center =
-            [NSUserNotificationCenter defaultUserNotifiactionCenter];
-        NSUserNotifaction *notifiaction =
-            [[NSUserNotifiaction alloc] init];
+        NSUserNotificationCenter* center =
+            [NSUserNotificationCenter defaultUserNotificationCenter];
+        NSUserNotification *notification =
+            [[NSUserNotification alloc] init];
 
         [notification setTitle: title];
         [notification setSubtitle: subtitle];
@@ -46,8 +46,8 @@ namespace {
     }
 }
 
-OSXNotify::OSXNotify(QString appName): QObject() :
-                m_appName( appName )
+OSXNotify::OSXNotify(QString appName): QObject()
+               , m_appName( appName )
 {
     EngineController *engine = The::engineController();
 
@@ -84,11 +84,11 @@ OSXNotify::show( Meta::TrackPtr track )
     if( text.isEmpty() ) //still
         text = i18n("No information available for this track");
 
-    QPixmap *image = The::coverCache()->getCover( track->album(), 100 );
+    QPixmap pixmap = The::coverCache()->getCover( track->album(), 100 );
     CGImageRef cgImage = pixmap.toMacCGImageRef();
     NSImage *nImage = [[NSImage alloc] initWithCGImage:cgImage size:NSZeroSize];
     CFRelease(cgImage);
-    NSString *title = "Amarok";
-    NSString *subTitle = text.constData();
+    NSString *title =[[NSString alloc] initWithUTF8String: "Amarok" ];
+    NSString *subTitle = [[NSString alloc] initWithUTF8String:text.toUtf8().constData() ];
     SendNotifactionCenterMessage( title, subTitle, nImage );
 }

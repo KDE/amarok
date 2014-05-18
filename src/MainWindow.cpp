@@ -101,6 +101,9 @@
 
 #ifdef Q_WS_MAC
 #include "mac/GrowlInterface.h"
+#ifdef HAVE_NOTIFICATION_CENTER
+#include "mac/MacSystemNotify.h"
+#endif
 #endif
 
 #define AMAROK_CAPTION I18N_NOOP( "Amarok" )
@@ -125,7 +128,10 @@ MainWindow::MainWindow()
     s_instance = this;
 
 #ifdef Q_WS_MAC
-    GrowlInterface* growl = new GrowlInterface( qApp->applicationName() );
+    (void)new GrowlInterface( qApp->applicationName() );
+#ifdef HAVE_NOTIFICATION_CENTER
+    (void)new OSXNotify( qApp->applicationName() );
+#endif
 #endif
 
     PERF_LOG( "Instantiate Collection Manager" )
