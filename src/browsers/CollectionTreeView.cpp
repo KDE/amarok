@@ -56,8 +56,59 @@
 #include <QHash>
 #include <QMouseEvent>
 #include <QSortFilterProxyModel>
+#include <QScrollBar>
 
 using namespace Collections;
+
+/**
+ * RAII class to perform restoring of the scroll position once all queries are
+ * finished. DelayedScroller auto-deletes itself once its job is over (ot if it finds
+ * it is useless).
+ */
+class DelayedScroller : public QObject
+{
+    Q_OBJECT
+
+    public:
+        DelayedScroller( CollectionTreeView *treeView,
+                         CollectionTreeItemModelBase *treeModel,
+                         const QModelIndex &treeModelScrollToIndex, int topOffset )
+            : QObject( treeView )
+            , m_treeView( treeView )
+            , m_treeModel( treeModel )
+            , m_topOffset( topOffset )
+        {
+            connect( treeModel, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
+            connect( treeModel, SIGNAL(allQueriesFinished(bool)), SLOT(slotScroll()) );
+
+            m_scrollToItem = m_treeModel->treeItem( treeModelScrollToIndex );
+            if( m_scrollToItem )
+                connect( m_scrollToItem, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
+            else
+                deleteLater(); // nothing to do
+        }
+
+    private slots:
+        void slotScroll()
+        {
+            deleteLater();
+            QModelIndex idx = m_treeModel->itemIndex( m_scrollToItem );
+            QSortFilterProxyModel *filterModel = m_treeView->filterModel();
+            idx = filterModel ? filterModel->mapFromSource( idx ) : QModelIndex();
+            QScrollBar *scrollBar = m_treeView->verticalScrollBar();
+            if( !idx.isValid() || !scrollBar )
+                return;
+
+            int newTopOffset = m_treeView->visualRect( idx ).top();
+            scrollBar->setValue( scrollBar->value() + (newTopOffset - m_topOffset) );
+        }
+
+    private:
+        CollectionTreeView *m_treeView;
+        CollectionTreeItemModelBase *m_treeModel;
+        CollectionTreeItem *m_scrollToItem;
+        int m_topOffset;
+};
 
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : Amarok::PrettyTreeView( parent )
@@ -900,8 +951,28 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem *> &items ) const
 void
 CollectionTreeView::slotSetFilter( const QString &filter )
 {
-    if( m_treeModel && m_treeModel->currentFilter() != filter )
-        m_treeModel->setCurrentFilter( filter );
+    QString currentFilter = m_treeModel ? m_treeModel->currentFilter() : QString();
+    if( !m_filterModel || !m_treeModel || filter == currentFilter )
+        return;
+
+    // special case: transitioning from non-empty to empty buffer
+    // -> trigger later restoring of the scroll position
+    if( filter.isEmpty() ) // currentFilter must not be empty then (see earlier check)
+    {
+        // take first item, descending to leaf ones if expanded. There may be better
+        // ways to determine what item should stay "fixed".
+        QModelIndex scrollToIndex = m_filterModel->index( 0, 0 );
+        while( isExpanded( scrollToIndex ) && m_filterModel->rowCount( scrollToIndex ) > 0 )
+            scrollToIndex = scrollToIndex.child( 0, 0 );
+        int topOffset = visualRect( scrollToIndex ).top();
+
+        QModelIndex bottomIndex = m_filterModel->mapToSource( scrollToIndex );
+        // if we have somewhere to scroll to after filter is cleared...
+        if( bottomIndex.isValid() )
+            // auto-destroys itself
+            new DelayedScroller( this, m_treeModel, bottomIndex, topOffset );
+    }
+    m_treeModel->setCurrentFilter( filter );
 }
 
 void
@@ -1329,4 +1400,5 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem *> &
     return new Collections::MetaQueryMaker( queryMakers );
 }
 
-#include "CollectionTreeView.moc"
+#include "CollectionTreeView.moc"  // Q_OBJECTs defined in CollectionTreeView.cpp
+#include "moc_CollectionTreeView.cpp"  // Q_OBJECTs defined in CollectionTreeView.h

@@ -367,10 +367,7 @@ CollectionTreeItemModelBase::parent(const QModelIndex & index) const
      CollectionTreeItem *childItem = static_cast<CollectionTreeItem*>(index.internalPointer());
      CollectionTreeItem *parentItem = childItem->parent();
 
-     if ( (parentItem == m_rootItem) || !parentItem )
-         return QModelIndex();
-
-     return createIndex(parentItem->row(), 0, parentItem);
+     return itemIndex( parentItem );
 }
 
 int
@@ -488,6 +485,24 @@ CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item )
     {
         listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
     }
+}
+
+CollectionTreeItem *
+CollectionTreeItemModelBase::treeItem( const QModelIndex &index ) const
+{
+    if( !index.isValid() || index.model() != this )
+        return 0;
+
+    return static_cast<CollectionTreeItem *>( index.internalPointer() );
+}
+
+QModelIndex
+CollectionTreeItemModelBase::itemIndex( CollectionTreeItem *item ) const
+{
+    if( !item || item == m_rootItem )
+        return QModelIndex();
+
+    return createIndex( item->row(), 0, item );
 }
 
 void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMaker * qm, CollectionTreeItem * parent)
@@ -639,7 +654,7 @@ CollectionTreeItemModelBase::queryDone()
     //reset icon for this item
     if( item && item != m_rootItem )
     {
-        emit dataChanged( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) );
+        emit dataChanged( itemIndex( item ), itemIndex( item ) );
     }
 
     //stop timer if there are no more animations active
@@ -738,13 +753,9 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
     else if( type == CollectionTreeItem::NoLabel )
         parent = m_noLabelsQueries.value( qm );
 
-    QModelIndex parentIndex;
     if( parent )
     {
-        if (parent == m_rootItem ) // will never happen in CollectionTreeItemModel
-            parentIndex = QModelIndex();
-        else
-            parentIndex = createIndex( parent->row(), 0, parent );
+        QModelIndex parentIndex = itemIndex( parent );
 
         //if the special query did not return a result we have to remove the
         //the special node itself
@@ -803,7 +814,7 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
                 //only call populateChildren for the special node if we have not
                 //created it in this method call. The special node ctor takes care
                 //of that itself
-                populateChildren( dataList, specialNode, createIndex( specialNode->row(), 0, specialNode ) );
+                populateChildren( dataList, specialNode, itemIndex( specialNode ) );
             }
             //populate children will call setRequiresUpdate on vaNode
             //but as the special query is based on specialNode's parent,
@@ -836,13 +847,8 @@ void
 CollectionTreeItemModelBase::handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList )
 {
     CollectionTreeItem *parent = m_childQueries.value( qm );
-    QModelIndex parentIndex;
     if( parent ) {
-        if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel, but will happen in Single!
-            parentIndex = QModelIndex();
-        else
-            parentIndex = createIndex( parent->row(), 0, parent );
-
+        QModelIndex parentIndex = itemIndex( parent );
         populateChildren( dataList, parent, parentIndex );
 
         if ( parent->isDataItem() )
@@ -1065,7 +1071,7 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
     {
         if( item == m_rootItem )
             continue;
-        emit dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) );
+        emit dataChanged( itemIndex( item ), itemIndex( item ) );
     }
 }
 
@@ -1093,7 +1099,7 @@ CollectionTreeItemModelBase::slotFilter( bool autoExpand )
     {
         CollectionTreeItem *expandedItem = m_collections.value( expanded->collectionId() ).second;
         if( expandedItem )
-            emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
+            emit expandIndex( itemIndex( expandedItem ) );
     }
 }
 

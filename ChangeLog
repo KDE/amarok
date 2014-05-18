@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.8.1
   FEATURES:
+   * Collection Browser scrolls back to its original position when the filter is cleared.
+     (BR 188074)
    * Statistics synchronization between Amarok collections and
      Amarok 1.4, Amarok 2.x, Apple iTunes, Banshee, Clementine, and
      Rhythmbox track databases.

@@ -240,7 +240,7 @@ CollectionTreeItemModel::requestCollectionsExpansion()
 {
     for( int i = 0, count = m_rootItem->childCount(); i < count; i++ )
     {
-        emit expandIndex( createIndex( i, 0, m_rootItem->child( i ) ) );
+        emit expandIndex( itemIndex( m_rootItem->child( i ) ) );
     }
 }
 
