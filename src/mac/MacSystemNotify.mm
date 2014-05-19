@@ -30,14 +30,17 @@
 #import <ApplicationServices/ApplicationServices.h>
 
 namespace {
-    void SendNotifactionCenterMessage(NSString* title, NSString* subtitle, NSImage *image) {
+    void SendNotifactionCenterMessage(NSString* title, NSString* subtitle, NSString *informativeText, NSImage *image)
+     {
         NSUserNotificationCenter* center =
             [NSUserNotificationCenter defaultUserNotificationCenter];
         NSUserNotification *notification =
             [[NSUserNotification alloc] init];
 
+        [center removeAllDeliveredNotifications]; // Clear the previous one before sending another
         [notification setTitle: title];
         [notification setSubtitle: subtitle];
+        [notification setInformativeText: informativeText];
         [notification setContentImage: image];
 
         [center deliverNotification: notification];
@@ -60,19 +63,23 @@ OSXNotify::show( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
     QString text;
+    QString albumString;
+    QString artistString;
     if( !track || track->playableUrl().isEmpty() )
         text = i18n( "No track playing" );
     else
     {
         text = track->prettyName();
         if( track->artist() && !track->artist()->prettyName().isEmpty() )
-            text = track->artist()->prettyName() + " - " + text;
+            artistString = track->artist()->prettyName();
         if( track->album() && !track->album()->prettyName().isEmpty() )
-            text += "\n (" + track->album()->prettyName() + ") ";
-        else
-            text += '\n';
+            albumString = track->album()->prettyName();
         if( track->length() > 0 )
+        {
+            text += " (";
             text += Meta::msToPrettyTime( track->length() );
+            text += ')';
+        }
     }
 
     if( text.isEmpty() )
@@ -88,7 +95,12 @@ OSXNotify::show( Meta::TrackPtr track )
     CGImageRef cgImage = pixmap.toMacCGImageRef();
     NSImage *nImage = [[NSImage alloc] initWithCGImage:cgImage size:NSZeroSize];
     CFRelease(cgImage);
-    NSString *title =[[NSString alloc] initWithUTF8String: "Amarok" ];
-    NSString *subTitle = [[NSString alloc] initWithUTF8String:text.toUtf8().constData() ];
-    SendNotifactionCenterMessage( title, subTitle, nImage );
+    if( artistString.isEmpty() )
+        artistString = i18n( "Unknown" );
+    if( albumString.isEmpty() )
+        albumString = i18n( "Unknown" );
+    NSString *title =[[NSString alloc] initWithUTF8String: artistString.toUtf8().constData() ];
+    NSString *subTitle = [[NSString alloc] initWithUTF8String: albumString.toUtf8().constData() ];
+    NSString *songTitle = [[NSString alloc] initWithUTF8String: text.toUtf8().constData() ];
+    SendNotifactionCenterMessage( songTitle, title, subTitle, nImage );
 }

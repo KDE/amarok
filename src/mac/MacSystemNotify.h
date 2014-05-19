@@ -26,8 +26,7 @@
 #include "core/support/Debug.h"
 #include "core/meta/forward_declarations.h"
 #include "EngineController.h"
-    
- // NOTE if not on mac, this whole file is useless, so not even going to try
+
 class OSXNotify : QObject
 {
     Q_OBJECT
@@ -41,7 +40,7 @@ class OSXNotify : QObject
     private:
         QString m_appName;
         Meta::TrackPtr m_currentTrack;
-     
+
 };
 
 #endif
