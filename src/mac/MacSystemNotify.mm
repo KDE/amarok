@@ -65,6 +65,7 @@ OSXNotify::show( Meta::TrackPtr track )
     QString text;
     QString albumString;
     QString artistString;
+    QPixmap albumImage;
     if( !track || track->playableUrl().isEmpty() )
         text = i18n( "No track playing" );
     else
@@ -80,10 +81,12 @@ OSXNotify::show( Meta::TrackPtr track )
             text += Meta::msToPrettyTime( track->length() );
             text += ')';
         }
-    }
 
-    if( text.isEmpty() )
-        text =  track->playableUrl().fileName();
+        if( text.isEmpty() )
+            text =  track->playableUrl().fileName();
+
+        albumImage = The::coverCache()->getCover( track->album(), 100 );
+    }
 
     if( text.startsWith( "- " ) ) //When we only have a title tag, _something_ prepends a fucking hyphen. Remove that.
         text = text.mid( 2 );
@@ -91,10 +94,13 @@ OSXNotify::show( Meta::TrackPtr track )
     if( text.isEmpty() ) //still
         text = i18n("No information available for this track");
 
-    QPixmap pixmap = The::coverCache()->getCover( track->album(), 100 );
-    CGImageRef cgImage = pixmap.toMacCGImageRef();
-    NSImage *nImage = [[NSImage alloc] initWithCGImage:cgImage size:NSZeroSize];
-    CFRelease(cgImage);
+    NSImage *nImage = 0;
+    if( !albumImage.isNull() )
+    {
+        CGImageRef cgImage = albumImage.toMacCGImageRef();
+        nImage = [[NSImage alloc] initWithCGImage:cgImage size:NSZeroSize];
+        CFRelease(cgImage);
+    }
     if( artistString.isEmpty() )
         artistString = i18n( "Unknown" );
     if( albumString.isEmpty() )
