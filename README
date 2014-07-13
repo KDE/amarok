@@ -50,7 +50,6 @@ Required
 
     * TagLib Extras 1.0.1 (or newer)
       (Support for metadata reading of additional file types)
-      http://www.kollide.net/~jefferai/taglib-extras-1.0.1.tar.gz
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
 
     * MySQL 5.0 (or newer) Embedded: libmysqld compiled with fPIC
