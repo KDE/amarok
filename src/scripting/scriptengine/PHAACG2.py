@@ -89,7 +89,7 @@ def traverseDir( dirPath, opDir ):
 def main():
     scriptPath = sys.argv[1]
     if not os.path.exists(sys.argv[2]):
-            os.makedirs(sys.argv[2])
+        os.makedirs(sys.argv[2])
     traverseDir( sys.argv[1], sys.argv[2] )
 
 if __name__ == "__main__":
