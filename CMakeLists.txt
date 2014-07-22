@@ -13,10 +13,6 @@ option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recommended" ON)
 option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
 
-include(CheckLibraryExists)
-check_library_exists(dl dlopen "" LIBDL_FOUND)
-
-
 ############### Taglib
 set(TAGLIB_MIN_VERSION "1.7")
 find_package(Taglib REQUIRED)

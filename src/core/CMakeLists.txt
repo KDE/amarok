@@ -102,6 +102,7 @@ kde4_add_library(amarokcore SHARED ${libcore_LIB_SRCS})
 
 target_link_libraries(amarokcore
     amarokshared
+    ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
     ${KDE4_KIO_LIBS}
     ${KDE4_SOLID_LIBRARY}
@@ -112,10 +113,6 @@ target_link_libraries(amarokcore
 if(APPLE)
     SET_TARGET_PROPERTIES(amarokcore PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
-
-if(LIBDL_FOUND)
-    target_link_libraries(amarokcore dl)
-endif(LIBDL_FOUND)
 
 if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SYSTEM_NAME MATCHES Linux)
     set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=iso9899:1999" )

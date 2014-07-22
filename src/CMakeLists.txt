@@ -873,6 +873,7 @@ target_link_libraries(amaroklib
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSCRIPTTOOLS_LIBRARY}
     ${QT_QTSQL_LIBRARY}
+    ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
@@ -911,10 +912,6 @@ endif(WIN32)
 if(APPLE)
     SET_TARGET_PROPERTIES(amaroklib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
-
-if(LIBDL_FOUND)
-    target_link_libraries(amaroklib dl)
-endif(LIBDL_FOUND)
 
 set_target_properties(amaroklib PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
