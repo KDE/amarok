@@ -29,7 +29,7 @@ def generatePseudoHeader( rootDir, fileName ):
         match = re.search( r'//[\s]*SCRIPTDOX[\s:]*(.*)', contents )
         if match is None:
             return
-        s = filter( None, match.group(1).split(' ') )
+        s = [item for item in match.group(1).split(' ') if item]
         if 'PROTOTYPE' in s:
             className = s[2].strip()
             prototype[ s[1] ] = className
