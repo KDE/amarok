@@ -68,8 +68,8 @@ def generatePseudoHeader( rootDir, fileName ):
 
 def traverseDir( dirPath, opDir ):
     for root, subFolder, files in os.walk(dirPath):
-	for fileName in files:
-	    if fileName.endswith( ".cpp" ):
+        for fileName in files:
+            if fileName.endswith( ".cpp" ):
                 generatePseudoHeader( root, fileName[:-4] )
     #substitute prototypes
     for scriptClass in scriptMap:
