@@ -65,7 +65,6 @@ def generatePseudoHeader( rootDir, fileName ):
                                 funcName = reg.group(1).replace('*','').replace('&','')
                                 autoComplete.append( className+"."+ funcName + '(' )
                     scriptMap[className].append( selections )
-    return
 
 def traverseDir( dirPath, opDir ):
     for root, subFolder, files in os.walk(dirPath):
