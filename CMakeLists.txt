@@ -219,6 +219,9 @@ if( WITH_PLAYER )
     find_program( CLAMZ_FOUND clamz PATH )
     macro_log_feature( CLAMZ_FOUND "clamz" "Optional requirement to download songs from the Amazon MP3 store. Highly recommended on Linux, as the official downloader from Amazon is quite broken on many systems." "https://code.google.com/p/clamz/" FALSE )
 
+    find_package(PythonInterp)
+    macro_log_feature(PYTHONINTERP_FOUND "Python" "Required for generating the autocompletion file for the script console" "https://www.python.org" FALSE "2.x" "")
+
     include_directories( ${KDE4_INCLUDES} )
 
     if( KDE4_BUILD_TESTS AND NOT WIN32 )

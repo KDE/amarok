@@ -477,9 +477,13 @@ set(scriptconsole_SRCS
     scripting/scriptconsole/ScriptConsoleItem.cpp
 )
 
-set(args ${CMAKE_SOURCE_DIR}/src/scripting/scriptengine/  ${DATA_INSTALL_DIR}/amarok/scriptconsole)
-#shouldn't be here
-execute_process(COMMAND python ${CMAKE_SOURCE_DIR}/src/scripting/scriptengine/PHAACG2.py ${args})
+if (PYTHONINTERP_FOUND)
+    execute_process(COMMAND "${PYTHON_EXECUTABLE}" ${CMAKE_SOURCE_DIR}/src/scripting/scriptengine/PHAACG2.py
+                                                   ${CMAKE_SOURCE_DIR}/src/scripting/scriptengine
+                                                   ${CMAKE_BINARY_DIR}/scriptconsole)
+    install(FILES ${CMAKE_BINARY_DIR}/scriptconsole/AutoComplete.txt
+            DESTINATION ${DATA_INSTALL_DIR}/amarok/scriptconsole)
+endif(PYTHONINTERP_FOUND)
 
 #####################################################################
 # PLAYLIST GENERATOR
