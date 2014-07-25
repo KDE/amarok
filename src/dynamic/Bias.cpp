@@ -117,7 +117,7 @@ Dynamic::RandomBias::name() const
 QString
 Dynamic::RandomBias::toString() const
 {
-    return i18nc("Random bias representation", "Random songs");
+    return i18nc("Random bias representation", "Random tracks");
 }
 
 QWidget*

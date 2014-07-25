@@ -112,7 +112,7 @@ Dynamic::SearchQueryBias::toString() const
 {
     if( m_filter.isEmpty() )
         return i18nc("Random bias representation",
-                     "Random songs");
+                     "Random tracks");
     else
         return i18nc("SearchQuery bias representation",
                      "Search for: %1", m_filter );
