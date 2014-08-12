@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>amarok.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <name>Amarok</name>
+  <description>
+    <p>Amarok is a free, versatile and powerful music player.</p>
+    <p>Features:</p>
+    <ul>
+      <li>Dynamic playlists matching different criteria</li>
+      <li>Collection managing with rating support</li>
+      <li>Support for basic iPod, MTP and UMS music player devices</li>
+      <li>Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
+      <li>Scripting support</li>
+      <li>Cover manager</li>
+      <li>Replay gain support</li>
+    </ul>
+  </description>
+  <url type="homepage">http://amarok.kde.org</url>
+  <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=amarok</url>
+  <url type="help">http://docs.kde.org/development/en/extragear-multimedia/amarok/index.html</url>
+  <screenshots>
+    <screenshot type="default">
+      <image>http://kde.org/images/screenshots/amarok.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://amarok.kde.org/files/Amarok2.7screenie.png</image>
+    </screenshot>
+  </screenshots>
+  <project_group>KDE</project_group>
+  <provides>
+    <binary>amarok</binary>
+  </provides>
+</component>
