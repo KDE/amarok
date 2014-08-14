@@ -1,5 +1,5 @@
 [Desktop Entry]
-ServiceTypes=KonqPopupMenu/Plugin,audio/*
+ServiceTypes=KonqPopupMenu/Plugin,audio/*,inode/directory
 Actions=appendToPlaylist;appendAndPlay;queueTrack;
 Type=Service
 X-KDE-Submenu=Amarok
