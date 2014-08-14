@@ -1,19 +1,53 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <component type="desktop">
   <id>amarok.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <name>Amarok</name>
+  <name xml:lang="cs">Amarok</name>
+  <name xml:lang="nl">Amarok</name>
+  <name xml:lang="uk">Amarok</name>
+  <name xml:lang="x-test">xxAmarokxx</name>
   <description>
     <p>Amarok is a free, versatile and powerful music player.</p>
+    <p xml:lang="nl">Amarok is een vrije, veelzijdige en krachtige muziekspeler.</p>
+    <p xml:lang="uk">Amarok — вільна, універсальна та потужна програма для відтворення звукових даних.</p>
+    <p xml:lang="x-test">xxAmarok is a free, versatile and powerful music player.xx</p>
     <p>Features:</p>
+    <p xml:lang="cs">Vlastnosti:</p>
+    <p xml:lang="nl">Mogelijkheden:</p>
+    <p xml:lang="uk">Можливості:</p>
+    <p xml:lang="x-test">xxFeatures:xx</p>
     <ul>
       <li>Dynamic playlists matching different criteria</li>
+      <li xml:lang="nl">Dynamische afspeellijsten die voldoen aan verschillende criteria</li>
+      <li xml:lang="uk">динамічні списки відтворення на основі різних критеріїв;</li>
+      <li xml:lang="x-test">xxDynamic playlists matching different criteriaxx</li>
       <li>Collection managing with rating support</li>
+      <li xml:lang="nl">Beheer van verzamelingen met ondersteuning van waardering</li>
+      <li xml:lang="uk">керування збіркою з підтримкою оцінок;</li>
+      <li xml:lang="x-test">xxCollection managing with rating supportxx</li>
       <li>Support for basic iPod, MTP and UMS music player devices</li>
+      <li xml:lang="nl">Ondersteuning voor basis iPod, MTP en UMS muziekspelerapparaten</li>
+      <li xml:lang="uk">підтримка базової роботи з пристроями відтворення, що працюють за протоколами iPod, MTP та UMS;</li>
+      <li xml:lang="x-test">xxSupport for basic iPod, MTP and UMS music player devicesxx</li>
       <li>Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
+      <li xml:lang="nl">Geïntegreerde internetservices: last.fm, Magnatune, Jamendo, Ampache, mp3tunes en meer.</li>
+      <li xml:lang="uk">інтеграція з інтернет-службами: last.fm, Magnatune, Jamendo, Ampache, mp3tunes тощо;</li>
+      <li xml:lang="x-test">xxIntegrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.xx</li>
       <li>Scripting support</li>
+      <li xml:lang="cs">Podpora pro skripty</li>
+      <li xml:lang="nl">Ondersteuning voor scripting</li>
+      <li xml:lang="uk">підтримка роботи зі скриптами;</li>
+      <li xml:lang="x-test">xxScripting supportxx</li>
       <li>Cover manager</li>
+      <li xml:lang="cs">Správce obalů</li>
+      <li xml:lang="nl">Hoesbeheerder</li>
+      <li xml:lang="uk">засіб керування збіркою зображень обкладинок;</li>
+      <li xml:lang="x-test">xxCover managerxx</li>
       <li>Replay gain support</li>
+      <li xml:lang="nl">Ondersteuning van Replay gain</li>
+      <li xml:lang="uk">підтримка вирівнювання гучності.</li>
+      <li xml:lang="x-test">xxReplay gain supportxx</li>
     </ul>
   </description>
   <url type="homepage">http://amarok.kde.org</url>
