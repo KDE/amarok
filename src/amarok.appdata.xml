@@ -5,47 +5,62 @@
   <name>Amarok</name>
   <name xml:lang="cs">Amarok</name>
   <name xml:lang="nl">Amarok</name>
+  <name xml:lang="sk">Amarok</name>
+  <name xml:lang="sv">Amarok</name>
   <name xml:lang="uk">Amarok</name>
   <name xml:lang="x-test">xxAmarokxx</name>
   <description>
     <p>Amarok is a free, versatile and powerful music player.</p>
     <p xml:lang="nl">Amarok is een vrije, veelzijdige en krachtige muziekspeler.</p>
+    <p xml:lang="sv">Amarok är en fri, mångsidig och kraftfull musikspelare.</p>
     <p xml:lang="uk">Amarok — вільна, універсальна та потужна програма для відтворення звукових даних.</p>
     <p xml:lang="x-test">xxAmarok is a free, versatile and powerful music player.xx</p>
     <p>Features:</p>
     <p xml:lang="cs">Vlastnosti:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
+    <p xml:lang="sk">Funkcie:</p>
+    <p xml:lang="sv">Funktioner:</p>
     <p xml:lang="uk">Можливості:</p>
     <p xml:lang="x-test">xxFeatures:xx</p>
     <ul>
       <li>Dynamic playlists matching different criteria</li>
       <li xml:lang="nl">Dynamische afspeellijsten die voldoen aan verschillende criteria</li>
+      <li xml:lang="sv">Dynamiska spellistor som motsvarar olika kriterier</li>
       <li xml:lang="uk">динамічні списки відтворення на основі різних критеріїв;</li>
       <li xml:lang="x-test">xxDynamic playlists matching different criteriaxx</li>
       <li>Collection managing with rating support</li>
       <li xml:lang="nl">Beheer van verzamelingen met ondersteuning van waardering</li>
+      <li xml:lang="sv">Samlingshantering med betygsstöd</li>
       <li xml:lang="uk">керування збіркою з підтримкою оцінок;</li>
       <li xml:lang="x-test">xxCollection managing with rating supportxx</li>
       <li>Support for basic iPod, MTP and UMS music player devices</li>
       <li xml:lang="nl">Ondersteuning voor basis iPod, MTP en UMS muziekspelerapparaten</li>
+      <li xml:lang="sv">Stöd för grundläggande iPod-, MTP- och UMS-musikspelare</li>
       <li xml:lang="uk">підтримка базової роботи з пристроями відтворення, що працюють за протоколами iPod, MTP та UMS;</li>
       <li xml:lang="x-test">xxSupport for basic iPod, MTP and UMS music player devicesxx</li>
       <li>Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
       <li xml:lang="nl">Geïntegreerde internetservices: last.fm, Magnatune, Jamendo, Ampache, mp3tunes en meer.</li>
+      <li xml:lang="sk">Integrované internetové služby: last.fm, Magnatune, Jamendo, Ampache, mp3tunes a viac.</li>
+      <li xml:lang="sv">Integrerade Internet-tjänster: last.fm, Magnatune, Jamendo, Ampache, mp3tunes med flera.</li>
       <li xml:lang="uk">інтеграція з інтернет-службами: last.fm, Magnatune, Jamendo, Ampache, mp3tunes тощо;</li>
       <li xml:lang="x-test">xxIntegrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.xx</li>
       <li>Scripting support</li>
       <li xml:lang="cs">Podpora pro skripty</li>
       <li xml:lang="nl">Ondersteuning voor scripting</li>
+      <li xml:lang="sk">Podpora skriptovania</li>
+      <li xml:lang="sv">Stöd för skript</li>
       <li xml:lang="uk">підтримка роботи зі скриптами;</li>
       <li xml:lang="x-test">xxScripting supportxx</li>
       <li>Cover manager</li>
       <li xml:lang="cs">Správce obalů</li>
       <li xml:lang="nl">Hoesbeheerder</li>
+      <li xml:lang="sk">Správca obalov</li>
+      <li xml:lang="sv">Omslagshanterare</li>
       <li xml:lang="uk">засіб керування збіркою зображень обкладинок;</li>
       <li xml:lang="x-test">xxCover managerxx</li>
       <li>Replay gain support</li>
       <li xml:lang="nl">Ondersteuning van Replay gain</li>
+      <li xml:lang="sv">Stöd för uppspelningsnivå</li>
       <li xml:lang="uk">підтримка вирівнювання гучності.</li>
       <li xml:lang="x-test">xxReplay gain supportxx</li>
     </ul>
