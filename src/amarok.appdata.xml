@@ -5,6 +5,7 @@
   <name>Amarok</name>
   <name xml:lang="ca">Amarok</name>
   <name xml:lang="cs">Amarok</name>
+  <name xml:lang="de">Amarok</name>
   <name xml:lang="en-GB">Amarok</name>
   <name xml:lang="es">Amarok</name>
   <name xml:lang="it">Amarok</name>
@@ -129,6 +130,7 @@
       <li>Scripting support</li>
       <li xml:lang="ca">Implementació per a la creació d'scripts</li>
       <li xml:lang="cs">Podpora pro skripty</li>
+      <li xml:lang="de">Skript-Unterstützung</li>
       <li xml:lang="en-GB">Scripting support</li>
       <li xml:lang="es">Uso de guiones</li>
       <li xml:lang="it">Supporto per la creazione di script</li>
@@ -147,6 +149,7 @@
       <li>Cover manager</li>
       <li xml:lang="ca">Gestor de cobertes</li>
       <li xml:lang="cs">Správce obalů</li>
+      <li xml:lang="de">Cover-Verwaltung</li>
       <li xml:lang="en-GB">Cover manager</li>
       <li xml:lang="es">Gestor de carátulas</li>
       <li xml:lang="it">Gestore delle copertine</li>
@@ -165,6 +168,7 @@
       <li>Replay gain support</li>
       <li xml:lang="ca">Implementació de la repetició de guany</li>
       <li xml:lang="cs">Podpora Replay gain</li>
+      <li xml:lang="de">Unterstützung für Lautstärkeanpassung</li>
       <li xml:lang="en-GB">Replay gain support</li>
       <li xml:lang="es">Implementación de normalización de audio</li>
       <li xml:lang="it">Supporto del guadagno di riproduzione</li>
