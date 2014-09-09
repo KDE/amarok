@@ -5,6 +5,7 @@
   <name>Amarok</name>
   <name xml:lang="ca">Amarok</name>
   <name xml:lang="cs">Amarok</name>
+  <name xml:lang="da">Amarok</name>
   <name xml:lang="de">Amarok</name>
   <name xml:lang="en-GB">Amarok</name>
   <name xml:lang="es">Amarok</name>
@@ -25,6 +26,7 @@
     <p>Amarok is a free, versatile and powerful music player.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música lliure, versàtil i potent.</p>
     <p xml:lang="cs">Amarok je svobodný, univerzální a mocný přehrávač hudby.</p>
+    <p xml:lang="da">Amarok er en fri, alsidig og kraftfuld musikafspiller.</p>
     <p xml:lang="en-GB">Amarok is a free, versatile and powerful music player.</p>
     <p xml:lang="es">Amarok es un potente y versátil reproductor de música libre.</p>
     <p xml:lang="it">Amarok è un lettore musicale libero, versatile e potente.</p>
@@ -42,6 +44,7 @@
     <p>Features:</p>
     <p xml:lang="ca">Característiques:</p>
     <p xml:lang="cs">Vlastnosti:</p>
+    <p xml:lang="da">Funktioner:</p>
     <p xml:lang="en-GB">Features:</p>
     <p xml:lang="es">Funciones:</p>
     <p xml:lang="it">Funzionalità:</p>
@@ -61,6 +64,7 @@
       <li>Dynamic playlists matching different criteria</li>
       <li xml:lang="ca">Llistes de reproducció dinàmiques coincidint amb diferents criteris</li>
       <li xml:lang="cs">Dynamické seznamy skladeb odpovídající různým požadavkům</li>
+      <li xml:lang="da">Dynamiske spillelister som matcher forskellige kriterier</li>
       <li xml:lang="en-GB">Dynamic playlists matching different criteria</li>
       <li xml:lang="es">Listas de reproducción dinámicas según distintos criterios</li>
       <li xml:lang="it">Scalette dinamiche che verificano diversi criteri</li>
@@ -78,6 +82,7 @@
       <li>Collection managing with rating support</li>
       <li xml:lang="ca">Gestió de les col·leccions amb implementació per a les qualificacions</li>
       <li xml:lang="cs">Správa sbírek s podporou hodnocení</li>
+      <li xml:lang="da">Samlingshåndtering med understøttelse af vurderinger</li>
       <li xml:lang="en-GB">Collection managing with rating support</li>
       <li xml:lang="es">Gestión de colección con uso de puntuaciones</li>
       <li xml:lang="it">Gestione della collezione con supporto per la valutazione</li>
@@ -95,6 +100,7 @@
       <li>Support for basic iPod, MTP and UMS music player devices</li>
       <li xml:lang="ca">Implementació pels dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
       <li xml:lang="cs">Podpora pro zařízení iPod, MTP a UMS</li>
+      <li xml:lang="da">Understøttelse af basale iPod-, MTP- og UMS-musikafspillere</li>
       <li xml:lang="en-GB">Support for basic iPod, MTP and UMS music player devices</li>
       <li xml:lang="es">Implementación básica de dispositivos de reproducción de música como iPod y los que usan los protocolos MTP y UMS</li>
       <li xml:lang="it">Supporto per i lettori musicali iPod, MTP e UMS</li>
@@ -112,6 +118,7 @@
       <li>Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
       <li xml:lang="ca">Serveis integrats d'Internet: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i més</li>
       <li xml:lang="cs">Integrované internetové služby: last.fm, Magnatune, Jamendo, Ampache, mp3tunes a další.</li>
+      <li xml:lang="da">Integrerede internettjenester: last.fm, Magnatune, Jamendo, Ampache, mp3tunes og andre.</li>
       <li xml:lang="en-GB">Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
       <li xml:lang="es">Servicios de Internet integrados: last.fm, Magnatune, Jamendo, Ampache, mp3tunes y más.</li>
       <li xml:lang="it">Servizi Internet integrati: last.fm, Magnatune, Jamendo, Ampache, mp3tunes e altri.</li>
@@ -130,6 +137,7 @@
       <li>Scripting support</li>
       <li xml:lang="ca">Implementació per a la creació d'scripts</li>
       <li xml:lang="cs">Podpora pro skripty</li>
+      <li xml:lang="da">Understøttelse af scripts</li>
       <li xml:lang="de">Skript-Unterstützung</li>
       <li xml:lang="en-GB">Scripting support</li>
       <li xml:lang="es">Uso de guiones</li>
@@ -149,6 +157,7 @@
       <li>Cover manager</li>
       <li xml:lang="ca">Gestor de cobertes</li>
       <li xml:lang="cs">Správce obalů</li>
+      <li xml:lang="da">Omslagshåndtering</li>
       <li xml:lang="de">Cover-Verwaltung</li>
       <li xml:lang="en-GB">Cover manager</li>
       <li xml:lang="es">Gestor de carátulas</li>
@@ -168,6 +177,7 @@
       <li>Replay gain support</li>
       <li xml:lang="ca">Implementació de la repetició de guany</li>
       <li xml:lang="cs">Podpora Replay gain</li>
+      <li xml:lang="da">Replay Gain-understøttelse</li>
       <li xml:lang="de">Unterstützung für Lautstärkeanpassung</li>
       <li xml:lang="en-GB">Replay gain support</li>
       <li xml:lang="es">Implementación de normalización de audio</li>
