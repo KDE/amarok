@@ -8,6 +8,7 @@ VERSION 2.8.1
    * Add Service entries for directories. (BR 229708)
    * Collection Browser scrolls back to its original position when the filter is cleared.
      (BR 188074)
+   * Notification Center support on Mac OS X.
    * Statistics synchronization between Amarok collections and
      Amarok 1.4, Amarok 2.x, Apple iTunes, Banshee, Clementine, and
      Rhythmbox track databases.

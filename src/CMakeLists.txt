@@ -10,6 +10,11 @@ if(APPLE)
         app_mac.cpp
         mac/GrowlInterface.cpp
     )
+    # Notification Center Appeared in 10.8, or Darwin 12
+    if( CMAKE_SYSTEM_VERSION VERSION_GREATER "11.9.9")
+        list(APPEND mac_SRCS mac/MacSystemNotify.mm)
+        add_definitions(-DHAVE_NOTIFICATION_CENTER)
+    endif()
 
     include_directories ( services/lastfm/ )
     set( MAC_FILES_DIR  ${CMAKE_SOURCE_DIR}/src/mac )
@@ -914,6 +919,7 @@ if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
 endif(WIN32)
 if(APPLE)
+    target_link_libraries(amaroklib "/System/Library/Frameworks/Foundation.framework")
     SET_TARGET_PROPERTIES(amaroklib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
