@@ -9,6 +9,7 @@
   <name xml:lang="de">Amarok</name>
   <name xml:lang="en-GB">Amarok</name>
   <name xml:lang="es">Amarok</name>
+  <name xml:lang="fi">Amarok</name>
   <name xml:lang="it">Amarok</name>
   <name xml:lang="nl">Amarok</name>
   <name xml:lang="pl">Amarok</name>
@@ -29,6 +30,7 @@
     <p xml:lang="da">Amarok er en fri, alsidig og kraftfuld musikafspiller.</p>
     <p xml:lang="en-GB">Amarok is a free, versatile and powerful music player.</p>
     <p xml:lang="es">Amarok es un potente y versátil reproductor de música libre.</p>
+    <p xml:lang="fi">Amarok on vapaa, monipuolinen ja tehokas musiikkisoitin.</p>
     <p xml:lang="it">Amarok è un lettore musicale libero, versatile e potente.</p>
     <p xml:lang="nl">Amarok is een vrije, veelzijdige en krachtige muziekspeler.</p>
     <p xml:lang="pl">Amarok jest darmowym, wszechstronnym i zaawansowanym odtwarzaczem muzyki.</p>
@@ -47,6 +49,7 @@
     <p xml:lang="da">Funktioner:</p>
     <p xml:lang="en-GB">Features:</p>
     <p xml:lang="es">Funciones:</p>
+    <p xml:lang="fi">Ominaisuudet:</p>
     <p xml:lang="it">Funzionalità:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
     <p xml:lang="pl">Możliwości:</p>
@@ -67,6 +70,7 @@
       <li xml:lang="da">Dynamiske spillelister som matcher forskellige kriterier</li>
       <li xml:lang="en-GB">Dynamic playlists matching different criteria</li>
       <li xml:lang="es">Listas de reproducción dinámicas según distintos criterios</li>
+      <li xml:lang="fi">Eri ehtoja vastaavat dynaamiset soittolistat</li>
       <li xml:lang="it">Scalette dinamiche che verificano diversi criteri</li>
       <li xml:lang="nl">Dynamische afspeellijsten die voldoen aan verschillende criteria</li>
       <li xml:lang="pl">Dynamiczne listy odtwarzania spełniające różne warunki</li>
@@ -85,6 +89,7 @@
       <li xml:lang="da">Samlingshåndtering med understøttelse af vurderinger</li>
       <li xml:lang="en-GB">Collection managing with rating support</li>
       <li xml:lang="es">Gestión de colección con uso de puntuaciones</li>
+      <li xml:lang="fi">Kokoelmanhallinta arviointituella</li>
       <li xml:lang="it">Gestione della collezione con supporto per la valutazione</li>
       <li xml:lang="nl">Beheer van verzamelingen met ondersteuning van waardering</li>
       <li xml:lang="pl">Zarządzanie zbiorem wraz z obsługą ocen</li>
@@ -103,6 +108,7 @@
       <li xml:lang="da">Understøttelse af basale iPod-, MTP- og UMS-musikafspillere</li>
       <li xml:lang="en-GB">Support for basic iPod, MTP and UMS music player devices</li>
       <li xml:lang="es">Implementación básica de dispositivos de reproducción de música como iPod y los que usan los protocolos MTP y UMS</li>
+      <li xml:lang="fi">Tuki tavallisille iPod-, MTP- ja UMS-musiikkisoitinlaitteille</li>
       <li xml:lang="it">Supporto per i lettori musicali iPod, MTP e UMS</li>
       <li xml:lang="nl">Ondersteuning voor basis iPod, MTP en UMS muziekspelerapparaten</li>
       <li xml:lang="pl">Obsługa dla podstawowych urządzeń odtwarzających muzykę takich jak iPod, MTP oraz UMS</li>
@@ -121,6 +127,7 @@
       <li xml:lang="da">Integrerede internettjenester: last.fm, Magnatune, Jamendo, Ampache, mp3tunes og andre.</li>
       <li xml:lang="en-GB">Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
       <li xml:lang="es">Servicios de Internet integrados: last.fm, Magnatune, Jamendo, Ampache, mp3tunes y más.</li>
+      <li xml:lang="fi">Sisäänrakennetut internetpalvelut: Last.fm, Magnatune, Jamendo, Ampache, mp3tunes ja muita.</li>
       <li xml:lang="it">Servizi Internet integrati: last.fm, Magnatune, Jamendo, Ampache, mp3tunes e altri.</li>
       <li xml:lang="nl">Geïntegreerde internetservices: last.fm, Magnatune, Jamendo, Ampache, mp3tunes en meer.</li>
       <li xml:lang="pl">Zintegrowane usługi internetowe: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i więcej.</li>
@@ -141,6 +148,7 @@
       <li xml:lang="de">Skript-Unterstützung</li>
       <li xml:lang="en-GB">Scripting support</li>
       <li xml:lang="es">Uso de guiones</li>
+      <li xml:lang="fi">Skriptaustuki</li>
       <li xml:lang="it">Supporto per la creazione di script</li>
       <li xml:lang="nl">Ondersteuning voor scripting</li>
       <li xml:lang="pl">Obsługa skryptów</li>
@@ -161,6 +169,7 @@
       <li xml:lang="de">Cover-Verwaltung</li>
       <li xml:lang="en-GB">Cover manager</li>
       <li xml:lang="es">Gestor de carátulas</li>
+      <li xml:lang="fi">Kansikuvien hallinta</li>
       <li xml:lang="it">Gestore delle copertine</li>
       <li xml:lang="nl">Hoesbeheerder</li>
       <li xml:lang="pl">Zarządzanie okładkami</li>
@@ -181,6 +190,7 @@
       <li xml:lang="de">Unterstützung für Lautstärkeanpassung</li>
       <li xml:lang="en-GB">Replay gain support</li>
       <li xml:lang="es">Implementación de normalización de audio</li>
+      <li xml:lang="fi">Voimakkuudentasauksen tuki</li>
       <li xml:lang="it">Supporto del guadagno di riproduzione</li>
       <li xml:lang="nl">Ondersteuning van Replay gain</li>
       <li xml:lang="pl">Obsługa trybu replay gain</li>
