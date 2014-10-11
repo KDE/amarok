@@ -36,6 +36,7 @@
     <p xml:lang="pl">Amarok jest darmowym, wszechstronnym i zaawansowanym odtwarzaczem muzyki.</p>
     <p xml:lang="pt">O Amarok é um leitor multimédia gratuito, versátil e poderoso.</p>
     <p xml:lang="pt-BR">Amarok é um reprodutor de músicas livre, versátil e poderoso.</p>
+    <p xml:lang="sk">Amarok je slobodný, univerzálny a silný prehrávač hudby.</p>
     <p xml:lang="sr">Амарок је слободан, свестран и моћан музички плејер.</p>
     <p xml:lang="sr-Latn">Amarok je slobodan, svestran i moćan muzički plejer.</p>
     <p xml:lang="sr-ijekavian">Амарок је слободан, свестран и моћан музички плејер.</p>
@@ -76,6 +77,7 @@
       <li xml:lang="pl">Dynamiczne listy odtwarzania spełniające różne warunki</li>
       <li xml:lang="pt">Listas dinâmicas que correspondem a diferentes critérios</li>
       <li xml:lang="pt-BR">Listas de músicas dinâmicas que correspondem a diferentes critérios</li>
+      <li xml:lang="sk">Dynamické zoznamy skladieb sledujúce rôzne kritériá</li>
       <li xml:lang="sr">Динамичке листе нумера по различитим критеријумима.</li>
       <li xml:lang="sr-Latn">Dinamičke liste numera po različitim kriterijumima.</li>
       <li xml:lang="sr-ijekavian">Динамичке листе нумера по различитим критеријумима.</li>
@@ -95,6 +97,7 @@
       <li xml:lang="pl">Zarządzanie zbiorem wraz z obsługą ocen</li>
       <li xml:lang="pt">Gestão da colecção com o suporte para classificações</li>
       <li xml:lang="pt-BR">Gerenciamento de coleções com suporte a avaliação</li>
+      <li xml:lang="sk">Správa zbierok s podporou hodnotení</li>
       <li xml:lang="sr">Управљање збирком и подршка за оцењивање.</li>
       <li xml:lang="sr-Latn">Upravljanje zbirkom i podrška za ocenjivanje.</li>
       <li xml:lang="sr-ijekavian">Управљање збирком и подршка за оцењивање.</li>
@@ -114,6 +117,7 @@
       <li xml:lang="pl">Obsługa dla podstawowych urządzeń odtwarzających muzykę takich jak iPod, MTP oraz UMS</li>
       <li xml:lang="pt">Suporte para os dispositivos leitores multimédia básicos de iPod, MTP e UMS</li>
       <li xml:lang="pt-BR">Suporte a dispositivos básicos para reprodução de música iPod, MTP e UMS</li>
+      <li xml:lang="sk">Podpora pre základné prehrávacie zariadenia iPod, MTP a UMS</li>
       <li xml:lang="sr">Подршка за основне МТП и УМС музичке плејере, и и‑под.</li>
       <li xml:lang="sr-Latn">Podrška za osnovne MTP i UMS muzičke plejere, i iPod.</li>
       <li xml:lang="sr-ijekavian">Подршка за основне МТП и УМС музичке плејере, и и‑под.</li>
@@ -197,6 +201,7 @@
       <li xml:lang="pl">Obsługa trybu replay gain</li>
       <li xml:lang="pt">Suporte para o ganho de reprodução</li>
       <li xml:lang="pt-BR">Suporte a ajuste de ganho</li>
+      <li xml:lang="sk">Podpora replay gain</li>
       <li xml:lang="sr">Подршка за поновљиво појачање.</li>
       <li xml:lang="sr-Latn">Podrška za ponovljivo pojačanje.</li>
       <li xml:lang="sr-ijekavian">Подршка за поновљиво појачање.</li>
