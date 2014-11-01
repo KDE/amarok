@@ -36,7 +36,7 @@
       <item row="1" column="0">
        <widget class="QRadioButton" name="flacButton">
         <property name="text">
-         <string>Flac</string>
+         <string>FLAC</string>
         </property>
        </widget>
       </item>
@@ -50,7 +50,7 @@
       <item row="3" column="0">
        <widget class="QRadioButton" name="mp3Button">
         <property name="text">
-         <string>Mp3</string>
+         <string>MP3</string>
         </property>
        </widget>
       </item>
