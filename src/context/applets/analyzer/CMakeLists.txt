@@ -8,6 +8,7 @@ set(analyzer_SRCS
     BallsAnalyzer.cpp
     BlockAnalyzer.cpp
     DiscoAnalyzer.cpp
+    ASCIIAnalyzer.cpp
     fht.cpp
 )
 

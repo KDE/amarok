@@ -23,6 +23,7 @@
 #include "BallsAnalyzer.h"
 #include "BlockAnalyzer.h"
 #include "DiscoAnalyzer.h"
+#include "ASCIIAnalyzer.h"
 
 #include <QAction>
 #include <QGraphicsView>
@@ -54,6 +55,7 @@ AnalyzerApplet::init()
     m_analyzerNames["Balls"] = i18nc( "Analyzer name", "Balls" );
     m_analyzerNames["Blocky"] = i18nc( "Analyzer name", "Blocky" );
     m_analyzerNames["Disco"] = i18nc( "Analyzer name", "Disco" );
+    m_analyzerNames["ASCII"] = i18nc( "Analyzer name", "ASCII" );
 
     KConfigGroup config = Amarok::config( "Analyzer Applet" );
     setNewHeight( (WidgetHeight)config.readEntry( "Height", int() ) );
@@ -183,6 +185,8 @@ AnalyzerApplet::setCurrentAnalyzer( const QString &name )
         m_analyzer = new BallsAnalyzer( view()->viewport() );
     else if( name == "Disco" )
         m_analyzer = new DiscoAnalyzer( view()->viewport() );
+    else if( name == "ASCII" )
+        m_analyzer = new ASCIIAnalyzer( view()->viewport() );
     else
         m_analyzer = new BlockAnalyzer( view()->viewport() ); // The default
 
