@@ -14,6 +14,7 @@ VERSION 2.8.1
      Rhythmbox track databases.
    * Usability of the Organize Files dialog has been improved.
    * Wikipedia can now be also used over SSL.
+   * New ASCII Analyzer option in the Analyzer widget. Patch provided my Matej Repinc
 
   CHANGES:
    * "Import" button under Configure Amarok -> Local Collection no longer
@@ -27,6 +28,7 @@ VERSION 2.8.1
      compilers currently supported by KDE.
 
   BUGFIXES:
+   * Correct wrong lowercase for FLAC and MP3. Patch provided by Duilio Felix (BR 339495)
    * Collection Browser no longer excessively expands the tree. (BR 300557)
    * Properly calculate and store Aft tags in mp4 files.  Patch By Stefano
      Pettini <stefano.pettini@gmail.com> (BR 332811)
