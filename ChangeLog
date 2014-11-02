@@ -28,6 +28,7 @@ VERSION 2.8.1
      compilers currently supported by KDE.
 
   BUGFIXES:
+   * Fix a crash when searching the Icecast directory. (BR 334479)
    * Correct wrong lowercase for FLAC and MP3. Patch provided by Duilio Felix (BR 339495)
    * Collection Browser no longer excessively expands the tree. (BR 300557)
    * Properly calculate and store Aft tags in mp4 files.  Patch By Stefano

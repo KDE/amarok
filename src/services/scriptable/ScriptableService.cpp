@@ -241,7 +241,6 @@ int ScriptableService::addTrack( ScriptableServiceTrack * track )
     if ( m_levels > 1 ) {
 
         if ( !m_ssAlbumIdMap.contains( albumId ) ){
-            delete track;
             return -1;
         }
 
@@ -258,7 +257,6 @@ int ScriptableService::addTrack( ScriptableServiceTrack * track )
      if ( m_levels > 2 ) {
 
          if ( !m_ssArtistIdMap.contains( artistId ) ) {
-             delete track;
              return -1;
          }
 
@@ -273,7 +271,6 @@ int ScriptableService::addTrack( ScriptableServiceTrack * track )
      if ( m_levels == 4) {
          
          if ( !m_ssGenreIdMap.contains( genreId ) ) {
-             delete track;
              return -1;
          }
 
