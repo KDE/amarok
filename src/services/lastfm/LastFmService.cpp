@@ -48,6 +48,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTextDocument>        //Qt::escape
+#include <QTimer>
 
 #include <XmlQuery.h>
 
@@ -138,7 +139,7 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     The::globalCurrentTrackActions()->addAction( loveAction );
 
     connect( m_config.data(), SIGNAL(updated()), this, SLOT(slotReconfigure()) );
-    slotReconfigure();
+    QTimer::singleShot(0, this, SLOT(slotReconfigure())); // call reconfigure but only after constructor is finished (because it might call virtual methods)
 }
 
 LastFmService::~LastFmService()
