@@ -17,6 +17,7 @@
   <name xml:lang="pt">Amarok</name>
   <name xml:lang="pt-BR">Amarok</name>
   <name xml:lang="sk">Amarok</name>
+  <name xml:lang="sl">Amarok</name>
   <name xml:lang="sr">Амарок</name>
   <name xml:lang="sr-Latn">Amarok</name>
   <name xml:lang="sr-ijekavian">Амарок</name>
@@ -40,6 +41,7 @@
     <p xml:lang="pt">O Amarok é um leitor multimédia gratuito, versátil e poderoso.</p>
     <p xml:lang="pt-BR">Amarok é um reprodutor de músicas livre, versátil e poderoso.</p>
     <p xml:lang="sk">Amarok je slobodný, univerzálny a silný prehrávač hudby.</p>
+    <p xml:lang="sl">Amarok je prost, vsestranski in zmogljiv predvajalnik glasbe.</p>
     <p xml:lang="sr">Амарок је слободан, свестран и моћан музички плејер.</p>
     <p xml:lang="sr-Latn">Amarok je slobodan, svestran i moćan muzički plejer.</p>
     <p xml:lang="sr-ijekavian">Амарок је слободан, свестран и моћан музички плејер.</p>
@@ -62,6 +64,7 @@
     <p xml:lang="pt">Características:</p>
     <p xml:lang="pt-BR">Funcionalidades:</p>
     <p xml:lang="sk">Funkcie:</p>
+    <p xml:lang="sl">Zmožnosti:</p>
     <p xml:lang="sr">Могућности:</p>
     <p xml:lang="sr-Latn">Mogućnosti:</p>
     <p xml:lang="sr-ijekavian">Могућности:</p>
@@ -85,6 +88,7 @@
       <li xml:lang="pt">Listas dinâmicas que correspondem a diferentes critérios</li>
       <li xml:lang="pt-BR">Listas de músicas dinâmicas que correspondem a diferentes critérios</li>
       <li xml:lang="sk">Dynamické zoznamy skladieb sledujúce rôzne kritériá</li>
+      <li xml:lang="sl">Dinamični seznami predvajanja temelječi na raznolikih pogojih</li>
       <li xml:lang="sr">Динамичке листе нумера по различитим критеријумима.</li>
       <li xml:lang="sr-Latn">Dinamičke liste numera po različitim kriterijumima.</li>
       <li xml:lang="sr-ijekavian">Динамичке листе нумера по различитим критеријумима.</li>
@@ -107,6 +111,7 @@
       <li xml:lang="pt">Gestão da colecção com o suporte para classificações</li>
       <li xml:lang="pt-BR">Gerenciamento de coleções com suporte a avaliação</li>
       <li xml:lang="sk">Správa zbierok s podporou hodnotení</li>
+      <li xml:lang="sl">Upravljanje zbirk s podporo ocenam</li>
       <li xml:lang="sr">Управљање збирком и подршка за оцењивање.</li>
       <li xml:lang="sr-Latn">Upravljanje zbirkom i podrška za ocenjivanje.</li>
       <li xml:lang="sr-ijekavian">Управљање збирком и подршка за оцењивање.</li>
@@ -129,6 +134,7 @@
       <li xml:lang="pt">Suporte para os dispositivos leitores multimédia básicos de iPod, MTP e UMS</li>
       <li xml:lang="pt-BR">Suporte a dispositivos básicos para reprodução de música iPod, MTP e UMS</li>
       <li xml:lang="sk">Podpora pre základné prehrávacie zariadenia iPod, MTP a UMS</li>
+      <li xml:lang="sl">Podpora osnovnim napravam za predvajanje glasbe: iPod, MTP in UMS</li>
       <li xml:lang="sr">Подршка за основне МТП и УМС музичке плејере, и и‑под.</li>
       <li xml:lang="sr-Latn">Podrška za osnovne MTP i UMS muzičke plejere, i iPod.</li>
       <li xml:lang="sr-ijekavian">Подршка за основне МТП и УМС музичке плејере, и и‑под.</li>
@@ -151,6 +157,7 @@
       <li xml:lang="pt">Serviços da Internet integrados: last.fm, Magnatune, Jamendo, Ampache, mp3tunes entre outros.</li>
       <li xml:lang="pt-BR">Serviços de Internet integrados: last.fm, Magnatune, Jamendo, Ampache, mp3tunes entre outros.</li>
       <li xml:lang="sk">Integrované internetové služby: last.fm, Magnatune, Jamendo, Ampache, mp3tunes a viac.</li>
+      <li xml:lang="sl">Vgrajene internetne storitve: last.fm, Magnatune, Jamendo, Ampache, mp3tunes in več.</li>
       <li xml:lang="sr">Уклопљени интернет сервиси: ЛастФМ, Магнатјун, Џамендо, Ампач, МП3‑тјунс, и други.</li>
       <li xml:lang="sr-Latn">Uklopljeni internet servisi: last.fm, Magnatune, Jamendo, Ampache, MP3Tunes, i drugi.</li>
       <li xml:lang="sr-ijekavian">Уклопљени интернет сервиси: ЛастФМ, Магнатјун, Џамендо, Ампач, МП3‑тјунс, и други.</li>
@@ -173,6 +180,7 @@
       <li xml:lang="pt">Suporte para a programação</li>
       <li xml:lang="pt-BR">Suporte a scripts</li>
       <li xml:lang="sk">Podpora skriptovania</li>
+      <li xml:lang="sl">Podpora skriptom</li>
       <li xml:lang="sr">Подршка за скриптовање.</li>
       <li xml:lang="sr-Latn">Podrška za skriptovanje.</li>
       <li xml:lang="sr-ijekavian">Подршка за скриптовање.</li>
@@ -195,6 +203,7 @@
       <li xml:lang="pt">Gestor de capas</li>
       <li xml:lang="pt-BR">Gerenciador de capas</li>
       <li xml:lang="sk">Správca obalov</li>
+      <li xml:lang="sl">Upravljalnik ovitkov</li>
       <li xml:lang="sr">Менаџер омота.</li>
       <li xml:lang="sr-Latn">Menadžer omota.</li>
       <li xml:lang="sr-ijekavian">Менаџер омота.</li>
@@ -217,6 +226,7 @@
       <li xml:lang="pt">Suporte para o ganho de reprodução</li>
       <li xml:lang="pt-BR">Suporte a ajuste de ganho</li>
       <li xml:lang="sk">Podpora replay gain</li>
+      <li xml:lang="sl">Podpora jakosti predvajanja</li>
       <li xml:lang="sr">Подршка за поновљиво појачање.</li>
       <li xml:lang="sr-Latn">Podrška za ponovljivo pojačanje.</li>
       <li xml:lang="sr-ijekavian">Подршка за поновљиво појачање.</li>
