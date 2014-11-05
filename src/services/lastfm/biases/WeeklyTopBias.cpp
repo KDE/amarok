@@ -23,6 +23,8 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
+#include <KLocale>
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>

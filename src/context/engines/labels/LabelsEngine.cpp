@@ -22,6 +22,7 @@
 #include "EngineController.h"
 #include "context/ContextObserver.h"
 #include "context/ContextView.h"
+#include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"

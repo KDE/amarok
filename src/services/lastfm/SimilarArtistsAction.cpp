@@ -20,6 +20,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistController.h"
 
+#include <KLocale>
 #include <KIcon>
 
 SimilarArtistsAction::SimilarArtistsAction( QObject *parent )

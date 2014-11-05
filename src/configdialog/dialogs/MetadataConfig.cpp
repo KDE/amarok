@@ -18,10 +18,13 @@
 
 #include "amarokconfig.h"
 #include "configdialog/dialogs/ExcludedLabelsDialog.h"
+#include "core/meta/support/MetaConstants.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "statsyncing/Config.h"
 #include "statsyncing/Controller.h"
+
+#include "MetaValues.h"
 
 MetadataConfig::MetadataConfig( QWidget *parent )
     : ConfigDialogBase( parent )

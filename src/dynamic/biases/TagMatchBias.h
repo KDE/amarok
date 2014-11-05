@@ -22,6 +22,7 @@
 #define AMAROK_METATAGBIAS_H
 
 #include "amarok_export.h"
+#include "core/collections/QueryMaker.h"
 #include "dynamic/Bias.h"
 #include "dynamic/BiasFactory.h"
 #include "widgets/MetaQueryWidget.h"

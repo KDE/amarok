@@ -32,6 +32,8 @@
 #include "statsyncing/ui/CreateProviderDialog.h"
 #include "statsyncing/ui/ConfigureProviderDialog.h"
 
+#include "MetaValues.h"
+
 #include <KMessageBox>
 
 #include <QTimer>

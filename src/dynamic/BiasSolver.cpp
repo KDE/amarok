@@ -25,6 +25,7 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Debug.h"
+#include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
 #include <ThreadWeaver/Thread>

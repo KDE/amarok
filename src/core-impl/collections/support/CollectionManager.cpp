@@ -18,7 +18,6 @@
 
 #include "CollectionManager.h"
 
-#include "EngineController.h"
 #include "PluginManager.h"
 #include "core/capabilities/CollectionScanCapability.h"
 #include "core/collections/Collection.h"
@@ -41,7 +40,7 @@
 typedef QPair<Collections::Collection*, CollectionManager::CollectionStatus> CollectionPair;
 
 /** This wrapper will be used by the collection manager to present one static SqlStorage object even when the user switches the actual database.
-On the other hand nobody except the owning colleciton should hold a reference to the SqlStorage anyway. */
+On the other hand nobody except the owning collection should hold a reference to the SqlStorage anyway. */
 class SqlStorageWrapper : public SqlStorage
 {
 public:
@@ -484,31 +483,6 @@ CollectionManager::trackForUrl( const KUrl &url )
     return Meta::TrackPtr( 0 );
 }
 
-void
-CollectionManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList artists )
-{
-    Q_UNUSED(collectionId);
-
-    foreach( Meta::ArtistPtr artist, artists )
-    {
-        if( !m_artistNameSet.contains( artist->name() ) )
-        {
-            m_resultArtistList.append( artist );
-            m_artistNameSet.insert( artist->name() );
-            if( m_resultArtistList.size() == m_maxArtists )
-            {
-                m_resultEmitted = true;
-                emit( foundRelatedArtists( m_resultArtistList ) );
-                return;
-            }
-        }
-    }
-    if( m_resultArtistList.size() == m_maxArtists && !m_resultEmitted )
-    {
-        m_resultEmitted = true;
-        emit( foundRelatedArtists( m_resultArtistList ) );
-    }
-}
 
 void
 CollectionManager::addUnmanagedCollection( Collections::Collection *newCollection, CollectionStatus defaultStatus )

@@ -22,6 +22,7 @@
 #include "CollectionSetup.h"
 
 #include "amarokconfig.h"
+#include "core/collections/Collection.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "dialogs/DatabaseImporterDialog.h"

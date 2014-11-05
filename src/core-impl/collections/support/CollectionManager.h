@@ -18,20 +18,34 @@
 #define AMAROK_COLLECTIONMANAGER_H
 
 #include "amarok_export.h"
-#include "core/collections/Collection.h"
-#include "core/collections/QueryMaker.h"
 #include "core/meta/forward_declarations.h"
 
-#include <KService>
+#include <KUrl>
 
 #include <QList>
 #include <QObject>
-#include <QSet>
 
 class SqlStorage;
 class CollectionManagerSingleton;
 class TimecodeTrackProvider;
 
+namespace Plugins {
+    class PluginFactory;
+}
+
+namespace Collections {
+    class Collection;
+    class CollectionFactory;
+    class TrackProvider;
+    class QueryMaker;
+}
+
+/** Class managing the different collections.
+ *
+ *  This singleton class is the main repository for all current collections.
+ *  The most usefull functions are probably queryMaker and
+ *  viewableCollections
+ */
 class AMAROK_EXPORT CollectionManager : public QObject
 {
     Q_OBJECT
@@ -173,13 +187,10 @@ class AMAROK_EXPORT CollectionManager : public QObject
         //it will not be emitted on minor changes (e.g. the tags of a song were changed)
         void collectionDataChanged( Collections::Collection *changedCollection );
 
-        void foundRelatedArtists( Meta::ArtistList artists );
-
     private slots:
         void slotNewCollection( Collections::Collection *newCollection );
         void slotRemoveCollection();
         void slotCollectionChanged();
-        void slotArtistQueryResult( QString collectionId, Meta::ArtistList artists );
 
     private:
         static CollectionManager* s_instance;
@@ -188,12 +199,6 @@ class AMAROK_EXPORT CollectionManager : public QObject
         ~CollectionManager();
 
         Q_DISABLE_COPY( CollectionManager )
-
-        //used for related artists query
-        QSet<QString>    m_artistNameSet;
-        Meta::ArtistList m_resultArtistList;
-        bool             m_resultEmitted;
-        int              m_maxArtists;
 
         bool             m_haveEmbeddedMysql;
         TimecodeTrackProvider *m_timecodeTrackProvider;

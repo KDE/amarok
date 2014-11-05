@@ -17,6 +17,7 @@
 #include "ExcludedLabelsDialog.h"
 
 #include "core/meta/Meta.h"
+#include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "statsyncing/Config.h"
 

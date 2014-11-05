@@ -22,6 +22,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 
 #include <QWeakPointer>
+#include <QDateTime>
 
 class QTimer;
 

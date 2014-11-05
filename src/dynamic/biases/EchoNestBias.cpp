@@ -26,6 +26,7 @@
 
 #include <KStandardDirs>
 #include <KIO/Job>
+#include <klocalizedstring.h>
 
 #include <QDomDocument>
 #include <QDomNode>
