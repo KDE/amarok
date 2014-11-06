@@ -1309,27 +1309,29 @@ SqlTrack::removeLabel( const Meta::LabelPtr &label )
 Meta::LabelList
 SqlTrack::labels() const
 {
-    if( m_labelsInCache )
     {
-        return m_labelsCache;
+        QReadLocker locker( &m_lock );
+        if( m_labelsInCache )
+            return m_labelsCache;
     }
-    else if( m_collection )
-    {
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( Collections::QueryMaker::Label );
-        qm->addMatch( Meta::TrackPtr( const_cast<SqlTrack*>(this) ) );
-        qm->setBlocking( true );
-        qm->run();
 
+    if( !m_collection )
+        return Meta::LabelList();
+
+    // when running the query maker don't lock. might lead to deadlock via registry
+    Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+    qm->setQueryType( Collections::QueryMaker::Label );
+    qm->addMatch( Meta::TrackPtr( const_cast<SqlTrack*>(this) ) );
+    qm->setBlocking( true );
+    qm->run();
+
+    {
+        QWriteLocker locker( &m_lock );
         m_labelsInCache = true;
         m_labelsCache = qm->labels();
 
         delete qm;
         return m_labelsCache;
-    }
-    else
-    {
-        return Meta::LabelList();
     }
 }
 
@@ -1407,19 +1409,26 @@ SqlArtist::invalidateCache()
 TrackList
 SqlArtist::tracks()
 {
-    QMutexLocker locker( &m_mutex );
-    if( m_tracksLoaded )
-        return m_tracks;
+    {
+        QMutexLocker locker( &m_mutex );
+        if( m_tracksLoaded )
+            return m_tracks;
+    }
 
+    // when running the query maker don't lock. might lead to deadlock via registry
     Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->addMatch( Meta::ArtistPtr( this ) );
     qm->setBlocking( true );
     qm->run();
-    m_tracks = qm->tracks();
-    delete qm;
-    m_tracksLoaded = true;
-    return m_tracks;
+
+    {
+        QMutexLocker locker( &m_mutex );
+        m_tracks = qm->tracks();
+        m_tracksLoaded = true;
+        delete qm;
+        return m_tracks;
+    }
 }
 
 bool
@@ -1486,10 +1495,13 @@ SqlAlbum::invalidateCache()
 TrackList
 SqlAlbum::tracks()
 {
-    QMutexLocker locker( &m_mutex );
-    if( m_tracksLoaded )
-        return m_tracks;
+    {
+        QMutexLocker locker( &m_mutex );
+        if( m_tracksLoaded )
+            return m_tracks;
+    }
 
+    // when running the query maker don't lock. might lead to deadlock via registry
     Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->addMatch( Meta::AlbumPtr( this ) );
@@ -1498,10 +1510,14 @@ SqlAlbum::tracks()
     qm->orderBy( Meta::valTitle );
     qm->setBlocking( true );
     qm->run();
-    m_tracks = qm->tracks();
-    delete qm;
-    m_tracksLoaded = true;
-    return m_tracks;
+
+    {
+        QMutexLocker locker( &m_mutex );
+        m_tracks = qm->tracks();
+        m_tracksLoaded = true;
+        delete qm;
+        return m_tracks;
+    }
 }
 
 // note for internal implementation:
@@ -2066,25 +2082,25 @@ SqlComposer::invalidateCache()
 TrackList
 SqlComposer::tracks()
 {
-    QMutexLocker locker( &m_mutex );
-    if( m_tracksLoaded )
     {
-        return m_tracks;
+        QMutexLocker locker( &m_mutex );
+        if( m_tracksLoaded )
+            return m_tracks;
     }
-    else if( m_collection )
+
+    Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+    qm->setQueryType( Collections::QueryMaker::Track );
+    qm->addMatch( Meta::ComposerPtr( this ) );
+    qm->setBlocking( true );
+    qm->run();
+
     {
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( Collections::QueryMaker::Track );
-        qm->addMatch( Meta::ComposerPtr( this ) );
-        qm->setBlocking( true );
-        qm->run();
+        QMutexLocker locker( &m_mutex );
         m_tracks = qm->tracks();
-        delete qm;
         m_tracksLoaded = true;
+        delete qm;
         return m_tracks;
     }
-    else
-        return TrackList();
 }
 
 //---------------SqlGenre---------------------------------
@@ -2111,19 +2127,26 @@ SqlGenre::invalidateCache()
 TrackList
 SqlGenre::tracks()
 {
-    QMutexLocker locker( &m_mutex );
-    if( m_tracksLoaded )
-        return m_tracks;
+    {
+        QMutexLocker locker( &m_mutex );
+        if( m_tracksLoaded )
+            return m_tracks;
+    }
 
+    // when running the query maker don't lock. might lead to deadlock via registry
     Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->addMatch( Meta::GenrePtr( this ) );
     qm->setBlocking( true );
     qm->run();
-    m_tracks = qm->tracks();
-    delete qm;
-    m_tracksLoaded = true;
-    return m_tracks;
+
+    {
+        QMutexLocker locker( &m_mutex );
+        m_tracks = qm->tracks();
+        m_tracksLoaded = true;
+        delete qm;
+        return m_tracks;
+    }
 }
 
 //---------------SqlYear---------------------------------
@@ -2150,19 +2173,26 @@ SqlYear::invalidateCache()
 TrackList
 SqlYear::tracks()
 {
-    QMutexLocker locker( &m_mutex );
-    if( m_tracksLoaded )
-        return m_tracks;
+    {
+        QMutexLocker locker( &m_mutex );
+        if( m_tracksLoaded )
+            return m_tracks;
+    }
 
+    // when running the query maker don't lock. might lead to deadlock via registry
     Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->addMatch( Meta::YearPtr( this ) );
     qm->setBlocking( true );
     qm->run();
-    m_tracks = qm->tracks();
-    delete qm;
-    m_tracksLoaded = true;
-    return m_tracks;
+
+    {
+        QMutexLocker locker( &m_mutex );
+        m_tracks = qm->tracks();
+        m_tracksLoaded = true;
+        delete qm;
+        return m_tracks;
+    }
 }
 
 //---------------SqlLabel---------------------------------
@@ -2189,18 +2219,25 @@ SqlLabel::invalidateCache()
 TrackList
 SqlLabel::tracks()
 {
-    QMutexLocker locker( &m_mutex );
-    if( m_tracksLoaded )
-        return m_tracks;
+    {
+        QMutexLocker locker( &m_mutex );
+        if( m_tracksLoaded )
+            return m_tracks;
+    }
 
+    // when running the query maker don't lock. might lead to deadlock via registry
     Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->addMatch( Meta::LabelPtr( this ) );
     qm->setBlocking( true );
     qm->run();
-    m_tracks = qm->tracks();
-    delete qm;
-    m_tracksLoaded = true;
-    return m_tracks;
+
+    {
+        QMutexLocker locker( &m_mutex );
+        m_tracks = qm->tracks();
+        m_tracksLoaded = true;
+        delete qm;
+        return m_tracks;
+    }
 }
 
