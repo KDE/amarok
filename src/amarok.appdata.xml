@@ -13,6 +13,7 @@
   <name xml:lang="id">Amarok</name>
   <name xml:lang="it">Amarok</name>
   <name xml:lang="nl">Amarok</name>
+  <name xml:lang="pa">ਅਮਰੋਕ</name>
   <name xml:lang="pl">Amarok</name>
   <name xml:lang="pt">Amarok</name>
   <name xml:lang="pt-BR">Amarok</name>
@@ -37,6 +38,7 @@
     <p xml:lang="id">Amarok adalah bebas, serbaguna dan player musik perkasa.</p>
     <p xml:lang="it">Amarok è un lettore musicale libero, versatile e potente.</p>
     <p xml:lang="nl">Amarok is een vrije, veelzijdige en krachtige muziekspeler.</p>
+    <p xml:lang="pa">ਅਮਰੋਕ ਮੁਫ਼ਤ, ਲਚਕੀਲਾ ਤੇ ਮਜ਼ਬੂਤ ਸੰਗੀਤ ਪਲੇਅਰ ਹੈ।</p>
     <p xml:lang="pl">Amarok jest darmowym, wszechstronnym i zaawansowanym odtwarzaczem muzyki.</p>
     <p xml:lang="pt">O Amarok é um leitor multimédia gratuito, versátil e poderoso.</p>
     <p xml:lang="pt-BR">Amarok é um reprodutor de músicas livre, versátil e poderoso.</p>
@@ -60,6 +62,7 @@
     <p xml:lang="id">Ciri yang khas:</p>
     <p xml:lang="it">Funzionalità:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
+    <p xml:lang="pa">ਲੱਛਣ:</p>
     <p xml:lang="pl">Możliwości:</p>
     <p xml:lang="pt">Características:</p>
     <p xml:lang="pt-BR">Funcionalidades:</p>
