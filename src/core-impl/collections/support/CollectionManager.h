@@ -27,7 +27,6 @@
 
 class SqlStorage;
 class CollectionManagerSingleton;
-class TimecodeTrackProvider;
 
 namespace Plugins {
     class PluginFactory;
@@ -57,10 +56,10 @@ class AMAROK_EXPORT CollectionManager : public QObject
          * defines the status of a collection in respect to global queries (i.e. queries that query all known collections)
          * or the collection browser.
          */
-        enum CollectionStatus { CollectionDisabled = 1, //Collection neither viewable nor queryable
-                                CollectionViewable = 2, //Collection will not be queried by CollectionManager::queryMaker
-                                CollectionQueryable= 4, //Collection wil not show up in the browser, but is queryable by global queries
-                                CollectionEnabled = CollectionViewable | CollectionQueryable //Collection viewable in the browser and queryable
+        enum CollectionStatus { CollectionDisabled = 1, ///< Collection neither viewable nor queryable (but might produce tracks that can be played)
+                                CollectionViewable = 2, ///< Collection will not be queried by CollectionManager::queryMaker
+                                CollectionQueryable= 4, ///< Collection wil not show up in the browser, but is queryable by global queries
+                                CollectionEnabled = CollectionViewable | CollectionQueryable ///< Collection viewable in the browser and queryable
         };
 
         static CollectionManager *instance();
@@ -116,14 +115,22 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         /**
          * add a collection whose lifecycle is not managed by CollectionManager.
-         * CollectionManger uses the default status passed as the second argument unless a custom
+         *
+         * @param defaultStatus  uses the default status passed as the second argument unless a custom
          * status is stored in Amarok's config file.
+         *
+         * Also adds the collection as track provider
          */
         void addUnmanagedCollection( Collections::Collection *newCollection, CollectionStatus defaultStatus );
         void removeUnmanagedCollection( Collections::Collection *collection );
 
+        /** Set's the collection status.
+         *
+         *  Currently unused.
+         */
         void setCollectionStatus( const QString &collectionId, CollectionStatus status );
         CollectionStatus collectionStatus( const QString &collectionId ) const;
+
         QHash<Collections::Collection*, CollectionStatus> collections() const;
 
         /**
@@ -149,10 +156,6 @@ class AMAROK_EXPORT CollectionManager : public QObject
          */
         void removeTrackProvider( Collections::TrackProvider *provider );
 
-        bool haveEmbeddedMysql() { return m_haveEmbeddedMysql; }
-
-        void init();
-
         /**
          * should be called whenever new factories are created.
          *
@@ -169,7 +172,9 @@ class AMAROK_EXPORT CollectionManager : public QObject
         Collections::TrackProvider *fileTrackProvider();
 
     public slots:
+        /** Starts the full scan for each collection with CollectionScanCapability */
         void startFullScan();
+        /** Starts the incremetal scan for each collection with CollectionScanCapability */
         void startIncrementalScan( const QString &directory = QString() );
         void stopScan();
         void checkCollectionChanges();
@@ -188,7 +193,9 @@ class AMAROK_EXPORT CollectionManager : public QObject
         void collectionDataChanged( Collections::Collection *changedCollection );
 
     private slots:
+        /** Will be called whenever a registered collection factory creates a new collection */
         void slotNewCollection( Collections::Collection *newCollection );
+        /** Will remove the collection that emitted the signal */
         void slotRemoveCollection();
         void slotCollectionChanged();
 
@@ -198,11 +205,10 @@ class AMAROK_EXPORT CollectionManager : public QObject
         CollectionManager();
         ~CollectionManager();
 
-        Q_DISABLE_COPY( CollectionManager )
+        void init();
 
-        bool             m_haveEmbeddedMysql;
-        TimecodeTrackProvider *m_timecodeTrackProvider;
-        Collections::TrackProvider *m_fileTrackProvider; // special case
+
+        Q_DISABLE_COPY( CollectionManager )
 
         struct Private;
         Private * const d;

@@ -86,7 +86,6 @@ Plugins::PluginManager::init()
     PERF_LOG( "Loading collection plugins" )
     key = QLatin1String( "Collection" );
     m_factories[ key ] = createFactories( key );
-    CollectionManager::instance()->init();
     CollectionManager::instance()->handleNewFactories( m_factories.value( key ) );
     PERF_LOG( "Loaded collection plugins" )
 

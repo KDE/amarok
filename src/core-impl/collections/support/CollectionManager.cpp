@@ -36,6 +36,7 @@
 #include <QMetaObject>
 #include <QPair>
 #include <QTimer>
+#include <QReadWriteLock>
 
 typedef QPair<Collections::Collection*, CollectionManager::CollectionStatus> CollectionPair;
 
@@ -73,16 +74,25 @@ private:
     SqlStorage *m_sqlStorage;
 };
 
+/** Private structure of the collection manager */
 struct CollectionManager::Private
 {
     QList<CollectionPair> collections;
     SmartPointerList<Collections::CollectionFactory> factories;
+
     SqlStorage *sqlDatabase;
     SqlStorageWrapper *sqlStorageWrapper;
+
     QList<Collections::Collection*> unmanagedCollections;
     SmartPointerList<Collections::Collection> managedCollections;
+
     QList<Collections::TrackProvider*> trackProviders;
+    TimecodeTrackProvider *timecodeTrackProvider;
+    Collections::TrackProvider *fileTrackProvider; // special case
+
     Collections::Collection *primaryCollection;
+
+    QReadWriteLock lock; ///< protects all other variables against threading issues
 };
 
 CollectionManager *CollectionManager::s_instance = 0;
@@ -90,13 +100,18 @@ CollectionManager *CollectionManager::s_instance = 0;
 CollectionManager *
 CollectionManager::instance()
 {
-    return s_instance ? s_instance : new CollectionManager();
+    if( !s_instance ) {
+        s_instance = new CollectionManager();
+        s_instance->init();
+    }
+
+    return s_instance;
 }
 
 void
 CollectionManager::destroy()
 {
-    if (s_instance) {
+    if( s_instance ) {
         delete s_instance;
         s_instance = 0;
     }
@@ -115,31 +130,32 @@ CollectionManager::CollectionManager()
     d->sqlDatabase = 0;
     d->primaryCollection = 0;
     d->sqlStorageWrapper = new SqlStorageWrapper();
-    s_instance = this;
-    m_haveEmbeddedMysql = false;
-
     // special-cased in trackForUrl(), don't add to d->trackProviders yet
-    m_fileTrackProvider = new FileTrackProvider();
+    d->fileTrackProvider = new FileTrackProvider();
 }
 
 CollectionManager::~CollectionManager()
 {
     DEBUG_BLOCK
 
-    //not deleting SqlStorageWrapper here as somebody might be caching it
-    //Amarok really needs a proper state management...
-    d->sqlStorageWrapper->setSqlStorage( 0 );
-    delete m_timecodeTrackProvider;
-    delete m_fileTrackProvider;
-    d->collections.clear();
-    d->unmanagedCollections.clear();
-    d->trackProviders.clear();
+    {
+        QWriteLocker locker( &d->lock );
 
-    // Hmm, qDeleteAll from Qt 4.8 crashes with our SmartPointerList, do it manually. Bug 285951
-    while( !d->managedCollections.isEmpty() )
-        delete d->managedCollections.takeFirst();
-    while (!d->factories.isEmpty() )
-        delete d->factories.takeFirst();
+        //not deleting SqlStorageWrapper here as somebody might be caching it
+        //Amarok really needs a proper state management...
+        d->sqlStorageWrapper->setSqlStorage( 0 );
+        delete d->timecodeTrackProvider;
+        delete d->fileTrackProvider;
+        d->collections.clear();
+        d->unmanagedCollections.clear();
+        d->trackProviders.clear();
+
+        // Hmm, qDeleteAll from Qt 4.8 crashes with our SmartPointerList, do it manually. Bug 285951
+        while( !d->managedCollections.isEmpty() )
+            delete d->managedCollections.takeFirst();
+        while (!d->factories.isEmpty() )
+            delete d->factories.takeFirst();
+    }
 
     delete d;
 }
@@ -149,8 +165,8 @@ CollectionManager::init()
 {
     //register the timecode track provider now, as it needs to get added before loading
     //the stored playlist... Since it can have playable urls that might also match other providers, it needs to get added first.
-    m_timecodeTrackProvider = new TimecodeTrackProvider();
-    addTrackProvider( m_timecodeTrackProvider );
+    d->timecodeTrackProvider = new TimecodeTrackProvider();
+    addTrackProvider( d->timecodeTrackProvider );
 }
 
 void
@@ -206,17 +222,20 @@ CollectionManager::loadPlugins( const QList<Collections::CollectionFactory*> &fa
 
         connect( factory, SIGNAL(newCollection(Collections::Collection*)),
                  this, SLOT(slotNewCollection(Collections::Collection*)) );
-        d->factories.append( factory );
+        {
+            QWriteLocker locker( &d->lock );
+            d->factories.append( factory );
+        }
         debug() << "initializing" << name;
         factory->init();
-        if( name == QLatin1String("amarok_collection-mysqlecollection") )
-            m_haveEmbeddedMysql = true;
     }
 }
 
 void
 CollectionManager::startFullScan()
 {
+    QReadLocker locker( &d->lock );
+
     foreach( const CollectionPair &pair, d->collections )
     {
         QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
@@ -228,6 +247,8 @@ CollectionManager::startFullScan()
 void
 CollectionManager::startIncrementalScan( const QString &directory )
 {
+    QReadLocker locker( &d->lock );
+
     foreach( const CollectionPair &pair, d->collections )
     {
         QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
@@ -239,6 +260,8 @@ CollectionManager::startIncrementalScan( const QString &directory )
 void
 CollectionManager::stopScan()
 {
+    QReadLocker locker( &d->lock );
+
     foreach( const CollectionPair &pair, d->collections )
     {
         QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
@@ -256,6 +279,8 @@ CollectionManager::checkCollectionChanges()
 Collections::QueryMaker*
 CollectionManager::queryMaker() const
 {
+    QReadLocker locker( &d->lock );
+
     QList<Collections::Collection*> colls;
     foreach( const CollectionPair &pair, d->collections )
     {
@@ -271,17 +296,21 @@ void
 CollectionManager::slotNewCollection( Collections::Collection* newCollection )
 {
     DEBUG_BLOCK
+
     if( !newCollection )
     {
         debug() << "Warning, newCollection in slotNewCollection is 0";
         return;
     }
-    foreach( const CollectionPair &p, d->collections )
     {
-        if( p.first == newCollection )
+        QWriteLocker locker( &d->lock );
+        foreach( const CollectionPair &p, d->collections )
         {
-            debug() << "Warning, newCollection is already being managed";
-            return;
+            if( p.first == newCollection )
+            {
+                debug() << "Warning, newCollection is already being managed";
+                return;
+            }
         }
     }
 
@@ -292,23 +321,34 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
     CollectionStatus status;
     enumValue == -1 ? status = CollectionEnabled : status = (CollectionStatus) enumValue;
     CollectionPair pair( newCollection, status );
-    d->collections.append( pair );
-    d->managedCollections.append( newCollection );
-    d->trackProviders.append( newCollection );
-    connect( newCollection, SIGNAL(remove()), SLOT(slotRemoveCollection()), Qt::QueuedConnection );
-    connect( newCollection, SIGNAL(updated()), SLOT(slotCollectionChanged()), Qt::QueuedConnection );
-    //by convention, collections that provide a SQL database have a Qt property called "sqlStorage"
-    int propertyIndex = newCollection->metaObject()->indexOfProperty( "sqlStorage" );
-    if( propertyIndex != -1 )
+
     {
-        SqlStorage *sqlStorage = newCollection->property( "sqlStorage" ).value<SqlStorage*>();
-        if( sqlStorage )
+        QWriteLocker locker( &d->lock );
+        d->collections.append( pair );
+        d->managedCollections.append( newCollection );
+        d->trackProviders.append( newCollection );
+        connect( newCollection, SIGNAL(remove()), SLOT(slotRemoveCollection()), Qt::QueuedConnection );
+        connect( newCollection, SIGNAL(updated()), SLOT(slotCollectionChanged()), Qt::QueuedConnection );
+
+        // by convention, collections that provide a SQL database have a Qt property called "sqlStorage"
+        int propertyIndex = newCollection->metaObject()->indexOfProperty( "sqlStorage" );
+        if( propertyIndex != -1 )
         {
-            //let's cheat a bit and assume that sqlStorage and the primaryCollection are always the same
-            //it is true for now anyway
-            if( d->sqlDatabase )
+            SqlStorage *sqlStorage = newCollection->property( "sqlStorage" ).value<SqlStorage*>();
+            if( sqlStorage )
             {
-                if( d->sqlDatabase->sqlDatabasePriority() < sqlStorage->sqlDatabasePriority() )
+                //let's cheat a bit and assume that sqlStorage and the primaryCollection are always the same
+                //it is true for now anyway
+                if( d->sqlDatabase )
+                {
+                    if( d->sqlDatabase->sqlDatabasePriority() < sqlStorage->sqlDatabasePriority() )
+                    {
+                        d->sqlDatabase = sqlStorage;
+                        d->primaryCollection = newCollection;
+                        d->sqlStorageWrapper->setSqlStorage( sqlStorage );
+                    }
+                }
+                else
                 {
                     d->sqlDatabase = sqlStorage;
                     d->primaryCollection = newCollection;
@@ -317,16 +357,11 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
             }
             else
             {
-                d->sqlDatabase = sqlStorage;
-                d->primaryCollection = newCollection;
-                d->sqlStorageWrapper->setSqlStorage( sqlStorage );
+                warning() << "Collection " << newCollection->collectionId() << " has sqlStorage property but did not provide a SqlStorage pointer";
             }
         }
-        else
-        {
-            warning() << "Collection " << newCollection->collectionId() << " has sqlStorage property but did not provide a SqlStorage pointer";
-        }
     }
+
     if( status & CollectionViewable )
     {
         emit collectionAdded( newCollection );
@@ -342,37 +377,45 @@ CollectionManager::slotRemoveCollection()
     {
         CollectionStatus status = collectionStatus( collection->collectionId() );
         CollectionPair pair( collection, status );
-        d->collections.removeAll( pair );
-        d->managedCollections.removeAll( collection );
-        d->trackProviders.removeAll( collection );
-        QVariant v = collection->property( "sqlStorage" );
-        if( v.isValid() )
+
         {
-            SqlStorage *sqlDb = v.value<SqlStorage*>();
-            if( sqlDb && sqlDb == d->sqlDatabase )
+            QWriteLocker locker( &d->lock );
+            d->collections.removeAll( pair );
+            d->managedCollections.removeAll( collection );
+            d->trackProviders.removeAll( collection );
+
+            // if the collection had a sql storage, find a new database that could provide
+            // one.
+            QVariant v = collection->property( "sqlStorage" );
+            if( v.isValid() )
             {
-                SqlStorage *newSqlDatabase = 0;
-                foreach( const CollectionPair &pair, d->collections )
+                SqlStorage *sqlDb = v.value<SqlStorage*>();
+                if( sqlDb && sqlDb == d->sqlDatabase )
                 {
-                    QVariant variant = pair.first->property( "sqlStorage" );
-                    if( !variant.isValid() )
-                        continue;
-                    SqlStorage *sqlDb = variant.value<SqlStorage*>();
-                    if( sqlDb )
+                    SqlStorage *newSqlDatabase = 0;
+                    foreach( const CollectionPair &pair, d->collections )
                     {
-                        if( newSqlDatabase )
+                        QVariant variant = pair.first->property( "sqlStorage" );
+                        if( !variant.isValid() )
+                            continue;
+                        SqlStorage *sqlDb = variant.value<SqlStorage*>();
+                        if( sqlDb )
                         {
-                            if( newSqlDatabase->sqlDatabasePriority() < sqlDb->sqlDatabasePriority() )
+                            if( newSqlDatabase )
+                            {
+                                if( newSqlDatabase->sqlDatabasePriority() < sqlDb->sqlDatabasePriority() )
+                                    newSqlDatabase = sqlDb;
+                            }
+                            else
                                 newSqlDatabase = sqlDb;
                         }
-                        else
-                            newSqlDatabase = sqlDb;
                     }
+                    d->sqlDatabase = newSqlDatabase;
+                    d->sqlStorageWrapper->setSqlStorage( newSqlDatabase );
                 }
-                d->sqlDatabase = newSqlDatabase;
-                d->sqlStorageWrapper->setSqlStorage( newSqlDatabase );
             }
         }
+
         emit collectionRemoved( collection->collectionId() );
         QTimer::singleShot( 500, collection, SLOT(deleteLater()) ); // give the tree some time to update itself until we really delete the collection pointers.
     }
@@ -395,6 +438,8 @@ CollectionManager::slotCollectionChanged()
 QList<Collections::Collection*>
 CollectionManager::viewableCollections() const
 {
+    QReadLocker locker( &d->lock );
+
     QList<Collections::Collection*> result;
     foreach( const CollectionPair &pair, d->collections )
     {
@@ -409,6 +454,8 @@ CollectionManager::viewableCollections() const
 QList<Collections::Collection*>
 CollectionManager::queryableCollections() const
 {
+    QReadLocker locker( &d->lock );
+
     QList<Collections::Collection*> result;
     foreach( const CollectionPair &pair, d->collections )
         if( pair.second & CollectionQueryable )
@@ -420,12 +467,16 @@ CollectionManager::queryableCollections() const
 Collections::Collection*
 CollectionManager::primaryCollection() const
 {
+    QReadLocker locker( &d->lock );
+
     return d->primaryCollection;
 }
 
 SqlStorage*
 CollectionManager::sqlStorage() const
 {
+    QReadLocker locker( &d->lock );
+
     return d->sqlStorageWrapper;
 }
 
@@ -449,6 +500,8 @@ CollectionManager::tracksForUrls( const KUrl::List &urls )
 Meta::TrackPtr
 CollectionManager::trackForUrl( const KUrl &url )
 {
+    QReadLocker locker( &d->lock );
+
     // TODO:
     // might be a podcast, in that case we'll have additional meta information
     // might be a lastfm track, another stream
@@ -471,11 +524,11 @@ CollectionManager::trackForUrl( const KUrl &url )
     if( remoteProtocols.contains( url.protocol() ) )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
-    /* TODO: add m_fileTrackProvider to normal providers once tested that the reorder
+    /* TODO: add fileTrackProvider to normal providers once tested that the reorder
      * doesn't change behaviour */
-    if( m_fileTrackProvider->possiblyContainsTrack( url ) )
+    if( d->fileTrackProvider->possiblyContainsTrack( url ) )
     {
-        Meta::TrackPtr track = m_fileTrackProvider->trackForUrl( url );
+        Meta::TrackPtr track = d->fileTrackProvider->trackForUrl( url );
         if( track )
             return track;
     }
@@ -487,6 +540,8 @@ CollectionManager::trackForUrl( const KUrl &url )
 void
 CollectionManager::addUnmanagedCollection( Collections::Collection *newCollection, CollectionStatus defaultStatus )
 {
+    QWriteLocker locker( &d->lock );
+
     if( newCollection && d->unmanagedCollections.indexOf( newCollection ) == -1 )
     {
         const QMetaObject *mo = metaObject();
@@ -552,6 +607,8 @@ CollectionManager::setCollectionStatus( const QString &collectionId, CollectionS
 CollectionManager::CollectionStatus
 CollectionManager::collectionStatus( const QString &collectionId ) const
 {
+    QReadLocker locker( &d->lock );
+
     foreach( const CollectionPair &pair, d->collections )
     {
         if( pair.first->collectionId() == collectionId )
@@ -565,6 +622,8 @@ CollectionManager::collectionStatus( const QString &collectionId ) const
 QHash<Collections::Collection*, CollectionManager::CollectionStatus>
 CollectionManager::collections() const
 {
+    QReadLocker locker( &d->lock );
+
     QHash<Collections::Collection*, CollectionManager::CollectionStatus> result;
     foreach( const CollectionPair &pair, d->collections )
     {
@@ -576,18 +635,23 @@ CollectionManager::collections() const
 void
 CollectionManager::addTrackProvider( Collections::TrackProvider *provider )
 {
-    d->trackProviders.append( provider );
+    {
+        QWriteLocker locker( &d->lock );
+        d->trackProviders.append( provider );
+    }
     emit trackProviderAdded( provider );
 }
 
 void
 CollectionManager::removeTrackProvider( Collections::TrackProvider *provider )
 {
+    QWriteLocker locker( &d->lock );
     d->trackProviders.removeAll( provider );
 }
 
 Collections::TrackProvider *
 CollectionManager::fileTrackProvider()
 {
-    return m_fileTrackProvider;
+    QReadLocker locker( &d->lock );
+    return d->fileTrackProvider;
 }
