@@ -91,9 +91,8 @@ Plugins::PluginManager::init()
 
     PERF_LOG( "Loading service plugins" )
     key = QLatin1String( "Service" );
-    m_servicePluginManager = new ServicePluginManager( this );
     m_factories[ key ] = createFactories( key );
-    m_servicePluginManager->init( m_factories.value( key ) );
+    ServicePluginManager::instance()->init( m_factories.value( key ) );
     PERF_LOG( "Loaded service plugins" )
 
     PERF_LOG( "Loading importer plugins" )
@@ -109,12 +108,6 @@ QList<Plugins::PluginFactory*>
 Plugins::PluginManager::factories( const QString &category ) const
 {
     return m_factories.value( category );
-}
-
-ServicePluginManager *
-Plugins::PluginManager::servicePluginManager()
-{
-    return m_servicePluginManager;
 }
 
 void
@@ -139,7 +132,7 @@ Plugins::PluginManager::checkPluginEnabledStates()
             }
         }
     }
-    m_servicePluginManager->checkEnabledStates( m_factories.value(QLatin1String("Service")) );
+    ServicePluginManager::instance()->checkEnabledStates( m_factories.value(QLatin1String("Service")) );
     CollectionManager::instance()->handleNewFactories( newFactories );
 }
 

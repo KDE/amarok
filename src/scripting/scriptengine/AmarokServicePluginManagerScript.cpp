@@ -17,7 +17,6 @@
 #include "AmarokServicePluginManagerScript.h"
 
 #include "App.h"
-#include "PluginManager.h"
 #include "services/ServicePluginManager.h"
 
 #include <QScriptEngine>
@@ -35,29 +34,29 @@ AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QScriptEngin
 QStringList
 AmarokServicePluginManagerScript::loadedServices()
 {
-    return The::pluginManager()->servicePluginManager()->loadedServices();
+    return ServicePluginManager::instance()->loadedServices();
 }
 
 QStringList
 AmarokServicePluginManagerScript::loadedServiceNames()
 {
-    return The::pluginManager()->servicePluginManager()->loadedServiceNames();
+    return ServicePluginManager::instance()->loadedServiceNames();
 }
 
 QString
 AmarokServicePluginManagerScript::serviceDescription( const QString &service )
 {
-    return The::pluginManager()->servicePluginManager()->serviceDescription( service );
+    return ServicePluginManager::instance()->serviceDescription( service );
 }
 
 QString
 AmarokServicePluginManagerScript::serviceMessages( const QString &service )
 {
-    return The::pluginManager()->servicePluginManager()->serviceMessages( service );
+    return ServicePluginManager::instance()->serviceMessages( service );
 }
 
 QString
 AmarokServicePluginManagerScript::sendMessage( const QString &service, const QString &message )
 {
-    return The::pluginManager()->servicePluginManager()->sendMessage( service, message );
+    return ServicePluginManager::instance()->sendMessage( service, message );
 }

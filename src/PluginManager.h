@@ -47,8 +47,6 @@ class AMAROK_EXPORT PluginManager : public QObject
 
         KPluginInfo::List plugins( const QString &category ) const;
 
-        ServicePluginManager *servicePluginManager();
-
     private:
         int findPlugins();
         void handleNoPluginsFound();
@@ -56,7 +54,6 @@ class AMAROK_EXPORT PluginManager : public QObject
         QList<PluginFactory*> createFactories( const QString &category );
         PluginFactory* createFactory( const KPluginInfo &plugin );
 
-        ServicePluginManager *m_servicePluginManager;
         QHash<QString, QList<PluginFactory*> > m_factories;
         QHash<QString, KPluginInfo::List> m_pluginInfos;
         QHash<QString, bool> m_factoryCreated;

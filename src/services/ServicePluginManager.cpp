@@ -27,29 +27,42 @@
 
 #include <KService>
 
-ServicePluginManager::ServicePluginManager( QObject *parent )
-    : QObject( parent )
-    , m_serviceBrowser( ServiceBrowser::instance() )
+ServicePluginManager *ServicePluginManager::s_instance = 0;
+
+ServicePluginManager *
+ServicePluginManager::instance()
+{
+    if( !s_instance ) {
+        s_instance = new ServicePluginManager();
+    }
+
+    return s_instance;
+}
+
+
+void
+ServicePluginManager::destroy()
+{
+    if( s_instance ) {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
+
+
+ServicePluginManager::ServicePluginManager()
+    : QObject()
 {
     DEBUG_BLOCK
+    // ensure this object is created in a main thread
+    Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
+
     setObjectName( "ServicePluginManager" );
 }
 
 
 ServicePluginManager::~ServicePluginManager()
 {
-}
-
-ServiceBrowser *
-ServicePluginManager::browser() const
-{
-    return m_serviceBrowser;
-}
-
-void
-ServicePluginManager::setBrowser( ServiceBrowser * browser )
-{
-    m_serviceBrowser = browser;
 }
 
 void
@@ -86,18 +99,20 @@ ServicePluginManager::checkEnabledStates( const QList<Plugins::PluginFactory*> &
         const QString pluginName = factory->info().pluginName();
         bool enabledInConfig = Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true );
         bool isLastActive = !factory->activeServices().isEmpty();
-        if( enabledInConfig == isLastActive )
-            continue;
 
         debug() << "PLUGIN CHECK:" << pluginName << enabledInConfig << isLastActive;
-        if( enabledInConfig && !isLastActive )
+        if( enabledInConfig == isLastActive ) // nothing to do
+        {
+            continue;
+        }
+        else if( enabledInConfig && !isLastActive ) // add new plugins
         {
             initFactory( factory );
         }
-        else if( !enabledInConfig && isLastActive )
+        else if( !enabledInConfig && isLastActive ) // remove old plugins
         {
             foreach( ServiceBase * service, factory->activeServices() )
-                m_serviceBrowser->removeCategory( service );
+                ServiceBrowser::instance()->removeCategory( service );
             factory->clearActiveServices();
         }
     }
@@ -119,7 +134,7 @@ ServicePluginManager::slotNewService( ServiceBase *newService )
 {
     DEBUG_BLOCK
     debug() << "new service:" << newService->name();
-    m_serviceBrowser->addCategory( newService );
+    ServiceBrowser::instance()->addCategory( newService );
 }
 
 void
@@ -127,7 +142,7 @@ ServicePluginManager::slotRemoveService( ServiceBase *removedService )
 {
     DEBUG_BLOCK
     debug() << "removed service:" << removedService->name();
-    m_serviceBrowser->removeCategory( removedService );
+    ServiceBrowser::instance()->removeCategory( removedService );
 }
 
 QStringList
@@ -149,23 +164,23 @@ ServicePluginManager::loadedServices() const
 QStringList
 ServicePluginManager::loadedServiceNames() const
 {
-    return m_serviceBrowser->categories().keys();
+    return ServiceBrowser::instance()->categories().keys();
 }
 
 QString
 ServicePluginManager::serviceDescription( const QString & serviceName )
 {
     //get named service
-    if ( !m_serviceBrowser->categories().contains( serviceName ) )
+    if ( !ServiceBrowser::instance()->categories().contains( serviceName ) )
     {
         return i18n( "No service named %1 is currently loaded", serviceName );
     }
 
-    ServiceBase * service = dynamic_cast<ServiceBase *>( m_serviceBrowser->categories().value( serviceName ) );
+    ServiceBase * service = dynamic_cast<ServiceBase *>( ServiceBrowser::instance()->categories().value( serviceName ) );
 
     if ( service == 0 )
         return QString();
-    
+
     return service->shortDescription();
 }
 
@@ -173,12 +188,12 @@ QString
 ServicePluginManager::serviceMessages( const QString & serviceName )
 {
     //get named service
-    if ( !m_serviceBrowser->categories().contains( serviceName ) )
+    if ( !ServiceBrowser::instance()->categories().contains( serviceName ) )
     {
         return i18n( "No service named %1 is currently loaded", serviceName );
     }
 
-    ServiceBase * service = dynamic_cast<ServiceBase *>( m_serviceBrowser->categories().value( serviceName ) );
+    ServiceBase * service = dynamic_cast<ServiceBase *>( ServiceBrowser::instance()->categories().value( serviceName ) );
 
     if ( service == 0 )
         return QString();
@@ -190,12 +205,12 @@ QString
 ServicePluginManager::sendMessage( const QString & serviceName, const QString & message )
 {
     //get named service
-    if ( !m_serviceBrowser->categories().contains( serviceName ) )
+    if ( !ServiceBrowser::instance()->categories().contains( serviceName ) )
     {
         return i18n( "No service named %1 is currently loaded", serviceName );
     }
 
-    ServiceBase * service = dynamic_cast<ServiceBase *>( m_serviceBrowser->categories().value( serviceName ) );
+    ServiceBase * service = dynamic_cast<ServiceBase *>( ServiceBrowser::instance()->categories().value( serviceName ) );
 
     if ( service == 0 )
         return QString();

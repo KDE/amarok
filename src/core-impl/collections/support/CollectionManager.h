@@ -201,10 +201,10 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
     private:
         static CollectionManager* s_instance;
-        void loadPlugins( const QList<Collections::CollectionFactory*> &factories );
         CollectionManager();
         ~CollectionManager();
 
+        void loadPlugins( const QList<Collections::CollectionFactory*> &factories );
         void init();
 
 

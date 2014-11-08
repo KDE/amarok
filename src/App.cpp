@@ -52,6 +52,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "services/ServicePluginManager.h"
 #include "scripting/scriptconsole/ScriptConsole.h"
 #include "statemanagement/ApplicationController.h"
 #include "statemanagement/DefaultApplicationController.h"
@@ -238,6 +239,7 @@ App::~App()
     CoverFetcher::destroy();
     CoverCache::destroy();
     CollectionManager::destroy();
+    ServicePluginManager::destroy();
     NetworkAccessManagerProxy::destroy();
     Plugins::PluginManager::destroy();
 

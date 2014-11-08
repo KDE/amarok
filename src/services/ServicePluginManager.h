@@ -28,22 +28,18 @@ namespace Plugins {
     class PluginFactory;
 }
 
-/**
-A class to keep track of available service plugins and load them as needed
-
-    @author
-*/
+/** A class to keep track of available service plugins and load them as needed
+ *
+ *  @author
+ */
 class ServicePluginManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY( ServiceBrowser* browser READ browser WRITE setBrowser )
 
 public:
-    ServicePluginManager( QObject *parent = 0 );
-    ~ServicePluginManager();
 
-    ServiceBrowser *browser() const;
-    void setBrowser( ServiceBrowser * browser );
+    static ServicePluginManager *instance();
+    static void destroy();
 
     /**
      * Load any services that are configured to be loaded
@@ -60,9 +56,13 @@ public slots:
     QString sendMessage( const QString &service, const QString &message );
 
 private:
+    static ServicePluginManager* s_instance;
+    ServicePluginManager();
+    ~ServicePluginManager();
+
     void initFactory( ServiceFactory *factory );
 
-    ServiceBrowser *m_serviceBrowser;
+    Q_DISABLE_COPY( ServicePluginManager )
 
 private slots:
     void slotNewService( ServiceBase *newService);
