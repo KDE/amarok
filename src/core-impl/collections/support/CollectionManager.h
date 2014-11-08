@@ -157,12 +157,12 @@ class AMAROK_EXPORT CollectionManager : public QObject
         void removeTrackProvider( Collections::TrackProvider *provider );
 
         /**
-         * should be called whenever new factories are created.
+         * Set the list of current factories
          *
          * For every factory that is a CollectionFactory uses it to create new
          * collections and register with this manager.
          */
-        void handleNewFactories( const QList<Plugins::PluginFactory*> &factories );
+        void setFactories( const QList<Plugins::PluginFactory*> &factories );
 
         /**
          * Return a pointer to CollectionManger's internal FileTrackProvider instance.
@@ -204,7 +204,6 @@ class AMAROK_EXPORT CollectionManager : public QObject
         CollectionManager();
         ~CollectionManager();
 
-        void loadPlugins( const QList<Collections::CollectionFactory*> &factories );
         void init();
 
 

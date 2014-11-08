@@ -73,7 +73,7 @@ namespace StatSyncing
              * multiple provider instances. This method is called by Amarok's plugin
              * infrastructure.
              */
-            void handleNewFactories( const QList<Plugins::PluginFactory*> &factories );
+            void setFactories( const QList<Plugins::PluginFactory*> &factories );
 
             /**
              * Returns true if any instantiable provider types are registered with the

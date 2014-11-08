@@ -149,7 +149,7 @@ Controller::unregisterProvider( const ProviderPtr &provider )
 }
 
 void
-Controller::handleNewFactories( const QList<Plugins::PluginFactory*> &factories )
+Controller::setFactories( const QList<Plugins::PluginFactory*> &factories )
 {
     foreach( Plugins::PluginFactory *pFactory, factories )
     {

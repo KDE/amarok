@@ -170,7 +170,7 @@ CollectionManager::init()
 }
 
 void
-CollectionManager::handleNewFactories( const QList<Plugins::PluginFactory*> &factories )
+CollectionManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
 {
     using Collections::CollectionFactory;
 
@@ -181,55 +181,56 @@ CollectionManager::handleNewFactories( const QList<Plugins::PluginFactory*> &fac
         if( !factory )
             continue;
 
-        const QString name = factory->info().pluginName();
-        if( name == QLatin1String("amarok_collection-mysqlservercollection") ||
-            name == QLatin1String("amarok_collection-mysqlecollection") )
-        {
-            cfactories.prepend( factory );
-        }
-        else
-        {
-            cfactories.append( factory );
-        }
-    }
-    loadPlugins( cfactories );
-}
-
-void
-CollectionManager::loadPlugins( const QList<Collections::CollectionFactory*> &factories )
-{
-    DEBUG_BLOCK
-    foreach( Collections::CollectionFactory *factory, factories )
-    {
-        if( !factory )
-            continue;
-
         const KPluginInfo info = factory->info();
-        const QString name = info.pluginName();
+        const QString pluginName = info.pluginName();
         const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
 
-        bool essential = false;
-        if( (useMySqlServer && (name == QLatin1String("amarok_collection-mysqlservercollection"))) ||
-            (!useMySqlServer && (name == QLatin1String("amarok_collection-mysqlecollection"))) )
+        // the sql collection is a core collection. It cannot be switched off
+        // and should be first.
+        bool coreCollection = false;
+        if( (useMySqlServer && (pluginName == QLatin1String("amarok_collection-mysqlservercollection"))) ||
+            (!useMySqlServer && (pluginName == QLatin1String("amarok_collection-mysqlecollection"))) )
         {
-            essential = true;
+            coreCollection = true;
         }
 
-        bool enabledByDefault = info.isPluginEnabledByDefault();
-        bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
-        if( !enabled && !essential )
+        // check if this service is enabled
+        bool enabledByDefault = info.isPluginEnabledByDefault() || coreCollection;
+        bool enabledInConfig = Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", enabledByDefault );
+        bool isLastActive = d->factories.contains( factory );
+
+        debug() << "COLLECTION PLUGIN CHECK:" << pluginName << enabledInConfig << isLastActive;
+        if( enabledInConfig == isLastActive ) // nothing to do
+        {
             continue;
-
-        connect( factory, SIGNAL(newCollection(Collections::Collection*)),
-                 this, SLOT(slotNewCollection(Collections::Collection*)) );
-        {
-            QWriteLocker locker( &d->lock );
-            d->factories.append( factory );
         }
-        debug() << "initializing" << name;
-        factory->init();
+        else if( enabledInConfig && !isLastActive ) // add new plugins
+        {
+            connect( factory, SIGNAL(newCollection(Collections::Collection*)),
+                     this, SLOT(slotNewCollection(Collections::Collection*)) );
+            {
+                QWriteLocker locker( &d->lock );
+                if( coreCollection )
+                    d->factories.prepend( factory );
+                else
+                    d->factories.append( factory );
+            }
+            debug() << "initializing" << pluginName;
+            factory->init();
+        }
+        else if( !enabledInConfig && isLastActive ) // remove old plugins
+        {
+            disconnect( factory, SIGNAL(newCollection(Collections::Collection*)),
+                     this, SLOT(slotNewCollection(Collections::Collection*)) );
+            {
+                QWriteLocker locker( &d->lock );
+                d->factories.removeAll( factory );
+            }
+        }
     }
+
 }
+
 
 void
 CollectionManager::startFullScan()

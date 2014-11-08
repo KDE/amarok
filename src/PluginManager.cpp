@@ -86,13 +86,13 @@ Plugins::PluginManager::init()
     PERF_LOG( "Loading collection plugins" )
     key = QLatin1String( "Collection" );
     m_factories[ key ] = createFactories( key );
-    CollectionManager::instance()->handleNewFactories( m_factories.value( key ) );
+    CollectionManager::instance()->setFactories( m_factories.value( key ) );
     PERF_LOG( "Loaded collection plugins" )
 
     PERF_LOG( "Loading service plugins" )
     key = QLatin1String( "Service" );
     m_factories[ key ] = createFactories( key );
-    ServicePluginManager::instance()->init( m_factories.value( key ) );
+    ServicePluginManager::instance()->setFactories( m_factories.value( key ) );
     PERF_LOG( "Loaded service plugins" )
 
     PERF_LOG( "Loading importer plugins" )
@@ -100,7 +100,7 @@ Plugins::PluginManager::init()
     m_factories[ key ] = createFactories( key );
     StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
     if( controller )
-        controller->handleNewFactories( m_factories.value( key ) );
+        controller->setFactories( m_factories.value( key ) );
     PERF_LOG( "Loaded importer plugins" )
 }
 
@@ -132,8 +132,8 @@ Plugins::PluginManager::checkPluginEnabledStates()
             }
         }
     }
-    ServicePluginManager::instance()->checkEnabledStates( m_factories.value(QLatin1String("Service")) );
-    CollectionManager::instance()->handleNewFactories( newFactories );
+    ServicePluginManager::instance()->setFactories( m_factories.value(QLatin1String("Service")) );
+    CollectionManager::instance()->setFactories( newFactories );
 }
 
 KPluginInfo::List
@@ -145,7 +145,9 @@ Plugins::PluginManager::plugins( const QString &category ) const
 Plugins::PluginFactory*
 Plugins::PluginManager::createFactory( const KPluginInfo &plugin )
 {
+    // check if the plugin is enables
     const QString name = plugin.pluginName();
+    // we will always need a sql database.
     const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
     bool enabled = false;
     if( name == QLatin1String("amarok_collection-mysqlservercollection") )

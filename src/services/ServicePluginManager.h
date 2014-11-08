@@ -42,11 +42,10 @@ public:
     static void destroy();
 
     /**
-     * Load any services that are configured to be loaded
+     * Load any services that are configured to be loaded.
+     * Unload any services that have been switched off.
      */
-    void init( const QList<Plugins::PluginFactory*> &factories );
-
-    void checkEnabledStates( const QList<Plugins::PluginFactory*> &factories );
+    void setFactories( const QList<Plugins::PluginFactory*> &factories );
 
 public slots:
     QStringList loadedServices() const;

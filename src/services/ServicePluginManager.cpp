@@ -16,7 +16,7 @@
  ****************************************************************************************/
 
 #define DEBUG_PREFIX "ServicePluginManager"
- 
+
 #include "ServicePluginManager.h"
 
 #include "PluginManager.h"
@@ -65,28 +65,9 @@ ServicePluginManager::~ServicePluginManager()
 {
 }
 
-void
-ServicePluginManager::init( const QList<Plugins::PluginFactory*> &factories )
-{
-    DEBUG_BLOCK
-    foreach( Plugins::PluginFactory* pFactory, factories )
-    {
-        ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
-        if( !factory )
-            continue;
-        if( factory->isInitialized() )
-            continue;
-
-        //check if this service is enabled
-        QString pluginName = factory->info().pluginName();
-        debug() << "PLUGIN CHECK:" << pluginName;
-        if( Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true ) )
-            initFactory( factory );
-    }
-}
 
 void
-ServicePluginManager::checkEnabledStates( const QList<Plugins::PluginFactory*> &factories )
+ServicePluginManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
 {
     DEBUG_BLOCK
     foreach( Plugins::PluginFactory* pFactory, factories )
@@ -95,7 +76,7 @@ ServicePluginManager::checkEnabledStates( const QList<Plugins::PluginFactory*> &
         if( !factory )
             continue;
 
-        //check if this service is enabled
+        // check if this service is enabled
         const QString pluginName = factory->info().pluginName();
         bool enabledInConfig = Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true );
         bool isLastActive = !factory->activeServices().isEmpty();
