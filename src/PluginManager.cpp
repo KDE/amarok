@@ -78,75 +78,85 @@ Plugins::PluginManager::~PluginManager()
 void
 Plugins::PluginManager::init()
 {
-    if( !findPlugins() )
-        handleNoPluginsFound();
+    checkPluginEnabledStates();
+}
 
-    QString key;
-
-    PERF_LOG( "Loading collection plugins" )
-    key = QLatin1String( "Collection" );
-    m_factories[ key ] = createFactories( key );
-    CollectionManager::instance()->setFactories( m_factories.value( key ) );
-    PERF_LOG( "Loaded collection plugins" )
-
-    PERF_LOG( "Loading service plugins" )
-    key = QLatin1String( "Service" );
-    m_factories[ key ] = createFactories( key );
-    ServicePluginManager::instance()->setFactories( m_factories.value( key ) );
-    PERF_LOG( "Loaded service plugins" )
-
-    PERF_LOG( "Loading importer plugins" )
-    key = QLatin1String( "Importer" );
-    m_factories[ key ] = createFactories( key );
-    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
-    if( controller )
-        controller->setFactories( m_factories.value( key ) );
-    PERF_LOG( "Loaded importer plugins" )
+KPluginInfo::List
+Plugins::PluginManager::plugins( PluginFactory::Type type ) const
+{
+    return m_pluginInfosByType.value( type );
 }
 
 QList<Plugins::PluginFactory*>
-Plugins::PluginManager::factories( const QString &category ) const
+Plugins::PluginManager::factories( PluginFactory::Type type ) const
 {
-    return m_factories.value( category );
+    return m_factoriesByType.value( type );
 }
 
 void
 Plugins::PluginManager::checkPluginEnabledStates()
 {
-    QList<PluginFactory*> newFactories;
-    foreach( const KPluginInfo::List &plugins, m_pluginInfos )
+    // re-create all the member infos.
+    m_pluginInfos.clear();
+    m_pluginInfosByType.clear();
+    m_factoriesByType.clear();
+
+    m_pluginInfos = findPlugins(); // reload all the plugins plus their enabled state
+    if( m_pluginInfos.isEmpty() ) // try it a second time with syscoca
+        handleNoPluginsFound();
+
+    // sort the plugin infos by type
+    foreach( const KPluginInfo &pluginInfo, m_pluginInfos )
     {
-        foreach( KPluginInfo plugin, plugins )
-        {
-            plugin.load( Amarok::config(QLatin1String("Plugins")) ); // load enabled state of plugin
-            QString name = plugin.pluginName();
-            bool enabled = plugin.isPluginEnabled();
-            if( !enabled || m_factoryCreated.value(name) )
-                continue;
-
-            PluginFactory *factory = createFactory( plugin );
-            if( factory )
-            {
-                m_factories[ plugin.category() ] << factory;
-                newFactories << factory;
-            }
-        }
+        PluginFactory::Type type = PluginFactory::Unknown;
+        if( pluginInfo.category() == QLatin1String("Collection") )
+            type = PluginFactory::Collection;
+        else if( pluginInfo.category() == QLatin1String("Service") )
+            type = PluginFactory::Service;
+        else if( pluginInfo.category() == QLatin1String("Importer") )
+            type = PluginFactory::Importer;
+        m_pluginInfosByType[ type ] << pluginInfo;
     }
-    ServicePluginManager::instance()->setFactories( m_factories.value(QLatin1String("Service")) );
-    CollectionManager::instance()->setFactories( newFactories );
-}
 
-KPluginInfo::List
-Plugins::PluginManager::plugins( const QString &category ) const
-{
-    return m_pluginInfos.value( category );
+    // create the factories and sort them by type
+    QList<PluginFactory*> newFactories = createFactories( m_pluginInfos );
+    foreach( PluginFactory* factory, newFactories )
+    {
+        m_factoriesByType[ factory->pluginType() ] << factory;
+    }
+
+    // the setFactories functions should to:
+    // - filter out factories not usefull
+    // - handle the new list of factories, disabling old ones and enabling new ones.
+
+    PERF_LOG( "Loading collection plugins" )
+    CollectionManager::instance()->setFactories( m_factoriesByType.value( PluginFactory::Collection ) );
+    PERF_LOG( "Loaded collection plugins" )
+
+    PERF_LOG( "Loading service plugins" )
+    ServicePluginManager::instance()->setFactories( m_factoriesByType.value( PluginFactory::Service ) );
+    PERF_LOG( "Loaded service plugins" )
+
+    PERF_LOG( "Loading importer plugins" )
+    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+    if( controller )
+        controller->setFactories( m_factoriesByType.value( PluginFactory::Importer ) );
+    PERF_LOG( "Loaded importer plugins" )
 }
 
 Plugins::PluginFactory*
-Plugins::PluginManager::createFactory( const KPluginInfo &plugin )
+Plugins::PluginManager::createFactory( const KPluginInfo &pluginInfo )
 {
-    // check if the plugin is enables
-    const QString name = plugin.pluginName();
+    const QString name = pluginInfo.pluginName();
+
+    // check if we already created this factory
+    // note: we are not checking if the factory has been disabled in the
+    //   meantime. We can't very well just destroy a factory being
+    //   currently used.
+    if( m_factoryCreated.contains(name) )
+        return m_factoryCreated.value(name);
+
+    // -- check if the plugin is enabled
     // we will always need a sql database.
     const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
     bool enabled = false;
@@ -162,13 +172,13 @@ Plugins::PluginManager::createFactory( const KPluginInfo &plugin )
     }
     else
     {
-        const bool enabledByDefault = plugin.isPluginEnabledByDefault();
+        const bool enabledByDefault = pluginInfo.isPluginEnabledByDefault();
         enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
     }
     if( !enabled )
         return 0;
 
-    KService::Ptr service = plugin.service();
+    KService::Ptr service = pluginInfo.service();
     KPluginLoader loader( *( service.constData() ) );
     KPluginFactory *pluginFactory( loader.factory() );
 
@@ -179,6 +189,7 @@ Plugins::PluginManager::createFactory( const KPluginInfo &plugin )
         return 0;
     }
 
+    // create the factory with this object as owner
     PluginFactory *factory = 0;
     if( !(factory = pluginFactory->create<PluginFactory>( this )) )
     {
@@ -196,24 +207,24 @@ Plugins::PluginManager::createFactory( const KPluginInfo &plugin )
     const QMetaObject *mo = factory->metaObject();
     QString type = mo->enumerator( mo->indexOfEnumerator("Type") ).valueToKey( factory->pluginType() );
     debug() << "created factory for plugin" << name << "type:" << type;
-    m_factoryCreated[ name ] = true;
+    m_factoryCreated[ pluginInfo.pluginName() ] = factory;
     return factory;
 }
 
 QList<Plugins::PluginFactory*>
-Plugins::PluginManager::createFactories( const QString &category )
+Plugins::PluginManager::createFactories( const KPluginInfo::List& infos )
 {
     QList<PluginFactory*> factories;
-    foreach( const KPluginInfo &plugin, plugins( category ) )
+    foreach( const KPluginInfo &pluginInfo, infos )
     {
-        PluginFactory *factory = createFactory( plugin );
+        PluginFactory *factory = createFactory( pluginInfo );
         if( factory )
             factories << factory;
     }
     return factories;
 }
 
-int
+KPluginInfo::List
 Plugins::PluginManager::findPlugins()
 {
     QString query = QString::fromLatin1( "[X-KDE-Amarok-framework-version] == %1"
@@ -223,18 +234,17 @@ Plugins::PluginManager::findPlugins()
     KConfigGroup pluginsConfig = Amarok::config(QLatin1String("Plugins"));
     KService::List services = KServiceTypeTrader::self()->query( "Amarok/Plugin", query );
     KPluginInfo::List plugins = KPluginInfo::fromServices( services, pluginsConfig );
-    qSort( plugins ); // sort list by category
 
+    // load the plugins
     foreach( KPluginInfo info, plugins )
     {
         info.load( pluginsConfig ); // load the enabled state of plugin
-        QString name = info.pluginName();
-        m_pluginInfos[ info.category() ] << info;
-        debug() << "found plugin:" << name << "enabled:" << info.isPluginEnabled();
+        debug() << "found plugin:" << info.pluginName()
+                << "enabled:" << info.isPluginEnabled();
     }
     debug() << plugins.count() << "plugins in total";
 
-    return plugins.count();
+    return plugins;
 }
 
 void
@@ -255,7 +265,8 @@ Plugins::PluginManager::handleNoPluginsFound()
 
     debug() << "Second attempt at finding plugins";
 
-    if( !findPlugins() )
+    m_pluginInfos = findPlugins();
+    if( m_pluginInfos.isEmpty() )
     {
         if( QApplication::type() != QApplication::Tty )
         {

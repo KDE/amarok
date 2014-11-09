@@ -39,17 +39,14 @@ PluginsConfig::PluginsConfig( QWidget *parent )
     layout->setMargin( 0 );
     layout->addWidget( m_selector );
 
-    QString key = QLatin1String( "Collection" );
-    m_selector->addPlugins( The::pluginManager()->plugins( key ),
-                            KPluginSelector::ReadConfigFile, i18n("Collections"), key );
+    m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginFactory::Collection ),
+                            KPluginSelector::ReadConfigFile, i18n("Collections"), "Collection" );
 
-    key = QLatin1String( "Service" );
-    m_selector->addPlugins( The::pluginManager()->plugins( key ),
-                            KPluginSelector::ReadConfigFile, i18n("Internet Services"), key );
+    m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginFactory::Service ),
+                            KPluginSelector::ReadConfigFile, i18n("Internet Services"), "Service" );
 
-    key = QLatin1String( "Importer" );
-    m_selector->addPlugins( The::pluginManager()->plugins( key ),
-                            KPluginSelector::ReadConfigFile, i18n("Statistics importers"), key );
+    m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginFactory::Importer ),
+                            KPluginSelector::ReadConfigFile, i18n("Statistics importers"), "Importer" );
 
     connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
     connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );

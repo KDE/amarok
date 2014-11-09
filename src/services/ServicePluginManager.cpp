@@ -130,7 +130,7 @@ QStringList
 ServicePluginManager::loadedServices() const
 {
     QStringList names;
-    foreach( Plugins::PluginFactory *pFactory, The::pluginManager()->factories(QLatin1String("Service")) )
+    foreach( Plugins::PluginFactory *pFactory, The::pluginManager()->factories( Plugins::PluginFactory::Service ) )
     {
         ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
         if( !factory )

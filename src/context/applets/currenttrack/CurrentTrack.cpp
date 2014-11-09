@@ -805,7 +805,8 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("artist") );
             m_customActions << act;
 
-            KPluginInfo::List services = The::pluginManager()->plugins( QLatin1String("Service") );
+            // show a special action if the amazon plugin is enabled
+            KPluginInfo::List services = The::pluginManager()->plugins( Plugins::PluginFactory::Service );
             foreach( const KPluginInfo &service, services )
             {
                 if( service.pluginName() == QLatin1String("amarok_service_amazonstore") )

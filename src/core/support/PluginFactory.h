@@ -20,11 +20,16 @@
 #include "core/amarokcore_export.h"
 
 #include <KPluginInfo>
+#include <KSharedPtr>
 
 #include <QObject>
 
 namespace Plugins {
 
+/** Baseclass for Amarok plugins.
+ *
+ *  Plugins need to set the m_info and m_type variables.
+ */
 class AMAROK_CORE_EXPORT PluginFactory : public QObject
 {
     Q_OBJECT
@@ -33,7 +38,15 @@ class AMAROK_CORE_EXPORT PluginFactory : public QObject
     Q_PROPERTY( Type pluginType READ pluginType )
 
 public:
-    enum Type { Unknown, Collection, Service, Importer };
+    /** Type of the plugin */
+    enum Type
+    {
+        Unknown = 0,    ///< somebody forgot to initialize m_type
+        Collection = 1, ///< the plugin implements a CollectionFactory
+        Service = 2,    ///< this is a service plugin
+        Importer = 3    ///< this plugin implements importer functionity
+    };
+
     PluginFactory( QObject *parent, const QVariantList &args );
     virtual ~PluginFactory() = 0;
 
@@ -60,5 +73,6 @@ protected:
 };
 
 } // namespace Plugins
+
 
 #endif /* AMAROK_PLUGINFACTORY_H */

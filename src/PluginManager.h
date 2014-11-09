@@ -41,22 +41,41 @@ class AMAROK_EXPORT PluginManager : public QObject
          */
         void init();
 
+        /** Returns plugin factories for the given plugin type */
+        KPluginInfo::List plugins( PluginFactory::Type type ) const;
+
+        /** Returns plugin factories for the given plugin type.
+         *
+         *  Owner of the PluginFactory pointers is the PluginManager
+         *  and the pointers will only be valid while the PluginManager exists.
+         */
+        QList<PluginFactory*> factories( PluginFactory::Type type ) const;
+
+        /** check if any services were disabled and needs to be removed, or any
+         *  that are hidden needs to be enabled
+         */
         void checkPluginEnabledStates();
 
-        QList<PluginFactory*> factories( const QString &category ) const;
-
-        KPluginInfo::List plugins( const QString &category ) const;
-
     private:
-        int findPlugins();
+        /** Tries finding Amarok plugins */
+        KPluginInfo::List findPlugins();
+
+        /** Does additional effort to find plugins.
+         *
+         *  Starts kbuildsycoca4 thingie
+         *  Stops Amarok if it still can't find plugins
+         */
         void handleNoPluginsFound();
 
-        QList<PluginFactory*> createFactories( const QString &category );
+        /** Creates factories for all infos */
+        QList<PluginFactory*> createFactories( const KPluginInfo::List& infos );
         PluginFactory* createFactory( const KPluginInfo &plugin );
 
-        QHash<QString, QList<PluginFactory*> > m_factories;
-        QHash<QString, KPluginInfo::List> m_pluginInfos;
-        QHash<QString, bool> m_factoryCreated;
+        /// contains the names of all KPluginInfos that have factories created
+        QHash<QString, PluginFactory*> m_factoryCreated;
+        QHash<PluginFactory::Type, QList<PluginFactory*> > m_factoriesByType;
+        KPluginInfo::List m_pluginInfos;
+        QHash<PluginFactory::Type, KPluginInfo::List > m_pluginInfosByType;
 
         static const int s_pluginFrameworkVersion;
         static PluginManager *s_instance;
