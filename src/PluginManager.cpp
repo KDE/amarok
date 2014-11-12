@@ -21,7 +21,6 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "services/ServicePluginManager.h"
 #include "statsyncing/Controller.h"
@@ -33,11 +32,8 @@
 #include <KStandardDirs>
 
 #include <QApplication>
-#include <QFile>
+#include <QThread>
 #include <QMetaEnum>
-
-#include <cstdlib>
-#include <unistd.h>
 
 
 const int Plugins::PluginManager::s_pluginFrameworkVersion = 71;
@@ -144,39 +140,45 @@ Plugins::PluginManager::checkPluginEnabledStates()
     PERF_LOG( "Loaded importer plugins" )
 }
 
-Plugins::PluginFactory*
-Plugins::PluginManager::createFactory( const KPluginInfo &pluginInfo )
+
+bool
+Plugins::PluginManager::isPluginEnabled( const KPluginInfo &pluginInfo ) const
 {
-    const QString name = pluginInfo.pluginName();
+    const QString pluginName = pluginInfo.pluginName();
 
-    // check if we already created this factory
-    // note: we are not checking if the factory has been disabled in the
-    //   meantime. We can't very well just destroy a factory being
-    //   currently used.
-    if( m_factoryCreated.contains(name) )
-        return m_factoryCreated.value(name);
-
-    // -- check if the plugin is enabled
-    // we will always need a sql database.
+    // the sql collection is a core collection. It cannot be switched off
+    // and should be first.
     const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
-    bool enabled = false;
-    if( name == QLatin1String("amarok_collection-mysqlservercollection") )
+    if( pluginName == QLatin1String("amarok_collection-mysqlservercollection") )
     {
-        if( useMySqlServer )
-            enabled = true;
+        return useMySqlServer;
     }
-    else if( name == QLatin1String("amarok_collection-mysqlecollection") )
+    else if( pluginName == QLatin1String("amarok_collection-mysqlecollection") )
     {
-        if( !useMySqlServer )
-            enabled = true;
+        return !useMySqlServer;
     }
     else
     {
-        const bool enabledByDefault = pluginInfo.isPluginEnabledByDefault();
-        enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
+        bool enabledByDefault = pluginInfo.isPluginEnabledByDefault();
+        return Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", enabledByDefault );
     }
-    if( !enabled )
+}
+
+
+Plugins::PluginFactory*
+Plugins::PluginManager::createFactory( const KPluginInfo &pluginInfo )
+{
+    if( !isPluginEnabled( pluginInfo ) )
         return 0;
+
+    // check if we already created this factory
+    // note: old factories are not deleted.
+    //   We can't very well just destroy a factory being
+    //   currently used.
+    const QString name = pluginInfo.pluginName();
+    if( m_factoryCreated.contains(name) )
+        return m_factoryCreated.value(name);
+
 
     KService::Ptr service = pluginInfo.service();
     KPluginLoader loader( *( service.constData() ) );
@@ -257,9 +259,9 @@ Plugins::PluginManager::handleNoPluginsFound()
     // Run kbuildsycoca4 in a blocking fashion
     KProcess::execute( KStandardDirs::findExe( "kbuildsycoca4" ), QStringList( "--noincremental" ) );
 
-    // Wait a bit until ksycoca has fully updated
-    for( int i = 0; i < 3; i++ ) {
-        sleep( 1 );
+    // Wait a bit (3 sec) until ksycoca has fully updated
+    for( int i = 0; i < 30; i++ ) {
+        QThread::currentThread()->wait( 100 );
         QApplication::processEvents();
     }
 

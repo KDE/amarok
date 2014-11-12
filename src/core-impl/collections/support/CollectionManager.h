@@ -124,11 +124,6 @@ class AMAROK_EXPORT CollectionManager : public QObject
         void addUnmanagedCollection( Collections::Collection *newCollection, CollectionStatus defaultStatus );
         void removeUnmanagedCollection( Collections::Collection *collection );
 
-        /** Set's the collection status.
-         *
-         *  Currently unused.
-         */
-        void setCollectionStatus( const QString &collectionId, CollectionStatus status );
         CollectionStatus collectionStatus( const QString &collectionId ) const;
 
         QHash<Collections::Collection*, CollectionStatus> collections() const;

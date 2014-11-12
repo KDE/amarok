@@ -19,13 +19,15 @@
 
 #include "ServicePluginManager.h"
 
-#include "PluginManager.h"
+// #include "PluginManager.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
-#include "core/support/Amarok.h"
+// #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "services/ServiceBase.h"
 
 #include <KService>
+
+#include <QSet>
 
 ServicePluginManager *ServicePluginManager::s_instance = 0;
 
@@ -70,33 +72,30 @@ void
 ServicePluginManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
 {
     DEBUG_BLOCK
-    foreach( Plugins::PluginFactory* pFactory, factories )
+    QSet<Plugins::PluginFactory*> newFactories = factories.toSet();
+    QSet<Plugins::PluginFactory*> oldFactories = m_factories.toSet();
+
+    // remove old factories
+    foreach( Plugins::PluginFactory* pFactory, oldFactories - newFactories )
+    {
+        ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
+
+        foreach( ServiceBase * service, factory->activeServices() )
+            ServiceBrowser::instance()->removeCategory( service );
+        factory->clearActiveServices();
+    }
+
+    // create new factories
+    foreach( Plugins::PluginFactory* pFactory, newFactories - oldFactories )
     {
         ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
         if( !factory )
             continue;
 
-        // check if this service is enabled
-        const QString pluginName = factory->info().pluginName();
-        bool enabledInConfig = Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true );
-        bool isLastActive = !factory->activeServices().isEmpty();
-
-        debug() << "PLUGIN CHECK:" << pluginName << enabledInConfig << isLastActive;
-        if( enabledInConfig == isLastActive ) // nothing to do
-        {
-            continue;
-        }
-        else if( enabledInConfig && !isLastActive ) // add new plugins
-        {
-            initFactory( factory );
-        }
-        else if( !enabledInConfig && isLastActive ) // remove old plugins
-        {
-            foreach( ServiceBase * service, factory->activeServices() )
-                ServiceBrowser::instance()->removeCategory( service );
-            factory->clearActiveServices();
-        }
+        initFactory( factory );
     }
+
+    m_factories = factories;
 }
 
 void
@@ -130,7 +129,7 @@ QStringList
 ServicePluginManager::loadedServices() const
 {
     QStringList names;
-    foreach( Plugins::PluginFactory *pFactory, The::pluginManager()->factories( Plugins::PluginFactory::Service ) )
+    foreach( Plugins::PluginFactory *pFactory, m_factories )
     {
         ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
         if( !factory )

@@ -63,6 +63,11 @@ private:
 
     Q_DISABLE_COPY( ServicePluginManager )
 
+    /** The list of currently set factories.
+     *  Note: the PluginManager owns the pointers.
+     */
+    QList<Plugins::PluginFactory*> m_factories;
+
 private slots:
     void slotNewService( ServiceBase *newService);
     void slotRemoveService( ServiceBase *removedService );

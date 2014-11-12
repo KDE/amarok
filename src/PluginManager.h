@@ -44,15 +44,20 @@ class AMAROK_EXPORT PluginManager : public QObject
         /** Returns plugin factories for the given plugin type */
         KPluginInfo::List plugins( PluginFactory::Type type ) const;
 
-        /** Returns plugin factories for the given plugin type.
+        /** Returns enabled plugin factories for the given plugin type.
+         *
+         *  This function will only return enable factories.
          *
          *  Owner of the PluginFactory pointers is the PluginManager
          *  and the pointers will only be valid while the PluginManager exists.
          */
         QList<PluginFactory*> factories( PluginFactory::Type type ) const;
 
-        /** check if any services were disabled and needs to be removed, or any
+        /** Check if any services were disabled and needs to be removed, or any
          *  that are hidden needs to be enabled
+         *
+         * This function will call the sub plugin managers (like CollectionManager)
+         * setFactories function.
          */
         void checkPluginEnabledStates();
 
@@ -66,6 +71,14 @@ class AMAROK_EXPORT PluginManager : public QObject
          *  Stops Amarok if it still can't find plugins
          */
         void handleNoPluginsFound();
+
+        /** Returns true if the plugin is enabled.
+         *  This function will theck the default enabled state,
+         *  the Amarok configuration state and the primary collection.
+         *
+         *  @returns true if the plugin is enabled.
+         */
+        bool isPluginEnabled( const KPluginInfo &factory ) const;
 
         /** Creates factories for all infos */
         QList<PluginFactory*> createFactories( const KPluginInfo::List& infos );

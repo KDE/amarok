@@ -157,6 +157,9 @@ Controller::setFactories( const QList<Plugins::PluginFactory*> &factories )
         if( !factory )
             continue;
 
+        if( m_providerFactories.contains( factory->type() ) ) // we have it already
+            continue;
+
         factory->init();
         m_providerFactories.insert( factory->type(), factory );
     }
