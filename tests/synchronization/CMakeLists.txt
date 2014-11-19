@@ -15,6 +15,7 @@ set( testmasterslave_SRCS
         TestMasterSlaveSynchronizationJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/SynchronizationBaseJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/MasterSlaveSynchronizationJob.cpp
+        ${GOOGLEMOCK_SRCS}
 )
 
 kde4_add_unit_test( testmasterslavesynchronizationjob  ${testmasterslave_SRCS} )
@@ -40,6 +41,7 @@ set( testunion_SRCS
         TestUnionJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/SynchronizationBaseJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/UnionJob.cpp
+        ${GOOGLEMOCK_SRCS}
 )
 
 kde4_add_unit_test( testunionjob  ${testunion_SRCS} )
@@ -65,6 +67,7 @@ set( testonewaysynchronization_SRCS
         TestOneWaySynchronizationJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/SynchronizationBaseJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/OneWaySynchronizationJob.cpp
+        ${GOOGLEMOCK_SRCS}
 )
 
 kde4_add_unit_test( testonewaysynchronizationjob  ${testonewaysynchronization_SRCS} )

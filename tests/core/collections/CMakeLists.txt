@@ -15,7 +15,8 @@ include_directories(
 #------------------------ Test CollectionLocation -----------------------------
 
 set( testcollectionlocation_SRCS
-    CollectionLocationTest.cpp
+        CollectionLocationTest.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 kde4_add_unit_test( testcollectionlocation TESTNAME amarok-testcollectionlocation ${testcollectionlocation_SRCS} )

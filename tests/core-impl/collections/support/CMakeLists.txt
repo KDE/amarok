@@ -15,6 +15,7 @@ include_directories(
 
 set( testmemoryquerymaker_SRCS
         TestMemoryQueryMaker.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 kde4_add_unit_test( testmemoryquerymaker ${testmemoryquerymaker_SRCS} )

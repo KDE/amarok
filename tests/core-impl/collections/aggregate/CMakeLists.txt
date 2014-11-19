@@ -12,7 +12,10 @@ include_directories(
 
 #------------------------------- TestAggregateMeta -------------------------------
 
-kde4_add_unit_test( testaggregatemeta TestAggregateMeta.cpp )
+kde4_add_unit_test( testaggregatemeta
+                        TestAggregateMeta.cpp
+                        ${GOOGLEMOCK_SRCS}
+                  )
 
 add_dependencies( testaggregatemeta amarokconfig_h )
 add_dependencies( testaggregatemeta amarokcore )

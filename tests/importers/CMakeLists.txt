@@ -19,6 +19,7 @@ set( testimporterscommon_LIBS
 set( testimportermanager_SRCS
     TestImporterManager.cpp
     ImporterMocks.cpp
+    ${GOOGLEMOCK_SRCS}
 )
 
 kde4_add_unit_test( testimportermanager ${testimportermanager_SRCS} )
@@ -29,6 +30,7 @@ target_link_libraries( testimportermanager ${testimporterscommon_LIBS} )
 set( testimporterprovider_SRCS
     TestImporterProvider.cpp
     ImporterMocks.cpp
+    ${GOOGLEMOCK_SRCS}
 )
 
 kde4_add_unit_test( testimporterprovider ${testimporterprovider_SRCS} )

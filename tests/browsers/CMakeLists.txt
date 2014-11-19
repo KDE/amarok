@@ -12,6 +12,7 @@ include_directories(
 
 set( testsinglecollectiontreeitemmodel_SRCS
         TestSingleCollectionTreeItemModel.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 kde4_add_unit_test( testsinglecollectiontreeitemmodel  ${testsinglecollectiontreeitemmodel_SRCS} )

@@ -8,8 +8,8 @@ include_directories(
 #------------------------ Test AmazonConfig -------------------------------
 
 set( testamazonconfig_SRCS
-TestAmazonConfig.cpp
-${AMAROK_SOURCE_TREE}/services/amazon/AmazonConfig.cpp
+        TestAmazonConfig.cpp
+        ${AMAROK_SOURCE_TREE}/services/amazon/AmazonConfig.cpp
  )
 
 kde4_add_unit_test( testamazonconfig ${testamazonconfig_SRCS} )
@@ -19,8 +19,8 @@ target_link_libraries( testamazonconfig ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY
 #------------------------ Test AmazonMetaFactory -------------------------------
 
 set( testamazonmetafactory_SRCS
-TestAmazonMetaFactory.cpp
-${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
+        TestAmazonMetaFactory.cpp
+        ${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
  )
 
 kde4_add_unit_test( testamazonmetafactory ${testamazonmetafactory_SRCS} )
@@ -37,10 +37,11 @@ amaroklib )
 #------------------------ Test AmazonShoppingCart --------------------------
 
 set( testamazonshoppingcart_SRCS
-TestAmazonShoppingCart.cpp
-${AMAROK_SOURCE_TREE}/services/amazon/AmazonConfig.cpp
-${AMAROK_SOURCE_TREE}/services/amazon/AmazonShoppingCart.cpp
-${AMAROK_SOURCE_TREE}/services/amazon/AmazonShoppingCartItem.cpp
+        TestAmazonShoppingCart.cpp
+        ${AMAROK_SOURCE_TREE}/services/amazon/AmazonConfig.cpp
+        ${AMAROK_SOURCE_TREE}/services/amazon/AmazonShoppingCart.cpp
+        ${AMAROK_SOURCE_TREE}/services/amazon/AmazonShoppingCartItem.cpp
+        ${GOOGLEMOCK_SRCS}
  )
 
 kde4_add_unit_test( testamazonshoppingcart ${testamazonshoppingcart_SRCS} )

@@ -19,7 +19,9 @@ set( testmetamultitrack_SRCS
     ${AMAROK_SOURCE_TREE}/core/capabilities/MultiSourceCapability.cpp
     ${AMAROK_SOURCE_TREE}/core-impl/meta/multi/MultiTrack.cpp
     ${AMAROK_SOURCE_TREE}/core-impl/capabilities/multisource/MultiSourceCapabilityImpl.cpp
-    ${AMAROK_SOURCE_TREE}/playback/PowerManager.cpp )
+    ${AMAROK_SOURCE_TREE}/playback/PowerManager.cpp
+        ${GOOGLEMOCK_SRCS}
+    )
 
 
 kde4_add_unit_test( testmetamultitrack

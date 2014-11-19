@@ -18,6 +18,7 @@ set( testcuefilesupport_SRCS
         ${AMAROK_SOURCE_TREE}/core-impl/meta/cue/CueFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/core-impl/meta/timecode/TimecodeMeta.cpp
         ${AMAROK_SOURCE_TREE}/core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 kde4_add_unit_test( testcuefilesupport ${testcuefilesupport_SRCS} )

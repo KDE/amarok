@@ -30,6 +30,7 @@ set( testplaylistmodels_SRCS
         ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/playlist/PlaylistItem.cpp
         ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
+        ${GOOGLEMOCK_SRCS}
 )
 
 kde4_add_unit_test( testplaylistmodels ${testplaylistmodels_SRCS} )

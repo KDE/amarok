@@ -5,6 +5,9 @@
 # GOOGLEMOCK_LIBRARY, the path to Google Mock library
 # GOOGLEMOCK_LIBRARIES, the path to Google Mock and Google Test library
 # GOOGLEMOCK_FOUND, whether Google Mock was found
+#
+# since google test and google mock is not supposed to be supplied pre-compiled
+# we try to find the google mock sources as a fallback
 
 find_program(GMOCK-CONFIG_EXECUTABLE NAMES gmock-config PATHS
        ${BIN_INSTALL_DIR}
@@ -84,26 +87,51 @@ endif( NOT WIN32 AND GOOGLEMOCK_LIBRARY )
 # However they are distributing sources, so we are looking if we at least have
 # them available
 if( NOT GOOGLEMOCK_DEP_GTEST_LIBRARY )
-    find_path( GOOGLEMOCK_DEP_GTEST_SOURCES NAMES gtest
+    find_path( GOOGLEMOCK_SOURCES NAMES gmock
         PATHS /usr/src
         NO_DEFAULT_PATH
         NO_CMAKE_PATH
     )
 
-    # in this case we also have to use the static google mock library
-    set( OLD_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
-    set( CMAKE_FIND_LIBRARY_SUFFIXES .a)
-    find_library( GOOGLEMOCK_LIBRARY_STATIC NAMES gmock
-        PATHS
-        ~/usr/lib
-       /opt/local/lib
-       /usr/lib
-       /usr/lib64
-       /usr/local/lib
-       /opt/kde4/lib
-       ${KDE4_LIB_DIR}
-    )
-    set( CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_CMAKE_FIND_LIBRARY_SUFFIXES})
+    # found googlemock as sources. then we also have the gtest sources since they
+    # are included
+    if( GOOGLEMOCK_SOURCES )
+        find_path( GOOGLEMOCK_DEP_GTEST_SOURCES NAMES gtest
+            PATHS "${GOOGLEMOCK_SOURCES}/gmock"
+            NO_DEFAULT_PATH
+            NO_CMAKE_PATH
+        )
+
+        # make sure that we use the gtest supplied with googlemock
+        set(GOOGLEMOCK_INCLUDE_DIR
+            "${GOOGLEMOCK_INCLUDE_DIR}" 
+            "${GOOGLEMOCK_SOURCES}/gmock" 
+            "${GOOGLEMOCK_DEP_GTEST_SOURCES}/gtest/include"
+        )
+
+    elseif( GOOGLEMOCK_SOURCES )
+        find_path( GOOGLEMOCK_DEP_GTEST_SOURCES NAMES gtest
+            PATHS /usr/src
+            NO_DEFAULT_PATH
+            NO_CMAKE_PATH
+        )
+
+        # in this case we also have to use the static google mock library
+        set( OLD_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
+        set( CMAKE_FIND_LIBRARY_SUFFIXES .a)
+        find_library( GOOGLEMOCK_LIBRARY_STATIC NAMES gmock
+            PATHS
+            ~/usr/lib
+           /opt/local/lib
+           /usr/lib
+           /usr/lib64
+           /usr/local/lib
+           /opt/kde4/lib
+           ${KDE4_LIB_DIR}
+        )
+        set( CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_CMAKE_FIND_LIBRARY_SUFFIXES})
+    endif( GOOGLEMOCK_SOURCES )
+
 endif( NOT GOOGLEMOCK_DEP_GTEST_LIBRARY )
 
 # -- googlemock and gtest library available
@@ -119,6 +147,16 @@ elseif(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_SO
    set(GOOGLEMOCK_LIBRARIES ${GOOGLEMOCK_LIBRARY_STATIC} gtest)
    set(GOOGLEMOCK_GTEST_SOURCES "${GOOGLEMOCK_DEP_GTEST_SOURCES}/gtest" CACHE PATH "Path to the gtest sources")
    message(STATUS "Found libgmock but need to build gtest: ${GOOGLEMOCK_INCLUDE_DIR}, ${GOOGLEMOCK_LIBRARIES} ${GOOGLEMOCK_DEP_GTEST_SOURCES}")
+
+# -- googlemock sources and gtest sources available
+elseif(GOOGLEMOCK_SOURCES)
+   set(GOOGLEMOCK_FOUND TRUE)
+   set(GOOGLEMOCK_LIBRARIES gtest)
+   set(GOOGLEMOCK_SRCS "${GOOGLEMOCK_SOURCES}/gmock/src/gmock-all.cc" CACHE PATH "Google mock source file that needs to be added")
+   set(GOOGLEMOCK_SOURCES "${GOOGLEMOCK_SOURCES}/gmock" CACHE PATH "Path to the google-mock sources")
+   set(GOOGLEMOCK_GTEST_SOURCES "${GOOGLEMOCK_DEP_GTEST_SOURCES}/gtest" CACHE PATH "Path to the gtest sources")
+   message(STATUS "Found gmock and gtest but need to build both: ${GOOGLEMOCK_INCLUDE_DIR}, ${GOOGLEMOCK_DEP_GTEST_SOURCES}")
+   mark_as_advanced(GOOGLEMOCK_SRCS)
 
 # -- googlemock but no gtest
 else(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_SOURCES)

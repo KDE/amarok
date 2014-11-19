@@ -65,6 +65,7 @@ include_directories(
 
 set( databaseupdatertest_SRCS
         TestDatabaseUpdater.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 add_database_test( testsqldatabaseupdater "${databaseupdatertest_SRCS}" )
@@ -73,6 +74,7 @@ add_database_test( testsqldatabaseupdater "${databaseupdatertest_SRCS}" )
 
 set( testsqlalbum_SRCS
         TestSqlAlbum.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 add_database_test( testsqlalbum "${testsqlalbum_SRCS}" )
@@ -81,6 +83,7 @@ add_database_test( testsqlalbum "${testsqlalbum_SRCS}" )
 
 set( testsqlartist_SRCS
         TestSqlArtist.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 
@@ -89,6 +92,7 @@ add_database_test( testsqlartist "${testsqlartist_SRCS}" )
 
 set( testsqlcollection_SRCS
         TestSqlCollection.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 
@@ -98,6 +102,7 @@ add_database_test( testsqlcollection "${testsqlcollection_SRCS}" )
 
 set( testsqlquerymaker_SRCS
         TestSqlQueryMaker.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 
@@ -107,6 +112,7 @@ add_database_test( testsqlquerymaker "${testsqlquerymaker_SRCS}" )
 
 set( testsqlscanmanager_SRCS
         TestSqlScanManager.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 add_database_test( testsqlscanmanager "${testsqlscanmanager_SRCS}" )
@@ -116,6 +122,7 @@ add_database_test( testsqlscanmanager "${testsqlscanmanager_SRCS}" )
 set( testsqltrack_SRCS
         TestSqlTrack.cpp
         ${AMAROK_TEST_TREE}/MetaNotificationSpy.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 
@@ -127,6 +134,7 @@ set( testsqlcollectionlocation_SRCS
         TestSqlCollectionLocation.cpp
 	${AMAROK_SOURCE_TREE}/core/interfaces/Logger.cpp
         ${AMAROK_SOURCE_TREE}/core-impl/logger/ProxyLogger.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 add_database_test( testsqlcollectionlocation "${testsqlcollectionlocation_SRCS}" )

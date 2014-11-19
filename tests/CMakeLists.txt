@@ -132,6 +132,7 @@ set( testtrackorganizer_SRCS
         ${AMAROK_SOURCE_TREE}/dialogs/TrackOrganizer.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/QStringx.cpp
+        ${GOOGLEMOCK_SRCS}
     )
 
 kde4_add_unit_test( testtrackorganizer  ${testtrackorganizer_SRCS} )

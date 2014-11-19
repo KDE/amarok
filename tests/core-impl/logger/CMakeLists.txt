@@ -12,9 +12,11 @@ include_directories(
 #------------------------ Test ProxyLogger -----------------------------
 
 set( testproxylogger_SRCS
-    TestProxyLogger.cpp
-    ${AMAROK_SOURCE_TREE}/core/interfaces/Logger.cpp
-    ${AMAROK_SOURCE_TREE}/core-impl/logger/ProxyLogger.cpp )
+        TestProxyLogger.cpp
+        ${AMAROK_SOURCE_TREE}/core/interfaces/Logger.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/logger/ProxyLogger.cpp
+        ${GOOGLEMOCK_SRCS}
+    )
 
 
 kde4_add_unit_test( testproxylogger
