@@ -63,6 +63,9 @@ class AMAROK_EXPORT CollectionManager : public QObject
         };
 
         static CollectionManager *instance();
+
+        /** Destroys the instance of the CollectionManager.
+         */
         static void destroy();
 
         /**

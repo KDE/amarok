@@ -77,13 +77,12 @@ private:
 struct CollectionManager::Private
 {
     QList<CollectionPair> collections;
-    SmartPointerList<Collections::CollectionFactory> factories;
+    QList<Plugins::PluginFactory*> factories; // factories belong to PluginManager
 
     SqlStorage *sqlDatabase;
     SqlStorageWrapper *sqlStorageWrapper;
 
     QList<Collections::Collection*> unmanagedCollections;
-    SmartPointerList<Collections::Collection> managedCollections;
 
     QList<Collections::TrackProvider*> trackProviders;
     TimecodeTrackProvider *timecodeTrackProvider;
@@ -150,8 +149,6 @@ CollectionManager::~CollectionManager()
         d->trackProviders.clear();
 
         // Hmm, qDeleteAll from Qt 4.8 crashes with our SmartPointerList, do it manually. Bug 285951
-        while( !d->managedCollections.isEmpty() )
-            delete d->managedCollections.takeFirst();
         while (!d->factories.isEmpty() )
             delete d->factories.takeFirst();
     }
@@ -173,8 +170,33 @@ CollectionManager::setFactories( const QList<Plugins::PluginFactory*> &factories
 {
     using Collections::CollectionFactory;
 
-    QList<CollectionFactory*> cfactories;
-    foreach( Plugins::PluginFactory *pFactory, factories )
+
+    QSet<Plugins::PluginFactory*> newFactories = factories.toSet();
+    QSet<Plugins::PluginFactory*> oldFactories;
+
+    {
+        QReadLocker locker( &d->lock );
+        oldFactories = d->factories.toSet();
+    }
+
+    // remove old factories
+    foreach( Plugins::PluginFactory* pFactory, oldFactories - newFactories )
+    {
+
+        CollectionFactory *factory = qobject_cast<CollectionFactory*>( pFactory );
+        if( !factory )
+            continue;
+
+        disconnect( factory, SIGNAL(newCollection(Collections::Collection*)),
+                    this, SLOT(slotNewCollection(Collections::Collection*)) );
+        {
+            QWriteLocker locker( &d->lock );
+            d->factories.removeAll( factory );
+        }
+    }
+
+    // create new factories
+    foreach( Plugins::PluginFactory* pFactory, newFactories - oldFactories )
     {
         CollectionFactory *factory = qobject_cast<CollectionFactory*>( pFactory );
         if( !factory )
@@ -186,48 +208,28 @@ CollectionManager::setFactories( const QList<Plugins::PluginFactory*> &factories
 
         // the sql collection is a core collection. It cannot be switched off
         // and should be first.
-        bool coreCollection = false;
+        bool primaryCollection = false;
         if( (useMySqlServer && (pluginName == QLatin1String("amarok_collection-mysqlservercollection"))) ||
             (!useMySqlServer && (pluginName == QLatin1String("amarok_collection-mysqlecollection"))) )
         {
-            coreCollection = true;
+            primaryCollection = true;
         }
 
-        // check if this service is enabled
-        bool enabledByDefault = info.isPluginEnabledByDefault() || coreCollection;
-        bool enabledInConfig = Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", enabledByDefault );
-        bool isLastActive = d->factories.contains( factory );
-
-        debug() << "COLLECTION PLUGIN CHECK:" << pluginName << enabledInConfig << isLastActive;
-        if( enabledInConfig == isLastActive ) // nothing to do
+        connect( factory, SIGNAL(newCollection(Collections::Collection*)),
+                 this, SLOT(slotNewCollection(Collections::Collection*)) );
         {
-            continue;
-        }
-        else if( enabledInConfig && !isLastActive ) // add new plugins
-        {
-            connect( factory, SIGNAL(newCollection(Collections::Collection*)),
-                     this, SLOT(slotNewCollection(Collections::Collection*)) );
-            {
                 QWriteLocker locker( &d->lock );
-                if( coreCollection )
+                if( primaryCollection )
                     d->factories.prepend( factory );
                 else
                     d->factories.append( factory );
-            }
-            debug() << "initializing" << pluginName;
-            factory->init();
         }
-        else if( !enabledInConfig && isLastActive ) // remove old plugins
-        {
-            disconnect( factory, SIGNAL(newCollection(Collections::Collection*)),
-                     this, SLOT(slotNewCollection(Collections::Collection*)) );
-            {
-                QWriteLocker locker( &d->lock );
-                d->factories.removeAll( factory );
-            }
-        }
+
+        debug() << "initializing" << pluginName;
+        factory->init();
     }
 
+    d->factories = factories;
 }
 
 
@@ -325,7 +327,6 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
     {
         QWriteLocker locker( &d->lock );
         d->collections.append( pair );
-        d->managedCollections.append( newCollection );
         d->trackProviders.append( newCollection );
         connect( newCollection, SIGNAL(remove()), SLOT(slotRemoveCollection()), Qt::QueuedConnection );
         connect( newCollection, SIGNAL(updated()), SLOT(slotCollectionChanged()), Qt::QueuedConnection );
@@ -381,7 +382,6 @@ CollectionManager::slotRemoveCollection()
         {
             QWriteLocker locker( &d->lock );
             d->collections.removeAll( pair );
-            d->managedCollections.removeAll( collection );
             d->trackProviders.removeAll( collection );
 
             // if the collection had a sql storage, find a new database that could provide
@@ -542,6 +542,8 @@ CollectionManager::addUnmanagedCollection( Collections::Collection *newCollectio
 {
     QWriteLocker locker( &d->lock );
 
+    // TODO: what happens if a collection is managed and then added as unmanaged
+    //  or the other way round.
     if( newCollection && d->unmanagedCollections.indexOf( newCollection ) == -1 )
     {
         const QMetaObject *mo = metaObject();

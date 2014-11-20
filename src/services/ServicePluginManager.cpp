@@ -19,15 +19,14 @@
 
 #include "ServicePluginManager.h"
 
-// #include "PluginManager.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
-// #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "services/ServiceBase.h"
 
 #include <KService>
 
 #include <QSet>
+#include <QCoreApplication>
 
 ServicePluginManager *ServicePluginManager::s_instance = 0;
 
@@ -71,7 +70,6 @@ ServicePluginManager::~ServicePluginManager()
 void
 ServicePluginManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
 {
-    DEBUG_BLOCK
     QSet<Plugins::PluginFactory*> newFactories = factories.toSet();
     QSet<Plugins::PluginFactory*> oldFactories = m_factories.toSet();
 
@@ -79,6 +77,8 @@ ServicePluginManager::setFactories( const QList<Plugins::PluginFactory*> &factor
     foreach( Plugins::PluginFactory* pFactory, oldFactories - newFactories )
     {
         ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
+        if( !factory )
+            continue;
 
         foreach( ServiceBase * service, factory->activeServices() )
             ServiceBrowser::instance()->removeCategory( service );

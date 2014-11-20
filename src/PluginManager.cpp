@@ -69,6 +69,14 @@ Plugins::PluginManager::PluginManager( QObject *parent )
 
 Plugins::PluginManager::~PluginManager()
 {
+    // tell the managers to get rid of their current factories
+    QList<Plugins::PluginFactory*> emptyFactories;
+
+    CollectionManager::instance()->setFactories( emptyFactories );
+    ServicePluginManager::instance()->setFactories( emptyFactories );
+    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+    if( controller )
+        controller->setFactories( emptyFactories );
 }
 
 void

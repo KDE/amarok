@@ -33,6 +33,14 @@ class AMAROK_EXPORT PluginManager : public QObject
         ~PluginManager();
 
         static PluginManager *instance();
+
+        /** Destroys the instance of the PluginManager.
+         *
+         *  The order of the destruction is somewhat important.
+         *  The PluginManager needs to be destroyed after all collections
+         *  have been removed and before the CollectionManager,
+         *  the ServicePluginManager and the StatSyncing::Controller are destroyed.
+         */
         static void destroy();
         static int pluginFrameworkVersion();
 
