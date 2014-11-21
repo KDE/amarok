@@ -308,11 +308,9 @@ BiasSolver::getTrackCollection()
     qm->setAutoDelete( true );
 
     connect( qm, SIGNAL(newResultReady(QStringList)),
-             this, SLOT(trackCollectionResultsReady(QStringList)),
-             Qt::DirectConnection );
+             this, SLOT(trackCollectionResultsReady(QStringList)) );
     connect( qm, SIGNAL(queryDone()),
-             this, SLOT(trackCollectionDone()),
-             Qt::DirectConnection );
+             this, SLOT(trackCollectionDone()) );
 
     qm->run();
 }

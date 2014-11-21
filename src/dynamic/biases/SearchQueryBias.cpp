@@ -163,9 +163,9 @@ Dynamic::SearchQueryBias::newQuery()
     m_qm->addReturnValue( Meta::valUniqueId );
 
     connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
-             this, SLOT(updateReady(QStringList)) );
+             this, SLOT(updateReady(QStringList)), Qt::QueuedConnection );
     connect( m_qm.data(), SIGNAL(queryDone()),
-             this, SLOT(updateFinished()) );
+             this, SLOT(updateFinished()), Qt::QueuedConnection );
     m_qm.data()->run();
 }
 
