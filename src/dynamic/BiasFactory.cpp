@@ -26,7 +26,6 @@
 #include "biases/SearchQueryBias.h"
 #include "biases/QuizPlayBias.h"
 #include "biases/EchoNestBias.h"
-#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/support/Debug.h"
 #include "core/collections/QueryMaker.h"
 #include "dynamic/Bias.h"

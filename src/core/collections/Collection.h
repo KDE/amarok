@@ -41,6 +41,8 @@ namespace Collections
     class QueryMaker;
     typedef QList<Collection*> CollectionList;
 
+    /** A plugin that creates new collections.
+     */
     class AMAROK_CORE_EXPORT CollectionFactory : public Plugins::PluginFactory
     {
         Q_OBJECT
@@ -56,6 +58,12 @@ namespace Collections
 
     };
 
+    /** A TrackProvider is a class that can lookup urls and return Track objects.
+     *
+     *  A track provider is implemented by every collection, but there
+     *  are also a couple of other track providers.
+     *  All TrackProvider are managed by the CollectionManager.
+     */
     class AMAROK_CORE_EXPORT TrackProvider
     {
         public:

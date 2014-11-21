@@ -44,8 +44,14 @@ namespace PlaylistBrowserNS
             BiasDialog( Dynamic::BiasPtr bias, QWidget* parent = 0 );
             virtual ~BiasDialog();
 
+        public slots:
+            void accept();
+            void reject();
+
         protected slots:
+            /** Updates the list of biases in the bias type selection list */
             void factoriesChanged();
+            /** Called when a new bias type has been selected */
             void selectionChanged( int index );
             void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
 
@@ -58,6 +64,12 @@ namespace PlaylistBrowserNS
             QLabel *m_descriptionLabel;
             QWidget *m_biasWidget;
 
+            Dynamic::BiasPtr m_origBias;
+
+            /** A copy of the bias given when constructing this object.
+             *
+             *  We edit only in the copy so that we can discard it if needed.
+             */
             Dynamic::BiasPtr m_bias;
     };
 

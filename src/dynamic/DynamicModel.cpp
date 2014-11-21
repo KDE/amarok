@@ -1026,22 +1026,7 @@ Dynamic::DynamicModel::cloneList( Dynamic::BiasedPlaylist* list )
 Dynamic::BiasPtr
 Dynamic::DynamicModel::cloneBias( Dynamic::BiasPtr bias )
 {
-    QByteArray bytes;
-    QBuffer buffer( &bytes, 0 );
-    buffer.open( QIODevice::ReadWrite );
-
-    // write the bias
-    QXmlStreamWriter xmlWriter( &buffer );
-    xmlWriter.writeStartElement( bias->name() );
-    bias->toXml( &xmlWriter );
-    xmlWriter.writeEndElement();
-
-    // and read a new list
-    buffer.seek( 0 );
-    QXmlStreamReader xmlReader( &buffer );
-    while( !xmlReader.isStartElement() )
-        xmlReader.readNext();
-    return Dynamic::BiasFactory::fromXml( &xmlReader );
+    return bias->clone();
 }
 
 void

@@ -22,7 +22,6 @@
 
 #include "TagMatchBias.h"
 
-#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"

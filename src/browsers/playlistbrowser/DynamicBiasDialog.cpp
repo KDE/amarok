@@ -18,7 +18,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "DynamicBiasWidgets.h"
+#include "DynamicBiasDialog.h"
 
 #include "core/support/Debug.h"
 #include "dynamic/Bias.h"
@@ -38,10 +38,12 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
     , m_biasLayout( 0 )
     , m_descriptionLabel( 0 )
     , m_biasWidget( 0 )
-    , m_bias( bias )
+    , m_origBias( bias )
+    , m_bias( bias->clone() ) // m_bias is a clone
 {
     setWindowTitle( i18nc( "Bias dialog window title", "Edit bias" ) );
     m_mainLayout = new QVBoxLayout( this );
+
 
     // -- the bias selection combo
     QLabel* selectionLabel = new QLabel( i18nc("Bias selection label in bias view.", "Match Type:" ) );
@@ -62,11 +64,11 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
     m_mainLayout->addLayout( m_biasLayout );
 
     // -- button box
-    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
     m_mainLayout->addWidget( buttonBox );
 
     factoriesChanged();
-    biasReplaced( Dynamic::BiasPtr(), bias );
+    biasReplaced( Dynamic::BiasPtr(), m_bias );
 
     connect( Dynamic::BiasFactory::instance(), SIGNAL(changed()),
              this, SLOT(factoriesChanged()) );
@@ -74,6 +76,21 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
              this, SLOT(selectionChanged(int)) );
     connect(buttonBox, SIGNAL(accepted()),
             this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()),
+            this, SLOT(reject()));
+}
+
+void PlaylistBrowserNS::BiasDialog::accept()
+{
+    // use the newly edited bias
+    m_origBias->replace( m_bias ); // tell the old bias it has just been replaced
+    QDialog::accept();
+}
+
+void PlaylistBrowserNS::BiasDialog::reject()
+{
+    // do nothing.
+    QDialog::reject();
 }
 
 PlaylistBrowserNS::BiasDialog::~BiasDialog()
@@ -184,4 +201,4 @@ PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::
 
 
 
-#include "DynamicBiasWidgets.moc"
+#include "DynamicBiasDialog.moc"

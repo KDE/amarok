@@ -20,7 +20,7 @@
 
 #include "DynamicView.h"
 #include "DynamicBiasDelegate.h"
-#include "DynamicBiasWidgets.h"
+#include "DynamicBiasDialog.h"
 
 #include "core/support/Debug.h"
 #include "dynamic/Bias.h"

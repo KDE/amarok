@@ -75,6 +75,13 @@ namespace Dynamic
             */
             virtual void toXml( QXmlStreamWriter *writer ) const;
 
+            /** Creates a new bias (with all sub-biases) that is a copy of this.
+             *
+             *  This function does a deep copy by writing and reading back from xml.
+             *  Should work for all biases.
+             */
+            BiasPtr clone() const;
+
             /** Returns the name of this bias.
                 The name is used for reading and writing to xml.
             */

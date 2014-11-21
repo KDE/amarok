@@ -21,7 +21,6 @@
 #include "DynamicView.h"
 
 #include "amarokconfig.h"
-#include "DynamicBiasWidgets.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"

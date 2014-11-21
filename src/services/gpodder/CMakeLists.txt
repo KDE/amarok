@@ -7,7 +7,7 @@ include_directories(
         ../../context
         ../../network
         ../../dynamic # for CustomBias.h
-        ../../browsers/playlistbrowser # for DynamicBiasWidgets
+        ../../browsers/playlistbrowser
         ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
         ${KDE4_INCLUDE_DIR}
         ${QT_INCLUDES}

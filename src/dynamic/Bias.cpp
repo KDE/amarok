@@ -22,7 +22,6 @@
 
 #include "Bias.h"
 
-#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/support/Debug.h"
 #include "dynamic/BiasFactory.h"
 #include "dynamic/DynamicModel.h"
@@ -31,6 +30,7 @@
 #include <KLocale>
 
 #include <QPainter>
+#include <QBuffer>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
@@ -55,6 +55,27 @@ void
 Dynamic::AbstractBias::toXml( QXmlStreamWriter *writer ) const
 {
     Q_UNUSED( writer );
+}
+
+Dynamic::BiasPtr
+Dynamic::AbstractBias::clone() const
+{
+    QByteArray bytes;
+    QBuffer buffer( &bytes, 0 );
+    buffer.open( QIODevice::ReadWrite );
+
+    // write the bias
+    QXmlStreamWriter xmlWriter( &buffer );
+    xmlWriter.writeStartElement( name() );
+    toXml( &xmlWriter );
+    xmlWriter.writeEndElement();
+
+    // and read a new list
+    buffer.seek( 0 );
+    QXmlStreamReader xmlReader( &buffer );
+    while( !xmlReader.isStartElement() )
+        xmlReader.readNext();
+    return Dynamic::BiasFactory::fromXml( &xmlReader );
 }
 
 QString
