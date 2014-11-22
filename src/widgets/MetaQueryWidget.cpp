@@ -865,7 +865,7 @@ MetaQueryWidget::makeLengthSelection()
     timeSpin2->setTime( QTime().addSecs( m_filter.numValue2 ) );
 
     connect( timeSpin2, SIGNAL(timeChanged(QTime)),
-            SLOT(numValueChanged(QTime)) );
+            SLOT(numValue2Changed(QTime)) );
 
     m_valueSelection2 = timeSpin2;
 }
@@ -1081,8 +1081,16 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
     }
     else if( isNumeric() )
     {
-        strValue1 = QString::number( numValue );
-        strValue2 = QString::number( numValue2 );
+        if (numValue < numValue2) // two values are only used for "between". We want to order them by size
+        {
+            strValue1 = QString::number( numValue );
+            strValue2 = QString::number( numValue2 );
+        }
+        else
+        {
+            strValue1 = QString::number( numValue2 );
+            strValue2 = QString::number( numValue );
+        }
     }
 
     QString result;
