@@ -28,7 +28,7 @@
 class ConstraintNode;
 
 namespace Collections {
-    class MetaQueryMaker;
+    class QueryMaker;
 }
 
 namespace APG {
@@ -74,7 +74,7 @@ namespace APG {
             double m_finalSatisfaction;
 
             ConstraintNode* const m_constraintTreeRoot;
-            Collections::MetaQueryMaker* m_qm;
+            Collections::QueryMaker* m_qm;
 
             mutable Meta::TrackList m_domain;   // tracks available to solver
             QMutex m_domainMutex;

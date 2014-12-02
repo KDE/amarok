@@ -69,7 +69,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
         static void destroy();
 
         /**
-         * Returns a query maker that queries ALL the collections
+         * Returns a query maker that queries all queryable the collections
          */
         Collections::QueryMaker *queryMaker() const;
 
@@ -77,11 +77,6 @@ class AMAROK_EXPORT CollectionManager : public QObject
          * returns all viewable collections.
          */
         QList<Collections::Collection*> viewableCollections() const;
-
-        /**
-         * returns all queryable collections.
-         */
-        QList<Collections::Collection*> queryableCollections() const;
 
         //TODO: Remove
         /**

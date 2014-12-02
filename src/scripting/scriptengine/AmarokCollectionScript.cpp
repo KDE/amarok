@@ -139,12 +139,6 @@ AmarokCollectionScript::scanCollectionChanges() const
     CollectionManager::instance()->checkCollectionChanges();
 }
 
-CollectionList
-AmarokCollectionScript::queryableCollections() const
-{
-    return CollectionManager::instance()->queryableCollections();
-}
-
 QueryMaker*
 AmarokCollectionScript::queryMaker() const
 {

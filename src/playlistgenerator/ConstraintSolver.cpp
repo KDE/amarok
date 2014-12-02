@@ -25,7 +25,7 @@
 
 #include "Constraint.h"
 
-#include "core/collections/MetaQueryMaker.h"
+#include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
@@ -68,7 +68,7 @@ APG::ConstraintSolver::ConstraintSolver( ConstraintNode* r, int qualityFactor )
         return;
     }
 
-    m_qm = new Collections::MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+    m_qm = CollectionManager::instance()->queryMaker();
     if ( m_qm ) {
         debug() << "New ConstraintSolver with serial number" << m_serialNumber;
         m_qm->setQueryType( Collections::QueryMaker::Track );
@@ -214,7 +214,7 @@ APG::ConstraintSolver::receiveQueryMakerDone()
         m_domainReductionFailed = true;
 
         // need a new query maker without constraints
-        m_qm = new Collections::MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+        m_qm = CollectionManager::instance()->queryMaker();
         if ( m_qm ) {
             connect( m_qm, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(receiveQueryMakerData(Meta::TrackList)), Qt::QueuedConnection );
             connect( m_qm, SIGNAL(queryDone()), this, SLOT(receiveQueryMakerDone()), Qt::QueuedConnection );

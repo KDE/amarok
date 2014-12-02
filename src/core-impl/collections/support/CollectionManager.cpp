@@ -448,19 +448,6 @@ CollectionManager::viewableCollections() const
     return result;
 }
 
-QList<Collections::Collection*>
-CollectionManager::queryableCollections() const
-{
-    QReadLocker locker( &d->lock );
-
-    QList<Collections::Collection*> result;
-    foreach( const CollectionPair &pair, d->collections )
-        if( pair.second & CollectionQueryable )
-            result << pair.first;
-    return result;
-
-}
-
 Collections::Collection*
 CollectionManager::primaryCollection() const
 {

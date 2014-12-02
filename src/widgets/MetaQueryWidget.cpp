@@ -741,7 +741,7 @@ MetaQueryWidget::makeGenericComboSelection( bool editable, Collections::QueryMak
 void
 MetaQueryWidget::makeMetaComboSelection( qint64 field )
 {
-    Collections::QueryMaker* qm = new Collections::MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+    Collections::QueryMaker* qm = CollectionManager::instance()->queryMaker();
     qm->setQueryType( Collections::QueryMaker::Custom );
     qm->addReturnValue( field );
     qm->setAutoDelete( true );

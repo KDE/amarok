@@ -81,14 +81,9 @@ namespace AmarokScript
             Q_INVOKABLE void scanCollectionChanges() const;
 
             /**
-             * Returns a query maker that queries all collections.
+             * Returns a query maker that queries all queryable collections.
              */
             Q_INVOKABLE Collections::QueryMaker *queryMaker() const;
-
-            /**
-             * Returns a list of collections that can be queried with a querymaker.
-             */
-            Q_INVOKABLE Collections::CollectionList queryableCollections() const;
 
             /**
              * Return a list of collections that are viewable in the collection browser.
