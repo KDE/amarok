@@ -61,7 +61,7 @@ public:
     virtual QString longTextColumnType() const { return QString(); }
     virtual QString randomFunc() const { return QString(); }
 
-    virtual QStringList getLastErrors() const  { return QStringList(); }
+    virtual QStringList getLastErrors() const { return QStringList(); }
 
     /** Clears the list of the last errors. */
     virtual void clearLastErrors() { }
@@ -74,6 +74,15 @@ static EmptySqlStorage emptyStorage;
 struct StorageManager::Private
 {
     SqlStorage* sqlDatabase;
+
+    /** A list that collects errors from database plugins
+     *
+     *  StoragePlugin factories can report errors that
+     *  prevent the storage from even being created.
+     *
+     *  This list collects them.
+     */
+    QStringList errorList;
 };
 
 StorageManager *StorageManager::s_instance = 0;
@@ -142,7 +151,29 @@ StorageManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
 
         connect( factory, SIGNAL(newStorage(SqlStorage*)),
                  this, SLOT(slotNewStorage(SqlStorage*)) );
+        connect( factory, SIGNAL(newError(QStringList)),
+                 this, SLOT(slotNewError(QStringList)) );
     }
+}
+
+QStringList
+StorageManager::getLastErrors() const
+{
+    if( !d->errorList.isEmpty() )
+        return d->errorList;
+    if( d->sqlDatabase == &emptyStorage )
+    {
+        QStringList list;
+        list << i18n( "The configured database plugin could be loaded." );
+        return list;
+    }
+    return d->errorList;
+}
+
+void
+StorageManager::clearLastErrors()
+{
+    d->errorList.clear();
 }
 
 void
@@ -166,6 +197,12 @@ StorageManager::slotNewStorage( SqlStorage* newStorage )
     }
 
     d->sqlDatabase = newStorage;
+}
+
+void
+StorageManager::slotNewError( QStringList errorMessageList )
+{
+    d->errorList << errorMessageList;
 }
 
 

@@ -41,7 +41,6 @@
 
 #include <KStandardDirs>
 #include <KApplication>
-#include <KMessageBox>
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QApplication>
@@ -275,25 +274,6 @@ SqlCollection::SqlCollection( SqlStorage* storage )
              m_scanManager,      SLOT(requestScan(QList<KUrl>,GenericScanManager::ScanType)) );
     ThreadWeaver::Weaver::instance()->enqueue( m_directoryWatcher );
 
-
-    // we need a UI-dialog service, but for now just output the messages
-    if( !storage->getLastErrors().isEmpty() )
-    {
-        if( QApplication::type() != QApplication::Tty )
-        {
-            KMessageBox::error( The::mainWindow(), i18n( "The amarok database reported "
-                    "the following errors:\n%1\nIn most cases you will need to resolve "
-                    "these errors before Amarok will run properly.",
-                    storage->getLastErrors().join( "\n" ) ) );
-        }
-        else
-        {
-            warning() << QString( "The amarok database reported the following errors:\n"
-                                  "%1\n"
-                                  "In most cases you will need to resolve these errors before Amarok will run properly.").
-                arg(storage->getLastErrors().join( "\n" ) );
-        }
-    }
 }
 
 SqlCollection::~SqlCollection()

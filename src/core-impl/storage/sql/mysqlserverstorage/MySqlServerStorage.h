@@ -18,20 +18,25 @@
 #ifndef AMAROK_STORAGE_MYSQLSERVERSTORAGE_H
 #define AMAROK_STORAGE_MYSQLSERVERSTORAGE_H
 
-#include "amarok_export.h"
+#include "../amarok_sqlstorage_export.h"
 #include "../mysql-shared/MySqlStorage.h"
 
 /**
  * Implements a MySqlStorage using a MySQL Server
  */
-class AMAROK_EXPORT MySqlServerStorage: public MySqlStorage
+class AMAROK_SQLSTORAGE_MYSQLE_EXPORT MySqlServerStorage: public MySqlStorage
 {
     public:
+        /** Connect to the server defined by the configuration options. */
         MySqlServerStorage();
         virtual ~MySqlServerStorage();
 
-        virtual QString type() const;
+        virtual bool init();
+
         virtual QStringList query( const QString &query );
+
+        /** Returns true if the given settings allow to connect to a sql server. */
+        static bool testSettings( const QString &host, const QString &user, const QString &password, int port );
 };
 
 #endif

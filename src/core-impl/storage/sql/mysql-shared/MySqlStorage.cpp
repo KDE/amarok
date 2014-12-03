@@ -95,16 +95,7 @@ MySqlStorage::MySqlStorage()
 }
 
 MySqlStorage::~MySqlStorage()
-{
-    DEBUG_BLOCK
-
-    QMutexLocker locker( &m_mutex );
-    if( m_db )
-    {
-        mysql_close( m_db );
-        m_db = 0;
-    }
-}
+{ }
 
 QStringList MySqlStorage::query( const QString& statement )
 {

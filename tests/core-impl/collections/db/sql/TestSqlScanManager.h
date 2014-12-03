@@ -24,7 +24,7 @@
 
 #include <KTempDir>
 
-class SqlStorage;
+class MySqlStorage;
 class GenericScanManager;
 
 class QIODevice;
@@ -169,7 +169,7 @@ private:
 
     int m_collectionUpdatedCount;
 
-    SqlStorage *m_storage;
+    MySqlStorage *m_storage;
     KTempDir *m_tmpDatabaseDir;
     KTempDir *m_tmpCollectionDir;
     QString m_sourcePath; // the path to the template .mp3 file

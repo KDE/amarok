@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QStringList>
 
 namespace Plugins {
     class PluginFactory;
@@ -73,6 +74,15 @@ class AMAROK_EXPORT StorageManager : public QObject
          */
         void setFactories( const QList<Plugins::PluginFactory*> &factories );
 
+        /** Returns a list of the last sql errors.
+          The list might not include every one error if the number
+          is beyond a sensible limit.
+          */
+        QStringList getLastErrors() const;
+
+        /** Clears the list of the last errors. */
+        void clearLastErrors();
+
     private slots:
 
         /** Will be called whenever a factory emits a newStorage signal.
@@ -84,6 +94,15 @@ class AMAROK_EXPORT StorageManager : public QObject
          *  after all other plugins are done.
          */
         void slotNewStorage( SqlStorage* newStorage );
+
+        /** Will be called whenever a factory emits a newError signal.
+         *
+         *  The factories will not emit the newStorage signal in case
+         *  of initialization problems.
+         *  In order to report their issues they will instead emit
+         *  newError with the list of errors.
+         */
+        void slotNewError( QStringList errorMessageList );
 
     private:
         static StorageManager* s_instance;

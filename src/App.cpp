@@ -60,11 +60,6 @@
 #include "statsyncing/Controller.h"
 #include "widgets/Osd.h"
 
-
-#ifdef NO_MYSQL_EMBEDDED
-#include "MySqlServerTester.h"
-#endif
-
 #include <iostream>
 
 #include <KAction>
@@ -501,29 +496,18 @@ App::continueInit()
 
     PERF_LOG( "App init done" )
 
-#ifdef NO_MYSQL_EMBEDDED
-    bool useServer = true;
-    if( !AmarokConfig::useServer() )
+    // check that the amarok sql configuration is valid.
+    if( !StorageManager::instance()->getLastErrors().isEmpty() )
     {
-        useServer = false;
-        AmarokConfig::setUseServer( true );
-    }
-    if( !MySqlServerTester::testSettings(
-             AmarokConfig::host(),
-             AmarokConfig::user(),
-             AmarokConfig::password(),
-             AmarokConfig::port()
-         )
-    )
-    {
-        KMessageBox::messageBox( 0, KMessageBox::Information,
-                ( !useServer ? i18n( "The embedded database was not found; you must set up a database server connection.\nYou must restart Amarok after doing this." ) :
-                              i18n( "The connection details for the database server were invalid.\nYou must enter correct settings and restart Amarok after doing this." ) ),
-                i18n( "Database Error" ) );
+        KMessageBox::error( The::mainWindow(), i18n( "The amarok database reported "
+                 "the following errors:\n%1\nIn most cases you will need to resolve "
+                 "these errors before Amarok will run properly." ).
+                 arg( StorageManager::instance()->getLastErrors().join( "\n" ) ),
+                 i18n( "Database Error" ));
+        StorageManager::instance()->clearLastErrors();
         slotConfigAmarok( "DatabaseConfig" );
     }
     else
-#endif
     {
         handleFirstRun();
     }

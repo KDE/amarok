@@ -19,9 +19,9 @@
 
 #include "MySqlEmbeddedStorage.h"
 
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
-#include "amarokconfig.h"
+#include <amarokconfig.h>
+#include <core/support/Amarok.h>
+#include <core/support/Debug.h>
 
 #include <QDir>
 #include <QString>
@@ -34,19 +34,26 @@
 
 MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
     : MySqlStorage()
+    , m_storageLocation( storageLocation )
 {
     m_debugIdent = "MySQLe";
+}
 
-    QString storagePath = storageLocation;
+bool
+MySqlEmbeddedStorage::init()
+{
+
+    // -- figuring out and setting the database path.
+    QString storagePath = m_storageLocation;
     QString databaseDir;
-    if( storageLocation.isEmpty() )
+    if( storagePath.isEmpty() )
     {
         storagePath = Amarok::saveLocation();
         databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", QString(storagePath + "mysqle") );
     }
     else
     {
-        QDir dir( storageLocation );
+        QDir dir( storagePath );
         dir.mkpath( "." );  //ensure directory exists
         databaseDir = dir.absolutePath() + QDir::separator() + "mysqle";
     }
@@ -72,6 +79,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         dir.mkpath( "." );
     }
 
+    // -- initializing the library
     int ret = mysql_library_init( mysql_args.size(), const_cast<char**>(mysql_args.data()), 0 );
     if( ret != 0 )
     {
@@ -82,7 +90,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         m_lastErrors.append( errorMessage );
         error() << errorMessage.toLocal8Bit().constData();
         error() << "mysqle arguments were:" << mysql_args;
-        return;
+        return false;
     }
 
     m_db = mysql_init( NULL );
@@ -90,7 +98,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
     if( !m_db )
     {
         error() << "MySQLe initialization failed";
-        return;
+        mysql_library_end();
+        return false;
     }
 
     if( mysql_options( m_db, MYSQL_READ_DEFAULT_GROUP, "amarokclient" ) )
@@ -100,25 +109,28 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
 
     if( !mysql_real_connect( m_db, NULL,NULL,NULL, 0, 0,NULL, 0 ) )
     {
-        error() << "Could not connect to mysql!";
-        reportError( "na" );
+        error() << "Could not connect to mysql embedded!";
+        reportError( "call to mysql_real_connect" );
         mysql_close( m_db );
+        mysql_library_end();
         m_db = 0;
-    }
-    else
-    {
-        sharedInit( "amarok" );
-        debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
+        return false;
     }
 
+    sharedInit( "amarok" );
+    debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
+
     MySqlStorage::initThreadInitializer();
+
+    return true;
 }
 
 MySqlEmbeddedStorage::~MySqlEmbeddedStorage()
-{}
-
-QString
-MySqlEmbeddedStorage::type() const
 {
-    return "MySQLe";
+    if( m_db )
+    {
+        mysql_close( m_db );
+        mysql_library_end();
+    }
 }
+

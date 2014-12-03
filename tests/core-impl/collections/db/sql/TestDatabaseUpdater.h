@@ -21,7 +21,7 @@
 
 #include <KTempDir>
 
-class SqlStorage;
+class MySqlStorage;
 
 namespace Collections {
     class SqlCollection;
@@ -47,7 +47,7 @@ private slots:
 
 private:
     Collections::SqlCollection *m_collection;
-    SqlStorage *m_storage;
+    MySqlStorage *m_storage;
     KTempDir *m_tmpDir;
 };
 

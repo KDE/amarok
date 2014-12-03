@@ -40,6 +40,12 @@ class MySqlStorage: public SqlStorage
         MySqlStorage();
         virtual ~MySqlStorage();
 
+        /** Initializes the sql storage.
+         *
+         *  @returns true if the initialization was successfull.
+         */
+        virtual bool init() = 0;
+
         virtual QStringList query( const QString &query );
         virtual int insert( const QString &statement, const QString &table = QString() );
 
@@ -49,13 +55,11 @@ class MySqlStorage: public SqlStorage
         virtual QString boolTrue() const;
         virtual QString boolFalse() const;
         virtual QString idType() const;
-        virtual QString textColumnType( int length ) const;
-        virtual QString exactTextColumnType( int length ) const;
+        virtual QString textColumnType( int length = 255 ) const;
+        virtual QString exactTextColumnType( int length = 1000 ) const;
         //the below value may have to be decreased even more for different indexes; only time will tell
-        virtual QString exactIndexableTextColumnType( int length ) const;
+        virtual QString exactIndexableTextColumnType( int length = 324 ) const;
         virtual QString longTextColumnType() const;
-
-        virtual QString type() const = 0;
 
         /** Returns a list of the last sql errors.
             The list might not include every one error if the number
@@ -67,6 +71,12 @@ class MySqlStorage: public SqlStorage
         void clearLastErrors();
 
     protected:
+        /** Adds an error message to the m_lastErrors.
+         *
+         *  Adds a message including the mysql error number and mesage
+         *  to the last error messages.
+         *  @param message Usually the query statement being executed.
+         */
         void reportError( const QString &message );
 
         void initThreadInitializer();
@@ -74,6 +84,7 @@ class MySqlStorage: public SqlStorage
 
         MYSQL* m_db;
 
+        /** Mutex protecting the m_lastErrors list */
         mutable QMutex m_mutex;
 
         QString m_debugIdent;

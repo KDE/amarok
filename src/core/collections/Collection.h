@@ -51,8 +51,6 @@ namespace Collections
             CollectionFactory( QObject *parent, const QVariantList &args );
             virtual ~CollectionFactory();
 
-            virtual void init() = 0;
-
         signals:
             void newCollection( Collections::Collection *newCollection );
     };

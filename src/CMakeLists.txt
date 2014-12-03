@@ -752,15 +752,6 @@ set(amaroklib_LIB_SRCS
     moodbar/MoodbarManager.cpp
 )
 
-if( NOT BUILD_MYSQLE_COLLECTION )
-    set(amaroklib_LIB_SRCS
-        ${amaroklib_LIB_SRCS}
-        MySqlServerTester.cpp
-    )
-    add_definitions(${MYSQL_CFLAGS})
-    include_directories(${MYSQL_INCLUDE_DIR})
-endif( NOT BUILD_MYSQLE_COLLECTION )
-
 if( LIBMYGPO_QT_FOUND )
     set( EXTRA_LIBS ${LIBMYGPO_QT_LIBRARIES} )
     include_directories(     ${LIBMYGPO_QT_INCLUDE_DIRS} ${LIBMYGPO_QT_INCLUDE_DIRS}/../ )
@@ -919,10 +910,6 @@ endif( QCA2_FOUND )
 if(KDE4_BUILD_TESTS)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
 endif()
-
-if( NOT BUILD_MYSQLE_COLLECTION )
-    target_link_libraries(amaroklib ${MYSQL_LIBRARIES} ${ZLIB_LIBRARIES})
-endif( NOT BUILD_MYSQLE_COLLECTION )
 
 if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})

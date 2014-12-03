@@ -31,14 +31,22 @@
 MySqlServerStorage::MySqlServerStorage()
     : MySqlStorage()
 {
+    m_debugIdent = "MySQL-server";
+}
+
+bool
+MySqlServerStorage::init()
+{
     DEBUG_BLOCK
 
-    m_debugIdent = "MySQL-server";
 
-    if( mysql_library_init( 0, NULL, NULL ) )
+    // -- initializing the library
+    int ret = mysql_library_init( 0, NULL, NULL );
+    if( ret != 0 )
     {
+        // it has no sense to call reportError here because m_db is not yet initialized
         error() << "MySQL library initialization failed!";
-        return;
+        return false;
     }
 
     m_db = mysql_init( NULL );
@@ -47,11 +55,10 @@ MySqlServerStorage::MySqlServerStorage()
     {
         error() << "MySQL initialization failed";
         mysql_library_end();
-        return;
+        return false;
     }
 
     //first here, the right way for >= 5.1.6
-
     my_bool reconnect = true;
     if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
         reportError( "Asking for automatic reconnect did not succeed!" );
@@ -68,39 +75,38 @@ MySqlServerStorage::MySqlServerStorage()
                 CLIENT_COMPRESS )
         )
     {
-        debug() << "connection to mysql failed";
-        error() << "Could not connect to mysql!";
-        reportError( "na" );
+        error() << "Could not connect to mysql server!";
+        reportError( "call to mysql_real_connect" );
         mysql_close( m_db );
         mysql_library_end();
         m_db = 0;
+        return false;
     }
-    else
-    {
-        //but in versions prior to 5.1.6, have to call it after every real_connect
-        my_bool reconnect = true;
-        if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
-            reportError( "Asking for automatic reconnect did not succeed!" );
-        else
-            debug() << "Automatic reconnect successfully activated";
 
-        QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
-        sharedInit( databaseName );
-        debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
-    }
+    //but in versions prior to 5.1.6, have to call it after every real_connect
+    reconnect = true;
+    if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
+        reportError( "Asking for automatic reconnect did not succeed!" );
+    else
+        debug() << "Automatic reconnect successfully activated";
+
+    QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
+    sharedInit( databaseName );
+    debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
 
     MySqlServerStorage::initThreadInitializer();
+    return true;
 }
 
 MySqlServerStorage::~MySqlServerStorage()
 {
     DEBUG_BLOCK
-}
 
-QString
-MySqlServerStorage::type() const
-{
-    return "MySQL";
+    if( m_db )
+    {
+        mysql_close( m_db );
+        mysql_library_end();
+    }
 }
 
 QStringList
@@ -136,5 +142,37 @@ MySqlServerStorage::query( const QString &query )
 
     return MySqlStorage::query( query );
 }
+
+
+bool
+MySqlServerStorage::testSettings( const QString &host, const QString &user, const QString &password, int port )
+{
+    DEBUG_BLOCK
+    if( mysql_library_init( 0, NULL, NULL ) )
+    {
+        error() << "MySQL library initialization failed!";
+        return false;
+    }
+
+    MYSQL* db = mysql_init( NULL );
+
+    if( !db )
+    {
+        error() << "MySQL initialization failed";
+        return false;
+    }
+
+    if( !mysql_real_connect( db, host.toUtf8(), user.toUtf8(), password.toUtf8(), NULL, port, NULL, CLIENT_COMPRESS ) )
+    {
+        mysql_close( db );
+        db = 0;
+        return false;
+    }
+
+    mysql_close( db );
+    db = 0;
+    return true;
+}
+
 
 

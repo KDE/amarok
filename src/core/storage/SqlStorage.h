@@ -32,9 +32,6 @@ public:
     SqlStorage() {}
     virtual ~SqlStorage() {}
 
-    /** Returns e.g. MySQLe */
-    virtual QString type() const = 0;
-
     virtual QString escape( const QString &text ) const = 0;
 
     virtual QStringList query( const QString &query ) = 0;

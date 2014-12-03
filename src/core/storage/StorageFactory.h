@@ -39,13 +39,19 @@ public:
     StorageFactory( QObject *parent, const QVariantList &args );
     virtual ~StorageFactory();
 
-    virtual void init() = 0;
-
 signals:
     /** Emitted whenever the factory produces a new storage.
      *
      */
     void newStorage( SqlStorage *newStorage );
+
+    /**
+     *  The factories will not emit the newStorage signal in case
+     *  of initialization problems.
+     *  In order to report their issues they will instead emit
+     *  newError with the list of errors.
+     */
+    void newError( QStringList errorMessageList );
 };
 
 

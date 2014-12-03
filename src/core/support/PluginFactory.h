@@ -31,6 +31,7 @@ namespace Plugins {
  *  - CollectionFactory
  *  - ServiceFactory
  *  - ImportFactory
+ *  - StorageFactory
  *
  *  Plugins need to set the m_info variables.
  *  Plugins also need to set a valid category in their Desktop file.
@@ -44,8 +45,8 @@ public:
     PluginFactory( QObject *parent, const QVariantList &args );
     virtual ~PluginFactory() = 0;
 
-    /**
-     * Initialize the service plugin of this type.
+    /** Initialize the service plugin of this type.
+     *
      * Reimplemented by subclasses, which must set
      * m_initialized = true when the function has finished.
      *
@@ -58,7 +59,7 @@ public:
 
 protected:
     bool m_initialized; ///< set after init was called
-    KPluginInfo m_info;
+    KPluginInfo m_info; ///< contains the KPluginInfo returned by info(). Should be set in the constructor
 };
 
 } // namespace Plugins

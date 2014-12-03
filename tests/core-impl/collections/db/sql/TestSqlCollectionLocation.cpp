@@ -116,6 +116,7 @@ TestSqlCollectionLocation::initTestCase()
     Amarok::Components::setLogger( new ProxyLogger() );
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
+    QVERIFY( m_storage->init() );
     m_collection = new Collections::SqlCollection( m_storage );
     SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
     mock->setCollectionFolders( QStringList() << m_tmpDir->name() ); // the target folder needs to have enough space and be writable

@@ -19,13 +19,11 @@
 #define MYSQLEMBEDDEDSTORAGE_H
 
 #include "../amarok_sqlstorage_export.h"
-#include <core/storage/SqlStorage.h>
-#include <core-impl/storage/sql/mysql-shared/MySqlStorage.h>
+#include "../mysql-shared/MySqlStorage.h"
 
 /**
  * Implements a MySqlStorage using a MySQL Embedded Server
  */
-
 class AMAROK_SQLSTORAGE_MYSQLE_EXPORT MySqlEmbeddedStorage : public MySqlStorage
 {
     public:
@@ -38,7 +36,10 @@ class AMAROK_SQLSTORAGE_MYSQLE_EXPORT MySqlEmbeddedStorage : public MySqlStorage
         MySqlEmbeddedStorage( const QString &storageLocation = QString() );
         virtual ~MySqlEmbeddedStorage();
 
-        virtual QString type() const;
+        virtual bool init();
+
+    private:
+        QString m_storageLocation;
 };
 
 #endif // MYSQLEMBEDDEDSTORAGE_H

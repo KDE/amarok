@@ -40,7 +40,20 @@ MySqleStorageFactory::init()
     m_initialized = true;
 
     if( ! Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
-        emit newStorage( new MySqlEmbeddedStorage() );
+    {
+        MySqlEmbeddedStorage* storage = new MySqlEmbeddedStorage();
+        bool initResult = storage->init();
+
+        // handle errors during creation
+        if( !storage->getLastErrors().isEmpty() )
+            emit newError( storage->getLastErrors() );
+        storage->clearLastErrors();
+
+        if( initResult )
+            emit newStorage( storage );
+        else
+            delete storage;
+    }
 }
 
 #include "MySqlEmbeddedStorageFactory.moc"

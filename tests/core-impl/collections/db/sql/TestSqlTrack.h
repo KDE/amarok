@@ -21,7 +21,7 @@
 
 #include <KTempDir>
 
-class SqlStorage;
+class MySqlStorage;
 class SqlRegistry;
 
 namespace Collections {
@@ -65,7 +65,7 @@ private:
     void getAllValues( Meta::SqlTrack *track );
 
     Collections::SqlCollection *m_collection;
-    SqlStorage *m_storage;
+    MySqlStorage *m_storage;
     KTempDir *m_tmpDir;
 };
 
