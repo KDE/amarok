@@ -22,7 +22,7 @@
 
 #include <KTempDir>
 
-class MySqlStorage;
+class MySqlEmbeddedStorage;
 class SqlMountPointManagerMock;
 
 namespace Collections {
@@ -95,7 +95,7 @@ private:
 
     Collections::SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpm;
-    MySqlStorage *m_storage;
+    MySqlEmbeddedStorage *m_storage;
     KTempDir *m_tmpDir;
 };
 

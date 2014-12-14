@@ -16,15 +16,18 @@
 
 #include "DatabaseConfig.h"
 
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include <PluginManager.h>
+#include <core/support/Amarok.h>
+#include <core/support/Debug.h>
 
+#include <KConfigDialogManager>
+#include <KMessageBox>
 #include <KCMultiDialog>
 
 
-DatabaseConfig::DatabaseConfig( QWidget* parent )
+DatabaseConfig::DatabaseConfig( QWidget* parent, KConfigSkeleton *config )
     : ConfigDialogBase( parent )
+    , m_configManager( new KConfigDialogManager( this, config ) )
 {
     setupUi( this );
 
@@ -34,15 +37,32 @@ DatabaseConfig::DatabaseConfig( QWidget* parent )
     setTabOrder( kcfg_User,     kcfg_Password );    // username to password
     setTabOrder( kcfg_Password, kcfg_Database );    // password to database
 
+    // enable the test button if one of the plugin factories has a correct testSettings slot
+    // get all storage factories
+    QList<Plugins::PluginFactory*> factories;
+    factories = Plugins::PluginManager::instance()->factories( Plugins::PluginManager::Storage );
+    bool testFunctionAvailable = false;
+    foreach( Plugins::PluginFactory* factory, factories )
+    {
+        // check the meta object if there is a testSettings slot available
+        if( factory->metaObject()->
+            indexOfMethod( QMetaObject::normalizedSignature("testSettings(QString, QString, QString, int, QString)" ) ) >= 0 )
+            testFunctionAvailable = true;
+    }
+    button_Test->setEnabled( testFunctionAvailable );
+
+    // connect slots
     connect( kcfg_UseServer, SIGNAL(stateChanged(int)), SLOT(toggleExternalConfigAvailable(int)) );
 
     connect( kcfg_Database, SIGNAL(textChanged(QString)), SLOT(updateSQLQuery()) );
     connect( kcfg_User,     SIGNAL(textChanged(QString)), SLOT(updateSQLQuery()) );
-    connect( kcfg_Host,     SIGNAL(textChanged(QString)), SLOT(updateSQLQuery()) );
+    connect( button_Test,   SIGNAL(clicked(bool)),  SLOT(testDatabaseConnection()));
 
     toggleExternalConfigAvailable( kcfg_UseServer->checkState() );
 
     updateSQLQuery();
+
+    m_configManager->addWidget( this );
 }
 
 DatabaseConfig::~DatabaseConfig()
@@ -52,6 +72,47 @@ void
 DatabaseConfig::toggleExternalConfigAvailable( const int checkBoxState ) //SLOT
 {
     group_Connection->setEnabled( checkBoxState == Qt::Checked );
+}
+
+void
+DatabaseConfig::testDatabaseConnection() //SLOT
+{
+    // get all storage factories
+    QList<Plugins::PluginFactory*> factories;
+    factories = Plugins::PluginManager::instance()->factories( Plugins::PluginManager::Storage );
+
+    // try if they have a testSettings slot that we can call
+    bool tested = false;
+    foreach( Plugins::PluginFactory* factory, factories )
+    {
+        bool callSucceeded = false;
+        QStringList connectionErrors;
+
+        callSucceeded = QMetaObject::invokeMethod( factory,
+                               "testSettings",
+                               Q_RETURN_ARG( QStringList, connectionErrors ),
+                               Q_ARG( QString, kcfg_Host->text() ),
+                               Q_ARG( QString, kcfg_User->text() ),
+                               Q_ARG( QString, kcfg_Password->text() ),
+                               Q_ARG( int, kcfg_Port->text().toInt() ),
+                               Q_ARG( QString, kcfg_Database->text() )
+                               );
+
+        if( callSucceeded )
+        {
+            tested = true;
+            if( connectionErrors.isEmpty() )
+                KMessageBox::messageBox( this, KMessageBox::Information,
+                                         i18n( "Amarok was able to connect succesfull to the database." ),
+                                         i18n( "Success" ) );
+            else
+                KMessageBox::error( this, i18n( "The amarok database reported "
+                                                "the following errors:\n%1\nIn most cases you will need to resolve "
+                                                "these errors before Amarok will run properly." ).
+                                    arg( connectionErrors.join( "\n" ) ),
+                                    i18n( "Database Error" ));
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////
@@ -72,7 +133,12 @@ DatabaseConfig::isDefault()
 
 void
 DatabaseConfig::updateSettings()
-{}
+{
+    if( m_configManager->hasChanged() )
+        KMessageBox::messageBox( 0, KMessageBox::Information,
+                 i18n( "Changes to database settings only take\neffect after Amarok is restarted." ),
+                 i18n( "Database settings changed" ) );
+}
 
 
 ///////////////////////////////////////////////////////////////

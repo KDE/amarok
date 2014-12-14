@@ -2,6 +2,7 @@
  * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
  * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
  * Copyright (c) 2012 Lachlan Dufton <dufton@gmail.com>                                 *
+ * Copyright (c) 2014 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,13 +21,15 @@
 
 #include "MySqlServerStorage.h"
 
-#include <amarokconfig.h>
-#include <core/support/Amarok.h>
 #include <core/support/Debug.h>
 
-#include <QMutexLocker>
+#include <QAtomicInt>
 
 #include <mysql.h>
+
+/** number of times the library is used.
+ */
+static QAtomicInt libraryInitRef;
 
 MySqlServerStorage::MySqlServerStorage()
     : MySqlStorage()
@@ -35,26 +38,30 @@ MySqlServerStorage::MySqlServerStorage()
 }
 
 bool
-MySqlServerStorage::init()
+MySqlServerStorage::init( const QString &host, const QString &user, const QString &password, int port, const QString &databaseName )
 {
     DEBUG_BLOCK
 
-
     // -- initializing the library
-    int ret = mysql_library_init( 0, NULL, NULL );
-    if( ret != 0 )
+    // we only need to do this once
+    if( !libraryInitRef.fetchAndAddOrdered( 1 ) )
     {
-        // it has no sense to call reportError here because m_db is not yet initialized
-        error() << "MySQL library initialization failed!";
-        return false;
+        int ret = mysql_library_init( 0, NULL, NULL );
+        if( ret != 0 )
+        {
+            // mysql sources show that there is only 0 and 1 as return code
+            // and it can only fail because of memory or thread issues.
+            reportError( "library initialization "
+                         "failed, return code " + QString::number( ret ) );
+            libraryInitRef.deref();
+            return false;
+        }
     }
 
     m_db = mysql_init( NULL );
-
     if( !m_db )
     {
-        error() << "MySQL initialization failed";
-        mysql_library_end();
+        reportError( "call to mysql_init" );
         return false;
     }
 
@@ -65,20 +72,19 @@ MySqlServerStorage::init()
     else
         debug() << "Automatic reconnect successfully activated";
 
+    debug() << "Connecting to mysql server " << user << "@" << host << ":" << port;
     if( !mysql_real_connect( m_db,
-                Amarok::config( "MySQL" ).readEntry( "Host", "localhost" ).toUtf8(),
-                Amarok::config( "MySQL" ).readEntry( "User", "amarokuser" ).toUtf8(),
-                Amarok::config( "MySQL" ).readEntry( "Password", "password" ).toUtf8(),
+                host.toUtf8(),
+                user.toUtf8(),
+                password.toUtf8(),
                 NULL,
-                Amarok::config( "MySQL" ).readEntry( "Port", "3306" ).toInt(),
+                port,
                 NULL,
                 CLIENT_COMPRESS )
         )
     {
-        error() << "Could not connect to mysql server!";
         reportError( "call to mysql_real_connect" );
         mysql_close( m_db );
-        mysql_library_end();
         m_db = 0;
         return false;
     }
@@ -90,9 +96,15 @@ MySqlServerStorage::init()
     else
         debug() << "Automatic reconnect successfully activated";
 
-    QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
-    sharedInit( databaseName );
-    debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
+    m_databaseName = databaseName; // store it when we need it later for reconnect
+    if( !sharedInit( databaseName ) )
+    {
+        // if sharedInit fails then we can usually not switch to the correct database
+        // sharedInit already reports errors.
+        mysql_close( m_db );
+        m_db = 0;
+        return false;
+    }
 
     MySqlServerStorage::initThreadInitializer();
     return true;
@@ -105,7 +117,10 @@ MySqlServerStorage::~MySqlServerStorage()
     if( m_db )
     {
         mysql_close( m_db );
-        mysql_library_end();
+        if( !libraryInitRef.deref() )
+        {
+            mysql_library_end();
+        }
     }
 }
 
@@ -132,47 +147,14 @@ MySqlServerStorage::query( const QString &query )
     if( tid != mysql_thread_id( m_db ) )
     {
         debug() << "NOTE: MySQL server had gone away, ping reconnected it";
-        QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
         if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
             reportError( "SET NAMES 'utf8' died" );
-        if( mysql_query( m_db, QString( "USE %1" ).arg( databaseName ).toUtf8() ) )
+        if( mysql_query( m_db, QString( "USE %1" ).arg( m_databaseName ).toUtf8() ) )
             reportError( "Could not select database" );
     }
 
 
     return MySqlStorage::query( query );
 }
-
-
-bool
-MySqlServerStorage::testSettings( const QString &host, const QString &user, const QString &password, int port )
-{
-    DEBUG_BLOCK
-    if( mysql_library_init( 0, NULL, NULL ) )
-    {
-        error() << "MySQL library initialization failed!";
-        return false;
-    }
-
-    MYSQL* db = mysql_init( NULL );
-
-    if( !db )
-    {
-        error() << "MySQL initialization failed";
-        return false;
-    }
-
-    if( !mysql_real_connect( db, host.toUtf8(), user.toUtf8(), password.toUtf8(), NULL, port, NULL, CLIENT_COMPRESS ) )
-    {
-        mysql_close( db );
-        db = 0;
-        return false;
-    }
-
-    mysql_close( db );
-    db = 0;
-    return true;
-}
-
 
 

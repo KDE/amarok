@@ -273,7 +273,11 @@ void
 MySqlStorage::reportError( const QString& message )
 {
     QMutexLocker locker( &m_mutex );
-    QString errorMessage( "GREPME " + m_debugIdent + " query failed! (" + QString::number( mysql_errno( m_db ) ) + ") " + mysql_error( m_db ) + " on " + message );
+    QString errorMessage;
+    if( m_db )
+        errorMessage = m_debugIdent + " query failed! (" + QString::number( mysql_errno( m_db ) ) + ") " + mysql_error( m_db ) + " on " + message;
+    else
+        errorMessage = m_debugIdent + " something failed! on " + message;
     error() << errorMessage;
 
     if( m_lastErrors.count() < 20 )
@@ -287,7 +291,7 @@ MySqlStorage::initThreadInitializer()
     ThreadInitializer::init();
 }
 
-void
+bool
 MySqlStorage::sharedInit( const QString &databaseName )
 {
     QMutexLocker locker( &m_mutex );
@@ -298,7 +302,11 @@ MySqlStorage::sharedInit( const QString &databaseName )
     if( mysql_query( m_db, QString( "ALTER DATABASE %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
         reportError( "Could not alter database charset/collation" );
     if( mysql_query( m_db, QString( "USE %1" ).arg( databaseName ).toUtf8() ) )
+    {
         reportError( "Could not select database" );
+        return false; // this error is fatal
+    }
 
     debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
+    return true;
 }

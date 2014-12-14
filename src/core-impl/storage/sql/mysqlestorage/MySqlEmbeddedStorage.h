@@ -28,18 +28,18 @@ class AMAROK_SQLSTORAGE_MYSQLE_EXPORT MySqlEmbeddedStorage : public MySqlStorage
 {
     public:
         /** Creates a new SqlStorage.
-         *  @param storageLocation The directory for storing the mysql database, will use the default defined by Amarok/KDE if not set.
+         *
          *  Note: Currently it is not possible to open two storages to different locations
          *  in one process.
          *  The first caller wins.
          */
-        MySqlEmbeddedStorage( const QString &storageLocation = QString() );
+        MySqlEmbeddedStorage();
         virtual ~MySqlEmbeddedStorage();
 
-        virtual bool init();
-
-    private:
-        QString m_storageLocation;
+        /** Initializes the storage.
+         *  @param storageLocation The directory for storing the mysql database, will use the default defined by Amarok/KDE if not set.
+         */
+        bool init( const QString &storageLocation = QString() );
 };
 
 #endif // MYSQLEMBEDDEDSTORAGE_H

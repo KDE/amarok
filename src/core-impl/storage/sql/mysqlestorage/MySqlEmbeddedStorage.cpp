@@ -24,28 +24,31 @@
 #include <core/support/Debug.h>
 
 #include <QDir>
-#include <QString>
-#include <QMutexLocker>
-#include <QThreadStorage>
 #include <QVarLengthArray>
 #include <QVector>
+#include <QAtomicInt>
 
 #include <mysql.h>
 
-MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
+/** number of times the library is used.
+ */
+static QAtomicInt libraryInitRef;
+
+MySqlEmbeddedStorage::MySqlEmbeddedStorage()
     : MySqlStorage()
-    , m_storageLocation( storageLocation )
 {
     m_debugIdent = "MySQLe";
 }
 
 bool
-MySqlEmbeddedStorage::init()
+MySqlEmbeddedStorage::init( const QString &storageLocation )
 {
 
     // -- figuring out and setting the database path.
-    QString storagePath = m_storageLocation;
+    QString storagePath = storageLocation;
     QString databaseDir;
+    // TODO: the following logic is not explained in the comments.
+    //  tests use a different directory then the real run
     if( storagePath.isEmpty() )
     {
         storagePath = Amarok::saveLocation();
@@ -80,25 +83,25 @@ MySqlEmbeddedStorage::init()
     }
 
     // -- initializing the library
-    int ret = mysql_library_init( mysql_args.size(), const_cast<char**>(mysql_args.data()), 0 );
-    if( ret != 0 )
+    // we only need to do this once
+    if( !libraryInitRef.fetchAndAddOrdered( 1 ) )
     {
-        // it has no sense to call reportError here because m_db is not yet initialized
-        QMutexLocker locker( &m_mutex );
-        QString errorMessage( "GREPME " + m_debugIdent + " library initialization "
-                              "failed, return code " + QString::number( ret ) );
-        m_lastErrors.append( errorMessage );
-        error() << errorMessage.toLocal8Bit().constData();
-        error() << "mysqle arguments were:" << mysql_args;
-        return false;
+        int ret = mysql_library_init( mysql_args.size(), const_cast<char**>(mysql_args.data()), 0 );
+        if( ret != 0 )
+        {
+            // mysql sources show that there is only 0 and 1 as return code
+            // and it can only fail because of memory or thread issues.
+            reportError( "library initialization "
+                         "failed, return code " + QString::number( ret ) );
+            libraryInitRef.deref();
+            return false;
+        }
     }
 
     m_db = mysql_init( NULL );
-
     if( !m_db )
     {
-        error() << "MySQLe initialization failed";
-        mysql_library_end();
+        reportError( "call to mysql_init" );
         return false;
     }
 
@@ -112,13 +115,18 @@ MySqlEmbeddedStorage::init()
         error() << "Could not connect to mysql embedded!";
         reportError( "call to mysql_real_connect" );
         mysql_close( m_db );
-        mysql_library_end();
         m_db = 0;
         return false;
     }
 
-    sharedInit( "amarok" );
-    debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
+    if( !sharedInit( QLatin1String("amarok") ) )
+    {
+        // if sharedInit fails then we can usually not switch to the correct database
+        // sharedInit already reports errors.
+        mysql_close( m_db );
+        m_db = 0;
+        return false;
+    }
 
     MySqlStorage::initThreadInitializer();
 
@@ -130,7 +138,10 @@ MySqlEmbeddedStorage::~MySqlEmbeddedStorage()
     if( m_db )
     {
         mysql_close( m_db );
-        mysql_library_end();
+        if( !libraryInitRef.deref() )
+        {
+            mysql_library_end();
+        }
     }
 }
 

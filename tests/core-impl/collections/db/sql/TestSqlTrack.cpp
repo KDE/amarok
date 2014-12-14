@@ -46,8 +46,8 @@ void
 TestSqlTrack::initTestCase()
 {
     m_tmpDir = new KTempDir();
-    m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    QVERIFY( m_storage->init() );
+    m_storage = new MySqlEmbeddedStorage();
+    QVERIFY( m_storage->init( m_tmpDir->name() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
 

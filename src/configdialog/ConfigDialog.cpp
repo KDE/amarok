@@ -49,7 +49,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase *metadata = new MetadataConfig( this );
     ConfigDialogBase *playback = new PlaybackConfig( this );
     ConfigDialogBase *notify = new NotificationsConfig( this );
-    ConfigDialogBase *database = new DatabaseConfig( this );
+    ConfigDialogBase *database = new DatabaseConfig( this, config );
     ConfigDialogBase *plugins = new PluginsConfig( this );
     ConfigDialogBase *scripts = new ScriptsConfig( this );
 
@@ -198,7 +198,7 @@ bool Amarok2ConfigDialog::isDefault()
     bool def = false;
 
     foreach( ConfigDialogBase* page, m_pageList )
-        if( page->hasChanged() )
+        if( page->isDefault() )
             def = true;
 
     return def;

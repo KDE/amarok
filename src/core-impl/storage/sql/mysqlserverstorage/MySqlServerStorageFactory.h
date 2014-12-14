@@ -28,6 +28,12 @@ class MySqlServerStorageFactory : public StorageFactory
         virtual ~MySqlServerStorageFactory();
 
         virtual void init();
+
+    public slots:
+
+        /** Returns the error messages created during establishing the connection.
+         */
+        QStringList testSettings( const QString &host, const QString &user, const QString &password, int port, const QString &databaseName );
 };
 
 

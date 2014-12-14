@@ -40,12 +40,6 @@ class MySqlStorage: public SqlStorage
         MySqlStorage();
         virtual ~MySqlStorage();
 
-        /** Initializes the sql storage.
-         *
-         *  @returns true if the initialization was successfull.
-         */
-        virtual bool init() = 0;
-
         virtual QStringList query( const QString &query );
         virtual int insert( const QString &statement, const QString &table = QString() );
 
@@ -80,7 +74,13 @@ class MySqlStorage: public SqlStorage
         void reportError( const QString &message );
 
         void initThreadInitializer();
-        void sharedInit( const QString &databaseName );
+
+        /** Sends the first sql commands to setup the connection.
+         *
+         *  Sets things like the used database and charset.
+         *  @returns false if something fatal was wrong.
+         */
+        bool sharedInit( const QString &databaseName );
 
         MYSQL* m_db;
 

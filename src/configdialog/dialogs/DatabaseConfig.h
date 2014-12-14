@@ -21,12 +21,15 @@
 #include "ui_DatabaseConfig.h"
 #include "configdialog/ConfigDialogBase.h"
 
+class KConfigDialogManager;
+class KConfigSkeleton;
+
 class DatabaseConfig : public ConfigDialogBase, public Ui_DatabaseConfig
 {
     Q_OBJECT
 
     public:
-        DatabaseConfig( QWidget* parent );
+        DatabaseConfig( QWidget* parent, KConfigSkeleton *config );
         virtual ~DatabaseConfig();
 
         virtual bool hasChanged();
@@ -35,12 +38,20 @@ class DatabaseConfig : public ConfigDialogBase, public Ui_DatabaseConfig
 
     public slots:
         void toggleExternalConfigAvailable( int checkBoxState );
+        void testDatabaseConnection();
 
     private Q_SLOTS:
         void updateSQLQuery();
 
     private:
-        inline bool isSQLInfoPresent() const;
+        /** Returns true if the configuration is complete.
+         *
+         *  Complete menas that the database, user and host are filled out.
+         */
+        bool isSQLInfoPresent() const;
+
+        KConfigDialogManager* m_configManager;
+
 };
 
 

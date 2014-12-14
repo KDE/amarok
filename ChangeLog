@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.8.1
   FEATURES:
+   * Database configuration dialog now has a "test connection" button.
    * Add Service entries for directories. (BR 229708)
    * Collection Browser scrolls back to its original position when the filter is cleared.
      (BR 188074)

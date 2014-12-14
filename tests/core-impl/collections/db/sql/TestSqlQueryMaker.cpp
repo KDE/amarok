@@ -68,8 +68,8 @@ void
 TestSqlQueryMaker::initTestCase()
 {
     m_tmpDir = new KTempDir();
-    m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
-    QVERIFY( m_storage->init() );
+    m_storage = new MySqlEmbeddedStorage();
+    QVERIFY( m_storage->init( m_tmpDir->name() ) );
     m_collection = new Collections::SqlCollection( m_storage );
 
     QMap<int,QString> mountPoints;

@@ -59,8 +59,8 @@ TestSqlScanManager::initTestCase()
 
     m_tmpDatabaseDir = new KTempDir();
     QVERIFY( m_tmpDatabaseDir->exists() );
-    m_storage = new MySqlEmbeddedStorage( m_tmpDatabaseDir->name() );
-    QVERIFY( m_storage->init() );
+    m_storage = new MySqlEmbeddedStorage();
+    QVERIFY( m_storage->init( m_tmpDatabaseDir->name() ) );
 
     m_collection = new Collections::SqlCollection( m_storage );
     connect( m_collection, SIGNAL(updated()), this, SLOT(slotCollectionUpdated()) );

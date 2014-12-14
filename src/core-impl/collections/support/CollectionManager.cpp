@@ -241,7 +241,7 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
 
     if( !newCollection )
     {
-        debug() << "Warning, newCollection in slotNewCollection is 0";
+        error() << "newCollection in slotNewCollection is 0";
         return;
     }
     {
@@ -250,7 +250,7 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
         {
             if( p.first == newCollection )
             {
-                debug() << "Warning, newCollection is already being managed";
+                error() << "newCollection " << newCollection->collectionId() << " is already being managed";
                 return;
             }
         }
@@ -266,13 +266,21 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
 
     {
         QWriteLocker locker( &d->lock );
-        d->collections.append( pair );
-        d->trackProviders.append( newCollection );
+        if( newCollection->collectionId() == QLatin1String("localCollection") )
+        {
+            d->primaryCollection = newCollection;
+            d->collections.insert( 0, pair ); // the primary collection should be the first collection to be searched
+            d->trackProviders.insert( 2, newCollection ); // the primary collection should be between the timecode track provider and the local file track provider
+        }
+        else
+        {
+            d->collections.append( pair );
+            d->trackProviders.append( newCollection );
+        }
         connect( newCollection, SIGNAL(remove()), SLOT(slotRemoveCollection()), Qt::QueuedConnection );
         connect( newCollection, SIGNAL(updated()), SLOT(slotCollectionChanged()), Qt::QueuedConnection );
 
-        if( newCollection->collectionId() == "localCollection" )
-            d->primaryCollection = newCollection;
+        debug() << "new Collection " << newCollection->collectionId();
     }
 
     if( status & CollectionViewable )

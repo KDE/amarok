@@ -27,16 +27,22 @@
 class AMAROK_SQLSTORAGE_MYSQLE_EXPORT MySqlServerStorage: public MySqlStorage
 {
     public:
-        /** Connect to the server defined by the configuration options. */
+        /** Constructor for the server based mysql storage. */
         MySqlServerStorage();
         virtual ~MySqlServerStorage();
 
-        virtual bool init();
+        /** Try to connect to the server indicated by the options.
+         *
+         *  Error messages are in the store error log.
+         *
+         *  @return true if connection works.
+         */
+        virtual bool init( const QString &host, const QString &user, const QString &password, int port, const QString &databaseName );
 
         virtual QStringList query( const QString &query );
 
-        /** Returns true if the given settings allow to connect to a sql server. */
-        static bool testSettings( const QString &host, const QString &user, const QString &password, int port );
+    private:
+        QString m_databaseName; ///< remember the name given at init for reconnects
 };
 
 #endif
