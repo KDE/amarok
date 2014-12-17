@@ -27,7 +27,6 @@
 #include "MainWindow.h"
 #include "amarokconfig.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/capabilities/MultiPlayableCapability.h"
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
@@ -35,7 +34,6 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/support/MetaUtility.h"
-#include "core/playlists/PlaylistFormat.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
@@ -44,9 +42,7 @@
 #include "playback/PowerManager.h"
 #include "playlist/PlaylistActions.h"
 
-#include <KMessageBox>
-#include <KRun>
-#include <KServiceTypeTrader>
+#include <KLocale>
 
 #include <Phonon/AudioOutput>
 #include <Phonon/BackendCapabilities>
@@ -54,7 +50,7 @@
 #include <Phonon/VolumeFaderEffect>
 
 #include <QCoreApplication>
-#include <QTextDocument>
+#include <QTextDocument> // for Qt::escape
 #include <qmath.h>
 
 // for slotMetaDataChanged()
