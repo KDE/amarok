@@ -20,7 +20,6 @@
 #include "core/amarokcore_export.h"
 
 #include <KPluginInfo>
-#include <KSharedPtr>
 
 #include <QObject>
 
@@ -28,7 +27,12 @@ namespace Plugins {
 
 /** Baseclass for Amarok plugins.
  *
- *  Plugins need to set the m_info and m_type variables.
+ *  This class is subclassed for the different type of Amarok plugins.
+ *  - CollectionFactory
+ *  - ServiceFactory
+ *  - ImportFactory
+ *
+ *  Plugins need to set the m_info variables.
  */
 class AMAROK_CORE_EXPORT PluginFactory : public QObject
 {
@@ -54,20 +58,20 @@ public:
      * Initialize the service plugin of this type.
      * Reimplemented by subclasses, which must set
      * m_initialized = true when the function has finished.
+     *
+     * This function is called by the different Managers after
+     * loading the plugin.
+     * If there is ever a plugin managed by two different
+     * Managers measures have to be taken so that
+     * calling init twice doesn't cause problems.
      * */
     virtual void init() = 0;
-
-    /**
-     * Indicates whether or not the plugin has been initialized.
-     * @return Initialized or not
-     */
-    bool isInitialized() const;
 
     KPluginInfo info() const;
     Type pluginType() const;
 
 protected:
-    bool m_initialized;
+    bool m_initialized; ///< set after init was called
     KPluginInfo m_info;
     Type m_type;
 };
