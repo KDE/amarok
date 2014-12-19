@@ -22,7 +22,7 @@
 #include "core-impl/logger/ProxyLogger.h"
 #include "DefaultSqlQueryMakerFactory.h"
 #include "core/meta/Meta.h"
-#include "mysqlecollection/MySqlEmbeddedStorage.h"
+#include "core-impl/storage/MySqlEmbeddedStorage.h"
 #include "SqlCollection.h"
 #include "SqlCollectionLocation.h"
 #include "SqlRegistry.h"

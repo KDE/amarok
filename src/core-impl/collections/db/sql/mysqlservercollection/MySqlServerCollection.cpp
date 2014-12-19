@@ -17,18 +17,13 @@
  ****************************************************************************************/
 
 #include "MySqlServerCollection.h"
+#include "MySqlServerStorage.h"
 
 #include "amarokconfig.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/db/sql/SqlCollectionFactory.h"
-
-#include <QMutexLocker>
-#include <QThreadStorage>
-#include <QVarLengthArray>
-
-#include <mysql.h>
 
 using namespace Collections;
 
@@ -47,113 +42,6 @@ MySqlServerCollectionFactory::init()
 
     emit newStorage( storage );
     emit newCollection( collection );
-}
-
-MySqlServerStorage::MySqlServerStorage()
-    : MySqlStorage()
-{
-    DEBUG_BLOCK
-
-    m_debugIdent = "MySQL-server";
-
-    if( mysql_library_init( 0, NULL, NULL ) )
-    {
-        error() << "MySQL library initialization failed!";
-        return;
-    }
-
-    m_db = mysql_init( NULL );
-
-    if( !m_db )
-    {
-        error() << "MySQL initialization failed";
-        return;
-    }
-
-    //first here, the right way for >= 5.1.6
-
-    my_bool reconnect = true;
-    if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
-        reportError( "Asking for automatic reconnect did not succeed!" );
-    else
-        debug() << "Automatic reconnect successfully activated";
-
-    if( !mysql_real_connect( m_db,
-                Amarok::config( "MySQL" ).readEntry( "Host", "localhost" ).toUtf8(),
-                Amarok::config( "MySQL" ).readEntry( "User", "amarokuser" ).toUtf8(),
-                Amarok::config( "MySQL" ).readEntry( "Password", "password" ).toUtf8(),
-                NULL,
-                Amarok::config( "MySQL" ).readEntry( "Port", "3306" ).toInt(),
-                NULL,
-                CLIENT_COMPRESS )
-        )
-    {
-        debug() << "connection to mysql failed";
-        error() << "Could not connect to mysql!";
-        reportError( "na" );
-        mysql_close( m_db );
-        m_db = 0;
-    }
-    else
-    {
-        //but in versions prior to 5.1.6, have to call it after every real_connect
-        my_bool reconnect = true;
-        if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
-            reportError( "Asking for automatic reconnect did not succeed!" );
-        else
-            debug() << "Automatic reconnect successfully activated";
-
-        QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
-        sharedInit( databaseName );
-        debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
-    }
-
-    MySqlServerStorage::initThreadInitializer();
-}
-
-MySqlServerStorage::~MySqlServerStorage()
-{
-    DEBUG_BLOCK
-}
-
-QString
-MySqlServerStorage::type() const
-{
-    return "MySQL";
-}
-
-QStringList
-MySqlServerStorage::query( const QString &query )
-{
-    MySqlStorage::initThreadInitializer();
-    QMutexLocker locker( &m_mutex );
-    if( !m_db )
-    {
-        error() << "Tried to query an uninitialized m_db!";
-        return QStringList();
-    }
-
-    unsigned long tid = mysql_thread_id( m_db );
-
-    int res = mysql_ping( m_db );
-    if( res )
-    {
-        reportError( "mysql_ping failed!" );
-        return QStringList();
-    }
-
-    if( tid != mysql_thread_id( m_db ) )
-    {
-        debug() << "NOTE: MySQL server had gone away, ping reconnected it";
-        QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
-        if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
-            reportError( "SET NAMES 'utf8' died" );
-        if( mysql_query( m_db, QString( "USE %1" ).arg( databaseName ).toUtf8() ) )
-            reportError( "Could not select database" );
-    }
-
-
-    return MySqlStorage::query( query );
 }
 
 #include "MySqlServerCollection.moc"

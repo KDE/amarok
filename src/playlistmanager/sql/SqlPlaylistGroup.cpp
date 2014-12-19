@@ -16,9 +16,9 @@
 
 #include "SqlPlaylistGroup.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/storage/StorageManager.h"
 #include "core/support/Debug.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 
 #include <typeinfo>
 
@@ -62,7 +62,7 @@ SqlPlaylistGroup::save()
     if ( m_parent )
         parentId = m_parent->id();
 
-    SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage* sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -103,7 +103,7 @@ SqlPlaylistGroup::setDescription( const QString &description )
 void
 SqlPlaylistGroup::removeFromDb()
 {
-    SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage* sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -140,7 +140,7 @@ SqlPlaylistGroup::setParent( SqlPlaylistGroupPtr parent )
 SqlPlaylistGroupList
 SqlPlaylistGroup::childSqlGroups() const
 {
-    SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage* sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return SqlPlaylistGroupList();
 
@@ -172,7 +172,7 @@ SqlPlaylistGroup::childSqlGroups() const
 SqlPlaylistList
 SqlPlaylistGroup::childSqlPlaylists() const
 {
-    SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage* sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return SqlPlaylistList();
 

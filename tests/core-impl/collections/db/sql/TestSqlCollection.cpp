@@ -19,7 +19,7 @@
 #include <core/collections/Collection.h>
 #include <core-impl/collections/db/sql/SqlCollection.h>
 #include <core-impl/collections/db/sql/DatabaseUpdater.h>
-#include <core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.h>
+#include <core-impl/storage/MySqlEmbeddedStorage.h>
 
 #include "SqlMountPointManagerMock.h"
 

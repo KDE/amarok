@@ -24,10 +24,10 @@
 #include "amarokurls/NavigationUrlRunner.h"
 #include "amarokurls/PlayUrlGenerator.h"
 #include "amarokurls/PlayUrlRunner.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/storage/StorageManager.h"
 #include "core-impl/meta/timecode/TimecodeObserver.h"
 #include "playlist/PlaylistViewUrlGenerator.h"
 
@@ -139,7 +139,7 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
 
     QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks where url like 'amarok://%1%' ORDER BY name;";
     query = query.arg( command );
-    QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
+    QStringList result = StorageManager::instance()->sqlStorage()->query( query );
 
     debug() << "Result: " << result;
     int resultRows = result.count() / 6;

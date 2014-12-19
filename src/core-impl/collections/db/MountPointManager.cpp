@@ -21,7 +21,7 @@
 #include "MediaDeviceCache.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core-impl/collections/db/sql/device/massstorage/MassStorageDeviceHandler.h"
 #include "core-impl/collections/db/sql/device/nfs/NfsDeviceHandler.h"
 #include "core-impl/collections/db/sql/device/smb/SmbDeviceHandler.h"

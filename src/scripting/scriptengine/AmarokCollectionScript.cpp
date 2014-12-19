@@ -18,8 +18,9 @@
 
 #include "amarokconfig.h"
 #include "App.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/storage/StorageManager.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/db/sql/SqlCollectionLocation.h"
 #include "core/collections/QueryMaker.h"
@@ -118,13 +119,13 @@ AmarokCollectionScript::collectionLocation() const
 QStringList
 AmarokCollectionScript::query( const QString& sql ) const
 {
-    return CollectionManager::instance()->sqlStorage()->query( sql );
+    return StorageManager::instance()->sqlStorage()->query( sql );
 }
 
 QString
 AmarokCollectionScript::escape( const QString& sql ) const
 {
-    return CollectionManager::instance()->sqlStorage()->escape( sql );
+    return StorageManager::instance()->sqlStorage()->escape( sql );
 }
 
 void

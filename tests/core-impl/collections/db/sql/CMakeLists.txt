@@ -5,8 +5,8 @@ macro(add_database_test test_target test_sources)
     #one cannot link to plugins on OS X. As a workaround, add anything relevant that goes into the mysqle plugin to each test
         set( test_sources_internal
                 ${test_sources}
-                ${AMAROK_SOURCE_TREE}/core-impl/collections/db/sql/mysql-shared/MySqlStorage.cpp
-                ${AMAROK_SOURCE_TREE}/core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.cpp )
+                ${AMAROK_SOURCE_TREE}/core-impl/storage/MySqlStorage.cpp
+                ${AMAROK_SOURCE_TREE}/core-impl/storage/MySqlEmbeddedStorage.cpp )
     endif(APPLE)
 
 

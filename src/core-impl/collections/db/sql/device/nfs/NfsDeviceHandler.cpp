@@ -20,7 +20,7 @@
 #include "NfsDeviceHandler.h"
 
 #include "core/support/Debug.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 
 #include <KUrl>
 #include <Solid/Device>

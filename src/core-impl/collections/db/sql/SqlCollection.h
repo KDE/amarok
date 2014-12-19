@@ -21,8 +21,8 @@
 
 #include "amarok_sqlcollection_export.h"
 #include "core/capabilities/TranscodeCapability.h"
-#include "core/collections/support/SqlStorage.h"
-#include "core-impl/collections/db/DatabaseCollection.h"
+#include <core/storage/SqlStorage.h>
+#include <core-impl/collections/db/DatabaseCollection.h>
 #include "SqlRegistry.h"
 
 class SqlScanResultProcessor;

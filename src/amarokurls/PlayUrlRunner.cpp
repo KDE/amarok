@@ -20,12 +20,13 @@
 #include "amarokconfig.h"
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
+#include "core-impl/storage/StorageManager.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "EngineController.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/proxymodels/AbstractModel.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core/meta/Meta.h"
 
 PlayUrlRunner::PlayUrlRunner() : AmarokUrlRunnerBase()
@@ -104,7 +105,7 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl( KUrl url )
     // the base64 encoded url (minus the '=').
     QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks WHERE url LIKE '%%1%'";
     query = query.arg ( track_encoded );
-    QStringList result = CollectionManager::instance()->sqlStorage()->query ( query );
+    QStringList result = StorageManager::instance()->sqlStorage()->query ( query );
 
     int resultRows = result.count() / 6;
 

@@ -18,12 +18,13 @@
 
 #include "PluginManager.h"
 
-#include "core/support/Amarok.h"
-#include "core/support/Components.h"
-#include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "services/ServicePluginManager.h"
-#include "statsyncing/Controller.h"
+#include <core/support/Amarok.h>
+#include <core/support/Components.h>
+#include <core/support/Debug.h>
+#include <core-impl/collections/support/CollectionManager.h>
+#include <core-impl/storage/StorageManager.h>
+#include <services/ServicePluginManager.h>
+#include <statsyncing/Controller.h>
 
 #include <KLocalizedString>
 #include <KMessageBox>
@@ -72,11 +73,11 @@ Plugins::PluginManager::~PluginManager()
     // tell the managers to get rid of their current factories
     QList<Plugins::PluginFactory*> emptyFactories;
 
-    CollectionManager::instance()->setFactories( emptyFactories );
-    ServicePluginManager::instance()->setFactories( emptyFactories );
     StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
     if( controller )
         controller->setFactories( emptyFactories );
+    ServicePluginManager::instance()->setFactories( emptyFactories );
+    StorageManager::instance()->setFactories( emptyFactories );
 }
 
 void
@@ -150,6 +151,10 @@ Plugins::PluginManager::checkPluginEnabledStates()
     // the setFactories functions should to:
     // - filter out factories not usefull
     // - handle the new list of factories, disabling old ones and enabling new ones.
+
+    PERF_LOG( "Loading storage plugins" )
+    StorageManager::instance()->setFactories( m_factoriesByType.value( Collection ) );
+    PERF_LOG( "Loaded storage plugins" )
 
     PERF_LOG( "Loading collection plugins" )
     CollectionManager::instance()->setFactories( m_factoriesByType.value( Collection ) );

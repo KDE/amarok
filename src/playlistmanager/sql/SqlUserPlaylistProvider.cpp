@@ -19,11 +19,11 @@
 
 #include "SvgHandler.h"
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core/playlists/PlaylistFormat.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/storage/StorageManager.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
@@ -188,7 +188,7 @@ SqlUserPlaylistProvider::createTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
     {
         debug() << "No SQL Storage available!";
@@ -229,7 +229,7 @@ SqlUserPlaylistProvider::deleteTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
 
     if( !sqlStorage )
     {
@@ -253,7 +253,7 @@ SqlUserPlaylistProvider::checkTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     QStringList values;
 
     //Prevents amarok from crashing on bad DB
@@ -299,7 +299,7 @@ void
 SqlUserPlaylistProvider::upgradeVersion2to3()
 {
     DEBUG_BLOCK
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     sqlStorage->query( "ALTER TABLE playlists DROP COLUMN description" );
 }
 

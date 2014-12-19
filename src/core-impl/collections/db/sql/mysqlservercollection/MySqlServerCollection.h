@@ -19,7 +19,6 @@
 #define AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
 
 #include "core/collections/Collection.h"
-#include "core-impl/collections/db/sql/mysql-shared/MySqlStorage.h"
 
 namespace Collections {
 
@@ -39,18 +38,5 @@ class MySqlServerCollectionFactory : public Collections::CollectionFactory
 };
 
 } //namespace Collections
-
-/**
- * Implements a MySqlStorage using a MySQL Server
- */
-class MySqlServerStorage: public MySqlStorage
-{
-    public:
-        MySqlServerStorage();
-        virtual ~MySqlServerStorage();
-
-        virtual QString type() const;
-        virtual QStringList query( const QString &query );
-};
 
 #endif

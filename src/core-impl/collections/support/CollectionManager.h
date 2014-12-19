@@ -25,7 +25,6 @@
 #include <QList>
 #include <QObject>
 
-class SqlStorage;
 class CollectionManagerSingleton;
 
 namespace Plugins {
@@ -103,13 +102,6 @@ class AMAROK_EXPORT CollectionManager : public QObject
           */
         Meta::TrackList tracksForUrls( const KUrl::List &urls );
 
-        /**
-            retrieve an interface which allows client-code to store/load data in a relational database.
-            Note: code using this method does NOT take ownership of the pointer, but may cache the pointer
-            Note2: You should never modify the database unless you really really know what you do.
-                   Using the SqlMeta (e.g. SqlRegistry or SqlTrack) is much better.
-        */
-        SqlStorage* sqlStorage() const;
 
         /**
          * add a collection whose lifecycle is not managed by CollectionManager.

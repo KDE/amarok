@@ -18,9 +18,9 @@
 
 #include "AmarokUrlHandler.h"
 #include "BookmarkGroup.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/storage/StorageManager.h"
 #include "core/support/Debug.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 
 #include <QUrl>
 
@@ -144,7 +144,7 @@ bool AmarokUrl::saveToDb()
 
     const int parentId = m_parent ? m_parent->id() : -1;
 
-    SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
+    SqlStorage * sql =  StorageManager::instance()->sqlStorage();
 
     if( m_id != -1 )
     {
@@ -152,7 +152,7 @@ bool AmarokUrl::saveToDb()
         debug() << "Updating bookmark";
         QString query = "UPDATE bookmarks SET parent_id=%1, name='%2', url='%3', description='%4', custom='%5' WHERE id=%6;";
         query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ), sql->escape( url() ), sql->escape( m_description ), sql->escape( m_customValue ) , QString::number( m_id ) );
-        CollectionManager::instance()->sqlStorage()->query( query );
+        StorageManager::instance()->sqlStorage()->query( query );
     }
     else
     {
@@ -160,7 +160,7 @@ bool AmarokUrl::saveToDb()
         debug() << "Creating new bookmark in the db";
         QString query = "INSERT INTO bookmarks ( parent_id, name, url, description, custom ) VALUES ( %1, '%2', '%3', '%4', '%5' );";
         query = query.arg( QString::number( parentId ), sql->escape( m_name ), sql->escape( url() ), sql->escape( m_description ), sql->escape( m_customValue ) );
-        m_id = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
+        m_id = StorageManager::instance()->sqlStorage()->insert( query, NULL );
     }
 
     return true;
@@ -190,7 +190,7 @@ void AmarokUrl::removeFromDb()
 {
     QString query = "DELETE FROM bookmarks WHERE id=%1";
     query = query.arg( QString::number( m_id ) );
-    CollectionManager::instance()->sqlStorage()->query( query );
+    StorageManager::instance()->sqlStorage()->query( query );
 }
 
 void AmarokUrl::rename( const QString &name )

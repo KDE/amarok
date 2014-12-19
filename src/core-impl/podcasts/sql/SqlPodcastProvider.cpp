@@ -24,14 +24,14 @@
 #include "browsers/playlistbrowser/PodcastModel.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core/interfaces/Logger.h"
 #include "core/podcasts/PodcastImageFetcher.h"
 #include "core/podcasts/PodcastReader.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/storage/StorageManager.h"
 #include "core-impl/podcasts/sql/PodcastSettingsDialog.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
 
@@ -79,7 +79,7 @@ SqlPodcastProvider::SqlPodcastProvider()
 {
     connect( m_updateTimer, SIGNAL(timeout()), SLOT(autoUpdate()) );
 
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
 
     if( !sqlStorage )
     {
@@ -165,7 +165,7 @@ void
 SqlPodcastProvider::loadPodcasts()
 {
     m_channels.clear();
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -195,7 +195,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
     if( string.isEmpty() )
         return SqlPodcastEpisodePtr();
 
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return SqlPodcastEpisodePtr();
 
@@ -243,7 +243,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
 bool
 SqlPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
 {
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return false;
 
@@ -460,7 +460,7 @@ SqlPodcastProvider::addPodcast( const KUrl &url )
     KUrl kurl = KUrl( url );
     debug() << "importing " << kurl.url();
 
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -577,7 +577,7 @@ SqlPodcastProvider::removeSubscription( Podcasts::SqlPodcastChannelPtr sqlChanne
     //Remove it when we know it's supposed to be empty.
     if( m_channels.isEmpty() )
     {
-        SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+        SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
         if( !sqlStorage )
             return;
         debug() << "Unsubscribed from last channel, cleaning out the podcastepisodes table.";
@@ -1438,7 +1438,7 @@ SqlPodcastProvider::redirected( KIO::Job *job, const KUrl &redirectedUrl )
 void
 SqlPodcastProvider::createTables() const
 {
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -1486,7 +1486,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
     debug() << QString( "Updating Podcast tables from version %1 to version %2" )
             .arg( fromVersion ).arg( toVersion );
 
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 #define escape(x) sqlStorage->escape(x)

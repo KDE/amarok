@@ -16,9 +16,9 @@
 
 #include "TagStatisticsStore.h"
 
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core/meta/Meta.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/storage/StorageManager.h"
 
 TagStatisticsStore::TagStatisticsStore( Meta::Track *track )
     : PersistentStatisticsStore( track )
@@ -26,7 +26,7 @@ TagStatisticsStore::TagStatisticsStore( Meta::Track *track )
     , m_artist( track->artist() ? track->artist()->name() : QString() )
     , m_album( track->album() ? track->album()->name() : QString() )
 {
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sql = StorageManager::instance()->sqlStorage();
 
     const QString query = "SELECT firstPlayed, lastPlayed, score, rating, playcount FROM "
                           "statistics_tag WHERE name = '%1' AND artist = '%2' AND album = '%3'";
@@ -46,7 +46,7 @@ TagStatisticsStore::TagStatisticsStore( Meta::Track *track )
 void
 TagStatisticsStore::save()
 {
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sql = StorageManager::instance()->sqlStorage();
 
     const QString check = "SELECT COUNT(*) FROM statistics_tag WHERE name = '%1' "
                           "AND artist = '%2' AND album = '%3'";

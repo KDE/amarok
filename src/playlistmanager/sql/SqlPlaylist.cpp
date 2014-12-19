@@ -16,9 +16,9 @@
 
 #include "SqlPlaylist.h"
 
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/storage/StorageManager.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeMeta.h"
@@ -102,7 +102,7 @@ SqlPlaylist::saveToDb( bool tracks )
     if( m_parent )
         parentId = m_parent->id();
 
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sql = StorageManager::instance()->sqlStorage();
 
     //figure out if we have a urlId and if this id is already in the db, if so, update it instead of creating a new one.
     if( !m_urlId.isEmpty() )
@@ -129,14 +129,14 @@ SqlPlaylist::saveToDb( bool tracks )
         query = query.arg( QString::number( parentId ) )
                 .arg( sql->escape( m_name ) )
                 .arg( QString::number( m_dbId ) );
-        CollectionManager::instance()->sqlStorage()->query( query );
+        StorageManager::instance()->sqlStorage()->query( query );
 
         if( tracks )
         {
             //delete existing tracks and insert all
             query = "DELETE FROM playlist_tracks where playlist_id=%1;";
             query = query.arg( QString::number( m_dbId ) );
-            CollectionManager::instance()->sqlStorage()->query( query );
+            StorageManager::instance()->sqlStorage()->query( query );
             saveTracks();
         }
     }
@@ -148,7 +148,7 @@ SqlPlaylist::saveToDb( bool tracks )
         query = query.arg( QString::number( parentId ) )
                 .arg( sql->escape( m_name ) )
                 .arg( sql->escape( m_urlId ) );
-        m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, "playlists" );
+        m_dbId = StorageManager::instance()->sqlStorage()->insert( query, "playlists" );
         if( tracks )
             saveTracks();
     }
@@ -173,7 +173,7 @@ void
 SqlPlaylist::saveTracks()
 {
     int trackNum = 1;
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sql = StorageManager::instance()->sqlStorage();
 
     foreach( Meta::TrackPtr trackPtr, m_tracks )
     {
@@ -256,7 +256,7 @@ SqlPlaylist::loadTracks()
                     "playlist_tracks WHERE playlist_id=%1 ORDER BY track_num";
     query = query.arg( QString::number( m_dbId ) );
 
-    QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
+    QStringList result = StorageManager::instance()->sqlStorage()->query( query );
 
     int resultRows = result.count() / 7;
 
@@ -288,11 +288,11 @@ SqlPlaylist::removeFromDb()
 {
     QString query = "DELETE FROM playlist_tracks WHERE playlist_id=%1";
     query = query.arg( QString::number( m_dbId ) );
-    CollectionManager::instance()->sqlStorage()->query( query );
+    StorageManager::instance()->sqlStorage()->query( query );
 
     query = "DELETE FROM playlists WHERE id=%1";
     query = query.arg( QString::number( m_dbId ) );
-    CollectionManager::instance()->sqlStorage()->query( query );
+    StorageManager::instance()->sqlStorage()->query( query );
 }
 
 } //namespace Playlists

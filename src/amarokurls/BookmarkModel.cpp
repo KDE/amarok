@@ -22,8 +22,8 @@
 #include "BookmarkGroup.h"
 #include "AmarokUrlHandler.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core-impl/storage/StorageManager.h>
+#include <core/storage/SqlStorage.h>
 
 #include <KIcon>
 
@@ -424,7 +424,7 @@ void BookmarkModel::createTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -449,8 +449,8 @@ void BookmarkModel::deleteTables()
 {
 
     DEBUG_BLOCK
-    
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -463,8 +463,8 @@ void BookmarkModel::checkTables()
 {
 
     DEBUG_BLOCK
-            
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -687,7 +687,7 @@ BookmarkModel::renameBookmarkRecursively( BookmarkGroupPtr group, const QString&
 
 void BookmarkModel::upgradeTables( int from )
 {
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
     

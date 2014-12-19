@@ -18,7 +18,7 @@
 
 #include "SqlCollection.h"
 #include "DatabaseUpdater.h"
-#include "mysqlecollection/MySqlEmbeddedStorage.h"
+#include "core-impl/storage/MySqlEmbeddedStorage.h"
 
 #include <KTempDir>
 

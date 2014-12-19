@@ -16,13 +16,11 @@
 
 #include "TestSqlArtist.h"
 
-#include "core/support/Debug.h"
 #include "DefaultSqlQueryMakerFactory.h"
 #include "core/meta/Meta.h"
-#include "mysqlecollection/MySqlEmbeddedStorage.h"
+#include "core-impl/storage/MySqlEmbeddedStorage.h"
 #include "SqlCollection.h"
 #include "SqlMountPointManagerMock.h"
-// #include "SqlMeta.h"
 
 #include <qtest_kde.h>
 

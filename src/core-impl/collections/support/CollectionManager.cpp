@@ -21,10 +21,10 @@
 #include "core/capabilities/CollectionScanCapability.h"
 #include "core/collections/Collection.h"
 #include "core/collections/MetaQueryMaker.h"
-#include "core/collections/support/SqlStorage.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/SmartPointerList.h"
+#include <core/storage/SqlStorage.h>
 #include "core-impl/meta/file/FileTrackProvider.h"
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
@@ -39,47 +39,12 @@
 
 typedef QPair<Collections::Collection*, CollectionManager::CollectionStatus> CollectionPair;
 
-/** This wrapper will be used by the collection manager to present one static SqlStorage object even when the user switches the actual database.
-On the other hand nobody except the owning collection should hold a reference to the SqlStorage anyway. */
-class SqlStorageWrapper : public SqlStorage
-{
-public:
-    SqlStorageWrapper()
-        : SqlStorage()
-        , m_sqlStorage( 0 )
-    {}
-
-    virtual QString type() const  { return ( m_sqlStorage ? m_sqlStorage->type() : "SqlStorageWrapper" ); }
-    virtual QString escape( const QString &text ) const  { return ( m_sqlStorage ? m_sqlStorage->escape( text ) : text ); }
-    virtual QStringList query( const QString &query )  { return ( m_sqlStorage ? m_sqlStorage->query( query ) : QStringList() ); }
-    virtual int insert( const QString &statement, const QString &table )  { return ( m_sqlStorage ? m_sqlStorage->insert( statement, table ) : 0 ); }
-    virtual QString boolTrue() const  { return ( m_sqlStorage ? m_sqlStorage->boolTrue() : "1" ); }
-    virtual QString boolFalse() const  { return ( m_sqlStorage ? m_sqlStorage->boolFalse() : "0" ); }
-    virtual QString idType() const  { return ( m_sqlStorage ? m_sqlStorage->idType() : "WRAPPER_NOT_IMPLEMENTED" ); }
-    virtual QString textColumnType( int length ) const { return ( m_sqlStorage ? m_sqlStorage->textColumnType( length ) : "WRAPPER_NOT_IMPLEMENTED" ); }
-    virtual QString exactTextColumnType( int length ) const { return ( m_sqlStorage ? m_sqlStorage->exactTextColumnType( length ) : "WRAPPER_NOT_IMPLEMENTED" ); }
-    virtual QString exactIndexableTextColumnType( int length ) const { return ( m_sqlStorage ? m_sqlStorage->exactIndexableTextColumnType( length ) : "WRAPPER_NOT_IMPLEMENTED" ); };
-    virtual QString longTextColumnType() const { return ( m_sqlStorage ? m_sqlStorage->longTextColumnType() : "WRAPPER_NOT_IMPLEMENTED" ); }
-    virtual QString randomFunc() const { return ( m_sqlStorage ? m_sqlStorage->randomFunc() : "WRAPPER_NOT_IMPLEMENTED" ); }
-
-    virtual QStringList getLastErrors() const
-    { return m_sqlStorage ? m_sqlStorage->getLastErrors() : QStringList(); }
-    virtual void clearLastErrors()
-    { if( m_sqlStorage ) m_sqlStorage->clearLastErrors(); }
-
-    void setSqlStorage( SqlStorage *sqlStorage ) { m_sqlStorage = sqlStorage; }
-private:
-    SqlStorage *m_sqlStorage;
-};
 
 /** Private structure of the collection manager */
 struct CollectionManager::Private
 {
     QList<CollectionPair> collections;
     QList<Plugins::PluginFactory*> factories; // factories belong to PluginManager
-
-    SqlStorage *sqlDatabase;
-    SqlStorageWrapper *sqlStorageWrapper;
 
     QList<Collections::Collection*> unmanagedCollections;
 
@@ -123,10 +88,7 @@ CollectionManager::CollectionManager()
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
 
     setObjectName( "CollectionManager" );
-    qRegisterMetaType<SqlStorage *>( "SqlStorage*" );
-    d->sqlDatabase = 0;
     d->primaryCollection = 0;
-    d->sqlStorageWrapper = new SqlStorageWrapper();
     // special-cased in trackForUrl(), don't add to d->trackProviders yet
     d->fileTrackProvider = new FileTrackProvider();
 }
@@ -138,9 +100,6 @@ CollectionManager::~CollectionManager()
     {
         QWriteLocker locker( &d->lock );
 
-        //not deleting SqlStorageWrapper here as somebody might be caching it
-        //Amarok really needs a proper state management...
-        d->sqlStorageWrapper->setSqlStorage( 0 );
         delete d->timecodeTrackProvider;
         delete d->fileTrackProvider;
         d->collections.clear();
@@ -336,9 +295,7 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
             {
                 //let's cheat a bit and assume that sqlStorage and the primaryCollection are always the same
                 //it is true for now anyway
-                d->sqlDatabase = sqlStorage;
                 d->primaryCollection = newCollection;
-                d->sqlStorageWrapper->setSqlStorage( sqlStorage );
             }
             else
             {
@@ -367,31 +324,6 @@ CollectionManager::slotRemoveCollection()
             QWriteLocker locker( &d->lock );
             d->collections.removeAll( pair );
             d->trackProviders.removeAll( collection );
-
-            // if the collection had a sql storage, find a new database that could provide
-            // one.
-            QVariant v = collection->property( "sqlStorage" );
-            if( v.isValid() )
-            {
-                SqlStorage *sqlDb = v.value<SqlStorage*>();
-                if( sqlDb && sqlDb == d->sqlDatabase )
-                {
-                    SqlStorage *newSqlDatabase = 0;
-                    foreach( const CollectionPair &pair, d->collections )
-                    {
-                        QVariant variant = pair.first->property( "sqlStorage" );
-                        if( !variant.isValid() )
-                            continue;
-                        SqlStorage *sqlDb = variant.value<SqlStorage*>();
-                        if( sqlDb )
-                        {
-                            newSqlDatabase = sqlDb;
-                        }
-                    }
-                    d->sqlDatabase = newSqlDatabase;
-                    d->sqlStorageWrapper->setSqlStorage( newSqlDatabase );
-                }
-            }
         }
 
         emit collectionRemoved( collection->collectionId() );
@@ -435,14 +367,6 @@ CollectionManager::primaryCollection() const
     QReadLocker locker( &d->lock );
 
     return d->primaryCollection;
-}
-
-SqlStorage*
-CollectionManager::sqlStorage() const
-{
-    QReadLocker locker( &d->lock );
-
-    return d->sqlStorageWrapper;
 }
 
 Meta::TrackList

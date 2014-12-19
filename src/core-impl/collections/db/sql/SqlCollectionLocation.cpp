@@ -23,7 +23,7 @@
 
 #include "MetaTagLib.h" // for getting the uid
 #include "core/collections/CollectionLocationDelegate.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"

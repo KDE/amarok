@@ -17,7 +17,7 @@
 #ifndef SQLSTORAGEMOCK_H
 #define SQLSTORAGEMOCK_H
 
-#include "core/collections/support/SqlStorage.h"
+#include "core/storage/SqlStorage.h"
 
 #include <QList>
 #include <QPair>

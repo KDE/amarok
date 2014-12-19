@@ -19,10 +19,10 @@
 
 #include "ServiceSqlQueryMaker.h"
 
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/storage/StorageManager.h"
 #include "ServiceSqlCollection.h"
 
 #include <threadweaver/Job.h>
@@ -764,7 +764,7 @@ ServiceSqlQueryMaker::handleYears( const QStringList &result )
 QString
 ServiceSqlQueryMaker::escape( QString text ) const //krazy2:exclude=constref
 {
-    SqlStorage *storage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *storage = StorageManager::instance()->sqlStorage();
     if( storage )
         return storage->escape( text );
     else

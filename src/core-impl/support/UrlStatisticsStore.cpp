@@ -16,10 +16,10 @@
 
 #include "UrlStatisticsStore.h"
 
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/storage/StorageManager.h"
 
 UrlStatisticsStore::UrlStatisticsStore( Meta::Track *track, const QString &permanentUrl )
     : PersistentStatisticsStore( track )
@@ -27,7 +27,7 @@ UrlStatisticsStore::UrlStatisticsStore( Meta::Track *track, const QString &perma
 {
     if( m_permanentUrl.isEmpty() )
         m_permanentUrl = track->uidUrl();
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sql = StorageManager::instance()->sqlStorage();
     if( !sql )
     {
         warning() << __PRETTY_FUNCTION__ << "could not get SqlStorage, aborting";
@@ -51,7 +51,7 @@ UrlStatisticsStore::UrlStatisticsStore( Meta::Track *track, const QString &perma
 void
 UrlStatisticsStore::save()
 {
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sql = StorageManager::instance()->sqlStorage();
     if( !sql )
     {
         warning() << __PRETTY_FUNCTION__ << "could not get SqlStorage, aborting";

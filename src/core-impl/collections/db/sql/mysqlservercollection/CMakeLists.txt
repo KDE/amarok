@@ -4,8 +4,8 @@ add_definitions(${MYSQL_CFLAGS})
 
 set( amarok_collection-mysqlservercollection_PART_SRCS
      ../mysql-shared/MySqlStorage.cpp
+     MySqlServerStorage.cpp
      MySqlServerCollection.cpp
-
 )
 
 kde4_add_plugin(amarok_collection-mysqlservercollection ${amarok_collection-mysqlservercollection_PART_SRCS})

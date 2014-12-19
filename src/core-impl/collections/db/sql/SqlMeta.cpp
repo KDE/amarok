@@ -32,7 +32,7 @@
 #include "MetaTagLib.h" // for getting an embedded cover
 
 #include "amarokurls/BookmarkMetaActions.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"

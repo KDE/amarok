@@ -22,7 +22,7 @@
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
-#include "mysqlecollection/MySqlEmbeddedStorage.h"
+#include "core-impl/storage/MySqlEmbeddedStorage.h"
 
 #include "SqlMountPointManagerMock.h"
 

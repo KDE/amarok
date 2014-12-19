@@ -17,9 +17,9 @@
 
 #include "MySqlEmbeddedCollection.h"
 
-#include "MySqlEmbeddedStorage.h"
-#include "core-impl/collections/db/sql/SqlCollection.h"
-#include "core-impl/collections/db/sql/SqlCollectionFactory.h"
+#include <core-impl/storage/MySqlEmbeddedStorage.h>
+#include <core-impl/collections/db/sql/SqlCollection.h>
+#include <core-impl/collections/db/sql/SqlCollectionFactory.h>
 
 #include <KLocale>
 

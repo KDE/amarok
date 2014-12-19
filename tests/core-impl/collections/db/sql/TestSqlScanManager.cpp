@@ -23,7 +23,7 @@
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/db/sql/SqlQueryMaker.h"
 #include "core-impl/collections/db/sql/SqlRegistry.h"
-#include "core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.h"
+#include "core-impl/storage/MySqlEmbeddedStorage.h"
 
 #include "config-amarok-test.h"
 #include "SqlMountPointManagerMock.h"

@@ -258,6 +258,13 @@ set(collection_SRCS
 )
 
 #####################################################################
+# STORAGE
+#####################################################################
+set(storage_SRCS
+    core-impl/storage/StorageManager.cpp
+)
+
+#####################################################################
 # SCANNER
 #####################################################################
 set( scanner_SRCS
@@ -610,6 +617,7 @@ set(amaroklib_LIB_SRCS
     ${core_interfaces_SRCS}
     ${apg_SRCS}
     ${collection_SRCS}
+    ${storage_SRCS}
     ${scanner_SRCS}
     ${mac_SRCS}
     ${network_access_SRCS}

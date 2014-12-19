@@ -16,8 +16,8 @@
  
 #include "MagnatuneDatabaseWorker.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core-impl/storage/StorageManager.h>
+#include <core/storage/SqlStorage.h>
 
 MagnatuneDatabaseWorker::MagnatuneDatabaseWorker()
     : ThreadWeaver::Job()
@@ -101,7 +101,7 @@ void MagnatuneDatabaseWorker::fetchAlbumBySku( const QString & sku, ServiceSqlRe
 
 void MagnatuneDatabaseWorker::doFetchMoodMap()
 {
-    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlDb = StorageManager::instance()->sqlStorage();
     QString queryString = "select count( mood ), mood from magnatune_moods GROUP BY mood;";
     debug() << "Querying for moods: " << queryString;
     QStringList result = sqlDb->query( queryString );
@@ -117,7 +117,7 @@ void MagnatuneDatabaseWorker::doFetchMoodMap()
 
 void MagnatuneDatabaseWorker::doFetchTrackswithMood()
 {
-    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlDb = StorageManager::instance()->sqlStorage();
 
 
 
@@ -177,8 +177,8 @@ void MagnatuneDatabaseWorker::doFetchAlbumBySku()
     QString rows = metaFactory->getAlbumSqlRows()
                  + ','
                  + metaFactory->getArtistSqlRows();
-    
-    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+
+    SqlStorage *sqlDb = StorageManager::instance()->sqlStorage();
     QString queryString = "SELECT " + rows + " FROM magnatune_albums LEFT JOIN magnatune_artists ON magnatune_albums.artist_id = magnatune_artists.id WHERE album_code = '" + m_sku + "';";
     debug() << "Querying for album: " << queryString;
     QStringList result = sqlDb->query( queryString );

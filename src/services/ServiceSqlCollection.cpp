@@ -17,9 +17,9 @@
 
 #include "ServiceSqlCollection.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
 #include "ServiceSqlQueryMaker.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
+#include <core-impl/storage/StorageManager.h>
 
 #include <klocale.h>
 
@@ -59,20 +59,20 @@ ServiceSqlCollection::queryMaker()
 QStringList
 ServiceSqlCollection::query( const QString &statement )
 {
-    return CollectionManager::instance()->sqlStorage()->query( statement );
+    return StorageManager::instance()->sqlStorage()->query( statement );
 }
 
 int
 ServiceSqlCollection::insert( const QString &statement, const QString &table )
 {
-    return CollectionManager::instance()->sqlStorage()->insert( statement, table );
+    return StorageManager::instance()->sqlStorage()->insert( statement, table );
 }
 
 
 QString
 ServiceSqlCollection::escape( QString text ) const
 {
-    return CollectionManager::instance()->sqlStorage()->escape( text );
+    return StorageManager::instance()->sqlStorage()->escape( text );
 }
 
 Meta::TrackPtr
@@ -88,7 +88,7 @@ ServiceSqlCollection::trackForUrl(const KUrl & url)
 
     QString pristineUrl = url.url();
 
-    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlDb = StorageManager::instance()->sqlStorage();
 
     QString from =  prefix + "_tracks";
     from += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";

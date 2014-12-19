@@ -19,12 +19,13 @@
 #include "amarokurls/BookmarkMetaActions.h"
 #include "amarokurls/PlayUrlRunner.h"
 #include "core/capabilities/ActionsCapability.h"
-#include "core/collections/support/SqlStorage.h"
+#include <core/storage/SqlStorage.h>
 #include "core/meta/TrackEditor.h"
 #include "core/support/Debug.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/storage/StorageManager.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/podcasts/sql/SqlPodcastProvider.h"
 
@@ -117,7 +118,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChann
     : Podcasts::PodcastEpisode( Podcasts::PodcastChannelPtr::staticCast( sqlChannel ) )
     , m_channel( sqlChannel )
 {
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
     m_dbId = (*(iter++)).toInt();
     m_url = KUrl( *(iter++) );
@@ -433,7 +434,7 @@ SqlPodcastEpisode::writeTagsToFile()
 void
 SqlPodcastEpisode::updateInDb()
 {
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
 
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
@@ -504,7 +505,7 @@ SqlPodcastEpisode::updateInDb()
 void
 SqlPodcastEpisode::deleteFromDb()
 {
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     sqlStorage->query(
         QString( "DELETE FROM podcastepisodes WHERE id = %1;" ).arg( dbId() ) );
 }
@@ -530,7 +531,7 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     , m_trackCacheIsValid( false )
     , m_provider( provider )
 {
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
     m_dbId = (*(iter++)).toInt();
     m_url = KUrl( *(iter++) );
@@ -768,7 +769,7 @@ SqlPodcastChannel::applyPurge()
 void
 SqlPodcastChannel::updateInDb()
 {
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
 
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
@@ -844,7 +845,7 @@ SqlPodcastChannel::updateInDb()
 void
 SqlPodcastChannel::deleteFromDb()
 {
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     foreach( SqlPodcastEpisodePtr sqlEpisode, m_episodes )
     {
        sqlEpisode->deleteFromDb();
@@ -861,7 +862,7 @@ SqlPodcastChannel::loadEpisodes()
 {
     m_episodes.clear();
 
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
 
     //If purge is enabled we must limit the number of results
     QString command;

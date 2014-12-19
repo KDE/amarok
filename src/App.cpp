@@ -40,6 +40,7 @@
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core-impl/storage/StorageManager.h"
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetcher.h"
 #include "dbus/CollectionDBusHandler.h"
@@ -238,8 +239,9 @@ App::~App()
     PlaylistManager::destroy();
     CoverFetcher::destroy();
     CoverCache::destroy();
-    CollectionManager::destroy();
     ServicePluginManager::destroy();
+    CollectionManager::destroy();
+    StorageManager::destroy();
     NetworkAccessManagerProxy::destroy();
     Plugins::PluginManager::destroy();
 
