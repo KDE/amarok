@@ -78,8 +78,9 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     // Get plugins -- we have to assemble a list again.
     KPluginInfo::List aPlugins;
     const Plugins::PluginManager *aPluginManager = Plugins::PluginManager::instance();
-    aPlugins.append( aPluginManager->plugins( Plugins::PluginFactory::Collection ) );
-    aPlugins.append( aPluginManager->plugins( Plugins::PluginFactory::Service ) );
+    aPlugins.append( aPluginManager->plugins( Plugins::PluginManager::Collection ) );
+    aPlugins.append( aPluginManager->plugins( Plugins::PluginManager::Service ) );
+    aPlugins.append( aPluginManager->plugins( Plugins::PluginManager::Importer ) );
 
     QString aPluginString;
     foreach( KPluginInfo aInfo, aPlugins )

@@ -27,9 +27,21 @@ namespace Plugins {
 class AMAROK_EXPORT PluginManager : public QObject
 {
     Q_OBJECT
+    Q_ENUMS( Type )
     Q_PROPERTY( int pluginFrameworkVersion READ pluginFrameworkVersion )
 
     public:
+        /** Type of the plugin.
+         *
+         *  Will be determined by the KPluginInfo::category
+         */
+        enum Type
+        {
+            Collection = 1, ///< the plugin implements a CollectionFactory
+            Service = 2,    ///< this is a service plugin
+            Importer = 3    ///< this plugin implements importer functionity
+        };
+
         ~PluginManager();
 
         static PluginManager *instance();
@@ -50,7 +62,7 @@ class AMAROK_EXPORT PluginManager : public QObject
         void init();
 
         /** Returns plugin factories for the given plugin type */
-        KPluginInfo::List plugins( PluginFactory::Type type ) const;
+        KPluginInfo::List plugins( Type type ) const;
 
         /** Returns enabled plugin factories for the given plugin type.
          *
@@ -59,7 +71,7 @@ class AMAROK_EXPORT PluginManager : public QObject
          *  Owner of the PluginFactory pointers is the PluginManager
          *  and the pointers will only be valid while the PluginManager exists.
          */
-        QList<PluginFactory*> factories( PluginFactory::Type type ) const;
+        QList<PluginFactory*> factories( Type type ) const;
 
         /** Check if any services were disabled and needs to be removed, or any
          *  that are hidden needs to be enabled
@@ -88,15 +100,14 @@ class AMAROK_EXPORT PluginManager : public QObject
          */
         bool isPluginEnabled( const KPluginInfo &factory ) const;
 
-        /** Creates factories for all infos */
-        QList<PluginFactory*> createFactories( const KPluginInfo::List& infos );
+        /** Creates a factories for an info */
         PluginFactory* createFactory( const KPluginInfo &plugin );
 
         /// contains the names of all KPluginInfos that have factories created
         QHash<QString, PluginFactory*> m_factoryCreated;
-        QHash<PluginFactory::Type, QList<PluginFactory*> > m_factoriesByType;
+        QHash<Type, QList<PluginFactory*> > m_factoriesByType;
         KPluginInfo::List m_pluginInfos;
-        QHash<PluginFactory::Type, KPluginInfo::List > m_pluginInfosByType;
+        QHash<Type, KPluginInfo::List > m_pluginInfosByType;
 
         static const int s_pluginFrameworkVersion;
         static PluginManager *s_instance;

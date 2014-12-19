@@ -19,7 +19,6 @@
 Plugins::PluginFactory::PluginFactory( QObject *parent, const QVariantList &args )
     : QObject( parent )
     , m_initialized( false )
-    , m_type( Unknown )
 {
     Q_UNUSED( args )
 }
@@ -31,18 +30,6 @@ KPluginInfo
 Plugins::PluginFactory::info() const
 {
     return m_info;
-}
-
-Plugins::PluginFactory::Type
-Plugins::PluginFactory::pluginType() const
-{
-    return m_type;
-}
-
-bool
-Plugins::PluginFactory::isInitialized() const
-{
-    return m_initialized;
 }
 
 #include "PluginFactory.moc"

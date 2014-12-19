@@ -34,7 +34,6 @@ namespace StatSyncing
 ImporterManager::ImporterManager( QObject *parent, const QVariantList &args )
     : ProviderFactory( parent, args )
 {
-    m_type = Importer;
 }
 
 ImporterManager::~ImporterManager()

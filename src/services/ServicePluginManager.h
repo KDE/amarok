@@ -59,8 +59,6 @@ private:
     ServicePluginManager();
     ~ServicePluginManager();
 
-    void initFactory( ServiceFactory *factory );
-
     Q_DISABLE_COPY( ServicePluginManager )
 
     /** The list of currently set factories.

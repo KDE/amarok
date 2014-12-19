@@ -33,24 +33,14 @@ namespace Plugins {
  *  - ImportFactory
  *
  *  Plugins need to set the m_info variables.
+ *  Plugins also need to set a valid category in their Desktop file.
  */
 class AMAROK_CORE_EXPORT PluginFactory : public QObject
 {
     Q_OBJECT
-    Q_ENUMS( Type )
     Q_PROPERTY( KPluginInfo info READ info )
-    Q_PROPERTY( Type pluginType READ pluginType )
 
 public:
-    /** Type of the plugin */
-    enum Type
-    {
-        Unknown = 0,    ///< somebody forgot to initialize m_type
-        Collection = 1, ///< the plugin implements a CollectionFactory
-        Service = 2,    ///< this is a service plugin
-        Importer = 3    ///< this plugin implements importer functionity
-    };
-
     PluginFactory( QObject *parent, const QVariantList &args );
     virtual ~PluginFactory() = 0;
 
@@ -59,21 +49,16 @@ public:
      * Reimplemented by subclasses, which must set
      * m_initialized = true when the function has finished.
      *
-     * This function is called by the different Managers after
-     * loading the plugin.
-     * If there is ever a plugin managed by two different
-     * Managers measures have to be taken so that
-     * calling init twice doesn't cause problems.
+     * This function is called by the PluginManager after
+     * setting the plugin in the different sub-plugin managers
      * */
     virtual void init() = 0;
 
     KPluginInfo info() const;
-    Type pluginType() const;
 
 protected:
     bool m_initialized; ///< set after init was called
     KPluginInfo m_info;
-    Type m_type;
 };
 
 } // namespace Plugins

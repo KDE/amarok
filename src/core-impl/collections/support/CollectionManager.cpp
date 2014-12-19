@@ -224,9 +224,6 @@ CollectionManager::setFactories( const QList<Plugins::PluginFactory*> &factories
                 else
                     d->factories.append( factory );
         }
-
-        debug() << "initializing" << pluginName;
-        factory->init();
     }
 
     d->factories = factories;

@@ -806,7 +806,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
             m_customActions << act;
 
             // show a special action if the amazon plugin is enabled
-            KPluginInfo::List services = The::pluginManager()->plugins( Plugins::PluginFactory::Service );
+            KPluginInfo::List services = The::pluginManager()->plugins( Plugins::PluginManager::Service );
             foreach( const KPluginInfo &service, services )
             {
                 if( service.pluginName() == QLatin1String("amarok_service_amazonstore") )

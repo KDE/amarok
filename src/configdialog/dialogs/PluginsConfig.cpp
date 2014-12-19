@@ -39,13 +39,13 @@ PluginsConfig::PluginsConfig( QWidget *parent )
     layout->setMargin( 0 );
     layout->addWidget( m_selector );
 
-    m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginFactory::Collection ),
+    m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Collection ),
                             KPluginSelector::ReadConfigFile, i18n("Collections"), "Collection" );
 
-    m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginFactory::Service ),
+    m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Service ),
                             KPluginSelector::ReadConfigFile, i18n("Internet Services"), "Service" );
 
-    m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginFactory::Importer ),
+    m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Importer ),
                             KPluginSelector::ReadConfigFile, i18n("Statistics importers"), "Importer" );
 
     connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );

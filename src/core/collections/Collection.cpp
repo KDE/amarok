@@ -22,7 +22,6 @@
 Collections::CollectionFactory::CollectionFactory( QObject *parent, const QVariantList &args )
     : Plugins::PluginFactory( parent, args )
 {
-    m_type = Plugins::PluginFactory::Collection;
 }
 
 Collections::CollectionFactory::~CollectionFactory()

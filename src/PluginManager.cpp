@@ -86,13 +86,13 @@ Plugins::PluginManager::init()
 }
 
 KPluginInfo::List
-Plugins::PluginManager::plugins( PluginFactory::Type type ) const
+Plugins::PluginManager::plugins( Type type ) const
 {
     return m_pluginInfosByType.value( type );
 }
 
 QList<Plugins::PluginFactory*>
-Plugins::PluginManager::factories( PluginFactory::Type type ) const
+Plugins::PluginManager::factories( Type type ) const
 {
     return m_factoriesByType.value( type );
 }
@@ -109,24 +109,31 @@ Plugins::PluginManager::checkPluginEnabledStates()
     if( m_pluginInfos.isEmpty() ) // try it a second time with syscoca
         handleNoPluginsFound();
 
+    QList<PluginFactory*> allFactories;
+
     // sort the plugin infos by type
     foreach( const KPluginInfo &pluginInfo, m_pluginInfos )
     {
-        PluginFactory::Type type = PluginFactory::Unknown;
+        Type type;
         if( pluginInfo.category() == QLatin1String("Collection") )
-            type = PluginFactory::Collection;
+            type = Collection;
         else if( pluginInfo.category() == QLatin1String("Service") )
-            type = PluginFactory::Service;
+            type = Service;
         else if( pluginInfo.category() == QLatin1String("Importer") )
-            type = PluginFactory::Importer;
+            type = Importer;
+        else {
+            warning() << pluginInfo.pluginName() << " has unknown category";
+            continue;
+        }
         m_pluginInfosByType[ type ] << pluginInfo;
-    }
 
-    // create the factories and sort them by type
-    QList<PluginFactory*> newFactories = createFactories( m_pluginInfos );
-    foreach( PluginFactory* factory, newFactories )
-    {
-        m_factoriesByType[ factory->pluginType() ] << factory;
+        // create the factories and sort them by type
+        PluginFactory *factory = createFactory( pluginInfo );
+        if( factory )
+        {
+            m_factoriesByType[ type ] << factory;
+            allFactories << factory;
+        }
     }
 
     // the setFactories functions should to:
@@ -134,18 +141,26 @@ Plugins::PluginManager::checkPluginEnabledStates()
     // - handle the new list of factories, disabling old ones and enabling new ones.
 
     PERF_LOG( "Loading collection plugins" )
-    CollectionManager::instance()->setFactories( m_factoriesByType.value( PluginFactory::Collection ) );
+    CollectionManager::instance()->setFactories( m_factoriesByType.value( Collection ) );
     PERF_LOG( "Loaded collection plugins" )
 
     PERF_LOG( "Loading service plugins" )
-    ServicePluginManager::instance()->setFactories( m_factoriesByType.value( PluginFactory::Service ) );
+    ServicePluginManager::instance()->setFactories( m_factoriesByType.value( Service ) );
     PERF_LOG( "Loaded service plugins" )
 
     PERF_LOG( "Loading importer plugins" )
     StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
     if( controller )
-        controller->setFactories( m_factoriesByType.value( PluginFactory::Importer ) );
+        controller->setFactories( m_factoriesByType.value( Importer ) );
     PERF_LOG( "Loaded importer plugins" )
+
+    // init all new factories
+    // do this after they were added to the sub-manager so that they
+    // have a chance to connect to signals
+    foreach( PluginFactory* factory, allFactories )
+    {
+        factory->init();
+    }
 }
 
 
@@ -207,32 +222,11 @@ Plugins::PluginManager::createFactory( const KPluginInfo &pluginInfo )
         return 0;
     }
 
-    if( factory->pluginType() == PluginFactory::Unknown )
-    {
-        warning() << "factory has unknown type!";
-        factory->deleteLater();
-        return 0;
-    }
-
-    const QMetaObject *mo = factory->metaObject();
-    QString type = mo->enumerator( mo->indexOfEnumerator("Type") ).valueToKey( factory->pluginType() );
-    debug() << "created factory for plugin" << name << "type:" << type;
+    debug() << "created factory for plugin" << name << "type:" << pluginInfo.category();
     m_factoryCreated[ pluginInfo.pluginName() ] = factory;
     return factory;
 }
 
-QList<Plugins::PluginFactory*>
-Plugins::PluginManager::createFactories( const KPluginInfo::List& infos )
-{
-    QList<PluginFactory*> factories;
-    foreach( const KPluginInfo &pluginInfo, infos )
-    {
-        PluginFactory *factory = createFactory( pluginInfo );
-        if( factory )
-            factories << factory;
-    }
-    return factories;
-}
 
 KPluginInfo::List
 Plugins::PluginManager::findPlugins()

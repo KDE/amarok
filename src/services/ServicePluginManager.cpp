@@ -92,21 +92,11 @@ ServicePluginManager::setFactories( const QList<Plugins::PluginFactory*> &factor
         if( !factory )
             continue;
 
-        initFactory( factory );
+        connect( factory, SIGNAL(newService(ServiceBase*)), SLOT(slotNewService(ServiceBase*)) );
+        connect( factory, SIGNAL(removeService(ServiceBase*)), SLOT(slotRemoveService(ServiceBase*)) );
     }
 
     m_factories = factories;
-}
-
-void
-ServicePluginManager::initFactory( ServiceFactory *factory )
-{
-    DEBUG_BLOCK
-    debug() << "initializing:" << factory->info().pluginName();
-    disconnect( factory, 0, this, 0 );
-    connect( factory, SIGNAL(newService(ServiceBase*)), SLOT(slotNewService(ServiceBase*)) );
-    connect( factory, SIGNAL(removeService(ServiceBase*)), SLOT(slotRemoveService(ServiceBase*)) );
-    factory->init();
 }
 
 void
