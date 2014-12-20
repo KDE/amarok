@@ -30,11 +30,15 @@ AMAROK_EXPORT_COLLECTION( MySqlEmbeddedCollectionFactory, mysqlecollection )
 void
 MySqlEmbeddedCollectionFactory::init()
 {
+    if( m_initialized )
+        return;
+
     SqlCollectionFactory fac;
     SqlStorage *storage = new MySqlEmbeddedStorage();
     SqlCollection *collection = fac.createSqlCollection( storage );
     m_initialized = true;
 
+    emit newStorage( storage );
     emit newCollection( collection );
 }
 

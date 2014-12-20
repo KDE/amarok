@@ -21,6 +21,7 @@
 #include "core/amarokcore_export.h"
 #include "core/interfaces/MetaCapability.h"
 #include "core/support/PluginFactory.h"
+#include "core/storage/SqlStorage.h"
 
 #include <QObject>
 
@@ -55,6 +56,16 @@ namespace Collections
 
         signals:
             void newCollection( Collections::Collection *newCollection );
+
+            /** Emitted whenever the factory produces a new storage.
+             *
+             *  This should usually happen only once before the creation
+             *  of the first primary (local) collection.
+             *
+             *  This function will disapper as soon as we have dedictated
+             *  StorageFactories.
+             */
+            void newStorage( SqlStorage *newStorage );
 
     };
 

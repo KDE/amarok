@@ -131,8 +131,19 @@ Plugins::PluginManager::checkPluginEnabledStates()
         PluginFactory *factory = createFactory( pluginInfo );
         if( factory )
         {
-            m_factoriesByType[ type ] << factory;
-            allFactories << factory;
+            // the collection with the storage needs to go first.
+            QString pluginName = pluginInfo.pluginName();
+            if( pluginName == QLatin1String("amarok_collection-mysqlservercollection") ||
+                pluginName == QLatin1String("amarok_collection-mysqlecollection") )
+            {
+                m_factoriesByType[ type ].prepend( factory );
+                allFactories.prepend( factory );
+            }
+            else
+            {
+                m_factoriesByType[ type ] << factory;
+                allFactories << factory;
+            }
         }
     }
 
@@ -157,10 +168,14 @@ Plugins::PluginManager::checkPluginEnabledStates()
     // init all new factories
     // do this after they were added to the sub-manager so that they
     // have a chance to connect to signals
-    foreach( PluginFactory* factory, allFactories )
-    {
+    //
+    // we need to init by type and the storages need to go first
+    foreach( PluginFactory* factory, m_factoriesByType[ Collection ] )
         factory->init();
-    }
+    foreach( PluginFactory* factory, m_factoriesByType[ Service ] )
+        factory->init();
+    foreach( PluginFactory* factory, m_factoriesByType[ Importer ] )
+        factory->init();
 }
 
 
@@ -170,7 +185,8 @@ Plugins::PluginManager::isPluginEnabled( const KPluginInfo &pluginInfo ) const
     const QString pluginName = pluginInfo.pluginName();
 
     // the sql collection is a core collection. It cannot be switched off
-    // and should be first.
+    // and needs to be first to be initialized since it's storage needs
+    // to be created before everything else
     const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
     if( pluginName == QLatin1String("amarok_collection-mysqlservercollection") )
     {

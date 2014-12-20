@@ -90,7 +90,6 @@ MySqlStorage::MySqlStorage()
     , m_db( 0 )
     , m_mutex( QMutex::Recursive )
     , m_debugIdent( "MySQL-none" )
-    , m_priority( 1 )
 {
     //Relevant code must be implemented in subclasses
 }
@@ -221,12 +220,6 @@ QString
 MySqlStorage::randomFunc() const
 {
     return "RAND()";
-}
-
-int
-MySqlStorage::sqlDatabasePriority() const
-{
-    return m_priority;
 }
 
 QString

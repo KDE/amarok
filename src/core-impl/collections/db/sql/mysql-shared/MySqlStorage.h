@@ -56,9 +56,6 @@ class MySqlStorage: public SqlStorage
         virtual QString longTextColumnType() const;
 
         virtual QString type() const = 0;
-        virtual int sqlDatabasePriority() const;
-
-        void setDatabasePriority( int priority ) { m_priority = priority; }
 
         /** Returns a list of the last sql errors.
             The list might not include every one error if the number
@@ -81,9 +78,6 @@ class MySqlStorage: public SqlStorage
 
         QString m_debugIdent;
         QStringList m_lastErrors;
-
-    private:
-        int m_priority;
 };
 
 #endif

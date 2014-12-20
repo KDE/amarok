@@ -49,7 +49,6 @@ public:
         , m_sqlStorage( 0 )
     {}
 
-    virtual int sqlDatabasePriority() const { return ( m_sqlStorage ? m_sqlStorage->sqlDatabasePriority() : 0 ); }
     virtual QString type() const  { return ( m_sqlStorage ? m_sqlStorage->type() : "SqlStorageWrapper" ); }
     virtual QString escape( const QString &text ) const  { return ( m_sqlStorage ? m_sqlStorage->escape( text ) : text ); }
     virtual QStringList query( const QString &query )  { return ( m_sqlStorage ? m_sqlStorage->query( query ) : QStringList() ); }
@@ -337,21 +336,9 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
             {
                 //let's cheat a bit and assume that sqlStorage and the primaryCollection are always the same
                 //it is true for now anyway
-                if( d->sqlDatabase )
-                {
-                    if( d->sqlDatabase->sqlDatabasePriority() < sqlStorage->sqlDatabasePriority() )
-                    {
-                        d->sqlDatabase = sqlStorage;
-                        d->primaryCollection = newCollection;
-                        d->sqlStorageWrapper->setSqlStorage( sqlStorage );
-                    }
-                }
-                else
-                {
-                    d->sqlDatabase = sqlStorage;
-                    d->primaryCollection = newCollection;
-                    d->sqlStorageWrapper->setSqlStorage( sqlStorage );
-                }
+                d->sqlDatabase = sqlStorage;
+                d->primaryCollection = newCollection;
+                d->sqlStorageWrapper->setSqlStorage( sqlStorage );
             }
             else
             {
@@ -398,13 +385,7 @@ CollectionManager::slotRemoveCollection()
                         SqlStorage *sqlDb = variant.value<SqlStorage*>();
                         if( sqlDb )
                         {
-                            if( newSqlDatabase )
-                            {
-                                if( newSqlDatabase->sqlDatabasePriority() < sqlDb->sqlDatabasePriority() )
-                                    newSqlDatabase = sqlDb;
-                            }
-                            else
-                                newSqlDatabase = sqlDb;
+                            newSqlDatabase = sqlDb;
                         }
                     }
                     d->sqlDatabase = newSqlDatabase;

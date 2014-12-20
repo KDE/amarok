@@ -37,11 +37,15 @@ AMAROK_EXPORT_COLLECTION( MySqlServerCollectionFactory, mysqlservercollection )
 void
 MySqlServerCollectionFactory::init()
 {
+    if( m_initialized )
+        return;
+
     SqlCollectionFactory fac;
     SqlStorage *storage = new MySqlServerStorage();
     SqlCollection *collection = fac.createSqlCollection( storage );
     m_initialized = true;
 
+    emit newStorage( storage );
     emit newCollection( collection );
 }
 

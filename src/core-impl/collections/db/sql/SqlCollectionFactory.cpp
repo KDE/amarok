@@ -19,8 +19,6 @@
 #include "core-impl/collections/db/MountPointManager.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 
-#include <KLocale>
-
 Collections::SqlCollectionFactory::SqlCollectionFactory()
 {
 }

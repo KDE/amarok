@@ -30,9 +30,7 @@ class SqlStorage
 {
 public:
     SqlStorage() {}
-    virtual ~SqlStorage() {} 
-
-    virtual int sqlDatabasePriority() const = 0;
+    virtual ~SqlStorage() {}
 
     virtual QString type() const = 0;
 
