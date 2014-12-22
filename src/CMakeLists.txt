@@ -27,6 +27,7 @@ include_directories(
 
 add_subdirectory( core )
 add_subdirectory( core-impl/collections )
+add_subdirectory( core-impl/storage/sql )
 #don't use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( services )

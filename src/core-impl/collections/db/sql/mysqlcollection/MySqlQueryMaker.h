@@ -14,21 +14,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MySqlQueryMaker.h"
+#ifndef AMAROK_COLLECTION_MYSQLQUERYMAKER_H
+#define AMAROK_COLLECTION_MYSQLQUERYMAKER_H
 
-MySqlQueryMaker::MySqlQueryMaker( MySqlCollection *collection )
-    : SqlQueryMaker( collection )
+#include "../SqlCollection.h"
+#include "../SqlQueryMaker.h"
+
+namespace Collections
 {
-    //nothing to do
+
+class MySqlQueryMaker : public SqlQueryMaker
+{
+    public:
+        MySqlQueryMaker( SqlCollection* collection );
+        virtual ~MySqlQueryMaker();
+
+    protected:
+        virtual QString escape( QString text ) const;
+};
+
 }
 
-MySqlQueryMaker::~MySqlQueryMaker()
-{
-    //nothing to do
-}
-
-QString
-MySqlQueryMaker::escape( QString text ) const               //krazy:exclude=constref
-{
-    return text.replace("\\", "\\\\").replace( '\'', "''" );
-}
+#endif

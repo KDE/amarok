@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
+ * Copyright (c) 2007 David Faure <faure@kde.org>                                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,31 +14,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TEST_IMPORTER_MANAGER
-#define TEST_IMPORTER_MANAGER
+#ifndef AMAROK_SQLSTORAGE_EXPORT_H
+#define AMAROK_SQLSTORAGE_EXPORT_H
 
-#include "ImporterMocks.h"
+/* needed for KDE_EXPORT and KDE_IMPORT macros */
+#include <kdemacros.h>
 
-class TestImporterManager : public ImporterMocks
-{
-    Q_OBJECT
+#ifndef AMAROK_SQLSTORAGE_EXPORT
+# if defined(MAKE_AMAROK_SQLSTORAGE_LIB)
+   /* We are building this library */
+#   define AMAROK_SQLSTORAGE_EXPORT KDE_EXPORT
+# else
+   /* We are using this library */
+#   define AMAROK_SQLSTORAGE_EXPORT KDE_IMPORT
+# endif
+#endif
 
-private slots:
-    void initShouldSetInfo();
-    void initShouldLoadSettings();
-    void creatingProviderShouldSetConfigAndParent();
-    void creatingProviderShouldSaveSettings();
-    void creatingProviderShouldSaveGeneratedId();
-    void creatingConfigWidgetShouldDelegate();
-    void createConfigWidgetShouldNotCrashOnNull();
-    void createProviderShouldNotCrashOnNull();
-    void createProviderShouldReplaceProviderIfExists();
-    void createProviderShouldRegisterProvider();
-    void forgetProviderShouldUnregisterProvider();
-    void forgetProviderShouldForgetConfig();
-    void forgetProviderShouldHangleInvalidId();
-    void forgetProviderShouldNotCauseOtherProvidersToBeForgotten();
-    void managerShouldHandleMultipleProviders();
-};
+#ifndef AMAROK_SQLSTORAGE_MYSQLE_EXPORT
+# if defined(MAKE_AMAROK_STORAGE_MYSQLESTORAGE_LIB)
+   /* We are building this library */
+#   define AMAROK_SQLSTORAGE_MYSQLE_EXPORT KDE_EXPORT
+# else
+   /* We are using this library */
+#   define AMAROK_SQLSTORAGE_MYSQLE_EXPORT KDE_IMPORT
+# endif
+#endif
 
-#endif // TEST_IMPORTER_MANAGER
+# ifndef AMAROK_SQLSTORAGE_EXPORT_DEPRECATED
+#  define AMAROK_SQLSTORAGE_EXPORT_DEPRECATED KDE_DEPRECATED AMAROK_SQLSTORAGE_EXPORT
+# endif
+
+#endif

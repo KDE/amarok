@@ -19,7 +19,7 @@
 #include "StorageManager.h"
 
 #include <core/storage/SqlStorage.h>
-#include <core/collections/Collection.h>
+#include <core/storage/StorageFactory.h>
 
 #include <core/support/Amarok.h>
 #include <core/support/Debug.h>
@@ -114,7 +114,8 @@ StorageManager::~StorageManager()
 {
     DEBUG_BLOCK
 
-    delete d->sqlDatabase;
+    if( d->sqlDatabase != &emptyStorage )
+        delete d->sqlDatabase;
     delete d;
 }
 
@@ -133,11 +134,9 @@ StorageManager::init()
 void
 StorageManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
 {
-    using Collections::CollectionFactory;
-
     foreach( Plugins::PluginFactory* pFactory, factories )
     {
-        CollectionFactory *factory = qobject_cast<CollectionFactory*>( pFactory );
+        StorageFactory *factory = qobject_cast<StorageFactory*>( pFactory );
         if( !factory )
             continue;
 
@@ -153,14 +152,18 @@ StorageManager::slotNewStorage( SqlStorage* newStorage )
 
     if( !newStorage )
     {
-        debug() << "Warning, newStorage in slotNewStorage is 0";
+        warning() << "Warning, newStorage in slotNewStorage is 0";
         return;
     }
 
-    if( d->sqlDatabase )
+    if( d->sqlDatabase && d->sqlDatabase != &emptyStorage )
+    {
+        warning() << "Warning, newStorage when we already have a storage";
+        delete newStorage;
         return; // once we have the database set we can't change it since
         // plugins might have already created their tables in the old database
         // or caching data from it.
+    }
 
     d->sqlDatabase = newStorage;
 }

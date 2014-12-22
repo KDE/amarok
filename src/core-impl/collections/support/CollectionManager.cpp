@@ -166,12 +166,7 @@ CollectionManager::setFactories( const QList<Plugins::PluginFactory*> &factories
 
         // the sql collection is a core collection. It cannot be switched off
         // and should be first.
-        bool primaryCollection = false;
-        if( (useMySqlServer && (pluginName == QLatin1String("amarok_collection-mysqlservercollection"))) ||
-            (!useMySqlServer && (pluginName == QLatin1String("amarok_collection-mysqlecollection"))) )
-        {
-            primaryCollection = true;
-        }
+        bool primaryCollection = ( pluginName == QLatin1String("amarok_collection-mysqlcollection") );
 
         connect( factory, SIGNAL(newCollection(Collections::Collection*)),
                  this, SLOT(slotNewCollection(Collections::Collection*)) );

@@ -39,7 +39,8 @@ class AMAROK_EXPORT PluginManager : public QObject
         {
             Collection = 1, ///< the plugin implements a CollectionFactory
             Service = 2,    ///< this is a service plugin
-            Importer = 3    ///< this plugin implements importer functionity
+            Importer = 3,   ///< this plugin implements importer functionity
+            Storage = 4     ///< the plugin implements a StorageFactory
         };
 
         ~PluginManager();

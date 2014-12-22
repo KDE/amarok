@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,31 +14,21 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TEST_IMPORTER_MANAGER
-#define TEST_IMPORTER_MANAGER
+#include "MySqlQueryMaker.h"
 
-#include "ImporterMocks.h"
-
-class TestImporterManager : public ImporterMocks
+Collections::MySqlQueryMaker::MySqlQueryMaker( SqlCollection *collection )
+    : SqlQueryMaker( collection )
 {
-    Q_OBJECT
+    //nothing to do
+}
 
-private slots:
-    void initShouldSetInfo();
-    void initShouldLoadSettings();
-    void creatingProviderShouldSetConfigAndParent();
-    void creatingProviderShouldSaveSettings();
-    void creatingProviderShouldSaveGeneratedId();
-    void creatingConfigWidgetShouldDelegate();
-    void createConfigWidgetShouldNotCrashOnNull();
-    void createProviderShouldNotCrashOnNull();
-    void createProviderShouldReplaceProviderIfExists();
-    void createProviderShouldRegisterProvider();
-    void forgetProviderShouldUnregisterProvider();
-    void forgetProviderShouldForgetConfig();
-    void forgetProviderShouldHangleInvalidId();
-    void forgetProviderShouldNotCauseOtherProvidersToBeForgotten();
-    void managerShouldHandleMultipleProviders();
-};
+Collections::MySqlQueryMaker::~MySqlQueryMaker()
+{
+    //nothing to do
+}
 
-#endif // TEST_IMPORTER_MANAGER
+QString
+Collections::MySqlQueryMaker::escape( QString text ) const // krazy:exclude=constref
+{
+    return text.replace("\\", "\\\\").replace( '\'', "''" );
+}

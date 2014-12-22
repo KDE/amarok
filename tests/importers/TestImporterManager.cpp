@@ -28,19 +28,6 @@ QTEST_KDEMAIN_CORE( TestImporterManager )
 using namespace ::testing;
 
 void
-TestImporterManager::constructorShouldSetPluginType()
-{
-    QCOMPARE( m_mockManager->pluginType(), Plugins::PluginFactory::Importer );
-}
-
-void
-TestImporterManager::initShouldSetInitialized()
-{
-    m_mockManager->init();
-    QVERIFY( m_mockManager->isInitialized() );
-}
-
-void
 TestImporterManager::initShouldSetInfo()
 {
     KPluginInfo expectedInfo( "testinfo", "services" );

@@ -68,7 +68,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Konrad Zemek
 X-KDE-Amarok-email=konrad.zemek@gmail.com
-X-KDE-Amarok-framework-version=71
+X-KDE-Amarok-framework-version=72
 X-KDE-Amarok-name=RhythmboxImporter
 X-KDE-Amarok-plugintype=importer
 X-KDE-Amarok-rank=100

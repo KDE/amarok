@@ -79,6 +79,9 @@ class AMAROK_EXPORT StorageManager : public QObject
          *
          *  The first factory to emit this signal will get it's storage
          *  registered as "the" storage.
+         *
+         *  StorageManager will take ownership of the pointer and free it
+         *  after all other plugins are done.
          */
         void slotNewStorage( SqlStorage* newStorage );
 

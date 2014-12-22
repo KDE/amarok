@@ -1,3 +1,7 @@
+
+# macro function to build a test target.
+#
+# we are linking agains the mysql collection and mysql embedded storage plugin (except on OSX where this is not possible)
 macro(add_database_test test_target test_sources)
     add_definitions(${MYSQL_CFLAGS})
 
@@ -5,8 +9,8 @@ macro(add_database_test test_target test_sources)
     #one cannot link to plugins on OS X. As a workaround, add anything relevant that goes into the mysqle plugin to each test
         set( test_sources_internal
                 ${test_sources}
-                ${AMAROK_SOURCE_TREE}/core-impl/storage/MySqlStorage.cpp
-                ${AMAROK_SOURCE_TREE}/core-impl/storage/MySqlEmbeddedStorage.cpp )
+                ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/MySqlStorage.cpp
+                ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.cpp )
     endif(APPLE)
 
 
@@ -16,12 +20,13 @@ macro(add_database_test test_target test_sources)
         SET_TARGET_PROPERTIES(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif(APPLE)
 
+    # TODO: I don't think that we need to manually add dependencies here (Ralf)
     add_dependencies( ${test_target} amarokconfig_h )
     add_dependencies( ${test_target} amarokcore )
     add_dependencies( ${test_target} amaroklib)
     add_dependencies( ${test_target} amarok-sqlcollection)
     if(NOT APPLE)
-        add_dependencies( ${test_target} amarok_collection-mysqlecollection )
+        add_dependencies( ${test_target} amarok_collection-mysqlcollection amarok_storage-mysqlestorage )
     endif(NOT APPLE)
 
     target_link_libraries(${test_target}
@@ -41,7 +46,7 @@ macro(add_database_test test_target test_sources)
         ${GOOGLEMOCK_LIBRARIES})
 
     if(NOT APPLE)
-        target_link_libraries( ${test_target} amarok_collection-mysqlecollection )
+        target_link_libraries( ${test_target} amarok_collection-mysqlcollection amarok_storage-mysqlestorage )
     endif(NOT APPLE)
 
 endmacro(add_database_test)

@@ -1,7 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
- * Copyright (c) 2012 Lachlan Dufton <dufton@gmail.com>                                 *
+ * Copyright (c) 2014 Ralf Engels <ralf-engels@gmx.de>                                   *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,33 +14,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MySqlServerCollection.h"
-#include "MySqlServerStorage.h"
+#include "MySqlEmbeddedStorageFactory.h"
+#include "MySqlEmbeddedStorage.h"
 
-#include "amarokconfig.h"
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
-#include "core-impl/collections/db/sql/SqlCollection.h"
-#include "core-impl/collections/db/sql/SqlCollectionFactory.h"
+AMAROK_EXPORT_STORAGE( MySqleStorageFactory, mysqlestorage )
 
-using namespace Collections;
+MySqleStorageFactory::MySqleStorageFactory( QObject *parent, const QVariantList &args )
+    : StorageFactory( parent, args )
+{
+    m_info = KPluginInfo( "amarok_storage-mysqlestorage.desktop", "services" );
+}
 
-AMAROK_EXPORT_COLLECTION( MySqlServerCollectionFactory, mysqlservercollection )
+MySqleStorageFactory::~MySqleStorageFactory()
+{
+}
 
 void
-MySqlServerCollectionFactory::init()
+MySqleStorageFactory::init()
 {
     if( m_initialized )
         return;
 
-    SqlCollectionFactory fac;
-    SqlStorage *storage = new MySqlServerStorage();
-    SqlCollection *collection = fac.createSqlCollection( storage );
     m_initialized = true;
 
-    emit newStorage( storage );
-    emit newCollection( collection );
+    emit newStorage( new MySqlEmbeddedStorage() );
 }
 
-#include "MySqlServerCollection.moc"
+#include "MySqlEmbeddedStorageFactory.moc"
 

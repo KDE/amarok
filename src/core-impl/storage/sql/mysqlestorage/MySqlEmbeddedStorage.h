@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
+ * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
+ * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,31 +15,30 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TEST_IMPORTER_MANAGER
-#define TEST_IMPORTER_MANAGER
+#ifndef MYSQLEMBEDDEDSTORAGE_H
+#define MYSQLEMBEDDEDSTORAGE_H
 
-#include "ImporterMocks.h"
+#include "../amarok_sqlstorage_export.h"
+#include <core/storage/SqlStorage.h>
+#include <core-impl/storage/sql/mysql-shared/MySqlStorage.h>
 
-class TestImporterManager : public ImporterMocks
+/**
+ * Implements a MySqlStorage using a MySQL Embedded Server
+ */
+
+class AMAROK_SQLSTORAGE_MYSQLE_EXPORT MySqlEmbeddedStorage : public MySqlStorage
 {
-    Q_OBJECT
+    public:
+        /** Creates a new SqlStorage.
+         *  @param storageLocation The directory for storing the mysql database, will use the default defined by Amarok/KDE if not set.
+         *  Note: Currently it is not possible to open two storages to different locations
+         *  in one process.
+         *  The first caller wins.
+         */
+        MySqlEmbeddedStorage( const QString &storageLocation = QString() );
+        virtual ~MySqlEmbeddedStorage();
 
-private slots:
-    void initShouldSetInfo();
-    void initShouldLoadSettings();
-    void creatingProviderShouldSetConfigAndParent();
-    void creatingProviderShouldSaveSettings();
-    void creatingProviderShouldSaveGeneratedId();
-    void creatingConfigWidgetShouldDelegate();
-    void createConfigWidgetShouldNotCrashOnNull();
-    void createProviderShouldNotCrashOnNull();
-    void createProviderShouldReplaceProviderIfExists();
-    void createProviderShouldRegisterProvider();
-    void forgetProviderShouldUnregisterProvider();
-    void forgetProviderShouldForgetConfig();
-    void forgetProviderShouldHangleInvalidId();
-    void forgetProviderShouldNotCauseOtherProvidersToBeForgotten();
-    void managerShouldHandleMultipleProviders();
+        virtual QString type() const;
 };
 
-#endif // TEST_IMPORTER_MANAGER
+#endif // MYSQLEMBEDDEDSTORAGE_H

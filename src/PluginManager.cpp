@@ -37,7 +37,11 @@
 #include <QMetaEnum>
 
 
-const int Plugins::PluginManager::s_pluginFrameworkVersion = 71;
+/** Defines the used plugin version number.
+ *
+ *  This must match the desktop files.
+ */
+const int Plugins::PluginManager::s_pluginFrameworkVersion = 72;
 Plugins::PluginManager* Plugins::PluginManager::s_instance = 0;
 
 Plugins::PluginManager*
@@ -116,7 +120,9 @@ Plugins::PluginManager::checkPluginEnabledStates()
     foreach( const KPluginInfo &pluginInfo, m_pluginInfos )
     {
         Type type;
-        if( pluginInfo.category() == QLatin1String("Collection") )
+        if( pluginInfo.category() == QLatin1String("Storage") )
+            type = Storage;
+        else if( pluginInfo.category() == QLatin1String("Collection") )
             type = Collection;
         else if( pluginInfo.category() == QLatin1String("Service") )
             type = Service;
@@ -132,19 +138,8 @@ Plugins::PluginManager::checkPluginEnabledStates()
         PluginFactory *factory = createFactory( pluginInfo );
         if( factory )
         {
-            // the collection with the storage needs to go first.
-            QString pluginName = pluginInfo.pluginName();
-            if( pluginName == QLatin1String("amarok_collection-mysqlservercollection") ||
-                pluginName == QLatin1String("amarok_collection-mysqlecollection") )
-            {
-                m_factoriesByType[ type ].prepend( factory );
-                allFactories.prepend( factory );
-            }
-            else
-            {
-                m_factoriesByType[ type ] << factory;
-                allFactories << factory;
-            }
+            m_factoriesByType[ type ] << factory;
+            allFactories << factory;
         }
     }
 
@@ -153,7 +148,7 @@ Plugins::PluginManager::checkPluginEnabledStates()
     // - handle the new list of factories, disabling old ones and enabling new ones.
 
     PERF_LOG( "Loading storage plugins" )
-    StorageManager::instance()->setFactories( m_factoriesByType.value( Collection ) );
+    StorageManager::instance()->setFactories( m_factoriesByType.value( Storage ) );
     PERF_LOG( "Loaded storage plugins" )
 
     PERF_LOG( "Loading collection plugins" )
@@ -175,6 +170,8 @@ Plugins::PluginManager::checkPluginEnabledStates()
     // have a chance to connect to signals
     //
     // we need to init by type and the storages need to go first
+    foreach( PluginFactory* factory, m_factoriesByType[ Storage ] )
+        factory->init();
     foreach( PluginFactory* factory, m_factoriesByType[ Collection ] )
         factory->init();
     foreach( PluginFactory* factory, m_factoriesByType[ Service ] )
@@ -189,17 +186,20 @@ Plugins::PluginManager::isPluginEnabled( const KPluginInfo &pluginInfo ) const
 {
     const QString pluginName = pluginInfo.pluginName();
 
-    // the sql collection is a core collection. It cannot be switched off
-    // and needs to be first to be initialized since it's storage needs
-    // to be created before everything else
+    // The type of storage to be used it determined by the configuration
     const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
-    if( pluginName == QLatin1String("amarok_collection-mysqlservercollection") )
+    if( pluginName == QLatin1String("amarok_storage-mysqlserverstorage") )
     {
         return useMySqlServer;
     }
-    else if( pluginName == QLatin1String("amarok_collection-mysqlecollection") )
+    else if( pluginName == QLatin1String("amarok_storage-mysqlestorage") )
     {
         return !useMySqlServer;
+    }
+    // we the default collection is always enabled
+    else if( pluginName == QLatin1String("amarok_collection-mysqlcollection") )
+    {
+        return true;
     }
     else
     {

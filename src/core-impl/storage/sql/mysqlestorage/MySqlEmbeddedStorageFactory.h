@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2014 Ralf Engels <ralf-engels@gmx.de>                                   *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,28 +14,21 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
-#define AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
+#ifndef AMAROK_STORAGE_MYSQLEMBEDDEDFACTORY_H
+#define AMAROK_STORAGE_MYSQLEMBEDDEDFACTORY_H
 
-#include "core/collections/Collection.h"
+#include "core/storage/StorageFactory.h"
 
-namespace Collections {
-
-class MySqlServerCollectionFactory : public Collections::CollectionFactory
+class MySqleStorageFactory : public StorageFactory
 {
     Q_OBJECT
 
     public:
-        MySqlServerCollectionFactory( QObject *parent, const QVariantList &args )
-            : Collections::CollectionFactory( parent, args )
-        {
-            m_info = KPluginInfo( "amarok_collection-mysqlservercollection.desktop", "services" );
-        }
-        virtual ~MySqlServerCollectionFactory() {}
+        MySqleStorageFactory( QObject *parent, const QVariantList &args );
+        virtual ~MySqleStorageFactory();
 
         virtual void init();
 };
 
-} //namespace Collections
 
 #endif

@@ -15,10 +15,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_COLLECTION_MYSQLSTORAGE_H
-#define AMAROK_COLLECTION_MYSQLSTORAGE_H
+#ifndef AMAROK_STORAGE_MYSQLSTORAGE_H
+#define AMAROK_STORAGE_MYSQLSTORAGE_H
 
-#include "core/collections/support/SqlStorage.h"
+#include "core/storage/SqlStorage.h"
 
 
 #include <QMutex>
@@ -32,7 +32,7 @@ struct st_mysql;
 typedef struct st_mysql MYSQL;
 
 /**
- * Implements a SqlCollection using a MySQL backend
+ * Implements a SqlStorage using a MySQL backend
  */
 class MySqlStorage: public SqlStorage
 {

@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
+ * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,21 +14,24 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef AMAROK_COLLECTION_MYSQLQUERYMAKER_H
-#define AMAROK_COLLECTION_MYSQLQUERYMAKER_H
 
-#include "MySqlCollection.h"
-#include "SqlQueryMaker.h"
+#ifndef AMAROK_STORAGE_MYSQLSERVERSTORAGE_H
+#define AMAROK_STORAGE_MYSQLSERVERSTORAGE_H
 
-class MySqlQueryMaker : public SqlQueryMaker
+#include "amarok_export.h"
+#include "../mysql-shared/MySqlStorage.h"
+
+/**
+ * Implements a MySqlStorage using a MySQL Server
+ */
+class AMAROK_EXPORT MySqlServerStorage: public MySqlStorage
 {
     public:
-        MySqlQueryMaker( MySqlCollection* collection );
-        virtual ~MySqlQueryMaker();
+        MySqlServerStorage();
+        virtual ~MySqlServerStorage();
 
-    protected:
-        virtual QString escape( QString text ) const;
+        virtual QString type() const;
+        virtual QStringList query( const QString &query );
 };
 
 #endif

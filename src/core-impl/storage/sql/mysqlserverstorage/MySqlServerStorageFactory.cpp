@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2014 Ralf Engels <ralf-engels@gmx.de>                                   *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,30 +14,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MYSQLEMBEDDEDSTORAGE_H
-#define MYSQLEMBEDDEDSTORAGE_H
+#include "MySqlServerStorageFactory.h"
+#include "MySqlServerStorage.h"
 
-#include "../amarok_sqlcollection_export.h"
-#include <core/collections/support/SqlStorage.h>
-#include <core-impl/collections/db/sql/mysql-shared/MySqlStorage.h>
+AMAROK_EXPORT_STORAGE( MySqlServerStorageFactory, mysqlserverstorage )
 
-/**
- * Implements a MySqlCollection using a MySQL Embedded Server
- */
-
-class AMAROK_SQLCOLLECTION_MYSQLE_EXPORT MySqlEmbeddedStorage : public MySqlStorage
+MySqlServerStorageFactory::MySqlServerStorageFactory( QObject *parent, const QVariantList &args )
+    : StorageFactory( parent, args )
 {
-    public:
-        /** Creates a new SqlStorage.
-         *  @param storageLocation The directory for storing the mysql database, will use the default defined by Amarok/KDE if not set.
-         *  Note: Currently it is not possible to open two storages to different locations
-         *  in one process.
-         *  The first caller wins.
-         */
-        MySqlEmbeddedStorage( const QString &storageLocation = QString() );
-        virtual ~MySqlEmbeddedStorage();
+    m_info = KPluginInfo( "amarok_storage-mysqlserverstorage.desktop", "services" );
+}
 
-        virtual QString type() const;
-};
+MySqlServerStorageFactory::~MySqlServerStorageFactory()
+{
+}
 
-#endif // MYSQLEMBEDDEDSTORAGE_H
+void
+MySqlServerStorageFactory::init()
+{
+    if( m_initialized )
+        return;
+
+    m_initialized = true;
+
+    emit newStorage( new MySqlServerStorage() );
+}
+
+#include "MySqlServerStorageFactory.moc"
+

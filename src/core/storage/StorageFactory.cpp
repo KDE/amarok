@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
+ * Copyright (c) 2014 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,31 +14,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TEST_IMPORTER_MANAGER
-#define TEST_IMPORTER_MANAGER
+#include "StorageFactory.h"
 
-#include "ImporterMocks.h"
-
-class TestImporterManager : public ImporterMocks
+StorageFactory::StorageFactory( QObject *parent, const QVariantList &args )
+    : Plugins::PluginFactory( parent, args )
 {
-    Q_OBJECT
+}
 
-private slots:
-    void initShouldSetInfo();
-    void initShouldLoadSettings();
-    void creatingProviderShouldSetConfigAndParent();
-    void creatingProviderShouldSaveSettings();
-    void creatingProviderShouldSaveGeneratedId();
-    void creatingConfigWidgetShouldDelegate();
-    void createConfigWidgetShouldNotCrashOnNull();
-    void createProviderShouldNotCrashOnNull();
-    void createProviderShouldReplaceProviderIfExists();
-    void createProviderShouldRegisterProvider();
-    void forgetProviderShouldUnregisterProvider();
-    void forgetProviderShouldForgetConfig();
-    void forgetProviderShouldHangleInvalidId();
-    void forgetProviderShouldNotCauseOtherProvidersToBeForgotten();
-    void managerShouldHandleMultipleProviders();
-};
+StorageFactory::~StorageFactory()
+{
+}
 
-#endif // TEST_IMPORTER_MANAGER
+
+#include "StorageFactory.moc"

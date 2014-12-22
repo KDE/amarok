@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
+ * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
+ * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,31 +15,30 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TEST_IMPORTER_MANAGER
-#define TEST_IMPORTER_MANAGER
+#include "MySqlCollectionFactory.h"
 
-#include "ImporterMocks.h"
+#include <core-impl/storage/StorageManager.h>
+#include <core-impl/collections/db/sql/SqlCollection.h>
+#include <core-impl/collections/db/sql/SqlCollectionFactory.h>
 
-class TestImporterManager : public ImporterMocks
+#include <KLocale>
+
+using namespace Collections;
+
+AMAROK_EXPORT_COLLECTION( MySqlCollectionFactory, mysqlcollection )
+
+void
+MySqlCollectionFactory::init()
 {
-    Q_OBJECT
+    if( m_initialized )
+        return;
 
-private slots:
-    void initShouldSetInfo();
-    void initShouldLoadSettings();
-    void creatingProviderShouldSetConfigAndParent();
-    void creatingProviderShouldSaveSettings();
-    void creatingProviderShouldSaveGeneratedId();
-    void creatingConfigWidgetShouldDelegate();
-    void createConfigWidgetShouldNotCrashOnNull();
-    void createProviderShouldNotCrashOnNull();
-    void createProviderShouldReplaceProviderIfExists();
-    void createProviderShouldRegisterProvider();
-    void forgetProviderShouldUnregisterProvider();
-    void forgetProviderShouldForgetConfig();
-    void forgetProviderShouldHangleInvalidId();
-    void forgetProviderShouldNotCauseOtherProvidersToBeForgotten();
-    void managerShouldHandleMultipleProviders();
-};
+    SqlCollectionFactory fac;
+    SqlStorage *storage = StorageManager::instance()->sqlStorage();
+    SqlCollection *collection = fac.createSqlCollection( storage );
+    m_initialized = true;
 
-#endif // TEST_IMPORTER_MANAGER
+    emit newCollection( collection );
+}
+
+#include "MySqlCollectionFactory.moc"

@@ -1,0 +1,27 @@
+[Desktop Entry]
+Type=Service
+Icon=server-database
+Name=MySQLe Storage
+Name[en_GB]=MySQLe Storage
+Comment=Storage plugin for Amarok
+Comment[en_GB]=Storage plugin for Amarok
+NoDisplay=true
+
+ServiceTypes=Amarok/Plugin
+
+X-KDE-Amarok-authors=Ralf Engels
+X-KDE-Amarok-email=ralf-engels@gmx.de
+X-KDE-Amarok-framework-version=72
+X-KDE-Amarok-name=mysqle-storage
+X-KDE-Amarok-plugintype=storage
+X-KDE-Amarok-rank=100
+X-KDE-Amarok-version=1
+
+X-KDE-PluginInfo-Author=Ralf Engels
+X-KDE-PluginInfo-Email=ralf.engels@gmx.de
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Storage
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-Name=amarok_storage-mysqlestorage
+X-KDE-Library=amarok_storage-mysqlestorage

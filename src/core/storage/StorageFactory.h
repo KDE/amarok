@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2014 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,28 +14,43 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
-#define AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
+#ifndef AMAROK_STORAGE_FACTORY_H
+#define AMAROK_STORAGE_FACTORY_H
 
-#include "core/collections/Collection.h"
+#include "core/amarokcore_export.h"
+#include "core/support/PluginFactory.h"
 
-namespace Collections {
+#include <QObject>
 
-class MySqlEmbeddedCollectionFactory : public Collections::CollectionFactory
+class SqlStorage;
+
+/** A plugin that provides a Storage object.
+ *
+ *  The storage plugin is the only part of Amarok that actually needs to be
+ *  a plugin since we are linking two libraries (MySqlClient and MySqlEmbedded)
+ *  that have the same symbols.
+ *
+ */
+class AMAROK_CORE_EXPORT StorageFactory : public Plugins::PluginFactory
 {
     Q_OBJECT
 
-    public:
-        MySqlEmbeddedCollectionFactory( QObject *parent, const QVariantList &args )
-            : Collections::CollectionFactory( parent, args )
-        {
-            m_info = KPluginInfo( "amarok_collection-mysqlecollection.desktop", "services" );
-        }
-        virtual ~MySqlEmbeddedCollectionFactory() {}
+public:
+    StorageFactory( QObject *parent, const QVariantList &args );
+    virtual ~StorageFactory();
 
-        virtual void init();
+    virtual void init() = 0;
+
+signals:
+    /** Emitted whenever the factory produces a new storage.
+     *
+     */
+    void newStorage( SqlStorage *newStorage );
 };
 
-} //namespace Collections
 
-#endif
+#define AMAROK_EXPORT_STORAGE( classname, libname ) \
+    K_PLUGIN_FACTORY( factory, registerPlugin<classname>(); ) \
+            K_EXPORT_PLUGIN( factory( "amarok_storage-" #libname ) )
+
+#endif /* AMAROK_STORAGE_FACTORY_H */

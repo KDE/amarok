@@ -54,6 +54,10 @@ set(libcore_collection_SRCS
     collections/support/TrackForUrlWorker.cpp
 )
 
+set(libcore_storage_SRCS
+    storage/StorageFactory.cpp
+)
+
 set(libcore_podcasts_SRCS
     podcasts/PodcastReader.cpp
     podcasts/PodcastMeta.cpp
@@ -91,6 +95,7 @@ set(libcore_LIB_SRCS
     ${libcore_podcasts_SRCS}
     ${libcore_interfaces_SRCS}
     ${libcore_collection_SRCS}
+    ${libcore_storage_SRCS}
     ${libcore_playlists_SRCS}
     ${libcore_meta_SRCS}
     ${libcore_capabilities_SRCS}
