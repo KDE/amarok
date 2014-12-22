@@ -21,6 +21,7 @@
 #include "core/meta/Meta.h"
 
 #include <QObject>
+#include <QString>
 #include <QWeakPointer>
 
 namespace Collections

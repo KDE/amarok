@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
+ * Copyright (c) 2013-2014 Anmol Ahuja <darthcodus@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,16 +18,17 @@
 #ifndef AMAROK_WINDOW_SCRIPT_H
 #define AMAROK_WINDOW_SCRIPT_H
 
-#include <QObject>
+#include <QFont>
 #include <QMetaType>
+#include <QObject>
+#include <QPalette>
+#include <QString>
 #include <QWeakPointer>
 
 class EventFilter;
 class KMenu;
-class QFont;
 class QMainWindow;
 class QMenu;
-class QPalette;
 class QScriptEngine;
 
 namespace AmarokScript

@@ -20,7 +20,9 @@
 #include "core/meta/forward_declarations.h"
 #include "core/playlists/PlaylistProvider.h"
 
+#include <QIcon>
 #include <QObject>
+#include <QString>
 #include <QWeakPointer>
 
 class QScriptEngine;

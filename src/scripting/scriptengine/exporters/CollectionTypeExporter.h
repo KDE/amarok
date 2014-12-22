@@ -22,7 +22,10 @@
 #include "core/collections/Collection.h"
 #include "core/collections/CollectionLocation.h"
 
+#include <QIcon>
 #include <QObject>
+#include <QString>
+#include <QStringList>
 #include <QWeakPointer>
 
 namespace Collections
@@ -30,7 +33,6 @@ namespace Collections
     class Collection;
     class QueryMaker;
 }
-class QIcon;
 class QScriptEngine;
 class QScriptValue;
 

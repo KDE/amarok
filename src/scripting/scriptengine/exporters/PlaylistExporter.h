@@ -21,6 +21,8 @@
 #include "core/playlists/Playlist.h"
 
 #include <QObject>
+#include <QString>
+#include <QUrl>
 
 class QScriptValue;
 class QScriptEngine;

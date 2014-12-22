@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
+ * Copyright (c) 2013-14 Anmol Ahuja <darthcodus@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,10 +24,10 @@
 
 #include <QObject>
 #include <QScriptable>
+#include <QString>
 
 class QScriptContext;
 class QScriptEngine;
-class QScriptValue;
 class QScriptValue;
 
 typedef QMap<QString,QString> StringMap;

@@ -22,6 +22,7 @@
 
 #include <QObject>
 #include <QScriptValue>
+#include <QString>
 
 class QScriptContext;
 class QScriptEngine;
