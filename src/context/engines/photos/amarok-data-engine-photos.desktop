@@ -46,7 +46,6 @@ Name[sv]=Datagränssnitt för foton
 Name[th]=กลไกข้อมูลของภาพถ่าย
 Name[tr]=Fotoğraf Veri Motoru
 Name[uk]=Рушій даних фотографій
-Name[x-test]=xxPhotos Data Enginexx
 Name[zh_CN]=照片数据引擎
 Name[zh_TW]=Photos 資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine

@@ -41,7 +41,6 @@ Name[sr@latin]=MP3 muzička prodavnica
 Name[sv]=MP3-musikbutik
 Name[tr]=MP3 Müzik Mağazası
 Name[uk]=Музична крамниця з продажу MP3
-Name[x-test]=xxMP3 Music Storexx
 Name[zh_CN]=MP3 音乐商店
 Name[zh_TW]=MP3 音樂商店
 Comment=Access the Amazon MP3 Store directly from Amarok
@@ -82,7 +81,6 @@ Comment[sr@latin]=Pristupite Amazonovoj MP3 prodavnici neposredno iz Amaroka
 Comment[sv]=Kom åt Amazons MP3-butik direkt från Amarok
 Comment[tr]=Amarok'tan Amazon MP3 Mağazası'na doğrudan erişim
 Comment[uk]=Доступ до крамниці з продажу MP3 Amazon безпосередньо з Amarok
-Comment[x-test]=xxAccess the Amazon MP3 Store directly from Amarokxx
 Comment[zh_CN]=直接从 Amarok 访问亚马逊 MP3 商店
 Comment[zh_TW]=直接到 Amazon 存取 Amazon MP3 商店
 
