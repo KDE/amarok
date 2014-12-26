@@ -50,6 +50,7 @@ Name[th]=กลไกข้อมูลของแอมอะร็อก
 Name[tr]=Amarok Veri Motoru
 Name[uk]=Рушій даних Amarok
 Name[wa]=Éndjin d' dinêyes Amarok
+Name[x-test]=xxAmarok Data Enginexx
 Name[zh_CN]=Amarok 数据引擎
 Name[zh_TW]=Amarok 資料引擎
 Type=ServiceType
@@ -107,6 +108,7 @@ Comment[th]=กลไกข้อมูลของแอมอะร็อก
 Comment[tr]=Amarok Veri Motoru
 Comment[uk]=Рушій даних Amarok
 Comment[wa]=Éndjin d' dinêyes Amarok
+Comment[x-test]=xxAmarok Data Enginexx
 Comment[zh_CN]=Amarok 数据引擎
 Comment[zh_TW]=Amarok 資料引擎
 

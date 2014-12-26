@@ -32,6 +32,7 @@ Name[sr@latin]=Analizator
 Name[sv]=Analysator
 Name[tr]=Çözümleyici
 Name[uk]=Аналізатор
+Name[x-test]=xxAnalyzerxx
 Name[zh_TW]=分析器
 Type=Service
 Icon=view-media-analyzer-amarok

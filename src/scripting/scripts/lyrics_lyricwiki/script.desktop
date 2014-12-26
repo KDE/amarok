@@ -31,6 +31,7 @@ Name[sr@latin]=LyricWiki
 Name[sv]=Lyricwiki
 Name[tr]=Lyricwiki
 Name[uk]=Lyricwiki
+Name[x-test]=xxLyricwikixx
 Name[zh_TW]=Lyricwiki
 Comment=A script to fetch lyrics from lyricwiki.org
 Comment[ca]=Un script per recuperar lletres des de lyricwiki.org
@@ -60,6 +61,7 @@ Comment[sr@latin]=Skripta za dobavljanje stihova sa LyricWikija
 Comment[sv]=Ett skript för att hämta sångtexter från lyricwiki.org
 Comment[tr]=Lyricwiki.org şarkı sözleri getirmek için bir betik
 Comment[uk]=Скрипт для отримання слів пісень з lyricwiki.org
+Comment[x-test]=xxA script to fetch lyrics from lyricwiki.orgxx
 Comment[zh_TW]=從 lyricwiki.org 抓取歌詞的文稿
 
 X-KDE-PluginInfo-Author=Aaron Reichman
