@@ -94,3 +94,6 @@ Type=int
 [PropertyDef::X-KDE-Amarok-experimental]
 Type=bool
 
+# If true, Amarok will always initialize this plugin indepenent of the configuration
+[PropertyDef::X-KDE-Amarok-vital]
+Type=bool

@@ -184,26 +184,15 @@ Plugins::PluginManager::checkPluginEnabledStates()
 bool
 Plugins::PluginManager::isPluginEnabled( const KPluginInfo &pluginInfo ) const
 {
-    const QString pluginName = pluginInfo.pluginName();
-
-    // The type of storage to be used it determined by the configuration
-    const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
-    if( pluginName == QLatin1String("amarok_storage-mysqlserverstorage") )
-    {
-        return useMySqlServer;
-    }
-    else if( pluginName == QLatin1String("amarok_storage-mysqlestorage") )
-    {
-        return !useMySqlServer;
-    }
-    // we the default collection is always enabled
-    else if( pluginName == QLatin1String("amarok_collection-mysqlcollection") )
+    // mysql storage and collection are vital. They need to be loaded always
+    if( pluginInfo.property("X-KDE-Amarok-vital").toBool() )
     {
         return true;
     }
     else
     {
-        bool enabledByDefault = pluginInfo.isPluginEnabledByDefault();
+        const QString pluginName = pluginInfo.pluginName();
+        const bool enabledByDefault = pluginInfo.isPluginEnabledByDefault();
         return Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", enabledByDefault );
     }
 }
@@ -244,6 +233,7 @@ Plugins::PluginManager::createFactory( const KPluginInfo &pluginInfo )
     }
 
     debug() << "created factory for plugin" << name << "type:" << pluginInfo.category();
+    debug() << "is vital?" << pluginInfo.property("X-KDE-Amarok-vital").toBool();
     m_factoryCreated[ pluginInfo.pluginName() ] = factory;
     return factory;
 }

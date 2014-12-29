@@ -17,6 +17,8 @@
 #include "MySqlServerStorageFactory.h"
 #include "MySqlServerStorage.h"
 
+#include <core/support/Amarok.h>
+
 AMAROK_EXPORT_STORAGE( MySqlServerStorageFactory, mysqlserverstorage )
 
 MySqlServerStorageFactory::MySqlServerStorageFactory( QObject *parent, const QVariantList &args )
@@ -37,7 +39,8 @@ MySqlServerStorageFactory::init()
 
     m_initialized = true;
 
-    emit newStorage( new MySqlServerStorage() );
+    if( Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
+        emit newStorage( new MySqlServerStorage() );
 }
 
 #include "MySqlServerStorageFactory.moc"

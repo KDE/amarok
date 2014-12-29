@@ -160,22 +160,11 @@ CollectionManager::setFactories( const QList<Plugins::PluginFactory*> &factories
         if( !factory )
             continue;
 
-        const KPluginInfo info = factory->info();
-        const QString pluginName = info.pluginName();
-        const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
-
-        // the sql collection is a core collection. It cannot be switched off
-        // and should be first.
-        bool primaryCollection = ( pluginName == QLatin1String("amarok_collection-mysqlcollection") );
-
         connect( factory, SIGNAL(newCollection(Collections::Collection*)),
                  this, SLOT(slotNewCollection(Collections::Collection*)) );
         {
-                QWriteLocker locker( &d->lock );
-                if( primaryCollection )
-                    d->factories.prepend( factory );
-                else
-                    d->factories.append( factory );
+            QWriteLocker locker( &d->lock );
+            d->factories.append( factory );
         }
     }
 
