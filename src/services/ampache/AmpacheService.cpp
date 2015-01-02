@@ -105,7 +105,7 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
 
 AmpacheService::~AmpacheService()
 {
-    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+    CollectionManager::instance()->removeTrackProvider( m_collection );
     delete m_collection;
     m_ampacheLogin->deleteLater();
 }
@@ -135,7 +135,7 @@ AmpacheService::onLoginSuccessful()
     m_collection = new Collections::AmpacheServiceCollection( this, m_ampacheLogin->server(), m_ampacheLogin->sessionId() );
     // connect( m_collection, SIGNAL(authenticationNeeded()), SLOT(authenticate()) );
 
-    CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
+    CollectionManager::instance()->addTrackProvider( m_collection );
     QList<CategoryId::CatMenuId> levels;
     levels << CategoryId::Artist << CategoryId::Album;
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );

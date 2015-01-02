@@ -51,6 +51,7 @@ namespace Collections
     PlaydarCollectionFactory::~PlaydarCollectionFactory()
     {
         DEBUG_BLOCK
+        CollectionManager::instance()->removeTrackProvider( m_collection.data() );
         delete m_collection.data();
         delete m_controller;
     }

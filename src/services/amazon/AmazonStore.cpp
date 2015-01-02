@@ -116,7 +116,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     m_lastSearch.clear();
 
     // add the collection, exclude it from global queries
-    CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
+    CollectionManager::instance()->addTrackProvider( m_collection );
 
     connect( m_searchWidget, SIGNAL(filterChanged(QString)), this, SLOT(newSearchRequest(QString)) );
 
@@ -126,7 +126,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
 
 AmazonStore::~AmazonStore()
 {
-    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+    CollectionManager::instance()->removeTrackProvider( m_collection );
     delete m_collection;
 }
 

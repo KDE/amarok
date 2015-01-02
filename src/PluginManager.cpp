@@ -232,8 +232,6 @@ Plugins::PluginManager::createFactory( const KPluginInfo &pluginInfo )
         return 0;
     }
 
-    debug() << "created factory for plugin" << name << "type:" << pluginInfo.category();
-    debug() << "is vital?" << pluginInfo.property("X-KDE-Amarok-vital").toBool();
     m_factoryCreated[ pluginInfo.pluginName() ] = factory;
     return factory;
 }

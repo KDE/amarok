@@ -41,11 +41,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
 {
     Q_OBJECT
 
-    Q_PROPERTY( SqlStorage *sqlStorage
-                READ sqlStorage
-                SCRIPTABLE false
-                DESIGNABLE false )
-
     public:
         /** Creates a new SqlCollection.
          *  @param storage The storage this collection should work on. It will be freed by the collection.

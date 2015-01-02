@@ -134,13 +134,13 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     metaFactory->setStreamType( m_streamType );
     m_registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new Collections::MagnatuneSqlCollection( "magnatune", "Magnatune.com", metaFactory, m_registry );
-    CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
+    CollectionManager::instance()->addTrackProvider( m_collection );
     setServiceReady( true );
 }
 
 MagnatuneStore::~MagnatuneStore()
 {
-    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+    CollectionManager::instance()->removeTrackProvider( m_collection );
     delete m_registry;
     delete m_collection;
 }

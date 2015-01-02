@@ -89,14 +89,21 @@ setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_jamendo.p
     ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo", this );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new Collections::ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
-    CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
+    CollectionManager::instance()->addTrackProvider( m_collection );
     setServiceReady( true );
 }
 
 JamendoService::~JamendoService()
 {
     DEBUG_BLOCK
-    
+
+    if( m_collection )
+    {
+        CollectionManager::instance()->removeTrackProvider( m_collection );
+        m_collection->deleteLater();
+        m_collection = 0;
+    }
+
     //if currently running, stop it or we will get crashes
     if( m_xmlParser ) {
         m_xmlParser->requestAbort();

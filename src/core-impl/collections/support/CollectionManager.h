@@ -97,22 +97,6 @@ class AMAROK_EXPORT CollectionManager : public QObject
             could be created for the url.
         */
         Meta::TrackPtr trackForUrl( const KUrl &url );
-        /**
-          * convenience method. See trackForUrl( const KUrl ).
-          */
-        Meta::TrackList tracksForUrls( const KUrl::List &urls );
-
-
-        /**
-         * add a collection whose lifecycle is not managed by CollectionManager.
-         *
-         * @param defaultStatus  uses the default status passed as the second argument unless a custom
-         * status is stored in Amarok's config file.
-         *
-         * Also adds the collection as track provider
-         */
-        void addUnmanagedCollection( Collections::Collection *newCollection, CollectionStatus defaultStatus );
-        void removeUnmanagedCollection( Collections::Collection *collection );
 
         CollectionStatus collectionStatus( const QString &collectionId ) const;
 

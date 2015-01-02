@@ -156,9 +156,9 @@ LastFmService::~LastFmService()
         delete factory;
     }
 
-    if( m_collection && CollectionManager::instance() )
+    if( m_collection )
     {
-        CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+        CollectionManager::instance()->removeTrackProvider( m_collection );
         m_collection->deleteLater();
         m_collection = 0;
     }
@@ -181,7 +181,7 @@ LastFmService::slotReconfigure()
     if( !m_collection && ready )
     {
         m_collection = new Collections::LastFmServiceCollection( m_config->username() );
-        CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
+        CollectionManager::instance()->addTrackProvider( m_collection );
     }
 
     // create Model once the username is known, it depends on it implicitly

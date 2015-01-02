@@ -24,15 +24,15 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/SmartPointerList.h"
-#include <core/storage/SqlStorage.h>
 #include "core-impl/meta/file/FileTrackProvider.h"
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
 
-#include <QCoreApplication>
-#include <QList>
 #include <QMetaEnum>
 #include <QMetaObject>
+
+#include <QCoreApplication>
+#include <QList>
 #include <QPair>
 #include <QTimer>
 #include <QReadWriteLock>
@@ -45,8 +45,6 @@ struct CollectionManager::Private
 {
     QList<CollectionPair> collections;
     QList<Plugins::PluginFactory*> factories; // factories belong to PluginManager
-
-    QList<Collections::Collection*> unmanagedCollections;
 
     QList<Collections::TrackProvider*> trackProviders;
     TimecodeTrackProvider *timecodeTrackProvider;
@@ -103,7 +101,6 @@ CollectionManager::~CollectionManager()
         delete d->timecodeTrackProvider;
         delete d->fileTrackProvider;
         d->collections.clear();
-        d->unmanagedCollections.clear();
         d->trackProviders.clear();
 
         // Hmm, qDeleteAll from Qt 4.8 crashes with our SmartPointerList, do it manually. Bug 285951
@@ -270,22 +267,8 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
         connect( newCollection, SIGNAL(remove()), SLOT(slotRemoveCollection()), Qt::QueuedConnection );
         connect( newCollection, SIGNAL(updated()), SLOT(slotCollectionChanged()), Qt::QueuedConnection );
 
-        // by convention, collections that provide a SQL database have a Qt property called "sqlStorage"
-        int propertyIndex = newCollection->metaObject()->indexOfProperty( "sqlStorage" );
-        if( propertyIndex != -1 )
-        {
-            SqlStorage *sqlStorage = newCollection->property( "sqlStorage" ).value<SqlStorage*>();
-            if( sqlStorage )
-            {
-                //let's cheat a bit and assume that sqlStorage and the primaryCollection are always the same
-                //it is true for now anyway
-                d->primaryCollection = newCollection;
-            }
-            else
-            {
-                warning() << "Collection " << newCollection->collectionId() << " has sqlStorage property but did not provide a SqlStorage pointer";
-            }
-        }
+        if( newCollection->collectionId() == "localCollection" )
+            d->primaryCollection = newCollection;
     }
 
     if( status & CollectionViewable )
@@ -353,23 +336,6 @@ CollectionManager::primaryCollection() const
     return d->primaryCollection;
 }
 
-Meta::TrackList
-CollectionManager::tracksForUrls( const KUrl::List &urls )
-{
-    DEBUG_BLOCK
-
-    debug() << "adding " << urls.size() << " tracks";
-
-    Meta::TrackList tracks;
-    foreach( const KUrl &url, urls )
-    {
-        Meta::TrackPtr track = trackForUrl( url );
-        if( track )
-            tracks.append( track );
-    }
-    return tracks;
-}
-
 Meta::TrackPtr
 CollectionManager::trackForUrl( const KUrl &url )
 {
@@ -409,47 +375,6 @@ CollectionManager::trackForUrl( const KUrl &url )
     return Meta::TrackPtr( 0 );
 }
 
-
-void
-CollectionManager::addUnmanagedCollection( Collections::Collection *newCollection, CollectionStatus defaultStatus )
-{
-    QWriteLocker locker( &d->lock );
-
-    // TODO: what happens if a collection is managed and then added as unmanaged
-    //  or the other way round.
-    if( newCollection && d->unmanagedCollections.indexOf( newCollection ) == -1 )
-    {
-        const QMetaObject *mo = metaObject();
-        const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "CollectionStatus" ) );
-        const QString &value = KGlobal::config()->group( "CollectionManager" ).readEntry( newCollection->collectionId() );
-        int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
-        CollectionStatus status;
-        enumValue == -1 ? status = defaultStatus : status = (CollectionStatus) enumValue;
-        d->unmanagedCollections.append( newCollection );
-        CollectionPair pair( newCollection, status );
-        d->collections.append( pair );
-        d->trackProviders.append( newCollection );
-        if( status & CollectionViewable )
-        {
-            emit collectionAdded( newCollection );
-            emit collectionAdded( newCollection, status );
-        }
-        emit trackProviderAdded( newCollection );
-    }
-}
-
-void
-CollectionManager::removeUnmanagedCollection( Collections::Collection *collection )
-{
-    //do not remove it from collection if it is not in unmanagedCollections
-    if( collection && d->unmanagedCollections.removeAll( collection ) )
-    {
-        CollectionPair pair( collection, collectionStatus( collection->collectionId() ) );
-        d->collections.removeAll( pair );
-        d->trackProviders.removeAll( collection );
-        emit collectionRemoved( collection->collectionId() );
-    }
-}
 
 CollectionManager::CollectionStatus
 CollectionManager::collectionStatus( const QString &collectionId ) const

@@ -127,7 +127,7 @@ Mp3tunesService::~Mp3tunesService()
     delete m_locker;
 //    delete m_daemon;
     if( m_collection ) {
-        CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+        CollectionManager::instance()->removeTrackProvider( m_collection );
         delete m_collection;
     }
 }
@@ -282,8 +282,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         m_authenticated = true;
 
         m_collection = new Collections::Mp3tunesServiceCollection( this, m_sessionId, m_locker );
-        CollectionManager::instance()->addUnmanagedCollection( m_collection,
-                                    CollectionManager::CollectionDisabled );
+        CollectionManager::instance()->addTrackProvider( m_collection );
         QList<CategoryId::CatMenuId> levels;
         levels << CategoryId::Artist << CategoryId::Album;
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
