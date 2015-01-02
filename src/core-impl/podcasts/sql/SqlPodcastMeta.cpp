@@ -27,12 +27,15 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/storage/StorageManager.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
+#include "core-impl/meta/file/FileTrackProvider.h"
 #include "core-impl/podcasts/sql/SqlPodcastProvider.h"
 
 #include <QDate>
 #include <QFile>
 
 using namespace Podcasts;
+
+static FileTrackProvider myFileTrackProvider; // we need it to be available for lookups
 
 class TimecodeWriteCapabilityPodcastImpl : public Capabilities::TimecodeWriteCapability
 {
@@ -240,7 +243,7 @@ SqlPodcastEpisode::setupLocalFile()
     /* following won't write to actual file, because MetaProxy::Track hasn't yet looked
      * up the underlying track. It will just set some cached values. */
     writeTagsToFile();
-    proxyTrack->lookupTrack( CollectionManager::instance()->fileTrackProvider() );
+    proxyTrack->lookupTrack( &myFileTrackProvider );
 }
 
 SqlPodcastEpisode::~SqlPodcastEpisode()

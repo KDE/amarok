@@ -87,8 +87,8 @@ CollectionManager::CollectionManager()
 
     setObjectName( "CollectionManager" );
     d->primaryCollection = 0;
-    // special-cased in trackForUrl(), don't add to d->trackProviders yet
-    d->fileTrackProvider = new FileTrackProvider();
+    d->timecodeTrackProvider = 0;
+    d->fileTrackProvider = 0;
 }
 
 CollectionManager::~CollectionManager()
@@ -98,10 +98,10 @@ CollectionManager::~CollectionManager()
     {
         QWriteLocker locker( &d->lock );
 
-        delete d->timecodeTrackProvider;
-        delete d->fileTrackProvider;
         d->collections.clear();
         d->trackProviders.clear();
+        delete d->timecodeTrackProvider;
+        delete d->fileTrackProvider;
 
         // Hmm, qDeleteAll from Qt 4.8 crashes with our SmartPointerList, do it manually. Bug 285951
         while (!d->factories.isEmpty() )
@@ -114,10 +114,14 @@ CollectionManager::~CollectionManager()
 void
 CollectionManager::init()
 {
-    //register the timecode track provider now, as it needs to get added before loading
-    //the stored playlist... Since it can have playable urls that might also match other providers, it needs to get added first.
+    // register the timecode track provider now, as it needs to get added before loading
+    // the stored playlist... Since it can have playable urls that might also match other providers, it needs to get added first.
     d->timecodeTrackProvider = new TimecodeTrackProvider();
     addTrackProvider( d->timecodeTrackProvider );
+
+    // addint fileTrackProvider second since local tracks should be preferred even if the url matchs two tracks
+    d->fileTrackProvider = new FileTrackProvider();
+    addTrackProvider( d->fileTrackProvider );
 }
 
 void
@@ -363,15 +367,6 @@ CollectionManager::trackForUrl( const KUrl &url )
     if( remoteProtocols.contains( url.protocol() ) )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
-    /* TODO: add fileTrackProvider to normal providers once tested that the reorder
-     * doesn't change behaviour */
-    if( d->fileTrackProvider->possiblyContainsTrack( url ) )
-    {
-        Meta::TrackPtr track = d->fileTrackProvider->trackForUrl( url );
-        if( track )
-            return track;
-    }
-
     return Meta::TrackPtr( 0 );
 }
 
@@ -421,9 +416,3 @@ CollectionManager::removeTrackProvider( Collections::TrackProvider *provider )
     d->trackProviders.removeAll( provider );
 }
 
-Collections::TrackProvider *
-CollectionManager::fileTrackProvider()
-{
-    QReadLocker locker( &d->lock );
-    return d->fileTrackProvider;
-}

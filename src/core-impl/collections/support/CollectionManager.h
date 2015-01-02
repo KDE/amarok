@@ -133,13 +133,6 @@ class AMAROK_EXPORT CollectionManager : public QObject
          */
         void setFactories( const QList<Plugins::PluginFactory*> &factories );
 
-        /**
-         * Return a pointer to CollectionManger's internal FileTrackProvider instance.
-         * valid as long as this CollectionManger is alive, CollectionManager remains
-         * owner of the pointer.
-         */
-        Collections::TrackProvider *fileTrackProvider();
-
     public slots:
         /** Starts the full scan for each collection with CollectionScanCapability */
         void startFullScan();
