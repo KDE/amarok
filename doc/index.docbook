@@ -6841,7 +6841,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 </sect3>
 <sect3 id="but-i-also-want-that-stars-system-like-in-other-players"><title>But I also want that stars system like in other players!</title> 
-<para>&amarok;, of course, supports an user-defined rating system, and you can rate your tracks with a single click using the <guilabel>Current Track</guilabel> applet. You can also do this in the context menu (right-click) <menuchoice><guimenu>Edit Track Details</guimenu><guimenuitem>Summary</guimenuitem></menuchoice> tab. If you have the rating stars displayed in your playlist layout, you can also edit there, with the <emphasis>slow double-click</emphasis>.
+<para>&amarok;, of course, supports a user-defined rating system, and you can rate your tracks with a single click using the <guilabel>Current Track</guilabel> applet. You can also do this in the context menu (right-click) <menuchoice><guimenu>Edit Track Details</guimenu><guimenuitem>Summary</guimenuitem></menuchoice> tab. If you have the rating stars displayed in your playlist layout, you can also edit there, with the <emphasis>slow double-click</emphasis>.
 </para>
 </sect3>
 <sect3 id="can-i-drag-and-drop-plasma-applets-from-the-main-window-to-the-desktop"><title>Can I drag and drop Plasma applets from the main window to the Desktop?</title> 
