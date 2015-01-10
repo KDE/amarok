@@ -6,6 +6,7 @@
             ${Amarok_SOURCE_DIR}/src/statusbar
             ${CMAKE_CURRENT_BINARY_DIR}/../../..
             ${KDE4_INCLUDE_DIR}
+            ${QCA2_INCLUDE_DIR}
             ${QT_INCLUDES}
             )
 
@@ -20,8 +21,7 @@ add_subdirectory( images )
 ########### next target ###############
 
 set(libampache_account_login_SRCS
-    AmpacheAccountLogin.cpp
-    sha256/sha256.cpp)
+    AmpacheAccountLogin.cpp)
 kde4_add_library(ampache_account_login SHARED ${libampache_account_login_SRCS})
 target_link_libraries(ampache_account_login
     amaroklib
@@ -29,6 +29,7 @@ target_link_libraries(ampache_account_login
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
+    ${QCA2_LIBRARIES}
 )
 install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 
