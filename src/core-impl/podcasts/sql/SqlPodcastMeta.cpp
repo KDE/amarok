@@ -773,38 +773,72 @@ SqlPodcastChannel::updateInDb()
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
     #define escape(x) sqlStorage->escape(x)
-    QString insert = "INSERT INTO podcastchannels("
-    "url,title,weblink,image,description,copyright,directory,labels,"
-    "subscribedate,autoscan,fetchtype,haspurge,purgecount,writetags,filenamelayout) "
-    "VALUES ( '%1','%2','%3','%4','%5','%6','%7','%8','%9',%10,%11,%12,%13,%14,'%15' );";
-
-    QString update = "UPDATE podcastchannels SET url='%1',title='%2'"
-    ",weblink='%3',image='%4',description='%5',copyright='%6',directory='%7'"
-    ",labels='%8',subscribedate='%9',autoscan=%10,fetchtype=%11,haspurge=%12,"
-    "purgecount=%13, writetags=%14, filenamelayout='%15' WHERE id=%16;";
-    //if we don't have a database ID yet we should insert;
-    QString command = m_dbId ? update : insert;
-
-    command = command.arg( escape(m_url.url()) ); //%1
-    command = command.arg( escape(m_title) ); //%2
-    command = command.arg( escape(m_webLink.url()) ); //%3
-    command = command.arg( escape(m_imageUrl.url()) ); //image  //%4
-    command = command.arg( escape(m_description) ); //%5
-    command = command.arg( escape(m_copyright) ); //%6
-    command = command.arg( escape(m_directory.url()) ); //%7
-    command = command.arg( escape(m_labels.join( "," )) ); //%8
-    command = command.arg( escape(m_subscribeDate.toString()) ); //%9
-    command = command.arg( m_autoScan ? boolTrue : boolFalse ); //%10
-    command = command.arg( QString::number(m_fetchType) ); //%11
-    command = command.arg( m_purge ? boolTrue : boolFalse ); //%12
-    command = command.arg( QString::number(m_purgeCount) ); //%13
-    command = command.arg( m_writeTags ? boolTrue : boolFalse ); //%14
-    command = command.arg( escape(m_filenameLayout) ); //%15
-
+    QString command;
+    QTextStream stream( &command );
     if( m_dbId )
-        sqlStorage->query( command.arg( m_dbId ) );
+    {
+        stream << "UPDATE podcastchannels ";
+        stream << "SET url='";
+        stream << escape(m_url.url());
+        stream << "', title='";
+        stream << escape(m_title);
+        stream << "', weblink='";
+        stream << escape(m_webLink.url());
+        stream << "', image='";
+        stream << escape(m_imageUrl.url());
+        stream << "', description='";
+        stream << escape(m_description);
+        stream << "', copyright='";
+        stream << escape(m_copyright);
+        stream << "', directory='";
+        stream << escape(m_directory.url());
+        stream << "', labels='";
+        stream << escape(m_labels.join( "," ));
+        stream << "', subscribedate='";
+        stream << escape(m_subscribeDate.toString());
+        stream << "', autoscan=";
+        stream << (m_autoScan ? boolTrue : boolFalse);
+        stream << ", fetchtype=";
+        stream << QString::number(m_fetchType);
+        stream << ", haspurge=";
+        stream << (m_purge ? boolTrue : boolFalse);
+        stream << ", purgecount=";
+        stream << QString::number(m_purgeCount);
+        stream << ", writetags=";
+        stream << (m_writeTags ? boolTrue : boolFalse);
+        stream << ", filenamelayout='";
+        stream << escape(m_filenameLayout);
+        stream << "' WHERE id=";
+        stream << m_dbId;
+        stream << ";";
+        kDebug() << command;
+        sqlStorage->query( command );
+    }
     else
+    {
+        stream << "INSERT INTO podcastchannels(";
+        stream << "url,title,weblink,image,description,copyright,directory,labels,";
+        stream << "subscribedate,autoscan,fetchtype,haspurge,purgecount,writetags,filenamelayout) ";
+        stream << "VALUES ( '";
+        stream << escape(m_url.url()) << "', '";
+        stream << escape(m_title) << "', '";
+        stream << escape(m_webLink.url()) << "', '";
+        stream << escape(m_imageUrl.url()) << "', '";
+        stream << escape(m_description) << "', '";
+        stream << escape(m_copyright) << "', '";
+        stream << escape(m_directory.url()) << "', '";
+        stream << escape(m_labels.join( "," )) << "', '";
+        stream << escape(m_subscribeDate.toString()) << "', ";
+        stream << (m_autoScan ? boolTrue : boolFalse) << ", ";
+        stream << QString::number(m_fetchType) << ", ";
+        stream << (m_purge ? boolTrue : boolFalse) << ", ";
+        stream << QString::number(m_purgeCount) << ", ";
+        stream << (m_writeTags ? boolTrue : boolFalse) << ", '";
+        stream << escape(m_filenameLayout);
+        stream << "');";
+        kDebug() << command;
         m_dbId = sqlStorage->insert( command, "podcastchannels" );
+    }
 }
 
 void
