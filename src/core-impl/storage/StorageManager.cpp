@@ -164,7 +164,7 @@ StorageManager::getLastErrors() const
     if( d->sqlDatabase == &emptyStorage )
     {
         QStringList list;
-        list << i18n( "The configured database plugin could be loaded." );
+        list << i18n( "The configured database plugin could not be loaded." );
         return list;
     }
     return d->errorList;

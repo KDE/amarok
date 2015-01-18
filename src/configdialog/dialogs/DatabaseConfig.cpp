@@ -103,7 +103,7 @@ DatabaseConfig::testDatabaseConnection() //SLOT
             tested = true;
             if( connectionErrors.isEmpty() )
                 KMessageBox::messageBox( this, KMessageBox::Information,
-                                         i18n( "Amarok was able to connect succesfull to the database." ),
+                                         i18n( "Amarok was able to establish a successful connection to the database." ),
                                          i18n( "Success" ) );
             else
                 KMessageBox::error( this, i18n( "The amarok database reported "
