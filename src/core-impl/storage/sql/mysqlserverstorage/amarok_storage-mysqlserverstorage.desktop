@@ -2,9 +2,7 @@
 Type=Service
 Icon=network-server-database
 Name=MySQLServer Storage
-Name[en_GB]=MySQLServer Storage
 Comment=Storage plugin for Amarok
-Comment[en_GB]=Storage plugin for Amarok
 NoDisplay=true
 
 ServiceTypes=Amarok/Plugin

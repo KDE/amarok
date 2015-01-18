@@ -2,9 +2,7 @@
 Type=Service
 Icon=server-database
 Name=MySQLe Storage
-Name[en_GB]=MySQLe Storage
 Comment=Storage plugin for Amarok
-Comment[en_GB]=Storage plugin for Amarok
 NoDisplay=true
 
 ServiceTypes=Amarok/Plugin
