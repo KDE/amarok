@@ -2,7 +2,23 @@
 Type=Service
 Icon=network-server-database
 Name=MySQLServer Storage
+Name[ca]=Emmagatzematge MySQLServer
+Name[en_GB]=MySQLServer Storage
+Name[nl]=MySQLServer-opslag
+Name[pt]=Armazenamento no Servidor de MySQL
+Name[pt_BR]=Armazenamento MySQLServer
+Name[sv]=MySQLServer-lagring
+Name[uk]=Сховище даних MySQLServer
+Name[x-test]=xxMySQLServer Storagexx
 Comment=Storage plugin for Amarok
+Comment[ca]=Connector d'emmagatzematge per l'Amarok
+Comment[en_GB]=Storage plugin for Amarok
+Comment[nl]=Opslag-plug-in voor Amarok
+Comment[pt]='Plugin' de armazenamento do Amarok
+Comment[pt_BR]=Plugin de armazenamento para o Amarok
+Comment[sv]=Lagringsinsticksprogram för Amarok
+Comment[uk]=Додаток сховища даних для Amarok
+Comment[x-test]=xxStorage plugin for Amarokxx
 NoDisplay=true
 
 ServiceTypes=Amarok/Plugin

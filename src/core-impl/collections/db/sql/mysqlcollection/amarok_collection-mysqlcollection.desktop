@@ -2,6 +2,14 @@
 Type=Service
 Icon=server-database
 Name=MySQL Collection
+Name[ca]=Col·lecció MySQL
+Name[en_GB]=MySQL Collection
+Name[nl]=MySQL-verzameling
+Name[pt]=Colecção de MySQL
+Name[pt_BR]=Coleção MySQL
+Name[sv]=MySQL-anslutning
+Name[uk]=Збірка MySQL
+Name[x-test]=xxMySQL Collectionxx
 Comment=Collection plugin for Amarok
 Comment[be]=Утулка калекцыі для Amarok
 Comment[bg]=Приставка за колекция (Amarok)
