@@ -114,7 +114,6 @@ AmpacheAccountLogin::authenticate( const KUrl &requestUrl, QByteArray data, Netw
 
         passPhrase = QCA::arrayToHex( sha256Hash.final().toByteArray() );
 
-//         passPhrase = sha256( rawHandshake );
     }
     else
     {
