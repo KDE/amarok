@@ -154,5 +154,5 @@ Playlists::newPlaylistFilePath( const QString &fileExtension )
     while( QFileInfo( url.path() ).exists() )
         url.setFileName( fileName.subs( ++trailingNumber ).toString() );
 
-    return KUrl( QString( "%1.%2" ).arg( url.path() ).arg( fileExtension ) );
+    return KUrl( QString( "%1.%2" ).arg( url.path(), fileExtension ) );
 }

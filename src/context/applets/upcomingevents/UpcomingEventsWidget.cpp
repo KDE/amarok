@@ -261,7 +261,7 @@ UpcomingEventsWidget::setDate( const KDateTime &date )
 void
 UpcomingEventsWidget::setLocation( const LastFmLocationPtr &loc )
 {
-    QString text = QString( "%1, %2" ).arg( loc->city ).arg( loc->country );
+    QString text = QString( "%1, %2" ).arg( loc->city, loc->country );
     if( !loc->street.isEmpty() )
         text.prepend( loc->street + ", " );
     QLabel *locLabel = static_cast<QLabel*>( m_location->widget() );

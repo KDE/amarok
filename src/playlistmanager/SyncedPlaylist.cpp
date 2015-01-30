@@ -33,7 +33,7 @@ SyncedPlaylist::SyncedPlaylist( Playlists::PlaylistPtr playlist )
 KUrl
 SyncedPlaylist::uidUrl() const
 {
-    return KUrl( QString( "amarok-syncedplaylist://%1" ).arg( m_playlists.first()->name() ) );
+    return KUrl( QString( "amarok-syncedplaylist://" ) +  m_playlists.first()->name() );
 }
 
 QString
@@ -195,8 +195,8 @@ SyncedPlaylist::syncNeeded() const
     Playlists::PlaylistPtr master = *i;
     int masterTrackCount = master->trackCount();
     ++i; //From now on its only slaves on the iterator
-    debug() << QString( "Master Playlist: %1 - %2" ).arg( master->name() ).arg( master->uidUrl().url() );
-    debug() << QString( "Master track count: %1" ).arg( masterTrackCount );
+    debug() << "Master Playlist: " << master->name() << " - " << master->uidUrl().url();
+    debug() << "Master track count: " << masterTrackCount;
 
     for( ;i != m_playlists.end(); ++i)
     {
@@ -204,11 +204,11 @@ SyncedPlaylist::syncNeeded() const
         //Playlists::PlaylistPtr slave = i.next();
         Playlists::PlaylistPtr slave = *i;
 
-        debug() << QString( "Slave Playlist: %1 - %2" ).arg( slave->name() ).arg( slave->uidUrl().url() );
+        debug() << "Slave Playlist: " << slave->name() << " - " << slave->uidUrl().url();
         if( masterTrackCount != -1 )
         {
             int slaveTrackCount = slave->trackCount();
-            debug() << QString( "Slave track count: %1" ).arg( slaveTrackCount );
+            debug() << "Slave track count: " << slaveTrackCount;
             //If the number of tracks is different a sync is certainly required
             if( slaveTrackCount != -1 && slaveTrackCount != masterTrackCount )
                 return true;
@@ -243,7 +243,7 @@ SyncedPlaylist::doSync() const
     QListIterator<TrackPtr> m( master->tracks() );
     //debug: print list
     int position = 0;
-    debug() << QString( "Master Playlist: %1 - %2" ).arg( master->name() ).arg( master->uidUrl().url() );
+    debug() << "Master Playlist: " << master->name() << " - " << master->uidUrl().url();
     while( m.hasNext() )
         debug() << QString( "%1 : %2" ).arg( position++ ).arg( m.next()->name() );
     m.toFront();
@@ -254,7 +254,7 @@ SyncedPlaylist::doSync() const
         TrackList slaveTracks = slave->tracks();
         //debug: print list
         position = 0;
-        debug() << QString( "Slave Playlist: %1 - %2" ).arg( slave->name() ).arg( slave->uidUrl().url() );
+        debug() << "Slave Playlist: " << slave->name() << " - " << slave->uidUrl().url();
         foreach( const TrackPtr track, slaveTracks )
             debug() << QString( "%1 : %2" ).arg( position++ ).arg( track->name() );
 
@@ -266,7 +266,7 @@ SyncedPlaylist::doSync() const
             if( position >= slaveTracks.size()
                     || track->uidUrl() != slaveTracks.at( position )->uidUrl() )
             {
-                debug() << QString( "insert %1 at %2" ).arg( track->name() ).arg( position );
+                debug() << QString( "insert %2 at %1" ).arg( position ).arg( track->name() );
                 slave->addTrack( track, position );
 
                 slave->syncTrackStatus( position, track );

@@ -39,13 +39,13 @@ AmarokScriptEngine::AmarokScriptEngine( QObject *parent )
 void
 AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property )
 {
-    const QString objName = QString( "%1%2" ).arg( name ).arg( qrand() );
+    const QString objName = QString( "%1%2" ).arg( name, QString::number( qrand() ) );
     globalObject().property( internalObject ).setProperty( objName, property, QScriptValue::ReadOnly | QScriptValue::SkipInEnumeration );
     const QString command = QString( "Object.defineProperty( %1, \"%2\", {get : function(){ var iobj= %3; iobj.invokableDeprecatedCall(\""
                                                                             " %1.%2 \"); return iobj.%4; },\
                                                                             enumerable : true,\
                                                                             configurable : false} );" )
-                                    .arg( parent ).arg( name ).arg( internalObject ).arg( objName );
+                                    .arg( parent, name, internalObject, objName );
     evaluate( command );
 }
 

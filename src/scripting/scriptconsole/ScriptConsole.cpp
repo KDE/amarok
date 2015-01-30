@@ -231,7 +231,7 @@ ScriptConsole::createScriptItem( const QString &script )
     do
     {
         scriptName = QString( "Script-%1" ).arg( qrand() );
-        scriptPath =  QString( "%1/%2" ).arg( m_savePath ).arg( scriptName );
+        scriptPath =  QString( "%1/%2" ).arg( m_savePath, scriptName );
     } while ( QDir( scriptPath ).exists() );
     QDir().mkdir( scriptPath );
 

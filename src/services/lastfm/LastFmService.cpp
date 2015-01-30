@@ -211,7 +211,7 @@ LastFmService::slotReconfigure()
             m_authenticateReply = 0;
         }
 
-        const QString authToken = md5( QString( "%1%2" ).arg( m_config->username() ).arg(
+        const QString authToken = md5( QString( "%1%2" ).arg( m_config->username(),
                 md5( m_config->password().toUtf8() ) ).toUtf8() );
         QMap<QString, QString> query;
         query[ "method" ] = "auth.getMobileSession";

@@ -205,7 +205,7 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
                     if( !track )
                         return false;
                     debug() << QString( "Copy track \"%1\" to \"%2\"." )
-                            .arg( track->prettyName() ).arg( provider->prettyName() );
+                            .arg( track->prettyName(),  provider->prettyName() );
     //                return !provider->addTrack( track ).isNull();
                     provider->addTrack( track ); //ignore result since UmsPodcastProvider returns NULL
                     return true;
@@ -223,7 +223,7 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
                     }
 
                     debug() << QString( "Copy playlist \"%1\" to \"%2\"." )
-                            .arg( playlist->prettyName() ).arg( provider->prettyName() );
+                            .arg( playlist->prettyName(), provider->prettyName() );
 
                     return !provider->addPlaylist( playlist ).isNull();
                 }

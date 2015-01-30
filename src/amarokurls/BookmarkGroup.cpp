@@ -100,14 +100,14 @@ void BookmarkGroup::save()
     if ( m_dbId != -1 ) {
         //update existing
         QString query = "UPDATE bookmark_groups SET parent_id=%1, name='%2', description='%3', custom='%4%' WHERE id=%5;";
-        query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description ).arg( m_customType ).arg( QString::number( m_dbId ) );
+        query = query.arg( QString::number( parentId ), m_name, m_description, m_customType, QString::number( m_dbId ) );
         StorageManager::instance()->sqlStorage()->query( query );
     }
     else
     {
         //insert new
         QString query = "INSERT INTO bookmark_groups ( parent_id, name, description, custom) VALUES ( %1, '%2', '%3', '%4' );";
-        query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description ).arg( m_customType );
+        query = query.arg( QString::number( parentId ), m_name, m_description, m_customType );
         m_dbId = StorageManager::instance()->sqlStorage()->insert( query, NULL );
 
     }

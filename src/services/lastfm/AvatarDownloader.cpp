@@ -55,7 +55,7 @@ AvatarDownloader::downloaded( const KUrl &url, QByteArray data, NetworkAccessMan
             emit avatarDownloaded( username, avatar );
     }
     else
-        debug() << QString("Error: failed to download %1'savatar: %1").arg(username).arg(e.description);
+        debug() << QString( "Error: failed to download %1'savatar: %2" ).arg( username, e.description );
 }
 
 #include "AvatarDownloader.moc"

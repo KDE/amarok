@@ -63,7 +63,7 @@ WikipediaAppletPrivate::parseWikiLangXml( const QByteArray &data )
             {
                 const QString &prefix = a.value("prefix").toString();
                 const QString &language = a.value("language").toString();
-                const QString &display = QString( "[%1] %2" ).arg( prefix ).arg( language );
+                const QString &display = QString( "[%1] %2" ).arg( prefix, language );
                 QListWidgetItem *item = new QListWidgetItem( display, 0 );
                 // The urlPrefix is the lang code infront of the wikipedia host
                 // url. It is mostly the same as the "prefix" attribute but in
@@ -245,7 +245,7 @@ WikipediaAppletPrivate::_loadSettings()
         QListWidgetItem *item = listWidget->item( i );
         const QString &prefix = item->data( PrefixRole ).toString();
         const QString &urlPrefix = item->data( UrlPrefixRole ).toString();
-        QString concat = QString("%1:%2").arg( prefix ).arg( urlPrefix );
+        QString concat = QString("%1:%2").arg( prefix, urlPrefix );
         list << (prefix == urlPrefix ? prefix : concat);
     }
     langList = list;

@@ -77,7 +77,7 @@ ScriptConsoleItem::createSpecFile( const QString &name, const QString &category,
                             "\nX-KDE-PluginInfo-Version=1.0"
                             "\nX-KDE-PluginInfo-Category=%2"
                             "\nX-KDE-PluginInfo-Depends=Amarok2.0"
-                            "\nX-KDE-PluginInfo-EnabledByDefault=false\n" ).arg( name ).arg( category );
+                            "\nX-KDE-PluginInfo-EnabledByDefault=false\n" ).arg( name, category );
 
     QString specPath = QString( "%1/script.spec" ).arg( path );
     QFile file( specPath );
@@ -140,8 +140,8 @@ QString
 ScriptConsoleItem::handleError( QScriptEngine *engine )
 {
     QString errorString = QString( "Script Error: %1 (line: %2)" )
-                        .arg( engine->uncaughtException().toString() )
-                        .arg( engine->uncaughtExceptionLineNumber() );
+                        .arg( engine->uncaughtException().toString(),
+                              QString::number( engine->uncaughtExceptionLineNumber() ) );
     return errorString;
 }
 

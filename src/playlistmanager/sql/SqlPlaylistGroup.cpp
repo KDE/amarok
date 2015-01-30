@@ -71,8 +71,8 @@ SqlPlaylistGroup::save()
         //update existing
         QString query = "UPDATE playlist_groups SET parent_id=%1, name='%2', \
                 description='%3' WHERE id=%4;";
-        query = query.arg( QString::number( parentId ) ).arg( m_name ).arg(
-            m_description ).arg( QString::number( m_dbId ) );
+        query = query.arg( QString::number( parentId ), m_name,
+                           m_description, QString::number( m_dbId ) );
         sqlStorage->query( query );
     }
     else
@@ -80,8 +80,7 @@ SqlPlaylistGroup::save()
         //insert new
         QString query = "INSERT INTO playlist_groups ( parent_id, name, \
                 description) VALUES ( %1, '%2', '%3' );";
-        query = query.arg( QString::number( parentId ) ).arg( m_name ).arg(
-            m_description );
+        query = query.arg( QString::number( parentId ), m_name, m_description );
         m_dbId = sqlStorage->insert( query, NULL );
     }
 }

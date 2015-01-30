@@ -151,7 +151,8 @@ bool AmarokUrl::saveToDb()
         //update existing
         debug() << "Updating bookmark";
         QString query = "UPDATE bookmarks SET parent_id=%1, name='%2', url='%3', description='%4', custom='%5' WHERE id=%6;";
-        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ), sql->escape( url() ), sql->escape( m_description ), sql->escape( m_customValue ) , QString::number( m_id ) );
+        query = query.arg( QString::number( parentId ), sql->escape( m_name ), sql->escape( url() ),
+                           sql->escape( m_description ), sql->escape( m_customValue ), QString::number( m_id ) );
         StorageManager::instance()->sqlStorage()->query( query );
     }
     else
@@ -159,7 +160,8 @@ bool AmarokUrl::saveToDb()
         //insert new
         debug() << "Creating new bookmark in the db";
         QString query = "INSERT INTO bookmarks ( parent_id, name, url, description, custom ) VALUES ( %1, '%2', '%3', '%4', '%5' );";
-        query = query.arg( QString::number( parentId ), sql->escape( m_name ), sql->escape( url() ), sql->escape( m_description ), sql->escape( m_customValue ) );
+        query = query.arg( QString::number( parentId ), sql->escape( m_name ), sql->escape( url() ),
+                           sql->escape( m_description ), sql->escape( m_customValue ) );
         m_id = StorageManager::instance()->sqlStorage()->insert( query, NULL );
     }
 

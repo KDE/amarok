@@ -80,8 +80,8 @@ void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
     debug() << QString("Adding interactive cover fetch for: '%1' from %2")
-        .arg( album->name() )
-        .arg( Amarok::config("Cover Fetcher").readEntry("Interactive Image Source", "LastFm") );
+        .arg( album->name(),
+              Amarok::config("Cover Fetcher").readEntry("Interactive Image Source", "LastFm") );
     switch( fetchSource() )
     {
     case CoverFetch::LastFm:
@@ -124,7 +124,7 @@ void
 CoverFetcher::queueQuery( Meta::AlbumPtr album, const QString &query, int page )
 {
     m_queue->addQuery( query, fetchSource(), page, album );
-    debug() << QString( "Queueing cover fetch query: '%1' (page %2)" ).arg( query ).arg( page );
+    debug() << QString( "Queueing cover fetch query: '%1' (page %2)" ).arg( query, QString::number( page ) );
 }
 
 void
