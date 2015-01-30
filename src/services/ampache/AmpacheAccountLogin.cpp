@@ -21,39 +21,17 @@
 
 #include "AmpacheAccountLogin.h"
 
-#include "sha256/sha256.h"
-
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 
 #include <QDomDocument>
 #include <QNetworkRequest>
+#include <QtCrypto>
 
 #include <KLocale>
 #include <KPasswordDialog>
 #include <KMessageBox>
-#include <KMD5>
-
-QString sha256( QString in )
-{
-    unsigned char digest[ SHA512_DIGEST_SIZE];
-    unsigned char* toHash = (unsigned char*)in.toUtf8().data();
-    
-    sha256( toHash , qstrlen( ( char* )toHash ), digest );
-    
-    // this part copied from main() in sha256.cpp
-    unsigned char output[2 * SHA512_DIGEST_SIZE + 1];
-    int i;
-    
-    output[2 * SHA256_DIGEST_SIZE ] = '\0';
-    
-    for (i = 0; i < SHA256_DIGEST_SIZE ; i++) {
-        sprintf((char *) output + 2*i, "%02x", digest[i]);
-    }
-    
-    return QString::fromAscii( (const char*)output );
-}
 
 
 AmpacheAccountLogin::AmpacheAccountLogin( const QString& url, const QString& username, const QString& password, QWidget* parent )
@@ -66,6 +44,7 @@ AmpacheAccountLogin::AmpacheAccountLogin( const QString& url, const QString& use
     , m_lastRequest( 0 )
 {
     reauthenticate();
+
 }
 
 
@@ -97,6 +76,8 @@ AmpacheAccountLogin::authenticate( const KUrl &requestUrl, QByteArray data, Netw
     if( !m_lastRequest )
         return;
 
+    QCA::Initializer init;
+
     DEBUG_BLOCK
     Q_UNUSED( requestUrl );
 
@@ -117,19 +98,33 @@ AmpacheAccountLogin::authenticate( const KUrl &requestUrl, QByteArray data, Netw
     // We need to use different authentication strings depending on the version of ampache
     if( version > 350000 )
     {
+
+
+
         debug() << "New Password Scheme " << version;
         url.addQueryItem( "version", "350001" );
 
-        QString rawHandshake = timestamp + sha256( m_password );
-        passPhrase = sha256( rawHandshake );
+        QCA::Hash sha256Hash( "sha256" );
+        sha256Hash.update( m_password.toUtf8() );
+        QString hashedPassword = QCA::arrayToHex( sha256Hash.final().toByteArray() );
+
+        QString rawHandshake = timestamp + hashedPassword;
+        sha256Hash.clear();
+        sha256Hash.update( rawHandshake.toUtf8() );
+
+        passPhrase = QCA::arrayToHex( sha256Hash.final().toByteArray() );
+
+//         passPhrase = sha256( rawHandshake );
     }
     else
     {
         debug() << "Version Older than 35001 Generated MD5 Auth " << version;
 
         QString rawHandshake = timestamp + m_password;
-        KMD5 context( rawHandshake.toUtf8() );
-        passPhrase = context.hexDigest().data();
+        QCA::Hash md5Hash( "md5" );
+
+        md5Hash.update( rawHandshake.toUtf8() );
+        passPhrase = QCA::arrayToHex( md5Hash.final().toByteArray() );
     }
 
     url.addQueryItem( "timestamp", timestamp );
