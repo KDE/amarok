@@ -38,15 +38,21 @@ public slots:
     void close();
 private slots:
     void apply();
-    void setPeerWidth( bool peer );
+    void setAutomaticWidth( bool peer );
 private:
     QWeakPointer<TokenWithLayout> m_token;
-    HintingLineEdit *m_prefix, *m_suffix;
+    HintingLineEdit *m_prefix;
+    HintingLineEdit *m_suffix;
     QLabel *m_element;
     QSlider *m_width;
+
+    /** Stores the width that the widget had before switching to automatic width. */
     int m_previousWidth;
-    QToolButton *m_bold, *m_italic, *m_underline,  *m_alignLeft, *m_alignCenter, *m_alignRight;
-    QRadioButton *m_fixedWidth, *m_peerWidth;
+
+    QToolButton *m_bold, *m_italic, *m_underline;
+    QToolButton *m_alignLeft, *m_alignCenter, *m_alignRight;
+    QRadioButton *m_fixedWidth;
+    QRadioButton *m_automaticWidth;
 };
 
 #endif

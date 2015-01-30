@@ -57,28 +57,35 @@ public:
     ~TokenWithLayout();
 
     Qt::Alignment alignment();
-    void setAlignment( Qt::Alignment alignment );
-
     bool bold() const;
     bool italic() const;
     bool underline() const;
     inline qreal size() const { return width(); }
     qreal width() const;
-    inline bool widthForced() const { return m_widthForced; }
+
+    /** Return true if the width is determined by width(). It's automatic otherwise */
+    inline bool widthForced() const { return m_width > 0.0; }
+
+    /** Returns the text that is added to the front of the value */
     inline QString prefix() const { return m_prefix; }
+
+    /** Returns the text that is added to the back of the value such as "%" */
     inline QString suffix() const { return m_suffix; }
 
 public slots:
-    void setAlignLeft( bool );
-    void setAlignCenter( bool );
-    void setAlignRight( bool );
+    void setAlignment( Qt::Alignment alignment );
     void setBold( bool bold );
     void setItalic( bool italic );
     void setUnderline( bool underline );
     void setPrefix( const QString& );
     void setSuffix( const QString& );
+
+    /** Set the width of the token to a percentage of the whole line.
+     *
+     *  @param width A number from 0 to 100. A width of >0 will
+     *    automatically set "forced" to true.
+     */
     void setWidth( int width );
-    void setWidthForced( bool );
 
 protected:
     virtual void enterEvent(QEvent *);
@@ -95,7 +102,6 @@ private:
     bool m_bold;
     bool m_italic;
     bool m_underline;
-    bool m_widthForced;
     qreal m_width;
     QString m_prefix, m_suffix;
     Wrench *m_wrench;

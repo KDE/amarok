@@ -36,7 +36,6 @@
 #include <QStyleOptionFrame>
 #include <QToolButton>
 
-#include <QtDebug>
 
 class HintingLineEdit : public QLineEdit
 {
@@ -106,11 +105,11 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     l4->addWidget( m_fitContent = new QRadioButton( i18n( "Fit content" ), this ) );
     m_fitContent->setToolTip( i18n( "Fit the element text" ) );
 #endif
-    l4->addWidget( m_peerWidth = new QRadioButton( i18nc( "automatic width", "Automatic" ), this ) );
-    m_peerWidth->setToolTip( i18n( "Take homogeneous part of the space available to all elements with automatic width" ) );
+    l4->addWidget( m_automaticWidth = new QRadioButton( i18nc( "automatic width", "Automatic" ), this ) );
+    m_automaticWidth->setToolTip( i18n( "Take homogeneous part of the space available to all elements with automatic width" ) );
     l4->addStretch();
     boxWidget->connect( m_fixedWidth, SIGNAL(toggled(bool)), SLOT(setEnabled(bool)) );
-    connect( m_peerWidth, SIGNAL(toggled(bool)), SLOT(setPeerWidth(bool)) );
+    connect( m_automaticWidth, SIGNAL(toggled(bool)), SLOT(setAutomaticWidth(bool)) );
     l1->addLayout( l4 );
 
     QHBoxLayout *l5 = new QHBoxLayout( boxWidget );
@@ -192,7 +191,7 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
 
 void LayoutEditDialog::apply()
 {
-    if ( !m_token )
+    if( !m_token )
         return;
 
     m_token.data()->setPrefix( m_prefix->text() );
@@ -209,7 +208,7 @@ void LayoutEditDialog::apply()
     m_token.data()->setUnderline( m_underline->isChecked() );
 
     // we do this here to avoid reliance on the connection order (i.e. prevent close before apply)
-    if ( sender() )
+    if( sender() )
         close();
 }
 
@@ -219,18 +218,18 @@ void LayoutEditDialog::close()
     QDialog::close();
 }
 
-void LayoutEditDialog::setPeerWidth( bool peer )
+void LayoutEditDialog::setAutomaticWidth( bool automatic )
 {
-    if ( peer )
+    if( automatic )
     {
         m_previousWidth = m_width->value();
-        m_width->setRange( 0, 100 );
-        m_width->setValue( 0 );
+        m_width->setMinimum( 0 ); // without setting the minumum we can't set the value..
+        m_width->setValue( 0 ); // automatic width is represented by width == 0
     }
     else
     {
         m_width->setValue( m_previousWidth );
-        m_width->setRange( 1, 100 );
+        m_width->setMinimum( 1 ); // set minimum back to 1 since "0" means automatic
     }
 }
 
@@ -248,33 +247,33 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
         m_suffix->setText( m_token.data()->suffix() );
 
 
+        // Compute the remaining space from the tokens on the same line.
         // this should still not be done here as it makes upward assumptions
         // solution(?) token->element->row->elements
-        if ( m_token.data()->parentWidget() )
+        TokenDropTarget *editWidget = qobject_cast<TokenDropTarget*>( m_token.data()->parentWidget() );
+        if( editWidget )
         {
-            if ( TokenDropTarget *editWidget = qobject_cast<TokenDropTarget*>( m_token.data()->parentWidget() ) )
+            qreal spareWidth = 100.0;
+            int row = editWidget->row( m_token.data() );
+            if( row > -1 )
             {
-                qreal spareWidth = 100.0;
-                int row = editWidget->row( m_token.data() );
-                if ( row > -1 )
+                QList<Token*> tokens = editWidget->tokensAtRow( row );
+                foreach ( Token *token, tokens )
                 {
-                    QList<Token*> tokens = editWidget->tokensAtRow( row );
-                    foreach ( Token *token, tokens )
-                    {
-                        if ( token == m_token.data() )
-                            continue;
-                        if ( TokenWithLayout *twl = qobject_cast<TokenWithLayout*>( token ) )
-                            spareWidth -= twl->width() * 100.0;
-                    }
+                    if ( token == m_token.data() )
+                        continue;
+
+                    if ( TokenWithLayout *twl = qobject_cast<TokenWithLayout*>( token ) )
+                        spareWidth -= twl->width() * 100.0;
                 }
-
-                int max = qMax( spareWidth, qreal( 0.0 ) );
-
-                if ( max >= m_token.data()->width() * 100.0 )
-                    m_width->setMaximum( qMax( spareWidth, qreal( 0.0 ) ) );
-                else
-                    m_width->setMaximum( m_token.data()->width() * 100.0 );
             }
+
+            int max = qMax( spareWidth, qreal( 0.0 ) );
+
+            if( max >= m_token.data()->width() * 100.0 )
+                m_width->setMaximum( qMax( spareWidth, qreal( 0.0 ) ) );
+            else
+                m_width->setMaximum( m_token.data()->width() * 100.0 );
         }
         m_width->setValue( m_token.data()->width() * 100.0 );
         m_previousWidth = m_width->value();
@@ -282,7 +281,7 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
         if ( m_token.data()->width() > 0.0 )
             m_fixedWidth->setChecked( true );
         else
-            m_peerWidth->setChecked( true );
+            m_automaticWidth->setChecked( true );
 
         if ( m_token.data()->alignment() & Qt::AlignLeft )
             m_alignLeft->setChecked(true);

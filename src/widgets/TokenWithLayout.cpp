@@ -97,7 +97,6 @@ TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, 
     : Token( text, iconName, value, parent  )
     , m_width( 0.0 ), m_wrenchTimer( 0 )
 {
-    m_widthForced = m_width > 0.0;
     m_alignment = Qt::AlignCenter;
     m_bold = false;
     m_italic = false;
@@ -200,24 +199,6 @@ void TokenWithLayout::setAlignment( Qt::Alignment alignment )
     emit changed();
 }
 
-void TokenWithLayout::setAlignLeft( bool b )
-{
-    if (b)
-        setAlignment( Qt::AlignLeft );
-}
-
-void TokenWithLayout::setAlignCenter( bool b )
-{
-    if (b)
-        setAlignment( Qt::AlignCenter );
-}
-
-void TokenWithLayout::setAlignRight( bool b )
-{
-    if (b)
-        setAlignment( Qt::AlignRight );
-}
-
 bool TokenWithLayout::bold() const
 {
     return m_bold;
@@ -260,15 +241,8 @@ void TokenWithLayout::setSuffix( const QString& string )
 void TokenWithLayout::setWidth( int size )
 {
     m_width = qMax( qMin( 1.0, size/100.0 ), 0.0 ) ;
-    if ( m_width > 0.0 )
-        m_widthForced = true;
 
     emit changed();
-}
-
-void TokenWithLayout::setWidthForced( bool on )
-{
-    m_widthForced = on;
 }
 
 qreal TokenWithLayout::width() const
