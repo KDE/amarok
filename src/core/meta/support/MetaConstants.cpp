@@ -61,6 +61,7 @@ QString Meta::nameForField( qint64 field )
     case Meta::valAlbumArtist: return "albumartist";
     case Meta::valLabel:       return "label";
     case Meta::valModified:    return "modified";
+    case Meta::valLyrics:      return "lyrics";
     default:                   return QString();
     }
 }
@@ -165,6 +166,9 @@ qint64 Meta::fieldForName( const QString &name )
     else if( name.compare( "modified", Qt::CaseInsensitive ) == 0
           || name.compare( shortI18nForField( Meta::valModified ), Qt::CaseInsensitive ) == 0 )
             return Meta::valModified;
+    else if( name.compare( "lyrics", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valLyrics ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valLyrics;
     else
             return 0;
 }
@@ -206,6 +210,7 @@ QString Meta::i18nForField( qint64 field )
     case Meta::valAlbumArtist: return i18nc("Track field name", "Album Artist");
     case Meta::valLabel:       return i18nc("Track field name", "Label");
     case Meta::valModified:    return i18nc("Track field name", "Last Modified");
+    case Meta::valLyrics:      return i18nc("Track field name", "Lyrics");
     default:                   return QString();
     }
 }
@@ -249,6 +254,7 @@ QString Meta::shortI18nForField( qint64 field )
     case Meta::valAlbumArtist: return i18nc("One word translation used in the collection filter", "albumartist");
     case Meta::valLabel:       return i18nc("One word translation used in the collection filter", "label");
     case Meta::valModified:    return i18nc("One word translation used in the collection filter", "modified");
+    case Meta::valLyrics:      return i18nc("One word translation used in the collection filter", "lyrics");
     default:                   return QString();
     }
 }
