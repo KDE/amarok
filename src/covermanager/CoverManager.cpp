@@ -690,12 +690,13 @@ CoverManager::updateStatusBar()
                     Amarok::manipulateThe( artist, false );
                     artists.append( artist );
                 }
-                text += i18n( " by " ) + artists.join( ", " );
+                text = i18n( "%1 by %2", text, artists.join( i18nc("Separator for artists", ", ")) );
             }
         }
 
         if( missingCounter )
-            text += i18n(" - ( <b>%1</b> without cover )", missingCounter );
+            text = i18np("%2 - ( <b>1</b> without cover )", "%2 - ( <b>%1</b> without cover )",
+                         missingCounter, text );
 
         m_fetchButton->setEnabled( missingCounter );
     }

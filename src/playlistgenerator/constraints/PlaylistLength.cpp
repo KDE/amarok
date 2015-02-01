@@ -115,11 +115,13 @@ ConstraintTypes::PlaylistLength::getName() const
 
     KLocalizedString v;
     if ( m_comparison == CompareNumEquals ) {
-        v = ki18nc( "%1 is a number", "Playlist length: %1 tracks");
+        v = ki18ncp( "%1 is a number", "Playlist length: 1 track", "Playlist length: %1 tracks");
     } else if ( m_comparison == CompareNumGreaterThan ) {
-        v = ki18nc( "%1 is a number", "Playlist length: more than %1 tracks");
+        v = ki18ncp( "%1 is a number", "Playlist length: more than 1 track",
+                     "Playlist length: more than %1 tracks");
     } else if ( m_comparison == CompareNumLessThan ) {
-        v = ki18nc( "%1 is a number", "Playlist length: less than %1 tracks");
+        v = ki18ncp( "%1 is a number", "Playlist length: less than 1 track",
+                     "Playlist length: less than %1 tracks");
     } else {
         v = ki18n( "Playlist length: unknown");
     }

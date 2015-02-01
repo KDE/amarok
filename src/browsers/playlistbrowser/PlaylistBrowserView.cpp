@@ -370,9 +370,10 @@ PlaylistBrowserNS::PlaylistBrowserView::actionsFor( const QModelIndexList &index
         const int actionTrackCount = m_writableActionTracks.count();
         const int playlistCount = m_writableActionTracks.uniqueKeys().count();
         if( playlistCount > 1 )
-            m_removeTracksAction->setText( i18ncp( "Number of playlists is >= 2",
-                "Remove a Track From %2 Playlists", "Remove %1 Tracks From %2 Playlists",
-                actionTrackCount, playlistCount ) );
+            m_removeTracksAction->setText( i18nc( "%1: number of tracks. %2: number of playlists",
+                "Remove %1 From %2", i18ncp ("First part of 'Remove %1 From %2'", "a Track",
+                "%1 Tracks", actionTrackCount), i18ncp ("Second part of 'Remove %1 From %2'", "1 Playlist",
+                "%1 Playlists", playlistCount ) ) );
         else
             m_removeTracksAction->setText( i18ncp( "%2 is saved playlist name",
                 "Remove a Track From %2", "Remove %1 Tracks From %2", actionTrackCount,
