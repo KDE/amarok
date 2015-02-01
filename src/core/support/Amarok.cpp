@@ -40,6 +40,8 @@ QMutex Amarok::globalDirsMutex;
 namespace Amarok
 {
 
+    // TODO: sometimes we have a playcount but no valid datetime.
+    //   in such a case we should maybe display "Unknown" and not "Never"
     QString verboseTimeSince( const QDateTime &datetime )
     {
         if( datetime.isNull() || !datetime.toTime_t() )

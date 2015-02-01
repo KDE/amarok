@@ -779,17 +779,14 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
     ui->qSpinBox_score->setValue( tags.value( Meta::Field::SCORE ).toInt() );
     ui->ratingWidget->setRating( tags.value( Meta::Field::RATING ).toInt() );
     ui->ratingWidget->setMaxRating( 10 );
-    ui->qLabel_playcount->setText( unknownSafe( tags.value( Meta::Field::PLAYCOUNT ).toInt() ) );
+    int playcount = tags.value( Meta::Field::PLAYCOUNT ).toInt();
+    ui->qLabel_playcount->setText( unknownSafe( playcount ) );
 
-    QDate firstPlayed = tags.value( Meta::Field::FIRST_PLAYED ).toDate();
-    ui->qLabel_firstPlayed->setText( firstPlayed.isValid() ?
-                                     KGlobal::locale()->formatDate( firstPlayed, KLocale::ShortDate ) :
-                                     i18nc( "When this track first played", "Never") );
+    QDateTime firstPlayed = tags.value( Meta::Field::FIRST_PLAYED ).toDateTime();
+    ui->qLabel_firstPlayed->setText( Amarok::verboseTimeSince( firstPlayed ) );
 
-    QDate lastPlayed = tags.value( Meta::Field::LAST_PLAYED ).toDate();
-    ui->qLabel_lastPlayed->setText( lastPlayed.isValid() ?
-                                    KGlobal::locale()->formatDate( lastPlayed, KLocale::ShortDate ) :
-                                    i18nc( "When this track was last played", "Never") );
+    QDateTime lastPlayed = tags.value( Meta::Field::LAST_PLAYED ).toDateTime();
+    ui->qLabel_lastPlayed->setText( Amarok::verboseTimeSince( lastPlayed ) );
 
     ui->qLabel_collection->setText( tags.contains( Meta::Field::COLLECTION ) ?
                                     tags.value( Meta::Field::COLLECTION ).toString() :
