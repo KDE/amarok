@@ -38,7 +38,7 @@
     <p xml:lang="en-GB">Amarok is a free, versatile and powerful music player.</p>
     <p xml:lang="es">Amarok es un potente y versátil reproductor de música libre.</p>
     <p xml:lang="fi">Amarok on vapaa, monipuolinen ja tehokas musiikkisoitin.</p>
-    <p xml:lang="id">Amarok adalah bebas, serbaguna dan player musik perkasa.</p>
+    <p xml:lang="id">Amarok adalah bebas, serbaguna dan pemutar musik perkasa.</p>
     <p xml:lang="it">Amarok è un lettore musicale libero, versatile e potente.</p>
     <p xml:lang="ko">Amarok은 강력한 자유 소프트웨어 음악 재생기입니다.</p>
     <p xml:lang="nl">Amarok is een vrije, veelzijdige en krachtige muziekspeler.</p>
@@ -64,7 +64,7 @@
     <p xml:lang="en-GB">Features:</p>
     <p xml:lang="es">Funciones:</p>
     <p xml:lang="fi">Ominaisuudet:</p>
-    <p xml:lang="id">Ciri yang khas:</p>
+    <p xml:lang="id">Fitur:</p>
     <p xml:lang="it">Funzionalità:</p>
     <p xml:lang="ko">기능:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
@@ -91,7 +91,7 @@
       <li xml:lang="en-GB">Dynamic playlists matching different criteria</li>
       <li xml:lang="es">Listas de reproducción dinámicas según distintos criterios</li>
       <li xml:lang="fi">Eri ehtoja vastaavat dynaamiset soittolistat</li>
-      <li xml:lang="id">Playlist dinamis menyesuaikan kriteria yang berbeda</li>
+      <li xml:lang="id">Daftar putar dinamis menyesuaikan kriteria yang berbeda</li>
       <li xml:lang="it">Scalette dinamiche che verificano diversi criteri</li>
       <li xml:lang="ko">조건에 따른 동적 재생 목록</li>
       <li xml:lang="nl">Dynamische afspeellijsten die voldoen aan verschillende criteria</li>
@@ -141,7 +141,7 @@
       <li xml:lang="en-GB">Support for basic iPod, MTP and UMS music player devices</li>
       <li xml:lang="es">Implementación básica de dispositivos de reproducción de música como iPod y los que usan los protocolos MTP y UMS</li>
       <li xml:lang="fi">Tuki tavallisille iPod-, MTP- ja UMS-musiikkisoitinlaitteille</li>
-      <li xml:lang="id">Terutama mendukung perangkat player musik iPod, MTP dan UMS</li>
+      <li xml:lang="id">Terutama mendukung perangkat pemutar musik iPod, MTP dan UMS</li>
       <li xml:lang="it">Supporto per i lettori musicali iPod, MTP e UMS</li>
       <li xml:lang="ko">iPod, MTP, UMS 음악 재생기 장치 지원</li>
       <li xml:lang="nl">Ondersteuning voor basis iPod, MTP en UMS muziekspelerapparaten</li>
@@ -241,7 +241,7 @@
       <li xml:lang="en-GB">Replay gain support</li>
       <li xml:lang="es">Implementación de normalización de audio</li>
       <li xml:lang="fi">Voimakkuudentasauksen tuki</li>
-      <li xml:lang="id">Dukungan gain mainkan lagi</li>
+      <li xml:lang="id">Dukungan gain putar lagi</li>
       <li xml:lang="it">Supporto del guadagno di riproduzione</li>
       <li xml:lang="ko">리플레이게인 지원</li>
       <li xml:lang="nl">Ondersteuning van Replay gain</li>
