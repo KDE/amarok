@@ -146,19 +146,19 @@ Dynamic::AlbumPlayBias::matchingTracks( const Meta::TrackList& playlist,
     Q_UNUSED( contextCount );
     Q_UNUSED( finalCount );
 
-    if( playlist.isEmpty() )
+    if( playlist.isEmpty() ) // no track means we can't find any tracks in the same album
         return Dynamic::TrackSet( universe, false );
 
     Meta::TrackPtr track = playlist.last();
     Meta::AlbumPtr album = track->album();
 
-    if( !album )
+    if( !album ) // no album means we can't find any tracks in the same album
         return Dynamic::TrackSet( universe, false );
 
     Meta::TrackList albumTracks = album->tracks();
 
-    if( albumTracks.count() == 1 ||
-        ( sameTrack( track, albumTracks.last() ) && m_follow != DontCare) )
+    if( ( albumTracks.count() <= 1 ) || // the album has only one track (or even less) so there can't be any other tracks in the same album
+        ( m_follow != DontCare && sameTrack( track, albumTracks.last() ) ) ) // track is the last one and we want to find a later one.
         return Dynamic::TrackSet( universe, false );
 
     // we assume that the album tracks are sorted by cd and track number which
