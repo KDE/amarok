@@ -3,6 +3,7 @@
   <id>amarok.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <name>Amarok</name>
+  <name xml:lang="ar">أماروك</name>
   <name xml:lang="ca">Amarok</name>
   <name xml:lang="cs">Amarok</name>
   <name xml:lang="da">Amarok</name>
@@ -30,6 +31,7 @@
   <name xml:lang="x-test">xxAmarokxx</name>
   <description>
     <p>Amarok is a free, versatile and powerful music player.</p>
+    <p xml:lang="ar">أماروك مشغّل موسيقى مجّانيّ، وقويّ متعدّد الاستعمالات.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música lliure, versàtil i potent.</p>
     <p xml:lang="cs">Amarok je svobodný, univerzální a mocný přehrávač hudby.</p>
     <p xml:lang="da">Amarok er en fri, alsidig og kraftfuld musikafspiller.</p>
@@ -56,6 +58,7 @@
     <p xml:lang="uk">Amarok — вільна, універсальна та потужна програма для відтворення звукових даних.</p>
     <p xml:lang="x-test">xxAmarok is a free, versatile and powerful music player.xx</p>
     <p>Features:</p>
+    <p xml:lang="ar">الميزات:</p>
     <p xml:lang="ca">Característiques:</p>
     <p xml:lang="cs">Vlastnosti:</p>
     <p xml:lang="da">Funktioner:</p>
@@ -83,6 +86,7 @@
     <p xml:lang="x-test">xxFeatures:xx</p>
     <ul>
       <li>Dynamic playlists matching different criteria</li>
+      <li xml:lang="ar">قوائم تشغيل حركيّة تطابق معايير مختلفة</li>
       <li xml:lang="ca">Llistes de reproducció dinàmiques coincidint amb diferents criteris</li>
       <li xml:lang="cs">Dynamické seznamy skladeb odpovídající různým požadavkům</li>
       <li xml:lang="da">Dynamiske spillelister som matcher forskellige kriterier</li>
@@ -108,6 +112,7 @@
       <li xml:lang="uk">динамічні списки відтворення на основі різних критеріїв;</li>
       <li xml:lang="x-test">xxDynamic playlists matching different criteriaxx</li>
       <li>Collection managing with rating support</li>
+      <li xml:lang="ar">إدارة التّجميعات مع دعم التّقييم</li>
       <li xml:lang="ca">Gestió de les col·leccions amb implementació per a les qualificacions</li>
       <li xml:lang="cs">Správa sbírek s podporou hodnocení</li>
       <li xml:lang="da">Samlingshåndtering med understøttelse af vurderinger</li>
@@ -133,6 +138,7 @@
       <li xml:lang="uk">керування збіркою з підтримкою оцінок;</li>
       <li xml:lang="x-test">xxCollection managing with rating supportxx</li>
       <li>Support for basic iPod, MTP and UMS music player devices</li>
+      <li xml:lang="ar">دعم أجهة مشغّلات الوسائط iPod، وMTP وUMS الأساسيّة</li>
       <li xml:lang="ca">Implementació pels dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
       <li xml:lang="cs">Podpora pro zařízení iPod, MTP a UMS</li>
       <li xml:lang="da">Understøttelse af basale iPod-, MTP- og UMS-musikafspillere</li>
@@ -208,6 +214,7 @@
       <li xml:lang="uk">підтримка роботи зі скриптами;</li>
       <li xml:lang="x-test">xxScripting supportxx</li>
       <li>Cover manager</li>
+      <li xml:lang="ar">إدارة الأغلفة</li>
       <li xml:lang="ca">Gestor de cobertes</li>
       <li xml:lang="cs">Správce obalů</li>
       <li xml:lang="da">Omslagshåndtering</li>
