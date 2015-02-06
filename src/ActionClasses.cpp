@@ -171,7 +171,7 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
     ac->addAction( "play_pause", this );
     setText( i18n( "Play/Pause" ) );
     setShortcut( Qt::Key_Space );
-    setGlobalShortcut( KShortcut( Qt::Key_MediaPlay ) );
+    setGlobalShortcut( KShortcut() );
 
     EngineController *engine = The::engineController();
 
@@ -420,7 +420,7 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
     ac->addAction( "stop", this );
     setText( i18n( "Stop" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
-    setGlobalShortcut( KShortcut( Qt::Key_MediaStop ) );
+    setGlobalShortcut( KShortcut() );
     connect( this, SIGNAL(triggered()), this, SLOT(stop()) );
 
     EngineController *engine = The::engineController();
