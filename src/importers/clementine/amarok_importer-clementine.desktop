@@ -2,6 +2,7 @@
 Type=Service
 Icon=view-importers-clementine-amarok
 Name=Clementine Importer
+Name[bs]=Clementine uvoznik
 Name[ca]=Importador del Clementine
 Name[ca@valencia]=Importador del Clementine
 Name[cs]=Import Clementine
@@ -33,6 +34,7 @@ Name[uk]=Засіб імпортування даних Clementine
 Name[x-test]=xxClementine Importerxx
 Name[zh_TW]=Clementine 匯入器
 Comment=Import statistics from Clementine database
+Comment[bs]=Uvezite statistiku iz Clementine baze podataka
 Comment[ca]=Importa estadístiques des de base de dades del Clementine
 Comment[ca@valencia]=Importa estadístiques des de base de dades del Clementine
 Comment[cs]=Importovat statistiky z databáze Clementine
