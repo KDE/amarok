@@ -4,6 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <name>Amarok</name>
   <name xml:lang="ar">أماروك</name>
+  <name xml:lang="bs">Amarok</name>
   <name xml:lang="ca">Amarok</name>
   <name xml:lang="cs">Amarok</name>
   <name xml:lang="da">Amarok</name>
@@ -33,6 +34,7 @@
   <description>
     <p>Amarok is a free, versatile and powerful music player.</p>
     <p xml:lang="ar">أماروك مشغّل موسيقى مجّانيّ، وقويّ متعدّد الاستعمالات.</p>
+    <p xml:lang="bs">Amarok je besplatan, prilagodljiv i snažan muzički  player.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música lliure, versàtil i potent.</p>
     <p xml:lang="cs">Amarok je svobodný, univerzální a mocný přehrávač hudby.</p>
     <p xml:lang="da">Amarok er en fri, alsidig og kraftfuld musikafspiller.</p>
@@ -61,6 +63,7 @@
     <p xml:lang="x-test">xxAmarok is a free, versatile and powerful music player.xx</p>
     <p>Features:</p>
     <p xml:lang="ar">الميزات:</p>
+    <p xml:lang="bs">Svojstva:</p>
     <p xml:lang="ca">Característiques:</p>
     <p xml:lang="cs">Vlastnosti:</p>
     <p xml:lang="da">Funktioner:</p>
@@ -90,6 +93,7 @@
     <ul>
       <li>Dynamic playlists matching different criteria</li>
       <li xml:lang="ar">قوائم تشغيل حركيّة تطابق معايير مختلفة</li>
+      <li xml:lang="bs">Dinamičke muzičke liste odgovaraju različitim kriterijima</li>
       <li xml:lang="ca">Llistes de reproducció dinàmiques coincidint amb diferents criteris</li>
       <li xml:lang="cs">Dynamické seznamy skladeb odpovídající různým požadavkům</li>
       <li xml:lang="da">Dynamiske spillelister som matcher forskellige kriterier</li>
@@ -117,6 +121,7 @@
       <li xml:lang="x-test">xxDynamic playlists matching different criteriaxx</li>
       <li>Collection managing with rating support</li>
       <li xml:lang="ar">إدارة التّجميعات مع دعم التّقييم</li>
+      <li xml:lang="bs">Kolekcija upravljanja sa podrškom procjene</li>
       <li xml:lang="ca">Gestió de les col·leccions amb implementació per a les qualificacions</li>
       <li xml:lang="cs">Správa sbírek s podporou hodnocení</li>
       <li xml:lang="da">Samlingshåndtering med understøttelse af vurderinger</li>
@@ -144,6 +149,7 @@
       <li xml:lang="x-test">xxCollection managing with rating supportxx</li>
       <li>Support for basic iPod, MTP and UMS music player devices</li>
       <li xml:lang="ar">دعم أجهة مشغّلات الوسائط iPod، وMTP وUMS الأساسيّة</li>
+      <li xml:lang="bs">Podrška za osnovne iPod, MTP i UMS muzičke player uređaje</li>
       <li xml:lang="ca">Implementació pels dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
       <li xml:lang="cs">Podpora pro zařízení iPod, MTP a UMS</li>
       <li xml:lang="da">Understøttelse af basale iPod-, MTP- og UMS-musikafspillere</li>
@@ -170,6 +176,7 @@
       <li xml:lang="uk">підтримка базової роботи з пристроями відтворення, що працюють за протоколами iPod, MTP та UMS;</li>
       <li xml:lang="x-test">xxSupport for basic iPod, MTP and UMS music player devicesxx</li>
       <li>Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
+      <li xml:lang="bs">Integrisane Internet usluge: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i još mnogo toga.</li>
       <li xml:lang="ca">Serveis integrats d'Internet: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i més</li>
       <li xml:lang="cs">Integrované internetové služby: last.fm, Magnatune, Jamendo, Ampache, mp3tunes a další.</li>
       <li xml:lang="da">Integrerede internettjenester: last.fm, Magnatune, Jamendo, Ampache, mp3tunes og andre.</li>
@@ -196,6 +203,7 @@
       <li xml:lang="uk">інтеграція з інтернет-службами: last.fm, Magnatune, Jamendo, Ampache, mp3tunes тощо;</li>
       <li xml:lang="x-test">xxIntegrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.xx</li>
       <li>Scripting support</li>
+      <li xml:lang="bs">Podrška za skriptiranje</li>
       <li xml:lang="ca">Implementació per a la creació d'scripts</li>
       <li xml:lang="cs">Podpora pro skripty</li>
       <li xml:lang="da">Understøttelse af scripts</li>
@@ -223,6 +231,7 @@
       <li xml:lang="x-test">xxScripting supportxx</li>
       <li>Cover manager</li>
       <li xml:lang="ar">إدارة الأغلفة</li>
+      <li xml:lang="bs">Upravitelj naslovnicom</li>
       <li xml:lang="ca">Gestor de cobertes</li>
       <li xml:lang="cs">Správce obalů</li>
       <li xml:lang="da">Omslagshåndtering</li>
@@ -249,6 +258,7 @@
       <li xml:lang="uk">засіб керування збіркою зображень обкладинок;</li>
       <li xml:lang="x-test">xxCover managerxx</li>
       <li>Replay gain support</li>
+      <li xml:lang="bs">Ponoviti dobijanje podrške</li>
       <li xml:lang="ca">Implementació de la repetició de guany</li>
       <li xml:lang="cs">Podpora Replay gain</li>
       <li xml:lang="da">Replay Gain-understøttelse</li>
