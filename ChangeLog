@@ -18,6 +18,8 @@ VERSION 2.8.1
    * New ASCII Analyzer option in the Analyzer widget. Patch provided by Matej Repinc
 
   CHANGES:
+   * Last played and first played dates now use the same formatter than in the playlist
+     giving a human readable date such as "one minute ago" in meta edit dialog.
    * "Import" button under Configure Amarok -> Local Collection no longer
      serves to import statistics from Amarok 1.4 and iTunes, and has been
      renamed to "Import batch file" to reflect the change.
