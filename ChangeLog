@@ -1,9 +1,9 @@
 Amarok ChangeLog
 ================
-(C) 2002-2014 the Amarok authors.
+(C) 2002-2015 the Amarok authors.
 
 
-VERSION 2.8.1
+VERSION 2.8.90
   FEATURES:
    * Database configuration dialog now has a "test connection" button.
    * Add Service entries for directories. (BR 229708)
