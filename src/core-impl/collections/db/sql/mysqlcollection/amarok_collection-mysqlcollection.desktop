@@ -2,6 +2,7 @@
 Type=Service
 Icon=server-database
 Name=MySQL Collection
+Name[bs]=MySQLe Zbirka
 Name[ca]=Col·lecció MySQL
 Name[cs]=Sbírka MySQL
 Name[da]=MySQL-samling
