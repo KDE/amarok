@@ -12,8 +12,8 @@ set( currenttrack_SRCS
      ${Amarok_SOURCE_DIR}/src/widgets/PixmapViewer.cpp
      )
 
-kde4_add_ui_files( currenttrack_SRCS currentTrackSettings.ui )
-kde4_add_plugin(amarok_context_applet_currenttrack ${currenttrack_SRCS})
+ki18n_wrap_ui( currenttrack_SRCS currentTrackSettings.ui )
+add_library(amarok_context_applet_currenttrack MODULE ${currenttrack_SRCS})
 if(APPLE)
    SET_TARGET_PROPERTIES(amarok_context_applet_currenttrack PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)

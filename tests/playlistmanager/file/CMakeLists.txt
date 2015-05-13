@@ -21,5 +21,7 @@ set( testplaylistfileprovider_SRCS
      ${AMAROK_SOURCE_TREE}/playlist/proxymodels/SortScheme.cpp
      ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
     )
-kde4_add_unit_test( testplaylistfileprovider ${testplaylistfileprovider_SRCS} )
-target_link_libraries( testplaylistfileprovider ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} amarokcore amaroklib )
+add_executable( testplaylistfileprovider ${testplaylistfileprovider_SRCS} )
+add_test(testplaylistfileprovider testplaylistfileprovider)
+ecm_mark_as_test(testplaylistfileprovider)
+target_link_libraries( testplaylistfileprovider  KF5::KIOCore Qt5::Test Qt5::Core amarokcore amaroklib )

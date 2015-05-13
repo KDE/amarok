@@ -34,9 +34,9 @@ set(ocsclient_SRCS
 
 
 
-kde4_add_library(amarokocsclient SHARED ${ocsclient_SRCS})
+add_library(amarokocsclient SHARED ${ocsclient_SRCS})
 set_target_properties(amarokocsclient PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION})
 
-target_link_libraries(amarokocsclient ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} ${KDE4_KABC_LIBS})
+target_link_libraries(amarokocsclient  KF5::KIOCore ${KDE4_KABC_LIBS})
 
 install(TARGETS amarokocsclient ${INSTALL_TARGETS_DEFAULT_ARGS})

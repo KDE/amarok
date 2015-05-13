@@ -6,5 +6,7 @@ include_directories( .
 #------------------------ Test ActionsCapability -----------------------------
 
 set( testactionscapability_SRCS TestActionsCapability.cpp )
-kde4_add_unit_test( testactionscapability ${testactionscapability_SRCS} )
-target_link_libraries( testactionscapability ${KDE4_KDECORE_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} amarokcore amaroklib )
+add_executable( testactionscapability ${testactionscapability_SRCS} )
+add_test(testactionscapability testactionscapability)
+ecm_mark_as_test(testactionscapability)
+target_link_libraries( testactionscapability KF5::KDELibs4Support Qt5::Gui Qt5::Test amarokcore amaroklib )

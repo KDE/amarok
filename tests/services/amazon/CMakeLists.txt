@@ -12,8 +12,10 @@ set( testamazonconfig_SRCS
         ${AMAROK_SOURCE_TREE}/services/amazon/AmazonConfig.cpp
  )
 
-kde4_add_unit_test( testamazonconfig ${testamazonconfig_SRCS} )
-target_link_libraries( testamazonconfig ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
+add_executable( testamazonconfig ${testamazonconfig_SRCS} )
+add_test(testamazonconfig testamazonconfig)
+ecm_mark_as_test(testamazonconfig)
+target_link_libraries( testamazonconfig KF5::KDELibs4Support Qt5::Test )
 
 
 #------------------------ Test AmazonMetaFactory -------------------------------
@@ -23,12 +25,14 @@ set( testamazonmetafactory_SRCS
         ${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
  )
 
-kde4_add_unit_test( testamazonmetafactory ${testamazonmetafactory_SRCS} )
+add_executable( testamazonmetafactory ${testamazonmetafactory_SRCS} )
+add_test(testamazonmetafactory testamazonmetafactory)
+ecm_mark_as_test(testamazonmetafactory)
 target_link_libraries( testamazonmetafactory
-${KDE4_KDECORE_LIBS}
-${KDE4_KDEUI_LIBS}
-${QT_QTTEST_LIBRARY}
-${QT_QTCORE_LIBRARY}
+KF5::KDELibs4Support
+
+Qt5::Test
+Qt5::Core
 amarokcore
 amaroklib )
 
@@ -44,11 +48,13 @@ set( testamazonshoppingcart_SRCS
         ${GOOGLEMOCK_SRCS}
  )
 
-kde4_add_unit_test( testamazonshoppingcart ${testamazonshoppingcart_SRCS} )
+add_executable( testamazonshoppingcart ${testamazonshoppingcart_SRCS} )
+add_test(testamazonshoppingcart testamazonshoppingcart)
+ecm_mark_as_test(testamazonshoppingcart)
 target_link_libraries( testamazonshoppingcart
 ${GOOGLEMOCK_LIBRARIES}
-${QT_QTTEST_LIBRARY}
-${KDE4_KDECORE_LIBS}
+Qt5::Test
+KF5::KDELibs4Support
 amarokcore )
 
 
@@ -59,8 +65,10 @@ TestAmazonShoppingCartItem.cpp
 ${AMAROK_SOURCE_TREE}/services/amazon/AmazonShoppingCartItem.cpp
  )
 
-kde4_add_unit_test( testamazonshoppingcartitem ${testamazonshoppingcartitem_SRCS} )
-target_link_libraries( testamazonshoppingcartitem ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
+add_executable( testamazonshoppingcartitem ${testamazonshoppingcartitem_SRCS} )
+add_test(testamazonshoppingcartitem testamazonshoppingcartitem)
+ecm_mark_as_test(testamazonshoppingcartitem)
+target_link_libraries( testamazonshoppingcartitem KF5::KDELibs4Support Qt5::Test )
 
 
 #------------------------ Test Meta::AmazonAlbum ---------------------------------
@@ -70,12 +78,14 @@ TestAmazonAlbum.cpp
 ${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
  )
 
-kde4_add_unit_test( testamazonalbum ${testamazonalbum_SRCS} )
+add_executable( testamazonalbum ${testamazonalbum_SRCS} )
+add_test(testamazonalbum testamazonalbum)
+ecm_mark_as_test(testamazonalbum)
 target_link_libraries( testamazonalbum
-${KDE4_KDECORE_LIBS}
-${KDE4_KDEUI_LIBS}
-${QT_QTTEST_LIBRARY}
-${QT_QTCORE_LIBRARY}
+KF5::KDELibs4Support
+
+Qt5::Test
+Qt5::Core
 amarokcore
 amaroklib )
 
@@ -88,12 +98,14 @@ TestAmazonArtist.cpp
 ${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
  )
 
-kde4_add_unit_test( testamazonartist ${testamazonartist_SRCS} )
+add_executable( testamazonartist ${testamazonartist_SRCS} )
+add_test(testamazonartist testamazonartist)
+ecm_mark_as_test(testamazonartist)
 target_link_libraries( testamazonartist
-${KDE4_KDECORE_LIBS}
-${KDE4_KDEUI_LIBS}
-${QT_QTTEST_LIBRARY}
-${QT_QTCORE_LIBRARY}
+KF5::KDELibs4Support
+
+Qt5::Test
+Qt5::Core
 amarokcore
 amaroklib )
 
@@ -105,12 +117,14 @@ TestAmazonItem.cpp
 ${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
  )
 
-kde4_add_unit_test( testamazonitem ${testamazonitem_SRCS} )
+add_executable( testamazonitem ${testamazonitem_SRCS} )
+add_test(testamazonitem testamazonitem)
+ecm_mark_as_test(testamazonitem)
 target_link_libraries( testamazonitem
-${KDE4_KDECORE_LIBS}
-${KDE4_KDEUI_LIBS}
-${QT_QTTEST_LIBRARY}
-${QT_QTCORE_LIBRARY}
+KF5::KDELibs4Support
+
+Qt5::Test
+Qt5::Core
 amarokcore
 amaroklib )
 
@@ -122,12 +136,14 @@ TestAmazonTrack.cpp
 ${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
  )
 
-kde4_add_unit_test( testamazontrack ${testamazontrack_SRCS} )
+add_executable( testamazontrack ${testamazontrack_SRCS} )
+add_test(testamazontrack testamazontrack)
+ecm_mark_as_test(testamazontrack)
 target_link_libraries( testamazontrack
-${KDE4_KDECORE_LIBS}
-${KDE4_KDEUI_LIBS}
-${QT_QTTEST_LIBRARY}
-${QT_QTCORE_LIBRARY}
+KF5::KDELibs4Support
+
+Qt5::Test
+Qt5::Core
 amarokcore
 amaroklib )
 
@@ -142,13 +158,15 @@ ${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
 ${AMAROK_SOURCE_TREE}/services/amazon/AmazonParser.cpp
  )
 
-kde4_add_unit_test( testamazonparser ${testamazonparser_SRCS} )
+add_executable( testamazonparser ${testamazonparser_SRCS} )
+add_test(testamazonparser testamazonparser)
+ecm_mark_as_test(testamazonparser)
 target_link_libraries( testamazonparser
-${KDE4_KDECORE_LIBS}
-${KDE4_KDEUI_LIBS}
-${KDE4_THREADWEAVER_LIBRARIES}
-${QT_QTTEST_LIBRARY}
-${QT_QTCORE_LIBRARY}
-${QT_QTXML_LIBRARY}
+KF5::KDELibs4Support
+
+KF5::ThreadWeaver
+Qt5::Test
+Qt5::Core
+Qt5::Xml
 amarokcore
 amaroklib )

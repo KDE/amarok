@@ -1,4 +1,3 @@
-include_directories( ${QT_INCLUDES} )
 
 ########### next target ###############
 
@@ -11,7 +10,7 @@ set(amarokcollectionscanner_SRCS
 add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
 
 target_link_libraries(amarokcollectionscanner 
-    ${QT_QTCORE_LIBRARY}
+    Qt5::Core
     amarokshared
 )
 

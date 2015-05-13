@@ -1,8 +1,8 @@
 include_directories(
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/shared
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES}
+    
+    
 )
 
 set(libcore_interfaces_SRCS
@@ -103,15 +103,15 @@ set(libcore_LIB_SRCS
     ${libcore_transcoding_SRCS}
 )
 
-kde4_add_library(amarokcore SHARED ${libcore_LIB_SRCS})
+add_library(amarokcore SHARED ${libcore_LIB_SRCS})
 
 target_link_libraries(amarokcore
     amarokshared
     ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
-    ${KDE4_KIO_LIBS}
+    KF5::KIOCore
     ${KDE4_SOLID_LIBRARY}
-    ${KDE4_THREADWEAVER_LIBRARIES}
+    KF5::ThreadWeaver
     ${QT_CORE_LIBRARY}
 )
 

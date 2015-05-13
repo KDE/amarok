@@ -41,13 +41,15 @@ set( testamarok_SRCS
         ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
     )
 
-kde4_add_unit_test( testamarok ${testamarok_SRCS} )
+add_executable( testamarok ${testamarok_SRCS} )
+add_test(testamarok testamarok)
+ecm_mark_as_test(testamarok)
 
 target_link_libraries( testamarok
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
-    ${QT_QTTEST_LIBRARY}
+    KF5::KDELibs4Support
+    
+    KF5::KIOCore
+    Qt5::Test
     amarokcore
     amaroklib
     )
@@ -59,9 +61,11 @@ set( testcaseconverter_SRCS
         ${AMAROK_SOURCE_TREE}/CaseConverter.cpp
     )
 
-kde4_add_unit_test( testcaseconverter  ${testcaseconverter_SRCS} )
+add_executable( testcaseconverter  ${testcaseconverter_SRCS} )
+add_test(testcaseconverter testcaseconverter)
+ecm_mark_as_test(testcaseconverter)
 
-target_link_libraries(testcaseconverter ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarokcore)
+target_link_libraries(testcaseconverter KF5::KDELibs4Support Qt5::Test amarokcore)
 
 #------------------------ Test Debug -----------------------------
 
@@ -71,14 +75,18 @@ set( testdebug_SRCS
      ${AMAROK_SOURCE_TREE}/core/support/Debug.cpp
      )
 
-kde4_add_unit_test( testdebug ${testdebug_SRCS} )
-target_link_libraries(testdebug ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarokcore )
+add_executable( testdebug ${testdebug_SRCS} )
+add_test(testdebug testdebug)
+ecm_mark_as_test(testdebug)
+target_link_libraries(testdebug KF5::KDELibs4Support Qt5::Test amarokcore )
 
 #------------------------ Test EngineController -----------------------------
 
 set( testenginecontroller_SRCS TestEngineController.cpp )
-kde4_add_unit_test( testenginecontroller ${testenginecontroller_SRCS} )
-target_link_libraries( testenginecontroller ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amaroklib amarokcore )
+add_executable( testenginecontroller ${testenginecontroller_SRCS} )
+add_test(testenginecontroller testenginecontroller)
+ecm_mark_as_test(testenginecontroller)
+target_link_libraries( testenginecontroller KF5::ThreadWeaver KF5::KDELibs4Support Qt5::Test amaroklib amarokcore )
 
 #------------------------ Test Expression -----------------------------
 
@@ -87,9 +95,11 @@ set( testexpression_SRCS
         ${AMAROK_SOURCE_TREE}/core-impl/collections/support/Expression.cpp
     )
 
-kde4_add_unit_test( testexpression  ${testexpression_SRCS} )
+add_executable( testexpression  ${testexpression_SRCS} )
+add_test(testexpression testexpression)
+ecm_mark_as_test(testexpression)
 
-target_link_libraries(testexpression ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
+target_link_libraries(testexpression KF5::KDELibs4Support Qt5::Test)
 
 #------------------------ Test QStringx -----------------------------
 
@@ -98,9 +108,11 @@ set( testqstringx_SRCS
         ${AMAROK_SOURCE_TREE}/QStringx.cpp
     )
 
-kde4_add_unit_test( testqstringx  ${testqstringx_SRCS} )
+add_executable( testqstringx  ${testqstringx_SRCS} )
+add_test(testqstringx testqstringx)
+ecm_mark_as_test(testqstringx)
 
-target_link_libraries(testqstringx ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
+target_link_libraries(testqstringx KF5::KDELibs4Support Qt5::Test)
 
 #------------------------ Test SmartPointerList -----------------------------
 
@@ -109,9 +121,11 @@ set( testsmartpointerlist_SRCS
         ${AMAROK_SOURCE_TREE}/core/support/SmartPointerList.cpp
     )
 
-kde4_add_unit_test( testsmartpointerlist  ${testsmartpointerlist_SRCS} )
+add_executable( testsmartpointerlist  ${testsmartpointerlist_SRCS} )
+add_test(testsmartpointerlist testsmartpointerlist)
+ecm_mark_as_test(testsmartpointerlist)
 
-target_link_libraries(testsmartpointerlist ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
+target_link_libraries(testsmartpointerlist KF5::KDELibs4Support Qt5::Test)
 
 #------------------------ Test TagGuesser -----------------------------
 
@@ -121,9 +135,11 @@ set( testtagguesser_SRCS
         ${AMAROK_SOURCE_TREE}/dialogs/TagGuesser.cpp
     )
 
-kde4_add_unit_test( testtagguesser  ${testtagguesser_SRCS} )
+add_executable( testtagguesser  ${testtagguesser_SRCS} )
+add_test(testtagguesser testtagguesser)
+ecm_mark_as_test(testtagguesser)
 
-target_link_libraries(testtagguesser ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY} amarokcore)
+target_link_libraries(testtagguesser KF5::KDELibs4Support  Qt5::Test amarokcore)
 
 #------------------------ Test TrackOrganizer -----------------------------
 
@@ -135,7 +151,9 @@ set( testtrackorganizer_SRCS
         ${GOOGLEMOCK_SRCS}
     )
 
-kde4_add_unit_test( testtrackorganizer  ${testtrackorganizer_SRCS} )
+add_executable( testtrackorganizer  ${testtrackorganizer_SRCS} )
+add_test(testtrackorganizer testtrackorganizer)
+ecm_mark_as_test(testtrackorganizer)
 
 # Since Google recommends not to distribute a pre-compiled gtest library
 # we have to build it our own
@@ -147,5 +165,5 @@ add_dependencies( testtrackorganizer amarokcore )
 add_dependencies( testtrackorganizer amaroklib )
 add_dependencies( testtrackorganizer gtest )
 
-target_link_libraries( testtrackorganizer amarokcore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_SOLID_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${GOOGLEMOCK_LIBRARIES})
+target_link_libraries( testtrackorganizer amarokcore amaroklib KF5::KDELibs4Support  ${KDE4_SOLID_LIBRARY} Qt5::Test Qt5::Core Qt5::Gui ${GOOGLEMOCK_LIBRARIES})
 

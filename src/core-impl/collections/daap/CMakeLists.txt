@@ -2,8 +2,8 @@ include_directories( ../..
     ${CMAKE_BINARY_DIR}/src
     ${AMAROK_COLLECTION_SUPPORT_DIR}
     daapreader
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES} )
+    
+     )
 
 remove_definitions(-DQT_NO_HTTP)
 
@@ -17,17 +17,17 @@ set(amarok_collection-daapcollection_PART_SRCS
    daapreader/authentication/hasher.c
    daapreader/authentication/md5.c )
 
-kde4_add_plugin(amarok_collection-daapcollection ${amarok_collection-daapcollection_PART_SRCS})
+add_library(amarok_collection-daapcollection MODULE ${amarok_collection-daapcollection_PART_SRCS})
 
 target_link_libraries(amarok_collection-daapcollection
     amarokcore
     amaroklib
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${KDE4_KDNSSD_LIBS}
-    ${KDE4_SOLID_LIBS}
-    ${QT_QTNETWORK_LIBRARY}
+    KF5::KDELibs4Support
+    
+    KF5::ThreadWeaver
+    KF5::DNSSD
+    
+    Qt5::Network
 )
 
 if(APPLE)

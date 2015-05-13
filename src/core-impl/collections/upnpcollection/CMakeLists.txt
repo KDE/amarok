@@ -1,8 +1,8 @@
 include_directories( ../..
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
-   ${KDE4_INCLUDE_DIR}
-   ${QT_INCLUDES}
+   
+   
 )
 
 
@@ -23,16 +23,16 @@ set(amarok_collection-upnpcollection_PART_SRCS
 )
 
 
-kde4_add_plugin(amarok_collection-upnpcollection ${amarok_collection-upnpcollection_PART_SRCS})
+add_library(amarok_collection-upnpcollection MODULE ${amarok_collection-upnpcollection_PART_SRCS})
 
 target_link_libraries(
     amarok_collection-upnpcollection
     amarokcore
     amaroklib
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
-    ${KDE4_SOLID_LIBS}
+    KF5::ThreadWeaver
+    
+    KF5::KIOCore
+    
 )
 
 if(APPLE)

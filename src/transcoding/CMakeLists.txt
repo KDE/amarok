@@ -4,8 +4,8 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/utilities
     ${CMAKE_BINARY_DIR}/src
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES}
+    
+    
 )
 
 set(amarok_transcoding_SRCS
@@ -17,19 +17,19 @@ set(amarok_transcoding_SRCS
     TranscodingSelectConfigWidget.cpp
 )
 
-kde4_add_ui_files(amarok_transcoding_SRCS
+ki18n_wrap_ui(amarok_transcoding_SRCS
     TranscodingAssistantDialog.ui
 )
 
-kde4_add_library(amarok-transcoding SHARED ${amarok_transcoding_SRCS})
+add_library(amarok-transcoding SHARED ${amarok_transcoding_SRCS})
 
 target_link_libraries(amarok-transcoding
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTGUI_LIBRARY}
+    KF5::KDELibs4Support
+    
+    KF5::KIOCore
+    KF5::ThreadWeaver
+    Qt5::Core
+    Qt5::Gui
     ${CMAKE_THREAD_LIBS_INIT}
     amarokcore
 )

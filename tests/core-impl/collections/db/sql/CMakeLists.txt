@@ -34,12 +34,12 @@ macro(add_database_test test_target test_sources)
         amarokcore
         amaroklib
         amarok-sqlcollection
-        ${KDE4_KDECORE_LIBS}
-        ${KDE4_KIO_LIBS}
-        ${KDE4_THREADWEAVER_LIBRARIES}
-        ${KDE4_KDEUI_LIBS}
-        ${QT_QTTEST_LIBRARY}
-        ${QT_QTCORE_LIBRARY}
+        KF5::KDELibs4Support
+        KF5::KIOCore
+        KF5::ThreadWeaver
+        
+        Qt5::Test
+        Qt5::Core
         ${MYSQL_EMBEDDED_LIBRARIES}
         ${CMAKE_DL_LIBS}
         ${ZLIB_LIBRARIES}
@@ -61,8 +61,8 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
+  
+  
   ${MYSQL_INCLUDE_DIR}
   )
 

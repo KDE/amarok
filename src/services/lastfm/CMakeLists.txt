@@ -9,11 +9,11 @@ add_subdirectory( images )
 set( amarok_service_lastfm_shared_SRCS
     LastFmServiceConfig.cpp
 )
-kde4_add_library( amarok_service_lastfm_shared SHARED ${amarok_service_lastfm_shared_SRCS} )
+add_library( amarok_service_lastfm_shared SHARED ${amarok_service_lastfm_shared_SRCS} )
 target_link_libraries( amarok_service_lastfm_shared
     amarokcore
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
+    KF5::KDELibs4Support
+    
 )
 install( TARGETS amarok_service_lastfm_shared ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
@@ -39,19 +39,19 @@ set( amarok_service_lastfm_PART_SRCS
     SimilarArtistsAction.cpp
     LoveTrackAction.cpp
 )
-kde4_add_plugin( amarok_service_lastfm ${amarok_service_lastfm_PART_SRCS} )
+add_library(amarok_service_lastfm MODULE ${amarok_service_lastfm_PART_SRCS} )
 target_link_libraries( amarok_service_lastfm
     amarok_service_lastfm_shared
     amarokcore
     amaroklib
     amarokpud
     ${LIBLASTFM_LIBRARY}
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
+    KF5::KDELibs4Support
+    
+    KF5::KIOCore
     ${KDE4_SOLID_LIBRARY}
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${QT_QTNETWORK_LIBRARY}
+    KF5::ThreadWeaver
+    Qt5::Network
 )
 install( TARGETS amarok_service_lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
 
@@ -60,17 +60,17 @@ install( TARGETS amarok_service_lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
 set(kcm_amarok_service_lastfm_PART_SRCS
     LastFmServiceSettings.cpp
 )
-kde4_add_ui_files( kcm_amarok_service_lastfm_PART_SRCS LastFmConfigWidget.ui )
-kde4_add_plugin( kcm_amarok_service_lastfm ${kcm_amarok_service_lastfm_PART_SRCS} )
+ki18n_wrap_ui( kcm_amarok_service_lastfm_PART_SRCS LastFmConfigWidget.ui )
+add_library(kcm_amarok_service_lastfm MODULE ${kcm_amarok_service_lastfm_PART_SRCS} )
 target_link_libraries( kcm_amarok_service_lastfm
     amarok_service_lastfm_shared
     amarokcore
     amaroklib
     ${LIBLASTFM_LIBRARY}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KUTILS_LIBS}
-    ${KDE4_KIO_LIBS}
-    ${QT_QTNETWORK_LIBRARY} )
+    
+    
+    KF5::KIOCore
+    Qt5::Network )
 install( TARGETS kcm_amarok_service_lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 ########### install files ###############

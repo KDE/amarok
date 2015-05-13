@@ -28,9 +28,9 @@ ADD_LIBRARY(amarokpud SHARED ${amarokpud_LIB_SRCS})
 SET_TARGET_PROPERTIES( amarokpud PROPERTIES DEFINE_SYMBOL MAKE_POPUPDROPPER_LIB )
 
 target_link_libraries(amarokpud
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTGUI_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Svg
 )
 
 set_target_properties(amarokpud PROPERTIES VERSION 1.0.0 SOVERSION 1)

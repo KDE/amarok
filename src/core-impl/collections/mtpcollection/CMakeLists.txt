@@ -16,8 +16,8 @@ if (MTP_FOUND)
        ${MTP_INCLUDE_DIR}
        ${CMAKE_BINARY_DIR}/src
        ${AMAROK_COLLECTION_SUPPORT_DIR}
-       ${KDE4_INCLUDE_DIR}
-       ${QT_INCLUDES}
+       
+       
 )
 
 
@@ -32,17 +32,17 @@ set(amarok_collection-mtpcollection_PART_SRCS
     support/MtpDeviceInfo.cpp
     support/MtpConnectionAssistant.cpp
 )
-kde4_add_plugin(amarok_collection-mtpcollection ${amarok_collection-mtpcollection_PART_SRCS})
+add_library(amarok_collection-mtpcollection MODULE ${amarok_collection-mtpcollection_PART_SRCS})
 
 target_link_libraries(amarok_collection-mtpcollection
     amarokcore
     amaroklib
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KIO_LIBS}
-    ${KDE4_KDEUI_LIBS}
+    KF5::KDELibs4Support
+    KF5::KIOCore
+    
     ${KDE4_SOLID_LIBRARY}
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${QT_QTGUI_LIBRARY}
+    KF5::ThreadWeaver
+    Qt5::Gui
     ${MTP_LIBRARIES}
 )
 

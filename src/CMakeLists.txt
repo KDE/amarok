@@ -147,7 +147,7 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/DatabaseConfig.cpp
 )
 
-kde4_add_ui_files(libconfigdialog_SRCS
+ki18n_wrap_ui(libconfigdialog_SRCS
     configdialog/dialogs/CollectionConfig.ui
     configdialog/dialogs/GeneralConfig.ui
     configdialog/dialogs/MetadataConfig.ui
@@ -406,7 +406,7 @@ set(libplaylist_SRCS
     playlist/proxymodels/SearchProxy.cpp
 )
 
-kde4_add_ui_files(libplaylist_SRCS
+ki18n_wrap_ui(libplaylist_SRCS
     playlist/PlaylistQueueEditor.ui
 )
 
@@ -523,7 +523,7 @@ set(apg_SRCS
     playlistgenerator/constraints/TrackSpreader.cpp
 )
 
-kde4_add_ui_files(apg_SRCS
+ki18n_wrap_ui(apg_SRCS
     playlistgenerator/ConstraintGroupEditWidget.ui
     playlistgenerator/PresetEditDialog.ui
     playlistgenerator/constraints/CheckpointEditWidget.ui
@@ -547,7 +547,7 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
         network/NetworkAccessViewer.cpp
         )
 
-    kde4_add_ui_files(network_access_SRCS
+    ki18n_wrap_ui(network_access_SRCS
         network/NetworkRequests.ui
         )
 endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
@@ -582,7 +582,7 @@ set( statsyncing_SRCS
     statsyncing/ui/TrackDelegate.cpp
 )
 
-kde4_add_ui_files( statsyncing_SRCS
+ki18n_wrap_ui( statsyncing_SRCS
     statsyncing/ui/ChooseProvidersPage.ui
     statsyncing/ui/MatchedTracksPage.ui
 )
@@ -792,35 +792,35 @@ if( LIBOFA_FOUND )
     )
 endif( LIBOFA_FOUND )
 
-qt4_add_dbus_adaptor(
+qt5_add_dbus_adaptor(
    AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
    dbus/mpris1/RootHandler.h
    Mpris1::RootHandler
    Mpris1RootAdaptor
    Mpris1RootAdaptor )
-qt4_add_dbus_adaptor(
+qt5_add_dbus_adaptor(
    AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/mpris1/org.freedesktop.MediaPlayer.player.xml
    dbus/mpris1/PlayerHandler.h
    Mpris1::PlayerHandler
    Mpris1PlayerAdaptor
    Mpris1PlayerAdaptor )
-qt4_add_dbus_adaptor(
+qt5_add_dbus_adaptor(
    AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/mpris1/org.freedesktop.MediaPlayer.tracklist.xml
    dbus/mpris1/TrackListHandler.h
    Mpris1::TrackListHandler
    Mpris1TrackListAdaptor
    Mpris1TrackListAdaptor )
-qt4_add_dbus_adaptor(
+qt5_add_dbus_adaptor(
    AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/org.kde.amarok.App.xml
    dbus/mpris1/RootHandler.h
    Mpris1::RootHandler
    Mpris1AmarokAppAdaptor
    Mpris1AmarokAppAdaptor )
-qt4_add_dbus_adaptor(
+qt5_add_dbus_adaptor(
    AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/mpris1/org.kde.amarok.Mpris1Extensions.Player.xml
    dbus/mpris1/PlayerHandler.h
@@ -828,7 +828,7 @@ qt4_add_dbus_adaptor(
    Mpris1AmarokPlayerAdaptor
    Mpris1AmarokPlayerAdaptor )
 
-qt4_add_dbus_adaptor(
+qt5_add_dbus_adaptor(
    AMAROK_MPRIS1_ADAPTOR_SRCS
    dbus/org.kde.amarok.Collection.xml
    dbus/CollectionDBusHandler.h
@@ -847,10 +847,10 @@ set( amaroklib_DEPENDS "amarokpud" )
 set( amaroklib_DEPENDS "amarokcore" )
 set( amaroklib_DEPENDS "amarok-transcoding" ) # depends on generated ui_*.h file
 
-kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
+kconfig_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 add_custom_target(amarokconfig_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/amarokconfig.h)
 
-kde4_add_ui_files(amaroklib_LIB_SRCS
+ki18n_wrap_ui(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui
     dialogs/EditFilterDialog.ui
     dialogs/EqualizerDialog.ui
@@ -866,22 +866,22 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 
-kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS} ${AMAROK_MPRIS1_ADAPTOR_SRCS})
+add_library(amaroklib SHARED ${amaroklib_LIB_SRCS} ${AMAROK_MPRIS1_ADAPTOR_SRCS})
 
 target_link_libraries(amaroklib
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KFILE_LIBS}
-    ${KDE4_KNEWSTUFF3_LIBS}
-    ${KDE4_KNOTIFYCONFIG_LIBS}
-    ${KDE4_KUTILS_LIBS}
-    ${KDE4_PHONON_LIBRARY}
+    
+    
+    KF5::NewStuff
+    KF5::NotifyConfig
+    
+    Phonon::phonon4qt5
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
-    ${KDE4_KTEXTEDITOR_LIBS}
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${QT_QTSCRIPT_LIBRARY}
+    KF5::TextEditor
+    KF5::ThreadWeaver
+    Qt5::Script
     ${QT_QTSCRIPTTOOLS_LIBRARY}
-    ${QT_QTSQL_LIBRARY}
+    Qt5::Sql
     ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
@@ -908,11 +908,11 @@ endif( QCA2_FOUND )
 
 
 if(KDE4_BUILD_TESTS)
-    target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
+    target_link_libraries(amaroklib Qt5::Test)
 endif()
 
 if(WIN32)
-    target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
+    target_link_libraries(amaroklib Qt5::WebKitWidgets)
 endif(WIN32)
 if(APPLE)
     target_link_libraries(amaroklib "/System/Library/Frameworks/Foundation.framework")
@@ -929,11 +929,12 @@ install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 set( amarok_SRCS main.cpp )
 
-kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../images/hi*-app-amarok.png)
+file(GLOB ICONS_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../images/hi*-app-amarok.png)
+ecm_add_app_icon(amarok_SRCS ICONS ${ICONS_SRCS})
 
 find_package(X11)
 
-kde4_add_executable(amarok ${amarok_SRCS})
+add_executable(amarok ${amarok_SRCS})
 if(APPLE)
     set_target_properties(amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     set(MACOSX_BUNDLE_BUNDLE_NAME "Amarok 2")
@@ -943,7 +944,7 @@ if(APPLE)
     set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/amarok.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 endif(APPLE)
 
-target_link_libraries(amarok ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${X11_LIBRARIES})
+target_link_libraries(amarok KF5::KDELibs4Support  amarokcore amaroklib ${X11_LIBRARIES})
 install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
@@ -983,4 +984,4 @@ install(FILES services/InfoParserLoading.html
               browsers/hover_info_template.html
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
 
-kde4_install_icons( ${ICON_INSTALL_DIR} )
+ecm_install_icons( ${ICON_INSTALL_DIR} )

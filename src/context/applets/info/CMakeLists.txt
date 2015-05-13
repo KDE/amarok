@@ -8,7 +8,7 @@ include_directories(
                     ../../..
                     )
 
-kde4_add_plugin(amarok_context_applet_info ${info_SRCS})
+add_library(amarok_context_applet_info MODULE ${info_SRCS})
 if(APPLE)
    SET_TARGET_PROPERTIES(amarok_context_applet_info PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
@@ -17,7 +17,7 @@ target_link_libraries(amarok_context_applet_info
     amaroklib
     ${KDE4_PLASMA_LIBS}
     ${KDE4_KDEWEBKIT_LIBS}
-    ${QT_QTWEBKIT_LIBRARY}
+    Qt5::WebKitWidgets
     )
 
 install(TARGETS amarok_context_applet_info DESTINATION ${PLUGIN_INSTALL_DIR})

@@ -5,9 +5,9 @@
             ${Amarok_SOURCE_DIR}/src/network
             ${Amarok_SOURCE_DIR}/src/statusbar
             ${CMAKE_CURRENT_BINARY_DIR}/../../..
-            ${KDE4_INCLUDE_DIR}
+            
             ${QCA2_INCLUDE_DIR}
-            ${QT_INCLUDES}
+            
             )
 
 if( LIBLASTFM_FOUND )
@@ -22,13 +22,13 @@ add_subdirectory( images )
 
 set(libampache_account_login_SRCS
     AmpacheAccountLogin.cpp)
-kde4_add_library(ampache_account_login SHARED ${libampache_account_login_SRCS})
+add_library(ampache_account_login SHARED ${libampache_account_login_SRCS})
 target_link_libraries(ampache_account_login
     amaroklib
     amarokcore
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
+    KF5::KDELibs4Support
+    
+    KF5::KIOCore
     ${QCA2_LIBRARIES}
 )
 install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
@@ -49,17 +49,17 @@ install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS
 
 
 
-        kde4_add_plugin(amarok_service_ampache ${amarok_service_ampache_PART_SRCS})
+        add_library(amarok_service_ampache MODULE ${amarok_service_ampache_PART_SRCS})
         target_link_libraries(amarok_service_ampache
             ampache_account_login
             amarokcore
             amaroklib
-            ${KDE4_KDECORE_LIBS}
-            ${KDE4_KDEUI_LIBS}
-            ${KDE4_KIO_LIBS}
-            ${KDE4_THREADWEAVER_LIBRARIES}
-            ${QT_QTXML_LIBRARY}
-            ${KDE4_SOLID_LIBS}
+            KF5::KDELibs4Support
+            
+            KF5::KIOCore
+            KF5::ThreadWeaver
+            Qt5::Xml
+            
         )
         if( LIBLASTFM_FOUND )
             target_link_libraries(amarok_service_ampache
@@ -75,15 +75,15 @@ install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS
 
         set(kcm_amarok_service_ampache_PART_SRCSS AddServerDialog.cpp AmpacheSettings.cpp AmpacheConfig.cpp )
 
-        kde4_add_ui_files( kcm_amarok_service_ampache_PART_SRCSS AmpacheConfigWidget.ui NewServerWidget.ui )
+        ki18n_wrap_ui( kcm_amarok_service_ampache_PART_SRCSS AmpacheConfigWidget.ui NewServerWidget.ui )
 
 
-        kde4_add_plugin( kcm_amarok_service_ampache ${kcm_amarok_service_ampache_PART_SRCSS} )
+        add_library(kcm_amarok_service_ampache MODULE ${kcm_amarok_service_ampache_PART_SRCSS} )
 
 
         target_link_libraries( kcm_amarok_service_ampache
-            ampache_account_login ${KDE4_KUTILS_LIBS} ${QT_QTCORE_LIBRARY}
-            ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBRARY} ${KDE4_KDEUI_LIBS} )
+            ampache_account_login  Qt5::Core
+            Qt5::Gui   )
 
         install(TARGETS kcm_amarok_service_ampache  DESTINATION ${PLUGIN_INSTALL_DIR})
 

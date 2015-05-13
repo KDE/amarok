@@ -11,7 +11,7 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
 # Add a variable which points to amarok's source directory.
 set( AMAROK_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/ )
 
-include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${AMAROK_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
+include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${AMAROK_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  ${TAGLIB_INCLUDES})
 
 add_subdirectory( src )
 

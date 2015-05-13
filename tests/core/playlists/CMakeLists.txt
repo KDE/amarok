@@ -6,8 +6,10 @@ include_directories( .
 #------------------------ Test PlaylistFormat -----------------------------
 
 set( testplaylistformat_SRCS TestPlaylistFormat.cpp )
-kde4_add_unit_test( testplaylistformat ${testplaylistformat_SRCS} )
-target_link_libraries( testplaylistformat ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarokcore amaroklib )
+add_executable( testplaylistformat ${testplaylistformat_SRCS} )
+add_test(testplaylistformat testplaylistformat)
+ecm_mark_as_test(testplaylistformat)
+target_link_libraries( testplaylistformat KF5::KDELibs4Support Qt5::Test amarokcore amaroklib )
 
 #------------------------ Test PlaylistObserver -----------------------------
 
@@ -15,5 +17,7 @@ set( testplaylistobserver_SRCS
      TestPlaylistObserver.cpp
      ${AMAROK_SOURCE_TREE}/core/playlists/Playlist.cpp
      )
-kde4_add_unit_test( testplaylistobserver ${testplaylistobserver_SRCS} )
-target_link_libraries( testplaylistobserver ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} amarokcore amaroklib )
+add_executable( testplaylistobserver ${testplaylistobserver_SRCS} )
+add_test(testplaylistobserver testplaylistobserver)
+ecm_mark_as_test(testplaylistobserver)
+target_link_libraries( testplaylistobserver KF5::ThreadWeaver KF5::KDELibs4Support Qt5::Test Qt5::Core amarokcore amaroklib )

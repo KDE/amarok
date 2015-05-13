@@ -1,5 +1,5 @@
 include_directories( ../
-                     ${QT_INCLUDES}             
+                                  
                      ${TAGLIB_INCLUDES}         
                    )                            
 
@@ -19,7 +19,7 @@ if( TAGLIB-EXTRAS_FOUND )
 endif( TAGLIB-EXTRAS_FOUND )
 
 target_link_libraries(amarok_afttagger
-                        ${QT_QTCORE_LIBRARY}
+                        Qt5::Core
                         ${TAGLIB_LIBRARIES}
                      )
 

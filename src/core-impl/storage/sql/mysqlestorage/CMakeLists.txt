@@ -8,7 +8,7 @@ set( amarok_storage-mysqlestorage_PART_SRCS
      MySqlEmbeddedStorageFactory.cpp
 )
 
-kde4_add_plugin(amarok_storage-mysqlestorage ${amarok_storage-mysqlestorage_PART_SRCS})
+add_library(amarok_storage-mysqlestorage MODULE ${amarok_storage-mysqlestorage_PART_SRCS})
 
 STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN "${CMAKE_SHARED_LINKER_FLAGS}")
 SET(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
@@ -20,9 +20,9 @@ target_link_libraries(amarok_storage-mysqlestorage
     # amarok-sqlstorage
     amarokcore
     amaroklib
-    ${KDE4_KDECORE_LIBS}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTGUI_LIBRARY}
+    KF5::KDELibs4Support
+    Qt5::Core
+    Qt5::Gui
     ${MYSQL_EMBEDDED_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES}

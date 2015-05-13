@@ -7,7 +7,7 @@ include_directories(
                     ../../..
                     )
 
-kde4_add_plugin(amarok_context_applet_albums ${albums_SRCS})
+add_library(amarok_context_applet_albums MODULE ${albums_SRCS})
 if(APPLE)
    SET_TARGET_PROPERTIES(amarok_context_applet_albums PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)

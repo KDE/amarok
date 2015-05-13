@@ -5,8 +5,8 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
+  
+  
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
@@ -33,20 +33,22 @@ set( testplaylistmodels_SRCS
         ${GOOGLEMOCK_SRCS}
 )
 
-kde4_add_unit_test( testplaylistmodels ${testplaylistmodels_SRCS} )
+add_executable( testplaylistmodels ${testplaylistmodels_SRCS} )
+add_test(testplaylistmodels testplaylistmodels)
+ecm_mark_as_test(testplaylistmodels)
 
 add_dependencies( testplaylistmodels amaroklib )
 
 target_link_libraries( testplaylistmodels
     amarokcore
     amaroklib
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
-    ${KDE4_PHONON_LIBRARY}
-    ${KDE4_SOLID_LIBS}
-    ${QT_QTTEST_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
+    KF5::KDELibs4Support
+    
+    KF5::KIOCore
+    Phonon::phonon4qt5
+    
+    Qt5::Test
+    Qt5::Core
     ${GOOGLEMOCK_LIBRARIES}
     ${CMAKE_DL_LIBS}
 )

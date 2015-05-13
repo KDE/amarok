@@ -14,7 +14,7 @@ set(analyzer_SRCS
 
 include_directories(${OPENGL_INCLUDE_DIR})
 
-kde4_add_plugin(amarok_context_applet_analyzer ${analyzer_SRCS})
+add_library(amarok_context_applet_analyzer MODULE ${analyzer_SRCS})
 
 if(APPLE)
     SET_TARGET_PROPERTIES(amarok_context_applet_analyzer PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
@@ -25,7 +25,7 @@ target_link_libraries(amarok_context_applet_analyzer
     amarokcore
     amaroklib
     ${KDE4_PLASMA_LIBS}
-    ${QT_QTOPENGL_LIBRARY}
+    Qt5::OpenGL
     ${OPENGL_gl_LIBRARY}
 )
 

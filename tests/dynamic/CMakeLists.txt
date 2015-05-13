@@ -13,12 +13,12 @@ macro(link_database_test test_target)
     target_link_libraries(${test_target}
         amarokcore
         amaroklib
-        ${KDE4_KDECORE_LIBS}
-        ${KDE4_KIO_LIBS}
-        ${KDE4_THREADWEAVER_LIBRARIES}
-        ${KDE4_KDEUI_LIBS}
-        ${QT_QTTEST_LIBRARY}
-        ${QT_QTCORE_LIBRARY}
+        KF5::KDELibs4Support
+        KF5::KIOCore
+        KF5::ThreadWeaver
+        
+        Qt5::Test
+        Qt5::Core
         ${MYSQL_LIBRARIES}
         ${CMAKE_DL_LIBS}
 #        ${TAGLIB-EXTRAS_LIBRARIES}
@@ -37,8 +37,8 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/dynamic
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
+  
+  
   ${MYSQL_INCLUDE_DIR}
   )
 
@@ -48,7 +48,9 @@ set( dynamicmodel_SRCS
         TestDynamicModel.cpp
     )
 
-kde4_add_unit_test( testdynamicmodel TESTNAME testdynamicmodel ${dynamicmodel_SRCS} )
+add_executable( testdynamicmodelNAME testdynamicmodel ${dynamicmodel_SRCS} )
+add_test(testdynamicmodel testdynamicmodel)
+ecm_mark_as_test(testdynamicmodel)
 link_database_test( testdynamicmodel )
 
 #------------------------------- TrackSet Test -------------------------------
@@ -57,7 +59,9 @@ set( trackset_SRCS
         TestTrackSet.cpp
     )
 
-kde4_add_unit_test( testtrackset TESTNAME testtrackset ${trackset_SRCS} )
+add_executable( testtracksetNAME testtrackset ${trackset_SRCS} )
+add_test(testtrackset testtrackset)
+ecm_mark_as_test(testtrackset)
 link_database_test( testtrackset )
 
 

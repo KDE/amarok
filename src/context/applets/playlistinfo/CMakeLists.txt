@@ -5,7 +5,7 @@ set(currenttrack_SRCS CurrentTrack.cpp )
 include_directories( ../../
                     ../../.. )
 
-kde4_add_plugin(amarok_context_applet_currenttrack ${currenttrack_SRCS})
+add_library(amarok_context_applet_currenttrack MODULE ${currenttrack_SRCS})
 target_link_libraries(amarok_context_applet_currenttrack
     amarokcore
     amaroklib

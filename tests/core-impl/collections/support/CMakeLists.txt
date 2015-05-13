@@ -6,8 +6,8 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
+  
+  
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
@@ -18,7 +18,9 @@ set( testmemoryquerymaker_SRCS
         ${GOOGLEMOCK_SRCS}
     )
 
-kde4_add_unit_test( testmemoryquerymaker ${testmemoryquerymaker_SRCS} )
+add_executable( testmemoryquerymaker ${testmemoryquerymaker_SRCS} )
+add_test(testmemoryquerymaker testmemoryquerymaker)
+ecm_mark_as_test(testmemoryquerymaker)
 
 if(APPLE)
     SET_TARGET_PROPERTIES(testmemoryquerymaker PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
@@ -28,11 +30,11 @@ add_dependencies( testmemoryquerymaker amaroklib )
 target_link_libraries(testmemoryquerymaker
     amarokcore
     amaroklib
-    ${KDE4_KDECORE_LIBS}
-    ${QT_QTGUI_LIBRARY}
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${QT_QTTEST_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
+    KF5::KDELibs4Support
+    Qt5::Gui
+    KF5::ThreadWeaver
+    Qt5::Test
+    Qt5::Core
     ${GOOGLEMOCK_LIBRARIES})
 
 #-------------------------------- Test ArtistHelper -----------------------
@@ -43,14 +45,16 @@ set( testartisthelper_SRCS
     )
 
 
-kde4_add_unit_test( testartisthelper ${testartisthelper_SRCS} )
+add_executable( testartisthelper ${testartisthelper_SRCS} )
+add_test(testartisthelper testartisthelper)
+ecm_mark_as_test(testartisthelper)
 
     if(APPLE)
         SET_TARGET_PROPERTIES(testartisthelper PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif(APPLE)
 
 target_link_libraries( testartisthelper
-                        ${QT_QTTEST_LIBRARY}
-                        ${QT_QTCORE_LIBRARY}
-                        ${KDE4_KDECORE_LIBS})
+                        Qt5::Test
+                        Qt5::Core
+                        KF5::KDELibs4Support)
 

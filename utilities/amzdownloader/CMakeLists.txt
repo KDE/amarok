@@ -2,7 +2,7 @@ macro_optional_find_package( SharedMimeInfo )
 
 include_directories( ../
                      ${CMAKE_SOURCE_DIR}
-                     ${QT_INCLUDES}
+                     
                      ${CMAKE_CURRENT_BINARY_DIR}
                    )
 
@@ -20,15 +20,15 @@ set( amzdownloader_MOC_HDRS
     AmzDownloader.h
 )
 
-qt4_wrap_ui( amzdownloader_SRCS ${amzdownloader_UI} )
+ki18n_wrap_ui( amzdownloader_SRCS ${amzdownloader_UI} )
 
-qt4_wrap_cpp( amzdownloader_MOC ${amzdownloader_MOC_HDRS} )
+qt5_wrap_cpp( amzdownloader_MOC ${amzdownloader_MOC_HDRS} )
 
 add_executable( amzdownloader ${amzdownloader_SRCS} ${amzdownloader_MOC})
 
 target_link_libraries( amzdownloader
-                      ${QT_QTGUI_LIBRARY}
-                      ${QT_QTCORE_LIBRARY}
+                      Qt5::Gui
+                      Qt5::Core
                       )
 
 install( TARGETS amzdownloader RUNTIME DESTINATION ${BIN_INSTALL_DIR} )

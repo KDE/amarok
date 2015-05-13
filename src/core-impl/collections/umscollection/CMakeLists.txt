@@ -3,8 +3,8 @@ include_directories( ../..
   podcasts
   ${CMAKE_BINARY_DIR}/src
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
+  
+  
   )
 
 ########### next target ################
@@ -16,23 +16,23 @@ set(amarok_collection-umscollection_PART_SRCS
   podcasts/UmsPodcastProvider.cpp
   podcasts/UmsPodcastMeta.cpp)
 
-kde4_add_ui_files(amarok_collection-umscollection_PART_SRCS
+ki18n_wrap_ui(amarok_collection-umscollection_PART_SRCS
     UmsConfiguration.ui
 )
 
-kde4_add_plugin(amarok_collection-umscollection ${amarok_collection-umscollection_PART_SRCS})
+add_library(amarok_collection-umscollection MODULE ${amarok_collection-umscollection_PART_SRCS})
 	
 target_link_libraries(amarok_collection-umscollection
   amarokshared
   amaroklib
   amarokcore
   amarok-transcoding
-  ${KDE4_KDECORE_LIBS}
-  ${KDE4_KIO_LIBS}
-  ${KDE4_KDEUI_LIBS}
+  KF5::KDELibs4Support
+  KF5::KIOCore
+  
   ${KDE4_SOLID_LIBRARY}
-  ${KDE4_THREADWEAVER_LIBRARIES}
-  ${QT_QTGUI_LIBRARY}
+  KF5::ThreadWeaver
+  Qt5::Gui
   )
 
 install(TARGETS 

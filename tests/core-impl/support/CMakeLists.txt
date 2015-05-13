@@ -1,12 +1,14 @@
 #------------------------ Test TrackLoader -----------------------------
 
-kde4_add_unit_test( testtrackloader TestTrackLoader.cpp )
+add_executable( testtrackloader TestTrackLoader.cpp )
+add_test(testtrackloader testtrackloader)
+ecm_mark_as_test(testtrackloader)
 
 target_link_libraries( testtrackloader
     amarokcore
     amaroklib
-    ${KDE4_KDECORE_LIBS}
-    ${QT_QTTEST_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
-    ${KDE4_THREADWEAVER_LIBRARIES}
+    KF5::KDELibs4Support
+    Qt5::Test
+    Qt5::Core
+    KF5::ThreadWeaver
 )

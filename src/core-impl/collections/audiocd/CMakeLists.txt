@@ -6,8 +6,8 @@ include_directories( ../..
     ../mediadevicecollection/podcast
     ${CMAKE_BINARY_DIR}/src
     ${AMAROK_COLLECTION_SUPPORT_DIR}
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES}
+    
+    
 )
 
 
@@ -23,17 +23,17 @@ set(amarok_collection-audiocdcollection_PART_SRCS
     support/AudioCdConnectionAssistant.cpp
 )
 
-kde4_add_ui_files(amarok_collection-audiocdcollection_PART_SRCS FormatSelectionDialog.ui)
+ki18n_wrap_ui(amarok_collection-audiocdcollection_PART_SRCS FormatSelectionDialog.ui)
 
-kde4_add_plugin(amarok_collection-audiocdcollection ${amarok_collection-audiocdcollection_PART_SRCS})
+add_library(amarok_collection-audiocdcollection MODULE ${amarok_collection-audiocdcollection_PART_SRCS})
 
 target_link_libraries(
     amarok_collection-audiocdcollection
     amarokcore
     amaroklib
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${KDE4_KIO_LIBS}
-    ${KDE4_KUTILS_LIBS}
+    KF5::ThreadWeaver
+    KF5::KIOCore
+    
     ${KDE4_SOLID_LIBRARY}
 )
 

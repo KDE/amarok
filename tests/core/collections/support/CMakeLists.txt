@@ -6,5 +6,7 @@ include_directories( .
 #------------------------ Test TrackForUrlWorker -----------------------------
 
 set( testtrackforurlworker_SRCS TestTrackForUrlWorker.cpp ../../../mocks/MockTrackForUrlWorker.cpp )
-kde4_add_unit_test( testtrackforurlworker ${testtrackforurlworker_SRCS} )
-target_link_libraries( testtrackforurlworker ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} ${KDE4_THREADWEAVER_LIBRARIES} amarokcore amaroklib )
+add_executable( testtrackforurlworker ${testtrackforurlworker_SRCS} )
+add_test(testtrackforurlworker testtrackforurlworker)
+ecm_mark_as_test(testtrackforurlworker)
+target_link_libraries( testtrackforurlworker KF5::KDELibs4Support Qt5::Test KF5::ThreadWeaver amarokcore amaroklib )

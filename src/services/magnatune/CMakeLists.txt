@@ -4,8 +4,8 @@ include_directories(
     ../../core-impl/collections
     ../../statusbar
     ${CMAKE_CURRENT_BINARY_DIR}/../../..
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES} )
+    
+     )
 
 add_subdirectory( images )
 
@@ -33,21 +33,21 @@ set(amarok_service_magnatune_PART_SRCS
 
 )
 
-kde4_add_ui_files( amarok_service_magnatune_PART_SRCS
+ki18n_wrap_ui( amarok_service_magnatune_PART_SRCS
     MagnatuneDownloadDialogBase.ui
     MagnatuneNeedUpdateWidget.ui
     MagnatuneRedownloadDialogBase.ui
     MagnatuneSignupDialogBase.ui
 )
 
-kde4_add_plugin(amarok_service_magnatunestore ${amarok_service_magnatune_PART_SRCS})
+add_library(amarok_service_magnatunestore MODULE ${amarok_service_magnatune_PART_SRCS})
 target_link_libraries(amarok_service_magnatunestore
     amarokcore
     amaroklib
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
-    ${KDE4_THREADWEAVER_LIBRARIES}
+    KF5::KDELibs4Support
+    
+    KF5::KIOCore
+    KF5::ThreadWeaver
 )
 
 
@@ -60,13 +60,13 @@ set(kcm_amarok_service_magnatune_PART_SRCSS
     MagnatuneConfig.cpp
 )
 
-kde4_add_ui_files( kcm_amarok_service_magnatune_PART_SRCSS MagnatuneConfigWidget.ui )
+ki18n_wrap_ui( kcm_amarok_service_magnatune_PART_SRCSS MagnatuneConfigWidget.ui )
 
 
-kde4_add_plugin( kcm_amarok_service_magnatunestore ${kcm_amarok_service_magnatune_PART_SRCSS} )
+add_library(kcm_amarok_service_magnatunestore MODULE ${kcm_amarok_service_magnatune_PART_SRCSS} )
 
 
-target_link_libraries( kcm_amarok_service_magnatunestore  ${KDE4_KUTILS_LIBS} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBRARY} ${KDE4_KDEUI_LIBS} )
+target_link_libraries( kcm_amarok_service_magnatunestore   Qt5::Core Qt5::Gui   )
 
 install(TARGETS kcm_amarok_service_magnatunestore  DESTINATION ${PLUGIN_INSTALL_DIR})
 

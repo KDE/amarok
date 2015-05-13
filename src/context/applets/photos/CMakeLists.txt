@@ -9,9 +9,9 @@ set( photos_applet_SRCS
      PhotosScrollWidget.cpp
 )
 
-kde4_add_ui_files( photos_applet_SRCS photosSettings.ui )
+ki18n_wrap_ui( photos_applet_SRCS photosSettings.ui )
 
-kde4_add_plugin(amarok_context_applet_photos ${photos_applet_SRCS})
+add_library(amarok_context_applet_photos MODULE ${photos_applet_SRCS})
 target_link_libraries( amarok_context_applet_photos
     amarokcore
     amaroklib

@@ -19,16 +19,16 @@ set( amarok_collection-sqlcollection_SRCS
     device/smb/SmbDeviceHandler.cpp
 )
 
-kde4_add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
+add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
 
 target_link_libraries(amarok-sqlcollection
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
+    KF5::KDELibs4Support
+    
+    KF5::KIOCore
     ${KDE4_SOLID_LIBRARY}
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTGUI_LIBRARY}
+    KF5::ThreadWeaver
+    Qt5::Core
+    Qt5::Gui
     ${CMAKE_THREAD_LIBS_INIT}
     amarokcore
     amaroklib

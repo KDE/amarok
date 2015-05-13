@@ -11,8 +11,8 @@ if(LIBXML2_FOUND AND CURL_FOUND)
             ${LIBXML2_INCLUDE_DIR}
             ${CURL_INCLUDE_DIRS}
             ${CMAKE_CURRENT_BINARY_DIR}/../../..
-            ${KDE4_INCLUDE_DIR}
-            ${QT_INCLUDES}
+            
+            
         )
     ########### next target ###############
 
@@ -39,20 +39,21 @@ if(LIBXML2_FOUND AND CURL_FOUND)
                 libmp3tunes/locker.c
                 libmp3tunes/harmony.c
             )
-            QT4_ADD_DBUS_ADAPTOR(amarok_service_mp3tunes_harmony_PART_SRCS
+            qt5_add_dbus_adaptor(amarok_service_mp3tunes_harmony_PART_SRCS
                 harmonydaemon/org.kde.amarok.Mp3tunesHarmonyDaemon.xml
                 harmonydaemon/Mp3tunesHarmonyDaemon.h
                 Mp3tunesHarmonyDaemon
             )
 
-            kde4_add_executable(amarokmp3tunesharmonydaemon NOGUI
+            add_executable(amarokmp3tunesharmonydaemon
+ecm_mark_nongui_executable(amarokmp3tunesharmonydaemon)
                 ${amarok_service_mp3tunes_harmony_PART_SRCS}
             )
 
             target_link_libraries(amarokmp3tunesharmonydaemon
                 amarokcore
                 amaroklib
-                ${KDE4_KDECORE_LIBS}
+                KF5::KDELibs4Support
                 ${GLIB2_LIBRARIES}
                 ${GOBJECT_LIBRARIES}
                 ${LOUDMOUTH_LIBRARIES}
@@ -85,22 +86,22 @@ if(LIBXML2_FOUND AND CURL_FOUND)
             libmp3tunes/md5.c
         )
 
-        QT4_ADD_DBUS_ADAPTOR(amarok_service_mp3tunes_PART_SRCS
+        qt5_add_dbus_adaptor(amarok_service_mp3tunes_PART_SRCS
                 org.kde.amarok.Mp3tunesHarmonyHandler.xml
                 Mp3tunesHarmonyHandler.h
                 Mp3tunesHarmonyHandler
         )
 
-        kde4_add_plugin(amarok_service_mp3tunes ${amarok_service_mp3tunes_PART_SRCS})
+        add_library(amarok_service_mp3tunes MODULE ${amarok_service_mp3tunes_PART_SRCS})
         target_link_libraries(amarok_service_mp3tunes
             amarokcore
             amaroklib
-            ${KDE4_KDECORE_LIBS}
-            ${KDE4_KDEUI_LIBS}
-            ${KDE4_THREADWEAVER_LIBRARIES}
+            KF5::KDELibs4Support
+            
+            KF5::ThreadWeaver
             ${LIBXML2_LIBRARIES}
             ${CURL_LIBRARIES}
-            ${QT_QTNETWORK_LIBRARY}
+            Qt5::Network
         )
 
           if(LIBGCRYPT_FOUND)
@@ -120,13 +121,13 @@ if(LIBXML2_FOUND AND CURL_FOUND)
             Mp3tunesConfig.cpp
         )
 
-        kde4_add_ui_files( kcm_amarok_service_mp3tunes_PART_SRCSS Mp3tunesConfigWidget.ui )
+        ki18n_wrap_ui( kcm_amarok_service_mp3tunes_PART_SRCSS Mp3tunesConfigWidget.ui )
 
 
-        kde4_add_plugin( kcm_amarok_service_mp3tunes ${kcm_amarok_service_mp3tunes_PART_SRCSS} )
+        add_library(kcm_amarok_service_mp3tunes MODULE ${kcm_amarok_service_mp3tunes_PART_SRCSS} )
 
 
-        target_link_libraries( kcm_amarok_service_mp3tunes  ${QT_QTNETWORK_LIBRARY} ${KDE4_KDEUI_LIBS} ${KDE4_KUTILS_LIBS} )
+        target_link_libraries( kcm_amarok_service_mp3tunes  Qt5::Network   )
 
         install(TARGETS kcm_amarok_service_mp3tunes  DESTINATION ${PLUGIN_INSTALL_DIR})
 

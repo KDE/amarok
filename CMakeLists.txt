@@ -96,8 +96,6 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/shared
 )
 
-find_package( Qt4 4.8.3 COMPONENTS QtCore QtGui QtScript QtSvg QtXml QtWebKit REQUIRED )
-find_package( KDE4 4.8.4 REQUIRED )
 
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")  # Require C++11
@@ -238,7 +236,6 @@ if( WITH_PLAYER )
     find_package(PythonInterp)
     macro_log_feature(PYTHONINTERP_FOUND "Python" "Required for generating the autocompletion file for the script console" "https://www.python.org" FALSE "2.x" "")
 
-    include_directories( ${KDE4_INCLUDES} )
 
     if( KDE4_BUILD_TESTS AND NOT WIN32 )
         ENABLE_TESTING()

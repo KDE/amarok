@@ -8,8 +8,8 @@ set( lyrics_engine_SRCS
     LyricsEngine.cpp
 )
 
-kde4_add_plugin(amarok_data_engine_lyrics ${lyrics_engine_SRCS})
-target_link_libraries( amarok_data_engine_lyrics amarokcore amaroklib ${KDE4_PLASMA_LIBS} ${KDE4_KDECORE_LIBS} ${QT_QTGUI_LIBRARY})
+add_library(amarok_data_engine_lyrics MODULE ${lyrics_engine_SRCS})
+target_link_libraries( amarok_data_engine_lyrics amarokcore amaroklib ${KDE4_PLASMA_LIBS} KF5::KDELibs4Support Qt5::Gui)
 
 install( TARGETS amarok_data_engine_lyrics DESTINATION ${PLUGIN_INSTALL_DIR} )
 install( FILES amarok-data-engine-lyrics.desktop DESTINATION ${SERVICES_INSTALL_DIR} )

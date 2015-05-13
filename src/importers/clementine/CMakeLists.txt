@@ -1,6 +1,6 @@
 include_directories(
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES}
+    
+    
 )
 
 set( amarok_importer-clementine_PART_SRCS
@@ -10,13 +10,13 @@ set( amarok_importer-clementine_PART_SRCS
     ClementineTrack.cpp
 )
 
-kde4_add_plugin( amarok_importer-clementine ${amarok_importer-clementine_PART_SRCS} )
+add_library(amarok_importer-clementine MODULE ${amarok_importer-clementine_PART_SRCS} )
 
 target_link_libraries( amarok_importer-clementine
     amarokcore
     amaroklib
-    ${KDE4_KIO_LIBS}
-    ${QT_QTSQL_LIBRARY}
+    KF5::KIOCore
+    Qt5::Sql
 )
 
 install( TARGETS amarok_importer-clementine DESTINATION ${PLUGIN_INSTALL_DIR} )

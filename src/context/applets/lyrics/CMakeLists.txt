@@ -8,8 +8,8 @@ set(lyrics_SRCS
 include_directories( ../..
                      ../../.. )
 
-kde4_add_ui_files( lyrics_SRCS lyricsSettings.ui )
-kde4_add_plugin(amarok_context_applet_lyrics ${lyrics_SRCS})
+ki18n_wrap_ui( lyrics_SRCS lyricsSettings.ui )
+add_library(amarok_context_applet_lyrics MODULE ${lyrics_SRCS})
 if(APPLE)
    SET_TARGET_PROPERTIES(amarok_context_applet_lyrics PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)

@@ -6,8 +6,8 @@ include_directories(
   ${AMAROK_SOURCE_TREE}/context
   ${AMAROK_TEST_TREE}/context/engines
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
+  
+  
 )
 
 
@@ -21,8 +21,10 @@ set( testupcomingeventsengine_SRCS
     ${AMAROK_SOURCE_TREE}/context/applets/upcomingevents/LastFmEventXmlParser.cpp
 )
 
-kde4_add_unit_test( testupcomingeventsengine ${testupcomingeventsengine_SRCS} )
+add_executable( testupcomingeventsengine ${testupcomingeventsengine_SRCS} )
+add_test(testupcomingeventsengine testupcomingeventsengine)
+ecm_mark_as_test(testupcomingeventsengine)
 
 add_dependencies( testupcomingeventsengine amaroklib)
 
-target_link_libraries( testupcomingeventsengine amarokcore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_PLASMA_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} ${QT_QTTEST_LIBRARY})
+target_link_libraries( testupcomingeventsengine amarokcore amaroklib KF5::KDELibs4Support ${KDE4_PLASMA_LIBS}  KF5::KIOCore Qt5::Test)

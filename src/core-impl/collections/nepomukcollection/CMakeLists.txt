@@ -31,15 +31,15 @@ if(NepomukCore_FOUND AND Soprano_FOUND)
         meta/NepomukYear.cpp
     )
 
-    kde4_add_plugin(amarok_collection-nepomukcollection ${amarok_collection-nepomukcollection_PART_SRCS})
+    add_library(amarok_collection-nepomukcollection MODULE ${amarok_collection-nepomukcollection_PART_SRCS})
 
     target_link_libraries(amarok_collection-nepomukcollection
         amarokcore
         amaroklib
-        ${KDE4_THREADWEAVER_LIBRARIES}
+        KF5::ThreadWeaver
         ${NEPOMUK_CORE_LIBRARY}
-        ${KDE4_KDEUI_LIBS}
-        ${KDE4_KDECORE_LIBS}
+        
+        KF5::KDELibs4Support
         ${SOPRANO_LIBRARIES}
     )
 

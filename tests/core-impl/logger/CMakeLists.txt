@@ -4,8 +4,8 @@ include_directories(
   ${AMAROK_UTILITY_TREE}
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
+  
+  
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
@@ -19,14 +19,16 @@ set( testproxylogger_SRCS
     )
 
 
-kde4_add_unit_test( testproxylogger
+add_executable( testproxylogger
+add_test(testproxylogger testproxylogger)
+ecm_mark_as_test(testproxylogger)
     ${testproxylogger_SRCS}
     )
 
 target_link_libraries( testproxylogger
-    ${KDE4_KDECORE_LIBS}
-    ${QT_QTTEST_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
-    ${KDE4_THREADWEAVER_LIBRARIES}
+    KF5::KDELibs4Support
+    Qt5::Test
+    Qt5::Core
+    KF5::ThreadWeaver
     ${GOOGLEMOCK_LIBRARIES}
     ${CMAKE_DL_LIBS})

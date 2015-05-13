@@ -3,5 +3,7 @@ add_subdirectory( support )
 #------------------------ Test MetaTrack -----------------------------
 
 set( testmetatrack_SRCS TestMetaTrack.cpp )
-kde4_add_unit_test( testmetatrack ${testmetatrack_SRCS} )
-target_link_libraries( testmetatrack ${KDE4_KDECORE_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} amarokcore amaroklib )
+add_executable( testmetatrack ${testmetatrack_SRCS} )
+add_test(testmetatrack testmetatrack)
+ecm_mark_as_test(testmetatrack)
+target_link_libraries( testmetatrack KF5::KDELibs4Support Qt5::Gui Qt5::Test amarokcore amaroklib )
