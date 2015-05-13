@@ -7,7 +7,7 @@ set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mo
 message(STATUS "${CMAKE_MODULE_PATH}")
 
 ###############
-find_package(ECM 1.1.0 REQUIRED CONFIG)
+find_package(ECM 1.7.0 REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
@@ -17,6 +17,7 @@ include(ECMInstallIcons)
 include(ECMSetupVersion)
 include(FeatureSummary)
 include(ECMAddTests)
+include(ECMAddAppIcon)
 
 find_package( Qt5 REQUIRED COMPONENTS Core DBus Widgets Test )
 find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid )
