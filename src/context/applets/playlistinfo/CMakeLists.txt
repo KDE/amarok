@@ -9,7 +9,7 @@ add_library(amarok_context_applet_currenttrack MODULE ${currenttrack_SRCS})
 target_link_libraries(amarok_context_applet_currenttrack
     amarokcore
     amaroklib
-    ${KDE4_PLASMA_LIBS}
+    KF5::Plasma
 )
 
 install(TARGETS amarok_context_applet_currenttrack DESTINATION ${PLUGIN_INSTALL_DIR})

@@ -14,7 +14,7 @@ endif(APPLE)
 target_link_libraries(amarok_context_applet_albums
     amarokcore
     amaroklib
-    ${KDE4_PLASMA_LIBS}
+    KF5::Plasma
 )
 
 install(TARGETS amarok_context_applet_albums DESTINATION ${PLUGIN_INSTALL_DIR})

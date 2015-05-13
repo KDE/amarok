@@ -16,7 +16,7 @@ endif(APPLE)
 target_link_libraries(amarok_context_applet_similarArtists
     amarokcore
     amaroklib
-    ${KDE4_PLASMA_LIBS}
+    KF5::Plasma
     
 )
 

@@ -16,7 +16,7 @@ endif(APPLE)
 target_link_libraries(amarok_context_applet_wikipedia
     amarokcore
     amaroklib
-    ${KDE4_PLASMA_LIBS}
+    KF5::Plasma
     KF5::KIOCore
     ${KDE4_KDEWEBKIT_LIBS}
     Qt5::WebKitWidgets

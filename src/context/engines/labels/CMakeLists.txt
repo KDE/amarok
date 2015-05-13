@@ -8,7 +8,7 @@ set( labels_engine_SRCS
 )
 
 add_library(amarok_data_engine_labels MODULE ${labels_engine_SRCS})
-target_link_libraries( amarok_data_engine_labels amarokcore amaroklib ${KDE4_PLASMA_LIBS} KF5::KIOCore)
+target_link_libraries( amarok_data_engine_labels amarokcore amaroklib KF5::Plasma KF5::KIOCore)
 
 install( TARGETS amarok_data_engine_labels DESTINATION ${PLUGIN_INSTALL_DIR} )
 install( FILES amarok-data-engine-labels.desktop DESTINATION ${SERVICES_INSTALL_DIR} )

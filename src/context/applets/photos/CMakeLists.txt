@@ -15,7 +15,7 @@ add_library(amarok_context_applet_photos MODULE ${photos_applet_SRCS})
 target_link_libraries( amarok_context_applet_photos
     amarokcore
     amaroklib
-    ${KDE4_PLASMA_LIBS}
+    KF5::Plasma
 )
 
 install( TARGETS amarok_context_applet_photos DESTINATION ${PLUGIN_INSTALL_DIR} )

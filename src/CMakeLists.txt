@@ -875,7 +875,7 @@ target_link_libraries(amaroklib
     KF5::NotifyConfig
     
     Phonon::phonon4qt5
-    ${KDE4_PLASMA_LIBS}
+    KF5::Plasma
     ${KDE4_SOLID_LIBRARY}
     KF5::TextEditor
     KF5::ThreadWeaver

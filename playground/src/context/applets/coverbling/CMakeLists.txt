@@ -19,7 +19,7 @@ add_library(amarok_context_applet_coverbling MODULE ${coverbling_SRCS})
 target_link_libraries(amarok_context_applet_coverbling
     amarokcore
     amaroklib
-    ${KDE4_PLASMA_LIBS} 
+    KF5::Plasma 
     KF5::KIOCore
 )
 

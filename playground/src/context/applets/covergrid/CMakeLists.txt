@@ -17,7 +17,7 @@ add_library(amarok_context_applet_covergrid MODULE ${covergrid_SRCS})
 target_link_libraries(amarok_context_applet_covergrid
     amarokcore
     amaroklib
-    ${KDE4_PLASMA_LIBS} 
+    KF5::Plasma 
     KF5::KIOCore
 )
 
