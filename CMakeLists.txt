@@ -6,6 +6,21 @@ set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mo
 
 message(STATUS "${CMAKE_MODULE_PATH}")
 
+###############
+find_package(ECM 1.1.0 REQUIRED CONFIG)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
+
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
+include(ECMInstallIcons)
+include(ECMSetupVersion)
+include(FeatureSummary)
+include(ECMAddTests)
+
+find_package( Qt5 REQUIRED COMPONENTS Core DBus Widgets Test )
+find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid )
+###############
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
