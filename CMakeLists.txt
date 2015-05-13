@@ -114,17 +114,17 @@ add_definitions( ${QT_DEFINITIONS} ${KDE4_DEFINITIONS} )
 # QCA2 is required for the Script Updater
 find_package( QCA2 )
 
-macro_optional_find_package( LibLastFm )
+find_package( LibLastFm )
 set( LIBLASTFM_MIN_VERSION "1.0.0" )
 if( LIBLASTFM_FOUND )
     macro_ensure_version( ${LIBLASTFM_MIN_VERSION} ${LIBLASTFM_VERSION} LIBLASTFM_FOUND )
 endif( LIBLASTFM_FOUND )
 macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
-macro_optional_find_package( FFmpeg )
+find_package( FFmpeg )
 
 if( FFMPEG_FOUND )
-    macro_optional_find_package( LibOFA )
+    find_package( LibOFA )
     macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
 endif( FFMPEG_FOUND )
 
@@ -165,7 +165,7 @@ if( WITH_PLAYER )
     macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" FALSE "" "" )
 
     # QJson is required for the PlaydarCollection
-    macro_optional_find_package(QJSON)
+    find_package(QJSON)
     macro_log_feature( QJSON_FOUND "QJson" "Qt JSON Parser used for the Playdar Collection" "http://qjson.sourceforge.net/" FALSE "" "" )
 
     # We tell users that we need 1.0.3, but we really check just >= 1.0.0. This is because
@@ -182,7 +182,7 @@ if( WITH_PLAYER )
     endif( FFMPEG_FOUND )
 
     ##gpodder Service
-    macro_optional_find_package( Mygpo-qt 1.0.7 QUIET )
+    find_package( Mygpo-qt 1.0.7 QUIET )
     macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable gpodder.net service" "http://wiki.gpodder.org/wiki/Libmygpo-qt" FALSE "1.0.7" "" )
     macro_bool_to_01( LIBMYGPO_QT_FOUND HAVE_LIBMYGPOQT )
 
@@ -193,11 +193,11 @@ if( WITH_PLAYER )
             macro_ensure_version(${IPOD_MIN_VERSION} ${IPOD_VERSION} IPOD_FOUND)
         endif( IPOD_FOUND AND NOT WIN32 )
         macro_log_feature( IPOD_FOUND "libgpod" "Support Apple iPod/iPad/iPhone audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE ${IPOD_MIN_VERSION} "" )
-        macro_optional_find_package(GDKPixBuf)
+        find_package(GDKPixBuf)
         macro_log_feature( GDKPIXBUF_FOUND "GDK-PixBuf" "Support for artwork on iPod audio devices via GDK-PixBuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
     endif( WITH_IPOD )
 
-    macro_optional_find_package(Mtp)
+    find_package(Mtp)
     macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "1.0.0" "")
 
     if( WITH_MP3Tunes )
@@ -207,8 +207,8 @@ if( WITH_PLAYER )
         find_package(LibXml2)
         macro_log_feature( LIBXML2_FOUND "libxml2" "LibXML2 is an XML parser required by mp3tunes." "http://www.xmlsoft.org" FALSE "" "" )
 
-        macro_optional_find_package(OpenSSL)
-        macro_optional_find_package(Libgcrypt)
+        find_package(OpenSSL)
+        find_package(Libgcrypt)
         if ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
             set (_mp3tunes_crypto TRUE )
         else ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )

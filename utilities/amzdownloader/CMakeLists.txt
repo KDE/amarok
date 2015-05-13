@@ -1,8 +1,7 @@
-macro_optional_find_package( SharedMimeInfo )
+find_package( SharedMimeInfo )
 
 include_directories( ../
-                     ${CMAKE_SOURCE_DIR}
-                     
+                     ${CMAKE_SOURCE_DIR}                     
                      ${CMAKE_CURRENT_BINARY_DIR}
                    )
 

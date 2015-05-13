@@ -1,4 +1,4 @@
-macro_optional_find_package(Mtp)
+find_package(Mtp)
 
 
 if (MTP_FOUND)
