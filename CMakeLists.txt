@@ -20,7 +20,7 @@ include(ECMAddTests)
 include(ECMAddAppIcon)
 
 find_package( Qt5 REQUIRED COMPONENTS Core DBus Widgets Test )
-find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid )
+find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid KDELibs4Support)
 ###############
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
