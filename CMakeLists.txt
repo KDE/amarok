@@ -19,6 +19,8 @@ include(FeatureSummary)
 include(ECMAddTests)
 include(ECMAddAppIcon)
 
+#find_package( Qt4 4.8.3 COMPONENTS QtCore QtGui QtScript QtSvg QtXml QtWebKit REQUIRED )
+#find_package( KDE4 4.8.4 REQUIRED )
 find_package( Qt5 REQUIRED COMPONENTS Core DBus Widgets Test )
 find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid KDELibs4Support)
 ###############
@@ -145,47 +147,42 @@ add_subdirectory( images )
 add_subdirectory( shared )
 
 if( WITH_PLAYER )
-    include(MacroLogFeature)
-
-    macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE ${KDE_MIN_VERSION} "" )
-
-    macro_log_feature( QT_QTOPENGL_FOUND "QtOpenGL" "Required for the spectrum analyzer" "http://qt-project.org" FALSE "" "" )
+    set_package_properties( QTOPENGL PROPERTIES DESCRIPTION "Required for the spectrum analyzer" URL "http://qt-project.org" TYPE OPTIONAL )
 
     find_package(MySQLAmarok REQUIRED)
     if( WITH_MYSQL_EMBEDDED )
         set( BUILD_MYSQLE_COLLECTION TRUE )
-        macro_log_feature( MYSQL_EMBEDDED_FOUND "mysqld" "Embedded MySQL Libraries" "http://www.mysql.com" TRUE "" "" )
+        set_package_properties( MYSQLD PROPERTIES DESCRIPTION "Embedded MySQL Libraries" URL "http://www.mysql.com" TYPE REQUIRED )
     else( WITH_MYSQL_EMBEDDED )
         add_definitions( "-DNO_MYSQL_EMBEDDED" )
     endif( WITH_MYSQL_EMBEDDED )
-    macro_log_feature( MYSQL_FOUND "mysql" "MySQL Server Libraries" "http://www.mysql.com" TRUE "" "" )
+    set_package_properties( MYSQL PROPERTIES DESCRIPTION "MySQL Server Libraries" URL "http://www.mysql.com" TYPE REQUIRED )
 
     # zlib is required for mysql embedded
     find_package(ZLIB REQUIRED)
-    macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
+    set_package_properties( ZLIB PROPERTIES DESCRIPTION "zlib" TYPE REQUIRED )
 
-    macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" FALSE "" "" )
+    set_package_properties( QCA2 PROPERTIES DESCRIPTION "Qt Cryptographic Architecture" URL "http://delta.affinix.com/qca/" TYPE OPTIONAL )
 
     # QJson is required for the PlaydarCollection
     find_package(QJSON)
-    macro_log_feature( QJSON_FOUND "QJson" "Qt JSON Parser used for the Playdar Collection" "http://qjson.sourceforge.net/" FALSE "" "" )
+    set_package_properties( QJSON PROPERTIES DESCRIPTION "Qt JSON Parser used for the Playdar Collection" URL "http://qjson.sourceforge.net/" TYPE OPTIONAL )
 
     # We tell users that we need 1.0.3, but we really check just >= 1.0.0. This is because
     # upstream forgot to update version in lastfm/global.h, so it looks like 1.0.2. :-(
     # will be fixed in liblastfm-1.0.4
     set( LIBLASTFM_MIN_VERSION "1.0.3" )
-    macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists"
-                       "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" FALSE ${LIBLASTFM_MIN_VERSION} "" )
+    set_package_properties( LIBLASTFM PROPERTIES DESCRIPTION "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" URL "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" TYPE OPTIONAL )
 
-    macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.7" "" )
+    set_package_properties( FFMPEG PROPERTIES DESCRIPTION "Libraries and tools for handling multimedia data" URL "http://www.ffmpeg.org/" TYPE OPTIONAL )
 
     if( FFMPEG_FOUND )
-        macro_log_feature( LIBOFA_FOUND "libofa" "Enable MusicDNS service" "http://code.google.com/p/musicip-libofa/" FALSE "0.9.x" "" )
+        set_package_properties(LIBOFA PROPERTIES DESCRIPTION "Enable MusicDNS service" URL "http://code.google.com/p/musicip-libofa/" TYPE OPTIONAL)
     endif( FFMPEG_FOUND )
 
     ##gpodder Service
     find_package( Mygpo-qt 1.0.7 QUIET )
-    macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable gpodder.net service" "http://wiki.gpodder.org/wiki/Libmygpo-qt" FALSE "1.0.7" "" )
+    set_package_properties( LIBMYGPO_QT PROPERTIES DESCRIPTION "Enable gpodder.net service" URL "http://wiki.gpodder.org/wiki/Libmygpo-qt" TYPE OPTIONAL )
     macro_bool_to_01( LIBMYGPO_QT_FOUND HAVE_LIBMYGPOQT )
 
     if( WITH_IPOD )
@@ -196,20 +193,20 @@ if( WITH_PLAYER )
                 set( IPOD_FOUND TRUE )
             endif()
         endif( IPOD_FOUND AND NOT WIN32 )
-        macro_log_feature( IPOD_FOUND "libgpod" "Support Apple iPod/iPad/iPhone audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE ${IPOD_MIN_VERSION} "" )
+        set_package_properties( IPOD PROPERTIES DESCRIPTION "Support Apple iPod/iPad/iPhone audio devices" URL "http://sourceforge.net/projects/gtkpod/" TYPE OPTIONAL )
         find_package(GDKPixBuf)
-        macro_log_feature( GDKPIXBUF_FOUND "GDK-PixBuf" "Support for artwork on iPod audio devices via GDK-PixBuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
+        set_package_properties( GDKPIXBUF PROPERTIES DESCRIPTION "Support for artwork on iPod audio devices via GDK-PixBuf" URL "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" TYPE OPTIONAL )
     endif( WITH_IPOD )
 
     find_package(Mtp)
-    macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "1.0.0" "")
+    set_package_properties(MTP PROPERTIES DESCRIPTION "Enable Support for portable media devices that use the media transfer protocol" URL "http://libmtp.sourceforge.net/" TYPE OPTIONAL )
 
     if( WITH_MP3Tunes )
         find_package(CURL)
-        macro_log_feature( CURL_FOUND "curl" "cURL provides the necessary network libraries required by mp3tunes." "http://curl.haxx.se" FALSE "" "" )
+        set_package_properties( MTP PROPERTIES DESCRIPTION "Enable Support for portable media devices that use the media transfer protocol" URL "http://libmtp.sourceforge.net/" TYPE OPTIONAL )
 
         find_package(LibXml2)
-        macro_log_feature( LIBXML2_FOUND "libxml2" "LibXML2 is an XML parser required by mp3tunes." "http://www.xmlsoft.org" FALSE "" "" )
+        set_package_properties( LIBXML2 PROPERTIES DESCRIPTION "LibXML2 is an XML parser required by mp3tunes." URL "http://www.xmlsoft.org" TYPE OPTIONAL )
 
         find_package(OpenSSL)
         find_package(Libgcrypt)
@@ -218,27 +215,27 @@ if( WITH_PLAYER )
         else ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
             message( SEND_ERROR "Building with mp3tunes support REQUIRES either OpenSSL or GNU Libgcrypt" )
         endif ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
-        macro_log_feature( _mp3tunes_crypto "openssl or libgcrypt" "OpenSSL or GNU Libgcrypt provides cryptographic functions required by mp3tunes." "http://www.openssl.org/ or http://www.gnupg.org/download/#libgcrypt" FALSE "" "" )
+        set_package_properties( OPENSSL_OR_LIBGCRYPT PROPERTIES DESCRIPTION "OpenSSL or GNU Libgcrypt provides cryptographic functions required by mp3tunes." URL "http://www.openssl.org/ or http://www.gnupg.org/download/#libgcrypt" TYPE OPTIONAL )
 
         find_package(Loudmouth)
-        macro_log_feature( LOUDMOUTH_FOUND "loudmouth" "Loudmouth is the communication backend needed by mp3tunes for syncing." "http://www.loudmouth-project.org" FALSE "" "" )
+        set_package_properties( LOUDMOUTH PROPERTIES DESCRIPTION "Loudmouth is the communication backend needed by mp3tunes for syncing." URL "http://www.loudmouth-project.org" TYPE OPTIONAL )
 
         include(CheckQtGlib)
-        macro_log_feature(QT4_GLIB_SUPPORT "Qt4 Glib support" "Qt4 must be compiled with glib support for mp3tunes" "http://www.trolltech.com" FALSE "" "")
+        set_package_properties( QT4_GLIB PROPERTIES DESCRIPTION "Qt4 must be compiled with glib support for mp3tunes" URL "http://www.trolltech.com" TYPE OPTIONAL )
     endif( WITH_MP3Tunes )
 
     if( WITH_IPOD OR WITH_MP3Tunes )
     find_package(GObject)
-    macro_log_feature( GOBJECT_FOUND "gobject" "Required by libgpod and mp3tunes." "http://www.gtk.org" FALSE "2.x" "" )
+    set_package_properties( GOBJECT PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes." URL "http://www.gtk.org" TYPE OPTIONAL )
     find_package(GLIB2)
-    macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
+    set_package_properties( GLIB2 PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes" URL "http://www.gtk.org" TYPE OPTIONAL )
     endif( WITH_IPOD OR WITH_MP3Tunes )
 
     find_program( CLAMZ_FOUND clamz PATH )
-    macro_log_feature( CLAMZ_FOUND "clamz" "Optional requirement to download songs from the Amazon MP3 store. Highly recommended on Linux, as the official downloader from Amazon is quite broken on many systems." "https://code.google.com/p/clamz/" FALSE )
+    set_package_properties( CLAMZ PROPERTIES DESCRIPTION "Optional requirement to download songs from the Amazon MP3 store. Highly recommended on Linux, as the official downloader from Amazon is quite broken on many systems." URL "https://code.google.com/p/clamz/" TYPE OPTIONAL )
 
     find_package(PythonInterp)
-    macro_log_feature(PYTHONINTERP_FOUND "Python" "Required for generating the autocompletion file for the script console" "https://www.python.org" FALSE "2.x" "")
+    set_package_properties( PYTHON PROPERTIES DESCRIPTION "Required for generating the autocompletion file for the script console" URL "https://www.python.org" TYPE OPTIONAL )
 
 
     if( KDE4_BUILD_TESTS AND NOT WIN32 )
@@ -249,10 +246,10 @@ if( WITH_PLAYER )
     add_subdirectory( src )
 
     # Also display taglib in the feature log
-    macro_log_feature( TAGLIB_FOUND "taglib" "Support for Audio metadata." "http://developer.kde.org/~wheeler/taglib.html" TRUE "${TAGLIB_MIN_VERSION}" "Required for tag reading" )
+    set_package_properties( TAGLIB PROPERTIES DESCRIPTION "Support for Audio metadata." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE REQUIRED PURPOSE "Required for tag reading" )
     # following line is here (and not near TAGLIB_MOD_FOUND) because there may be no MacroLogFeature without kdelibs
-    macro_log_feature( TAGLIB_MOD_FOUND "taglib" "Additional support for Audio metadata of mod, s3m, it and xm files." "http://developer.kde.org/~wheeler/taglib.html" FALSE "1.8" "" )
-    macro_log_feature( TAGLIB_OPUS_FOUND "taglib" "Additional support for Audio metadata of opus files." "http://developer.kde.org/~wheeler/taglib.html" FALSE "1.9" "" )
+    set_package_properties( TAGLIB_MOD PROPERTIES DESCRIPTION "Additional support for Audio metadata of mod, s3m, it and xm files." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE OPTIONAL )
+    set_package_properties( TAGLIB_OPUS PROPERTIES DESCRIPTION "Additional support for Audio metadata of opus files." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE OPTIONAL )
 
     macro_display_feature_log()
 
