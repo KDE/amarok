@@ -251,7 +251,7 @@ if( WITH_PLAYER )
     set_package_properties( TAGLIB_MOD PROPERTIES DESCRIPTION "Additional support for Audio metadata of mod, s3m, it and xm files." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE OPTIONAL )
     set_package_properties( TAGLIB_OPUS PROPERTIES DESCRIPTION "Additional support for Audio metadata of opus files." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE OPTIONAL )
 
-    macro_display_feature_log()
+    feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
     #Do not remove or modify these.  The release script substitutes in for these
     #comments with appropriate doc and translation directories.

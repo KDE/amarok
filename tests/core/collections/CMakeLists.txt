@@ -7,8 +7,6 @@ include_directories(
   ${AMAROK_SOURCE_TREE}/meta
   ${CMAKE_BINARY_DIR}/src
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  
-  
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
@@ -19,7 +17,7 @@ set( testcollectionlocation_SRCS
         ${GOOGLEMOCK_SRCS}
     )
 
-add_executable( testcollectionlocationNAME amarok-testcollectionlocation ${testcollectionlocation_SRCS} )
+add_executable( testcollectionlocation TESTNAME amarok-testcollectionlocation ${testcollectionlocation_SRCS} )
 add_test(testcollectionlocation testcollectionlocation)
 ecm_mark_as_test(testcollectionlocation)
 

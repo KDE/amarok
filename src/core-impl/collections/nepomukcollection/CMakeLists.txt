@@ -1,7 +1,7 @@
 find_package(NepomukCore QUIET)
-macro_log_feature(NepomukCore_FOUND "nepomuk-core" "NepomukCore Libraries required by Nepomuk Collection" "http://kde.org/download/#v4.9" FALSE "4.9.0")
+set_package_properties(NEPOMUK-CORE PROPERTIES DESCRIPTION "NepomukCore Libraries required by Nepomuk Collection" URL "http://kde.org/download/#v4.9"  TYPE OPTIONAL)
 find_package(Soprano QUIET)
-macro_log_feature(Soprano_FOUND "Soprano" "Soprano libraries required by Nepomuk Collection" "http://soprano.sourceforge.net/" FALSE)
+set_package_properties(SOPRANO PROPERTIES DESCRIPTION "Soprano libraries required by Nepomuk Collection" URL "http://soprano.sourceforge.net/" TYPE OPTIONAL)
 
 if(NepomukCore_FOUND AND Soprano_FOUND)
     include(NepomukAddOntologyClasses)

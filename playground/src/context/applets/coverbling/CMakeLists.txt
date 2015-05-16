@@ -8,9 +8,9 @@ PhotoBrowser.cpp
 SearchBarTextItem.cpp
 )
 
-include_directories( ../../..
-                    ../..
-                    /amarok ) # this way we don't need to prefix it with amarok/ (and it compiles this way too :)
+#include_directories( ../../..
+#                    ../..
+#                    ${KDE4_INCLUDE_DIR}/amarok ) # this way we don't need to prefix it with amarok/ (and it compiles this way too :)
 
 ki18n_wrap_ui( coverbling_SRCS coverblingSettings.ui )
 add_library(amarok_context_applet_coverbling MODULE ${coverbling_SRCS})

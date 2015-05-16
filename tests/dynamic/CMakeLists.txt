@@ -16,7 +16,6 @@ macro(link_database_test test_target)
         KF5::KDELibs4Support
         KF5::KIOCore
         KF5::ThreadWeaver
-        
         Qt5::Test
         Qt5::Core
         ${MYSQL_LIBRARIES}
@@ -48,7 +47,7 @@ set( dynamicmodel_SRCS
         TestDynamicModel.cpp
     )
 
-add_executable( testdynamicmodelNAME testdynamicmodel ${dynamicmodel_SRCS} )
+add_executable( testdynamicmodel TESTNAME testdynamicmodel ${dynamicmodel_SRCS} )
 add_test(testdynamicmodel testdynamicmodel)
 ecm_mark_as_test(testdynamicmodel)
 link_database_test( testdynamicmodel )

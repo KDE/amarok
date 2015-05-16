@@ -5,10 +5,10 @@ set(covergrid_SRCS
     AlbumItem.cpp
 )
 
-include_directories( ../../..
-                    ../..
-                    /amarok # this way we don't need to prefix it with amarok/ (and it compiles this way too :)
-)
+#include_directories( ../../..
+#                    ../..
+#                    ${KDE4_INCLUDE_DIR}/amarok # this way we don't need to prefix it with amarok/ (and it compiles this way too :)
+#)
 
 ki18n_wrap_ui( covergrid_SRCS CoverGridSettings.ui )
 add_library(amarok_context_applet_covergrid MODULE ${covergrid_SRCS})
