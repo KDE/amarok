@@ -20,10 +20,10 @@ set( testproxylogger_SRCS
 
 
 add_executable( testproxylogger
-add_test(testproxylogger testproxylogger)
-ecm_mark_as_test(testproxylogger)
     ${testproxylogger_SRCS}
     )
+add_test(testproxylogger testproxylogger)
+ecm_mark_as_test(testproxylogger)
 
 target_link_libraries( testproxylogger
     KF5::KDELibs4Support

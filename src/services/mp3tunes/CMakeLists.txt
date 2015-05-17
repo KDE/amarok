@@ -45,10 +45,10 @@ if(LIBXML2_FOUND AND CURL_FOUND)
                 Mp3tunesHarmonyDaemon
             )
 
-            add_executable(amarokmp3tunesharmonydaemon
-ecm_mark_nongui_executable(amarokmp3tunesharmonydaemon)
+            add_executable(amarokmp3tunesharmonydaemon 
                 ${amarok_service_mp3tunes_harmony_PART_SRCS}
             )
+            ecm_mark_nongui_executable(amarokmp3tunesharmonydaemon)
 
             target_link_libraries(amarokmp3tunesharmonydaemon
                 amarokcore

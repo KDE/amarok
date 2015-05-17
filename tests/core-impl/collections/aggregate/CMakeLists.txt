@@ -13,11 +13,11 @@ include_directories(
 #------------------------------- TestAggregateMeta -------------------------------
 
 add_executable( testaggregatemeta
-add_test(testaggregatemeta testaggregatemeta)
-ecm_mark_as_test(testaggregatemeta)
                         TestAggregateMeta.cpp
                         ${GOOGLEMOCK_SRCS}
                   )
+add_test(testaggregatemeta testaggregatemeta)
+ecm_mark_as_test(testaggregatemeta)
 
 add_dependencies( testaggregatemeta amarokconfig_h )
 add_dependencies( testaggregatemeta amarokcore )

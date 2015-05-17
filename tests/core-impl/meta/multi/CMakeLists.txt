@@ -25,10 +25,10 @@ set( testmetamultitrack_SRCS
 
 
 add_executable( testmetamultitrack
-add_test(testmetamultitrack testmetamultitrack)
-ecm_mark_as_test(testmetamultitrack)
     ${testmetamultitrack_SRCS}
     )
+add_test(testmetamultitrack testmetamultitrack)
+ecm_mark_as_test(testmetamultitrack)
 
 add_dependencies( testmetamultitrack amarokcore )
 add_dependencies( testmetamultitrack amaroklib )
