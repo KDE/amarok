@@ -984,4 +984,7 @@ install(FILES services/InfoParserLoading.html
               browsers/hover_info_template.html
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
 
-ecm_install_icons( ${ICON_INSTALL_DIR} )
+ecm_install_icons(ICONS
+    DESTINATION ${ICON_INSTALL_DIR} 
+    THEME hicolor
+)
