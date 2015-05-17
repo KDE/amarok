@@ -17,7 +17,7 @@ set( testcollectionlocation_SRCS
         ${GOOGLEMOCK_SRCS}
     )
 
-add_executable( testcollectionlocation TESTNAME amarok-testcollectionlocation ${testcollectionlocation_SRCS} )
+add_executable( testcollectionlocation ${testcollectionlocation_SRCS} )
 add_test(testcollectionlocation testcollectionlocation)
 ecm_mark_as_test(testcollectionlocation)
 

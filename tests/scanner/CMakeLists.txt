@@ -5,7 +5,7 @@ macro(add_database_test test_target test_sources)
                 ${test_sources} )
     endif(APPLE)
 
-    add_executable( ${test_target} TESTNAME ${test_target}
+    add_executable( ${test_target}
         ${test_sources}
         ${test_sources_internal}
         ${GOOGLEMOCK_SRCS}
@@ -28,8 +28,7 @@ macro(add_database_test test_target test_sources)
         amarokshared
         KF5::KDELibs4Support
         KF5::KIOCore
-        KF5::ThreadWeaver
-        
+        KF5::ThreadWeaver        
         Qt5::Test
         Qt5::Core
         ${CMAKE_DL_LIBS}
@@ -46,9 +45,7 @@ include_directories(
   ${AMAROK_UTILITY_TREE}
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
-  ${AMAROK_COLLECTION_SUPPORT_DIR}
-  
-  
+  ${AMAROK_COLLECTION_SUPPORT_DIR}  
   )
 
 #-------------------------------- Test SqlScanManager -----------------------

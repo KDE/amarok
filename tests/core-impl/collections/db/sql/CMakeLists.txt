@@ -13,7 +13,7 @@ macro(add_database_test test_target test_sources)
                 ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.cpp )
     endif(APPLE)
 
-    add_executable( ${test_target} TESTNAME ${test_target} ${test_sources} ${test_sources_internal} )
+    add_executable( ${test_target} ${test_sources} ${test_sources_internal} )
     add_test(${test_target} ${test_target})
     ecm_mark_as_test(${test_target})
 
