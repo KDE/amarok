@@ -43,10 +43,9 @@ target_link_libraries( testimporterprovider ${testimporterscommon_LIBS} )
 #------------------------ Test SimpleImporterConfigWidget -----------------
 
 set( testsimpleimporterconfigwidget_SRCS TestSimpleImporterConfigWidget.cpp )
-add_executable( testsimpleimporterconfigwidget
+add_executable( testsimpleimporterconfigwidget ${testsimpleimporterconfigwidget_SRCS} )
 add_test(testsimpleimporterconfigwidget testsimpleimporterconfigwidget)
 ecm_mark_as_test(testsimpleimporterconfigwidget)
-                    ${testsimpleimporterconfigwidget_SRCS} )
 target_link_libraries( testsimpleimporterconfigwidget ${testimporterscommon_LIBS} )
 
 #------------------------ Test AmarokImporter -----------------------------
