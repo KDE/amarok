@@ -929,7 +929,7 @@ install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 set( amarok_SRCS main.cpp )
 
-file(GLOB ICONS_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../images/hi*-app-amarok.png)
+file(GLOB ICONS_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../images/*-apps-amarok.png)
 ecm_add_app_icon(amarok_SRCS ICONS ${ICONS_SRCS})
 
 find_package(X11)
