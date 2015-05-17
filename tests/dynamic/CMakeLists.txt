@@ -58,7 +58,7 @@ set( trackset_SRCS
         TestTrackSet.cpp
     )
 
-add_executable( testtracksetNAME testtrackset ${trackset_SRCS} )
+add_executable( testtrackset TESTNAME testtrackset ${trackset_SRCS} )
 add_test(testtrackset testtrackset)
 ecm_mark_as_test(testtrackset)
 link_database_test( testtrackset )

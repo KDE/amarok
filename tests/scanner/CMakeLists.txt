@@ -5,11 +5,13 @@ macro(add_database_test test_target test_sources)
                 ${test_sources} )
     endif(APPLE)
 
-    kde4_add_unit_test( ${test_target} TESTNAME ${test_target}
+    add_executable( ${test_target} TESTNAME ${test_target}
         ${test_sources}
         ${test_sources_internal}
         ${GOOGLEMOCK_SRCS}
         )
+    add_test(${test_target} ${test_target})
+    ecm_mark_as_test(${test_target})
 
     if(APPLE)
         SET_TARGET_PROPERTIES(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
