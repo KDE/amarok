@@ -8,7 +8,7 @@ message(STATUS "${CMAKE_MODULE_PATH}")
 
 ###############
 find_package(ECM 1.7.0 REQUIRED CONFIG)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
