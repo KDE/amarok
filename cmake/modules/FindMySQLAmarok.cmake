@@ -6,6 +6,7 @@
 #  MYSQL_EMBEDDED_LIBRARIES, the libraries needed to use MySQL Embedded.
 #  MYSQL_FOUND, If false, do not try to use MySQL.
 #  MYSQL_EMBEDDED_FOUND, If false, do not try to use MySQL Embedded.
+#  MYSQLAMAROK_FOUND, TRUE if both MYSQL and MYSQL_EMBEDDED have been found, FALSE otherwise.
 
 # Copyright (c) 2006, Jaroslaw Staniek, <js@iidea.pl>
 #
@@ -111,5 +112,10 @@ else(MYSQL_INCLUDE_DIR AND MYSQL_EMBEDDED_LIBRARIES AND HAVE_MYSQL_EMBEDDED)
    set(MYSQL_EMBEDDED_FOUND FALSE)
    message(STATUS "MySQL Embedded not found.")
 endif(MYSQL_INCLUDE_DIR AND MYSQL_EMBEDDED_LIBRARIES AND HAVE_MYSQL_EMBEDDED)
+
+#MYSQLAMAROK_FOUND has to be defined so that MYSQLAMAROK gets into the PACKAGES_FOUND property and the other properties that depend on <NAME>_FOUND variables. If this is not set to TRUE (when both MYSQL and MYSQLD are available) then on the subsequent call to feature_summary, MySQLAmarok will be missing from the PACKAGES_FOUND property and hence it will be marked as a missing required feature thus breaking the build when feature_summary has been used with FATAL_ON_MISSING_REQUIRED_PACKAGES.
+if(MYSQL_EMBEDDED_FOUND AND MYSQL_FOUND)
+   set(MYSQLAMAROK_FOUND TRUE)
+endif(MYSQL_EMBEDDED_FOUND AND MYSQL_FOUND)
 
 mark_as_advanced(MYSQL_INCLUDE_DIR MYSQL_LIBRARIES MYSQL_EMBEDDED_LIBRARIES)
