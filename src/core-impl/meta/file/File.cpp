@@ -37,13 +37,15 @@
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/support/UrlStatisticsStore.h"
 
-#include <KMimeType>
+
 
 #include <QAction>
 #include <QFileInfo>
 #include <QList>
 #include <QWeakPointer>
 #include <QString>
+#include <QMimeDatabase>
+#include <QMimeType>
 
 using namespace MetaFile;
 
@@ -420,8 +422,8 @@ Track::isTrack( const KUrl &url )
     if( fileInfo.isDir() )
         return false;
 
-    const KMimeType::Ptr mimeType = KMimeType::findByPath( url.toLocalFile() );
-    const QString name = mimeType->name();
+    const QMimeType mimeType = db.mimeTypeForFile( url.toLocalFile() );
+    const QString name = mimeType.name();
     return name.startsWith( "audio/" ) || name.startsWith( "video/" );
 }
 

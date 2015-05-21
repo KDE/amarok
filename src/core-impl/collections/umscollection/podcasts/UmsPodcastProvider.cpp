@@ -20,7 +20,7 @@
 #include <KIO/DeleteJob>
 #include <KIO/FileCopyJob>
 #include <KIO/Job>
-#include <KMimeType>
+
 
 #include <QAction>
 #include <QDirIterator>
@@ -28,6 +28,8 @@
 #include <QListWidget>
 #include <QObject>
 #include <QVBoxLayout>
+#include <QMimeDatabase>
+#include <QMimeType>
 
 using namespace Podcasts;
 
@@ -453,15 +455,15 @@ UmsPodcastProvider::addPath( const QString &path )
     DEBUG_BLOCK
     int acc = 0;
     debug() << path;
-    KMimeType::Ptr mime = KMimeType::findByFileContent( path, &acc );
-    if( !mime || mime->name() == KMimeType::defaultMimeType() )
+    QMimeType mime = KMimeType::findByFileContent( path, &acc );
+    if( !mime || mime.name() == KMimeType::defaultMimeType() )
     {
         debug() << "Trying again with findByPath:" ;
-        mime = KMimeType::findByPath( path, 0, true, &acc );
-        if( mime->name() == KMimeType::defaultMimeType() )
+        mime = db.mimeTypeForFile( path, 0, true, &acc );
+        if( mime.name() == KMimeType::defaultMimeType() )
             return 0;
     }
-    debug() << "Got type: " << mime->name() << ", with accuracy: " << acc;
+    debug() << "Got type: " << mime.name() << ", with accuracy: " << acc;
 
     QFileInfo info( path );
     if( info.isDir() )
@@ -475,7 +477,7 @@ UmsPodcastProvider::addPath( const QString &path )
     {
 //        foreach( const QString &mimetype, m_handler->mimetypes() )
 //        {
-//            if( mime->is( mimetype ) )
+//            if( mime.inherits( mimetype ) )
 //            {
                 addFile( MetaFile::TrackPtr( new MetaFile::Track(
                         KUrl( info.canonicalFilePath() ) ) ) );

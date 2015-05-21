@@ -51,6 +51,8 @@
 #include <QScrollArea>
 #include <QSplitter>
 #include <QTabWidget>
+#include <QMimeDatabase>
+#include <QMimeType>
 
 CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                                     const CoverFetch::Metadata &data,
@@ -406,7 +408,7 @@ void CoverFoundDialog::saveAs()
     }
 
     const QImage &image = item->bigPix();
-    const QString &ext = KMimeType::extractKnownExtension( saveUrl.path() ).toLower();
+    const QString &ext = db.suffixForFileName( saveUrl.path() ).toLower();
     if( ext == "jpg" || ext == "jpeg" )
         image.save( &saveFile, "JPG" );
     else if( ext == "png" )

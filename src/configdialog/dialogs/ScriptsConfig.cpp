@@ -38,6 +38,8 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QScrollBar>
+#include <QMimeDatabase>
+#include <QMimeType>
 
 ScriptsConfig::ScriptsConfig( QWidget *parent )
     : ConfigDialogBase( parent )
@@ -134,9 +136,9 @@ ScriptsConfig::installLocalScript()
         return;
 
     QString fileName = QFileInfo( filePath ).fileName();
-    KMimeType::Ptr mimeType = KMimeType::findByPath( filePath );
+    QMimeType mimeType = db.mimeTypeForFile( filePath );
     QScopedPointer<KArchive> archive;
-    if( mimeType->is( "application/zip" ) )
+    if( mimeType.inherits( "application/zip" ) )
         archive.reset( new KZip( filePath ) );
     else
         archive.reset( new KTar( filePath ) );
