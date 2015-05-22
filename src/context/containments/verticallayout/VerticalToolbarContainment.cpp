@@ -208,4 +208,3 @@ Context::VerticalToolbarContainment::showEmptyText( bool toShow ) // SLOT
     update();
 }
 
-#include "VerticalToolbarContainment.moc"

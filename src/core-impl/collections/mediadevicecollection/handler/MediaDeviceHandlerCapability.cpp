@@ -41,4 +41,3 @@ void Handler::Capability::slotSetParent( QObject *parent )
     setParent( parent );
 }
 
-#include "MediaDeviceHandlerCapability.moc"

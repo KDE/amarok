@@ -123,4 +123,3 @@ int ProgressBar::percentage()
 }
 
 
-#include "ProgressBar.moc"

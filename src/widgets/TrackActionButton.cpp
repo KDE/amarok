@@ -143,4 +143,3 @@ void TrackActionButton::updateAction()
     }
 }
 
-#include "TrackActionButton.moc"

@@ -319,4 +319,3 @@ SqlUserPlaylistProvider::toSqlPlaylists( Playlists::PlaylistList playlists )
 
 } //namespace Playlists
 
-#include "SqlUserPlaylistProvider.moc"

@@ -698,4 +698,3 @@ bool IpodCollection::writeDatabase()
     return success;
 }
 
-#include "IpodCollection.moc"

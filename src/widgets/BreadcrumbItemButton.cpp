@@ -327,4 +327,3 @@ BreadcrumbUrlMenuButton::copyCurrentToClipboard()
 
 }
 
-#include "BreadcrumbItemButton.moc"

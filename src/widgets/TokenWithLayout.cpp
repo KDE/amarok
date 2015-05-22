@@ -287,7 +287,6 @@ void TokenWithLayout::setUnderline( bool underline )
 }
 
 
-#include "TokenWithLayout.moc"
 
 
 

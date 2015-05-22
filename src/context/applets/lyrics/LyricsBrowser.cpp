@@ -159,4 +159,3 @@ void LyricsBrowser::resizeEvent( QGraphicsSceneResizeEvent *event )
     }
 }
 
-#include "LyricsBrowser.moc"

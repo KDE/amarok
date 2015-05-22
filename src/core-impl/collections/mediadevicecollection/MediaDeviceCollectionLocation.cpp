@@ -136,5 +136,4 @@ MediaDeviceCollectionLocation::removeOperationFinished()
     slotRemoveOperationFinished();
 }
 
-#include "MediaDeviceCollectionLocation.moc"
 

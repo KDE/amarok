@@ -314,5 +314,4 @@ DaapCollection::parsingFailed()
     emit remove();
 }
 
-#include "DaapCollection.moc"
 

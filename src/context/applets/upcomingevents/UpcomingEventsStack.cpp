@@ -189,4 +189,3 @@ UpcomingEventsStack::cleanupListWidgets()
     }
 }
 
-#include "UpcomingEventsStack.moc"

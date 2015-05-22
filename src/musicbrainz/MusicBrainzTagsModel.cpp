@@ -334,4 +334,3 @@ MusicBrainzTagsModel::clearChoices()
     }
 }
 
-#include "MusicBrainzTagsModel.moc"

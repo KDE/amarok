@@ -197,4 +197,3 @@ MusicBrainzTagger::progressStep()
     ui->progressBar->setValue( ui->progressBar->value() + 1 );
 }
 
-#include "MusicBrainzTagger.moc"

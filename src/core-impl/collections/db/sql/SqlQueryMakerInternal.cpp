@@ -242,4 +242,3 @@ SqlQueryMakerInternal::handleLabels( const QStringList &result )
     emit newResultReady( labels );
 }
 
-#include "SqlQueryMakerInternal.moc"

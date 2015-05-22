@@ -435,7 +435,6 @@ void BookmarkTreeView::slotSectionCountChanged( int oldCount, int newCount )
 }
 
 
-#include "BookmarkTreeView.moc"
 
 
 

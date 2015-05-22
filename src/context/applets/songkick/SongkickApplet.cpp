@@ -264,4 +264,3 @@ SongkickApplet::paletteChanged( const QPalette & palette )
                             );
 }
 
-#include "SongkickApplet.moc"

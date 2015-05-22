@@ -96,4 +96,3 @@ AppletIconWidget::pluginName() const
 
 } // namespace Context
 
-#include "AppletIcon.moc"

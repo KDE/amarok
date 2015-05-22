@@ -75,4 +75,3 @@ void AlbumBreadcrumbWidget::albumClicked()
     emit albumClicked( m_album->name() );
 }
 
-#include "AlbumBreadcrumbWidget.moc"

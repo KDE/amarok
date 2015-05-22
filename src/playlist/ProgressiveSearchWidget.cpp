@@ -386,4 +386,3 @@ void ProgressiveSearchWidget::slotFilterClear()
 
 }   //namespace Playlist
 
-#include "ProgressiveSearchWidget.moc"

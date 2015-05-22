@@ -265,4 +265,3 @@ Context::ToolbarView::refreshSycoca()
     recreateOverlays();
 }
 
-#include "ToolbarView.moc"

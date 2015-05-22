@@ -381,4 +381,3 @@ ProxyBase::rowToSource( int proxyModelRow ) const
 
 }   //namespace Playlist
 
-#include "ProxyBase.moc"

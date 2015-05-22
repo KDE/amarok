@@ -110,5 +110,4 @@ ContentFetcher::checkForErrors( int /*state*/ )
 }
 
 
-#include "contentfetcher.moc"
 

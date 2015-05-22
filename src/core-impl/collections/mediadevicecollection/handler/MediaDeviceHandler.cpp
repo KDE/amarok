@@ -1243,4 +1243,3 @@ CopyWorkerThread::slotDoneFailed( ThreadWeaver::Job* )
 }
 
 
-#include "MediaDeviceHandler.moc"

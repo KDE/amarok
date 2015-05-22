@@ -353,4 +353,3 @@ UpcomingEventsMapWidget::clear()
     page()->mainFrame()->evaluateJavaScript( "javascript:clearMarkers()" );
 }
 
-#include "UpcomingEventsMapWidget.moc"

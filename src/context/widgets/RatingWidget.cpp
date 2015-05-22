@@ -296,5 +296,4 @@ RatingWidget::sizeHint( Qt::SizeHint hint, const QSizeF& size ) const
                   pixSize.height() + contentsRect().width() );
 }
 
-#include "RatingWidget.moc"
 

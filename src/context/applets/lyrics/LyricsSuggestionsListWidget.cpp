@@ -116,4 +116,3 @@ LyricsSuggestionItem::onClicked()
     emit selected( m_data );
 }
 
-#include "LyricsSuggestionsListWidget.moc"

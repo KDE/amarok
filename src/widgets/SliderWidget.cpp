@@ -416,4 +416,3 @@ bool Amarok::TimeSlider::event( QEvent * event )
 }
 
 
-#include "SliderWidget.moc"

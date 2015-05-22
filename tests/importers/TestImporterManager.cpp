@@ -253,4 +253,3 @@ TestImporterManager::managerShouldHandleMultipleProviders()
         QVERIFY( m_mockManager->providers().contains( providerPtr->id() ) );
 }
 
-#include "TestImporterManager.moc"

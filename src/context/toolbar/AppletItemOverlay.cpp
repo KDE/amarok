@@ -370,4 +370,3 @@ Context::AppletItemOverlay::syncGeometry()
     //debug() << m_index << m_layout->count() << m_prevGeom << m_nextGeom;
 }
 
-#include "AppletItemOverlay.moc"

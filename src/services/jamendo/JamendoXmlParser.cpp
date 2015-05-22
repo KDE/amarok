@@ -421,5 +421,4 @@ JamendoXmlParser::requestAbort()
     m_aborted = true;
 }
 
-#include "JamendoXmlParser.moc"
 

@@ -221,4 +221,3 @@ TestAmarokImporter::providerShouldHandleErroneousConfigValues()
     QVERIFY( provider.artists().isEmpty() );
 }
 
-#include "TestAmarokImporter.moc"

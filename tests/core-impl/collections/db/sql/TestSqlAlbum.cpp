@@ -418,4 +418,3 @@ TestSqlAlbum::testUnsetCompilationWithMultipleArtists()
     QVERIFY( sqlAlbum->id() != 1 ); // the albums should be a new one
 }
 
-#include "TestSqlAlbum.moc"

@@ -175,5 +175,4 @@ Dynamic::IfElseBias::removeDuplicate() const
             m_tracks.subtract( m_playlist[i] );
 }
 
-#include "IfElseBias.moc"
 

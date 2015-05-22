@@ -155,5 +155,4 @@ DeviceConfigureDialog::slotButtonClicked( KDialog::ButtonCode button )
     KDialog::slotButtonClicked( button );
 }
 
-#include "deviceconfiguredialog.moc"
 

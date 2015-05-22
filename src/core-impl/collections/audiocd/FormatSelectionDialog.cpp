@@ -117,5 +117,4 @@ void FormatSelectionDialog::showAdvancedSettings()
 }
 
 
-#include "FormatSelectionDialog.moc"
 

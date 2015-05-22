@@ -250,5 +250,4 @@ PlaylistBrowserNS::DynamicCategory::setAllowDuplicates( bool value ) // SLOT
 }
 
 
-#include "DynamicCategory.moc"
 

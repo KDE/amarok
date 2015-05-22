@@ -199,4 +199,3 @@ AnalyzerApplet::setCurrentAnalyzer( const QString &name )
     m_analyzer->show();
 }
 
-#include "AnalyzerApplet.moc"

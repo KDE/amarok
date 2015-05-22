@@ -161,4 +161,3 @@ Context::AppletHeader::clearDummyItems()
     m_dummyItems.clear();
 }
 
-#include "AppletHeader.moc"

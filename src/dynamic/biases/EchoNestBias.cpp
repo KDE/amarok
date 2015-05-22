@@ -538,4 +538,3 @@ Dynamic::EchoNestBias::tracksMapKey( QStringList artists )
     return artists.join("|");
 }
 
-#include "EchoNestBias.moc"

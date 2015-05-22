@@ -184,4 +184,3 @@ AlbumsProxyModel::setMode( Mode mode )
     m_mode = mode;
 }
 
-#include "AlbumsModel.moc"

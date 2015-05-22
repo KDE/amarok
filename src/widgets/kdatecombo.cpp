@@ -16,7 +16,6 @@
 
 #include "kdatecombo.h"
 
-#include "kdatecombo.moc"
 
 #include <QtCore/QTimer>
 //Added by qt3to4:

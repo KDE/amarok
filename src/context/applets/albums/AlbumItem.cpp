@@ -138,4 +138,3 @@ AlbumItem::operator<( const QStandardItem &other ) const
         return false;
 }
 
-#include "AlbumItem.moc"

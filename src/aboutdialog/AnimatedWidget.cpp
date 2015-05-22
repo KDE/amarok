@@ -107,4 +107,3 @@ void AnimatedWidget::load()
     m_currentFrame = 0;
 }
 
-#include "AnimatedWidget.moc"

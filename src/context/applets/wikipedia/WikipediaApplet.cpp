@@ -802,4 +802,3 @@ WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
     QTimer::singleShot( 0, this, SLOT(_configureLangSelector()) );
 }
 
-#include "WikipediaApplet.moc"

@@ -81,6 +81,5 @@ BookmarkCurrentTrackPositionAction::slotTriggered()
     }
 }
 
-#include "BookmarkMetaActions.moc"
 
 

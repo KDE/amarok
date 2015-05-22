@@ -124,5 +124,4 @@ FindInSourceCapabilityImpl::findInSource( QFlags<TargetTag> tag )
 
 } //namespace Capabilities
 
-#include "SqlCapabilities.moc"
 

@@ -78,5 +78,4 @@ MySqlServerStorageFactory::testSettings( const QString &host, const QString &use
     return errors;
 }
 
-#include "MySqlServerStorageFactory.moc"
 

@@ -260,4 +260,3 @@ PhotosEngine::photosListFromXml( QXmlStreamReader &xml )
     return photoList;
 }
 
-#include "PhotosEngine.moc"

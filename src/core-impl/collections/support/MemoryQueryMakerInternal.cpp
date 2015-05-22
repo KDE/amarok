@@ -611,4 +611,3 @@ MemoryQueryMakerInternal::setCustomReturnValues( const QList<CustomReturnValue *
 
 } //namespace Collections
 
-#include "MemoryQueryMakerInternal.moc"

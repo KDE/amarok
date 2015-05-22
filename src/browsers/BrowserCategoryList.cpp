@@ -418,4 +418,3 @@ void BrowserCategoryList::setFilter( const QString &filter )
     m_proxyModel->setFilterFixedString( filter );
 }
 
-#include "BrowserCategoryList.moc"

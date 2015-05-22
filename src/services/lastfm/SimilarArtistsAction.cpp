@@ -39,4 +39,3 @@ void SimilarArtistsAction::slotTriggered()
     The::playlistController()->insertOptioned( lastfmtrack, Playlist::OnPlayMediaAction );
 }
 
-#include "SimilarArtistsAction.moc"

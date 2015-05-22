@@ -39,5 +39,4 @@ Containment::~Containment()
 
 
 } // namespace Context
-#include "Containment.moc"
 

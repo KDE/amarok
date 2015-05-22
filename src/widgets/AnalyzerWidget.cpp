@@ -75,4 +75,3 @@ AnalyzerWidget::contextMenuEvent( QContextMenuEvent *e)
 #endif
 }
 
-#include "AnalyzerWidget.moc"

@@ -53,5 +53,4 @@ void ContextScene::loadDefaultSetup()
 
 } // Context namespace
 
-#include "ContextScene.moc"
 

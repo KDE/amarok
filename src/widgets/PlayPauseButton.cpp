@@ -84,4 +84,3 @@ void PlayPauseButton::setPlaying( bool playing )
     setIcon( m_isPlaying ? m_icon.pause[underMouse()] : m_icon.play[underMouse()], 4 );
 }
 
-#include "PlayPauseButton.moc"

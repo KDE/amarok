@@ -82,4 +82,3 @@ void DragPixmapItem::mouseMoveEvent( QGraphicsSceneMouseEvent* event )
     drag->exec( Qt::CopyAction );
 }
 
-#include "DragPixmapItem.moc"

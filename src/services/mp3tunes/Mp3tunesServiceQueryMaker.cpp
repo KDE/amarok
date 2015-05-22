@@ -461,5 +461,4 @@ int Mp3tunesServiceQueryMaker::validFilterMask()
     return ArtistFilter;
 }
 
-#include "Mp3tunesServiceQueryMaker.moc"
 

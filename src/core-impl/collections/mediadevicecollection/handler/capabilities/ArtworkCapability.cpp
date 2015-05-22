@@ -29,4 +29,3 @@ Handler::ArtworkCapability::setCoverPath( Meta::MediaDeviceAlbumPtr album, const
         setCover( album, pix );
 }
 
-#include "ArtworkCapability.moc"

@@ -286,5 +286,4 @@ UpnpBrowseCollectionScanCapability::stopScan()
 }
 
 } //~ namespace
-#include "UpnpBrowseCollection.moc"
 

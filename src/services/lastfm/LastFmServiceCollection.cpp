@@ -322,5 +322,4 @@ LastFmServiceCollection::queryMaker()
     return ServiceCollection::queryMaker();
 }
 
-#include "LastFmServiceCollection.moc"
 

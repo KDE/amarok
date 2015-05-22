@@ -92,6 +92,5 @@ void SourceSelectionPopup::sourceSelected( QListWidgetItem * item )
 
 }
 
-#include "SourceSelectionPopup.moc"
 
 

@@ -182,4 +182,3 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
     return false;
 }
 
-#include "UserPlaylistModel.moc"

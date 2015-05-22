@@ -99,5 +99,4 @@ void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo info )
 /*$SPECIALIZATION$*/
 
 
-#include "MagnatuneDownloadDialog.moc"
 

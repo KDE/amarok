@@ -653,4 +653,3 @@ MusicBrainzFinder::compileRequest( QUrl &url )
     return req;
 }
 
-#include "MusicBrainzFinder.moc"

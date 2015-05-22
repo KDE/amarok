@@ -266,4 +266,3 @@ void NavigatorConfigAction::navigatorChanged()
     }
 }
 
-#include "NavigatorConfigAction.moc"

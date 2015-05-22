@@ -79,4 +79,3 @@ PodcastFilenameLayoutConfigDialog::configure()
 }
 
 
-#include "PodcastFilenameLayoutConfigDialog.moc"

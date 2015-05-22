@@ -151,4 +151,3 @@ void IpodCollectionLocation::ensureDirectoriesExist()
     }
 }
 
-#include "IpodCollectionLocation.moc"

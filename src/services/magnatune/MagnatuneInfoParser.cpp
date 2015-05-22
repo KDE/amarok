@@ -335,5 +335,4 @@ MagnatuneInfoParser::createArtistLinks( const QString &page )
 }
 
 
-#include "MagnatuneInfoParser.moc"
 

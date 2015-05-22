@@ -412,5 +412,4 @@ void MagnatuneXmlParser::setDbHandler(MagnatuneDatabaseHandler * dbHandler)
     m_dbHandler = dbHandler;
 }
 
-#include "MagnatuneXmlParser.moc"
 

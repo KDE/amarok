@@ -85,6 +85,5 @@ void AudioCdCollectionLocation::onCancel()
 }
 
 
-#include "AudioCdCollectionLocation.moc"
 
 

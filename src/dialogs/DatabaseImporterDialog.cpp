@@ -192,5 +192,4 @@ void DatabaseImporterDialog::ambigousTrack( Meta::TrackList tracks, QString oldU
     m_results->appendHtml( text );
 }
 
-#include "DatabaseImporterDialog.moc"
 

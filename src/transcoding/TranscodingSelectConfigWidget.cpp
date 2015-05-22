@@ -90,4 +90,3 @@ SelectConfigWidget::hasChanged() const
     return currentIndex() < 0 || m_passedChoice != currentChoice();
 }
 
-#include "TranscodingSelectConfigWidget.moc"

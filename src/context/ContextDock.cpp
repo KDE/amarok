@@ -74,4 +74,3 @@ ContextDock::createContextView( Plasma::Containment *containment )
 }
 
 
-#include "ContextDock.moc"

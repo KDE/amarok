@@ -280,4 +280,3 @@ QSize ProgressWidget::sizeHint() const
     return QSize( width(), 12 );
 }
 
-#include "ProgressWidget.moc"

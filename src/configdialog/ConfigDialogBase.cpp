@@ -15,5 +15,4 @@
  ****************************************************************************************/
 
 #include "ConfigDialogBase.h"
-#include "ConfigDialogBase.moc"
 

@@ -435,5 +435,4 @@ CollectionScanner::Scanner::displayHelp( const QString &error )
     ::exit(0);
 }
 
-#include "CollectionScanner.moc"
 

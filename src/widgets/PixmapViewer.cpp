@@ -120,4 +120,3 @@ PixmapViewer::wheelEvent( QWheelEvent *event )
     event->accept();
 }
 
-#include "PixmapViewer.moc"

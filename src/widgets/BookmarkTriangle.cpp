@@ -184,5 +184,4 @@ void BookmarkTriangle::hidePopup()
 {
     if ( m_tooltip )  m_tooltip->hide();
 }
-#include "BookmarkTriangle.moc"
 

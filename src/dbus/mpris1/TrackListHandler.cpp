@@ -145,5 +145,4 @@ namespace Mpris1
 
 }
 
-#include "TrackListHandler.moc"
 

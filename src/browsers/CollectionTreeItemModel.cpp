@@ -244,4 +244,3 @@ CollectionTreeItemModel::requestCollectionsExpansion()
     }
 }
 
-#include "CollectionTreeItemModel.moc"

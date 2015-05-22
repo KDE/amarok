@@ -654,4 +654,3 @@ UpcomingEventsApplet::enableVenueGrouping( bool enable )
     updateConstraints();
 }
 
-#include "UpcomingEventsApplet.moc"

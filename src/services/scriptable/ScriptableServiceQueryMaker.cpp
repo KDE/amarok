@@ -459,4 +459,3 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter( qint64 value, const QString
 
 }
 
-#include "ScriptableServiceQueryMaker.moc"

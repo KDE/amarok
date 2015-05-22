@@ -35,4 +35,3 @@ qreal Handler::ReadCapability::libGetReplayGain( const Meta::MediaDeviceTrackPtr
     return 0.0;
 }
 
-#include "ReadCapability.moc"

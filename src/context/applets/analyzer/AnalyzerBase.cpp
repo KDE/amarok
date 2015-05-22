@@ -226,4 +226,3 @@ Analyzer::Base::setFps( int fps )
 }
 
 
-#include "AnalyzerBase.moc"

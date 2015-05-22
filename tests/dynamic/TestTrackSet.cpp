@@ -194,4 +194,3 @@ TestTrackSet::testEqual()
 
 }
 
-#include "TestTrackSet.moc"

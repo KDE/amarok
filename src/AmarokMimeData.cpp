@@ -392,4 +392,3 @@ AmarokMimeData::queryDone()
 }
 
 
-#include "AmarokMimeData.moc"

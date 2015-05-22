@@ -445,5 +445,4 @@ QString LastFm::Track::scalableEmblem()
         return QString();
 }
 
-#include "LastFmMeta.moc"
 #include "LastFmMeta_p.moc"

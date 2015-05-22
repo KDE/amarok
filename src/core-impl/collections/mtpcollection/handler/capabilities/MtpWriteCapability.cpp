@@ -247,4 +247,3 @@ MtpWriteCapability::updateTrack( Meta::MediaDeviceTrackPtr &track )
     m_handler->updateTrack( track );
 }
 
-#include "MtpWriteCapability.moc"

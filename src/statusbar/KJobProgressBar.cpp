@@ -44,4 +44,3 @@ void KJobProgressBar::infoMessage( KJob* job, QString plain, QString rich )
 }
 
 
-#include "KJobProgressBar.moc"

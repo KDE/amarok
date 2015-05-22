@@ -226,4 +226,3 @@ AmarokUrlHandler::prettyCommand( const QString &command )
 
 
 
-#include "AmarokUrlHandler.moc"

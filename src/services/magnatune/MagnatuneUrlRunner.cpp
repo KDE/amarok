@@ -90,4 +90,3 @@ bool MagnatuneUrlRunner::run( AmarokUrl url )
 }
 
 
-#include "MagnatuneUrlRunner.moc"

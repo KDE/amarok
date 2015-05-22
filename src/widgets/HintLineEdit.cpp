@@ -74,4 +74,3 @@ HintLineEdit::parent()
     return m_vbox->parent();
 }
 
-#include "HintLineEdit.moc"

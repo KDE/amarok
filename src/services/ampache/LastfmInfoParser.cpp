@@ -183,4 +183,3 @@ void LastfmInfoParser::onGetArtistInfo()
     m_jobs["getArtistInfo"] = 0;
 }
 
-#include "LastfmInfoParser.moc"

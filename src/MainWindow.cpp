@@ -1396,4 +1396,3 @@ MainWindow::isOnCurrentDesktop() const
 }
 
 
-#include "MainWindow.moc"

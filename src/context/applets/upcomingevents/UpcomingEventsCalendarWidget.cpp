@@ -177,4 +177,3 @@ UpcomingEventsCalendarWidget::addEvents( const LastFmEvent::List &events )
     d->addEvents( events );
 }
 
-#include "UpcomingEventsCalendarWidget.moc"

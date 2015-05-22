@@ -1000,5 +1000,4 @@ SqlRegistry::emptyCache()
     if( hasLabel ) m_labelMutex.unlock();
 }
 
-#include "SqlRegistry.moc"
 

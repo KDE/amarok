@@ -294,5 +294,4 @@ ServiceMetaFactory * ServiceSqlRegistry::factory()
 }
 
 
-#include "ServiceSqlRegistry.moc"
 

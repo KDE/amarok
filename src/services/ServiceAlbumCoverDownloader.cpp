@@ -198,5 +198,4 @@ ServiceAlbumCoverDownloader::coverDownloadCanceled( KJob *downloadJob )
     deleteLater();
 }
 
-#include "ServiceAlbumCoverDownloader.moc"
 

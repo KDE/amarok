@@ -735,4 +735,3 @@ LyricsApplet::keyPressEvent( QKeyEvent *e )
     Context::Applet::keyPressEvent( e );
 }
 
-#include "LyricsApplet.moc"

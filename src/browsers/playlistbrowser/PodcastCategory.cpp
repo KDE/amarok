@@ -281,4 +281,3 @@ PodcastCategory::slotImportOpml()
     AmarokUrl( "amarok://service-podcastdirectory/addOpml" ).run();
 }
 
-#include "PodcastCategory.moc"

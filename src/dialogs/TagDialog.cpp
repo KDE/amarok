@@ -1406,5 +1406,4 @@ TagDialog::musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap> resu
         setTagsToUi( getTagsFromMultipleTracks() );
 }
 
-#include "TagDialog.moc"
 

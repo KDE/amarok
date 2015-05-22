@@ -95,4 +95,3 @@ LastfmReadLabelCapability::labels()
 
 }
 
-#include "LastfmReadLabelCapability.moc"

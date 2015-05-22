@@ -130,4 +130,3 @@ void LayoutConfigAction::onActiveLayoutChanged()
 
 }
 
-#include "LayoutConfigAction.moc"

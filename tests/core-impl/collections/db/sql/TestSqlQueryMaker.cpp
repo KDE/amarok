@@ -1024,4 +1024,3 @@ TestSqlQueryMaker::testLabelQueryMode()
     checkResultCount( &qm, type, result );
 }
 
-#include "TestSqlQueryMaker.moc"

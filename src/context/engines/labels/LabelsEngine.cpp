@@ -370,5 +370,4 @@ void LabelsEngine::timeout()
 }
 
 
-#include "LabelsEngine.moc"
 

@@ -40,4 +40,3 @@ Capabilities::ActionsCapability::actions() const
     return m_actions;
 }
 
-#include "ActionsCapability.moc"

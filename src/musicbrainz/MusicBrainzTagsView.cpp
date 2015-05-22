@@ -235,4 +235,3 @@ MusicBrainzTagsView::openTrackPage() const
     QDesktopServices::openUrl( url );
 }
 
-#include "MusicBrainzTagsView.moc"

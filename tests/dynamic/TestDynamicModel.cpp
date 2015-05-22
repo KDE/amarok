@@ -354,4 +354,3 @@ TestDynamicModel::testRemoveActive()
     QCOMPARE( model->activePlaylist(), static_cast<Dynamic::DynamicPlaylist*>(0) );
 }
 
-#include "TestDynamicModel.moc"

@@ -119,4 +119,3 @@ TestTrackForUrlWorker::setEmittedTrack( Meta::TrackPtr track )
     m_emittedTrack = track;
 }
 
-#include "TestTrackForUrlWorker.moc"

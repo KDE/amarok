@@ -90,7 +90,6 @@ BookmarkTreeView * BookmarkManagerWidget::treeView()
     return m_bookmarkView;
 }
 
-#include "BookmarkManagerWidget.moc"
 
 
 

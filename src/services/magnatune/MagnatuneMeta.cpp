@@ -391,4 +391,3 @@ MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {}
 
-#include "MagnatuneMeta.moc"

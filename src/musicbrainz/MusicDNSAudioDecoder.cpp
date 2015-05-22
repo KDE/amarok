@@ -745,4 +745,3 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
 #endif
 
 
-#include "MusicDNSAudioDecoder.moc"

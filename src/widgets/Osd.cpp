@@ -863,4 +863,3 @@ namespace ShadowEngine
     }
 }
 
-#include "Osd.moc"

@@ -420,4 +420,3 @@ InlineEditorWidget::eventFilter( QObject *obj, QEvent *event )
         return KHBox::eventFilter( obj, event );
 }
 
-#include "InlineEditorWidget.moc"

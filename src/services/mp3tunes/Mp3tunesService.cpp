@@ -377,5 +377,4 @@ void Mp3tunesService::harmonyDownloadPending( const QVariantMap &download )
     debug() << "Got message about ready: " << download["trackTitle"].toString() << " by " << download["artistName"].toString() << " on " << download["albumTitle"].toString();
 }
 
-#include "Mp3tunesService.moc"
 

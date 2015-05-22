@@ -21,4 +21,3 @@ Capabilities::MultiPlayableCapability::~MultiPlayableCapability()
     //nothing to do
 }
 
-#include "MultiPlayableCapability.moc"

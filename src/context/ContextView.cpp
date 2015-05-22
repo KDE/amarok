@@ -393,4 +393,3 @@ QStringList ContextView::currentAppletNames()
 
 } // Context namespace
 
-#include "ContextView.moc"

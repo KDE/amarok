@@ -160,4 +160,3 @@ MediaDeviceUserPlaylistProvider::removePlaylist( Playlists::MediaDevicePlaylistP
 
 } //namespace Playlists
 
-#include "MediaDeviceUserPlaylistProvider.moc"

@@ -67,4 +67,3 @@ IpodDeleteTracksJob::run()
         itdb_stop_sync( m_coll.data()->m_itdb );
 }
 
-#include "IpodDeleteTracksJob.moc"

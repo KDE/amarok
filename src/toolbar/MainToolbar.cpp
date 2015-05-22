@@ -1026,4 +1026,3 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
 }
 
 
-#include "MainToolbar.moc"

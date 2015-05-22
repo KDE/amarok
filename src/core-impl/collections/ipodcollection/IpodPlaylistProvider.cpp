@@ -407,4 +407,3 @@ IpodPlaylistProvider::entitiesDiffer( T first, T second )
     return ( first ? first->name() : QString() ) != ( second ? second->name() : QString() );
 }
 
-#include "IpodPlaylistProvider.moc"

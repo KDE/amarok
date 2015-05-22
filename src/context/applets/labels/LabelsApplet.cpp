@@ -872,4 +872,3 @@ LabelsApplet::settingsRemoveReplacement()
 }
 
 
-#include "LabelsApplet.moc"

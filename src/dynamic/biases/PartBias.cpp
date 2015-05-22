@@ -629,5 +629,4 @@ Dynamic::PartBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newB
     AndBias::biasReplaced( oldBias, newBias );
 }
 
-#include "PartBias.moc"
 

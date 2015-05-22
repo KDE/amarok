@@ -82,5 +82,4 @@ SlimToolbar::eventFilter( QObject* object, QEvent* event )
     return QToolBar::eventFilter( object, event );
 }
 
-#include "SlimToolbar.moc"
 

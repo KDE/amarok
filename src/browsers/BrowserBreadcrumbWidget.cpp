@@ -237,4 +237,3 @@ void BrowserBreadcrumbWidget::showAsNeeded()
     }
 }
 
-#include "BrowserBreadcrumbWidget.moc"

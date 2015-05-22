@@ -128,4 +128,3 @@ void ElidingButton::elideText( const QSize &widgetSize )
 
 }
 
-#include "ElidingButton.moc"

@@ -369,4 +369,3 @@ AlbumsFilterBar::focusEditor()
     m_editor->setFocus( Qt::PopupFocusReason );
 }
 
-#include "Albums.moc"

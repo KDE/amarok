@@ -341,4 +341,3 @@ void VolumeDial::valueChangedSlot( int v )
     update();
 }
 
-#include "VolumeDial.moc"

@@ -399,5 +399,4 @@ CollectionTreeItem::children() const
     return m_childItems;
 }
 
-#include "CollectionTreeItem.moc"
 

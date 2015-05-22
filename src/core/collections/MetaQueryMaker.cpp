@@ -271,5 +271,4 @@ MetaQueryMaker::slotQueryDone()
         m_queryDoneCountMutex.unlock();
 }
 
-#include "MetaQueryMaker.moc"
 

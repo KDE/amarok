@@ -1153,5 +1153,4 @@ SqlQueryMaker::blockingNewResultReady(const Meta::LabelList &labels )
     d->blockingLabels = labels;
 }
 
-#include "SqlQueryMaker.moc"
 

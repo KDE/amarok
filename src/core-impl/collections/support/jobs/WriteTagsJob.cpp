@@ -40,4 +40,3 @@ void WriteTagsJob::run()
         Meta::Tag::setEmbeddedCover( m_path, m_changes.value( Meta::valImage ).value<QImage>() );
 }
 
-#include "WriteTagsJob.moc"

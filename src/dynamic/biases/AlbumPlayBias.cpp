@@ -297,5 +297,4 @@ Dynamic::AlbumPlayBias::sameTrack( Meta::TrackPtr track1, Meta::TrackPtr track2 
 }
 
 
-#include "AlbumPlayBias.moc"
 

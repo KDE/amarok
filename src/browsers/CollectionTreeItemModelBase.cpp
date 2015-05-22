@@ -1214,4 +1214,3 @@ CollectionTreeItemModelBase::levelCategory( const int level ) const
     return CategoryId::None;
 }
 
-#include "CollectionTreeItemModelBase.moc"

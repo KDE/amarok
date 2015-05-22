@@ -132,4 +132,3 @@ void FileCollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
         slotShowRemoveDialogDone();
 }
 
-#include "FileCollectionLocation.moc"

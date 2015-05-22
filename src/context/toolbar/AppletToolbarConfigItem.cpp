@@ -81,4 +81,3 @@ Context::AppletToolbarConfigItem::mousePressEvent( QGraphicsSceneMouseEvent *eve
     emit triggered();
 }
 
-#include "AppletToolbarConfigItem.moc"

@@ -618,4 +618,3 @@ TimecodeYear::addTrack( TimecodeTrackPtr track )
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
-#include "TimecodeMeta.moc"

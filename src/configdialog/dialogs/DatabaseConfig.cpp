@@ -173,6 +173,5 @@ DatabaseConfig::isSQLInfoPresent() const
 }
 
 
-#include "DatabaseConfig.moc"
 
 

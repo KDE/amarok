@@ -30,4 +30,3 @@ IpodWriteDatabaseJob::run()
     m_coll->writeDatabase();
 }
 
-#include "IpodWriteDatabaseJob.moc"

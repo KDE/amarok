@@ -58,4 +58,3 @@ void MagnatuneAddToFavoritesAction::slotTriggered()
     m_album->addToFavorites();
 }
 
-#include "MagnatuneActions.moc"

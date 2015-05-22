@@ -101,4 +101,3 @@ AmarokScriptEngine::enumObject( const QMetaEnum &metaEnum )
 AmarokScriptEngine::~AmarokScriptEngine()
 {}
 
-#include "ScriptingDefines.moc"

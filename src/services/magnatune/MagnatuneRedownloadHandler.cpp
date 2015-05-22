@@ -201,4 +201,3 @@ DEBUG_BLOCK
 }
 
 
-#include "MagnatuneRedownloadHandler.moc"

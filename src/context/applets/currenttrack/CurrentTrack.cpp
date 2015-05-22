@@ -917,4 +917,3 @@ CurrentTrack::setView( CurrentTrack::View mode )
     m_album->setVisible( !m_isStopped );
 }
 
-#include "CurrentTrack.moc"

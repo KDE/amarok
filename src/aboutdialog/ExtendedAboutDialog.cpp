@@ -411,4 +411,3 @@ ExtendedAboutDialog::onProviderFetched( KJob *job )
         warning() << "OCS provider fetch failed";
 }
 
-#include "ExtendedAboutDialog.moc"

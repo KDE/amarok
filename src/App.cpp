@@ -641,4 +641,3 @@ void App::handleFirstRun()
     config.writeEntry( "First Run", false );
 }
 
-#include "App.moc"

@@ -36,4 +36,3 @@ Handler::WriteCapability::libSetReplayGain( Meta::MediaDeviceTrackPtr &track, qr
     Q_UNUSED( newReplayGain )
 }
 
-#include "WriteCapability.moc"

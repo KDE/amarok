@@ -59,4 +59,3 @@ void NetworkProgressBar::infoMessage( QNetworkReply::NetworkError code )
     }
 }
 
-#include "NetworkProgressBar.moc"

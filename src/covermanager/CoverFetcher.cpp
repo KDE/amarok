@@ -476,5 +476,4 @@ CoverFetcher::fetchSource() const
     return source;
 }
 
-#include "CoverFetcher.moc"
 

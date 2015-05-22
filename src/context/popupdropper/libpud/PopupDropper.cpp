@@ -979,5 +979,4 @@ void PopupDropper::addSeparator( PopupDropperItem* separator )
 }
 
 #include "PopupDropper_p.moc"
-#include "PopupDropper.moc"
 

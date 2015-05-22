@@ -844,4 +844,3 @@ ServiceSqlQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
     return this;
 }
 
-#include "ServiceSqlQueryMaker.moc"

@@ -523,5 +523,4 @@ Playlist::PlaylistLayoutEditDialog::setLayoutChanged()
     (*m_layoutsMap)[m_layoutName].setDirty( true );
 }
 
-#include "PlaylistLayoutEditDialog.moc"
 

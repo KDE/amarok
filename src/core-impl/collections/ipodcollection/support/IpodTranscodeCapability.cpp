@@ -55,4 +55,3 @@ IpodTranscodeCapability::setSavedConfiguration( const Transcoding::Configuration
     config.sync();
 }
 
-#include "IpodTranscodeCapability.moc"

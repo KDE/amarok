@@ -115,5 +115,4 @@ ServiceSqlCollection::possiblyContainsTrack(const KUrl & url) const
     return url.url().contains( m_metaFactory->tablePrefix(), Qt::CaseInsensitive );
 }
 
-#include "ServiceSqlCollection.moc"
 

@@ -154,4 +154,3 @@ DatabaseUpdaterTest::testCreatePermanentTables()
     QCOMPARE( tables.count(), 18 );
 }
 
-#include "TestDatabaseUpdater.moc"

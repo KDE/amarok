@@ -375,4 +375,3 @@ Qt::ItemFlags PlaylistsInFoldersProxy::flags(const QModelIndex &idx) const
     return QtGroupingProxy::flags(idx);
 }
 
-#include "PlaylistsInFoldersProxy.moc"

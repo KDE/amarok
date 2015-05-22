@@ -371,4 +371,3 @@ Context::Applet::showWarning( const QString &message, const char *slot )
         warning() << "invoking failed:" << sig;
 }
 
-#include "Applet.moc"

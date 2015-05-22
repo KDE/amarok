@@ -201,4 +201,3 @@ PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::
 
 
 
-#include "DynamicBiasDialog.moc"

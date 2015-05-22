@@ -134,4 +134,3 @@ void TestSmartPointerList::testOperatorPlusEquals()
     QCOMPARE( os.count(), 8 );
 }
 
-#include "TestSmartPointerList.moc"

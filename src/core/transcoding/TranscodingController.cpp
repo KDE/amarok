@@ -85,4 +85,3 @@ Controller::format( Encoder encoder ) const
     return m_formats.value( encoder );
 }
 
-#include "TranscodingController.moc"

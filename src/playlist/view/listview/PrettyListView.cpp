@@ -1046,4 +1046,3 @@ void Playlist::PrettyListView::playlistLayoutChanged()
     QTimer::singleShot( 0, this, SLOT(slotPlaylistActiveTrackChanged()) );
 }
 
-#include "PrettyListView.moc"

@@ -26,4 +26,3 @@ StorageFactory::~StorageFactory()
 }
 
 
-#include "StorageFactory.moc"

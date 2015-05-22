@@ -48,4 +48,3 @@ UmsTranscodeCapability::setSavedConfiguration( const Transcoding::Configuration 
     configFile.sync();
 }
 
-#include "UmsTranscodeCapability.moc"

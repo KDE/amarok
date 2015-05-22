@@ -400,4 +400,3 @@ AnimatedLabelStack::wheelEvent( QWheelEvent * we )
         we->ignore();
 }
 
-#include "AnimatedLabelStack.moc"

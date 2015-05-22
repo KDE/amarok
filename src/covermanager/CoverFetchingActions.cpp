@@ -201,5 +201,4 @@ SetCustomCoverAction::slotTriggered()
     }
 }
 
-#include "CoverFetchingActions.moc"
 

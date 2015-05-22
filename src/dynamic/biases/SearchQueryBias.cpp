@@ -169,5 +169,4 @@ Dynamic::SearchQueryBias::newQuery()
     m_qm.data()->run();
 }
 
-#include "SearchQueryBias.moc"
 

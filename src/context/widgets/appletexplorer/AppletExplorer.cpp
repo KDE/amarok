@@ -229,4 +229,3 @@ AppletExplorer::listAppletWidgets()
 
 } //namespace Context
 
-#include "AppletExplorer.moc"

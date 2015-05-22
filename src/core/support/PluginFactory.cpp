@@ -32,4 +32,3 @@ Plugins::PluginFactory::info() const
     return m_info;
 }
 
-#include "PluginFactory.moc"

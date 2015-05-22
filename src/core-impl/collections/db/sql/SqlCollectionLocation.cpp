@@ -781,4 +781,3 @@ void TransferJob::propagateProcessedAmount( KJob *job, KJob::Unit unit, qulonglo
     }
 }
 
-#include "SqlCollectionLocation.moc"

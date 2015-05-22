@@ -16,4 +16,3 @@
 
 #include "ApplicationController.h"
 
-#include "ApplicationController.moc"

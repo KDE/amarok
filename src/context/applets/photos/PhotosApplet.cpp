@@ -247,4 +247,3 @@ PhotosApplet::saveSettings()
     engine->query( QLatin1String( "photos:forceUpdate" ) );
 }
 
-#include "PhotosApplet.moc"

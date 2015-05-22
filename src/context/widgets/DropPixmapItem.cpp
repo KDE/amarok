@@ -156,4 +156,3 @@ DropPixmapLayoutItem::hide()
     m_pixmap->hide();
 }
 
-#include "DropPixmapItem.moc"

@@ -449,4 +449,3 @@ MetaTrackPrototype::isLoadedAndLocal() const
 #undef CHECK_TRACK
 #undef GET_TRACK_EC
 
-#include "MetaTypeExporter.moc"

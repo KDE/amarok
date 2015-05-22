@@ -192,4 +192,3 @@ MtpReadCapability::totalCapacity() const
     return m_handler.data()->totalCapacity();
 }
 
-#include "MtpReadCapability.moc"

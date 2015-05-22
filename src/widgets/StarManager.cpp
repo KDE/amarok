@@ -164,5 +164,4 @@ StarManager::setHalfColor( const QColor &color )
     return true;
 }
 
-#include "StarManager.moc"
 

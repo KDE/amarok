@@ -511,5 +511,4 @@ Dynamic::OrBias::resultReceived( const Dynamic::TrackSet &tracks )
         emit resultReady( m_tracks );
 }
 
-#include "Bias.moc"
 

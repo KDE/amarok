@@ -214,4 +214,3 @@ AssistantDialog::trackSelection() const
         return Configuration::TranscodeAll;
 }
 
-#include "TranscodingAssistantDialog.moc"

@@ -68,4 +68,3 @@ void BookmarkCurrentButton::generateMenu( const QPoint &pos )
     }
 }
 
-#include "BookmarkCurrentButton.moc"

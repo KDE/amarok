@@ -627,4 +627,3 @@ DelayedActivator::slotRowsInserted( const QModelIndex &parent, int start )
     deleteLater();
 }
 
-#include "FileBrowser.moc"
