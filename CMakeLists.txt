@@ -118,6 +118,7 @@ add_definitions(-DQT_NO_URL_CAST_FROM_STRING)
 # QCA2 is required for the Script Updater
 find_package(Qca-qt5 2.1.0)
 
+find_package(Phonon4Qt5 4.6.60 REQUIRED NO_MODULE)
 find_package( LibLastFm )
 set( LIBLASTFM_MIN_VERSION "1.0.0" )
 if( LIBLASTFM_FOUND )
