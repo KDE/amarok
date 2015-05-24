@@ -37,14 +37,14 @@ TestCueFileSupport::TestCueFileSupport()
 void TestCueFileSupport::testLocateCueFile()
 {
   //Check that we find the right .cue file and that it passes the validator
-  KUrl cueTestUrl = dataPath( "data/cue/testsheet01-iso8859-1.cue" );
-  KUrl cueResultUrl = CueFileSupport::locateCueSheet( cueTestUrl );
+  QUrl cueTestUrl = dataPath( "data/cue/testsheet01-iso8859-1.cue" );
+  QUrl cueResultUrl = CueFileSupport::locateCueSheet( cueTestUrl );
 
   QVERIFY( !cueResultUrl.url().isEmpty() );
   QCOMPARE( cueResultUrl.url(), cueTestUrl.url() );
 
   //Check that a nonexisting cue file returns an empty url
-  KUrl testUrl = dataPath( "data/cue/test_silence.ogg" );
+  QUrl testUrl = dataPath( "data/cue/test_silence.ogg" );
   cueResultUrl = CueFileSupport::locateCueSheet( testUrl );
 
   QVERIFY( cueResultUrl.isEmpty() );
@@ -58,8 +58,8 @@ void TestCueFileSupport::testLocateCueFile()
 
 void TestCueFileSupport::testIso88591Cue()
 {
-    KUrl testUrl = dataPath( "data/cue/testsheet01-iso8859-1.cue" );
-    KUrl testTrackUrl = QString( "Die Toten Hosen - In aller Stille (2008).mp3" );
+    QUrl testUrl = dataPath( "data/cue/testsheet01-iso8859-1.cue" );
+    QUrl testTrackUrl = QString( "Die Toten Hosen - In aller Stille (2008).mp3" );
     CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, testTrackUrl, 48000 );
 
     QCOMPARE( cueItemMap.size(), 14 );
@@ -69,8 +69,8 @@ void TestCueFileSupport::testIso88591Cue()
 
 void TestCueFileSupport::testUtf8Cue()
 {
-    KUrl testUrl = dataPath( "data/cue/testsheet01-utf8.cue" );
-    KUrl testTrackUrl = QString( "Die Toten Hosen - In aller Stille (2008).mp3" );
+    QUrl testUrl = dataPath( "data/cue/testsheet01-utf8.cue" );
+    QUrl testTrackUrl = QString( "Die Toten Hosen - In aller Stille (2008).mp3" );
     CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, testTrackUrl, 48000 );
 
     QCOMPARE( cueItemMap.size(), 14 );

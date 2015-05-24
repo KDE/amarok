@@ -156,7 +156,7 @@ Meta::TrackList IpodParseTracksJob::findOrphanedTracks(const QSet< QString >& kn
             QString canonPath = info.canonicalFilePath();
             if( knownPaths.contains( canonPath ) )
                 continue;  // already in iTunes database
-            Meta::TrackPtr track( new MetaFile::Track( KUrl( canonPath ) ) );
+            Meta::TrackPtr track( new MetaFile::Track( QUrl( canonPath ) ) );
             orphanedTracks << track;
         }
     }

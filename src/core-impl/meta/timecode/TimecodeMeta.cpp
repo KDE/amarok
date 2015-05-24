@@ -56,7 +56,7 @@ TimecodeTrack::name() const
     return m_name;
 }
 
-KUrl
+QUrl
 TimecodeTrack::playableUrl() const
 {
     return m_playableUrl;

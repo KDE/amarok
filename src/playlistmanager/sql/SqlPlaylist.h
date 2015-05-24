@@ -48,7 +48,7 @@ class SqlPlaylist : public Playlist
         ~SqlPlaylist();
 
         /* Playlist virtual functions */
-        virtual KUrl uidUrl() const;
+        virtual QUrl uidUrl() const;
         virtual QString name() const { return m_name; }
 
         virtual PlaylistProvider *provider() const { return m_provider; }

@@ -38,7 +38,7 @@ class ProxyGenre;
 class ProxyComposer;
 class ProxyYear;
 
-MetaProxy::Track::Track( const KUrl &url, LookupType lookupType )
+MetaProxy::Track::Track( const QUrl &url, LookupType lookupType )
     : Meta::Track()
     , d( new Private() )
 {
@@ -119,7 +119,7 @@ MetaProxy::Track::sortableName() const
         return Meta::Track::sortableName();
 }
 
-KUrl
+QUrl
 MetaProxy::Track::playableUrl() const
 {
     if( d->realTrack )
@@ -128,7 +128,7 @@ MetaProxy::Track::playableUrl() const
         /* don't return d->url here, it may be something like
          * amarok-sqltrackuid://2f9277bb7e49962c1c4c5612811807a1 and Phonon may choke
          * on such urls trying to find a codec and causing hang (bug 308371) */
-        return KUrl();
+        return QUrl();
 }
 
 QString
@@ -137,7 +137,7 @@ MetaProxy::Track::prettyUrl() const
     if( d->realTrack )
         return d->realTrack->prettyUrl();
     else
-        return d->url.prettyUrl();
+        return d->url.toDisplayString();
 }
 
 QString

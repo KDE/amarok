@@ -104,7 +104,7 @@ class MEDIADEVICECOLLECTION_EXPORT ReadCapability : public Handler::Capability
         virtual QDateTime libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track )  = 0;
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track ) = 0;
-        virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;
+        virtual QUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual bool    libIsCompilation( const Meta::MediaDeviceTrackPtr &track );
         virtual qreal   libGetReplayGain( const Meta::MediaDeviceTrackPtr &track );
 

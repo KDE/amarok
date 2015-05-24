@@ -31,7 +31,7 @@
 #include <KDialog>
 #include <KInputDialog>
 #include <KLocale>
-#include <KUrl>
+#include <QUrl>
 
 #include <QAction>
 #include <QDir>
@@ -52,7 +52,7 @@ PlaylistFileProvider::PlaylistFileProvider()
     QStringList keys = loadedPlaylistsConfig().keyList();
     foreach( const QString &key, keys )
     {
-        KUrl url( key );
+        QUrl url( key );
         //Don't load these from the config file, they are read from the directory anyway
         if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
             continue;
@@ -64,8 +64,9 @@ PlaylistFileProvider::PlaylistFileProvider()
                              QDir::Files | QDir::Readable );
     foreach( const QString &file, playlistDir.entryList() )
     {
-        KUrl url( playlistDir.path() );
-        url.addPath( file );
+        QUrl url( playlistDir.path() );
+        url = url.adjusted(QUrl::StripTrailingSlash);
+        url.setPath(url.path() + '/' + ( file ));
         if( Playlists::isPlaylist( url ) )
             m_urlsToLoad << url;
     }
@@ -79,7 +80,7 @@ PlaylistFileProvider::~PlaylistFileProvider()
     //Write loaded playlists to config file
     foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
     {
-        KUrl url = playlistFile->uidUrl();
+        QUrl url = playlistFile->uidUrl();
         //only save files NOT in "playlists", those are automatically loaded.
         if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
             continue;
@@ -145,8 +146,9 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
         filename.append( QLatin1String( ".xspf" ) );
     }
 
-    KUrl path( Amarok::saveLocation( "playlists" ) );
-    path.addPath( Amarok::vfatPath( filename ) );
+    QUrl path( Amarok::saveLocation( "playlists" ) );
+    path = path.adjusted(QUrl::StripTrailingSlash);
+    path.setPath(path.path() + '/' + ( Amarok::vfatPath( filename ) ));
     if( QFileInfo( path.toLocalFile() ).exists() )
     {
         //TODO:request overwrite
@@ -190,7 +192,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 }
 
 bool
-PlaylistFileProvider::import( const KUrl &path )
+PlaylistFileProvider::import( const QUrl &path )
 {
     DEBUG_BLOCK
     if( !path.isValid() )
@@ -278,7 +280,7 @@ PlaylistFileProvider::loadPlaylists()
     //arbitrary number of playlists to load during one mainloop run: 5
     for( int i = 0; i < qMin( m_urlsToLoad.count(), 5 ); i++ )
     {
-        KUrl url = m_urlsToLoad.takeFirst();
+        QUrl url = m_urlsToLoad.takeFirst();
         QString groups = loadedPlaylistsConfig().readEntry( url.url() );
         Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url, this );
         if( !playlist )

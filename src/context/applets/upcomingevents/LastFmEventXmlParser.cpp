@@ -58,9 +58,9 @@ LastFmEventXmlParser::read()
                     else if( n == "startDate" )
                         event->setDate( KDateTime::fromString( m_xml.readElementText(), "%a, %d %b %Y %H:%M:%S" ) );
                     else if( n == "image" && a.hasAttribute("size") )
-                        event->setImageUrl( LastFmEvent::stringToImageSize(a.value("size").toString()), KUrl( m_xml.readElementText() ) );
+                        event->setImageUrl( LastFmEvent::stringToImageSize(a.value("size").toString()), QUrl( m_xml.readElementText() ) );
                     else if( n == "url" )
-                        event->setUrl( KUrl( m_xml.readElementText() ) );
+                        event->setUrl( QUrl( m_xml.readElementText() ) );
                     else if( n == "attendance" )
                         event->setAttendance( m_xml.readElementText().toInt() );
                     else if( n == "cancelled" )
@@ -153,15 +153,15 @@ LastFmVenueXmlParser::read()
                     m_venue->location = locationParser.location();
             }
             else if( n == "url" )
-                m_venue->url = KUrl( m_xml.readElementText() );
+                m_venue->url = QUrl( m_xml.readElementText() );
             else if( n == "website" )
-                m_venue->website = KUrl( m_xml.readElementText() );
+                m_venue->website = QUrl( m_xml.readElementText() );
             else if( n == "phonenumber" )
                 m_venue->phoneNumber = m_xml.readElementText();
             else if( n == "image" && a.hasAttribute("size") )
             {
                 LastFmEvent::ImageSize size = LastFmEvent::stringToImageSize( a.value("size").toString() );
-                m_venue->imageUrls[ size ] = KUrl( m_xml.readElementText() );
+                m_venue->imageUrls[ size ] = QUrl( m_xml.readElementText() );
             }
             else
                 m_xml.skipCurrentElement();

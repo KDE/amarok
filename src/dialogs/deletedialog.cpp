@@ -31,7 +31,7 @@
 #include <KIO/DeleteJob>
 #include <KLocale>
 #include <KStandardGuiItem>
-#include <KUrl>
+#include <QUrl>
 
 
 
@@ -49,11 +49,11 @@ DeleteWidget::DeleteWidget(QWidget *parent)
     ddShouldDelete->setChecked(deleteInstead);
 }
 
-void DeleteWidget::setFiles(const KUrl::List &files)
+void DeleteWidget::setFiles(const QList<QUrl> &files)
 {
     ddFileList->clear();
 //    ddFileList->insertStringList(files);
-    for( KUrl::List::ConstIterator it = files.constBegin(), end = files.constEnd(); it != end; ++it)
+    for( QList<QUrl>::ConstIterator it = files.constBegin(), end = files.constEnd(); it != end; ++it)
     {
         if( (*it).isLocalFile() ) //path is nil for non-local
             ddFileList->insertItem( (*it).path() );
@@ -109,14 +109,14 @@ DeleteDialog::DeleteDialog( QWidget *parent, const char *name )
 
 }
 
-bool DeleteDialog::confirmDeleteList(const KUrl::List& condemnedFiles)
+bool DeleteDialog::confirmDeleteList(const QList<QUrl>& condemnedFiles)
 {
     m_widget->setFiles(condemnedFiles);
 
     return exec() == QDialog::Accepted;
 }
 
-void DeleteDialog::setFiles(const KUrl::List &files)
+void DeleteDialog::setFiles(const QList<QUrl> &files)
 {
     m_widget->setFiles(files);
 }
@@ -138,7 +138,7 @@ void DeleteDialog::slotShouldDelete(bool shouldDelete)
     setButtonGuiItem(Ok, shouldDelete ? KStandardGuiItem::del() : m_trashGuiItem);
 }
 
-bool DeleteDialog::showTrashDialog(QWidget* parent, const KUrl::List& files)
+bool DeleteDialog::showTrashDialog(QWidget* parent, const QList<QUrl>& files)
 {
     DeleteDialog dialog(parent);
     bool doDelete = dialog.confirmDeleteList(files);

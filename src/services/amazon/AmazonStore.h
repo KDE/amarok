@@ -57,7 +57,7 @@ public:
     virtual QString name();
     virtual KConfigGroup config();
 
-    virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.url().contains( "amazon.", Qt::CaseInsensitive ); } // XXX: ???
+    virtual bool possiblyContainsTrack( const QUrl &url ) const { return url.url().contains( "amazon.", Qt::CaseInsensitive ); } // XXX: ???
 };
 
 

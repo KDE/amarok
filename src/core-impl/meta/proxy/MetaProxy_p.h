@@ -39,7 +39,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
 
     public:
         Track *proxy;
-        KUrl url;
+        QUrl url;
 
         Meta::TrackPtr realTrack;
 
@@ -259,7 +259,7 @@ public:
             return Meta::Album::hasImage( size );
     }
 
-    KUrl imageLocation( int size = 0 )
+    QUrl imageLocation( int size = 0 )
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->imageLocation( size );

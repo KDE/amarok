@@ -23,7 +23,7 @@
 
 #include <qjson/parser.h>
 
-#include <KUrl>
+#include <QUrl>
 #include <KIO/Job>
 
 #include <QString>
@@ -55,7 +55,7 @@ namespace Playdar {
                 << ", album name = " << album << ", and track title = " << title;
         
         const QString baseUrl( "http://localhost:60210/api/?method=resolve" );
-        KUrl resolveUrl( baseUrl );
+        QUrl resolveUrl( baseUrl );
         
         resolveUrl.addQueryItem( QString( "artist" ), artist );
         resolveUrl.addQueryItem( QString( "album" ), album );
@@ -73,7 +73,7 @@ namespace Playdar {
         DEBUG_BLOCK
         
         const QString baseUrl( "http://localhost:60210/api/?method=get_results" );
-        KUrl getResultsUrl( baseUrl );
+        QUrl getResultsUrl( baseUrl );
         
         getResultsUrl.addQueryItem( QString( "qid" ), query->qid() );
         
@@ -87,7 +87,7 @@ namespace Playdar {
         DEBUG_BLOCK
         
         const QString baseUrl( "http://localhost:60210/api/?method=get_results_long" );
-        KUrl getResultsUrl( baseUrl );
+        QUrl getResultsUrl( baseUrl );
         
         getResultsUrl.addQueryItem( QString( "qid" ), query->qid() );
         
@@ -95,15 +95,16 @@ namespace Playdar {
         connect( getResultsJob, SIGNAL(result(KJob*)), query, SLOT(receiveResults(KJob*)) );
     }
     
-    KUrl
+    QUrl
     Controller::urlForSid( const QString &sid ) const
     {
         DEBUG_BLOCK
         
         const QString baseUrl( "http://localhost:60210/sid/" );
-        KUrl playableUrl( baseUrl );
+        QUrl playableUrl( baseUrl );
         
-        playableUrl.addPath( sid );
+        playableUrl = playableUrl.adjusted(QUrl::StripTrailingSlash);
+        playableUrl.setPath(playableUrl.path() + '/' + ( sid ));
         
         return playableUrl;
     }
@@ -114,7 +115,7 @@ namespace Playdar {
         // DEBUG_BLOCK
         
         const QString baseUrl( "http://localhost:60210/api/?method=stat" );
-        KUrl statusUrl( baseUrl );
+        QUrl statusUrl( baseUrl );
         
         KJob* statusJob = KIO::storedGet( statusUrl, KIO::Reload, KIO::HideProgressInfo );
         connect( statusJob, SIGNAL(result(KJob*)), this, SLOT(processStatus(KJob*)) );

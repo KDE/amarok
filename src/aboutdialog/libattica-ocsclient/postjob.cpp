@@ -34,7 +34,7 @@ PostJob::PostJob()
 {
 }
 
-void PostJob::setUrl( const KUrl &url )
+void PostJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }

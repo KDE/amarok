@@ -18,7 +18,7 @@
 #ifndef AMAROK_PHOTOS_INFO
 #define AMAROK_PHOTOS_INFO
 
-#include <KUrl>
+#include <QUrl>
 #include <KSharedPtr>
 
 #include <QSharedData>
@@ -54,8 +54,8 @@ public:
     ~PhotosInfo() {}
     
     QString title;      // Name of the phtos
-    KUrl urlphoto;      // url of the photos, for the download
-    KUrl urlpage;       // Url for the browser ( http://www.flickr.com/photos/wanderlustg/322285063/ )
+    QUrl urlphoto;      // url of the photos, for the download
+    QUrl urlpage;       // Url for the browser ( http://www.flickr.com/photos/wanderlustg/322285063/ )
 };
 
 Q_DECLARE_METATYPE( PhotosInfo )

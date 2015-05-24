@@ -37,7 +37,7 @@ CategoryListJob::CategoryListJob()
 {
 }
 
-void CategoryListJob::setUrl( const KUrl &url )
+void CategoryListJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }

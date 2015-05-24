@@ -20,7 +20,7 @@
 
 #include "core/capabilities/Capability.h"
 
-class KUrl;
+class QUrl;
 
 namespace Capabilities
 {
@@ -62,10 +62,10 @@ namespace Capabilities
              * Return the url of the next source without actually advancing to it.
              * Returns empty url if the current source is the last one.
              */
-            virtual KUrl nextUrl() const = 0;
+            virtual QUrl nextUrl() const = 0;
 
         signals:
-            void urlChanged( const KUrl &url );
+            void urlChanged( const QUrl &url );
     };
 }
 

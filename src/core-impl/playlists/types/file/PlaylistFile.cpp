@@ -21,14 +21,14 @@
 #include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KUrl>
+#include <QUrl>
 #include <KMimeType>
 
 #include <ThreadWeaver/Weaver>
 
 using namespace Playlists;
 
-PlaylistFile::PlaylistFile( const KUrl &url, PlaylistProvider *provider )
+PlaylistFile::PlaylistFile( const QUrl &url, PlaylistProvider *provider )
              : Playlist()
              , m_provider( provider )
              , m_url( url )
@@ -121,7 +121,7 @@ PlaylistFile::save( bool relative )
     QMutexLocker locker( &m_saveLock );
 
     //if the location is a directory append the name of this playlist.
-    if( m_url.fileName( KUrl::ObeyTrailingSlash ).isNull() )
+    if( m_url.fileName( QUrl::ObeyTrailingSlash ).isNull() )
         m_url.setFileName( name() );
 
     QFile file( m_url.path() );
@@ -156,17 +156,18 @@ PlaylistFile::addProxyTrack( const Meta::TrackPtr &proxyTrack )
     notifyObserversTrackAdded( m_tracks.last(), m_tracks.size() - 1 );
 }
 
-KUrl
-PlaylistFile::getAbsolutePath( const KUrl &url )
+QUrl
+PlaylistFile::getAbsolutePath( const QUrl &url )
 {
-    KUrl absUrl = url;
+    QUrl absUrl = url;
     if( url.isRelative() )
     {
         m_relativePaths = true;
-        // example: url = KUrl("../tunes/tune.ogg")
+        // example: url = QUrl("../tunes/tune.ogg")
         const QString relativePath = url.path(); // "../tunes/tune.ogg"
         absUrl = m_url.directory(); // file:///playlists/
-        absUrl.addPath( relativePath ); // file:///playlists/../tunes/tune.ogg
+        absUrl = absUrl.adjusted(QUrl::StripTrailingSlash);
+        absUrl.setPath(absUrl.path() + '/' + ( relativePath ));
         absUrl.cleanPath(); // file:///playlists/tunes/tune.ogg
     }
     return absUrl;
@@ -175,7 +176,7 @@ PlaylistFile::getAbsolutePath( const KUrl &url )
 QString
 PlaylistFile::trackLocation( const Meta::TrackPtr &track ) const
 {
-    KUrl path = track->playableUrl();
+    QUrl path = track->playableUrl();
     if( path.isEmpty() )
         return track->uidUrl();
 

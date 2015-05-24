@@ -77,12 +77,14 @@ ScriptUpdater::updateScript()
     m_scriptname = rxname.cap( 1 );
 
     // 2. check if there are updates: get 'version' file from server
-    KUrl versionUrl( updateBaseUrl );
-    versionUrl.addPath( m_scriptname );
-    versionUrl.addPath( '/' + versionFilename );
+    QUrl versionUrl( updateBaseUrl );
+    versionUrl = versionUrl.adjusted(QUrl::StripTrailingSlash);
+    versionUrl.setPath(versionUrl.path() + '/' + ( m_scriptname ));
+    versionUrl = versionUrl.adjusted(QUrl::StripTrailingSlash);
+    versionUrl.setPath(versionUrl.path() + '/' + ( '/' + versionFilename ));
     m_versionFile.open();
-    debug() << m_scriptname << ": Accessing " << versionUrl.prettyUrl() << " ...";
-    KUrl versionDest( m_versionFile.fileName() );
+    debug() << m_scriptname << ": Accessing " << versionUrl.toDisplayString() << " ...";
+    QUrl versionDest( m_versionFile.fileName() );
     KIO::FileCopyJob *versionJob = KIO::file_copy( versionUrl, versionDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
     connect ( versionJob, SIGNAL(result(KJob*)), this, SLOT(phase2(KJob*)) );
 }
@@ -115,11 +117,13 @@ ScriptUpdater::phase2( KJob * job )
     debug() << m_scriptname << ": newer version found, starting update :-)";
 
     // 3. get the update archive, download it to a temporary file
-    KUrl archiveSrc( updateBaseUrl );
-    archiveSrc.addPath( m_scriptname );
-    archiveSrc.addPath( '/' + archiveFilename );
+    QUrl archiveSrc( updateBaseUrl );
+    archiveSrc = archiveSrc.adjusted(QUrl::StripTrailingSlash);
+    archiveSrc.setPath(archiveSrc.path() + '/' + ( m_scriptname ));
+    archiveSrc = archiveSrc.adjusted(QUrl::StripTrailingSlash);
+    archiveSrc.setPath(archiveSrc.path() + '/' + ( '/' + archiveFilename ));
     m_archiveFile.open(); // temporary files only have a fileName() after they've been opened
-    KUrl archiveDest( m_archiveFile.fileName() );
+    QUrl archiveDest( m_archiveFile.fileName() );
     KIO::FileCopyJob *archiveJob = KIO::file_copy( archiveSrc, archiveDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
     connect ( archiveJob, SIGNAL(result(KJob*)), this, SLOT(phase3(KJob*)) );
 }
@@ -134,11 +138,13 @@ void ScriptUpdater::phase3( KJob * job )
     }
 
     // 4. get the archive's signature, download it to a temporary file as well
-    KUrl sigSrc( updateBaseUrl );
-    sigSrc.addPath( m_scriptname );
-    sigSrc.addPath( '/' + signatureFilename );
+    QUrl sigSrc( updateBaseUrl );
+    sigSrc = sigSrc.adjusted(QUrl::StripTrailingSlash);
+    sigSrc.setPath(sigSrc.path() + '/' + ( m_scriptname ));
+    sigSrc = sigSrc.adjusted(QUrl::StripTrailingSlash);
+    sigSrc.setPath(sigSrc.path() + '/' + ( '/' + signatureFilename ));
     m_sigFile.open();
-    KUrl sigDest( m_sigFile.fileName() );
+    QUrl sigDest( m_sigFile.fileName() );
     KIO::FileCopyJob *sigJob = KIO::file_copy( sigSrc, sigDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
     connect ( sigJob, SIGNAL(result(KJob*)), this, SLOT(phase4(KJob*)) );
 }

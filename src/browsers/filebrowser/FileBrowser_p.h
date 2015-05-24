@@ -62,7 +62,7 @@ public:
     void saveHeaderState();
 
     void updateNavigateActions();
-    BreadcrumbSiblingList siblingsForDir( const KUrl &path );
+    BreadcrumbSiblingList siblingsForDir( const QUrl &path );
 
     void updateHeaderState();
 
@@ -76,7 +76,7 @@ public:
 
     SearchWidget *searchWidget;
 
-    KUrl currentPath;
+    QUrl currentPath;
     FileView *fileView;
 
     KAction *upAction;
@@ -86,8 +86,8 @@ public:
     KAction *backAction;
     KAction *forwardAction;
 
-    UniqueStack<KUrl> backStack;
-    UniqueStack<KUrl> forwardStack;
+    UniqueStack<QUrl> backStack;
+    UniqueStack<QUrl> forwardStack;
 
 private:
     void restoreDefaultHeaderState();

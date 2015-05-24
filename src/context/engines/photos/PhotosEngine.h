@@ -67,7 +67,7 @@ private slots:
      * http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=My+Bloody+Valentine
      * see here for details: http://www.flickr.com/services/api/
      */
-    void resultFlickr( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void resultFlickr( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     void stopped();
     void trackChanged( Meta::TrackPtr track );
@@ -86,7 +86,7 @@ private:
 
     int m_nbPhotos;
 
-    QSet<KUrl> m_flickrUrls;
+    QSet<QUrl> m_flickrUrls;
     QStringList m_sources;
 
     Meta::TrackPtr m_currentTrack;

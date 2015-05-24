@@ -24,7 +24,7 @@
 
 #include <KAboutData>
 #include <KUniqueApplication>   //baseclass
-#include <KUrl>
+#include <QUrl>
 
 #include <QHash>
 #include <QWeakPointer>
@@ -80,7 +80,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
         void applySettings( bool firstTime = false );
         void slotConfigAmarok( const QString& page = QString() );
         void slotConfigShortcuts();
-        KIO::Job *trashFiles( const KUrl::List &files );
+        KIO::Job *trashFiles( const QList<QUrl> &files );
         void quit();
 
     protected:

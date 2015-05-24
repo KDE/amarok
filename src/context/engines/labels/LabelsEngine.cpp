@@ -277,7 +277,7 @@ LabelsEngine::fetchLastFm()
         setData( "labels", "album", m_album );
 
         // Query lastfm
-        KUrl lastFmUrl;
+        QUrl lastFmUrl;
         lastFmUrl.setScheme( "http" );
         lastFmUrl.setHost( "ws.audioscrobbler.com" );
         lastFmUrl.setPath( "/2.0/" );
@@ -291,7 +291,7 @@ LabelsEngine::fetchLastFm()
 //         req.setAttribute( QNetworkRequest::ConnectionEncryptedAttribute, QNetworkRequest::AlwaysNetwork );
         The::networkAccessManager()->get( req );
         The::networkAccessManager()->getData( lastFmUrl, this,
-            SLOT(resultLastFm(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+            SLOT(resultLastFm(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
     else
     {
@@ -302,7 +302,7 @@ LabelsEngine::fetchLastFm()
     }
 }
 
-void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+void LabelsEngine::resultLastFm( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     DEBUG_BLOCK;
 

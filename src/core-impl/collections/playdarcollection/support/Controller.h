@@ -20,7 +20,7 @@
 #include <QObject>
 #include <QWeakPointer>
 
-class KUrl;
+class QUrl;
 class KJob;
 
 class QString;
@@ -139,11 +139,11 @@ namespace Playdar
             void getResultsLongPoll( Playdar::Query* query );
 
             /**
-             * Makes a naive attempt to produce a KUrl that points to
+             * Makes a naive attempt to produce a QUrl that points to
              * a playable location of a query result.
              * @param sid The sid of the result desired.
              */
-            KUrl urlForSid( const QString &sid ) const;
+            QUrl urlForSid( const QString &sid ) const;
             
         private Q_SLOTS:
             void processStatus( KJob* statusJob );

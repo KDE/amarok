@@ -59,19 +59,19 @@ AmpacheAccountLogin::reauthenticate()
     DEBUG_BLOCK
 
     // We need to check the version of Ampache we are attempting to authenticate against, as this changes how we deal with it
-    KUrl url = getRequestUrl( "ping" );
+    QUrl url = getRequestUrl( "ping" );
 
     debug() << "Verifying Ampache Version Using: " << url.url();
 
     m_lastRequest = The::networkAccessManager()->getData( url, this,
-                                                          SLOT(authenticate(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                                                          SLOT(authenticate(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
     if( !m_lastRequest )
         emit finished();
 }
 
 void
-AmpacheAccountLogin::authenticate( const KUrl &requestUrl, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmpacheAccountLogin::authenticate( const QUrl &requestUrl, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( !m_lastRequest )
         return;
@@ -91,7 +91,7 @@ AmpacheAccountLogin::authenticate( const KUrl &requestUrl, QByteArray data, Netw
     debug() << "Version reply: " << data;
     int version = getVersion( doc );
 
-    KUrl url = getRequestUrl( "handshake" );
+    QUrl url = getRequestUrl( "handshake" );
     QString timestamp = QString::number( QDateTime::currentDateTime().toTime_t() );
     QString passPhrase;
 
@@ -133,13 +133,13 @@ AmpacheAccountLogin::authenticate( const KUrl &requestUrl, QByteArray data, Netw
 
     // TODO: Amarok::Components::logger()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
     m_lastRequest = The::networkAccessManager()->getData( url, this,
-                                                          SLOT(authenticationComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                                                          SLOT(authenticationComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
     if( !m_lastRequest )
         emit finished();
 }
 
-void AmpacheAccountLogin::authenticationComplete( const KUrl &requestUrl, QByteArray data, NetworkAccessManagerProxy::Error e )
+void AmpacheAccountLogin::authenticationComplete( const QUrl &requestUrl, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( !m_lastRequest )
         return;
@@ -244,7 +244,7 @@ AmpacheAccountLogin::generalVerify( const QDomDocument& doc, NetworkAccessManage
     return true;
 }
 
-KUrl
+QUrl
 AmpacheAccountLogin::getRequestUrl( const QString &action ) const
 {
     //lets keep this around for now if we want to allow people to add a service that prompts for stuff
@@ -254,9 +254,9 @@ AmpacheAccountLogin::getRequestUrl( const QString &action ) const
         KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );
         dlg.setPrompt( i18n( "Enter the server name and a password" ) );
         if( !dlg.exec() )
-            return KUrl(); //the user canceled
+            return QUrl(); //the user canceled
 
-        m_server = KUrl( dlg.username() ).url();
+        m_server = QUrl( dlg.username() ).url();
         m_password = dlg.password();
     }
     */
@@ -266,7 +266,7 @@ AmpacheAccountLogin::getRequestUrl( const QString &action ) const
     if( !path.startsWith("http://") && !path.startsWith("https://") )
         path = "http://" + path;
 
-    KUrl url( path );
+    QUrl url( path );
 
     if( !action.isEmpty() )
         url.addQueryItem( "action", action );

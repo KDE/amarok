@@ -21,7 +21,7 @@
 #include "core/transcoding/TranscodingConfiguration.h"
 
 #include <KJob>
-#include <KUrl>
+#include <QUrl>
 
 #include <KProcess>
 
@@ -46,8 +46,8 @@ public:
      *        uses the FFmpeg executable, @see http://ffmpeg.org/ffmpeg-doc.html#SEC6
      * @param the parent QObject.
      */
-    explicit Job( const KUrl &src,
-                  const KUrl &dest,
+    explicit Job( const QUrl &src,
+                  const QUrl &dest,
                   const Transcoding::Configuration &configuration,
                   QObject *parent = 0 );
 
@@ -55,7 +55,7 @@ public:
      * Convenience constructor. Creates a Transcoding::Job with the destination file to be
      * placed in the same directory as the source.
      */
-    explicit Job( KUrl &src,
+    explicit Job( QUrl &src,
                   const Transcoding::Configuration &configuration,
                   QObject *parent = 0 );
 
@@ -63,13 +63,13 @@ public:
      * Sets the path of the source file.
      * @param src the path of the source file.
      */
-    void setSource( const KUrl &src );
+    void setSource( const QUrl &src );
 
     /**
      * Sets the path of the destination file, to be created.
      * @param dest the path of the destination file.
      */
-    void setDestination( const KUrl &dest );
+    void setDestination( const QUrl &dest );
 
     /**
      * Starts the transcoding job.
@@ -79,12 +79,12 @@ public:
     /**
      * Get the source url.
      */
-    KUrl srcUrl() const { return m_src; }
+    QUrl srcUrl() const { return m_src; }
 
     /**
      * Get the destination url.
      */
-    KUrl destUrl() const { return m_dest; }
+    QUrl destUrl() const { return m_dest; }
 
 private slots:
     void processOutput();
@@ -98,8 +98,8 @@ private slots:
 private:
     inline qint64 computeDuration( const QString &output );
     inline qint64 computeProgress( const QString &output );
-    KUrl m_src;
-    KUrl m_dest;
+    QUrl m_src;
+    QUrl m_dest;
     Transcoding::Configuration m_configuration;
     KProcess *m_transcoder;
     qint64 m_duration; //in csec

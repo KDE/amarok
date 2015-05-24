@@ -32,7 +32,7 @@
 #include <KIO/DeleteJob>
 #include "kjob.h"
 #include <threadweaver/ThreadWeaver.h>
-#include <KUrl>
+#include <QUrl>
 
 #include <QFileInfo>
 #include <QString>
@@ -373,7 +373,7 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
 
-    QMap<Meta::TrackPtr,  KUrl> urls;
+    QMap<Meta::TrackPtr,  QUrl> urls;
 
     QString genericError = i18n( "Could not copy track from device." );
 
@@ -1079,12 +1079,12 @@ MtpHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
     return mtpFileTypes.value( m_mtpTrackHash.value( track )->filetype );
 }
 
-KUrl
+QUrl
 MtpHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
     Q_UNUSED( track )
     // NOTE: not a real url, using for unique key for qm
-    return KUrl( QString::number(  m_mtpTrackHash.value( track )->item_id,  10 ) );
+    return QUrl( QString::number(  m_mtpTrackHash.value( track )->item_id,  10 ) );
 }
 
 float
@@ -1292,11 +1292,11 @@ void
 MtpHandler::prepareToPlay( Meta::MediaDeviceTrackPtr &track )
 {
     DEBUG_BLOCK
-    KUrl url;
+    QUrl url;
     if( m_cachedTracks.contains( track ) )
     {
         debug() << "File is already copied, simply return";
-        //m_playableUrl = KUrl::fromPath( m_playableUrl );
+        //m_playableUrl = QUrl::fromLocalFile( m_playableUrl );
     }
     else
     {
@@ -1310,12 +1310,12 @@ MtpHandler::prepareToPlay( Meta::MediaDeviceTrackPtr &track )
         if( success )
         {
             debug() << "File transfer successful!";
-            //m_playableUrl = KUrl::fromPath( m_playableUrl );
+            //m_playableUrl = QUrl::fromLocalFile( m_playableUrl );
         }
         else
         {
             debug() << "File transfer failed!";
-            //m_playableUrl = KUrl::fromPath( "" );
+            //m_playableUrl = QUrl::fromLocalFile( "" );
             m_cachedTracks.remove( track );
         }
     }

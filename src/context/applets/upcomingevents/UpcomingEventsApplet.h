@@ -207,8 +207,8 @@ private:
 
 private slots:
     void searchVenue( const QString &text );
-    void venueResults( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void venuePhotoResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void venueResults( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void venuePhotoResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void showVenueInfo( QListWidgetItem *item );
     void venueResultDoubleClicked( QListWidgetItem *item );
     void selectedVenueDoubleClicked( QListWidgetItem *item );

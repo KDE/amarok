@@ -74,8 +74,8 @@ MountPointManager::handleMusicLocation()
     // write the music location as another collection folder in this case
     if( folders.readEntry( entryKey, false ) )
     {
-        const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
-        const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
+        const QUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
+        const QString musicDir = musicUrl.toLocalFile( QUrl::RemoveTrailingSlash );
         const QDir dir( musicDir );
         if( dir.exists() && dir.isReadable() )
         {
@@ -130,7 +130,7 @@ MountPointManager::createDeviceFactories()
 }
 
 int
-MountPointManager::getIdForUrl( const KUrl &url )
+MountPointManager::getIdForUrl( const QUrl &url )
 {
     int mountPointLength = 0;
     int id = -1;
@@ -184,10 +184,10 @@ MountPointManager::getMountPointForId( const int id ) const
 QString
 MountPointManager::getAbsolutePath( const int deviceId, const QString& relativePath ) const
 {
-    // TODO: someone who clearly understands KUrl should clean this up.
-    KUrl rpath;
+    // TODO: someone who clearly understands QUrl should clean this up.
+    QUrl rpath;
     rpath.setPath( relativePath );
-    KUrl absolutePath;
+    QUrl absolutePath;
 
     // debug() << "id is " << deviceId << ", relative path is " << relativePath;
     if ( deviceId == -1 )
@@ -196,7 +196,8 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
         absolutePath.setPath( rpath.toLocalFile() );
 #else
         absolutePath.setPath( "/" );
-        absolutePath.addPath( rpath.path() );
+        absolutePath = absolutePath.adjusted(QUrl::StripTrailingSlash);
+        absolutePath.setPath(absolutePath.path() + '/' + ( rpath.path() ));
 #endif
         absolutePath.cleanPath();
         // debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path();
@@ -224,7 +225,8 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
             else
             {
                 absolutePath.setPath( lastMountPoint.first() );
-                absolutePath.addPath( rpath.path() );
+                absolutePath = absolutePath.adjusted(QUrl::StripTrailingSlash);
+                absolutePath.setPath(absolutePath.path() + '/' + ( rpath.path() ));
                 absolutePath.cleanPath();
                 //debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path();
             }
@@ -245,15 +247,15 @@ MountPointManager::getRelativePath( const int deviceId, const QString& absoluteP
     if ( deviceId != -1 && m_handlerMap.contains( deviceId ) )
     {
         //FIXME max: returns garbage if the absolute path is actually not under the device's mount point
-        return KUrl::relativePath( m_handlerMap[deviceId]->getDevicePath(), absolutePath );
+        return QUrl::relativePath( m_handlerMap[deviceId]->getDevicePath(), absolutePath );
     }
     else
     {
         //TODO: better error handling
 #ifdef Q_OS_WIN32
-        return KUrl( absolutePath ).toLocalFile();
+        return QUrl( absolutePath ).toLocalFile();
 #else
-        return KUrl::relativePath( "/", absolutePath );
+        return QUrl::relativePath( "/", absolutePath );
 #endif
     }
 }
@@ -287,8 +289,8 @@ MountPointManager::collectionFolders() const
         const QStringList rpaths = folders.readEntry( QString::number( id ), QStringList() );
         foreach( const QString &strIt, rpaths )
         {
-            const KUrl url = ( strIt == "./" ) ? getMountPointForId( id ) : getAbsolutePath( id, strIt );
-            const QString absPath = url.toLocalFile( KUrl::RemoveTrailingSlash );
+            const QUrl url = ( strIt == "./" ) ? getMountPointForId( id ) : getAbsolutePath( id, strIt );
+            const QString absPath = url.toLocalFile( QUrl::RemoveTrailingSlash );
             if ( !result.contains( absPath ) )
                 result.append( absPath );
         }

@@ -25,7 +25,7 @@
 #include "statusbar/PopupWidget.h"
 
 #include <KPluginInfo>
-#include <KUrl>
+#include <QUrl>
 
 #include <QScriptValue>
 
@@ -57,7 +57,7 @@ public:
     QString name() const { return m_name; }
     AmarokScript::AmarokScriptEngine* engine() { return m_engine.data(); }
     AmarokScript::ScriptableServiceScript* service() { return m_service.data(); }
-    KUrl url() const { return m_url; }
+    QUrl url() const { return m_url; }
     KPluginInfo info() const { return m_info; }
     bool running() const { return m_running; }
     QString specPath() const;
@@ -92,7 +92,7 @@ protected:
 
 private:
     QString                                             m_name;
-    KUrl                                                m_url;
+    QUrl                                                m_url;
     KPluginInfo                                         m_info;
     QWeakPointer<AmarokScript::AmarokScriptEngine>      m_engine;
     /** Currently activated in the Script Manager */

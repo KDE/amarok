@@ -161,7 +161,7 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     settings.endGroup();
 
     if( m_savePath.isEmpty() )
-        m_savePath = KUrl( KStandardDirs::locate( "data", "amarok/scriptconsole/" ) ).path();
+        m_savePath = QUrl( KStandardDirs::locate( "data", "amarok/scriptconsole/" ) ).path();
 
     slotNewScript();
     connect( m_debugger, SIGNAL(evaluationSuspended()), SLOT(slotEvaluationSuspended()) );

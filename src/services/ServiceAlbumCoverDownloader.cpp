@@ -135,13 +135,13 @@ ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCoverPtr album )
 {
     m_album = album;
 
-    KUrl downloadUrl( album->coverUrl() );
+    QUrl downloadUrl( album->coverUrl() );
 
     m_coverDownloadPath = m_tempDir->name() + downloadUrl.fileName();
 
     debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_coverDownloadPath;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_coverDownloadPath ), -1, KIO::Overwrite | KIO::HideProgressInfo );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, QUrl( m_coverDownloadPath ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
     connect( m_albumDownloadJob, SIGNAL(result(KJob*)), SLOT(coverDownloadComplete(KJob*)) );
     connect( m_albumDownloadJob, SIGNAL(canceled(KJob*)), SLOT(coverDownloadCanceled(KJob*)) );

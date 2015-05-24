@@ -123,7 +123,7 @@ OcsPersonItem::name()
 void
 OcsPersonItem::launchUrl( QAction *action ) //SLOT
 {
-    KUrl url = KUrl( action->data().toString() );
+    QUrl url = QUrl( action->data().toString() );
     KRun::runUrl( url, "text/html", 0, false );
 }
 

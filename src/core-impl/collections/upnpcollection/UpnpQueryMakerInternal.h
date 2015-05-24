@@ -22,7 +22,7 @@
 
 #include <QObject>
 
-#include <KUrl>
+#include <QUrl>
 #include <kio/udsentry.h>
 
 #include "core/collections/QueryMaker.h"
@@ -45,7 +45,7 @@ class UpnpQueryMakerInternal : public QObject
         ~UpnpQueryMakerInternal();
         void setQueryType( Collections::QueryMaker::QueryType type ) { m_queryType = type; }
         void reset();
-        void runQuery( KUrl query, bool filter=true );
+        void runQuery( QUrl query, bool filter=true );
 
     signals:
         void results( bool error, const KIO::UDSEntryList list );

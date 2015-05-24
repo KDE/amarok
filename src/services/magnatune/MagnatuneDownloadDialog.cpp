@@ -53,9 +53,9 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
     
     m_currentDownloadInfo.setFormatSelection( format );
 
-    KUrl unpackLocation = downloadTargetURLRequester->url();
-    unpackLocation.adjustPath( KUrl::AddTrailingSlash );
-    m_currentDownloadInfo.setUnpackUrl( unpackLocation.directory( KUrl::ObeyTrailingSlash ) );
+    QUrl unpackLocation = downloadTargetURLRequester->url();
+    unpackLocation.adjustPath( QUrl::AddTrailingSlash );
+    m_currentDownloadInfo.setUnpackUrl( unpackLocation.directory( QUrl::ObeyTrailingSlash ) );
 
     emit( downloadAlbum( m_currentDownloadInfo ) );
 
@@ -91,7 +91,7 @@ void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo info )
     }
 
     if ( !path.isEmpty() ) {
-        downloadTargetURLRequester->setUrl( KUrl(path) );
+        downloadTargetURLRequester->setUrl( QUrl(path) );
     }
 
 }

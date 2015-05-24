@@ -37,7 +37,7 @@ namespace MetaProxy
              * CollectionManager are used and a watch for new providers is used.
              * Otherwise the lookup happes just in @param provider and is one-shot.
              */
-            explicit Worker( const KUrl &url, Collections::TrackProvider *provider = 0 );
+            explicit Worker( const QUrl &url, Collections::TrackProvider *provider = 0 );
 
             //TrackForUrlWorker virtual methods
             virtual void run();
@@ -51,7 +51,7 @@ namespace MetaProxy
             void slotStepDone();
 
         private:
-            KUrl m_url;
+            QUrl m_url;
             Collections::TrackProvider *m_provider;
             int m_stepsDoneReceived;
     };

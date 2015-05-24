@@ -30,8 +30,8 @@ class AMAROK_EXPORT FileTrackProvider : public Collections::TrackProvider
         FileTrackProvider();
         virtual ~FileTrackProvider();
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
     private:
         Q_DISABLE_COPY( FileTrackProvider )

@@ -19,7 +19,7 @@
 
 #include "browsers/BrowserCategory.h"
 
-#include <KUrl>
+#include <QUrl>
 
 class QAbstractItemView;
 class QModelIndex;
@@ -37,7 +37,7 @@ public:
     /**
     * Navigate to a specific directory
     */
-    void setDir( const KUrl &dir );
+    void setDir( const QUrl &dir );
 
     /**
      * Return the path of the currently shown dir.

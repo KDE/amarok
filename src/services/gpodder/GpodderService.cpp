@@ -35,7 +35,7 @@
 #include <KLocale>
 #include <KPasswordDialog>
 #include <KStandardDirs>
-#include <KUrl>
+#include <QUrl>
 
 #include <QHostInfo>
 
@@ -263,7 +263,7 @@ GpodderService::subscribe()
     if( GpodderPodcastTreeItem *podcastTreeItem = qobject_cast<GpodderPodcastTreeItem*>( treeItem ) )
     {
         Podcasts::PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
-        KUrl kUrl( podcastTreeItem->podcast()->url() );
+        QUrl kUrl( podcastTreeItem->podcast()->url() );
         podcastProvider->addPodcast( kUrl );
     }
 }

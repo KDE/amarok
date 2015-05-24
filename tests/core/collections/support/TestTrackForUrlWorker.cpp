@@ -20,7 +20,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "mocks/MockTrackForUrlWorker.h"
 
-#include <KUrl>
+#include <QUrl>
 #include <ThreadWeaver/Job>
 #include <ThreadWeaver/Weaver>
 #include <qtest_kde.h>
@@ -53,7 +53,7 @@ TestTrackForUrlWorker::testCompleteJobKUrl_data()
 void
 TestTrackForUrlWorker::testCompleteJobKUrl()
 {
-    KUrl url;
+    QUrl url;
 
     MockTrackForUrlWorker *trackForUrlWorker = new MockTrackForUrlWorker( url );
     QVERIFY( trackForUrlWorker );

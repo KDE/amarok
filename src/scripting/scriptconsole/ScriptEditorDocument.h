@@ -28,7 +28,7 @@ namespace KTextEditor
     class Document;
     class View;
 }
-class KUrl;
+class QUrl;
 class QColor;
 class QIcon;
 class QWidget;
@@ -45,7 +45,7 @@ namespace ScriptConsoleNS
             QString text() const;
             KTextEditor::View *createView( QWidget *editor = 0 );
             void setText( const QString &text );
-            void save( const KUrl &url );
+            void save( const QUrl &url );
             void save();
             void setReadWrite( bool readWrite );
             static void highlight( KTextEditor::View *view, int line, const QColor &color );

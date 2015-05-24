@@ -39,9 +39,9 @@ void DropPixmapItem::dropEvent(QGraphicsSceneDragDropEvent* event)
         
         if ( file.contains( "http://" ) || file.contains( "https://" ) )
         {           
-            m_url = KUrl( file );
+            m_url = QUrl( file );
             The::networkAccessManager()->getData( m_url, this,
-                 SLOT(imageDownloadResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                 SLOT(imageDownloadResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
         
         else if ( file.contains( "file://" ) )
@@ -67,7 +67,7 @@ void DropPixmapItem::dropEvent(QGraphicsSceneDragDropEvent* event)
     }
 }
 
-void DropPixmapItem::imageDownloadResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+void DropPixmapItem::imageDownloadResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( !url.isValid() || m_url != url )
         return;

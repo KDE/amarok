@@ -20,7 +20,7 @@
 
 #include "network/NetworkAccessManagerProxy.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QHash>
 #include <QList>
@@ -61,18 +61,18 @@ namespace AmarokScript
             static AmarokDownloadHelper *instance();
 
             // called by the wrapper class to register a new download
-            void newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
-            void newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj );
+            void newStringDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
+            void newDataDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj );
 
         private slots:
-            void resultString( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-            void resultData( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+            void resultString( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+            void resultData( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
-            void requestRedirected( const KUrl &sourceUrl, const KUrl &targetUrl );
+            void requestRedirected( const QUrl &sourceUrl, const QUrl &targetUrl );
 
         private:
-            void cleanUp( const KUrl &url );
-            void newDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot );
+            void cleanUp( const QUrl &url );
+            void newDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot );
 
             /**
             * Template function which updates the given @p sourceUrl to the given
@@ -83,7 +83,7 @@ namespace AmarokScript
             * @param sourceUrl The old URL (= the old key).
             * @param targetUrl The new URL (= the new key).
             */
-            template<typename T> void updateUrl( QHash< KUrl, T > &hash, const KUrl &sourceUrl, const KUrl &targetUrl )
+            template<typename T> void updateUrl( QHash< QUrl, T > &hash, const QUrl &sourceUrl, const QUrl &targetUrl )
             {
                 // Get all entries with the source URL as key.
                 QList< T > data = hash.values( sourceUrl );
@@ -100,9 +100,9 @@ namespace AmarokScript
                 hash.remove( sourceUrl );
             };
 
-            QHash<KUrl, QScriptEngine *> m_engines;
-            QHash<KUrl, QScriptValue> m_values;
-            QHash<KUrl, QString> m_encodings;
+            QHash<QUrl, QScriptEngine *> m_engines;
+            QHash<QUrl, QScriptValue> m_values;
+            QHash<QUrl, QString> m_encodings;
     };
 }
 

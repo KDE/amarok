@@ -287,7 +287,7 @@ EngineController::restoreSession()
 
     if( AmarokConfig::resumePlayback() )
     {
-        const KUrl url = AmarokConfig::resumeTrack();
+        const QUrl url = AmarokConfig::resumeTrack();
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
         // Only give a resume time for local files, because resuming remote protocols can have weird side effects.
@@ -376,8 +376,8 @@ EngineController::play( Meta::TrackPtr track, uint offset, bool startPaused )
 
     if( m_multiPlayback )
     {
-        connect( m_multiPlayback, SIGNAL(playableUrlFetched(KUrl)),
-                 SLOT(slotPlayableUrlFetched(KUrl)) );
+        connect( m_multiPlayback, SIGNAL(playableUrlFetched(QUrl)),
+                 SLOT(slotPlayableUrlFetched(QUrl)) );
         m_multiPlayback->fetchFirst();
     }
     else if( m_boundedPlayback )
@@ -402,7 +402,7 @@ EngineController::replay() // slot
 }
 
 void
-EngineController::playUrl( const KUrl &url, uint offset, bool startPaused )
+EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
 {
     DEBUG_BLOCK
 
@@ -412,7 +412,7 @@ EngineController::playUrl( const KUrl &url, uint offset, bool startPaused )
     debug() << "Offset: " << offset;
 
     m_currentAudioCdTrack = 0;
-    if( url.protocol() == "audiocd" )
+    if( url.scheme() == "audiocd" )
     {
         QStringList pathItems = url.path().split( '/', QString::KeepEmptyParts );
         if( pathItems.count() != 3 )
@@ -427,7 +427,7 @@ EngineController::playUrl( const KUrl &url, uint offset, bool startPaused )
             error() << __PRETTY_FUNCTION__ << "failed to get positive track number from" << url.url();
             return;
         }
-        QString device = url.queryItem( "device" );
+        QString device = QUrlQuery(url).queryItemValue( "device" );
 
         m_media.data()->setCurrentSource( Phonon::MediaSource( Phonon::Cd, device ) );
         m_currentAudioCdTrack = trackNumber;
@@ -735,7 +735,7 @@ EngineController::setNextTrack( Meta::TrackPtr track )
         return;
 
     track->prepareToPlay();
-    KUrl url = track->playableUrl();
+    QUrl url = track->playableUrl();
     if( url.isEmpty() )
         return;
 
@@ -746,7 +746,7 @@ EngineController::setNextTrack( Meta::TrackPtr track )
         // keep in sync with playUrl(), slotPlayableUrlFetched()
         if( url.isLocalFile() )
             m_media.data()->enqueue( url.toLocalFile() );
-        else if( url.protocol() != "audiocd" ) // we don't support gapless for CD, bug 305708
+        else if( url.scheme() != "audiocd" ) // we don't support gapless for CD, bug 305708
             m_media.data()->enqueue( url );
         m_nextTrack = track;
         m_nextUrl = url;
@@ -761,7 +761,7 @@ EngineController::isStream()
     Phonon::MediaSource::Type type = Phonon::MediaSource::Invalid;
     if( m_media )
         // type is determined purely from the MediaSource constructor used in
-        // setCurrentSource(). For streams we use the KUrl one, see playUrl()
+        // setCurrentSource(). For streams we use the QUrl one, see playUrl()
         type = m_media.data()->currentSource().type();
     return type == Phonon::MediaSource::Url || type == Phonon::MediaSource::Stream;
 }
@@ -867,7 +867,7 @@ EngineController::slotAboutToFinish()
     else if( m_multiSource )
     {
         debug() << "source finished, lets get the next one";
-        KUrl nextSource = m_multiSource->nextUrl();
+        QUrl nextSource = m_multiSource->nextUrl();
 
         if( !nextSource.isEmpty() )
         { //more sources
@@ -994,8 +994,8 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         if( m_multiSource )
         {
             debug() << "Got a MultiSource Track with" <<  m_multiSource->sources().count() << "sources";
-            connect( m_multiSource.data(), SIGNAL(urlChanged(KUrl)),
-                     SLOT(slotPlayableUrlFetched(KUrl)) );
+            connect( m_multiSource.data(), SIGNAL(urlChanged(QUrl)),
+                     SLOT(slotPlayableUrlFetched(QUrl)) );
         }
     }
 
@@ -1110,7 +1110,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
 }
 
 void
-EngineController::slotPlayableUrlFetched( const KUrl &url )
+EngineController::slotPlayableUrlFetched( const QUrl &url )
 {
     DEBUG_BLOCK
     debug() << "Fetched url: " << url;

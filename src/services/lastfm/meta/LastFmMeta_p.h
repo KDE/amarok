@@ -152,7 +152,7 @@ class Track::Private : public QObject
 
                     if( !imageUrl.isEmpty() )
                     {
-                        KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
+                        KIO::Job* job = KIO::storedGet( QUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
                         connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
                     }
                 }
@@ -278,12 +278,12 @@ public:
         return d->albumArt;
     }
 
-    KUrl imageLocation( int size )
+    QUrl imageLocation( int size )
     {
         Q_UNUSED( size );
         if( d && !d->imageUrl.isEmpty() )
-            return KUrl( d->imageUrl );
-        return KUrl();
+            return QUrl( d->imageUrl );
+        return QUrl();
     }
 
     // return true since we handle our own fetching

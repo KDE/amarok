@@ -514,7 +514,7 @@ PlaylistBrowserView::slotExport()
     // TODO: have this code only once
     QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving") );
     saveRelativeCheck->setChecked( AmarokConfig::relativePlaylist() );
-    KFileDialog fileDialog( KUrl( "kfiledialog:///amarok-playlist-export" ), QString(), 0, saveRelativeCheck );
+    KFileDialog fileDialog( QUrl("kfiledialog:///amarok-playlist-export"), QString(), 0, saveRelativeCheck );
 
     QStringList supportedMimeTypes;
     supportedMimeTypes << "video/x-ms-asf"; // ASX

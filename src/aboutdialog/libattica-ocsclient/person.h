@@ -25,7 +25,7 @@
 #include <QtCore/QList>
 #include <QtGui/QPixmap>
 
-#include <KUrl>
+#include <QUrl>
 
 #include "atticaclient_export.h"
 
@@ -60,8 +60,8 @@ class ATTICA_EXPORT Person
     void setLongitude( qreal );
     qreal longitude() const;
 
-    void setAvatarUrl( const KUrl & );
-    KUrl avatarUrl() const;
+    void setAvatarUrl( const QUrl & );
+    QUrl avatarUrl() const;
 
     void setAvatar( const QPixmap & );
     QPixmap avatar() const;
@@ -85,7 +85,7 @@ class ATTICA_EXPORT Person
     QString m_country;
     qreal m_latitude;
     qreal m_longitude;
-    KUrl m_avatarUrl;
+    QUrl m_avatarUrl;
     QPixmap m_avatar;
     QString m_homepage;
     QString m_city;

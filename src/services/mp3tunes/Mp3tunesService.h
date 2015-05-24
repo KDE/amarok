@@ -34,7 +34,7 @@ class Mp3tunesServiceFactory: public ServiceFactory
         Mp3tunesServiceFactory( QObject *parent, const QVariantList &args );
         virtual ~Mp3tunesServiceFactory() {}
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
         virtual void init();
         virtual QString name();

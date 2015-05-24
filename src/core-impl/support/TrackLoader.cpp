@@ -44,22 +44,22 @@ TrackLoader::~TrackLoader()
 }
 
 void
-TrackLoader::init( const KUrl &url )
+TrackLoader::init( const QUrl &url )
 {
-    init( QList<KUrl>() << url );
+    init( QList<QUrl>() << url );
 }
 
 void
 TrackLoader::init( const QList<QUrl> &qurls )
 {
-    QList<KUrl> kurls;
+    QList<QUrl> kurls;
     foreach( const QUrl &qurl, qurls )
-        kurls << KUrl( qurl );
+        kurls << QUrl( qurl );
     init( kurls );
 }
 
 void
-TrackLoader::init( const QList<KUrl> &urls )
+TrackLoader::init( const QList<QUrl> &urls )
 {
     m_sourceUrls = urls;
     QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
@@ -82,7 +82,7 @@ TrackLoader::processNextSourceUrl()
         return;
     }
 
-    KUrl sourceUrl = m_sourceUrls.takeFirst();
+    QUrl sourceUrl = m_sourceUrls.takeFirst();
     if( sourceUrl.isLocalFile() && QFileInfo( sourceUrl.toLocalFile() ).isDir() )
     {
         // KJobs delete themselves
@@ -104,11 +104,11 @@ TrackLoader::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list 
 {
     //dfaure says that job->redirectionUrl().isValid() ? job->redirectionUrl() : job->url(); might be needed
     //but to wait until an issue is actually found, since it might take more work
-    const KUrl dir = static_cast<KIO::SimpleJob *>( job )->url();
+    const QUrl dir = static_cast<KIO::SimpleJob *>( job )->url();
     foreach( const KIO::UDSEntry &entry, list )
     {
         KFileItem item( entry, dir, true, true );
-        KUrl url = item.url();
+        QUrl url = item.url();
         if( MetaFile::Track::isTrack( url ) )
             m_listJobResults << url;
     }
@@ -145,7 +145,7 @@ TrackLoader::processNextResultUrl()
         return;
     }
 
-    KUrl resultUrl = m_resultUrls.takeFirst();
+    QUrl resultUrl = m_resultUrls.takeFirst();
     if( isPlaylist( resultUrl ) )
     {
         PlaylistFilePtr playlist = loadPlaylistFile( resultUrl );
@@ -274,10 +274,10 @@ TrackLoader::finish()
 }
 
 bool
-TrackLoader::directorySensitiveLessThan( const KUrl &left, const KUrl &right )
+TrackLoader::directorySensitiveLessThan( const QUrl &left, const QUrl &right )
 {
-    QString leftDir = left.directory( KUrl::AppendTrailingSlash );
-    QString rightDir = right.directory( KUrl::AppendTrailingSlash );
+    QString leftDir = left.directory( QUrl::AppendTrailingSlash );
+    QString rightDir = right.directory( QUrl::AppendTrailingSlash );
 
     // filter out tracks from same directories:
     if( leftDir == rightDir )

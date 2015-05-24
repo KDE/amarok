@@ -76,8 +76,8 @@ namespace Collections
             bool isOrganizable() const;
             
             //Methods from Collections::TrackProvider
-            bool possiblyContainsTrack( const KUrl &url ) const;
-            Meta::TrackPtr trackForUrl( const KUrl &url );
+            bool possiblyContainsTrack( const QUrl &url ) const;
+            Meta::TrackPtr trackForUrl( const QUrl &url );
             
             //Methods from Collections::CollectionBase
             bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;

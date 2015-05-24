@@ -52,7 +52,7 @@ class MagnatuneServiceFactory : public ServiceFactory
         virtual QString name();
         virtual KConfigGroup config();
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.url().contains( "magnatune.com", Qt::CaseInsensitive ); }
+        virtual bool possiblyContainsTrack( const QUrl &url ) const { return url.url().contains( "magnatune.com", Qt::CaseInsensitive ); }
 };
 
 

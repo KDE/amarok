@@ -27,7 +27,7 @@
 class PodcastImageFetcher;
 
 class KDialog;
-class KUrl;
+class QUrl;
 class PodcastReader;
 class SqlStorage;
 class QTimer;
@@ -49,8 +49,8 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         virtual ~SqlPodcastProvider();
 
         //TrackProvider methods
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         //PlaylistProvider methods
         virtual QString prettyName() const { return i18n("Local Podcasts"); }
@@ -66,7 +66,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         //PodcastProvider methods
         virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid );
 
-        virtual void addPodcast( const KUrl &url );
+        virtual void addPodcast( const QUrl &url );
 
         virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
         virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
@@ -78,7 +78,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         //SqlPodcastProvider specific methods
         virtual Podcasts::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
 
-        virtual KUrl baseDownloadDir() const { return m_baseDownloadDir; }
+        virtual QUrl baseDownloadDir() const { return m_baseDownloadDir; }
 
     public slots:
         void updateAll();
@@ -92,7 +92,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
     private slots:
         void downloadResult( KJob * );
         void addData( KIO::Job *job, const QByteArray & data );
-        void redirected( KIO::Job *, const KUrl& );
+        void redirected( KIO::Job *, const QUrl& );
         void autoUpdate();
         void slotDeleteDownloadedEpisodes();
         void slotDownloadEpisodes();
@@ -153,7 +153,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
           */
         void removeSubscription( Podcasts::SqlPodcastChannelPtr channel );
 
-        void subscribe( const KUrl &url );
+        void subscribe( const QUrl &url );
         QFile* createTmpFile ( Podcasts::SqlPodcastEpisodePtr sqlEpisode );
         void cleanupDownload( KJob *job, bool downloadFailed );
 
@@ -167,7 +167,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         unsigned int m_updatingChannels;
         unsigned int m_maxConcurrentUpdates;
         Podcasts::SqlPodcastChannelList m_updateQueue;
-        QList<KUrl> m_subscribeQueue;
+        QList<QUrl> m_subscribeQueue;
 
         struct PodcastEpisodeDownload {
             Podcasts::SqlPodcastEpisodePtr episode;
@@ -182,7 +182,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         int m_maxConcurrentDownloads;
         int m_completedDownloads;
 
-        KUrl m_baseDownloadDir;
+        QUrl m_baseDownloadDir;
 
         KDialog *m_providerSettingsDialog;
         Ui::SqlPodcastProviderSettingsWidget *m_providerSettingsWidget;

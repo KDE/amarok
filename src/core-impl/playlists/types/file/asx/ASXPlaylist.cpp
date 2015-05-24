@@ -21,14 +21,14 @@
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QFile>
 #include <QString>
 
 using namespace Playlists;
 
-ASXPlaylist::ASXPlaylist( const KUrl &url, PlaylistProvider *provider )
+ASXPlaylist::ASXPlaylist( const QUrl &url, PlaylistProvider *provider )
     : PlaylistFile( url, provider )
     , QDomDocument()
 {
@@ -109,7 +109,7 @@ ASXPlaylist::loadAsx( QTextStream &stream )
                     QByteArray path = subSubNode.attributes().namedItem("href").nodeValue().toUtf8();
                     path.replace( '\\', '/' );
 
-                    KUrl url = getAbsolutePath( KUrl::fromEncoded( path ) );
+                    QUrl url = getAbsolutePath( QUrl::fromEncoded( path ) );
                     track.location = url;
                 }
                 else if( subSubNode.nodeName() == "title" )

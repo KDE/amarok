@@ -58,7 +58,7 @@ AggregateCollection::icon() const
 }
 
 bool
-AggregateCollection::possiblyContainsTrack( const KUrl &url ) const
+AggregateCollection::possiblyContainsTrack( const QUrl &url ) const
 {
     foreach( Collections::Collection *collection, m_idCollectionMap )
     {
@@ -69,7 +69,7 @@ AggregateCollection::possiblyContainsTrack( const KUrl &url ) const
 }
 
 Meta::TrackPtr
-AggregateCollection::trackForUrl( const KUrl &url )
+AggregateCollection::trackForUrl( const QUrl &url )
 {
     foreach( Collections::Collection *collection, m_idCollectionMap )
     {

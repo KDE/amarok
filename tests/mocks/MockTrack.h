@@ -42,7 +42,7 @@ class MockTrack : public Meta::Track
 
     MOCK_CONST_METHOD0( name, QString() );
     MOCK_CONST_METHOD0( prettyName, QString() );
-    MOCK_CONST_METHOD0( playableUrl, KUrl() );
+    MOCK_CONST_METHOD0( playableUrl, QUrl() );
     MOCK_CONST_METHOD0( prettyUrl, QString() );
     MOCK_CONST_METHOD0( uidUrl, QString() );
     MOCK_CONST_METHOD0( notPlayableReason, QString() );

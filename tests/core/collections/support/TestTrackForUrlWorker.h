@@ -36,9 +36,9 @@ class TestTrackForUrlWorker : public QObject
         void initTestCase();
 
         /**
-         * Test slot completeJob() for both KUrl and QString types of urls
+         * Test slot completeJob() for both QUrl and QString types of urls
          */
-        void testCompleteJobKUrl();
+        void testCompleteJobQUrl();
         void testCompleteJobQString();
 
         /**

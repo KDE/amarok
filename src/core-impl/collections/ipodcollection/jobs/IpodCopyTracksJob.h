@@ -45,7 +45,7 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         /**
          * @param goingToRemoveSources whether this is in fact a move operation
          */
-        IpodCopyTracksJob( const QMap<Meta::TrackPtr,KUrl> &sources,
+        IpodCopyTracksJob( const QMap<Meta::TrackPtr,QUrl> &sources,
                            const QWeakPointer<IpodCollection> &collection,
                            const Transcoding::Configuration &configuration,
                            bool goingToRemoveSources );
@@ -59,7 +59,7 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         void startDuplicateTrackSearch( const Meta::TrackPtr &track );
 
         // a hack to create copyjob in a thread with event loop:
-        void startCopyOrTranscodeJob( const KUrl &src, const KUrl &dest, bool isJustCopy );
+        void startCopyOrTranscodeJob( const QUrl &src, const QUrl &dest, bool isJustCopy );
 
         // a hack to display KMessageBox in a gui thread:
         void displaySorryDialog();
@@ -85,7 +85,7 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         void slotDuplicateTrackSearchQueryDone();
 
         /// @see startCopyJob()
-        void slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl,
+        void slotStartCopyOrTranscodeJob( const QUrl &sourceUrl, const QUrl &destUrl,
                                           bool isJustCopy );
         void slotCopyOrTranscodeJobFinished( KJob *job );
 
@@ -97,7 +97,7 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
 
         QWeakPointer<IpodCollection> m_coll;
         Transcoding::Configuration m_transcodingConfig;
-        QMap<Meta::TrackPtr,KUrl> m_sources;
+        QMap<Meta::TrackPtr,QUrl> m_sources;
         QMultiHash<CopiedStatus, Meta::TrackPtr> m_sourceTrackStatus;
         QSemaphore m_copying;
         QSemaphore m_searchingForDuplicates;

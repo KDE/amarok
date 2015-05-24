@@ -47,7 +47,7 @@ public:
 
     virtual QString name() const;
 
-    virtual KUrl playableUrl() const;
+    virtual QUrl playableUrl() const;
     virtual QString uidUrl() const;
     virtual QString prettyUrl() const;
     virtual QString notPlayableReason() const;

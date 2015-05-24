@@ -103,7 +103,7 @@ class ScriptableServiceAlbum : public Meta::ServiceAlbumWithCover, public Script
         virtual void setCoverUrl( const QString &coverUrl ) { m_coverUrl = coverUrl; }
         virtual QString coverUrl() const { return m_coverUrl; }
 
-        virtual KUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return KUrl( coverUrl() ); }
+        virtual QUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return QUrl( coverUrl() ); }
 
         virtual QString sourceName();
         virtual QString sourceDescription();

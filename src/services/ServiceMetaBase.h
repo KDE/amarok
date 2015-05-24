@@ -150,8 +150,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         virtual ~ServiceTrack();
 
         virtual QString name() const;
-        virtual KUrl downloadableUrl() const;
-        virtual KUrl playableUrl() const;
+        virtual QUrl downloadableUrl() const;
+        virtual QUrl playableUrl() const;
         virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
         virtual QString notPlayableReason() const;

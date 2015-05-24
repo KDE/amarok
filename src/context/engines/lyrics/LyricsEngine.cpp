@@ -125,7 +125,7 @@ void LyricsEngine::update()
         }
     }
 
-    LyricsData lyrics = { currentTrack->cachedLyrics(), title, artist, KUrl() };
+    LyricsData lyrics = { currentTrack->cachedLyrics(), title, artist, QUrl() };
 
     // Check if the title, the artist and the lyrics are still the same.
     if( !lyrics.text.isEmpty() && (lyrics.text == m_prevLyrics.text) )

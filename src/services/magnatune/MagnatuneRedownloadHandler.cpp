@@ -144,7 +144,7 @@ MagnatuneRedownloadHandler::fetchServerSideRedownloadList()
 
     QString redownloadApiUrl = "http://magnatune.com/buy/redownload_xml?email=" + email;
 
-    m_redownloadApiJob = KIO::storedGet( KUrl( redownloadApiUrl ), KIO::NoReload, KIO::HideProgressInfo );
+    m_redownloadApiJob = KIO::storedGet( QUrl( redownloadApiUrl ), KIO::NoReload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_redownloadApiJob, i18n( "Getting list of previous Magnatune.com purchases" ) );
     connect( m_redownloadApiJob, SIGNAL(result(KJob*)), SLOT(redownloadApiResult(KJob*)) );
 

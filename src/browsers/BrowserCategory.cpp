@@ -100,7 +100,7 @@ BrowserCategory::icon() const
 void
 BrowserCategory::setBackgroundImage(const QString& path)
 {
-    if ( path.isEmpty() || !KUrl(path).isLocalFile() ) {
+    if ( path.isEmpty() || !QUrl(path).isLocalFile() ) {
         setStyleSheet( QString() );
         return;
     }

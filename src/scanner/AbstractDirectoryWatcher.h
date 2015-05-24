@@ -27,7 +27,7 @@
 
 #include <threadweaver/Job.h>
 
-#include <KUrl>
+#include <QUrl>
 
 class QTimer;
 class KDirWatch;
@@ -69,7 +69,7 @@ class AMAROK_EXPORT AbstractDirectoryWatcher : public ThreadWeaver::Job
          *  @param directory The directory to scan or and empty string if every
          *  collection folder should be checked for changes.
          */
-        void requestScan( QList<KUrl> directories, GenericScanManager::ScanType type );
+        void requestScan( QList<QUrl> directories, GenericScanManager::ScanType type );
 
     protected slots:
         void delayTimeout();
@@ -89,7 +89,7 @@ class AMAROK_EXPORT AbstractDirectoryWatcher : public ThreadWeaver::Job
         QWaitCondition m_waitCondition;
 
         QMutex m_dirsMutex;
-        QSet<KUrl> m_scanDirsRequested;
+        QSet<QUrl> m_scanDirsRequested;
 
         bool m_aborted;
         bool m_blocked;

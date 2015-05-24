@@ -101,12 +101,12 @@ void SongkickEngine::update()
     }
 
     QString country = QLocale::system().name().right( 2 ).toLower();
-    KUrl ontourUrl( QString( "http://api.songkick.com/api/V2/get_tour_status?key=kJcAUmzi8AoAngzh&id=0&country=%2&range=all&name=%1" ).arg( QUrl::toPercentEncoding( currentTrack->artist()->prettyName() ), country ) );
+    QUrl ontourUrl( QString( "http://api.songkick.com/api/V2/get_tour_status?key=kJcAUmzi8AoAngzh&id=0&country=%2&range=all&name=%1" ).arg( QUrl::toPercentEncoding( currentTrack->artist()->prettyName() ), country ) );
     debug() << "getting ontour status: " << ontourUrl;
     m_ontourJob = KIO::storedGet( ontourUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_ontourJob, SIGNAL(result(KJob*)), this, SLOT(ontourResult(KJob*)) );
 
-    KUrl datesUrl( QString( "http://api.songkick.com/api/V2/get_dates_extended?key=kJcAUmzi8AoAngzh&id=0&country=%2&range=all&name=%1" ).arg( QUrl::toPercentEncoding( currentTrack->artist()->prettyName() ), country ) );
+    QUrl datesUrl( QString( "http://api.songkick.com/api/V2/get_dates_extended?key=kJcAUmzi8AoAngzh&id=0&country=%2&range=all&name=%1" ).arg( QUrl::toPercentEncoding( currentTrack->artist()->prettyName() ), country ) );
     debug() << "getting concert dates: " << datesUrl;
     m_datesJob = KIO::storedGet( datesUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_datesJob, SIGNAL(result(KJob*)), this, SLOT(datesResult(KJob*)) );

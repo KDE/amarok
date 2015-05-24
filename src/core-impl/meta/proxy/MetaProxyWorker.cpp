@@ -21,7 +21,7 @@
 
 using namespace MetaProxy;
 
-Worker::Worker( const KUrl &url, Collections::TrackProvider *provider )
+Worker::Worker( const QUrl &url, Collections::TrackProvider *provider )
     : m_url( url )
     , m_provider( provider )
     , m_stepsDoneReceived( 0 )

@@ -40,7 +40,7 @@ public:
     bool isWritable() const;
 
 protected:
-    void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+    void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                const Transcoding::Configuration &configuration );
     void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources,
                                 const Transcoding::Configuration &configuration );

@@ -20,7 +20,7 @@
 #include "core/meta/Meta.h" // for AlbumPtr default argument
 
 #include <KSharedPtr>
-#include <KUrl>
+#include <QUrl>
 
 #include <QStringList>
 #include <QXmlStreamReader>
@@ -51,7 +51,7 @@ namespace CoverFetch
     };
 
     typedef QHash<QString, QString> Metadata;
-    typedef QHash<KUrl, Metadata> Urls;
+    typedef QHash<QUrl, Metadata> Urls;
 }
 
 /**

@@ -62,7 +62,7 @@ private slots:
     void slotFetch( CoverFetchUnit::Ptr unit );
 
     /// Handle result of a fetch job
-    void slotResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void slotResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /// Cover found dialog is closed by the user
     void slotDialogFinished();
@@ -84,7 +84,7 @@ private:
     CoverFetchQueue *m_queue;     //!< current fetch queue
     Meta::AlbumList m_queueLater; //!< put here if m_queue exceeds m_limit
 
-    QHash< KUrl, CoverFetchUnit::Ptr > m_urls;
+    QHash< QUrl, CoverFetchUnit::Ptr > m_urls;
     QHash< const CoverFetchUnit::Ptr, QImage > m_selectedImages;
 
     QStringList m_errors;
@@ -103,7 +103,7 @@ private:
 
     void handleCoverPayload( const CoverFetchUnit::Ptr &unit,
                              const QByteArray &data,
-                             const KUrl &url );
+                             const QUrl &url );
 
     CoverFetch::Source fetchSource() const;
 };

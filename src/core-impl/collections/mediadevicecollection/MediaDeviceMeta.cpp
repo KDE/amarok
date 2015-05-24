@@ -27,7 +27,7 @@
 #include "covermanager/CoverFetchingActions.h"
 
 #include <KIcon>
-#include <KUrl>
+#include <QUrl>
 
 #include <QAction>
 
@@ -69,7 +69,7 @@ MediaDeviceTrack::name() const
     return m_name;
 }
 
-KUrl
+QUrl
 MediaDeviceTrack::playableUrl() const
 {
     return m_playableUrl;

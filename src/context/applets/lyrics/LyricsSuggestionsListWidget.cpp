@@ -78,7 +78,7 @@ LyricsSuggestionItem::LyricsSuggestionItem( const LyricsSuggestion &suggestion, 
     font.setBold( true );
     titleLabel->setFont( font );
 
-    const KUrl &url = m_data.url;
+    const QUrl &url = m_data.url;
     QString urlText = QString("<a href=\"%1\">%2</a>").arg(url.url(), url.host());
     Plasma::Label *urlLabel = new Plasma::Label( this );
     urlLabel->setText( urlText );

@@ -63,7 +63,7 @@ IpodCollectionLocation::isWritable() const
 }
 
 void
-IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr,KUrl> &sources,
+IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr,QUrl> &sources,
                                               const Transcoding::Configuration &configuration )
 {
     if( !isWritable() )

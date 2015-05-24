@@ -19,7 +19,7 @@
 
 #include "OpmlOutline.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QAbstractItemModel>
 
@@ -40,7 +40,7 @@ public:
         CustomRoleOffset //first role that can be used by sublasses for their own data
     };
 
-    explicit OpmlDirectoryModel( KUrl outlineUrl, QObject *parent = 0 );
+    explicit OpmlDirectoryModel( QUrl outlineUrl, QObject *parent = 0 );
     ~OpmlDirectoryModel();
 
     // QAbstractItemModel methods
@@ -55,7 +55,7 @@ public:
     virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
     // OpmlDirectoryModel methods
-    virtual void saveOpml( const KUrl &saveLocation );
+    virtual void saveOpml( const QUrl &saveLocation );
     virtual OpmlNodeType opmlNodeType( const QModelIndex &idx ) const;
 
     //TODO: extract these into OpmlPodcastDirectoryModel subclass
@@ -80,7 +80,7 @@ private slots:
 private:
     QModelIndex addOutlineToModel( QModelIndex parentIdx, OpmlOutline *oultine );
 
-    KUrl m_rootOpmlUrl;
+    QUrl m_rootOpmlUrl;
     QList<OpmlOutline *> m_rootOutlines;
 
     QMap<OpmlParser *,QModelIndex> m_currentFetchingMap;

@@ -72,7 +72,7 @@ ScriptEditorDocument::setText( const QString &text )
 }
 
 void
-ScriptEditorDocument::save( const KUrl &url )
+ScriptEditorDocument::save( const QUrl &url )
 {
     m_document->saveAs( url );
 }

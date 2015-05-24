@@ -35,7 +35,7 @@ FolderListJob::FolderListJob()
 {
 }
 
-void FolderListJob::setUrl( const KUrl &url )
+void FolderListJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }

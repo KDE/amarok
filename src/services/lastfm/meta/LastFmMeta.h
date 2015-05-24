@@ -44,7 +44,7 @@ namespace LastFm
             virtual QString sortableName() const;
 
         // methods inherited from Meta::Track
-            virtual KUrl playableUrl() const;
+            virtual QUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
             virtual QString notPlayableReason() const;
@@ -88,7 +88,7 @@ namespace LastFm
 
             //LastFm specific methods, cast the object to LastFm::Track to use them
             //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)
-            KUrl internalUrl() const; // this returns the private temporary url to the .mp3, DO NOT USE,
+            QUrl internalUrl() const; // this returns the private temporary url to the .mp3, DO NOT USE,
                                    // if you are asking, it has already expired
             QString streamName() const; // A nice name for the stream..
 

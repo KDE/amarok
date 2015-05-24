@@ -131,7 +131,7 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
                 map[ "albumartist" ] = track->album()->albumArtist()->name();
 
             QImage image = track->album()->image();
-            KUrl url = track->album()->imageLocation().url();
+            QUrl url = track->album()->imageLocation().url();
             if ( url.isValid() && !url.isLocalFile() ) {
                 // embedded id?  Request a version to be put in the cache
                 int width = track->album()->image().width();
@@ -190,7 +190,7 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
 
         if( album ) {
             QImage image = album->image();
-            KUrl url = album->imageLocation().url();
+            QUrl url = album->imageLocation().url();
             debug() << "MPRIS2: Album image location is" << url;
             if ( url.isValid() && !url.isLocalFile() ) {
                 // embedded id?  Request a version to be put in the cache

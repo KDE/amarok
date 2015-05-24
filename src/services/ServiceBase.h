@@ -76,7 +76,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          * @param url The url to test.
          * @return A bool representing whether the ServiceFactory believes that a service of this kind can process the given url.
          */
-        virtual bool possiblyContainsTrack( const KUrl &url ) const { Q_UNUSED( url ); return false; }
+        virtual bool possiblyContainsTrack( const QUrl &url ) const { Q_UNUSED( url ); return false; }
 
         /**
          * Attempt to create a Meta::Track object from a given url. This method is meant as a proxy that will forward this call to one or more
@@ -85,7 +85,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          * @param url The url to test.
          * @return A Meta::TrackPtr based one the url, or empty if nothing was known about the url.
          */
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         /**
          * Clear the list of active services created by this factory. Used when unloading services.
@@ -331,7 +331,7 @@ protected:
 
     bool m_useCollectionTreeView;
 
-    KUrl::List   m_urlsToInsert;
+    QList<QUrl>   m_urlsToInsert;
 
     InfoParserBase * m_infoParser;
 

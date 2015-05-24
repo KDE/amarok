@@ -232,7 +232,7 @@ BiasSolver::getRandomTrack( const TrackSet& subset ) const
 Meta::TrackPtr
 BiasSolver::trackForUid( const QString& uid ) const
 {
-    const KUrl url( uid );
+    const QUrl url( uid );
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
     if( !track )

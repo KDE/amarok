@@ -77,7 +77,7 @@ void TestMetaTrack::testPrettyUrl()
 
 void TestMetaTrack::testUidUrl()
 {
-    QCOMPARE( m_testTrack1->uidUrl(), KUrl( m_trackPath ).url() );
+    QCOMPARE( m_testTrack1->uidUrl(), QUrl( m_trackPath ).url() );
 }
 
 void TestMetaTrack::testIsPlayable()

@@ -79,7 +79,7 @@ void UpnpBrowseCollection::processUpdates()
     QString urlString = m_updateQueue.dequeue();
     debug() << "Update URL is" << urlString;
     invalidateTracksIn( urlString );
-    KUrl url( urlString );
+    QUrl url( urlString );
     if( url.scheme() != "upnp-ms" || m_device.uuid() != url.host() )
         return;
     debug() << "Now incremental scanning" << url;
@@ -137,7 +137,7 @@ UpnpBrowseCollection::startIncrementalScan( const QString &directory )
         return;
     }
     debug() << "Scanning directory" << directory;
-    KUrl url;
+    QUrl url;
     url.setScheme( "upnp-ms" );
     url.setHost( m_device.uuid() );
     url.setPath( directory );
@@ -249,7 +249,7 @@ UpnpBrowseCollection::queryMaker()
 }
 
 Meta::TrackPtr
-UpnpBrowseCollection::trackForUrl( const KUrl &url )
+UpnpBrowseCollection::trackForUrl( const QUrl &url )
 {
     debug() << "TRACK FOR URL " << url;
     if( url.scheme() == "upnptrack" && url.host() == collectionId() )

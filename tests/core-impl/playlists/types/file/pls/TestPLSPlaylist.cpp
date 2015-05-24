@@ -59,7 +59,7 @@ void TestPLSPlaylist::initTestCase()
     CollectionManager::instance();
 
     const QString testPls = "data/playlists/test.pls";
-    const KUrl url = dataPath( testPls );
+    const QUrl url = dataPath( testPls );
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 

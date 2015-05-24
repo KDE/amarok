@@ -24,7 +24,7 @@
 #include "core/meta/support/MetaUtility.h"
 
 #include <kio/job.h>
-#include <kurl.h>
+#include <QUrl>
 #include <KDateTime>
 
 #include <QTextDocument>
@@ -431,7 +431,7 @@ bool PodcastReader::read( QIODevice *device )
 }
 
 bool
-PodcastReader::read( const KUrl &url )
+PodcastReader::read( const QUrl &url )
 {
     DEBUG_BLOCK
 
@@ -445,13 +445,13 @@ PodcastReader::read( const KUrl &url )
     connect( m_transferJob, SIGNAL(result(KJob*)),
              SLOT(downloadResult(KJob*)) );
 
-    connect( m_transferJob, SIGNAL(redirection(KIO::Job*,KUrl)),
-             SLOT(slotRedirection(KIO::Job*,KUrl)) );
+    connect( m_transferJob, SIGNAL(redirection(KIO::Job*,QUrl)),
+             SLOT(slotRedirection(KIO::Job*,QUrl)) );
 
     connect( m_transferJob, SIGNAL( permanentRedirection( KIO::Job *,
-                                    const KUrl &, const KUrl & ) ),
-             SLOT( slotPermanentRedirection( KIO::Job *, const KUrl &,
-                                             const KUrl & ) ) );
+                                    const QUrl &, const QUrl & ) ),
+             SLOT( slotPermanentRedirection( KIO::Job *, const QUrl &,
+                                             const QUrl & ) ) );
 
     QString description = i18n( "Importing podcast channel from %1", url.url() );
     if( m_channel )
@@ -989,7 +989,7 @@ PodcastReader::endLink()
 {
     // TODO: change to m_current->... when the field
     //       is moved to the PodcastMetaCommon class.
-    m_channel->setWebLink( KUrl( m_buffer ) );
+    m_channel->setWebLink( QUrl( m_buffer ) );
 }
 
 void
@@ -1219,7 +1219,7 @@ PodcastReader::beginEnclosure()
         return;
     }
 
-    KUrl url( str.toString() );
+    QUrl url( str.toString() );
 
     str = m_xmlReader.attributes().value( "length" );
 
@@ -1263,7 +1263,7 @@ PodcastReader::beginImage()
 {
     if( m_xmlReader.namespaceUri() == ITUNES_NS )
     {
-        m_channel->setImageUrl( KUrl( m_xmlReader.attributes().value( "href" ).toString() ) );
+        m_channel->setImageUrl( QUrl( m_xmlReader.attributes().value( "href" ).toString() ) );
     }
 }
 
@@ -1271,7 +1271,7 @@ void
 PodcastReader::endImageUrl()
 {
     // TODO save image data
-    m_channel->setImageUrl( KUrl( m_buffer ) );
+    m_channel->setImageUrl( QUrl( m_buffer ) );
 }
 
 void
@@ -1296,7 +1296,7 @@ PodcastReader::endNewFeedUrl()
 {
     if( m_xmlReader.namespaceUri() == ITUNES_NS )
     {
-        m_url = KUrl( m_buffer.trimmed() );
+        m_url = QUrl( m_buffer.trimmed() );
 
         if( m_channel && m_channel->url() != m_url )
         {
@@ -1445,11 +1445,11 @@ PodcastReader::beginAtomFeedLink()
     if( !hasAttribute( ATOM_NS, "rel" ) ||
             attribute( ATOM_NS, "rel" ) == "alternate" )
     {
-        m_channel->setWebLink( KUrl( attribute( ATOM_NS, "href" ).toString() ) );
+        m_channel->setWebLink( QUrl( attribute( ATOM_NS, "href" ).toString() ) );
     }
     else if( attribute( ATOM_NS, "rel" ) == "self" )
     {
-        m_url = KUrl( attribute( ATOM_NS, "href" ).toString() );
+        m_url = QUrl( attribute( ATOM_NS, "href" ).toString() );
 
         if( m_channel && m_channel->url() != m_url )
         {
@@ -1464,7 +1464,7 @@ PodcastReader::beginAtomEntryLink()
 {
     if( attribute( ATOM_NS, "rel" ) == "enclosure" )
     {
-        KUrl url( attribute( ATOM_NS, "href" ).toString() );
+        QUrl url( attribute( ATOM_NS, "href" ).toString() );
         int filesize = 0;
         QString mimeType;
 
@@ -1633,7 +1633,7 @@ PodcastReader::parsePubDate( const QString &dateString )
 }
 
 void
-PodcastReader::slotRedirection( KIO::Job * job, const KUrl & url )
+PodcastReader::slotRedirection( KIO::Job * job, const QUrl &url )
 {
     DEBUG_BLOCK
     Q_UNUSED( job );
@@ -1641,8 +1641,8 @@ PodcastReader::slotRedirection( KIO::Job * job, const KUrl & url )
 }
 
 void
-PodcastReader::slotPermanentRedirection( KIO::Job * job, const KUrl & fromUrl,
-        const KUrl & toUrl )
+PodcastReader::slotPermanentRedirection( KIO::Job * job, const QUrl &fromUrl,
+        const QUrl &toUrl )
 {
     DEBUG_BLOCK
     Q_UNUSED( job );

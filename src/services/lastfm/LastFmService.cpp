@@ -89,9 +89,9 @@ LastFmServiceFactory::config()
 }
 
 bool
-LastFmServiceFactory::possiblyContainsTrack( const KUrl &url ) const
+LastFmServiceFactory::possiblyContainsTrack( const QUrl &url ) const
 {
-    return url.protocol() == "lastfm";
+    return url.scheme() == "lastfm";
 }
 
 
@@ -340,7 +340,7 @@ LastFmService::onGetUserInfo()
                 {
                     debug() << "profile avatar: " <<lfm["user"][ "image" ].text();
                     AvatarDownloader* downloader = new AvatarDownloader();
-                    KUrl url( lfm["user"][ "image" ].text() );
+                    QUrl url( lfm["user"][ "image" ].text() );
                     downloader->downloadAvatar( m_config->username(),  url);
                     connect( downloader, SIGNAL(avatarDownloaded(QString,QPixmap)),
                                          SLOT(onAvatarDownloaded(QString,QPixmap)) );
@@ -526,7 +526,7 @@ void LastFmService::playCustomStation()
     }
 }
 
-void LastFmService::playLastFmStation( const KUrl &url )
+void LastFmService::playLastFmStation( const QUrl &url )
 {
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
     The::playlistController()->insertOptioned( track, Playlist::OnPlayMediaAction );

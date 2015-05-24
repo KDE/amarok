@@ -61,10 +61,10 @@ SqlPlaylist::~SqlPlaylist()
 {
 }
 
-KUrl
+QUrl
 SqlPlaylist::uidUrl() const
 {
-    return KUrl( QString( "amarok-sqlplaylistuid://%1").arg( m_dbId ) );
+    return QUrl( QString( "amarok-sqlplaylistuid://%1").arg( m_dbId ) );
 }
 
 QStringList
@@ -263,7 +263,7 @@ SqlPlaylist::loadTracks()
     for( int i = 0; i < resultRows; i++ )
     {
         QStringList row = result.mid( i*7, 7 );
-        KUrl url = KUrl( row[2] );
+        QUrl url = QUrl( row[2] );
 
         MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
 

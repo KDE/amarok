@@ -20,7 +20,7 @@
 #include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QList>
 #include <QObject>
@@ -96,7 +96,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
             This method will try to get a Track object for the given url. This method will return 0 if no Track object
             could be created for the url.
         */
-        Meta::TrackPtr trackForUrl( const KUrl &url );
+        Meta::TrackPtr trackForUrl( const QUrl &url );
 
         CollectionStatus collectionStatus( const QString &collectionId ) const;
 

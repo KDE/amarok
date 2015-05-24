@@ -37,7 +37,7 @@ ContentListJob::ContentListJob()
 {
 }
 
-void ContentListJob::setUrl( const KUrl &url )
+void ContentListJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }

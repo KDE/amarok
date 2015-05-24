@@ -103,7 +103,7 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
             currentHtml = currentHtml.replace( "{background_color}", PaletteHandler::highlightColor().lighter( 150 ).name());
             currentHtml = currentHtml.replace( "{border_color}", PaletteHandler::highlightColor().lighter( 150 ).name() );
             
-            m_webView->setHtml( currentHtml, KUrl( QString() ) );
+            m_webView->setHtml( currentHtml, QUrl( QString() ) );
         }
         else
         {

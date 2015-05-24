@@ -40,7 +40,7 @@
 #include <kio/job.h>
 #include <KInputDialog>
 #include <KLocale>
-#include <KUrl>
+#include <QUrl>
 
 #include <QFileInfo>
 
@@ -338,7 +338,7 @@ PlaylistManager::import( const QString& fromLocation )
         debug() << "ERROR: m_playlistFileProvider was null";
         return false;
     }
-    return m_playlistFileProvider->import( KUrl(fromLocation) );
+    return m_playlistFileProvider->import( QUrl(fromLocation) );
 }
 
 void

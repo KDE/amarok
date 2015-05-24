@@ -61,7 +61,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
 
         virtual QString name() const;
 
-        virtual KUrl playableUrl() const;
+        virtual QUrl playableUrl() const;
         virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
         virtual QString notPlayableReason() const;
@@ -147,7 +147,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
         void setType( const QString & type );
 
         void setLength( qint64 length );
-        void setPlayableUrl( const KUrl &url) { m_playableUrl = url; }
+        void setPlayableUrl( const QUrl &url) { m_playableUrl = url; }
 
         /**
          * Notifies observers about changes to metadata, one of the observers is media
@@ -183,7 +183,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
         qreal m_bpm;
         qreal m_replayGain;
         QString m_displayUrl;
-        KUrl m_playableUrl;
+        QUrl m_playableUrl;
 };
 
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceArtist : public Meta::Artist

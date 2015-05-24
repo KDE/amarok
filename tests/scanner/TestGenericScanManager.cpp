@@ -222,8 +222,8 @@ TestGenericScanManager::slotFailed( const QString& message )
 void
 TestGenericScanManager::fullScanAndWait()
 {
-    QList<KUrl> urls;
-    urls << KUrl::fromPath( m_tmpCollectionDir->name() );
+    QList<QUrl> urls;
+    urls << QUrl::fromLocalFile( m_tmpCollectionDir->name() );
 
     m_scanManager->requestScan( urls );
     waitScannerFinished();

@@ -65,7 +65,7 @@ QString UpnpCollectionBase::prettyName() const
     return m_device.friendlyName();
 }
 
-bool UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const
+bool UpnpCollectionBase::possiblyContainsTrack( const QUrl &url ) const
 {
     if( url.scheme() == "upnp-ms" )
 //         && url.host() == m_device.host()

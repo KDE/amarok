@@ -374,12 +374,12 @@ Dynamic::EchoNestBias::currentArtists( int position, const Meta::TrackList& play
 
 
 // this method shamelessly inspired by liblastfm/src/ws/ws.cpp
-KUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QString > params )
+QUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QString > params )
 {
     params.insert( "api_key", "DD9P0OV9OYFH1LCAE" );
     params.insert( "format", "xml" );
 
-    KUrl url;
+    QUrl url;
     url.setScheme( "http" );
     url.setHost( "developer.echonest.com" );
     url.setPath( "/api/v4/" + method );

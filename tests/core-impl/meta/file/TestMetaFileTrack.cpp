@@ -126,20 +126,20 @@ void TestMetaFileTrack::testSortableName()
 
 void TestMetaFileTrack::testPlayableUrl()
 {
-    const KUrl tempUrl = m_track->playableUrl();
+    const QUrl tempUrl = m_track->playableUrl();
     QCOMPARE( tempUrl.toLocalFile(), m_tmpFileName );
 }
 
 void TestMetaFileTrack::testPrettyUrl()
 {
-    KUrl tempUrl;
+    QUrl tempUrl;
     tempUrl = m_track->prettyUrl();
     QCOMPARE( tempUrl.toLocalFile(), m_tmpFileName );
 }
 
 void TestMetaFileTrack::testUidUrl()
 {
-    KUrl tempUrl;
+    QUrl tempUrl;
     tempUrl = m_track->uidUrl();
     QCOMPARE( tempUrl.toLocalFile(), m_tmpFileName );
 }

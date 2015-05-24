@@ -33,7 +33,7 @@
 
 #include <KLocale>
 #include <KTemporaryFile>
-#include <KUrl>
+#include <QUrl>
 #include <KMessageBox>
 
 #include <QFile>
@@ -42,7 +42,7 @@
 using namespace Playlists;
 
 PlaylistFilePtr
-Playlists::loadPlaylistFile( const KUrl &url, PlaylistFileProvider *provider )
+Playlists::loadPlaylistFile( const QUrl &url, PlaylistFileProvider *provider )
 {
     // note: this function can be called from out of process, so don't do any
     // UI stuff from this thread.
@@ -86,7 +86,7 @@ Playlists::loadPlaylistFile( const KUrl &url, PlaylistFileProvider *provider )
 }
 
 bool
-Playlists::exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bool relative,
+Playlists::exportPlaylistFile( const Meta::TrackList &list, const QUrl &path, bool relative,
                     const QList<int> &queued )
 {
     PlaylistFormat format = Playlists::getFormat( path );
@@ -143,16 +143,18 @@ Playlists::expand( Meta::TrackPtr track )
    return Playlists::PlaylistPtr::dynamicCast( loadPlaylistFile( track->uidUrl() ) );
 }
 
-KUrl
+QUrl
 Playlists::newPlaylistFilePath( const QString &fileExtension )
 {
     int trailingNumber = 1;
     KLocalizedString fileName = ki18n("Playlist_%1");
-    KUrl url( Amarok::saveLocation( "playlists" ) );
-    url.addPath( fileName.subs( trailingNumber ).toString() );
+    QUrl url( Amarok::saveLocation( "playlists" ) );
+    url = url.adjusted(QUrl::StripTrailingSlash);
+    url.setPath(url.path() + '/' + ( fileName.subs( trailingNumber ).toString() ));
 
     while( QFileInfo( url.path() ).exists() )
-        url.setFileName( fileName.subs( ++trailingNumber ).toString() );
+        url = url.adjusted(QUrl::RemoveFilename);
+        url.setPath(url.path() +  fileName.subs( ++trailingNumber ).toString() );
 
-    return KUrl( QString( "%1.%2" ).arg( url.path(), fileExtension ) );
+    return QUrl( QString( "%1.%2" ).arg( url.path(), fileExtension ) );
 }

@@ -17,7 +17,7 @@
 #ifndef LYRICS_SUGGESTIONS_LIST_WIDGET_H
 #define LYRICS_SUGGESTIONS_LIST_WIDGET_H
 
-#include <KUrl>
+#include <QUrl>
 #include <Plasma/ScrollWidget>
 
 class LyricsSuggestionItem;
@@ -25,7 +25,7 @@ class QGraphicsLinearLayout;
 
 struct LyricsSuggestion
 {
-    KUrl url;
+    QUrl url;
     QString title;
     QString artist;
 };
@@ -55,7 +55,7 @@ private:
 class LyricsSuggestionItem : public QGraphicsWidget
 {
     Q_OBJECT
-    Q_PROPERTY( KUrl url READ url )
+    Q_PROPERTY( QUrl url READ url )
     Q_PROPERTY( QString title READ title )
     Q_PROPERTY( QString artist READ artist )
 
@@ -65,7 +65,7 @@ public:
 
     QString artist() const;
     QString title() const;
-    KUrl url() const;
+    QUrl url() const;
 
 signals:
     void selected( const LyricsSuggestion &suggestion );
@@ -84,7 +84,7 @@ inline QString LyricsSuggestionItem::title() const
 inline QString LyricsSuggestionItem::artist() const
 { return m_data.artist; }
 
-inline KUrl LyricsSuggestionItem::url() const
+inline QUrl LyricsSuggestionItem::url() const
 { return m_data.url; }
 
 Q_DECLARE_METATYPE( LyricsSuggestion )

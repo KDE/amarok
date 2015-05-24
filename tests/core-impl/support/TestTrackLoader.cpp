@@ -65,7 +65,7 @@ TestTrackLoader::testFullMetadataInit()
     {
         TrackLoader *loader = new TrackLoader( TrackLoader::FullMetadataRequired );
         QSignalSpy spy( loader, SIGNAL(finished(Meta::TrackList)) );
-        loader->init( KUrl( pair.first ) );
+        loader->init( QUrl( pair.first ) );
         if( spy.isEmpty() )
             QVERIFY2( QTest::kWaitForSignal( loader, SIGNAL(finished(Meta::TrackList)), 5000 ),
                     "loader did not finish within timeout" );
@@ -90,7 +90,7 @@ TestTrackLoader::testInit()
 {
     TrackLoader *loader1 = new TrackLoader();
     QSignalSpy spy1( loader1, SIGNAL(finished(Meta::TrackList)) );
-    loader1->init( KUrl( dataPath( "data/audio" ) ) ); // test the convenience overload
+    loader1->init( QUrl( dataPath( "data/audio" ) ) ); // test the convenience overload
     if( spy1.isEmpty() )
         QVERIFY2( QTest::kWaitForSignal( loader1, SIGNAL(finished(Meta::TrackList)), 5000 ),
                   "loader1 did not finish within timeout" );
@@ -107,7 +107,7 @@ TestTrackLoader::testInit()
 
     TrackLoader *loader2 = new TrackLoader();
     QSignalSpy spy2( loader2, SIGNAL(finished(Meta::TrackList)) );
-    loader2->init( QList<KUrl>() << KUrl( dataPath( "data/audio/album2" ) ) );
+    loader2->init( QList<QUrl>() << QUrl( dataPath( "data/audio/album2" ) ) );
     if( spy2.isEmpty() )
         QVERIFY2( QTest::kWaitForSignal( loader2, SIGNAL(finished(Meta::TrackList)), 5000 ),
                   "loader2 did not finish within timeout" );
@@ -122,10 +122,10 @@ TestTrackLoader::testInitWithPlaylists()
 {
     TrackLoader *loader = new TrackLoader();
     QSignalSpy spy( loader, SIGNAL(finished(Meta::TrackList)) );
-    QList<KUrl> urls;
-    urls << KUrl( dataPath( "data/playlists/test.asx" ) )
-         << KUrl( dataPath( "data/audio/album" ) )
-         << KUrl( dataPath( "data/playlists/test.xspf" ) );
+    QList<QUrl> urls;
+    urls << QUrl( dataPath( "data/playlists/test.asx" ) )
+         << QUrl( dataPath( "data/audio/album" ) )
+         << QUrl( dataPath( "data/playlists/test.xspf" ) );
     loader->init( urls );
     if( spy.isEmpty() )
         QVERIFY2( QTest::kWaitForSignal( loader, SIGNAL(finished(Meta::TrackList)), 5000 ),
@@ -148,8 +148,8 @@ TestTrackLoader::testDirectlyPassingPlaylists()
     TrackLoader *loader = new TrackLoader();
     QSignalSpy spy( loader, SIGNAL(finished(Meta::TrackList)) );
     PlaylistList playlists;
-    playlists << PlaylistPtr::staticCast( loadPlaylistFile( KUrl( dataPath( "data/playlists/test.asx" ) ) ) )
-              << PlaylistPtr::staticCast( loadPlaylistFile( KUrl( dataPath( "data/playlists/test.xspf" ) ) ) );
+    playlists << PlaylistPtr::staticCast( loadPlaylistFile( QUrl( dataPath( "data/playlists/test.asx" ) ) ) )
+              << PlaylistPtr::staticCast( loadPlaylistFile( QUrl( dataPath( "data/playlists/test.xspf" ) ) ) );
     loader->init( playlists );
     if( spy.isEmpty() )
         QVERIFY2( QTest::kWaitForSignal( loader, SIGNAL(finished(Meta::TrackList)), 5000 ),

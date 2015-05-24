@@ -24,7 +24,7 @@
 
 #include "knowledgebase.h"
 
-#include <kurl.h>
+#include <QUrl>
 #include <kjob.h>
 
 namespace KIO {
@@ -39,7 +39,7 @@ class ATTICA_EXPORT KnowledgeBaseListJob : public KJob
   public:
     KnowledgeBaseListJob();
 
-    void setUrl( const KUrl & );
+    void setUrl( const QUrl & );
 
     void start();
 
@@ -53,7 +53,7 @@ class ATTICA_EXPORT KnowledgeBaseListJob : public KJob
     void slotJobData( KIO::Job *job, const QByteArray &data );
 
   private:
-    KUrl m_url;
+    QUrl m_url;
     KIO::Job *m_job;
     QByteArray m_data;
 

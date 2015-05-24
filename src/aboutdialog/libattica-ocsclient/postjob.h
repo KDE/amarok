@@ -24,7 +24,7 @@
 #include "atticaclient_export.h"
 
 #include <kjob.h>
-#include <kurl.h>
+#include <QUrl>
 
 namespace KIO {
 class Job;
@@ -38,7 +38,7 @@ class ATTICA_EXPORT PostJob : public KJob
   public:
     PostJob();
 
-    void setUrl( const KUrl & );
+    void setUrl( const QUrl & );
     void setData( const QString &name, const QString &value );
 
     void start();
@@ -53,7 +53,7 @@ class ATTICA_EXPORT PostJob : public KJob
     void slotJobData( KIO::Job *, const QByteArray & );
     
   private:
-    KUrl m_url;
+    QUrl m_url;
     QMap<QString,QString> m_data;
     KIO::Job *m_job;
     QString m_responseData;

@@ -210,8 +210,8 @@ CollectionSetup::isDirInCollection( const QString& path ) const
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
 
-    KUrl url = KUrl( path );
-    KUrl parentUrl;
+    QUrl url = QUrl( path );
+    QUrl parentUrl;
     foreach( const QString &dir, collectionFolders )
     {
         debug() << "Collection Location: " << dir;

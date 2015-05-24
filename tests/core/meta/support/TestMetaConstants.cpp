@@ -403,7 +403,7 @@ TestMetaConstants::testValueForField()
 
     // Set up mock track details and create mock track
     QVariantMap trackData;
-    trackData[ Meta::Field::URL ] = KUrl( "file:///test/url" );
+    trackData[ Meta::Field::URL ] = QUrl("file:///test/url");
     trackData[ Meta::Field::TITLE ] = "test track";
     trackData[ Meta::Field::COMMENT ] = "test comment" ;
     trackData[ Meta::Field::TRACKNUMBER ] = 1;
@@ -449,7 +449,7 @@ TestMetaConstants::testValueForField()
 
     // Case 0
     QVariant trackValue = valueForField( qint64( 0 ), trackPtr );
-    QVERIFY( trackValue.toStringList().contains( trackData.value( Meta::Field::URL ).value<KUrl>().path()
+    QVERIFY( trackValue.toStringList().contains( trackData.value( Meta::Field::URL ).value<QUrl>().path()
         + trackData.value( Meta::Field::TITLE ).toString()
         + trackData.value( Meta::Field::COMMENT ).toString() ) );
     QVERIFY( trackValue.toStringList().contains( testAlbum->name() ) );
@@ -458,7 +458,7 @@ TestMetaConstants::testValueForField()
 
     // Case Meta::valUrl
     trackValue = valueForField( Meta::valUrl, trackPtr );
-    QVERIFY( trackValue.toString() == trackData.value( Meta::Field::URL ).value<KUrl>().path() );
+    QVERIFY( trackValue.toString() == trackData.value( Meta::Field::URL ).value<QUrl>().path() );
 
     // Case Meta::valTitle
     trackValue = valueForField( Meta::valTitle, trackPtr );

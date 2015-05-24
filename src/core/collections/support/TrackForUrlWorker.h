@@ -21,7 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/meta/forward_declarations.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <threadweaver/Job.h>
 
@@ -35,7 +35,7 @@ class AMAROK_CORE_EXPORT TrackForUrlWorker : public ThreadWeaver::Job
 {
     Q_OBJECT
 public:
-    TrackForUrlWorker( const KUrl &url );
+    TrackForUrlWorker( const QUrl &url );
     TrackForUrlWorker( const QString &url );
     ~TrackForUrlWorker();
 
@@ -44,7 +44,7 @@ signals:
     void finishedLookup( const Meta::TrackPtr &track );
 
 protected:
-    KUrl m_url;
+    QUrl m_url;
     Meta::TrackPtr m_track;
 
 private slots:

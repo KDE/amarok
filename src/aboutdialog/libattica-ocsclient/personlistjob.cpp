@@ -37,7 +37,7 @@ PersonListJob::PersonListJob()
 {
 }
 
-void PersonListJob::setUrl( const KUrl &url )
+void PersonListJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }

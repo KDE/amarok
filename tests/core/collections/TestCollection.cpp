@@ -119,7 +119,7 @@ void
 TestCollection::testTrackForUrl()
 {
     // Always returns a shared pointer pointing to null by default
-    KUrl url;
+    QUrl url;
     QVERIFY( m_trackProvider->trackForUrl( url ).isNull() );
 }
 

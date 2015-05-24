@@ -27,7 +27,7 @@
 #include "collectionscanner/Directory.h"
 
 #include <threadweaver/Job.h>
-#include <KUrl>
+#include <QUrl>
 
 #include <QObject>
 #include <QString>

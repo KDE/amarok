@@ -59,7 +59,7 @@ QString Mp3tunesServiceCollection::prettyName() const
 }
 
 bool
-Mp3tunesServiceCollection::possiblyContainsTrack(const KUrl & url) const
+Mp3tunesServiceCollection::possiblyContainsTrack(const QUrl &url) const
 {
     QRegExp rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
     int matches = rx.indexIn( url.url() );
@@ -70,7 +70,7 @@ Mp3tunesServiceCollection::possiblyContainsTrack(const KUrl & url) const
 }
 
 Meta::TrackPtr
-Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
+Mp3tunesServiceCollection::trackForUrl( const QUrl &url )
 {
     DEBUG_BLOCK
     if( !m_locker->authenticated() )

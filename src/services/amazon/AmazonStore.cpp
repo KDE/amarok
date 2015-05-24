@@ -338,7 +338,7 @@ AmazonStore::newSearchRequest( const QString request )
     }
 
     m_searchWidget->searchStarted();
-    KIO::FileCopyJob *requestJob = KIO::file_copy( requestUrl, KUrl( tempFile.fileName() ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
+    KIO::FileCopyJob *requestJob = KIO::file_copy( requestUrl, QUrl( tempFile.fileName() ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
     connect( requestJob, SIGNAL(result(KJob*)), this, SLOT(parseReply(KJob*)) );
     requestJob->start();

@@ -23,7 +23,7 @@
 
 #include "widgets/ElidingButton.h"
 
-class KUrl;
+class QUrl;
 class QEvent;
 class KUrlNavigator;
 

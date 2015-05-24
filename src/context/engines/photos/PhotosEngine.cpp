@@ -169,7 +169,7 @@ PhotosEngine::update( bool force )
 
         // Query flickr, order by relevance, 10 max
         // Flickr :http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=ARTIST&per_page=20
-        KUrl flickrUrl;
+        QUrl flickrUrl;
         flickrUrl.setScheme( "http" );
         flickrUrl.setHost( "api.flickr.com" );
         flickrUrl.setPath( "/services/rest/" );
@@ -184,13 +184,13 @@ PhotosEngine::update( bool force )
 
         m_flickrUrls << flickrUrl;
         The::networkAccessManager()->getData( flickrUrl, this,
-             SLOT(resultFlickr(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+             SLOT(resultFlickr(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
     }
 }
 
 void
-PhotosEngine::resultFlickr( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+PhotosEngine::resultFlickr( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( !m_flickrUrls.contains( url ) )
         return;
@@ -239,12 +239,12 @@ PhotosEngine::photosListFromXml( QXmlStreamReader &xml )
             QStringRef server = attr.value( QLatin1String("server") );
             QStringRef title  = attr.value( QLatin1String("title") );
 
-            KUrl photoUrl;
+            QUrl photoUrl;
             photoUrl.setScheme( "http" );
             photoUrl.setHost( QString("farm%1.static.flickr.com").arg( farm.toString() ) );
             photoUrl.setPath( QString("/%1/%2_%3.jpg").arg( server.toString(), id.toString(), secret.toString() ) );
 
-            KUrl pageUrl;
+            QUrl pageUrl;
             pageUrl.setScheme( "http" );
             pageUrl.setHost( QLatin1String("www.flickr.com") );
             pageUrl.setPath( QString("/photos/%1/%2").arg( owner.toString(), id.toString() ) );

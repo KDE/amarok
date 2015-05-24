@@ -176,7 +176,7 @@ public:
     virtual QList<QAction *> collectionActions() { return QList<QAction*> (); }
 
 signals:
-    void gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> &urls );
+    void gotCopyableUrls( const QMap<Meta::TrackPtr, QUrl> &urls );
     void databaseWritten( bool succeeded );
 
     void deleteTracksDone();

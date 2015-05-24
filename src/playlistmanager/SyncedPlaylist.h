@@ -30,7 +30,7 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual ~SyncedPlaylist() {}
 
         //Playlists::Playlist methods
-        virtual KUrl uidUrl() const;
+        virtual QUrl uidUrl() const;
         virtual QString name() const;
         virtual QString prettyName() const;
         virtual Playlists::PlaylistProvider *provider() const;

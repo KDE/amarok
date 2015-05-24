@@ -140,7 +140,7 @@ GpodderProvider::~GpodderProvider()
 }
 
 bool
-GpodderProvider::possiblyContainsTrack( const KUrl &url ) const
+GpodderProvider::possiblyContainsTrack( const QUrl &url ) const
 {
     DEBUG_BLOCK
 
@@ -157,7 +157,7 @@ GpodderProvider::possiblyContainsTrack( const KUrl &url ) const
 }
 
 Meta::TrackPtr
-GpodderProvider::trackForUrl( const KUrl &url )
+GpodderProvider::trackForUrl( const QUrl &url )
 {
     DEBUG_BLOCK
 
@@ -194,7 +194,7 @@ GpodderProvider::episodeForGuid( const QString &guid )
 }
 
 void
-GpodderProvider::addPodcast( const KUrl &url )
+GpodderProvider::addPodcast( const QUrl &url )
 {
     Q_UNUSED( url )
 }
@@ -1002,14 +1002,14 @@ GpodderProvider::requestUrlResolve( Podcasts::GpodderPodcastChannelPtr channel )
     connect( m_resolveUrlJob, SIGNAL(result(KJob*)),
              SLOT(urlResolveFinished(KJob*)) );
     connect( m_resolveUrlJob,
-             SIGNAL(permanentRedirection(KIO::Job*,KUrl,KUrl)),
-             SLOT(urlResolvePermanentRedirection(KIO::Job*,KUrl,KUrl)) );
+             SIGNAL(permanentRedirection(KIO::Job*,QUrl,QUrl)),
+             SLOT(urlResolvePermanentRedirection(KIO::Job*,QUrl,QUrl)) );
 
     m_resolvedPodcasts.insert( m_resolveUrlJob, channel );
 }
 
 void
-GpodderProvider::urlResolvePermanentRedirection( KIO::Job *job, const KUrl &fromUrl, const KUrl &toUrl )
+GpodderProvider::urlResolvePermanentRedirection( KIO::Job *job, const QUrl &fromUrl, const QUrl &toUrl )
 {
     DEBUG_BLOCK
 
@@ -1296,9 +1296,9 @@ void GpodderProvider::saveCachedPodcastsChanges()
     }
 }
 
-KUrl GpodderProvider::resolvedPodcastUrl( const PodcastEpisodePtr episode )
+QUrl GpodderProvider::resolvedPodcastUrl( const PodcastEpisodePtr episode )
 {
-    KUrl podcastUrl = episode->channel()->url();
+    QUrl podcastUrl = episode->channel()->url();
 
     if( m_redirectionUrlMap.contains( podcastUrl ) )
         podcastUrl = m_redirectionUrlMap.value( podcastUrl );

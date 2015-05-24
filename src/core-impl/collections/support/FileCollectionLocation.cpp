@@ -71,7 +71,7 @@ void FileCollectionLocation::startRemoveJobs()
     while ( !m_removetracks.isEmpty() )
     {
         Meta::TrackPtr track = m_removetracks.takeFirst();
-        KUrl src = track->playableUrl();
+        QUrl src = track->playableUrl();
 
         KIO::DeleteJob *job = 0;
 

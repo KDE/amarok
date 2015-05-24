@@ -61,8 +61,8 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         virtual ~IpodCollection();
 
         // TrackProvider methods:
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         // CollectionBase methods:
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;

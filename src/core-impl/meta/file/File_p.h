@@ -114,7 +114,7 @@ public:
     {}
 
 public:
-    KUrl url;
+    QUrl url;
 
     Meta::AlbumPtr album;
     Meta::ArtistPtr artist;

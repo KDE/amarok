@@ -21,12 +21,12 @@
 #include "../PlaydarMeta.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QObject>
 
 Playdar::ProxyResolver::ProxyResolver( Collections::PlaydarCollection *collection,
-                                       const KUrl &url, MetaProxy::TrackPtr track )
+                                       const QUrl &url, MetaProxy::TrackPtr track )
     : m_collection( collection )
     , m_proxyTrack( track )
     , m_controller( new Playdar::Controller( true ) )
@@ -36,9 +36,9 @@ Playdar::ProxyResolver::ProxyResolver( Collections::PlaydarCollection *collectio
              this, SLOT(slotPlaydarError(Playdar::Controller::ErrorState)) );
     connect( m_controller, SIGNAL(queryReady(Playdar::Query*)),
              this, SLOT(collectQuery(Playdar::Query*)) );
-    m_controller->resolve( url.queryItem( "artist" ),
-                           url.queryItem( "album" ),
-                           url.queryItem( "title" ) );
+    m_controller->resolve( QUrlQuery(url).queryItemValue( "artist" ),
+                           QUrlQuery(url).queryItemValue( "album" ),
+                           QUrlQuery(url).queryItemValue( "title" ) );
 }
 
 Playdar::ProxyResolver::~ProxyResolver()

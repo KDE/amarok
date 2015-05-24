@@ -57,7 +57,7 @@ class UpnpBrowseCollection : public UpnpCollectionBase
     virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
     virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-    Meta::TrackPtr trackForUrl( const KUrl &url );
+    Meta::TrackPtr trackForUrl( const QUrl &url );
     virtual KIcon icon() const { return KIcon("network-server"); }
 
     QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }

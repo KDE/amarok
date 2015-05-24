@@ -60,7 +60,7 @@ AmpacheServiceCollection::prettyName() const
 }
 
 bool
-AmpacheServiceCollection::possiblyContainsTrack( const KUrl &url ) const
+AmpacheServiceCollection::possiblyContainsTrack( const QUrl &url ) const
 {
     return url.url().contains( m_server );
 }
@@ -72,7 +72,7 @@ AmpacheServiceCollection::slotAuthenticationNeeded()
 }
 
 Meta::TrackPtr
-AmpacheServiceCollection::trackForUrl( const KUrl &url )
+AmpacheServiceCollection::trackForUrl( const QUrl &url )
 {
     MetaProxy::TrackPtr trackptr( new MetaProxy::Track( url.url(), MetaProxy::Track::ManualLookup ) );
     AmpacheTrackForUrlWorker *worker = new AmpacheTrackForUrlWorker( url, trackptr,
@@ -135,7 +135,7 @@ void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
     album->setAlbumArtist( artistPtr );
 }
 
-AmpacheTrackForUrlWorker::AmpacheTrackForUrlWorker( const KUrl &url,
+AmpacheTrackForUrlWorker::AmpacheTrackForUrlWorker( const QUrl &url,
                                                     MetaProxy::TrackPtr track,
                                                     const QString &server,
                                                     const QString &sessionId,

@@ -124,8 +124,8 @@ public:
             if( fileBrowser )
             {
                 //get the path of the parent directory of the file
-                KUrl playableUrl = m_track->playableUrl();
-                fileBrowser->setDir( playableUrl.directory() );       
+                QUrl playableUrl = m_track->playableUrl();
+                fileBrowser->setDir( playableUrl.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash).path() );       
             }
         }
     }
@@ -135,7 +135,7 @@ private:
 };
 
 
-Track::Track( const KUrl &url )
+Track::Track( const QUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
@@ -165,7 +165,7 @@ Track::name() const
     return "This is a bug!";
 }
 
-KUrl
+QUrl
 Track::playableUrl() const
 {
     return d->url;
@@ -404,7 +404,7 @@ Track::type() const
 }
 
 bool
-Track::isTrack( const KUrl &url )
+Track::isTrack( const QUrl &url )
 {
     // some playlists lay under audio/ mime category, filter them
     if( Playlists::isPlaylist( url ) )

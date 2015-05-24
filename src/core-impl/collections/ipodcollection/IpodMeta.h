@@ -57,7 +57,7 @@ namespace IpodMeta
             virtual QString name() const;
 
             // Meta::Track methods:
-            virtual KUrl playableUrl() const;
+            virtual QUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
             virtual QString notPlayableReason() const;

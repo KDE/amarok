@@ -56,13 +56,13 @@ MediaDeviceCollectionLocation::isWritable() const
 void
 MediaDeviceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
-    connect( m_handler, SIGNAL(gotCopyableUrls(QMap<Meta::TrackPtr,KUrl>)),SLOT(slotGetKIOCopyableUrlsDone(QMap<Meta::TrackPtr,KUrl>)) );
+    connect( m_handler, SIGNAL(gotCopyableUrls(QMap<Meta::TrackPtr,QUrl>)),SLOT(slotGetKIOCopyableUrlsDone(QMap<Meta::TrackPtr,QUrl>)) );
     m_handler->getCopyableUrls( tracks );
 }
 
 
 void
-MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                                      const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK

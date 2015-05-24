@@ -22,7 +22,7 @@
 #include "core/support/Debug.h"
 #include <core/storage/SqlStorage.h>
 
-#include <KUrl>
+#include <QUrl>
 #include <Solid/Device>
 #include <Solid/StorageAccess>
 #include <Solid/NetworkShare>
@@ -75,14 +75,15 @@ const QString &SmbDeviceHandler::getDevicePath() const
     return m_mountPoint;
 }
 
-void SmbDeviceHandler::getURL( KUrl &absolutePath, const KUrl &relativePath )
+void SmbDeviceHandler::getURL( QUrl &absolutePath, const QUrl &relativePath )
 {
     absolutePath.setPath( m_mountPoint );
-    absolutePath.addPath( relativePath.path() );
+    absolutePath = absolutePath.adjusted(QUrl::StripTrailingSlash);
+    absolutePath.setPath(absolutePath.path() + '/' + ( relativePath.path() ));
     absolutePath.cleanPath();
 }
 
-void SmbDeviceHandler::getPlayableURL( KUrl &absolutePath, const KUrl &relativePath )
+void SmbDeviceHandler::getPlayableURL( QUrl &absolutePath, const QUrl &relativePath )
 {
     getURL( absolutePath, relativePath );
 }

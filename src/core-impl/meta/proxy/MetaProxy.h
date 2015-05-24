@@ -56,7 +56,7 @@ namespace MetaProxy
              * and you are responsible to call lookupTrack() once it is feasible. This way
              * you can also optionally define which TrackProvider will be used.
              */
-            Track( const KUrl &url, LookupType lookupType = AutomaticLookup );
+            Track( const QUrl &url, LookupType lookupType = AutomaticLookup );
             virtual ~Track();
 
             /**
@@ -81,7 +81,7 @@ namespace MetaProxy
             virtual QString sortableName() const;
 
         // methods inherited from Meta::Track
-            virtual KUrl playableUrl() const;
+            virtual QUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
             virtual QString notPlayableReason() const;

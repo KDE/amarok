@@ -22,7 +22,7 @@
 #include "MemoryCollection.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QAction>
 #include <QObject>
@@ -81,8 +81,8 @@ public:
 
     virtual CollectionLocation* location();
 
-    virtual bool possiblyContainsTrack( const KUrl &url ) const;
-    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+    virtual bool possiblyContainsTrack( const QUrl &url ) const;
+    virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
     void cdRemoved();
 
@@ -102,7 +102,7 @@ private:
     void readAudioCdSettings();
 
     // Helper function to build the audiocd url.
-    KUrl audiocdUrl( const QString &path = "" ) const;
+    QUrl audiocdUrl( const QString &path = "" ) const;
     qint64 trackLength( int i ) const;
 
     /**
@@ -115,7 +115,7 @@ private:
 
     void updateProxyTracks();
 
-    QMap<int, KUrl> m_cddbTextFiles;
+    QMap<int, QUrl> m_cddbTextFiles;
 
     QString m_cdName;
     QString m_discCddbId;
@@ -126,7 +126,7 @@ private:
     QString m_fileNamePattern;
     QString m_albumNamePattern;
 
-    QMap<KUrl, MetaProxy::Track*> m_proxyMap;
+    QMap<QUrl, MetaProxy::Track*> m_proxyMap;
 };
 
 } //namespace Collections

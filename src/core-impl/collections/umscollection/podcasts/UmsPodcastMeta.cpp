@@ -61,13 +61,13 @@ UmsPodcastEpisode::~UmsPodcastEpisode()
 }
 
 void
-UmsPodcastEpisode::setLocalUrl( const KUrl &localUrl )
+UmsPodcastEpisode::setLocalUrl( const QUrl &localUrl )
 {
     m_localUrl = localUrl;
     //TODO: load local file
 }
 
-KUrl
+QUrl
 UmsPodcastEpisode::playableUrl() const
 {
     if( m_localFile.isNull() )
@@ -243,7 +243,7 @@ UmsPodcastChannel::addUmsEpisode( UmsPodcastEpisodePtr umsEpisode )
 }
 
 void
-UmsPodcastChannel::setPlaylistFileSource( const KUrl &playlistFilePath )
+UmsPodcastChannel::setPlaylistFileSource( const QUrl &playlistFilePath )
 {
     m_playlistFilePath = playlistFilePath;
     m_playlistFile = Playlists::loadPlaylistFile( playlistFilePath );

@@ -48,7 +48,7 @@ class UpnpTrack : public Meta::Track
 
         virtual QString name() const;
 
-        virtual KUrl playableUrl() const;
+        virtual QUrl playableUrl() const;
         virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
         virtual QString notPlayableReason() const;
@@ -156,7 +156,7 @@ class UpnpAlbum : public QObject, public Meta::Album
 
         virtual bool hasImage( int size = 0 ) const;
         virtual QImage image( int size = 0 ) const;
-        virtual KUrl imageLocation( int size = 0 );
+        virtual QUrl imageLocation( int size = 0 );
 
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
@@ -164,7 +164,7 @@ class UpnpAlbum : public QObject, public Meta::Album
         void addTrack( UpnpTrackPtr track );
         void removeTrack( UpnpTrackPtr track );
         void setAlbumArtist( UpnpArtistPtr artist );
-        void setAlbumArtUrl( const KUrl &url );
+        void setAlbumArtUrl( const QUrl &url );
 
     private:
         QString m_name;
@@ -172,7 +172,7 @@ class UpnpAlbum : public QObject, public Meta::Album
         TrackList m_tracks;
         bool m_isCompilation;
         UpnpArtistPtr m_albumArtist;
-        KUrl m_albumArtUrl;
+        QUrl m_albumArtUrl;
 };
 
 class UpnpGenre : public Meta::Genre

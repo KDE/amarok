@@ -20,7 +20,7 @@
 #include "amarok_export.h"
 #include "network/NetworkAccessManagerProxy.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QGraphicsLayoutItem>
 #include <QGraphicsPixmapItem>
@@ -52,7 +52,7 @@ class AMAROK_EXPORT DropPixmapItem : public QObject, public QGraphicsPixmapItem
         /**
         * Result of the image fetching stuff
         */
-        void imageDownloadResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+        void imageDownloadResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
         
     protected slots:
         /**
@@ -61,7 +61,7 @@ class AMAROK_EXPORT DropPixmapItem : public QObject, public QGraphicsPixmapItem
         virtual void dropEvent( QGraphicsSceneDragDropEvent* );
 
     private:
-        KUrl m_url;
+        QUrl m_url;
 
 };
 

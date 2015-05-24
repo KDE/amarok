@@ -64,8 +64,8 @@ class TabsEngine : public DataEngine
         /**
         *   handling of tab data search results from ultimateguitar.com
         */
-        void resultUltimateGuitarSearch( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-        void resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+        void resultUltimateGuitarSearch( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+        void resultUltimateGuitarTab( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
         /**
         *   This method will send the info to the applet and order them if every jobs are finished
@@ -103,7 +103,7 @@ class TabsEngine : public DataEngine
         /**
          * Set containing urls of active jobs
          */
-        QSet < const KUrl > m_urls;
+        QSet < const QUrl > m_urls;
 
         /**
          * Holds artist and title name of the current track

@@ -131,7 +131,7 @@ ScriptsConfig::installLocalScript()
     if( response == KMessageBox::Cancel )
         return;
 
-    QString filePath = KFileDialog::getOpenFileName( KUrl(), QString(), this, i18n( "Select Archived Script" ) );
+    QString filePath = KFileDialog::getOpenFileName( QUrl(), QString(), this, i18n( "Select Archived Script" ) );
     if( filePath.isEmpty() )
         return;
 

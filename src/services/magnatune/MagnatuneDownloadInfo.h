@@ -17,7 +17,7 @@
 #ifndef MAGNATUNE_DOWNLOAD_INFO_H
 #define MAGNATUNE_DOWNLOAD_INFO_H
 
-#include <kurl.h>
+#include <QUrl>
 
 #include <QDomElement>
 #include <qmap.h>
@@ -62,7 +62,7 @@ public:
     void setUnpackUrl( const QString &unpackUrl );
     void setAlbumCode( const QString & albumCode );
     bool isReadyForDownload();
-    KUrl completeDownloadUrl();
+    QUrl completeDownloadUrl();
     QString unpackLocation();
 
 

@@ -42,7 +42,7 @@
 #include <KMenuBar>
 #include <KStandardDirs>  //locate()
 #include <KTemporaryFile>
-#include <KUrl>
+#include <QUrl>
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QDateTime>
@@ -325,7 +325,7 @@ bool MagnatuneStore::updateMagnatuneList()
 
     m_tempFileName = tempFile.fileName();
 
-    m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
+    m_listDownloadJob = KIO::file_copy( QUrl("http://magnatune.com/info/album_info_xml.bz2"),  QUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
     Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com database..." ), this, SLOT(listDownloadCancelled()) );
 
     connect( m_listDownloadJob, SIGNAL(result(KJob*)),
@@ -509,7 +509,7 @@ void MagnatuneStore::polish()
         The::amarokUrlHandler()->registerRunner( runner, runner->command() );
     }
 
-    const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
+    const QUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
     QString imagePath = url.url();
 
     MagnatuneInfoParser * parser = dynamic_cast<MagnatuneInfoParser *> ( infoParser() );
@@ -578,7 +578,7 @@ void MagnatuneStore::setStreamType( int type )
 
 void MagnatuneStore::checkForUpdates()
 {
-    m_updateTimestampDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/info/last_update_timestamp" ), KIO::Reload, KIO::HideProgressInfo );
+    m_updateTimestampDownloadJob = KIO::storedGet( QUrl("http://magnatune.com/info/last_update_timestamp"), KIO::Reload, KIO::HideProgressInfo );
     connect( m_updateTimestampDownloadJob, SIGNAL(result(KJob*)), SLOT(timestampDownloadComplete(KJob*)) );
 }
 
@@ -701,7 +701,7 @@ void MagnatuneStore::addToFavorites( const QString &sku )
 
     debug() << "favorites url: " << url;
 
-    m_favoritesJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    m_favoritesJob = KIO::storedGet( QUrl( url ), KIO::Reload, KIO::HideProgressInfo );
     connect( m_favoritesJob, SIGNAL(result(KJob*)), SLOT(favoritesResult(KJob*)) );
 }
 
@@ -718,7 +718,7 @@ void MagnatuneStore::removeFromFavorites( const QString &sku )
 
     debug() << "favorites url: " << url;
 
-    m_favoritesJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    m_favoritesJob = KIO::storedGet( QUrl( url ), KIO::Reload, KIO::HideProgressInfo );
     connect( m_favoritesJob, SIGNAL(result(KJob*)), SLOT(favoritesResult(KJob*)) );
 }
 

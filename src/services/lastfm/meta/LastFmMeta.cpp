@@ -118,16 +118,16 @@ Track::sortableName() const
     return name();
 }
 
-KUrl
+QUrl
 Track::playableUrl() const
 {
     return d->lastFmUri.toString();
 }
 
-KUrl
+QUrl
 Track::internalUrl() const
 {
-    return KUrl( d->trackPath );
+    return QUrl( d->trackPath );
 }
 
 QString

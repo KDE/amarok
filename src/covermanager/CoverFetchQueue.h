@@ -21,7 +21,7 @@
 #include "CoverFetchUnit.h"
 
 #include <KIO/Job>
-#include <KUrl>
+#include <QUrl>
 
 #include <QByteArray>
 #include <QList>

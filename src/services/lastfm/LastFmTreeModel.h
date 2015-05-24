@@ -21,7 +21,7 @@
 
 #include "core/meta/forward_declarations.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QAbstractItemModel>
 #include <QPixmap>
@@ -85,7 +85,7 @@ enum SortOrder
 }
 
 class LastFmTreeItem;
-class KUrl;
+class QUrl;
 class WsReply;
 
 
@@ -119,7 +119,7 @@ private slots:
 private:
     void setupModelData( LastFmTreeItem *parent );
 
-    QIcon avatar( const QString &username, const KUrl &avatarUrl ) const;
+    QIcon avatar( const QString &username, const QUrl &avatarUrl ) const;
     QString mapTypeToUrl( LastFm::Type type, const QString &key = "" );
 
     void appendUserStations( LastFmTreeItem* item, const QString& user );
@@ -156,11 +156,11 @@ public:
         return mType;
     }
 
-    KUrl avatarUrl() const
+    QUrl avatarUrl() const
     {
         return avatar;
     }
-    void setAvatarUrl( const KUrl &url )
+    void setAvatarUrl( const QUrl &url )
     {
         avatar = url;
     }
@@ -171,7 +171,7 @@ private:
     LastFmTreeItem *parentItem;
     QVariant itemData;
     QString mUrl;
-    KUrl avatar;
+    QUrl avatar;
 };
 
 #endif

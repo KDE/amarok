@@ -52,8 +52,8 @@ namespace Collections {
         virtual QString prettyName() const;
         virtual KIcon icon() const;
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         virtual QueryMaker* queryMaker();
 

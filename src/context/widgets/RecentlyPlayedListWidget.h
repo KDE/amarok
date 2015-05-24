@@ -21,7 +21,7 @@
 #include "core/meta/forward_declarations.h"
 
 #include <KIcon>
-#include <KUrl>
+#include <QUrl>
 #include <Plasma/ScrollWidget>
 
 #include <QDateTime>

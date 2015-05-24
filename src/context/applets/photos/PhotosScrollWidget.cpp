@@ -120,7 +120,7 @@ void PhotosScrollWidget::setPhotosInfoList( const PhotosInfo::List &list )
         if( m_currentlist.contains( item ) )
             continue;
 
-        KUrl url = item->urlphoto;
+        QUrl url = item->urlphoto;
         if( url.isValid() )
         {
             QPixmap pixmap;
@@ -132,7 +132,7 @@ void PhotosScrollWidget::setPhotosInfoList( const PhotosInfo::List &list )
             {
                 m_infoHash[ url ] = item;
                 The::networkAccessManager()->getData( url, this,
-                     SLOT(photoFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                     SLOT(photoFetched(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
             }
             toAddList << item;
         }
@@ -141,7 +141,7 @@ void PhotosScrollWidget::setPhotosInfoList( const PhotosInfo::List &list )
     m_currentlist = toAddList;
 }
 
-void PhotosScrollWidget::photoFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+void PhotosScrollWidget::photoFetched( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( !m_infoHash.contains( url ) )
         return;

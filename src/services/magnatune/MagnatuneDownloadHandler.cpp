@@ -78,7 +78,7 @@ void MagnatuneDownloadHandler::membershipDownload( int membershipType, const QSt
 
     m_membershipDownload = true;
 
-    m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
+    m_resultDownloadJob = KIO::storedGet( QUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_resultDownloadJob,
                                                         i18n( "Processing download" ) );
     connect( m_resultDownloadJob, SIGNAL(result(KJob*)), SLOT(xmlDownloadComplete(KJob*)) );

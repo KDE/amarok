@@ -66,12 +66,12 @@ public:
         return new CollectionLocationTestImpl( mc, this );
     }
 
-    bool possiblyContainsTrack( const KUrl &url ) const
+    bool possiblyContainsTrack( const QUrl &url ) const
     {
         return findTrackForUrl( url );
     }
 
-    Meta::TrackPtr trackForUrl( const KUrl &url )
+    Meta::TrackPtr trackForUrl( const QUrl &url )
     {
         return findTrackForUrl( url );
     }
@@ -80,7 +80,7 @@ public:
     QSharedPointer<MemoryCollection> mc;
 
 private:
-    Meta::TrackPtr findTrackForUrl( const KUrl &url ) const
+    Meta::TrackPtr findTrackForUrl( const QUrl &url ) const
     {
         QReadLocker( mc->mapLock() );
 
@@ -111,7 +111,7 @@ private:
             return true;
         }
 
-        void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+        void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                    const Transcoding::Configuration &configuration )
         {
             Q_UNUSED( configuration );

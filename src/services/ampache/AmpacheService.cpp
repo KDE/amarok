@@ -73,7 +73,7 @@ AmpacheServiceFactory::config()
 }
 
 bool
-AmpacheServiceFactory::possiblyContainsTrack(const KUrl & url) const
+AmpacheServiceFactory::possiblyContainsTrack(const QUrl &url) const
 {
     AmpacheConfig config;
     foreach( const AmpacheServerEntry &server, config.servers() )

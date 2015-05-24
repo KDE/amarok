@@ -77,7 +77,7 @@ bool MoodbarManager::hasMoodbar( Meta::TrackPtr track )
     }
         
  
-    KUrl trackUrl = track->playableUrl();
+    QUrl trackUrl = track->playableUrl();
     //only supports local files for now.
     if ( !trackUrl.isLocalFile() )
     {
@@ -195,7 +195,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
     return moodbar;
 }
 
-MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
+MoodbarColorList MoodbarManager::readMoodFile( const QUrl &moodFileUrl )
 {
     DEBUG_BLOCK
 

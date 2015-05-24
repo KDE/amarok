@@ -78,7 +78,7 @@ public:
 
     virtual QString downloadPrefix() const { return "amazon"; }
 
-    virtual KUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return KUrl( coverUrl() ); }
+    virtual QUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return QUrl( coverUrl() ); }
 
     virtual bool isBookmarkable() const { return true; }
     virtual QString collectionName() const { return "Amazon"; }

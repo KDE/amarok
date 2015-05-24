@@ -24,7 +24,7 @@
 #include "message.h"
 
 #include <kjob.h>
-#include <kurl.h>
+#include <QUrl>
 
 namespace KIO {
 class Job;
@@ -38,7 +38,7 @@ class ATTICA_EXPORT MessageListJob : public KJob
   public:
     MessageListJob();
 
-    void setUrl( const KUrl & );
+    void setUrl( const QUrl & );
 
     void start();
 
@@ -51,7 +51,7 @@ class ATTICA_EXPORT MessageListJob : public KJob
     void slotJobData( KIO::Job *job, const QByteArray &data );
     
   private:
-    KUrl m_url;
+    QUrl m_url;
     KIO::Job *m_job;
     QByteArray m_data;
   

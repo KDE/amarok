@@ -25,13 +25,13 @@
 #include "AmarokPlaylistManagerScript.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QSet>
 
 using namespace AmarokScript;
 
-ScriptImporter::ScriptImporter( AmarokScriptEngine *scriptEngine, const KUrl &url )
+ScriptImporter::ScriptImporter( AmarokScriptEngine *scriptEngine, const QUrl &url )
     : QObject( scriptEngine )
     , m_scriptUrl( url )
     , m_scriptEngine( scriptEngine )
@@ -74,8 +74,9 @@ ScriptImporter::loadQtBinding( const QString& binding )
 bool
 ScriptImporter::include( const QString& relativeFilename )
 {
-    KUrl includeUrl = m_scriptUrl.upUrl();
-    includeUrl.addPath( relativeFilename );
+    QUrl includeUrl = m_scriptUrl.upUrl();
+    includeUrl = includeUrl.adjusted(QUrl::StripTrailingSlash);
+    includeUrl.setPath(includeUrl.path() + '/' + ( relativeFilename ));
     QFile file( includeUrl.toLocalFile() );
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {

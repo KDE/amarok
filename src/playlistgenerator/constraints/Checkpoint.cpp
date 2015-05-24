@@ -25,7 +25,7 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <algorithm>
 #include <climits>
@@ -80,7 +80,7 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
 
     a = xmlelem.attributeNode( "trackurl" );
     if ( !a.isNull() ) {
-        Meta::TrackPtr trk = CollectionManager::instance()->trackForUrl( KUrl( a.value() ) );
+        Meta::TrackPtr trk = CollectionManager::instance()->trackForUrl( QUrl( a.value() ) );
         if ( trk ) {
             if ( m_checkpointType == CheckpointAlbum ) {
                 m_checkpointObject = Meta::DataPtr::dynamicCast( trk->album() );

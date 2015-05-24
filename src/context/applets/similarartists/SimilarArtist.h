@@ -19,7 +19,7 @@
 
 //Kde
 #include <KSharedPtr>
-#include <KUrl>
+#include <QUrl>
 
 //Qt
 #include <QSharedData>
@@ -53,8 +53,8 @@ public:
      * @param urlImage  A url of an image of this artist, for example on last.fm
      * @param similarTo The name of the artist similar to this artist
      */
-    SimilarArtist( const QString &name, const int match, const KUrl &url,
-                   const KUrl &urlImage, const QString &similarTo );
+    SimilarArtist( const QString &name, const int match, const QUrl &url,
+                   const QUrl &urlImage, const QString &similarTo );
 
     SimilarArtist( const SimilarArtist &other );
 
@@ -71,12 +71,12 @@ public:
     /**
      * @return a url on the web for this artist, for example on last.fm
      */
-    KUrl url() const;
+    QUrl url() const;
 
     /**
      * @return a url on the web for an image oh this artist, for example on last.fm
      */
-    KUrl urlImage() const;
+    QUrl urlImage() const;
 
     /**
      * @return the artist this similar artist is related to
@@ -105,12 +105,12 @@ private:
     /**
      * A url of this artist on the web
      */
-    KUrl m_url;
+    QUrl m_url;
 
     /**
      * A image url of this artist on the web
      */
-    KUrl m_urlImage;
+    QUrl m_urlImage;
 
     /**
      * The name of the artist similar to this artist

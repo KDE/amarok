@@ -114,7 +114,7 @@ void
 SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
 {
     // we generate the url for the demand on the lastFM Api
-    KUrl url;
+    QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
@@ -124,11 +124,11 @@ SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
     url.addQueryItem( "limit",  QString::number( m_maxArtists ) );
 
     The::networkAccessManager()->getData( url, this,
-         SLOT(parseSimilarArtists(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(parseSimilarArtists(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data,
+SimilarArtistsEngine::parseSimilarArtists( const QUrl &url, QByteArray data,
                                            NetworkAccessManagerProxy::Error e )
 {
     if( e.code != QNetworkReply::NoError )

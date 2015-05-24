@@ -26,7 +26,7 @@
 #include "amarok_export.h"
 #include "collectionscanner/Directory.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QObject>
 #include <QSharedPointer>
@@ -103,7 +103,7 @@ class AMAROK_EXPORT GenericScanManager : public QObject
 
     public slots:
         /** Requests the scanner to do a full scan at the next possibility. */
-        virtual void requestScan( QList<KUrl> directories, GenericScanManager::ScanType type = UpdateScan );
+        virtual void requestScan( QList<QUrl> directories, GenericScanManager::ScanType type = UpdateScan );
 
         /** Requests the scanner to do a full scan using the given import file.
          */

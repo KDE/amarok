@@ -87,11 +87,12 @@ AudioCdCollection::~AudioCdCollection()
 }
 
 
-KUrl
+QUrl
 AudioCdCollection::audiocdUrl( const QString &path ) const
 {
-    KUrl url("audiocd:/");
-    url.addPath( path );
+    QUrl url("audiocd:/");
+    url = url.adjusted(QUrl::StripTrailingSlash);
+    url.setPath(url.path() + '/' + ( path ));
 
     if( !m_device.isEmpty() )
         url.addQueryItem( "device", m_device );
@@ -140,7 +141,7 @@ AudioCdCollection::slotEntriesJobDone( KJob *job )
     }
 
     int biggestTextFile = m_cddbTextFiles.keys().last();
-    KUrl url = m_cddbTextFiles.value( biggestTextFile );
+    QUrl url = m_cddbTextFiles.value( biggestTextFile );
     m_cddbTextFiles.clear(); // save memory
     KIO::StoredTransferJob *tjob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( tjob, SIGNAL(result(KJob*)), SLOT(infoFetchComplete(KJob*)) );
@@ -286,7 +287,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
             baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
 
             //we hack the url so the engine controller knows what track on the CD to play..
-            KUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i + 1 ) );
+            QUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i + 1 ) );
 
             debug() << "Track Base File Name (after): " << baseFileName;
             debug() << "Track url: " << baseUrl;
@@ -349,7 +350,7 @@ AudioCdCollection::checkForStartPlayRequest()
 qint64
 AudioCdCollection::trackLength(int i) const
 {
-    KUrl kioUrl = audiocdUrl( QString("Track%1.wav").arg(i, 2, 10, QChar('0') ) );
+    QUrl kioUrl = audiocdUrl( QString("Track%1.wav").arg(i, 2, 10, QChar('0') ) );
     KIO::UDSEntry uds;
     if ( KIO::NetAccess::stat(kioUrl, uds, NULL) )
     {
@@ -532,13 +533,13 @@ AudioCdCollection::readAudioCdSettings()
 }
 
 bool
-AudioCdCollection::possiblyContainsTrack( const KUrl &url ) const
+AudioCdCollection::possiblyContainsTrack( const QUrl &url ) const
 {
-    return url.protocol() == "audiocd";
+    return url.scheme() == "audiocd";
 }
 
 Meta::TrackPtr
-AudioCdCollection::trackForUrl( const KUrl &url )
+AudioCdCollection::trackForUrl( const QUrl &url )
 {
     QReadLocker locker( memoryCollection()->mapLock() );
     if( memoryCollection()->trackMap().contains( url.url() ) )
@@ -575,7 +576,7 @@ AudioCdCollection::trackForUrl( const KUrl &url )
 void
 AudioCdCollection::updateProxyTracks()
 {
-    foreach( const KUrl &url, m_proxyMap.keys() )
+    foreach( const QUrl &url, m_proxyMap.keys() )
     {
 
         QString urlString = url.url().remove( "audiocd:/" );

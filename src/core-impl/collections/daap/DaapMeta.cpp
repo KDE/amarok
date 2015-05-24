@@ -52,11 +52,11 @@ DaapTrack::name() const
     return m_name;
 }
 
-KUrl
+QUrl
 DaapTrack::playableUrl() const
 {
-    KUrl url( m_playableUrl );
-    url.setProtocol( "http" );
+    QUrl url( m_playableUrl );
+    url.setScheme( "http" );
     return url;
 }
 

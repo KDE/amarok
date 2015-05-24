@@ -21,14 +21,14 @@
 
 #include "core/support/Amarok.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QString>
 
 namespace Playlists {
 
 PlaylistFormat
-getFormat( const KUrl &path )
+getFormat( const QUrl &path )
 {
     const QString ext = Amarok::extension( path.fileName() );
 
@@ -44,7 +44,7 @@ getFormat( const KUrl &path )
 }
 
 bool
-isPlaylist( const KUrl &path )
+isPlaylist( const QUrl &path )
 {
     return ( getFormat( path ) != Unknown );
 }

@@ -46,7 +46,7 @@
 
 #include <KDiskFreeSpaceInfo>
 #include <kmimetype.h>
-#include <KUrl>
+#include <QUrl>
 
 #include <QThread>
 #include <QTimer>
@@ -281,8 +281,9 @@ UmsCollection::init()
     KConfigGroup entries = config.group( QString() ); // default group
     if( entries.hasKey( s_musicFolderKey ) )
     {
-        m_musicPath = KUrl( m_mountPoint );
-        m_musicPath.addPath( entries.readPathEntry( s_musicFolderKey, QString() ) );
+        m_musicPath = QUrl( m_mountPoint );
+        m_musicPath = m_musicPath.adjusted(QUrl::StripTrailingSlash);
+        m_musicPath.setPath(m_musicPath.path() + '/' + ( entries.readPathEntry( s_musicFolderKey, QString() ) ));
         m_musicPath.cleanPath();
         if( !QDir( m_musicPath.toLocalFile() ).exists() )
         {
@@ -296,7 +297,7 @@ UmsCollection::init()
     }
     else if( !entries.keyList().isEmpty() )
         // config file exists, but has no s_musicFolderKey -> music should be disabled
-        m_musicPath = KUrl();
+        m_musicPath = QUrl();
     else
         m_musicPath = m_mountPoint; // related BR 259849
     QString scheme = entries.readEntry( s_musicFilenameSchemeKey );
@@ -309,8 +310,9 @@ UmsCollection::init()
     m_replaceText = entries.readEntry( s_replaceTextKey, m_replaceText );
     if( entries.hasKey( s_podcastFolderKey ) )
     {
-        m_podcastPath = KUrl( m_mountPoint );
-        m_podcastPath.addPath( entries.readPathEntry( s_podcastFolderKey, QString() ) );
+        m_podcastPath = QUrl( m_mountPoint );
+        m_podcastPath = m_podcastPath.adjusted(QUrl::StripTrailingSlash);
+        m_podcastPath.setPath(m_podcastPath.path() + '/' + ( entries.readPathEntry( s_podcastFolderKey, QString() ) ));
         m_podcastPath.cleanPath();
     }
     m_autoConnect = entries.readEntry( s_autoConnectKey, m_autoConnect );
@@ -323,7 +325,7 @@ UmsCollection::init()
 }
 
 bool
-UmsCollection::possiblyContainsTrack( const KUrl &url ) const
+UmsCollection::possiblyContainsTrack( const QUrl &url ) const
 {
     //not initialized yet.
     if( m_mc.isNull() )
@@ -334,7 +336,7 @@ UmsCollection::possiblyContainsTrack( const KUrl &url ) const
 }
 
 Meta::TrackPtr
-UmsCollection::trackForUrl( const KUrl &url )
+UmsCollection::trackForUrl( const QUrl &url )
 {
     //not initialized yet.
     if( m_mc.isNull() )
@@ -477,7 +479,7 @@ UmsCollection::metadataChanged( Meta::TrackPtr track )
         emit startUpdateTimer();
 }
 
-KUrl
+QUrl
 UmsCollection::organizedUrl( Meta::TrackPtr track, const QString &fileExtension ) const
 {
     TrackOrganizer trackOrganizer( Meta::TrackList() << track );
@@ -492,7 +494,7 @@ UmsCollection::organizedUrl( Meta::TrackPtr track, const QString &fileExtension 
     if( !fileExtension.isEmpty() )
         trackOrganizer.setTargetFileExtension( fileExtension );
 
-    return KUrl( trackOrganizer.getDestinations().value( track ) );
+    return QUrl( trackOrganizer.getDestinations().value( track ) );
 }
 
 void
@@ -513,7 +515,7 @@ UmsCollection::slotEject()
 }
 
 void
-UmsCollection::slotTrackAdded( KUrl location )
+UmsCollection::slotTrackAdded( QUrl location )
 {
     Q_ASSERT( m_musicPath.isParentOf( location ) );
     MetaFile::Track *fileTrack = new MetaFile::Track( location );
@@ -564,7 +566,7 @@ UmsCollection::slotParseTracks()
     }
 
     m_tracksParsed = true;
-    m_scanManager->requestScan( QList<KUrl>() << m_musicPath, GenericScanManager::FullScan );
+    m_scanManager->requestScan( QList<QUrl>() << m_musicPath, GenericScanManager::FullScan );
 }
 
 void
@@ -589,13 +591,13 @@ UmsCollection::slotConfigure()
     settings->m_musicFolder->setMode( KFile::Directory );
     settings->m_musicCheckBox->setChecked( !m_musicPath.isEmpty() );
     settings->m_musicWidget->setEnabled( settings->m_musicCheckBox->isChecked() );
-    settings->m_musicFolder->setUrl( m_musicPath.isEmpty() ? KUrl( m_mountPoint ) : m_musicPath );
+    settings->m_musicFolder->setUrl( m_musicPath.isEmpty() ? QUrl( m_mountPoint ) : m_musicPath );
     settings->m_transcodeConfig->fillInChoices( tc->savedConfiguration() );
 
     settings->m_podcastFolder->setMode( KFile::Directory );
     settings->m_podcastCheckBox->setChecked( !m_podcastPath.isEmpty() );
     settings->m_podcastWidget->setEnabled( settings->m_podcastCheckBox->isChecked() );
-    settings->m_podcastFolder->setUrl( m_podcastPath.isEmpty() ? KUrl( m_mountPoint )
+    settings->m_podcastFolder->setUrl( m_podcastPath.isEmpty() ? QUrl( m_mountPoint )
                                          : m_podcastPath );
 
     settings->m_collectionName->setText( prettyName() );
@@ -647,7 +649,7 @@ UmsCollection::slotConfigure()
         else
         {
             debug() << "music support is disabled";
-            m_musicPath = KUrl();
+            m_musicPath = QUrl();
             //TODO: remove all tracks from the MemoryCollection.
         }
 
@@ -671,7 +673,7 @@ UmsCollection::slotConfigure()
         else
         {
             debug() << "podcast support is disabled";
-            m_podcastPath = KUrl();
+            m_podcastPath = QUrl();
             //TODO: remove the PodcastProvider
         }
 
@@ -683,7 +685,7 @@ UmsCollection::slotConfigure()
         KConfig config( m_mountPoint + '/' + s_settingsFileName, KConfig::SimpleConfig );
         KConfigGroup entries = config.group( QString() ); // default group
         if( !m_musicPath.isEmpty() )
-            entries.writePathEntry( s_musicFolderKey, KUrl::relativePath( m_mountPoint,
+            entries.writePathEntry( s_musicFolderKey, QUrl::relativePath( m_mountPoint,
                 m_musicPath.toLocalFile() ) );
         else
             entries.deleteEntry( s_musicFolderKey );
@@ -695,7 +697,7 @@ UmsCollection::slotConfigure()
         entries.writeEntry( s_regexTextKey, m_regexText );
         entries.writeEntry( s_replaceTextKey, m_replaceText );
         if( !m_podcastPath.isEmpty() )
-            entries.writePathEntry( s_podcastFolderKey, KUrl::relativePath( m_mountPoint,
+            entries.writePathEntry( s_podcastFolderKey, QUrl::relativePath( m_mountPoint,
                 m_podcastPath.toLocalFile() ) );
         else
             entries.deleteEntry( s_podcastFolderKey );

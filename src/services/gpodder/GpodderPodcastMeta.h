@@ -47,7 +47,7 @@ class GpodderPodcastChannel : public PodcastChannel
         virtual Playlists::PlaylistProvider *provider() const;
 
         //Playlist virtual methods
-        virtual KUrl uidUrl() const;
+        virtual QUrl uidUrl() const;
 
     private:
         GpodderProvider *m_provider;

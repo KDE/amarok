@@ -24,7 +24,7 @@
 #include "ScriptItem.h"
 
 #include <KPluginInfo>
-#include <KUrl>
+#include <QUrl>
 
 #include <QSemaphore>
 

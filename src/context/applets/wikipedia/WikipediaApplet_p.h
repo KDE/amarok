@@ -25,7 +25,7 @@
 
 #include <KGraphicsWebView>
 #include <KLineEdit>
-#include <KUrl>
+#include <QUrl>
 
 #include <Plasma/LineEdit>
 #include <Plasma/Svg>
@@ -99,7 +99,7 @@ public:
     void _paletteChanged( const QPalette &palette );
 
     void _getLangMapProgress( qint64 received, qint64 total );
-    void _getLangMapFinished( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void _getLangMapFinished( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void _getLangMap();
 
     void _configureLangSelector();

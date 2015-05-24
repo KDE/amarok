@@ -84,7 +84,7 @@ LastFmTreeModel::slotAddNeighbors()
 
             LastFmTreeItem* neighbor = new LastFmTreeItem( mapTypeToUrl(LastFm::NeighborsChild, name),
                                                            LastFm::NeighborsChild, name, m_myNeighbors );
-            KUrl avatarUrl( e[ QLatin1String("image size=small") ].text() );
+            QUrl avatarUrl( e[ QLatin1String("image size=small") ].text() );
             if( !avatarUrl.isEmpty() )
                 neighbor->setAvatarUrl( avatarUrl );
 
@@ -128,7 +128,7 @@ LastFmTreeModel::slotAddFriends()
             LastFmTreeItem* afriend = new LastFmTreeItem( mapTypeToUrl(LastFm::FriendsChild, name),
                                                           LastFm::FriendsChild, name, m_myFriends );
 
-            KUrl avatarUrl( e[ QLatin1String("image size=small") ].text() );
+            QUrl avatarUrl( e[ QLatin1String("image size=small") ].text() );
             if( !avatarUrl.isEmpty() )
                 afriend->setAvatarUrl( avatarUrl );
 
@@ -311,7 +311,7 @@ LastFmTreeModel::onAvatarDownloaded( const QString &username, QPixmap avatar )
 }
 
 QIcon
-LastFmTreeModel::avatar( const QString &username, const KUrl &avatarUrl ) const
+LastFmTreeModel::avatar( const QString &username, const QUrl &avatarUrl ) const
 {
     KIcon defaultIcon( "filename-artist-amarok" );
     if( username.isEmpty() )
@@ -586,7 +586,7 @@ LastFmTreeModel::setupModelData( LastFmTreeItem *parent )
 QString
 LastFmTreeModel::mapTypeToUrl( LastFm::Type type, const QString &key )
 {
-    QString const encoded_username = KUrl::toPercentEncoding( m_user.name() );
+    QString const encoded_username = QUrl::toPercentEncoding( m_user.name() );
     switch( type )
     {
     case MyRecommendations:
@@ -598,17 +598,17 @@ LastFmTreeModel::mapTypeToUrl( LastFm::Type type, const QString &key )
     case NeighborhoodRadio:
         return "lastfm://user/" + encoded_username + "/neighbours";
     case MyTagsChild:
-        return "lastfm://usertags/" + encoded_username + "/" + KUrl::toPercentEncoding( key );
+        return "lastfm://usertags/" + encoded_username + "/" + QUrl::toPercentEncoding( key );
     case FriendsChild:
-        return "lastfm://user/" + KUrl::toPercentEncoding( key ) + "/personal";
+        return "lastfm://user/" + QUrl::toPercentEncoding( key ) + "/personal";
     case ArtistsChild:
-        return "lastfm://artist/" + KUrl::toPercentEncoding( key ) + "/similarartists";
+        return "lastfm://artist/" + QUrl::toPercentEncoding( key ) + "/similarartists";
     case NeighborsChild:
-        return "lastfm://user/" + KUrl::toPercentEncoding( key ) + "/personal";
+        return "lastfm://user/" + QUrl::toPercentEncoding( key ) + "/personal";
     case UserChildPersonal:
-        return "lastfm://user/" + KUrl::toPercentEncoding( key ) + "/personal";
+        return "lastfm://user/" + QUrl::toPercentEncoding( key ) + "/personal";
     case UserChildNeighborhood:
-        return "lastfm://user/" + KUrl::toPercentEncoding( key ) + "/neighbours";
+        return "lastfm://user/" + QUrl::toPercentEncoding( key ) + "/neighbours";
     default:
         return "";
     }
@@ -672,7 +672,7 @@ LastFmTreeItem::track() const
     if( mUrl.isEmpty() )
         return track;
 
-    KUrl url( mUrl );
+    QUrl url( mUrl );
     track = CollectionManager::instance()->trackForUrl( url );
 
     return track;

@@ -35,7 +35,7 @@ SimilarArtistsAction::SimilarArtistsAction( QObject *parent )
 void SimilarArtistsAction::slotTriggered()
 {
     const QString url = "lastfm://artist/" + artist()->prettyName() + "/similarartists";
-    Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+    Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( QUrl( url ) );
     The::playlistController()->insertOptioned( lastfmtrack, Playlist::OnPlayMediaAction );
 }
 

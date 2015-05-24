@@ -125,7 +125,7 @@ AggregateTrack::sortableName() const
     return m_name;
 }
 
-KUrl
+QUrl
 AggregateTrack::playableUrl() const
 {
     Meta::TrackPtr bestPlayableTrack;
@@ -150,7 +150,7 @@ AggregateTrack::playableUrl() const
     if( bestPlayableTrack )
         return bestPlayableTrack->playableUrl();
 
-    return KUrl();
+    return QUrl();
 }
 
 QString
@@ -837,21 +837,21 @@ AggregateAlbum::image( int size ) const
     return Meta::Album::image( size );
 }
 
-KUrl
+QUrl
 AggregateAlbum::imageLocation( int size )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
         if( album->hasImage( size ) )
         {
-            KUrl url = album->imageLocation( size );
+            QUrl url = album->imageLocation( size );
             if( url.isValid() )
             {
                 return url;
             }
         }
     }
-    return KUrl();
+    return QUrl();
 }
 
 QPixmap

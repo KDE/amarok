@@ -70,7 +70,7 @@ Meta::MultiTrack::current() const
     return m_playlist->tracks().indexOf( m_currentTrack );
 }
 
-KUrl
+QUrl
 MultiTrack::nextUrl() const
 {
     int index = current() + 1;
@@ -80,7 +80,7 @@ MultiTrack::nextUrl() const
         track->prepareToPlay();
         return track->playableUrl();
     }
-    return KUrl();
+    return QUrl();
 }
 
 bool

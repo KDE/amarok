@@ -35,7 +35,7 @@
 #include <KInputDialog>
 #include <KLocale>
 #include <KMessageBox>
-#include <KUrl>
+#include <QUrl>
 
 #include <QAction>
 #include <QLabel>

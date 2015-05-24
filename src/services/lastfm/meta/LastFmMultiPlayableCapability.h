@@ -51,7 +51,7 @@ class LastFmMultiPlayableCapability : public Capabilities::MultiPlayableCapabili
         void error( lastfm::ws::Error e );
 
     private:
-        KUrl m_url;
+        QUrl m_url;
         LastFm::TrackPtr m_track;
 
         lastfm::Track m_currentTrack;

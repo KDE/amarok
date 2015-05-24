@@ -29,7 +29,7 @@
 
 using namespace Playlists;
 
-XSPFPlaylist::XSPFPlaylist( const KUrl &url, Playlists::PlaylistProvider *provider, OnLoadAction onLoad )
+XSPFPlaylist::XSPFPlaylist( const QUrl &url, Playlists::PlaylistProvider *provider, OnLoadAction onLoad )
     : PlaylistFile( url, provider )
     , QDomDocument()
     , m_autoAppendAfterLoad( onLoad == AppendToPlaylist )
@@ -154,16 +154,16 @@ XSPFPlaylist::annotation() const
     return documentElement().namedItem( "annotation" ).firstChild().nodeValue();
 }
 
-KUrl
+QUrl
 XSPFPlaylist::info() const
 {
-    return KUrl( documentElement().namedItem( "info" ).firstChild().nodeValue() );
+    return QUrl( documentElement().namedItem( "info" ).firstChild().nodeValue() );
 }
 
-KUrl
+QUrl
 XSPFPlaylist::location() const
 {
-    return KUrl( documentElement().namedItem( "location" ).firstChild().nodeValue() );
+    return QUrl( documentElement().namedItem( "location" ).firstChild().nodeValue() );
 }
 
 QString
@@ -172,10 +172,10 @@ XSPFPlaylist::identifier() const
     return documentElement().namedItem( "identifier" ).firstChild().nodeValue();
 }
 
-KUrl
+QUrl
 XSPFPlaylist::image() const
 {
-    return KUrl( documentElement().namedItem( "image" ).firstChild().nodeValue() );
+    return QUrl( documentElement().namedItem( "image" ).firstChild().nodeValue() );
 }
 
 QDateTime
@@ -184,17 +184,17 @@ XSPFPlaylist::date() const
     return QDateTime::fromString( documentElement().namedItem( "date" ).firstChild().nodeValue(), Qt::ISODate );
 }
 
-KUrl
+QUrl
 XSPFPlaylist::license() const
 {
-    return KUrl( documentElement().namedItem( "license" ).firstChild().nodeValue() );
+    return QUrl( documentElement().namedItem( "license" ).firstChild().nodeValue() );
 }
 
-KUrl::List
+QList<QUrl>
 XSPFPlaylist::attribution() const
 {
     const QDomNodeList nodes = documentElement().namedItem( "attribution" ).childNodes();
-    KUrl::List list;
+    QList<QUrl> list;
 
     for( int i = 0, count = nodes.length(); i < count; ++i  )
     {
@@ -205,10 +205,10 @@ XSPFPlaylist::attribution() const
     return list;
 }
 
-KUrl
+QUrl
 XSPFPlaylist::link() const
 {
-    return KUrl( documentElement().namedItem( "link" ).firstChild().nodeValue() );
+    return QUrl( documentElement().namedItem( "link" ).firstChild().nodeValue() );
 }
 
 void
@@ -277,7 +277,7 @@ XSPFPlaylist::setAnnotation( const QString &annotation )
 }
 
 void
-XSPFPlaylist::setInfo( const KUrl &info )
+XSPFPlaylist::setInfo( const QUrl &info )
 {
 
     if( documentElement().namedItem( "info" ).isNull() )
@@ -299,7 +299,7 @@ XSPFPlaylist::setInfo( const KUrl &info )
 }
 
 void
-XSPFPlaylist::setLocation( const KUrl &location )
+XSPFPlaylist::setLocation( const QUrl &location )
 {
     if( documentElement().namedItem( "location" ).isNull() )
     {
@@ -341,7 +341,7 @@ XSPFPlaylist::setIdentifier( const QString &identifier )
 }
 
 void
-XSPFPlaylist::setImage( const KUrl &image )
+XSPFPlaylist::setImage( const QUrl &image )
 {
     if( documentElement().namedItem( "image" ).isNull() )
     {
@@ -387,7 +387,7 @@ XSPFPlaylist::setDate( const QDateTime &date )
 }
 
 void
-XSPFPlaylist::setLicense( const KUrl &license )
+XSPFPlaylist::setLicense( const QUrl &license )
 {
     if( documentElement().namedItem( "license" ).isNull() )
     {
@@ -408,7 +408,7 @@ XSPFPlaylist::setLicense( const KUrl &license )
 }
 
 void
-XSPFPlaylist::setAttribution( const KUrl &attribution, bool append )
+XSPFPlaylist::setAttribution( const QUrl &attribution, bool append )
 {
     if( !attribution.isValid() )
         return;
@@ -444,7 +444,7 @@ XSPFPlaylist::setAttribution( const KUrl &attribution, bool append )
 }
 
 void
-XSPFPlaylist::setLink( const KUrl &link )
+XSPFPlaylist::setLink( const QUrl &link )
 {
     if( documentElement().namedItem( "link" ).isNull() )
     {
@@ -486,7 +486,7 @@ XSPFPlaylist::trackList()
                     QByteArray path = subSubNode.firstChild().nodeValue().toAscii();
                     path.replace( '\\', '/' );
 
-                    KUrl url = getAbsolutePath( KUrl::fromEncoded( path ) );
+                    QUrl url = getAbsolutePath( QUrl::fromEncoded( path ) );
                     track.location = url;
                 }
                 else if( subSubNode.nodeName() == "title" )

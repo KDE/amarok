@@ -62,7 +62,7 @@ void TestSqlUserPlaylistProvider::testPlaylists()
 void TestSqlUserPlaylistProvider::testSave()
 {
     Meta::TrackList tempTrackList;
-    KUrl trackUrl;
+    QUrl trackUrl;
     trackUrl = dataPath( "data/audio/Platz 01.mp3" );
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
 

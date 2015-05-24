@@ -64,7 +64,7 @@ TestASXPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const KUrl url = dataPath( "data/playlists/test.asx" );
+    const QUrl url = dataPath( "data/playlists/test.asx" );
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 

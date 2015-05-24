@@ -60,7 +60,7 @@ GenericScanManager::getBatchFile( const QStringList& scanDirsRequested )
 }
 
 void
-GenericScanManager::requestScan( QList<KUrl> directories, ScanType type )
+GenericScanManager::requestScan( QList<QUrl> directories, ScanType type )
 {
     DEBUG_BLOCK;
 
@@ -73,7 +73,7 @@ GenericScanManager::requestScan( QList<KUrl> directories, ScanType type )
     }
 
     QSet<QString> scanDirsSet;
-    foreach( const KUrl &url, directories )
+    foreach( const QUrl &url, directories )
     {
         if( !url.isLocalFile() )
         {
@@ -81,7 +81,7 @@ GenericScanManager::requestScan( QList<KUrl> directories, ScanType type )
             continue;
         }
 
-        QString path = url.path( KUrl::RemoveTrailingSlash );
+        QString path = url.path( QUrl::RemoveTrailingSlash );
         if( !QFileInfo( path ).isDir() )
         {
             warning() << "scan of a non-directory" << path << "requested, skipping it.";

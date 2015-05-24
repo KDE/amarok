@@ -16,7 +16,7 @@
 #ifndef AMAROK_TABS_INFO
 #define AMAROK_TABS_INFO
 
-#include <KUrl>
+#include <QUrl>
 
 //  struct TabsInfo contains all the data for a tab
 struct TabsInfo
@@ -27,7 +27,7 @@ struct TabsInfo
     QString tabs;     // Data for the tab
     QString source;   // origin for the tab
     TabType tabType;  // TabType for the tab
-    KUrl url;         // Url of the specific tab
+    QUrl url;         // Url of the specific tab
 };
 
 #endif

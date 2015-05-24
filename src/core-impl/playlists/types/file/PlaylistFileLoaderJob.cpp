@@ -25,7 +25,7 @@
 
 #include <KLocale>
 #include <KMessageBox>
-#include <KUrl>
+#include <QUrl>
 #include <KIO/Job>
 
 #include <QFile>
@@ -42,7 +42,7 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
 
     // we must handle remove downloading here as KIO is coupled with GUI as is not
     // designed to work from another thread
-    const KUrl url = playlist->uidUrl();
+    const QUrl url = playlist->uidUrl();
     if( url.isLocalFile() )
     {
         m_actualPlaylistFile = url.toLocalFile();

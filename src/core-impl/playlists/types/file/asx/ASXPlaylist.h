@@ -26,7 +26,7 @@ namespace Playlists {
 class AMAROK_EXPORT ASXPlaylist : public PlaylistFile, public QDomDocument
 {
     public:
-        ASXPlaylist( const KUrl &url, PlaylistProvider *provider = 0 );
+        ASXPlaylist( const QUrl &url, PlaylistProvider *provider = 0 );
 
         virtual bool save( bool relative ) { return PlaylistFile::save( relative ); }
 

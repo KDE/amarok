@@ -21,7 +21,7 @@
 
 #include <QObject>
 
-#include <kurl.h>
+#include <QUrl>
 #include <threadweaver/Job.h>
 #include "MemoryCollection.h"
 

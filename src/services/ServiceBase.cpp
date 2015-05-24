@@ -47,7 +47,7 @@ ServiceFactory::~ServiceFactory()
 
 
 Meta::TrackPtr
-ServiceFactory::trackForUrl( const KUrl &url )
+ServiceFactory::trackForUrl( const QUrl &url )
 {
     if ( m_activeServices.size() == 0 ) {
         debug() << "our service (" << name() << ") is needed for a url, so init it!";

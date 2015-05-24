@@ -37,7 +37,7 @@ ActivityListJob::ActivityListJob()
 {
 }
 
-void ActivityListJob::setUrl( const KUrl &url )
+void ActivityListJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }

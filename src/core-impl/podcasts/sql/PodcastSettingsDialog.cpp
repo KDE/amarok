@@ -132,7 +132,7 @@ PodcastSettingsDialog::checkModified() //slot
 void
 PodcastSettingsDialog::slotApply()       //slot
 {
-    m_channel->setUrl( KUrl( m_ps->m_urlLineEdit->text() ) );
+    m_channel->setUrl( QUrl( m_ps->m_urlLineEdit->text() ) );
     m_channel->setAutoScan( m_ps->m_autoFetchCheck->isChecked() );
     m_channel->setFetchType(
         m_ps->m_downloadRadio->isChecked() ?

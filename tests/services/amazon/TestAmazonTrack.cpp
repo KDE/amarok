@@ -42,7 +42,7 @@ TestAmazonTrack::testConstructor()
     QCOMPARE( track.name(), QString( "name" ) );
     QCOMPARE( track.trackNumber(), 0 );
     QCOMPARE( track.length(), (qint64)0 );
-    QCOMPARE( track.playableUrl(), KUrl( "playableUrl" ) );
+    QCOMPARE( track.playableUrl(), QUrl( "playableUrl" ) );
     QCOMPARE( track.albumId(), 0 );
     QCOMPARE( track.artistId(), 0 );
     QCOMPARE( track.price(), QString( "price" ) );
@@ -51,7 +51,7 @@ TestAmazonTrack::testConstructor()
     QCOMPARE( track2.id(), 23 );
     QCOMPARE( track2.trackNumber(), 5 );
     QCOMPARE( track2.length(), (qint64)300 );
-    QCOMPARE( track2.playableUrl(), KUrl( "http://www.amazon.de/gp/dmusic/get_sample_url.html?ASIN=B007NV28OK" ) );
+    QCOMPARE( track2.playableUrl(), QUrl("http://www.amazon.de/gp/dmusic/get_sample_url.html?ASIN=B007NV28OK") );
     QCOMPARE( track2.albumId(), 42 );
     QCOMPARE( track2.artistId(), 12 );
     QCOMPARE( track2.price(), QString( "99" ) );

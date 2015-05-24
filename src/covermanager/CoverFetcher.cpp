@@ -33,7 +33,7 @@
 #include "CoverFetchUnit.h"
 
 #include <KLocale>
-#include <KUrl>
+#include <QUrl>
 
 #include <QBuffer>
 #include <QImageReader>
@@ -156,14 +156,14 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
         return;
     }
 
-    const KUrl::List uniqueUrls = urls.uniqueKeys();
-    foreach( const KUrl &url, uniqueUrls )
+    const QList<QUrl> uniqueUrls = urls.uniqueKeys();
+    foreach( const QUrl &url, uniqueUrls )
     {
         if( !url.isValid() )
             continue;
 
         QNetworkReply *reply = The::networkAccessManager()->getData( url, this,
-                               SLOT(slotResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                               SLOT(slotResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         m_urls.insert( url, unit );
 
         if( payload->type() == CoverFetchPayload::Art )
@@ -177,7 +177,7 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
 }
 
 void
-CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+CoverFetcher::slotResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     DEBUG_BLOCK
     if( !m_urls.contains( url ) )
@@ -217,7 +217,7 @@ CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManager
 }
 
 void
-CoverFetcher::handleCoverPayload( const CoverFetchUnit::Ptr &unit, const QByteArray &data, const KUrl &url )
+CoverFetcher::handleCoverPayload( const CoverFetchUnit::Ptr &unit, const QByteArray &data, const QUrl &url )
 {
     if( data.isEmpty() )
     {
@@ -313,8 +313,8 @@ void
 CoverFetcher::fetchRequestRedirected( QNetworkReply *oldReply,
                                       QNetworkReply *newReply )
 {
-    KUrl oldUrl = oldReply->request().url();
-    KUrl newUrl = newReply->request().url();
+    QUrl oldUrl = oldReply->request().url();
+    QUrl newUrl = newReply->request().url();
 
     // Since we were redirected we have to check if the redirect
     // was for one of our URLs and if the new URL is not handled
@@ -381,8 +381,8 @@ CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
     m_queue->remove( unit );
     m_queueLater.removeAll( unit->album() );
     m_selectedImages.remove( unit );
-    KUrl::List urls = m_urls.keys( unit );
-    foreach( const KUrl &url, urls )
+    QList<QUrl> urls = m_urls.keys( unit );
+    foreach( const QUrl &url, urls )
         m_urls.remove( url );
     The::networkAccessManager()->abortGet( urls );
 }

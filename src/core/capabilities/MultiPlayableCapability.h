@@ -19,7 +19,7 @@
 
 #include "core/capabilities/Capability.h"
 
-#include <KUrl>
+#include <QUrl>
 
 namespace Capabilities
 {
@@ -37,7 +37,7 @@ namespace Capabilities
             virtual void fetchNext() = 0;
 
         signals:
-            void playableUrlFetched( const KUrl &url );
+            void playableUrlFetched( const QUrl &url );
     };
 }
 

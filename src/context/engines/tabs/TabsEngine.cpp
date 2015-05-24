@@ -243,7 +243,7 @@ void
 TabsEngine::queryUltimateGuitar( const QString &artist, const QString &title )
 {
     // Query UltimateGuitar.com (filtering guitar (tabs + chords) and bass tabs)
-    KUrl ultimateGuitarUrl;
+    QUrl ultimateGuitarUrl;
     ultimateGuitarUrl.setScheme( "http" );
     ultimateGuitarUrl.setHost( "www.ultimate-guitar.com" );
     ultimateGuitarUrl.setPath( "/search.php" );
@@ -256,7 +256,7 @@ TabsEngine::queryUltimateGuitar( const QString &artist, const QString &title )
     ultimateGuitarUrl.addQueryItem( "version_la", "" );
 
     The::networkAccessManager()->getData( ultimateGuitarUrl, this,
-        SLOT(resultUltimateGuitarSearch(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        SLOT(resultUltimateGuitarSearch(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     m_urls.insert( ultimateGuitarUrl );
 }
 
@@ -264,7 +264,7 @@ TabsEngine::queryUltimateGuitar( const QString &artist, const QString &title )
  *  parses the tab search results from UltimateGuitar
  */
 void
-TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+TabsEngine::resultUltimateGuitarSearch( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     // specific job has finished -> remove from queue
     if( !m_urls.contains( url ) )
@@ -289,9 +289,9 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
             if( !tabUrl.isEmpty() )
             {
                 // fetch the actual tab
-                const KUrl tabFetchUrl = KUrl( tabUrl );
+                const QUrl tabFetchUrl = QUrl( tabUrl );
                 The::networkAccessManager()->getData( tabFetchUrl, this,
-                    SLOT(resultUltimateGuitarTab(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                    SLOT(resultUltimateGuitarTab(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
                 m_urls.insert( tabFetchUrl );
             }
         }
@@ -303,7 +303,7 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
  * * retrieves the information for a single tab from UltimateGuitar.com
  */
 void
-TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+TabsEngine::resultUltimateGuitarTab( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     // specific tab search job has finished -> remove from queue
     if( !m_urls.contains( url ) )
@@ -382,10 +382,10 @@ TabsEngine::resultFinalize()
     else
     {
         // sort against tabtype
-        QList < QPair < TabsInfo::TabType, KUrl > > sorting;
+        QList < QPair < TabsInfo::TabType, QUrl > > sorting;
         foreach( TabsInfo *item, m_tabs )
-            sorting << QPair < TabsInfo::TabType, KUrl> ( item->tabType, item->url) ;
-        qSort(sorting.begin(), sorting.end(), qLess<QPair < TabsInfo::TabType, KUrl> >() );
+            sorting << QPair < TabsInfo::TabType, QUrl> ( item->tabType, item->url) ;
+        qSort(sorting.begin(), sorting.end(), qLess<QPair < TabsInfo::TabType, QUrl> >() );
 
         // debug info
         foreach( TabsInfo *item, m_tabs )
@@ -396,7 +396,7 @@ TabsEngine::resultFinalize()
             return;
 
         // otherwise send the fetched data to the subscribed applets
-        QList < QPair <TabsInfo::TabType, KUrl > >::iterator i;
+        QList < QPair <TabsInfo::TabType, QUrl > >::iterator i;
         int pos = 0;
         for(i = sorting.begin(); i != sorting.end(); ++i)
         {

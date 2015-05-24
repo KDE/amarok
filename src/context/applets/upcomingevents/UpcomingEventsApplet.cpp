@@ -339,9 +339,9 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
     const QString &city    = item->data( VenueCityRole ).toString();
     const QString &country = item->data( VenueCountryRole ).toString();
     const QString &street  = item->data( VenueStreetRole ).toString();
-    const KUrl &url        = item->data( VenueUrlRole ).value<KUrl>();
-    const KUrl &website    = item->data( VenueWebsiteRole ).value<KUrl>();
-    const KUrl &photoUrl   = item->data( VenuePhotoUrlRole ).value<KUrl>();
+    const QUrl &url        = item->data( VenueUrlRole ).value<QUrl>();
+    const QUrl &website    = item->data( VenueWebsiteRole ).value<QUrl>();
+    const QUrl &photoUrl   = item->data( VenuePhotoUrlRole ).value<QUrl>();
 
     ui_VenueSettings.nameValue->setText( name );
     ui_VenueSettings.cityValue->setText( city );
@@ -369,7 +369,7 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
     if( photoUrl.isValid() )
     {
         The::networkAccessManager()->getData( photoUrl, this,
-             SLOT(venuePhotoResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+             SLOT(venuePhotoResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
     else
     {
@@ -381,7 +381,7 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
 void
 UpcomingEventsApplet::searchVenue( const QString &text )
 {
-    KUrl url;
+    QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
@@ -393,11 +393,11 @@ UpcomingEventsApplet::searchVenue( const QString &text )
     if( !countryCode.isEmpty() )
         url.addQueryItem( "country", countryCode );
     The::networkAccessManager()->getData( url, this,
-         SLOT(venueResults(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(venueResults(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-UpcomingEventsApplet::venueResults( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+UpcomingEventsApplet::venueResults( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
@@ -440,7 +440,7 @@ UpcomingEventsApplet::venueResults( const KUrl &url, QByteArray data, NetworkAcc
 }
 
 void
-UpcomingEventsApplet::venuePhotoResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+UpcomingEventsApplet::venuePhotoResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )

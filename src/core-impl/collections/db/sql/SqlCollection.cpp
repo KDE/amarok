@@ -270,8 +270,8 @@ SqlCollection::SqlCollection( SqlStorage* storage )
     m_directoryWatcher = new SqlDirectoryWatcher( this );
     connect( m_directoryWatcher, SIGNAL(done(ThreadWeaver::Job*)),
              m_directoryWatcher, SLOT(deleteLater()) ); // auto delete
-    connect( m_directoryWatcher, SIGNAL(requestScan(QList<KUrl>,GenericScanManager::ScanType)),
-             m_scanManager,      SLOT(requestScan(QList<KUrl>,GenericScanManager::ScanType)) );
+    connect( m_directoryWatcher, SIGNAL(requestScan(QList<QUrl>,GenericScanManager::ScanType)),
+             m_scanManager,      SLOT(requestScan(QList<QUrl>,GenericScanManager::ScanType)) );
     ThreadWeaver::Weaver::instance()->enqueue( m_directoryWatcher );
 
 }
@@ -320,27 +320,27 @@ SqlCollection::sqlStorage() const
 }
 
 bool
-SqlCollection::possiblyContainsTrack( const KUrl &url ) const
+SqlCollection::possiblyContainsTrack( const QUrl &url ) const
 {
     if( url.isLocalFile() )
     {
         foreach( const QString &folder, collectionFolders() )
         {
-            if( KUrl( folder ).isParentOf( url ) )
+            if( QUrl( folder ).isParentOf( url ) )
                 return true;
         }
         return false;
     }
     else
-        return url.protocol() == uidUrlProtocol();
+        return url.scheme() == uidUrlProtocol();
 }
 
 Meta::TrackPtr
-SqlCollection::trackForUrl( const KUrl &url )
+SqlCollection::trackForUrl( const QUrl &url )
 {
-    if( url.protocol() == uidUrlProtocol() )
+    if( url.scheme() == uidUrlProtocol() )
         return m_registry->getTrackFromUid( url.url() );
-    else if( url.protocol() == "file" )
+    else if( url.scheme() == "file" )
         return m_registry->getTrack( url.path() );
     else
         return Meta::TrackPtr();

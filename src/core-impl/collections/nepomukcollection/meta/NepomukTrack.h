@@ -43,7 +43,7 @@ public:
     ~NepomukTrack();
 
     virtual QString name() const;
-    virtual KUrl playableUrl() const;
+    virtual QUrl playableUrl() const;
     virtual QString prettyUrl() const;
     virtual QString uidUrl() const;
     virtual QString notPlayableReason() const;
@@ -116,11 +116,11 @@ public:
     void setTrackPeakGain( qreal trackPeakGain ) { m_trackPeakGain = trackPeakGain; }
     void setAlbumGain( qreal albumGain ) { m_albumGain = albumGain; }
     void setAlbumPeakGain( qreal albumPeakGain ) { m_albumPeakGain = albumPeakGain; }
-    void setPlayableUrl( const KUrl &url ) { m_playableUrl = url; }
+    void setPlayableUrl( const QUrl &url ) { m_playableUrl = url; }
 
     bool isFilled(){ return m_filled; }
 
-    void fill( const QString &name, const KUrl &url, Collections::NepomukCollection *coll )
+    void fill( const QString &name, const QUrl &url, Collections::NepomukCollection *coll )
     {
         m_name = name;
         m_playableUrl = url;
@@ -140,7 +140,7 @@ private:
     YearPtr m_year;
     LabelList m_labellist;
 
-    KUrl m_playableUrl;
+    QUrl m_playableUrl;
     QString m_name;
     QString m_type;
     qint64 m_length;

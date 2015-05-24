@@ -76,7 +76,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics, pu
 
         virtual QString name() const;
         virtual QString prettyName() const;
-        virtual KUrl playableUrl() const;
+        virtual QUrl playableUrl() const;
         virtual QString prettyUrl() const;
         virtual QString uidUrl() const;
         virtual QString notPlayableReason() const;
@@ -236,7 +236,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics, pu
         int m_deviceId;
         QString m_rpath;
         int m_directoryId; // only set when the urls table needs to be written
-        KUrl m_url;
+        QUrl m_url;
         QString m_uid;
 
         // the rest
@@ -375,7 +375,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
          */
         virtual QImage image( int size = 0 ) const;
 
-        virtual KUrl imageLocation( int size = 0 );
+        virtual QUrl imageLocation( int size = 0 );
         virtual void setImage( const QImage &image );
         virtual void removeImage();
         virtual void setSuppressImageAutoFetch( const bool suppress ) { m_suppressAutoFetch = suppress; }

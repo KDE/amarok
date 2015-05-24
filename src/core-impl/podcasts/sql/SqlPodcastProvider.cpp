@@ -46,7 +46,7 @@
 #include <KLocale>
 #include <KProgressDialog>
 #include <KStandardDirs>
-#include <KUrl>
+#include <QUrl>
 #include <Solid/Networking>
 
 #include <QAction>
@@ -241,7 +241,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
 }
 
 bool
-SqlPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
+SqlPodcastProvider::possiblyContainsTrack( const QUrl &url ) const
 {
     SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
@@ -256,7 +256,7 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
 }
 
 Meta::TrackPtr
-SqlPodcastProvider::trackForUrl( const KUrl &url )
+SqlPodcastProvider::trackForUrl( const QUrl &url )
 {
     if( url.isEmpty() )
         return Meta::TrackPtr();
@@ -455,9 +455,9 @@ SqlPodcastProvider::episodeForGuid( const QString &guid )
 }
 
 void
-SqlPodcastProvider::addPodcast( const KUrl &url )
+SqlPodcastProvider::addPodcast( const QUrl &url )
 {
-    KUrl kurl = KUrl( url );
+    QUrl kurl = QUrl( url );
     debug() << "importing " << kurl.url();
 
     SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
@@ -489,7 +489,7 @@ SqlPodcastProvider::updateAll()
 }
 
 void
-SqlPodcastProvider::subscribe( const KUrl &url )
+SqlPodcastProvider::subscribe( const QUrl &url )
 {
     if( !url.isValid() )
         return;
@@ -622,8 +622,8 @@ SqlPodcastProvider::configureProvider()
             startTimer();
         else
             m_updateTimer->stop();
-        KUrl adjustedNewPath = settings.m_baseDirUrl->url();
-        adjustedNewPath.adjustPath( KUrl::RemoveTrailingSlash );
+        QUrl adjustedNewPath = settings.m_baseDirUrl->url();
+        adjustedNewPath.adjustedNewPath = adjustedNewPath.adjusted(QUrl::StripTrailingSlash));
         if( adjustedNewPath != m_baseDownloadDir )
         {
             m_baseDownloadDir = adjustedNewPath;
@@ -649,9 +649,10 @@ SqlPodcastProvider::configureProvider()
                 {
                     foreach( SqlPodcastChannelPtr sqlChannel, m_channels )
                     {
-                        KUrl oldSaveLocation = sqlChannel->saveLocation();
-                        KUrl newSaveLocation = m_baseDownloadDir;
-                        newSaveLocation.addPath( oldSaveLocation.fileName() );
+                        QUrl oldSaveLocation = sqlChannel->saveLocation();
+                        QUrl newSaveLocation = m_baseDownloadDir;
+                        newSaveLocation = newSaveLocation.adjusted(QUrl::StripTrailingSlash);
+                        newSaveLocation.setPath(newSaveLocation.path() + '/' + ( oldSaveLocation.fileName() ));
                         sqlChannel->setSaveLocation( newSaveLocation );
                         debug() << newSaveLocation.path();
                         moveDownloadedEpisodes( sqlChannel );
@@ -702,14 +703,14 @@ SqlPodcastProvider::slotExportOpml()
     }
 
     //TODO: add checkbox as widget to filedialog to include podcast settings.
-    KFileDialog fileDialog( KUrl( "kfiledialog:///podcast/amarok_podcasts.opml"), "*.opml",
+    KFileDialog fileDialog( QUrl("kfiledialog:///podcast/amarok_podcasts.opml"), "*.opml",
                             The::mainWindow() );
     fileDialog.setMode( KFile::File );
     fileDialog.setCaption( i18n( "Select file for OPML export") );
     if( fileDialog.exec() != KDialog::Accepted )
         return;
 
-    KUrl filePath = fileDialog.selectedUrl();
+    QUrl filePath = fileDialog.selectedUrl();
 
     QFile *opmlFile = new QFile( filePath.toLocalFile(), this );
     if( !opmlFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -739,8 +740,8 @@ SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel 
     if( !sqlChannel )
         return;
 
-    KUrl oldUrl = sqlChannel->url();
-    KUrl oldSaveLocation = sqlChannel->saveLocation();
+    QUrl oldUrl = sqlChannel->url();
+    QUrl oldSaveLocation = sqlChannel->saveLocation();
     bool oldHasPurge = sqlChannel->hasPurge();
     int oldPurgeCount = sqlChannel->purgeCount();
     bool oldAutoScan = sqlChannel->autoScan();
@@ -792,16 +793,17 @@ SqlPodcastProvider::moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr sqlCh
             .arg( sqlChannel->title() )
             .arg( sqlChannel->saveLocation().prettyUrl() );
 
-    KUrl::List filesToMove;
+    QList<QUrl> filesToMove;
     foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
     {
         if( !episode->localUrl().isEmpty() )
         {
-            KUrl newLocation = sqlChannel->saveLocation();
+            QUrl newLocation = sqlChannel->saveLocation();
             QDir dir( newLocation.toLocalFile() );
             dir.mkpath( "." );
 
-            newLocation.addPath( episode->localUrl().fileName() );
+            newLocation = newLocation.adjusted(QUrl::StripTrailingSlash);
+            newLocation.setPath(newLocation.path() + '/' + ( episode->localUrl().fileName() ));
             debug() << "Moving from " << episode->localUrl() << " to " << newLocation;
             KIO::Job *moveJob = KIO::move( episode->localUrl(), newLocation,
                                            KIO::HideProgressInfo );
@@ -958,7 +960,7 @@ SqlPodcastProvider::deleteDownloadedEpisode( Podcasts::SqlPodcastEpisodePtr epis
     debug() << "deleting " << episode->title();
     KIO::del( episode->localUrl(), KIO::HideProgressInfo );
 
-    episode->setLocalUrl( KUrl() );
+    episode->setLocalUrl( QUrl() );
 
     emit episodeDeleted( Podcasts::PodcastEpisodePtr::dynamicCast( episode ) );
 }
@@ -1151,7 +1153,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
                                                tmpFile,
     /* Unless a redirect happens the filename from the enclosure is used. This is a potential source
        of filename conflicts in downloadResult() */
-                                               KUrl( sqlEpisode->uidUrl() ).fileName(),
+                                               QUrl( sqlEpisode->uidUrl() ).fileName(),
                                                false
                                              };
     m_downloadJobMap.insert( transferJob, download );
@@ -1191,8 +1193,8 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     //KJob::kill()
     connect( transferJob, SIGNAL(finished(KJob*)),
              SLOT(downloadResult(KJob*)) );
-    connect( transferJob, SIGNAL(redirection(KIO::Job*,KUrl)),
-             SLOT(redirected(KIO::Job*,KUrl)) );
+    connect( transferJob, SIGNAL(redirection(KIO::Job*,QUrl)),
+             SLOT(redirected(KIO::Job*,QUrl)) );
 }
 
 void
@@ -1237,7 +1239,7 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     dir.mkpath( "." );  // ensure that the path is there
     //TODO: what if result is false?
 
-    KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
+    QUrl localUrl = QUrl::fromLocalFile( dir.absolutePath() );
     QString tempName;
     if( !sqlEpisode->guid().isEmpty() )
         tempName = QUrl::toPercentEncoding( sqlEpisode->guid() );
@@ -1246,7 +1248,8 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
 
     QString tempNameMd5( KMD5( tempName.toUtf8() ).hexDigest() );
 
-    localUrl.addPath( tempNameMd5 + PODCAST_TMP_POSTFIX );
+    localUrl = localUrl.adjusted(QUrl::StripTrailingSlash);
+    localUrl.setPath(localUrl.path() + '/' + ( tempNameMd5 + PODCAST_TMP_POSTFIX ));
 
     return new QFile( localUrl.toLocalFile() );
 }
@@ -1269,7 +1272,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
         return false;
     }
 
-    QString fileName = sqlChannel->saveLocation().toLocalFile( KUrl::AddTrailingSlash );
+    QString fileName = sqlChannel->saveLocation().toLocalFile( QUrl::AddTrailingSlash );
     fileName += download.fileName;
     debug() << "checking " << fileName;
     QFileInfo fileInfo( fileName );
@@ -1396,7 +1399,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
             download.fileName = QString( filenameLayout );
         }
 
-        QString finalName = sqlChannel->saveLocation().toLocalFile( KUrl::AddTrailingSlash )
+        QString finalName = sqlChannel->saveLocation().toLocalFile( QUrl::AddTrailingSlash )
                             + download.fileName;
         if( tmpFile->rename( finalName ) )
         {
@@ -1428,7 +1431,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
 }
 
 void
-SqlPodcastProvider::redirected( KIO::Job *job, const KUrl &redirectedUrl )
+SqlPodcastProvider::redirected( KIO::Job *job, const QUrl &redirectedUrl )
 {
     debug() << "redirecting to " << redirectedUrl << ". filename: "
             << redirectedUrl.fileName();

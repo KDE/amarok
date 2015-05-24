@@ -152,7 +152,7 @@ UpcomingEventsWidget::createLabel( const QString &text, QSizePolicy::Policy hPol
 }
 
 void
-UpcomingEventsWidget::setImage( const KUrl &url )
+UpcomingEventsWidget::setImage( const QUrl &url )
 {
     if( url.isValid() )
     {
@@ -177,7 +177,7 @@ UpcomingEventsWidget::loadImage()
         return;
 
     reply->deleteLater();
-    const KUrl &url = reply->request().url();
+    const QUrl &url = reply->request().url();
     if( m_imageUrl != url )
         return;
 

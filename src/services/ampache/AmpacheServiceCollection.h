@@ -25,7 +25,7 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
 {
     Q_OBJECT
     public:
-        AmpacheTrackForUrlWorker( const KUrl &url, MetaProxy::TrackPtr track,
+        AmpacheTrackForUrlWorker( const QUrl &url, MetaProxy::TrackPtr track,
                                   const QString &server, const QString &sessionId,
                                   ServiceBase *service);
         ~AmpacheTrackForUrlWorker();
@@ -71,8 +71,8 @@ public:
     virtual QString collectionId() const;
     virtual QString prettyName() const;
 
-    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
-    virtual bool possiblyContainsTrack( const KUrl &url ) const;
+    virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+    virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
 signals:
     void authenticationNeeded();

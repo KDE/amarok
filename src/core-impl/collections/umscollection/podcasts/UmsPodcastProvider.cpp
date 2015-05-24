@@ -33,7 +33,7 @@
 
 using namespace Podcasts;
 
-UmsPodcastProvider::UmsPodcastProvider( KUrl scanDirectory )
+UmsPodcastProvider::UmsPodcastProvider( QUrl scanDirectory )
         : m_scanDirectory( scanDirectory )
         , m_deleteEpisodeAction( 0 )
         , m_deleteChannelAction( 0 )
@@ -47,14 +47,14 @@ UmsPodcastProvider::~UmsPodcastProvider()
 }
 
 bool
-UmsPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
+UmsPodcastProvider::possiblyContainsTrack( const QUrl &url ) const
 {
     Q_UNUSED( url )
     return false;
 }
 
 Meta::TrackPtr
-UmsPodcastProvider::trackForUrl( const KUrl &url )
+UmsPodcastProvider::trackForUrl( const QUrl &url )
 {
     Q_UNUSED( url )
     return Meta::TrackPtr();
@@ -68,7 +68,7 @@ UmsPodcastProvider::episodeForGuid( const QString &guid )
 }
 
 void
-UmsPodcastProvider::addPodcast( const KUrl &url )
+UmsPodcastProvider::addPodcast( const QUrl &url )
 {
     Q_UNUSED( url );
 }
@@ -87,14 +87,16 @@ UmsPodcastProvider::addChannel( PodcastChannelPtr channel )
 PodcastEpisodePtr
 UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
 {
-    KUrl localFilePath = episode->playableUrl();
+    QUrl localFilePath = episode->playableUrl();
     if( !localFilePath.isLocalFile() )
         return PodcastEpisodePtr();
 
-    KUrl destination = KUrl( m_scanDirectory );
-    destination.addPath( Amarok::vfatPath( episode->channel()->prettyName() ) );
+    QUrl destination = QUrl( m_scanDirectory );
+    destination = destination.adjusted(QUrl::StripTrailingSlash);
+    destination.setPath(destination.path() + '/' + ( Amarok::vfatPath( episode->channel()->prettyName() ) ));
     KIO::mkdir( destination );
-    destination.addPath( Amarok::vfatPath( localFilePath.fileName() ) );
+    destination = destination.adjusted(QUrl::StripTrailingSlash);
+    destination.setPath(destination.path() + '/' + ( Amarok::vfatPath( localFilePath.fileName() ) ));
 
     debug() << QString( "Copy episode \"%1\" to %2" ).arg( localFilePath.path())
             .arg( destination.path() );
@@ -113,7 +115,7 @@ UmsPodcastProvider::slotCopyComplete( KJob *job )
     if( !copyJob )
         return;
 
-    KUrl localFilePath = copyJob->destUrl();
+    QUrl localFilePath = copyJob->destUrl();
     MetaFile::Track *fileTrack = new MetaFile::Track( localFilePath );
 
     UmsPodcastEpisodePtr umsEpisode = addFile( MetaFile::TrackPtr( fileTrack ) );
@@ -244,7 +246,7 @@ UmsPodcastProvider::slotDeleteEpisodes()
 void
 UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
 {
-    KUrl::List urlsToDelete;
+    QList<QUrl> urlsToDelete;
     foreach( UmsPodcastEpisodePtr umsEpisode, umsEpisodes )
         urlsToDelete << umsEpisode->playableUrl();
 
@@ -258,7 +260,7 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
                   );
     QListWidget listWidget( &dialog );
     listWidget.setSelectionMode( QAbstractItemView::NoSelection );
-    foreach( const KUrl &url, urlsToDelete )
+    foreach( const QUrl &url, urlsToDelete )
     {
         new QListWidgetItem( url.toLocalFile(), &listWidget );
     }
@@ -443,7 +445,7 @@ UmsPodcastProvider::scan()
         return;
     m_dirList.clear();
     debug() << "scan directory for podcasts: " <<
-            m_scanDirectory.toLocalFile( KUrl::AddTrailingSlash );
+            m_scanDirectory.toLocalFile( QUrl::AddTrailingSlash );
     QDirIterator it( m_scanDirectory.toLocalFile(), QDirIterator::Subdirectories );
     while( it.hasNext() )
         addPath( it.next() );
@@ -480,7 +482,7 @@ UmsPodcastProvider::addPath( const QString &path )
 //            if( mime.inherits( mimetype ) )
 //            {
                 addFile( MetaFile::TrackPtr( new MetaFile::Track(
-                        KUrl( info.canonicalFilePath() ) ) ) );
+                        QUrl( info.canonicalFilePath() ) ) ) );
                 return 2;
 //            }
 //        }

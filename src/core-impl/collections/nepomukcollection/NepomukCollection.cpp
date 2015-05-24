@@ -85,13 +85,13 @@ NepomukCollection::isWritable() const
 }
 
 bool
-NepomukCollection::possiblyContainsTrack( const KUrl & ) const
+NepomukCollection::possiblyContainsTrack( const QUrl & ) const
 {
     return true;
 }
 
 Meta::TrackPtr
-NepomukCollection::trackForUrl( const KUrl &url )
+NepomukCollection::trackForUrl( const QUrl &url )
 {
     DEBUG_BLOCK
     debug() << url;

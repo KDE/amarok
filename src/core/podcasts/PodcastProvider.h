@@ -30,20 +30,20 @@ class AMAROK_CORE_EXPORT PodcastProvider : public Collections::TrackProvider, pu
 {
     public:
         static bool couldBeFeed( const QString &urlString );
-        static KUrl toFeedUrl( const QString &urlString );
+        static QUrl toFeedUrl( const QString &urlString );
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const = 0;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url ) = 0;
+        virtual bool possiblyContainsTrack( const QUrl &url ) const = 0;
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url ) = 0;
 
         /** Special function to get an episode for a given guid.
           *
-          * note: this functions is required because KUrl does not preserve every possible guids.
+          * note: this functions is required because QUrl does not preserve every possible guids.
           * This means we can not use trackForUrl().
           * Problematic guids contain non-latin characters, percent encoded parts, capitals, etc.
           */
         virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid ) = 0;
 
-        virtual void addPodcast( const KUrl &url ) = 0;
+        virtual void addPodcast( const QUrl &url ) = 0;
         virtual void updateAll() {}
 
         virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel ) = 0;

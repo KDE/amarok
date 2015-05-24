@@ -163,7 +163,7 @@ SetCustomCoverAction::slotTriggered()
     dlg.setInlinePreviewShown( true );
 
     dlg.exec();
-    KUrl file = dlg.selectedUrl();
+    QUrl file = dlg.selectedUrl();
 
     if( !file.isEmpty() )
     {
@@ -175,7 +175,7 @@ SetCustomCoverAction::slotTriggered()
         }
         else
         {
-            debug() << "Custom Cover Fetch: " << file.prettyUrl() << endl;
+            debug() << "Custom Cover Fetch: " << file.toDisplayString() << endl;
 
             KTempDir tempDir;
             tempDir.setAutoRemove( true );
@@ -183,7 +183,7 @@ SetCustomCoverAction::slotTriggered()
             const QString coverDownloadPath = tempDir.name() + file.fileName();
 
             bool ret = KIO::NetAccess::file_copy( file,
-                                                  KUrl( coverDownloadPath ),
+                                                  QUrl( coverDownloadPath ),
                                                   qobject_cast<QWidget*>( parent() ) );
 
             if( ret )

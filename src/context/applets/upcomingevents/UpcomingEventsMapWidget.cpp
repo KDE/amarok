@@ -37,7 +37,7 @@ public:
     void addEvent( const LastFmEventPtr &event );
     void addMarker( const LastFmEventPtr &event );
     QString createInfoString( const LastFmEventPtr &event ) const;
-    KUrl eventForMapIcon( const LastFmEventPtr &event ) const;
+    QUrl eventForMapIcon( const LastFmEventPtr &event ) const;
     void removeEvent( const LastFmEventPtr &event );
     void removeMarker( const LastFmEventPtr &event );
 
@@ -167,7 +167,7 @@ UpcomingEventsMapWidgetPrivate::createInfoString( const LastFmEventPtr &event ) 
     return html;
 }
 
-KUrl
+QUrl
 UpcomingEventsMapWidgetPrivate::eventForMapIcon( const LastFmEventPtr &event ) const
 {
     // Thanks a whole bunch to Nicolas Mollet, Matthias Stasiak at google-maps-icons
@@ -188,7 +188,7 @@ UpcomingEventsMapWidgetPrivate::eventForMapIcon( const LastFmEventPtr &event ) c
         name = "dancinghall.png";
     else
         name = "music-live.png";
-    return KUrl( "http://google-maps-icons.googlecode.com/files/" + name );
+    return QUrl( "http://google-maps-icons.googlecode.com/files/" + name );
 }
 
 void

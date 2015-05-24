@@ -328,7 +328,7 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
         if ( m_infoHtmlTemplate.isEmpty() )
         {
 
-            KUrl dataUrl( KStandardDirs::locate( "data", "amarok/data/" ) );
+            QUrl dataUrl( KStandardDirs::locate( "data", "amarok/data/" ) );
             QString dataPath = dataUrl.path();
 
             //load html

@@ -53,7 +53,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
                                              const QString &name = QString() );
 
-        virtual bool import( const KUrl &path );
+        virtual bool import( const QUrl &path );
 
         virtual bool isWritable() { return true; }
         virtual void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName );
@@ -74,7 +74,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         KConfigGroup loadedPlaylistsConfig() const;
 
         bool m_playlistsLoaded;
-        QList<KUrl> m_urlsToLoad;
+        QList<QUrl> m_urlsToLoad;
         Playlists::PlaylistFileList m_playlists;
         QMultiMap<QString, Playlists::PlaylistPtr> m_groupMap;
 

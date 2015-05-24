@@ -61,12 +61,14 @@ TestPlaylistFormat::testGetFormat()
 {
     QFETCH( QString, filename );
     QFETCH( Playlists::PlaylistFormat, playlistFormat );
-    KUrl url( "amarok:///playlists/" );
+    QUrl url( "amarok:///playlists/" );
 
-    url.setFileName( filename );
+    url = url.adjusted(QUrl::RemoveFilename);
+    url.setPath(url.path() +  filename );
     QCOMPARE( Playlists::getFormat( url ), playlistFormat );
     // file extensions in capitals must also pass this test
-    url.setFileName( filename.toUpper() );
+    url = url.adjusted(QUrl::RemoveFilename);
+    url.setPath(url.path() +  filename.toUpper() );
     QCOMPARE( Playlists::getFormat( url ), playlistFormat );
 }
 
@@ -101,11 +103,13 @@ TestPlaylistFormat::testIsPlaylist()
 {
     QFETCH( QString, filename );
     QFETCH( bool, isPlaylist );
-    KUrl url( "amarok:///playlists/" );
+    QUrl url( "amarok:///playlists/" );
 
-    url.setFileName( filename );
+    url = url.adjusted(QUrl::RemoveFilename);
+    url.setPath(url.path() +  filename );
     QCOMPARE( Playlists::isPlaylist( url ), isPlaylist );
     // file extensions in capitals must also pass this test
-    url.setFileName( filename.toUpper() );
+    url = url.adjusted(QUrl::RemoveFilename);
+    url.setPath(url.path() +  filename.toUpper() );
     QCOMPARE( Playlists::isPlaylist( url ), isPlaylist );
 }

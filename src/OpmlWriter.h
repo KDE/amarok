@@ -20,7 +20,7 @@
 #include "OpmlOutline.h"
 
 #include <threadweaver/Job.h>
-#include <KUrl>
+#include <QUrl>
 
 #include <QXmlStreamWriter>
 
@@ -60,7 +60,7 @@ class AMAROK_EXPORT OpmlWriter : public ThreadWeaver::Job
         QList<OpmlOutline *> m_rootOutlines;
         QMap<QString,QString> m_headerData;
 
-        KUrl m_fileUrl;
+        QUrl m_fileUrl;
         QXmlStreamWriter *m_xmlWriter;
 };
 

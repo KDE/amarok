@@ -53,7 +53,7 @@ class UpnpSearchCollection : public UpnpCollectionBase
 
     virtual KIcon icon() const { return KIcon("network-server"); }
 
-    Meta::TrackPtr trackForUrl( const KUrl &url );
+    Meta::TrackPtr trackForUrl( const QUrl &url );
 
     UpnpCache* cache() { return m_cache; }
     QStringList searchCapabilities() { return m_searchCapabilities; }

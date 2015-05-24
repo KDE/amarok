@@ -112,7 +112,7 @@ TestAmazonMetaFactory::testCreateTrack()
     QCOMPARE( amazonTrack->name(), QString( "name" ) );
     QCOMPARE( amazonTrack->trackNumber(), 0 );
     QCOMPARE( amazonTrack->length(), (qint64)0 );
-    QCOMPARE( amazonTrack->playableUrl(), KUrl( "playableUrl" ) );
+    QCOMPARE( amazonTrack->playableUrl(), QUrl( "playableUrl" ) );
     QCOMPARE( amazonTrack->albumId(), 0 );
     QCOMPARE( amazonTrack->artistId(), 0 );
     QCOMPARE( amazonTrack->price(), QString( "price" ) );
@@ -121,7 +121,7 @@ TestAmazonMetaFactory::testCreateTrack()
     QCOMPARE( amazonTrack2->id(), 23 );
     QCOMPARE( amazonTrack2->trackNumber(), 5 );
     QCOMPARE( amazonTrack2->length(), (qint64)300 );
-    QCOMPARE( amazonTrack2->playableUrl(), KUrl( "http://www.amazon.de/gp/dmusic/get_sample_url.html?ASIN=B007NV28OK" ) );
+    QCOMPARE( amazonTrack2->playableUrl(), QUrl("http://www.amazon.de/gp/dmusic/get_sample_url.html?ASIN=B007NV28OK") );
     QCOMPARE( amazonTrack2->albumId(), 42 );
     QCOMPARE( amazonTrack2->artistId(), 12 );
     QCOMPARE( amazonTrack2->price(), QString( "99" ) );

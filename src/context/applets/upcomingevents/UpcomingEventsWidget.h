@@ -21,7 +21,7 @@
 #include "NetworkAccessManagerProxy.h"
 #include "LastFmEvent.h"
 
-#include <KUrl>
+#include <QUrl>
 #include <Plasma/ScrollWidget>
 
 #include <QGraphicsWidget>
@@ -60,9 +60,9 @@ class UpcomingEventsWidget : public QGraphicsWidget
 
         /**
          *Set the event's image in Plasma::Label from an url
-         *@param KUrl, image's url to be displayed
+         *@param QUrl, image's url to be displayed
          */
-        void setImage( const KUrl &url );
+        void setImage( const QUrl &url );
 
         /**
          * Set attendance for this event
@@ -101,10 +101,10 @@ class UpcomingEventsWidget : public QGraphicsWidget
         void setVenue( const LastFmVenuePtr &venue );
 
         /**
-         *Set the event's url in Plasma::Label from a KUrl
-         *@param KUrl, url to be displayed
+         *Set the event's url in Plasma::Label from a QUrl
+         *@param QUrl, url to be displayed
          */
-        void setUrl( const KUrl &url );
+        void setUrl( const QUrl &url );
 
         /**
          * Set the events tags
@@ -125,7 +125,7 @@ class UpcomingEventsWidget : public QGraphicsWidget
         QGraphicsProxyWidget *m_tags;
         QGraphicsProxyWidget *m_venue;
         QLabel *m_image;
-        KUrl m_imageUrl;
+        QUrl m_imageUrl;
         const LastFmEventPtr m_event;
 
         QGraphicsProxyWidget *createLabel( const QString &text = QString(),

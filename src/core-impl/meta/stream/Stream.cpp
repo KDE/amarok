@@ -28,7 +28,7 @@
 
 using namespace MetaStream;
 
-Track::Track( const KUrl &url )
+Track::Track( const QUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
@@ -53,7 +53,7 @@ Track::name() const
     return d->title;
 }
 
-KUrl
+QUrl
 Track::playableUrl() const
 {
     return d->url;

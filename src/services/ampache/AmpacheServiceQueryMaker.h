@@ -23,7 +23,7 @@
 #include "AmpacheService.h"
 #include "NetworkAccessManagerProxy.h"
 
-#include <KUrl>
+#include <QUrl>
 
 namespace Collections {
 
@@ -67,9 +67,9 @@ protected:
     Private * const d;
 
 public slots:
-    void artistDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void albumDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void trackDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void artistDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void albumDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void trackDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
 private:
     // Disable copy constructor and assignment
@@ -79,7 +79,7 @@ private:
     /** Gets the url for the ampache requests.
         Already adds query items for the dateFilter and the limit.
     */
-    KUrl getRequestUrl( const QString &action = QString() ) const;
+    QUrl getRequestUrl( const QString &action = QString() ) const;
 
     /*
     template<class PointerType, class ListType>

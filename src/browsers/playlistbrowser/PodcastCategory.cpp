@@ -152,7 +152,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
     QString description;
     QString title( index.data( Qt::DisplayRole ).toString() );
     QString subtitle( index.sibling( row, SubtitleColumn ).data( Qt::DisplayRole ).toString() );
-    KUrl imageUrl( qvariant_cast<KUrl>(
+    QUrl imageUrl( qvariant_cast<QUrl>(
         index.sibling( row, ImageColumn ).data( Qt::DisplayRole )
     ) );
     QString author( index.sibling( row, AuthorColumn ).data( Qt::DisplayRole ).toString() );

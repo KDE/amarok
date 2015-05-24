@@ -79,7 +79,7 @@ void CollectionLocationTest::testSuccessfulCopy()
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  KUrl( "file:///IDoNotExist.mp3" ) );
+    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
     Meta::TrackPtr file1( new MetaMock( map ) );
     cl->transferSuccessful( file1 );
 
@@ -101,7 +101,7 @@ void CollectionLocationTest::testFailedCopy()
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  KUrl( "file:///IDoNotExist.mp3" ) );
+    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
     Meta::TrackPtr file1( new MetaMock( map ) );
     cl->transferError( file1, "Test of CollectionLocation" );
 
@@ -124,11 +124,11 @@ void CollectionLocationTest::testCopyMultipleTracks()
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  KUrl( "file:///IDoNotExist.mp3" ) );
+    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
     Meta::TrackPtr file1( new MetaMock( map ) );
-    map.insert( Meta::Field::URL, KUrl( "file:///IDoNotExistAsWell.mp3" ) );
+    map.insert( Meta::Field::URL, QUrl("file:///IDoNotExistAsWell.mp3") );
     Meta::TrackPtr file2( new MetaMock( map )  );
-    map.insert( Meta::Field::URL, KUrl( "file:///IDoNotExistAsWell.mp3" ) );
+    map.insert( Meta::Field::URL, QUrl("file:///IDoNotExistAsWell.mp3") );
     Meta::TrackPtr file3( new MetaMock( map ) );
     cl->transferError( file1, "Test of CollectionLocation" );
     cl->transferSuccessful( file2 );
@@ -152,7 +152,7 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  KUrl( "file:///IDoNotExist.mp3" ) );
+    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
     Meta::TrackPtr file1( new MetaMock( map ) );
     cl->transferError( file1, "Test of CollectionLocation" );
     cl->transferSuccessful( file1 );

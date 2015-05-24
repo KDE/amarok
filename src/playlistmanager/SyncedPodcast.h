@@ -38,19 +38,19 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
         virtual QString author() const { return m_master->author(); }
 
         //Podcasts::PodcastChannel methods
-        virtual KUrl url() const { return m_master->url(); }
-        virtual KUrl webLink() const { return m_master->webLink(); }
+        virtual QUrl url() const { return m_master->url(); }
+        virtual QUrl webLink() const { return m_master->webLink(); }
         virtual bool hasImage() const { return m_master->hasImage(); }
-        virtual KUrl imageUrl() const { return m_master->imageUrl(); }
+        virtual QUrl imageUrl() const { return m_master->imageUrl(); }
         virtual QImage image() const { return m_master->image(); }
         virtual QString copyright() const { return m_master->copyright(); }
         virtual QStringList labels() const { return m_master->labels(); }
         virtual QDate subscribeDate() const { return m_master->subscribeDate(); }
 
-        virtual void setUrl( const KUrl &url ) { m_master->setUrl( url ); }
-        virtual void setWebLink( const KUrl &link ) { m_master->setWebLink( link ); }
+        virtual void setUrl( const QUrl &url ) { m_master->setUrl( url ); }
+        virtual void setWebLink( const QUrl &link ) { m_master->setWebLink( link ); }
         virtual void setImage( const QImage &image ) { m_master->setImage( image ); }
-        virtual void setImageUrl( const KUrl &imageUrl ) { m_master->setImageUrl( imageUrl ); }
+        virtual void setImageUrl( const QUrl &imageUrl ) { m_master->setImageUrl( imageUrl ); }
         virtual void setCopyright( const QString &copyright ) { m_master->setCopyright( copyright ); }
         virtual void setLabels( const QStringList &labels ) { m_master->setLabels( labels ); }
         virtual void addLabel( const QString &label ) { m_master->addLabel( label ); }
@@ -65,12 +65,12 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
         bool load( QTextStream &stream ) { return m_master->load( stream ); }
 
         //Settings
-        virtual KUrl saveLocation() const { return m_master->saveLocation(); }
+        virtual QUrl saveLocation() const { return m_master->saveLocation(); }
         virtual bool autoScan() const { return m_master->autoScan(); }
         virtual bool hasPurge() const { return m_master->hasPurge(); }
         virtual int purgeCount() const { return m_master->purgeCount(); }
 
-        void setSaveLocation( const KUrl &url ) { m_master->setSaveLocation( url ); }
+        void setSaveLocation( const QUrl &url ) { m_master->setSaveLocation( url ); }
         void setAutoScan( bool autoScan ) { m_master->setAutoScan( autoScan ); }
         void setFetchType( Podcasts::PodcastChannel::FetchType fetchType )
         {

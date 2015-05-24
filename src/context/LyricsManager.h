@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QStringList>
 #include <QList>
@@ -33,7 +33,7 @@ struct LyricsData
     QString text;
     QString title;
     QString artist;
-    KUrl site;
+    QUrl site;
 
     void clear()
     {

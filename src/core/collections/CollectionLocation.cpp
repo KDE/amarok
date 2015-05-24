@@ -250,7 +250,7 @@ void
 CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    QMap<Meta::TrackPtr, KUrl> urls;
+    QMap<Meta::TrackPtr, QUrl> urls;
     foreach( Meta::TrackPtr track, tracks )
     {
         if( track->isPlayable() )
@@ -264,7 +264,7 @@ CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 }
 
 void
-CollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+CollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                           const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
@@ -433,7 +433,7 @@ CollectionLocation::operationInProgressText( const Transcoding::Configuration &c
 }
 
 void
-CollectionLocation::slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, KUrl> &sources )
+CollectionLocation::slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, QUrl> &sources )
 {
     emit startCopy( sources, m_transcodingConfiguration );
 }
@@ -489,7 +489,7 @@ CollectionLocation::slotOperationPrepared()
 }
 
 void
-CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources,
+CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, QUrl> &sources,
                                    const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
@@ -545,7 +545,7 @@ CollectionLocation::slotFinishRemove()
             continue;
 
         if( track->playableUrl().isLocalFile() )
-            dirsToRemove.append( track->playableUrl().directory( KUrl::AppendTrailingSlash ) );
+            dirsToRemove.append( track->playableUrl().directory( QUrl::AppendTrailingSlash ) );
     }
 
     if( !dirsToRemove.isEmpty() && delegate->deleteEmptyDirs( this ) )
@@ -623,8 +623,8 @@ CollectionLocation::setupConnections()
     connect( this, SIGNAL(prepareOperation(Meta::TrackList,bool,Transcoding::Configuration)),
              m_destination, SLOT(slotPrepareOperation(Meta::TrackList,bool,Transcoding::Configuration)) );
     connect( m_destination, SIGNAL(operationPrepared()), SLOT(slotOperationPrepared()) );
-    connect( this, SIGNAL(startCopy(QMap<Meta::TrackPtr,KUrl>,Transcoding::Configuration)),
-             m_destination, SLOT(slotStartCopy(QMap<Meta::TrackPtr,KUrl>,Transcoding::Configuration)) );
+    connect( this, SIGNAL(startCopy(QMap<Meta::TrackPtr,QUrl>,Transcoding::Configuration)),
+             m_destination, SLOT(slotStartCopy(QMap<Meta::TrackPtr,QUrl>,Transcoding::Configuration)) );
     connect( m_destination, SIGNAL(finishCopy()),
              this, SLOT(slotFinishCopy()) );
     connect( this, SIGNAL(aborted()), SLOT(slotAborted()) );

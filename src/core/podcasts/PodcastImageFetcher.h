@@ -32,8 +32,8 @@ public:
 
     void run();
 
-    static KUrl cachedImagePath( Podcasts::PodcastChannelPtr channel );
-    static KUrl cachedImagePath( Podcasts::PodcastChannel *channel );
+    static QUrl cachedImagePath( Podcasts::PodcastChannelPtr channel );
+    static QUrl cachedImagePath( Podcasts::PodcastChannel *channel );
 
 signals:
     void imageReady( Podcasts::PodcastChannelPtr channel, QImage image );

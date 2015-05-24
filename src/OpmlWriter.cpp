@@ -17,7 +17,7 @@
 #include "OpmlWriter.h"
 #include "core/support/Debug.h"
 
-#include <KUrl>
+#include <QUrl>
 
 OpmlWriter::OpmlWriter( const QList<OpmlOutline *> rootOutlines,
                         const QMap<QString,QString> headerData,

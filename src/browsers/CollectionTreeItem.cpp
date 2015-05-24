@@ -311,18 +311,18 @@ CollectionTreeItem::addMatch( Collections::QueryMaker *qm, CategoryId::CatMenuId
 }
 
 
-KUrl::List
+QList<QUrl>
 CollectionTreeItem::urls() const
 {
     /*QueryBuilder qb = queryBuilder();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     QStringList values = qb.run();
-    KUrl::List list;
+    QList<QUrl> list;
     foreach( QString s, values ) {
-        list += KUrl( s );
+        list += QUrl( s );
     }
     return list;*/
-    KUrl::List list;
+    QList<QUrl> list;
     return list;
 }
 

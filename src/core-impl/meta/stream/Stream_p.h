@@ -90,7 +90,7 @@ class MetaStream::Track::Private : public QObject
         }
 
     public:
-        KUrl url;
+        QUrl url;
         QString title;
         QString artist;
         QString album;

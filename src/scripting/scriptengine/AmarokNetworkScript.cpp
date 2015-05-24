@@ -86,7 +86,7 @@ Downloader::init( QScriptContext* context, QScriptEngine *engine, bool stringRes
         return object;
     }
 
-    KUrl url( qscriptvalue_cast<QUrl>( context->argument( 0 ) ) );
+    QUrl url( qscriptvalue_cast<QUrl>( context->argument( 0 ) ) );
 
     // start download, and connect to it
     //FIXME: url is not working directly.
@@ -111,25 +111,25 @@ Downloader::init( QScriptContext* context, QScriptEngine *engine, bool stringRes
 AmarokDownloadHelper::AmarokDownloadHelper()
 {
     s_instance = this;
-    connect( The::networkAccessManager(), SIGNAL(requestRedirected(KUrl,KUrl)),
-             this, SLOT(requestRedirected(KUrl,KUrl)) );
+    connect( The::networkAccessManager(), SIGNAL(requestRedirected(QUrl,QUrl)),
+             this, SLOT(requestRedirected(QUrl,QUrl)) );
 }
 
 void
-AmarokDownloadHelper::newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding )
+AmarokDownloadHelper::newStringDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding )
 {
     m_encodings[ url ] = encoding;
-    newDownload( url, engine, obj, SLOT(resultString(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    newDownload( url, engine, obj, SLOT(resultString(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-AmarokDownloadHelper::newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj )
+AmarokDownloadHelper::newDataDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj )
 {
-    newDownload( url, engine, obj, SLOT(resultData(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    newDownload( url, engine, obj, SLOT(resultData(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-AmarokDownloadHelper::newDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot )
+AmarokDownloadHelper::newDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot )
 {
     m_values[ url ] = obj;
     m_engines[ url ] = engine;
@@ -138,7 +138,7 @@ AmarokDownloadHelper::newDownload( const KUrl &url, QScriptEngine* engine, QScri
 }
 
 void
-AmarokDownloadHelper::requestRedirected( const KUrl &sourceUrl, const KUrl &targetUrl )
+AmarokDownloadHelper::requestRedirected( const QUrl &sourceUrl, const QUrl &targetUrl )
 {
     DEBUG_BLOCK
 
@@ -149,7 +149,7 @@ AmarokDownloadHelper::requestRedirected( const KUrl &sourceUrl, const KUrl &targ
 }
 
 void
-AmarokDownloadHelper::resultData( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmarokDownloadHelper::resultData( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( !m_values.contains( url ) )
         return;
@@ -181,7 +181,7 @@ AmarokDownloadHelper::resultData( const KUrl &url, QByteArray data, NetworkAcces
 
 
 void
-AmarokDownloadHelper::resultString( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmarokDownloadHelper::resultString( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( !m_values.contains( url ) )
         return;
@@ -226,7 +226,7 @@ AmarokDownloadHelper::resultString( const KUrl &url, QByteArray data, NetworkAcc
 }
 
 void
-AmarokDownloadHelper::cleanUp( const KUrl &url )
+AmarokDownloadHelper::cleanUp( const QUrl &url )
 {
     m_values.remove( url );
     m_engines.remove( url );

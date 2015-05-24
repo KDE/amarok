@@ -38,7 +38,7 @@ class JamendoServiceFactory : public ServiceFactory
         virtual QString name();
         virtual KConfigGroup config();
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.url().contains( "jamendo.com", Qt::CaseInsensitive ); }
+        virtual bool possiblyContainsTrack( const QUrl &url ) const { return url.url().contains( "jamendo.com", Qt::CaseInsensitive ); }
 };
 
 class JamendoService : public ServiceBase

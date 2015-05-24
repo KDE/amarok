@@ -30,7 +30,7 @@
 #include <QTextStream>
 
 #include <KSharedPtr>
-#include <KUrl>
+#include <QUrl>
 
 class QTextStream;
 
@@ -137,7 +137,7 @@ namespace Playlists
              * @returns a unique identifier for a playlist. Should be similar to
              * Meta::Track::uidUrl
              */
-            virtual KUrl uidUrl() const = 0;
+            virtual QUrl uidUrl() const = 0;
 
             virtual QString name() const = 0;
             virtual QString prettyName() const { return name(); }

@@ -23,7 +23,7 @@
 
 #include <QTimer>
 
-#include <KUrl>
+#include <QUrl>
 
 
 using namespace AmarokAttica;
@@ -44,7 +44,7 @@ void ProviderInitJob::start()
 void ProviderInitJob::doWork()
 {
     if (m_id == "opendesktop") {
-        m_provider = Provider(m_id, KUrl("https://api.opendesktop.org/v1/"), "OpenDesktop.org");
+        m_provider = Provider(m_id, QUrl("https://api.opendesktop.org/v1/"), "OpenDesktop.org");
     }
     emitResult();
 }

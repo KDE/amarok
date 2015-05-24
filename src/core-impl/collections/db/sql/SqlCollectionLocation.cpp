@@ -123,7 +123,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
         track->collection()->collectionId() == m_collection->collectionId() )
     {
         bool removed;
-        KUrl src = track->playableUrl();
+        QUrl src = track->playableUrl();
         if( isGoingToRemoveSources() ) // is organize operation?
         {
             SqlCollectionLocation* destinationloc = qobject_cast<SqlCollectionLocation*>( destination() );
@@ -469,7 +469,7 @@ void SqlCollectionLocation::slotTransferJobAborted()
 
 
 void
-SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                              const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
@@ -506,9 +506,9 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
     if( !m_sources.isEmpty() )
     {
         Meta::TrackPtr track = m_sources.keys().first();
-        KUrl src = m_sources.take( track );
+        QUrl src = m_sources.take( track );
 
-        KUrl dest = m_destinations[ track ];
+        QUrl dest = m_destinations[ track ];
         dest.cleanPath();
         src.cleanPath();
 
@@ -567,8 +567,8 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
             job = KIO::file_move( src, dest, -1, flags );
             if( hasMoodFile )
             {
-                KUrl moodSrc = moodFile( src );
-                KUrl moodDest = moodFile( dest );
+                QUrl moodSrc = moodFile( src );
+                QUrl moodDest = moodFile( dest );
                 moodJob = KIO::file_move( moodSrc, moodDest, -1, flags );
             }
         }
@@ -590,8 +590,8 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
 
             if( hasMoodFile )
             {
-                KUrl moodSrc = moodFile( src );
-                KUrl moodDest = moodFile( dest );
+                QUrl moodSrc = moodFile( src );
+                QUrl moodDest = moodFile( dest );
                 moodJob = KIO::file_copy( moodSrc, moodDest, -1, flags );
             }
         }
@@ -629,9 +629,9 @@ bool SqlCollectionLocation::startNextRemoveJob()
     while ( !m_removetracks.isEmpty() )
     {
         Meta::TrackPtr track = m_removetracks.takeFirst();
-        // KUrl src = track->playableUrl();
-        KUrl src = track->playableUrl();
-        KUrl srcMoodFile = moodFile( src );
+        // QUrl src = track->playableUrl();
+        QUrl src = track->playableUrl();
+        QUrl srcMoodFile = moodFile( src );
 
         debug() << "isGoingToRemoveSources() " << isGoingToRemoveSources();
         if( isGoingToRemoveSources() && destination() ) // is organize operation?
@@ -667,11 +667,12 @@ bool SqlCollectionLocation::startNextRemoveJob()
     return false;
 }
 
-KUrl 
-SqlCollectionLocation::moodFile( const KUrl &track ) const
+QUrl 
+SqlCollectionLocation::moodFile( const QUrl &track ) const
 {
-    KUrl moodPath = track;
-    moodPath.setFileName( '.' + moodPath.fileName().replace( QRegExp( "(\\.\\w{2,5})$" ), ".mood" ) );
+    QUrl moodPath = track;
+    moodPath = moodPath.adjusted(QUrl::RemoveFilename);
+    moodPath.setPath(moodPath.path() +  '.' + moodPath.fileName().replace( QRegExp( "(\\.\\w{2,5})$" ), ".mood" ) );
     return moodPath;
 }
 

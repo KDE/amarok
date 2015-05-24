@@ -74,7 +74,7 @@ bool
 PlaylistBrowserNS::PodcastModel::isOnDisk( PodcastEpisodePtr episode ) const
 {
     bool isOnDisk = false;
-    KUrl episodeFile( episode->localUrl() );
+    QUrl episodeFile( episode->localUrl() );
 
     if( !episodeFile.isEmpty() )
     {
@@ -82,7 +82,7 @@ PlaylistBrowserNS::PodcastModel::isOnDisk( PodcastEpisodePtr episode ) const
         // reset localUrl because the file is not there.
         // FIXME: changing a podcast in innoncent-looking getter method is convoluted
         if( !isOnDisk )
-            episode->setLocalUrl( KUrl() );
+            episode->setLocalUrl( QUrl() );
     }
 
     return isOnDisk;
@@ -177,7 +177,7 @@ PlaylistBrowserNS::PodcastModel::channelData( const PodcastChannelPtr &channel,
                     return channel->keywords();
                 case ImageColumn:
                 {
-                    KUrl imageUrl( PodcastImageFetcher::cachedImagePath( channel ) );
+                    QUrl imageUrl( PodcastImageFetcher::cachedImagePath( channel ) );
                     if( !QFile( imageUrl.toLocalFile() ).exists() )
                         imageUrl = channel->imageUrl();
                     return imageUrl;

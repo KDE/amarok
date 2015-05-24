@@ -26,7 +26,7 @@
 #include "core/meta/Observer.h"
 #include "playback/EqualizerController.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QMutex>
 #include <QObject>
@@ -447,7 +447,7 @@ private slots:
     void slotAboutToFinish();
     void slotNewTrackPlaying( const Phonon::MediaSource &source);
     void slotStateChanged( Phonon::State newState, Phonon::State oldState);
-    void slotPlayableUrlFetched( const KUrl &url );
+    void slotPlayableUrlFetched( const QUrl &url );
     void slotTick( qint64 );
     void slotTrackLengthChanged( qint64 );
     void slotMetaDataChanged();
@@ -495,7 +495,7 @@ private:
      * @param offset the position in the media to start at in milliseconds
      * @param startPaused if true, go to paused state. if false, go to playing state (default)
      */
-    void playUrl( const KUrl &url, uint offset, bool startPaused = false );
+    void playUrl( const QUrl &url, uint offset, bool startPaused = false );
 
     /**
      * Try to detect MetaData spam in Streams etc.
@@ -537,7 +537,7 @@ private:
     Meta::TrackPtr  m_currentTrack;
     Meta::AlbumPtr  m_currentAlbum;
     Meta::TrackPtr  m_nextTrack;
-    KUrl            m_nextUrl;
+    QUrl            m_nextUrl;
     Capabilities::BoundedPlaybackCapability* m_boundedPlayback;
     Capabilities::MultiPlayableCapability* m_multiPlayback;
     QScopedPointer<Capabilities::MultiSourceCapability> m_multiSource;

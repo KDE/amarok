@@ -35,7 +35,7 @@
 #include <gpod/itdb.h>
 #include <unistd.h>  // fsync()
 
-IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,KUrl> &sources,
+IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,QUrl> &sources,
                                       const QWeakPointer<IpodCollection> &collection,
                                       const Transcoding::Configuration &configuration,
                                       bool goingToRemoveSources )
@@ -48,8 +48,8 @@ IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,KUrl> &sources,
 {
     connect( this, SIGNAL(startDuplicateTrackSearch(Meta::TrackPtr)),
                    SLOT(slotStartDuplicateTrackSearch(Meta::TrackPtr)) );
-    connect( this, SIGNAL(startCopyOrTranscodeJob(KUrl,KUrl,bool)),
-                   SLOT(slotStartCopyOrTranscodeJob(KUrl,KUrl,bool)) );
+    connect( this, SIGNAL(startCopyOrTranscodeJob(QUrl,QUrl,bool)),
+                   SLOT(slotStartCopyOrTranscodeJob(QUrl,QUrl,bool)) );
     connect( this, SIGNAL(displaySorryDialog()), SLOT(slotDisplaySorryDialog()) );
 }
 
@@ -63,7 +63,7 @@ IpodCopyTracksJob::run()
     QString collectionPrettyName = m_coll.data()->prettyName();
 
     itdb_start_sync( m_coll.data()->m_itdb );
-    QMapIterator<Meta::TrackPtr, KUrl> it( m_sources );
+    QMapIterator<Meta::TrackPtr, QUrl> it( m_sources );
     while( it.hasNext() )
     {
         if( m_aborted || !m_coll )
@@ -71,7 +71,7 @@ IpodCopyTracksJob::run()
 
         it.next();
         Meta::TrackPtr track = it.key();
-        KUrl sourceUrl = it.value();
+        QUrl sourceUrl = it.value();
         emit startDuplicateTrackSearch( track );
 
         // wait for searching to finish:
@@ -130,7 +130,7 @@ IpodCopyTracksJob::run()
         }
 
         // start the physical copying
-        KUrl destUrl = KUrl( QFile::decodeName( destFilename ) );
+        QUrl destUrl = QUrl( QFile::decodeName( destFilename ) );
         emit startCopyOrTranscodeJob( sourceUrl, destUrl, isJustCopy );
 
         // wait for copying to finish:
@@ -296,7 +296,7 @@ IpodCopyTracksJob::slotDuplicateTrackSearchQueryDone()
 }
 
 void
-IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl,
+IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const QUrl &sourceUrl, const QUrl &destUrl,
                                                 bool isJustCopy )
 {
     KJob *job = 0;

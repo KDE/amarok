@@ -40,7 +40,7 @@ namespace Meta {
             QString prettyName() const;
             virtual QString sortableName() const;
 
-            KUrl playableUrl() const;
+            QUrl playableUrl() const;
             QString prettyUrl() const;
             QString uidUrl() const;
 
@@ -137,7 +137,7 @@ namespace Meta {
         /** returns the cover of the album */
         virtual QImage image( int size = 0 ) const;
         /** returns the image location on disk */
-        virtual KUrl imageLocation( int size = 0 );
+        virtual QUrl imageLocation( int size = 0 );
         /** returns the cover of the album with a nice border around it*/
         virtual QPixmap imageWithBorder( int size = 0, int borderWidth = 5 );
         /** Returns true if it is possible to update the cover of the album */

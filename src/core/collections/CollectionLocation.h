@@ -26,7 +26,7 @@
 #include <QList>
 #include <QObject>
 
-#include <KUrl>
+#include <QUrl>
 
 namespace Collections {
     class Collection;
@@ -45,7 +45,7 @@ namespace Collections {
     - prettyLocation()
     - isWritable()
     - remove( Meta::Track )
-    - copyUrlsToCollection( QMap<Meta::TrackPtr, KUrl> )
+    - copyUrlsToCollection( QMap<Meta::TrackPtr, QUrl> )
 
     Writable collections that are also organizable should reimplement isOrganizable().
     Organizable means that the user is able to decide (to varying degrees, the details
@@ -222,7 +222,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual void transferError( const Meta::TrackPtr &track, const QString &error );
 
     signals:
-        void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources,
+        void startCopy( const QMap<Meta::TrackPtr, QUrl> &sources,
                         const Transcoding::Configuration & );
         void finishCopy();
         void startRemove();
@@ -254,7 +254,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         /**
             this method is called on the source location, and should return a list of urls
             which the destination location can copy using KIO. You must call
-            slotGetKIOCopyableUrlsDone( QMap<Meta::TrackPtr, KUrl> ) after retrieving the
+            slotGetKIOCopyableUrlsDone( QMap<Meta::TrackPtr, QUrl> ) after retrieving the
             urls. The order of urls passed to that method has to be the same as the order
             of the tracks passed to this method.
         */
@@ -269,7 +269,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
             successfully copied to destination collection. Only such marked tracks are
             then removed in case of a "move" action.
         */
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                            const Transcoding::Configuration &configuration );
 
         /**
@@ -367,7 +367,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
          * Please note: the order of urls in the argument has to be the same as in the
          * tracklist
          */
-        void slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, KUrl> &sources );
+        void slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, QUrl> &sources );
         void slotCopyOperationFinished();
         void slotRemoveOperationFinished();
         void slotShowSourceDialogDone();
@@ -379,7 +379,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources,
                                    const Transcoding::Configuration &configuration );
         void slotOperationPrepared();
-        void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources,
+        void slotStartCopy( const QMap<Meta::TrackPtr, QUrl> &sources,
                             const Transcoding::Configuration &configuration );
         void slotFinishCopy();
         void slotStartRemove();

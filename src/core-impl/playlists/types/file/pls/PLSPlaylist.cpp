@@ -22,7 +22,7 @@
 
 using namespace Playlists;
 
-PLSPlaylist::PLSPlaylist( const KUrl &url, PlaylistProvider *provider )
+PLSPlaylist::PLSPlaylist( const QUrl &url, PlaylistProvider *provider )
     : PlaylistFile( url, provider )
 {
 }
@@ -123,7 +123,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             if( index > numberOfEntries || index == 0 )
                 continue;
             tmp = (*i).section( '=', 1 ).trimmed();
-            KUrl url = getAbsolutePath( KUrl( tmp ) );
+            QUrl url = getAbsolutePath( QUrl( tmp ) );
             proxyTrack = new MetaProxy::Track( url );
             Meta::TrackPtr track( proxyTrack.data() );
             addProxyTrack( track );

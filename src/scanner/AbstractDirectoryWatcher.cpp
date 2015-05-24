@@ -73,10 +73,10 @@ AbstractDirectoryWatcher::run()
             if( m_watcher->isStopped() )
             {
                 // Check if directories changed while we didn't have a watcher
-                QList<KUrl> urls;
+                QList<QUrl> urls;
                 foreach( const QString &path, collectionFolders() )
                 {
-                    urls.append( KUrl::fromPath( path ) );
+                    urls.append( QUrl::fromLocalFile( path ) );
                 }
                 emit requestScan( urls, GenericScanManager::PartialUpdateScan );
                 m_watcher->startScan( true );

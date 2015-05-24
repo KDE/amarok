@@ -98,9 +98,9 @@ public:
     // private slots
     void _checkRequireUpdate( Meta::TrackPtr track );
     void _dataContainerUpdated( const QString &source, const Plasma::DataEngine::Data &data );
-    void _parseLangLinksResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void _parseListingResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void _wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e );
+    void _parseLangLinksResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void _parseListingResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void _wikiResult( const QUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e );
     void _stopped();
 };
 
@@ -151,11 +151,11 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
             wikiCurrentUrl = clickUrl;
             if( !wikiCurrentUrl.hasQueryItem( QLatin1String("useskin") ) )
                 wikiCurrentUrl.addQueryItem( QLatin1String("useskin"), QLatin1String("monobook") );
-            KUrl encodedUrl( wikiCurrentUrl.toEncoded() );
+            QUrl encodedUrl( wikiCurrentUrl.toEncoded() );
             urls << encodedUrl;
             q->setData( source, QLatin1String("busy"), true );
             The::networkAccessManager()->getData( encodedUrl, q,
-                 SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                 SLOT(_wikiResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
         q->removeData( source, QLatin1String("clickUrl") );
     }
@@ -195,7 +195,7 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
 }
 
 void
-WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e )
+WikipediaEnginePrivate::_wikiResult( const QUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e )
 {
     Q_Q( WikipediaEngine );
     if( !urls.contains( url ) )
@@ -269,7 +269,7 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
 }
 
 void
-WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
+WikipediaEnginePrivate::_parseLangLinksResult( const QUrl &url, QByteArray data,
                                                NetworkAccessManagerProxy::Error e )
 {
     Q_Q( WikipediaEngine );
@@ -401,7 +401,7 @@ WikipediaEnginePrivate::_parseLangLinksResult( const KUrl &url, QByteArray data,
 }
 
 void
-WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
+WikipediaEnginePrivate::_parseListingResult( const QUrl &url,
                                              QByteArray data,
                                              NetworkAccessManagerProxy::Error e )
 {
@@ -542,7 +542,7 @@ void
 WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPrefix )
 {
     Q_Q( WikipediaEngine );
-    KUrl pageUrl;
+    QUrl pageUrl;
     QString host( ".wikipedia.org" );
     pageUrl.setScheme( useSSL ? QLatin1String( "https" ) : QLatin1String( "http" ) );
 
@@ -572,7 +572,7 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
     wikiCurrentUrl = pageUrl;
     urls << pageUrl;
     The::networkAccessManager()->getData( pageUrl, q,
-         SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(_wikiResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
@@ -581,7 +581,7 @@ WikipediaEnginePrivate::fetchLangLinks( const QString &title,
                                         const QString &llcontinue )
 {
     Q_Q( WikipediaEngine );
-    KUrl url;
+    QUrl url;
     url.setScheme( useSSL ? QLatin1String( "https" ) : QLatin1String( "http" ) );
     url.setHost( hostLang + QLatin1String(".wikipedia.org") );
     url.setPath( QLatin1String("/w/api.php") );
@@ -596,14 +596,14 @@ WikipediaEnginePrivate::fetchLangLinks( const QString &title,
     urls << url;
     debug() << "Fetching langlinks:" << url;
     The::networkAccessManager()->getData( url, q,
-         SLOT(_parseLangLinksResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(_parseLangLinksResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
 WikipediaEnginePrivate::fetchListing( const QString &title, const QString &hostLang )
 {
     Q_Q( WikipediaEngine );
-    KUrl url;
+    QUrl url;
     url.setScheme( useSSL ? QLatin1String( "https" ) : QLatin1String( "http" ) );
     url.setHost( hostLang + QLatin1String(".wikipedia.org") );
     url.setPath( QLatin1String("/w/api.php") );
@@ -617,7 +617,7 @@ WikipediaEnginePrivate::fetchListing( const QString &title, const QString &hostL
     urls << url;
     debug() << "Fetching listing:" << url;
     The::networkAccessManager()->getData( url, q,
-         SLOT(_parseListingResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(_parseListingResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
@@ -878,7 +878,7 @@ WikipediaEnginePrivate::reloadWikipedia()
     q->setData( QLatin1String("wikipedia"), QLatin1String("busy"), true );
     q->scheduleSourcesUpdated();
     The::networkAccessManager()->getData( wikiCurrentUrl, q,
-         SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(_wikiResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 WikipediaEnginePrivate::SelectionType

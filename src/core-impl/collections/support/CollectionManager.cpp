@@ -349,7 +349,7 @@ CollectionManager::primaryCollection() const
 }
 
 Meta::TrackPtr
-CollectionManager::trackForUrl( const KUrl &url )
+CollectionManager::trackForUrl( const QUrl &url )
 {
     QReadLocker locker( &d->lock );
 
@@ -372,7 +372,7 @@ CollectionManager::trackForUrl( const KUrl &url )
     // TODO: create specific TrackProviders for these:
     static const QSet<QString> remoteProtocols = QSet<QString>()
             << "http" << "https" << "mms" << "smb"; // consider unifying with TrackLoader::tracksLoaded()
-    if( remoteProtocols.contains( url.protocol() ) )
+    if( remoteProtocols.contains( url.scheme() ) )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
     return Meta::TrackPtr( 0 );

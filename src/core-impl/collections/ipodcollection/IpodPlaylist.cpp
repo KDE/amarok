@@ -82,7 +82,7 @@ IpodPlaylist::~IpodPlaylist()
     itdb_playlist_free( m_playlist );
 }
 
-KUrl
+QUrl
 IpodPlaylist::uidUrl() const
 {
     // integer reading is atomic, no lock needed

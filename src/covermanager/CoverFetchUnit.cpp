@@ -231,7 +231,7 @@ CoverFetchInfoPayload::~CoverFetchInfoPayload()
 void
 CoverFetchInfoPayload::prepareUrls()
 {
-    KUrl url;
+    QUrl url;
     CoverFetch::Metadata metadata;
 
     switch( m_src )
@@ -287,11 +287,11 @@ CoverFetchInfoPayload::prepareDiscogsUrls( const QByteArray &data )
                             continue;
                         if( xml.name() == "uri" )
                         {
-                            KUrl releaseUrl( xml.readElementText() );
-                            QString releaseStr = releaseUrl.url( KUrl::RemoveTrailingSlash );
+                            QUrl releaseUrl( xml.readElementText() );
+                            QString releaseStr = releaseUrl.url( QUrl::RemoveTrailingSlash );
                             QString releaseId = releaseStr.split( '/' ).last();
 
-                            KUrl url;
+                            QUrl url;
                             url.setScheme( "http" );
                             url.setHost( "www.discogs.com" );
                             url.setPath( "/release/" + releaseId );
@@ -343,7 +343,7 @@ CoverFetchSearchPayload::query() const
 void
 CoverFetchSearchPayload::prepareUrls()
 {
-    KUrl url;
+    QUrl url;
     url.setScheme( "http" );
     CoverFetch::Metadata metadata;
 
@@ -507,9 +507,9 @@ CoverFetchArtPayload::prepareDiscogsUrls( QXmlStreamReader &xml )
                     if( xml.name() == "image" )
                     {
                         const QXmlStreamAttributes &attr = xml.attributes();
-                        const KUrl thburl( attr.value( "uri150" ).toString() );
-                        const KUrl uri( attr.value( "uri" ).toString() );
-                        const KUrl url = (m_size == CoverFetch::ThumbSize) ? thburl : uri;
+                        const QUrl thburl( attr.value( "uri150" ).toString() );
+                        const QUrl uri( attr.value( "uri" ).toString() );
+                        const QUrl url = (m_size == CoverFetch::ThumbSize) ? thburl : uri;
                         if( !url.isValid() )
                             continue;
 
@@ -545,7 +545,7 @@ CoverFetchArtPayload::prepareGoogleUrls()
 
     while( ( (pos = rx.indexIn( html, pos ) ) != -1 ) )
     {
-        KUrl url( "http://www.google.com" + rx.cap( 1 ) );
+        QUrl url( "http://www.google.com" + rx.cap( 1 ) );
 
         CoverFetch::Metadata metadata;
         metadata[ "width" ] = url.queryItemValue( "w" );
@@ -563,10 +563,10 @@ CoverFetchArtPayload::prepareGoogleUrls()
         {
         default:
         case CoverFetch::ThumbSize:
-            url = KUrl( metadata.value( "thumbarturl" ) );
+            url = QUrl( metadata.value( "thumbarturl" ) );
             break;
         case CoverFetch::NormalSize:
-            url = KUrl( metadata.value( "normalarturl" ) );
+            url = QUrl( metadata.value( "normalarturl" ) );
             break;
         }
 
@@ -649,7 +649,7 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
         acceptableSizes << "extralarge" << "large";
         metadata[ "normalarturl" ] = firstAvailableValue( acceptableSizes, coverUrlHash );
 
-        KUrl url( m_size == CoverFetch::ThumbSize ? metadata["thumbarturl"] : metadata["normalarturl"] );
+        QUrl url( m_size == CoverFetch::ThumbSize ? metadata["thumbarturl"] : metadata["normalarturl"] );
         if( url.isValid() )
             m_urls.insert( url , metadata );
     }

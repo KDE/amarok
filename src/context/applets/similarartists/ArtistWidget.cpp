@@ -231,14 +231,14 @@ ArtistWidget::fetchPhoto()
         return;
 
     The::networkAccessManager()->getData( m_artist->urlImage(), this,
-         SLOT(photoFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(photoFetched(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
 ArtistWidget::fetchInfo()
 {
     // we genere the url for the demand on the lastFM Api
-    KUrl url;
+    QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
@@ -247,14 +247,14 @@ ArtistWidget::fetchInfo()
     url.addQueryItem( "artist", m_artist->name() );
 
     The::networkAccessManager()->getData( url, this,
-         SLOT(parseInfo(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(parseInfo(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
 ArtistWidget::fetchTopTrack()
 {
     // we genere the url for the demand on the lastFM Api
-    KUrl url;
+    QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
@@ -263,11 +263,11 @@ ArtistWidget::fetchTopTrack()
     url.addQueryItem( "artist",  m_artist->name() );
 
     The::networkAccessManager()->getData( url, this,
-         SLOT(parseTopTrack(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(parseTopTrack(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-ArtistWidget::photoFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+ArtistWidget::photoFetched( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( url != m_artist->urlImage() )
         return;
@@ -291,7 +291,7 @@ ArtistWidget::photoFetched( const KUrl &url, QByteArray data, NetworkAccessManag
 }
 
 void
-ArtistWidget::parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+ArtistWidget::parseInfo( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
@@ -351,7 +351,7 @@ ArtistWidget::parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerP
 }
 
 void
-ArtistWidget::parseTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+ArtistWidget::parseTopTrack( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
@@ -414,7 +414,7 @@ void
 ArtistWidget::openArtistUrl()
 {
     // somehow Last.fm decides to supply this url without the scheme
-    KUrl artistUrl = QString( "http://%1" ).arg( m_artist->url().url() );
+    QUrl artistUrl = QString( "http://%1" ).arg( m_artist->url().url() );
     if( artistUrl.isValid() )
         QDesktopServices::openUrl( artistUrl );
 }
@@ -576,7 +576,7 @@ void
 ArtistWidget::addLastfmArtistStation()
 {
     const QString url = "lastfm://artist/" + m_artist->name() + "/similarartists";
-    Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+    Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( QUrl( url ) );
     The::playlistController()->insertOptioned( lastfmtrack, Playlist::OnAppendToPlaylistAction );
 }
 

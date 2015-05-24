@@ -346,7 +346,7 @@ WikipediaAppletPrivate::_getLangMapProgress( qint64 received, qint64 total )
 }
 
 void
-WikipediaAppletPrivate::_getLangMapFinished( const KUrl &url, QByteArray data,
+WikipediaAppletPrivate::_getLangMapFinished( const QUrl &url, QByteArray data,
                                              NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
@@ -413,7 +413,7 @@ WikipediaAppletPrivate::_getLangMap()
     languageSettingsUi.progressBar->setMaximum( 100 );
     languageSettingsUi.progressBar->setValue( 0 );
 
-    KUrl url;
+    QUrl url;
     url.setScheme( "http" );
     url.setHost( "en.wikipedia.org" );
     url.setPath( "/w/api.php" );
@@ -423,7 +423,7 @@ WikipediaAppletPrivate::_getLangMap()
     url.addQueryItem( "sifilteriw", "local" );
     url.addQueryItem( "format", "xml" );
     QNetworkReply *reply = The::networkAccessManager()->getData( url, q,
-                           SLOT(_getLangMapFinished(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                           SLOT(_getLangMapFinished(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     q->connect( reply, SIGNAL(downloadProgress(qint64,qint64)), q, SLOT(_getLangMapProgress(qint64,qint64)) );
 }
 
@@ -741,7 +741,7 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
     }
     else if( data.contains( "sourceUrl" ) )
     {
-        const KUrl &url = data.value( "sourceUrl" ).value<KUrl>();
+        const QUrl &url = data.value( "sourceUrl" ).value<QUrl>();
         d->setUrl( url );
         debug() << "source URL" << url;
         setCollapseOff();

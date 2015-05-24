@@ -54,7 +54,7 @@ TrashCollectionLocation::isWritable() const
 }
 
 void
-TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                                const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
@@ -69,8 +69,8 @@ TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> 
 
     if( m_trashConfirmed )
     {
-        KUrl::List files = sources.values();
-        foreach( const KUrl &file, files )
+        QList<QUrl> files = sources.values();
+        foreach( const QUrl &file, files )
         {
             if( !QFile::exists( file.toLocalFile() ) )
             {

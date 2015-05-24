@@ -55,7 +55,7 @@ void TestM3UPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const KUrl url = dataPath( "data/playlists/test.m3u" );
+    const QUrl url = dataPath( "data/playlists/test.m3u" );
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 

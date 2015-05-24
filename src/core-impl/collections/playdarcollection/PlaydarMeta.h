@@ -25,7 +25,7 @@
 #include <QWeakPointer>
 
 #include <KSharedPtr>
-#include <KUrl>
+#include <QUrl>
 
 namespace Collections
 {
@@ -75,7 +75,7 @@ namespace Meta
             ~PlaydarTrack();
             
             QString name() const;
-            KUrl playableUrl() const;
+            QUrl playableUrl() const;
             QString prettyUrl() const;
             QString uidUrl() const;
             QString sid() const;
@@ -142,7 +142,7 @@ namespace Meta
             Meta::StatisticsPtr m_statsStore;
 
             QString m_sid;
-            KUrl m_uidUrl;
+            QUrl m_uidUrl;
             QString m_playableUrl;
             QString m_name;
             QString m_mimetype;
@@ -192,7 +192,7 @@ namespace Meta
             TrackList tracks();
             bool hasImage( int size = 0 ) const;
             QImage image( int size = 0 ) const;
-            KUrl imageLocation( int size = 0 );
+            QUrl imageLocation( int size = 0 );
             bool canUpdateImage() const;
             void setImage( const QImage &image );
             void removeImage();

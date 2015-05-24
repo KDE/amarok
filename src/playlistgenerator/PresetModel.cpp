@@ -29,7 +29,7 @@
 #include "playlistgenerator/PresetEditDialog.h"
 
 #include <KFileDialog>
-#include <KUrl>
+#include <QUrl>
 
 #include <QAbstractItemModel>
 #include <QDesktopServices>
@@ -154,7 +154,7 @@ APG::PresetModel::exportActive()
 void
 APG::PresetModel::import()
 {
-    QString filename = KFileDialog::getOpenFileName( KUrl( QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) ),
+    QString filename = KFileDialog::getOpenFileName( QUrl( QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) ),
                                                      QString("*.xml|" + i18n("Preset files (*.xml)") ),
                                                      0,
                                                      i18n("Import preset") );
@@ -298,7 +298,7 @@ APG::PresetModel::parseXmlToPresets( QDomDocument& document )
  * ExportDialog nested class
  */
 APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
-    : KFileDialog( KUrl( QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) ),
+    : KFileDialog( QUrl( QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) ),
                    QString("*.xml|" + i18n("Preset files (*.xml)") ),
                    0 )
 

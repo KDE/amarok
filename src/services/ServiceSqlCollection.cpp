@@ -76,7 +76,7 @@ ServiceSqlCollection::escape( QString text ) const
 }
 
 Meta::TrackPtr
-ServiceSqlCollection::trackForUrl(const KUrl & url)
+ServiceSqlCollection::trackForUrl(const QUrl &url)
 {
     if ( !possiblyContainsTrack( url ) ) //do we even bother trying?
         return Meta::TrackPtr();
@@ -110,7 +110,7 @@ ServiceSqlCollection::trackForUrl(const KUrl & url)
 }
 
 bool
-ServiceSqlCollection::possiblyContainsTrack(const KUrl & url) const
+ServiceSqlCollection::possiblyContainsTrack(const QUrl &url) const
 {
     return url.url().contains( m_metaFactory->tablePrefix(), Qt::CaseInsensitive );
 }

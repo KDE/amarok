@@ -24,7 +24,7 @@
 #include "atticaclient_export.h"
 
 #include <QDateTime>
-#include <KUrl>
+#include <QUrl>
 
 namespace AmarokAttica
 {
@@ -70,8 +70,8 @@ class ATTICA_EXPORT KnowledgeBase
     void setComments(int comments);
     int comments() const;
 
-    void setDetailPage(const KUrl &detailPage);
-    KUrl detailPage() const;
+    void setDetailPage(const QUrl &detailPage);
+    QUrl detailPage() const;
 
     void addExtendedAttribute( const QString &key, const QString &value );
     QString extendedAttribute( const QString &key ) const;
@@ -88,7 +88,7 @@ class ATTICA_EXPORT KnowledgeBase
     QString m_description;
     QString m_answer;
     int m_comments;
-    KUrl m_detailPage;
+    QUrl m_detailPage;
 
     QMap<QString,QString> m_extendedAttributes;
 };

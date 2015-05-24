@@ -46,7 +46,7 @@ public:
     virtual QString name();
     virtual KConfigGroup config();
 
-    virtual bool possiblyContainsTrack( const KUrl &url ) const;
+    virtual bool possiblyContainsTrack( const QUrl &url ) const;
 };
 
 class LastFmService : public ServiceBase
@@ -76,7 +76,7 @@ private slots:
 
 private:
     void continueReconfiguring();
-    void playLastFmStation( const KUrl &url );
+    void playLastFmStation( const QUrl &url );
     void updateProfileInfo();
 
     QExplicitlySharedDataPointer<ScrobblerAdapter> m_scrobbler;

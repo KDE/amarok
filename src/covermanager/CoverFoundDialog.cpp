@@ -387,7 +387,7 @@ void CoverFoundDialog::saveAs()
     supportedMimeTypes << "image/png";
     dlg.setMimeFilter( supportedMimeTypes );
 
-    KUrl saveUrl;
+    QUrl saveUrl;
     int res = dlg.exec();
     switch( res )
     {
@@ -455,8 +455,8 @@ void CoverFoundDialog::slotButtonClicked( int button )
 void CoverFoundDialog::fetchRequestRedirected( QNetworkReply *oldReply,
                                                QNetworkReply *newReply )
 {
-    KUrl oldUrl = oldReply->request().url();
-    KUrl newUrl = newReply->request().url();
+    QUrl oldUrl = oldReply->request().url();
+    QUrl newUrl = newReply->request().url();
 
     // Since we were redirected we have to check if the redirect
     // was for one of our URLs and if the new URL is not handled
@@ -472,7 +472,7 @@ void CoverFoundDialog::fetchRequestRedirected( QNetworkReply *oldReply,
     }
 }
 
-void CoverFoundDialog::handleFetchResult( const KUrl &url, QByteArray data,
+void CoverFoundDialog::handleFetchResult( const QUrl &url, QByteArray data,
                                           NetworkAccessManagerProxy::Error e )
 {
     CoverFoundItem *item = m_urls.take( url );
@@ -498,12 +498,12 @@ bool CoverFoundDialog::fetchBigPix()
 {
     DEBUG_BLOCK
     CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->currentItem() );
-    const KUrl url( item->metadata().value( "normalarturl" ) );
+    const QUrl url( item->metadata().value( "normalarturl" ) );
     if( !url.isValid() )
         return false;
 
     QNetworkReply *reply = The::networkAccessManager()->getData( url, this,
-                           SLOT(handleFetchResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                           SLOT(handleFetchResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     m_urls.insert( url, item );
 
     if( !m_dialog )

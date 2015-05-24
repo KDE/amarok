@@ -28,7 +28,7 @@
 
 using namespace AmarokScript;
 
-InfoScript::InfoScript( const KUrl& scriptUrl, AmarokScriptEngine *engine )
+InfoScript::InfoScript( const QUrl &scriptUrl, AmarokScriptEngine *engine )
     : QObject( engine )
     , m_scriptUrl( scriptUrl )
 {

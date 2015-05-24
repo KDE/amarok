@@ -76,7 +76,7 @@ void TestPlaylistFileProvider::testSave_data()
 void TestPlaylistFileProvider::testSave()
 {
     Meta::TrackList tempTrackList;
-    const KUrl trackUrl = dataPath( "data/audio/Platz 01.mp3" );
+    const QUrl trackUrl = dataPath( "data/audio/Platz 01.mp3" );
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
     QCOMPARE( tempTrackList.size(), 1 );
 

@@ -22,7 +22,7 @@
 
 using namespace Playlists;
 
-M3UPlaylist::M3UPlaylist( const KUrl &url, PlaylistProvider *provider )
+M3UPlaylist::M3UPlaylist( const QUrl &url, PlaylistProvider *provider )
     : PlaylistFile( url, provider )
 {
 }
@@ -53,7 +53,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
         {
             line = line.replace( "\\", "/" );
 
-            KUrl url = getAbsolutePath( KUrl( line ) );
+            QUrl url = getAbsolutePath( QUrl( line ) );
 
             MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
             QString artist = extinfTitle.section( " - ", 0, 0 );
@@ -84,7 +84,7 @@ M3UPlaylist::savePlaylist( QFile &file )
     QTextStream stream( &file );
 
     stream << "#EXTM3U\n";
-    KUrl::List urls;
+    QList<QUrl> urls;
     QStringList titles;
     QList<int> lengths;
 
@@ -93,7 +93,7 @@ M3UPlaylist::savePlaylist( QFile &file )
         if( !track ) // see BUG: 303056
             continue;
 
-        const KUrl &url = track->playableUrl();
+        const QUrl &url = track->playableUrl();
         int length = track->length() / 1000;
         const QString &title = track->name();
         const QString &artist = track->artist()->name();
@@ -107,7 +107,7 @@ M3UPlaylist::savePlaylist( QFile &file )
             stream << '\n';
         }
 
-        if( url.protocol() == "file" )
+        if( url.scheme() == "file" )
             stream << trackLocation( track );
         else
             stream << url.url();

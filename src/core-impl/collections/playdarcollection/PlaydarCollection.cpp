@@ -196,11 +196,11 @@ namespace Collections
     }
 
     bool
-    PlaydarCollection::possiblyContainsTrack( const KUrl &url ) const
+    PlaydarCollection::possiblyContainsTrack( const QUrl &url ) const
     {
         DEBUG_BLOCK
 
-        if( url.protocol() == uidUrlProtocol() &&
+        if( url.scheme() == uidUrlProtocol() &&
             url.hasQueryItem( QString( "artist" ) ) &&
             url.hasQueryItem( QString( "album" ) ) &&
             url.hasQueryItem( QString( "title" ) ) )
@@ -210,7 +210,7 @@ namespace Collections
     }
 
     Meta::TrackPtr
-    PlaydarCollection::trackForUrl( const KUrl &url )
+    PlaydarCollection::trackForUrl( const QUrl &url )
     {
         DEBUG_BLOCK
 
@@ -226,9 +226,9 @@ namespace Collections
         {
             m_memoryCollection->releaseLock();
             MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
-            proxyTrack->setArtist( url.queryItem( "artist" ) );
-            proxyTrack->setAlbum( url.queryItem( "album" ) );
-            proxyTrack->setTitle( url.queryItem( "title" ) );
+            proxyTrack->setArtist( QUrlQuery(url).queryItemValue( "artist" ) );
+            proxyTrack->setAlbum( QUrlQuery(url).queryItemValue( "album" ) );
+            proxyTrack->setTitle( QUrlQuery(url).queryItemValue( "title" ) );
             Playdar::ProxyResolver *proxyResolver = new Playdar::ProxyResolver( this, url, proxyTrack );
 
             connect( proxyResolver, SIGNAL(playdarError(Playdar::Controller::ErrorState)),

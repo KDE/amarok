@@ -156,11 +156,11 @@ Track::setTitle( const QString &newTitle )
     commitIfInNonBatchUpdate( Meta::valTitle, newTitle );
 }
 
-KUrl
+QUrl
 Track::playableUrl() const
 {
     if( m_mountPoint.isEmpty() || !m_track->ipod_path || m_track->ipod_path[0] == '\0' )
-        return KUrl();
+        return QUrl();
     QReadLocker locker( &m_trackLock );
     gchar *relPathChar = g_strdup( m_track->ipod_path );
     locker.unlock();
@@ -168,13 +168,13 @@ Track::playableUrl() const
     // relPath begins with a slash
     QString relPath = QFile::decodeName( relPathChar );
     g_free( relPathChar );
-    return KUrl( m_mountPoint + relPath );
+    return QUrl( m_mountPoint + relPath );
 }
 
 QString
 Track::prettyUrl() const
 {
-    const KUrl &url = playableUrl();
+    const QUrl &url = playableUrl();
     if( url.isLocalFile() )
         return url.toLocalFile();
 

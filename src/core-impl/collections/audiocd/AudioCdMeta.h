@@ -44,12 +44,12 @@ typedef KSharedPtr<AudioCdYear> AudioCdYearPtr;
 class AudioCdTrack : public Meta::Track
 {
     public:
-        AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const KUrl &url );
+        AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const QUrl &url );
         virtual ~AudioCdTrack();
 
         virtual QString name() const;
 
-        virtual KUrl playableUrl() const;
+        virtual QUrl playableUrl() const;
         virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
         virtual QString notPlayableReason() const;
@@ -108,7 +108,7 @@ class AudioCdTrack : public Meta::Track
         QString m_name;
         qint64 m_length;
         int m_trackNumber;
-        KUrl m_playableUrl;
+        QUrl m_playableUrl;
         QString m_fileNameBase;
 };
 

@@ -36,7 +36,7 @@ Restorer::Restorer()
 }
 
 void
-Restorer::restore( const KUrl &defaultPath )
+Restorer::restore( const QUrl &defaultPath )
 {
     m_tracks.clear();
     m_playlistToRestore = Playlists::loadPlaylistFile( defaultPath );

@@ -52,7 +52,7 @@
 
 #include <KApplication>
 #include <KMenu>
-#include <KUrl>
+#include <QUrl>
 #include <KLocale>
 
 #include <QClipboard>
@@ -584,10 +584,10 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
 
     if ( event->button() == Qt::MidButton )
     {
-        KUrl url( QApplication::clipboard()->text() );
+        QUrl url( QApplication::clipboard()->text() );
         if ( url.isValid() )
         {
-            QList<KUrl> urls = QList<KUrl>() << url;
+            QList<QUrl> urls = QList<QUrl>() << url;
             if( index.isValid() )
                 The::playlistController()->insertUrls( index.row() + 1, urls );
             else

@@ -317,8 +317,8 @@ SqlQueryMaker::addMatch( const Meta::TrackPtr &track )
     QString url = track->uidUrl();
     if( !url.isEmpty() )
     /*
-    KUrl kurl( url );
-    if( kurl.protocol() == "amarok-sqltrackuid" )
+    QUrl kurl( url );
+    if( kurl.scheme() == "amarok-sqltrackuid" )
     */
     {
         d->queryMatch += QString( " AND urls.uniqueid = '%1' " ).arg( url /*kurl.url()*/ );

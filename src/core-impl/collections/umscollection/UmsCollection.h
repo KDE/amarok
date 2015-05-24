@@ -106,8 +106,8 @@ class UmsCollection : public Collection, public Meta::Observer
         virtual ~UmsCollection();
 
         /* TrackProvider methods */
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         /* Collection methods */
         virtual QueryMaker *queryMaker();
@@ -135,8 +135,8 @@ class UmsCollection : public Collection, public Meta::Observer
         using Meta::Observer::metadataChanged; // silence compiler warning about hidder overloads
 
         /* own methods */
-        const KUrl &musicPath() const { return m_musicPath; }
-        const KUrl &podcastPath() const { return m_podcastPath; }
+        const QUrl &musicPath() const { return m_musicPath; }
+        const QUrl &podcastPath() const { return m_podcastPath; }
 
         /**
          * Get location where track @param track should be transferred to.
@@ -144,7 +144,7 @@ class UmsCollection : public Collection, public Meta::Observer
          * @param fileExtension new extension to use. Leave empty if you don't wish to
          * change file extension
          */
-        KUrl organizedUrl( Meta::TrackPtr track, const QString &fileExtension = QString() ) const;
+        QUrl organizedUrl( Meta::TrackPtr track, const QString &fileExtension = QString() ) const;
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
@@ -169,7 +169,7 @@ class UmsCollection : public Collection, public Meta::Observer
          */
         void slotEject();
 
-        void slotTrackAdded( KUrl trackLocation );
+        void slotTrackAdded( QUrl trackLocation );
         void slotTrackRemoved( const Meta::TrackPtr &track );
 
     private slots:
@@ -214,8 +214,8 @@ class UmsCollection : public Collection, public Meta::Observer
 
         bool m_autoConnect;
         QString m_mountPoint;
-        KUrl m_musicPath;
-        KUrl m_podcastPath;
+        QUrl m_musicPath;
+        QUrl m_podcastPath;
         QString m_musicFilenameScheme;
         bool m_vfatSafe;
         bool m_asciiOnly;

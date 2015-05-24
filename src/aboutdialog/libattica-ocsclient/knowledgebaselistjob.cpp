@@ -36,7 +36,7 @@ KnowledgeBaseListJob::KnowledgeBaseListJob()
 {
 }
 
-void KnowledgeBaseListJob::setUrl( const KUrl &url )
+void KnowledgeBaseListJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }

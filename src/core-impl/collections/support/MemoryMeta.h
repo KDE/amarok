@@ -162,7 +162,7 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual QString name() const { return m_track->name(); }
 
         /* Meta::Track virtual methods */
-        virtual KUrl playableUrl() const { return m_track->playableUrl(); }
+        virtual QUrl playableUrl() const { return m_track->playableUrl(); }
         virtual QString prettyUrl() const { return m_track->prettyUrl(); }
         virtual QString uidUrl() const { return m_track->uidUrl(); }
         virtual QString notPlayableReason() const { return m_track->notPlayableReason(); }

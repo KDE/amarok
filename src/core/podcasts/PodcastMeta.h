@@ -23,7 +23,7 @@
 #include "core/support/Amarok.h"
 
 #include <KLocale>
-#include <KUrl>
+#include <QUrl>
 
 #include <QDateTime>
 #include <QSharedData>
@@ -91,7 +91,7 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual QString name() const { return m_title; }
 
         // Meta::Track Methods
-        virtual KUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
+        virtual QUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
         virtual QString prettyUrl() const { return playableUrl().prettyUrl(); }
         virtual QString uidUrl() const { return m_url.url(); }
         virtual QString notPlayableReason() const;
@@ -133,7 +133,7 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual void setTitle( const QString &title ) { m_title = title; }
 
         //PodcastEpisode methods
-        virtual KUrl localUrl() const { return m_localUrl; }
+        virtual QUrl localUrl() const { return m_localUrl; }
         virtual QDateTime pubDate() const { return m_pubDate; }
         virtual int duration() const { return m_duration; }
         virtual QString guid() const { return m_guid; }
@@ -141,10 +141,10 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual int sequenceNumber() const { return m_sequenceNumber; }
         virtual PodcastChannelPtr channel() const { return m_channel; }
 
-        virtual void setLocalUrl( const KUrl &url ) { m_localUrl = url; }
+        virtual void setLocalUrl( const QUrl &url ) { m_localUrl = url; }
         virtual void setFilesize( int fileSize ) { m_fileSize = fileSize; }
         virtual void setMimeType( const QString &mimeType ) { m_mimeType = mimeType; }
-        virtual void setUidUrl( const KUrl &url ) { m_url = url; }
+        virtual void setUidUrl( const QUrl &url ) { m_url = url; }
         virtual void setPubDate( const QDateTime &pubDate ) { m_pubDate = pubDate; }
         virtual void setDuration( int duration ) { m_duration = duration; }
         virtual void setGuid( const QString &guid ) { m_guid = guid; }
@@ -156,8 +156,8 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         PodcastChannelPtr m_channel;
 
         QString m_guid; //the GUID from the podcast feed
-        KUrl m_url; //remote url of the file
-        KUrl m_localUrl; //the localUrl, only valid if downloaded
+        QUrl m_url; //remote url of the file
+        QUrl m_localUrl; //the localUrl, only valid if downloaded
         QString m_mimeType; //the mimetype of the enclosure
         QDateTime m_pubDate; //the pubDate from the feed
         int m_duration; //the playlength in seconds
@@ -199,7 +199,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual ~PodcastChannel() {}
 
         //Playlist virtual methods
-        virtual KUrl uidUrl() const { return m_url; }
+        virtual QUrl uidUrl() const { return m_url; }
         virtual QString name() const { return title(); }
 
         virtual int trackCount() const { return m_episodes.count(); }
@@ -211,20 +211,20 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual QString description() const { return m_description; }
 
         //PodcastChannel methods
-        virtual KUrl url() const { return m_url; }
-        virtual KUrl webLink() const { return m_webLink; }
+        virtual QUrl url() const { return m_url; }
+        virtual QUrl webLink() const { return m_webLink; }
         virtual bool hasImage() const { return !m_image.isNull(); }
-        virtual KUrl imageUrl() const { return m_imageUrl; }
+        virtual QUrl imageUrl() const { return m_imageUrl; }
         virtual QImage image() const { return m_image; }
         virtual QString copyright() const { return m_copyright; }
         virtual QStringList labels() const { return m_labels; }
         virtual QDate subscribeDate() const { return m_subscribeDate; }
 
-        virtual void setUrl( const KUrl &url ) { m_url = url; }
-        virtual void setWebLink( const KUrl &link ) { m_webLink = link; }
+        virtual void setUrl( const QUrl &url ) { m_url = url; }
+        virtual void setWebLink( const QUrl &link ) { m_webLink = link; }
         // TODO: inform all albums with this channel of the changed image
         virtual void setImage( const QImage &image ) { m_image = image; }
-        virtual void setImageUrl( const KUrl &imageUrl ) { m_imageUrl = imageUrl; }
+        virtual void setImageUrl( const QUrl &imageUrl ) { m_imageUrl = imageUrl; }
         virtual void setCopyright( const QString &copyright ) { m_copyright = copyright; }
         virtual void setLabels( const QStringList &labels ) { m_labels = labels; }
         virtual void addLabel( const QString &label ) { m_labels << label; }
@@ -236,27 +236,27 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 
         //PodcastChannel Settings
-        KUrl saveLocation() const { return m_directory; }
+        QUrl saveLocation() const { return m_directory; }
         bool autoScan() const { return m_autoScan; }
         FetchType fetchType() const { return m_fetchType; }
         bool hasPurge() const { return m_purge; }
         int purgeCount() const { return m_purgeCount; }
 
-        void setSaveLocation( const KUrl &url ) { m_directory = url; }
+        void setSaveLocation( const QUrl &url ) { m_directory = url; }
         void setAutoScan( bool autoScan ) { m_autoScan = autoScan; }
         void setFetchType( FetchType fetchType ) { m_fetchType = fetchType; }
         void setPurge( bool purge ) { m_purge = purge; }
         void setPurgeCount( int purgeCount ) { m_purgeCount = purgeCount; }
 
     protected:
-        KUrl m_url;
-        KUrl m_webLink;
+        QUrl m_url;
+        QUrl m_webLink;
         QImage m_image;
-        KUrl m_imageUrl;
+        QUrl m_imageUrl;
         QStringList m_labels;
         QDate m_subscribeDate;
         QString m_copyright;
-        KUrl m_directory; //the local directory to save the files in.
+        QUrl m_directory; //the local directory to save the files in.
         bool m_autoScan; //should this channel be checked automatically?
         PodcastChannel::FetchType m_fetchType; //'download when available' or 'stream or download on demand'
         bool m_purge; //remove old episodes?

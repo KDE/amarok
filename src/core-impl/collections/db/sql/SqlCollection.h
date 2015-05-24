@@ -67,9 +67,9 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         SqlStorage* sqlStorage() const;
 
         /** Every collection has this function. */
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         /** Gets an existing track (or a new one) at the given position.
             This function should only be used by the SqlScanResultProcessor. */

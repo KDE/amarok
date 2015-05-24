@@ -48,7 +48,7 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
     m_currentAlbumInfo = info;
 
 
-    KUrl downloadUrl = info.completeDownloadUrl();
+    QUrl downloadUrl = info.completeDownloadUrl();
     m_currentAlbumUnpackLocation = info.unpackLocation();
     debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation;
 
@@ -56,7 +56,7 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
 
     debug() << "Using temporary location: " << m_tempDir->name() + m_currentAlbumFileName;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir->name() + m_currentAlbumFileName ), -1, KIO::Overwrite | KIO::HideProgressInfo );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, QUrl( m_tempDir->name() + m_currentAlbumFileName ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
     connect( m_albumDownloadJob, SIGNAL(result(KJob*)), SLOT(albumDownloadComplete(KJob*)) );
 
@@ -124,11 +124,11 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     QString coverUrlString = m_currentAlbumInfo.coverUrl();
 
-    KUrl downloadUrl( coverUrlString.replace( "_200.jpg", ".jpg") );
+    QUrl downloadUrl( coverUrlString.replace( "_200.jpg", ".jpg") );
 
     debug() << "Adding cover " << downloadUrl.url() << " to collection at " << finalAlbumPath;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( finalAlbumPath + "/cover.jpg" ), -1, KIO::Overwrite | KIO::HideProgressInfo );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, QUrl( finalAlbumPath + "/cover.jpg" ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
     connect( m_albumDownloadJob, SIGNAL(result(KJob*)), SLOT(coverAddComplete(KJob*)) );
 

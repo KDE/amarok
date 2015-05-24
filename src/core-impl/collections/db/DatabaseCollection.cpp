@@ -183,9 +183,9 @@ DatabaseCollectionScanCapability::~DatabaseCollectionScanCapability()
 void
 DatabaseCollectionScanCapability::startFullScan()
 {
-    QList<KUrl> urls;
+    QList<QUrl> urls;
     foreach( const QString& path, m_collection->mountPointManager()->collectionFolders() )
-        urls.append( KUrl::fromPath( path ) );
+        urls.append( QUrl::fromLocalFile( path ) );
 
     m_collection->scanManager()->requestScan( urls, GenericScanManager::FullScan );
 }
@@ -195,16 +195,16 @@ DatabaseCollectionScanCapability::startIncrementalScan( const QString &directory
 {
     if( directory.isEmpty() )
     {
-        QList<KUrl> urls;
+        QList<QUrl> urls;
         foreach( const QString& path, m_collection->mountPointManager()->collectionFolders() )
-            urls.append( KUrl::fromPath( path ) );
+            urls.append( QUrl::fromLocalFile( path ) );
 
         m_collection->scanManager()->requestScan( urls, GenericScanManager::UpdateScan );
     }
     else
     {
-        QList<KUrl> urls;
-        urls.append( KUrl::fromPath( directory ) );
+        QList<QUrl> urls;
+        urls.append( QUrl::fromLocalFile( directory ) );
 
         m_collection->scanManager()->requestScan( urls,
                                                   GenericScanManager::PartialUpdateScan );

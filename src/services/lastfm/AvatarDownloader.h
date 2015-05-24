@@ -42,7 +42,7 @@ class AvatarDownloader : public QObject
         * Start the download
         * @param url The url that should be downloaded.
         */
-        void downloadAvatar( const QString& username, const KUrl& url );
+        void downloadAvatar( const QString& username, const QUrl &url );
 
     signals:
         void avatarDownloaded( const QString &username, QPixmap avatar );
@@ -51,9 +51,9 @@ class AvatarDownloader : public QObject
         /**
          * Slot called when the network access manager finished a request
          */
-        void downloaded( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+        void downloaded( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     private:
-        QHash<KUrl, QString> m_userAvatarUrls;
+        QHash<QUrl, QString> m_userAvatarUrls;
 };
 #endif

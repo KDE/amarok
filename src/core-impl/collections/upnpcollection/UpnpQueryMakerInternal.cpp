@@ -51,14 +51,14 @@ UpnpQueryMakerInternal::~UpnpQueryMakerInternal()
 
 void UpnpQueryMakerInternal::queueJob(KIO::SimpleJob* job)
 {
-    KUrl url = job->url();
-    debug() << "+-+- RUNNING JOB WITH" << url.prettyUrl();
+    QUrl url = job->url();
+    debug() << "+-+- RUNNING JOB WITH" << url.toDisplayString();
     m_collection->addJob( job );
     m_jobCount++;
     job->start();
 }
 
-void UpnpQueryMakerInternal::runQuery( KUrl query, bool filter )
+void UpnpQueryMakerInternal::runQuery( QUrl query, bool filter )
 {
     // insert this query as a job
     // first check cache size vs remote size
@@ -81,7 +81,7 @@ void UpnpQueryMakerInternal::runQuery( KUrl query, bool filter )
 
 void UpnpQueryMakerInternal::runStat( const QString& id )
 {
-    KUrl url( m_collection->collectionId() );
+    QUrl url( m_collection->collectionId() );
     url.addQueryItem( "id", id );
     debug() << "STAT URL" << url;
     KIO::StatJob *job = KIO::stat( url, KIO::HideProgressInfo );

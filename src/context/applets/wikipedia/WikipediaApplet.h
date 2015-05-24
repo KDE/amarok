@@ -72,7 +72,7 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _updateWebFonts() )
 
     Q_PRIVATE_SLOT( d_ptr, void _getLangMapProgress(qint64,qint64) )
-    Q_PRIVATE_SLOT( d_ptr, void _getLangMapFinished(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
+    Q_PRIVATE_SLOT( d_ptr, void _getLangMapFinished(const QUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
     Q_PRIVATE_SLOT( d_ptr, void _getLangMap() )
     Q_PRIVATE_SLOT( d_ptr, void _configureLangSelector() )
     Q_PRIVATE_SLOT( d_ptr, void _langSelectorItemChanged(QListWidgetItem*) )

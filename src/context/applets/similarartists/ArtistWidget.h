@@ -22,7 +22,7 @@
 #include "network/NetworkAccessManagerProxy.h"
 #include "SimilarArtist.h"
 
-#include <KUrl>
+#include <QUrl>
 #include <KDateTime>
 #include <Plasma/ScrollWidget>
 
@@ -224,19 +224,19 @@ private slots:
     /**
      * Handle artist photo retrieved from Last.fm
      */
-    void photoFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void photoFetched( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
      * Parse the xml fetched on the lastFM API for the artist info.
      * Launched when the download of the data are finished and for each similarArtists.
      */
-    void parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void parseInfo( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
      * Parse the xml fetched on the lastFM API for the similarArtist most known track.
      * Launched when the download of the data are finished and for each similarArtists.
      */
-    void parseTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void parseTopTrack( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
      * Open an URL

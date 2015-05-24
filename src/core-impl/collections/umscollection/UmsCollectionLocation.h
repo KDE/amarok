@@ -41,7 +41,7 @@ class UmsCollectionLocation : public Collections::CollectionLocation
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
 
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                            const Transcoding::Configuration &configuration );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
@@ -52,11 +52,11 @@ class UmsCollectionLocation : public Collections::CollectionLocation
         /**
          * Needed for removal of source tracks during move operation
          */
-        void slotTrackTransferred( const KUrl &sourceTrackUrl );
+        void slotTrackTransferred( const QUrl &sourceTrackUrl );
 
     private:
         UmsCollection *m_umsCollection;
-        QHash<KUrl, Meta::TrackPtr> m_sourceUrlToTrackMap;
+        QHash<QUrl, Meta::TrackPtr> m_sourceUrlToTrackMap;
 };
 
 class UmsTransferJob : public KCompositeJob
@@ -65,13 +65,13 @@ class UmsTransferJob : public KCompositeJob
     public:
         UmsTransferJob( UmsCollectionLocation *location, const Transcoding::Configuration &configuration );
 
-        void addCopy( const KUrl &from, const KUrl &to );
-        void addTranscode( const KUrl &from, const KUrl &to );
+        void addCopy( const QUrl &from, const QUrl &to );
+        void addTranscode( const QUrl &from, const QUrl &to );
         virtual void start();
 
     signals:
-        void sourceFileTransferDone( KUrl source );
-        void fileTransferDone( KUrl destination );
+        void sourceFileTransferDone( QUrl source );
+        void fileTransferDone( QUrl destination );
 
     public slots:
         void slotCancel();
@@ -88,7 +88,7 @@ class UmsTransferJob : public KCompositeJob
         Transcoding::Configuration m_transcodingConfiguration;
         bool m_abort;
 
-        typedef QPair<KUrl,KUrl> KUrlPair;
+        typedef QPair<QUrl,QUrl> KUrlPair;
         QList<KUrlPair> m_copyList;
         QList<KUrlPair> m_transcodeList;
         int m_totalTracks; // total number of tracks in whole transfer

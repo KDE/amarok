@@ -33,13 +33,13 @@ KConfigSyncRelStore::KConfigSyncRelStore()
 
     foreach( const QString &key, syncedPlaylistsConfig().keyList() )
     {
-        KUrl masterUrl( key );
+        QUrl masterUrl( key );
 
         m_syncMasterMap.insert( masterUrl, SyncedPlaylistPtr() );
 
         foreach( const QString &value, syncedPlaylistsConfig().readEntry( key ).split( ',' ) )
         {
-            m_syncSlaveMap.insert( KUrl( value ), masterUrl );
+            m_syncSlaveMap.insert( QUrl( value ), masterUrl );
         }
     }
 }
@@ -95,7 +95,7 @@ KConfigSyncRelStore::syncedPlaylistsConfig() const
 void
 KConfigSyncRelStore::addSync( const PlaylistPtr master, const PlaylistPtr slave )
 {
-    KUrl masterUrl( master->uidUrl() );
+    QUrl masterUrl( master->uidUrl() );
 
     if ( m_syncMasterMap.contains( masterUrl ) )
         m_syncSlaveMap.insert( slave->uidUrl(), masterUrl );
@@ -107,7 +107,7 @@ KConfigSyncRelStore::addSync( const PlaylistPtr master, const PlaylistPtr slave 
 
     QList<QString> slaveUrlStringList;
 
-    foreach( const KUrl& slaveUrl, m_syncSlaveMap.keys() )
+    foreach( const QUrl &slaveUrl, m_syncSlaveMap.keys() )
     {
         if( m_syncSlaveMap.value( slaveUrl ) == masterUrl )
             slaveUrlStringList.append( slaveUrl.url() );

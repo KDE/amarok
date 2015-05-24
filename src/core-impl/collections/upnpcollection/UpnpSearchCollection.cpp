@@ -69,7 +69,7 @@ UpnpSearchCollection::queryMaker()
 }
 
 Meta::TrackPtr
-UpnpSearchCollection::trackForUrl( const KUrl &url )
+UpnpSearchCollection::trackForUrl( const QUrl &url )
 {
 #ifdef __GNUC__
     #warning Implement track for url

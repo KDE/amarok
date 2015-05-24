@@ -138,7 +138,7 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
             }
 
             QString artist = currentTrack->artist() ? currentTrack->artist()->name() : QString();
-            LyricsData data = { lyrics, currentTrack->name(), artist, KUrl() };
+            LyricsData data = { lyrics, currentTrack->name(), artist, QUrl() };
             sendNewLyrics( data );
             return;
         }
@@ -192,7 +192,7 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
     if( currentTrack && !isEmpty( lyricsHTML ) )
     {
         QString artist = currentTrack->artist() ? currentTrack->artist()->name() : QString();
-        LyricsData data = { lyricsHTML, currentTrack->name(), artist, KUrl() };
+        LyricsData data = { lyricsHTML, currentTrack->name(), artist, QUrl() };
         sendNewLyrics( data );
 
         // overwrite cached lyrics (as either there were no lyircs available previously OR
@@ -234,7 +234,7 @@ bool LyricsManager::showCached()
 
         QString lyrics = currentTrack->cachedLyrics();
         QString artist = currentTrack->artist() ? currentTrack->artist()->name() : QString();
-        LyricsData data = { lyrics, currentTrack->name(), artist, KUrl() };
+        LyricsData data = { lyrics, currentTrack->name(), artist, QUrl() };
         sendNewLyrics( data );
         return true;
     }
@@ -245,7 +245,7 @@ void LyricsManager::setLyricsForTrack( const QString &trackUrl, const QString &l
 {
     DEBUG_BLOCK
 
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( trackUrl ) );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( QUrl( trackUrl ) );
 
     if( track )
         track->setCachedLyrics( lyrics );

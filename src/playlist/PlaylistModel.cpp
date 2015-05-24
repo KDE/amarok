@@ -48,7 +48,7 @@
 #include <KGlobal>
 #include <KIconLoader>
 #include <KLocale>
-#include <KUrl>
+#include <QUrl>
 
 #include <QAction>
 #include <QTimer>

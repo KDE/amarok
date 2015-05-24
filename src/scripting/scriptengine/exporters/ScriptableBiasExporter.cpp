@@ -543,7 +543,7 @@ TrackSetExporter::uniteUids( const QStringList &uids )
 Meta::TrackPtr
 TrackSetExporter::getRandomTrack() const
 {
-    return CollectionManager::instance()->trackForUrl( KUrl( Dynamic::TrackSet::getRandomTrack() ) );
+    return CollectionManager::instance()->trackForUrl( QUrl( Dynamic::TrackSet::getRandomTrack() ) );
 }
 
 bool

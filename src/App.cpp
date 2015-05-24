@@ -267,17 +267,17 @@ App::handleCliArgs() //static
     bool haveArgs = true; // assume having args in first place
     if( args->count() > 0 )
     {
-        KUrl::List list;
+        QList<QUrl> list;
         for( int i = 0; i < args->count(); i++ )
         {
-            KUrl url = args->url( i );
+            QUrl url = args->url( i );
             //TODO:PORTME
             if( Podcasts::PodcastProvider::couldBeFeed( url.url() ) )
             {
-                KUrl feedUrl = Podcasts::PodcastProvider::toFeedUrl( url.url() );
+                QUrl feedUrl = Podcasts::PodcastProvider::toFeedUrl( url.url() );
                 The::playlistManager()->defaultPodcasts()->addPodcast( feedUrl );
             }
-            else if( url.protocol() == "amarok" )
+            else if( url.scheme() == "amarok" )
                 s_delayedAmarokUrls.append( url.url() );
             else
                 list << url;
@@ -545,7 +545,7 @@ void App::slotConfigShortcuts()
     AmarokConfig::self()->writeConfig();
 }
 
-KIO::Job *App::trashFiles( const KUrl::List &files )
+KIO::Job *App::trashFiles( const QList<QUrl> &files )
 {
     KIO::Job *job = KIO::trash( files );
     Amarok::Components::logger()->newProgressOperation( job, i18n("Moving files to trash") );
@@ -577,7 +577,7 @@ bool App::event( QEvent *event )
         case QEvent::FileOpen:
         {
             QString file = static_cast<QFileOpenEvent*>( event )->file();
-            The::playlistController()->insertOptioned( KUrl( file ), Playlist::OnPlayMediaAction );
+            The::playlistController()->insertOptioned( QUrl( file ), Playlist::OnPlayMediaAction );
             return true;
         }
         default:
@@ -608,8 +608,8 @@ void App::handleFirstRun()
     if( !config.readEntry( "First Run", true ) )
         return;
 
-    const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
-    const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
+    const QUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
+    const QString musicDir = musicUrl.toLocalFile( QUrl::RemoveTrailingSlash );
     const QDir dir( musicDir );
 
     int result = KMessageBox::No;

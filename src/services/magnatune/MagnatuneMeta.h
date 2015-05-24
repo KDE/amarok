@@ -118,7 +118,7 @@ public:
     virtual void setCoverUrl( const QString &coverUrl );
     virtual QString coverUrl() const;
 
-    virtual KUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return KUrl( coverUrl() ); }
+    virtual QUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return QUrl( coverUrl() ); }
     
     void setAlbumCode(  const QString &albumCode );
     QString albumCode();

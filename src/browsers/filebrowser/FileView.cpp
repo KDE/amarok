@@ -46,7 +46,7 @@
 #include <KIcon>
 #include <KLocale>
 #include <KMenu>
-#include <KUrl>
+#include <QUrl>
 
 #include <QContextMenuEvent>
 #include <QFileSystemModel>
@@ -196,7 +196,7 @@ FileView::mouseDoubleClickEvent( QMouseEvent *event )
     if( event->button() == Qt::LeftButton )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-        KUrl url = file.url();
+        QUrl url = file.url();
         if( !file.isNull() && ( Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) ) )
             addIndexToPlaylist( index, Playlist::OnDoubleClickOnSelectedItems );
         else
@@ -222,7 +222,7 @@ FileView::keyPressEvent( QKeyEvent *event )
         case Qt::Key_Return:
         {
             KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-            KUrl url = file.url();
+            QUrl url = file.url();
             if( !file.isNull() && ( Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) ) )
                 // right, we test the current item, but then add the selection to playlist
                 addSelectionToPlaylist( Playlist::OnReturnPressedOnSelectedItems );
@@ -460,11 +460,11 @@ FileView::addIndicesToPlaylist( QModelIndexList indices, Playlist::AddOptions op
     // let tracks & playlists appear in playlist as they are shown in the view:
     qSort( indices );
 
-    QList<KUrl> urls;
+    QList<QUrl> urls;
     foreach( const QModelIndex &index, indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-        KUrl url = file.url();
+        QUrl url = file.url();
         if( file.isDir() || Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) )
         {
             urls << file.url();
@@ -583,7 +583,7 @@ FileView::slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modif
                            indices.count() );
     }
 
-    KUrl::List urls;
+    QList<QUrl> urls;
     QStringList filepaths;
     foreach( const QModelIndex& index, indices )
     {

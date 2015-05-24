@@ -488,13 +488,13 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
         uidChange.insert( Meta::valUniqueId, newUid );
         uidChanges.insert( track->trackNumber(), newUid );
 
-        KUrl url = track->playableUrl();
+        QUrl url = track->playableUrl();
         QVERIFY( url.isLocalFile() );
         Meta::Tag::writeTags( url.path(), uidChange, true );
     }
 
     // move album directory
-    const KUrl oldUrl = tracks.first()->playableUrl();
+    const QUrl oldUrl = tracks.first()->playableUrl();
     const QString base = m_tmpCollectionDir->name() + "Pop";
     QVERIFY( QFile::rename( base, base + "Albums" ) );
 
@@ -587,7 +587,7 @@ TestSqlScanManager::testMove()
     QVERIFY( album );
     QCOMPARE( album->tracks().count(), 10 );
     track = album->tracks().first();
-    KUrl oldUrl = track->playableUrl();
+    QUrl oldUrl = track->playableUrl();
 
     QVERIFY( QFile::rename( m_tmpCollectionDir->name() + "Top Gun",
                             m_tmpCollectionDir->name() + "Top Gun - Soundtrack" ) );

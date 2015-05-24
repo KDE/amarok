@@ -38,14 +38,14 @@ Collections::TrackProvider::~TrackProvider()
 }
 
 bool
-Collections::TrackProvider::possiblyContainsTrack( const KUrl &url ) const
+Collections::TrackProvider::possiblyContainsTrack( const QUrl &url ) const
 {
     Q_UNUSED( url )
     return false;
 }
 
 Meta::TrackPtr
-Collections::TrackProvider::trackForUrl( const KUrl &url )
+Collections::TrackProvider::trackForUrl( const QUrl &url )
 {
     Q_UNUSED( url )
     return Meta::TrackPtr();

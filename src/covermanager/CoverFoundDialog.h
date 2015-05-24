@@ -84,7 +84,7 @@ private slots:
     void clearView();
     void downloadProgressed( qint64 bytesReceived, qint64 bytesTotal );
     void fetchRequestRedirected( QNetworkReply *oldReply, QNetworkReply *newReply );
-    void handleFetchResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void handleFetchResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void insertComboText( const QString &text );
     void currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void itemDoubleClicked( QListWidgetItem *item );
@@ -121,7 +121,7 @@ private:
     bool m_sortEnabled;               //!< Sort covers by size
     const CoverFetchUnit::Ptr m_unit; //!< Cover fetch unit that initiated this dialog
     int m_queryPage;                  //!< Cache for the page number associated with @ref m_query
-    QHash<KUrl, CoverFoundItem*> m_urls; //!< Urls hash for network access manager proxy
+    QHash<QUrl, CoverFoundItem*> m_urls; //!< Urls hash for network access manager proxy
     QWeakPointer<KProgressDialog> m_dialog;  //!< Progress dialog for fetching big pix
 
     Q_DISABLE_COPY( CoverFoundDialog )

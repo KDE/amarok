@@ -21,7 +21,7 @@
 #include <kio/scheduler.h>
 #include <kio/netaccess.h>
 #include <kdirlister.h>
-#include <kurl.h>
+#include <QUrl>
 #include <solid/device.h>
 #include <solid/devicenotifier.h>
 #include <solid/storageaccess.h>

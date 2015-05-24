@@ -37,7 +37,7 @@ EventJob::EventJob()
 }
 
 
-void EventJob::setUrl(const KUrl& url)
+void EventJob::setUrl(const QUrl &url)
 {
     m_url = url;
 }

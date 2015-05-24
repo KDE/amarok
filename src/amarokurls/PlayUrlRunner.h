@@ -46,7 +46,7 @@ public:
      * @return a list of bookmarks. the list is empty if no bookmarks exist.
      * @see PlayUrlGenerator
      */
-    static BookmarkList bookmarksFromUrl( KUrl url );
+    static BookmarkList bookmarksFromUrl( QUrl url );
 
 };
 

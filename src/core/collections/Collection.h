@@ -72,7 +72,7 @@ namespace Collections
              * track specified by @p url.
              * This should do a minimal amount of checking, and return quickly.
              */
-            virtual bool possiblyContainsTrack( const KUrl &url ) const;
+            virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
             /**
              * Creates a TrackPtr object for url @p url.  Returns a null track Ptr if
@@ -80,7 +80,7 @@ namespace Collections
              * If asynchronysity is desired it is suggested to return a MetaProxy track here
              * and have the proxy watch for the real track.
              */
-            virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+            virtual Meta::TrackPtr trackForUrl( const QUrl &url );
     };
 
     class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, public MetaCapability

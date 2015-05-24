@@ -29,12 +29,12 @@ TimecodeTrackProvider::~TimecodeTrackProvider()
 {
 }
 
-bool TimecodeTrackProvider::possiblyContainsTrack( const KUrl & url ) const
+bool TimecodeTrackProvider::possiblyContainsTrack( const QUrl &url ) const
 {
     return url.url().contains( QRegExp(":\\d+-\\d+$") );
 }
 
-Meta::TrackPtr TimecodeTrackProvider::trackForUrl( const KUrl & url )
+Meta::TrackPtr TimecodeTrackProvider::trackForUrl( const QUrl &url )
 {
     QString urlString = url.url();
 

@@ -28,7 +28,7 @@
 class DeviceHandler;
 class DeviceHandlerFactory;
 class SqlStorage;
-class KUrl;
+class QUrl;
 namespace Solid {
     class Device;
 }
@@ -103,7 +103,7 @@ public:
      * @param absolutePath
      * @param relativePath
      */
-    virtual void getPlayableURL( KUrl &absolutePath, const KUrl &relativePath ) = 0;
+    virtual void getPlayableURL( QUrl &absolutePath, const QUrl &relativePath ) = 0;
 
     /**
      * builds an absolute path from a relative path and DeviceHandler specific information. The absolute path
@@ -111,7 +111,7 @@ public:
      * @param absolutePath the not necessarily playbale absolute path
      * @param relativePath the device specific relative path
      */
-    virtual void getURL( KUrl &absolutePath, const KUrl &relativePath ) = 0;
+    virtual void getURL( QUrl &absolutePath, const QUrl &relativePath ) = 0;
 
     /**
      * retrieves the unique database id of a given Medium. Implementations are responsible
@@ -148,7 +148,7 @@ public:
      * @param url
      * @return
      */
-    virtual int getIdForUrl( const KUrl &url );
+    virtual int getIdForUrl( const QUrl &url );
 
     /**
      *

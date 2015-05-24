@@ -49,7 +49,7 @@ bool Mp3tunesServiceCollectionLocation::isWritable() const
 }
 
 void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
-        const QMap<Meta::TrackPtr, KUrl> &sources,
+        const QMap<Meta::TrackPtr, QUrl> &sources,
         const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK

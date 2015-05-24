@@ -80,7 +80,7 @@ void UpnpQueryMaker::run()
 {
 DEBUG_BLOCK
 
-    KUrl baseUrl( m_collection->collectionId() );
+    QUrl baseUrl( m_collection->collectionId() );
     baseUrl.addQueryItem( "search", "1" );
 
     if( m_queryType == Custom ) {
@@ -160,7 +160,7 @@ DEBUG_BLOCK
         if( queryList[i].isEmpty() )
             continue;
 
-        KUrl url( baseUrl );
+        QUrl url( baseUrl );
         url.addQueryItem( "query", queryList[i] );
 
         debug() << this << "Running query" << url;

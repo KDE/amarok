@@ -124,10 +124,10 @@ SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChann
     SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
     m_dbId = (*(iter++)).toInt();
-    m_url = KUrl( *(iter++) );
+    m_url = QUrl( *(iter++) );
     int channelId = (*(iter++)).toInt();
     Q_UNUSED( channelId );
-    m_localUrl = KUrl( *(iter++) );
+    m_localUrl = QUrl( *(iter++) );
     m_guid = *(iter++);
     m_title = *(iter++);
     m_subtitle = *(iter++);
@@ -170,7 +170,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( Podcasts::PodcastEpisodePtr episode )
 
     // PodcastEpisode
     m_guid = episode->guid();
-    m_url = KUrl( episode->uidUrl() );
+    m_url = QUrl( episode->uidUrl() );
     m_localUrl = episode->localUrl();
     m_mimeType = episode->mimeType();
     m_pubDate = episode->pubDate();
@@ -213,7 +213,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( PodcastChannelPtr channel, Podcasts::Podca
 
     // PodcastEpisode
     m_guid = episode->guid();
-    m_url = KUrl( episode->uidUrl() );
+    m_url = QUrl( episode->uidUrl() );
     m_localUrl = episode->localUrl();
     m_mimeType = episode->mimeType();
     m_pubDate = episode->pubDate();
@@ -264,7 +264,7 @@ void SqlPodcastEpisode::setKeep( bool isKeep )
 }
 
 void
-SqlPodcastEpisode::setLocalUrl( const KUrl &url )
+SqlPodcastEpisode::setLocalUrl( const QUrl &url )
 {
     m_localUrl = url;
     updateInDb();
@@ -537,13 +537,13 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
     m_dbId = (*(iter++)).toInt();
-    m_url = KUrl( *(iter++) );
+    m_url = QUrl( *(iter++) );
     m_title = *(iter++);
     m_webLink = *(iter++);
     m_imageUrl = *(iter++);
     m_description = *(iter++);
     m_copyright = *(iter++);
-    m_directory = KUrl( *(iter++) );
+    m_directory = QUrl( *(iter++) );
     m_labels = QStringList( QString( *(iter++) ).split( ',', QString::SkipEmptyParts ) );
     m_subscribeDate = QDate::fromString( *(iter++) );
     m_autoScan = sqlStorage->boolTrue() == *(iter++);
@@ -583,7 +583,7 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
 
     //Default Settings
 
-    m_directory = KUrl( m_provider->baseDownloadDir() );
+    m_directory = QUrl( m_provider->baseDownloadDir() );
     m_directory.addPath( Amarok::vfatPath( m_title ) );
     m_autoScan = true;
     m_fetchType = StreamOrDownloadOnDemand;
@@ -638,10 +638,10 @@ SqlPodcastChannel::setGroups( const QStringList &groups )
     m_labels = groups;
 }
 
-KUrl
+QUrl
 SqlPodcastChannel::uidUrl() const
 {
-    return KUrl( QString( "amarok-sqlpodcastuid://%1").arg( m_dbId ) );
+    return QUrl( QString( "amarok-sqlpodcastuid://%1").arg( m_dbId ) );
 }
 
 SqlPodcastChannel::~SqlPodcastChannel()
@@ -674,7 +674,7 @@ SqlPodcastChannel::setImage( const QImage &image )
 }
 
 void
-SqlPodcastChannel::setImageUrl( const KUrl &imageUrl )
+SqlPodcastChannel::setImageUrl( const QUrl &imageUrl )
 {
     DEBUG_BLOCK
     debug() << imageUrl;
@@ -695,7 +695,7 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     if( !m_provider )
         return PodcastEpisodePtr();
 
-    KUrl checkUrl;
+    QUrl checkUrl;
     //searched in the database for guid or enclosure url
     if( !episode->guid().isEmpty() )
         checkUrl = episode->guid();

@@ -24,7 +24,7 @@
 
 #include "NetworkAccessManagerProxy.h"
 
-#include <KUrl>
+#include <QUrl>
 #include <kdemacros.h>
 
 #include <QObject>
@@ -53,8 +53,8 @@ class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
         void finished(); //!authentication was or was not successful
 
     private slots:
-        void authenticate( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-        void authenticationComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+        void authenticate( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+        void authenticationComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     private:
         int getVersion( const QDomDocument& doc ) const;
@@ -67,7 +67,7 @@ class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
 
         /** Returns the base url.
             You would need to add query items to use it. */
-        KUrl getRequestUrl( const QString &action = QString() ) const;
+        QUrl getRequestUrl( const QString &action = QString() ) const;
 
         bool m_authenticated;
         QString m_server;

@@ -198,14 +198,14 @@ RecentlyPlayedListWidget::addWidgetItem( const RecentlyPlayedTrackData &data )
 void
 RecentlyPlayedListWidget::itemLeftClicked( const QString &url )
 {
-    Playlist::Controller::instance()->insertOptioned( KUrl( url ),
+    Playlist::Controller::instance()->insertOptioned( QUrl( url ),
                                                 Playlist::OnDoubleClickOnSelectedItems );
 }
 
 void
 RecentlyPlayedListWidget::itemMiddleClicked( const QString &url )
 {
-    Playlist::Controller::instance()->insertOptioned( KUrl( url ),
+    Playlist::Controller::instance()->insertOptioned( QUrl( url ),
                                                 Playlist::OnMiddleClickOnSelectedItems );
 }
 

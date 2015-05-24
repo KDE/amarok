@@ -29,7 +29,7 @@
 #include <QXmlStreamReader>
 
 #include <kjob.h>
-#include <KUrl>
+#include <QUrl>
 #include <threadweaver/Job.h>
 
 namespace KIO
@@ -52,7 +52,7 @@ public:
      * @param fileName The file to parse 
      * @return Pointer to new object
      */
-    OpmlParser( const KUrl &url );
+    OpmlParser( const QUrl &url );
 
     /**
      * Destructor
@@ -67,12 +67,12 @@ public:
     */
     void run();
 
-    bool read( const KUrl &url );
+    bool read( const QUrl &url );
     bool read( QIODevice *device );
 
     /** @return the URL of the OPML being parsed.
     */
-    KUrl url() const { return m_url; }
+    QUrl url() const { return m_url; }
 
     QMap<QString,QString> headerData() { return m_headerData; }
 
@@ -264,7 +264,7 @@ private:
     // currently processing outlines so we can do nested outlines.
     QStack<OpmlOutline *> m_outlineStack;
 
-    KUrl m_url;
+    QUrl m_url;
     KIO::TransferJob *m_transferJob;
 };
 

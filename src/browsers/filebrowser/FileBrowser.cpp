@@ -48,7 +48,7 @@
 #include <QHeaderView>
 
 static const QString placesString( "places://" );
-static const KUrl placesUrl( placesString );
+static const QUrl placesUrl( placesString );
 
 FileBrowser::Private::Private( FileBrowser *parent )
     : placesModel( 0 )
@@ -90,8 +90,8 @@ FileBrowser::Private::~Private()
 void
 FileBrowser::Private::readConfig()
 {
-    const KUrl homeUrl( QDir::homePath() );
-    const KUrl savedUrl = Amarok::config( "File Browser" ).readEntry( "Current Directory", homeUrl );
+    const QUrl homeUrl( QDir::homePath() );
+    const QUrl savedUrl = Amarok::config( "File Browser" ).readEntry( "Current Directory", homeUrl );
     bool useHome( true );
     // fall back to $HOME if the saved dir has since disappeared or is a remote one
     if( savedUrl.isLocalFile() )
@@ -114,10 +114,10 @@ FileBrowser::Private::writeConfig()
 }
 
 BreadcrumbSiblingList
-FileBrowser::Private::siblingsForDir( const KUrl &path )
+FileBrowser::Private::siblingsForDir( const QUrl &path )
 {
     BreadcrumbSiblingList siblings;
-    if( path.protocol() == "places" )
+    if( path.scheme() == "places" )
     {
         for( int i = 0; i < placesModel->rowCount(); i++ )
         {
@@ -327,7 +327,7 @@ FileBrowser::slotNavigateToDirectory( const QModelIndex &index )
         {
             d->backStack.push( d->currentPath );
             d->forwardStack.clear(); // navigating resets forward stack
-            setDir( KUrl( url ) );
+            setDir( QUrl( url ) );
         }
         else
         {
@@ -362,7 +362,7 @@ FileBrowser::addItemActivated( const QString &callbackString )
     if( callbackString.isEmpty() )
         return;
 
-    KUrl newPath;
+    QUrl newPath;
     // we have been called with a places name, it means that we'll probably have to mount
     // the place
     if( callbackString.startsWith( placesString ) )
@@ -393,7 +393,7 @@ FileBrowser::addItemActivated( const QString &callbackString )
 
     d->backStack.push( d->currentPath );
     d->forwardStack.clear(); // navigating resets forward stack
-    setDir( KUrl( newPath ) );
+    setDir( QUrl( newPath ) );
 }
 
 void
@@ -404,7 +404,7 @@ FileBrowser::setupAddItems()
     if( d->currentPath == placesUrl )
         return; // no more items to add
 
-    QString workingUrl = d->currentPath.prettyUrl( KUrl::RemoveTrailingSlash );
+    QString workingUrl = d->currentPath.prettyUrl( QUrl::RemoveTrailingSlash );
     int currentPosition = 0;
 
     QString name;
@@ -413,7 +413,7 @@ FileBrowser::setupAddItems()
 
     // find QModelIndex of the NON-HIDDEN closestItem
     QModelIndex placesIndex;
-    KUrl tempUrl = d->currentPath;
+    QUrl tempUrl = d->currentPath;
     do
     {
         placesIndex = d->bottomPlacesModel->closestItem( tempUrl );
@@ -434,8 +434,8 @@ FileBrowser::setupAddItems()
         name = placesIndex.data( Qt::DisplayRole ).toString();
         callback = placesIndex.data( KFilePlacesModel::UrlRole ).toString();
 
-        KUrl currPlaceUrl = d->placesModel->data( placesIndex, KFilePlacesModel::UrlRole ).toUrl();
-        currentPosition = currPlaceUrl.url( KUrl::AddTrailingSlash ).length();
+        QUrl currPlaceUrl = d->placesModel->data( placesIndex, KFilePlacesModel::UrlRole ).toUrl();
+        currentPosition = currPlaceUrl.url( QUrl::AddTrailingSlash ).length();
     }
     else
     {
@@ -453,7 +453,7 @@ FileBrowser::setupAddItems()
             name.remove( QRegExp( "/$" ) );
     }
     /* always provide siblings for places, regardless of what first item is; this also
-     * work-arounds bug 312639, where creating KUrl with accented chars crashes */
+     * work-arounds bug 312639, where creating QUrl with accented chars crashes */
     siblings = d->siblingsForDir( placesUrl );
     addAdditionalItem( new BrowserBreadcrumbItem( name, callback, siblings, this ) );
 
@@ -487,7 +487,7 @@ FileBrowser::reActivate()
 }
 
 void
-FileBrowser::setDir( const KUrl &dir )
+FileBrowser::setDir( const QUrl &dir )
 {
     if( dir == placesUrl )
     {
@@ -549,7 +549,7 @@ FileBrowser::up()
     if( d->currentPath == placesUrl )
         return; // nothing to do, we consider places as the root view
 
-    KUrl upUrl = d->currentPath.upUrl();
+    QUrl upUrl = d->currentPath.upUrl();
     if( upUrl == d->currentPath ) // apparently, we cannot go up withn url
         upUrl = placesUrl;
 
@@ -563,7 +563,7 @@ FileBrowser::home()
 {
     d->backStack.push( d->currentPath );
     d->forwardStack.clear(); // navigating resets forward stack
-    setDir( KUrl( QDir::homePath() ) );
+    setDir( QUrl( QDir::homePath() ) );
 }
 
 void

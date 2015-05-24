@@ -27,8 +27,8 @@
 namespace Transcoding
 {
 
-Job::Job( const KUrl &src,
-                            const KUrl &dest,
+Job::Job( const QUrl &src,
+                            const QUrl &dest,
                             const Transcoding::Configuration &configuration,
                             QObject *parent )
     : KJob( parent )
@@ -40,7 +40,7 @@ Job::Job( const KUrl &src,
     init();
 }
 
-Job::Job( KUrl &src,
+Job::Job( QUrl &src,
                             const Transcoding::Configuration &configuration,
                             QObject *parent )
     : KJob( parent )

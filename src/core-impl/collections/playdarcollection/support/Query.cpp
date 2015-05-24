@@ -22,7 +22,7 @@
 
 #include <qjson/parser.h>
 
-#include <KUrl>
+#include <QUrl>
 #include <KIO/Job>
 
 #include <QString>
@@ -161,7 +161,7 @@ namespace Playdar
         {
             QVariantMap result = resultVariant.toMap();
             Meta::PlaydarTrackPtr aTrack;
-            KUrl resultUrl( m_controller.data()->urlForSid( result.value( "sid" ).toString() ) );
+            QUrl resultUrl( m_controller.data()->urlForSid( result.value( "sid" ).toString() ) );
             
             QString trackSid = result.value( "sid" ).toString();
             QString trackUrl = resultUrl.url();

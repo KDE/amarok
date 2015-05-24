@@ -98,12 +98,12 @@ qreal Person::longitude() const
   return m_longitude;
 }
 
-void Person::setAvatarUrl( const KUrl &url )
+void Person::setAvatarUrl( const QUrl &url )
 {
   m_avatarUrl = url;
 }
 
-KUrl Person::avatarUrl() const
+QUrl Person::avatarUrl() const
 {
   return m_avatarUrl;
 }

@@ -27,7 +27,7 @@
 #include <QDateTime>
 #include <QSharedData>
 
-#include <KUrl>
+#include <QUrl>
 
 namespace Collections
 {
@@ -44,7 +44,7 @@ namespace Meta
             /** used to display the trackname, should never be empty, returns prettyUrl() by default if name() is empty */
             virtual QString prettyName() const;
             /** an url which can be played by the engine backends */
-            virtual KUrl playableUrl() const = 0;
+            virtual QUrl playableUrl() const = 0;
             /** an url for display purposes */
             virtual QString prettyUrl() const = 0;
 
@@ -290,7 +290,7 @@ namespace Meta
                 The mpris interface is using this information for notifications so
                 it better is a local file url.
             */
-            virtual KUrl imageLocation( int size = 0 ) { Q_UNUSED( size ); return KUrl(); }
+            virtual QUrl imageLocation( int size = 0 ) { Q_UNUSED( size ); return QUrl(); }
 
             /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }

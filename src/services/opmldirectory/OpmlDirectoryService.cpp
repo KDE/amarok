@@ -109,14 +109,16 @@ void OpmlDirectoryService::polish()
     opmlView->setDragDropMode ( QAbstractItemView::DragOnly );
     opmlView->setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
     setView( opmlView );
-    KUrl opmlLocation( Amarok::saveLocation() );
-    opmlLocation.addPath( "podcast_directory.opml" );
+    QUrl opmlLocation( Amarok::saveLocation() );
+    opmlLocation = opmlLocation.adjusted(QUrl::StripTrailingSlash);
+    opmlLocation.setPath(opmlLocation.path() + '/' + ( "podcast_directory.opml" ));
 
     if( !QFile::exists( opmlLocation.toLocalFile() ) )
     {
         //copy from the standard data dir
-        KUrl schippedOpmlLocation( KStandardDirs::locate( "data", "amarok/data/" ) );
-        schippedOpmlLocation.addPath( "podcast_directory.opml" );
+        QUrl schippedOpmlLocation( KStandardDirs::locate( "data", "amarok/data/" ) );
+        schippedOpmlLocation = schippedOpmlLocation.adjusted(QUrl::StripTrailingSlash);
+        schippedOpmlLocation.setPath(schippedOpmlLocation.path() + '/' + ( "podcast_directory.opml" ));
         if( !QFile::copy( schippedOpmlLocation.toLocalFile(), opmlLocation.toLocalFile() ) )
         {
             debug() << QString( "Failed to copy from %1 to %2" )

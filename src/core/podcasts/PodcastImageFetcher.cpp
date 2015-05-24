@@ -58,21 +58,22 @@ PodcastImageFetcher::addEpisode( Podcasts::PodcastEpisodePtr episode )
     Q_UNUSED( episode );
 }
 
-KUrl
+QUrl
 PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannelPtr channel )
 {
     return cachedImagePath( channel.data() );
 }
 
-KUrl
+QUrl
 PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannel *channel )
 {
-    KUrl imagePath = channel->saveLocation();
+    QUrl imagePath = channel->saveLocation();
     if( imagePath.isEmpty() )
         imagePath = Amarok::saveLocation( "podcasts" );
     KMD5 md5( channel->url().url().toLocal8Bit() );
     QString extension = Amarok::extension( channel->imageUrl().fileName() );
-    imagePath.addPath( md5.hexDigest() + '.' + extension );
+    imagePath = imagePath.adjusted(QUrl::StripTrailingSlash);
+    imagePath.setPath(imagePath.path() + '/' + ( md5.hexDigest() + '.' + extension ));
     return imagePath.toLocalFile();
 }
 
@@ -106,8 +107,8 @@ PodcastImageFetcher::run()
 
     foreach( Podcasts::PodcastChannelPtr channel, m_channels )
     {
-        KUrl cachedPath = cachedImagePath( channel );
-        KIO::mkdir( cachedPath.directory() );
+        QUrl cachedPath = cachedImagePath( channel );
+        KIO::mkdir( cachedPath.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash).path() );
         KIO::FileCopyJob *job = KIO::file_copy( channel->imageUrl(), cachedPath,
                                 -1, KIO::HideProgressInfo | KIO::Overwrite );
         //remove channel from the todo list

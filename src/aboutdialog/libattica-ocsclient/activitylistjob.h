@@ -22,7 +22,7 @@
 #define ATTICA_ACTIVITYLISTJOB_H
 
 #include <KJob>
-#include <KUrl>
+#include <QUrl>
 
 #include "activity.h"
 
@@ -39,7 +39,7 @@ class ATTICA_EXPORT ActivityListJob : public KJob
   public:
     ActivityListJob();
 
-    void setUrl( const KUrl & );
+    void setUrl( const QUrl & );
 
     void start();
 
@@ -52,7 +52,7 @@ class ATTICA_EXPORT ActivityListJob : public KJob
     void slotJobData( KIO::Job *job, const QByteArray &data );
     
   private:
-    KUrl m_url;
+    QUrl m_url;
     KIO::Job *m_job;
     QByteArray m_data;
   

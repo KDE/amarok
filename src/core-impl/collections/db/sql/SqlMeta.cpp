@@ -175,7 +175,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection *collection, const QStringList &r
     m_rpath = *(iter++);
     m_directoryId = (*(iter++)).toInt();
     Q_ASSERT( m_directoryId > 0 && "refusing to create SqlTrack with non-positive directoryId, please file a bug" );
-    m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
+    m_url = QUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
     m_uid = *(iter++);
     m_trackId = (*(iter++)).toInt();
     m_title = *(iter++);
@@ -282,7 +282,7 @@ SqlTrack::setTitle( const QString &newTitle )
 }
 
 
-KUrl
+QUrl
 SqlTrack::playableUrl() const
 {
     QReadLocker locker( &m_lock );
@@ -850,8 +850,8 @@ SqlTrack::commitIfInNonBatchUpdate()
         // existing track, which is forbidden by the database
         // At least the ScanResultProcessor handles this problem
 
-        KUrl oldUrl = m_url;
-        KUrl newUrl = m_cache.value( Meta::valUrl ).toString();
+        QUrl oldUrl = m_url;
+        QUrl newUrl = m_cache.value( Meta::valUrl ).toString();
         if( oldUrl != newUrl )
             m_collection->registry()->updateCachedUrl( oldUrl.path(), newUrl.path() );
         m_url = newUrl;
@@ -1117,7 +1117,7 @@ SqlTrack::prettyTitle( const QString &filename ) //static
 
     //remove file extension, s/_/ /g and decode %2f-like sequences
     s = s.left( s.lastIndexOf( '.' ) ).replace( '_', ' ' );
-    s = KUrl::fromPercentEncoding( s.toAscii() );
+    s = QUrl::fromPercentEncoding( s.toAscii() );
 
     return s;
 }
@@ -1614,11 +1614,11 @@ SqlAlbum::image( int size ) const
     return image;
 }
 
-KUrl
+QUrl
 SqlAlbum::imageLocation( int size )
 {
     if( !hasImage() )
-        return KUrl();
+        return QUrl();
 
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
@@ -1628,7 +1628,7 @@ SqlAlbum::imageLocation( int size )
     QString cachedImagePath = scaledDiskCachePath( size );
 
     if( cachedImagePath.isEmpty() )
-        return KUrl();
+        return QUrl();
 
     if( !QFile( cachedImagePath ).exists() )
     {
@@ -1639,7 +1639,7 @@ SqlAlbum::imageLocation( int size )
     }
 
     if( !QFile( cachedImagePath ).exists() )
-        return KUrl();
+        return QUrl();
 
     return cachedImagePath;
 }

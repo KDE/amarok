@@ -27,7 +27,7 @@ class MockTrackForUrlWorker : public TrackForUrlWorker
     Q_OBJECT
 
     public:
-        MockTrackForUrlWorker(const KUrl &url);
+        MockTrackForUrlWorker(const QUrl &url);
         MockTrackForUrlWorker(const QString &url);
 
         /**

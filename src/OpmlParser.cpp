@@ -30,7 +30,7 @@ const QString OpmlParser::OPML_MIME = "text/x-opml+xml";
 
 const OpmlParser::StaticData OpmlParser::sd;
 
-OpmlParser::OpmlParser( const KUrl &url )
+OpmlParser::OpmlParser( const QUrl &url )
         : ThreadWeaver::Job()
         , QXmlStreamReader()
         , m_url( url )
@@ -48,7 +48,7 @@ OpmlParser::run()
 }
 
 bool
-OpmlParser::read( const KUrl &url )
+OpmlParser::read( const QUrl &url )
 {
     m_url = url;
     if( m_url.isLocalFile() )

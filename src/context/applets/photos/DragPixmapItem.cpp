@@ -38,7 +38,7 @@ DragPixmapItem::DragPixmapItem( QGraphicsItem* parent )
     setCursor( Qt::PointingHandCursor );
 }
 
-void DragPixmapItem::SetClickableUrl( const KUrl &url )
+void DragPixmapItem::SetClickableUrl( const QUrl &url )
 {
     m_url = url;
 }

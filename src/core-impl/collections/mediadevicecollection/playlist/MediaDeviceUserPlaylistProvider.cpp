@@ -31,7 +31,7 @@
 
 #include <KIcon>
 #include <KInputDialog>
-#include <KUrl>
+#include <QUrl>
 
 #include <QMap>
 

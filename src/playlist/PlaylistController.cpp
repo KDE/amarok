@@ -248,13 +248,13 @@ Controller::insertOptioned( Playlists::PlaylistList list, AddOptions options )
 }
 
 void
-Controller::insertOptioned( const KUrl &url, AddOptions options )
+Controller::insertOptioned( const QUrl &url, AddOptions options )
 {
-    insertOptioned( QList<KUrl>() << url, options );
+    insertOptioned( QList<QUrl>() << url, options );
 }
 
 void
-Controller::insertOptioned( QList<KUrl> &urls, AddOptions options )
+Controller::insertOptioned( QList<QUrl> &urls, AddOptions options )
 {
     TrackLoader::Flags flags;
     // if we are going to play, we need full metadata (playable tracks)
@@ -303,7 +303,7 @@ Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList playlists 
 }
 
 void
-Controller::insertUrls( int topModelRow, QList<KUrl> &urls )
+Controller::insertUrls( int topModelRow, QList<QUrl> &urls )
 {
     TrackLoader *loader = new TrackLoader(); // auto-deletes itself
     loader->setProperty( "topModelRow", QVariant( topModelRow ) );
@@ -614,7 +614,7 @@ Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
         }
         else if( typeid( *track.data() ) == typeid( MetaFile::Track  ) )
         {
-            KUrl cuesheet = MetaCue::CueFileSupport::locateCueSheet( track->playableUrl() );
+            QUrl cuesheet = MetaCue::CueFileSupport::locateCueSheet( track->playableUrl() );
             if( !cuesheet.isEmpty() )
             {
                 MetaCue::CueFileItemMap cueMap = MetaCue::CueFileSupport::loadCueFile( cuesheet, track );

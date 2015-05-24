@@ -20,7 +20,7 @@
 #define AMAROK_INFO_SCRIPT_H
 
 #include <QObject>
-#include <KUrl>
+#include <QUrl>
 
 class QScriptEngine;
 
@@ -45,7 +45,7 @@ namespace AmarokScript
                 Enormous=128
             };
 
-            InfoScript( const KUrl& scriptUrl, AmarokScriptEngine *engine );
+            InfoScript( const QUrl &scriptUrl, AmarokScriptEngine *engine );
 
             /**
              * The directory where the script's main.js file is located
@@ -74,7 +74,7 @@ namespace AmarokScript
             Q_INVOKABLE QString version() const;
 
         private:
-            const KUrl m_scriptUrl;
+            const QUrl m_scriptUrl;
     };
 
 } // namespace AmarokScript

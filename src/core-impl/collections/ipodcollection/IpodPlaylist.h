@@ -58,7 +58,7 @@ class IpodPlaylist : public Playlists::Playlist
 
         virtual ~IpodPlaylist();
 
-        virtual KUrl uidUrl() const;
+        virtual QUrl uidUrl() const;
         virtual QString name() const;
         virtual void setName( const QString &name );
 

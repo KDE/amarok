@@ -88,7 +88,7 @@ class PhotosScrollWidget : public QGraphicsWidget
         //virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
 
     private slots:
-        void photoFetched( const KUrl&, QByteArray, NetworkAccessManagerProxy::Error );
+        void photoFetched( const QUrl&, QByteArray, NetworkAccessManagerProxy::Error );
 
     private:
         void addPhoto( const PhotosInfoPtr &item, const QPixmap &photo );
@@ -103,7 +103,7 @@ class PhotosScrollWidget : public QGraphicsWidget
         int     m_mode;       //
         int     m_delta;
         int     m_deltastart;
-        QHash<KUrl, PhotosInfoPtr> m_infoHash;
+        QHash<QUrl, PhotosInfoPtr> m_infoHash;
         QPropertyAnimation      *m_animation;   // animation
         QList<int>               m_timerlist;
         PhotosInfo::List         m_currentlist; // contain the list of the current PhotosItem in the widget

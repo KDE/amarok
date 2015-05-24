@@ -296,7 +296,7 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
 void
 MediaDeviceHandler::getCopyableUrls(const Meta::TrackList &tracks)
 {
-    QMap<Meta::TrackPtr, KUrl> urls;
+    QMap<Meta::TrackPtr, QUrl> urls;
     foreach( Meta::TrackPtr track, tracks )
     {
         if( track->isPlayable() )

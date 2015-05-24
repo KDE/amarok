@@ -101,7 +101,7 @@ private slots:
      * Parse the xml fetched on the lastFM API.
      * Launched when the download of the data are finished.
      */
-    void parseSimilarArtists( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void parseSimilarArtists( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 };
 
 #endif // SIMILARARTISTSENGINE_H

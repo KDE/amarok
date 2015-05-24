@@ -39,7 +39,7 @@ class IpodCollectionLocation : public Collections::CollectionLocation
         virtual QString prettyLocation() const;
         virtual bool isWritable() const;
 
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                            const Transcoding::Configuration &configuration );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 

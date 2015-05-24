@@ -33,7 +33,7 @@
 
 #include <QAction>
 
-OpmlDirectoryModel::OpmlDirectoryModel( KUrl outlineUrl, QObject *parent )
+OpmlDirectoryModel::OpmlDirectoryModel( QUrl outlineUrl, QObject *parent )
     : QAbstractItemModel( parent )
     , m_rootOpmlUrl( outlineUrl )
 {
@@ -238,7 +238,7 @@ OpmlDirectoryModel::removeRows( int row, int count, const QModelIndex &parent )
 }
 
 void
-OpmlDirectoryModel::saveOpml( const KUrl &saveLocation )
+OpmlDirectoryModel::saveOpml( const QUrl &saveLocation )
 {
     if( !saveLocation.isLocalFile() )
     {
@@ -370,7 +370,7 @@ OpmlDirectoryModel::fetchMore( const QModelIndex &parent )
         error() << "trying to start second fetch job for same item";
         return;
     }
-    KUrl urlToFetch;
+    QUrl urlToFetch;
     if( !parent.isValid() )
     {
         urlToFetch = m_rootOpmlUrl;
@@ -382,7 +382,7 @@ OpmlDirectoryModel::fetchMore( const QModelIndex &parent )
             return;
         if( outline->attributes().value( "type" ) != "include" )
             return;
-        urlToFetch = KUrl( outline->attributes()["url"] );
+        urlToFetch = QUrl( outline->attributes()["url"] );
     }
 
     if( !urlToFetch.isValid() )
@@ -472,11 +472,11 @@ OpmlDirectoryModel::subscribe( const QModelIndexList &indexes ) const
         if( !outline )
             continue;
 
-        KUrl url;
+        QUrl url;
         if( outline->attributes().contains( "xmlUrl" ) )
-            url = KUrl( outline->attributes()["xmlUrl"] );
+            url = QUrl( outline->attributes()["xmlUrl"] );
         else if( outline->attributes().contains( "url" ) )
-            url = KUrl( outline->attributes()["url"] );
+            url = QUrl( outline->attributes()["url"] );
 
         if( url.isEmpty() )
             continue;

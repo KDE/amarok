@@ -168,13 +168,13 @@ IpodCollection::~IpodCollection()
 }
 
 bool
-IpodCollection::possiblyContainsTrack( const KUrl &url ) const
+IpodCollection::possiblyContainsTrack( const QUrl &url ) const
 {
     return url.toLocalFile().startsWith( m_mountPoint );
 }
 
 Meta::TrackPtr
-IpodCollection::trackForUrl( const KUrl &url )
+IpodCollection::trackForUrl( const QUrl &url )
 {
     QString relativePath = url.toLocalFile().mid( m_mountPoint.size() + 1 );
     QString uidUrl = QString( "%1/%2" ).arg( collectionId(), relativePath );

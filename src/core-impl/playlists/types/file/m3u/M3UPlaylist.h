@@ -26,7 +26,7 @@ namespace Playlists {
 class AMAROK_EXPORT M3UPlaylist : public PlaylistFile
 {
     public:
-        M3UPlaylist( const KUrl &url, PlaylistProvider *provider = 0 );
+        M3UPlaylist( const QUrl &url, PlaylistProvider *provider = 0 );
 
         /* PlaylistFile methods */
         using PlaylistFile::load;

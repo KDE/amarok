@@ -451,7 +451,7 @@ MainWindow::exportPlaylist() //SLOT
 {
     DEBUG_BLOCK
 
-    QScopedPointer<KFileDialog> fileDialog( new KFileDialog( KUrl("kfiledialog:///amarok-playlist-export"), QString(), this ) );
+    QScopedPointer<KFileDialog> fileDialog( new KFileDialog( QUrl("kfiledialog:///amarok-playlist-export"), QString(), this ) );
     QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving") );
     saveRelativeCheck->setChecked( AmarokConfig::relativePlaylist() );
 
@@ -522,11 +522,11 @@ MainWindow::slotPlayMedia() //SLOT
 void
 MainWindow::slotAddLocation( bool directPlay ) //SLOT
 {
-    static KUrl lastDirectory;
+    static QUrl lastDirectory;
 
     // open a file selector to add media to the playlist
-    KUrl::List files;
-    KFileDialog dlg( KUrl(QDesktopServices::storageLocation(QDesktopServices::MusicLocation) ), QString("*.*|"), this );
+    QList<QUrl> files;
+    KFileDialog dlg( QUrl(QDesktopServices::storageLocation(QDesktopServices::MusicLocation) ), QString("*.*|"), this );
 
     if( !lastDirectory.isEmpty() )
         dlg.setUrl( lastDirectory );
@@ -556,7 +556,7 @@ MainWindow::slotAddStream() //SLOT
     if( !ok )
         return;
 
-    The::playlistController()->insertOptioned( KUrl( url ),
+    The::playlistController()->insertOptioned( QUrl( url ),
             Playlist::OnAppendToPlaylistAction | Playlist::RemotePlaylistsAreStreams );
 }
 

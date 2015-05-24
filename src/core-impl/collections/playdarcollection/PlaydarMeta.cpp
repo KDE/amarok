@@ -30,7 +30,7 @@
 #include <QString>
 
 #include <KSharedPtr>
-#include <KUrl>
+#include <QUrl>
 
 namespace Collections
 {
@@ -89,10 +89,10 @@ Meta::PlaydarTrack::name() const
     return m_name;
 }
 
-KUrl
+QUrl
 Meta::PlaydarTrack::playableUrl() const
 {
-    return KUrl( m_playableUrl );
+    return QUrl( m_playableUrl );
 }
 
 QString
@@ -499,11 +499,11 @@ Meta::PlaydarAlbum::image( int size ) const
     return size <= 1 ? m_cover : m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 }
 
-KUrl
+QUrl
 Meta::PlaydarAlbum::imageLocation( int size )
 {
     if( !m_cover.isNull() )
-        return KUrl();
+        return QUrl();
 
     return Meta::Album::imageLocation( size );
 }

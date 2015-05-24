@@ -30,10 +30,10 @@ SyncedPlaylist::SyncedPlaylist( Playlists::PlaylistPtr playlist )
     addPlaylist( playlist );
 }
 
-KUrl
+QUrl
 SyncedPlaylist::uidUrl() const
 {
-    return KUrl( QString( "amarok-syncedplaylist://" ) +  m_playlists.first()->name() );
+    return QUrl( QString( "amarok-syncedplaylist://" ) +  m_playlists.first()->name() );
 }
 
 QString

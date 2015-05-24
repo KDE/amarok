@@ -45,7 +45,7 @@ namespace Playlists
 
         public:
             /* Playlist methods */
-            virtual KUrl uidUrl() const { return m_url; }
+            virtual QUrl uidUrl() const { return m_url; }
             virtual QString name() const { return m_url.fileName(); }
             virtual Meta::TrackList tracks() { return m_tracks; }
             virtual int trackCount() const;
@@ -91,7 +91,7 @@ namespace Playlists
             virtual QStringList groups() { return m_groups; }
 
         protected:
-            PlaylistFile( const KUrl &url, PlaylistProvider *provider );
+            PlaylistFile( const QUrl &url, PlaylistProvider *provider );
 
             /**
              * Schedule this playlist file to be saved on the next iteration of the
@@ -130,12 +130,12 @@ namespace Playlists
              * Sets m_relative to true if it ecounters a relative url
              * (this serves to preserve playlist "relativity" across reads & saves)
              **/
-            KUrl getAbsolutePath( const KUrl &url );
+            QUrl getAbsolutePath( const QUrl &url );
 
             PlaylistProvider *m_provider;
             QStringList m_groups;
 
-            KUrl m_url;
+            QUrl m_url;
 
             mutable bool m_tracksLoaded;
             mutable Meta::TrackList m_tracks;

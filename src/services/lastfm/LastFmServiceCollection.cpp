@@ -104,14 +104,14 @@ LastFmServiceCollection::~LastFmServiceCollection()
 }
 
 bool
-LastFmServiceCollection::possiblyContainsTrack( const KUrl &url ) const
+LastFmServiceCollection::possiblyContainsTrack( const QUrl &url ) const
 {
-    return url.protocol() == "lastfm";
+    return url.scheme() == "lastfm";
 }
 
 
 Meta::TrackPtr
-LastFmServiceCollection::trackForUrl( const KUrl &url )
+LastFmServiceCollection::trackForUrl( const QUrl &url )
 {
     return Meta::TrackPtr( new LastFm::Track( url.url() ) );
 }

@@ -133,7 +133,7 @@ InfoProxy::loadHomePage()
 {
     DEBUG_BLOCK
 
-    KUrl dataUrl( KStandardDirs::locate( "data", "amarok/data/" ) );
+    QUrl dataUrl( KStandardDirs::locate( "data", "amarok/data/" ) );
     QString dataPath = dataUrl.path();
 
     //load html
@@ -148,7 +148,7 @@ InfoProxy::loadHomePage()
 
     QString html = file.readAll();
 
-    KUrl imageUrl( KStandardDirs::locate( "data", "amarok/images/" ) );
+    QUrl imageUrl( KStandardDirs::locate( "data", "amarok/images/" ) );
     QString imagePath = imageUrl.url();
 
     html.replace( "_PATH_", imagePath );

@@ -37,7 +37,7 @@ MessageListJob::MessageListJob()
 {
 }
 
-void MessageListJob::setUrl( const KUrl &url )
+void MessageListJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }

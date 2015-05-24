@@ -158,7 +158,7 @@ LyricsAppletPrivate::showSuggested( const QVariantList &suggestions )
         QStringList s( suggestion.toStringList() );
         QString title( s.at(0) );
         QString artist( s.at(1) );
-        KUrl url( s.at(2) );
+        QUrl url( s.at(2) );
         LyricsSuggestion lyricsSuggestion = { url, title, artist };
         suggestView->add( lyricsSuggestion );
     }
@@ -347,7 +347,7 @@ void
 LyricsAppletPrivate::_suggestionChosen( const LyricsSuggestion &suggestion )
 {
     DEBUG_BLOCK
-    KUrl url = suggestion.url;
+    QUrl url = suggestion.url;
     if( !url.isValid() )
         return;
 

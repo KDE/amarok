@@ -23,7 +23,7 @@
 #define ATTICA_EVENTJOB_H
 
 #include <KJob>
-#include <KUrl>
+#include <QUrl>
 
 #include "atticaclient_export.h"
 #include "event.h"
@@ -42,7 +42,7 @@ class ATTICA_EXPORT EventJob : public KJob
     public:
         EventJob();
 
-        void setUrl(const KUrl& url);
+        void setUrl(const QUrl &url);
 
         void start();
 
@@ -56,7 +56,7 @@ class ATTICA_EXPORT EventJob : public KJob
         void slotJobData(KIO::Job* job, const QByteArray& data);
         
     private:
-        KUrl m_url;
+        QUrl m_url;
         KIO::Job* m_job;
         QByteArray m_data;
     

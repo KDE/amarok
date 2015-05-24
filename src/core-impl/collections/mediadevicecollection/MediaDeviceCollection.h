@@ -93,8 +93,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
          * url-based methods can be abstracted via use of Amarok URLs
          * subclasses simply define a protocol prefix, e.g. ipod
          */
-        virtual bool possiblyContainsTrack( const KUrl &url ) const { Q_UNUSED(url); return false;} // TODO: NYI
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
+        virtual bool possiblyContainsTrack( const QUrl &url ) const { Q_UNUSED(url); return false;} // TODO: NYI
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
 
         virtual QueryMaker* queryMaker();
         virtual void startFullScanDevice();

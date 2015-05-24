@@ -24,7 +24,7 @@
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
 
-#include <KUrl>
+#include <QUrl>
 
 using namespace Collections;
 

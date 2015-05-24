@@ -22,7 +22,7 @@
 namespace KTextEditor{
     class View;
 }
-class KUrl;
+class QUrl;
 class QIcon;
 class QScriptContext;
 class QScriptEngine;
