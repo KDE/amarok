@@ -9,6 +9,7 @@ message(STATUS "${CMAKE_MODULE_PATH}")
 ###############
 find_package(ECM 1.7.0 REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+set(CMAKE_AUTOMOC ON)
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
@@ -112,6 +113,7 @@ include( KDE4Defaults )
 include( MacroBoolTo01 )
 include( MacroLibrary )
 add_definitions( ${QT_DEFINITIONS} ${KDE4_DEFINITIONS} )
+add_definitions(-DQT_NO_URL_CAST_FROM_STRING)
 
 # QCA2 is required for the Script Updater
 find_package(Qca-qt5 2.1.0)
