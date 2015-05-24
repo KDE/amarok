@@ -113,6 +113,7 @@ target_link_libraries(amarokcore
     ${KDE4_SOLID_LIBRARY}
     KF5::ThreadWeaver
     ${QT_CORE_LIBRARY}
+    KF5::KDELibs4Support
 )
 
 if(APPLE)

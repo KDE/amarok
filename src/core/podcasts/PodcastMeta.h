@@ -92,7 +92,7 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
 
         // Meta::Track Methods
         virtual QUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
-        virtual QString prettyUrl() const { return playableUrl().prettyUrl(); }
+        virtual QString prettyUrl() const { return playableUrl().toDisplayString(); }
         virtual QString uidUrl() const { return m_url.url(); }
         virtual QString notPlayableReason() const;
 
