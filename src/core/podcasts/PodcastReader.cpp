@@ -1155,7 +1155,7 @@ PodcastReader::endItem()
         if( guid.isEmpty() )
         {
              episode = Podcasts::PodcastEpisodePtr::dynamicCast(
-                                              m_podcastProvider->trackForUrl( m_item->uidUrl() )
+                                              m_podcastProvider->trackForUrl( QUrl::fromUserInput((m_item->uidUrl())) )
                                           );
         }
         else
@@ -1174,7 +1174,7 @@ PodcastReader::endItem()
             episode->setSummary( m_item->summary() );
             episode->setDescription( m_item->description() );
             episode->setAuthor( m_item->author() );
-            episode->setUidUrl( m_item->uidUrl() );
+            episode->setUidUrl( QUrl::fromUserInput(m_item->uidUrl()) );
             episode->setFilesize( m_item->filesize() );
             episode->setMimeType( m_item->mimeType() );
             episode->setPubDate( m_item->pubDate() );
