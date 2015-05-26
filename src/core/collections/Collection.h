@@ -22,6 +22,7 @@
 #include "core/interfaces/MetaCapability.h"
 #include "core/support/PluginFactory.h"
 
+#include <KSharedPtr>
 #include <QObject>
 
 namespace Meta {
