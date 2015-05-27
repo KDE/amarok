@@ -30,6 +30,7 @@
 #include "core/transcoding/TranscodingConfiguration.h"
 #include "core/transcoding/TranscodingController.h"
 
+#include <klocalizedstring.h>
 #include <QDir>
 #include <QTimer>
 
@@ -545,7 +546,7 @@ CollectionLocation::slotFinishRemove()
             continue;
 
         if( track->playableUrl().isLocalFile() )
-            dirsToRemove.append( track->playableUrl().directory( QUrl::AppendTrailingSlash ) );
+            dirsToRemove.append( track->playableUrl().adjusted( QUrl::RemoveFilename ).path() );
     }
 
     if( !dirsToRemove.isEmpty() && delegate->deleteEmptyDirs( this ) )

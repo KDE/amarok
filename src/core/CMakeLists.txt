@@ -114,6 +114,7 @@ target_link_libraries(amarokcore
     KF5::ThreadWeaver
     ${QT_CORE_LIBRARY}
     KF5::KDELibs4Support
+    KF5::I18n
 )
 
 if(APPLE)
