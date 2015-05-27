@@ -74,7 +74,7 @@ PodcastEpisode::PodcastEpisode( PodcastEpisodePtr episode,
     m_sequenceNumber = episode->sequenceNumber();
     m_subtitle = episode->subtitle();
     m_summary = episode->summary();
-    m_url = episode->uidUrl();
+    m_url = QUrl::fromUserInput(episode->uidUrl());
 }
 
 QString
