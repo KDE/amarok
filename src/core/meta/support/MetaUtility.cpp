@@ -131,11 +131,11 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
                 map[ "albumartist" ] = track->album()->albumArtist()->name();
 
             QImage image = track->album()->image();
-            QUrl url = track->album()->imageLocation().url();
+            QUrl url = QUrl::fromLocalFile(track->album()->imageLocation().toString());
             if ( url.isValid() && !url.isLocalFile() ) {
                 // embedded id?  Request a version to be put in the cache
                 int width = track->album()->image().width();
-                url = track->album()->imageLocation( width ).url();
+                url = QUrl::fromLocalFile( track->album()->imageLocation( width ).toString() );
                 debug() << "MPRIS: New location for width" << width << "is" << url;
             }
             if ( url.isValid() && url.isLocalFile() )
@@ -190,12 +190,12 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
 
         if( album ) {
             QImage image = album->image();
-            QUrl url = album->imageLocation().url();
+            QUrl url = QUrl::fromLocalFile( album->imageLocation().toString() );
             debug() << "MPRIS2: Album image location is" << url;
             if ( url.isValid() && !url.isLocalFile() ) {
                 // embedded id?  Request a version to be put in the cache
                 int width = album->image().width();
-                url = album->imageLocation( width ).url();
+                url = QUrl::fromLocalFile( album->imageLocation( width ).toString() );
                 debug() << "MPRIS2: New location for width" << width << "is" << url;
             }
             if ( url.isValid() && url.isLocalFile() )
