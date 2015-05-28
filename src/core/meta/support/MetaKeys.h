@@ -21,6 +21,7 @@
 #include "core/meta/forward_declarations.h"
 
 #include <QHash>
+#include <QString>
 
 class TestMetaAlbumKey;
 class TestMetaTrackKey;
