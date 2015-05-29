@@ -29,6 +29,7 @@
 #include <KIconEffect>
 #include <KStandardDirs>
 #include <KUniqueApplication>
+#include <KGlobal>
 
 #include <QDateTime>
 #include <QPixmapCache>

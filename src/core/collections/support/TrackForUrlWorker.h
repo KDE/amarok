@@ -23,7 +23,8 @@
 
 #include <QUrl>
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/QObjectDecorator>
 
 namespace Amarok
 {
@@ -31,7 +32,7 @@ namespace Amarok
  * Derive from this class and implement the run() method to set mTrack.
  * @author Casey Link
  */
-class AMAROK_CORE_EXPORT TrackForUrlWorker : public ThreadWeaver::Job
+class AMAROK_CORE_EXPORT TrackForUrlWorker : public ThreadWeaver::QObjectDecorator, public ThreadWeaver::Job
 {
     Q_OBJECT
 public:

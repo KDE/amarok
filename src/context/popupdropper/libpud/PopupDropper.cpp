@@ -977,6 +977,3 @@ void PopupDropper::addSeparator( PopupDropperItem* separator )
     d->reposItems();
     d->scene->addItem( lineItem );
 }
-
-#include "PopupDropper_p.moc"
-

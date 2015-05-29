@@ -23,7 +23,7 @@ include(ECMAddAppIcon)
 #find_package( Qt4 4.8.3 COMPONENTS QtCore QtGui QtScript QtSvg QtXml QtWebKit REQUIRED )
 #find_package( KDE4 4.8.4 REQUIRED )
 find_package( Qt5 REQUIRED COMPONENTS Core DBus Widgets Test )
-find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid KDELibs4Support Codecs I18n)
+find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid KDELibs4Support Codecs I18n ThreadWeaver)
 
 ###############
 option(WITH_UTILITIES "Enable building of utilities" ON)
