@@ -20,7 +20,7 @@
 #ifndef POPUPDROPPER_VIEW_H
 #define POPUPDROPPER_VIEW_H
 
-#include <QtGui/QGraphicsView>
+#include <QGraphicsView>
 
 class PopupDropper;
 class PopupDropperViewPrivate;

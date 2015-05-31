@@ -24,7 +24,7 @@
 #include <QtCore/QtDebug>
 #include <QtSvg/QSvgRenderer>
 #include <QtSvg/QGraphicsSvgItem>
-#include <QtGui/QAction>
+#include <QAction>
 #include <QtGui/QFont>
 
 ///////////////////////////////////////////////////////////

@@ -3,8 +3,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_BINARY_DIR}/popupdropper
     ${CMAKE_CURRENT_BINARY_DIR}/..
-    
 )
+
 
 ########### next target ###############
 
@@ -13,13 +13,6 @@ SET(pud_LIB_SRCS
     PopupDropperItem.cpp
     PopupDropperView.cpp
 )
-
-QT4_AUTOMOC(
-    PopupDropper.cpp 
-    PopupDropperItem.cpp
-    PopupDropperView.cpp
-)
-
 
 ADD_LIBRARY(pud SHARED ${pud_LIB_SRCS})
 

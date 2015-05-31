@@ -31,6 +31,8 @@ target_link_libraries(amarokpud
     Qt5::Core
     Qt5::Gui
     Qt5::Svg
+    Qt5::Widgets
+    Qt5::Svg
 )
 
 set_target_properties(amarokpud PROPERTIES VERSION 1.0.0 SOVERSION 1)
