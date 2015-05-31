@@ -5,7 +5,7 @@ ServiceTypes=KPluginInfo
 
 Name=Amarok Script Console
 Name[bs]=Amarok skript konzola
-Name[ca]=Consola d'scripts de l'Amarok
+Name[ca]=Consola de scripts de l'Amarok
 Name[ca@valencia]=Consola d'scripts de l'Amarok
 Name[cs]=Konzole skriptu pro Amarok
 Name[da]=Amarok script-konsol
@@ -37,7 +37,7 @@ Name[x-test]=xxAmarok Script Consolexx
 Name[zh_TW]=Amarok 文稿主控台
 Comment=Amarok Script Console
 Comment[bs]=Amarok skript konzola
-Comment[ca]=Consola d'scripts de l'Amarok
+Comment[ca]=Consola de scripts de l'Amarok
 Comment[ca@valencia]=Consola d'scripts de l'Amarok
 Comment[cs]=Konzole skriptu pro Amarok
 Comment[da]=Amarok script-konsol
