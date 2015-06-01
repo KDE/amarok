@@ -31,6 +31,8 @@ VERSION 2.8.90
      compilers currently supported by KDE.
 
   BUGFIXES:
+   * Fixed longstanding APG zero-length playlist bug (BR 313762, BR 315206,
+     BR 323945)
    * Fix a crash when searching the Icecast directory. (BR 334479)
    * Correct wrong lowercase for FLAC and MP3. Patch provided by Duilio Felix (BR 339495)
    * Collection Browser no longer excessively expands the tree. (BR 300557)
