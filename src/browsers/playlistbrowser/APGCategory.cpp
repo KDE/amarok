@@ -21,7 +21,7 @@
 #include "playlistgenerator/PresetModel.h"
 #include "widgets/PrettyTreeView.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 #include <KStandardDirs>
 
@@ -38,7 +38,7 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
 
     setPrettyName( i18n( "Automated Playlist Generator" ) );
     setShortDescription( i18n("Create playlists by specifying criteria") );
-    setIcon( KIcon( "playlist-generator" ) );
+    setIcon( QIcon::fromTheme( "playlist-generator" ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )
@@ -60,31 +60,31 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
     toolBar_Actions->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
 
     QAction* a;
-    a = toolBar_Actions->addAction( KIcon( "list-add-amarok" ), i18n("Add new preset") );
+    a = toolBar_Actions->addAction( QIcon::fromTheme( "list-add-amarok" ), i18n("Add new preset") );
     connect( a, SIGNAL(triggered(bool)), presetmodel, SLOT(addNew()) );
 
-    a = toolBar_Actions->addAction( KIcon( "document-properties-amarok" ), i18n("Edit selected preset") );
+    a = toolBar_Actions->addAction( QIcon::fromTheme( "document-properties-amarok" ), i18n("Edit selected preset") );
     a->setEnabled( false );
     connect( a, SIGNAL(triggered(bool)), presetmodel, SLOT(edit()) );
     connect( this, SIGNAL(validIndexSelected(bool)), a, SLOT(setEnabled(bool)) );
 
-    a = toolBar_Actions->addAction( KIcon( "list-remove-amarok" ), i18n("Delete selected preset") );
+    a = toolBar_Actions->addAction( QIcon::fromTheme( "list-remove-amarok" ), i18n("Delete selected preset") );
     a->setEnabled( false );
     connect( a, SIGNAL(triggered(bool)), presetmodel, SLOT(removeActive()) );
     connect( this, SIGNAL(validIndexSelected(bool)), a, SLOT(setEnabled(bool)) );
 
-    a = toolBar_Actions->addAction( KIcon( "document-import-amarok" ), i18n("Import a new preset") );
+    a = toolBar_Actions->addAction( QIcon::fromTheme( "document-import-amarok" ), i18n("Import a new preset") );
     a->setEnabled( true );
     connect( a, SIGNAL(triggered(bool)), presetmodel, SLOT(import()) );
 
-    a = toolBar_Actions->addAction( KIcon( "document-export-amarok" ), i18n("Export the selected preset") );
+    a = toolBar_Actions->addAction( QIcon::fromTheme( "document-export-amarok" ), i18n("Export the selected preset") );
     a->setEnabled( false );
     connect( a, SIGNAL(triggered(bool)), presetmodel, SLOT(exportActive()) );
     connect( this, SIGNAL(validIndexSelected(bool)), a, SLOT(setEnabled(bool)) );
 
     toolBar_Actions->addSeparator();
 
-    a = toolBar_Actions->addAction( KIcon( "go-next-amarok" ), i18n("Run APG with selected preset") );
+    a = toolBar_Actions->addAction( QIcon::fromTheme( "go-next-amarok" ), i18n("Run APG with selected preset") );
     a->setEnabled( false );
     connect( a, SIGNAL(triggered(bool)), this, SLOT(runGenerator()) );
     connect( this, SIGNAL(validIndexSelected(bool)), a, SLOT(setEnabled(bool)) );

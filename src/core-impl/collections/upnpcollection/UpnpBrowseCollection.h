@@ -28,7 +28,7 @@
 #include <QtGlobal>
 #include <QSharedPointer>
 
-#include <KIcon>
+#include <QIcon>
 #include <KDirNotify>
 #include <kio/udsentry.h>
 
@@ -58,7 +58,7 @@ class UpnpBrowseCollection : public UpnpCollectionBase
     virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
     Meta::TrackPtr trackForUrl( const QUrl &url );
-    virtual KIcon icon() const { return KIcon("network-server"); }
+    virtual QIcon icon() const { return QIcon::fromTheme("network-server"); }
 
     QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 

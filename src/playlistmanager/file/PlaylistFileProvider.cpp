@@ -98,9 +98,9 @@ PlaylistFileProvider::prettyName() const
     return i18n( "Playlist Files on Disk" );
 }
 
-KIcon PlaylistFileProvider::icon() const
+QIcon PlaylistFileProvider::icon() const
 {
-    return KIcon( "folder-documents" );
+    return QIcon::fromTheme( "folder-documents" );
 }
 
 int

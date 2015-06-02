@@ -69,7 +69,7 @@ CreateProviderDialog::~CreateProviderDialog()
 
 void
 CreateProviderDialog::addProviderType( const QString &id, const QString &prettyName,
-                                       const KIcon &icon,
+                                       const QIcon &icon,
                                        ProviderConfigWidget *configWidget )
 {
     QRadioButton *providerTypeButton = new QRadioButton;

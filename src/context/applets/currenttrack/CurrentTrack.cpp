@@ -770,7 +770,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
 
     if( m_showEditTrackDetailsAction && track->editor() )
     {
-        QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),
+        QAction *editAction = new QAction( QIcon::fromTheme("media-track-edit-amarok"),
                                            i18n("Edit Track Details"), this );
         connect( editAction, SIGNAL(triggered()), SLOT(editTrack()) );
         m_customActions << editAction;
@@ -793,14 +793,14 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
 
         if( album && !album->name().isEmpty() )
         {
-            act = new QAction( KIcon("current-track-amarok"), i18n("Show Album in Media Sources"), this );
+            act = new QAction( QIcon::fromTheme("current-track-amarok"), i18n("Show Album in Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("album") );
             m_customActions << act;
         }
         if( artist && !artist->name().isEmpty() )
         {
-            act = new QAction( KIcon("filename-artist-amarok"), i18n("Show Artist in Media Sources"), this );
+            act = new QAction( QIcon::fromTheme("filename-artist-amarok"), i18n("Show Artist in Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("artist") );
             m_customActions << act;
@@ -813,7 +813,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
                 {
                     if( service.isPluginEnabled() )
                     {
-                        act = new QAction( KIcon("view-services-amazon-amarok"),
+                        act = new QAction( QIcon::fromTheme("view-services-amazon-amarok"),
                                            i18n("Search for Artist in the MP3 Music Store"), this );
                         connect( act, SIGNAL(triggered()), this, SLOT(findInStore()) );
                         m_customActions << act;
@@ -824,21 +824,21 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
         }
         if( composer && !composer->name().isEmpty() && (composer->name() != i18n("Unknown Composer")) )
         {
-            act = new QAction( KIcon("filename-composer-amarok"), i18n("Show Composer in Media Sources"), this );
+            act = new QAction( QIcon::fromTheme("filename-composer-amarok"), i18n("Show Composer in Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("composer") );
             m_customActions << act;
         }
         if( genre && !genre->name().isEmpty() )
         {
-            act = new QAction( KIcon("filename-genre-amarok"), i18n("Show Genre in Media Sources"), this );
+            act = new QAction( QIcon::fromTheme("filename-genre-amarok"), i18n("Show Genre in Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("genre") );
             m_customActions << act;
         }
         if( year && !year->name().isEmpty() )
         {
-            act = new QAction( KIcon("filename-year-amarok"), i18n("Show Year in Media Sources"), this );
+            act = new QAction( QIcon::fromTheme("filename-year-amarok"), i18n("Show Year in Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("year") );
             m_customActions << act;

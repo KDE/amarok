@@ -24,7 +24,7 @@
 #include "core/support/Debug.h"
 #include "SvgHandler.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QAbstractListModel>
 

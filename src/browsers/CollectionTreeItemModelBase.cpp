@@ -35,7 +35,7 @@
 #include "widgets/PrettyTreeRoles.h"
 
 #include <KGlobalSettings>
-#include <KIcon>
+#include <QIcon>
 #include <KIconLoader>
 #include <KLocale>
 #include <KStandardDirs>
@@ -234,7 +234,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
             }
 
         case Qt::DecorationRole:
-            return KIcon( "media-album-track" );
+            return QIcon::fromTheme( "media-album-track" );
         case PrettyTreeRoles::SortRole:
             return track->sortableName();
         }
@@ -313,7 +313,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         switch( role )
         {
         case Qt::DecorationRole:
-            return KIcon( "similarartists-amarok" );
+            return QIcon::fromTheme( "similarartists-amarok" );
         case Qt::DisplayRole:
             return i18n( "Various Artists" );
         case PrettyTreeRoles::SortRole:
@@ -956,22 +956,22 @@ CollectionTreeItemModelBase::iconForCategory( CategoryId::CatMenuId category )
     switch( category )
     {
         case CategoryId::Album :
-            return KIcon( "media-optical-amarok" );
+            return QIcon::fromTheme( "media-optical-amarok" );
         case CategoryId::Artist :
-            return KIcon( "view-media-artist-amarok" );
+            return QIcon::fromTheme( "view-media-artist-amarok" );
         case CategoryId::AlbumArtist :
-            return KIcon( "view-media-artist-amarok" );
+            return QIcon::fromTheme( "view-media-artist-amarok" );
         case CategoryId::Composer :
-            return KIcon( "filename-composer-amarok" );
+            return QIcon::fromTheme( "filename-composer-amarok" );
         case CategoryId::Genre :
-            return KIcon( "favorite-genres-amarok" );
+            return QIcon::fromTheme( "favorite-genres-amarok" );
         case CategoryId::Year :
-            return KIcon( "clock" );
+            return QIcon::fromTheme( "clock" );
         case CategoryId::Label :
-            return KIcon( "label-amarok" );
+            return QIcon::fromTheme( "label-amarok" );
         case CategoryId::None:
         default:
-            return KIcon( "image-missing" );
+            return QIcon::fromTheme( "image-missing" );
     }
 
 }

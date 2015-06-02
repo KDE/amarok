@@ -48,10 +48,10 @@ ImporterProvider::description() const
     return m_manager ? m_manager->description() : QString();
 }
 
-KIcon
+QIcon
 ImporterProvider::icon() const
 {
-    return m_manager ? m_manager->icon() : KIcon();
+    return m_manager ? m_manager->icon() : QIcon();
 }
 
 QString

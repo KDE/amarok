@@ -18,13 +18,13 @@
 
 #include "LastFmService.h"
 
-#include <KIcon>
+#include <QIcon>
 
 LoveTrackAction::LoveTrackAction( LastFmService * service )
     : GlobalCollectionTrackAction( i18n( "Last.fm: Love" ), service )
     , m_service( service )
 {
-    setIcon( KIcon( "love-amarok") );
+    setIcon( QIcon::fromTheme( "love-amarok") );
     setProperty( "popupdropper_svg_id", "lastfm" );
 
     connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );

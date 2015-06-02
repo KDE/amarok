@@ -36,7 +36,7 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
 
         // PlaylistProvider methods:
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
         virtual int playlistCount() const;
         virtual Playlists::PlaylistList playlists();

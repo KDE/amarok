@@ -28,7 +28,7 @@ BreadcrumbLevel::BreadcrumbLevel( QString internalColumnName )
 {
     Column col = columnForName( internalColumnName );
 
-    m_icon = KIcon( iconName( col ) );
+    m_icon = QIcon::fromTheme( iconName( col ) );
     m_prettyName = columnName( col );
 }
 
@@ -47,7 +47,7 @@ BreadcrumbLevel::prettyName()
     return m_prettyName;
 }
 
-const KIcon &
+const QIcon &
 BreadcrumbLevel::icon()
 {
     return m_icon;

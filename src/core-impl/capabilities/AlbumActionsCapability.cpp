@@ -19,7 +19,7 @@
 #include "core/meta/Meta.h"
 #include "covermanager/CoverFetchingActions.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocalizedString>
 
 class CompilationAction : public QAction
@@ -34,12 +34,12 @@ class CompilationAction : public QAction
                 connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
                 if( m_album->isCompilation() )
                 {
-                    setIcon( KIcon( "filename-artist-amarok" ) );
+                    setIcon( QIcon::fromTheme( "filename-artist-amarok" ) );
                     setText( i18n( "Do not show under Various Artists" ) );
                 }
                 else
                 {
-                    setIcon( KIcon( "similarartists-amarok" ) );
+                    setIcon( QIcon::fromTheme( "similarartists-amarok" ) );
                     setText( i18n( "Show under Various Artists" ) );
                 }
                 setEnabled( m_album->canUpdateCompilation() );

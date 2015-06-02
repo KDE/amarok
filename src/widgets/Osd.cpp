@@ -35,7 +35,7 @@
 #include "widgets/StarManager.h"
 
 #include <KApplication>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 #include <KWindowSystem>
 

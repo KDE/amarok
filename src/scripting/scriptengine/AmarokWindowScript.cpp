@@ -130,7 +130,7 @@ AmarokWindowScript::addMenuAction( QWeakPointer<KMenu> menu, QString id, QString
     if( ac->action( id ) )
         return false;
 
-    KAction *action = new KAction( KIcon( icon ), menuTitle, this );
+    KAction *action = new KAction( QIcon::fromTheme( icon ), menuTitle, this );
     ac->addAction( id, action );
 
     // don't forget to read the shortcut settings from the config file so

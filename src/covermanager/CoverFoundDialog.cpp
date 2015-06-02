@@ -118,9 +118,9 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_search->completionObject()->setItems( completionNames );
     m_search->insertItem( 0, KStandardGuiItem::find().icon(), QString() );
     m_search->insertSeparator( 1 );
-    m_search->insertItem( 2, KIcon("filename-album-amarok"), m_album->name() );
+    m_search->insertItem( 2, QIcon::fromTheme("filename-album-amarok"), m_album->name() );
     if( m_album->hasAlbumArtist() )
-        m_search->insertItem( 3, KIcon("filename-artist-amarok"), m_album->albumArtist()->name() );
+        m_search->insertItem( 3, QIcon::fromTheme("filename-artist-amarok"), m_album->albumArtist()->name() );
 
     m_searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
     KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
@@ -351,10 +351,10 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
     item->setSelected( true );
 
     QMenu menu( this );
-    QAction *display = new QAction( KIcon("zoom-original"), i18n("Display Cover"), &menu );
+    QAction *display = new QAction( QIcon::fromTheme("zoom-original"), i18n("Display Cover"), &menu );
     connect( display, SIGNAL(triggered()), this, SLOT(display()) );
 
-    QAction *save = new QAction( KIcon("document-save"), i18n("Save As"), &menu );
+    QAction *save = new QAction( QIcon::fromTheme("document-save"), i18n("Save As"), &menu );
     connect( save, SIGNAL(triggered()), this, SLOT(saveAs()) );
 
     menu.addAction( display );

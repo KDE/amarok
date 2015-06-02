@@ -31,7 +31,7 @@
 #include "SvgHandler.h"
 #include "ProgressWidget.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 #include <KStandardDirs>
 #include <KGlobalSettings>
@@ -252,7 +252,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
     /*
     // TODO: Phonon
     menu.addSeparator();
-    menu.addAction( KIcon( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), kapp, SLOT(slotConfigEqualizer()) )->setData( -1 );
+    menu.addAction( QIcon::fromTheme( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), kapp, SLOT(slotConfigEqualizer()) )->setData( -1 );
     */
 
     QAction* a = menu.exec( mapToGlobal( e->pos() ) );

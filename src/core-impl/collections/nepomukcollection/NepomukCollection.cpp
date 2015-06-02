@@ -30,7 +30,7 @@
 #include <Nepomuk2/ResourceManager>
 #include <Nepomuk2/Vocabulary/NFO>
 
-#include <KIcon>
+#include <QIcon>
 #include <ThreadWeaver/Weaver>
 
 namespace Collections
@@ -69,10 +69,10 @@ NepomukCollection::prettyName() const
     return i18n( "Nepomuk Collection" );
 }
 
-KIcon
+QIcon
 NepomukCollection::icon() const
 {
-    return KIcon( "nepomuk" );
+    return QIcon::fromTheme( "nepomuk" );
 }
 
 bool

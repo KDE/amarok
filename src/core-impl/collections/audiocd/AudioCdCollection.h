@@ -77,7 +77,7 @@ public:
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
-    virtual KIcon icon() const;
+    virtual QIcon icon() const;
 
     virtual CollectionLocation* location();
 

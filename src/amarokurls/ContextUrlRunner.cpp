@@ -30,9 +30,9 @@ ContextUrlRunner::~ContextUrlRunner()
     The::amarokUrlHandler()->unRegisterRunner ( this );
 }
 
-KIcon ContextUrlRunner::icon() const
+QIcon ContextUrlRunner::icon() const
 {
-    return KIcon( "x-media-podcast-amarok" );
+    return QIcon::fromTheme( "x-media-podcast-amarok" );
 }
 
 bool ContextUrlRunner::run( AmarokUrl url )

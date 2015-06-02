@@ -35,7 +35,7 @@ public:
     Mp3Format();
     QString prettyName() const;
     QString description() const;
-    KIcon icon() const;
+    QIcon icon() const;
     QStringList ffmpegParameters( const Configuration &configuration ) const;
     bool verifyAvailability( const QString &ffmpegOutput ) const;
 };

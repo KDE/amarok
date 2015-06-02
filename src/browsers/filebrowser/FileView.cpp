@@ -43,7 +43,7 @@
 #include <KFileItem>
 #include <KGlobalSettings>
 #include <KMessageBox>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 #include <KMenu>
 #include <QUrl>
@@ -115,7 +115,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     if( !writableCollections.isEmpty() )
     {
         QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), &menu );
-        copyMenu->setIcon( KIcon( "edit-copy" ) );
+        copyMenu->setIcon( QIcon::fromTheme( "edit-copy" ) );
         foreach( Collections::Collection *coll, writableCollections )
         {
             CollectionAction *copyAction = new CollectionAction( coll, &menu );
@@ -125,7 +125,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
         menu.addMenu( copyMenu );
 
         QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), &menu );
-        moveMenu->setIcon( KIcon( "go-jump" ) );
+        moveMenu->setIcon( QIcon::fromTheme( "go-jump" ) );
         foreach( Collections::Collection *coll, writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, &menu );
@@ -381,7 +381,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 
     if( !m_appendAction )
     {
-        m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
+        m_appendAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
                                       this );
         m_appendAction->setProperty( "popupdropper_svg_id", "append" );
         connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppendToPlaylist()) );
@@ -401,7 +401,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 
     if( !m_moveToTrashAction )
     {
-        m_moveToTrashAction = new KAction( KIcon( "user-trash" ), i18n( "&Move to Trash" ), this );
+        m_moveToTrashAction = new KAction( QIcon::fromTheme( "user-trash" ), i18n( "&Move to Trash" ), this );
         m_moveToTrashAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_moveToTrashAction->setShortcut( Qt::Key_Delete );
@@ -413,7 +413,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 
     if( !m_deleteAction )
     {
-        m_deleteAction = new KAction( KIcon( "remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new KAction( QIcon::fromTheme( "remove-amarok" ), i18n( "&Delete" ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
@@ -424,7 +424,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 
     if( !m_editAction )
     {
-        m_editAction = new QAction( KIcon( "media-track-edit-amarok" ),
+        m_editAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
                                     i18n( "&Edit Track Details" ), this );
         m_editAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_editAction, SIGNAL(triggered()), this, SLOT(slotEditTracks()) );

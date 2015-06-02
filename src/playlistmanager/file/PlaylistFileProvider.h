@@ -37,7 +37,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         virtual ~PlaylistFileProvider();
 
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
         virtual int category() const { return Playlists::UserPlaylist; }
 

@@ -63,48 +63,48 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
     setEditTriggers( QAbstractItemView::EditKeyPressed );
     setMouseTracking( true ); // needed for highlighting provider action icons
 
-    m_createEmptyPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ),
+    m_createEmptyPlaylistAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ),
                                                i18n( "Create an Empty Playlist" ), this );
     connect( m_createEmptyPlaylistAction, SIGNAL(triggered()), SLOT(slotCreateEmptyPlaylist()) );
 
-    m_appendAction = new QAction( KIcon( "media-track-add-amarok" ),
+    m_appendAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ),
             i18n( "&Add to Playlist" ), this );
     m_appendAction->setProperty( "popupdropper_svg_id", "append" );
     connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppend()) );
 
-    m_loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently "
+    m_loadAction = new QAction( QIcon::fromTheme( "folder-open" ), i18nc( "Replace the currently "
             "loaded tracks with these", "&Replace Playlist" ), this );
     m_loadAction->setProperty( "popupdropper_svg_id", "load" );
     connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotLoad()) );
 
-    m_setNewAction = new QAction( KIcon( "rating" ), i18nc( "toggle the \"new\" status "
+    m_setNewAction = new QAction( QIcon::fromTheme( "rating" ), i18nc( "toggle the \"new\" status "
             " of this podcast episode", "&New" ), this );
     m_setNewAction->setProperty( "popupdropper_svg_id", "new" );
     m_setNewAction->setCheckable( true );
     connect( m_setNewAction, SIGNAL(triggered(bool)), SLOT(slotSetNew(bool)) );
 
-    m_renamePlaylistAction = new QAction( KIcon( "media-track-edit-amarok" ),
+    m_renamePlaylistAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
             i18n( "&Rename..." ), this );
     m_renamePlaylistAction->setProperty( "popupdropper_svg_id", "edit" );
     // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
     m_renamePlaylistAction->setShortcut( Qt::Key_F2 );
     connect( m_renamePlaylistAction, SIGNAL(triggered()), this, SLOT(slotRename()) );
 
-    m_deletePlaylistAction = new QAction( KIcon( "media-track-remove-amarok" ),
+    m_deletePlaylistAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
             i18n( "&Delete..." ), this );
     m_deletePlaylistAction->setProperty( "popupdropper_svg_id", "delete" );
     // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
     m_deletePlaylistAction->setShortcut( Qt::Key_Delete );
     connect( m_deletePlaylistAction, SIGNAL(triggered()), SLOT(slotDelete()) );
 
-    m_removeTracksAction = new QAction( KIcon( "media-track-remove-amarok" ),
+    m_removeTracksAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
             QString( "<placeholder>" ), this );
     m_removeTracksAction->setProperty( "popupdropper_svg_id", "delete" );
     // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
     m_removeTracksAction->setShortcut( Qt::Key_Delete );
     connect( m_removeTracksAction, SIGNAL(triggered()), SLOT(slotRemoveTracks()) );
 
-    m_exportAction = new QAction( KIcon( "document-export-amarok" ),
+    m_exportAction = new QAction( QIcon::fromTheme( "document-export-amarok" ),
             i18n( "&Export As..." ), this );
     connect( m_exportAction, SIGNAL(triggered()), this, SLOT(slotExport()) );
 

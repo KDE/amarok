@@ -25,7 +25,7 @@
 #include "widgets/ProgressWidget.h"
 
 #include <KApplication>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 #include <KVBox>
 

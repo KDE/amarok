@@ -23,6 +23,6 @@ AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( fastforward,
                                       "FastForwardImporter",
                                       i18n( "Amarok 1.4 (FastForward)" ),
                                       i18n( "Amarok 1.4 Statistics Importer" ),
-                                      KIcon( "amarok" ),
+                                      QIcon::fromTheme( "amarok" ),
                                       StatSyncing::FastForwardConfigWidget,
                                       StatSyncing::FastForwardProvider )

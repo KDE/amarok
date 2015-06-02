@@ -22,7 +22,7 @@
 #include "playlist/layouts/LayoutEditDialog.h"
 
 #include <KColorScheme>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 #include <QContextMenuEvent>
@@ -34,7 +34,7 @@
 Wrench::Wrench( QWidget *parent ) : QLabel( parent )
 {
     setCursor( Qt::ArrowCursor );
-    setPixmap( KIcon( "configure" ).pixmap( 64 ) );
+    setPixmap( QIcon::fromTheme( "configure" ).pixmap( 64 ) );
     setScaledContents( true );
     setMargin( 4 );
 }

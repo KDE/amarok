@@ -24,7 +24,7 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QStack>
 

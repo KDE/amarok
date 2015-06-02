@@ -33,7 +33,7 @@
 
 #include <KActionMenu>
 #include <KConfigGroup>
-#include <KIcon>
+#include <QIcon>
 #include <KStandardDirs>
 #include <KToolBar>
 
@@ -74,17 +74,17 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
 
     m_toolBar->addSeparator();
 
-    m_addFolderAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
+    m_addFolderAction = new KAction( QIcon::fromTheme( "folder-new" ), i18n( "Add Folder" ), this  );
     m_addFolderAction->setPriority( QAction::LowPriority );
     m_toolBar->addAction( m_addFolderAction );
     connect( m_addFolderAction, SIGNAL(triggered(bool)), SLOT(createNewFolder()) );
 
-    m_providerMenu = new KActionMenu( KIcon( "checkbox" ), i18n( "Visible Sources"), this );
+    m_providerMenu = new KActionMenu( QIcon::fromTheme( "checkbox" ), i18n( "Visible Sources"), this );
     m_providerMenu->setDelayed( false );
     m_providerMenu->setPriority( QAction::HighPriority );
     m_toolBar->addAction( m_providerMenu );
 
-    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Merged View" ),
+    KAction *toggleAction = new KAction( QIcon::fromTheme( "view-list-tree" ), i18n( "Merged View" ),
                                          m_toolBar );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( Amarok::config( m_configGroup ).readEntry( s_mergeViewKey, false ) );

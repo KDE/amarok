@@ -21,7 +21,7 @@
 #include "core/podcasts/PodcastReader.h"
 #include "SqlPodcastMeta.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 class PodcastImageFetcher;
@@ -54,7 +54,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
 
         //PlaylistProvider methods
         virtual QString prettyName() const { return i18n("Local Podcasts"); }
-        virtual KIcon icon() const { return KIcon( "server-database" ); }
+        virtual QIcon icon() const { return QIcon::fromTheme( "server-database" ); }
 
         virtual Playlists::PlaylistList playlists();
 

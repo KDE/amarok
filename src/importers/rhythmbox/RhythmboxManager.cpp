@@ -23,6 +23,6 @@ AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( rhythmbox,
                                       "RhythmboxImporter",
                                       i18n( "Rhythmbox" ),
                                       i18n( "Rhythmbox Statistics Importer" ),
-                                      KIcon( "view-importers-rhythmbox-amarok" ),
+                                      QIcon::fromTheme( "view-importers-rhythmbox-amarok" ),
                                       StatSyncing::RhythmboxConfigWidget,
                                       StatSyncing::RhythmboxProvider )

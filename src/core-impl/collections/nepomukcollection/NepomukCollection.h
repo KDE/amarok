@@ -20,7 +20,7 @@
 
 #include "core/collections/Collection.h"
 
-#include <KIcon>
+#include <QIcon>
 
 namespace Collections
 {
@@ -46,7 +46,7 @@ public:
     virtual QString uidUrlProtocol() const;
     virtual QString collectionId() const;
     virtual QString prettyName() const;
-    virtual KIcon icon() const;
+    virtual QIcon icon() const;
     virtual bool isWritable() const;
 
     // TrackProvider methods

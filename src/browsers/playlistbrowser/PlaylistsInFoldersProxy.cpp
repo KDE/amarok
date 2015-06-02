@@ -25,7 +25,7 @@
 #include "widgets/PrettyTreeRoles.h"
 
 #include <KDialog>
-#include <KIcon>
+#include <QIcon>
 #include <KInputDialog>
 
 #include <QLabel>
@@ -33,13 +33,13 @@
 PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::LabelColumn )
 {
-    m_renameFolderAction =  new QAction( KIcon( "media-track-edit-amarok" ),
+    m_renameFolderAction =  new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
                                          i18n( "&Rename Folder..." ), this );
     m_renameFolderAction->setProperty( "popupdropper_svg_id", "edit_group" );
     connect( m_renameFolderAction, SIGNAL(triggered()), this,
              SLOT(slotRenameFolder()) );
 
-    m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ),
+    m_deleteFolderAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
                                         i18n( "&Delete Folder" ), this );
     m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
     m_deleteFolderAction->setObjectName( "deleteAction" );
@@ -360,7 +360,7 @@ PlaylistsInFoldersProxy::createNewFolder( const QString &groupName )
     RowData data;
     ItemData roleData;
     roleData.insert( Qt::DisplayRole, groupName );
-    roleData.insert( Qt::DecorationRole, QVariant( KIcon( "folder" ) ) );
+    roleData.insert( Qt::DecorationRole, QVariant( QIcon::fromTheme( "folder" ) ) );
     roleData.insert( Qt::EditRole, groupName );
     data.insert( 0, roleData );
     return addEmptyGroup( data );

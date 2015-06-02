@@ -38,9 +38,9 @@ QString MagnatuneUrlRunner::prettyCommand() const
     return i18nc( "A type of command that triggers an action in the integrated Magnatune.com service", "Magnatune" );
 }
 
-KIcon MagnatuneUrlRunner::icon() const
+QIcon MagnatuneUrlRunner::icon() const
 {
-    return KIcon( "view-services-magnatune-amarok" );
+    return QIcon::fromTheme( "view-services-magnatune-amarok" );
 }
 
 bool MagnatuneUrlRunner::run( AmarokUrl url )

@@ -68,7 +68,7 @@ void SongkickApplet::init()
     m_titleLabel->setDrawBackground( true );
 
     QAction* reloadAction = new QAction( i18n("Reload Songkick"), this );
-    reloadAction->setIcon( KIcon( "view-refresh" ) );
+    reloadAction->setIcon( QIcon::fromTheme( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );
     m_reloadIcon = addAction( reloadAction );

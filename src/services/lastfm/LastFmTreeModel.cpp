@@ -25,7 +25,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "AmarokMimeData.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QPainter>
 
@@ -313,7 +313,7 @@ LastFmTreeModel::onAvatarDownloaded( const QString &username, QPixmap avatar )
 QIcon
 LastFmTreeModel::avatar( const QString &username, const QUrl &avatarUrl ) const
 {
-    KIcon defaultIcon( "filename-artist-amarok" );
+    QIcon defaultIcon( "filename-artist-amarok" );
     if( username.isEmpty() )
         return defaultIcon;
     if( m_avatars.contains(username) )
@@ -393,43 +393,43 @@ LastFmTreeModel::data( const QModelIndex &index, int role ) const
         switch( i->type() )
         {
         case MyRecommendations:
-            return KIcon( "lastfm-recommended-radio-amarok" );
+            return QIcon::fromTheme( "lastfm-recommended-radio-amarok" );
         case TopArtists:
         case PersonalRadio:
-            return KIcon( "lastfm-personal-radio-amarok" );
+            return QIcon::fromTheme( "lastfm-personal-radio-amarok" );
         case MixRadio:
-            return KIcon( "lastfm-mix-radio-amarok" );
+            return QIcon::fromTheme( "lastfm-mix-radio-amarok" );
         case NeighborhoodRadio:
-            return KIcon( "lastfm-neighbour-radio-amarok" );
-            //             case RecentlyPlayed:      return KIcon( "lastfm-recent-tracks-amarok" );
-            //             case RecentlyLoved:       return KIcon( "lastfm-recently-loved-amarok" );
-            //             case RecentlyBanned:      return KIcon( "lastfm-recently-banned-amarok" );
+            return QIcon::fromTheme( "lastfm-neighbour-radio-amarok" );
+            //             case RecentlyPlayed:      return QIcon::fromTheme( "lastfm-recent-tracks-amarok" );
+            //             case RecentlyLoved:       return QIcon::fromTheme( "lastfm-recently-loved-amarok" );
+            //             case RecentlyBanned:      return QIcon::fromTheme( "lastfm-recently-banned-amarok" );
         case MyTags:
-            return KIcon( "lastfm-my-tags-amarok" );
+            return QIcon::fromTheme( "lastfm-my-tags-amarok" );
         case Friends:
-            return KIcon( "lastfm-my-friends-amarok" );
+            return QIcon::fromTheme( "lastfm-my-friends-amarok" );
         case Neighbors:
-            return KIcon( "lastfm-my-neighbours-amarok" );
+            return QIcon::fromTheme( "lastfm-my-neighbours-amarok" );
 
         case RecentlyPlayedTrack: //FALL THROUGH
         case RecentlyLovedTrack:  //FALL THROUGH
         case RecentlyBannedTrack:
-            return KIcon( "icon_track" );
+            return QIcon::fromTheme( "icon_track" );
         case MyTagsChild:
-            return KIcon( "lastfm-tag-amarok" );
+            return QIcon::fromTheme( "lastfm-tag-amarok" );
 
         case FriendsChild:
             return avatar( i->data().toString(), i->avatarUrl() );
         case UserChildPersonal:
-            return KIcon( "lastfm-personal-radio-amarok" );
+            return QIcon::fromTheme( "lastfm-personal-radio-amarok" );
         case UserChildNeighborhood:
-            return KIcon( "lastfm-neighbour-radio-amarok" );
+            return QIcon::fromTheme( "lastfm-neighbour-radio-amarok" );
 
         case NeighborsChild:
             return avatar( i->data().toString(), i->avatarUrl() );
 
         case HistoryStation:
-            return KIcon( "icon_radio" );
+            return QIcon::fromTheme( "icon_radio" );
 
         default:
             break;

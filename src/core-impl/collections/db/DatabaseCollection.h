@@ -24,7 +24,7 @@
 #include "core/capabilities/CollectionScanCapability.h"
 #include "core/capabilities/CollectionImportCapability.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QMutex>
 
@@ -66,7 +66,7 @@ class DatabaseCollection : public Collections::Collection
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
         virtual GenericScanManager *scanManager() const;
         virtual MountPointManager *mountPointManager() const;

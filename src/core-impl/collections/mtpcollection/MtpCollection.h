@@ -26,7 +26,7 @@
 
 #include <QtGlobal>
 
-#include <KIcon>
+#include <QIcon>
 
 class MediaDeviceInfo;
 
@@ -53,7 +53,7 @@ class MtpCollection : public MediaDeviceCollection
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
-    virtual KIcon icon() const { return KIcon("multimedia-player"); }
+    virtual QIcon icon() const { return QIcon::fromTheme("multimedia-player"); }
 
     //void writeDatabase();
 };

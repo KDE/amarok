@@ -19,7 +19,7 @@
 #ifndef AMAROK_TOKEN_H
 #define AMAROK_TOKEN_H
 
-#include <KIcon>
+#include <QIcon>
 #include <QWidget>
 #include <QLabel>
 #include <QPixmap>
@@ -52,7 +52,7 @@ class Token : public QWidget
 
         explicit Token( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 );
 
-        KIcon icon() const;
+        QIcon icon() const;
         QString iconName() const;
         QString name() const;
         qint64 value() const;
@@ -100,7 +100,7 @@ class Token : public QWidget
 
     protected:
         QString     m_name;
-        KIcon       m_icon;
+        QIcon       m_icon;
         QString     m_iconName;
         qint64      m_value; // TODO: make this more typesave
         bool        m_customColor;

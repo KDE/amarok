@@ -108,7 +108,7 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
 {
     DEBUG_BLOCK
     setShortDescription( i18n( "Last.fm: The social music revolution" ) );
-    setIcon( KIcon( "view-services-lastfm-amarok" ) );
+    setIcon( QIcon::fromTheme( "view-services-lastfm-amarok" ) );
     setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends or that Last.fm considers your musical \"neighbors\"" ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_lastfm.png" ) );
 
@@ -133,7 +133,7 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     The::globalCollectionActions()->addArtistAction( new SimilarArtistsAction( this ) );
     The::globalCollectionActions()->addTrackAction( new LoveTrackAction( this ) );
 
-    QAction *loveAction = new QAction( KIcon( "love-amarok" ), i18n( "Last.fm: Love" ), this );
+    QAction *loveAction = new QAction( QIcon::fromTheme( "love-amarok" ), i18n( "Last.fm: Love" ), this );
     connect( loveAction, SIGNAL(triggered()), this, SLOT(love()) );
     loveAction->setShortcut( i18n( "Ctrl+L" ) );
     The::globalCurrentTrackActions()->addAction( loveAction );
@@ -441,7 +441,7 @@ LastFmService::polish()
         if( !m_avatar )
         {
             int m = LastFmTreeModel::avatarSize();
-            m_avatarLabel->setPixmap( KIcon( "filename-artist-amarok" ).pixmap(m, m) );
+            m_avatarLabel->setPixmap( QIcon::fromTheme( "filename-artist-amarok" ).pixmap(m, m) );
             m_avatarLabel->setFixedSize( m, m );
         }
         else
@@ -471,7 +471,7 @@ LastFmService::polish()
         updateEditHint( m_customStationCombo->currentIndex() );
         m_customStationButton = new QPushButton;
         m_customStationButton->setObjectName( "customButton" );
-        m_customStationButton->setIcon( KIcon( "media-playback-start-amarok" ) );
+        m_customStationButton->setIcon( QIcon::fromTheme( "media-playback-start-amarok" ) );
         QHBoxLayout *hbox = new QHBoxLayout();
         hbox->addWidget(m_customStationCombo);
         hbox->addWidget(m_customStationEdit);

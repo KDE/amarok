@@ -533,7 +533,7 @@ void TagDialog::initUi()
     ui->removeButton->setEnabled( false );
 
     // set an icon for the open-in-konqui button
-    ui->pushButton_open->setIcon( KIcon( "folder-amarok" ) );
+    ui->pushButton_open->setIcon( QIcon::fromTheme( "folder-amarok" ) );
 
     connect( ui->pushButton_guessTags, SIGNAL(clicked()), SLOT(guessFromFilename()) );
 

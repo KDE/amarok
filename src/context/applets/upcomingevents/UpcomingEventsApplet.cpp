@@ -74,13 +74,13 @@ UpcomingEventsApplet::init()
              m_stack, SLOT(cleanupListWidgets()) );
 
     QAction *calendarAction = new QAction( this );
-    calendarAction->setIcon( KIcon( "view-calendar" ) );
+    calendarAction->setIcon( QIcon::fromTheme( "view-calendar" ) );
     calendarAction->setToolTip( i18n( "View Events Calendar" ) );
     Plasma::IconWidget *calendarIcon = addLeftHeaderAction( calendarAction );
     connect( calendarIcon, SIGNAL(clicked()), this, SLOT(viewCalendar()) );
 
     QAction* settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setIcon( QIcon::fromTheme( "preferences-system" ) );
     settingsAction->setToolTip( i18n( "Settings" ) );
     settingsAction->setEnabled( true );
     Plasma::IconWidget *settingsIcon = addRightHeaderAction( settingsAction );
@@ -91,7 +91,7 @@ UpcomingEventsApplet::init()
     m_artistStackItem->setTitle( i18nc( "@title:group", "No track is currently playing" ) );
     m_artistStackItem->setWidget( m_artistEventsList );
     m_artistStackItem->setCollapsed( true );
-    m_artistStackItem->setIcon( KIcon("filename-artist-amarok") );
+    m_artistStackItem->setIcon( QIcon::fromTheme("filename-artist-amarok") );
     connect( m_artistEventsList, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
@@ -141,7 +141,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
         addToStackItem( m_artistStackItem, events, artistName );
         if( !m_artistStackItem->action( "showinmediasources" ) )
         {
-            QAction *act = new QAction( KIcon("edit-find"), QString(), m_artistStackItem );
+            QAction *act = new QAction( QIcon::fromTheme("edit-find"), QString(), m_artistStackItem );
             act->setToolTip( i18n( "Show in Media Sources" ) );
             connect( act, SIGNAL(triggered()), this, SLOT(navigateToArtist()) );
             m_artistStackItem->addAction( "showinmediasources", act );
@@ -170,7 +170,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
                     listWidget->setName( venue->name );
                     stackItem->setWidget( listWidget );
                     stackItem->setCollapsed( true );
-                    stackItem->setIcon( KIcon("favorites") );
+                    stackItem->setIcon( QIcon::fromTheme("favorites") );
                     stackItem->showCloseButton();
                     connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
                     connect( listWidget, SIGNAL(destroyed(QObject*)), SLOT(listWidgetDestroyed(QObject*)) );
@@ -490,7 +490,7 @@ UpcomingEventsApplet::mapView()
 
     UpcomingEventsStackItem *stackItem = m_stack->create( QLatin1String("venuemapview") );
     UpcomingEventsMapWidget *view = new UpcomingEventsMapWidget( stackItem );
-    stackItem->setIcon( KIcon( "edit-find" ) );
+    stackItem->setIcon( QIcon::fromTheme( "edit-find" ) );
     stackItem->setTitle( i18n( "Map View" ) );
     stackItem->setWidget( view );
     stackItem->setMinimumWidth( 50 );
@@ -528,7 +528,7 @@ UpcomingEventsApplet::viewCalendar()
 
     UpcomingEventsStackItem *stackItem = m_stack->create( QLatin1String("calendar") );
     UpcomingEventsCalendarWidget *calendar = new UpcomingEventsCalendarWidget( stackItem );
-    stackItem->setIcon( KIcon( "view-calendar" ) );
+    stackItem->setIcon( QIcon::fromTheme( "view-calendar" ) );
     stackItem->setTitle( i18n( "Events Calendar" ) );
     stackItem->setWidget( calendar );
     stackItem->setMinimumWidth( 50 );

@@ -21,7 +21,7 @@
 
 #include <plasma/widgets/iconwidget.h>
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QAction>
 #include <QPainter>
@@ -34,7 +34,7 @@ Context::AppletToolbarConfigItem::AppletToolbarConfigItem( QGraphicsItem* parent
     , m_icon( 0 )
 {
     QAction* listAdd = new QAction( i18n( "Configure Applets..." ), this );
-    listAdd->setIcon( KIcon( "configure" ) );
+    listAdd->setIcon( QIcon::fromTheme( "configure" ) );
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
     

@@ -25,7 +25,7 @@
 #include "core/support/Debug.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QAction>
 
@@ -63,7 +63,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
     Playlists::PlaylistPtr playlist = m_playlists.value( row );
 
     QString name;
-    KIcon icon;
+    QIcon icon;
     int playlistCount = 0;
     QList<QAction *> providerActions;
     QList<Playlists::PlaylistProvider *> providers =
@@ -79,12 +79,12 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             {
                 track = playlist->tracks()[index.row()];
                 name = track->prettyName();
-                icon = KIcon( "amarok_track" );
+                icon = QIcon::fromTheme( "amarok_track" );
             }
             else
             {
                 name = playlist->prettyName();
-                icon = KIcon( "amarok_playlist" );
+                icon = QIcon::fromTheme( "amarok_playlist" );
             }
             break;
         }
@@ -93,7 +93,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             if( !playlist->groups().isEmpty() )
             {
                 name = playlist->groups().first();
-                icon = KIcon( "folder" );
+                icon = QIcon::fromTheme( "folder" );
             }
             break;
         }

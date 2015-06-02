@@ -23,7 +23,7 @@
 #include "SvgHandler.h"
 
 #include <KDateTime>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 #include <Plasma/Label>
@@ -74,7 +74,7 @@ UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
         {
             m_mapButton = new Plasma::PushButton( this );
             m_mapButton->setMaximumSize( QSizeF( 22, 22 ) );
-            m_mapButton->setIcon( KIcon("edit-find") ); // TODO: a map icon would be nice
+            m_mapButton->setIcon( QIcon::fromTheme("edit-find") ); // TODO: a map icon would be nice
             m_mapButton->setToolTip( i18n( "View map" ) );
             buttonsLayout->addItem( m_mapButton );
         }
@@ -84,7 +84,7 @@ UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
     {
         m_urlButton = new Plasma::PushButton( this );
         m_urlButton->setMaximumSize( QSizeF( 22, 22 ) );
-        m_urlButton->setIcon( KIcon("applications-internet") );
+        m_urlButton->setIcon( QIcon::fromTheme("applications-internet") );
         m_urlButton->setToolTip( i18n( "Open Last.fm webpage for this event" ) );
         connect( m_urlButton, SIGNAL(clicked()), this, SLOT(openUrl()) );
         buttonsLayout->addItem( m_urlButton );

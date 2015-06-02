@@ -108,20 +108,20 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
     QList< KAction * > actions;
     if ( m_loadAction == 0 )
     {
-        m_loadAction = new KAction( KIcon( "folder-open" ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
+        m_loadAction = new KAction( QIcon::fromTheme( "folder-open" ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
         connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotLoad()) );
     }
 
     if ( m_deleteAction == 0 )
     {
-        m_deleteAction = new KAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new KAction( QIcon::fromTheme( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
         connect( m_deleteAction, SIGNAL(triggered()), this, SLOT(slotDelete()) );
     }
 
     if ( m_createTimecodeTrackAction == 0 )
     {
         debug() << "creating m_createTimecodeTrackAction";
-        m_createTimecodeTrackAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
+        m_createTimecodeTrackAction = new KAction( QIcon::fromTheme( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
         connect( m_createTimecodeTrackAction, SIGNAL(triggered()), this, SLOT(slotCreateTimecodeTrack()) );
     }
 

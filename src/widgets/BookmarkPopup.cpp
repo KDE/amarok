@@ -41,7 +41,7 @@ BookmarkPopup::BookmarkPopup ( QWidget* parent, QString label, BookmarkTriangle*
     m_overDelete = false;
     m_isEditMode = false;
 
-    m_deleteIcon = KIcon ( "edit-delete" );
+    m_deleteIcon = QIcon::fromTheme( "edit-delete" );
     adjustWidth();
 
     m_edit = new QLineEdit ( m_label, 0 );

@@ -70,14 +70,14 @@ void Albums::init()
     setMinimumHeight( collapseHeight() );
 
     QAction *settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setIcon( QIcon::fromTheme( "preferences-system" ) );
     settingsAction->setEnabled( true );
     settingsAction->setToolTip( i18n( "Settings" ) );
     addRightHeaderAction( settingsAction );
     connect( settingsAction, SIGNAL(triggered()), this, SLOT(showConfigurationInterface()) );
 
     QAction *filterAction = new QAction( this );
-    filterAction->setIcon( KIcon( "view-filter" ) );
+    filterAction->setIcon( QIcon::fromTheme( "view-filter" ) );
     filterAction->setEnabled( true );
     filterAction->setToolTip( i18n( "Filter Albums" ) );
     m_filterIcon = addLeftHeaderAction( filterAction );
@@ -313,7 +313,7 @@ void Albums::collectionDataChanged( Collections::Collection *collection )
 AlbumsFilterBar::AlbumsFilterBar( QGraphicsItem *parent, Qt::WindowFlags wFlags )
     : QGraphicsWidget( parent, wFlags )
     , m_editor( new KLineEdit )
-    , m_closeIcon( new Plasma::IconWidget( KIcon("dialog-close"), QString(), this ) )
+    , m_closeIcon( new Plasma::IconWidget( QIcon::fromTheme("dialog-close"), QString(), this ) )
 {
     QGraphicsProxyWidget *editProxy = new QGraphicsProxyWidget( this );
     editProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );

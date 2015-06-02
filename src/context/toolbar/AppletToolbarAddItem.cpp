@@ -23,7 +23,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QAction>
 #include <QGraphicsSceneResizeEvent>
@@ -46,7 +46,7 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     , m_label( 0 )
 {
     QAction* listAdd = new QAction( i18n( "Add Applets..." ), this );
-    listAdd->setIcon( KIcon( "list-add" ) );
+    listAdd->setIcon( QIcon::fromTheme( "list-add" ) );
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
     

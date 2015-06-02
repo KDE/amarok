@@ -19,7 +19,7 @@
 
 #include "core/support/Amarok.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 #include <QAction>

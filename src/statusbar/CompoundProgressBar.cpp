@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 #include <QLayout>

@@ -20,7 +20,7 @@
 #include "core/amarokcore_export.h"
 #include "core/playlists/Playlist.h"
 
-class KIcon;
+class QIcon;
 
 namespace Playlists {
 
@@ -39,7 +39,7 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject
         /**
          * A nice icon for this playlist provider.
          */
-        virtual KIcon icon() const = 0;
+        virtual QIcon icon() const = 0;
 
         /**
          * @returns An unique integer that identifies the category of the offered playlists.

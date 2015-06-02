@@ -21,7 +21,7 @@
 
 #include <QTimer>
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 ProgressBar::ProgressBar( QWidget *parent )
@@ -44,7 +44,7 @@ ProgressBar::ProgressBar( QWidget *parent )
     descriptionLayout->addWidget( m_descriptionLabel, 1 );
 
     m_cancelButton = new QToolButton;
-    m_cancelButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
+    m_cancelButton->setIcon( QIcon::fromTheme( "dialog-cancel-amarok" ) );
     m_cancelButton->setToolTip( i18n( "Abort" ) );
     m_cancelButton->setHidden( true );
     m_cancelButton->setFixedWidth( 16 );

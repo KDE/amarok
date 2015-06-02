@@ -32,7 +32,7 @@
 
 #include <kstandarddirs.h>
 
-#include <KIcon>
+#include <QIcon>
 #include <KMenu>
 
 AmazonItemTreeView::AmazonItemTreeView( QWidget *parent ) :
@@ -242,7 +242,7 @@ AmazonItemTreeView::searchForAlbumAction()
 QAction*
 AmazonItemTreeView::createAddToCartAction()
 {
-    QAction *addToCartAction = new QAction( KIcon( "amarok_cart_add" ), QString( i18n( "Add to Cart" ) ), this );
+    QAction *addToCartAction = new QAction( QIcon::fromTheme( "amarok_cart_add" ), QString( i18n( "Add to Cart" ) ), this );
     connect( addToCartAction, SIGNAL(triggered()), this, SIGNAL(addToCart()) );
 
     return addToCartAction;
@@ -251,7 +251,7 @@ AmazonItemTreeView::createAddToCartAction()
 QAction*
 AmazonItemTreeView::createAddToPlaylistAction()
 {
-    QAction *addToPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ), QString( i18n( "Add Preview to Playlist" ) ), this );
+    QAction *addToPlaylistAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ), QString( i18n( "Add Preview to Playlist" ) ), this );
     connect( addToPlaylistAction, SIGNAL(triggered()), this, SLOT(itemActivatedAction()) );
 
     return addToPlaylistAction;
@@ -269,7 +269,7 @@ AmazonItemTreeView::createDetailsAction()
 QAction*
 AmazonItemTreeView::createDirectCheckoutAction()
 {
-    QAction *directCheckoutAction = new QAction( KIcon( "download-amarok" ), QString( i18n( "Direct Checkout" ) ), this );
+    QAction *directCheckoutAction = new QAction( QIcon::fromTheme( "download-amarok" ), QString( i18n( "Direct Checkout" ) ), this );
     connect( directCheckoutAction, SIGNAL(triggered()), this, SIGNAL(directCheckout()) );
 
     return directCheckoutAction;
@@ -278,7 +278,7 @@ AmazonItemTreeView::createDirectCheckoutAction()
 QAction*
 AmazonItemTreeView::createSearchForAlbumAction()
 {
-    QAction *searchForAlbumAction = new QAction( KIcon( "media-optical-amarok" ), QString( i18n( "Search for Album..." ) ), this );
+    QAction *searchForAlbumAction = new QAction( QIcon::fromTheme( "media-optical-amarok" ), QString( i18n( "Search for Album..." ) ), this );
     connect( searchForAlbumAction, SIGNAL(triggered()), this, SLOT(searchForAlbumAction()) );
 
     return searchForAlbumAction;

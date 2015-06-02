@@ -27,7 +27,7 @@
 
 #include "PaletteHandler.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KPluginInfo>
 
 #include <QColor>
@@ -41,7 +41,7 @@ AppletIconWidget::AppletIconWidget( const KPluginInfo &info, QGraphicsItem *pare
     , m_pluginName( info.pluginName() )
 {
     setText( info.name() );
-    setIcon( KIcon( info.icon().isEmpty() ? "application-x-plasma" : info.icon() ) );
+    setIcon( QIcon::fromTheme( info.icon().isEmpty() ? "application-x-plasma" : info.icon() ) );
     setToolTip( info.name() );
     setTextBackgroundColor( Qt::transparent );
 }

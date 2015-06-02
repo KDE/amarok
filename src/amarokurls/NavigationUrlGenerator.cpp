@@ -251,9 +251,9 @@ NavigationUrlGenerator::description()
     return i18n( "Bookmark Media Sources View" );
 }
 
-KIcon NavigationUrlGenerator::icon()
+QIcon NavigationUrlGenerator::icon()
 {
-    return KIcon( "flag-amarok" );
+    return QIcon::fromTheme( "flag-amarok" );
 }
 
 AmarokUrl

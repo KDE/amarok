@@ -67,7 +67,7 @@ FileBrowser::Private::Private( FileBrowser *parent )
 
     upAction = KStandardAction::up( q, SLOT(up()), topHBox );
     homeAction = KStandardAction::home( q, SLOT(home()), topHBox );
-    refreshAction = new KAction( KIcon("view-refresh"), i18n( "Refresh" ), topHBox );
+    refreshAction = new KAction( QIcon::fromTheme("view-refresh"), i18n( "Refresh" ), topHBox );
     QObject::connect( refreshAction, SIGNAL(triggered(bool)), q, SLOT(refresh()) );
 
     navigationToolbar->addAction( backAction );
@@ -138,7 +138,7 @@ FileBrowser::Private::siblingsForDir( const QUrl &path )
         dir.cdUp();
         foreach( const QString &item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
         {
-            siblings << BreadcrumbSibling( KIcon( "folder-amarok" ), item,
+            siblings << BreadcrumbSibling( QIcon::fromTheme( "folder-amarok" ), item,
                                            dir.absoluteFilePath( item ) );
         }
     }

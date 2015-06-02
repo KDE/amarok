@@ -54,7 +54,7 @@
             return DESCRIPTION; \
         } \
     \
-        KIcon icon() const \
+        QIcon icon() const \
         { \
             return ICON; \
         } \

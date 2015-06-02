@@ -38,10 +38,10 @@ OpmlDirectoryModel::OpmlDirectoryModel( QUrl outlineUrl, QObject *parent )
     , m_rootOpmlUrl( outlineUrl )
 {
     //fetchMore will be called by the view
-    m_addOpmlAction = new QAction( KIcon( "list-add" ), i18n( "Add OPML" ), this );
+    m_addOpmlAction = new QAction( QIcon::fromTheme( "list-add" ), i18n( "Add OPML" ), this );
     connect( m_addOpmlAction, SIGNAL(triggered()), SLOT(slotAddOpmlAction()) );
 
-    m_addFolderAction = new QAction( KIcon( "folder-add" ), i18n( "Add Folder"), this );
+    m_addFolderAction = new QAction( QIcon::fromTheme( "folder-add" ), i18n( "Add Folder"), this );
     connect( m_addFolderAction, SIGNAL(triggered()), SLOT(slotAddFolderAction()) );
 }
 
@@ -312,7 +312,7 @@ OpmlDirectoryModel::slotAddOpmlAction()
         outline->addAttribute( "text", title );
 
     //Folder icon with down-arrow emblem
-    m_imageMap.insert( outline, KIcon( "folder", 0, QStringList( "go-down" ) ).pixmap( 24, 24 ) );
+    m_imageMap.insert( outline, QIcon::fromTheme( "folder", 0, QStringList( "go-down" ) ).pixmap( 24, 24 ) );
 
     QModelIndex newIdx = addOutlineToModel( parentIdx, outline );
     //TODO: force the view to expand the folder (parentIdx) so the new node is shown
@@ -338,7 +338,7 @@ OpmlDirectoryModel::slotAddFolderAction()
 
     OpmlOutline *outline = new OpmlOutline();
     outline->addAttribute( "text", i18n( "New Folder" ) );
-    m_imageMap.insert( outline, KIcon( "folder" ).pixmap( 24, 24 ) );
+    m_imageMap.insert( outline, QIcon::fromTheme( "folder" ).pixmap( 24, 24 ) );
 
     addOutlineToModel( parentIdx, outline );
     //TODO: trigger edit of the new folder
@@ -438,11 +438,11 @@ OpmlDirectoryModel::slotOpmlOutlineParsed( OpmlOutline *outline )
     switch( outline->opmlNodeType() )
     {
         case RegularNode:
-            m_imageMap.insert( outline, KIcon( "folder" ).pixmap( 24, 24 ) ); break;
+            m_imageMap.insert( outline, QIcon::fromTheme( "folder" ).pixmap( 24, 24 ) ); break;
         case IncludeNode:
         {
             m_imageMap.insert( outline,
-                               KIcon( "folder", 0, QStringList( "go-down" ) ).pixmap( 24, 24 )
+                               QIcon::fromTheme( "folder", 0, QStringList( "go-down" ) ).pixmap( 24, 24 )
                              );
             break;
         }

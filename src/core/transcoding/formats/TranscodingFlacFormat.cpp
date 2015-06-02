@@ -60,10 +60,10 @@ FlacFormat::description() const
                   "without compromising on audio quality, FLAC is an excellent choice." );
 }
 
-KIcon
+QIcon
 FlacFormat::icon() const
 {
-    return KIcon( "audio-x-flac" ); //TODO: get a *real* icon!
+    return QIcon::fromTheme( "audio-x-flac" ); //TODO: get a *real* icon!
 }
 
 QStringList

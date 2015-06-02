@@ -20,7 +20,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 #include <QApplication>
@@ -78,7 +78,7 @@ void DragPixmapItem::mouseMoveEvent( QGraphicsSceneMouseEvent* event )
     QDrag *drag = new QDrag( event->widget() );
     drag->setMimeData( data );
     drag->setPixmap( pixmap().scaledToWidth( 140 ) );
-    drag->setDragCursor( KIcon( "insert-image" ).pixmap( 24, 24 ), Qt::CopyAction );
+    drag->setDragCursor( QIcon::fromTheme( "insert-image" ).pixmap( 24, 24 ), Qt::CopyAction );
     drag->exec( Qt::CopyAction );
 }
 

@@ -33,7 +33,7 @@
 
 #include <KAction>
 #include <KGlobalSettings>
-#include <KIcon>
+#include <QIcon>
 #include <KMenu>
 #include <Plasma/Svg>
 #include <Plasma/SvgWidget>
@@ -238,10 +238,10 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
     }
 
     KMenu menu;
-    KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), &menu );
-    KAction *loadAction   = new KAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), &menu );
-    KAction *queueAction  = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "&Queue" ), &menu );
-    KAction *editAction   = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), &menu );
+    KAction *appendAction = new KAction( QIcon::fromTheme( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), &menu );
+    KAction *loadAction   = new KAction( QIcon::fromTheme( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), &menu );
+    KAction *queueAction  = new KAction( QIcon::fromTheme( "media-track-queue-amarok" ), i18n( "&Queue" ), &menu );
+    KAction *editAction   = new KAction( QIcon::fromTheme( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), &menu );
 
     menu.addAction( appendAction );
     menu.addAction( loadAction );
@@ -272,7 +272,7 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
                 }
 
                 menuCover.addActions( actions );
-                menuCover.setIcon( KIcon( "filename-album-amarok" ) );
+                menuCover.setIcon( QIcon::fromTheme( "filename-album-amarok" ) );
                 menu.addMenu( &menuCover );
             }
         }

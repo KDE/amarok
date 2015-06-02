@@ -81,10 +81,10 @@ OpusFormat::description() const
                   "a patent-free digital audio codec using a form of lossy data compression.");
 }
 
-KIcon
+QIcon
 OpusFormat::icon() const
 {
-    return KIcon( "audio-x-generic" );  //TODO: get a *real* icon!
+    return QIcon::fromTheme( "audio-x-generic" );  //TODO: get a *real* icon!
 }
 
 QStringList

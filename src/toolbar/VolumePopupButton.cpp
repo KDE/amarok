@@ -65,7 +65,7 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     QToolBar *muteBar = new QToolBar( QString(), mainBox );
     muteBar->setContentsMargins( 0, 0, 0, 0 );
     muteBar->setIconSize( QSize( 16, 16 ) );
-    m_muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), muteBar );
+    m_muteAction = new QAction( QIcon::fromTheme( "audio-volume-muted" ), QString(), muteBar );
     m_muteAction->setCheckable ( true );
     m_muteAction->setChecked( ec->isMuted() );
 
@@ -89,11 +89,11 @@ void
 VolumePopupButton::volumeChanged( int newVolume )
 {
     if ( newVolume < 34 )
-        setIcon( KIcon( "audio-volume-low" ) );
+        setIcon( QIcon::fromTheme( "audio-volume-low" ) );
     else if ( newVolume < 67 )
-        setIcon( KIcon( "audio-volume-medium" ) );
+        setIcon( QIcon::fromTheme( "audio-volume-medium" ) );
     else
-        setIcon( KIcon( "audio-volume-high" ) );
+        setIcon( QIcon::fromTheme( "audio-volume-high" ) );
 
     m_volumeLabel->setText( QString::number( newVolume ) + '%' );
 
@@ -115,7 +115,7 @@ VolumePopupButton::muteStateChanged( bool muted )
 
     if ( muted )
     {
-        setIcon( KIcon( "audio-volume-muted" ) );
+        setIcon( QIcon::fromTheme( "audio-volume-muted" ) );
         setToolTip( i18n( "Volume: %1% (muted)", volume ) );
     }
     else

@@ -81,12 +81,12 @@ AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
         if( index.row() < m_collection->albumIDMap().size() - m_hiddenAlbums ) // album
         {
             if( index.column() == 0 )
-                return KIcon( "media-optical-amarok" );
+                return QIcon::fromTheme( "media-optical-amarok" );
         }
         else // track
         {
             if( index.column() == 0 )
-                return KIcon( "media-album-track" );
+                return QIcon::fromTheme( "media-album-track" );
         }
     }
     else if( role == Qt::ToolTipRole )

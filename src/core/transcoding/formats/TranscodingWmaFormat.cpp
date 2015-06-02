@@ -78,10 +78,10 @@ WmaFormat::description() const
                   "do not support Ogg Vorbis." );
 }
 
-KIcon
+QIcon
 WmaFormat::icon() const
 {
-    return KIcon( "audio-x-generic" );  //TODO: get a *real* icon!
+    return QIcon::fromTheme( "audio-x-generic" );  //TODO: get a *real* icon!
 }
 
 QStringList

@@ -197,21 +197,21 @@ void
 PlayPauseAction::stopped()
 {
     setChecked( false );
-    setIcon( KIcon("media-playback-start-amarok") );
+    setIcon( QIcon::fromTheme("media-playback-start-amarok") );
 }
 
 void
 PlayPauseAction::paused()
 {
     setChecked( true );
-    setIcon( KIcon("media-playback-start-amarok") );
+    setIcon( QIcon::fromTheme("media-playback-start-amarok") );
 }
 
 void
 PlayPauseAction::playing()
 {
     setChecked( false );
-    setIcon( KIcon("media-playback-pause-amarok") );
+    setIcon( QIcon::fromTheme("media-playback-pause-amarok") );
 }
 
 
@@ -292,7 +292,7 @@ void SelectAction::setIcons( QStringList icons )
     m_icons = icons;
     foreach( QAction *a, selectableActionGroup()->actions() )
     {
-        a->setIcon( KIcon(icons.takeFirst()) );
+        a->setIcon( QIcon::fromTheme(icons.takeFirst()) );
     }
 }
 
@@ -419,7 +419,7 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
 {
     ac->addAction( "stop", this );
     setText( i18n( "Stop" ) );
-    setIcon( KIcon("media-playback-stop-amarok") );
+    setIcon( QIcon::fromTheme("media-playback-stop-amarok") );
     setGlobalShortcut( KShortcut() );
     connect( this, SIGNAL(triggered()), this, SLOT(stop()) );
 
@@ -465,7 +465,7 @@ StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionC
 {
     ac->addAction( "stop_after_current", this );
     setText( i18n( "Stop after current Track" ) );
-    setIcon( KIcon("media-playback-stop-amarok") );
+    setIcon( QIcon::fromTheme("media-playback-stop-amarok") );
     setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_V ) );
     connect( this, SIGNAL(triggered()), SLOT(stopPlayingAfterCurrentTrack()) );
 }

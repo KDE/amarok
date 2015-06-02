@@ -36,7 +36,7 @@
 #include "widgets/PrettyTreeDelegate.h"
 
 #include <KAction>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 #include <KMenu>
 #include <KMenuBar>
@@ -171,7 +171,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     // Filter presets. UserRole is used to store the actual syntax.
     KComboBox *combo = d->searchWidget->comboBox();
-    const KIcon icon = KStandardGuiItem::find().icon();
+    const QIcon icon = KStandardGuiItem::find().icon();
     combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added This Hour"),
                     QString(Meta::shortI18nForField( Meta::valCreateDate ) + ":<1h") );
     combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added Today"),
@@ -264,14 +264,14 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     d->searchWidget->toolBar()->addSeparator();
 
-    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Merged View" ), this );
+    KAction *toggleAction = new KAction( QIcon::fromTheme( "view-list-tree" ), i18n( "Merged View" ), this );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( d->viewMode == CollectionWidget::UnifiedCollection );
     toggleView( d->viewMode == CollectionWidget::UnifiedCollection );
     connect( toggleAction, SIGNAL(triggered(bool)), SLOT(toggleView(bool)) );
     d->searchWidget->toolBar()->addAction( toggleAction );
 
-    KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
+    KAction *searchMenuAction = new KAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
     searchMenuAction->setMenu( filterMenu );
     d->searchWidget->toolBar()->addAction( searchMenuAction );
 

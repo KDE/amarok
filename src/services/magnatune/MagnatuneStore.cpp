@@ -105,7 +105,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     //initTopPanel( );
 
     setShortDescription( i18n( "\"Fair trade\" online music store" ) );
-    setIcon( KIcon( "view-services-magnatune-amarok" ) );
+    setIcon( QIcon::fromTheme( "view-services-magnatune-amarok" ) );
 
     // xgettext: no-c-format
     setLongDescription( i18n( "Magnatune.com is a different kind of record company with the motto \"We are not evil!\" 50% of every purchase goes directly to the artist and if you purchase an album through Amarok, the Amarok project receives a 10% commission. Magnatune.com also offers \"all you can eat\" memberships that lets you download as much of their music as you like." ) );
@@ -230,7 +230,7 @@ void MagnatuneStore::initTopPanel( )
     action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum()) );
 
-    KAction *filterMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
+    KAction *filterMenuAction = new KAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
     filterMenuAction->setMenu( filterMenu );
 
     m_searchWidget->toolBar()->addSeparator();
@@ -248,7 +248,7 @@ void MagnatuneStore::initTopPanel( )
     m_updateAction = actionsMenu->addAction( i18n( "Update Database" ) );
     connect( m_updateAction, SIGNAL(triggered(bool)), SLOT(updateButtonClicked()) );
 
-    KAction *actionsMenuAction = new KAction( KIcon( "list-add" ), i18n( "Tools" ), this );
+    KAction *actionsMenuAction = new KAction( QIcon::fromTheme( "list-add" ), i18n( "Tools" ), this );
     actionsMenuAction->setMenu( actionsMenu );
 
     m_searchWidget->toolBar()->addAction( actionsMenuAction );
@@ -281,7 +281,7 @@ void MagnatuneStore::initBottomPanel()
     }
 
     m_downloadAlbumButton->setObjectName( "downloadButton" );
-    m_downloadAlbumButton->setIcon( KIcon( "download-amarok" ) );
+    m_downloadAlbumButton->setIcon( QIcon::fromTheme( "download-amarok" ) );
     
     connect( m_downloadAlbumButton, SIGNAL(clicked()) , this, SLOT(download()) );
 

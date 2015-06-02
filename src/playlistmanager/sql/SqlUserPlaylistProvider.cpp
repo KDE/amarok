@@ -31,7 +31,7 @@
 
 #include <KDialog>
 #include <KGlobal>
-#include <KIcon>
+#include <QIcon>
 #include <KInputDialog>
 #include <KLocale>
 #include <KMessageBox>

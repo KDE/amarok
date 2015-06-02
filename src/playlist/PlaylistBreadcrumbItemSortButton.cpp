@@ -16,7 +16,7 @@
 
 #include "PlaylistBreadcrumbItemSortButton.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QPainter>
 #include <QStyle>

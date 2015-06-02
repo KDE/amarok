@@ -363,7 +363,7 @@ IpodDeviceHelper::fillInConfigureDialog( KDialog *configureDialog,
             fillInModelComboBox( configureDialogUi->modelComboBox, sysInfoExists || sysInfoExtendedExists );
         configureDialogUi->initializeLabel->setEnabled( true );
         configureDialogUi->initializeButton->setEnabled( true );
-        configureDialogUi->initializeButton->setIcon( KIcon( "task-attention" ) );
+        configureDialogUi->initializeButton->setIcon( QIcon::fromTheme( "task-attention" ) );
         if( !errorMessage.isEmpty() )
             warningText = i18n(
                 "<b>%1</b><br><br>"

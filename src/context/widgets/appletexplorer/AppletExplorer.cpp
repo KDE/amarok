@@ -29,7 +29,7 @@
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <Plasma/Applet>
 #include <Plasma/ScrollWidget>
 
@@ -95,26 +95,26 @@ AppletExplorer::init()
     connect( iconTriggerMapper, SIGNAL(mapped(QString)), SLOT(addApplet(QString)) );
 
     Plasma::IconWidget *appletIcon = new Plasma::IconWidget( this );
-    appletIcon->setIcon( KIcon( "preferences-plugin" ) );
+    appletIcon->setIcon( QIcon::fromTheme( "preferences-plugin" ) );
     const QSizeF iconSize = appletIcon->sizeFromIconSize( 22 );
     appletIcon->setMinimumSize( iconSize );
     appletIcon->setMaximumSize( iconSize );
 
     Plasma::IconWidget *hideIcon = new Plasma::IconWidget( this );
-    hideIcon->setIcon( KIcon( "window-close" ) );
+    hideIcon->setIcon( QIcon::fromTheme( "window-close" ) );
     hideIcon->setToolTip( i18n( "Hide menu" ) );
     hideIcon->setMinimumSize( iconSize );
     hideIcon->setMaximumSize( iconSize );
     connect( hideIcon, SIGNAL(clicked()), this, SLOT(hideMenu()) );
 
     Plasma::IconWidget *forwardIcon = new Plasma::IconWidget( this );
-    forwardIcon->setIcon( KIcon( "go-next" ) );
+    forwardIcon->setIcon( QIcon::fromTheme( "go-next" ) );
     forwardIcon->setMinimumSize( iconSize );
     forwardIcon->setMaximumSize( iconSize );
     connect( forwardIcon, SIGNAL(clicked()), this, SLOT(scrollRight()) );
 
     Plasma::IconWidget *backIcon = new Plasma::IconWidget( this );
-    backIcon->setIcon( KIcon( "go-previous" ) );
+    backIcon->setIcon( QIcon::fromTheme( "go-previous" ) );
     backIcon->setMinimumSize( iconSize );
     backIcon->setMaximumSize( iconSize );
     connect( backIcon, SIGNAL(clicked()), this, SLOT(scrollLeft()) );

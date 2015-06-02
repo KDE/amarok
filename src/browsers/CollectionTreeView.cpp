@@ -47,7 +47,7 @@
 
 #include <KAction>
 #include <KGlobalSettings>
-#include <KIcon>
+#include <QIcon>
 #include <KComboBox>
 #include <KMenu>
 #include <KMessageBox> // NOTE: for delete dialog, will move to CollectionCapability later
@@ -280,7 +280,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     if( albumActions.count() > 1 )
     {
         menuAlbum.addActions( albumActions );
-        menuAlbum.setIcon( KIcon( "filename-album-amarok" ) );
+        menuAlbum.setIcon( QIcon::fromTheme( "filename-album-amarok" ) );
         menu.addMenu( &menuAlbum );
         menu.addSeparator();
     }
@@ -299,7 +299,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     if( collectionActions.count() > 1 )
     {
-        menuCollection.setIcon( KIcon( "drive-harddisk" ) );
+        menuCollection.setIcon( QIcon::fromTheme( "drive-harddisk" ) );
         menuCollection.addActions( collectionActions );
         menu.addMenu( &menuCollection );
         menu.addSeparator();
@@ -315,7 +315,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     if( !m_currentCopyDestination.empty() )
     {
         KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
-        copyMenu->setIcon( KIcon( "edit-copy" ) );
+        copyMenu->setIcon( QIcon::fromTheme( "edit-copy" ) );
         copyMenu->addActions( m_currentCopyDestination.keys() );
         menu.addMenu( copyMenu );
     }
@@ -324,7 +324,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     if( !m_currentMoveDestination.empty() )
     {
         KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
-        moveMenu->setIcon( KIcon( "go-jump" ) );
+        moveMenu->setIcon( QIcon::fromTheme( "go-jump" ) );
         moveMenu->addActions( m_currentMoveDestination.keys() );
         menu.addMenu( moveMenu );
     }
@@ -336,7 +336,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
         if( collection && collection->isWritable() )
         {
             //TODO: don't recreate action
-            KAction *trashAction = new KAction( KIcon( "user-trash" ),
+            KAction *trashAction = new KAction( QIcon::fromTheme( "user-trash" ),
                                                 i18n( "Move Tracks to Trash" ),
                                                 &menu );
             trashAction->setProperty( "popupdropper_svg_id", "delete" );
@@ -347,7 +347,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
                      SLOT(slotTrashTracks(Qt::MouseButtons,Qt::KeyboardModifiers)) );
             menu.addAction( trashAction );
 
-            KAction *deleteAction = new KAction( KIcon( "remove-amarok" ),
+            KAction *deleteAction = new KAction( QIcon::fromTheme( "remove-amarok" ),
                                                  i18n( "Delete Tracks" ),
                                                  &menu );
             deleteAction->setProperty( "popupdropper_svg_id", "delete" );
@@ -1016,7 +1016,7 @@ CollectionTreeView::createBasicActions( const QModelIndexList &indices )
     {
         if( m_appendAction == 0 )
         {
-            m_appendAction = new QAction( KIcon( "media-track-add-amarok" ),
+            m_appendAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ),
                                           i18n( "&Add to Playlist" ), this );
             m_appendAction->setProperty( "popupdropper_svg_id", "append" );
             connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppendChildTracks()) );
@@ -1076,7 +1076,7 @@ CollectionTreeView::createExtendedActions( const QModelIndexList &indices )
                 {
                     if( m_organizeAction == 0 )
                     {
-                        m_organizeAction = new QAction( KIcon("folder-open" ),
+                        m_organizeAction = new QAction( QIcon::fromTheme("folder-open" ),
                                     i18nc( "Organize Files", "Organize Files" ), this );
                         m_organizeAction->setProperty( "popupdropper_svg_id", "organize" );
                         connect( m_organizeAction, SIGNAL(triggered()),
@@ -1109,7 +1109,7 @@ CollectionTreeView::createExtendedActions( const QModelIndexList &indices )
 
         if( m_editAction == 0 )
         {
-            m_editAction = new QAction( KIcon( "media-track-edit-amarok" ),
+            m_editAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
                                         i18n( "&Edit Track Details" ), this );
             setProperty( "popupdropper_svg_id", "edit" );
             connect( m_editAction, SIGNAL(triggered()), this, SLOT(slotEditTracks()) );

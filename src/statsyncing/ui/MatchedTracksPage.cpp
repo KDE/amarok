@@ -186,7 +186,7 @@ MatchedTracksPage::setProviders( const ProviderPtrList &providers )
     }
     takeRatingsMenu->addAction( i18n( "Reset All Ratings to Undecided" ), this, SLOT(takeRatingsFrom()) );
     matchedRatingsButton->setMenu( takeRatingsMenu );
-    matchedRatingsButton->setIcon( KIcon( Meta::iconForField( Meta::valRating ) ) );
+    matchedRatingsButton->setIcon( QIcon::fromTheme( Meta::iconForField( Meta::valRating ) ) );
 
     // populate menu of the "Labels" button
     QMenu *labelsMenu = new QMenu( matchedLabelsButton );
@@ -203,7 +203,7 @@ MatchedTracksPage::setProviders( const ProviderPtrList &providers )
     labelsMenu->addAction( i18n( "Reset All Labels to Undecided (Don't Synchronize Them)" ),
                            this, SLOT(excludeLabelsFrom()) );
     matchedLabelsButton->setMenu( labelsMenu );
-    matchedLabelsButton->setIcon( KIcon( Meta::iconForField( Meta::valLabel ) ) );
+    matchedLabelsButton->setIcon( QIcon::fromTheme( Meta::iconForField( Meta::valLabel ) ) );
 }
 
 void

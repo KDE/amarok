@@ -39,7 +39,7 @@
 #include <QSpinBox>
 
 #include <KHBox>
-#include <KIcon>
+#include <QIcon>
 #include <KStandardDirs>
 #include <KSeparator>
 #include <KToolBar>
@@ -50,7 +50,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
 {
     setPrettyName( i18n( "Dynamic Playlists" ) );
     setShortDescription( i18n( "Dynamically updating parameter based playlists" ) );
-    setIcon( KIcon( "dynamic-amarok" ) );
+    setIcon( QIcon::fromTheme( "dynamic-amarok" ) );
 
     setLongDescription( i18n( "With a dynamic playlist, Amarok becomes your own personal dj, automatically selecting tracks for you, based on a number of parameters that you select." ) );
 
@@ -105,7 +105,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_onOffButton = new QToolButton( presetToolbar );
     m_onOffButton->setText( i18nc( "Turn dynamic mode on", "On") );
     m_onOffButton->setCheckable( true );
-    m_onOffButton->setIcon( KIcon( "dynamic-amarok" ) );
+    m_onOffButton->setIcon( QIcon::fromTheme( "dynamic-amarok" ) );
     m_onOffButton->setToolTip( i18n( "Turn dynamic mode on." ) );
     presetToolbar->addWidget( m_onOffButton );
 
@@ -113,33 +113,33 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_duplicateButton->setText( i18n("Duplicates") );
     m_duplicateButton->setCheckable( true );
     m_duplicateButton->setChecked( allowDuplicates() );
-    m_duplicateButton->setIcon( KIcon( "edit-copy" ) );
+    m_duplicateButton->setIcon( QIcon::fromTheme( "edit-copy" ) );
     m_duplicateButton->setToolTip( i18n( "Allow duplicate songs in result" ) );
     presetToolbar->addWidget( m_duplicateButton );
 
     m_addButton = new QToolButton( presetToolbar );
     m_addButton->setText( i18n("New") );
-    m_addButton->setIcon( KIcon( "document-new" ) );
+    m_addButton->setIcon( QIcon::fromTheme( "document-new" ) );
     m_addButton->setToolTip( i18n( "New playlist" ) );
     presetToolbar->addWidget( m_addButton );
 
     m_editButton = new QToolButton( presetToolbar );
     m_editButton->setText( i18n("Edit") );
-    m_editButton->setIcon( KIcon( "document-properties-amarok" ) );
+    m_editButton->setIcon( QIcon::fromTheme( "document-properties-amarok" ) );
     m_editButton->setToolTip( i18n( "Edit the selected playlist or bias" ) );
     presetToolbar->addWidget( m_editButton );
 
     m_deleteButton = new QToolButton( presetToolbar );
     m_deleteButton->setText( i18n("Delete") );
     m_deleteButton->setEnabled( false );
-    m_deleteButton->setIcon( KIcon( "edit-delete" ) );
+    m_deleteButton->setIcon( QIcon::fromTheme( "edit-delete" ) );
     m_deleteButton->setToolTip( i18n( "Delete the selected playlist or bias") );
     presetToolbar->addWidget( m_deleteButton );
 
     m_repopulateButton = new QPushButton( presetLayout );
     m_repopulateButton->setText( i18n("Repopulate") );
     m_repopulateButton->setToolTip( i18n("Replace the upcoming tracks with fresh ones.") );
-    m_repopulateButton->setIcon( KIcon( "view-refresh-amarok" ) );
+    m_repopulateButton->setIcon( QIcon::fromTheme( "view-refresh-amarok" ) );
     m_repopulateButton->setEnabled( enabled );
     // m_repopulateButton->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
     QObject::connect( m_repopulateButton, SIGNAL(clicked(bool)), The::playlistActions(), SLOT(repopulateDynamicPlaylist()) );

@@ -29,7 +29,7 @@
 #include <ThreadWeaver/Weaver>
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QAction>
 #include <QInputDialog>
@@ -120,13 +120,13 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastChannelPtr &channel ) const
         // if it's a new episode draw the overlay:
         if( !emblems.isEmpty() )
             // draw the overlay the same way KIconLoader does:
-            p.drawPixmap( 2, 32 - 16 - 2, KIcon( "rating" ).pixmap( 16, 16 ) );
+            p.drawPixmap( 2, 32 - 16 - 2, QIcon::fromTheme( "rating" ).pixmap( 16, 16 ) );
         p.end();
 
         return pixmap;
     }
     else
-        return KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
+        return QIcon::fromTheme( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
 }
 
 QVariant
@@ -137,9 +137,9 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastEpisodePtr &episode ) const
         emblems << "go-down";
 
     if( episode->isNew() )
-        return KIcon( "rating", 0, emblems ).pixmap( 24, 24 );
+        return QIcon::fromTheme( "rating", 0, emblems ).pixmap( 24, 24 );
     else
-        return KIcon( "podcast-amarok", 0, emblems ).pixmap( 24, 24 );
+        return QIcon::fromTheme( "podcast-amarok", 0, emblems ).pixmap( 24, 24 );
 }
 
 QVariant

@@ -61,8 +61,8 @@ TestImporterProvider::descriptionShouldDelegateToManager()
 void
 TestImporterProvider::iconShouldDelegateToManager()
 {
-    EXPECT_CALL( *m_mockManager, icon() ).WillOnce( Return( KIcon( "amarok" ) ) );
-    QCOMPARE( m_mockProvider->icon().name(), KIcon( "amarok" ).name() );
+    EXPECT_CALL( *m_mockManager, icon() ).WillOnce( Return( QIcon::fromTheme( "amarok" ) ) );
+    QCOMPARE( m_mockProvider->icon().name(), QIcon::fromTheme( "amarok" ).name() );
 }
 
 void

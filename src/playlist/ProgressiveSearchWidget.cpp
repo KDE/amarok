@@ -58,10 +58,10 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     connect( m_searchEdit, SIGNAL(downPressed()), this, SIGNAL(downPressed()) );
     connect( m_searchEdit, SIGNAL(upPressed()), this, SIGNAL(upPressed()) );
 
-    m_nextAction = new KAction( KIcon( "go-down" ), i18n( "&Next" ), this );
+    m_nextAction = new KAction( QIcon::fromTheme( "go-down" ), i18n( "&Next" ), this );
     connect( m_nextAction, SIGNAL(triggered()), this, SLOT(slotNext()) );
 
-    m_previousAction = new KAction( KIcon( "go-up" ), i18n( "&Previous" ), this );
+    m_previousAction = new KAction( QIcon::fromTheme( "go-up" ), i18n( "&Previous" ), this );
     connect( m_previousAction, SIGNAL(triggered()), this, SLOT(slotPrevious()) );
 
     m_nextAction->setEnabled( false );
@@ -132,7 +132,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     m_nextAction->setVisible( !m_showOnlyMatches );
     m_previousAction->setVisible( !m_showOnlyMatches );
 
-    KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
+    KAction *searchMenuAction = new KAction( QIcon::fromTheme( "preferences-other" ), i18n( "Search Preferences" ), this );
     searchMenuAction->setMenu( m_menu );
 
     m_toolBar->addAction( searchMenuAction );

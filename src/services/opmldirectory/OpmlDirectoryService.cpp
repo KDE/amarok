@@ -71,7 +71,7 @@ OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent,
  : ServiceBase( name, parent, false, prettyName )
 {
     setShortDescription( i18n( "A large listing of podcasts" ) );
-    setIcon( KIcon( "view-services-opml-amarok" ) );
+    setIcon( QIcon::fromTheme( "view-services-opml-amarok" ) );
 
     setLongDescription( i18n( "A comprehensive list of searchable podcasts that you can subscribe to directly from within Amarok." ) );
 
@@ -133,7 +133,7 @@ void OpmlDirectoryService::polish()
     m_subscribeButton = new QPushButton( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
     m_subscribeButton->setObjectName( "subscribeButton" );
-    m_subscribeButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    m_subscribeButton->setIcon( QIcon::fromTheme( "get-hot-new-stuff-amarok" ) );
 
     m_subscribeButton->setEnabled( false );
 
@@ -142,7 +142,7 @@ void OpmlDirectoryService::polish()
     m_addOpmlButton = new QPushButton( m_bottomPanel );
     m_addOpmlButton->setText( i18n( "Add OPML" ) );
     m_addOpmlButton->setObjectName( "addOpmlButton" );
-    m_addOpmlButton->setIcon( KIcon( "list-add-amarok" ) );
+    m_addOpmlButton->setIcon( QIcon::fromTheme( "list-add-amarok" ) );
 
     connect( m_addOpmlButton, SIGNAL(clicked()), model(), SLOT(slotAddOpmlAction()) );
 

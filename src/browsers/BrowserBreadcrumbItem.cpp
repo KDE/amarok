@@ -21,7 +21,7 @@
 #include "core/support/Debug.h"
 #include "widgets/BreadcrumbItemButton.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 #include <QDir>
@@ -67,7 +67,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
     {
         // root item
         m_mainButton->setToolTip( i18n( "Media Sources Home" ) );
-        m_mainButton->setIcon( KIcon( "user-home" ) );
+        m_mainButton->setIcon( QIcon::fromTheme( "user-home" ) );
     }
 
     connect( m_mainButton, SIGNAL(sizePolicyChanged()), this, SLOT(updateSizePolicy()) );

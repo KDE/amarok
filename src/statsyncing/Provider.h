@@ -21,7 +21,7 @@
 #include "statsyncing/Track.h"
 #include "support/QSharedDataPointerMisc.h" // operator<() for ProviderPtr
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QMap>
 #include <QSet>
@@ -85,7 +85,7 @@ namespace StatSyncing
             /**
              * Icon of this provider; must be thread-safe
              */
-            virtual KIcon icon() const = 0;
+            virtual QIcon icon() const = 0;
 
             /**
              * Return true if this provider can be reconfigured after creation. Returns

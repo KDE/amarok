@@ -53,7 +53,7 @@ class UmsPodcastProvider : public PodcastProvider
 
         // PlaylistProvider methods
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
         virtual Playlists::PlaylistList playlists();
 

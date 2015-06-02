@@ -24,7 +24,7 @@
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "widgets/ProgressWidget.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album )
@@ -32,7 +32,7 @@ BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album 
     , m_album( album )
 {
     connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
-    setIcon( KIcon("bookmark-new") );
+    setIcon( QIcon::fromTheme("bookmark-new") );
     setProperty( "popupdropper_svg_id", "lastfm" );
 }
 
@@ -48,7 +48,7 @@ BookmarkArtistAction::BookmarkArtistAction( QObject *parent, Meta::ArtistPtr art
     , m_artist( artist )
 {
     connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
-    setIcon( KIcon("bookmark-new") );
+    setIcon( QIcon::fromTheme("bookmark-new") );
     setProperty( "popupdropper_svg_id", "lastfm" );
 }
 
@@ -62,7 +62,7 @@ BookmarkCurrentTrackPositionAction::BookmarkCurrentTrackPositionAction( QObject 
     : QAction( i18n( "Add Position Marker" ), parent )
 {
     connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
-    setIcon( KIcon("flag-amarok") );
+    setIcon( QIcon::fromTheme("flag-amarok") );
 }
 
 void

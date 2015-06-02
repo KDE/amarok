@@ -117,8 +117,8 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl( QUrl url )
     return list;
 }
 
-KIcon PlayUrlRunner::icon() const
+QIcon PlayUrlRunner::icon() const
 {
-    return KIcon( "x-media-podcast-amarok" );
+    return QIcon::fromTheme( "x-media-podcast-amarok" );
 }
 

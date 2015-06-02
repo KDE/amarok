@@ -23,6 +23,6 @@ AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( banshee,
                                       "BansheeImporter",
                                       i18n( "Banshee" ),
                                       i18n( "Banshee Statistics Importer" ),
-                                      KIcon( "view-importers-banshee-amarok" ),
+                                      QIcon::fromTheme( "view-importers-banshee-amarok" ),
                                       StatSyncing::BansheeConfigWidget,
                                       StatSyncing::BansheeProvider )

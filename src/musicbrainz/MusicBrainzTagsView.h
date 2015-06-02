@@ -18,7 +18,7 @@
 #ifndef MUSICBRAINZTAGSVIEW_H
 #define MUSICBRAINZTAGSVIEW_H
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QTreeView>
 
@@ -47,9 +47,9 @@ class MusicBrainzTagsView : public QTreeView
         void openTrackPage() const;
 
     private:
-        KIcon m_artistIcon;
-        KIcon m_releaseIcon;
-        KIcon m_trackIcon;
+        QIcon m_artistIcon;
+        QIcon m_releaseIcon;
+        QIcon m_trackIcon;
 };
 
 #endif // MUSICBRAINZTAGSVIEW_H

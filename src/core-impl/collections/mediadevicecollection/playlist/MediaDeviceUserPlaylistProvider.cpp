@@ -29,7 +29,7 @@
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KInputDialog>
 #include <QUrl>
 

@@ -124,7 +124,7 @@ GpodderService::GpodderService( GpodderServiceFactory *parent, const QString &na
     DEBUG_BLOCK
 
     setShortDescription( i18n( "gpodder.net: Podcast Directory Service" ) );
-    setIcon( KIcon( "view-services-gpodder-amarok" ) );
+    setIcon( QIcon::fromTheme( "view-services-gpodder-amarok" ) );
     setLongDescription(
                 i18n( "gpodder.net is an online Podcast Directory & Synchonisation Service." ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/mygpo.png" ) );
@@ -234,7 +234,7 @@ GpodderService::polish()
     m_subscribeButton->setParent( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
     m_subscribeButton->setObjectName( "subscribeButton" );
-    m_subscribeButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    m_subscribeButton->setIcon( QIcon::fromTheme( "get-hot-new-stuff-amarok" ) );
 
     m_subscribeButton->setEnabled( true );
 

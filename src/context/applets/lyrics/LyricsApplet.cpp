@@ -446,42 +446,42 @@ LyricsApplet::init()
     setPreferredHeight( collapseHeight() );
 
     QAction* editAction = new QAction( this );
-    editAction->setIcon( KIcon( "document-edit" ) );
+    editAction->setIcon( QIcon::fromTheme( "document-edit" ) );
     editAction->setEnabled( false );
     editAction->setText( i18n( "Edit Lyrics" ) );
     d->editIcon = addLeftHeaderAction( editAction );
     connect( d->editIcon, SIGNAL(clicked()), this, SLOT(_editLyrics()) );
 
     QAction* saveAction = new QAction( this );
-    saveAction->setIcon( KIcon( "document-save" ) );
+    saveAction->setIcon( QIcon::fromTheme( "document-save" ) );
     saveAction->setEnabled( false );
     saveAction->setText( i18n( "Save Lyrics" ) );
     d->saveIcon = addLeftHeaderAction( saveAction );
     connect( d->saveIcon, SIGNAL(clicked()), this, SLOT(_saveLyrics()) );
 
     QAction* closeAction = new QAction( this );
-    closeAction->setIcon( KIcon( "document-close" ) );
+    closeAction->setIcon( QIcon::fromTheme( "document-close" ) );
     closeAction->setEnabled( false );
     closeAction->setText( i18n( "Close" ) );
     d->closeIcon = addLeftHeaderAction( closeAction );
     connect( d->closeIcon, SIGNAL(clicked()), this, SLOT(_closeLyrics()) );
 
     QAction* autoScrollAction = new QAction( this );
-    autoScrollAction->setIcon( KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-sorting-16.png" ) ) ) );
+    autoScrollAction->setIcon( QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-sorting-16.png" ) ) ) );
     autoScrollAction->setEnabled( true );
     autoScrollAction->setText( i18n( "Scroll automatically" ) );
     d->autoScrollIcon = addRightHeaderAction( autoScrollAction );
     connect( d->autoScrollIcon, SIGNAL(clicked()), this, SLOT(_toggleAutoScroll()) );
 
     QAction* reloadAction = new QAction( this );
-    reloadAction->setIcon( KIcon( "view-refresh" ) );
+    reloadAction->setIcon( QIcon::fromTheme( "view-refresh" ) );
     reloadAction->setEnabled( true );
     reloadAction->setText( i18n( "Reload Lyrics" ) );
     d->reloadIcon = addRightHeaderAction( reloadAction );
     connect( d->reloadIcon, SIGNAL(clicked()), this, SLOT(refreshLyrics()) );
 
     QAction* settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setIcon( QIcon::fromTheme( "preferences-system" ) );
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
     d->settingsIcon = addRightHeaderAction( settingsAction );

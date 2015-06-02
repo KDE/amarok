@@ -177,7 +177,7 @@ Playlist::Dock::polish()
         QActionGroup *playlistActions = new QActionGroup( m_mainWidget );
         playlistActions->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
 
-        m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ),
+        m_savePlaylistMenu = new KActionMenu( QIcon::fromTheme( "document-save-amarok" ),
                                               i18n("&Save Current Playlist"), m_mainWidget );
         m_savePlaylistMenu->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
 

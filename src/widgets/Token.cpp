@@ -66,7 +66,7 @@ TokenFactory::createTokenFromMime( const QMimeData* mimeData, QWidget* parent ) 
 Token::Token( const QString &name, const QString &iconName, qint64 value, QWidget *parent )
     : QWidget( parent )
     , m_name( name )
-    , m_icon( KIcon( iconName ) )
+    , m_icon( QIcon::fromTheme( iconName ) )
     , m_iconName( iconName )
     , m_value( value )
     , m_customColor( false )
@@ -111,7 +111,7 @@ Token::value() const
     return m_value;
 }
 
-KIcon
+QIcon
 Token::icon() const
 {
     return m_icon;

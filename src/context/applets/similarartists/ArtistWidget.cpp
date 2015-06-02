@@ -34,7 +34,7 @@
 //KDE
 #include <KColorUtils>
 #include <KGlobalSettings>
-#include <KIcon>
+#include <QIcon>
 #include <Plasma/PushButton>
 #include <Plasma/Separator>
 
@@ -127,26 +127,26 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
 
     m_navigateButton = new Plasma::PushButton( this );
     m_navigateButton->setMaximumSize( QSizeF( 22, 22 ) );
-    m_navigateButton->setIcon( KIcon( "edit-find" ) );
+    m_navigateButton->setIcon( QIcon::fromTheme( "edit-find" ) );
     m_navigateButton->setToolTip( i18n( "Show in Media Sources" ) );
     connect( m_navigateButton, SIGNAL(clicked()), this, SLOT(navigateToArtist()) );
     
     m_lastfmStationButton = new Plasma::PushButton( this );
     m_lastfmStationButton->setMaximumSize( QSizeF( 22, 22 ) );
-    m_lastfmStationButton->setIcon( KIcon("view-services-lastfm-amarok") );
+    m_lastfmStationButton->setIcon( QIcon::fromTheme("view-services-lastfm-amarok") );
     m_lastfmStationButton->setToolTip( i18n( "Add Last.fm artist station to the Playlist" ) );
     connect( m_lastfmStationButton, SIGNAL(clicked()), this, SLOT(addLastfmArtistStation()) );
 
     m_topTrackButton = new Plasma::PushButton( this );
     m_topTrackButton->setMaximumSize( QSizeF( 22, 22 ) );
-    m_topTrackButton->setIcon( KIcon( "media-track-add-amarok" ) );
+    m_topTrackButton->setIcon( QIcon::fromTheme( "media-track-add-amarok" ) );
     m_topTrackButton->setToolTip( i18n( "Add top track to the Playlist" ) );
     m_topTrackButton->hide();
     connect( m_topTrackButton, SIGNAL(clicked()), this, SLOT(addTopTrackToPlaylist()) );
 
     m_similarArtistButton = new Plasma::PushButton( this );
     m_similarArtistButton->setMaximumSize( QSizeF( 22, 22 ) );
-    m_similarArtistButton->setIcon( KIcon( "similarartists-amarok" ) );
+    m_similarArtistButton->setIcon( QIcon::fromTheme( "similarartists-amarok" ) );
     m_similarArtistButton->setToolTip( i18n( "Show Similar Artists to %1", m_artist->name() ) );
     connect( m_similarArtistButton, SIGNAL(clicked()), this, SIGNAL(showSimilarArtists()) );
 
@@ -161,7 +161,7 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     {
         m_urlButton = new Plasma::PushButton( this );
         m_urlButton->setMaximumSize( QSizeF( 22, 22 ) );
-        m_urlButton->setIcon( KIcon("applications-internet") );
+        m_urlButton->setIcon( QIcon::fromTheme("applications-internet") );
         m_urlButton->setToolTip( i18n( "Open Last.fm webpage for this artist" ) );
         connect( m_urlButton, SIGNAL(clicked()), this, SLOT(openArtistUrl()) );
         buttonsLayout->addItem( m_urlButton );

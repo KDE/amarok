@@ -58,7 +58,7 @@ ScriptsConfig::ScriptsConfig( QWidget *parent )
 
     // Load config
     gui.kcfg_AutoUpdateScripts->setChecked( AmarokConfig::autoUpdateScripts() );
-    gui.manageButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    gui.manageButton->setIcon( QIcon::fromTheme( "get-hot-new-stuff-amarok" ) );
     connect( gui.manageButton, SIGNAL(clicked()), SLOT(slotManageScripts()) );
     connect( gui.installButton, SIGNAL(clicked(bool)), SLOT(installLocalScript()) );
 

@@ -20,7 +20,7 @@
 #include "core/collections/Collection.h"
 #include "core/collections/CollectionLocation.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <qtest_kde.h>
 
 using namespace Collections;
@@ -55,10 +55,10 @@ class CollectionMock : public Collection
             return QString();
         }
 
-        virtual KIcon icon() const
+        virtual QIcon icon() const
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return KIcon();
+            return QIcon();
         }
 };
 

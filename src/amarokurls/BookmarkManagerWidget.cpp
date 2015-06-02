@@ -24,7 +24,7 @@
 #include "widgets/ProgressWidget.h"
 
 #include <KAction>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 #include <KVBox>
 
@@ -41,11 +41,11 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_toolBar = new QToolBar( topLayout );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    KAction * addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Group" ), this  );
+    KAction * addGroupAction = new KAction( QIcon::fromTheme("media-track-add-amarok" ), i18n( "Add Group" ), this  );
     m_toolBar->addAction( addGroupAction );
     connect( addGroupAction, SIGNAL(triggered(bool)), BookmarkModel::instance(), SLOT(createNewGroup()) );
 
-    /*KAction * addBookmarkAction = new KAction( KIcon("bookmark-new" ), i18n( "New Bookmark" ), this  );
+    /*KAction * addBookmarkAction = new KAction( QIcon::fromTheme("bookmark-new" ), i18n( "New Bookmark" ), this  );
     m_toolBar->addAction( addBookmarkAction );
     connect( addBookmarkAction, SIGNAL(triggered(bool)), BookmarkModel::instance(), SLOT(createNewBookmark()) );*/
 

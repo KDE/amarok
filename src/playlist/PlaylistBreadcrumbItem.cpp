@@ -19,7 +19,7 @@
 
 #include "PlaylistSortWidget.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 namespace Playlist
@@ -33,13 +33,13 @@ BreadcrumbItemMenu::BreadcrumbItemMenu( Column currentColumn, QWidget *parent )
         if( !isSortableColumn( col ) || currentColumn == col )
             continue;
 
-        QAction *action = addAction( KIcon( iconName( col ) ),
+        QAction *action = addAction( QIcon::fromTheme( iconName( col ) ),
                                      QString( columnName( col ) ) );
         action->setData( internalColumnName( col ) );
     }
 
     addSeparator();
-    QAction *shuffleAction = addAction( KIcon( "media-playlist-shuffle" ),
+    QAction *shuffleAction = addAction( QIcon::fromTheme( "media-playlist-shuffle" ),
                                         QString( i18n( "Shuffle" ) ) );
     shuffleAction->setData( QString( "Shuffle" ) );
 

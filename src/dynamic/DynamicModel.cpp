@@ -35,7 +35,7 @@
 
 #include "playlist/PlaylistActions.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QFile>
 #include <QBuffer>
@@ -259,9 +259,9 @@ Dynamic::DynamicModel::data( const QModelIndex& i, int role ) const
 
         case Qt::DecorationRole:
             if( activePlaylist() == indexPlaylist )
-                return KIcon( "amarok_playlist" );
+                return QIcon::fromTheme( "amarok_playlist" );
             else
-                return KIcon( "amarok_playlist_clear" );
+                return QIcon::fromTheme( "amarok_playlist_clear" );
 
         case Qt::FontRole:
             {

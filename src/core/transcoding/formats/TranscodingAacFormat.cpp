@@ -79,10 +79,10 @@ AacFormat::description() const
 
 }
 
-KIcon
+QIcon
 AacFormat::icon() const
 {
-    return KIcon( "audio-ac3" ); //TODO: get a *real* icon!
+    return QIcon::fromTheme( "audio-ac3" ); //TODO: get a *real* icon!
 }
 
 QStringList

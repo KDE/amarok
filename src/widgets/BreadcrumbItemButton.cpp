@@ -23,7 +23,7 @@
 #include "core/support/Amarok.h"
 
 #include <KColorScheme>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 #include <KMenu>
 
@@ -232,7 +232,7 @@ BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
 
 
 BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent )
-    : BreadcrumbItemButton( KIcon( "bookmark-new-list" ), QString(), parent )
+    : BreadcrumbItemButton( QIcon::fromTheme( "bookmark-new-list" ), QString(), parent )
     , m_urlsCommand( urlsCommand )
     , m_copyToClipboardAction( 0 )
 {
@@ -273,7 +273,7 @@ BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
 
     if( !m_copyToClipboardAction )
     {
-        m_copyToClipboardAction = new QAction( KIcon( "klipper" ), i18n( "Copy Current View Bookmark to Clipboard" ), this );
+        m_copyToClipboardAction = new QAction( QIcon::fromTheme( "klipper" ), i18n( "Copy Current View Bookmark to Clipboard" ), this );
         connect( m_copyToClipboardAction, SIGNAL(triggered(bool)), this, SLOT(copyCurrentToClipboard()) );
     }
 

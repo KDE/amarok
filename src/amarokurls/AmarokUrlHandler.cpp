@@ -31,7 +31,7 @@
 #include "core-impl/meta/timecode/TimecodeObserver.h"
 #include "playlist/PlaylistViewUrlGenerator.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 namespace The {
@@ -195,13 +195,13 @@ AmarokUrlHandler::bookmarkCurrentContextView()
     BookmarkModel::instance()->reloadFromDb(); 
 }
 
-KIcon
+QIcon
 AmarokUrlHandler::iconForCommand( const QString &command )
 {
     if( m_registeredRunners.keys().contains( command ) )
         return m_registeredRunners.value( command )->icon();
 
-    return KIcon( "unknown" );
+    return QIcon::fromTheme( "unknown" );
 }
 
 void AmarokUrlHandler::updateTimecodes(const QString* BookmarkName)

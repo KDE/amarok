@@ -21,7 +21,7 @@
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlRunnerBase.h"
 
-#include <KIcon>
+#include <QIcon>
 
 namespace Playlist
 {
@@ -34,7 +34,7 @@ public:
 
     virtual QString command() const;
     virtual QString prettyCommand() const;
-    virtual KIcon icon() const;
+    virtual QIcon icon() const;
     virtual bool run( AmarokUrl url );
 };
 

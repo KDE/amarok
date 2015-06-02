@@ -23,7 +23,7 @@
 #include "services/lastfm/meta/LastFmMultiPlayableCapability.h"
 #include "services/lastfm/meta/LastFmStreamInfoCapability.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QCoreApplication>
 #include <QThread>
@@ -77,13 +77,13 @@ void Track::init( int id /* = -1*/ )
     d->composerPtr = Meta::ComposerPtr( new LastFmComposer( d ) );
     d->yearPtr = Meta::YearPtr( new LastFmYear( d ) );
 
-    QAction *banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
+    QAction *banAction = new QAction( QIcon::fromTheme( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
     connect( banAction, SIGNAL(triggered()), this, SLOT(ban()) );
     m_trackActions.append( banAction );
 
-    QAction *skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
+    QAction *skipAction = new QAction( QIcon::fromTheme( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
     skipAction->setShortcut( i18n( "Ctrl+S" ) );
     skipAction->setStatusTip( i18n( "Skip this track" ) );
     connect( skipAction, SIGNAL(triggered()), this, SIGNAL(skipTrack()) );

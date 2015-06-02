@@ -26,7 +26,7 @@
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetchingActions.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <QUrl>
 
 #include <QAction>

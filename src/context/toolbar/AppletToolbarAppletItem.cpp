@@ -25,7 +25,7 @@
 #include <Plasma/Applet>
 #include <Plasma/IconWidget>
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QAction>
 #include <QPainter>
@@ -58,7 +58,7 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     setAcceptHoverEvents( true );
     m_label->setAcceptHoverEvents( true );
     QAction* delApplet = new QAction( i18n( "Remove Applet" ), this );
-    delApplet->setIcon( KIcon( "edit-delete" ) );
+    delApplet->setIcon( QIcon::fromTheme( "edit-delete" ) );
     delApplet->setVisible( true );
     delApplet->setEnabled( true );
 

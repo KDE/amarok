@@ -17,10 +17,10 @@
 #include "MagnatuneActions.h"
 #include "SvgHandler.h"
 
-#include <KIcon>
+#include <QIcon>
 
 MagnatuneDownloadAction::MagnatuneDownloadAction( const QString &text, Meta::MagnatuneAlbum * album )
-    : QAction( KIcon("download-amarok" ), text, album )
+    : QAction( QIcon::fromTheme("download-amarok" ), text, album )
     , m_album( album )
 {
     setProperty( "popupdropper_svg_id", "append" );
@@ -40,7 +40,7 @@ void MagnatuneDownloadAction::slotTriggered()
 
 
 MagnatuneAddToFavoritesAction::MagnatuneAddToFavoritesAction( const QString &text, Meta::MagnatuneAlbum * album )
-    : QAction( KIcon("favorites" ), text, album )
+    : QAction( QIcon::fromTheme("favorites" ), text, album )
     , m_album( album )
 {
     setProperty( "popupdropper_svg_id", "append" );

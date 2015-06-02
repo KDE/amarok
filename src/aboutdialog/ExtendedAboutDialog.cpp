@@ -99,7 +99,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
 
     QIcon windowIcon;
     if (!aboutData->programIconName().isEmpty()) {
-        windowIcon = KIcon(aboutData->programIconName());
+        windowIcon = QIcon::fromTheme(aboutData->programIconName());
     } else {
         windowIcon = qApp->windowIcon();
     }

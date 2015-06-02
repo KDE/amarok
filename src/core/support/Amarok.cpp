@@ -25,7 +25,7 @@
 #include <KConfigGroup>
 #include <KDirLister>
 #include <KGlobalSettings>
-#include <KIcon>
+#include <QIcon>
 #include <KIconEffect>
 #include <KStandardDirs>
 #include <KUniqueApplication>
@@ -416,7 +416,7 @@ namespace Amarok
         #define AMAROK_LOGO_CACHE_KEY QLatin1String("AmarokSemiTransparentLogo")+QString::number(dim)
         if( !QPixmapCache::find( AMAROK_LOGO_CACHE_KEY, &logo ) )
         {
-            QImage amarokIcon = KIcon( QLatin1String("amarok") ).pixmap( dim, dim ).toImage();
+            QImage amarokIcon = QIcon::fromTheme( QLatin1String("amarok") ).pixmap( dim, dim ).toImage();
             KIconEffect::toGray( amarokIcon, 1 );
             KIconEffect::semiTransparent( amarokIcon );
             logo = QPixmap::fromImage( amarokIcon );

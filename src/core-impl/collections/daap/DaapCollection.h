@@ -30,7 +30,7 @@
 #include <QtGlobal>
 #include <QSharedPointer>
 
-#include <KIcon>
+#include <QIcon>
 
 #include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
 
@@ -84,7 +84,7 @@ class DaapCollection : public Collections::Collection
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
-        virtual KIcon icon() const { return KIcon("network-server"); }
+        virtual QIcon icon() const { return QIcon::fromTheme("network-server"); }
 
         void serverOffline();
 

@@ -31,7 +31,7 @@ public:
     QString type() const;
     QString prettyName() const;
     QString description() const;
-    KIcon icon() const;
+    QIcon icon() const;
     ProviderConfigWidget *configWidget( const QVariantMap &config );
 
 protected:

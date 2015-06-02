@@ -25,7 +25,7 @@
 #include "core/support/Debug.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 Q_DECLARE_METATYPE( QAction* )
@@ -140,7 +140,7 @@ CollectionTreeItem::data( int role ) const
         case Qt::DisplayRole:
             return i18nc( "No labels are assigned to the given item are any of its subitems", "No Labels" );
         case Qt::DecorationRole:
-            return KIcon( "label-amarok" );
+            return QIcon::fromTheme( "label-amarok" );
         }
         return QVariant();
     }

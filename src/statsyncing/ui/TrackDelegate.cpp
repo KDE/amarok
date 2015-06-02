@@ -21,7 +21,7 @@
 #include "statsyncing/models/CommonModel.h"
 
 #include <KGlobal>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 #include <kratingpainter.h>
 
@@ -59,7 +59,7 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
             if( rating < 0 ) // unresolved conflict
             {
                 rating = 0;
-                ratingPainter.setIcon( KIcon( "status_unknown" ) );
+                ratingPainter.setIcon( QIcon::fromTheme( "status_unknown" ) );
                 ratingPainter.setEnabled( false );
                 ratingPainter.setMaxRating( 2 );
             }

@@ -50,7 +50,7 @@ namespace Collections {
         // Collections::Collection methods
 
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
         virtual bool possiblyContainsTrack( const QUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const QUrl &url );

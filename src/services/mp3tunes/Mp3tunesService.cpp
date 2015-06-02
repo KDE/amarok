@@ -106,7 +106,7 @@ Mp3tunesService::Mp3tunesService( Mp3tunesServiceFactory* parent, const QString 
 {
     DEBUG_BLOCK
     setShortDescription( i18n( "The MP3tunes Locker: Your Music Everywhere!" ) );
-    setIcon( KIcon( "view-services-mp3tunes-amarok" ) );
+    setIcon( QIcon::fromTheme( "view-services-mp3tunes-amarok" ) );
     debug() << "Making new Locker Object";
     m_locker = new Mp3tunesLocker( "4895500420" );
 

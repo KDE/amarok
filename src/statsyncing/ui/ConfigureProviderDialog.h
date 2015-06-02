@@ -24,7 +24,7 @@
 #include <QSharedPointer>
 #include <QString>
 
-#include <KIcon>
+#include <QIcon>
 
 namespace StatSyncing
 {

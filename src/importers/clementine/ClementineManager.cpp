@@ -23,6 +23,6 @@ AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( clementine,
                                       "ClementineImporter",
                                       i18n( "Clementine" ),
                                       i18n( "Clementine Statistics Importer" ),
-                                      KIcon( "view-importers-clementine-amarok" ),
+                                      QIcon::fromTheme( "view-importers-clementine-amarok" ),
                                       StatSyncing::ClementineConfigWidget,
                                       StatSyncing::ClementineProvider )

@@ -21,7 +21,7 @@
 #include "context/toolbar/AppletToolbarAppletItem.h"
 #include "core/support/Debug.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KGlobalSettings>
 #include <Plasma/Applet>
 #include <Plasma/PaintUtils>
@@ -91,11 +91,11 @@ Context::AppletItemOverlay::AppletItemOverlay( Context::AppletToolbarAppletItem 
 
     m_deleteIcon = new QToolButton( this );
     QAction* delApplet = new QAction( i18n( "Remove Applet" ), this );
-    delApplet->setIcon( KIcon( "edit-delete" ) );
+    delApplet->setIcon( QIcon::fromTheme( "edit-delete" ) );
     delApplet->setVisible( true );
     delApplet->setEnabled( true );
     m_deleteIcon->addAction( delApplet );
-    m_deleteIcon->setIcon( KIcon( "edit-delete" ) );
+    m_deleteIcon->setIcon( QIcon::fromTheme( "edit-delete" ) );
     m_deleteIcon->setMaximumSize( 24, 24 );
     QColor trans;
     trans.setAlpha( 0 );
@@ -147,7 +147,7 @@ Context::AppletItemOverlay::paintEvent( QPaintEvent *event )
 
     QPainter p( this );
     p.save();
-    KIcon icon( "transform-move" );
+    QIcon icon( "transform-move" );
     int iconSize;
     QRect iconRect;
 

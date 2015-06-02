@@ -38,10 +38,10 @@ NullFormat::description() const
     return QString();
 }
 
-KIcon
+QIcon
 NullFormat::icon() const
 {
-    return KIcon();
+    return QIcon();
 }
 
 QStringList

@@ -20,7 +20,7 @@
 
 #include "core/meta/forward_declarations.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <QUrl>
 #include <Plasma/ScrollWidget>
 
@@ -102,7 +102,7 @@ private:
     Meta::TrackPtr m_currentTrack;
     QGraphicsLinearLayout *m_layout;
     QQueue<RecentlyPlayedTrackData> m_recentTracks;
-    KIcon m_trackIcon;
+    QIcon m_trackIcon;
     QTimer *m_updateTimer;
 };
 

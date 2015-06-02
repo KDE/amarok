@@ -298,10 +298,10 @@ GpodderProvider::prettyName() const
     return i18n( "Gpodder Podcasts" );
 }
 
-KIcon
+QIcon
 GpodderProvider::icon() const
 {
-    return KIcon( "view-services-gpodder-amarok" );
+    return QIcon::fromTheme( "view-services-gpodder-amarok" );
 }
 
 Playlists::PlaylistList
@@ -352,7 +352,7 @@ GpodderProvider::channelActions( PodcastChannelList channels )
 
     if( m_removeAction == 0 )
     {
-        m_removeAction = new QAction( KIcon( "edit-delete" ),
+        m_removeAction = new QAction( QIcon::fromTheme( "edit-delete" ),
                 i18n( "&Delete Channel and Episodes" ), this );
         m_removeAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_removeAction,  SIGNAL(triggered()), SLOT(slotRemoveChannels()) );

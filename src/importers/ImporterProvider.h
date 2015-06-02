@@ -63,7 +63,7 @@ public:
     /**
      * Provider's icon. Returns m_importer->icon() by default.
      */
-    virtual KIcon icon() const;
+    virtual QIcon icon() const;
 
     /**
      * Provider's name as displayed in Amarok's Metadata Configuration tab. Returns

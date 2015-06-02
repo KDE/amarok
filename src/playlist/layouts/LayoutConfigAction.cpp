@@ -37,7 +37,7 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     : KAction( parent )
     , m_layoutDialog( 0 )
 {
-    KIcon actionIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-layouts-22.png") ) );    //TEMPORARY ICON
+    QIcon actionIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-layouts-22.png") ) );    //TEMPORARY ICON
     setIcon( actionIcon );
     m_layoutMenu = new KMenu( parent );
     setMenu( m_layoutMenu );
@@ -65,7 +65,7 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     connect( LayoutManager::instance(), SIGNAL(layoutListChanged()), this, SLOT(layoutListChanged()) );
     connect( LayoutManager::instance(), SIGNAL(activeLayoutChanged()), this, SLOT(onActiveLayoutChanged()) );
 
-    const KIcon configIcon( "configure" );
+    const QIcon configIcon( "configure" );
     m_configAction->setIcon( configIcon );
     m_configAction->setText( i18n( "Configure Playlist Layouts..." ) );
 

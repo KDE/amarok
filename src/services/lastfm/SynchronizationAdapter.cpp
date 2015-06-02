@@ -63,10 +63,10 @@ SynchronizationAdapter::description() const
                   "slows down track matching" );
 }
 
-KIcon
+QIcon
 SynchronizationAdapter::icon() const
 {
-    return KIcon( "view-services-lastfm-amarok" );
+    return QIcon::fromTheme( "view-services-lastfm-amarok" );
 }
 
 qint64

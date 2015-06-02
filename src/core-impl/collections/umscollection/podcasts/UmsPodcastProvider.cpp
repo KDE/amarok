@@ -163,10 +163,10 @@ UmsPodcastProvider::prettyName() const
     return i18nc( "Podcasts on a media device", "Podcasts on %1", QString("TODO: replace me") );
 }
 
-KIcon
+QIcon
 UmsPodcastProvider::icon() const
 {
-    return KIcon("drive-removable-media-usb-pendrive");
+    return QIcon::fromTheme("drive-removable-media-usb-pendrive");
 }
 
 Playlists::PlaylistList
@@ -187,7 +187,7 @@ UmsPodcastProvider::episodeActions( PodcastEpisodeList episodes )
 
     if( m_deleteEpisodeAction == 0 )
     {
-        m_deleteEpisodeAction = new QAction( KIcon( "edit-delete" ), i18n( "&Delete Episode" ), this );
+        m_deleteEpisodeAction = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete Episode" ), this );
         m_deleteEpisodeAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteEpisodeAction, SIGNAL(triggered()), SLOT(slotDeleteEpisodes()) );
     }
@@ -326,7 +326,7 @@ UmsPodcastProvider::channelActions( PodcastChannelList channels )
 
     if( m_deleteChannelAction == 0 )
     {
-        m_deleteChannelAction = new QAction( KIcon( "edit-delete" ), i18n( "&Delete "
+        m_deleteChannelAction = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete "
                 "Channel and Episodes" ), this );
         m_deleteChannelAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteChannelAction, SIGNAL(triggered()), SLOT(slotDeleteChannels()) );

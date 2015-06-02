@@ -35,7 +35,7 @@
 #include <QTextBrowser>
 
 #include <KAction>
-#include <KIcon>
+#include <QIcon>
 #include <KStandardDirs>
 #include <KUrlRequesterDialog>
 #include <KGlobal>
@@ -81,7 +81,7 @@ PodcastCategory::PodcastCategory( QWidget *parent )
 {
     setPrettyName( i18n( "Podcasts" ) );
     setShortDescription( i18n( "List of podcast subscriptions and episodes" ) );
-    setIcon( KIcon( "podcast-amarok" ) );
+    setIcon( QIcon::fromTheme( "podcast-amarok" ) );
 
     setLongDescription( i18n( "Manage your podcast subscriptions and browse individual episodes. "
                               "Downloading episodes to the disk is also done here, or you can tell "
@@ -93,13 +93,13 @@ PodcastCategory::PodcastCategory( QWidget *parent )
     if( AmarokConfig::showBrowserBackgroundImage() )
         setBackgroundImage( imagePath() );
 
-    QAction *addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"),
+    QAction *addPodcastAction = new QAction( QIcon::fromTheme( "list-add-amarok" ), i18n("&Add Podcast"),
                                              m_toolBar );
     addPodcastAction->setPriority( QAction::NormalPriority );
     m_toolBar->insertAction( m_separator, addPodcastAction );
     connect( addPodcastAction, SIGNAL(triggered(bool)), The::podcastModel(), SLOT(addPodcast()) );
 
-    QAction *updateAllAction = new QAction( KIcon("view-refresh-amarok"), QString(), m_toolBar );
+    QAction *updateAllAction = new QAction( QIcon::fromTheme("view-refresh-amarok"), QString(), m_toolBar );
     updateAllAction->setToolTip( i18n("&Update All") );
     updateAllAction->setPriority( QAction::LowPriority );
     m_toolBar->insertAction( m_separator, updateAllAction );
@@ -107,7 +107,7 @@ PodcastCategory::PodcastCategory( QWidget *parent )
              The::podcastModel(), SLOT(refreshPodcasts()) );
 
 
-    QAction *importOpmlAction = new QAction( KIcon("document-import")
+    QAction *importOpmlAction = new QAction( QIcon::fromTheme("document-import")
                                              , i18n( "Import OPML File" )
                                              , m_toolBar
                                          );

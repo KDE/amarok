@@ -19,7 +19,7 @@
 #include "TranscodingJob.h"
 #include "core/transcoding/TranscodingController.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KPushButton>
 
 using namespace Transcoding;
@@ -51,7 +51,7 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     button( Ok )->setEnabled( false );
 
     QString explanatoryText;
-    KIcon justCopyIcon;
+    QIcon justCopyIcon;
     QString justCopyText;
     QString justCopyDescription;
     switch( operation )
@@ -62,7 +62,7 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
                 "format with an encoder (codec). This can be done to save space or to "
                 "make your files readable by a portable music player or a particular "
                 "software program." );
-            justCopyIcon = KIcon( "edit-copy" );
+            justCopyIcon = QIcon::fromTheme( "edit-copy" );
             justCopyText = i18n( "&Copy" );
             justCopyDescription = i18n( "Just copy the tracks without transcoding them." );
             break;
@@ -73,7 +73,7 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
                 "make your files readable by a portable music player or a particular "
                 "software program. Only successfully transcoded files will be removed "
                 "from their original location." );
-            justCopyIcon = KIcon( "go-jump" ); // Dolphin uses this icon for "move"
+            justCopyIcon = QIcon::fromTheme( "go-jump" ); // Dolphin uses this icon for "move"
             justCopyText = i18n( "&Move" );
             justCopyDescription = i18n( "Just move the tracks without transcoding them." );
             break;

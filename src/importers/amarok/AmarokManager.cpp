@@ -56,10 +56,10 @@ AmarokManager::description() const
     return i18n( "Amarok 2.x Statistics Importer" );
 }
 
-KIcon
+QIcon
 AmarokManager::icon() const
 {
-    return KIcon( "amarok" );
+    return QIcon::fromTheme( "amarok" );
 }
 
 ProviderConfigWidget*

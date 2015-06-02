@@ -17,7 +17,7 @@
 
 #include "AnimatedBarWidget.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QHBoxLayout>
 #include <QPainter>

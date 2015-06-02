@@ -46,7 +46,7 @@ IpodPlaylistProvider::prettyName() const
     return m_coll->prettyName();
 }
 
-KIcon
+QIcon
 IpodPlaylistProvider::icon() const
 {
     return m_coll->icon();

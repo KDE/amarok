@@ -71,7 +71,7 @@ void
 ImporterMocks::initTestCase()
 {
     DefaultValue<QString>::Set( QString() );
-    DefaultValue<KIcon>::Set( KIcon() );
+    DefaultValue<QIcon>::Set( QIcon() );
     DefaultValue<KPluginInfo>::Set( KPluginInfo() );
 
     m_engineController = new EngineController;

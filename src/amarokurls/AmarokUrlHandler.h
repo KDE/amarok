@@ -23,7 +23,7 @@
 #include "core/meta/forward_declarations.h"
 #include "playlist/PlaylistViewUrlRunner.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QMap>
 
@@ -59,7 +59,7 @@ public:
     bool run( AmarokUrl url );
 
     BookmarkList urlsByCommand( const QString &command );
-    KIcon iconForCommand( const QString &command );
+    QIcon iconForCommand( const QString &command );
 
     void updateTimecodes( const QString * BookmarkName = 0 );
     void paintNewTimecode( const QString &name, int pos );

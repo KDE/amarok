@@ -35,9 +35,9 @@
 MusicBrainzTagsView::MusicBrainzTagsView( QWidget *parent )
     : QTreeView( parent )
 {
-    m_artistIcon = KIcon( KStandardDirs::locate( "data", "amarok/images/mb_aicon.png" ) );
-    m_releaseIcon = KIcon( KStandardDirs::locate( "data", "amarok/images/mb_licon.png" ) );
-    m_trackIcon = KIcon( KStandardDirs::locate( "data", "amarok/images/mb_ticon.png" ) );
+    m_artistIcon = QIcon::fromTheme( KStandardDirs::locate( "data", "amarok/images/mb_aicon.png" ) );
+    m_releaseIcon = QIcon::fromTheme( KStandardDirs::locate( "data", "amarok/images/mb_licon.png" ) );
+    m_trackIcon = QIcon::fromTheme( KStandardDirs::locate( "data", "amarok/images/mb_ticon.png" ) );
 }
 
 MusicBrainzTagsModel *
@@ -76,7 +76,7 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
 
     if( model->rowCount() > 1 && !index.data( MusicBrainzTagsModel::ReleasesRole ).isNull() )
     {
-        QAction *action = new QAction( KIcon( "filename-album-amarok" ),
+        QAction *action = new QAction( QIcon::fromTheme( "filename-album-amarok" ),
                                        i18n( "Choose Best Matches from This Album" ), menu );
         connect( action, SIGNAL(triggered()), SLOT(chooseBestMatchesFromRelease()) );
         menu->addAction( action );

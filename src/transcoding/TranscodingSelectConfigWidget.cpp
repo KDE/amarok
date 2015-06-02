@@ -16,7 +16,7 @@
 
 #include "TranscodingSelectConfigWidget.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocalizedString>
 
 using namespace Transcoding;
@@ -32,21 +32,21 @@ void
 SelectConfigWidget::fillInChoices( const Configuration &savedConfiguration )
 {
     clear();
-    addItem( KIcon( "edit-copy" ), i18n( "Never" ), JustCopy );
-    addItem( KIcon( "view-choose" ), i18n( "Ask before each transfer" ), Invalid );
+    addItem( QIcon::fromTheme( "edit-copy" ), i18n( "Never" ), JustCopy );
+    addItem( QIcon::fromTheme( "view-choose" ), i18n( "Ask before each transfer" ), Invalid );
     if( savedConfiguration.isValid() )
     {
         if( !savedConfiguration.isJustCopy() )
         {
             Configuration temp = savedConfiguration;
             temp.setTrackSelection( Configuration::TranscodeAll );
-            addItem( KIcon( "audio-x-generic" ), temp.prettyName(),
+            addItem( QIcon::fromTheme( "audio-x-generic" ), temp.prettyName(),
                     TranscodeAll );
             temp.setTrackSelection( Configuration::TranscodeUnlessSameType );
-            addItem( KIcon( "audio-x-generic" ), temp.prettyName(),
+            addItem( QIcon::fromTheme( "audio-x-generic" ), temp.prettyName(),
                     TranscodeUnlessSameType );
             temp.setTrackSelection( Configuration::TranscodeOnlyIfNeeded );
-            addItem( KIcon( "audio-x-generic" ),temp.prettyName(),
+            addItem( QIcon::fromTheme( "audio-x-generic" ),temp.prettyName(),
                     TranscodeOnlyIfNeeded );
             setCurrentIndex( savedConfiguration.trackSelection() + 2 );
         }

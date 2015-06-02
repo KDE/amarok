@@ -64,8 +64,8 @@ MetadataConfig::MetadataConfig( QWidget *parent )
     StatSyncing::Config *config = controller ? controller->config() : 0;
     m_statSyncingConfig = config;
     m_statSyncingProvidersView->setModel( config );
-    m_synchronizeButton->setIcon( KIcon( "amarok_playcount" ) );
-    m_configureTargetButton->setIcon( KIcon( "configure" ) );
+    m_synchronizeButton->setIcon( QIcon::fromTheme( "amarok_playcount" ) );
+    m_configureTargetButton->setIcon( QIcon::fromTheme( "configure" ) );
     connect( config, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SIGNAL(changed()) );
     connect( config, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(changed()) );
     connect( config, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(changed()) );

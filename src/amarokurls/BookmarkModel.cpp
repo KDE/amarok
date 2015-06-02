@@ -25,7 +25,7 @@
 #include <core-impl/storage/StorageManager.h>
 #include <core/storage/SqlStorage.h>
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QAbstractListModel>
 #include <QListIterator>
@@ -109,7 +109,7 @@ BookmarkModel::data( const QModelIndex & index, int role ) const
         if( index.column() == Name )
         {
             if ( typeid( * item ) == typeid( BookmarkGroup ) )
-                return QVariant( KIcon( "folder-bookmark" ) );
+                return QVariant( QIcon::fromTheme( "folder-bookmark" ) );
             else if ( typeid( * item ) == typeid( AmarokUrl ) )
             {
                 AmarokUrl * url = static_cast<AmarokUrl *>( item.data() );

@@ -64,11 +64,11 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     connect( m_rescanDirAction, SIGNAL(triggered()),
              this, SLOT(slotRescanDirTriggered()) );
 
-    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui.buttonContainer );
+    KPushButton *rescan = new KPushButton( QIcon::fromTheme( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui.buttonContainer );
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
     connect( rescan, SIGNAL(clicked()), CollectionManager::instance(), SLOT(startFullScan()) );
 
-    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import batch file..." ), m_ui.buttonContainer );
+    KPushButton *import = new KPushButton( QIcon::fromTheme( "tools-wizard" ), i18n( "Import batch file..." ), m_ui.buttonContainer );
     import->setToolTip( i18n( "Import collection from file produced by amarokcollectionscanner." ) );
     connect( import, SIGNAL(clicked()), this, SLOT(importCollection()) );
 

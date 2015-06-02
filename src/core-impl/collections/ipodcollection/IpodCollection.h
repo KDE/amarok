@@ -74,7 +74,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         virtual QString uidUrlProtocol() const;
         virtual QString collectionId() const;
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
         virtual bool hasCapacity() const;
         virtual float usedCapacity() const;

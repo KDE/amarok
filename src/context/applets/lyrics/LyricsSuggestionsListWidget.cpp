@@ -21,7 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KSqueezedTextLabel>
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
@@ -95,7 +95,7 @@ LyricsSuggestionItem::LyricsSuggestionItem( const LyricsSuggestion &suggestion, 
     artistLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     artistProxy->setWidget( artistLabel );
 
-    Plasma::IconWidget *lyricsIcon( new Plasma::IconWidget(KIcon("amarok_lyrics"), QString(), this) );
+    Plasma::IconWidget *lyricsIcon( new Plasma::IconWidget(QIcon::fromTheme("amarok_lyrics"), QString(), this) );
     lyricsIcon->setDrawBackground( true );
     connect( lyricsIcon, SIGNAL(clicked()), SLOT(onClicked()) );
 

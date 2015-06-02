@@ -21,7 +21,7 @@
 #include "MediaDevicePlaylist.h"
 
 #include <klocale.h>
-#include <kicon.h>
+#include <QIcon>
 
 namespace Collections {
     class MediaDeviceCollection;
@@ -38,7 +38,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
 
         /* PlaylistProvider functions */
         virtual QString prettyName() const { return i18n( "Media Device playlists" ); };
-        virtual KIcon icon() const { return KIcon( "multimedia-player" ); }
+        virtual QIcon icon() const { return QIcon::fromTheme( "multimedia-player" ); }
 
         /* Playlists::UserPlaylistProvider functions */
         virtual Playlists::PlaylistList playlists();

@@ -74,10 +74,10 @@ Mp3Format::description() const
                   "audio storage, and is widely supported on portable music players." );
 }
 
-KIcon
+QIcon
 Mp3Format::icon() const
 {
-    return KIcon( "audio-x-generic" );  //TODO: get a *real* icon!
+    return QIcon::fromTheme( "audio-x-generic" );  //TODO: get a *real* icon!
 }
 
 QStringList

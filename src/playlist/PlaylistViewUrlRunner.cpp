@@ -90,10 +90,10 @@ ViewUrlRunner::prettyCommand() const
     return i18nc( "A type of command that affects the sorting, layout and filtering int he Playlist", "Playlist" );
 }
 
-KIcon
+QIcon
 ViewUrlRunner::icon() const
 {
-    return KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-bookmark-16.png" ) ) );
+    return QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-bookmark-16.png" ) ) );
 }
 
 } //namespace Playlist

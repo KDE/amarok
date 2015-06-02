@@ -80,7 +80,7 @@ JamendoService::JamendoService( JamendoServiceFactory* parent, const QString & n
     , m_xmlParser( 0 )
 {
     setShortDescription(  i18n( "A archive of free, Creative Commons licensed music" ) );
-    setIcon( KIcon( "view-services-jamendo-amarok" ) );
+    setIcon( QIcon::fromTheme( "view-services-jamendo-amarok" ) );
 
     setLongDescription( i18n( "Jamendo.com puts artists and music lovers in touch with each other. The site allows artists to upload their own albums to share them with the world and users to download all of them for free. Listen to and download all Jamendo.com contents from within Amarok." ) );
 
@@ -126,13 +126,13 @@ JamendoService::polish()
     m_updateListButton->setParent( bottomPanelLayout );
     m_updateListButton->setText( i18nc( "Fetch new information from the website", "Update" ) );
     m_updateListButton->setObjectName( "updateButton" );
-    m_updateListButton->setIcon( KIcon( "view-refresh-amarok" ) );
+    m_updateListButton->setIcon( QIcon::fromTheme( "view-refresh-amarok" ) );
 
     m_downloadButton = new QPushButton;
     m_downloadButton->setParent( bottomPanelLayout );
     m_downloadButton->setText( i18n( "Download" ) );
     m_downloadButton->setObjectName( "downloadButton" );
-    m_downloadButton->setIcon( KIcon( "download-amarok" ) );
+    m_downloadButton->setIcon( QIcon::fromTheme( "download-amarok" ) );
     m_downloadButton->setEnabled( false );
 
     connect( m_updateListButton, SIGNAL(clicked()), this, SLOT(updateButtonClicked()) );
@@ -164,7 +164,7 @@ JamendoService::polish()
     action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum()) );
 
-    KAction *filterMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
+    KAction *filterMenuAction = new KAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
     filterMenuAction->setMenu( filterMenu );
 
     m_searchWidget->toolBar()->addSeparator();

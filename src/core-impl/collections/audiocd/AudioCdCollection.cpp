@@ -372,10 +372,10 @@ AudioCdCollection::prettyName() const
     return i18n( "Audio CD" );
 }
 
-KIcon
+QIcon
 AudioCdCollection::icon() const
 {
-    return KIcon( "media-optical-audio" );
+    return QIcon::fromTheme( "media-optical-audio" );
 }
 
 void

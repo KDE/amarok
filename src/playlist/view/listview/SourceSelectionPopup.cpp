@@ -16,7 +16,7 @@
  
 #include "SourceSelectionPopup.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 #include <QPushButton>
@@ -52,7 +52,7 @@ namespace Playlist {
     foreach( const QString &source, m_msc->sources() )
     {
         if ( i == m_msc->current() )
-            new QListWidgetItem( KIcon( "arrow-right" ), source, m_listWidget ) ;
+            new QListWidgetItem( QIcon::fromTheme( "arrow-right" ), source, m_listWidget ) ;
         else
             new QListWidgetItem( source, m_listWidget );
 
@@ -80,7 +80,7 @@ void SourceSelectionPopup::sourceSelected( QListWidgetItem * item )
     foreach( const QString &source, m_msc->sources() )
     {
         if ( i == m_msc->current() )
-            new QListWidgetItem( KIcon( "arrow-right" ), source, m_listWidget ) ;
+            new QListWidgetItem( QIcon::fromTheme( "arrow-right" ), source, m_listWidget ) ;
         else
             new QListWidgetItem( source, m_listWidget );
 

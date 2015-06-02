@@ -26,7 +26,7 @@
 #include "widgets/HorizontalDivider.h"
 
 #include <KAction>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 #include <QWidget>
@@ -71,14 +71,14 @@ BrowserDock::~BrowserDock()
 
 void BrowserDock::polish()
 {
-    m_categoryList.data()->setIcon( KIcon( "user-home" ) );
+    m_categoryList.data()->setIcon( QIcon::fromTheme( "user-home" ) );
 
     m_categoryList.data()->setMinimumSize( 100, 300 );
 
     connect( m_breadcrumbWidget, SIGNAL(toHome()), this, SLOT(home()) );
 
     // Keyboard shortcut for going back one level
-    KAction *action = new KAction( KIcon( "go-up" ), i18n( "Go Up in Media Sources Pane" ),
+    KAction *action = new KAction( QIcon::fromTheme( "go-up" ), i18n( "Go Up in Media Sources Pane" ),
                                   m_mainWidget );
     Amarok::actionCollection()->addAction( "browser_previous", action );
     connect( action, SIGNAL(triggered(bool)), m_categoryList.data(), SLOT(back()) );

@@ -25,7 +25,7 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
-#include <KIcon>
+#include <QIcon>
 #include <KLineEdit>
 #include <KHBox>
 #include <KPushButton>
@@ -67,7 +67,7 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
 
     if( advanced )
     {
-        m_filterAction = new QAction( KIcon( "document-properties" ), i18n( "Edit filter" ), this );
+        m_filterAction = new QAction( QIcon::fromTheme( "document-properties" ), i18n( "Edit filter" ), this );
         m_filterAction->setObjectName( "filter" );
         m_toolBar->addAction( m_filterAction );
 
@@ -161,7 +161,7 @@ SearchWidget::showAdvancedButton( bool show )
     {
         if( m_filterAction != 0 )
         {
-            m_filterAction = new QAction( KIcon( "document-properties" ), i18n( "Edit filter" ), this );
+            m_filterAction = new QAction( QIcon::fromTheme( "document-properties" ), i18n( "Edit filter" ), this );
             m_filterAction->setObjectName( "filter" );
             m_toolBar->addAction( m_filterAction );
             connect( m_filterAction, SIGNAL(triggered()), this, SLOT(slotShowFilterEditor()) );

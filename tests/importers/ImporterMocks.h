@@ -57,7 +57,7 @@ public:
     MOCK_CONST_METHOD0( type, QString() );
     MOCK_CONST_METHOD0( description, QString() );
     MOCK_CONST_METHOD0( prettyName, QString() );
-    MOCK_CONST_METHOD0( icon, KIcon() );
+    MOCK_CONST_METHOD0( icon, QIcon() );
     MOCK_METHOD1( configWidget, StatSyncing::ProviderConfigWidget*(const QVariantMap&) );
     MOCK_CONST_METHOD0( pluginInfo, KPluginInfo() );
     MOCK_METHOD1( newInstance, StatSyncing::ImporterProviderPtr(const QVariantMap&) );

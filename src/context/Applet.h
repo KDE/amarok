@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <Plasma/Applet>
 
 #include <QFont>

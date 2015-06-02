@@ -37,7 +37,7 @@
 #include <QTimeEdit>
 
 #include <KComboBox>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 #include <klocalizeddate.h>
 #include <KNumInput>
@@ -314,7 +314,7 @@ static void addIconItem( KComboBox *box, qint64 field )
     if( icon.isEmpty() )
         box->addItem( text, field );
     else
-        box->addItem( KIcon( icon ), text, field );
+        box->addItem( QIcon::fromTheme( icon ), text, field );
 }
 
 void

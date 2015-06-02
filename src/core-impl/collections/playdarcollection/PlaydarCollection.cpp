@@ -28,7 +28,7 @@
 #include "support/ProxyResolver.h"
 #include "core/support/Debug.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QObject>
 #include <QString>
@@ -173,10 +173,10 @@ namespace Collections
         return collectionId();
     }
 
-    KIcon
+    QIcon
     PlaydarCollection::icon() const
     {
-        return KIcon( "network-server" );
+        return QIcon::fromTheme( "network-server" );
     }
 
     bool

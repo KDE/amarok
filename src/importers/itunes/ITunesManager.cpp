@@ -23,6 +23,6 @@ AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( itunes,
                                       "ITunesImporter",
                                       i18n( "Apple iTunes" ),
                                       i18n( "iTunes Statistics Importer" ),
-                                      KIcon( "media-album-track" ),
+                                      QIcon::fromTheme( "media-album-track" ),
                                       StatSyncing::ITunesConfigWidget,
                                       StatSyncing::ITunesProvider )

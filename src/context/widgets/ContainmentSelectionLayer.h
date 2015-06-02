@@ -21,7 +21,7 @@
 
 #include <plasma/containment.h>
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QGraphicsItem>
 #include <QGraphicsSceneHoverEvent>
@@ -50,7 +50,7 @@ class AMAROK_EXPORT ContainmentSelectionLayer: public QObject, public QGraphicsI
         Plasma::Containment *m_containment;
         bool m_mouseHover;
         QGraphicsSimpleTextItem *m_zoomInText;
-        KIcon *m_zoomInIcon;
+        QIcon *m_zoomInIcon;
     Q_SIGNALS:
         void zoomRequested( Plasma::Containment *containment, Plasma::ZoomDirection direction );
 

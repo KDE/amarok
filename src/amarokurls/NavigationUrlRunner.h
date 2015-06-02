@@ -20,7 +20,7 @@
 #include "AmarokUrl.h"
 #include "AmarokUrlRunnerBase.h"
 
-#include <KIcon>
+#include <QIcon>
 
 
 class NavigationUrlRunner : public AmarokUrlRunnerBase
@@ -32,7 +32,7 @@ public:
 
     virtual QString command() const;
     virtual QString prettyCommand() const;
-    virtual KIcon icon() const;
+    virtual QIcon icon() const;
     virtual bool run( AmarokUrl url );
 };
 

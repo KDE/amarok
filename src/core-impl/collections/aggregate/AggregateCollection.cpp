@@ -23,7 +23,7 @@
 #include "core-impl/collections/aggregate/AggregateQueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QReadLocker>
 #include <QTimer>
@@ -51,10 +51,10 @@ AggregateCollection::prettyName() const
                   "Aggregate Collection" );
 }
 
-KIcon
+QIcon
 AggregateCollection::icon() const
 {
-    return KIcon("drive-harddisk");
+    return QIcon::fromTheme("drive-harddisk");
 }
 
 bool

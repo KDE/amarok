@@ -108,7 +108,7 @@ TimeDifferenceLabel::update()
 RecentlyPlayedListWidget::RecentlyPlayedListWidget( QGraphicsWidget *parent )
     : Plasma::ScrollWidget( parent )
     , m_layout( new QGraphicsLinearLayout( Qt::Vertical ) )
-    , m_trackIcon( KIcon( "media-album-track") )
+    , m_trackIcon( QIcon::fromTheme( "media-album-track") )
 {
     QGraphicsWidget *content = new QGraphicsWidget;
     content->setLayout( m_layout );

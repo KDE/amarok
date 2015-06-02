@@ -42,10 +42,10 @@ AmazonUrlRunner::prettyCommand() const
     return i18nc( "A type of command that triggers an action in the integrated MP3 Music Store service", "Amazon" );
 }
 
-KIcon
+QIcon
 AmazonUrlRunner::icon() const
 {
-    return KIcon( "view-services-amazon-amarok" );
+    return QIcon::fromTheme( "view-services-amazon-amarok" );
 }
 
 bool

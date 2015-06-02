@@ -22,7 +22,7 @@
 #include <QTimer>
 #include <QWidget>
 
-#include <KIcon>
+#include <QIcon>
 
 class BookmarkTriangle;
 
@@ -62,7 +62,7 @@ private:
 
     QTimer *m_timer;
     QString m_label;
-    KIcon m_deleteIcon;
+    QIcon m_deleteIcon;
     QRect m_deleteIconRect;
     QLineEdit *m_edit;
     int m_width;

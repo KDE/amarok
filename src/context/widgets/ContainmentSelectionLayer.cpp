@@ -47,7 +47,7 @@ ContainmentSelectionLayer::ContainmentSelectionLayer( QGraphicsItem *parent )
     m_zoomInText->setBrush( Qt::white );
         
     m_zoomInText->hide();
-    m_zoomInIcon = new KIcon( "zoom-in" );
+    m_zoomInIcon = new QIcon::fromTheme( "zoom-in" );
 }
 
 QRectF

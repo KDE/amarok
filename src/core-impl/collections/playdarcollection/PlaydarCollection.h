@@ -24,7 +24,7 @@
 #include "support/Controller.h"
 #include "support/ProxyResolver.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QObject>
 #include <QString>
@@ -70,7 +70,7 @@ namespace Collections
             QString uidUrlProtocol() const;
             QString collectionId() const;
             QString prettyName() const;
-            KIcon icon() const;
+            QIcon icon() const;
             
             bool isWritable() const;
             bool isOrganizable() const;

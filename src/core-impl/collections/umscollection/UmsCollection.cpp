@@ -246,15 +246,15 @@ UmsCollection::UmsCollection( Solid::Device device )
     connect( this, SIGNAL(startUpdateTimer()), SLOT(slotStartUpdateTimer()) );
     connect( &m_updateTimer, SIGNAL(timeout()), SLOT(collectionUpdated()) );
 
-    m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure Device" ), this );
+    m_configureAction = new QAction( QIcon::fromTheme( "configure" ), i18n( "&Configure Device" ), this );
     m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
     connect( m_configureAction, SIGNAL(triggered()), SLOT(slotConfigure()) );
 
-    m_parseAction = new QAction( KIcon( "checkbox" ), i18n(  "&Activate This Collection" ), this );
+    m_parseAction = new QAction( QIcon::fromTheme( "checkbox" ), i18n(  "&Activate This Collection" ), this );
     m_parseAction->setProperty( "popupdropper_svg_id", "edit" );
     connect( m_parseAction, SIGNAL(triggered()), this, SLOT(slotParseActionTriggered()) );
 
-    m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Eject Device" ),
+    m_ejectAction = new QAction( QIcon::fromTheme( "media-eject" ), i18n( "&Eject Device" ),
                                  const_cast<UmsCollection*>( this ) );
     m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
     connect( m_ejectAction, SIGNAL(triggered()), SLOT(slotEject()) );
@@ -390,13 +390,13 @@ UmsCollection::prettyName() const
                       "actual collection name", "%1 (not activated)", actualName );
 }
 
-KIcon
+QIcon
 UmsCollection::icon() const
 {
     if( m_device.icon().isEmpty() )
-        return KIcon( "drive-removable-media-usb-pendrive" );
+        return QIcon::fromTheme( "drive-removable-media-usb-pendrive" );
     else
-        return KIcon( m_device.icon() );
+        return QIcon::fromTheme( m_device.icon() );
 }
 
 bool

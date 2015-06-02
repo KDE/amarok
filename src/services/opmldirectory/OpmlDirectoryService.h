@@ -64,7 +64,7 @@ class OpmlDirectoryService : public ServiceBase, public AmarokUrlRunnerBase
         virtual QString command() const;
         virtual QString prettyCommand() const;
         virtual bool run( AmarokUrl url );
-        virtual KIcon icon() const { return KIcon( "view-services-opml-amarok" ); }
+        virtual QIcon icon() const { return QIcon::fromTheme( "view-services-opml-amarok" ); }
 
     private slots:
         void subscribe();

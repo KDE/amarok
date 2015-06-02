@@ -23,7 +23,7 @@
 #include "core-impl/collections/mediadevicecollection/support/mediadevicecollection_export.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QtGlobal>
 #include <QSharedPointer>
@@ -111,7 +111,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
         virtual QString collectionId() const; // uses udi
 
         virtual QString prettyName() const = 0; // NOTE: must be overridden based on device type
-        virtual KIcon icon() const = 0; // NOTE: must be overridden based on device type
+        virtual QIcon icon() const = 0; // NOTE: must be overridden based on device type
 
         virtual bool hasCapacity() const;
         virtual float usedCapacity() const;

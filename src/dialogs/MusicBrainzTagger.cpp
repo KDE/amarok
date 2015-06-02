@@ -32,7 +32,7 @@
 #endif
 #include "ui_MusicBrainzTagger.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QSortFilterProxyModel>
 #include <QToolBar>
@@ -89,9 +89,9 @@ MusicBrainzTagger::init()
         QToolBar *toolBar = new QToolBar( this );
         toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-        QAction *lastAction = toolBar->addAction( KIcon( "tools-wizard" ), i18n( "Choose Best Matches" ), m_resultsModel, SLOT(chooseBestMatches()) );
+        QAction *lastAction = toolBar->addAction( QIcon::fromTheme( "tools-wizard" ), i18n( "Choose Best Matches" ), m_resultsModel, SLOT(chooseBestMatches()) );
         lastAction->setToolTip( i18n( "Use the top result for each undecided track. Alternatively, you can click on <b>Choose Best Matches from This Album</b> in the context menu of a good suggestion; it may give even better results because it prevents mixing different album releases together." ) );
-        lastAction = toolBar->addAction( KIcon( "edit-clear" ), i18n( "Clear Choices" ), m_resultsModel, SLOT(clearChoices()) );
+        lastAction = toolBar->addAction( QIcon::fromTheme( "edit-clear" ), i18n( "Clear Choices" ), m_resultsModel, SLOT(clearChoices()) );
         lastAction->setToolTip( i18n( "Clear all choices, even manually made ones." ) );
 
         toolBar->addSeparator();

@@ -50,10 +50,10 @@ CollectionProvider::prettyName() const
     return m_coll ? m_coll.data()->prettyName() : QString();
 }
 
-KIcon
+QIcon
 CollectionProvider::icon() const
 {
-    return m_coll ? m_coll.data()->icon() : KIcon();
+    return m_coll ? m_coll.data()->icon() : QIcon();
 }
 
 qint64

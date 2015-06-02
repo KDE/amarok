@@ -18,7 +18,7 @@
 
 #include "AmarokUrl.h"
 
-#include <KIcon>
+#include <QIcon>
 
 class AmarokUrlGenerator
 {
@@ -34,7 +34,7 @@ public:
     /**
        Get the icon for the type of bookmarks created.
     */
-    virtual KIcon icon() = 0;
+    virtual QIcon icon() = 0;
 
     /**
        Cretate the default url for this generator.

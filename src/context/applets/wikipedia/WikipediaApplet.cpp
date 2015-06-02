@@ -598,51 +598,51 @@ WikipediaApplet::init()
     setPreferredHeight( collapseHeight() );
 
     QAction* backwardAction = new QAction( this );
-    backwardAction->setIcon( KIcon( "go-previous" ) );
+    backwardAction->setIcon( QIcon::fromTheme( "go-previous" ) );
     backwardAction->setEnabled( false );
     backwardAction->setText( i18n( "Back" ) );
     d->backwardIcon = addLeftHeaderAction( backwardAction );
     connect( d->backwardIcon, SIGNAL(clicked()), this, SLOT(_goBackward()) );
 
     QAction* forwardAction = new QAction( this );
-    forwardAction->setIcon( KIcon( "go-next" ) );
+    forwardAction->setIcon( QIcon::fromTheme( "go-next" ) );
     forwardAction->setEnabled( false );
     forwardAction->setText( i18n( "Forward" ) );
     d->forwardIcon = addLeftHeaderAction( forwardAction );
     connect( d->forwardIcon, SIGNAL(clicked()), this, SLOT(_goForward()) );
 
     QAction* reloadAction = new QAction( this );
-    reloadAction->setIcon( KIcon( "view-refresh" ) );
+    reloadAction->setIcon( QIcon::fromTheme( "view-refresh" ) );
     reloadAction->setText( i18n( "Reload" ) );
     d->reloadIcon = addLeftHeaderAction( reloadAction );
     connect( d->reloadIcon, SIGNAL(clicked()), this, SLOT(_reloadWikipedia()) );
 
     QAction* artistAction = new QAction( this );
-    artistAction->setIcon( KIcon( "filename-artist-amarok" ) );
+    artistAction->setIcon( QIcon::fromTheme( "filename-artist-amarok" ) );
     artistAction->setText( i18n( "Artist" ) );
     d->artistIcon = addRightHeaderAction( artistAction );
     connect( d->artistIcon, SIGNAL(clicked()), this, SLOT(_gotoArtist()) );
 
     QAction* composerAction = new QAction( this );
-    composerAction->setIcon( KIcon( "filename-composer-amarok" ) );
+    composerAction->setIcon( QIcon::fromTheme( "filename-composer-amarok" ) );
     composerAction->setText( i18n( "Composer" ) );
     d->composerIcon = addRightHeaderAction( composerAction );
     connect( d->composerIcon, SIGNAL(clicked()), this, SLOT(_gotoComposer()) );
 
     QAction* albumAction = new QAction( this );
-    albumAction->setIcon( KIcon( "filename-album-amarok" ) );
+    albumAction->setIcon( QIcon::fromTheme( "filename-album-amarok" ) );
     albumAction->setText( i18n( "Album" ) );
     d->albumIcon = addRightHeaderAction( albumAction );
     connect( d->albumIcon, SIGNAL(clicked()), this, SLOT(_gotoAlbum()) );
 
     QAction* trackAction = new QAction( this );
-    trackAction->setIcon( KIcon( "filename-title-amarok" ) );
+    trackAction->setIcon( QIcon::fromTheme( "filename-title-amarok" ) );
     trackAction->setText( i18n( "Track" ) );
     d->trackIcon = addRightHeaderAction( trackAction );
     connect( d->trackIcon, SIGNAL(clicked()), this, SLOT(_gotoTrack()) );
 
     QAction* settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setIcon( QIcon::fromTheme( "preferences-system" ) );
     settingsAction->setText( i18n( "Settings" ) );
     d->settingsIcon = addRightHeaderAction( settingsAction );
     connect( d->settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );

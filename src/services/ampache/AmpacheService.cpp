@@ -95,7 +95,7 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
     DEBUG_BLOCK
     connect(m_ampacheLogin, SIGNAL(loginSuccessful()), this, SLOT(onLoginSuccessful()));
     setShortDescription( i18n( "Amarok frontend for your Ampache server" ) );
-    setIcon( KIcon( "view-services-ampache-amarok" ) );
+    setIcon( QIcon::fromTheme( "view-services-ampache-amarok" ) );
     setLongDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server. This lets you browse and play all the Ampache contents from within Amarok." ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_ampache.png" ) );
 #ifdef HAVE_LIBLASTFM

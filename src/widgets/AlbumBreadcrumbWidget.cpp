@@ -19,15 +19,15 @@
 #include "core/meta/Meta.h"
 #include "widgets/BreadcrumbItemButton.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 AlbumBreadcrumbWidget::AlbumBreadcrumbWidget( const Meta::AlbumPtr album, QWidget *parent )
     : KHBox( parent )
     , m_album( album )
 {
-    const KIcon artistIcon = KIcon( "filename-artist-amarok" );
-    const KIcon albumIcon = KIcon( "filename-album-amarok" );
+    const QIcon artistIcon = QIcon::fromTheme( "filename-artist-amarok" );
+    const QIcon albumIcon = QIcon::fromTheme( "filename-album-amarok" );
     new BreadcrumbItemMenuButton( this );
     m_artistButton = new BreadcrumbItemButton( artistIcon, QString(), this );
     new BreadcrumbItemMenuButton( this );

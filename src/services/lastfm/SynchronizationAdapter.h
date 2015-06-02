@@ -38,7 +38,7 @@ class SynchronizationAdapter : public StatSyncing::Provider
         virtual QString id() const;
         virtual QString prettyName() const;
         virtual QString description() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
         virtual qint64 reliableTrackMetaData() const;
         virtual qint64 writableTrackStatsData() const;
         virtual Preference defaultPreference();

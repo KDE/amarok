@@ -284,19 +284,19 @@ SqlPodcastProvider::providerActions()
 {
     if( m_providerActions.isEmpty() )
     {
-        QAction *updateAllAction = new QAction( KIcon( "view-refresh-amarok" ),
+        QAction *updateAllAction = new QAction( QIcon::fromTheme( "view-refresh-amarok" ),
                 i18n( "&Update All Channels" ), this );
         updateAllAction->setProperty( "popupdropper_svg_id", "update" );
         connect( updateAllAction, SIGNAL(triggered()), this, SLOT(updateAll()) );
         m_providerActions << updateAllAction;
 
-        QAction *configureAction = new QAction( KIcon( "configure" ),
+        QAction *configureAction = new QAction( QIcon::fromTheme( "configure" ),
                 i18n( "&Configure General Settings" ), this );
         configureAction->setProperty( "popupdropper_svg_id", "configure" );
         connect( configureAction, SIGNAL(triggered()), this, SLOT(slotConfigureProvider()) );
         m_providerActions << configureAction;
 
-        QAction *exportOpmlAction = new QAction( KIcon( "document-export" ),
+        QAction *exportOpmlAction = new QAction( QIcon::fromTheme( "document-export" ),
                 i18n( "&Export subscriptions to OPML file" ), this );
         connect( exportOpmlAction, SIGNAL(triggered()), SLOT(slotExportOpml()) );
         m_providerActions << exportOpmlAction;
@@ -323,7 +323,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
     //TODO: add export OPML action for selected playlists only. Use the QAction::data() trick.
     if( m_configureChannelAction == 0 )
     {
-        m_configureChannelAction = new QAction( KIcon( "configure" ), i18n( "&Configure" ), this );
+        m_configureChannelAction = new QAction( QIcon::fromTheme( "configure" ), i18n( "&Configure" ), this );
         m_configureChannelAction->setProperty( "popupdropper_svg_id", "configure" );
         connect( m_configureChannelAction, SIGNAL(triggered()), SLOT(slotConfigureChannel()) );
     }
@@ -336,7 +336,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
 
     if( m_removeAction == 0 )
     {
-        m_removeAction = new QAction( KIcon( "news-unsubscribe" ), i18n( "&Remove Subscription" ), this );
+        m_removeAction = new QAction( QIcon::fromTheme( "news-unsubscribe" ), i18n( "&Remove Subscription" ), this );
         m_removeAction->setProperty( "popupdropper_svg_id", "remove" );
         connect( m_removeAction, SIGNAL(triggered()), SLOT(slotRemoveChannels()) );
     }
@@ -345,7 +345,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
 
     if( m_updateAction == 0 )
     {
-        m_updateAction = new QAction( KIcon( "view-refresh-amarok" ), i18n( "&Update Channel" ), this );
+        m_updateAction = new QAction( QIcon::fromTheme( "view-refresh-amarok" ), i18n( "&Update Channel" ), this );
         m_updateAction->setProperty( "popupdropper_svg_id", "update" );
         connect( m_updateAction, SIGNAL(triggered()), SLOT(slotUpdateChannels()) );
     }
@@ -381,14 +381,14 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
 
     if( m_downloadAction == 0 )
     {
-        m_downloadAction = new QAction( KIcon( "go-down" ), i18n( "&Download Episode" ), this );
+        m_downloadAction = new QAction( QIcon::fromTheme( "go-down" ), i18n( "&Download Episode" ), this );
         m_downloadAction->setProperty( "popupdropper_svg_id", "download" );
         connect( m_downloadAction, SIGNAL(triggered()), SLOT(slotDownloadEpisodes()) );
     }
 
     if( m_deleteAction == 0 )
     {
-        m_deleteAction = new QAction( KIcon( "edit-delete" ),
+        m_deleteAction = new QAction( QIcon::fromTheme( "edit-delete" ),
             i18n( "&Delete Downloaded Episode" ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         m_deleteAction->setObjectName( "deleteAction" );
@@ -397,7 +397,7 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
 
     if( m_writeTagsAction == 0 )
     {
-        m_writeTagsAction = new QAction( KIcon( "media-track-edit-amarok" ),
+        m_writeTagsAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
             i18n( "&Write Feed Information to File" ), this );
         m_writeTagsAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_writeTagsAction, SIGNAL(triggered()), SLOT(slotWriteTagsToFiles()) );
@@ -405,7 +405,7 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
 
     if( m_keepAction == 0 )
     {
-        m_keepAction = new QAction( KIcon( "podcast-amarok" ),
+        m_keepAction = new QAction( QIcon::fromTheme( "podcast-amarok" ),
                 i18n( "&Keep downloaded file" ), this );
         m_keepAction->setToolTip( i18n( "Toggle the \"keep\" downloaded file status of "
                 "this podcast episode. Downloaded files with this status wouldn't be "

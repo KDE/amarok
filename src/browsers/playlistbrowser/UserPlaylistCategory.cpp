@@ -31,7 +31,7 @@
 #include <KAction>
 #include <KActionMenu>
 #include <KButtonGroup>
-#include <KIcon>
+#include <QIcon>
 #include <KLineEdit>
 
 #include <QButtonGroup>
@@ -56,7 +56,7 @@ UserPlaylistCategory::UserPlaylistCategory( QWidget * parent )
 {
     setPrettyName( i18n( "Saved Playlists" ) );
     setShortDescription( i18n( "User generated and imported playlists" ) );
-    setIcon( KIcon( "amarok_playlist" ) );
+    setIcon( QIcon::fromTheme( "amarok_playlist" ) );
 
     setLongDescription( i18n( "Create, edit, organize and load playlists. "
         "Amarok automatically adds any playlists found when scanning your collection, "

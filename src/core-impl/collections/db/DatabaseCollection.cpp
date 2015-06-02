@@ -53,10 +53,10 @@ DatabaseCollection::prettyName() const
     return i18n( "Local Collection" );
 }
 
-KIcon
+QIcon
 DatabaseCollection::icon() const
 {
-    return KIcon("drive-harddisk");
+    return QIcon::fromTheme("drive-harddisk");
 }
 
 GenericScanManager*

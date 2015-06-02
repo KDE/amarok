@@ -21,7 +21,7 @@
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "scripting/scriptengine/ScriptingDefines.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QScriptEngine>
 #include <QScriptValue>

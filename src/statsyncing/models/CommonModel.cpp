@@ -21,7 +21,7 @@
 #include "core/support/Debug.h"
 #include "statsyncing/Options.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocalizedString>
 
 #include <QApplication>

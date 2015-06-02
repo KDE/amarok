@@ -108,27 +108,27 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     connect( moveUpButton, SIGNAL(clicked()), this, SLOT(moveUp()) );
     connect( moveDownButton, SIGNAL(clicked()), this, SLOT(moveDown()) );
 
-    buttonBox->button(QDialogButtonBox::Apply)->setIcon( KIcon( "dialog-ok-apply" ) );
-    buttonBox->button(QDialogButtonBox::Ok)->setIcon( KIcon( "dialog-ok" ) );
-    buttonBox->button(QDialogButtonBox::Cancel)->setIcon( KIcon( "dialog-cancel" ) );
+    buttonBox->button(QDialogButtonBox::Apply)->setIcon( QIcon::fromTheme( "dialog-ok-apply" ) );
+    buttonBox->button(QDialogButtonBox::Ok)->setIcon( QIcon::fromTheme( "dialog-ok" ) );
+    buttonBox->button(QDialogButtonBox::Cancel)->setIcon( QIcon::fromTheme( "dialog-cancel" ) );
     connect( buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()) );
 
-    const KIcon newIcon( "document-new" );
+    const QIcon newIcon( "document-new" );
     newLayoutButton->setIcon( newIcon );
     newLayoutButton->setToolTip( i18n( "New playlist layout" ) );
     connect( newLayoutButton, SIGNAL(clicked()), this, SLOT(newLayout()) );
 
-    const KIcon copyIcon( "edit-copy" );
+    const QIcon copyIcon( "edit-copy" );
     copyLayoutButton->setIcon( copyIcon );
     copyLayoutButton->setToolTip( i18n( "Copy playlist layout" ) );
     connect( copyLayoutButton, SIGNAL(clicked()), this, SLOT(copyLayout()) );
 
-    const KIcon deleteIcon( "edit-delete" );
+    const QIcon deleteIcon( "edit-delete" );
     deleteLayoutButton->setIcon( deleteIcon );
     deleteLayoutButton->setToolTip( i18n( "Delete playlist layout" ) );
     connect( deleteLayoutButton, SIGNAL(clicked()), this, SLOT(deleteLayout()) );
 
-    const KIcon renameIcon( "edit-rename" );
+    const QIcon renameIcon( "edit-rename" );
     renameLayoutButton->setIcon( renameIcon );
     renameLayoutButton->setToolTip( i18n( "Rename playlist layout" ) );
     connect( renameLayoutButton, SIGNAL(clicked()), this, SLOT(renameLayout()) );
@@ -497,7 +497,7 @@ Playlist::PlaylistLayoutEditDialog::setupGroupByCombo()
 {
     foreach( const Playlist::Column &col, Playlist::groupableCategories() )
     {
-        groupByComboBox->addItem( KIcon( iconName( col ) ),
+        groupByComboBox->addItem( QIcon::fromTheme( iconName( col ) ),
                                   columnName( col ),
                                   QVariant( internalColumnName( col ) ) );
     }

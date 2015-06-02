@@ -25,7 +25,7 @@
 #include <QtGlobal>
 #include <QSharedPointer>
 
-#include <KIcon>
+#include <QIcon>
 #include <KDirNotify>
 #include <solid/device.h>
 

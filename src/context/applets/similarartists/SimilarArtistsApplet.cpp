@@ -69,28 +69,28 @@ SimilarArtistsApplet::init()
     setHeaderText( i18n( "Similar Artists" ) );
 
     QAction* backwardAction = new QAction( this );
-    backwardAction->setIcon( KIcon( "go-previous" ) );
+    backwardAction->setIcon( QIcon::fromTheme( "go-previous" ) );
     backwardAction->setEnabled( false );
     backwardAction->setText( i18n( "Back" ) );
     m_backwardIcon = addLeftHeaderAction( backwardAction );
     connect( m_backwardIcon, SIGNAL(clicked()), this, SLOT(goBackward()) );
 
     QAction* forwardAction = new QAction( this );
-    forwardAction->setIcon( KIcon( "go-next" ) );
+    forwardAction->setIcon( QIcon::fromTheme( "go-next" ) );
     forwardAction->setEnabled( false );
     forwardAction->setText( i18n( "Forward" ) );
     m_forwardIcon = addLeftHeaderAction( forwardAction );
     connect( m_forwardIcon, SIGNAL(clicked()), this, SLOT(goForward()) );
 
     QAction *currentAction = new QAction( this );
-    currentAction->setIcon( KIcon( "filename-artist-amarok" ) );
+    currentAction->setIcon( QIcon::fromTheme( "filename-artist-amarok" ) );
     currentAction->setEnabled( true );
     currentAction->setText( i18n( "Show Similar Artists for Currently Playing Track" ) );
     m_currentArtistIcon = addRightHeaderAction( currentAction );
     connect( m_currentArtistIcon, SIGNAL(clicked()), this, SLOT(queryForCurrentTrack()) );
 
     QAction* settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setIcon( QIcon::fromTheme( "preferences-system" ) );
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addRightHeaderAction( settingsAction );

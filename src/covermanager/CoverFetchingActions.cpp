@@ -29,7 +29,7 @@
 #include <KFile>
 #include <KFileDialog>
 #include <KFileWidget>
-#include <KIcon>
+#include <QIcon>
 #include <KImageIO>
 #include <KLocalizedString>
 #include <KMessageBox>
@@ -45,7 +45,7 @@
 void FetchCoverAction::init()
 {
     setText( i18np("Fetch Cover", "Fetch Covers", m_albums.count()) );
-    setIcon( KIcon("insert-image") );
+    setIcon( QIcon::fromTheme("insert-image") );
     setToolTip( i18np("Fetch the artwork for this album", "Fetch artwork for %1 albums", m_albums.count()) );
 
     bool enabled = !m_albums.isEmpty();
@@ -74,7 +74,7 @@ void FetchCoverAction::slotTriggered()
 void DisplayCoverAction::init()
 {
     setText( i18n("Display Cover") );
-    setIcon( KIcon("zoom-original") );
+    setIcon( QIcon::fromTheme("zoom-original") );
     setToolTip( i18n("Display artwork for this album") );
     Meta::AlbumPtr album = m_albums.first();
     if( album )
@@ -94,7 +94,7 @@ void DisplayCoverAction::slotTriggered()
 void UnsetCoverAction::init()
 {
     setText( i18np("Unset Cover", "Unset Covers", m_albums.count()) );
-    setIcon( KIcon("list-remove") );
+    setIcon( QIcon::fromTheme("list-remove") );
     setToolTip( i18np("Remove artwork for this album", "Remove artwork for %1 albums", m_albums.count()) );
 
     // this action is enabled if any one of the albums has an image and can be updated
@@ -132,7 +132,7 @@ UnsetCoverAction::slotTriggered()
 void SetCustomCoverAction::init()
 {
     setText( i18n("Set Custom Cover") );
-    setIcon( KIcon("document-open") );
+    setIcon( QIcon::fromTheme("document-open") );
     setToolTip( i18np("Set custom artwork for this album", "Set custom artwork for these %1 albums", m_albums.count()) );
 
     // this action is enabled if any one of the albums can be updated

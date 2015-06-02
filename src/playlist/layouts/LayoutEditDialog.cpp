@@ -19,7 +19,7 @@
 #include "widgets/TokenWithLayout.h"
 #include "widgets/TokenDropTarget.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 
 #include <QButtonGroup>
@@ -168,11 +168,11 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
 
     l1->addStretch();
 
-    m_alignLeft->setIcon( KIcon( "format-justify-left" ) );
+    m_alignLeft->setIcon( QIcon::fromTheme( "format-justify-left" ) );
     m_alignLeft->setCheckable( true );
-    m_alignCenter->setIcon( KIcon( "format-justify-center" ) );
+    m_alignCenter->setIcon( QIcon::fromTheme( "format-justify-center" ) );
     m_alignCenter->setCheckable( true );
-    m_alignRight->setIcon( KIcon( "format-justify-right" ) );
+    m_alignRight->setIcon( QIcon::fromTheme( "format-justify-right" ) );
     m_alignRight->setCheckable( true );
     QButtonGroup *align = new QButtonGroup( this );
     align->setExclusive( true );
@@ -180,11 +180,11 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     align->addButton( m_alignCenter );
     align->addButton( m_alignRight );
 
-    m_bold->setIcon( KIcon( "format-text-bold" ) );
+    m_bold->setIcon( QIcon::fromTheme( "format-text-bold" ) );
     m_bold->setCheckable( true );
-    m_italic->setIcon( KIcon( "format-text-italic" ) );
+    m_italic->setIcon( QIcon::fromTheme( "format-text-italic" ) );
     m_italic->setCheckable( true );
-    m_underline->setIcon( KIcon( "format-text-underline" ) );
+    m_underline->setIcon( QIcon::fromTheme( "format-text-underline" ) );
     m_underline->setCheckable( true );
 
 }

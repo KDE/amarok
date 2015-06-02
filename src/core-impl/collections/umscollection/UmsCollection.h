@@ -23,7 +23,7 @@
 #include "core-impl/collections/support/MemoryCollection.h"
 
 #include <KDirWatch>
-#include <KIcon>
+#include <QIcon>
 
 #include <solid/device.h>
 
@@ -115,7 +115,7 @@ class UmsCollection : public Collection, public Meta::Observer
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
         virtual bool hasCapacity() const;
         virtual float usedCapacity() const;

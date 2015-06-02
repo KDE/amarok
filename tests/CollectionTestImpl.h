@@ -23,7 +23,7 @@
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <QSharedPointer>
 
 namespace Collections {
@@ -46,9 +46,9 @@ public:
         return new MemoryQueryMaker( mc.toWeakRef(), id );
     }
 
-    KIcon icon() const
+    QIcon icon() const
     {
-        return KIcon();
+        return QIcon();
     }
 
     QString collectionId() const

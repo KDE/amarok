@@ -33,7 +33,7 @@ namespace Playlists {
     class UserPlaylistProvider;
 }
 
-class KIcon;
+class QIcon;
 
 namespace Collections
 {
@@ -116,7 +116,7 @@ namespace Collections
             /**
              * @return an icon representing this collection
              */
-            virtual KIcon icon() const = 0;
+            virtual QIcon icon() const = 0;
 
             virtual bool hasCapacity() const { return false; }
             virtual float usedCapacity() const { return 0.0; }

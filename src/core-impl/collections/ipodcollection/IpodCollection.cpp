@@ -106,11 +106,11 @@ bool IpodCollection::init()
     connect( this, SIGNAL(startWriteDatabaseTimer()), SLOT(slotStartWriteDatabaseTimer()) );
     connect( &m_writeDatabaseTimer, SIGNAL(timeout()), SLOT(slotInitiateDatabaseWrite()) );
 
-    m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure Device" ), this );
+    m_configureAction = new QAction( QIcon::fromTheme( "configure" ), i18n( "&Configure Device" ), this );
     m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
     connect( m_configureAction, SIGNAL(triggered()), SLOT(slotShowConfigureDialog()) );
 
-    m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Eject Device" ), this );
+    m_ejectAction = new QAction( QIcon::fromTheme( "media-eject" ), i18n( "&Eject Device" ), this );
     m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
     connect( m_ejectAction, SIGNAL(triggered()), SLOT(slotEject()) );
 
@@ -119,7 +119,7 @@ bool IpodCollection::init()
     m_prettyName = IpodDeviceHelper::collectionName( m_itdb ); // allows null m_itdb
 
     // m_consolidateAction is used by the provider
-    m_consolidateAction = new QAction( KIcon( "dialog-ok-apply" ), i18n( "Re-add orphaned and forget stale tracks" ), this );
+    m_consolidateAction = new QAction( QIcon::fromTheme( "dialog-ok-apply" ), i18n( "Re-add orphaned and forget stale tracks" ), this );
     // provider needs to be up before IpodParseTracksJob is started
     m_playlistProvider = new IpodPlaylistProvider( this );
     connect( m_playlistProvider, SIGNAL(startWriteDatabaseTimer()), SIGNAL(startWriteDatabaseTimer()) );
@@ -248,10 +248,10 @@ IpodCollection::prettyName() const
     return m_prettyName;
 }
 
-KIcon
+QIcon
 IpodCollection::icon() const
 {
-    return KIcon("multimedia-player-apple-ipod");
+    return QIcon::fromTheme("multimedia-player-apple-ipod");
 }
 
 bool
