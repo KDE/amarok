@@ -24,7 +24,7 @@
 
 #include "event.h"
 
-#include <QtXml/QXmlStreamReader>
+#include <QXmlStreamReader>
 
 namespace AmarokAttica {
 

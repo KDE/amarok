@@ -21,8 +21,6 @@
 
 #include "personparser.h"
 
-#include <QXmlStreamReader>
-
 using namespace AmarokAttica;
 
 PersonParser::PersonParser()
@@ -83,7 +81,7 @@ Person PersonParser::parsePerson( QXmlStreamReader &xml )
       } else if ( xml.name() == "homepage" ) {
         person.setHomepage( xml.readElementText() );
       } else if ( xml.name() == "avatarpic" ) {
-        person.setAvatarUrl( xml.readElementText() );
+        person.setAvatarUrl( QUrl::fromUserInput(xml.readElementText()) );
       } else if ( xml.name() == "avatarpicfound" ) {
         QString value = xml.readElementText();
         if (value.toInt()) {
@@ -111,7 +109,7 @@ Person PersonParser::parsePerson( QXmlStreamReader &xml )
   }
 
   if (!hasAvatarPic) {
-    person.setAvatarUrl(QString());
+    person.setAvatarUrl( QUrl::fromUserInput(QString()) );
   }
 
   return person;

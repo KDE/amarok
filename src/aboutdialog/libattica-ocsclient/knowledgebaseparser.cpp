@@ -22,8 +22,6 @@
 
 #include "knowledgebaseparser.h"
 
-#include <QXmlStreamReader>
-
 using namespace AmarokAttica;
 
 KnowledgeBaseParser::KnowledgeBaseParser()

@@ -22,8 +22,6 @@
 #include "eventparser.h"
 
 #include <QtCore/QRegExp>
-#include <QtXml/QXmlStreamReader>
-
 
 using namespace AmarokAttica;
 

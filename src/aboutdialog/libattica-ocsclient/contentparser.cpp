@@ -22,7 +22,6 @@
 #include "contentparser.h"
 
 #include <QtCore/QDateTime>
-#include <QXmlStreamReader>
 
 using namespace AmarokAttica;
 

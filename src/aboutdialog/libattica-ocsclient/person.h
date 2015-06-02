@@ -26,6 +26,7 @@
 #include <QtGui/QPixmap>
 
 #include <QUrl>
+#include <QMap>
 
 #include "atticaclient_export.h"
 
@@ -90,7 +91,7 @@ class ATTICA_EXPORT Person
     QString m_homepage;
     QString m_city;
 
-    QMap<QString,QString> m_extendedAttributes;
+    QMap<QString, QString> m_extendedAttributes;
 };
 
 }

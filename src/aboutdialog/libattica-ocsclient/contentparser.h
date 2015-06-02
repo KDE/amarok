@@ -23,7 +23,7 @@
 
 #include "content.h"
 
-#include <QtXml/QXmlStreamReader>
+#include <QXmlStreamReader>
 
 namespace AmarokAttica {
 
