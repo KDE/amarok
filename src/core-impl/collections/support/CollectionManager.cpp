@@ -270,7 +270,7 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
         {
             d->primaryCollection = newCollection;
             d->collections.insert( 0, pair ); // the primary collection should be the first collection to be searched
-            d->trackProviders.insert( 2, newCollection ); // the primary collection should be between the timecode track provider and the local file track provider
+            d->trackProviders.insert( 1, newCollection ); // the primary collection should be between the timecode track provider and the local file track provider
         }
         else
         {
