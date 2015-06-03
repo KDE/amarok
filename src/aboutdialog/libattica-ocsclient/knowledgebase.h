@@ -25,6 +25,7 @@
 
 #include <QDateTime>
 #include <QUrl>
+#include <QMap>
 
 namespace AmarokAttica
 {

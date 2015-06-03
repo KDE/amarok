@@ -88,5 +88,3 @@ namespace Mpris1
     }
 
 }
-
-#include "mprisv1/RootHandler.moc"

@@ -19,7 +19,6 @@
 #include "core/meta/Statistics.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/proxy/MetaProxy_p.h"
-#include "core-impl/meta/proxy/MetaProxy_p.moc"
 #include "core-impl/meta/proxy/MetaProxyWorker.h"
 
 #include <KSharedPtr>

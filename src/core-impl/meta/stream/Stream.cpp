@@ -189,5 +189,3 @@ Track::setInitialInfo( const QString &artist, const QString &album, const QStrin
     if( d->trackNumber == 0 )
         d->trackNumber = trackNumber;
 }
-
-#include "Stream_p.moc"

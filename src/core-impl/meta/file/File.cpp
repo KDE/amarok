@@ -594,5 +594,3 @@ Track::commitIfInNonBatchUpdate()
     notifyObservers();
     d->lock.lockForWrite(); // return to original state
 }
-
-#include "File_p.moc"

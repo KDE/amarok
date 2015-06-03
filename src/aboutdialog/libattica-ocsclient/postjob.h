@@ -25,6 +25,7 @@
 
 #include <kjob.h>
 #include <QUrl>
+#include <QMap>
 
 namespace KIO {
 class Job;

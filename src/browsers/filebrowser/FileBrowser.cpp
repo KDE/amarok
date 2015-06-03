@@ -20,7 +20,6 @@
 
 #include "FileBrowser.h"
 #include "FileBrowser_p.h"
-#include "FileBrowser_p.moc"
 
 #include "amarokconfig.h"
 #include "EngineController.h"

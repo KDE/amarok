@@ -279,5 +279,3 @@ namespace Mpris1
         updateStatus();
     }
 } // namespace Amarok
-
-#include "mprisv1/PlayerHandler.moc"
