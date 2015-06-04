@@ -19,7 +19,7 @@
 #include "App.h"
 #include "aboutdialog/OcsData.h"
 
-#include <KAboutData>
+#include <K4AboutData>
 #include <KCmdLineArgs>
 #include <KDebug>
 
@@ -38,10 +38,10 @@ AMAROK_EXPORT OcsData ocsData;
 
 int main( int argc, char *argv[] )
 {
-    KAboutData aboutData(
+    K4AboutData aboutData(
         "amarok", 0,
         ki18n( "Amarok" ), AMAROK_VERSION,
-        ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
+        ki18n( "The audio player for KDE" ), K4AboutData::License_GPL,
         ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2013, The Amarok Development Squad" ),
         ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
         ( "http://amarok.kde.org" ) );

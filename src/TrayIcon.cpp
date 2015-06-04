@@ -32,7 +32,7 @@
 #include "core/support/Amarok.h"
 #include "playlist/PlaylistActions.h"
 
-#include <KAboutData>
+#include <K4AboutData>
 #include <KAction>
 #include <KCmdLineArgs>
 #include <KLocale>

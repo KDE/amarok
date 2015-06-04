@@ -56,10 +56,10 @@ public:
 
     ExtendedAboutDialog *q;
 
-    const KAboutData *aboutData;
+    const K4AboutData *aboutData;
 };
 
-ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsData *ocsData, QWidget *parent)
+ExtendedAboutDialog::ExtendedAboutDialog(const K4AboutData *aboutData, const OcsData *ocsData, QWidget *parent)
   : KDialog(parent)
   , d(new Private(this))
 {
@@ -71,7 +71,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
 
     if (!aboutData) {
         QLabel *errorLabel = new QLabel(i18n("<qt>No information available.<br />"
-                                             "The supplied KAboutData object does not exist.</qt>"), this);
+                                             "The supplied K4AboutData object does not exist.</qt>"), this);
 
         errorLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
         setMainWidget(errorLabel);
@@ -150,7 +150,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         QLabel *showLicenseLabel = new QLabel;
         showLicenseLabel->setText(QString("<a href=\"%1\">%2</a>").arg(QString::number(i),
                                                                        i18n("License: %1",
-                                                                            license.name(KAboutData::FullName))));
+                                                                            license.name(K4AboutData::FullName))));
         showLicenseLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
         connect(showLicenseLabel, SIGNAL(linkActivated(QString)), this, SLOT(_k_showLicense(QString)));
 
@@ -315,7 +315,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
             translatorPageText += "<p style=\"margin: 0px;\">&nbsp;</p>";
         }
 
-        translatorPageText += KAboutData::aboutTranslationTeam();
+        translatorPageText += K4AboutData::aboutTranslationTeam();
 
         KTextBrowser *translatorTextBrowser = new KTextBrowser;
         translatorTextBrowser->setFrameStyle(QFrame::NoFrame);

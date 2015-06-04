@@ -21,7 +21,7 @@
 #include "PluginManager.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
-#include <KAboutData>
+#include <K4AboutData>
 #include <KApplication>
 #include <KGlobal>
 #include <KPluginInfo>
@@ -34,7 +34,7 @@
 #include <QPlainTextEdit>
 
 
-DiagnosticDialog::DiagnosticDialog( const KAboutData *aboutData, QWidget *parent )
+DiagnosticDialog::DiagnosticDialog( const K4AboutData *aboutData, QWidget *parent )
         : KDialog( parent )
 {
     if( aboutData == 0 )
@@ -57,7 +57,7 @@ DiagnosticDialog::DiagnosticDialog( const KAboutData *aboutData, QWidget *parent
 }
 
 const QString
-DiagnosticDialog::generateReport( const KAboutData *aboutData )
+DiagnosticDialog::generateReport( const K4AboutData *aboutData )
 {
     // Get scripts -- we have to assemble 3 lists into one
     KPluginInfo::List aScripts;

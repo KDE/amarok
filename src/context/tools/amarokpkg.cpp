@@ -21,7 +21,7 @@
 #include <QDBusInterface>
 
 #include <KApplication>
-#include <KAboutData>
+#include <K4AboutData>
 #include <KAction>
 #include <KCmdLineArgs>
 #include <KLocale>
@@ -73,8 +73,8 @@ void listPackages(const QString& type)
 
 int main(int argc, char **argv)
 {
-    KAboutData aboutData("amarokpkg", 0, ki18n("Amarok Applet Manager"),
-                         version, ki18n(description), KAboutData::License_GPL,
+    K4AboutData aboutData("amarokpkg", 0, ki18n("Amarok Applet Manager"),
+                         version, ki18n(description), K4AboutData::License_GPL,
                          ki18n("(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"));
     aboutData.addAuthor( ki18n("Aaron Seigo"),
                          ki18n("Original author"),

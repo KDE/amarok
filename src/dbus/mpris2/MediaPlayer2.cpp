@@ -29,7 +29,7 @@
 
 #include <QWidget>
 
-#include <KAboutData>
+#include <K4AboutData>
 #include <KApplication>
 #include <KCmdLineArgs>
 #include <KWindowSystem>
