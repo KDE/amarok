@@ -131,7 +131,7 @@ private:
     bool m_openTransaction;
     QList<QVariantList> m_result;
 
-private slots:
+private Q_SLOTS:
     void slotQuery( const QString &query, const QVariantMap &bindValues, bool* const ok );
     void slotTransaction();
     void slotRollback();

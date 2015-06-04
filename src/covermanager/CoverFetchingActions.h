@@ -45,7 +45,7 @@ class AMAROK_EXPORT BaseCoverAction : public QAction
             connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
         }
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void slotTriggered() = 0;
     protected:
         Meta::AlbumList m_albums;
@@ -60,7 +60,7 @@ class AMAROK_EXPORT FetchCoverAction : public BaseCoverAction
         FetchCoverAction( QObject *parent, Meta::AlbumList albums )
             : BaseCoverAction( parent, albums ) { init(); }
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void slotTriggered();
     protected:
         virtual void init();
@@ -75,7 +75,7 @@ class AMAROK_EXPORT DisplayCoverAction : public BaseCoverAction
         DisplayCoverAction( QObject *parent, Meta::AlbumList albums )
             : BaseCoverAction( parent, albums ) { init(); }
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void slotTriggered();
     protected:
         virtual void init();
@@ -90,7 +90,7 @@ class AMAROK_EXPORT UnsetCoverAction : public BaseCoverAction
         UnsetCoverAction( QObject *parent, Meta::AlbumList albums )
             : BaseCoverAction( parent, albums ) { init(); }
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void slotTriggered();
     protected:
         virtual void init();
@@ -105,7 +105,7 @@ class AMAROK_EXPORT SetCustomCoverAction : public BaseCoverAction
         SetCustomCoverAction( QObject *parent, Meta::AlbumList albums )
             : BaseCoverAction( parent, albums ) { init(); }
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void slotTriggered();
     protected:
         virtual void init();

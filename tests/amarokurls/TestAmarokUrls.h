@@ -26,7 +26,7 @@ class TestAmarokUrls : public QObject
 public:
     TestAmarokUrls();
 
-private slots:
+private Q_SLOTS:
     void testConstructUrl();
     void testUrlFromString();
     void testEncoding();

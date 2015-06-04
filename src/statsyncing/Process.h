@@ -63,7 +63,7 @@ namespace StatSyncing
                      qint64 checkedFields, Mode mode, QObject *parent = 0 );
             virtual ~Process();
 
-        public slots:
+        public Q_SLOTS:
             /**
              * Starts the process.
              */
@@ -75,7 +75,7 @@ namespace StatSyncing
              */
             void raise();
 
-        private slots:
+        private Q_SLOTS:
             void slotMatchTracks();
             void slotTracksMatched( ThreadWeaver::Job *job );
             void slotBack();

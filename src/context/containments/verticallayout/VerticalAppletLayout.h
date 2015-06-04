@@ -53,11 +53,11 @@ class VerticalAppletLayout : public QGraphicsWidget
         
         void showAtIndex( int index );
         
-    signals:
+    Q_SIGNALS:
         void appletAdded( Plasma::Applet* applet, int location );
         void noApplets( bool );
         
-    public slots:
+    public Q_SLOTS:
         void showApplet( Plasma::Applet* );
         void moveApplet( Plasma::Applet*, int, int);
         void appletRemoved( Plasma::Applet* app );

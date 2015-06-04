@@ -44,7 +44,7 @@ class ATTICA_EXPORT FolderListJob : public KJob
 
     Folder::List folderList() const;
     
-  protected slots:
+  protected Q_SLOTS:
     void doWork();
 
     void slotJobResult( KJob *job );

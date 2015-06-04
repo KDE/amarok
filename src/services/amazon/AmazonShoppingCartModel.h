@@ -29,7 +29,7 @@ public:
     // reimplemented from QStringListModel
     virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
-signals:
+Q_SIGNALS:
     void contentsChanged();
 };
 

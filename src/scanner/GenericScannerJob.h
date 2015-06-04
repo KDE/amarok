@@ -80,7 +80,7 @@ class GenericScannerJob : public ThreadWeaver::Job
         virtual void run();
         virtual void abort();
 
-    signals:
+    Q_SIGNALS:
         void started( GenericScanManager::ScanType type );
 
         /** Gives the estimated count of directories that this scan will have.

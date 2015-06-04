@@ -96,21 +96,21 @@ public:
     */
     void addCollapseAnimation( QAbstractAnimation *anim );
 
-public slots:
+public Q_SLOTS:
     /**
      * Convenience methods to show and hide the applet explorer.
      */
     void hideAppletExplorer();
     void showAppletExplorer();
 
-signals:
+Q_SIGNALS:
     void appletExplorerHid();
 
 protected:
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
 
-private slots:
+private Q_SLOTS:
     void slotTrackChanged( Meta::TrackPtr track );
     void slotMetadataChanged( Meta::TrackPtr track );
     void slotPositionAppletExplorer();

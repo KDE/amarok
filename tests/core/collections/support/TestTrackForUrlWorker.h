@@ -26,13 +26,13 @@ class TestTrackForUrlWorker : public QObject
 {
     Q_OBJECT
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Stores the track emitted with finishedLookup
          */
         void setEmittedTrack( Meta::TrackPtr track );
 
-    private slots:
+    private Q_SLOTS:
         void initTestCase();
 
         /**

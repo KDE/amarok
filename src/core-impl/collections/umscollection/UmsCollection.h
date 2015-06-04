@@ -48,7 +48,7 @@ class UmsCollectionFactory : public CollectionFactory
 
         virtual void init();
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Called when solid notifier detects a new device has been added
          */
@@ -148,7 +148,7 @@ class UmsCollection : public Collection, public Meta::Observer
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
-    signals:
+    Q_SIGNALS:
         /**
          * Start a count-down that emits updated() signal after it expires.
          * Resets the timer to original timeout if already running. This is to ensure
@@ -158,7 +158,7 @@ class UmsCollection : public Collection, public Meta::Observer
          */
         void startUpdateTimer();
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Destroy the collection (by emitting remove)
          */
@@ -172,7 +172,7 @@ class UmsCollection : public Collection, public Meta::Observer
         void slotTrackAdded( QUrl trackLocation );
         void slotTrackRemoved( const Meta::TrackPtr &track );
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Update m_lastUpdated timestamp and emit updated()
          */

@@ -54,7 +54,7 @@ class AMAROK_EXPORT InfoProxy
         QVariantMap info(); // info about the service
         QVariantMap cloud(); //cloud view for the service
 
-    private slots:
+    private Q_SLOTS:
         void paletteChanged( const QPalette & palette );
     
     private:

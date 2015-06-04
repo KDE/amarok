@@ -93,13 +93,13 @@ public:
     static QString defaultFilteredLabel() { return QString(); }
     void setFilteredLabel( const QString &filteredLabel ) { m_filteredLabel = filteredLabel; }
 
-signals:
+Q_SIGNALS:
     /**
      * Emitted when settings are changed. (after save() is called)
      */
     void updated();
 
-private slots:
+private Q_SLOTS:
     void slotWalletOpenedToRead( bool success );
     void slotWalletOpenedToWrite( bool success );
 

@@ -45,10 +45,10 @@ class UmsCollectionLocation : public Collections::CollectionLocation
                                            const Transcoding::Configuration &configuration );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
-    protected slots:
+    protected Q_SLOTS:
         void slotRemoveOperationFinished(); // hides intentionally parent methods
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Needed for removal of source tracks during move operation
          */
@@ -69,14 +69,14 @@ class UmsTransferJob : public KCompositeJob
         void addTranscode( const QUrl &from, const QUrl &to );
         virtual void start();
 
-    signals:
+    Q_SIGNALS:
         void sourceFileTransferDone( QUrl source );
         void fileTransferDone( QUrl destination );
 
-    public slots:
+    public Q_SLOTS:
         void slotCancel();
 
-    private slots:
+    private Q_SLOTS:
         void startNextJob();
         void slotChildJobPercent( KJob *job, unsigned long percentage );
 

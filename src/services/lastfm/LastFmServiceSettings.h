@@ -40,7 +40,7 @@ public:
     virtual void load();
     virtual void defaults();
 
-private slots:
+private Q_SLOTS:
     void testLogin();
     void onAuthenticated();
     void onError( QNetworkReply::NetworkError code );
@@ -58,7 +58,7 @@ private:
 
     QNetworkReply* m_authQuery;
 
-private slots:
+private Q_SLOTS:
     void settingsChanged();
     void addNewLabels( const Meta::LabelList &labels );
 };

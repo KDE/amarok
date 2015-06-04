@@ -35,7 +35,7 @@ namespace APG {
         public:
             PresetEditDialog( PresetPtr );
 
-        private slots:
+        private Q_SLOTS:
             void addNode( const QString& );
             void removeNode();
             void currentNodeChanged( const QModelIndex& );

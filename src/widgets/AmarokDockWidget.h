@@ -29,7 +29,7 @@ public:
 
     void setMovable( bool movable );
 
-protected slots:
+protected Q_SLOTS:
     void slotVisibilityChanged( bool visible );
 
 protected:

@@ -39,17 +39,17 @@ class MusicBrainzFinder : public QObject
 
         bool isRunning() const;
 
-    signals:
+    Q_SIGNALS:
         void progressStep();
         void trackFound( const Meta::TrackPtr track, const QVariantMap tags );
         void done();
 
-    public slots:
+    public Q_SLOTS:
         void run( const Meta::TrackList &tracks );
 
         void lookUpByPUID( const Meta::TrackPtr &track, const QString &puid );
 
-    private slots:
+    private Q_SLOTS:
         void sendNewRequest();
         void gotAuthenticationRequest( const QNetworkReply *reply,
                                        QAuthenticator *authenticator ) const;

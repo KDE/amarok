@@ -43,7 +43,7 @@ class ComboBox : public KComboBox
     protected:
         virtual void keyPressEvent( QKeyEvent *event );
 
-    signals:
+    Q_SIGNALS:
         void downPressed();
 };
 

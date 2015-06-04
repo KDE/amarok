@@ -52,11 +52,11 @@ public:
 
     void switchToOcs( const AmarokAttica::Provider &provider );
 
-signals:
+Q_SIGNALS:
     void ocsFetchStarted();
     void ocsFetchResult( int err );
 
-private slots:
+private Q_SLOTS:
     void launchUrl( QAction *action );
     void onJobFinished( KJob *job );
 

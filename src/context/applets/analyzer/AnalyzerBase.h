@@ -53,10 +53,10 @@ protected:
     FHT    *m_fht;
     QTimer *m_renderTimer;
 
-protected slots:
+protected Q_SLOTS:
     virtual void demo();
 
-private slots:
+private Q_SLOTS:
     void connectSignals();
     void disconnectSignals();
     void currentDesktopChanged();

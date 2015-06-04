@@ -74,7 +74,7 @@ protected:
 
     QTreeView *playlistView();
 
-private slots:
+private Q_SLOTS:
     void toggleView( bool mergedView );
     void slotProviderAdded( Playlists::PlaylistProvider *provider, int category );
     void slotProviderRemoved( Playlists::PlaylistProvider *provider, int category );

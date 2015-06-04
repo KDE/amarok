@@ -39,11 +39,11 @@ public:
     */
     inline QRect textRect() const { return rect().adjusted( m_padding[0], 0, -m_padding[1], 0 ); }
 
-public slots:
+public Q_SLOTS:
     void setAnimated( bool on = true );
     inline void setStill( bool off = true ) { setAnimated( !off ); }
 
-signals:
+Q_SIGNALS:
     void pulsing( bool );
     void clicked( const QString &current );
 
@@ -64,7 +64,7 @@ private:
     void sleep( int ms );
     void wakeUp();
 
-private slots:
+private Q_SLOTS:
     void activateOnEnter();
 
 private:

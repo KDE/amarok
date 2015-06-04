@@ -25,7 +25,7 @@ class TestAmazonConfig : public QObject
 public:
     TestAmazonConfig();
     
-private slots:
+private Q_SLOTS:
     void testSetAndGetCountry();
 };
 

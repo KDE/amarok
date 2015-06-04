@@ -25,9 +25,9 @@ class OpmlDirectoryDelegate : public QStyledItemDelegate
 public:
     explicit OpmlDirectoryDelegate(QObject *parent = 0);
 
-signals:
+Q_SIGNALS:
 
-public slots:
+public Q_SLOTS:
 
 };
 

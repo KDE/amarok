@@ -79,7 +79,7 @@ namespace Collections
             
             int validFilterMask();
 
-        signals:
+        Q_SIGNALS:
             void newResultReady( Meta::TrackList );
             void newResultReady( Meta::ArtistList );
             void newResultReady( Meta::AlbumList );

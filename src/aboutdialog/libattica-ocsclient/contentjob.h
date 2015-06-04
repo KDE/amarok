@@ -44,7 +44,7 @@ class ATTICA_EXPORT ContentJob : public KJob
 
     Content content() const;
     
-  protected slots:
+  protected Q_SLOTS:
     void doWork();
 
     void slotJobResult( KJob *job );

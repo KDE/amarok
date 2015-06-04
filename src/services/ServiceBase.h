@@ -94,13 +94,13 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
 
         QList<ServiceBase *> activeServices() { return m_activeServices.toList(); }
 
-    public slots:
+    public Q_SLOTS:
         /**
          * The service is ready!
          */
         void slotServiceReady();
 
-    signals:
+    Q_SIGNALS:
         /**
          * This signal is emitted whenever a new service has been loaded.
          * @param newService The service that has been loaded.
@@ -115,7 +115,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          */
         void removeService( ServiceBase *newService );
 
-    private slots:
+    private Q_SLOTS:
         void slotNewService( ServiceBase *newService );
         void slotRemoveService( ServiceBase *service );
 
@@ -242,7 +242,7 @@ public:
      virtual QString filter() const;
      virtual QList<CategoryId::CatMenuId> levels() const;
 
-public slots:
+public Q_SLOTS:
     //void treeViewSelectionChanged( const QItemSelection & selected );
     /**
      * New info should be shown in the service info applet ( if present ).
@@ -277,7 +277,7 @@ public slots:
 
     void setLevels( const QList<CategoryId::CatMenuId> &levels );
 
-signals:
+Q_SIGNALS:
     /**
      * Signal emitted when the service wants to be hidden and the service browser list shown instead, for instance when the "Home" button is clicked.
      */
@@ -295,7 +295,7 @@ signals:
      */
     void ready();
 
-protected slots:
+protected Q_SLOTS:
     /**
      * Slot called when an item in the tree view has been activated
      * @param index The index of the activated item

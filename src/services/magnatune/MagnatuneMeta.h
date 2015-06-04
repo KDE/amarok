@@ -60,7 +60,7 @@ public:
 
     void setAlbumPtr( Meta::AlbumPtr album );
 
-public slots:
+public Q_SLOTS:
     void download();
 
 private:
@@ -132,7 +132,7 @@ public:
     virtual QString collectionName() const { return "Magnatune.com"; }
     virtual bool simpleFiltering() const { return false; }
 
-public slots:
+public Q_SLOTS:
     void download();
     void addToFavorites();
 };

@@ -45,7 +45,7 @@ protected:
     void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources,
                                 const Transcoding::Configuration &configuration );
 
-private slots:
+private Q_SLOTS:
     void slotTrashJobFinished( KJob *job );
 
 private:

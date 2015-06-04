@@ -103,7 +103,7 @@ class Mp3tunesHarmonyDaemon : public QCoreApplication
     void emitDownloadReady( const Mp3tunesHarmonyDownload &download );
     void emitDownloadPending( const Mp3tunesHarmonyDownload &download );
 
-  signals:
+  Q_SIGNALS:
       /* The actual signals that get emitted */
       void waitingForEmail( const QString &pin );
       void waitingForPin();
@@ -122,7 +122,7 @@ class Mp3tunesHarmonyDaemon : public QCoreApplication
        * adding the download to its own queue
        */
       void downloadPending( const Mp3tunesHarmonyDownload &download );
-  public slots:
+  public Q_SLOTS:
       /**
      * Returns the pin
      */

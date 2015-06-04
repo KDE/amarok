@@ -78,7 +78,7 @@ namespace Playdar
         public Q_SLOTS:
             void receiveResults( KJob* );
             
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted each time a new track is added to the list of results,
              * returning the latest result as a Meta::PlaydarTrack.

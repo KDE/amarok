@@ -60,10 +60,10 @@ class SynchronizationBaseJob : public QObject
         void setFilter( const QString &filter );
 
 
-    public slots:
+    public Q_SLOTS:
         virtual void synchronize();
 
-    private slots:
+    private Q_SLOTS:
         void slotResultReady( const Meta::TrackList &artists );
         void slotResultReady( const Meta::AlbumList &albums );
         void slotResultReady( const Meta::ArtistList &tracks );

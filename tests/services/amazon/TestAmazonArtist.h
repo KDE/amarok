@@ -25,7 +25,7 @@ class TestAmazonArtist : public QObject
 public:
     TestAmazonArtist();
     
-private slots:
+private Q_SLOTS:
     void testConstructor();
 };
 

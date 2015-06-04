@@ -58,12 +58,12 @@ public:
     bool hasMoodbar( Meta::TrackPtr track );
     QPixmap getMoodbar( Meta::TrackPtr track, int width, int height, bool rtl = false );
 
-signals:
+Q_SIGNALS:
     void moodbarReady( const QPixmap &pixmap );
     void moodbarCreationFailed( const QString &error );
     void moodbarStyleChanged();
 
-private slots:
+private Q_SLOTS:
     void paletteChanged( const QPalette &palette );
 
 private:

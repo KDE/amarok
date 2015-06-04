@@ -51,12 +51,12 @@ namespace StatSyncing
             virtual QSet<QString> artists();
             virtual TrackList artistTracks( const QString &artistName );
 
-        signals:
+        Q_SIGNALS:
             /// hacks to create and start QueryMaker in main eventloop
             void startArtistSearch();
             void startTrackSearch( QString artistName );
 
-        private slots:
+        private Q_SLOTS:
             /// @see startArtistSearch
             void slotStartArtistSearch();
             void slotStartTrackSearch( QString artistName );

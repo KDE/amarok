@@ -42,10 +42,10 @@ namespace MetaProxy
             //TrackForUrlWorker virtual methods
             virtual void run();
 
-        signals:
+        Q_SIGNALS:
             void finishedLookup( Meta::TrackPtr track );
 
-        private slots:
+        private Q_SLOTS:
             void slotNewTrackProvider( Collections::TrackProvider *newTrackProvider );
             void slotNewCollection( Collections::Collection *newCollection );
             void slotStepDone();

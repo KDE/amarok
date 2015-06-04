@@ -52,7 +52,7 @@ namespace ConstraintTypes {
             virtual double satisfaction( const Meta::TrackList& ) const;
             virtual quint32 suggestPlaylistSize() const;
 
-        private slots:
+        private Q_SLOTS:
             void setPosition( const int );
             void setStrictness( const int );
             void setCheckpoint( const Meta::DataPtr& );
@@ -138,14 +138,14 @@ namespace ConstraintTypes {
         public:
             CheckpointEditWidget( const qint64, const int, const Meta::DataPtr& );
 
-        signals:
+        Q_SIGNALS:
             void updated();
             void nameChanged( const QString& );
             void positionChanged( const int );
             void strictnessChanged( const int );
             void checkpointChanged( const Meta::DataPtr& );
 
-        private slots:
+        private Q_SLOTS:
             void on_timeEdit_Position_timeChanged( const QTime& );
             void on_slider_Strictness_valueChanged( const int );
             void on_trackSelector_selectionChanged( const Meta::DataPtr& );

@@ -37,7 +37,7 @@ class PodcastSettingsDialog : public KDialog
     protected:
         bool hasChanged();
 
-    protected slots:
+    protected Q_SLOTS:
         void checkModified();
         void slotApply();
         void slotFeedUrlClicked( const QString &url );

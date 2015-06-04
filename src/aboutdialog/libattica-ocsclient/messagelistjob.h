@@ -44,7 +44,7 @@ class ATTICA_EXPORT MessageListJob : public KJob
 
     Message::List messageList() const;
     
-  protected slots:
+  protected Q_SLOTS:
     void doWork();
 
     void slotJobResult( KJob *job );

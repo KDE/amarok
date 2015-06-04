@@ -68,7 +68,7 @@ private:
     QStringList m_playableFileTypes;
     Ui::AssistantDialog ui;
 
-private slots:
+private Q_SLOTS:
     void onJustCopyClicked();
     void onTranscodeClicked();
     void onFormatSelect( QListWidgetItem *item );

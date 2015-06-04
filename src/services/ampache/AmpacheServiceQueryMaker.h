@@ -66,7 +66,7 @@ protected:
     struct Private;
     Private * const d;
 
-public slots:
+public Q_SLOTS:
     void artistDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void albumDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void trackDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );

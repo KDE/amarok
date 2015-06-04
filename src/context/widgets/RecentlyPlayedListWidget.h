@@ -40,7 +40,7 @@ public:
                                       Qt::WindowFlags wFlags = 0 );
     ~ClickableGraphicsWidget();
 
-signals:
+Q_SIGNALS:
     void leftClicked( const QString &url );
     void middleClicked( const QString &url );
 
@@ -63,7 +63,7 @@ public:
                                   Qt::WindowFlags wFlags = 0 );
     ~TimeDifferenceLabel();
 
-public slots:
+public Q_SLOTS:
     void update();
 
 private:
@@ -86,7 +86,7 @@ public:
     explicit RecentlyPlayedListWidget( QGraphicsWidget *parent = 0 );
     ~RecentlyPlayedListWidget();
 
-private slots:
+private Q_SLOTS:
     void itemLeftClicked( const QString &url );
     void itemMiddleClicked( const QString &url );
     void trackChanged( const Meta::TrackPtr &track );

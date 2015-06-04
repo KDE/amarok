@@ -151,7 +151,7 @@ public:
 
     MetaData m_data;
 
-public slots:
+public Q_SLOTS:
     void readMetaData();
 
 private:

@@ -23,7 +23,7 @@ class TestSimpleImporterConfigWidget : public QObject
 {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     void constructorShouldCreateTargetNameRow();
     void targetNameShouldBeSetToDefaultValue();
     void targetNameShouldBeSetToConfigValueIfExists();

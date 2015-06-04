@@ -73,7 +73,7 @@ public:
     QString prettyCommand( const QString &command ); 
 
 
-public slots:
+public Q_SLOTS:
     void bookmarkAlbum( Meta::AlbumPtr album );
     void bookmarkArtist( Meta::ArtistPtr artist );
 
@@ -81,7 +81,7 @@ public slots:
     void bookmarkCurrentPlaylistView();
     void bookmarkCurrentContextView();
 
-signals:
+Q_SIGNALS:
     void timecodesUpdated( const QString * BookmarkName );
     void timecodeAdded( const QString &name, int pos );
 

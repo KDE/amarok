@@ -65,7 +65,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
           */
         void saveLater( Playlists::PlaylistFilePtr playlist );
 
-    private slots:
+    private Q_SLOTS:
         void loadPlaylists();
         void slotSaveLater();
 

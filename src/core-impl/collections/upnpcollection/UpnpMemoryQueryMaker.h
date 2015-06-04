@@ -33,7 +33,7 @@ class UpnpMemoryQueryMaker : public MemoryQueryMaker
 
         virtual void run();
 
-    signals:
+    Q_SIGNALS:
         void startFullScan();
 
     private:

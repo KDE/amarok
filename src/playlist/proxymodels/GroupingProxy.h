@@ -110,12 +110,12 @@ public:
     //! Custom version of functions inherited from QSortFilterProxyModel
     QVariant data( const QModelIndex &index, int role ) const;
 
-//signals:
+//Q_SIGNALS:
     // Emits signals inherited from QSortFilterProxy
 
     // Emits signals inherited from Playlist::AbstractModel / ProxyBase
 
-private slots:
+private Q_SLOTS:
     /**
     * Handlers for the standard QAbstractItemModel signals.
     */

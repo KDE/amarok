@@ -50,7 +50,7 @@ class ToolbarView : public QGraphicsView
         explicit ToolbarView( Plasma::Containment* cont, QGraphicsScene* scene, QWidget* parent = 0 );
         ~ToolbarView();
 
-    signals:
+    Q_SIGNALS:
         void hideAppletExplorer();
         void showAppletExplorer();
         
@@ -60,7 +60,7 @@ class ToolbarView : public QGraphicsView
         void dragMoveEvent(QDragMoveEvent *event);
         void dragLeaveEvent(QDragLeaveEvent *event);
     
-    private slots:
+    private Q_SLOTS:
         void applyStyleSheet();
         void toggleConfigMode();
         void appletRemoved( Plasma::Applet* );

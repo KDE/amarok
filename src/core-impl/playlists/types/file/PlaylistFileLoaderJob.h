@@ -39,7 +39,7 @@ namespace Playlists
         protected:
             void run();
 
-        private slots:
+        private Q_SLOTS:
             void slotDonwloadFinished( KJob *job );
 
             /**

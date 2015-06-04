@@ -65,7 +65,7 @@ public:
     ProxyLogger();
     virtual ~ProxyLogger();
 
-public slots:
+public Q_SLOTS:
     virtual void shortMessage( const QString &text );
     virtual void longMessage( const QString &text, MessageType type );
     virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj = 0,
@@ -86,12 +86,12 @@ public slots:
     void setLogger( Logger *logger );
     Logger* logger() const;
 
-private slots:
+private Q_SLOTS:
     void forwardNotifications();
     void slotStartTimer();
     void slotTotalSteps( int totalSteps );
 
-signals:
+Q_SIGNALS:
     // timer can only be started from its thread, use signals & slots to pass thread barrier
     void startTimer();
 

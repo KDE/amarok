@@ -37,7 +37,7 @@ public:
     virtual QStringList mimeTypes() const;
     int rowHeight() const;
 
-private slots:
+private Q_SLOTS:
     void updateRowHeight();
 
 private:

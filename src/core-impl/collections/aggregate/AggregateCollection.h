@@ -96,13 +96,13 @@ namespace Collections {
         Meta::AggregateLabel* getLabel( Meta::LabelPtr label );
         void setLabel( Meta::AggregateLabel *label );
 
-        public slots:
+        public Q_SLOTS:
         void removeCollection( const QString &collectionId );
         void removeCollection( Collections::Collection *collection );
         void addCollection( Collections::Collection *collection, CollectionManager::CollectionStatus status );
         void slotUpdated();
 
-        private slots:
+        private Q_SLOTS:
         void emptyCache();
 
         private:

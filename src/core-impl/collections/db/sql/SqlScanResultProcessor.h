@@ -36,7 +36,7 @@ class SqlScanResultProcessor : public AbstractScanResultProcessor
         virtual ~SqlScanResultProcessor();
 
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void scanStarted( GenericScanManager::ScanType type );
         virtual void scanSucceeded();
 

@@ -82,14 +82,14 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-    public slots:
+    public Q_SLOTS:
         /** Dumps the complete database content.
          *  The content of all Amarok tables is dumped in a couple of files
          *  in the users homedirectory.
          */
         void dumpDatabaseContent();
 
-    private slots:
+    private Q_SLOTS:
         void slotDeviceAdded( int id );
         void slotDeviceRemoved( int id );
 

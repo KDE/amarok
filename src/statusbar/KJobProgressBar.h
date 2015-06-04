@@ -32,7 +32,7 @@ class KJobProgressBar : public ProgressBar
         KJobProgressBar( QWidget *parent, KJob * job );
         ~KJobProgressBar();
 
-    private slots:
+    private Q_SLOTS:
         void updateJobStatus( KJob*, unsigned long );
         void infoMessage( KJob*, QString plain, QString rich );
 };

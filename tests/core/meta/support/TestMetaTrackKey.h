@@ -22,7 +22,7 @@ class TestMetaTrackKey : public QObject
 {
     Q_OBJECT
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Test constructor TrackKey( const TrackPtr &track )
          */

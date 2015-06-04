@@ -116,7 +116,7 @@ public:
             return KDirModel::data( index, role );
     }
 
-private slots:
+private Q_SLOTS:
     void updateRowHeight()
     {
         QFont font;
@@ -148,7 +148,7 @@ public:
             return KFilePlacesModel::data( index, role );
     }
 
-private slots:
+private Q_SLOTS:
     void updateRowHeight()
     {
         QFont font;

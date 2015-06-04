@@ -53,13 +53,13 @@ namespace StatSyncing
              */
             QMap<ScrobblingServicePtr, QMap<ScrobblingService::ScrobbleError, int> > scrobbles();
 
-        public slots:
+        public Q_SLOTS:
             /**
              * Abort the job as soon as possible.
              */
             void abort();
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when matcher gets to know total number of steps it will take to
              * match all tracks.
@@ -86,7 +86,7 @@ namespace StatSyncing
         protected:
             virtual void run();
 
-        private slots:
+        private Q_SLOTS:
             void slotTrackScrobbled( const ScrobblingServicePtr &service, const Meta::TrackPtr &track );
             void slotScrobbleFailed( const ScrobblingServicePtr &service, const Meta::TrackPtr &track, int error );
 

@@ -65,7 +65,7 @@ namespace StatSyncing
              */
             QString fieldsToString( qint64 fields ) const;
 
-        signals:
+        Q_SIGNALS:
             void selectedProvidersChanged();
 
         private:

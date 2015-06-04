@@ -30,7 +30,7 @@ class AMAROK_EXPORT CoverViewDialog : public QDialog
         CoverViewDialog( Meta::AlbumPtr album, QWidget *parent );
         CoverViewDialog( const QImage &image, QWidget *parent );
 
-    private slots:
+    private Q_SLOTS:
         void updateCaption();
         void zoomFactorChanged( qreal value );
 

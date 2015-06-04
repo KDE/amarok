@@ -56,7 +56,7 @@ public:
 
     bool isDataLoaded() { return m_isDataLoaded; }
 
-private slots:
+private Q_SLOTS:
     void textDialogYes();
     void textDialogNo();
 

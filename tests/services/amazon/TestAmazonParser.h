@@ -29,7 +29,7 @@ class TestAmazonParser : public AmazonParser
 public:
     TestAmazonParser();
 
-private slots:
+private Q_SLOTS:
     void testRun();
 };
 

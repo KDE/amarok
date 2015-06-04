@@ -32,7 +32,7 @@ class TestSqlArtist : public QObject
 public:
     TestSqlArtist();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 

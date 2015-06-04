@@ -69,14 +69,14 @@ class AMAROK_EXPORT App : public KUniqueApplication
         // FRIENDS
         friend class MainWindow; //requires access to applySettings()
 
-    signals:
+    Q_SIGNALS:
         void prepareToQuit();
         void settingsChanged();
 
-    private slots:
+    private Q_SLOTS:
         void continueInit();
 
-    public slots:
+    public Q_SLOTS:
         void applySettings( bool firstTime = false );
         void slotConfigAmarok( const QString& page = QString() );
         void slotConfigShortcuts();
@@ -86,7 +86,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
     protected:
         virtual bool event( QEvent *event );
 
-    private slots:
+    private Q_SLOTS:
         void slotTrashResult( KJob *job );
 
     private:

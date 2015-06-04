@@ -33,7 +33,7 @@ protected:
 private:
     QVariantMap m_cfg;
 
-private slots:
+private Q_SLOTS:
     void init();
 
     void providerShouldHandleNonexistentDbFile();

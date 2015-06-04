@@ -49,7 +49,7 @@ namespace ConstraintTypes {
             virtual double satisfaction(const Meta::TrackList&) const;
             virtual quint32 suggestPlaylistSize() const;
 
-        private slots:
+        private Q_SLOTS:
             void setComparison( const int );
             void setDuration( const int );
             void setStrictness( const int );
@@ -70,13 +70,13 @@ namespace ConstraintTypes {
         public:
             PlaylistDurationEditWidget( const int, const int, const int );
 
-        signals:
+        Q_SIGNALS:
             void updated();
             void durationChanged( const int );
             void comparisonChanged( const int );
             void strictnessChanged( const int );
 
-        private slots:
+        private Q_SLOTS:
             void on_timeEdit_Duration_timeChanged( const QTime& );
             void on_comboBox_Comparison_currentIndexChanged( const int );
             void on_slider_Strictness_valueChanged( const int );

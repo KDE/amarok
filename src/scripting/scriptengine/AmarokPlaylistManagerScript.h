@@ -118,7 +118,7 @@ namespace AmarokScript
         private:
             QList<int> availableCategories();
 
-        signals:
+        Q_SIGNALS:
             void updated( int category );
             void categoryAdded( int category );
             void providerAdded( Playlists::PlaylistProvider *provider, int category );

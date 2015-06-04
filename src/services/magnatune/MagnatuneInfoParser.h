@@ -51,7 +51,7 @@ public:
     void getFavoritesPage();
     void getRecommendationsPage();
 
-private slots:
+private Q_SLOTS:
 
     void artistInfoDownloadComplete( KJob *downLoadJob );
     void frontpageDownloadComplete( KJob *downLoadJob );

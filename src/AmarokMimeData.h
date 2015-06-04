@@ -88,16 +88,16 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
          */
         void startQueries();
 
-    signals:
+    Q_SIGNALS:
         void trackListSignal( Meta::TrackList ) const;
 
-    public slots:
+    public Q_SLOTS:
         void getTrackListSignal() const;
 
     protected:
         virtual QVariant retrieveData( const QString &mimeType, QVariant::Type type ) const;
 
-    private slots:
+    private Q_SLOTS:
         void newResultReady( const Meta::TrackList &tracks );
         void queryDone();
 

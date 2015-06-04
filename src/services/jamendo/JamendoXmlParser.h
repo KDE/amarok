@@ -67,14 +67,14 @@ public:
     virtual void requestAbort ();
 
 
-signals:
+Q_SIGNALS:
 
     /**
      * Signal emitted when parsing is complete.
      */
     void doneParsing();
 
-private slots:
+private Q_SLOTS:
     /**
      * Called when the job has completed. Is executed in the GUI thread
      */

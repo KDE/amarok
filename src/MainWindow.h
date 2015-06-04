@@ -118,13 +118,13 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
          */
         bool isOnCurrentDesktop() const;
 
-    signals:
+    Q_SIGNALS:
         void loveTrack( Meta::TrackPtr track );
         void banTrack( Meta::TrackPtr track );
         void skipTrack();
         void switchQueueStateShortcut();
 
-    public slots:
+    public Q_SLOTS:
         void showHide();
         void slotFullScreen();
         void showNotificationPopup();
@@ -133,7 +133,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void showAbout();
         void showReportBug();
 
-    private slots:
+    private Q_SLOTS:
         void setDefaultDockSizes();
 
         void slotLoveTrack();
@@ -174,7 +174,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         virtual void closeEvent( QCloseEvent* );
         virtual void changeEvent( QEvent *event );
 
-    private slots:
+    private Q_SLOTS:
         void setRating1() { setRating( 1 ); }
         void setRating2() { setRating( 2 ); }
         void setRating3() { setRating( 3 ); }

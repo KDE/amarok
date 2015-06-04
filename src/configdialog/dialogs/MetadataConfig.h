@@ -36,10 +36,10 @@ class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
         virtual bool hasChanged();
         virtual void updateSettings();
 
-    signals:
+    Q_SIGNALS:
         void changed();
 
-    private slots:
+    private Q_SLOTS:
         void slotForgetCollections();
         void slotUpdateForgetButton();
         void slotUpdateConfigureExcludedLabelsLabel();

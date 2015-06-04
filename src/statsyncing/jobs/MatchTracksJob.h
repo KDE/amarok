@@ -58,13 +58,13 @@ namespace StatSyncing
             const PerProviderTrackList &excludedTracks() const { return m_excludedTracks; }
             const TrackList &tracksToScrobble() const { return m_tracksToScrobble; }
 
-        public slots:
+        public Q_SLOTS:
             /**
              * Abort the job as soon as possible.
              */
             void abort();
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when matcher gets to know total number of steps it will take to
              * match all tracks.

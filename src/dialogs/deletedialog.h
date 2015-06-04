@@ -47,7 +47,7 @@ public:
 
     void setFiles(const QList<QUrl> &files);
 
-protected slots:
+protected Q_SLOTS:
     virtual void slotShouldDelete(bool shouldDelete);
 };
 
@@ -63,7 +63,7 @@ public:
     void setFiles(const QList<QUrl> &files);
     bool shouldDelete() const { return m_widget->ddShouldDelete->isChecked(); }
 
-protected slots:
+protected Q_SLOTS:
     virtual void accept();
     void slotShouldDelete(bool shouldDelete);
 

@@ -47,7 +47,7 @@ public:
       */
     void addCollapsibleActions( const QActionGroup *actions );
 
-private slots:
+private Q_SLOTS:
     /**
       * Sets the collapsed state of the toolbar.
       * @param collapsed true if the actions are to be collapsed, otherwise false.

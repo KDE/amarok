@@ -39,10 +39,10 @@ class TrackSelectWidget: public KVBox
 
         void setData( const Meta::DataPtr& );
 
-    signals:
+    Q_SIGNALS:
         void selectionChanged( const Meta::DataPtr& );
 
-    private slots:
+    private Q_SLOTS:
         void recvNewSelection( CollectionTreeItem* );
 
     private:

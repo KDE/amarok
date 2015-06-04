@@ -70,10 +70,10 @@ namespace Dynamic
             MatchType match() const;
             void setMatch( MatchType value );
 
-        public slots:
+        public Q_SLOTS:
             virtual void invalidate();
 
-        private slots:
+        private Q_SLOTS:
             virtual void newQuery();
             virtual void newSimilarArtistQuery();
 

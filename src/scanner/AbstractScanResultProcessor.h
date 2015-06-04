@@ -56,7 +56,7 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
         AbstractScanResultProcessor( GenericScanManager* manager, QObject* parent = 0 );
         virtual ~AbstractScanResultProcessor();
 
-    signals:
+    Q_SIGNALS:
         /** Those signals can be connected to a progress bar to get progress information
          *  from the scanner.
          */
@@ -64,7 +64,7 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
         void incrementProgress();
         void totalSteps( int totalSteps );
 
-    protected slots:
+    protected Q_SLOTS:
         // Signals received from the ScanManager.
         // They must be send in the correct order:
         // first scanStarted

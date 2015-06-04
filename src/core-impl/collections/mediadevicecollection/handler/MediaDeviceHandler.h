@@ -175,7 +175,7 @@ public:
     // HACK: Used for device-specific actions, such as initialize for iPod
     virtual QList<QAction *> collectionActions() { return QList<QAction*> (); }
 
-signals:
+Q_SIGNALS:
     void gotCopyableUrls( const QMap<Meta::TrackPtr, QUrl> &urls );
     void databaseWritten( bool succeeded );
 
@@ -188,7 +188,7 @@ signals:
 
     /* File I/O Methods */
 
-public slots:
+public Q_SLOTS:
 
    /**
     * Parses the media device's database and creates a Meta::MediaDeviceTrack
@@ -260,7 +260,7 @@ protected:
     bool m_copyingthreadsafe; ///< whether or not the handler's method of copying is threadsafe
     TitleMap          m_titlemap; ///< Map of track titles to tracks, used to detect duplicates
 
-protected slots:
+protected Q_SLOTS:
 
     void slotCopyNextTrackFailed( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
     void slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
@@ -385,9 +385,9 @@ successfully.
 
     virtual bool success() const;
 
-signals:
+Q_SIGNALS:
 
-private slots:
+private Q_SLOTS:
     /**
     * Is called when the job is done successfully, and simply
     * calls Collection's emitCollectionReady()
@@ -440,7 +440,7 @@ public:
 
     virtual bool success() const;
 
-signals:
+Q_SIGNALS:
 
     /**
     * Is emitted when the job is done successfully
@@ -457,7 +457,7 @@ signals:
     */
     void copyTrackFailed( ThreadWeaver::Job*, const Meta::TrackPtr& track );
 
-private slots:
+private Q_SLOTS:
     /**
     * Is called when the job is done successfully, and simply
     * emits copyTrackDone

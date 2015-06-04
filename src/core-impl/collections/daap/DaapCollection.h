@@ -54,7 +54,7 @@ class DaapCollectionFactory : public Collections::CollectionFactory
     private:
         QString serverKey( const QString& host, quint16 port ) const;
 
-    private slots:
+    private Q_SLOTS:
         void connectToManualServers();
         void serverOffline( DNSSD::RemoteService::Ptr );
         void foundDaap( DNSSD::RemoteService::Ptr );
@@ -90,14 +90,14 @@ class DaapCollection : public Collections::Collection
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
-    signals:
+    Q_SIGNALS:
         void collectionReady();
 
-    public slots:
+    public Q_SLOTS:
         void loadedDataFromServer();
         void parsingFailed();
 
-    private slots:
+    private Q_SLOTS:
         void passwordRequired();
         void httpError( const QString &error );
 

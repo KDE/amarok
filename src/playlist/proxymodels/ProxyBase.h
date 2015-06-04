@@ -81,7 +81,7 @@ public:
     virtual Meta::TrackPtr trackForId( const quint64 id ) const;
     virtual Meta::TrackList tracks() const;
 
-signals:
+Q_SIGNALS:
     //! Proxied from Playlist::Model.
     void activeTrackChanged( const quint64 );
     void queueChanged();

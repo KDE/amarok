@@ -48,11 +48,11 @@ public:
 
     void setAlbum( const Meta::AlbumPtr album );
 
-signals:
+Q_SIGNALS:
     void artistClicked( const QString& );
     void albumClicked( const QString& );
 
-private slots:
+private Q_SLOTS:
     void artistClicked();
     void albumClicked();
 

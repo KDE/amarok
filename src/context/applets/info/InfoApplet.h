@@ -39,11 +39,11 @@ public:
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
-public slots:
+public Q_SLOTS:
     virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
-private slots:
+private Q_SLOTS:
     void linkClicked( const QUrl & url );
 
 private:

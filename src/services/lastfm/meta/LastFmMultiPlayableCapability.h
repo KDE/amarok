@@ -44,7 +44,7 @@ class LastFmMultiPlayableCapability : public Capabilities::MultiPlayableCapabili
         virtual void fetchFirst();
         virtual void fetchNext();
 
-    private slots:
+    private Q_SLOTS:
         void slotTrackPlaying( const Meta::TrackPtr &track );
         void slotNewTrackAvailable();
         void skip();

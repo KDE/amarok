@@ -46,10 +46,10 @@ public:
 
     virtual void newProgressOperation( QObject *sender, const QString &text, int maximum,
                                        QObject *obj, const char *slot, Qt::ConnectionType type );
-signals:
+Q_SIGNALS:
     void signalLongMessage( const QString & text, MessageType type );
 
-private slots:
+private Q_SLOTS:
     void hideProgress();
     void nextShortMessage();
     void hideLongMessage();

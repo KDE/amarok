@@ -43,10 +43,10 @@ class TagGuessOptionWidget : public QWidget, public Ui::TagGuessOptions
         bool getWhitespaceOptions();
         bool getUnderscoreOptions();
 
-    signals:
+    Q_SIGNALS:
         void changed();
 
-    private slots:
+    private Q_SLOTS:
         // Handles the radiobuttons
         void editStateEnable( bool checked );
 
@@ -82,10 +82,10 @@ class AMAROK_EXPORT TagGuesserDialog : public KDialog
         /** Sets the filename to show colored preview from. */
         void setFileName( const QString& fileName );
 
-    public slots:
+    public Q_SLOTS:
         virtual void onAccept();
 
-    private slots:
+    private Q_SLOTS:
         /** Updates the result texts and the colored filename. */
         void updatePreview();
 

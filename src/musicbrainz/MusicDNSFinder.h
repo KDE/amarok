@@ -37,15 +37,15 @@ class MusicDNSFinder: public QObject
                         const QString &pathPrefix = "/ofa/1",
                         const QString &clietnId = AMAROK_MUSICDNS_CLIENT_ID,
                         const QString &clientVersion = AMAROK_VERSION  );
-    public slots:
+    public Q_SLOTS:
         void run( const Meta::TrackList &tracks );
 
-    signals:
+    Q_SIGNALS:
         void trackFound( const Meta::TrackPtr &track, const QString &puid );
         void progressStep();
         void done();
 
-    private slots:
+    private Q_SLOTS:
 
         void sendNewRequest();
         void gotReply( QNetworkReply *reply );

@@ -45,16 +45,16 @@ class AMAROK_EXPORT DropPixmapItem : public QObject, public QGraphicsPixmapItem
         
         DropPixmapItem( QGraphicsItem* parent = 0 );
 
-    signals:
+    Q_SIGNALS:
         void imageDropped( const QPixmap &pixmap );
         
-    public slots:
+    public Q_SLOTS:
         /**
         * Result of the image fetching stuff
         */
         void imageDownloadResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
         
-    protected slots:
+    protected Q_SLOTS:
         /**
         * Reimplement dropEvent
         */
@@ -87,7 +87,7 @@ public:
     void show();
     void hide();
 
-signals:
+Q_SIGNALS:
     void imageDropped( const QPixmap &pixmap );
 
 protected:

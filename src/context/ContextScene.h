@@ -41,7 +41,7 @@ public:
 
     void loadDefaultSetup();
 
-signals:
+Q_SIGNALS:
     void appletRemoved( QObject *object );
 
 };

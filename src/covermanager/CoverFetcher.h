@@ -50,13 +50,13 @@ public:
 
     enum FinishState { Success, Error, NotFound, Cancelled };
 
-public slots:
+public Q_SLOTS:
     AMAROK_EXPORT void queueQuery( Meta::AlbumPtr album, const QString &query, int page = 0 );
 
-signals:
+Q_SIGNALS:
     void finishedSingle( int state );
 
-private slots:
+private Q_SLOTS:
 
     /// Fetch a cover
     void slotFetch( CoverFetchUnit::Ptr unit );

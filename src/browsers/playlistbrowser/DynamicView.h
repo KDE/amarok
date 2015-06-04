@@ -38,17 +38,17 @@ public:
     explicit DynamicView( QWidget *parent = 0 );
     ~DynamicView();
 
-signals:
+Q_SIGNALS:
     void currentItemChanged( const QModelIndex &current );
 
-public slots:
+public Q_SLOTS:
     void addPlaylist();
     void addToSelected();
     void cloneSelected();
     void editSelected();
     void removeSelected();
 
-protected slots:
+protected Q_SLOTS:
     void expandRecursive(const QModelIndex &index);
     void collapseRecursive(const QModelIndex &index);
 

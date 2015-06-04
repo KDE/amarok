@@ -44,7 +44,7 @@ class ATTICA_EXPORT CategoryListJob : public KJob
 
     Category::List categoryList() const;
     
-  protected slots:
+  protected Q_SLOTS:
     void doWork();
 
     void slotJobResult( KJob *job );

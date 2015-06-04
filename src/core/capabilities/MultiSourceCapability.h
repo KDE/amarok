@@ -64,7 +64,7 @@ namespace Capabilities
              */
             virtual QUrl nextUrl() const = 0;
 
-        signals:
+        Q_SIGNALS:
             void urlChanged( const QUrl &url );
     };
 }

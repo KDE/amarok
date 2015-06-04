@@ -70,7 +70,7 @@ namespace AmarokScript
              */
             Q_INVOKABLE void showToolTip();
 
-        signals:
+        Q_SIGNALS:
             void prepareToQuit();
             void newPalette( QPalette );
 

@@ -38,7 +38,7 @@ class TestSqlTrack : public QObject
 public:
     TestSqlTrack();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 

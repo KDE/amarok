@@ -44,7 +44,7 @@ public:
      */
     QString currentDir() const;
 
-protected slots:
+protected Q_SLOTS:
     void slotNavigateToDirectory( const QModelIndex &index );
 
     void addItemActivated( const QString &callback );
@@ -91,7 +91,7 @@ protected slots:
      */
     void setupDone( const QModelIndex &index, bool success );
 
-private slots:
+private Q_SLOTS:
     void initView();
 
 private:
@@ -112,7 +112,7 @@ class DelayedActivator : public QObject
     public:
         explicit DelayedActivator( QAbstractItemView *view );
 
-    private slots:
+    private Q_SLOTS:
         void slotRowsInserted( const QModelIndex &parent, int start );
 
     private:

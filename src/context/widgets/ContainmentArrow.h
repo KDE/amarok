@@ -66,11 +66,11 @@ public:
     void enable();
     void disable();
 
-public slots:
+public Q_SLOTS:
     void show();
     void hide();
 
-signals:
+Q_SIGNALS:
     void changeContainment( int to );
 
 protected:

@@ -25,7 +25,7 @@ class CollectionLocationTest : public QObject
 public:
     CollectionLocationTest();
 
-private slots:
+private Q_SLOTS:
 
     void testSuccessfulCopy();
     void testFailedCopy();

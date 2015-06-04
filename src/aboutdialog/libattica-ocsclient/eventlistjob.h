@@ -48,7 +48,7 @@ class ATTICA_EXPORT EventListJob : public KJob
 
         Event::List eventList() const;
         
-    protected slots:
+    protected Q_SLOTS:
         void doWork();
 
         void slotJobResult(KJob* job);

@@ -90,7 +90,7 @@ namespace AmarokScript
                 Label = CategoryId::Label
             };
 
-        public slots:
+        public Q_SLOTS:
             void setLevel( int level, int type );
 
             /**
@@ -98,7 +98,7 @@ namespace AmarokScript
              */
             void setAction( const QScriptValue &value );
 
-        signals:
+        Q_SIGNALS:
             void filterChanged( QString );
 
         private:
@@ -186,10 +186,10 @@ namespace AmarokScript
              */
             Q_INVOKABLE Meta::TrackPtr track();
 
-        private slots:
+        private Q_SLOTS:
             void slotDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight );
 
-        signals:
+        Q_SIGNALS:
             void loaded( CollectionTreeItem* );
 
         private:
@@ -225,7 +225,7 @@ namespace AmarokScript
          */
         Q_PROPERTY( QList<CollectionTreeItem*> selectedItems READ selectedItems )
 
-        public slots:
+        public Q_SLOTS:
             /**
              * Get a QueryMaker for the selected items.
              */

@@ -42,7 +42,7 @@ class AMAROK_EXPORT TransferDialog : public KDialog
 
         bool isAccepted() { return m_accepted; }
 
-    private slots:
+    private Q_SLOTS:
         void slotOk();
         void slotCancel();
         void sort1_activated( int index );

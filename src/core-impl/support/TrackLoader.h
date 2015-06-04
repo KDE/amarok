@@ -106,10 +106,10 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::TrackPtr track );
 
-    signals:
+    Q_SIGNALS:
         void finished( const Meta::TrackList &tracks );
 
-    private slots:
+    private Q_SLOTS:
         void processNextSourceUrl();
         void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list );
         void listJobFinished();

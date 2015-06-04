@@ -48,13 +48,13 @@ namespace APG {
 
             QDomElement* toXml( QDomDocument& ) const;
 
-        public slots:
+        public Q_SLOTS:
             void generate( int );
 
-        signals:
+        Q_SIGNALS:
             void lock( bool );
 
-        private slots:
+        private Q_SLOTS:
             void queueSolver();
             void solverFinished( ThreadWeaver::Job* );
 

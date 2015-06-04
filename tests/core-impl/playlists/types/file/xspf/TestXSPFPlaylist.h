@@ -34,7 +34,7 @@ Q_OBJECT
 public:
     TestXSPFPlaylist();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 

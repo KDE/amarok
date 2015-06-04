@@ -95,7 +95,7 @@ namespace AmarokScript
              */
             Q_INVOKABLE void savePreset( const QString &name, const QList<int> &presetGains );
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when preset with name @param name is applied or the equalizer is disabled.
              * name is "" when disabled.
@@ -112,7 +112,7 @@ namespace AmarokScript
              */
             void presetsChanged( QString name );
 
-        private slots:
+        private Q_SLOTS:
             void equalizerPresetApplied( int index );
 
         private:

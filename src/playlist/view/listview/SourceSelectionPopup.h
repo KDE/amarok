@@ -41,10 +41,10 @@ public:
 
     ~SourceSelectionPopup();
 
-signals:
+Q_SIGNALS:
     void sourceChanged( int source );
 
-protected slots:
+protected Q_SLOTS:
     void sourceSelected( QListWidgetItem * item );
 
 private:

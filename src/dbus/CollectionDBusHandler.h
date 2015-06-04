@@ -36,7 +36,7 @@ class CollectionDBusHandler : public QObject, protected QDBusContext
     public:
         CollectionDBusHandler( QObject *parent );
         
-    public slots:
+    public Q_SLOTS:
         /*
          * Takes a query in XML form and executes it. Will return an empty map if the query XML is invalid
          *

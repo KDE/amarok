@@ -54,12 +54,12 @@ class AMAROK_EXPORT ProgressBar : public QFrame
         void setValue( int value );
         int percentage();
 
-    public slots:
+    public Q_SLOTS:
         void cancel();
         void delayedDone();
         void slotTotalSteps( int steps ) { m_progressBar->setMaximum( steps ); }
 
-    signals:
+    Q_SIGNALS:
         void cancelled( ProgressBar * );
         void cancelled();
         void complete( ProgressBar * );

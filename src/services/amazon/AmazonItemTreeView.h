@@ -49,7 +49,7 @@ protected:
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
 
-protected slots:
+protected Q_SLOTS:
     // Reimplemented from QTreeView
     virtual void dataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight );
     virtual void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
@@ -66,7 +66,7 @@ private:
     QAction* createDirectCheckoutAction();
     QAction* createSearchForAlbumAction();
 
-signals:
+Q_SIGNALS:
     void addToCart();
     void directCheckout();
     void itemDoubleClicked( QModelIndex index );

@@ -156,13 +156,13 @@ public:
 
     QList<BrowserBreadcrumbItem *> additionalItems();
 
-public slots:
+public Q_SLOTS:
     void activate();
 
     //Called if this category itself is re-clicked in the breadcrumb
     virtual void reActivate() {}
 
-private slots:
+private Q_SLOTS:
     void slotSettingsChanged();
 
 private:

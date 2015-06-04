@@ -75,7 +75,7 @@ class ServiceSqlQueryMaker : public QueryMaker
         virtual QString escape( QString text ) const;
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
 
-    public slots:
+    public Q_SLOTS:
         void done( ThreadWeaver::Job * job );
 
     private:

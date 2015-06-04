@@ -46,7 +46,7 @@ public:
     virtual void load();
     virtual void defaults();
 
-private slots:
+private Q_SLOTS:
     void testLogin();
 
     void finished();

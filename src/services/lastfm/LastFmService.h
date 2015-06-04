@@ -63,7 +63,7 @@ public:
 
     void love( Meta::TrackPtr track );
 
-private slots:
+private Q_SLOTS:
     void love();
 
     void playCustomStation();

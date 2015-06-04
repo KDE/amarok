@@ -46,7 +46,7 @@ class ATTICA_EXPORT KnowledgeBaseListJob : public KJob
     KnowledgeBase::List knowledgeBaseList() const;
     KnowledgeBase::Metadata metadata() const;
 
-  protected slots:
+  protected Q_SLOTS:
     void doWork();
 
     void slotJobResult( KJob *job );

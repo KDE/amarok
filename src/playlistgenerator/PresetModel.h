@@ -48,10 +48,10 @@ namespace APG {
 
             APG::PresetPtr activePreset() const;
 
-        signals:
+        Q_SIGNALS:
             void lock( bool ); // disable the edit widgets if the solver is running
 
-        public slots:
+        public Q_SLOTS:
             void addNew();
             void edit();
             void editPreset( const QModelIndex& );
@@ -62,7 +62,7 @@ namespace APG {
             void setActivePreset( const QModelIndex& );
             void savePresetsToXml() const; // force saving to default location
 
-        private slots:
+        private Q_SLOTS:
             void savePresetsToXml( const QString&, const QList<APG::PresetPtr> & ) const;
             void loadPresetsFromXml( const QString&, bool createDefaults = false );
 
@@ -87,10 +87,10 @@ namespace APG {
             ExportDialog( APG::PresetPtr );
             ~ExportDialog();
 
-        signals:
+        Q_SIGNALS:
             void pleaseExport( const QString&, const QList<APG::PresetPtr> ) const;
 
-        private slots:
+        private Q_SLOTS:
             void recvAccept() const;
 
         private:

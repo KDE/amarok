@@ -49,7 +49,7 @@ class AMAROK_EXPORT Fadeouter : public QObject
          */
         virtual ~Fadeouter();
 
-    signals:
+    Q_SIGNALS:
         /**
          * This signal is emitted when the fade-out is done. This signal may not
          * be emitted at all when Fadeouter is interrupted by new track playing.
@@ -57,7 +57,7 @@ class AMAROK_EXPORT Fadeouter : public QObject
          */
         void fadeoutFinished();
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Emits fadeoutFinished() and commits Fadeouter suicide.
          */

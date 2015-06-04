@@ -49,7 +49,7 @@ class AMAROK_EXPORT OpmlWriter : public ThreadWeaver::Job
 
         QIODevice *device() { return m_xmlWriter->device(); }
 
-    signals:
+    Q_SIGNALS:
         /**
          * Signal emmited when writing is complete.
          */

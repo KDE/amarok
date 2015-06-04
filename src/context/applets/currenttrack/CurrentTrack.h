@@ -50,7 +50,7 @@ public:
                                  const QStyleOptionGraphicsItem *option,
                                  const QRect &contentsRect );
 
-public slots:
+public Q_SLOTS:
     virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
@@ -60,7 +60,7 @@ protected:
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
     void createConfigurationInterface( KConfigDialog *parent );
 
-private slots:
+private Q_SLOTS:
     void trackRatingChanged( int rating );
     void paletteChanged( const QPalette &palette );
     void settingsAccepted();

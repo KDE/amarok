@@ -55,10 +55,10 @@ class PlaylistsInFoldersProxy : public QtGroupingProxy
         // re-implement to connect renameIndex signal
         virtual void setSourceModel( QAbstractItemModel *sourceModel );
 
-    signals:
+    Q_SIGNALS:
         void renameIndex( const QModelIndex &idx );
 
-    private slots:
+    private Q_SLOTS:
         void slotRenameIndex( const QModelIndex &idx );
 
         void slotDeleteFolder();

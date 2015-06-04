@@ -25,7 +25,7 @@ class TestAmazonItem : public QObject
 public:
     TestAmazonItem();
 
-private slots:
+private Q_SLOTS:
     void testSetAndGetAsin();
     void testSetAndGetPrice();
 };

@@ -43,7 +43,7 @@ namespace PlaylistBrowserNS {
 
             bool allowDuplicates() const;
 
-        private slots:
+        private Q_SLOTS:
             void navigatorChanged();
             void selectionChanged();
             void playlistCleared();

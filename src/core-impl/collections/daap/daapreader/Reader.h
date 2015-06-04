@@ -73,7 +73,7 @@ namespace Daap
             quint16 port() const { return m_port; }
 
             bool parseSongList( const QByteArray &data, bool set_collection = false);
-        public slots:
+        public Q_SLOTS:
             void logoutRequest(int, bool );
             void contentCodesReceived( int id , bool error );
             void loginHeaderReceived( const QHttpResponseHeader& resp );
@@ -83,7 +83,7 @@ namespace Daap
             void songListFinished( int id, bool error );
             void fetchingError( const QString& error );
 
-        signals:
+        Q_SIGNALS:
             //void daapBundles( const QString& host, Daap::SongList bundles );
             void httpError( const QString& );
             void passwordRequired();

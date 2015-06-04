@@ -35,12 +35,12 @@ public:
     static QUrl cachedImagePath( Podcasts::PodcastChannelPtr channel );
     static QUrl cachedImagePath( Podcasts::PodcastChannel *channel );
 
-signals:
+Q_SIGNALS:
     void imageReady( Podcasts::PodcastChannelPtr channel, QImage image );
     void imageReady( Podcasts::PodcastEpisodePtr episode, QImage image );
     void done( PodcastImageFetcher * );
 
-private slots:
+private Q_SLOTS:
     void slotDownloadFinished( KJob *job );
 
 private:

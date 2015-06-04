@@ -39,7 +39,7 @@ public:
     StorageFactory( QObject *parent, const QVariantList &args );
     virtual ~StorageFactory();
 
-signals:
+Q_SIGNALS:
     /** Emitted whenever the factory produces a new storage.
      *
      */

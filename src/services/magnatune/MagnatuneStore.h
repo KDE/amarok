@@ -94,7 +94,7 @@ public:
     virtual QString messages();
     virtual QString sendMessage( const QString &message );
 
-public slots:
+public Q_SLOTS:
     /**
     * Slot for catching cancelled list downloads
     */
@@ -111,7 +111,7 @@ public slots:
     void addToFavorites( const QString &sku );
     void removeFromFavorites( const QString &sku );
     
-private slots:
+private Q_SLOTS:
     /**
      * Slot called when the download album button is clicked. Starts a download
      */

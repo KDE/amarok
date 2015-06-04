@@ -25,7 +25,7 @@ class Mp3tunesHarmonyClient : public QObject {
     public:
         Mp3tunesHarmonyClient();
 
-    public slots:
+    public Q_SLOTS:
         virtual void harmonyError( const QString &error );
         virtual void harmonyWaitingForEmail( const QString &pin );
         virtual void harmonyWaitingForPin();

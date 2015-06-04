@@ -35,7 +35,7 @@ class TestSqlCollection : public QObject
 public:
     TestSqlCollection();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 

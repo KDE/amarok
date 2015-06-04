@@ -97,7 +97,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlQueryMaker : public QueryMaker
          */
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
 
-    public slots:
+    public Q_SLOTS:
         void done( ThreadWeaver::Job * job );
         void blockingNewResultReady( const QStringList &customData );
         void blockingNewResultReady( const Meta::AlbumList &albums );

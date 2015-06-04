@@ -39,7 +39,7 @@ public:
     explicit ExtendedAboutDialog( const KAboutData *aboutData, const OcsData *ocsData, QWidget *parent = 0 );
     virtual ~ExtendedAboutDialog();
 
-private slots:
+private Q_SLOTS:
     void switchToOcsWidgets();
     void onProviderFetched( KJob *job );
 

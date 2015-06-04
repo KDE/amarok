@@ -47,7 +47,7 @@ public:
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;
 
-public slots:
+public Q_SLOTS:
     virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
     void loadWikipediaUrl( const QString &url );

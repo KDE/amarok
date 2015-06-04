@@ -44,12 +44,12 @@ public:
 
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
-public slots:
+public Q_SLOTS:
     virtual void init();
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
-private slots:
+private Q_SLOTS:
     void paletteChanged( const QPalette & palette );
 
 private:

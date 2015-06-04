@@ -61,7 +61,7 @@ class MusicBrainzTagsModel : public QAbstractItemModel
         QMap<Meta::TrackPtr, QVariantMap> chosenItems() const;
         void chooseBestMatchesFromRelease( const QStringList &releases );
 
-    public slots:
+    public Q_SLOTS:
         void addTrack( const Meta::TrackPtr track, const QVariantMap tags );
 
         void chooseBestMatches();

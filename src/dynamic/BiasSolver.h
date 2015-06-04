@@ -121,7 +121,7 @@ namespace Dynamic
         protected:
             void run();
 
-        signals:
+        Q_SIGNALS:
             /** a job must implement the following signals for the progress bar
                 BiasedPlaylist set's us as progress sender in startSolver.
             */
@@ -133,7 +133,7 @@ namespace Dynamic
             void incrementProgress();
             void endProgressOperation( QObject * );
 
-        private slots:
+        private Q_SLOTS:
             void biasResultReady( const Dynamic::TrackSet &set );
 
             void trackCollectionResultsReady( QStringList );

@@ -45,7 +45,7 @@ namespace Amarok
             virtual void setText( const QString &text );
             virtual void resizeEvent( QResizeEvent *event );
 
-        signals:
+        Q_SIGNALS:
             void sizePolicyChanged();
 
         private:

@@ -44,10 +44,10 @@ namespace Mpris1
             void UpdateAllPodcasts();
             void AddPodcast( const QString& );
 
-        signals:
+        Q_SIGNALS:
             void TrackListChange( int );
 
-        private slots:
+        private Q_SLOTS:
             void slotTrackListChange();
     };
 }

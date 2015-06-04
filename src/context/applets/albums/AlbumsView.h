@@ -60,7 +60,7 @@ public:
 
     void clear();
 
-public slots:
+public Q_SLOTS:
     void setRecursiveExpanded( QStandardItem *item, bool expanded );
     void sort();
 
@@ -68,7 +68,7 @@ protected:
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
     void resizeEvent( QGraphicsSceneResizeEvent *event );
 
-private slots:
+private Q_SLOTS:
     void itemClicked( const QModelIndex &index );
     void slotDoubleClicked();
     void slotAppendSelected();

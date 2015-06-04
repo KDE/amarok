@@ -93,7 +93,7 @@ public:
 
     bool eventFilter( QObject *obj, QEvent *event );
 
-signals:
+Q_SIGNALS:
     /**
      * Show similar artists to the artist associated with this widget
      */
@@ -220,7 +220,7 @@ private:
 
     const SimilarArtistPtr m_artist;
 
-private slots:
+private Q_SLOTS:
     /**
      * Handle artist photo retrieved from Last.fm
      */
@@ -290,7 +290,7 @@ public:
 
     QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
 
-signals:
+Q_SIGNALS:
     void showSimilarArtists( const QString &artist );
     void showBio( const QString &artist );
 

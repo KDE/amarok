@@ -25,7 +25,7 @@ class TestAmazonAlbum : public QObject
 public:
     TestAmazonAlbum();
     
-private slots:
+private Q_SLOTS:
     void testSetAndGetCoverUrl();
 };
 

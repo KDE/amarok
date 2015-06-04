@@ -144,7 +144,7 @@ class ServiceAlbumCoverDownloader : public QObject
          */
         void downloadCover( Meta::ServiceAlbumWithCoverPtr album );
 
-    private slots:
+    private Q_SLOTS:
 
         /**
          * Slot called when the download job is complete.

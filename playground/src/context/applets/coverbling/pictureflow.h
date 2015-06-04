@@ -125,7 +125,7 @@ public:
 
   void setAnimationTime(int iTime);
 
-public slots:
+public Q_SLOTS:
 
  Meta::AlbumPtr album(int index);
 
@@ -192,7 +192,7 @@ public slots:
   */  
   void triggerRender();
 
-signals:
+Q_SIGNALS:
   void centerIndexChanged(int index);
   void doubleClicked(int index);
 protected:
@@ -204,7 +204,7 @@ protected:
   void wheelEvent(QWheelEvent * event);
   Meta::AlbumList m_album_list;
   bool m_opengl;
-private slots:
+private Q_SLOTS:
   void updateAnimation();
 
 private:

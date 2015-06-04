@@ -25,7 +25,7 @@ class TestArtistHelper : public QObject
 public:
     TestArtistHelper();
 
-private slots:
+private Q_SLOTS:
     void testRealTrackArtist_data();
     void testRealTrackArtist();
 };

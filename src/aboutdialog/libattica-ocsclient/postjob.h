@@ -47,7 +47,7 @@ class ATTICA_EXPORT PostJob : public KJob
     QString status() const;
     QString statusMessage() const;
     
-  protected slots:
+  protected Q_SLOTS:
     void doWork();
 
     void slotJobResult( KJob *job );

@@ -29,7 +29,7 @@ Q_OBJECT
 public:
     TestAmarok();
 
-private slots:
+private Q_SLOTS:
     void testAsciiPath();
     void testCleanPath();
     void testComputeScore();

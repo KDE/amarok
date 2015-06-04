@@ -54,14 +54,14 @@ public:
     void setContainment( Containment *containment );
     Containment *containment() const;
 
-signals:
+Q_SIGNALS:
     void addAppletToContainment( const QString &pluginName, const int loc );
     void appletExplorerHid();
 
 protected:
     QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
 
-private slots:
+private Q_SLOTS:
     void addApplet( const QString &name );
     void hideMenu();
     void scrollLeft();

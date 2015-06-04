@@ -70,7 +70,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
          */
         AMAROK_EXPORT void copySelectedToLocalCollection();
 
-    public slots:
+    public Q_SLOTS:
         void slotSetFilter( const QString &filter );
 
         /**
@@ -82,7 +82,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         void playChildTracksSlot( Meta::TrackList list );
 
-    signals:
+    Q_SIGNALS:
         /**
          * This signal is emitted when slotAddFilteredTracksToPlaylist() has done its
          * work.
@@ -98,7 +98,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void dragMoveEvent( QDragMoveEvent *event );
         void startDrag( Qt::DropActions supportedActions );
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotCollapsed( const QModelIndex &index );
         void slotExpanded( const QModelIndex &index );
@@ -156,7 +156,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         bool m_ongoingDrag;
 
-    signals:
+    Q_SIGNALS:
         void itemSelected( CollectionTreeItem * item );
         void leavingTree();
 };

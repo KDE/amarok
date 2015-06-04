@@ -58,10 +58,10 @@ public:
      */
     void setConvertToMultiTracks( bool convert );
 
-protected slots:
+protected Q_SLOTS:
     void slotScriptComplete( );
 
-private slots:
+private Q_SLOTS:
     void fetchGenre();
     void fetchArtists();
     void fetchAlbums();

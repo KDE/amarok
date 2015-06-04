@@ -42,10 +42,10 @@ public:
     virtual bool hasChanged();
     virtual bool isDefault();
 
-public slots:
+public Q_SLOTS:
     void slotConfigChanged( bool changed );
 
-private slots:
+private Q_SLOTS:
     void slotManageScripts();
     void installLocalScript();
     void slotReloadScriptSelector();

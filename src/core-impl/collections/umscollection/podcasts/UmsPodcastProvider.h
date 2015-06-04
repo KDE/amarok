@@ -62,7 +62,7 @@ class UmsPodcastProvider : public PodcastProvider
 
         virtual void completePodcastDownloads();
 
-    public slots:
+    public Q_SLOTS:
         virtual void updateAll();
         virtual void update( Podcasts::PodcastChannelPtr channel );
         virtual void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
@@ -70,10 +70,10 @@ class UmsPodcastProvider : public PodcastProvider
         virtual void slotUpdated();
         virtual void scan();
 
-    signals:
+    Q_SIGNALS:
         void updated();
 
-    private slots:
+    private Q_SLOTS:
         void slotDeleteEpisodes();
         void slotDeleteChannels();
         void deleteJobComplete( KJob *job );

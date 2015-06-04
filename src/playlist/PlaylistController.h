@@ -87,7 +87,7 @@ public:
      */
     static void destroy();
 
-public slots:
+public Q_SLOTS:
     /**
      * Handles the insertion of one single track into the playlist, considering a set of
      * options that handle the specifics of the operation.
@@ -196,7 +196,7 @@ public slots:
     void redo();
     void clear();
 
-signals:
+Q_SIGNALS:
     void canRedoChanged( bool );
     void canUndoChanged( bool );
 
@@ -204,7 +204,7 @@ signals:
 
     void replacingPlaylist();
 
-private slots:
+private Q_SLOTS:
     void slotLoaderWithOptionsFinished( const Meta::TrackList &tracks );
     void slotLoaderWithRowFinished( const Meta::TrackList &tracks );
 

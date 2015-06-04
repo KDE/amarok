@@ -25,7 +25,7 @@ class TestAmazonShoppingCart : public QObject
 public:
     TestAmazonShoppingCart();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 

@@ -48,7 +48,7 @@ public:
 
     virtual ContextView *view() = 0;
     
-public slots:
+public Q_SLOTS:
     void showApplet( Plasma::Applet* ) {}
     void moveApplet( Plasma::Applet*, int, int ) {}
     virtual void addApplet( const QString& pluginName, const int ) = 0;

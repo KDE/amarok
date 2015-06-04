@@ -46,7 +46,7 @@ protected:
     // reimplemented from Plasma::DataEngine
     bool sourceRequestEvent( const QString &name );
 
-private slots:
+private Q_SLOTS:
 
     void update( bool reload = false );
 

@@ -39,7 +39,7 @@ namespace Playlist
             quint64 requestUserNextTrack() { return StandardTrackNavigator::requestNextTrack(); }  // The user explicitly asks for change. Use the 'next' behaviour of parent 'StandardTrackNavigator'.
             // requestLastTrack(): The user explicitly asks for change. Let parent 'StandardTrackNavigator' handle that.
 
-        private slots:
+        private Q_SLOTS:
             void recvActiveTrackChanged( const quint64 id ) { m_trackid = id; }
 
         private:

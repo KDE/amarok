@@ -32,7 +32,7 @@ class LoveTrackAction : public GlobalCollectionTrackAction
 public:
     LoveTrackAction( LastFmService * service );
 
-private slots:
+private Q_SLOTS:
     void slotTriggered();
 
 private:

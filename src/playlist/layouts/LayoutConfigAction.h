@@ -49,7 +49,7 @@ class LayoutConfigAction : public KAction
          */
         ~LayoutConfigAction();
 
-    protected slots:
+    protected Q_SLOTS:
 
         /**
          * Set the currently active layout based on the selected action.

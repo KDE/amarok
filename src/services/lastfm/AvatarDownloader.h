@@ -44,10 +44,10 @@ class AvatarDownloader : public QObject
         */
         void downloadAvatar( const QString& username, const QUrl &url );
 
-    signals:
+    Q_SIGNALS:
         void avatarDownloaded( const QString &username, QPixmap avatar );
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Slot called when the network access manager finished a request
          */

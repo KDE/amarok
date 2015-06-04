@@ -97,7 +97,7 @@ public:
         return QModelIndex();
     }
 
-public slots:
+public Q_SLOTS:
     void createNewGroup();
     void createNewBookmark();
     void deleteBookmark( const QString &name );
@@ -109,7 +109,7 @@ public slots:
      */
     void setBookmarkArg(const QString &name, const QString &key, const QString &value);
 
-signals:
+Q_SIGNALS:
     void editIndex( const QModelIndex &index );
 
 private:

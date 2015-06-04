@@ -45,14 +45,14 @@ class SynchronizationAdapter : public StatSyncing::Provider
         virtual QSet<QString> artists();
         virtual StatSyncing::TrackList artistTracks( const QString &artistName );
 
-    signals:
+    Q_SIGNALS:
         /// hacks to create and start Last.fm queries in main eventloop
         // Last.fm indexes from 1!
         void startArtistSearch( int page );
         void startTrackSearch( QString artistName, int page );
         void startTagSearch( QString artistName, QString trackName );
 
-    private slots:
+    private Q_SLOTS:
         /// @see startArtistSearch
         void slotStartArtistSearch( int page );
         void slotStartTrackSearch( QString artistName, int page );

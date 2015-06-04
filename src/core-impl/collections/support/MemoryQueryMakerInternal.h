@@ -74,7 +74,7 @@ public:
     void setCollectionId( const QString &collectionId ) { m_collectionId = collectionId; }
     void setLabelQueryMode( Collections::QueryMaker::LabelQueryMode mode ) { m_labelQueryMode = mode; }
 
-signals:
+Q_SIGNALS:
     void newResultReady( Meta::TrackList );
     void newResultReady( Meta::ArtistList );
     void newResultReady( Meta::AlbumList );

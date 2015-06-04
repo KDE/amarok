@@ -51,7 +51,7 @@ public:
      */
     virtual ~BreadcrumbItemMenu();
 
-signals:
+Q_SIGNALS:
     /**
      * Emitted when a non-Shuffle item is triggered from the menu.
      * @param action the action in the menu that has been triggered.
@@ -63,7 +63,7 @@ signals:
      */
     void shuffleActionClicked();
 
-private slots:
+private Q_SLOTS:
     /**
      * Handles the selection of an item from the menu.
      * @param action the action in the menu that has been triggered.
@@ -121,7 +121,7 @@ public:
      */
     const BreadcrumbItemMenu *menu();
 
-signals:
+Q_SIGNALS:
     /**
      * Emitted when the item has been clicked.
      */
@@ -132,7 +132,7 @@ signals:
      */
     void orderInverted();
 
-protected slots:
+protected Q_SLOTS:
     void updateSizePolicy();
 
 private:

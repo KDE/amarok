@@ -167,7 +167,7 @@ public:
      */
     QString prettyNowPlaying( bool progress = false ) const;
 
-public slots:
+public Q_SLOTS:
     /**
      * Plays the current track, if there is one
      * This happens asynchronously.
@@ -435,7 +435,7 @@ Q_SIGNALS:
      */
     void fillInSupportedMimeTypes();
 
-private slots:
+private Q_SLOTS:
     /**
      * Sets up the Phonon system
      */

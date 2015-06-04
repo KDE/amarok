@@ -183,7 +183,7 @@ public:
     virtual QStringList collectionFolders() const;
     virtual void setCollectionFolders( const QStringList &folders );
 
-signals:
+Q_SIGNALS:
     void deviceAdded( int id );
     void deviceRemoved( int id );
 
@@ -218,7 +218,7 @@ private:
 
 //Solid specific
     void createHandlerFromDevice( const Solid::Device &device, const QString &udi );
-private slots:
+private Q_SLOTS:
     void deviceAdded( const QString &udi );
     void deviceRemoved( const QString &udi );
 

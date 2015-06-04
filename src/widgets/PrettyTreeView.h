@@ -44,7 +44,7 @@ namespace Amarok
             PrettyTreeView( QWidget *parent = 0 );
             virtual ~PrettyTreeView();
 
-        public slots:
+        public Q_SLOTS:
             /* There is a need to overload even this edit() variant, otherwise it hides
              * QAbstactItemView's implementation. Note that it is NOT safe to do anything
              * special in this method, as it is not virtual.
@@ -92,7 +92,7 @@ namespace Amarok
              */
             QAction *decoratorActionAt( const QModelIndex &idx, const QPoint &pos );
 
-        private slots:
+        private Q_SLOTS:
             virtual void newPalette( const QPalette &palette );
 
         private:

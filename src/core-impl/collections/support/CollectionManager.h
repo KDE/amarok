@@ -133,7 +133,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
          */
         void setFactories( const QList<Plugins::PluginFactory*> &factories );
 
-    public slots:
+    public Q_SLOTS:
         /** Starts the full scan for each collection with CollectionScanCapability */
         void startFullScan();
         /** Starts the incremetal scan for each collection with CollectionScanCapability */
@@ -141,7 +141,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
         void stopScan();
         void checkCollectionChanges();
 
-    signals:
+    Q_SIGNALS:
         //deprecated, use collectionAdded( Collections::Collection*, CollectionStatus ) instead
         void collectionAdded( Collections::Collection *newCollection );
 
@@ -154,7 +154,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
         //it will not be emitted on minor changes (e.g. the tags of a song were changed)
         void collectionDataChanged( Collections::Collection *changedCollection );
 
-    private slots:
+    private Q_SLOTS:
         /** Will be called whenever a registered collection factory creates a new collection */
         void slotNewCollection( Collections::Collection *newCollection );
         /** Will remove the collection that emitted the signal */

@@ -34,7 +34,7 @@ class TestMemoryQueryMaker : public QObject
 public:
     TestMemoryQueryMaker();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 

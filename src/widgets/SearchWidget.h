@@ -57,7 +57,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
          */
         void setClickMessage( const QString &message );
 
-    public slots:
+    public Q_SLOTS:
         void setSearchString( const QString &searchString = QString() );
 
         /**
@@ -76,7 +76,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
          */
         void searchEnded();
 
-    signals:
+    Q_SIGNALS:
         /**
          * Emitted when the filter value was changed.
          * Note: This signal might be delayed while the user is typing
@@ -89,7 +89,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
          */
         void returnPressed();
 
-    private slots:
+    private Q_SLOTS:
         void resetFilterTimeout();
         void filterNow();
         void advanceFocus();

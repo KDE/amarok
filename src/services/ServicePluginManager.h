@@ -47,7 +47,7 @@ public:
      */
     void setFactories( const QList<Plugins::PluginFactory*> &factories );
 
-public slots:
+public Q_SLOTS:
     QStringList loadedServices() const;
     QStringList loadedServiceNames() const;
     QString serviceDescription( const QString &service );
@@ -66,7 +66,7 @@ private:
      */
     QList<Plugins::PluginFactory*> m_factories;
 
-private slots:
+private Q_SLOTS:
     void slotNewService( ServiceBase *newService);
     void slotRemoveService( ServiceBase *removedService );
 };

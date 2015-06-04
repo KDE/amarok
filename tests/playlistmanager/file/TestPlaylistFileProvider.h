@@ -34,7 +34,7 @@ Q_OBJECT
 public:
     TestPlaylistFileProvider();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
     void testPlaylists();

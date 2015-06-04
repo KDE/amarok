@@ -34,7 +34,7 @@ public:
     explicit AmazonShoppingCartDialog( QWidget *parent = 0, AmazonStore *store = 0 );
     ~AmazonShoppingCartDialog();
 
-public slots:
+public Q_SLOTS:
     void contentsChanged();
 
 private:

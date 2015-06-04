@@ -37,7 +37,7 @@ private:
 
     const QString generateReport( const KAboutData *aboutData );
 
-private slots:
+private Q_SLOTS:
     void slotCopyToClipboard() const;
 };
 

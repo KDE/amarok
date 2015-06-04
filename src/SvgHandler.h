@@ -136,13 +136,13 @@ class AMAROK_EXPORT SvgHandler : public QObject
          */
         void setThemeFile( const QString  & themeFile );
 
-    public slots:
+    public Q_SLOTS:
         void reTint();
 
-    signals:
+    Q_SIGNALS:
         void retinted();
 
-    private slots:
+    private Q_SLOTS:
         void discardCache();
 
     private:

@@ -29,7 +29,7 @@ Q_OBJECT
 public:
     TestSmartPointerList();
 
-private slots:
+private Q_SLOTS:
     void testCount();
     void testCopy();
     void testCopyAndThenDelete();

@@ -42,12 +42,12 @@ public:
     void constraintsEvent();
     QSizeF contentSizeHint() const { return m_size; }
 
-public slots:
+public Q_SLOTS:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();
 
 
-private slots:
+private Q_SLOTS:
     void configAccepted();
 
 private:

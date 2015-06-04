@@ -89,7 +89,7 @@ Q_SIGNALS:
     void requestRedirected( const QUrl &sourceUrl, const QUrl &targetUrl );
     void requestRedirected( QNetworkReply* oldReply, QNetworkReply *newReply );
 
-public slots:
+public Q_SLOTS:
     void slotError( QObject *reply );
 
 protected:

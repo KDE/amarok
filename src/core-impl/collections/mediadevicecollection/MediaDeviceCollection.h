@@ -48,10 +48,10 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Col
         MediaDeviceCollectionFactoryBase( QObject *parent, const QVariantList &args,
                                           ConnectionAssistant* assistant );
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void slotDeviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
 
-    private slots:
+    private Q_SLOTS:
         void slotDeviceDisconnected( const QString &udi );
 
     private:
@@ -137,7 +137,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
         void collectionUpdated() { emit updated(); }
 
-    signals:
+    Q_SIGNALS:
         void collectionReady( Collections::Collection* );
         /** collectionDisconnected is called when ConnectionAssistant
           is told it is to be disconnected.  This could be
@@ -151,7 +151,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
 
         void copyTracksCompleted( bool success );
 
-    public slots:
+    public Q_SLOTS:
         void slotAttemptConnectionDone( bool success );
 
         virtual void eject();

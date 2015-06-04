@@ -37,7 +37,7 @@ public:
 protected:
     void doCommit( const qint64 fields );
 
-signals:
+Q_SIGNALS:
     void commitCalled( const QString &location, const Meta::FieldHash &statistics );
 
 private:

@@ -81,7 +81,7 @@ public:
      */
     static QColor alternateBackgroundColor();
 
-signals:
+Q_SIGNALS:
     void newPalette( const QPalette & palette );
 
 private:

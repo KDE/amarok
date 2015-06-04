@@ -35,7 +35,7 @@ class IpodParseTracksJob : public ThreadWeaver::Job
     public:
         explicit IpodParseTracksJob( IpodCollection *collection );
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Aborts the job as soon as it is safely possible
          */
@@ -44,7 +44,7 @@ class IpodParseTracksJob : public ThreadWeaver::Job
     protected:
         void run();
 
-    signals:
+    Q_SIGNALS:
         // signals for progress operation:
         void incrementProgress();
         void endProgressOperation( QObject *obj );

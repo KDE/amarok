@@ -38,10 +38,10 @@ public:
 
     virtual void tracksLoaded( Playlists::PlaylistPtr playlist );
 
-signals:
+Q_SIGNALS:
     void tracksLoadedSignal( Playlists::PlaylistPtr playlist );
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -68,10 +68,10 @@ class NotifyObserversWaiter : public QObject, private Meta::Observer
     public:
         NotifyObserversWaiter( const QSet<Meta::TrackPtr> &tracks, QObject *parent = 0 );
 
-    signals:
+    Q_SIGNALS:
         void done();
 
-    private slots:
+    private Q_SLOTS:
         void slotFilterResovled();
 
     private:

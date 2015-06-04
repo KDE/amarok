@@ -42,7 +42,7 @@ namespace Dynamic
         public:
             PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent = 0 );
 
-        protected slots:
+        protected Q_SLOTS:
             void biasAppended( Dynamic::BiasPtr bias );
             void biasRemoved( int pos );
             void biasMoved( int from, int to );
@@ -102,17 +102,17 @@ namespace Dynamic
             virtual void appendBias( Dynamic::BiasPtr bias );
             virtual void moveBias( int from, int to );
 
-        public slots:
+        public Q_SLOTS:
             void resultReceived( const Dynamic::TrackSet &tracks );
 
             /** The overall weight has changed */
             void changeBiasWeight( int biasNum, qreal value );
 
-        signals:
+        Q_SIGNALS:
             /** The overall weight has changed */
             void weightsChanged();
 
-        protected slots:
+        protected Q_SLOTS:
             virtual void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
 
         private:

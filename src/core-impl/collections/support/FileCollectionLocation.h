@@ -40,7 +40,7 @@ class AMAROK_EXPORT FileCollectionLocation : public CollectionLocation
         virtual bool isOrganizable() const;
         virtual void removeUrlsFromCollection( const Meta::TrackList& sources );
         virtual void showRemoveDialog( const Meta::TrackList &tracks );
-    public slots:
+    public Q_SLOTS:
         void slotRemoveJobFinished( KJob *job );
     private:
         void startRemoveJobs();

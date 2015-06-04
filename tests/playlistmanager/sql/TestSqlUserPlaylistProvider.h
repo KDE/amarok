@@ -34,7 +34,7 @@ Q_OBJECT
 public:
     TestSqlUserPlaylistProvider();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
     void testPlaylists();

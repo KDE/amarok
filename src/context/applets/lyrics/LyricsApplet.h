@@ -35,7 +35,7 @@ public:
 
     bool hasHeightForWidth() const;
 
-public slots:
+public Q_SLOTS:
     virtual void init();
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );

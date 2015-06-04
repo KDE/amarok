@@ -40,7 +40,7 @@ namespace Amarok
 
             virtual void setValue( int );
 
-        signals:
+        Q_SIGNALS:
             //we emit this when the user has specifically changed the slider
             //so connect to it if valueChanged() is too generic
             //Qt also emits valueChanged( int )
@@ -121,7 +121,7 @@ namespace Amarok
             virtual void sliderChange( SliderChange change );
             virtual bool event( QEvent * event );
 
-        private slots:
+        private Q_SLOTS:
             void slotTriangleClicked( int );
             void slotTriangleFocused( int );
 

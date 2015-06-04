@@ -48,7 +48,7 @@ protected:
 
     virtual void paintEvent ( QPaintEvent* event );
 
-protected slots:
+protected Q_SLOTS:
     virtual void editValueChanged();
     virtual void hideTimerAction();
 

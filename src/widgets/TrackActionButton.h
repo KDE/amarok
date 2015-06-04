@@ -36,7 +36,7 @@ protected:
     void enterEvent( QEvent * );
     void leaveEvent( QEvent * );
     void reloadContent( const QSize &sz );
-private slots:
+private Q_SLOTS:
     void updateAction();
     void init();
 private:

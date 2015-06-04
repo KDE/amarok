@@ -60,7 +60,7 @@ class AMAROK_EXPORT OrganizeCollectionOptionWidget : public QGroupBox, public Ui
         QString replaceText() const { return replaceEdit->text(); }
         void setReplaceText( const QString &text ) { replaceEdit->setText( text ); }
 
-    signals:
+    Q_SIGNALS:
         void optionsChanged();
 };
 
@@ -101,11 +101,11 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         QMap<Meta::TrackPtr, QString> getDestinations();
         bool overwriteDestinations() const;
 
-    public slots:
+    public Q_SLOTS:
         void slotUpdatePreview();
         void slotDialogAccepted();
 
-    private slots:
+    private Q_SLOTS:
         void processPreviewPaths();
         void previewNextBatch();
         void slotOverwriteModeChanged();
@@ -126,7 +126,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         QString m_previewPrefix;
         bool m_conflict;
 
-    private slots:
+    private Q_SLOTS:
         void slotEnableOk( const QString & currentCollectionRoot );
 };
 

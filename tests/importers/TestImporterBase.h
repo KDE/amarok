@@ -102,7 +102,7 @@ private:
 
     QSet<QString> m_lbl;
 
-private slots:
+private Q_SLOTS:
     void titleShouldBeCaseSensitive();
     void artistShouldBeCaseSensitive();
     void albumShouldBeCaseSensitive();

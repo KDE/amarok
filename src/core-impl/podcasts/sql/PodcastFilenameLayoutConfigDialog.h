@@ -35,7 +35,7 @@ public:
     //shows the filename configuration dialog
     bool configure();
 
-protected slots:
+protected Q_SLOTS:
     void slotApply();
 
 private:

@@ -45,7 +45,7 @@ public:
     */
    void downloadAlbum( Meta::MagnatuneAlbum * album );
 
-signals:
+Q_SIGNALS:
 
     void downloadCompleted( bool success );
 
@@ -75,7 +75,7 @@ private:
     void saveDownloadInfo(const QString &infoXml);
 
 
-protected slots:
+protected Q_SLOTS:
 
     void xmlDownloadComplete( KJob* downLoadJob );
     void albumDownloadComplete( bool success );

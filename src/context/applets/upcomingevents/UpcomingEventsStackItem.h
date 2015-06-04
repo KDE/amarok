@@ -120,11 +120,11 @@ public:
 
     QRectF boundingRect() const;
 
-public slots:
+public Q_SLOTS:
     void setCollapsed( bool collapsed );
     void showCloseButton( bool show = true );
 
-signals:
+Q_SIGNALS:
     void collapseChanged( bool isCollapsed );
 
 protected:

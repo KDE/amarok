@@ -82,7 +82,7 @@ class ConstraintNode : public QObject {
         // heuristic functions for the ConstraintSolver
         virtual quint32 suggestPlaylistSize() const;
 
-    signals:
+    Q_SIGNALS:
         void dataChanged();
 
     protected:

@@ -56,7 +56,7 @@ class IpodCollectionLocation : public Collections::CollectionLocation
          */
         using Collections::CollectionLocation::setHidingRemoveConfirm;
 
-    private slots:
+    private Q_SLOTS:
         void slotCopyTrackProcessed( Meta::TrackPtr srcTrack, Meta::TrackPtr destTrack,
                                      IpodCopyTracksJob::CopiedStatus status );
 

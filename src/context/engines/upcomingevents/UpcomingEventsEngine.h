@@ -92,7 +92,7 @@ private:
      */
     QList<int> m_venueIds;
 
-private slots:
+private Q_SLOTS:
     /**
      * Get events for specific artist
      */

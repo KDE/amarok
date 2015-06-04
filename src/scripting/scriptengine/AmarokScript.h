@@ -70,7 +70,7 @@ namespace AmarokScript
              */
             Q_INVOKABLE QStringList listRunningScripts() const;
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when this script is uninstalled.
              */

@@ -34,7 +34,7 @@ class OSXNotify : QObject
     public:
     OSXNotify( QString appName );
 
-    protected slots:
+    protected Q_SLOTS:
         void show( Meta::TrackPtr );
 
     private:

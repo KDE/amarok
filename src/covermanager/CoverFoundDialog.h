@@ -64,10 +64,10 @@ public:
 
     const CoverFetchUnit::Ptr unit() const { return m_unit; }
 
-signals:
+Q_SIGNALS:
     void newCustomQuery( Meta::AlbumPtr album, const QString &query, int page );
 
-public slots:
+public Q_SLOTS:
     void add( const QImage &cover,
               const CoverFetch::Metadata &metadata,
               const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
@@ -75,10 +75,10 @@ public slots:
 protected:
     void hideEvent( QHideEvent *event );
 
-protected slots:
+protected Q_SLOTS:
     void slotButtonClicked( int button );
 
-private slots:
+private Q_SLOTS:
     void addToCustomSearch( const QString &text );
     void clearQueryButtonClicked();
     void clearView();
@@ -135,7 +135,7 @@ public:
     explicit CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent = 0 );
     ~CoverFoundSideBar();
 
-public slots:
+public Q_SLOTS:
     void clear();
     void setPixmap( const QPixmap &pixmap, CoverFetch::Metadata metadata );
     void setPixmap( const QPixmap &pixmap );

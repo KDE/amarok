@@ -99,14 +99,14 @@ class DatabaseCollection : public Collections::Collection
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-    public slots:
+    public Q_SLOTS:
         /** Dumps the complete database content.
          *  The content of all Amarok tables is dumped in a couple of files
          *  in the users homedirectory.
          */
         virtual void dumpDatabaseContent() = 0;
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void slotDeviceAdded( int id ) { Q_UNUSED( id ); };
         virtual void slotDeviceRemoved( int id ) { Q_UNUSED( id ); };
 

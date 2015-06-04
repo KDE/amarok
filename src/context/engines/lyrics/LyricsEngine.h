@@ -49,7 +49,7 @@ public:
 protected:
     bool sourceRequestEvent( const QString& name );
 
-private slots:
+private Q_SLOTS:
     void update();
     void onTrackMetadataChanged( Meta::TrackPtr track );
 

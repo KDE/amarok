@@ -63,7 +63,7 @@ class PhotosScrollWidget : public QGraphicsWidget
         qreal animValue() const;
         bool isAnimating() const;
 
-    public slots:
+    public Q_SLOTS:
         void animate( qreal anim );
         void automaticAnimBegin();
         void automaticAnimEnd();
@@ -73,7 +73,7 @@ class PhotosScrollWidget : public QGraphicsWidget
         */
         virtual void resize( qreal, qreal );
 
-    signals:
+    Q_SIGNALS:
         void photoAdded();
 
     protected:
@@ -87,7 +87,7 @@ class PhotosScrollWidget : public QGraphicsWidget
         //virtual void keyPressEvent(QKeyEvent* event);
         //virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
 
-    private slots:
+    private Q_SLOTS:
         void photoFetched( const QUrl&, QByteArray, NetworkAccessManagerProxy::Error );
 
     private:

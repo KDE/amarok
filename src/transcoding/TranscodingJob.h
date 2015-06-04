@@ -86,7 +86,7 @@ public:
      */
     QUrl destUrl() const { return m_dest; }
 
-private slots:
+private Q_SLOTS:
     void processOutput();
     /**
      * Default arguments are for convenience (read: lazyness) so that this can be

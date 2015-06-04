@@ -221,7 +221,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         */
         virtual void transferError( const Meta::TrackPtr &track, const QString &error );
 
-    signals:
+    Q_SIGNALS:
         void startCopy( const QMap<Meta::TrackPtr, QUrl> &sources,
                         const Transcoding::Configuration & );
         void finishCopy();
@@ -361,7 +361,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual bool isHidingRemoveConfirm() const;
         virtual void setHidingRemoveConfirm( bool hideRemoveConfirm );
 
-    protected slots:
+    protected Q_SLOTS:
         /**
          * this slot has to be called from getKIOCopyableUrls( Meta::TrackList )
          * Please note: the order of urls in the argument has to be the same as in the
@@ -374,7 +374,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void slotShowRemoveDialogDone();
         void slotShowDestinationDialogDone();
 
-    private slots:
+    private Q_SLOTS:
         void slotShowSourceDialog();  // trick to show dialog in next mainloop iteration
         void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources,
                                    const Transcoding::Configuration &configuration );

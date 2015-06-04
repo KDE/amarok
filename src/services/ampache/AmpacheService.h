@@ -62,7 +62,7 @@ public:
 
     virtual Collections::Collection * collection() { return m_collection; }
 
-private slots:
+private Q_SLOTS:
     void onLoginSuccessful();
 
 private:

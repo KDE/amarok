@@ -47,7 +47,7 @@ class UpnpQueryMakerInternal : public QObject
         void reset();
         void runQuery( QUrl query, bool filter=true );
 
-    signals:
+    Q_SIGNALS:
         void results( bool error, const KIO::UDSEntryList list );
         void done();
 
@@ -56,7 +56,7 @@ class UpnpQueryMakerInternal : public QObject
         void newResultReady( Meta::AlbumList );
         void newResultReady( Meta::GenreList );
         void newResultReady( const KIO::UDSEntryList & );
-    private slots:
+    private Q_SLOTS:
         void slotEntries( KIO::Job *, const KIO::UDSEntryList & );
         void slotDone( KJob * );
         void slotStatDone( KJob * );

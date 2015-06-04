@@ -103,10 +103,10 @@ class AMAROK_EXPORT CollectionTreeItem : public QObject
         bool requiresUpdate() const;
         void setRequiresUpdate( bool updateRequired );
 
-    signals:
+    Q_SIGNALS:
         void dataUpdated();
 
-    private slots:
+    private Q_SLOTS:
         void tracksCounted( QStringList res );
         void collectionUpdated();
 

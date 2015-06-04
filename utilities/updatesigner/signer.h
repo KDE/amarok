@@ -28,7 +28,7 @@ class signer : public QObject
 		virtual ~signer();
 		bool setParams(int argc, char** argv);
 	
-	public slots:
+	public Q_SLOTS:
 		void keygen();
 		void signFile();
 		void checkSignature();

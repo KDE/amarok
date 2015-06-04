@@ -52,7 +52,7 @@ class AMAROK_EXPORT DynamicPlaylist : public QObject
         QString title() const;
         void setTitle( QString );
 
-    signals:
+    Q_SIGNALS:
         void tracksReady( Meta::TrackList );
 
         /** Emitted when this playlist has been modified in some way.
@@ -61,7 +61,7 @@ class AMAROK_EXPORT DynamicPlaylist : public QObject
         void changed( Dynamic::DynamicPlaylist* playlist );
 
 
-    public slots:
+    public Q_SLOTS:
         /** Start recalculating all tracks after the currently played track */
         // virtual void repopulate();
 

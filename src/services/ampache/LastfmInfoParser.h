@@ -35,7 +35,7 @@ class LastfmInfoParser : public InfoParserBase
         virtual void getInfo(Meta::AlbumPtr album);
         virtual void getInfo(Meta::ArtistPtr artist);
 
-    private slots:
+    private Q_SLOTS:
         void onGetTrackInfo();
         void onGetAlbumInfo();
         void onGetArtistInfo();

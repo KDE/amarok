@@ -34,7 +34,7 @@ protected:
     void mousePressEvent( QMouseEvent *e );
     void mouseReleaseEvent( QMouseEvent *e );
     void paintEvent( QPaintEvent *pe );
-signals:
+Q_SIGNALS:
     void clicked();
 };
 
@@ -72,7 +72,7 @@ public:
     /** Returns the text that is added to the back of the value such as "%" */
     inline QString suffix() const { return m_suffix; }
 
-public slots:
+public Q_SLOTS:
     void setAlignment( Qt::Alignment alignment );
     void setBold( bool bold );
     void setItalic( bool italic );
@@ -93,7 +93,7 @@ protected:
     virtual void leaveEvent(QEvent *);
     virtual void timerEvent( QTimerEvent* );
 
-private slots:
+private Q_SLOTS:
     void showConfig();
 
 private:

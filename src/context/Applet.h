@@ -185,7 +185,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         AppletHeader *m_header;
 
 
-    private slots:
+    private Q_SLOTS:
         void collapseAnimationFinished();
         void collapse( bool on );
 

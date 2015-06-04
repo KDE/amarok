@@ -43,7 +43,7 @@ public:
     void navigate( const QString &target );
     void polish();
 
-private slots:
+private Q_SLOTS:
     void home();
     void paletteChanged( const QPalette &palette );
 

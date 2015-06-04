@@ -46,7 +46,7 @@ namespace ConstraintTypes {
             virtual double satisfaction( const Meta::TrackList& ) const;
             virtual quint32 suggestPlaylistSize() const;
 
-        private slots:
+        private Q_SLOTS:
             void setComparison( const int );
             void setSize( const int );
             void setStrictness( const int );
@@ -73,14 +73,14 @@ namespace ConstraintTypes {
         public:
             PlaylistFileSizeEditWidget( const int, const int, const int, const int );
 
-        signals:
+        Q_SIGNALS:
             void updated();
             void sizeChanged( const int );
             void unitChanged( const int );
             void comparisonChanged( const int );
             void strictnessChanged( const int );
 
-        private slots:
+        private Q_SLOTS:
             void on_spinBox_Size_valueChanged( const int );
             void on_comboBox_Unit_currentIndexChanged( const int );
             void on_comboBox_Comparison_currentIndexChanged( const int );

@@ -39,7 +39,7 @@ public:
     virtual QIcon icon() const;
     virtual bool run( AmarokUrl url );
 
-signals:
+Q_SIGNALS:
     void showFavorites();
     void showHome();
     void showRecommendations();

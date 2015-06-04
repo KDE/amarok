@@ -50,7 +50,7 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
 
   private:
 
-  private slots:
+  private Q_SLOTS:
     void slotDeviceAdded( const DeviceTypeMap &udi );
     void slotDeviceRemoved( const DeviceTypeMap &udi );
     void createCollection( const QString& );

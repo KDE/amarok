@@ -42,7 +42,7 @@ public:
 
     void clear();
 
-signals:
+Q_SIGNALS:
     void selected( const LyricsSuggestion &suggestion );
 
 private:
@@ -67,10 +67,10 @@ public:
     QString title() const;
     QUrl url() const;
 
-signals:
+Q_SIGNALS:
     void selected( const LyricsSuggestion &suggestion );
 
-private slots:
+private Q_SLOTS:
     void onClicked();
 
 private:

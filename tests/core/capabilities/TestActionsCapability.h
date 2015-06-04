@@ -32,7 +32,7 @@ class TestActionsCapability : public QObject
 public:
     TestActionsCapability();
 
-private slots:
+private Q_SLOTS:
     void testActions();
     void testCapabilityInterfaceType();
 

@@ -49,7 +49,7 @@ class ATTICA_EXPORT EventJob : public KJob
         Event event() const;
         using QObject::event; // Unhide QObject's event()
         
-    protected slots:
+    protected Q_SLOTS:
         void doWork();
 
         void slotJobResult(KJob* job);

@@ -46,7 +46,7 @@ public:
 
     void insertPodcastList( mygpo::PodcastListPtr podcasts, const QModelIndex & parentItem );
 
-private slots:
+private Q_SLOTS:
     void topTagsRequestError( QNetworkReply::NetworkError error );
     void topTagsParseError();
     void insertTagList();

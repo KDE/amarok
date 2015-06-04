@@ -30,7 +30,7 @@ public:
     inline bool playing() const { return m_isPlaying; }
     void setPlaying( bool playing );
 
-signals:
+Q_SIGNALS:
     void toggled(bool playing);
 
 protected:
@@ -39,7 +39,7 @@ protected:
     void mousePressEvent( QMouseEvent * );
     void reloadContent( const QSize &sz );
 
-private slots:
+private Q_SLOTS:
     void toggle();
 
 private:

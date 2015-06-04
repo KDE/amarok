@@ -45,7 +45,7 @@ namespace APG {
             QModelIndex insertGroup( const QModelIndex& );
             QModelIndex insertConstraint( const QModelIndex&, const QString& );
 
-        private slots:
+        private Q_SLOTS:
             void slotConstraintDataChanged();
 
         private:

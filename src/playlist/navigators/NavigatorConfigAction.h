@@ -36,7 +36,7 @@ public:
     */
     ~NavigatorConfigAction();
 
-protected slots:
+protected Q_SLOTS:
 
     /**
     * Set the currently active navigator based on the selected action.

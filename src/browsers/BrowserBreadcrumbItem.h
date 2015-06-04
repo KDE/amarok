@@ -63,11 +63,11 @@ public:
 
     int nominalWidth() const;
 
-signals:
+Q_SIGNALS:
 
     void activated( const QString &callback );
 
-protected slots:
+protected Q_SLOTS:
     void updateSizePolicy();
     void activate();
     void activateSibling();

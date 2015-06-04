@@ -40,7 +40,7 @@ public:
     void setQueryType( QueryMaker::QueryType type );
     void setResultAsDataPtrs( bool value );
 
-signals:
+Q_SIGNALS:
     void newResultReady( Meta::TrackList );
     void newResultReady( Meta::ArtistList );
     void newResultReady( Meta::AlbumList );

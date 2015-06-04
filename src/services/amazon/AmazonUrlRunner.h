@@ -47,7 +47,7 @@ public:
     virtual QIcon icon() const;
     virtual bool run( AmarokUrl url );
 
-signals:
+Q_SIGNALS:
     void search( const QString &request );
 };
 

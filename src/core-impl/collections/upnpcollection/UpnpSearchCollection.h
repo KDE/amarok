@@ -57,7 +57,7 @@ class UpnpSearchCollection : public UpnpCollectionBase
 
     UpnpCache* cache() { return m_cache; }
     QStringList searchCapabilities() { return m_searchCapabilities; }
-  private slots:
+  private Q_SLOTS:
     void slotFilesChanged(const QStringList &);
 
   private:

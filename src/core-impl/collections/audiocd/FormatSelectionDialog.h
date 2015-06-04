@@ -36,15 +36,15 @@ public:
 
     ~FormatSelectionDialog();
 
-public slots:
+public Q_SLOTS:
     virtual void accept();
 
     virtual void showAdvancedSettings();
 
-signals:
+Q_SIGNALS:
     void formatSelected( int );
 
-private slots:
+private Q_SLOTS:
     void selectionChanged( bool checked );
 
 private:

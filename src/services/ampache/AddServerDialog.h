@@ -39,7 +39,7 @@ class AddServerDialog : public KDialog
         QString password();
         QString username();
         QString url();
-    private slots:
+    private Q_SLOTS:
         void anyTextEdited();
         void verifyData();
         void loginResult();

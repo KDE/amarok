@@ -203,7 +203,7 @@ namespace AmarokScript
 
             Meta::TrackList removeInvalidTracks( const Meta::TrackList &tracks );
 
-       signals:
+       Q_SIGNALS:
            /**
             * This signal will be emitted after major changes to the collection
             * e.g. new songs where added, or an album changed

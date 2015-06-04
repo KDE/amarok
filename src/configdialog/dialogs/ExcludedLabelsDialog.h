@@ -37,7 +37,7 @@ class ExcludedLabelsDialog : public KDialog, private Ui_ExcludedLabelsDialog
         explicit ExcludedLabelsDialog( StatSyncing::Config *config, QWidget *parent = 0,
                                        Qt::WFlags flags = 0 );
 
-    private slots:
+    private Q_SLOTS:
         void slowNewResultReady( const Meta::LabelList &labels );
         void slotAddExcludedLabel();
         void slotSaveToConfig();

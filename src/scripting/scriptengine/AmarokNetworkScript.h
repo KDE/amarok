@@ -64,7 +64,7 @@ namespace AmarokScript
             void newStringDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
             void newDataDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj );
 
-        private slots:
+        private Q_SLOTS:
             void resultString( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
             void resultData( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 

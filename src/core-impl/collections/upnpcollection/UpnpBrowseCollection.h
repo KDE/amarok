@@ -62,16 +62,16 @@ class UpnpBrowseCollection : public UpnpCollectionBase
 
     QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
-  signals:
+  Q_SIGNALS:
     void incrementProgress();
     void totalSteps( int );
     void endProgressOperation( QObject * );
 
-  public slots:
+  public Q_SLOTS:
     virtual void startFullScan();
     virtual void startIncrementalScan( const QString &directory = QString() );
 
-  private slots:
+  private Q_SLOTS:
     void entries( KIO::Job *, const KIO::UDSEntryList& );
     void done( KJob * );
     void createTrack( const KIO::UDSEntry &, const QString &baseUrl );

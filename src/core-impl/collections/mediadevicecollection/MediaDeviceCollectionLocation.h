@@ -51,7 +51,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public Collec
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
 
-    private slots:
+    private Q_SLOTS:
         void copyOperationFinished( bool success );
         void removeOperationFinished();
 

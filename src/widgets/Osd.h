@@ -41,7 +41,7 @@ class OSDWidget : public QWidget
 
         static const int FADING_DURATION = 400; //ms
          
-    public slots:
+    public Q_SLOTS:
         /** calls setText() then show(), after setting image if needed */
         void show( const QString &text, const QImage &newImage = QImage() );
 
@@ -143,7 +143,7 @@ class OSDPreviewWidget : public OSDWidget
 public:
     OSDPreviewWidget( QWidget *parent );
 
-public slots:
+public Q_SLOTS:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
     void setFontScale( int scale ) { OSDWidget::setFontScale( scale ); doUpdate(); }
@@ -156,7 +156,7 @@ public slots:
 private:
     inline void doUpdate() { if( !isHidden() ) show(); }
 
-signals:
+Q_SIGNALS:
     void positionChanged();
 
 protected:
@@ -187,14 +187,14 @@ namespace Amarok
         // Don't hide baseclass methods - prevent compiler warnings
         virtual void show() { OSDWidget::show(); }
 
-    protected slots:
+    protected Q_SLOTS:
         void muteStateChanged( bool mute );
         void trackPlaying( Meta::TrackPtr track );
         void stopped();
         void paused();
         void metadataChanged();
 
-    public slots:
+    public Q_SLOTS:
         /**
          * When user pushs global shortcut or uses script to toggle
          * even if it is disabled()

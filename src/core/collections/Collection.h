@@ -52,7 +52,7 @@ namespace Collections
             CollectionFactory( QObject *parent, const QVariantList &args );
             virtual ~CollectionFactory();
 
-        signals:
+        Q_SIGNALS:
             void newCollection( Collections::Collection *newCollection );
     };
 
@@ -141,7 +141,7 @@ namespace Collections
              */
             virtual bool isOrganizable() const;
 
-        signals:
+        Q_SIGNALS:
             /**
              * Once you register a collection with CollectionManager, this signal is the
              * only way to safely destroy it. CollectionManger will remove this collection

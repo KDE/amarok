@@ -53,12 +53,12 @@ class SynchronizationTrack : public QObject, public StatSyncing::Track
          */
         void parseAndSaveLastFmTags( const QSet<QString> &tags );
 
-    signals:
+    Q_SIGNALS:
         /// hacks to create and start Last.fm queries in main eventloop
         void startTagAddition( QStringList tags );
         void startTagRemoval();
 
-    private slots:
+    private Q_SLOTS:
         void slotStartTagAddition( QStringList tags );
         void slotStartTagRemoval();
 

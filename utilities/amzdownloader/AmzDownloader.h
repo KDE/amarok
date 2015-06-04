@@ -31,7 +31,7 @@ public:
     explicit AmzDownloader( QWidget *parent = 0 );
     ~AmzDownloader();
 
-public slots:
+public Q_SLOTS:
     void selectAmzClicked();
     void selectDirectoryClicked();
     void startClicked();
@@ -45,7 +45,7 @@ private:
     QDir m_downloadDir;
     QProcess m_clamzProcess;
 
-private slots:
+private Q_SLOTS:
     void clamzError();
     void clamzFinished( int exitCode, QProcess::ExitStatus exitStatus );
     void clamzOutputAvailable();

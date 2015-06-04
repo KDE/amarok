@@ -50,14 +50,14 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
         // re-implement to connect renameIndex signal
         virtual void setSourceModel( QAbstractItemModel *sourceModel );
 
-    signals:
+    Q_SIGNALS:
         void renameIndex( const QModelIndex &idx );
 
-    protected slots:
+    protected Q_SLOTS:
         //re-implemented to add empty providers
         virtual void buildTree();
 
-    private slots:
+    private Q_SLOTS:
         void slotRenameIndex( const QModelIndex &index );
         void slotProviderAdded( Playlists::PlaylistProvider *provider, int category );
         void slotProviderRemoved( Playlists::PlaylistProvider *provider, int category );

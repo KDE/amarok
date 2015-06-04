@@ -81,7 +81,7 @@ public:
     int contentLevels() { return m_levels; }
     bool hasSearchBar() { return m_hasSearchBar; }
 
-private slots:
+private Q_SLOTS:
 
 
     //void treeItemSelected( const QModelIndex & index );

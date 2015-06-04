@@ -30,7 +30,7 @@ Q_OBJECT
 public:
     TestPlaylistFileSupport();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void testGetFormat();
     void testIsPlaylist();

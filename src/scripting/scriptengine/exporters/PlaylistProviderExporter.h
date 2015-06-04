@@ -124,7 +124,7 @@ namespace AmarokScript
             int category() const;
             int playlistCount() const;
 
-        signals:
+        Q_SIGNALS:
             void updated();
             void playlistAdded( Playlists::PlaylistPtr playlist );
             void playlistRemoved( Playlists::PlaylistPtr playlist );

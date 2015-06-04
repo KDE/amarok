@@ -99,7 +99,7 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject
          */
         virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
 
-    signals:
+    Q_SIGNALS:
         void updated();
         void playlistAdded( Playlists::PlaylistPtr playlist );
         void playlistRemoved( Playlists::PlaylistPtr playlist );

@@ -79,7 +79,7 @@ public:
      */
     virtual ProviderConfigWidget *configWidget( const QVariantMap &config
                                                                     = QVariantMap() ) = 0;
-public slots:
+public Q_SLOTS:
     /**
      * Creates a new provider by calling newInstance and saves the config to the disk.
      * The created provider is registered with the StatSyncing::Controller
@@ -122,7 +122,7 @@ protected:
      */
     ProviderPtrMap m_providers;
 
-protected slots:
+protected Q_SLOTS:
     /**
      * ProviderImporter listens to StatSyncing::Config's providerForgotten signal, and
      * unregisters and removes managed providers if they're forgotten.

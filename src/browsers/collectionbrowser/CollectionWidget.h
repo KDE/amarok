@@ -61,7 +61,7 @@ class CollectionWidget : public BrowserCategory
         SearchWidget *searchWidget();
         ViewMode viewMode() const;
 
-    public slots:
+    public Q_SLOTS:
         void sortLevelSelected( QAction * );
         void sortByActionPayload( QAction * );
         void slotShowYears( bool checked );

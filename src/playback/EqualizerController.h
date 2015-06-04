@@ -83,7 +83,7 @@ public:
     bool deletePreset( const QString &name );
     bool enabled();
 
-public slots:
+public Q_SLOTS:
 
     /**
      * Update equalizer status - enabled,disabled,set values
@@ -96,7 +96,7 @@ public slots:
      */
     void applyEqualizerPreset( int index );
 
-signals:
+Q_SIGNALS:
 
     /**
      * Emitted when preset with index @param idnex is applied or the equalizer is disabled.

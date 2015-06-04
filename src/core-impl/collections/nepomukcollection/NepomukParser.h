@@ -61,7 +61,7 @@ public:
      */
     virtual void parse( Soprano::QueryResultIterator& ) = 0;
 
-signals:
+Q_SIGNALS:
     void newResultReady( Meta::TrackList );
     void newResultReady( Meta::ArtistList );
     void newResultReady( Meta::AlbumList );

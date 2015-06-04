@@ -46,7 +46,7 @@ class ScriptListDockWidget;
         public:
             static ScriptConsole *instance();
 
-        private slots:
+        private Q_SLOTS:
             void slotAbortEvaluation();
             void slotExecuteNewScript();
             void slotNewScript();
@@ -83,19 +83,19 @@ class ScriptListDockWidget;
             void addScript( ScriptConsoleItem *script );
             void addItem( QListWidgetItem *item );
 
-        public slots:
+        public Q_SLOTS:
             void clear();
             void removeCurrentScript();
             void prev();
             void next();
 
-        signals:
+        Q_SIGNALS:
             void edit( ScriptConsoleItem *item );
             void executeScript( ScriptConsoleItem *item );
             void currentItemChanged( ScriptConsoleItem *newItem );
             void newScript();
 
-        private slots:
+        private Q_SLOTS:
             void slotDoubleClicked( const QModelIndex &index );
             void slotCurrentItemChanged( QListWidgetItem *newItem, QListWidgetItem *oldItem );
 

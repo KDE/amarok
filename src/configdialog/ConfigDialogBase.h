@@ -24,7 +24,7 @@ class ConfigDialogBase : public QWidget
 {
     Q_OBJECT
 
-    signals:
+    Q_SIGNALS:
         void settingsChanged( const QString& );
 
     public:

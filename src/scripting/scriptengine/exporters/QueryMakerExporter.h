@@ -89,10 +89,10 @@ namespace AmarokScript
         bool isValid() const;
         QString filter() const;
 
-    private slots:
+    private Q_SLOTS:
         void slotResult( const Meta::TrackList &tracks );
 
-    signals:
+    Q_SIGNALS:
         /**
          * newResultReady will be emitted every time new results from the query maker are received.
          * This signal can be emitted zero times (in case of no results) one (the usual case) or multiple times

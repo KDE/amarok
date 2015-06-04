@@ -41,7 +41,7 @@ public:
 #endif
     {}
 
-private slots:
+private Q_SLOTS:
     void onDestroyed()
     {
         m_list.removeAll( sender() );

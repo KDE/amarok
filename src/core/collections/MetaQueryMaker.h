@@ -66,7 +66,7 @@ class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
         virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
-    private slots:
+    private Q_SLOTS:
         void slotQueryDone();
 
     private:

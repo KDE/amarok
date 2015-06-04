@@ -41,7 +41,7 @@ public:
     Albums( QObject* parent, const QVariantList& args );
     ~Albums();
 
-public slots:
+public Q_SLOTS:
     virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
@@ -49,7 +49,7 @@ protected:
     void createConfigurationInterface( KConfigDialog *parent );
     void keyPressEvent( QKeyEvent *event );
 
-private slots:
+private Q_SLOTS:
     void collectionDataChanged( Collections::Collection *collection );
     void saveConfiguration();
     void setRecentCount( int val );
@@ -78,7 +78,7 @@ public:
     bool eventFilter( QObject *obj, QEvent *e );
     void focusEditor();
 
-signals:
+Q_SIGNALS:
     void closeRequested();
     void filterTextChanged( const QString &text );
 

@@ -30,14 +30,14 @@ public:
 protected:
     Ui::MagnatuneNeedUpdateWidget* ui;
 
-signals:
+Q_SIGNALS:
     void wantUpdate();
 
-public slots:
+public Q_SLOTS:
     void enable();
     void disable();
 
-protected slots:
+protected Q_SLOTS:
     void startUpdate();
     void saveSettings();
 };

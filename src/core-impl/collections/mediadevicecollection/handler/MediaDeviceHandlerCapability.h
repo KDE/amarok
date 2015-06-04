@@ -56,13 +56,13 @@ namespace Handler
             Capability( QObject *handler );
             virtual ~Capability();
 
-        signals:
+        Q_SIGNALS:
             /**
              * Signals that parent of this object should be set to @param parent
              */
             void signalSetParent( QObject *parent );
 
-        private slots:
+        private Q_SLOTS:
             /**
              * Simply calls setParent( parent ); needed for cases where moveToThread() is
              * called in constructor - setting parent needs to be done in the new thread.

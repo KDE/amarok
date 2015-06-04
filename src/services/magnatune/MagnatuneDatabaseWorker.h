@@ -43,13 +43,13 @@ public:
     void fetchTrackswithMood( const QString &mood, int noOfTracks, ServiceSqlRegistry * registry );
     void fetchAlbumBySku( const QString &sku, ServiceSqlRegistry * registry );
 
-signals:
+Q_SIGNALS:
 
     void gotMoodMap( QMap<QString, int> map );
     void gotMoodyTracks( Meta::TrackList tracks );
     void gotAlbumBySku( Meta::MagnatuneAlbum * album );
 
-private slots:
+private Q_SLOTS:
     void completeJob();
 
 private:

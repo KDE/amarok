@@ -45,7 +45,7 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         virtual void fetchMore( const QModelIndex &parent );
         virtual Qt::DropActions supportedDropActions() const;
 
-    public slots:
+    public Q_SLOTS:
         virtual void collectionAdded( Collections::Collection *newCollection );
         virtual void collectionRemoved( const QString &collectionId );
 
@@ -53,7 +53,7 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         virtual void filterChildren();
         virtual int levelModifier() const { return 0; }
 
-    private slots:
+    private Q_SLOTS:
         void requestCollectionsExpansion();
 };
 

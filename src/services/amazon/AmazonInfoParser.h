@@ -40,7 +40,7 @@ public:
 
     void showFrontPage();
 
-private slots:
+private Q_SLOTS:
     void albumInfoDownloadComplete( KJob *requestJob );
 };
 

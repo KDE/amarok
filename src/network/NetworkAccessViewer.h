@@ -46,7 +46,7 @@ public:
     void show();
     void hide();
 
-private slots:
+private Q_SLOTS:
     void clear();
     void requestFinished( QObject *replyObject );
     void showItemDetails( QTreeWidgetItem *item );

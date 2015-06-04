@@ -30,12 +30,12 @@ public:
 protected:
     Ui::AmazonWantCountryWidget* ui;
 
-signals:
+Q_SIGNALS:
     void countrySelected();
 
-public slots:
+public Q_SLOTS:
 
-private slots:
+private Q_SLOTS:
     void storeCountry();
     void adjustButtonState();
 };

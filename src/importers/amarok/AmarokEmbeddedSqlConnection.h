@@ -54,7 +54,7 @@ private:
     /// Number of msecs to wait for server to start up
     static const int SERVER_START_TIMEOUT = 30000;
 
-private slots:
+private Q_SLOTS:
     void stopServer();
 };
 

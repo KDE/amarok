@@ -43,13 +43,13 @@ public:
 
     ~LongMessageWidget();
 
-signals:
+Q_SIGNALS:
     void closed();
 
 protected:
     void timerEvent( QTimerEvent * );
 
-private slots:
+private Q_SLOTS:
     void close();
 
 private:

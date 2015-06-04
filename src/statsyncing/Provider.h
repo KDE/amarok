@@ -169,7 +169,7 @@ namespace StatSyncing
              */
             virtual void commitTracks();
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when some data such as prettyName() were updated.
              */

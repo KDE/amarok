@@ -43,12 +43,12 @@ public:
     LastFmTreeView ( QWidget* parent = 0 );
     ~LastFmTreeView();
 
-signals:
+Q_SIGNALS:
     void statusMessage ( const QString& message );
     void plsShowRestState();
     void plsShowNowPlaying();
 
-private slots:
+private Q_SLOTS:
     void slotReplacePlaylistByChildTracks();
     void slotAppendChildTracks();
 

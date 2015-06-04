@@ -52,12 +52,12 @@ class TransferJob : public KCompositeJob
         virtual bool addSubjob( KJob* job );
 
         void emitInfo( const QString &message );
-    public slots:
+    public Q_SLOTS:
         /**
          * A move or copy job finished
          */
         void slotJobFinished( KJob *job );
-    protected slots:
+    protected Q_SLOTS:
         void slotResult( KJob *job );
         void doWork();
         void propagateProcessedAmount( KJob *job, KJob::Unit unit, qulonglong amount);
@@ -96,7 +96,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionLocation : public CollectionLocat
                                            const Transcoding::Configuration & configuration );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
-    private slots:
+    private Q_SLOTS:
         void slotDialogAccepted();
         void slotDialogRejected();
         void slotJobFinished( KJob *job );
@@ -150,7 +150,7 @@ public:
     virtual bool overwriteDestinations() const = 0;
     virtual QMap<Meta::TrackPtr, QString> destinations() const = 0;
 
-signals:
+Q_SIGNALS:
     void accepted();
     void rejected();
 };

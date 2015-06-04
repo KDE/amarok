@@ -58,7 +58,7 @@ protected:
     //reimplement from Plasma::DataEngine
     bool sourceRequestEvent( const QString& name );
 
-private slots:
+private Q_SLOTS:
 
     /**
      * This slots will handle Flickr result for this query :

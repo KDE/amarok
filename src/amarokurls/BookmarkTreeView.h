@@ -52,7 +52,7 @@ protected:
     void resizeEvent( QResizeEvent *event );
     bool viewportEvent( QEvent *event );
 
-protected slots:
+protected Q_SLOTS:
     void slotLoad();
     void slotDelete();
     void slotRename();
@@ -67,7 +67,7 @@ protected slots:
 
     void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
 
-signals:
+Q_SIGNALS:
     void bookmarkSelected( AmarokUrl bookmark );
     void showMenu( KMenu*, const QPointF& );
     

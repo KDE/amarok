@@ -83,7 +83,7 @@ class AMAROK_EXPORT StorageManager : public QObject
         /** Clears the list of the last errors. */
         void clearLastErrors();
 
-    private slots:
+    private Q_SLOTS:
 
         /** Will be called whenever a factory emits a newStorage signal.
          *

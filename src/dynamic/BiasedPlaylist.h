@@ -56,10 +56,10 @@ namespace Dynamic
 
             BiasPtr bias() const;
 
-        public slots:
+        public Q_SLOTS:
             virtual void requestAbort();
 
-        private slots:
+        private Q_SLOTS:
             void solverFinished();
             void biasChanged();
             void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );

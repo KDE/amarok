@@ -58,7 +58,7 @@ class AppletToolbar : public QGraphicsWidget
         void setContainment( Containment * containment );
         Containment* containment() const;
 
-    signals:
+    Q_SIGNALS:
         void showApplet( Plasma::Applet* );
         void appletAddedToToolbar( Plasma::Applet* applet, int loc );
         void moveApplet( Plasma::Applet*, int, int );
@@ -71,7 +71,7 @@ class AppletToolbar : public QGraphicsWidget
         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
         virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
 
-    private slots:
+    private Q_SLOTS:
         void appletAdded( Plasma::Applet*, int );
         void toggleConfigMode();
         

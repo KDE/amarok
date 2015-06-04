@@ -59,13 +59,13 @@ public:
      */
     void setRootList( BrowserCategoryList *rootList );
 
-signals:
+Q_SIGNALS:
     /**
      * Signal emitted when the root breadcrumb item is clicked.
      */
     void toHome();
 
-public slots:
+public Q_SLOTS:
     /**
      * Rebuild the list of breadcrumb items corrosponding to the current location in the hirachy.
      * This also allows for categories that add additional breadcrumb items (such as the file browser) to update the
@@ -76,7 +76,7 @@ public slots:
 protected:
     virtual void resizeEvent( QResizeEvent * event );
 
-private slots:
+private Q_SLOTS:
     /**
      * Goes through all breadcrumb items and shows the most relevant ones based on
      * available size. (always shows home icon and the last item)

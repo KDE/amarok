@@ -43,7 +43,7 @@ class Restorer: public QObject, public Playlists::PlaylistObserver
         // PlaylistObserver methods:
         virtual void tracksLoaded( Playlists::PlaylistPtr );
 
-    signals:
+    Q_SIGNALS:
         void restoreFinished();
 
     private:

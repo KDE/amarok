@@ -25,7 +25,7 @@ Q_OBJECT
 public:
     TestPlaylistModels();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanup();
     void testSorting();

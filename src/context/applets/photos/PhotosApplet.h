@@ -43,18 +43,18 @@ class PhotosApplet : public Context::Applet
         PhotosApplet( QObject* parent, const QVariantList& args );
         ~PhotosApplet();
 
-    public slots:
+    public Q_SLOTS:
         virtual void init();
         void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void saveSettings();
 
-    protected slots:
+    protected Q_SLOTS:
         void stopped();
         
     protected:
         void createConfigurationInterface(KConfigDialog *parent);
 
-    private slots:
+    private Q_SLOTS:
         void photoAdded();
         
     private:

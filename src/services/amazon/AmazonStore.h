@@ -87,7 +87,7 @@ public:
      */
     static QString iso3166toAmazon(const QString& country);
 
-public slots:
+public Q_SLOTS:
     /**
     * Adds the currently selected item to the cart.
     */
@@ -193,7 +193,7 @@ private:
 
     AmazonInfoParser* m_amazonInfoParser;
 
-private slots:
+private Q_SLOTS:
     /**
     * Parse the API reply XML document.
     */

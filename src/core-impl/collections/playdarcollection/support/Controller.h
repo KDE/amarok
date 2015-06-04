@@ -99,7 +99,7 @@ namespace Playdar
                 MissingResults
             };
 
-        signals:
+        Q_SIGNALS:
             /**
             * Emitted once after construction, as long as some service responds
             * from where we think Playdar is, and identifies itself as "playdar".

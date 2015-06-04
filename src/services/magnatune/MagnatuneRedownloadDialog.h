@@ -35,19 +35,19 @@ public:
     void setRedownloadItems( const QStringList &items );
     void setRedownloadItems( QList<MagnatuneDownloadInfo> previousPurchases );
 
-signals:
+Q_SIGNALS:
 
     void redownload( const QString &downloadInfoFileName );
     void redownload( MagnatuneDownloadInfo info );
     void cancelled();
 
-public slots:
+public Q_SLOTS:
     /*$PUBLIC_SLOTS$*/
 
 protected:
     QMap <QTreeWidgetItem*, MagnatuneDownloadInfo> m_infoMap;
 
-protected slots:
+protected Q_SLOTS:
     /*$PROTECTED_SLOTS$*/
     void redownload();
     void selectionChanged();

@@ -36,10 +36,10 @@ class NotificationsConfig : public ConfigDialogBase, public Ui_NotificationsConf
         virtual bool isDefault();
         virtual void updateSettings();
 
-    signals:
+    Q_SIGNALS:
         void changed();
 
-    private slots:
+    private Q_SLOTS:
         void slotPositionChanged();
         void useCustomColorsToggled( bool );
         void setGrowlEnabled( bool );

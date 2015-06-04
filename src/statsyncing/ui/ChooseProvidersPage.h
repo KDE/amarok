@@ -40,13 +40,13 @@ namespace StatSyncing
              */
             void setProvidersModel( ProvidersModel *model, QItemSelectionModel *selectionModel );
 
-        public slots:
+        public Q_SLOTS:
             void disableControls();
             void setProgressBarText( const QString &text );
             void setProgressBarMaximum( int maximum );
             void progressBarIncrementProgress();
 
-        signals:
+        Q_SIGNALS:
             void checkedFieldsChanged();
 
             /**
@@ -59,7 +59,7 @@ namespace StatSyncing
              */
             void rejected();
 
-        private slots:
+        private Q_SLOTS:
             void updateMatchedLabel();
             void updateEnabledFields();
             void openConfiguration();

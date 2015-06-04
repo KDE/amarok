@@ -25,7 +25,7 @@ class TestProxyLogger : public QObject
 public:
     TestProxyLogger();
 
-private slots:
+private Q_SLOTS:
     void init();
     void cleanup();
 

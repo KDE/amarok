@@ -74,7 +74,7 @@ class Token : public QWidget
         QSize sizeHint() const;
         QSize minimumSizeHint() const;
 
-    signals:
+    Q_SIGNALS:
         void changed();
 
         /** Emitted when the token get's the focus */

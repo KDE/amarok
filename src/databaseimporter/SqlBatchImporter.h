@@ -52,7 +52,7 @@ class SqlBatchImporter : public QObject
          */
         int importedCount() const;
 
-    signals:
+    Q_SIGNALS:
         void importFailed();
         void importSucceeded();
         void importError( QString );
@@ -65,7 +65,7 @@ class SqlBatchImporter : public QObject
     protected:
         void import();
 
-    protected slots:
+    protected Q_SLOTS:
         void importingFinished();
         void trackImported( Meta::TrackPtr track );
         void trackMatched( Meta::TrackPtr track, QString oldUrl );

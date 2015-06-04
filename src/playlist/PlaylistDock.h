@@ -56,13 +56,13 @@ public:
 
     void polish();
 
-public slots:
+public Q_SLOTS:
     void clearFilterIfActive();
 
 protected:
     QSize sizeHint() const;
 
-private slots:
+private Q_SLOTS:
     /** show or hide the dynamic playlist mode indicator */
     void showDynamicHint();
 

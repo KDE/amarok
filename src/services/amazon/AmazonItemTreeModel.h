@@ -64,7 +64,7 @@ private:
     */
     QString prettyNameByIndex( const QModelIndex &index ) const;
 
-private slots:
+private Q_SLOTS:
     void collectionChanged();
 };
 

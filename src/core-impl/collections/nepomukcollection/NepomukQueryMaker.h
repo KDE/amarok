@@ -71,7 +71,7 @@ public:
     virtual QueryMaker *beginOr();
     virtual QueryMaker *endAndOr();
 
-private slots:
+private Q_SLOTS:
     void inquirerDone();
 };
 

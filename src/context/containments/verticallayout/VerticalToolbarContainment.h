@@ -47,7 +47,7 @@ class VerticalToolbarContainment : public Containment
         virtual void setView( ContextView* view);
         virtual ContextView *view();
 
-    public slots:
+    public Q_SLOTS:
         void addApplet( const QString& pluginName, const int );
         void appletRemoved( Plasma::Applet* );
         // these slots below are forwarded to the layout
@@ -58,11 +58,11 @@ class VerticalToolbarContainment : public Containment
         virtual void wheelEvent( QGraphicsSceneWheelEvent* event );
         virtual void updateGeometry();
 
-    signals:
+    Q_SIGNALS:
         void updatedContainment( Containment* );
         void appletAdded( Plasma::Applet*, int );
         
-    private slots:
+    private Q_SLOTS:
         void showEmptyText( bool );
 
     private:

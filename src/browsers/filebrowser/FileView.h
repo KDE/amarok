@@ -62,11 +62,11 @@ class FileView : public Amarok::PrettyTreeView
 public:
     FileView( QWidget *parent );
 
-signals:
+Q_SIGNALS:
     void navigateToDirectory( const QModelIndex &index );
     void refreshBrowser();
 
-protected slots:
+protected Q_SLOTS:
     void slotAppendToPlaylist();
     void slotReplacePlaylist();
     void slotEditTracks();

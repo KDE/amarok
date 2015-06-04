@@ -51,7 +51,7 @@ class TokenPool : public KListWidget
         // void dragMoveEvent( QDragMoveEvent *event );
         void dropEvent( QDropEvent *event );
 
-    signals:
+    Q_SIGNALS:
         /** Emitted if somebody double clicks a token.
             The token parameter belongs to the token pool. Don't reparent it.
         */

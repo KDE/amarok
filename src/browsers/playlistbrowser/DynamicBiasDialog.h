@@ -44,11 +44,11 @@ namespace PlaylistBrowserNS
             BiasDialog( Dynamic::BiasPtr bias, QWidget* parent = 0 );
             virtual ~BiasDialog();
 
-        public slots:
+        public Q_SLOTS:
             void accept();
             void reject();
 
-        protected slots:
+        protected Q_SLOTS:
             /** Updates the list of biases in the bias type selection list */
             void factoriesChanged();
             /** Called when a new bias type has been selected */

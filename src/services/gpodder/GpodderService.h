@@ -43,7 +43,7 @@ public:
     virtual KPluginInfo info();
     virtual KConfigGroup config();
 
-private slots:
+private Q_SLOTS:
     void slotCreateGpodderService();
     void slotRemoveGpodderService();
 
@@ -59,7 +59,7 @@ public:
     GpodderService( GpodderServiceFactory *parent, const QString &name );
     virtual ~GpodderService();
 
-private slots:
+private Q_SLOTS:
     void subscribe();
     void itemSelected( CollectionTreeItem *selectedItem );
 

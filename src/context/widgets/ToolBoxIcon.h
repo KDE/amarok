@@ -66,7 +66,7 @@ protected:
 Q_SIGNALS:
     void appletChosen( const QString &pluginName );
 
-private slots:
+private Q_SLOTS:
     void mousePressed( bool pressed );
 
 private:

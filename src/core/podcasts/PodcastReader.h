@@ -64,15 +64,15 @@ class AMAROK_CORE_EXPORT PodcastReader : public QObject
         QXmlStreamReader::Error error () const { return m_xmlReader.error(); }
         QString errorString () const { return m_xmlReader.errorString(); }
 
-    signals:
+    Q_SIGNALS:
         void finished( PodcastReader *podcastReader );
         void statusBarSorryMessage( const QString &message );
         void statusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* );
 
-    public slots:
+    public Q_SLOTS:
         virtual void slotAbort();
 
-    private slots:
+    private Q_SLOTS:
         void slotRedirection( KIO::Job *job, const QUrl &url );
         void slotPermanentRedirection ( KIO::Job * job, const QUrl &fromUrl,
                 const QUrl &toUrl );

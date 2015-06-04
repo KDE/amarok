@@ -47,10 +47,10 @@ namespace Dynamic
 
             QString filter() const;
 
-        public slots:
+        public Q_SLOTS:
             void setFilter( const QString &filter );
 
-        protected slots:
+        protected Q_SLOTS:
             virtual void newQuery();
 
         private:

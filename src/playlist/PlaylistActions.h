@@ -108,7 +108,7 @@ public:
     bool queueMoveDown( quint64 id );
     void dequeue( quint64 id );
 
-public slots:
+public Q_SLOTS:
     void play();
     void play( const int row );
     void play( const QModelIndex& index );
@@ -153,10 +153,10 @@ public slots:
     */
     void repaintPlaylist();
 
-signals:
+Q_SIGNALS:
     void navigatorChanged();
 
-private slots:
+private Q_SLOTS:
     void slotTrackPlaying( Meta::TrackPtr engineTrack );
     void slotPlayingStopped( qint64 finalPosition, qint64 trackLength );
 

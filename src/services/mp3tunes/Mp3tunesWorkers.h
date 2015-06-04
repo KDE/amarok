@@ -36,10 +36,10 @@ class Mp3tunesLoginWorker :  public ThreadWeaver::Job
 
         void run();
 
-    signals:
+    Q_SIGNALS:
         void finishedLogin( const QString &sessionId );
 
-    private slots:
+    private Q_SLOTS:
         void completeJob();
 
     private:
@@ -61,10 +61,10 @@ class Mp3tunesArtistFetcher : public ThreadWeaver::Job
 
         void run();
 
-    signals:
+    Q_SIGNALS:
         void artistsFetched( QList<Mp3tunesLockerArtist> );
 
-    private slots:
+    private Q_SLOTS:
         void completeJob();
 
     private:
@@ -84,10 +84,10 @@ class Mp3tunesAlbumWithArtistIdFetcher : public ThreadWeaver::Job
 
         void run();
 
-    signals:
+    Q_SIGNALS:
         void albumsFetched( QList<Mp3tunesLockerAlbum> );
 
-    private slots:
+    private Q_SLOTS:
         void completeJob();
 
     private:
@@ -108,10 +108,10 @@ class Mp3tunesTrackWithAlbumIdFetcher : public ThreadWeaver::Job
 
         void run();
 
-    signals:
+    Q_SIGNALS:
         void tracksFetched( QList<Mp3tunesLockerTrack> );
 
-    private slots:
+    private Q_SLOTS:
         void completeJob();
 
     private:
@@ -132,10 +132,10 @@ class Mp3tunesTrackWithArtistIdFetcher : public ThreadWeaver::Job
 
         void run();
 
-    signals:
+    Q_SIGNALS:
         void tracksFetched( QList<Mp3tunesLockerTrack> );
 
-    private slots:
+    private Q_SLOTS:
         void completeJob();
 
     private:
@@ -156,12 +156,12 @@ class Mp3tunesSearchMonkey : public ThreadWeaver::Job
 
         void run();
 
-    signals:
+    Q_SIGNALS:
         void searchComplete( QList<Mp3tunesLockerArtist> );
         void searchComplete( QList<Mp3tunesLockerAlbum> );
         void searchComplete( QList<Mp3tunesLockerTrack> );
 
-    private slots:
+    private Q_SLOTS:
         void completeJob();
 
     private:
@@ -183,12 +183,12 @@ class Mp3tunesSimpleUploader : public ThreadWeaver::Job
 
         void run();
 
-    signals:
+    Q_SIGNALS:
         void uploadComplete();
         void incrementProgress();
         void endProgressOperation( QObject * );
 
-    private slots:
+    private Q_SLOTS:
         void completeJob();
 
     private:
@@ -208,10 +208,10 @@ class Mp3tunesTrackFromFileKeyFetcher : public ThreadWeaver::Job
 
         void run();
 
-    signals:
+    Q_SIGNALS:
         void trackFetched( Mp3tunesLockerTrack &track );
 
-    private slots:
+    private Q_SLOTS:
         void completeJob();
 
     private:

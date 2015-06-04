@@ -59,7 +59,7 @@ public:
 
     bool onlyMatches() const { return m_showOnlyMatches; }
 
-signals:
+Q_SIGNALS:
     /**
      * Signal emitted when the search term has changed.
      * @param filter The new search term.
@@ -109,7 +109,7 @@ signals:
      */
     void upPressed();
 
-public slots:
+public Q_SLOTS:
     /**
      * Notify the widget that there are matches (at least one), so the next and previous actions
      * should be enabled and the text color set to normal.
@@ -135,7 +135,7 @@ public slots:
      */
     void slotShowOnlyMatches( bool onlyMatches );
 
-protected slots:
+protected Q_SLOTS:
     /**
      * Notify widget that the text in the search edit has changed.
      * @param filter The new text in the search widget.
@@ -197,7 +197,7 @@ protected slots:
 protected:
     void keyPressEvent( QKeyEvent *event );
 
-private slots:
+private Q_SLOTS:
     void defocus() { m_searchEdit->clearFocus(); }
 
 private:

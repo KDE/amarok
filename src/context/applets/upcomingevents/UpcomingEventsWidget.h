@@ -133,7 +133,7 @@ class UpcomingEventsWidget : public QGraphicsWidget
 
         friend class UpcomingEventsListWidget;
 
-    private slots:
+    private Q_SLOTS:
         void loadImage();
         void openUrl();
 };
@@ -160,7 +160,7 @@ public:
 
     void clear();
 
-signals:
+Q_SIGNALS:
     void mapRequested( QObject *widget );
     void eventAdded( const LastFmEventPtr &event );
     void eventRemoved( const LastFmEventPtr &event );

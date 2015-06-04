@@ -32,7 +32,7 @@ class PowerManager : public QObject
         PowerManager( EngineController *engine );
         ~PowerManager();
 
-    private slots:
+    private Q_SLOTS:
         void slotSettingsChanged();
         void slotResumingFromSuspend();
         void slotPlaying();

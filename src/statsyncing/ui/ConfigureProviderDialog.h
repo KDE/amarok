@@ -40,13 +40,13 @@ namespace StatSyncing
                                           QWidget *parent = 0, Qt::WindowFlags f = 0 );
         virtual ~ConfigureProviderDialog();
 
-    signals:
+    Q_SIGNALS:
         void providerConfigured( QString id, QVariantMap config );
 
     private:
         QString m_providerId;
 
-    private slots:
+    private Q_SLOTS:
         void slotAccepted();
     };
 

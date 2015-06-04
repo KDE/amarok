@@ -32,7 +32,7 @@ Q_OBJECT
 public:
     TestASXPlaylist();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 

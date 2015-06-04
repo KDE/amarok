@@ -25,7 +25,7 @@ class TestOneWaySynchronizationJob : public QObject
 public:
     TestOneWaySynchronizationJob();
 
-private slots:
+private Q_SLOTS:
     void init();
 
     void testEmptyTarget();

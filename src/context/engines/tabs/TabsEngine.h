@@ -60,7 +60,7 @@ class TabsEngine : public DataEngine
     protected:
         bool sourceRequestEvent( const QString &name );
 
-    private slots:
+    private Q_SLOTS:
         /**
         *   handling of tab data search results from ultimateguitar.com
         */

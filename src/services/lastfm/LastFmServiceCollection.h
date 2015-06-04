@@ -44,7 +44,7 @@ public:
 
     virtual QueryMaker* queryMaker();
 
-private slots:
+private Q_SLOTS:
     void slotAddNeighboursLoved();
     void slotAddNeighboursPersonal();
     void slotAddFriendsLoved();

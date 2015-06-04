@@ -124,7 +124,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
 
         Meta::TrackPtr trackForUidUrl( const QString &uidUrl );
 
-    signals:
+    Q_SIGNALS:
         /**
          * Start a count-down that emits updated() signal after it expires.
          * Resets the timer to original timeout if already running. This is to ensure
@@ -143,7 +143,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          */
         void startWriteDatabaseTimer();
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Destroy the collection, try to write back iTunes database (if dirty)
          */
@@ -161,7 +161,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          */
         void slotShowConfigureDialog( const QString &errorMessage = QString() );
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Update m_lastUpdated timestamp and emit updated()
          */

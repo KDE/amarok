@@ -87,10 +87,10 @@ class BrowserCategoryList : public BrowserCategory
 
         BrowserCategory *activeCategoryRecursive();
 
-    signals:
+    Q_SIGNALS:
         void viewChanged();
 
-    public slots:
+    public Q_SLOTS:
 
         /**
          * Add a category.
@@ -118,7 +118,7 @@ class BrowserCategoryList : public BrowserCategory
 
         void childViewChanged();
 
-    private slots:
+    private Q_SLOTS:
         /** Sets the current filter value and updates the content */
         virtual void setFilter( const QString &filter );
 
@@ -137,7 +137,7 @@ class BrowserCategoryList : public BrowserCategory
 
         bool m_sorting;
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Slot called when an item in the list has been activated and the
          * corrosponding category should be shown.

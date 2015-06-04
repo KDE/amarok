@@ -79,14 +79,14 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget
         void setScheme( const QString &scheme );
 
 
-    public slots:
+    public Q_SLOTS:
         virtual void onAccept();
 
-    signals:
+    Q_SIGNALS:
         /** emitted when either the scheme, option checkboxes or the replace edits change */
         void schemeChanged();
 
-    private slots:
+    private Q_SLOTS:
         void toggleAdvancedMode();
 
         /* Updates the update preset button */

@@ -64,10 +64,10 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         using Observer::metadataChanged;
         void metadataChanged( Meta::AlbumPtr album );
 
-    signals:
+    Q_SIGNALS:
         void lyricsChanged( const QString& );
 
-    private slots:
+    private Q_SLOTS:
         void accept();
         void cancelPressed();
         void openPressed();

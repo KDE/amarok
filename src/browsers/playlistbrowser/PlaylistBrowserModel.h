@@ -89,11 +89,11 @@ class PlaylistBrowserModel : public QAbstractItemModel, public Playlists::Playli
         virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position );
         virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
 
-    public slots:
+    public Q_SLOTS:
         void slotRenamePlaylist( Playlists::PlaylistPtr playlist );
         void slotUpdate( int category );
 
-    signals:
+    Q_SIGNALS:
         void renameIndex( const QModelIndex &index );
 
     protected:
@@ -109,7 +109,7 @@ class PlaylistBrowserModel : public QAbstractItemModel, public Playlists::Playli
 
         Playlists::PlaylistProvider *getProviderByName( const QString &name );
 
-    private slots:
+    private Q_SLOTS:
         void slotPlaylistAdded( Playlists::PlaylistPtr playlist, int category );
         void slotPlaylistRemoved( Playlists::PlaylistPtr playlist, int category );
         void slotPlaylistUpdated( Playlists::PlaylistPtr playlist, int category );

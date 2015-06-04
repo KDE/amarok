@@ -35,7 +35,7 @@ public:
     virtual QSize sizeHint() const;
     virtual int heightForWidth(int w) const;
 
-public slots:
+public Q_SLOTS:
     void animate();
     void stop();
     void fold();

@@ -31,10 +31,10 @@ public:
     AnalyzerApplet( QObject* parent, const QVariantList& args );
     virtual ~AnalyzerApplet();
 
-public slots:
+public Q_SLOTS:
     virtual void init();
 
-private slots:
+private Q_SLOTS:
     void newGeometry();
     void heightActionTriggered();
     void analyzerAction( QAction* );

@@ -61,9 +61,9 @@ public:
     //TODO: extract these into OpmlPodcastDirectoryModel subclass
     void subscribe( const QModelIndexList &indexes ) const;
 
-signals:
+Q_SIGNALS:
 
-public slots:
+public Q_SLOTS:
     void slotAddOpmlAction();
     void slotAddFolderAction();
 
@@ -71,7 +71,7 @@ protected:
     virtual bool canFetchMore( const QModelIndex &parent ) const;
     virtual void fetchMore( const QModelIndex &parent );
 
-private slots:
+private Q_SLOTS:
     void slotOpmlHeaderDone();
     void slotOpmlOutlineParsed( OpmlOutline * );
     void slotOpmlParsingDone();

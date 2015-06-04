@@ -25,7 +25,7 @@ class TestMetaCapability : public QObject
     public:
         TestMetaCapability();
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Test whether has() properly delegates work to hasCapabilityInterface()
          */

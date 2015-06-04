@@ -153,7 +153,7 @@ namespace AmarokScript
              */
             Q_INVOKABLE QStringList selectedFilenames();
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when tracks are added to the playlist.
              */
@@ -164,7 +164,7 @@ namespace AmarokScript
              */
             void trackRemoved( int start, int end );
 
-        private slots:
+        private Q_SLOTS:
             void slotTrackInserted( const QModelIndex&, int start, int end );
             void slotTrackRemoved( const QModelIndex&, int start, int end );
 

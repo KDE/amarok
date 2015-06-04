@@ -50,10 +50,10 @@ class ScriptSelector : public KPluginSelector
         int                        m_scriptCount;
         KLineEdit                 *m_lineEdit;
 
-    private slots:
+    private Q_SLOTS:
         void slotFiltered( const QString &filter );
 
-    signals:
+    Q_SIGNALS:
         void filtered(bool);
 };
 

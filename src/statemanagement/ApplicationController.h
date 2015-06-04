@@ -29,7 +29,7 @@ public:
     ApplicationController( QObject *parent ) : QObject( parent ) {}
     virtual ~ ApplicationController() {}
 
-public slots:
+public Q_SLOTS:
     virtual void start() = 0;
     virtual void shutdown() = 0;
 };

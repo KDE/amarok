@@ -41,14 +41,14 @@ public:
     ~TrackForUrlWorker();
 
     virtual void run() = 0;
-signals:
+Q_SIGNALS:
     void finishedLookup( const Meta::TrackPtr &track );
 
 protected:
     QUrl m_url;
     Meta::TrackPtr m_track;
 
-private slots:
+private Q_SLOTS:
     void completeJob();
 
 

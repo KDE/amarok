@@ -30,7 +30,7 @@ public:
     virtual QSize sizeHint() const;
     void setIcon( const QImage &img, int steps = 0 );
 
-signals:
+Q_SIGNALS:
     void clicked();
 
 protected:
@@ -46,7 +46,7 @@ protected:
     */
     virtual void reloadContent( const QSize &sz ) = 0;
 
-protected slots:
+protected Q_SLOTS:
     void svgRetinted();
 
 private:

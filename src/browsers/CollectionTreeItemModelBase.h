@@ -108,11 +108,11 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
          */
         QModelIndex itemIndex( CollectionTreeItem *item ) const;
 
-    signals:
+    Q_SIGNALS:
         void expandIndex( const QModelIndex &index );
         void allQueriesFinished( bool autoExpand );
 
-    public slots:
+    public Q_SLOTS:
         virtual void queryDone();
         void newResultReady( Meta::TrackList );
         void newResultReady( Meta::ArtistList );
@@ -192,7 +192,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         mutable QMultiHash<CollectionTreeItem*, Collections::QueryMaker*> m_runningQueries;
         bool m_autoExpand; // whether to expand tree after queries are done
 
-    protected slots:
+    protected Q_SLOTS:
         void startAnimationTick();
         void loadingAnimationTick();
 };

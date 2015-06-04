@@ -133,7 +133,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlRegistry : public QObject
         /** Unblocks one blockDatabaseUpdate call. */
         void unblockDatabaseUpdate();
 
-    private slots:
+    private Q_SLOTS:
         /** empytCache clears up the different hash tables by unrefing all pointers that are no longer ref'd by anyone else.
             SqlRegistry is calling this function periodically.
             This is no free ticket for modifying the database directly as

@@ -23,7 +23,7 @@ class TestEngineController : public QObject
 {
     Q_OBJECT
 
-    private slots:
+    private Q_SLOTS:
         void init(); // called before each test
         void cleanup(); // called after each test
 

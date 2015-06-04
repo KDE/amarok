@@ -47,7 +47,7 @@ private:
     void loadList();
     int m_lastRowEdited;
     int m_lastColumnEdited;
-private slots:
+private Q_SLOTS:
 
     void add();
     void remove();

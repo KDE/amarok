@@ -50,7 +50,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
          */
         ~PlaylistLayoutEditDialog();
 
-    public slots:
+    public Q_SLOTS:
 
         /**
          * Set the currently selected layout.
@@ -59,7 +59,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
          */
         void setLayout( const QString &layoutName );
 
-    protected slots:
+    protected Q_SLOTS:
 
         /**
          * Previews the current layout in the playlist without saving it.

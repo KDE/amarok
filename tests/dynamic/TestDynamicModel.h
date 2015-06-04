@@ -26,7 +26,7 @@ class TestDynamicModel : public QObject
 public:
     TestDynamicModel();
 
-private slots:
+private Q_SLOTS:
     void init();
     void cleanup();
 

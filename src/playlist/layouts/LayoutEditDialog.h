@@ -34,9 +34,9 @@ class LayoutEditDialog : public QDialog
 public:
     LayoutEditDialog( QWidget *parent = 0 );
     void setToken( TokenWithLayout *t );
-public slots:
+public Q_SLOTS:
     void close();
-private slots:
+private Q_SLOTS:
     void apply();
     void setAutomaticWidth( bool peer );
 private:

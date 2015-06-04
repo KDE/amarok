@@ -59,7 +59,7 @@ namespace Dynamic
             FollowType follow() const;
             void setFollow( FollowType value );
 
-        protected slots:
+        protected Q_SLOTS:
             void selectionChanged( int );
 
         protected:

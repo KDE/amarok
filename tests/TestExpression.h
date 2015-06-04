@@ -29,7 +29,7 @@ Q_OBJECT
 public:
     TestExpression();
 
-private slots:
+private Q_SLOTS:
     void testParse();
     void testIsAdvancedExpression();
 };

@@ -27,7 +27,7 @@ class TestMetaAlbumKey : public QObject
     public:
         ~TestMetaAlbumKey();
 
-    private slots:
+    private Q_SLOTS:
         void initTestCase();
 
         /**

@@ -58,7 +58,7 @@ public:
     int coverWidth() { return m_coverWidth; }
     void setCoverWidth( const int width ) { m_coverWidth = width; }
 
-private slots:
+private Q_SLOTS:
     void metadataChanged( Meta::AlbumPtr album );
     void metadataChanged( Meta::TrackPtr track );
     void trackPlaying( Meta::TrackPtr track );
@@ -85,7 +85,7 @@ private:
     */
     Collections::QueryMaker *m_lastQueryMaker;
 
-private slots:
+private Q_SLOTS:
     void resultReady( const Meta::AlbumList &albums );
     void setupAlbumsData();
 };

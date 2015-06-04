@@ -25,7 +25,7 @@ class TestMasterSlaveSynchronizationJob : public QObject
 public:
     TestMasterSlaveSynchronizationJob();
 
-private slots:
+private Q_SLOTS:
     void init();
 
     void testAddTracksToEmptySlave();

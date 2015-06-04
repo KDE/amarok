@@ -40,10 +40,10 @@ class ContentFetcher : public QHttp
         void getDaap( const QString & command, QIODevice* musicFile = 0 );
         QByteArray results();
 
-    private slots:
+    private Q_SLOTS:
         void checkForErrors( int state );
 
-    signals:
+    Q_SIGNALS:
         void httpError( const QString& );
 
     private:

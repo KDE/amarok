@@ -31,7 +31,7 @@ public:
     GpodderPodcastRequestHandler( mygpo::PodcastListPtr podcasts, QModelIndex parentItem, GpodderServiceModel *model );
     virtual ~GpodderPodcastRequestHandler();
 
-public slots:
+public Q_SLOTS:
     void finished();
     void requestError( QNetworkReply::NetworkError );
     void parseError();

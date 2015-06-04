@@ -87,7 +87,7 @@ private:
      */
     QString m_artist;
 
-private slots:
+private Q_SLOTS:
     /**
      * Update similar artists for the current playing track.
      * Launch when the track played on amarok has changed.

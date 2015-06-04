@@ -51,14 +51,14 @@ public:
     /* reimplemented from QWidget to open/close the details widget */
     virtual void mousePressEvent( QMouseEvent *event );
 
-public slots:
+public Q_SLOTS:
     void endProgressOperation( QObject *owner );
     void slotIncrementProgress();
 
-signals:
+Q_SIGNALS:
     void allDone();
 
-protected slots:
+protected Q_SLOTS:
     void cancelAll();
     void toggleDetails();
 

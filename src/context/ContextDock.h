@@ -41,7 +41,7 @@ public:
 
     void polish();
 
-protected slots:
+protected Q_SLOTS:
     void createContextView( Plasma::Containment *containment );
 
 private:

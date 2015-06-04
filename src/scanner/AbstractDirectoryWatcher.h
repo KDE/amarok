@@ -63,7 +63,7 @@ class AMAROK_EXPORT AbstractDirectoryWatcher : public ThreadWeaver::Job
         /** Pauses the emitting of the scan signal */
         void setBlockScanning( bool block );
 
-    signals:
+    Q_SIGNALS:
         /** Requests the scanner to do an incremental scan.
          *  The incremental scan will check for new files or sub-folders.
          *  @param directory The directory to scan or and empty string if every
@@ -71,7 +71,7 @@ class AMAROK_EXPORT AbstractDirectoryWatcher : public ThreadWeaver::Job
          */
         void requestScan( QList<QUrl> directories, GenericScanManager::ScanType type );
 
-    protected slots:
+    protected Q_SLOTS:
         void delayTimeout();
         void delayedScan( const QString& path );
 

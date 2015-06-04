@@ -60,7 +60,7 @@ namespace Amarok
         public:
             PlayPauseAction( KActionCollection*, QObject* );
 
-        private slots:
+        private Q_SLOTS:
             void stopped();
             void paused();
             void playing();
@@ -91,7 +91,7 @@ namespace Amarok
             QStringList icons() const;
             QString currentIcon() const;
 
-        protected slots:
+        protected Q_SLOTS:
             virtual void actionTriggered( QAction *a );
 
         private:
@@ -132,7 +132,7 @@ namespace Amarok
             BurnMenu( QWidget* parent );
             static KMenu *instance();
 
-        private slots:
+        private Q_SLOTS:
             void slotBurnCurrentPlaylist();
             void slotBurnSelectedTracks();
 
@@ -154,7 +154,7 @@ namespace Amarok
         public:
             StopAction( KActionCollection*, QObject* );
 
-        private slots:
+        private Q_SLOTS:
             void stopped();
             void playing();
             void stop();
@@ -166,7 +166,7 @@ namespace Amarok
         public:
             StopPlayingAfterCurrentTrackAction( KActionCollection*, QObject* );
 
-        private slots:
+        private Q_SLOTS:
             void stopPlayingAfterCurrentTrack();
     };
 } /* namespace Amarok */

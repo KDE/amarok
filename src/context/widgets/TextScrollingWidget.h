@@ -83,7 +83,7 @@ class AMAROK_EXPORT TextScrollingWidget : public QGraphicsWidget
 
         void paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
-    protected slots:
+    protected Q_SLOTS:
         void startAnimation( QAbstractAnimation::Direction direction );
         void animationFinished();
 

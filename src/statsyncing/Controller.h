@@ -130,7 +130,7 @@ namespace StatSyncing
              */
             Config *config();
 
-        public slots:
+        public Q_SLOTS:
             /**
              * Start the whole synchronization machinery. This call returns quickly,
              * way before the synchronization is finished.
@@ -152,7 +152,7 @@ namespace StatSyncing
             void scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
                            const QDateTime &time = QDateTime() );
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when a track passed to scrobble() is successfully queued for
              * scrobbling submission. This signal is emitted for every scrobbling service.
@@ -167,7 +167,7 @@ namespace StatSyncing
              */
             void scrobbleFailed( const ScrobblingServicePtr &service, const Meta::TrackPtr &track, int error );
 
-        private slots:
+        private Q_SLOTS:
             /**
              * Creates new instance of provider type identified by @param type
              * with configuration stored in @param config.

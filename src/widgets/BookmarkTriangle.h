@@ -62,7 +62,7 @@ public:
     virtual void deleteBookmark();
     virtual int getTimeValue();
 
-signals:
+Q_SIGNALS:
     void clicked ( int );
     void focused ( int );
 

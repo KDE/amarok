@@ -131,7 +131,7 @@ public:
      */
     int moveDown( const QString &layout );
 
-signals:
+Q_SIGNALS:
     
     /**
      * Signal emitted when the active layout changes.

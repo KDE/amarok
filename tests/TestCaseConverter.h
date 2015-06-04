@@ -29,7 +29,7 @@ Q_OBJECT
 public:
     TestCaseConverter();
 
-private slots:
+private Q_SLOTS:
     void testToCapitalizedCase();
     void testToTitleCase();
 };

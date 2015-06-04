@@ -34,7 +34,7 @@ class TestGenericScanManager : public QObject
 public:
     TestGenericScanManager();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -62,7 +62,7 @@ private slots:
     void testAlbumImage();;
 
 
-public slots:
+public Q_SLOTS:
     void slotStarted( GenericScanManager::ScanType type );
     void slotDirectoryCount( int count );
     void slotDirectoryScanned( QSharedPointer<CollectionScanner::Directory> dir );

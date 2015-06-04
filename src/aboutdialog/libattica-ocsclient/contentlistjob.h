@@ -44,7 +44,7 @@ class ATTICA_EXPORT ContentListJob : public KJob
 
     Content::List contentList() const;
     
-  protected slots:
+  protected Q_SLOTS:
     void doWork();
 
     void slotJobResult( KJob *job );

@@ -80,7 +80,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
 
         virtual QUrl baseDownloadDir() const { return m_baseDownloadDir; }
 
-    public slots:
+    public Q_SLOTS:
         void updateAll();
         void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );
@@ -89,7 +89,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         void downloadEpisode( Podcasts::SqlPodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Podcasts::SqlPodcastEpisodePtr episode );
 
-    private slots:
+    private Q_SLOTS:
         void downloadResult( KJob * );
         void addData( KIO::Job *job, const QByteArray & data );
         void redirected( KIO::Job *, const QUrl& );
@@ -105,14 +105,14 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         void slotConfigChanged();
         void slotExportOpml();
 
-    signals:
+    Q_SIGNALS:
         void totalPodcastDownloadProgress( int progress );
 
         //SqlPodcastProvider signals
         void episodeDownloaded( Podcasts::PodcastEpisodePtr );
         void episodeDeleted( Podcasts::PodcastEpisodePtr );
 
-    private slots:
+    private Q_SLOTS:
         void channelImageReady( Podcasts::PodcastChannelPtr, QImage );
         void podcastImageFetcherDone( PodcastImageFetcher * );
         void slotConfigureProvider();

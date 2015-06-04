@@ -79,7 +79,7 @@ public:
     virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
     virtual QActionList playlistActions( const Playlists::PlaylistList &playlists );
 
-private slots:
+private Q_SLOTS:
     void requestDeviceUpdates();
     void deviceUpdatesFinished();
     void continueDeviceUpdatesFinished();

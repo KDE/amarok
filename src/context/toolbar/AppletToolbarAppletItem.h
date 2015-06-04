@@ -51,7 +51,7 @@ class AppletToolbarAppletItem : public AppletToolbarBase
         // needed for the overlay to check if the click is over the del icon
         QRectF delIconSceneRect();
 
-    signals:
+    Q_SIGNALS:
         void appletChosen( Plasma::Applet* );
         void geometryChanged();
 
@@ -69,7 +69,7 @@ class AppletToolbarAppletItem : public AppletToolbarBase
 
         void mousePressEvent( QGraphicsSceneMouseEvent * event );
 
-    private slots:
+    private Q_SLOTS:
         void deleteApplet();
         void paletteChanged( const QPalette &palette );
 

@@ -80,21 +80,21 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
          */
         bool hasStaleOrOrphaned() const;
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Re-add orphaned files to db and remove stale iTunes database entries. Meant to
          * be connected to the respective QAction.
          */
         void slotConsolidateStaleOrphaned();
 
-    signals:
+    Q_SIGNALS:
         /**
          * Signals to IpodCollection that the database has been dirtied and it has to
          * write the database in some point in time.
          */
         void startWriteDatabaseTimer();
 
-    private slots:
+    private Q_SLOTS:
         void slotCopyAndInsertToPlaylists();
 
     private:

@@ -32,7 +32,7 @@ class IpodDeleteTracksJob : public ThreadWeaver::Job
                                       const QWeakPointer<IpodCollection> &collection );
         virtual void run();
 
-    signals:
+    Q_SIGNALS:
         // signals for progress operation:
         void incrementProgress();
         void endProgressOperation( QObject *obj );

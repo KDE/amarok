@@ -36,7 +36,7 @@ namespace Capabilities
             virtual void fetchFirst() = 0;
             virtual void fetchNext() = 0;
 
-        signals:
+        Q_SIGNALS:
             void playableUrlFetched( const QUrl &url );
     };
 }

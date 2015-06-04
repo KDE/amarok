@@ -44,7 +44,7 @@ class DragPixmapItem : public QObject, public QGraphicsPixmapItem
 
         void SetClickableUrl( const QUrl &url );
         
-    protected slots:
+    protected Q_SLOTS:
         /**
         * Reimplement mouse event
         */

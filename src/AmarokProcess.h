@@ -50,7 +50,7 @@ class AMAROK_EXPORT AmarokProcess : public KProcess
     protected:
         virtual void setupChildProcess();
 
-    private slots:
+    private Q_SLOTS:
         void finished();
         void readyReadStandardOutput();
         void readyReadStandardError();
@@ -78,7 +78,7 @@ class AMAROK_EXPORT AmarokProcIO : public AmarokProcess
     Q_SIGNALS:
         void readReady(AmarokProcIO *pio);
         
-    private slots:
+    private Q_SLOTS:
         void readyReadStandardOutput();
     
     private:

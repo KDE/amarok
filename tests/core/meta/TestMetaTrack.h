@@ -34,7 +34,7 @@ public:
     TestMetaTrack();
     ~TestMetaTrack();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
 
     void testPrettyName();

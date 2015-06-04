@@ -64,10 +64,10 @@ class QtGroupingProxy : public QAbstractProxyModel
         virtual void fetchMore( const QModelIndex &parent );
         virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void buildTree();
 
-    private slots:
+    private Q_SLOTS:
         void modelDataChanged( const QModelIndex &, const QModelIndex & );
         void modelRowsInserted( const QModelIndex &, int, int );
         void modelRowsAboutToBeInserted( const QModelIndex &, int ,int );

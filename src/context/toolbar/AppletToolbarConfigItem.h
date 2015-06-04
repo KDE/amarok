@@ -40,7 +40,7 @@ class AppletToolbarConfigItem : public AppletToolbarBase
         AppletToolbarConfigItem( QGraphicsItem* parent = 0 );
         ~AppletToolbarConfigItem();
                         
-    signals:
+    Q_SIGNALS:
         void triggered();
         
     protected:    

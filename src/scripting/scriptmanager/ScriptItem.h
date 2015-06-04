@@ -43,7 +43,7 @@ class ScriptTerminatorWidget : public PopupWidget
 public:
     ScriptTerminatorWidget( const QString &message );
 
-signals:
+Q_SIGNALS:
     void terminate();
 };
 
@@ -67,7 +67,7 @@ public:
     virtual void pause();
     void uninstall();
 
-public slots:
+public Q_SLOTS:
     void stop();
 
     /**
@@ -75,10 +75,10 @@ public slots:
      */
     virtual void slotDeprecatedCall( const QString &call );
 
-private slots:
+private Q_SLOTS:
     virtual void timerEvent( QTimerEvent *event );
 
-signals:
+Q_SIGNALS:
     void signalHandlerException(QScriptValue);
     void evaluated( QString output );
     void uninstalled();

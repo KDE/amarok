@@ -76,7 +76,7 @@ protected:
      */
     ConnectionAssistant( bool wait = false );
 
-signals:
+Q_SIGNALS:
 
     /**
 

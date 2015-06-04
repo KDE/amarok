@@ -29,7 +29,7 @@ class TestPrivateMetaRegistry : public QObject
     public:
         ~TestPrivateMetaRegistry();
 
-    private slots:
+    private Q_SLOTS:
         void initTestCase();
 
         /**

@@ -25,7 +25,7 @@ class TestUnionJob : public QObject
 public:
     TestUnionJob();
 
-private slots:
+private Q_SLOTS:
     void init();
 
     void testEmptyA();

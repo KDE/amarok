@@ -69,13 +69,13 @@ class CoverManager : public KDialog, public Meta::Observer
         using Observer::metadataChanged;
         void metadataChanged( Meta::AlbumPtr album );
 
-    public slots:
+    public Q_SLOTS:
         void updateStatusBar();
 
     private:
         enum View { AllAlbums = 0, AlbumsWithCover, AlbumsWithoutCover };
 
-    private slots:
+    private Q_SLOTS:
         void slotArtistQueryResult( Meta::ArtistList artists );
         void slotContinueConstruction();
 
@@ -155,7 +155,7 @@ class CoverView : public QListWidget
     protected:
         void contextMenuEvent( QContextMenuEvent *event );
 
-    private slots:
+    private Q_SLOTS:
         void setStatusText( QListWidgetItem *item );
 };
 

@@ -25,7 +25,7 @@ class TestPlaylistFormat : public QObject
     public:
         TestPlaylistFormat();
 
-    private slots:
+    private Q_SLOTS:
         void testGetFormat_data();
         /**
          * Check if the correct extension format for the playlist file is returned

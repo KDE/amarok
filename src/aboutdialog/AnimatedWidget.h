@@ -29,7 +29,7 @@ class AnimatedWidget : public QWidget
         explicit AnimatedWidget( const QString& iconName, QWidget *parent = 0 );
         virtual ~AnimatedWidget();
 
-    public slots:
+    public Q_SLOTS:
         void start();
         void stop();
 

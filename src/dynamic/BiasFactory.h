@@ -51,7 +51,7 @@ namespace Dynamic
 
             virtual QWidget* widget( QWidget* parent = 0 );
 
-        protected slots:
+        protected Q_SLOTS:
                 void factoryChanged();
 
         private:
@@ -123,7 +123,7 @@ namespace Dynamic
          */
         static QList<AbstractBiasFactory*> factories();
 
-    signals:
+    Q_SIGNALS:
         /** Emitted when the list of bias factories was changed. */
         void changed();
 

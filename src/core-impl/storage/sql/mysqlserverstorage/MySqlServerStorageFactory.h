@@ -29,7 +29,7 @@ class MySqlServerStorageFactory : public StorageFactory
 
         virtual void init();
 
-    public slots:
+    public Q_SLOTS:
 
         /** Returns the error messages created during establishing the connection.
          */

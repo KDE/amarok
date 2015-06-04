@@ -27,7 +27,7 @@ Q_OBJECT
 public:
     TestCueFileSupport();
   
-private slots:
+private Q_SLOTS:
     void testLocateCueFile();
     void testIso88591Cue();
     void testUtf8Cue();

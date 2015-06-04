@@ -45,7 +45,7 @@ public:
      */
     bool isFullscreenWindowActive() const;
 
-public slots:
+public Q_SLOTS:
 
     /**
      * Shows a message. Warning, this method doesn't check isEnabled(), you

@@ -95,7 +95,7 @@ public:
      */
     virtual Preference defaultPreference();
 
-signals:
+Q_SIGNALS:
     void reconfigurationRequested( const QVariantMap &config );
 
 protected:

@@ -40,7 +40,7 @@ class DatabaseImporterDialog : public KAssistantDialog
         DatabaseImporterDialog( QWidget *parent = 0 );
         ~DatabaseImporterDialog();
 
-    private slots:
+    private Q_SLOTS:
         void importFailed();
         void importSucceeded();
         void importError( QString error );

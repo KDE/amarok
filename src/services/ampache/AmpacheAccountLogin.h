@@ -48,11 +48,11 @@ class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
         bool authenticated() const { return m_authenticated; }
         void reauthenticate();
 
-    signals:
+    Q_SIGNALS:
         void loginSuccessful(); //!authentication was successful
         void finished(); //!authentication was or was not successful
 
-    private slots:
+    private Q_SLOTS:
         void authenticate( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
         void authenticationComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 

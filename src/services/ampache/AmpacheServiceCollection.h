@@ -31,7 +31,7 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
         ~AmpacheTrackForUrlWorker();
         virtual void run();
         void parseTrack( const QString &xml );
-    signals:
+    Q_SIGNALS:
         void authenticationNeeded();
     private:
         MetaProxy::TrackPtr m_proxy;
@@ -74,10 +74,10 @@ public:
     virtual Meta::TrackPtr trackForUrl( const QUrl &url );
     virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
-signals:
+Q_SIGNALS:
     void authenticationNeeded();
 
-public slots:
+public Q_SLOTS:
     void slotAuthenticationNeeded();
     void slotLookupComplete( const Meta::TrackPtr & );
 

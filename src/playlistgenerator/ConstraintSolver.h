@@ -52,10 +52,10 @@ namespace APG {
             bool canBeExecuted();
             bool success() const;
 
-        public slots:
+        public Q_SLOTS:
             void requestAbort();
 
-        signals:
+        Q_SIGNALS:
             void readyToRun();
             void incrementProgress();
             void totalSteps( int );
@@ -64,7 +64,7 @@ namespace APG {
         protected:
             void run(); // from ThreadWeaver::Job
 
-        private slots:
+        private Q_SLOTS:
             void receiveQueryMakerData( Meta::TrackList );
             void receiveQueryMakerDone();
 

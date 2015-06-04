@@ -50,7 +50,7 @@ public:
 protected:
     void resizeEvent( QGraphicsSceneResizeEvent *event );
 
-private slots:
+private Q_SLOTS:
     void paletteChanged( const QPalette &palette );
     void updateAlignment();
 

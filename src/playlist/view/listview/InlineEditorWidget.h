@@ -37,10 +37,10 @@ public:
 
     QMap<int, QString> changedValues();
 
-signals:
+Q_SIGNALS:
     void editingDone( InlineEditorWidget * editor );
 
-protected slots:
+protected Q_SLOTS:
     void editValueChanged();
     void ratingValueChanged();
     void splitterMoved( int pos, int index );

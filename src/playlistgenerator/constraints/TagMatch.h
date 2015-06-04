@@ -74,7 +74,7 @@ namespace ConstraintTypes {
             const QBitArray whatTracksMatch( const Meta::TrackList& );
             int constraintMatchType() const;
 
-        private slots:
+        private Q_SLOTS:
             void setComparison( int );
             void setField( const QString& );
             void setInvert( bool );
@@ -162,7 +162,7 @@ namespace ConstraintTypes {
             TagMatchEditWidget( const int, const QString&, const bool, const int, const QVariant& );
             ~TagMatchEditWidget();
 
-        signals:
+        Q_SIGNALS:
             void comparisonChanged( int );
             void fieldChanged( const QString& );
             void invertChanged( bool );
@@ -170,7 +170,7 @@ namespace ConstraintTypes {
             void valueChanged( const QVariant& );
             void updated();
 
-        private slots:
+        private Q_SLOTS:
             // comparison
             void on_comboBox_ComparisonDate_currentIndexChanged( int );
             void on_comboBox_ComparisonInt_currentIndexChanged( int );

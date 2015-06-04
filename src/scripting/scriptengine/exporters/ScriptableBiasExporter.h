@@ -94,7 +94,7 @@ namespace AmarokScript
             QScriptValue widgetFunction() const;
             QScriptEngine *engine() const;
 
-        public slots:
+        public Q_SLOTS:
             Dynamic::BiasPtr createBias() override;
 
         private:
@@ -151,12 +151,12 @@ namespace AmarokScript
             void paintOperator( QPainter *painter, const QRect &rect, AbstractBias *bias ) override;
             QWidget* widget( QWidget *parent = 0 ) override;
 
-        private slots:
+        private Q_SLOTS:
             Dynamic::TrackSet slotMatchingTracks( const Meta::TrackList &playlist, int contextCount,
                                               int finalCount, const Dynamic::TrackCollectionPtr universe ) const;
             void removeBias();
 
-        public slots:
+        public Q_SLOTS:
 
             /** This slot is called when the bias should discard cached results.
             * This will be done in case a new playlist is requested for an updated

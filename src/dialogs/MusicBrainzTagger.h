@@ -49,10 +49,10 @@ class MusicBrainzTagger : public KDialog
                                     QWidget *parent = 0 );
         virtual ~MusicBrainzTagger();
 
-    signals:
+    Q_SIGNALS:
         void sendResult( const QMap<Meta::TrackPtr, QVariantMap> result );
 
-    private slots:
+    private Q_SLOTS:
         void search();
         void progressStep();
         void searchDone();

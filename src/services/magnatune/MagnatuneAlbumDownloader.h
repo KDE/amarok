@@ -39,7 +39,7 @@ public:
 
     ~MagnatuneAlbumDownloader();
 
-signals:
+Q_SIGNALS:
 
     /**
      * This signal is emitted when a download is finished or cancelled
@@ -47,7 +47,7 @@ signals:
      */
     void downloadComplete( bool success );
 
-public slots:
+public Q_SLOTS:
     /**
      * Initiates the download of an album
      * @param url A MagnatuneDownloadInfo object containing all needed information
@@ -62,7 +62,7 @@ protected:
     MagnatuneDownloadInfo m_currentAlbumInfo;
     KTempDir * m_tempDir;
 
-protected slots:
+protected Q_SLOTS:
     /**
      * Unzip the downloaded album
      * @param downLoadJob

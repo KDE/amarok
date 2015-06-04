@@ -81,7 +81,7 @@ class AMAROK_EXPORT AggregateQueryMaker : public QueryMaker
 
         void handleResult();
 
-    private slots:
+    private Q_SLOTS:
         void slotQueryDone();
         void slotNewResultReady( const Meta::TrackList &tracks );
         void slotNewResultReady( const Meta::ArtistList &artists );

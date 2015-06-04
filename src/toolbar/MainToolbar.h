@@ -50,7 +50,7 @@ private:
     void setCurrentTrackActionsVisible( bool );
     void updateCurrentTrackActions();
 
-private slots:
+private Q_SLOTS:
     void stopped();
     void paused();
     void playing();

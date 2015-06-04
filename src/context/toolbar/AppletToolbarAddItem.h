@@ -44,12 +44,12 @@ class AppletToolbarAddItem : public AppletToolbarBase
         explicit AppletToolbarAddItem( QGraphicsItem* parent = 0, Containment* cont = 0, bool fixedAdd = false );
         ~AppletToolbarAddItem();
         
-    signals:
+    Q_SIGNALS:
         void addApplet( const QString&, AppletToolbarAddItem*  );
         void hideAppletExplorer();
         void showAppletExplorer();
         
-    public slots:
+    public Q_SLOTS:
         void appletExplorerHid();
         void iconClicked();
 

@@ -66,7 +66,7 @@ class UpnpCollectionBase : public Collections::Collection
     virtual QString prettyName() const;
     bool possiblyContainsTrack( const QUrl &url ) const;
 
-  private slots:
+  private Q_SLOTS:
     void slotSlaveError( KIO::Slave *slave, int err, const QString &msg );
     void slotSlaveConnected( KIO::Slave *slave );
     void slotRemoveJob( KJob *job );

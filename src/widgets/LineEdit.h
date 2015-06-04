@@ -40,7 +40,7 @@ namespace Amarok
 
             void keyPressEvent( QKeyEvent *event );
 
-        signals:
+        Q_SIGNALS:
             void downPressed();
             void upPressed();
     };

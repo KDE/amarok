@@ -39,7 +39,7 @@ protected:
      */
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
-protected slots:
+protected Q_SLOTS:
     void removeFromCartAction();
 };
 

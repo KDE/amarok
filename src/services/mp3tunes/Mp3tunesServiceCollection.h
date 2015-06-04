@@ -47,7 +47,7 @@ public:
     virtual Meta::TrackPtr trackForUrl( const QUrl &url );
     virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
-private slots:
+private Q_SLOTS:
     /**
      * Handles trackForUrl complete.
      */

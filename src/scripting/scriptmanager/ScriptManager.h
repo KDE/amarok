@@ -91,11 +91,11 @@ class AMAROK_EXPORT ScriptManager : public QObject
         ScriptMap      m_scripts;
         QString        m_lyricsScript;
 
-    public slots:
+    public Q_SLOTS:
         /** Finds installed scripts, updates them, and loads them */
         void updateAllScripts();
 
-    signals:
+    Q_SIGNALS:
         // needed so the lyrics script can connect to this
         void fetchLyrics( const QString&, const QString&, const QString& url, Meta::TrackPtr );
         void lyricsScriptStarted();
@@ -105,7 +105,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
          */
         void scriptsChanged();
 
-    private slots:
+    private Q_SLOTS:
         bool slotRunScript( const QString &name, bool silent = false );
         void handleException( const QScriptValue &value );
 

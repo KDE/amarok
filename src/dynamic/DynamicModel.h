@@ -111,10 +111,10 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         /** Returns a representation of the whole model for debugging */
         QString toString();
 
-    signals:
+    Q_SIGNALS:
         void activeChanged( int index ); // active row changed
 
-    public slots:
+    public Q_SLOTS:
         /** Saves all playlists to disk */
         void savePlaylists();
 

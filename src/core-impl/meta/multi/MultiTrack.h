@@ -78,7 +78,7 @@ namespace Meta
             void prepareToPlay();
             virtual StatisticsPtr statistics();
 
-        signals:
+        Q_SIGNALS:
             void urlChanged( const QUrl &url );
 
         private:

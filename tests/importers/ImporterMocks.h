@@ -82,7 +82,7 @@ protected:
     MockManager *m_mockManager;
     MockProvider *m_mockProvider;
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void init();
     void cleanup();

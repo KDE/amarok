@@ -25,7 +25,7 @@ class TestAmazonTrack : public QObject
 public:
     TestAmazonTrack();
 
-private slots:
+private Q_SLOTS:
     void testConstructor();
     void testEmblem();
 };

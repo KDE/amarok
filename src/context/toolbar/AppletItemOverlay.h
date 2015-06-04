@@ -54,11 +54,11 @@ protected:
     virtual void enterEvent(QEvent *event);
     virtual void leaveEvent(QEvent *event);
     
-signals:
+Q_SIGNALS:
     void moveApplet( Plasma::Applet*, int, int );
     void deleteApplet( Plasma::Applet* );
     
-private slots:
+private Q_SLOTS:
     void deleteApplet();
     void delaySyncGeometry();
     void syncGeometry();

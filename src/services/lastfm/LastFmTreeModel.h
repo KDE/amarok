@@ -109,7 +109,7 @@ public:
 
     virtual QMimeData *mimeData( const QModelIndexList &indices ) const;
 
-private slots:
+private Q_SLOTS:
     void onAvatarDownloaded( const QString& username, QPixmap );
     void slotAddNeighbors();
     void slotAddFriends();

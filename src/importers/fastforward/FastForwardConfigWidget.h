@@ -50,7 +50,7 @@ private:
     QList<QWidget*> m_externalDbSettings;
     QList<QWidget*> m_embeddedDbSettings;
 
-private slots:
+private Q_SLOTS:
     void connectionTypeChanged( const int index );
 };
 

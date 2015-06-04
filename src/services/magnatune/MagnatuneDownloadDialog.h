@@ -55,7 +55,7 @@ public:
      */
     void setDownloadInfo( MagnatuneDownloadInfo info );
 
-signals:
+Q_SIGNALS:
 
     /**
      * Signal emitted when all needed info has been gathered and handler 
@@ -64,14 +64,14 @@ signals:
      */
     void downloadAlbum( MagnatuneDownloadInfo completedInfo );
 
-public slots:
+public Q_SLOTS:
     /*$PUBLIC_SLOTS$*/
 
 protected:
     /*$PROTECTED_FUNCTIONS$*/
     MagnatuneDownloadInfo m_currentDownloadInfo;
 
-protected slots:
+protected Q_SLOTS:
     /*$PROTECTED_SLOTS$*/
     /**
      * Slot for recieving notification when the download button is clicked.

@@ -42,7 +42,7 @@ public:
 
 /*    virtual void init();
 
-private slots:
+private Q_SLOTS:
     void audioCdAdded( const QString &uid );
     void deviceRemoved( const QString &uid );
 
@@ -89,10 +89,10 @@ public:
     virtual void startFullScan(); //Override this one as I really don't want to move parsing to the handler atm.
     virtual void startFullScanDevice() { startFullScan(); }
 
-public slots:
+public Q_SLOTS:
     virtual void eject();
 
-private slots:
+private Q_SLOTS:
     void audioCdEntries( KIO::Job *job, const KIO::UDSEntryList &list );
     void slotEntriesJobDone( KJob *job );
     void infoFetchComplete( KJob *job );

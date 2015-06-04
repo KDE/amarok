@@ -174,7 +174,7 @@ class MtpHandler : public MediaDeviceHandler
         virtual void prepareToDelete() {}
 
         /// libmtp-specific
-    private slots:
+    private Q_SLOTS:
         void slotDeviceMatchSucceeded( ThreadWeaver::Job* job );
         void slotDeviceMatchFailed( ThreadWeaver::Job* job );
 

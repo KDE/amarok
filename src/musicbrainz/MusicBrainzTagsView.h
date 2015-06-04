@@ -33,14 +33,14 @@ class MusicBrainzTagsView : public QTreeView
 
         MusicBrainzTagsModel *sourceModel() const;
 
-    public slots:
+    public Q_SLOTS:
         void collapseChosen();
         void expandUnchosen();
 
     protected:
         virtual void contextMenuEvent( QContextMenuEvent *event );
 
-    private slots:
+    private Q_SLOTS:
         void chooseBestMatchesFromRelease() const;
         void openArtistPage() const;
         void openReleasePage() const;

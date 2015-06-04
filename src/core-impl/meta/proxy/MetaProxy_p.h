@@ -68,7 +68,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
             proxy->notifyObservers();
         }
 
-    public slots:
+    public Q_SLOTS:
         void slotUpdateTrack( Meta::TrackPtr track )
         {
             if( track )

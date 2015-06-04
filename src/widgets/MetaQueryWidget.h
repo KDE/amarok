@@ -59,7 +59,7 @@ protected:
     KIntSpinBox *m_timeEdit;
     KComboBox *m_unitSelection;
 
-private slots:
+private Q_SLOTS:
     void slotUpdateComboBoxLabels( int value );
 };
 
@@ -146,7 +146,7 @@ class MetaQueryWidget : public QWidget
         static QString conditionToString( FilterCondition condition, qint64 field );
 
 
-    public slots:
+    public Q_SLOTS:
         void setFilter(const MetaQueryWidget::Filter &value);
 
         void setField( const qint64 field );
@@ -155,10 +155,10 @@ class MetaQueryWidget : public QWidget
         bool isFieldSelectorHidden() const;
         void setFieldSelectorHidden( const bool hidden );
 
-    signals:
+    Q_SIGNALS:
         void changed(const MetaQueryWidget::Filter &value);
 
-    private slots:
+    private Q_SLOTS:
         void fieldChanged( int );
         void compareChanged( int );
         void valueChanged( const QString& );

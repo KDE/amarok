@@ -33,7 +33,7 @@ class Amarok2ConfigDialog : public KConfigDialog
         void addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName,
                       const QString &header = QString(), bool manage = true );
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Shows the config dialog and sets the current page to "page"
          *
@@ -46,12 +46,12 @@ class Amarok2ConfigDialog : public KConfigDialog
          */
         void updateButtons();
 
-    protected slots:
+    protected Q_SLOTS:
         void updateSettings();
         void updateWidgets();
         void updateWidgetsDefault();
 
-    private slots:
+    private Q_SLOTS:
 
     protected:
         bool hasChanged();

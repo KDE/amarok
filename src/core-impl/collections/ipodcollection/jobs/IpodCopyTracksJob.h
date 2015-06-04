@@ -51,10 +51,10 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
                            bool goingToRemoveSources );
         virtual void run();
 
-    public slots:
+    public Q_SLOTS:
         void abort();
 
-    signals:
+    Q_SIGNALS:
         // a hack to create QueryMaken in a thread with event loop:
         void startDuplicateTrackSearch( const Meta::TrackPtr &track );
 
@@ -78,7 +78,7 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
          */
         void signalTrackProcessed( Meta::TrackPtr srcTrack, Meta::TrackPtr destTrack, IpodCopyTracksJob::CopiedStatus status );
 
-    private slots:
+    private Q_SLOTS:
         /// @see startDuplicateTrackSearch()
         void slotStartDuplicateTrackSearch( const Meta::TrackPtr &track );
         void slotDuplicateTrackSearchNewResult( const Meta::TrackList &tracks );

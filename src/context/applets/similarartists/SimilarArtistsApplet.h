@@ -65,7 +65,7 @@ public:
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
 
-public slots:
+public Q_SLOTS:
     /**
      * Initialization of the applet's display, creation of the layout, scrolls
      */
@@ -76,7 +76,7 @@ public slots:
      */
     void dataUpdated( const QString &source, const Plasma::DataEngine::Data &data );
 
-private slots:
+private Q_SLOTS:
     void goBackward();
     void goForward();
     void updateNavigationIcons();
@@ -119,7 +119,7 @@ private:
      */
     int m_maxArtists;
 
-private slots:
+private Q_SLOTS:
 
     /**
      * Allows the connection to the lastfm's api

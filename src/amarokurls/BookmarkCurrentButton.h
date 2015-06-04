@@ -26,7 +26,7 @@ public:
     BookmarkCurrentButton( QWidget *parent );
     virtual ~BookmarkCurrentButton();
 
-    protected slots:
+    protected Q_SLOTS:
         void showMenu();
         void generateMenu(  const QPoint &pos  );
 };

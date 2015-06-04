@@ -37,7 +37,7 @@ class CoverBling : public QGLWidget
         void draw( GLuint selected = 0 );
         GLuint objectAtPosition( const QPoint& pos );
 
-    private slots:
+    private Q_SLOTS:
         void queryResult( Meta::AlbumList albums );
 
     private:

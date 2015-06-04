@@ -25,7 +25,7 @@ class TestAmazonMetaFactory : public QObject
 public:
     TestAmazonMetaFactory();
     
-private slots:
+private Q_SLOTS:
     void testCreateAlbum();
     void testCreateArtist();
     void testCreateTrack();

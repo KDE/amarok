@@ -92,14 +92,14 @@ namespace LastFm
                                    // if you are asking, it has already expired
             QString streamName() const; // A nice name for the stream..
 
-        public slots:
+        public Q_SLOTS:
             void ban();
 
-        private slots:
+        private Q_SLOTS:
             void slotResultReady();
             void slotWsReply();
 
-        signals:
+        Q_SIGNALS:
             void skipTrack(); // needed for communication with multiplayablecapability
 
         private:

@@ -88,7 +88,7 @@ namespace Playlist
              */
             QQueue<quint64> queue();
 
-        public slots:
+        public Q_SLOTS:
             /**
              * Queues the specified id and schedules it to be played.
              */
@@ -109,7 +109,7 @@ namespace Playlist
              */
             bool queueMoveDown( const quint64 id );
 
-        private slots:
+        private Q_SLOTS:
             void slotModelReset();
             void slotRowsAboutToBeRemoved( const QModelIndex &parent, int start, int end );
 

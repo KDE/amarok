@@ -60,7 +60,7 @@ class ServiceBrowser : public BrowserCategoryList
          */
         void resetService( const QString &name );
 
-    public slots:
+    public Q_SLOTS:
 
         /**
          * Set a scriptable service manager to handle scripted services.

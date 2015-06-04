@@ -85,7 +85,7 @@ public:
      */
     QList<OpmlOutline *> results() const { return m_outlines; }
 
-signals:
+Q_SIGNALS:
 
     /**
      * Emitted when <head> has been completely parsed.
@@ -106,10 +106,10 @@ signals:
      */
     void outlineParsed( OpmlOutline *outline );
 
-public slots:
+public Q_SLOTS:
     virtual void slotAbort();
 
-private slots:
+private Q_SLOTS:
     void slotAddData( KIO::Job *, const QByteArray &data );
 
     void downloadResult( KJob * );

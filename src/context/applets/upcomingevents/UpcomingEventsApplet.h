@@ -88,7 +88,7 @@ public:
      */
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
-signals:
+Q_SIGNALS:
     void listWidgetAdded( UpcomingEventsListWidget *widget );
     void listWidgetRemoved( UpcomingEventsListWidget *widget );
 
@@ -103,7 +103,7 @@ protected:
      */
     void createConfigurationInterface(KConfigDialog *parent);
 
-public slots:
+public Q_SLOTS:
     /**
      * \brief Initialization
      *
@@ -140,7 +140,7 @@ private:
      */
     UpcomingEventsListWidget *m_artistEventsList;
 
-private slots:
+private Q_SLOTS:
     /**
      * Connects the source to the Upcoming Events engine
      * and calls the dataUpdated function
@@ -205,7 +205,7 @@ private:
     UpcomingEventsStack *m_stack;
     UpcomingEventsMapWidget *mapView();
 
-private slots:
+private Q_SLOTS:
     void searchVenue( const QString &text );
     void venueResults( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void venuePhotoResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );

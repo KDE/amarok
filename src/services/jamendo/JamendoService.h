@@ -52,7 +52,7 @@ public:
     void polish();
     virtual Collections::Collection * collection() { return m_collection; }
 
-private slots:
+private Q_SLOTS:
     void updateButtonClicked();
     void download();
     void listDownloadComplete( KJob* downloadJob);

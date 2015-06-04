@@ -25,7 +25,7 @@ class TestAggregateMeta : public QObject
 public:
     TestAggregateMeta();
 
-private slots:
+private Q_SLOTS:
     void testHasCapabilityOnSingleTrack();
     void testCreateCapabilityOnSingleTrack();
 

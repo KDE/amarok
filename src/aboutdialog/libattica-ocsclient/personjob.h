@@ -43,7 +43,7 @@ class ATTICA_EXPORT PersonJob : public KJob
 
     Person person() const;
     
-  protected slots:
+  protected Q_SLOTS:
     void doWork();
 
     void slotUserJobResult( KJob *job );

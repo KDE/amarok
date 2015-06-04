@@ -132,7 +132,7 @@ class Track::Private : public QObject
             }
         }
 
-    public slots:
+    public Q_SLOTS:
         void requestResult( )
         {
             if( !m_userFetch )

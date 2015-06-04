@@ -33,7 +33,7 @@ class DatabaseUpdaterTest : public QObject
 public:
     DatabaseUpdaterTest();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 

@@ -36,7 +36,7 @@ class TestSqlQueryMaker : public QObject
 public:
     TestSqlQueryMaker();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
