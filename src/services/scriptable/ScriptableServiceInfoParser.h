@@ -19,6 +19,7 @@
 
 #include "../InfoParserBase.h"
 #include "ScriptableServiceMeta.h"
+#include <KLocalizedString>
 
 /**
 Info parser for the scriptable services

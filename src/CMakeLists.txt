@@ -869,19 +869,19 @@ ki18n_wrap_ui(amaroklib_LIB_SRCS
 add_library(amaroklib SHARED ${amaroklib_LIB_SRCS} ${AMAROK_MPRIS1_ADAPTOR_SRCS})
 
 target_link_libraries(amaroklib
-    
-    
     KF5::NewStuff
     KF5::NotifyConfig
-    
     Phonon::phonon4qt5
     KF5::Plasma
+    KF5::PlasmaQuick
+    KF5::I18n
     ${KDE4_SOLID_LIBRARY}
     KF5::TextEditor
     KF5::ThreadWeaver
     Qt5::Script
     ${QT_QTSCRIPTTOOLS_LIBRARY}
     Qt5::Sql
+    Qt5::Gui
     ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}

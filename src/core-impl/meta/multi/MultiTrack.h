@@ -52,7 +52,7 @@ namespace Meta
             FORWARD( QString, name, QString() )
             FORWARD( QString, prettyName, QString() )
             FORWARD( QUrl, playableUrl, QUrl() )
-            FORWARD( QString, prettyUrl, m_playlist->uidUrl().prettyUrl() )
+            FORWARD( QString, prettyUrl, m_playlist->uidUrl().toDisplayString() )
             // TODO: change to m_playlist->uidUrl() unconditionally once playlist restorer can cope with it:
             FORWARD( QString, uidUrl, m_playlist->uidUrl().url() )
             FORWARD( QString, notPlayableReason, i18nc( "Reason why a track is not playable",

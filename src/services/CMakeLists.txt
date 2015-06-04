@@ -1,6 +1,4 @@
 include_directories(
-                    
-                    
                     ${Amarok_SOURCE_DIR}/src
                    )
 

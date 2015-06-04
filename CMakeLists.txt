@@ -22,8 +22,8 @@ include(ECMAddAppIcon)
 
 #find_package( Qt4 4.8.3 COMPONENTS QtCore QtGui QtScript QtSvg QtXml QtWebKit REQUIRED )
 #find_package( KDE4 4.8.4 REQUIRED )
-find_package( Qt5 REQUIRED COMPONENTS Core DBus Widgets Test Gui Svg Xml)
-find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid KDELibs4Support Codecs I18n ThreadWeaver)
+find_package( Qt5 REQUIRED COMPONENTS Core DBus Widgets Test Gui Svg Xml Script)
+find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid KDELibs4Support Codecs I18n ThreadWeaver Plasma)
 
 ###############
 option(WITH_UTILITIES "Enable building of utilities" ON)
@@ -125,6 +125,8 @@ endif ()
 find_package(Qca-qt5 2.1.0)
 
 find_package(Phonon4Qt5 4.6.60 REQUIRED NO_MODULE)
+include_directories(BEFORE ${PHONON_INCLUDES})
+
 find_package( LibLastFm )
 set( LIBLASTFM_MIN_VERSION "1.0.0" )
 if( LIBLASTFM_FOUND )

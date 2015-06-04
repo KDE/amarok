@@ -25,7 +25,7 @@
 #include "../ServiceMetaBase.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 
-#include <kiconloader.h>
+#include <KIconLoader>
 
 using namespace Meta;
 
@@ -122,8 +122,8 @@ void ScriptableServiceManager::setIcon( const QString & serviceName, const QPixm
         return;
     }
 
-  
-    m_serviceMap[serviceName]->setIcon( QIcon::fromTheme( QIcon( icon ) ) );
+
+    m_serviceMap[serviceName]->setIcon( QIcon( icon ) );
     emit( serviceUpdated( m_serviceMap[serviceName] ) );
 }
 
