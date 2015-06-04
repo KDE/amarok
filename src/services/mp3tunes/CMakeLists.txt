@@ -24,10 +24,10 @@ if(LIBXML2_FOUND AND CURL_FOUND)
             )
             if(LIBGCRYPT_FOUND)
                 add_definitions(-DHAVE_LIBGCRYPT)
-            else(LIBGCRYPT_FOUND)
+            else()
                 include_directories(${OPENSSL_INCLUDE_DIR})
                 add_definitions(-DHAVE_OPENSSL)
-            endif(LIBGCRYPT_FOUND)
+            endif()
 
             set(amarok_service_mp3tunes_harmony_PART_SRCS
                 harmonydaemon/Mp3tunesHarmonyDownload.cpp
@@ -63,9 +63,9 @@ if(LIBXML2_FOUND AND CURL_FOUND)
 
             if(LIBGCRYPT_FOUND)
                 target_link_libraries(amarokmp3tunesharmonydaemon ${LIBGCRYPT_LIBS})
-            else(LIBGCRYPT_FOUND)
+            else()
                 target_link_libraries(amarokmp3tunesharmonydaemon crypto ${OPENSSL_LIBRARIES})
-            endif(LIBGCRYPT_FOUND)
+            endif()
 
             install(TARGETS amarokmp3tunesharmonydaemon ${INSTALL_TARGETS_DEFAULT_ARGS} )
     ########### next target ###############
@@ -106,10 +106,10 @@ if(LIBXML2_FOUND AND CURL_FOUND)
 
           if(LIBGCRYPT_FOUND)
               target_link_libraries(amarok_service_mp3tunes ${LIBGCRYPT_LIBS})
-          else(LIBGCRYPT_FOUND)
+          else()
                   #${OPENSSL_LIBRARIES} returns -lssl, not -lcrypto. we only need -lcrypto.
               target_link_libraries(amarok_service_mp3tunes crypto ${OPENSSL_LIBRARIES})
-          endif(LIBGCRYPT_FOUND)
+          endif()
 
 
         install(TARGETS amarok_service_mp3tunes DESTINATION ${PLUGIN_INSTALL_DIR} )
@@ -136,7 +136,7 @@ if(LIBXML2_FOUND AND CURL_FOUND)
 
         install( FILES amarok_service_mp3tunes.desktop DESTINATION ${SERVICES_INSTALL_DIR})
         install( FILES amarok_service_mp3tunes_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-    endif(LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND AND QT4_GLIB_SUPPORT)
-endif(LIBXML2_FOUND AND CURL_FOUND)
-endif(OPENSSL_FOUND OR LIBGCRYPT_FOUND)
+    endif()
+endif()
+endif()
 

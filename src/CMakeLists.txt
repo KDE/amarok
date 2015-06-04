@@ -3,7 +3,7 @@ add_definitions(-DQT_USE_FAST_CONCATENATION)
 add_definitions(-DQT_USE_FAST_OPERATOR_PLUS)
 if(NOT MSVC)
     add_definitions(-DQT_STRICT_ITERATORS)
-endif(NOT MSVC)
+endif()
 
 if(APPLE)
     set(mac_SRCS
@@ -18,7 +18,7 @@ if(APPLE)
 
     include_directories ( services/lastfm/ )
     set( MAC_FILES_DIR  ${CMAKE_SOURCE_DIR}/src/mac )
-endif(APPLE)
+endif()
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -496,7 +496,7 @@ if (PYTHONINTERP_FOUND)
                                                    ${CMAKE_BINARY_DIR}/scriptconsole)
     install(FILES ${CMAKE_BINARY_DIR}/scriptconsole/AutoComplete.txt
             DESTINATION ${DATA_INSTALL_DIR}/amarok/scriptconsole)
-endif(PYTHONINTERP_FOUND)
+endif()
 
 #####################################################################
 # PLAYLIST GENERATOR
@@ -550,7 +550,7 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
     ki18n_wrap_ui(network_access_SRCS
         network/NetworkRequests.ui
         )
-endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
+endif()
 
 #####################################################################
 # STATISTICS SYNCHRONIZATION
@@ -755,7 +755,7 @@ set(amaroklib_LIB_SRCS
 if( LIBMYGPO_QT_FOUND )
     set( EXTRA_LIBS ${LIBMYGPO_QT_LIBRARIES} )
     include_directories(     ${LIBMYGPO_QT_INCLUDE_DIRS} ${LIBMYGPO_QT_INCLUDE_DIRS}/../ )
-endif( LIBMYGPO_QT_FOUND )
+endif()
 
 if( LIBLASTFM_FOUND )
     set(amaroklib_LIB_SRCS
@@ -764,7 +764,7 @@ if( LIBLASTFM_FOUND )
     )
     include_directories( ${LIBLASTFM_INCLUDE_DIR}/..  ${LIBLASTFM_INCLUDE_DIR})
     set( EXTRA_LIBS ${LIBLASTFM_LIBRARY} )
-endif( LIBLASTFM_FOUND )
+endif()
 
 if( LIBOFA_FOUND )
     add_definitions(
@@ -790,7 +790,7 @@ if( LIBOFA_FOUND )
         musicbrainz/MusicDNSFinder.cpp
         musicbrainz/MusicDNSXmlParser.cpp
     )
-endif( LIBOFA_FOUND )
+endif()
 
 qt5_add_dbus_adaptor(
    AMAROK_MPRIS1_ADAPTOR_SRCS
@@ -841,7 +841,7 @@ if(NOT WIN32)
     set_source_files_properties(${AMAROK_MPRIS1_ADAPTOR_SRCS}
                                 PROPERTIES
                                 COMPILE_FLAGS -Wno-deprecated-declarations)
-endif(NOT WIN32)
+endif()
 
 set( amaroklib_DEPENDS "amarokpud" )
 set( amaroklib_DEPENDS "amarokcore" )
@@ -899,12 +899,12 @@ if( TAGLIB-EXTRAS_FOUND )
     include_directories(${TAGLIB-EXTRAS_INCLUDES})
     add_definitions(${TAGLIB-EXTRAS_CFLAGS})
     target_link_libraries(amaroklib ${TAGLIB-EXTRAS_LIBRARIES})
-endif( TAGLIB-EXTRAS_FOUND )
+endif()
 
 if( QCA2_FOUND )
     include_directories( ${QCA2_INCLUDE_DIR} )
     target_link_libraries(amaroklib ${QCA2_LIBRARIES})
-endif( QCA2_FOUND )
+endif()
 
 
 if(KDE4_BUILD_TESTS)
@@ -913,11 +913,11 @@ endif()
 
 if(WIN32)
     target_link_libraries(amaroklib Qt5::WebKitWidgets)
-endif(WIN32)
+endif()
 if(APPLE)
     target_link_libraries(amaroklib "/System/Library/Frameworks/Foundation.framework")
-    SET_TARGET_PROPERTIES(amaroklib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    set_target_properties(amaroklib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 
 set_target_properties(amaroklib PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
@@ -942,7 +942,7 @@ if(APPLE)
     set(MACOSX_BUNDLE_COPYRIGHT "Amarok Team")
     set_target_properties(amarok PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MAC_FILES_DIR}/Info.plist.template)
     set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/amarok.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-endif(APPLE)
+endif()
 
 target_link_libraries(amarok KF5::KDELibs4Support  amarokcore amaroklib ${X11_LIBRARIES})
 install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})

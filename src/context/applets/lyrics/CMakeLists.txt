@@ -11,8 +11,8 @@ include_directories( ../..
 ki18n_wrap_ui( lyrics_SRCS lyricsSettings.ui )
 add_library(amarok_context_applet_lyrics MODULE ${lyrics_SRCS})
 if(APPLE)
-   SET_TARGET_PROPERTIES(amarok_context_applet_lyrics PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+   set_target_properties(amarok_context_applet_lyrics PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 target_link_libraries(amarok_context_applet_lyrics
     amarokcore
     amaroklib

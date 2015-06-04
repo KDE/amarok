@@ -9,8 +9,8 @@ include_directories(
 
 add_library(amarok_context_applet_albums MODULE ${albums_SRCS})
 if(APPLE)
-   SET_TARGET_PROPERTIES(amarok_context_applet_albums PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+   set_target_properties(amarok_context_applet_albums PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 target_link_libraries(amarok_context_applet_albums
     amarokcore
     amaroklib

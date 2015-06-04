@@ -11,8 +11,8 @@ ki18n_wrap_ui( wiki_SRCS wikipediaGeneralSettings.ui wikipediaLanguageSettings.u
 
 add_library(amarok_context_applet_wikipedia MODULE ${wiki_SRCS})
 if(APPLE)
-   SET_TARGET_PROPERTIES(amarok_context_applet_wikipedia PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+   set_target_properties(amarok_context_applet_wikipedia PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 target_link_libraries(amarok_context_applet_wikipedia
     amarokcore
     amaroklib

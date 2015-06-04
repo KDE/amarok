@@ -11,15 +11,15 @@ macro(add_database_test test_target test_sources)
                 ${test_sources}
                 ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/MySqlStorage.cpp
                 ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.cpp )
-    endif(APPLE)
+    endif()
 
     add_executable( ${test_target} ${test_sources} ${test_sources_internal} )
     add_test(${test_target} ${test_target})
     ecm_mark_as_test(${test_target})
 
     if(APPLE)
-        SET_TARGET_PROPERTIES(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-    endif(APPLE)
+        set_target_properties(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    endif()
 
     # TODO: I don't think that we need to manually add dependencies here (Ralf)
     add_dependencies( ${test_target} amarokconfig_h )
@@ -28,7 +28,7 @@ macro(add_database_test test_target test_sources)
     add_dependencies( ${test_target} amarok-sqlcollection)
     if(NOT APPLE)
         add_dependencies( ${test_target} amarok_collection-mysqlcollection amarok_storage-mysqlestorage )
-    endif(NOT APPLE)
+    endif()
 
     target_link_libraries(${test_target}
         amarokshared
@@ -48,7 +48,7 @@ macro(add_database_test test_target test_sources)
 
     if(NOT APPLE)
         target_link_libraries( ${test_target} amarok_collection-mysqlcollection amarok_storage-mysqlestorage )
-    endif(NOT APPLE)
+    endif()
 
 endmacro(add_database_test)
 
@@ -147,5 +147,5 @@ add_database_test( testsqlcollectionlocation "${testsqlcollectionlocation_SRCS}"
 
 if(NOT WIN32 AND NOT APPLE)
     target_link_libraries( testsqlcollectionlocation crypt pthread )
-endif(NOT WIN32 AND NOT APPLE)
+endif()
 

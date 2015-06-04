@@ -14,7 +14,7 @@ if( LIBLASTFM_FOUND )
     include_directories(
         ${LIBLASTFM_INCLUDE_DIR}
     )
-endif( LIBLASTFM_FOUND )
+endif()
 
 add_subdirectory( images )
 
@@ -45,7 +45,7 @@ install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS
             set(amarok_service_ampache_PART_SRCS
                 ${amarok_service_ampache_PART_SRCS}
                 LastfmInfoParser.cpp )
-        endif( LIBLASTFM_FOUND )
+        endif()
 
 
 
@@ -65,7 +65,7 @@ install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS
             target_link_libraries(amarok_service_ampache
                 ${LIBLASTFM_LIBRARY}
             )
-        endif( LIBLASTFM_FOUND )
+        endif()
 
 
         install(TARGETS amarok_service_ampache DESTINATION ${PLUGIN_INSTALL_DIR} )

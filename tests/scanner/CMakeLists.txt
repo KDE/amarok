@@ -3,7 +3,7 @@ macro(add_database_test test_target test_sources)
     #one cannot link to plugins on OS X. As a workaround, add anything relevant that goes into the mysqle plugin to each test
         set( test_sources_internal
                 ${test_sources} )
-    endif(APPLE)
+    endif()
 
     add_executable( ${test_target}
         ${test_sources}
@@ -14,8 +14,8 @@ macro(add_database_test test_target test_sources)
     ecm_mark_as_test(${test_target})
 
     if(APPLE)
-        SET_TARGET_PROPERTIES(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-    endif(APPLE)
+        set_target_properties(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    endif()
 
     add_dependencies( ${test_target} amarokconfig_h )
     add_dependencies( ${test_target} amarokcore )

@@ -1,6 +1,6 @@
 if( BUILD_MYSQLE_COLLECTION )
     add_subdirectory( mysqlestorage )
-endif( BUILD_MYSQLE_COLLECTION )
+endif()
 if( MYSQL_FOUND )
     add_subdirectory( mysqlserverstorage )
-endif( MYSQL_FOUND )
+endif()

@@ -46,13 +46,13 @@ check_cxx_source_compiles("#include <asftag.h>
 int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
 if( NOT TAGLIB_ASF_FOUND )
     message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
-endif( NOT TAGLIB_ASF_FOUND )
+endif()
 
 check_cxx_source_compiles("#include <mp4tag.h>
 int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
 if( NOT TAGLIB_MP4_FOUND )
     message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
-endif( NOT TAGLIB_MP4_FOUND )
+endif()
 
 check_cxx_source_compiles("#include <modtag.h>
 #include <modfile.h>
@@ -87,13 +87,13 @@ endif()
 if(WITH_DESKTOP_UI)
     add_definitions(-DDESKTOP_UI)
 endif()
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
 if (CMAKE_COMPILER_IS_GNUCXX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
     if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--as-needed")
-    endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-endif (CMAKE_COMPILER_IS_GNUCXX)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--as-needed")
+    endif()
+endif ()
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/shared
@@ -102,12 +102,12 @@ include_directories(
 
 
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")  # Require C++11
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")  # Require C++11
 
 # WORKAROUND for Clang bug: http://llvm.org/bugs/show_bug.cgi?id=15651
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-delayed-template-parsing")
-endif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-delayed-template-parsing")
+endif ()
 
 
 include( KDE4Defaults )
@@ -133,7 +133,7 @@ if( LIBLASTFM_FOUND )
     if ( ${LIBLASTFM_MIN_VERSION} VERSION_LESS ${LIBLASTFM_VERSION} )
         set( LIBLASTFM_FOUND TRUE )
     endif()
-endif( LIBLASTFM_FOUND )
+endif()
 macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
 find_package( FFmpeg )
@@ -141,13 +141,13 @@ find_package( FFmpeg )
 if( FFMPEG_FOUND )
     find_package( LibOFA )
     macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
-endif( FFMPEG_FOUND )
+endif()
 
 string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
 if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
     set( DEBUG_BUILD_TYPE ON )
     add_definitions(-Wall -Wextra)
-endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
+endif()
 
 # this needs to be here because also code in shared/ needs config.h. This is also the
 # reason why various checks are above why they belong under if( WITH_PLAYER )
@@ -164,9 +164,9 @@ if( WITH_PLAYER )
     if( WITH_MYSQL_EMBEDDED )
         set( BUILD_MYSQLE_COLLECTION TRUE )
         set_package_properties( MYSQLD PROPERTIES DESCRIPTION "Embedded MySQL Libraries" URL "http://www.mysql.com" TYPE REQUIRED )
-    else( WITH_MYSQL_EMBEDDED )
+    else()
         add_definitions( "-DNO_MYSQL_EMBEDDED" )
-    endif( WITH_MYSQL_EMBEDDED )
+    endif()
     set_package_properties( MYSQL PROPERTIES DESCRIPTION "MySQL Server Libraries" URL "http://www.mysql.com" TYPE REQUIRED )
 
     # zlib is required for mysql embedded
@@ -189,7 +189,7 @@ if( WITH_PLAYER )
 
     if( FFMPEG_FOUND )
         set_package_properties(LIBOFA PROPERTIES DESCRIPTION "Enable MusicDNS service" URL "http://code.google.com/p/musicip-libofa/" TYPE OPTIONAL)
-    endif( FFMPEG_FOUND )
+    endif()
 
     ##gpodder Service
     find_package( Mygpo-qt 1.0.7 QUIET )
@@ -198,16 +198,16 @@ if( WITH_PLAYER )
 
     if( WITH_IPOD )
         find_package(Ipod)
-        SET(IPOD_MIN_VERSION "0.8.2")
+        set(IPOD_MIN_VERSION "0.8.2")
         if( IPOD_FOUND AND NOT WIN32 )
             if ( ${IPOD_MIN_VERSION} VERSION_LESS ${IPOD_VERSION} )
                 set( IPOD_FOUND TRUE )
             endif()
-        endif( IPOD_FOUND AND NOT WIN32 )
+        endif()
         set_package_properties( IPOD PROPERTIES DESCRIPTION "Support Apple iPod/iPad/iPhone audio devices" URL "http://sourceforge.net/projects/gtkpod/" TYPE OPTIONAL )
         find_package(GDKPixBuf)
         set_package_properties( GDKPIXBUF PROPERTIES DESCRIPTION "Support for artwork on iPod audio devices via GDK-PixBuf" URL "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" TYPE OPTIONAL )
-    endif( WITH_IPOD )
+    endif()
 
     find_package(Mtp)
     set_package_properties(MTP PROPERTIES DESCRIPTION "Enable Support for portable media devices that use the media transfer protocol" URL "http://libmtp.sourceforge.net/" TYPE OPTIONAL )
@@ -223,9 +223,9 @@ if( WITH_PLAYER )
         find_package(Libgcrypt)
         if ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
             set (_mp3tunes_crypto TRUE )
-        else ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
+        else ()
             message( SEND_ERROR "Building with mp3tunes support REQUIRES either OpenSSL or GNU Libgcrypt" )
-        endif ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
+        endif ()
         set_package_properties( OPENSSL_OR_LIBGCRYPT PROPERTIES DESCRIPTION "OpenSSL or GNU Libgcrypt provides cryptographic functions required by mp3tunes." URL "http://www.openssl.org/ or http://www.gnupg.org/download/#libgcrypt" TYPE OPTIONAL )
 
         find_package(Loudmouth)
@@ -233,14 +233,14 @@ if( WITH_PLAYER )
 
         include(CheckQtGlib)
         set_package_properties( QT4_GLIB PROPERTIES DESCRIPTION "Qt4 must be compiled with glib support for mp3tunes" URL "http://www.trolltech.com" TYPE OPTIONAL )
-    endif( WITH_MP3Tunes )
+    endif()
 
     if( WITH_IPOD OR WITH_MP3Tunes )
     find_package(GObject)
     set_package_properties( GOBJECT PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes." URL "http://www.gtk.org" TYPE OPTIONAL )
     find_package(GLIB2)
     set_package_properties( GLIB2 PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes" URL "http://www.gtk.org" TYPE OPTIONAL )
-    endif( WITH_IPOD OR WITH_MP3Tunes )
+    endif()
 
     find_program( CLAMZ_FOUND clamz PATH )
     set_package_properties( CLAMZ PROPERTIES DESCRIPTION "Optional requirement to download songs from the Amazon MP3 store. Highly recommended on Linux, as the official downloader from Amazon is quite broken on many systems." URL "https://code.google.com/p/clamz/" TYPE OPTIONAL )
@@ -250,9 +250,9 @@ if( WITH_PLAYER )
 
 
     if( KDE4_BUILD_TESTS AND NOT WIN32 )
-        ENABLE_TESTING()
+        enable_testing()
         add_subdirectory( tests )
-    endif( KDE4_BUILD_TESTS AND NOT WIN32 )
+    endif()
 
     add_subdirectory( src )
 
@@ -269,17 +269,17 @@ if( WITH_PLAYER )
     #PO_SUBDIR
     #DOC_SUBDIR
 
-endif( WITH_PLAYER )
+endif()
 
 if( WITH_UTILITIES )
     set(EXEC_INSTALL_PREFIX  ${CMAKE_INSTALL_PREFIX}       CACHE PATH  "Base directory for executables and libraries" FORCE)
     set(BIN_INSTALL_DIR          "${EXEC_INSTALL_PREFIX}/bin"    CACHE PATH "The subdirectory to the binaries prefix (default prefix/bin)" FORCE)
     add_subdirectory( utilities )
-endif( WITH_UTILITIES )
+endif()
 
 if( WITH_PLAYGROUND )
     add_subdirectory( playground )
     message(STATUS "Included playground subdirectory in configuration")
-endif( WITH_PLAYGROUND )
+endif()
 
 include(CTest)

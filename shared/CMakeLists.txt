@@ -38,7 +38,7 @@ if( TAGLIB-EXTRAS_FOUND )
     include_directories( ${TAGLIB-EXTRAS_INCLUDES} )
     add_definitions( ${TAGLIB-EXTRAS_CFLAGS} )
     target_link_libraries( amarokshared ${TAGLIB-EXTRAS_LIBRARIES} )
-endif( TAGLIB-EXTRAS_FOUND )
+endif()
 
 target_link_libraries( amarokshared
     Qt5::Core

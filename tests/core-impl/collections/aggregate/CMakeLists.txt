@@ -24,8 +24,8 @@ add_dependencies( testaggregatemeta amarokcore )
 add_dependencies( testaggregatemeta amaroklib)
 
 if(APPLE)
-    SET_TARGET_PROPERTIES( testaggregatemeta PROPERTIES LINK_FLAGS "-undefined dynamic_lookup" )
-endif(APPLE)
+    set_target_properties( testaggregatemeta PROPERTIES LINK_FLAGS "-undefined dynamic_lookup" )
+endif()
 
 target_link_libraries( testaggregatemeta
     amarokcore

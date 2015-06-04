@@ -3,8 +3,8 @@ macro(link_database_test test_target)
     add_definitions(${MYSQL_CFLAGS})
 
     if(APPLE)
-        SET_TARGET_PROPERTIES(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-    endif(APPLE)
+        set_target_properties(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    endif()
 
     add_dependencies( ${test_target} amarokconfig_h )
     add_dependencies( ${test_target} amarokcore )

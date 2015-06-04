@@ -10,7 +10,7 @@ add_subdirectory( daap )
 
 if( NOT WIN32)
 add_subdirectory( audiocd )
-endif( NOT WIN32 )
+endif()
 
 add_subdirectory( ipodcollection )
 add_subdirectory( mtpcollection )
@@ -20,6 +20,6 @@ add_subdirectory( db )
 # only build playdarcollection if QJson was found
 if( QJSON_FOUND )
     add_subdirectory( playdarcollection )
-endif( QJSON_FOUND )
+endif()
 add_subdirectory( upnpcollection )
 add_subdirectory( nepomukcollection )

@@ -11,8 +11,8 @@ set(context_SRCS
 
 add_library(amarok_containment_vertical MODULE ${context_SRCS})
 if(APPLE)
-   SET_TARGET_PROPERTIES(amarok_containment_vertical PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+   set_target_properties(amarok_containment_vertical PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 target_link_libraries(amarok_containment_vertical amarokcore amaroklib KF5::Plasma KF5::KIOCore)
 
 install(TARGETS amarok_containment_vertical DESTINATION ${PLUGIN_INSTALL_DIR})

@@ -7,8 +7,8 @@ include_directories( ../..
 
 add_library(amarok_context_applet_songkick MODULE ${songkick_SRCS})
 if(APPLE)
-   SET_TARGET_PROPERTIES(amarok_context_applet_songkick PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+   set_target_properties(amarok_context_applet_songkick PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 target_link_libraries(amarok_context_applet_songkick amarokcore amaroklib KF5::Plasma KF5::KIOCore)
 
 install(TARGETS amarok_context_applet_songkick DESTINATION ${PLUGIN_INSTALL_DIR})

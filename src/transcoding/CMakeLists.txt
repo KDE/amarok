@@ -35,8 +35,8 @@ target_link_libraries(amarok-transcoding
 )
 
 if(APPLE)
-    SET_TARGET_PROPERTIES(amarok-transcoding PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    set_target_properties(amarok-transcoding PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 
 set_target_properties(amarok-transcoding PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amarok-transcoding ${INSTALL_TARGETS_DEFAULT_ARGS} )

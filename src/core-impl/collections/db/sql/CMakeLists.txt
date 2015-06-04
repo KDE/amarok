@@ -37,8 +37,8 @@ target_link_libraries(amarok-sqlcollection
 )
 
 if(APPLE)
-    SET_TARGET_PROPERTIES(amarok-sqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    set_target_properties(amarok-sqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 
 set_target_properties(amarok-sqlcollection PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amarok-sqlcollection ${INSTALL_TARGETS_DEFAULT_ARGS} )

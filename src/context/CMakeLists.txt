@@ -17,15 +17,15 @@ set(amarokpud_LIB_SRCS
     popupdropper/libpud/PopupDropperView.cpp
 )
 
-QT4_AUTOMOC(
+qt4_automoc(
     popupdropper/libpud/PopupDropper.cpp
     popupdropper/libpud/PopupDropperItem.cpp
     popupdropper/libpud/PopupDropperView.cpp
 )
 
-ADD_LIBRARY(amarokpud SHARED ${amarokpud_LIB_SRCS})
+add_library(amarokpud SHARED ${amarokpud_LIB_SRCS})
 
-SET_TARGET_PROPERTIES( amarokpud PROPERTIES DEFINE_SYMBOL MAKE_POPUPDROPPER_LIB )
+set_target_properties( amarokpud PROPERTIES DEFINE_SYMBOL MAKE_POPUPDROPPER_LIB )
 
 target_link_libraries(amarokpud
     Qt5::Core

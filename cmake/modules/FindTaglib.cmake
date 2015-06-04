@@ -12,13 +12,13 @@
 
 if(NOT TAGLIB_MIN_VERSION)
   set(TAGLIB_MIN_VERSION "1.6")
-endif(NOT TAGLIB_MIN_VERSION)
+endif()
 
 if(NOT WIN32)
     find_program(TAGLIBCONFIG_EXECUTABLE NAMES taglib-config PATHS
        ${BIN_INSTALL_DIR}
     )
-endif(NOT WIN32)
+endif()
 
 #reset vars
 set(TAGLIB_LIBRARIES)
@@ -32,7 +32,7 @@ if(TAGLIBCONFIG_EXECUTABLE)
   if(TAGLIB_VERSION STRLESS "${TAGLIB_MIN_VERSION}")
      message(STATUS "TagLib version too old: version searched :${TAGLIB_MIN_VERSION}, found ${TAGLIB_VERSION}")
      set(TAGLIB_FOUND FALSE)
-  else(TAGLIB_VERSION STRLESS "${TAGLIB_MIN_VERSION}")
+  else()
 
      exec_program(${TAGLIBCONFIG_EXECUTABLE} ARGS --libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE TAGLIB_LIBRARIES)
 
@@ -40,12 +40,12 @@ if(TAGLIBCONFIG_EXECUTABLE)
 
      if(TAGLIB_LIBRARIES AND TAGLIB_CFLAGS)
         set(TAGLIB_FOUND TRUE)
-     endif(TAGLIB_LIBRARIES AND TAGLIB_CFLAGS)
+     endif()
      string(REGEX REPLACE " *-I" ";" TAGLIB_INCLUDES "${TAGLIB_CFLAGS}")
-  endif(TAGLIB_VERSION STRLESS "${TAGLIB_MIN_VERSION}") 
+  endif() 
   mark_as_advanced(TAGLIB_CFLAGS TAGLIB_LIBRARIES TAGLIB_INCLUDES)
 
-else(TAGLIBCONFIG_EXECUTABLE)
+else()
 
   find_path(TAGLIB_INCLUDES
     NAMES
@@ -56,80 +56,80 @@ else(TAGLIBCONFIG_EXECUTABLE)
     ${INCLUDE_INSTALL_DIR}
   )
 
-    IF(NOT WIN32)
+    if(NOT WIN32)
       # on non-win32 we don't need to take care about WIN32_DEBUG_POSTFIX
 
-      FIND_LIBRARY(TAGLIB_LIBRARIES tag PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})
+      find_library(TAGLIB_LIBRARIES tag PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})
 
-    ELSE(NOT WIN32)
+    else()
 
       # 1. get all possible libnames
-      SET(args PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})             
-      SET(newargs "")               
-      SET(libnames_release "")      
-      SET(libnames_debug "")        
+      set(args PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})             
+      set(newargs "")               
+      set(libnames_release "")      
+      set(libnames_debug "")        
 
-      LIST(LENGTH args listCount)
+      list(LENGTH args listCount)
 
         # just one name
-        LIST(APPEND libnames_release "tag")
-        LIST(APPEND libnames_debug   "tagd")
+        list(APPEND libnames_release "tag")
+        list(APPEND libnames_debug   "tagd")
 
-        SET(newargs ${args})
+        set(newargs ${args})
 
       # search the release lib
-      FIND_LIBRARY(TAGLIB_LIBRARIES_RELEASE
+      find_library(TAGLIB_LIBRARIES_RELEASE
                    NAMES ${libnames_release}
                    ${newargs}
       )
 
       # search the debug lib
-      FIND_LIBRARY(TAGLIB_LIBRARIES_DEBUG
+      find_library(TAGLIB_LIBRARIES_DEBUG
                    NAMES ${libnames_debug}
                    ${newargs}
       )
 
-      IF(TAGLIB_LIBRARIES_RELEASE AND TAGLIB_LIBRARIES_DEBUG)
+      if(TAGLIB_LIBRARIES_RELEASE AND TAGLIB_LIBRARIES_DEBUG)
 
         # both libs found
-        SET(TAGLIB_LIBRARIES optimized ${TAGLIB_LIBRARIES_RELEASE}
+        set(TAGLIB_LIBRARIES optimized ${TAGLIB_LIBRARIES_RELEASE}
                         debug     ${TAGLIB_LIBRARIES_DEBUG})
 
-      ELSE(TAGLIB_LIBRARIES_RELEASE AND TAGLIB_LIBRARIES_DEBUG)
+      else()
 
-        IF(TAGLIB_LIBRARIES_RELEASE)
+        if(TAGLIB_LIBRARIES_RELEASE)
 
           # only release found
-          SET(TAGLIB_LIBRARIES ${TAGLIB_LIBRARIES_RELEASE})
+          set(TAGLIB_LIBRARIES ${TAGLIB_LIBRARIES_RELEASE})
 
-        ELSE(TAGLIB_LIBRARIES_RELEASE)
+        else()
 
           # only debug (or nothing) found
-          SET(TAGLIB_LIBRARIES ${TAGLIB_LIBRARIES_DEBUG})
+          set(TAGLIB_LIBRARIES ${TAGLIB_LIBRARIES_DEBUG})
 
-        ENDIF(TAGLIB_LIBRARIES_RELEASE)
+        endif()
 
-      ENDIF(TAGLIB_LIBRARIES_RELEASE AND TAGLIB_LIBRARIES_DEBUG)
+      endif()
 
-      MARK_AS_ADVANCED(TAGLIB_LIBRARIES_RELEASE)
-      MARK_AS_ADVANCED(TAGLIB_LIBRARIES_DEBUG)
+      mark_as_advanced(TAGLIB_LIBRARIES_RELEASE)
+      mark_as_advanced(TAGLIB_LIBRARIES_DEBUG)
 
-    ENDIF(NOT WIN32)
+    endif()
   
-  INCLUDE(FindPackageMessage)
-  INCLUDE(FindPackageHandleStandardArgs)
-  FIND_PACKAGE_HANDLE_STANDARD_ARGS(Taglib DEFAULT_MSG TAGLIB_INCLUDES TAGLIB_LIBRARIES)
+  include(FindPackageMessage)
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(Taglib DEFAULT_MSG TAGLIB_INCLUDES TAGLIB_LIBRARIES)
 
-endif(TAGLIBCONFIG_EXECUTABLE)
+endif()
 
 
 if(TAGLIB_FOUND)
   if(NOT Taglib_FIND_QUIETLY AND TAGLIBCONFIG_EXECUTABLE)
     message(STATUS "Taglib found: ${TAGLIB_LIBRARIES}")
-  endif(NOT Taglib_FIND_QUIETLY AND TAGLIBCONFIG_EXECUTABLE)
-else(TAGLIB_FOUND)
+  endif()
+else()
   if(Taglib_FIND_REQUIRED)
     message(FATAL_ERROR "Could not find Taglib")
-  endif(Taglib_FIND_REQUIRED)
-endif(TAGLIB_FOUND)
+  endif()
+endif()
 

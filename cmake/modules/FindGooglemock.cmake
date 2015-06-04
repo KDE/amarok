@@ -24,14 +24,14 @@ set(GOOGLEMOCK_LIBRARIES ${GOOGLEMOCK_LDFLAGS} ${GOOGLEMOCK_libs_tmp})
 if(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARIES)
    set(GOOGLEMOCK_FOUND TRUE)
    message(STATUS "Found libgmock: ${GOOGLEMOCK_INCLUDE_DIR}, ${GOOGLEMOCK_LIBRARIES}")
-else(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARIES)
+else()
    set(GOOGLEMOCK_FOUND FALSE)
    if (GOOGLEMOCK_FIND_REQUIRED)
       message(FATAL_ERROR "Could NOT find required package Googlemock")
-   endif(GOOGLEMOCK_FIND_REQUIRED)
-endif(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARIES)
+   endif()
+endif()
 
-else(GMOCK-CONFIG_EXECUTABLE)
+else()
 
 find_path(GOOGLEMOCK_INCLUDE_DIR NAMES gmock.h
    HINTS
@@ -80,7 +80,7 @@ if( NOT WIN32 AND GOOGLEMOCK_LIBRARY )
        ${KDE4_LIB_DIR}
     )
 
-endif( NOT WIN32 AND GOOGLEMOCK_LIBRARY )
+endif()
 
 # Google recommends not to distribute a pre-build libary and ubuntu is following
 # this advice with libgtest 1.6.0
@@ -130,9 +130,9 @@ if( NOT GOOGLEMOCK_DEP_GTEST_LIBRARY )
            ${KDE4_LIB_DIR}
         )
         set( CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_CMAKE_FIND_LIBRARY_SUFFIXES})
-    endif( GOOGLEMOCK_SOURCES )
+    endif()
 
-endif( NOT GOOGLEMOCK_DEP_GTEST_LIBRARY )
+endif()
 
 # -- googlemock and gtest library available
 if(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_LIBRARY)
@@ -159,13 +159,13 @@ elseif(GOOGLEMOCK_SOURCES)
    mark_as_advanced(GOOGLEMOCK_SRCS)
 
 # -- googlemock but no gtest
-else(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_SOURCES)
+else()
    set(GOOGLEMOCK_FOUND FALSE)
    if (GOOGLEMOCK_FIND_REQUIRED)
       message(FATAL_ERROR "Could NOT find required package Googlemock or gtest")
-   endif(GOOGLEMOCK_FIND_REQUIRED)
-endif(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_LIBRARY)
+   endif()
+endif()
 
-endif(GMOCK-CONFIG_EXECUTABLE)
+endif()
 
 mark_as_advanced(GOOGLEMOCK_INCLUDE_DIR GOOGLEMOCK_LIBRARIES)

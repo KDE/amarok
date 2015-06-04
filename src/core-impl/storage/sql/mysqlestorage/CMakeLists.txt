@@ -10,11 +10,11 @@ set( amarok_storage-mysqlestorage_PART_SRCS
 
 add_library(amarok_storage-mysqlestorage MODULE ${amarok_storage-mysqlestorage_PART_SRCS})
 
-STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN "${CMAKE_SHARED_LINKER_FLAGS}")
-SET(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
+string(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN "${CMAKE_SHARED_LINKER_FLAGS}")
+set(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
 
-STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN "${CMAKE_MODULE_LINKER_FLAGS}")
-SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
+string(REPLACE "-Wl,--fatal-warnings" "" CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN "${CMAKE_MODULE_LINKER_FLAGS}")
+set(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
 
 target_link_libraries(amarok_storage-mysqlestorage
     # amarok-sqlstorage
@@ -30,11 +30,11 @@ target_link_libraries(amarok_storage-mysqlestorage
 
 if(NOT WIN32 AND NOT APPLE)
     target_link_libraries( amarok_storage-mysqlestorage crypt pthread )
-endif(NOT WIN32 AND NOT APPLE)
+endif()
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_storage-mysqlestorage PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+endif()
 
 install(TARGETS amarok_storage-mysqlestorage DESTINATION ${PLUGIN_INSTALL_DIR} )
 

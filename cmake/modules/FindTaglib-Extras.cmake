@@ -12,13 +12,13 @@
 
 if(NOT TAGLIB-EXTRAS_MIN_VERSION)
   set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
-endif(NOT TAGLIB-EXTRAS_MIN_VERSION)
+endif()
 
 if(NOT WIN32)
     find_program(TAGLIB-EXTRASCONFIG_EXECUTABLE NAMES taglib-extras-config PATHS
        ${BIN_INSTALL_DIR}
     )
-endif(NOT WIN32)
+endif()
 
 #reset vars
 set(TAGLIB-EXTRAS_LIBRARIES)
@@ -32,7 +32,7 @@ if(TAGLIB-EXTRASCONFIG_EXECUTABLE)
   if(TAGLIB-EXTRAS_VERSION STRLESS "${TAGLIB-EXTRAS_MIN_VERSION}")
      message(STATUS "TagLib-Extras version too old: version searched :${TAGLIB-EXTRAS_MIN_VERSION}, found ${TAGLIB-EXTRAS_VERSION}")
      set(TAGLIB-EXTRAS_FOUND FALSE)
-  else(TAGLIB-EXTRAS_VERSION STRLESS "${TAGLIB-EXTRAS_MIN_VERSION}")
+  else()
 
      exec_program(${TAGLIB-EXTRASCONFIG_EXECUTABLE} ARGS --libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE TAGLIB-EXTRAS_LIBRARIES)
 
@@ -40,12 +40,12 @@ if(TAGLIB-EXTRASCONFIG_EXECUTABLE)
 
      if(TAGLIB-EXTRAS_LIBRARIES AND TAGLIB-EXTRAS_CFLAGS)
         set(TAGLIB-EXTRAS_FOUND TRUE)
-     endif(TAGLIB-EXTRAS_LIBRARIES AND TAGLIB-EXTRAS_CFLAGS)
+     endif()
      string(REGEX REPLACE " *-I" ";" TAGLIB-EXTRAS_INCLUDES "${TAGLIB-EXTRAS_CFLAGS}")
-  endif(TAGLIB-EXTRAS_VERSION STRLESS "${TAGLIB-EXTRAS_MIN_VERSION}") 
+  endif() 
   mark_as_advanced(TAGLIB-EXTRAS_CFLAGS TAGLIB-EXTRAS_LIBRARIES TAGLIB-EXTRAS_INCLUDES)
 
-else(TAGLIB-EXTRASCONFIG_EXECUTABLE)
+else()
 
   find_path(TAGLIB-EXTRAS_INCLUDES
     NAMES
@@ -56,80 +56,80 @@ else(TAGLIB-EXTRASCONFIG_EXECUTABLE)
     ${INCLUDE_INSTALL_DIR}
   )
 
-    IF(NOT WIN32)
+    if(NOT WIN32)
       # on non-win32 we don't need to take care about WIN32_DEBUG_POSTFIX
 
-      FIND_LIBRARY(TAGLIB-EXTRAS_LIBRARIES tag-extras PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})
+      find_library(TAGLIB-EXTRAS_LIBRARIES tag-extras PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})
 
-    ELSE(NOT WIN32)
+    else()
 
       # 1. get all possible libnames
-      SET(args PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})             
-      SET(newargs "")               
-      SET(libnames_release "")      
-      SET(libnames_debug "")        
+      set(args PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})             
+      set(newargs "")               
+      set(libnames_release "")      
+      set(libnames_debug "")        
 
-      LIST(LENGTH args listCount)
+      list(LENGTH args listCount)
 
         # just one name
-        LIST(APPEND libnames_release "tag-extras")
-        LIST(APPEND libnames_debug   "tag-extrasd")
+        list(APPEND libnames_release "tag-extras")
+        list(APPEND libnames_debug   "tag-extrasd")
 
-        SET(newargs ${args})
+        set(newargs ${args})
 
       # search the release lib
-      FIND_LIBRARY(TAGLIB-EXTRAS_LIBRARIES_RELEASE
+      find_library(TAGLIB-EXTRAS_LIBRARIES_RELEASE
                    NAMES ${libnames_release}
                    ${newargs}
       )
 
       # search the debug lib
-      FIND_LIBRARY(TAGLIB-EXTRAS_LIBRARIES_DEBUG
+      find_library(TAGLIB-EXTRAS_LIBRARIES_DEBUG
                    NAMES ${libnames_debug}
                    ${newargs}
       )
 
-      IF(TAGLIB-EXTRAS_LIBRARIES_RELEASE AND TAGLIB-EXTRAS_LIBRARIES_DEBUG)
+      if(TAGLIB-EXTRAS_LIBRARIES_RELEASE AND TAGLIB-EXTRAS_LIBRARIES_DEBUG)
 
         # both libs found
-        SET(TAGLIB-EXTRAS_LIBRARIES optimized ${TAGLIB-EXTRAS_LIBRARIES_RELEASE}
+        set(TAGLIB-EXTRAS_LIBRARIES optimized ${TAGLIB-EXTRAS_LIBRARIES_RELEASE}
                         debug     ${TAGLIB-EXTRAS_LIBRARIES_DEBUG})
 
-      ELSE(TAGLIB-EXTRAS_LIBRARIES_RELEASE AND TAGLIB-EXTRAS_LIBRARIES_DEBUG)
+      else()
 
-        IF(TAGLIB-EXTRAS_LIBRARIES_RELEASE)
+        if(TAGLIB-EXTRAS_LIBRARIES_RELEASE)
 
           # only release found
-          SET(TAGLIB-EXTRAS_LIBRARIES ${TAGLIB-EXTRAS_LIBRARIES_RELEASE})
+          set(TAGLIB-EXTRAS_LIBRARIES ${TAGLIB-EXTRAS_LIBRARIES_RELEASE})
 
-        ELSE(TAGLIB-EXTRAS_LIBRARIES_RELEASE)
+        else()
 
           # only debug (or nothing) found
-          SET(TAGLIB-EXTRAS_LIBRARIES ${TAGLIB-EXTRAS_LIBRARIES_DEBUG})
+          set(TAGLIB-EXTRAS_LIBRARIES ${TAGLIB-EXTRAS_LIBRARIES_DEBUG})
 
-        ENDIF(TAGLIB-EXTRAS_LIBRARIES_RELEASE)
+        endif()
 
-      ENDIF(TAGLIB-EXTRAS_LIBRARIES_RELEASE AND TAGLIB-EXTRAS_LIBRARIES_DEBUG)
+      endif()
 
-      MARK_AS_ADVANCED(TAGLIB-EXTRAS_LIBRARIES_RELEASE)
-      MARK_AS_ADVANCED(TAGLIB-EXTRAS_LIBRARIES_DEBUG)
+      mark_as_advanced(TAGLIB-EXTRAS_LIBRARIES_RELEASE)
+      mark_as_advanced(TAGLIB-EXTRAS_LIBRARIES_DEBUG)
 
-    ENDIF(NOT WIN32)
+    endif()
   
-  INCLUDE(FindPackageMessage)
-  INCLUDE(FindPackageHandleStandardArgs)
-  FIND_PACKAGE_HANDLE_STANDARD_ARGS(Taglib-Extras DEFAULT_MSG TAGLIB-EXTRAS_INCLUDES TAGLIB-EXTRAS_LIBRARIES)
+  include(FindPackageMessage)
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(Taglib-Extras DEFAULT_MSG TAGLIB-EXTRAS_INCLUDES TAGLIB-EXTRAS_LIBRARIES)
 
-endif(TAGLIB-EXTRASCONFIG_EXECUTABLE)
+endif()
 
 
 if(TAGLIB-EXTRAS_FOUND)
   if(NOT Taglib-Extras_FIND_QUIETLY AND TAGLIB-EXTRASCONFIG_EXECUTABLE)
     message(STATUS "Taglib-Extras found: ${TAGLIB-EXTRAS_LIBRARIES}")
-  endif(NOT Taglib-Extras_FIND_QUIETLY AND TAGLIB-EXTRASCONFIG_EXECUTABLE)
-else(TAGLIB-EXTRAS_FOUND)
+  endif()
+else()
   if(Taglib-Extras_FIND_REQUIRED)
     message(FATAL_ERROR "Could not find Taglib-Extras")
-  endif(Taglib-Extras_FIND_REQUIRED)
-endif(TAGLIB-EXTRAS_FOUND)
+  endif()
+endif()
 

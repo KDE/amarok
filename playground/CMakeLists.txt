@@ -15,5 +15,5 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${AMAROK_SOURCE_DIR} ${CMAKE_CU
 
 add_subdirectory( src )
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")

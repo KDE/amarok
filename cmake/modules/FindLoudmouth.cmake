@@ -10,37 +10,37 @@
 if (LOUDMOUTH_INCLUDE_DIRS AND LOUDMOUTH_LIBRARIES)
 
   # in cache already
-  SET(LOUDMOUTH_FOUND TRUE)
+  set(LOUDMOUTH_FOUND TRUE)
 
-else (LOUDMOUTH_INCLUDE_DIRS AND LOUDMOUTH_LIBRARIES)
+else ()
   if(NOT WIN32)
     # use pkg-config to get the directories and then use these values
     # in the FIND_PATH() and FIND_LIBRARY() calls
     find_package(PkgConfig)
-    PKG_SEARCH_MODULE(LOUDMOUTH loudmouth-1.0)
+    pkg_search_module(LOUDMOUTH loudmouth-1.0)
   
-  else(NOT WIN32)
+  else()
 
-    FIND_PATH(LOUDMOUTH_INCLUDE_DIRS loudmouth/loudmouth.h /usr/include/loudmouth-1.0
+    find_path(LOUDMOUTH_INCLUDE_DIRS loudmouth/loudmouth.h /usr/include/loudmouth-1.0
       ${_LOUDMOUTHIncDir}
     )
   
-    FIND_LIBRARY(LOUDMOUTH_LIBRARIES NAMES loudmouth-1
+    find_library(LOUDMOUTH_LIBRARIES NAMES loudmouth-1
       PATHS
       ${_LOUDMOUTHLinkDir}
     )
 
-  endif(NOT WIN32)
+  endif()
 
   if (LOUDMOUTH_INCLUDE_DIRS AND LOUDMOUTH_LIBRARIES)
-    SET(LOUDMOUTH_FOUND TRUE)
-  else (LOUDMOUTH_INCLUDE_DIRS AND LOUDMOUTH_LIBRARIES)
-    SET(LOUDMOUTH_FOUND_FALSE)
-  endif (LOUDMOUTH_INCLUDE_DIRS AND LOUDMOUTH_LIBRARIES)
+    set(LOUDMOUTH_FOUND TRUE)
+  else ()
+    set(LOUDMOUTH_FOUND_FALSE)
+  endif ()
 
   include(FindPackageHandleStandardArgs)
-  FIND_PACKAGE_HANDLE_STANDARD_ARGS(Loudmouth DEFAULT_MSG LOUDMOUTH_INCLUDE_DIRS LOUDMOUTH_LIBRARIES )
+  find_package_handle_standard_args(Loudmouth DEFAULT_MSG LOUDMOUTH_INCLUDE_DIRS LOUDMOUTH_LIBRARIES )
  
-  MARK_AS_ADVANCED(LOUDMOUTH_INCLUDE_DIRS LOUDMOUTH_LIBRARIES)
+  mark_as_advanced(LOUDMOUTH_INCLUDE_DIRS LOUDMOUTH_LIBRARIES)
   
-endif (LOUDMOUTH_INCLUDE_DIRS AND LOUDMOUTH_LIBRARIES)
+endif ()

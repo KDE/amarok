@@ -31,8 +31,8 @@ target_link_libraries(amarok_collection-daapcollection
 )
 
 if(APPLE)
-    SET_TARGET_PROPERTIES(amarok_collection-daapcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    set_target_properties(amarok_collection-daapcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 
 install(TARGETS amarok_collection-daapcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 

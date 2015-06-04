@@ -1,7 +1,7 @@
 set(CMAKE_REQUIRED_INCLUDES ${QT_INCLUDES})
 set(CMAKE_REQUIRED_DEFINITIONS "")
 set(CMAKE_REQUIRED_FLAGS "")
-CHECK_CXX_SOURCE_COMPILES("
+check_cxx_source_compiles("
 #include <QtCore/QtGlobal>
 int main()
 {

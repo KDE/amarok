@@ -8,11 +8,11 @@ set( amarok_collection-mysqlcollection_PART_SRCS
 
 add_library(amarok_collection-mysqlcollection MODULE ${amarok_collection-mysqlcollection_PART_SRCS})
 
-STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN "${CMAKE_SHARED_LINKER_FLAGS}")
-SET(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
+string(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN "${CMAKE_SHARED_LINKER_FLAGS}")
+set(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
 
-STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN "${CMAKE_MODULE_LINKER_FLAGS}")
-SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
+string(REPLACE "-Wl,--fatal-warnings" "" CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN "${CMAKE_MODULE_LINKER_FLAGS}")
+set(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
 
 target_link_libraries(amarok_collection-mysqlcollection
     amarok-sqlcollection
@@ -28,11 +28,11 @@ target_link_libraries(amarok_collection-mysqlcollection
 
 if(NOT WIN32 AND NOT APPLE)
     target_link_libraries( amarok_collection-mysqlcollection crypt pthread )
-endif(NOT WIN32 AND NOT APPLE)
+endif()
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_collection-mysqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+endif()
 
 install(TARGETS amarok_collection-mysqlcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 

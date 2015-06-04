@@ -53,4 +53,4 @@ install(TARGETS amarok_collection-mtpcollection DESTINATION ${PLUGIN_INSTALL_DIR
 
 install( FILES amarok_collection-mtpcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-endif (MTP_FOUND)
+endif ()

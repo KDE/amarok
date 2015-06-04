@@ -26,8 +26,8 @@ add_dependencies( testcollectionlocation amarokcore)
 add_dependencies( testcollectionlocation amaroklib)
 
 if(APPLE)
-    SET_TARGET_PROPERTIES(testcollectionlocation PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    set_target_properties(testcollectionlocation PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 
 target_link_libraries(testcollectionlocation
                         amarokcore

@@ -23,8 +23,8 @@ add_test(testmemoryquerymaker testmemoryquerymaker)
 ecm_mark_as_test(testmemoryquerymaker)
 
 if(APPLE)
-    SET_TARGET_PROPERTIES(testmemoryquerymaker PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    set_target_properties(testmemoryquerymaker PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 add_dependencies( testmemoryquerymaker amarokcore )
 add_dependencies( testmemoryquerymaker amaroklib )
 target_link_libraries(testmemoryquerymaker
@@ -50,8 +50,8 @@ add_test(testartisthelper testartisthelper)
 ecm_mark_as_test(testartisthelper)
 
     if(APPLE)
-        SET_TARGET_PROPERTIES(testartisthelper PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-    endif(APPLE)
+        set_target_properties(testartisthelper PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    endif()
 
 target_link_libraries( testartisthelper
                         Qt5::Test

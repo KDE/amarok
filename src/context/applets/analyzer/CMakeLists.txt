@@ -17,8 +17,8 @@ include_directories(${OPENGL_INCLUDE_DIR})
 add_library(amarok_context_applet_analyzer MODULE ${analyzer_SRCS})
 
 if(APPLE)
-    SET_TARGET_PROPERTIES(amarok_context_applet_analyzer PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    set_target_properties(amarok_context_applet_analyzer PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 
 
 target_link_libraries(amarok_context_applet_analyzer
