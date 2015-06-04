@@ -17,7 +17,7 @@
 #ifndef TESTSQLCOLLECTIONLOCATION_H
 #define TESTSQLCOLLECTIONLOCATION_H
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 #include <KTempDir>
 

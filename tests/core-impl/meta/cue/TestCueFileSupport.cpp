@@ -21,7 +21,7 @@
 
 #include <QtDebug>
 
-#include <QtTest/QTest>
+#include <QTest>
 
 #include <qtest_kde.h>
 

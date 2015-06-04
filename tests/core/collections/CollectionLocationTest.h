@@ -17,7 +17,7 @@
 #ifndef COLLECTIONLOCATIONTEST_H
 #define COLLECTIONLOCATIONTEST_H
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 class CollectionLocationTest : public QObject
 {

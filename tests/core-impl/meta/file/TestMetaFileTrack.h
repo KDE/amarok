@@ -22,8 +22,8 @@
 
 #include "core-impl/meta/file/File.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 class KTempDir;
 

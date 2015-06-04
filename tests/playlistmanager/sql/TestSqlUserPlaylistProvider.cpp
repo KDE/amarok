@@ -26,8 +26,8 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 
-#include <QtTest/QTest>
-#include <QtCore/QDir>
+#include <QTest>
+#include <QDir>
 
 #include <qtest_kde.h>
 

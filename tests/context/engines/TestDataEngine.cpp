@@ -15,7 +15,7 @@
 ****************************************************************************************/
 
 #include "TestDataEngine.h"
-#include <QtTest/QtTest>
+#include <QtTest>
 
 
 TestDataEngine::TestDataEngine( QObject* parent ):QObject(parent)

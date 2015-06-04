@@ -26,11 +26,11 @@
 #ifndef DBUSABSTRACTADAPTOR_H
 #define DBUSABSTRACTADAPTOR_H
 
-#include <QtDBus/QDBusAbstractAdaptor>
-#include <QtDBus/QDBusConnection>
+#include <QDBusAbstractAdaptor>
+#include <QDBusConnection>
 
-#include <QtCore/QStringList>
-#include <QtCore/QVariantMap>
+#include <QStringList>
+#include <QVariantMap>
 
 class PropertiesChangedAdaptor : public QDBusAbstractAdaptor
 {

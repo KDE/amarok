@@ -20,9 +20,9 @@
 
 #include "ServiceBase.h"
 
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtTest/QTest>
+#include <QDir>
+#include <QFile>
+#include <QTest>
 
 #include <qtest_kde.h>
 

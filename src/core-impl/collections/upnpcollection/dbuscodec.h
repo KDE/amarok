@@ -26,8 +26,8 @@
 // lib
 #include "deviceinfo.h"
 // Qt
-#include <QtCore/QMetaType>
-// #include <QtCore/QVector>
+#include <QMetaType>
+// #include <QVector>
 
 class QDBusArgument;
 QDBusArgument& operator<<( QDBusArgument &argument,

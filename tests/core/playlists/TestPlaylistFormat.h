@@ -16,7 +16,7 @@
 #ifndef TESTPLAYLISTFORMAT_H
 #define TESTPLAYLISTFORMAT_H
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 class TestPlaylistFormat : public QObject
 {

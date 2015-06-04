@@ -23,8 +23,8 @@
 #include "dbuscodec.h"
 
 // Qt
-#include <QtDBus/QDBusArgument>
-#include <QtCore/QUrl>
+#include <QDBusArgument>
+#include <QUrl>
 
 QDBusArgument& operator<<( QDBusArgument& argument, const DeviceInfo0_1_0& device )
 {

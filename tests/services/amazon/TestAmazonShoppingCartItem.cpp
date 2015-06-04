@@ -18,7 +18,7 @@
 
 #include "services/amazon/AmazonShoppingCartItem.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
 #include <qtest_kde.h>
 

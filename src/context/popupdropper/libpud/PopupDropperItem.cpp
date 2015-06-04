@@ -21,11 +21,11 @@
 #include "PopupDropperItem_p.h"
 #include "PopupDropper.h"
 
-#include <QtCore/QtDebug>
-#include <QtSvg/QSvgRenderer>
-#include <QtSvg/QGraphicsSvgItem>
+#include <QtDebug>
+#include <QSvgRenderer>
+#include <QGraphicsSvgItem>
 #include <QAction>
-#include <QtGui/QFont>
+#include <QFont>
 
 ///////////////////////////////////////////////////////////
 

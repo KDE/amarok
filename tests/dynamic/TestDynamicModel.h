@@ -18,7 +18,7 @@
 #define TESTDYNAMICMODEL_H
 
 #include <QModelIndex>
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestDynamicModel : public QObject
 {

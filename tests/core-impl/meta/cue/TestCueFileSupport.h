@@ -17,8 +17,8 @@
 #ifndef TESTCUEFILESUPPORT_H
 #define TESTCUEFILESUPPORT_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 class TestCueFileSupport : public QObject
 {

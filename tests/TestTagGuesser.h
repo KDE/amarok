@@ -20,7 +20,7 @@
 #ifndef TESTTAGGUESSER_H
 #define TESTTAGGUESSER_H
 
-#include <QtCore/QObject>
+#include <QObject>
 
 class TagGuesser;
 

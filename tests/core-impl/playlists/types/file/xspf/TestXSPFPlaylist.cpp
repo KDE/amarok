@@ -30,9 +30,9 @@
 #include <ThreadWeaver/Weaver>
 
 #include <QDebug>
-#include <QtTest/QTest>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
+#include <QTest>
+#include <QDir>
+#include <QFile>
 
 QTEST_KDEMAIN_CORE( TestXSPFPlaylist )
 

@@ -24,9 +24,9 @@
 
 #include "atticaclient_export.h"
 
-#include <QtCore/QDate>
-#include <QtCore/QList>
-#include <QtCore/QMap>
+#include <QDate>
+#include <QList>
+#include <QMap>
 
 
 namespace AmarokAttica {

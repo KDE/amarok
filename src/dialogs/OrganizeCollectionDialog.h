@@ -27,7 +27,7 @@
 #include <KDialog>
 #include <KVBox>
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
 namespace Ui
 {

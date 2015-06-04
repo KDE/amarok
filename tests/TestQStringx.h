@@ -22,7 +22,7 @@
 
 #include "QStringx.h"
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
 class TestQStringx : public QObject
 {

@@ -25,9 +25,9 @@
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "EngineController.h"
 
-#include <QtTest/QTest>
-#include <QtCore/QFile>
-#include <QtCore/QDir>
+#include <QTest>
+#include <QFile>
+#include <QDir>
 
 #include <KStandardDirs>
 #include <qtest_kde.h>

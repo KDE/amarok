@@ -17,7 +17,7 @@
 #ifndef signer_H
 #define signer_H
 
-#include <QtCore/QObject>
+#include <QObject>
 #include <QtCrypto>
 
 class signer : public QObject

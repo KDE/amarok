@@ -22,7 +22,7 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/Expression.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
 #include <qtest_kde.h>
 

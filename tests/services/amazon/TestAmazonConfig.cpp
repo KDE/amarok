@@ -18,7 +18,7 @@
 
 #include "services/amazon/AmazonConfig.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
 #include <qtest_kde.h>
 

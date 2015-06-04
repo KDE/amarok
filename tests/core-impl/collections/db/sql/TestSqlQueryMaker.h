@@ -17,7 +17,7 @@
 #ifndef TESTSQLQUERYMAKER_H
 #define TESTSQLQUERYMAKER_H
 
-#include <QtTest/QTest>
+#include <QTest>
 #include <core/collections/QueryMaker.h>
 
 #include <KTempDir>

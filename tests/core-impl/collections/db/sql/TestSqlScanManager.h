@@ -18,7 +18,7 @@
 #ifndef TESTSQLSCANMANAGER_H
 #define TESTSQLSCANMANAGER_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 #include "core/meta/support/MetaConstants.h"
 

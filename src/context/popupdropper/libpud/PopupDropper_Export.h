@@ -20,7 +20,7 @@
 #ifndef POPUPDROPPER_EXPORT_H
 #define POPUPDROPPER_EXPORT_H
 
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 
 #ifdef Q_WS_WIN
 # if defined(MAKE_POPUPDROPPER_LIB)

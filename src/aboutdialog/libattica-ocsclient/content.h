@@ -21,9 +21,9 @@
 #ifndef ATTICA_CONTENT_H
 #define ATTICA_CONTENT_H
 
-#include <QtCore/QList>
-#include <QtCore/QMap>
-#include <QtCore/QSharedDataPointer>
+#include <QList>
+#include <QMap>
+#include <QSharedDataPointer>
 
 #include "atticaclient_export.h"
 

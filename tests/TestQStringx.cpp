@@ -21,9 +21,9 @@
 
 #include "core/support/Debug.h"
 
-#include <QtTest/QTest>
-#include <QtCore/QString>
-#include <QtCore/QMap>
+#include <QTest>
+#include <QString>
+#include <QMap>
 
 #include <qtest_kde.h>
 

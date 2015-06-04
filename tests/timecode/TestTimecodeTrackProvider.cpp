@@ -25,7 +25,7 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest/QTest>
+#include <QTest>
 
 QTEST_KDEMAIN_CORE( TestTimecodeTrackProvider )
 

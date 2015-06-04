@@ -21,7 +21,7 @@
 
 #include <QAction>
 #include <QList>
-#include <QtTest/QtTest>
+#include <QtTest>
 
 #include <KTempDir>
 

@@ -17,10 +17,10 @@
 #include "kdatecombo.h"
 
 
-#include <QtCore/QTimer>
+#include <QTimer>
 //Added by qt3to4:
-#include <QtGui/QKeyEvent>
-#include <QtCore/QEvent>
+#include <QKeyEvent>
+#include <QEvent>
 
 #include <kglobal.h>
 #include <klocale.h>

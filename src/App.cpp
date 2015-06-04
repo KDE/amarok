@@ -82,7 +82,7 @@
 #include <QStringList>
 #include <QTextDocument>                // for Qt::escape()
 #include <QTimer>                       //showHyperThreadingWarning()
-#include <QtDBus/QtDBus>
+#include <QtDBus>
 
 #ifdef Q_WS_MAC
 #include <CoreFoundation/CoreFoundation.h>

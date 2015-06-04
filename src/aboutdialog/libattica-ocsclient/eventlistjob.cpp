@@ -21,7 +21,7 @@
 
 #include "eventlistjob.h"
 
-#include <QtCore/QTimer>
+#include <QTimer>
 
 #include <KIO/Job>
 

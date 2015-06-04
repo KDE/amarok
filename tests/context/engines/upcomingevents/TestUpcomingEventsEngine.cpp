@@ -22,7 +22,7 @@
 #include "EngineController.h"
 #include "UpcomingEventsEngine.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 #include <qtest_kde.h>
 
 QTEST_KDEMAIN_CORE( TestUpcomingEventsEngine )

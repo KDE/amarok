@@ -25,9 +25,9 @@
 
 #include "DBusAbstractAdaptor.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QMetaClassInfo>
-#include <QtDBus/QDBusMessage>
+#include <QDebug>
+#include <QMetaClassInfo>
+#include <QDBusMessage>
 
 #include "core/support/Debug.h"
 

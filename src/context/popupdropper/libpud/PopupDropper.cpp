@@ -24,7 +24,7 @@
 #include <QtDebug>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
-#include <QtSvg/QSvgRenderer>
+#include <QSvgRenderer>
 #include <QAction>
 #include <QMenu>
 #include <QPalette>

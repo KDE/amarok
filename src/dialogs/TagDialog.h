@@ -38,7 +38,7 @@
 #include <QMap>
 #include <QSet>
 #include <QVariant>
-#include <QtGui/QWidget>
+#include <QWidget>
 
 namespace Ui
 {

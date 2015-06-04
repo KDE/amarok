@@ -17,7 +17,7 @@
 #ifndef TESTONEWAYSYNCHRONIZATIONJOB_H
 #define TESTONEWAYSYNCHRONIZATIONJOB_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestOneWaySynchronizationJob : public QObject
 {

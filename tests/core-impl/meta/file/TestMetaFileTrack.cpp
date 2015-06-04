@@ -24,11 +24,11 @@
 
 #include <KTempDir>
 
-#include <QtTest/QTest>
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-#include <QtCore/QDateTime>
-#include <QtCore/QFileInfo>
+#include <QTest>
+#include <QFile>
+#include <QDir>
+#include <QDateTime>
+#include <QFileInfo>
 
 #include <qtest_kde.h>
 

@@ -20,11 +20,11 @@
 #ifndef POPUPDROPPER_ITEM_P_H
 #define POPUPDROPPER_ITEM_P_H
 
-#include <QtCore/QtDebug>
-#include <QtGui/QColor>
-#include <QtGui/QFont>
-#include <QtGui/QPen>
-#include <QtCore/QTimeLine>
+#include <QtDebug>
+#include <QColor>
+#include <QFont>
+#include <QPen>
+#include <QTimeLine>
 
 #include "PopupDropperItem.h"
 

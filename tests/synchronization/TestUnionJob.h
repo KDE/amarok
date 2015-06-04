@@ -17,7 +17,7 @@
 #ifndef TESTUNIONJOB_H
 #define TESTUNIONJOB_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestUnionJob : public QObject
 {

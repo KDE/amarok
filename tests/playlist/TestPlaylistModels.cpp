@@ -31,7 +31,7 @@
 #include <KStandardDirs>
 
 #include <QtDebug>
-#include <QtTest/QTest>
+#include <QTest>
 #include <qtest_kde.h>
 
 using namespace Playlist;

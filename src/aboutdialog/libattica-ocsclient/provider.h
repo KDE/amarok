@@ -22,8 +22,8 @@
 #ifndef ATTICA_PROVIDER_H
 #define ATTICA_PROVIDER_H
 
-#include <QtCore/QExplicitlySharedDataPointer>
-#include <QtCore/QString>
+#include <QExplicitlySharedDataPointer>
+#include <QString>
 
 #include "atticaclient_export.h"
 #include "category.h"

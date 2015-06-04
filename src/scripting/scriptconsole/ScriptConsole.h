@@ -20,7 +20,7 @@
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QScriptEngineAgent>
-#include <QtScriptTools/QScriptEngineDebugger>
+#include <QScriptEngineDebugger>
 #include <QWeakPointer>
 
 namespace KTextEditor{

@@ -22,8 +22,8 @@
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/playlists/PlaylistFormat.h"
 
-#include <QtTest/QTest>
-#include <QtCore/QDir>
+#include <QTest>
+#include <QDir>
 
 #include <qtest_kde.h>
 

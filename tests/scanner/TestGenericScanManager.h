@@ -23,7 +23,7 @@
 
 #include <KTempDir>
 
-#include <QtTest/QTest>
+#include <QTest>
 
 /** Test the GenericScanManager and the scanner job
  */

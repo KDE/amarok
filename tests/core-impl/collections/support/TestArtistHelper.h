@@ -17,7 +17,7 @@
 #ifndef TESTARTISTHELPER_H
 #define TESTARTISTHELPER_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestArtistHelper : public QObject
 {

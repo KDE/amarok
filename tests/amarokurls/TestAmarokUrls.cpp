@@ -24,7 +24,7 @@
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
 #include <qtest_kde.h>
 

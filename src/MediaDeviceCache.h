@@ -23,7 +23,7 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
-#include <QtCore/QTimer>
+#include <QTimer>
 
 namespace Solid {
     class Device;

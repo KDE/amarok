@@ -20,8 +20,8 @@
 #ifndef TESTASXPLAYLIST_H
 #define TESTASXPLAYLIST_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 namespace Playlists { class ASXPlaylist; }
 

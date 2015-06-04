@@ -17,7 +17,7 @@
 #ifndef TESTSINGLECOLLECTIONTREEITEMMODEL_H
 #define TESTSINGLECOLLECTIONTREEITEMMODEL_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestSingleCollectionTreeItemModel : public QObject
 {

@@ -17,7 +17,7 @@
 #ifndef DATABASEUPDATERTEST_H
 #define DATABASEUPDATERTEST_H
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 #include <KTempDir>
 

@@ -20,7 +20,7 @@
 #ifndef TESTCASECONVERTER_H
 #define TESTCASECONVERTER_H
 
-#include <QtCore/QObject>
+#include <QObject>
 
 class TestCaseConverter : public QObject
 {

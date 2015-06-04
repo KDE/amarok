@@ -22,8 +22,8 @@
 #include "core/support/Debug.h"
 #include "config-amarok-test.h"
 
-#include <QtCore/QStack>
-#include <QtTest/QTest>
+#include <QStack>
+#include <QTest>
 
 class TestDebug : public QObject
 {

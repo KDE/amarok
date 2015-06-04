@@ -25,7 +25,7 @@
 #include "core/meta/Statistics.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
 #include <qtest_kde.h>
 

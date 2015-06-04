@@ -21,7 +21,7 @@
 
 #include "CaseConverter.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
 #include <qtest_kde.h>
 

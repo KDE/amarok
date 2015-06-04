@@ -21,9 +21,9 @@
 #include "core/support/Amarok.h"
 #include "config-amarok-test.h"
 
-#include <QtTest/QTest>
-#include <QtCore/QDir>
-#include <QtCore/QDateTime>
+#include <QTest>
+#include <QDir>
+#include <QDateTime>
 
 #include <qtest_kde.h>
 

@@ -20,8 +20,8 @@
 #ifndef TESTM3UPLAYLIST_H
 #define TESTM3UPLAYLIST_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 namespace Playlists { class M3UPlaylist; }
 

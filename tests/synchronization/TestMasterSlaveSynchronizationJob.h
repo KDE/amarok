@@ -17,7 +17,7 @@
 #ifndef TESTMASTERSLAVESYNCHRONIZATIONJOB_H
 #define TESTMASTERSLAVESYNCHRONIZATIONJOB_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestMasterSlaveSynchronizationJob : public QObject
 {

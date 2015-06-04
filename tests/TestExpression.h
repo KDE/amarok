@@ -20,7 +20,7 @@
 #ifndef TESTEXPRESSION_H
 #define TESTEXPRESSION_H
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
 class TestExpression : public QObject
 {

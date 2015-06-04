@@ -17,7 +17,7 @@
 #ifndef TESTSQLALBUM_H
 #define TESTSQLALBUM_H
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 #include <KTempDir>
 

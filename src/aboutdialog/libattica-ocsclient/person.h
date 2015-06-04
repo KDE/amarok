@@ -21,9 +21,9 @@
 #ifndef ATTICA_PERSON_H
 #define ATTICA_PERSON_H
 
-#include <QtCore/QDate>
-#include <QtCore/QList>
-#include <QtGui/QPixmap>
+#include <QDate>
+#include <QList>
+#include <QPixmap>
 
 #include <QUrl>
 #include <QMap>

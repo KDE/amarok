@@ -21,7 +21,7 @@
 
 #include "category.h"
 
-#include <QtCore/QString>
+#include <QString>
 
 
 using namespace AmarokAttica;

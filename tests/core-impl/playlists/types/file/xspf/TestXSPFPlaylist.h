@@ -20,8 +20,8 @@
 #ifndef TESTXSPFPLAYLIST_H
 #define TESTXSPFPLAYLIST_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 namespace Playlists {
     class XSPFPlaylist;

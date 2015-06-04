@@ -22,8 +22,8 @@
 
 #include "core/meta/forward_declarations.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 #include <KTempDir>
 
 class TestMetaTrack : public QObject

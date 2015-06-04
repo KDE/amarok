@@ -22,7 +22,7 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include <QtCore/QStack>
+#include <QStack>
 
 #include "PopupDropper_Export.h"
 

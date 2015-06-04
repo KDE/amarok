@@ -23,8 +23,8 @@
 
 #include "personparser.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QTimer>
+#include <QDebug>
+#include <QTimer>
 
 #include <kio/job.h>
 #include <klocale.h>

@@ -20,7 +20,7 @@
 #ifndef TESTSMARTPOINTERLIST_H
 #define TESTSMARTPOINTERLIST_H
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
 class TestSmartPointerList : public QObject
 {

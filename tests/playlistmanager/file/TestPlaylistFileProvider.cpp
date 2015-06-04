@@ -27,9 +27,9 @@
 #include <KConfigGroup>
 #include <qtest_kde.h>
 
-#include <QtTest/QTest>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
+#include <QTest>
+#include <QDir>
+#include <QFile>
 
 QTEST_KDEMAIN( TestPlaylistFileProvider, GUI )
 

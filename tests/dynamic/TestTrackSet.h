@@ -19,7 +19,7 @@
 
 #include "dynamic/TrackSet.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestTrackSet : public QObject
 {

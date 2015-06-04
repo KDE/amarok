@@ -20,8 +20,8 @@
 #ifndef TESTTIMECODETRACKPROVIDER_H
 #define TESTTIMECODETRACKPROVIDER_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 class TimecodeTrackProvider;
 

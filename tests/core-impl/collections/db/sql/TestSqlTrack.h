@@ -17,7 +17,7 @@
 #ifndef TESTSQLTRACK_H
 #define TESTSQLTRACK_H
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 #include <KTempDir>
 

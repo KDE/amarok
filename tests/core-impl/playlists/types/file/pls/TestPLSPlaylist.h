@@ -20,8 +20,8 @@
 #ifndef TESTPLSPLAYLIST_H
 #define TESTPLSPLAYLIST_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 namespace Playlists {
 class PLSPlaylist;

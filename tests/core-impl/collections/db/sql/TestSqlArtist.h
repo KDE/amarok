@@ -17,7 +17,7 @@
 #ifndef TESTSQLARTIST_H
 #define TESTSQLARTIST_H
 
-#include <QtTest/QtTest>
+#include <QtTest>
 #include <KTempDir>
 
 class MySqlEmbeddedStorage;

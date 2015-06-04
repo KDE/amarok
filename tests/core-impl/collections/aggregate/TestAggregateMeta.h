@@ -17,7 +17,7 @@
 #ifndef TESTAGGREGATEMETA_H
 #define TESTAGGREGATEMETA_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestAggregateMeta : public QObject
 {

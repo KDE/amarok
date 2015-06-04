@@ -26,9 +26,9 @@
 #include "core-impl/meta/multi/MultiTrack.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
-#include <QtTest/QTest>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
+#include <QTest>
+#include <QDir>
+#include <QFileInfo>
 
 #include <qtest_kde.h>
 #include <ThreadWeaver/Weaver>

@@ -22,12 +22,12 @@
 #include "PopupDropper_p.h"
 #include "PopupDropperItem.h"
 
-#include <QtGui/QDragEnterEvent>
-#include <QtGui/QDragMoveEvent>
-#include <QtGui/QDragLeaveEvent>
-#include <QtGui/QDropEvent>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDragLeaveEvent>
+#include <QDropEvent>
 
-#include <QtCore/QtDebug>
+#include <QtDebug>
 
 class PopupDropperViewPrivate
 {
