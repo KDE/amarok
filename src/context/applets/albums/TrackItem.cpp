@@ -20,7 +20,7 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 
-#include <KStringHandler>
+#include <kstringhandler_deprecated.h>  //TODO KF5: Take care of this when moving to QCollator from KStringHandler::naturalCompare()
 
 #include <QFont>
 #include <QMutexLocker>

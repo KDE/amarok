@@ -116,7 +116,7 @@ include( MacroLibrary )
 add_definitions( ${QT_DEFINITIONS} ${KDE4_DEFINITIONS} )
 add_definitions(-DQT_NO_URL_CAST_FROM_STRING)
 
-# TEMPORARY: This is to disable noisy depreciation warnings in initial Qt5/KF5 build porting phase due to the dependency on KF5::KDELibs4Support.
+#TODO KF5:This is to disable noisy depreciation warnings in initial Qt5/KF5 build porting phase due to the dependency on KF5::KDELibs4Support. Remove this when porting away from KF5::KDELibs4Support
 if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUC)
     add_definitions(-Wno-deprecated -Wno-deprecated-declarations)
 endif ()

@@ -30,7 +30,7 @@
 #include "core/transcoding/TranscodingConfiguration.h"
 #include "core/transcoding/TranscodingController.h"
 
-#include <klocalizedstring.h>
+#include <KLocalizedString>
 #include <QDir>
 #include <QTimer>
 

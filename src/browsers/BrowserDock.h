@@ -24,6 +24,7 @@
 #include "widgets/AmarokDockWidget.h"
 
 #include <KVBox>
+#include <KShortcut>        //#TODO KF5: Remove this when porting from KShortcut to QKeySequence. KShortcut is deprecated
 
 #include <QWeakPointer>
 

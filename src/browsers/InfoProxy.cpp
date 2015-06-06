@@ -21,6 +21,7 @@
 #include "PaletteHandler.h"
 
 #include <KStandardDirs>
+#include <KLocalizedString>
 
 #include <QFile>
 

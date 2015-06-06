@@ -22,7 +22,7 @@
 #include "core/meta/support/MetaUtility.h"
 
 #include <KLocale>
-#include <KStringHandler>
+#include <kstringhandler_deprecated.h>  //TODO KF5: Take care of this when moving to QCollator from KStringHandler::naturalCompare()
 
 #include <QIcon>
 #include <QPixmap>

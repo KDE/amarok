@@ -32,6 +32,7 @@
 
 #include <KComboBox>
 #include <KStandardDirs>
+#include <KLocalizedString>
 
 #include <QFile>
 

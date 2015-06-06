@@ -21,7 +21,7 @@
 #include "Applet.h"
 #include "Context.h"
 
-#include <plasma/corona.h>
+#include <Plasma/Corona>
 
 #include <QGraphicsSceneMouseEvent>
 

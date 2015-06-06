@@ -24,7 +24,7 @@
 #include "core/support/Debug.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KStringHandler>
+#include <kstringhandler_deprecated.h>      //TODO KF5: Take care of this when moving to QCollator from KStringHandler::naturalCompare()
 
 #include <QVariant>
 #include <QString>

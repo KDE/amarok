@@ -24,7 +24,7 @@
 #include "TrackItem.h"
 
 #include <KGlobalSettings>
-#include <KStringHandler>
+#include <kstringhandler_deprecated.h>  //TODO KF5: Take care of this when moving to QCollator from KStringHandler::naturalCompare()
 
 #include <QFontMetrics>
 
