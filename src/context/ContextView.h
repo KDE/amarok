@@ -33,11 +33,11 @@
 #include "widgets/appletexplorer/AppletExplorer.h"
 
 #include <Plasma/Containment>
-#include <Plasma/View>
 
 #include <QMouseEvent>
 #include <QGraphicsView>
 #include <QQueue>
+#include <QAbstractAnimation>
 
 class QPixmap;
 class ContextUrlRunner;
@@ -49,7 +49,7 @@ namespace Context
 class ContextScene;
 class ControlBox;
 
-class AMAROK_EXPORT ContextView : public Plasma::View, public ContextSubject
+class AMAROK_EXPORT ContextView : public QGraphicsView, public ContextSubject
 {
     Q_OBJECT
 

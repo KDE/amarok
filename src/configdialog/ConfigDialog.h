@@ -19,7 +19,8 @@
 
 #include "ConfigDialogBase.h"
 
-#include <kconfigdialog.h>
+#include <KConfigDialog>
+#include <KConfigSkeleton>
 
 
 class Amarok2ConfigDialog : public KConfigDialog

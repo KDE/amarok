@@ -46,8 +46,8 @@ ContextScene::~ContextScene()
 
 void ContextScene::loadDefaultSetup()
 {
-    Plasma::Containment* c = addContainment( "amarok_containment_vertical" );
-    c->setScreen( -1 );
+    Plasma::Containment* c = createContainment( "amarok_containment_vertical" );
+//    c->setScreen( -1 );     This line may be removed as -1 is now the default value of lastScreen in ContainmentPrivate and there is no more a setScreen function in Plasma::Containment.
     c->setFormFactor( Plasma::Planar );
 }
 

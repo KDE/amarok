@@ -32,7 +32,7 @@ TestDataEngine::TestDataEngine( QObject* parent ):QObject(parent)
 //     qDebug() << " coucou 1\n";
 //     m_contextScene = new Plasma::Corona(this);
 //     qDebug() << " coucou 2\n";
-//     m_containment = m_contextScene->addContainment(QString("testlol"));
+//     m_containment = m_contextScene->createContainment(QString("testlol"));
 //     qDebug() << " coucou 3\n";
 //     m_contextView = new Context::ContextView(m_containment, m_contextScene, NULL);
 }

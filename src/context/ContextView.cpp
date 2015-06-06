@@ -52,7 +52,7 @@ ContextView* ContextView::s_self = 0;
 
 
 ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWidget* parent )
-    : Plasma::View( cont, parent )
+    : QGraphicsView(parent),
     , m_curState( Home )
     , m_urlRunner(0)
     , m_appletExplorer(0)
