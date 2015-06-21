@@ -60,6 +60,10 @@
 #include <QPainter>
 #include <QScopedPointer>
 #include <QSignalMapper>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -661,7 +665,17 @@ CurrentTrack::artistsCounted( QStringList results )
 void
 CurrentTrack::createConfigurationInterface( KConfigDialog *parent )
 {
-    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    parent->setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    parent->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    parent->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;

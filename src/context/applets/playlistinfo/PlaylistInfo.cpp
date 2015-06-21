@@ -25,6 +25,10 @@
 #include <QBrush>
 #include <QSpinBox>
 #include <QLabel>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 PlaylistInfo::PlaylistInfo( QObject* parent, const QStringList& args )
     : Plasma::Applet( parent, args )
@@ -147,13 +151,23 @@ void PlaylistInfo::showConfigurationInterface()
 {
     if (m_config == 0)
     {
-        m_config = new KDialog();
-        m_config->setCaption( i18n( "Configure Playlist Info Applet" ) );
+        m_config = new QDialog();
+        m_config->setWindowTitle( i18n( "Configure Playlist Info Applet" ) );
 
         QWidget* widget = new QWidget( m_config );
-        m_config->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
-        connect( m_config, SIGNAL(applyClicked()), this, SLOT(configAccepted()) );
-        connect( m_config, SIGNAL(okClicked()), this, SLOT(configAccepted()) );
+        QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel|QDialogButtonBox::Apply);
+        QWidget *mainWidget = new QWidget(this);
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        m_config->setLayout(mainLayout);
+        mainLayout->addWidget(mainWidget);
+        QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+        okButton->setDefault(true);
+        okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+        m_config->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+        m_config->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+        connect( m_config, SIGNAL(clicked()), this, SLOT(configAccepted()) );
+        connect( m_config, SIGNAL(clicked()), this, SLOT(configAccepted()) );
+        mainLayout->addWidget(buttonBox);
 
         m_configLayout = new QHBoxLayout( widget );
         m_spinWidth = new QSpinBox();

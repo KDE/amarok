@@ -28,16 +28,31 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QToolButton>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 ExcludedLabelsDialog::ExcludedLabelsDialog( StatSyncing::Config *config, QWidget *parent,
                                             Qt::WFlags flags )
-    : KDialog( parent, flags )
+    : QDialog( parent, flags )
     , m_statSyncingConfig( config )
 {
     Q_ASSERT( m_statSyncingConfig );
-    setupUi( mainWidget() );
-    setButtons( Ok | Cancel );
-    setCaption( i18n( "Excluded Labels" ) );
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    setupUi(mainWidget);
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    setWindowTitle( i18n( "Excluded Labels" ) );
+    mainLayout->addWidget(buttonBox);
 
     addLabels( config->excludedLabels(), true );
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
@@ -49,7 +64,7 @@ ExcludedLabelsDialog::ExcludedLabelsDialog( StatSyncing::Config *config, QWidget
 
     connect( addButton, SIGNAL(clicked(bool)), SLOT(slotAddExcludedLabel()) );
     connect( addLabelLine, SIGNAL(returnPressed(QString)), SLOT(slotAddExcludedLabel()) );
-    connect( this, SIGNAL(okClicked()), SLOT(slotSaveToConfig()) );
+    connect(okButton, SIGNAL(clicked()), SLOT(slotSaveToConfig()) );
 }
 
 void

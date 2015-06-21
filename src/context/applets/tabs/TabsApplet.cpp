@@ -27,9 +27,12 @@
 
 #include <KConfigDialog>
 #include <KConfigGroup>
-#include <KDialog>
+#include <QDialog>
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 /**
  * \brief Constructor
@@ -255,7 +258,17 @@ TabsApplet::updateInterface( const AppletState appletState )
 void
 TabsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
-    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    parent->setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    parent->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    parent->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
@@ -302,16 +315,24 @@ void
 TabsApplet::reloadTabs()
 {
     DEBUG_BLOCK
-    KDialog reloadDialog;
+    QDialog reloadDialog;
     QWidget *reloadWidget = new QWidget( &reloadDialog );
 
     Ui::ReloadEditDialog *reloadUI = new Ui::ReloadEditDialog();
     reloadUI->setupUi( reloadWidget );
 
-    reloadDialog.setCaption( i18nc( "Guitar tablature", "Reload Tabs" ) );
-    reloadDialog.setButtons( KDialog::Ok|KDialog::Cancel );
-    reloadDialog.setDefaultButton( KDialog::Ok );
-    reloadDialog.setMainWidget( reloadWidget );
+    reloadDialog.setWindowTitle( i18nc( "Guitar tablature", "Reload Tabs" ) );
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    reloadDialog.setLayout(mainLayout);
+    mainLayout->addWidget(reloadWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    reloadDialog.connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    reloadDialog.connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 
     // query engine for current artist and title
     Plasma::DataEngine *engine = dataEngine( "amarok-tabs" );
@@ -322,7 +343,7 @@ TabsApplet::reloadTabs()
     reloadUI->artistLineEdit->setText( artistName );
     reloadUI->titleLineEdit->setText( titleName );
 
-    if( reloadDialog.exec() == KDialog::Accepted )
+    if( reloadDialog.exec() == QDialog::Accepted )
     {
         QString newArtist = reloadUI->artistLineEdit->text();
         QString newTitle = reloadUI->titleLineEdit->text();

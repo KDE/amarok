@@ -39,6 +39,10 @@
 #include <QGraphicsLinearLayout>
 #include <QScrollBar>
 #include <QTimer>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 class LyricsAppletPrivate
 {
@@ -669,7 +673,17 @@ LyricsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     Q_D( LyricsApplet );
 
-    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    parent->setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    parent->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    parent->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
@@ -696,8 +710,8 @@ LyricsApplet::createConfigurationInterface( KConfigDialog *parent )
 
     connect( parent, SIGNAL(accepted()), this, SLOT(_changeLyricsFont()) );
     connect( parent, SIGNAL(accepted()), this, SLOT(_changeLyricsAlignment()) );
-    connect( parent, SIGNAL(applyClicked()), this, SLOT(_changeLyricsFont()) );
-    connect( parent, SIGNAL(applyClicked()), this, SLOT(_changeLyricsAlignment()) );
+    connect( parent, SIGNAL(clicked()), this, SLOT(_changeLyricsFont()) );
+    connect( parent, SIGNAL(clicked()), this, SLOT(_changeLyricsAlignment()) );
 }
 
 void

@@ -22,6 +22,7 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <KConfigGroup>
 
 
 Itdb_iTunesDB*
@@ -289,7 +290,7 @@ fillInModelComboBox( QComboBox *comboBox, bool someSysInfoFound )
 }
 
 void
-IpodDeviceHelper::fillInConfigureDialog( KDialog *configureDialog,
+IpodDeviceHelper::fillInConfigureDialog( QDialog *configureDialog,
                                          Ui::IpodConfiguration *configureDialogUi,
                                          const QString &mountPoint,
                                          Itdb_iTunesDB *itdb,
@@ -398,7 +399,7 @@ IpodDeviceHelper::fillInConfigureDialog( KDialog *configureDialog,
     configureDialogUi->notesPlaceholder->setText( notes );
     configureDialogUi->notesPlaceholder->adjustSize();
 
-    configureDialog->enableButtonOk( isSafeToWrite );
+    configureDialog->okButton->setEnabled( isSafeToWrite );
 }
 
 bool

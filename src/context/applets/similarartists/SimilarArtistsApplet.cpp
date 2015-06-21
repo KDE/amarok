@@ -44,6 +44,9 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include <QScrollBar>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
@@ -167,7 +170,17 @@ SimilarArtistsApplet::configure()
 void
 SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
-    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    parent->setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    parent->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    parent->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     QWidget *settings = new QWidget();
@@ -177,7 +190,7 @@ SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 
     parent->addPage( settings, i18n( "Similar Artists Settings" ), "preferences-system" );
 
-    connect( parent, SIGNAL(okClicked()), SLOT(saveSettings()) );
+    connect( parent, SIGNAL(clicked()), SLOT(saveSettings()) );
 }
 
 void

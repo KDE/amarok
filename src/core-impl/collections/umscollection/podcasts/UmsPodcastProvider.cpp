@@ -16,7 +16,7 @@
 #include "UmsPodcastProvider.h"
 #include "core/support/Debug.h"
 
-#include <KDialog>
+#include <QDialog>
 #include <KIO/DeleteJob>
 #include <KIO/FileCopyJob>
 #include <KIO/Job>
@@ -30,6 +30,7 @@
 #include <QVBoxLayout>
 #include <QMimeDatabase>
 #include <QMimeType>
+#include <KConfigGroup>
 
 using namespace Podcasts;
 
@@ -250,9 +251,9 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
     foreach( UmsPodcastEpisodePtr umsEpisode, umsEpisodes )
         urlsToDelete << umsEpisode->playableUrl();
 
-    KDialog dialog;
-    dialog.setCaption( i18n( "Confirm Delete" ) );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialog dialog;
+    dialog.setWindowTitle( i18n( "Confirm Delete" ) );
+
     QLabel label( i18np( "Are you sure you want to delete this episode?",
                          "Are you sure you want to delete these %1 episodes?",
                          urlsToDelete.count() )
@@ -265,14 +266,23 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
         new QListWidgetItem( url.toLocalFile(), &listWidget );
     }
 
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
     QWidget *widget = new QWidget( &dialog );
     QVBoxLayout *layout = new QVBoxLayout( widget );
+    dialog.setLayout(layout);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    umsSettingsDialog.connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    umsSettingsDialog.connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
     layout->addWidget( &label );
     layout->addWidget( &listWidget );
-    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from %1.",
+    layout->addWidget( widget );
+    layout->addWidget( buttonBox );
+
+    dialog.setButtonText( QDialog::Ok, i18n( "Yes, delete from %1.",
                                              QString("TODO: replace me") ) );
 
-    dialog.setMainWidget( widget );
     if( dialog.exec() != QDialog::Accepted )
         return;
 

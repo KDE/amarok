@@ -40,6 +40,10 @@
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
 #include <QPropertyAnimation>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #define LabelsAppletMaxLabelLength 40 // if a downloaded label is longer than this, don't show it
 
@@ -729,7 +733,17 @@ LabelsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     DEBUG_BLOCK
 
-    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    parent->setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    parent->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    parent->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 
     KConfigGroup configuration = config();
     QWidget *generalSettings = new QWidget;

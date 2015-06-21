@@ -97,6 +97,7 @@
 
 #ifdef Q_WS_X11
 #include <fixx11h.h>
+#include <KConfigGroup>
 #endif
 
 #ifdef Q_WS_MAC
@@ -466,7 +467,7 @@ MainWindow::exportPlaylist() //SLOT
     fileDialog->fileWidget()->setCustomWidget( saveRelativeCheck );
     fileDialog->setOperationMode( KFileDialog::Saving );
     fileDialog->setMode( KFile::File );
-    fileDialog->setCaption( i18n("Save As") );
+    fileDialog->setWindowTitle( i18n("Save As") );
     fileDialog->setObjectName( "PlaylistExport" );
 
     fileDialog->exec();
@@ -531,7 +532,7 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
     if( !lastDirectory.isEmpty() )
         dlg.setUrl( lastDirectory );
 
-    dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
+    dlg.setWindowTitle( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
     dlg.setMode( KFile::Files | KFile::Directory );
     dlg.setObjectName( "PlayMedia" );
     dlg.exec();

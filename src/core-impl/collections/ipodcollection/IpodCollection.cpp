@@ -44,6 +44,10 @@
 #include <QWeakPointer>
 
 #include <gpod/itdb.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 
 const QString IpodCollection::s_uidUrlProtocol = QString( "amarok-ipodtrackuid" );
@@ -401,12 +405,24 @@ IpodCollection::slotShowConfigureDialog( const QString &errorMessage )
     if( !m_configureDialog )
     {
         // create the dialog
-        m_configureDialog = new KDialog();
+        m_configureDialog = new QDialog();
         QWidget *settingsWidget = new QWidget( m_configureDialog );
         m_configureDialogUi.setupUi( settingsWidget );
 
-        m_configureDialog->setButtons( KDialog::Ok | KDialog::Cancel );
-        m_configureDialog->setMainWidget( settingsWidget );
+        QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+        QWidget *mainWidget = new QWidget(this);
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        m_configureDialog->setLayout(mainLayout);
+        mainLayout->addWidget(mainWidget);
+        QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+        okButton->setDefault(true);
+        okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+        m_configureDialog->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+        m_configureDialog->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+        mainLayout->addWidget(settingsWidget);
+        mainLayout->addWidget(buttonBox);
+
         m_configureDialog->setWindowTitle( settingsWidget->windowTitle() );  // setupUi() sets this
         if( m_itdb )
         {
@@ -418,7 +434,7 @@ IpodCollection::slotShowConfigureDialog( const QString &errorMessage )
         }
 
         connect( m_configureDialogUi.initializeButton, SIGNAL(clicked(bool)), SLOT(slotInitialize()) );
-        connect( m_configureDialog, SIGNAL(okClicked()), SLOT(slotApplyConfiguration()) );
+        connect( m_configureDialog, SIGNAL(clicked()), SLOT(slotApplyConfiguration()) );
     }
     QScopedPointer<Capabilities::TranscodeCapability> tc( create<Capabilities::TranscodeCapability>() );
     IpodDeviceHelper::fillInConfigureDialog( m_configureDialog, &m_configureDialogUi,

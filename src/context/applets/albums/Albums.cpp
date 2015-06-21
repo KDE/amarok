@@ -41,6 +41,10 @@
 #include <QSpinBox>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -244,7 +248,17 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
 void Albums::createConfigurationInterface( KConfigDialog *parent )
 {
-    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    parent->setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    parent->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    parent->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 
     QSpinBox *spinBox = new QSpinBox;
     spinBox->setRange( 1, 100 );

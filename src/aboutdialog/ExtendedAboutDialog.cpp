@@ -42,6 +42,9 @@
 #include <ktextbrowser.h>
 #include <ktitlewidget.h>
 #include <solid/networking.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 
 class ExtendedAboutDialog::Private
@@ -60,7 +63,7 @@ public:
 };
 
 ExtendedAboutDialog::ExtendedAboutDialog(const K4AboutData *aboutData, const OcsData *ocsData, QWidget *parent)
-  : KDialog(parent)
+  : QDialog(parent)
   , d(new Private(this))
 {
     DEBUG_BLOCK
@@ -74,7 +77,9 @@ ExtendedAboutDialog::ExtendedAboutDialog(const K4AboutData *aboutData, const Ocs
                                              "The supplied K4AboutData object does not exist.</qt>"), this);
 
         errorLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        setMainWidget(errorLabel);
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        setLayout(mainLayout);
+        mainLayout->addWidget(errorLabel);
         return;
     }
     if( !ocsData )
@@ -83,14 +88,23 @@ ExtendedAboutDialog::ExtendedAboutDialog(const K4AboutData *aboutData, const Ocs
                                              "The supplied OcsData object does not exist.</qt>"), this);
 
         errorLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        setMainWidget(errorLabel);
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        setLayout(mainLayout);
+        mainLayout->addWidget(errorLabel);
         return;
     }
     m_ocsData = *ocsData;
 
     setPlainCaption(i18n("About %1", aboutData->programName()));
-    setButtons(KDialog::Close);
-    setDefaultButton(KDialog::Close);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    buttonBox->button(QDialogButtonBox::Close)->setDefault(true);
+
     setModal(false);
 
 
@@ -325,15 +339,13 @@ ExtendedAboutDialog::ExtendedAboutDialog(const K4AboutData *aboutData, const Ocs
     }
 
     //Jam everything together in a layout:
-    QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(titleWidget);
     mainLayout->addWidget(tabWidget);
     mainLayout->setMargin(0);
 
-    QWidget *mainWidget = new QWidget;
-    mainWidget->setLayout(mainLayout);
-    setMainWidget(mainWidget);
-    setInitialSize( QSize( 480, 460 ) );
+    mainLayout->addWidget(buttonBox);
+
+    resize( QSize( 480, 460 ) );
 }
 
 ExtendedAboutDialog::~ExtendedAboutDialog()
@@ -343,11 +355,14 @@ ExtendedAboutDialog::~ExtendedAboutDialog()
 
 void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 {
-    KDialog *dialog = new KDialog(q);
+    QDialog *dialog = new QDialog(q);
+    QWidget *mainWidget = new QWidget(this);
 
-    dialog->setCaption(i18n("License Agreement"));
-    dialog->setButtons(KDialog::Close);
-    dialog->setDefaultButton(KDialog::Close);
+    dialog->setWindowTitle(i18n("License Agreement"));
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+    dialog->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    dialog->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    buttonBox->button(QDialogButtonBox::Close)->setDefault(true);
 
     const QFont font = KGlobalSettings::fixedFont();
     QFontMetrics metrics(font);
@@ -358,7 +373,11 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
     licenseBrowser->setLineWrapMode(QTextEdit::NoWrap);
     licenseBrowser->setText(licenseText);
 
-    dialog->setMainWidget(licenseBrowser);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    dialog->setLayout(mainLayout);
+    mainLayout->addWidget(licenseBrowser);
+    mainLayout->addWidget(mainWidget);
+    mainLayout->addWidget(buttonBox);
 
     // try to set up the dialog such that the full width of the
     // document is visible without horizontal scroll-bars being required
@@ -368,7 +387,7 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
     // try to allow enough height for a reasonable number of lines to be shown
     const int idealHeight = metrics.height() * 30;
 
-    dialog->setInitialSize(dialog->sizeHint().expandedTo(QSize((int)idealWidth,idealHeight)));
+    dialog->resize(dialog->sizeHint().expandedTo(QSize((int)idealWidth,idealHeight)));
     dialog->show();
 }
 

@@ -42,6 +42,7 @@
 #include <QDesktopServices>
 #include <QGraphicsLinearLayout>
 #include <QXmlStreamReader>
+#include <KConfigGroup>
 
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -276,7 +277,7 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
     connect( ui_VenueSettings.urlValue, SIGNAL(rightClickedUrl(QString)), SLOT(openUrl(QString)) );
     connect( ui_VenueSettings.websiteValue, SIGNAL(leftClickedUrl(QString)), SLOT(openUrl(QString)) );
     connect( ui_VenueSettings.websiteValue, SIGNAL(rightClickedUrl(QString)), SLOT(openUrl(QString)) );
-    connect( parent, SIGNAL(okClicked()), SLOT(saveSettings()) );
+    connect( parent, SIGNAL(clicked()), SLOT(saveSettings()) );
 
     ui_VenueSettings.photoLabel->hide();
     ui_VenueSettings.infoGroupBox->setFont( KGlobalSettings::smallestReadableFont() );

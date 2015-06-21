@@ -32,7 +32,7 @@
 #include <kdialog.h>
 #include <QWeakPointer>
 
-class AMAROK_EXPORT ExtendedAboutDialog : public KDialog
+class AMAROK_EXPORT ExtendedAboutDialog : public QDialog
 {
     Q_OBJECT
 public:

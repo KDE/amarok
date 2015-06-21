@@ -880,6 +880,8 @@ target_link_libraries(amaroklib
     KF5::TextEditor
     KF5::ThreadWeaver
     KF5::KDELibs4Support
+    KF5::KCMUtils
+    KF5::NewStuff
     Qt5::Script
     ${QT_QTSCRIPTTOOLS_LIBRARY}
     Qt5::Sql

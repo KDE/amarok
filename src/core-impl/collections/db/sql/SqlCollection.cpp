@@ -45,6 +45,7 @@
 
 #include <QApplication>
 #include <QDir>
+#include <KConfigGroup>
 
 
 /** Concrete implementation of the directory watcher */
@@ -154,7 +155,7 @@ public:
     virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration )
     { m_targetFileExtension =
       Amarok::Components::transcodingController()->format( configuration.encoder() )->fileExtension(); }
-    virtual void setCaption( const QString &caption ) { m_caption = caption; }
+    virtual void setWindowTitle( const QString &caption ) { m_caption = caption; }
 
     virtual void show()
     {
@@ -234,13 +235,20 @@ SqlCollection::SqlCollection( SqlStorage* storage )
     {
         if( updater.schemaExists() ) // this is an update
         {
-            KDialog dialog( 0, Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint );
+            QDialog dialog( 0, Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint );
             QLabel label( i18n( "Updating Amarok database schema. Please don't terminate "
                 "Amarok now as it may result in database corruption." ) );
             label.setWordWrap( true );
-            dialog.setMainWidget( &label );
-            dialog.setCaption( i18n( "Updating Amarok database schema" ) );
-            dialog.setButtons( KDialog::None );
+            dialog.setWindowTitle( i18n( "Updating Amarok database schema" ) );
+
+            QDialog *dialog = new QDialog();
+            QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::NoButton);
+            QVBoxLayout *mainLayout = new QVBoxLayout;
+            dialog->setLayout(mainLayout);
+            mainLayout->addWidget(licenseBrowser);
+            mainLayout->addWidget(label);
+            mainLayout->addWidget(buttonBox);
+
             dialog.setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
             dialog.show();
             dialog.raise();

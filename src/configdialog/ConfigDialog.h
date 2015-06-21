@@ -21,7 +21,7 @@
 
 #include <KConfigDialog>
 #include <KConfigSkeleton>
-
+#include <KWindowConfig>
 
 class Amarok2ConfigDialog : public KConfigDialog
 {

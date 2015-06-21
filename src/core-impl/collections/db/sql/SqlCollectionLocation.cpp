@@ -46,6 +46,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <kio/deletejob.h>
+#include <KConfigGroup>
 
 using namespace Collections;
 
@@ -339,7 +340,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
     delegate->setFolders( available_folders );
     delegate->setIsOrganizing( ( collection() == source()->collection() ) );
     delegate->setTranscodingConfiguration( configuration );
-    delegate->setCaption( operationText( configuration ) );
+    delegate->setWindowTitle( operationText( configuration ) );
 
     connect( delegate, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
     connect( delegate, SIGNAL(rejected()), SLOT(slotDialogRejected()) );

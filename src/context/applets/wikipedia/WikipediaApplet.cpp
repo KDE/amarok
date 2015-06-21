@@ -48,6 +48,10 @@
 #include <QTextStream>
 #include <QWebPage>
 #include <QXmlStreamReader>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 void
 WikipediaAppletPrivate::parseWikiLangXml( const QByteArray &data )
@@ -777,7 +781,17 @@ WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     Q_D( WikipediaApplet );
 
-    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    parent->setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    parent->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    parent->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 
     KConfigGroup configuration = config();
     QWidget *langSettings = new QWidget;
@@ -795,7 +809,7 @@ WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
     d->generalSettingsUi.sslCheckBox->setCheckState( d->useSSL ? Qt::Checked : Qt::Unchecked );
 
     connect( d->languageSettingsUi.downloadButton, SIGNAL(clicked()), this, SLOT(_getLangMap()) );
-    connect( parent, SIGNAL(okClicked()), this, SLOT(_loadSettings()) );
+    connect( parent, SIGNAL(clicked()), this, SLOT(_loadSettings()) );
 
     parent->addPage( genSettings, i18n( "Wikipedia General Settings" ), "configure" );
     parent->addPage( langSettings, i18n( "Wikipedia Language Settings" ), "applications-education-language" );

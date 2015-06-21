@@ -24,11 +24,12 @@
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KDialog>
+#include <QDialog>
 #include <QIcon>
 #include <KInputDialog>
 
 #include <QLabel>
+#include <KConfigGroup>
 
 PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::LabelColumn )
@@ -334,15 +335,31 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
     int childCount = rowCount( groupIdx );
     if( childCount > 0 )
     {
-        KDialog dialog;
-        dialog.setCaption( i18n( "Confirm Delete" ) );
-        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+        QDialog dialog;
+        dialog.setWindowTitle( i18n( "Confirm Delete" ) );
+
+        QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+        QWidget *mainWidget = new QWidget(this);
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        dialog.setLayout(mainLayout);
+        mainLayout->addWidget(mainWidget);
+
+        QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+        okButton->setText(i18n( "Yes, delete folder." ));
+        okButton->setDefault(true);
+        okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+
+        dialog.connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+        dialog.connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
         QLabel label( i18n( "Are you sure you want to delete this folder and its contents?" )
                       , &dialog
                     );
         //TODO:include a text area with all the names of the playlists
-        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete folder." ) );
-        dialog.setMainWidget( &label );
+
+        mainLayout->addWidget(label);
+        mainLayout->addWidget(buttonBox);
+
         if( dialog.exec() != QDialog::Accepted )
             return;
 

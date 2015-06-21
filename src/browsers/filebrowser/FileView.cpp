@@ -38,7 +38,7 @@
 #include <KAction>
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
-#include <KDialog>
+#include <QDialog>
 #include <KDirModel>
 #include <KFileItem>
 #include <KGlobalSettings>
@@ -52,6 +52,7 @@
 #include <QFileSystemModel>
 #include <QItemDelegate>
 #include <QPainter>
+#include <KConfigGroup>
 
 FileView::FileView( QWidget *parent )
     : Amarok::PrettyTreeView( parent )

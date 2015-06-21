@@ -19,10 +19,11 @@
 #include "core/support/Amarok.h"
 
 #include <KApplication>
-#include <KDialog>
+#include <QDialog>
 #include <KLocale>
 
 #include <QHBoxLayout>
+#include <KConfigGroup>
 
 BookmarkManager * BookmarkManager::s_instance = 0;
 
@@ -31,7 +32,7 @@ BookmarkManager::BookmarkManager( QWidget* parent )
 {
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
-    setWindowTitle( KDialog::makeStandardCaption( i18n("Bookmark Manager") ) );
+    setWindowTitle( QDialog::makeStandardCaption( i18n("Bookmark Manager") ) );
     setAttribute( Qt::WA_DeleteOnClose );
     setObjectName( "BookmarkManager" );
 

@@ -31,6 +31,10 @@
 #include "core/support/Debug.h"
 
 #include <KLocalizedString>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 QString Amarok2ConfigDialog::s_currentPage = "GeneralConfig";
 
@@ -65,8 +69,18 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( scripts, i18n( "Scripts" ), "preferences-plugin-script", i18n( "Configure Scripts" ) );
     //addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
-    setButtons( Help | Ok | Apply | Cancel );
-    restoreDialogSize( Amarok::config( "ConfigDialog" ) );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Apply);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
+    KWindowConfig::restoreWindowSize(windowHandle(), Amarok::config( "ConfigDialog" ));
 }
 
 Amarok2ConfigDialog::~Amarok2ConfigDialog()
@@ -85,7 +99,7 @@ Amarok2ConfigDialog::~Amarok2ConfigDialog()
     }
 
     KConfigGroup config = Amarok::config( "ConfigDialog" );
-    saveDialogSize( config );
+    KWindowConfig::saveWindowSize(windowHandle(), config);
     AmarokConfig::self()->writeConfig();
 }
 
@@ -93,7 +107,7 @@ void Amarok2ConfigDialog::updateButtons() //SLOT
 {
     DEBUG_BLOCK
 
-    enableButtonApply( hasChanged() );
+    buttonBox()->button(QDialogButtonBox::Apply)->setEnabled( hasChanged() );
 }
 
 /** Reimplemented from KConfigDialog */

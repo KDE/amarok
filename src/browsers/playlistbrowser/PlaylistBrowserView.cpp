@@ -43,6 +43,7 @@
 #include <QMouseEvent>
 #include <QCheckBox>
 #include <QLabel>
+#include <KConfigGroup>
 
 Q_DECLARE_METATYPE( QModelIndexList )
 
@@ -466,16 +467,33 @@ PlaylistBrowserView::slotDelete()
     foreach( const PlaylistProvider *provider, providerPlaylists.keys() )
         providerNames << provider->prettyName();
 
-    KDialog dialog;
-    dialog.setCaption( i18n( "Confirm Playlist Deletion" ) );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialog dialog;
+    dialog.setWindowTitle( i18n( "Confirm Playlist Deletion" ) );
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    dialog.setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    okButton->setText( i18nc( "%1 is playlist provider pretty name",
+        "Yes, delete from %1.", providerNames.join( ", " ) ) );
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+
+    connect(buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+
     QLabel *label = new QLabel( i18np( "Are you sure you want to delete this playlist?",
             "Are you sure you want to delete these %1 playlists?",
             m_writableActionPlaylists.count() ), &dialog );
     // TODO: include a text area with all the names of the playlists
-    dialog.setButtonText( KDialog::Ok, i18nc( "%1 is playlist provider pretty name",
-            "Yes, delete from %1.", providerNames.join( ", " ) ) );
-    dialog.setMainWidget( label );
+
+    mainLayout->addWidget(label);
+    mainLayout->addWidget(buttonBox);
     if( dialog.exec() == QDialog::Accepted )
     {
         foreach( PlaylistProvider *provider, providerPlaylists.keys() )
@@ -526,7 +544,7 @@ PlaylistBrowserView::slotExport()
     fileDialog.setMimeFilter( supportedMimeTypes, supportedMimeTypes.value( 1 ) );
     fileDialog.setOperationMode( KFileDialog::Saving );
     fileDialog.setMode( KFile::File );
-    fileDialog.setCaption( i18n("Save As") );
+    fileDialog.setWindowTitle( i18n("Save As") );
     fileDialog.setObjectName( "PlaylistExport" );
 
     fileDialog.exec();

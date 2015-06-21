@@ -21,6 +21,10 @@
 
 #include <QIcon>
 #include <KPushButton>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 using namespace Transcoding;
 
@@ -29,7 +33,7 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
                                   const QString &destCollectionName,
                                   const Configuration &prevConfiguration,
                                   QWidget *parent )
-    : KDialog( parent, Qt::Dialog )
+    : KPageDialog( parent, Qt::Dialog )
     , m_configuration( JUST_COPY )
     , m_save( false )
     , m_playableFileTypes( playableFileTypes )
@@ -38,7 +42,6 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     Q_UNUSED( destCollectionName )  // keep it in signature, may be useful in future
 
     QWidget *uiBase = new QWidget( this );
-    setMainWidget( uiBase);
     ui.setupUi( uiBase );
     setModal( true );
     setWindowTitle( i18n( "Transcode Tracks" ) );
@@ -46,9 +49,20 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     setMaximumWidth( 590 );
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::MinimumExpanding );
 
-    setButtons( Ok|Cancel );
-    button( Ok )->setText( i18n( "Transc&ode" ) );
-    button( Ok )->setEnabled( false );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(uiBase);
+    okButton->setText( i18n( "Transc&ode" ) );
+    okButton->setEnabled( false );
+    mainLayout->addWidget(buttonBox);
 
     QString explanatoryText;
     QIcon justCopyIcon;
@@ -94,7 +108,7 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
 
     ui.formatIconLabel->hide();
     ui.formatNameLabel->hide();
-    connect( button( Ok ), SIGNAL(clicked()),
+    connect( buttonBox->button(QDialogButtonBox::Ok) , SIGNAL(clicked()),
              this, SLOT(onTranscodeClicked()) );
 
     ui.rememberCheckBox->setChecked( m_save );
@@ -162,14 +176,14 @@ AssistantDialog::populateFormatList()
 void
 AssistantDialog::onJustCopyClicked() //SLOT
 {
-    KDialog::done( KDialog::Accepted );
+    QDialog::done( QDialog::Accepted );
 }
 
 void
 AssistantDialog::onTranscodeClicked() //SLOT
 {
     m_configuration = ui.transcodingOptionsStackedWidget->configuration( trackSelection() );
-    KDialog::done( KDialog::Accepted );
+    QDialog::done( QDialog::Accepted );
 }
 
 void
@@ -193,7 +207,7 @@ AssistantDialog::onFormatSelect( QListWidgetItem *item ) //SLOT
         ui.transcodeUnlessSameTypeRadioButton->setEnabled( true );
         ui.transcodeOnlyIfNeededRadioButton->setEnabled( true );
 
-        button( Ok )->setEnabled( true );
+        buttonBox()->button(QDialogButtonBox::Ok)->setEnabled(true);
     }
 }
 

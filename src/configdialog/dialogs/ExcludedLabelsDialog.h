@@ -29,7 +29,7 @@ class KLineEdit;
 class QGridLayout;
 class QListWidget;
 
-class ExcludedLabelsDialog : public KDialog, private Ui_ExcludedLabelsDialog
+class ExcludedLabelsDialog : public QDialog, private Ui_ExcludedLabelsDialog
 {
     Q_OBJECT
 
