@@ -17,7 +17,7 @@
 #ifndef STATSYNCING_CONFIGURE_PROVIDER_DIALOG_H
 #define STATSYNCING_CONFIGURE_PROVIDER_DIALOG_H
 
-#include <KDialog>
+#include <KPageDialog>
 
 #include <QButtonGroup>
 #include <QMap>
@@ -31,7 +31,7 @@ namespace StatSyncing
 
     class ProviderConfigWidget;
 
-    class ConfigureProviderDialog : public KDialog
+    class ConfigureProviderDialog : public KPageDialog
     {
         Q_OBJECT
 
@@ -45,6 +45,7 @@ namespace StatSyncing
 
     private:
         QString m_providerId;
+        QWidget *mainWidget;
 
     private Q_SLOTS:
         void slotAccepted();

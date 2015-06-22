@@ -421,7 +421,7 @@ Track::isTrack( const QUrl &url )
     // We can't play directories
     if( fileInfo.isDir() )
         return false;
-
+    QMimeDatabase db;
     const QMimeType mimeType = db.mimeTypeForFile( url.toLocalFile() );
     const QString name = mimeType.name();
     return name.startsWith( "audio/" ) || name.startsWith( "video/" );

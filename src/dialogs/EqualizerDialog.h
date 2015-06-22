@@ -23,9 +23,9 @@
 
 #include <equalizer/EqualizerPresets.h>
 
-#include <KDialog>
+#include <KPageDialog>
 
-class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
+class EqualizerDialog : public KPageDialog, public Ui_EqualizerDialog
 {
     Q_OBJECT
 

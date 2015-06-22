@@ -22,6 +22,7 @@
 #include "PlaylistSortWidget.h"
 #include "view/listview/PrettyListView.h"
 #include "widgets/AmarokDockWidget.h"
+#include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 
 #include <QWeakPointer>
 

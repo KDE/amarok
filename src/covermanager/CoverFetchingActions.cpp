@@ -37,6 +37,7 @@
 #include <KIO/NetAccess>
 
 #include <QDesktopWidget>
+#include <KConfigGroup>
 
 /////////////////////////////////////
 //  FetchCoverAction
@@ -159,7 +160,7 @@ SetCustomCoverAction::slotTriggered()
 
     dlg.setOperationMode( KFileDialog::Opening );
     dlg.setMode( KFile::File );
-    dlg.setCaption( i18n("Select Cover Image File") );
+    dlg.setWindowTitle( i18n("Select Cover Image File") );
     dlg.setInlinePreviewShown( true );
 
     dlg.exec();

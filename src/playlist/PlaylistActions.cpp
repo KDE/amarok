@@ -521,7 +521,7 @@ Playlist::Actions::restoreDefaultPlaylist()
     // non-collection Tracks will not be loaded correctly.
     The::playlistManager();
     Playlist::Restorer *restorer = new Playlist::Restorer();
-    restorer->restore( Amarok::defaultPlaylistPath() );
+    restorer->restore( QUrl::fromLocalFile(Amarok::defaultPlaylistPath()) );
     connect( restorer, SIGNAL(restoreFinished()), restorer, SLOT(deleteLater()) );
 }
 

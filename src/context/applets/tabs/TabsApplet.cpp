@@ -27,6 +27,7 @@
 
 #include <KConfigDialog>
 #include <KConfigGroup>
+#include <KDialog>
 #include <QDialog>
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
@@ -259,10 +260,8 @@ void
 TabsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-    QWidget *mainWidget = new QWidget(this);
     QVBoxLayout *mainLayout = new QVBoxLayout;
     parent->setLayout(mainLayout);
-    mainLayout->addWidget(mainWidget);
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
@@ -315,24 +314,16 @@ void
 TabsApplet::reloadTabs()
 {
     DEBUG_BLOCK
-    QDialog reloadDialog;
+    KDialog reloadDialog;
     QWidget *reloadWidget = new QWidget( &reloadDialog );
 
     Ui::ReloadEditDialog *reloadUI = new Ui::ReloadEditDialog();
     reloadUI->setupUi( reloadWidget );
 
-    reloadDialog.setWindowTitle( i18nc( "Guitar tablature", "Reload Tabs" ) );
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    reloadDialog.setLayout(mainLayout);
-    mainLayout->addWidget(reloadWidget);
-    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-    okButton->setDefault(true);
-    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-    reloadDialog.connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    reloadDialog.connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-    mainLayout->addWidget(buttonBox);
+    reloadDialog.setCaption( i18nc( "Guitar tablature", "Reload Tabs" ) );
+    reloadDialog.setButtons( KDialog::Ok|KDialog::Cancel );
+    reloadDialog.setDefaultButton( KDialog::Ok );
+    reloadDialog.setMainWidget( reloadWidget );
 
     // query engine for current artist and title
     Plasma::DataEngine *engine = dataEngine( "amarok-tabs" );
@@ -343,7 +334,7 @@ TabsApplet::reloadTabs()
     reloadUI->artistLineEdit->setText( artistName );
     reloadUI->titleLineEdit->setText( titleName );
 
-    if( reloadDialog.exec() == QDialog::Accepted )
+    if( reloadDialog.exec() == KDialog::Accepted )
     {
         QString newArtist = reloadUI->artistLineEdit->text();
         QString newTitle = reloadUI->titleLineEdit->text();

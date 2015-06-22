@@ -56,6 +56,10 @@
 #include <QToolButton>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
@@ -85,7 +89,7 @@ class ArtistItem : public QTreeWidgetItem
 
 
 CoverManager::CoverManager( QWidget *parent )
-        : KDialog( parent )
+        : QDialog( parent )
         , m_currentView( AllAlbums )
         , m_timer( new QTimer( this ) )    //search filter timer
         , m_fetchingCovers( false )
@@ -101,15 +105,22 @@ CoverManager::CoverManager( QWidget *parent )
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
-    setButtons( 0 );
-    setCaption( i18n("Cover Manager") );
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox();
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    setWindowTitle( i18n("Cover Manager") );
     setAttribute( Qt::WA_DeleteOnClose );
 
     connect( this, SIGNAL(hidden()), SLOT(delayedDestruct()) );
-    connect( this, SIGNAL(closeClicked()), SLOT(delayedDestruct()) );
+    connect(buttonBox->button(QDialogButtonBox::Close), SIGNAL(clicked()), SLOT(delayedDestruct()) );
 
     m_splitter = new QSplitter( this );
-    setMainWidget( m_splitter );
+    mainLayout->addWidget(m_splitter);
+    mainLayout->addWidget(buttonBox);
 
     //artist listview
     m_artistView = new QTreeWidget( m_splitter );

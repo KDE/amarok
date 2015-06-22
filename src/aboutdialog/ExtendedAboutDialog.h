@@ -29,7 +29,7 @@
 #include "AnimatedBarWidget.h"
 
 #include <KAboutData>
-#include <kdialog.h>
+#include <QDialog>
 #include <QWeakPointer>
 
 class AMAROK_EXPORT ExtendedAboutDialog : public QDialog

@@ -16,7 +16,7 @@
 #include "UmsPodcastProvider.h"
 #include "core/support/Debug.h"
 
-#include <QDialog>
+#include <KDialog>
 #include <KIO/DeleteJob>
 #include <KIO/FileCopyJob>
 #include <KIO/Job>
@@ -251,8 +251,9 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
     foreach( UmsPodcastEpisodePtr umsEpisode, umsEpisodes )
         urlsToDelete << umsEpisode->playableUrl();
 
-    QDialog dialog;
-    dialog.setWindowTitle( i18n( "Confirm Delete" ) );
+    KDialog dialog;
+    dialog.setCaption( i18n( "Confirm Delete" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
 
     QLabel label( i18np( "Are you sure you want to delete this episode?",
                          "Are you sure you want to delete these %1 episodes?",
@@ -266,22 +267,15 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
         new QListWidgetItem( url.toLocalFile(), &listWidget );
     }
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
     QWidget *widget = new QWidget( &dialog );
     QVBoxLayout *layout = new QVBoxLayout( widget );
-    dialog.setLayout(layout);
-    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-    okButton->setDefault(true);
-    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-    umsSettingsDialog.connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    umsSettingsDialog.connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
     layout->addWidget( &label );
     layout->addWidget( &listWidget );
-    layout->addWidget( widget );
-    layout->addWidget( buttonBox );
 
-    dialog.setButtonText( QDialog::Ok, i18n( "Yes, delete from %1.",
+    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from %1.",
                                              QString("TODO: replace me") ) );
+
+    dialog.setMainWidget( widget );
 
     if( dialog.exec() != QDialog::Accepted )
         return;
@@ -471,6 +465,7 @@ UmsPodcastProvider::addPath( const QString &path )
     if( !mime || mime.name() == KMimeType::defaultMimeType() )
     {
         debug() << "Trying again with findByPath:" ;
+        QMimeDatabase db;
         mime = db.mimeTypeForFile( path, 0, true, &acc );
         if( mime.name() == KMimeType::defaultMimeType() )
             return 0;

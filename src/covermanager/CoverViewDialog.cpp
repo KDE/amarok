@@ -21,12 +21,13 @@
 #include "widgets/PixmapViewer.h"
 
 #include <KApplication>
-#include <KDialog>
+#include <QDialog>
 #include <KLocalizedString>
 #include <KWindowSystem>
 
 #include <QDesktopWidget>
 #include <QHBoxLayout>
+#include <KConfigGroup>
 
 CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
     : QDialog( parent )
@@ -58,7 +59,7 @@ CoverViewDialog::updateCaption()
     QString zoom    = QString::number( m_zoom );
     QString size    = QString( "%1x%2" ).arg( width, height );
     QString caption = QString( "%1 - %2 - %3\%" ).arg( m_title, size, zoom );
-    setWindowTitle( KDialog::makeStandardCaption( caption ) );
+    setWindowTitle( caption );
 }
 
 void

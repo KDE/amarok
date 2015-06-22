@@ -29,6 +29,10 @@
 #include "TagsFromFileNameGuesser.h"
 
 #include <QBoxLayout>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #define album_color       Qt::red
 #define albumartist_color Qt::blue
@@ -213,16 +217,20 @@ TagGuesserWidget::createToken(qint64 value) const
 
 // -------------- TagGuesserDialog ------------
 TagGuesserDialog::TagGuesserDialog( const QString &fileName, QWidget *parent )
-    : KDialog( parent )
+    : QDialog( parent )
     , m_fileName( fileName )
 {
-    setCaption( i18n( "Guess Tags from Filename" ) );
-    setButtons( KDialog::Ok | KDialog::Cancel );
+    setWindowTitle( i18n( "Guess Tags from Filename" ) );
 
-
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
     QWidget* mainWidget = new QWidget( this );
     QBoxLayout* mainLayout = new QVBoxLayout( mainWidget );
-
+    setLayout(mainLayout);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
     m_layoutWidget = new TagGuesserWidget( this );
     mainLayout->addWidget( m_layoutWidget );
@@ -234,7 +242,6 @@ TagGuesserDialog::TagGuesserDialog( const QString &fileName, QWidget *parent )
     m_optionsWidget =  new TagGuessOptionWidget();
     mainLayout->addWidget( m_optionsWidget );
 
-
     connect( m_layoutWidget, SIGNAL(schemeChanged()),
              this, SLOT(updatePreview()) );
     connect( m_optionsWidget, SIGNAL(changed()),
@@ -242,7 +249,8 @@ TagGuesserDialog::TagGuesserDialog( const QString &fileName, QWidget *parent )
 
     updatePreview();
 
-    setMainWidget( mainWidget );
+    mainLayout->addWidget(mainWidget);
+    mainLayout->addWidget(buttonBox);
 }
 
 //Sets Filename for Preview

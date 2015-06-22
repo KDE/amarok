@@ -136,6 +136,7 @@ ScriptsConfig::installLocalScript()
         return;
 
     QString fileName = QFileInfo( filePath ).fileName();
+    QMimeDatabase db;
     QMimeType mimeType = db.mimeTypeForFile( filePath );
     QScopedPointer<KArchive> archive;
     if( mimeType.inherits( "application/zip" ) )

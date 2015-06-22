@@ -23,21 +23,33 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QFontMetrics>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 PodcastSettingsDialog::PodcastSettingsDialog( Podcasts::SqlPodcastChannelPtr channel, QWidget* parent )
-    : KDialog( parent )
+    : KPageDialog( parent )
     , m_ps( new Ui::PodcastSettingsBase() )
     , m_channel( channel )
 {
     QWidget* main = new QWidget( this );
     m_ps->setupUi( main );
-    setMainWidget( main );
 
-    setCaption( i18nc("change options", "Configure %1", m_channel->title() ) );
+    setWindowTitle( i18nc("change options", "Configure %1", m_channel->title() ) );
     setModal( true );
-    setButtons( Apply | Cancel | Ok );
-    setDefaultButton( Ok );
-    showButtonSeparator( true );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel|QDialogButtonBox::Apply);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+    mainLayout->addWidget(main);
+
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    okButton->setDefault(true);
+    mainLayout->addWidget(buttonBox);
 
     init();
 }
@@ -76,7 +88,7 @@ PodcastSettingsDialog::init()
 
     m_ps->m_writeTagsCheck->setChecked( m_channel->writeTags() );
 
-    enableButtonApply( false );
+    buttonBox()->button(QDialogButtonBox::Apply)->setEnabled( false );
 
     // Connects for modification check
     connect( m_ps->m_urlLineEdit, SIGNAL(textChanged(QString)),
@@ -91,8 +103,8 @@ PodcastSettingsDialog::init()
     connect( m_ps->m_writeTagsCheck, SIGNAL(clicked()), SLOT(checkModified()) );
     connect( m_ps->m_filenameLayoutConfigWidgetButton, SIGNAL(clicked()), SLOT(launchFilenameLayoutConfigDialog()) );
 
-    connect( this, SIGNAL(applyClicked()), this ,SLOT(slotApply()) );
-    connect( this, SIGNAL(okClicked()), this, SLOT(slotApply()) );
+    connect(buttonBox()->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this ,SLOT(slotApply()) );
+    connect(buttonBox()->button(QDialogButtonBox::Ok), SIGNAL(clicked()), this, SLOT(slotApply()) );
 }
 
 void
@@ -126,7 +138,7 @@ PodcastSettingsDialog::hasChanged()
 void
 PodcastSettingsDialog::checkModified() //slot
 {
-    enableButtonApply( hasChanged() );
+    buttonBox()->button(QDialogButtonBox::Apply)->setEnabled( hasChanged() );
 }
 
 void
@@ -145,7 +157,7 @@ PodcastSettingsDialog::slotApply()       //slot
     m_channel->setPurgeCount( m_ps->m_purgeCountSpinBox->value() );
     m_channel->setWriteTags( m_ps->m_writeTagsCheck->isChecked() );
 
-    enableButtonApply( false );
+    buttonBox()->button(QDialogButtonBox::Apply)->setEnabled( false );
 }
 
 bool PodcastSettingsDialog::configure()

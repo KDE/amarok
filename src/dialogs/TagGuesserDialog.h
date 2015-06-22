@@ -25,7 +25,7 @@
 
 #include "ui_TagGuessOptions.h"
 
-#include <KDialog>
+#include <QDialog>
 
 #include <QMap>
 #include <QString>

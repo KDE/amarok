@@ -23,6 +23,7 @@
 #include <QVBoxLayout>
 #include <QRadioButton>
 #include <QDebug>
+#include <KConfigGroup>
 
 namespace StatSyncing
 {
@@ -30,15 +31,15 @@ namespace StatSyncing
 ConfigureProviderDialog::ConfigureProviderDialog( const QString &providerId,
                                                   QWidget *configWidget, QWidget *parent,
                                                   Qt::WindowFlags f )
-    : KDialog( parent, f )
+    : KPageDialog( parent, f )
     , m_providerId( providerId )
 {
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
     setWindowTitle( i18n( "Configure Synchronization Target" ) );
     setModal( true );
-    showButton( KDialog::Help, false );
+    buttonBox()->button(QDialogButtonBox::Help)->setVisible(false);
 
-    setMainWidget( configWidget );
+    mainWidget = configWidget;
 
     connect( this, SIGNAL(accepted()), SLOT(slotAccepted()) );
 }
@@ -50,8 +51,7 @@ ConfigureProviderDialog::~ConfigureProviderDialog()
 void
 ConfigureProviderDialog::slotAccepted()
 {
-    const ProviderConfigWidget *configWidget =
-            qobject_cast<ProviderConfigWidget*>( mainWidget() );
+    const ProviderConfigWidget *configWidget = qobject_cast<ProviderConfigWidget*>(mainWidget);
 
     emit providerConfigured( m_providerId, configWidget->config() );
 }

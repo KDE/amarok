@@ -46,7 +46,7 @@ class QHBoxLayout;
 class QColorGroup;
 class QSplitter;
 
-class CoverManager : public KDialog, public Meta::Observer
+class CoverManager : public QDialog, public Meta::Observer
 {
         Q_OBJECT
 

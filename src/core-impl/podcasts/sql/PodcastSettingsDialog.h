@@ -19,13 +19,13 @@
 
 #include "SqlPodcastMeta.h"
 
-#include <KDialog>
+#include <KPageDialog>
 
 namespace Ui {
     class PodcastSettingsBase;
 }
 
-class PodcastSettingsDialog : public KDialog
+class PodcastSettingsDialog : public KPageDialog
 {
     Q_OBJECT
 

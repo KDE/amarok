@@ -27,6 +27,7 @@
 
 #include <QQueue>
 #include <QModelIndex>
+#include <QUrl>
 
 #include <Phonon/Global>
 

@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QRadioButton>
+#include <KConfigGroup>
 
 namespace StatSyncing
 {
@@ -35,7 +36,7 @@ CreateProviderDialog::CreateProviderDialog( QWidget *parent, Qt::WindowFlags f )
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
     setWindowTitle( i18n( "Add Synchronization Target" ) );
     setModal( true );
-    showButton( KDialog::Help, false );
+    buttonBox()->button(QDialogButtonBox::Help)->setVisible(false);
 
     m_providerButtons.setExclusive( true );
     m_layout = new QVBoxLayout;

@@ -32,24 +32,39 @@
 #include <QRadioButton>
 #include <QLabel>
 #include <q3buttongroup.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 
 DeviceConfigureDialog::DeviceConfigureDialog( MediaDevice *device )
-        : KDialog( Amarok::mainWindow() )
+        : QDialog( Amarok::mainWindow() )
         , m_device( device )
 {
-    setCaption( i18n("Select Plugin for %1", m_device->name() ) );
+    setWindowTitle( i18n("Select Plugin for %1", m_device->name() ) );
     setModal( true );
-    setButtons( Ok | Cancel );
-    showButtonSeparator( true );
+
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+//  showButtonSeparator( true );
+
 
     kapp->setTopWidget( this );
-    setCaption( KDialog::makeStandardCaption( i18n( "Configure Media Device" ) ) );
-    showButton( KDialog::Apply, false );
+    setWindowTitle( QDialog::makeStandardCaption( i18n( "Configure Media Device" ) ) );
+    buttonBox->button(QDialogButtonBox::Apply)->setVisible(false);
 
     KVBox* vbox = new KVBox( this );
-    setMainWidget( vbox );
-    vbox->setSpacing( KDialog::spacingHint() );
+    mainLayout->addWidget(vbox);
+    //TODO KF5     vbox->setSpacing( KDialog::spacingHint() );
 
     QLabel *connectLabel = 0;
     m_connectEdit = 0;
@@ -124,35 +139,3 @@ DeviceConfigureDialog::~DeviceConfigureDialog()
      delete m_connectEdit;
      delete m_disconnectEdit;
 }
-
-void
-DeviceConfigureDialog::slotButtonClicked( KDialog::ButtonCode button )
-{
-    if ( button != KDialog::Ok )
-        KDialog::slotButtonClicked( button );
-    m_accepted = true;
-
-    if( m_device )
-    {
-        m_device->m_preconnectcmd = m_connectEdit->text();
-        m_device->setConfigString( "PreConnectCommand", m_device->m_preconnectcmd );
-        m_device->m_postdisconnectcmd = m_disconnectEdit->text();
-        m_device->setConfigString( "PostDisconnectCommand", m_device->m_postdisconnectcmd );
-        m_device->setConfigBool( "Transcode", m_device->m_transcode );
-        m_device->m_transcode = m_transcodeCheck->isChecked();
-        m_device->setConfigBool( "Transcode", m_device->m_transcode );
-        m_device->m_transcodeAlways = m_transcodeAlways->isChecked();
-        m_device->setConfigBool( "TranscodeAlways", m_device->m_transcodeAlways );
-        m_device->m_transcodeRemove = m_transcodeRemove->isChecked();
-        m_device->setConfigBool( "TranscodeRemove", m_device->m_transcodeRemove );
-        m_device->applyConfig();
-    }
-
-    MediaBrowser::instance()->updateButtons();
-    MediaBrowser::instance()->updateStats();
-    MediaBrowser::instance()->updateDevices();
-
-    KDialog::slotButtonClicked( button );
-}
-
-

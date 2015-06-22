@@ -37,6 +37,7 @@
 
 #include <QBuffer>
 #include <QImageReader>
+#include <KConfigGroup>
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 
@@ -281,12 +282,12 @@ CoverFetcher::slotDialogFinished()
     const CoverFetchUnit::Ptr unit = m_dialog.data()->unit();
     switch( m_dialog.data()->result() )
     {
-    case KDialog::Accepted:
+    case QDialog::Accepted:
         m_selectedImages.insert( unit, m_dialog.data()->image() );
         finish( unit );
         break;
 
-    case KDialog::Rejected:
+    case QDialog::Rejected:
         finish( unit, Cancelled );
         break;
 

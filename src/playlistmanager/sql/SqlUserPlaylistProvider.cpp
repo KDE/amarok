@@ -29,7 +29,7 @@
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
-#include <KDialog>
+#include <QDialog>
 #include <KGlobal>
 #include <QIcon>
 #include <KInputDialog>
@@ -40,6 +40,7 @@
 #include <QAction>
 #include <QLabel>
 #include <QMap>
+#include <KConfigGroup>
 
 static const int USERPLAYLIST_DB_VERSION = 3;
 // a database updater has been added in checkTables(). Use that when updating db version

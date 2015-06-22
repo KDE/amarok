@@ -29,25 +29,40 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QLayout>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 
 TransferDialog::TransferDialog( MediaDevice *mdev )
-        : KDialog( Amarok::mainWindow() )
+        : QDialog( Amarok::mainWindow() )
 {
     setModal( true );
-    setButtons( Ok|Cancel );
-    setDefaultButton( Ok );
-    showButtonSeparator( true );
+
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+//  showButtonSeparator( true );
+
 
     m_dev = mdev;
     m_accepted = false;
     m_sort1LastIndex = m_sort2LastIndex = -1;
 
     kapp->setTopWidget( this );
-    setCaption( KDialog::makeStandardCaption( i18n( "Transfer Queue to Device" ) ) );
+    setWindowTitle( QDialog::makeStandardCaption( i18n( "Transfer Queue to Device" ) ) );
 
     KVBox *vbox = new KVBox( this );
-    setMainWidget( vbox );
+    mainLayout->addWidget(vbox);
+    mainLayout->addWidget(buttonBox);
 
     QString transferDir = mdev->getTransferDir();
 
@@ -116,17 +131,16 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     convertSpaces->setChecked( mdev->getSpacesToUnderscores() );
 
     connect( convertSpaces, SIGNAL(toggled(bool)), this, SLOT(convertSpaces_toggled(bool)) );
-    connect(this,SIGNAL(okClicked()),this,SLOT(slotOk()));
-    connect(this,SIGNAL(cancelClicked()),this,SLOT(slotCancel()));
+    connect(okButton,SIGNAL(clicked()),this,SLOT(slotOk()));
+    connect(buttonBox->button(QDialogButtonBox::Cancel),SIGNAL(clicked()),this,SLOT(slotCancel()));
 }
 
 void
 TransferDialog::slotOk()
 {
     m_accepted = true;
-    //KDialog::slotOk();
-    slotButtonClicked( Ok );
-
+    //QDialog::slotOk();
+    accept();
     m_dev->setFirstSort( m_sort1->currentText() );
     m_dev->setSecondSort( m_sort2->currentText() );
     m_dev->setThirdSort( m_sort3->currentText() );
@@ -136,8 +150,8 @@ void
 TransferDialog::slotCancel()
 {
     m_accepted = false;
-    //KDialog::slotCancel();
-    slotButtonClicked( Cancel );
+    //QDialog::slotCancel();
+    reject();
 }
 
 void

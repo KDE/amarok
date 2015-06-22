@@ -129,7 +129,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="0"/>
- <layoutfunction spacing="KDialog::spacingHint"/>
  <customwidgets>
   <customwidget>
    <class>KPushButton</class>

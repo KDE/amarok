@@ -29,7 +29,7 @@ class QRadioButton;
 /**
     @author Jeff Mitchell <kde-dev@emailgoeshere.com>
 */
-class DeviceConfigureDialog : public KDialog
+class DeviceConfigureDialog : public QDialog
 {
     Q_OBJECT
 
@@ -37,9 +37,6 @@ class DeviceConfigureDialog : public KDialog
         DeviceConfigureDialog( MediaDevice *device );
         ~DeviceConfigureDialog();
         bool successful() { return m_accepted; }
-
-    private Q_SLOTS:
-        void slotButtonClicked( KDialog::ButtonCode button );
 
     private:
         bool            m_accepted;

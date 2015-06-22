@@ -580,7 +580,7 @@ UmsCollection::slotParseActionTriggered()
 void
 UmsCollection::slotConfigure()
 {
-    QDialog umsSettingsDialog;
+    KDialog umsSettingsDialog;
     QWidget *settingsWidget = new QWidget( &umsSettingsDialog );
     QScopedPointer<Capabilities::TranscodeCapability> tc( create<Capabilities::TranscodeCapability>() );
 
@@ -624,16 +624,8 @@ UmsCollection::slotConfigure()
 
     layout.addWidget( &optionsWidget );
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    umsSettingsDialog.setLayout(mainLayout);
-    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-    okButton->setDefault(true);
-    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-    umsSettingsDialog.connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    umsSettingsDialog.connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-    mainLayout->addWidget(settingsWidget);
-    mainLayout->addWidget(buttonBox);
+    umsSettingsDialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    umsSettingsDialog.setMainWidget( settingsWidget );
 
     umsSettingsDialog.setWindowTitle( i18n( "Configure USB Mass Storage Device" ) );
 

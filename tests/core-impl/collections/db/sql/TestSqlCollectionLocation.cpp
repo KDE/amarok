@@ -41,6 +41,7 @@
 #include <qtest_kde.h>
 
 #include <gmock/gmock.h>
+#include <KConfigGroup>
 
 using ::testing::AnyNumber;
 using ::testing::Return;
@@ -69,7 +70,7 @@ public:
     void setIsOrganizing( bool organizing ) { Q_UNUSED( organizing ) }
     void setTranscodingConfiguration(const Transcoding::Configuration &configuration)
     { Q_UNUSED( configuration ) }
-    void setCaption( const QString& ) {}
+    void setWindowTitle( const QString& ) {}
 
     void show() { emit accepted(); }
 

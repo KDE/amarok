@@ -156,10 +156,9 @@ void PlaylistInfo::showConfigurationInterface()
 
         QWidget* widget = new QWidget( m_config );
         QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel|QDialogButtonBox::Apply);
-        QWidget *mainWidget = new QWidget(this);
         QVBoxLayout *mainLayout = new QVBoxLayout;
         m_config->setLayout(mainLayout);
-        mainLayout->addWidget(mainWidget);
+        
         QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
         okButton->setDefault(true);
         okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
@@ -167,6 +166,7 @@ void PlaylistInfo::showConfigurationInterface()
         m_config->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
         connect( m_config, SIGNAL(clicked()), this, SLOT(configAccepted()) );
         connect( m_config, SIGNAL(clicked()), this, SLOT(configAccepted()) );
+
         mainLayout->addWidget(buttonBox);
 
         m_configLayout = new QHBoxLayout( widget );

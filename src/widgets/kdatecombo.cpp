@@ -27,6 +27,7 @@
 #include <kdatepicker.h>
 #include <kdatetable.h>
 #include <kdebug.h>
+#include <KConfigGroup>
 
 KDateCombo::KDateCombo(QWidget *parent) : QComboBox(parent)
 {
@@ -51,7 +52,9 @@ void KDateCombo::initObject(const QDate & date)
   datePicker = new KDatePicker(date, popupFrame);
   datePicker->setMinimumSize(datePicker->sizeHint());
   datePicker->installEventFilter(this);
-  popupFrame->setMainWidget(datePicker);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  popupFrame->setLayout(mainLayout);
+  mainLayout->addWidget(datePicker);
   setDate(date);
 
   connect(datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(dateEnteredEvent(QDate)));
