@@ -20,6 +20,7 @@
 #include "core/podcasts/PodcastMeta.h"
 #include "core-impl/meta/file/File.h"
 #include "core/playlists/PlaylistProvider.h"
+#include <QDir>
 
 namespace Podcasts
 {

@@ -471,7 +471,7 @@ LyricsApplet::init()
     connect( d->closeIcon, SIGNAL(clicked()), this, SLOT(_closeLyrics()) );
 
     QAction* autoScrollAction = new QAction( this );
-    autoScrollAction->setIcon( QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-sorting-16.png" ) ) ) );
+    autoScrollAction->setIcon( QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-sorting-16.png" ) ) ) );
     autoScrollAction->setEnabled( true );
     autoScrollAction->setText( i18n( "Scroll automatically" ) );
     d->autoScrollIcon = addRightHeaderAction( autoScrollAction );

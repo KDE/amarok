@@ -93,8 +93,8 @@ SqlPodcastProvider::SqlPodcastProvider()
                                .readEntry( "Maximum Simultaneous Downloads", 4 );
     m_maxConcurrentUpdates = Amarok::config( "Podcasts" )
                              .readEntry( "Maximum Simultaneous Updates", 4 );
-    m_baseDownloadDir = Amarok::config( "Podcasts" ).readEntry( "Base Download Directory",
-                                                           Amarok::saveLocation( "podcasts" ) );
+    m_baseDownloadDir = QUrl::fromUserInput( Amarok::config( "Podcasts" ).readEntry( "Base Download Directory",
+                                                           Amarok::saveLocation( "podcasts" ) ) );
 
     QStringList values;
 
@@ -623,7 +623,8 @@ SqlPodcastProvider::configureProvider()
         else
             m_updateTimer->stop();
         QUrl adjustedNewPath = settings.m_baseDirUrl->url();
-        adjustedNewPath.adjustedNewPath = adjustedNewPath.adjusted(QUrl::StripTrailingSlash));
+        adjustedNewPath = adjustedNewPath.adjusted(QUrl::StripTrailingSlash);
+
         if( adjustedNewPath != m_baseDownloadDir )
         {
             m_baseDownloadDir = adjustedNewPath;
@@ -706,7 +707,7 @@ SqlPodcastProvider::slotExportOpml()
     KFileDialog fileDialog( QUrl("kfiledialog:///podcast/amarok_podcasts.opml"), "*.opml",
                             The::mainWindow() );
     fileDialog.setMode( KFile::File );
-    fileDialog.setCaption( i18n( "Select file for OPML export") );
+    fileDialog.setWindowTitle( i18n( "Select file for OPML export") );
     if( fileDialog.exec() != KDialog::Accepted )
         return;
 
@@ -791,7 +792,7 @@ SqlPodcastProvider::moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr sqlCh
 {
     debug() << QString( "We need to move downloaded episodes of \"%1\" to %2" )
             .arg( sqlChannel->title() )
-            .arg( sqlChannel->saveLocation().prettyUrl() );
+            .arg( sqlChannel->saveLocation().toDisplayString() );
 
     QList<QUrl> filesToMove;
     foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
@@ -1145,7 +1146,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     }
 
     KIO::TransferJob *transferJob =
-            KIO::get( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
+            KIO::get( QUrl::fromUserInput(sqlEpisode->uidUrl()), KIO::Reload, KIO::HideProgressInfo );
 
 
     QFile *tmpFile = createTmpFile( sqlEpisode );
@@ -1272,7 +1273,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
         return false;
     }
 
-    QString fileName = sqlChannel->saveLocation().toLocalFile( QUrl::AddTrailingSlash );
+    QString fileName = sqlChannel->saveLocation().adjusted(QUrl::StripTrailingSlash).toLocalFile();
     fileName += download.fileName;
     debug() << "checking " << fileName;
     QFileInfo fileInfo( fileName );
@@ -1282,7 +1283,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
     debug() << fileName << " already exists, no need to redownload";
     // NOTE: we need to emit because the KJobProgressBar relies on it to clean up
     job->kill( KJob::EmitResult );
-    sqlEpisode->setLocalUrl( fileName );
+    sqlEpisode->setLocalUrl( QUrl::fromLocalFile(fileName) );
     //TODO: repaint icons, probably with signal metadataUpdate()
     return true;
 }
@@ -1399,13 +1400,13 @@ SqlPodcastProvider::downloadResult( KJob *job )
             download.fileName = QString( filenameLayout );
         }
 
-        QString finalName = sqlChannel->saveLocation().toLocalFile( QUrl::AddTrailingSlash )
+        QString finalName = sqlChannel->saveLocation().adjusted(QUrl::StripTrailingSlash).toLocalFile()
                             + download.fileName;
         if( tmpFile->rename( finalName ) )
         {
             debug() << "successfully written Podcast Episode " << sqlEpisode->title()
                     << " to " << finalName;
-            sqlEpisode->setLocalUrl( finalName );
+            sqlEpisode->setLocalUrl( QUrl::fromLocalFile(finalName) );
 
             if( sqlChannel->writeTags() )
                 sqlEpisode->writeTagsToFile();

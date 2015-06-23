@@ -31,6 +31,7 @@
 
 #include <QAbstractListModel>
 #include <QHash>
+#include <QTimer>
 
 #include <KLocale>
 #include <kdemacros.h>

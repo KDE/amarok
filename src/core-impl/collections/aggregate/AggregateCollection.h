@@ -27,6 +27,7 @@
 #include <QString>
 #include <QHash>
 #include <QReadWriteLock>
+#include <KLocalizedString>
 
 namespace Meta {
     class AggreagateYear;

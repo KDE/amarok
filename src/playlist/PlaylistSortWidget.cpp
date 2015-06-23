@@ -39,7 +39,7 @@ SortWidget::SortWidget( QWidget *parent )
     m_layout->setContentsMargins( 0, 0, 0, 0 );
 
     BreadcrumbItemButton *rootItem = new BreadcrumbItemButton(
-            QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-sorting-16.png" ) ) ),
+            QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-sorting-16.png" ) ) ),
             QString(), this );
     rootItem->setToolTip( i18n( "Clear the playlist sorting configuration." ) );
     m_layout->addWidget( rootItem );

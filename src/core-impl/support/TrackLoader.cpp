@@ -52,15 +52,6 @@ TrackLoader::init( const QUrl &url )
 void
 TrackLoader::init( const QList<QUrl> &qurls )
 {
-    QList<QUrl> kurls;
-    foreach( const QUrl &qurl, qurls )
-        kurls << QUrl( qurl );
-    init( kurls );
-}
-
-void
-TrackLoader::init( const QList<QUrl> &urls )
-{
     m_sourceUrls = urls;
     QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
 }

@@ -539,8 +539,8 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     m_dbId = (*(iter++)).toInt();
     m_url = QUrl( *(iter++) );
     m_title = *(iter++);
-    m_webLink = *(iter++);
-    m_imageUrl = *(iter++);
+    m_webLink = QUrl::fromUserInput(*(iter++));
+    m_imageUrl = QUrl::fromUserInput(*(iter++));
     m_description = *(iter++);
     m_copyright = *(iter++);
     m_directory = QUrl( *(iter++) );
@@ -584,7 +584,9 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
     //Default Settings
 
     m_directory = QUrl( m_provider->baseDownloadDir() );
-    m_directory.addPath( Amarok::vfatPath( m_title ) );
+    m_directory = m_directory.adjusted(QUrl::StripTrailingSlash);
+    m_directory.setPath( QDir::toNativeSeparators(m_directory.path() + '/' + Amarok::vfatPath( m_title )) );
+
     m_autoScan = true;
     m_fetchType = StreamOrDownloadOnDemand;
     m_purge = false;
@@ -655,7 +657,10 @@ SqlPodcastChannel::setTitle( const QString &title )
     /* also change the savelocation if a title is not set yet.
        This is a special condition that can happen when first fetching a podcast feed */
     if( m_title.isEmpty() )
-        m_directory.addPath( Amarok::vfatPath( title ) );
+    {
+        m_directory = m_directory.adjusted(QUrl::StripTrailingSlash);
+        m_directory.setPath( QDir::toNativeSeparators(m_directory.path() + '/' + Amarok::vfatPath( title )) );
+    }
     m_title = title;
 }
 
@@ -698,14 +703,14 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     QUrl checkUrl;
     //searched in the database for guid or enclosure url
     if( !episode->guid().isEmpty() )
-        checkUrl = episode->guid();
+        checkUrl = QUrl::fromUserInput(episode->guid());
     else if( !episode->uidUrl().isEmpty() )
-        checkUrl = episode->uidUrl();
+        checkUrl = QUrl::fromUserInput(episode->uidUrl());
     else
         return PodcastEpisodePtr(); //noting to check for
 
     if( m_provider->possiblyContainsTrack( checkUrl ) )
-        return PodcastEpisodePtr::dynamicCast( m_provider->trackForUrl( episode->guid() ) );
+        return PodcastEpisodePtr::dynamicCast( m_provider->trackForUrl( QUrl::fromUserInput(episode->guid()) ) );
 
     //force episodes load.
     if( !m_episodesLoaded )

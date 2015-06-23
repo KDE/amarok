@@ -213,7 +213,7 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
         }
     }
 
-    KAction *visitProfile = new KAction( QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data",
+    KAction *visitProfile = new KAction( QIcon( QPixmap( KStandardDirs::locate( "data",
             "amarok/images/opendesktop-22.png" ) ) ), i18n( "Visit %1's openDesktop.org profile", ocsPerson.firstName() ), this );
 
     visitProfile->setToolTip( i18n( "Visit %1's profile on openDesktop.org", ocsPerson.firstName() ) );
@@ -254,17 +254,17 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
             }
             else if( type == "delicious" )
             {
-                icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-delicious.png" ) ) );
+                icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-delicious.png" ) ) );
                 text = i18n( "Visit contributor's del.icio.us profile" );
             }
             else if( type == "Digg" )
             {
-                icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-digg.png" ) ) );
+                icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-digg.png" ) ) );
                 text = i18n( "Visit contributor's Digg profile" );
             }
             else if( type == "Facebook" )
             {
-                icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-facebook.png" ) ) );
+                icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-facebook.png" ) ) );
                 text = i18n( "Visit contributor's Facebook profile" );
             }
             else if( type == "Homepage" || type == "other" || ( type.isEmpty() && !url.isEmpty() ) )
@@ -280,7 +280,7 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
                 }
                 if( type == "other" && url.contains( "last.fm/" ) )     //HACK: assign a last.fm icon if the URL contains last.fm
                 {
-                    icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-lastfm.png" ) ) );
+                    icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-lastfm.png" ) ) );
                     text = i18n( "Visit contributor's Last.fm profile" );
                 }
                 else
@@ -288,52 +288,52 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
             }
             else if( type == "LinkedIn" )
             {
-                icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-linkedin.png" ) ) );
+                icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-linkedin.png" ) ) );
                 text = i18n( "Visit contributor's LinkedIn profile" );
             }
             else if( type == "MySpace" )
             {
-                icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-myspace.png" ) ) );
+                icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-myspace.png" ) ) );
                 text = i18n( "Visit contributor's MySpace homepage" );
             }
             else if( type == "Reddit" )
             {
-                icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-reddit.png" ) ) );
+                icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-reddit.png" ) ) );
                 text = i18n( "Visit contributor's Reddit profile" );
             }
             else if( type == "YouTube" )
             {
-                icon = QIcon::fromTheme( "dragonplayer" ); //FIXME: icon
+                icon = QIcon( "dragonplayer" ); //FIXME: icon
                 text = i18n( "Visit contributor's YouTube profile" );
             }
             else if( type == "Twitter" )
             {
-                icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-twitter.png" ) ) );
+                icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-twitter.png" ) ) );
                 text = i18n( "Visit contributor's Twitter feed" );
             }
             else if( type == "Wikipedia" )
             {
-                icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-wikipedia.png" ) ) );
+                icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-wikipedia.png" ) ) );
                 text = i18n( "Visit contributor's Wikipedia profile" );
             }
             else if( type == "Xing" )
             {
-                icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-xing.png" ) ) );
+                icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-xing.png" ) ) );
                 text = i18n( "Visit contributor's Xing profile" );
             }
             else if( type == "identi.ca" )
             {
-                icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-identica.png" ) ) );
+                icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-identica.png" ) ) );
                 text = i18n( "Visit contributor's identi.ca feed" );
             }
             else if( type == "libre.fm" )
             {
-                icon = QIcon::fromTheme( "juk" );  //FIXME: icon
+                icon = QIcon( "juk" );  //FIXME: icon
                 text = i18n( "Visit contributor's libre.fm profile" );
             }
             else if( type == "StackOverflow" )
             {
-                icon = QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-stackoverflow.png" ) ) );
+                icon = QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-stackoverflow.png" ) ) );
                 text = i18n( "Visit contributor's StackOverflow profile" );
             }
             else

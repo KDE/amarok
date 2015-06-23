@@ -29,6 +29,7 @@
 
 #include <QHash>
 #include <QModelIndex>
+#include <KLocalizedString>
 
 namespace Playlist
 {

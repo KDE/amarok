@@ -23,6 +23,7 @@
 
 #include <QIcon>
 #include <KLocale>
+#include <KMD5>
 
 class PodcastImageFetcher;
 

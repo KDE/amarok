@@ -78,11 +78,6 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
         void init( const QUrl &url );
 
         /**
-         * Convenience overload for init( const QList<QUrl> &urls )
-         */
-        void init( const QList<QUrl> &urls );
-
-        /**
          * Starts TrackLoader's job, you'll get finished() signal in the end and
          * TrackLoader will auto-delete itself.
          *

@@ -57,7 +57,7 @@ Restorer::runJingle()
     {
         QString jingle = KStandardDirs::locate( "data", "amarok/data/first_run_jingle.ogg" );
         The::playlistController()->clear();
-        The::playlistController()->insertTrack( 0, CollectionManager::instance()->trackForUrl( jingle ) );
+        The::playlistController()->insertTrack( 0, CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(jingle) ) );
         AmarokConfig::setPlayFirstRunJingle( false );
     }
     emit restoreFinished();

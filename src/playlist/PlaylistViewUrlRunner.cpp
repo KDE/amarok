@@ -93,7 +93,7 @@ ViewUrlRunner::prettyCommand() const
 QIcon
 ViewUrlRunner::icon() const
 {
-    return QIcon::fromTheme( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-bookmark-16.png" ) ) );
+    return QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-bookmark-16.png" ) ) );
 }
 
 } //namespace Playlist

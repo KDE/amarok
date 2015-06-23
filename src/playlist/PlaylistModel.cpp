@@ -445,7 +445,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case Directory:
             {
                 if( track->playableUrl().isLocalFile() )
-                    return track->playableUrl().directory();
+                    return track->playableUrl().adjusted(QUrl::RemoveFilename).path();
                 break;
             }
             case DiscNumber:
@@ -906,7 +906,7 @@ Playlist::Model::exportPlaylist( const QString &path, bool relative ) const
     foreach( quint64 id, queueIds ) {
       queued << rowForId( id );
     }
-    return Playlists::exportPlaylistFile( tracks(), path, relative, queued );
+    return Playlists::exportPlaylistFile( tracks(), QUrl::fromLocalFile(path), relative, queued);
 }
 
 Meta::TrackList
