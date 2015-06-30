@@ -22,7 +22,9 @@
 #include "core-impl/meta/proxy/MetaProxyWorker.h"
 
 #include <KSharedPtr>
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
+#include <KLocalizedString>
 
 #include <QCoreApplication>
 #include <QThread>
@@ -63,7 +65,7 @@ MetaProxy::Track::Track( const QUrl &url, LookupType lookupType )
 
         QObject::connect( worker, SIGNAL(finishedLookup(Meta::TrackPtr)),
                           d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
-        ThreadWeaver::Weaver::instance()->enqueue( worker );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(worker) );
     }
 }
 
@@ -82,7 +84,7 @@ MetaProxy::Track::lookupTrack( Collections::TrackProvider *provider )
 
     QObject::connect( worker, SIGNAL(finishedLookup(Meta::TrackPtr)),
                       d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
-    ThreadWeaver::Weaver::instance()->enqueue( worker );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(worker) );
 }
 
 QString

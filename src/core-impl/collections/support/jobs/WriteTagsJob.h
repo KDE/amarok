@@ -33,13 +33,19 @@
  * The caller is responsible to delete this job after use, perhaps by connecting its
  * done() signal to its deleteLater() slot.
  */
-class AMAROK_EXPORT WriteTagsJob : public ThreadWeaver::Job
+class AMAROK_EXPORT WriteTagsJob :public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 
     public:
         WriteTagsJob( const QString &path, const Meta::FieldHash &changes, bool respectConfig = true );
-        virtual void run();
+        virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+
+    Q_SIGNALS:
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed. */
+        void failed(ThreadWeaver::JobPointer);
 
     private:
         const QString m_path;

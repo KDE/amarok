@@ -31,7 +31,7 @@ namespace StatSyncing
      * Because comparisonFields() needs to be static, only one instance of this class is
      * allowed to exist at given time.
      */
-    class MatchTracksJob : public ThreadWeaver::Job
+    class MatchTracksJob :public QObject, public ThreadWeaver::Job
     {
         Q_OBJECT
 
@@ -80,6 +80,11 @@ namespace StatSyncing
              * Emitted from worker thread when all time-consuming operations are done.
              */
             void endProgressOperation( QObject *owner );
+
+            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+            void done(ThreadWeaver::JobPointer);
+            /** This job has failed. */
+            void failed(ThreadWeaver::JobPointer);
 
         protected:
             virtual void run();

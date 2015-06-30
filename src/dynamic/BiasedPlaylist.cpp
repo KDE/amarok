@@ -34,8 +34,6 @@
 #include "dynamic/DynamicModel.h"
 #include "playlist/PlaylistModelStack.h" // for The::playlist
 
-#include <ThreadWeaver/Weaver>
-
 #include <QThread>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -120,13 +118,14 @@ Dynamic::BiasedPlaylist::startSolver( int numRequested )
     {
         debug() << "assigning new m_solver";
         m_solver = new BiasSolver( numRequested, m_bias, getContext() );
-        connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
+        connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(solverFinished()) );
 
         Amarok::Components::logger()->newProgressOperation( m_solver,
                                                             i18n( "Generating playlist..." ), 100,
                                                             this, SLOT(requestAbort()) );
 
-        ThreadWeaver::Weaver::instance()->enqueue( m_solver );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_solver) );
+
         debug() << "called prepareToRun";
     }
     else

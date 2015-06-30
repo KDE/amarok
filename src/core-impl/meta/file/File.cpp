@@ -37,8 +37,6 @@
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/support/UrlStatisticsStore.h"
 
-
-
 #include <QAction>
 #include <QFileInfo>
 #include <QList>
@@ -125,7 +123,7 @@ public:
             {
                 //get the path of the parent directory of the file
                 QUrl playableUrl = m_track->playableUrl();
-                fileBrowser->setDir( playableUrl.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash).path() );       
+                fileBrowser->setDir( playableUrl.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash) );       
             }
         }
     }
@@ -199,7 +197,7 @@ Track::notPlayableReason() const
 bool
 Track::isEditable() const
 {
-    QFileInfo info = QFileInfo( playableUrl().pathOrUrl() );
+    QFileInfo info = QFileInfo( playableUrl().toDisplayString() );
     return info.isFile() && info.isWritable();
 }
 

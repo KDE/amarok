@@ -26,10 +26,10 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 
 
-class AmazonParser : public ThreadWeaver::Job
+class AmazonParser : public QObject, public ThreadWeaver::Job
 {
 public:
     AmazonParser( QString tempFileName, Collections::AmazonCollection* collection, AmazonMetaFactory* factory );
@@ -47,6 +47,12 @@ protected:
     QDomDocument *m_responseDocument;
     AmazonMetaFactory *m_factory;
     bool m_success;
+
+Q_SIGNALS:
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed. */
+    void failed(ThreadWeaver::JobPointer);
 
 private:
     /**

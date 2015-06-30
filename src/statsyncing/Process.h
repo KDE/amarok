@@ -23,6 +23,10 @@
 #include <QSharedPointer>
 #include <QMap>
 
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/ThreadWeaver>
+
 class KDialog;
 namespace ThreadWeaver {
     class Job;
@@ -77,10 +81,10 @@ namespace StatSyncing
 
         private Q_SLOTS:
             void slotMatchTracks();
-            void slotTracksMatched( ThreadWeaver::Job *job );
+            void slotTracksMatched( ThreadWeaver::JobPointer job );
             void slotBack();
             void slotSynchronize();
-            void slotLogSynchronization( ThreadWeaver::Job *job );
+            void slotLogSynchronization( ThreadWeaver::JobPointer job );
             void slotSaveSizeAndDelete();
             void slotDeleteDialog();
 

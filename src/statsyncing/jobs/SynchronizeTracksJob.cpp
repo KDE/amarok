@@ -23,7 +23,7 @@
 #include "statsyncing/Controller.h"
 #include "statsyncing/TrackTuple.h"
 
-#include <threadweaver/Thread.h>
+#include <ThreadWeaver/Thread>
 
 using namespace StatSyncing;
 
@@ -33,7 +33,8 @@ static const int fuzz = denom / 2;
 SynchronizeTracksJob::SynchronizeTracksJob( const QList<TrackTuple> &tuples,
                                             const TrackList &tracksToScrobble,
                                             const Options &options, QObject *parent )
-    : Job( parent )
+    : QObject( parent )
+    , Job( parent )
     , m_abort( false )
     , m_tuples( tuples )
     , m_tracksToScrobble( tracksToScrobble )

@@ -34,7 +34,7 @@ namespace StatSyncing
      * A job to call TrackTuple::synchronize() in order not to make delays in the main
      * loop.
      */
-    class SynchronizeTracksJob : public ThreadWeaver::Job
+    class SynchronizeTracksJob : public QObject, public ThreadWeaver::Job
     {
         Q_OBJECT
 
@@ -82,6 +82,11 @@ namespace StatSyncing
              */
             void scrobble( const Meta::TrackPtr &track, double playedFraction,
                            const QDateTime &time );
+
+            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+            void done(ThreadWeaver::JobPointer);
+            /** This job has failed. */
+            void failed(ThreadWeaver::JobPointer);
 
         protected:
             virtual void run();

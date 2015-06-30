@@ -125,18 +125,20 @@ BiasSolver::setAutoDelete( bool autoDelete )
     {
         if( isFinished() )
             deleteLater();
-        connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
+        connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(deleteLater()) );
     }
     else
     {
-        disconnect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
+        disconnect( this, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(deleteLater()) );
     }
 }
 
 
 void
-BiasSolver::run()
+BiasSolver::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread )
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
 
     debug() << "BiasSolver::run in thread:" << QThread::currentThreadId();
@@ -159,7 +161,8 @@ BiasSolver::run()
     debug() << "found solution"<<list.m_trackList.count()<<"time"<< m_startTime.msecsTo( QDateTime::currentDateTime() );
 
     m_solution = list.m_trackList.mid( m_context.count() );
-    setFinished( true );
+//    setFinished( true );
+    setStatus(Status_Success);
 }
 
 void

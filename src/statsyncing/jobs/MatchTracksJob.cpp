@@ -78,7 +78,8 @@ MatchTracksJob::comparisonFields()
 }
 
 MatchTracksJob::MatchTracksJob( const ProviderPtrList &providers, QObject *parent )
-    : Job( parent )
+    : QObject(parent)
+    , Job( parent )
     , m_abort( false )
     , m_providers( providers )
 {

@@ -36,9 +36,10 @@
 using namespace Playlists;
 
 PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
-    : m_playlist( playlist )
+    : QObject()
+    , m_playlist( playlist )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotDone()) );
+    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(slotDone()) );
 
     // we must handle remove downloading here as KIO is coupled with GUI as is not
     // designed to work from another thread
@@ -59,7 +60,7 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
             return;
         }
 
-        KIO::FileCopyJob *job = KIO::file_copy( url , m_tempFile.fileName(), 0774,
+        KIO::FileCopyJob *job = KIO::file_copy( url , QUrl::fromLocalFile(m_tempFile.fileName()), 0774,
                                                 KIO::Overwrite | KIO::HideProgressInfo );
         Amarok::Components::logger()->newProgressOperation( job,
                 i18n("Downloading remote playlist" ) );
@@ -75,8 +76,10 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
 }
 
 void
-PlaylistFileLoaderJob::run()
+PlaylistFileLoaderJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     SemaphoreReleaser releaser( m_playlist->isLoadingAsync() ? 0 : &m_playlist->m_loadingDone );
     m_downloadSemaphore.acquire(); // wait for possible download to finish
     if( m_actualPlaylistFile.isEmpty() )

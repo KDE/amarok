@@ -24,7 +24,7 @@
 #include <QUrl>
 #include <KMimeType>
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 using namespace Playlists;
 
@@ -58,7 +58,7 @@ PlaylistFile::triggerTrackLoad()
         return;
     }
     PlaylistFileLoaderJob *worker = new PlaylistFileLoaderJob( PlaylistFilePtr( this ) );
-    ThreadWeaver::Weaver::instance()->enqueue( worker );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(worker) );
     if ( !isLoadingAsync() )
         m_loadingDone.acquire(); // after loading is finished worker will release semapore
 }
@@ -121,9 +121,10 @@ PlaylistFile::save( bool relative )
     QMutexLocker locker( &m_saveLock );
 
     //if the location is a directory append the name of this playlist.
-    if( m_url.fileName( QUrl::ObeyTrailingSlash ).isNull() )
-        m_url.setFileName( name() );
-
+    if( m_url.fileName().isNull() )
+    {    m_url = m_url.adjusted(QUrl::RemoveFilename);
+         m_url.setPath(m_url.path() + name());
+    }
     QFile file( m_url.path() );
 
     if( !file.open( QIODevice::WriteOnly ) )
@@ -145,7 +146,8 @@ PlaylistFile::setName( const QString &name )
     if( !m_url.isEmpty() && !name.isEmpty() )
     {
         QString exten = QString( ".%1" ).arg(extension());
-        m_url.setFileName( name + ( name.endsWith( exten, Qt::CaseInsensitive ) ? "" : exten ) );
+        m_url = m_url.adjusted(QUrl::RemoveFilename);
+        m_url.setPath(m_url.path() + name + ( name.endsWith( exten, Qt::CaseInsensitive ) ? "" : exten ));
     }
 }
 
@@ -165,10 +167,10 @@ PlaylistFile::getAbsolutePath( const QUrl &url )
         m_relativePaths = true;
         // example: url = QUrl("../tunes/tune.ogg")
         const QString relativePath = url.path(); // "../tunes/tune.ogg"
-        absUrl = m_url.directory(); // file:///playlists/
+        absUrl = m_url.adjusted(QUrl::RemoveFilename); // file:///playlists/
         absUrl = absUrl.adjusted(QUrl::StripTrailingSlash);
         absUrl.setPath(absUrl.path() + '/' + ( relativePath ));
-        absUrl.cleanPath(); // file:///playlists/tunes/tune.ogg
+        absUrl.setPath( QDir::cleanPath(absUrl.path()) ); // file:///playlists/tunes/tune.ogg
     }
     return absUrl;
 }
@@ -183,6 +185,6 @@ PlaylistFile::trackLocation( const Meta::TrackPtr &track ) const
     if( !m_relativePaths || m_url.isEmpty() || !path.isLocalFile() || !m_url.isLocalFile() )
         return path.toEncoded();
 
-    QDir playlistDir( m_url.directory() );
+    QDir playlistDir( m_url.adjusted(QUrl::RemoveFilename).path() );
     return QUrl::toPercentEncoding( playlistDir.relativeFilePath( path.path() ), "/" );
 }

@@ -38,7 +38,9 @@
 #include <QStack>
 
 #include <KAction>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/Queue>
 
 class AmazonMetaFactory;
 class AmazonInfoParser;
@@ -202,12 +204,12 @@ private Q_SLOTS:
     /**
     * Clean up after parsing the API reply XML document, update collection.
     */
-    void parsingDone( ThreadWeaver::Job* parserJob );
+    void parsingDone( ThreadWeaver::JobPointer parserJob );
 
     /**
     * Clean up after parsing the API reply XML document.
     */
-    void parsingFailed( ThreadWeaver::Job* parserJob );
+    void parsingFailed( ThreadWeaver::JobPointer parserJob );
 
     /**
     * Go backward in Amazon store.

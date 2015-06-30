@@ -23,6 +23,7 @@
 #include "dynamic/Bias.h"
 
 #include <QObject>
+#include <KLocalizedString>
 
 class QXmlStreamReader;
 class QXmlStreamWriter;

@@ -19,7 +19,7 @@
 #include "core/meta/Meta.h"
 
 Amarok::TrackForUrlWorker::TrackForUrlWorker( const QUrl &url )
-    : ThreadWeaver::QObjectDecorator(NULL)
+    : QObject()
     , ThreadWeaver::Job()
     , m_url( url )
 {
@@ -27,7 +27,7 @@ Amarok::TrackForUrlWorker::TrackForUrlWorker( const QUrl &url )
 }
 
 Amarok::TrackForUrlWorker::TrackForUrlWorker( const QString &url )
-    : ThreadWeaver::QObjectDecorator(NULL)
+    : QObject()
     , ThreadWeaver::Job()
     , m_url( QUrl( url ) )
 {

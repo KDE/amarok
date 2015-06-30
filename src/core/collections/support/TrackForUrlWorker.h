@@ -24,7 +24,6 @@
 #include <QUrl>
 
 #include <ThreadWeaver/Job>
-#include <ThreadWeaver/QObjectDecorator>
 
 namespace Amarok
 {
@@ -32,7 +31,7 @@ namespace Amarok
  * Derive from this class and implement the run() method to set mTrack.
  * @author Casey Link
  */
-class AMAROK_CORE_EXPORT TrackForUrlWorker : public ThreadWeaver::QObjectDecorator, public ThreadWeaver::Job
+class AMAROK_CORE_EXPORT TrackForUrlWorker : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 public:
@@ -40,9 +39,15 @@ public:
     TrackForUrlWorker( const QString &url );
     ~TrackForUrlWorker();
 
-    virtual void run() = 0;
+    virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread = 0) = 0;
+
 Q_SIGNALS:
     void finishedLookup( const Meta::TrackPtr &track );
+
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed. */
+    void failed(ThreadWeaver::JobPointer);
 
 protected:
     QUrl m_url;
@@ -50,8 +55,6 @@ protected:
 
 private Q_SLOTS:
     void completeJob();
-
-
 };
 
 }

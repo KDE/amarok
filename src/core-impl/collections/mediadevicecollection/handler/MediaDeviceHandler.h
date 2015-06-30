@@ -31,7 +31,7 @@
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 
 #include <QAction>
 #include <QObject>
@@ -186,6 +186,9 @@ Q_SIGNALS:
     void copyTracksDone( bool success );
     void removeTracksDone();
 
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+
     /* File I/O Methods */
 
 public Q_SLOTS:
@@ -262,8 +265,8 @@ protected:
 
 protected Q_SLOTS:
 
-    void slotCopyNextTrackFailed( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
-    void slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
+    void slotCopyNextTrackFailed( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track );
+    void slotCopyNextTrackDone( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track );
 
     void slotFinalizeTrackCopy( const Meta::TrackPtr & track );
     void slotCopyTrackFailed( const Meta::TrackPtr & track );
@@ -352,7 +355,6 @@ private:
     Handler::PodcastCapability *m_podcastCapability;
     Handler::ReadCapability *m_rc;
     Handler::WriteCapability *m_wc;
-
 };
 
 /**
@@ -360,7 +362,7 @@ private:
 * a separate thread. Once done, it informs the Collection it is done
 */
 
-class ParseWorkerThread : public ThreadWeaver::Job
+class ParseWorkerThread : public QObject , public ThreadWeaver::Job
 {
     Q_OBJECT
 public:
@@ -386,6 +388,10 @@ successfully.
     virtual bool success() const;
 
 Q_SIGNALS:
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed.    */
+    void failed(ThreadWeaver::JobPointer);
 
 private Q_SLOTS:
     /**
@@ -394,13 +400,13 @@ private Q_SLOTS:
     * @param job The job that was done
     */
 
-    void slotDoneSuccess( ThreadWeaver::Job* );
+    void slotDoneSuccess( ThreadWeaver::JobPointer );
 
 protected:
     /**
     * Reimplemented, simply runs the parse method.
     */
-    virtual void run();
+    virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
 private:
     bool m_success; ///< Whether or not the parse was successful
@@ -415,7 +421,7 @@ private:
 * Handler's m_copyingthreadsafe variable to false in the Handler's constructor.
 */
 
-class CopyWorkerThread : public ThreadWeaver::Job
+class CopyWorkerThread : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 public:
@@ -448,14 +454,19 @@ Q_SIGNALS:
     * @param track The source track used for the copy
     */
 
-    void copyTrackDone( ThreadWeaver::Job*, const Meta::TrackPtr& track );
+    void copyTrackDone( ThreadWeaver::JobPointer, const Meta::TrackPtr& track );
 
     /**
     * Is emitted when the job is done and has failed
     * @param job The job that was done
     * @param track The source track used for the copy
     */
-    void copyTrackFailed( ThreadWeaver::Job*, const Meta::TrackPtr& track );
+    void copyTrackFailed( ThreadWeaver::JobPointer, const Meta::TrackPtr& track );
+
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed.    */
+    void failed(ThreadWeaver::JobPointer);
 
 private Q_SLOTS:
     /**
@@ -464,7 +475,7 @@ private Q_SLOTS:
     * @param job The job that was done
     */
 
-    void slotDoneSuccess( ThreadWeaver::Job* );
+    void slotDoneSuccess( ThreadWeaver::JobPointer );
 
     /**
     * Is called when the job is done and failed, and simply
@@ -472,14 +483,13 @@ private Q_SLOTS:
     * @param job The job that was done
     */
 
-    void slotDoneFailed( ThreadWeaver::Job* );
+    void slotDoneFailed( ThreadWeaver::JobPointer );
 
 protected:
     /**
     * Reimplemented, simply runs the copy track method.
     */
-    virtual void run();
-
+    virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 private:
     bool m_success; ///< Whether or not the copy was successful
     Meta::TrackPtr m_track; ///< The source track to copy from

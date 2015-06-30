@@ -31,7 +31,8 @@
 #include <QHttpResponseHeader>
 #include <QVariant>
 
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
 using namespace Daap;
 using namespace Meta;
@@ -239,7 +240,7 @@ Reader::songListFinished( int /*id*/, bool error )
     QByteArray result = http->results();
     http->deleteLater();
 
-    ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( result, this, m_memColl ) );
+    ThreadWeaver::Queue::instance()->enqueue( new WorkerThread( result, this, m_memColl ) );
 }
 
 bool
@@ -566,14 +567,15 @@ Reader::fetchingError( const QString& error )
 }
 
 WorkerThread::WorkerThread( const QByteArray &data, Reader *reader, Collections::DaapCollection *coll )
-    : ThreadWeaver::Job()
+    : QObject()
+    , ThreadWeaver::Job()
     , m_success( false )
     , m_data( data )
     , m_reader( reader )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), coll, SLOT(loadedDataFromServer()) );
-    connect( this, SIGNAL(failed(ThreadWeaver::Job*)), coll, SLOT(parsingFailed()) );
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
+    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), coll, SLOT(loadedDataFromServer()) );
+    connect( this, SIGNAL(failed(ThreadWeaver::JobPointer)), coll, SLOT(parsingFailed()) );
+    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(deleteLater()) );
 }
 
 WorkerThread::~WorkerThread()

@@ -96,16 +96,16 @@ Playlists::exportPlaylistFile( const Meta::TrackList &list, const QUrl &path, bo
     switch( format )
     {
         case ASX:
-            playlist = new ASXPlaylist( path.toLocalFile() );
+            playlist = new ASXPlaylist( QUrl::fromLocalFile(path.toLocalFile()) );
             break;
         case PLS:
-            playlist = new PLSPlaylist( path.toLocalFile() );
+            playlist = new PLSPlaylist( QUrl::fromLocalFile(path.toLocalFile()) );
             break;
         case M3U:
-            playlist = new M3UPlaylist( path.toLocalFile() );
+            playlist = new M3UPlaylist( QUrl::fromLocalFile(path.toLocalFile()) );
             break;
         case XSPF:
-            playlist = new XSPFPlaylist( path.toLocalFile() );
+            playlist = new XSPFPlaylist( QUrl::fromLocalFile(path.toLocalFile()) );
             break;
         default:
             debug() << "Could not export playlist file " << path;
@@ -134,13 +134,13 @@ Playlists::canExpand( Meta::TrackPtr track )
     if( !track )
         return false;
 
-    return Playlists::getFormat( track->uidUrl() ) != Playlists::NotPlaylist;
+    return Playlists::getFormat( QUrl::fromUserInput(track->uidUrl()) ) != Playlists::NotPlaylist;
 }
 
 PlaylistPtr
 Playlists::expand( Meta::TrackPtr track )
 {
-   return Playlists::PlaylistPtr::dynamicCast( loadPlaylistFile( track->uidUrl() ) );
+   return Playlists::PlaylistPtr::dynamicCast( loadPlaylistFile( QUrl::fromUserInput(track->uidUrl()) ) );
 }
 
 QUrl

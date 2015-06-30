@@ -29,7 +29,7 @@ namespace Playlists
     /**
      * Allows threading during playlist file loading. Auto-deletes when its work is done.
      */
-    class PlaylistFileLoaderJob :  public ThreadWeaver::Job
+    class PlaylistFileLoaderJob :public QObject,  public ThreadWeaver::Job
     {
         Q_OBJECT
 
@@ -37,7 +37,13 @@ namespace Playlists
             PlaylistFileLoaderJob( const PlaylistFilePtr &playlist );
 
         protected:
-            void run();
+            void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+
+        Q_SIGNALS:
+            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+            void done(ThreadWeaver::JobPointer);
+            /** This job has failed. */
+            void failed(ThreadWeaver::JobPointer);
 
         private Q_SLOTS:
             void slotDonwloadFinished( KJob *job );

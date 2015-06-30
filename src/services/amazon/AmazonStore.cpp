@@ -540,15 +540,15 @@ AmazonStore::parseReply( KJob* requestJob )
 
     // create parser thread
     AmazonParser *parser = new AmazonParser( tempFileName, m_collection, m_metaFactory );
-    connect( parser, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(parsingDone(ThreadWeaver::Job*)) );
-    connect( parser, SIGNAL(failed(ThreadWeaver::Job*)), this, SLOT(parsingFailed(ThreadWeaver::Job*)) );
-    ThreadWeaver::Weaver::instance()->enqueue( parser );
+    connect( parser, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(parsingDone(ThreadWeaver::JobPointer)) );
+    connect( parser, SIGNAL(failed(ThreadWeaver::JobPointer)), this, SLOT(parsingFailed(ThreadWeaver::JobPointer)) );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(parser) );
 
     requestJob->deleteLater();
 }
 
 void
-AmazonStore::parsingDone( ThreadWeaver::Job* parserJob )
+AmazonStore::parsingDone( ThreadWeaver::JobPointer parserJob )
 {
     Q_UNUSED( parserJob )
     // model has been reset now, we no longer have a valid selection
@@ -557,7 +557,7 @@ AmazonStore::parsingDone( ThreadWeaver::Job* parserJob )
 }
 
 void
-AmazonStore::parsingFailed( ThreadWeaver::Job* parserJob )
+AmazonStore::parsingFailed( ThreadWeaver::JobPointer parserJob )
 {
     Q_UNUSED( parserJob )
     Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Error: Received an invalid reply. :-(" ) );

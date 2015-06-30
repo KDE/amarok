@@ -29,6 +29,7 @@
 
 #include <KPluginInfo>
 #include <KVBox>
+#include <KLocalizedString>
 
 #include <QAbstractItemModel>
 #include <QPushButton>

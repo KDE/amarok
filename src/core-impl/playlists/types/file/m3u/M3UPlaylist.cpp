@@ -32,7 +32,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
 {
     if( m_tracksLoaded )
         return true;
-    const QString directory = m_url.directory();
+    const QString directory = m_url.adjusted(QUrl::RemoveFilename).path();
     m_tracksLoaded = true;
 
     int length = -1;

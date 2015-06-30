@@ -22,17 +22,20 @@
 using namespace MetaProxy;
 
 Worker::Worker( const QUrl &url, Collections::TrackProvider *provider )
-    : m_url( url )
+    : QObject()
+    , m_url( url )
     , m_provider( provider )
     , m_stepsDoneReceived( 0 )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(slotStepDone()) );
+    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(slotStepDone()) );
     connect( this, SIGNAL(finishedLookup(Meta::TrackPtr)), SLOT(slotStepDone()) );
 }
 
 void
-Worker::run()
+Worker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     Meta::TrackPtr track;
 
     if( m_provider )

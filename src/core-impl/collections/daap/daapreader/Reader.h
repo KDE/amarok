@@ -22,7 +22,7 @@
 #include <QObject>
 
 #include <QUrl>
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 #include "MemoryCollection.h"
 
 class QString;
@@ -119,7 +119,7 @@ namespace Daap
             YearMap m_yearMap;
     };
 
-    class WorkerThread : public ThreadWeaver::Job
+    class WorkerThread : public QObject, public ThreadWeaver::Job
     {
         Q_OBJECT
         public:
@@ -130,6 +130,12 @@ namespace Daap
 
         protected:
             virtual void run();
+
+        Q_SIGNALS:
+            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+            void done(ThreadWeaver::JobPointer);
+            /** This job has failed. */
+            void failed(ThreadWeaver::JobPointer);
 
         private:
             bool m_success;

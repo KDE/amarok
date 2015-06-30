@@ -48,11 +48,11 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
 
     CueFileItemMap cueItems;
 
-    debug() << "CUEFILE: " << cuefile.pathOrUrl();
-    if ( QFile::exists ( cuefile.pathOrUrl() ) )
+    debug() << "CUEFILE: " << cuefile.toDisplayString();
+    if ( QFile::exists ( cuefile.toDisplayString() ) )
     {
         debug() << "  EXISTS!";
-        QFile file ( cuefile.pathOrUrl() );
+        QFile file ( cuefile.toDisplayString() );
         int trackNr = 0;
         QString defaultArtist;
         QString defaultAlbum;

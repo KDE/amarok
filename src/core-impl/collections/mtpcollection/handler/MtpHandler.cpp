@@ -31,7 +31,7 @@
 #include <KIO/Job>
 #include <KIO/DeleteJob>
 #include "kjob.h"
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
 #include <QUrl>
 
 #include <QFileInfo>
@@ -198,7 +198,7 @@ MtpHandler::init()
     if ( m_success )
     {
         debug() << "Got mtp list, connecting to device using thread";
-        ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( numrawdevices, rawdevices, this ) );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(new WorkerThread( numrawdevices, rawdevices, this )) );
     }
     else
     {
@@ -1339,7 +1339,7 @@ MtpHandler::setTempFile( Meta::MediaDeviceTrackPtr &track, const QString &format
 
 
 void
-MtpHandler::slotDeviceMatchSucceeded( ThreadWeaver::Job* job )
+MtpHandler::slotDeviceMatchSucceeded( ThreadWeaver::JobPointer job )
 {
     DEBUG_BLOCK
     if( !m_memColl ) // try to fix BUG:279966
@@ -1356,14 +1356,14 @@ MtpHandler::slotDeviceMatchSucceeded( ThreadWeaver::Job* job )
 }
 
 void
-MtpHandler::slotDeviceMatchFailed( ThreadWeaver::Job* job )
+MtpHandler::slotDeviceMatchFailed( ThreadWeaver::JobPointer job )
 {
     DEBUG_BLOCK
     if( !m_memColl ) // try to fix BUG:279966
         return;
 
     debug() << "Running slot device match failed";
-    disconnect( job, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotDeviceMatchSucceeded()) );
+    disconnect( job, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(slotDeviceMatchSucceeded()) );
     m_memColl->slotAttemptConnectionDone( false );
 }
 
@@ -1424,15 +1424,16 @@ MtpHandler::createCapabilityInterface( Handler::Capability::Type type )
 }
 
 WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices,  MtpHandler* handler )
-        : ThreadWeaver::Job()
+        : QObject()
+        , ThreadWeaver::Job()
         , m_success( false )
         , m_numrawdevices( numrawdevices )
         , m_rawdevices( rawdevices )
         , m_handler( handler )
 {
-    connect( this, SIGNAL(failed(ThreadWeaver::Job*)), m_handler, SLOT(slotDeviceMatchFailed(ThreadWeaver::Job*)) );
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), m_handler, SLOT(slotDeviceMatchSucceeded(ThreadWeaver::Job*)) );
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
+    connect( this, SIGNAL(failed(ThreadWeaver::JobPointer)), m_handler, SLOT(slotDeviceMatchFailed(ThreadWeaver::JobPointer)) );
+    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), m_handler, SLOT(slotDeviceMatchSucceeded(ThreadWeaver::JobPointer)) );
+    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(deleteLater()) );
 }
 
 WorkerThread::~WorkerThread()

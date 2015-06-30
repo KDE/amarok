@@ -31,8 +31,8 @@
 #include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "covermanager/CoverCache.h"
 
-#include <ThreadWeaver/Weaver>
-
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
 #include <QDateTime>
 #include <QFile>
 #include <QFileInfo>
@@ -352,11 +352,13 @@ public:
         Meta::FieldHash fields;
         fields.insert( Meta::valImage, image );
         WriteTagsJob *job = new WriteTagsJob( d.data()->url.toLocalFile(), fields );
-        QObject::connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-        ThreadWeaver::Weaver::instance()->enqueue( job );
+        QObject::connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
+
         if( d.data()->m_data.embeddedImage == image.isNull() )
             // we need to toggle the embeddedImage switch in this case
-            QObject::connect( job, SIGNAL(done(ThreadWeaver::Job*)), d.data(), SLOT(readMetaData()) );
+            QObject::connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), d.data(), SLOT(readMetaData()) );
 
         CoverCache::invalidateAlbum( this );
         notifyObservers();

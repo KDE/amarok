@@ -200,7 +200,7 @@ XSPFPlaylist::attribution() const
     {
         const QDomNode &node = nodes.at( i );
         if( !node.firstChild().nodeValue().isNull() )
-            list.append( node.firstChild().nodeValue() );
+            list.append( QUrl::fromUserInput(node.firstChild().nodeValue()) );
     }
     return list;
 }
@@ -504,11 +504,11 @@ XSPFPlaylist::trackList()
                 else if( subSubNode.nodeName() == "identifier" )
                     track.identifier = subSubNode.firstChild().nodeValue();
                 else if( subSubNode.nodeName() == "info" )
-                    track.info = subSubNode.firstChild().nodeValue();
+                    track.info = QUrl::fromUserInput(subSubNode.firstChild().nodeValue());
                 else if( subSubNode.nodeName() == "image" )
-                    track.image = subSubNode.firstChild().nodeValue();
+                    track.image = QUrl::fromUserInput(subSubNode.firstChild().nodeValue());
                 else if( subSubNode.nodeName() == "link" )
-                    track.link = subSubNode.firstChild().nodeValue();
+                    track.link = QUrl::fromUserInput(subSubNode.firstChild().nodeValue());
 
                 subSubNode = subSubNode.nextSibling();
             }

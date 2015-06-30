@@ -33,7 +33,8 @@
 #include <KIO/Job>
 #include <KTempDir>
 #include <KTemporaryFile>
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/Queue>
 
 #include <QObject>
 #include <QMap>
@@ -175,8 +176,8 @@ class MtpHandler : public MediaDeviceHandler
 
         /// libmtp-specific
     private Q_SLOTS:
-        void slotDeviceMatchSucceeded( ThreadWeaver::Job* job );
-        void slotDeviceMatchFailed( ThreadWeaver::Job* job );
+        void slotDeviceMatchSucceeded( ThreadWeaver::JobPointer job );
+        void slotDeviceMatchFailed( ThreadWeaver::JobPointer job );
 
     private:
         bool iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices );
@@ -252,7 +253,7 @@ class MtpHandler : public MediaDeviceHandler
         KTempDir *m_tempDir;
 };
 
-class WorkerThread : public ThreadWeaver::Job
+class WorkerThread : public QObject, public ThreadWeaver::Job
 {
         Q_OBJECT
 
@@ -264,6 +265,12 @@ class WorkerThread : public ThreadWeaver::Job
 
     protected:
         virtual void run();
+
+    Q_SIGNALS:
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed. */
+        void failed(ThreadWeaver::JobPointer);
 
     private:
         bool m_success;

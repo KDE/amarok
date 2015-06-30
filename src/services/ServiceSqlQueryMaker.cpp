@@ -25,18 +25,18 @@
 #include "core-impl/storage/StorageManager.h"
 #include "ServiceSqlCollection.h"
 
-#include <threadweaver/Job.h>
-#include <threadweaver/ThreadWeaver.h>
-
 #include <QStack>
+#include <QSharedPointer>
+#include <ThreadWeaver/QObjectDecorator>
 
 using namespace Collections;
 
-class ServiceSqlWorkerThread : public ThreadWeaver::Job
+class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
 {
     public:
         ServiceSqlWorkerThread( ServiceSqlQueryMaker *queryMaker )
-            : ThreadWeaver::Job()
+            : QObject()
+            , ThreadWeaver::Job()
             , m_queryMaker( queryMaker )
             , m_aborted( false )
         {
@@ -48,18 +48,30 @@ class ServiceSqlWorkerThread : public ThreadWeaver::Job
             m_aborted = true;
         }
 
+    Q_SIGNALS:
+            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+            void done(ThreadWeaver::JobPointer);
+            /** This job has failed. */
+            void failed(ThreadWeaver::JobPointer);
+
     protected:
-        virtual void run()
+
+        virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread = 0)
         {
+            Q_UNUSED(self);
+            Q_UNUSED(thread);
             QString query = m_queryMaker->query();
             QStringList result = m_queryMaker->runQuery( query );
             if( !m_aborted )
                 m_queryMaker->handleResult( result );
-            setFinished( !m_aborted );
+
+            if( m_aborted )
+                setStatus(Status_Aborted);
+            else
+                setStatus(Status_Running);
         }
     private:
         ServiceSqlQueryMaker *m_queryMaker;
-
         bool m_aborted;
 };
 
@@ -93,7 +105,7 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
 {
     //d->includedBuilder = true;
     //d->collectionRestriction = false;
-    d->worker = 0;
+    d->worker = NULL;
 
     d->queryType = Private::NONE;
     d->linkedTables = 0;
@@ -129,17 +141,19 @@ ServiceSqlQueryMaker::run()
     else
     {
         d->worker = new ServiceSqlWorkerThread( this );
-        connect( d->worker, SIGNAL(done(ThreadWeaver::Job*)), SLOT(done(ThreadWeaver::Job*)) );
-        ThreadWeaver::Weaver::instance()->enqueue( d->worker );
+        connect( d->worker, SIGNAL(done(ThreadWeaver::JobPointer)),SLOT(done(ThreadWeaver::JobPointer)) );
+
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(d->worker) );
     }
 }
 
 void
-ServiceSqlQueryMaker::done( ThreadWeaver::Job *job )
+ServiceSqlQueryMaker::done( ThreadWeaver::JobPointer job )
 {
-    ThreadWeaver::Weaver::instance()->dequeue( job );
-    job->deleteLater();
-    d->worker = 0;
+    ThreadWeaver::Queue::instance()->dequeue( job );
+    ThreadWeaver::QObjectDecorator *qs = new ThreadWeaver::QObjectDecorator(job.data());
+    qs->deleteLater();
+    d->worker = NULL;
     emit queryDone();
 }
 

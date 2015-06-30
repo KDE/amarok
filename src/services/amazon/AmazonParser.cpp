@@ -23,7 +23,8 @@
 #include <QFile>
 
 AmazonParser::AmazonParser( QString tempFileName, Collections::AmazonCollection* collection, AmazonMetaFactory* factory )
-    : ThreadWeaver::Job()
+    : QObject()
+    , ThreadWeaver::Job()
 {
     m_tempFileName = tempFileName;
     m_collection = collection;
@@ -54,7 +55,7 @@ AmazonParser::run()
     if( !responseFile.open( QIODevice::ReadOnly ) )
     {
         warning() << "Failed to open temp file" << m_tempFileName;
-        emit( failed( this ) );
+        emit( failed( QSharedPointer<ThreadWeaver::Job>(this) ) );
         QFile::remove( m_tempFileName );
         return;
     }
@@ -148,7 +149,7 @@ AmazonParser::run()
     m_collection->emitUpdated();
     QFile::remove( m_tempFileName );
     responseFile.close();
-    // ThreadWeaver::Job automatically emits the done( this ) signal
+    emit( done( QSharedPointer<ThreadWeaver::Job>(this) ) );
 }
 
 

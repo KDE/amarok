@@ -125,7 +125,7 @@ PodcastSettingsDialog::hasChanged()
         fetchTypeChanged = false;
     }
 
-    return( m_channel->url() != m_ps->m_urlLineEdit->text() ||
+    return( m_channel->url() != QUrl::fromUserInput(m_ps->m_urlLineEdit->text()) ||
             m_channel->saveLocation() != m_ps->m_saveLocation->url() ||
             m_channel->autoScan() != m_ps->m_autoFetchCheck->isChecked() ||
             m_channel->hasPurge() != m_ps->m_purgeCheck->isChecked()     ||

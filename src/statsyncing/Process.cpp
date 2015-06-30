@@ -32,8 +32,6 @@
 #include "statsyncing/ui/ChooseProvidersPage.h"
 #include "statsyncing/ui/MatchedTracksPage.h"
 
-#include <ThreadWeaver/Weaver>
-
 using namespace StatSyncing;
 
 Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &preSelectedProviders,
@@ -117,13 +115,13 @@ Process::slotMatchTracks()
         Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
     }
 
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(slotTracksMatched(ThreadWeaver::Job*)) );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(slotTracksMatched(ThreadWeaver::JobPointer)) );
+    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 
 void
-Process::slotTracksMatched( ThreadWeaver::Job *job )
+Process::slotTracksMatched( ThreadWeaver::JobPointer job )
 {
     MatchTracksJob *matchJob = dynamic_cast<MatchTracksJob *>( job );
     if( !matchJob )
@@ -209,13 +207,13 @@ Process::slotSynchronize()
             m_matchedTracksModel->matchedTuples(), m_tracksToScrobble, m_options );
     QString text = i18n( "Synchronizing Track Statistics" );
     Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(slotLogSynchronization(ThreadWeaver::Job*)) );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(slotLogSynchronization(ThreadWeaver::JobPointer)) );
+    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 
 void
-Process::slotLogSynchronization( ThreadWeaver::Job *job )
+Process::slotLogSynchronization( ThreadWeaver::JobPointer job )
 {
     deleteLater(); // our work is done
     SynchronizeTracksJob *syncJob = qobject_cast<SynchronizeTracksJob *>( job );

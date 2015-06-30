@@ -20,6 +20,7 @@
 #include "core/collections/Collection.h"
 
 #include <ThreadWeaver/Job>
+#include <QUrl>
 
 namespace MetaProxy
 {
@@ -27,7 +28,7 @@ namespace MetaProxy
      * Worker to get real track for MetaProxy::Track. Worker deletes itself somewhere
      * after emitting finishedLookup().
      */
-    class Worker : public ThreadWeaver::Job
+    class Worker : public QObject, public ThreadWeaver::Job
     {
         Q_OBJECT
 
@@ -40,10 +41,15 @@ namespace MetaProxy
             explicit Worker( const QUrl &url, Collections::TrackProvider *provider = 0 );
 
             //TrackForUrlWorker virtual methods
-            virtual void run();
+            virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
         Q_SIGNALS:
             void finishedLookup( Meta::TrackPtr track );
+
+            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+            void done(ThreadWeaver::JobPointer);
+            /** This job has failed. */
+            void failed(ThreadWeaver::JobPointer);
 
         private Q_SLOTS:
             void slotNewTrackProvider( Collections::TrackProvider *newTrackProvider );
