@@ -21,7 +21,7 @@
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 #include <QNetworkAccessManager>
 
@@ -59,10 +59,10 @@ MusicDNSFinder::run( const Meta::TrackList &tracks )
     MusicDNSAudioDecoder *decoder = new MusicDNSAudioDecoder( tracks );
     connect( decoder, SIGNAL(trackDecoded(Meta::TrackPtr,QString)),
                       SLOT(trackDecoded(Meta::TrackPtr,QString)) );
-    connect( decoder, SIGNAL(done(ThreadWeaver::Job*)),
-                      SLOT(decodingDone(ThreadWeaver::Job*)) );
+    connect( decoder, SIGNAL(done(ThreadWeaver::JobPointer)),
+                      SLOT(decodingDone(ThreadWeaver::JobPointer)) );
 
-    ThreadWeaver::Weaver::instance()->enqueue( decoder );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(decoder) );
 
     _timer->start();
 }
@@ -94,8 +94,8 @@ MusicDNSFinder::gotReply( QNetworkReply *reply )
         if( !m_replyes.value( reply ).isNull() )
             m_parsers.insert( parser, m_replyes.value( reply ) );
 
-        connect( parser, SIGNAL(done(ThreadWeaver::Job*)), SLOT(parsingDone(ThreadWeaver::Job*)) );
-        ThreadWeaver::Weaver::instance()->enqueue( parser );
+        connect( parser, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(parsingDone(ThreadWeaver::JobPointer)) );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(parser) );
     }
 
     m_replyes.remove( reply );
@@ -124,12 +124,12 @@ MusicDNSFinder::replyError( QNetworkReply::NetworkError code )
 }
 
 void
-MusicDNSFinder::parsingDone( ThreadWeaver::Job *_parser )
+MusicDNSFinder::parsingDone( ThreadWeaver::JobPointer _parser )
 {
     DEBUG_BLOCK
 
     MusicDNSXmlParser *parser = qobject_cast< MusicDNSXmlParser * >( _parser );
-    disconnect( parser, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(parsingDone(ThreadWeaver::Job*)) );
+    disconnect( parser, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(parsingDone(ThreadWeaver::JobPointer)) );
     if( m_parsers.contains( parser ) )
     {
         bool found = false;
@@ -161,14 +161,14 @@ MusicDNSFinder::trackDecoded( const Meta::TrackPtr track, const QString fingerpr
 }
 
 void
-MusicDNSFinder::decodingDone( ThreadWeaver::Job *_decoder )
+MusicDNSFinder::decodingDone( ThreadWeaver::JobPointer _decoder )
 {
     DEBUG_BLOCK
     MusicDNSAudioDecoder *decoder = ( MusicDNSAudioDecoder * )_decoder;
     disconnect( decoder, SIGNAL(trackDecoded(Meta::TrackPtr,QString)),
                 this, SLOT(trackDecoded(Meta::TrackPtr,QString)) );
-    disconnect( decoder, SIGNAL(done(ThreadWeaver::Job*)),
-                this, SLOT(decodingDone(ThreadWeaver::Job*)) );
+    disconnect( decoder, SIGNAL(done(ThreadWeaver::JobPointer)),
+                this, SLOT(decodingDone(ThreadWeaver::JobPointer)) );
     decoder->deleteLater();
     decodingComplete = true;
     checkDone();

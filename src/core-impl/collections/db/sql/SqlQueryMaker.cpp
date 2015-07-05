@@ -28,16 +28,18 @@
 #include <QWeakPointer>
 #include <QStack>
 
-#include <threadweaver/Job.h>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
 using namespace Collections;
 
-class SqlWorkerThread : public ThreadWeaver::Job
+class SqlWorkerThread : public QObject, public ThreadWeaver::Job
 {
     public:
         SqlWorkerThread( SqlQueryMakerInternal *queryMakerInternal )
-            : ThreadWeaver::Job()
+            : QObject()
+            , ThreadWeaver::Job()
             , m_queryMakerInternal( queryMakerInternal )
             , m_aborted( false )
         {
@@ -60,15 +62,40 @@ class SqlWorkerThread : public ThreadWeaver::Job
         }
 
     protected:
-        virtual void run()
+        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0)
         {
+            Q_UNUSED(self);
+            Q_UNUSED(thread);
             m_queryMakerInternal->run();
             setFinished( !m_aborted );
         }
+        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        {
+            Q_EMIT started(self);
+            ThreadWeaver::Job::defaultBegin(self, thread);
+        }
+
+        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        {
+            ThreadWeaver::Job::defaultEnd(self, thread);
+            if (!self->success()) {
+                Q_EMIT failed(self);
+            }
+            Q_EMIT done(self);
+        }
+
     private:
         SqlQueryMakerInternal *m_queryMakerInternal;
 
         bool m_aborted;
+    Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
 };
 
 struct SqlQueryMaker::Private
@@ -127,7 +154,10 @@ SqlQueryMaker::~SqlQueryMaker()
     disconnect();
     abortQuery();
     if( d->worker )
-        d->worker->deleteLater();
+    {
+        ThreadWeaver::QObjectDecorator *qs = new ThreadWeaver::QObjectDecorator(d->worker);
+        qs->deleteLater();
+    }
     delete d;
 }
 
@@ -174,8 +204,8 @@ SqlQueryMaker::run()
             connect( qmi, SIGNAL(newResultReady(QStringList)),        SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(Meta::LabelList)),    SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
             d->worker = new SqlWorkerThread( qmi );
-            connect( d->worker, SIGNAL(done(ThreadWeaver::Job*)), SLOT(done(ThreadWeaver::Job*)) );
-            ThreadWeaver::Weaver::instance()->enqueue( d->worker );
+            connect( d->worker, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(done(ThreadWeaver::JobPointer)) );
+            ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(d->worker) );
         }
         else //use it blocking
         {
@@ -195,9 +225,10 @@ SqlQueryMaker::run()
 }
 
 void
-SqlQueryMaker::done( ThreadWeaver::Job *job )
+SqlQueryMaker::done( ThreadWeaver::JobPointer job )
 {
-    job->deleteLater();
+    ThreadWeaver::QObjectDecorator *qs = new ThreadWeaver::QObjectDecorator(job.data());
+    qs->deleteLater();
     d->worker = 0; // d->worker *is* the job, prevent stale pointer
     emit queryDone();
 }

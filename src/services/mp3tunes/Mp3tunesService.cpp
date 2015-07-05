@@ -28,7 +28,8 @@
 
 #include <KMenuBar>
 #include <KMessageBox>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
 #include <QRegExp>
 
@@ -252,7 +253,7 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
     connect( m_loginWorker, SIGNAL(finishedLogin(QString)), this,
              SLOT(authenticationComplete(QString)) );
     //debug() << "Connection complete. Enqueueing..";
-    ThreadWeaver::Weaver::instance()->enqueue( m_loginWorker );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_loginWorker) );
     //debug() << "LoginWorker queue";
     Amarok::Components::logger()->shortMessage( i18n( "Authenticating"  ) );
 

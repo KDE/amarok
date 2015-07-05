@@ -39,7 +39,7 @@ public:
     TrackForUrlWorker( const QString &url );
     ~TrackForUrlWorker();
 
-    virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread = 0) = 0;
+    virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) = 0;
 
 Q_SIGNALS:
     void finishedLookup( const Meta::TrackPtr &track );
@@ -48,6 +48,8 @@ Q_SIGNALS:
     void done(ThreadWeaver::JobPointer);
     /** This job has failed. */
     void failed(ThreadWeaver::JobPointer);
+    /** This signal is emitted when this job is being processed by a thread. */
+    void started(ThreadWeaver::JobPointer);
 
 protected:
     QUrl m_url;

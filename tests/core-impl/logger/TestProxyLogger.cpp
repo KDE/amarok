@@ -23,8 +23,8 @@
 
 #include <KCmdLineArgs>
 #include <KGlobal>
-#include <threadweaver/ThreadWeaver.h>
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Job>
 
 #include <QCoreApplication>
 
@@ -65,11 +65,14 @@ TestProxyLogger::cleanup()
     delete s_logger;
 }
 
-class ProgressJob : public ThreadWeaver::Job
+class ProgressJob : public QObject, public ThreadWeaver::Job
 {
 public:
     ProgressJob() : deleteJob( false ), deleteObject( false ) {}
-    void run() {
+    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
+    {
+        Q_UNUSED(self);
+        Q_UNUSED(thread);
         KJob *job = new DummyJob();
         QObject *obj = new QObject();
         s_logger->newProgressOperation( job, QString( "foo" ), obj, "foo()" );
@@ -80,6 +83,31 @@ public:
 
     bool deleteJob;
     bool deleteObject;
+
+    protected:
+    void QObjectDecorator::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+    {
+        Q_EMIT started(self);
+        ThreadWeaver::Job::defaultBegin(self, thread);
+    }
+
+    void QObjectDecorator::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+    {
+        ThreadWeaver::Job::defaultEnd(self, thread);
+        if (!self->success()) {
+            Q_EMIT failed(self);
+        }
+        Q_EMIT done(self);
+    }
+
+    Q_SIGNALS:
+    /** This signal is emitted when this job is being processed by a thread. */
+    void started(ThreadWeaver::JobPointer);
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed.
+     * This signal is emitted when success() returns false after the job is executed. */
+    void failed(ThreadWeaver::JobPointer);
 };
 
 void
@@ -94,7 +122,7 @@ TestProxyLogger::testDoNotForwardDeletedJob()
 
     ProgressJob *job = new ProgressJob();
     job->deleteJob = true;
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 
     QTest::qSleep( 10 ); //ensure that the job has time to run
     QTest::qWait( 20 ); //give the ProxyLogger-internal timer time to fire
@@ -115,7 +143,7 @@ TestProxyLogger::testDoNotForwardDeletedSlot()
 
     ProgressJob *job = new ProgressJob();
     job->deleteObject = true;
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 
     QTest::qSleep( 10 ); //ensure that the job has time to run
     QTest::qWait( 20 ); //give the ProxyLogger-internal timer time to fire

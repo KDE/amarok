@@ -1448,10 +1448,30 @@ WorkerThread::success() const
 }
 
 void
-WorkerThread::run()
+WorkerThread::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     m_success = m_handler->iterateRawDevices( m_numrawdevices, m_rawdevices );
 }
+
+void
+WorkerThread::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+WorkerThread::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
 /*
 void
 MtpHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job )

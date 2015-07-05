@@ -24,7 +24,7 @@
 #include "core/collections/QueryMaker.h"
 
 #include <QWeakPointer>
-
+#include <ThreadWeaver/Job>
 
 namespace ThreadWeaver
 {
@@ -47,7 +47,7 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QString &collectionId );
         virtual ~MemoryQueryMaker();
 
-        virtual void run();
+        virtual void run() Q_DECL_OVERRIDE;
         virtual void abortQuery();
 
         virtual QueryMaker* setQueryType( QueryType type );
@@ -80,7 +80,7 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
     private Q_SLOTS:
-        void done( ThreadWeaver::Job * job );
+        void done( ThreadWeaver::JobPointer job );
 
     protected:
 

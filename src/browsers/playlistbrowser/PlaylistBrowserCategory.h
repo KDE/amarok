@@ -20,6 +20,7 @@
 #include "browsers/BrowserCategory.h"
 
 #include <QMap>
+#include <KAction>
 
 namespace Amarok {
     class PrettyTreeView;

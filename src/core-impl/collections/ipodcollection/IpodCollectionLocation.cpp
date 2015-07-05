@@ -21,7 +21,7 @@
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 #include <QDir>
 #include <QFile>
@@ -78,9 +78,9 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr,QUrl> &s
     qRegisterMetaType<IpodCopyTracksJob::CopiedStatus>( "IpodCopyTracksJob::CopiedStatus" );
     connect( job, SIGNAL(signalTrackProcessed(Meta::TrackPtr,Meta::TrackPtr,IpodCopyTracksJob::CopiedStatus)),
              this, SLOT(slotCopyTrackProcessed(Meta::TrackPtr,Meta::TrackPtr,IpodCopyTracksJob::CopiedStatus)) );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotCopyOperationFinished()) );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(slotCopyOperationFinished()) );
+    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 
 void
@@ -90,9 +90,9 @@ IpodCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources
         return;
 
     IpodDeleteTracksJob *job = new IpodDeleteTracksJob( sources, m_coll );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotRemoveOperationFinished()) );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(slotRemoveOperationFinished()) );
+    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 
 void

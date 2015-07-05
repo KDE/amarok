@@ -59,12 +59,6 @@ namespace Dynamic
 
             BiasPtr bias() const;
 
-        Q_SIGNALS:
-            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
-            void done(ThreadWeaver::JobPointer);
-            /** This job has failed. */
-            void failed(ThreadWeaver::JobPointer);
-
         public Q_SLOTS:
             virtual void requestAbort();
 

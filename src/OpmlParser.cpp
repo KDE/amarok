@@ -31,7 +31,8 @@ const QString OpmlParser::OPML_MIME = "text/x-opml+xml";
 const OpmlParser::StaticData OpmlParser::sd;
 
 OpmlParser::OpmlParser( const QUrl &url )
-        : ThreadWeaver::Job()
+        : QObject()
+        , ThreadWeaver::Job()
         , QXmlStreamReader()
         , m_url( url )
 {
@@ -42,9 +43,28 @@ OpmlParser::~OpmlParser()
 }
 
 void
-OpmlParser::run()
+OpmlParser::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     read( m_url );
+}
+
+void
+OpmlParser::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+OpmlParser::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 bool

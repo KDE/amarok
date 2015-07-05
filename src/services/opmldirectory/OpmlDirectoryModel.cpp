@@ -27,8 +27,6 @@
 
 #include "ui_AddOpmlWidget.h"
 
-#include <ThreadWeaver/Weaver>
-
 #include <KDialog>
 
 #include <QAction>

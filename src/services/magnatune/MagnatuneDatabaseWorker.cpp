@@ -20,10 +20,11 @@
 #include <core/storage/SqlStorage.h>
 
 MagnatuneDatabaseWorker::MagnatuneDatabaseWorker()
-    : ThreadWeaver::Job()
+    : QObject()
+    , ThreadWeaver::Job()
     , m_registry( 0 )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
 }
 
 
@@ -33,8 +34,11 @@ MagnatuneDatabaseWorker::~MagnatuneDatabaseWorker()
 
 
 void
-MagnatuneDatabaseWorker::run()
+MagnatuneDatabaseWorker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
+
     DEBUG_BLOCK
     switch ( m_task ) {
         case FETCH_MODS:
@@ -49,6 +53,23 @@ MagnatuneDatabaseWorker::run()
         default:
             break;
     }
+}
+
+void
+MagnatuneDatabaseWorker::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+MagnatuneDatabaseWorker::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void MagnatuneDatabaseWorker::completeJob()
@@ -69,8 +90,6 @@ void MagnatuneDatabaseWorker::completeJob()
     }
     deleteLater();
 }
-
-
 
 
 void MagnatuneDatabaseWorker::fetchMoodMap()

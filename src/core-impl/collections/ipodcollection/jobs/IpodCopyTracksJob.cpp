@@ -54,8 +54,10 @@ IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,QUrl> &sources,
 }
 
 void
-IpodCopyTracksJob::run()
+IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     if( !m_coll )
         return;  // destructed behind our back
     float totalSafeCapacity = m_coll.data()->totalCapacity() - m_coll.data()->capacityMargin();
@@ -248,6 +250,23 @@ IpodCopyTracksJob::run()
         // somethig more severe failed, notify user using a dialog
         emit displaySorryDialog();
     }
+}
+
+void
+IpodCopyTracksJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+IpodCopyTracksJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void

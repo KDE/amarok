@@ -31,7 +31,6 @@
 #include <Nepomuk2/Vocabulary/NFO>
 
 #include <QIcon>
-#include <ThreadWeaver/Weaver>
 
 namespace Collections
 {

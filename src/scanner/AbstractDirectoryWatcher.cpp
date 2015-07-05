@@ -31,7 +31,8 @@ static const int WATCH_INTERVAL = 60 * 1000; // = 60 seconds
 static const int DELAYED_SCAN_INTERVAL = 2 * 1000; // = 2 seconds
 
 AbstractDirectoryWatcher::AbstractDirectoryWatcher()
-    : ThreadWeaver::Job( 0 )
+    : QObject()
+    , ThreadWeaver::Job( 0 )
     , m_delayedScanTimer( 0 )
     , m_watcher( 0 )
     , m_aborted( false )
@@ -55,8 +56,11 @@ AbstractDirectoryWatcher::AbstractDirectoryWatcher()
 }
 
 void
-AbstractDirectoryWatcher::run()
+AbstractDirectoryWatcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
+
     // TODO: re-create the watcher if scanRecursively has changed
     QSet<QString> oldWatchDirs;
 
@@ -117,6 +121,23 @@ AbstractDirectoryWatcher::run()
 }
 
 void
+AbstractDirectoryWatcher::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+AbstractDirectoryWatcher::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
+void
 AbstractDirectoryWatcher::abort()
 {
     m_aborted = true;
@@ -167,7 +188,7 @@ AbstractDirectoryWatcher::addDirToList( const QString &directory )
 
     debug() << "addDirToList for"<<directory;
 
-    m_scanDirsRequested.insert( directory );
+    m_scanDirsRequested.insert( QUrl::fromUserInput(directory) );
 }
 
 

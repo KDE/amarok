@@ -26,14 +26,14 @@
 #include <QDomElement>
 #include <QMap>
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 
 /**
 * Parser for the XML file from http://magnatune.com/info/album_info.xml
 *
 * @author Nikolaj Hald Nielsen
 */
-class MagnatuneXmlParser : public ThreadWeaver::Job
+class MagnatuneXmlParser : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 
@@ -50,7 +50,7 @@ public:
      * The function that starts the actual work. Inherited from ThreadWeaver::Job
      * Note the work is performed in a separate thread
      */
-    void run();
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     /**
      * Destructor
@@ -68,6 +68,13 @@ public:
     void setDbHandler( MagnatuneDatabaseHandler * dbHandler );
 
 Q_SIGNALS:
+    /** This signal is emitted when this job is being processed by a thread. */
+    void started(ThreadWeaver::JobPointer);
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed.
+     * This signal is emitted when success() returns false after the job is executed. */
+    void failed(ThreadWeaver::JobPointer);
 
     /**
      * Signal emmited when parsing is complete.
@@ -131,7 +138,9 @@ private:
 
     MagnatuneDatabaseHandler * m_dbHandler;
 
-
+protected:
+    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 };
 
 #endif

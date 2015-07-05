@@ -30,7 +30,7 @@
 #include <QTest>
 
 #include <KStandardDirs>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
 #include <qtest_kde.h>
 
 QTEST_KDEMAIN_CORE( TestM3UPlaylist )
@@ -78,7 +78,7 @@ void TestM3UPlaylist::initTestCase()
 void TestM3UPlaylist::cleanupTestCase()
 {
     // Wait for other jobs, like MetaProxys fetching meta data, to finish
-    ThreadWeaver::Weaver::instance()->finish();
+    ThreadWeaver::Queue::instance()->finish();
 
     delete m_testPlaylist;
 }

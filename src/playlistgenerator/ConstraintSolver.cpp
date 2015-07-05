@@ -38,7 +38,7 @@
 #include <QMutexLocker>
 #include <QStringList>
 #include <QTimer>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
 
 #include <algorithm> // STL algorithms
 #include <cmath>
@@ -47,7 +47,9 @@
 const int APG::ConstraintSolver::QUALITY_RANGE = 10;
 
 APG::ConstraintSolver::ConstraintSolver( ConstraintNode* r, int qualityFactor )
-        : m_satisfactionThreshold( 0.95 )
+        : QObject()
+        , ThreadWeaver::Job()
+        , m_satisfactionThreshold( 0.95 )
         , m_finalSatisfaction( 0.0 )
         , m_constraintTreeRoot( r )
         , m_domainReductionFailed( false )
@@ -135,8 +137,11 @@ APG::ConstraintSolver::success() const
 }
 
 void
-APG::ConstraintSolver::run()
+APG::ConstraintSolver::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
+
     if ( !m_readyToRun ) {
         error() << "DANGER WILL ROBINSON!  A ConstraintSolver (serial no:" << m_serialNumber << ") tried to run before its QueryMaker finished!";
         m_abortRequested = true;
@@ -184,6 +189,21 @@ APG::ConstraintSolver::run()
     }
 
     emit endProgressOperation( this );
+}
+
+void APG::ConstraintSolver::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void APG::ConstraintSolver::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void

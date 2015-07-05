@@ -29,7 +29,7 @@
 #include <QTest>
 #include <QTimer>
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 #include <qtest_kde.h>
 
@@ -61,7 +61,7 @@ void
 TestPlaylistObserver::cleanupTestCase()
 {
     // Wait for other jobs, like MetaProxys fetching meta data, to finish
-    ThreadWeaver::Weaver::instance()->finish();
+    ThreadWeaver::Queue::instance()->finish();
 
     delete Amarok::Components::setEngineController( 0 );
 }

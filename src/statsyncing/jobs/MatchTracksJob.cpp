@@ -106,8 +106,10 @@ MatchTracksJob::abort()
 // work-around macro vs. template argument clash in foreach
 typedef QMultiMap<ProviderPtr, QString> ArtistProviders;
 
-void MatchTracksJob::run()
+void MatchTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     const qint64 possibleFields = Meta::valTitle | Meta::valArtist | Meta::valAlbum |
         Meta::valComposer | Meta::valYear | Meta::valTrackNr | Meta::valDiscNr;
     const qint64 requiredFields = Meta::valTitle | Meta::valArtist | Meta::valAlbum;
@@ -152,6 +154,21 @@ void MatchTracksJob::run()
                 << " matched =" << uniqueList.count() + excludedList.count() + m_matchedTrackCounts[ provider ];
     }
 #endif
+}
+
+void MatchTracksJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void MatchTracksJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void

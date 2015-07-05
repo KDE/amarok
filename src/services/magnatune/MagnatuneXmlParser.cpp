@@ -23,7 +23,6 @@
 
 #include <KFilterDev>
 #include <KLocale>
-#include <threadweaver/Job.h>
 
 #include <QDomDocument>
 #include <QFile>
@@ -31,10 +30,11 @@
 using namespace Meta;
 
 MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
-        : ThreadWeaver::Job()
+        : QObject()
+        , ThreadWeaver::Job()
 {
     m_sFileName = filename;
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
 }
 
 
@@ -45,11 +45,29 @@ MagnatuneXmlParser::~MagnatuneXmlParser()
 }
 
 void
-MagnatuneXmlParser::run()
+MagnatuneXmlParser::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     readConfigFile( m_sFileName );
 }
 
+void
+MagnatuneXmlParser::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+MagnatuneXmlParser::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
 
 void
 MagnatuneXmlParser::completeJob( )

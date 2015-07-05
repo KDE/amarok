@@ -20,8 +20,9 @@
 #include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
 
-#include <threadweaver/Job.h>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
 #include "core/support/Debug.h"
 
@@ -82,5 +83,5 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
         Amarok::Components::logger()->longMessage( error );
     Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader( m_collection->locker(), urls );
     connect( uploadWorker, SIGNAL(uploadComplete()), this, SLOT(slotCopyOperationFinished()) );
-    ThreadWeaver::Weaver::instance()->enqueue( uploadWorker );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(uploadWorker) );
 }

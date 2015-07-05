@@ -18,6 +18,7 @@
 #define TRASHCOLLECTIONLOCATION_H
 
 #include "core/collections/CollectionLocation.h"
+#include <KIOCore/KIO/Job>
 
 class KJob;
 

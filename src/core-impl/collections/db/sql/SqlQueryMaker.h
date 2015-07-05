@@ -21,7 +21,7 @@
 
 #include "amarok_sqlcollection_export.h"
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 
 namespace Collections {
 
@@ -98,7 +98,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlQueryMaker : public QueryMaker
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
 
     public Q_SLOTS:
-        void done( ThreadWeaver::Job * job );
+        void done( ThreadWeaver::JobPointer job );
         void blockingNewResultReady( const QStringList &customData );
         void blockingNewResultReady( const Meta::AlbumList &albums );
         void blockingNewResultReady( const Meta::ArtistList &artists );

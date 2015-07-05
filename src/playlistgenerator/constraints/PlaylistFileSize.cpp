@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <KGlobal>
+
 Constraint*
 ConstraintTypes::PlaylistFileSize::createFromXml( QDomElement& xmlelem, ConstraintNode* p )
 {

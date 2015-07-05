@@ -40,8 +40,10 @@ NepomukInquirer::~NepomukInquirer()
 }
 
 void
-NepomukInquirer::run()
+NepomukInquirer::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
 
     Soprano::Model *model = Nepomuk2::ResourceManager::instance()->mainModel();
@@ -55,6 +57,23 @@ NepomukInquirer::run()
     }
 
     m_parser->parse( it );
+}
+
+void
+NepomukInquirer::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+NepomukInquirer::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 }

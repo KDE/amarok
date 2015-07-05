@@ -27,7 +27,7 @@
 #include <QModelIndex>
 #include <QPersistentModelIndex>
 #include <QVariant>
-
+#include <KIconEngine>
 namespace PlaylistBrowserNS {
 
 /* TODO: these should be replaced with custom roles for PlaylistColumn so all data of a playlist can

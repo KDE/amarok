@@ -32,7 +32,8 @@ namespace Collections {
 }
 
 namespace APG {
-    class ConstraintSolver : public ThreadWeaver::Job {
+    class ConstraintSolver : public QObject, public ThreadWeaver::Job
+    {
         Q_OBJECT
 
         public:
@@ -61,8 +62,18 @@ namespace APG {
             void totalSteps( int );
             void endProgressOperation( QObject* );
 
+            /** This signal is emitted when this job is being processed by a thread. */
+            void started(ThreadWeaver::JobPointer);
+            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+            void done(ThreadWeaver::JobPointer);
+            /** This job has failed.
+             * This signal is emitted when success() returns false after the job is executed. */
+            void failed(ThreadWeaver::JobPointer);
+
         protected:
-            void run(); // from ThreadWeaver::Job
+            void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+            void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+            void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE; // from ThreadWeaver::Job
 
         private Q_SLOTS:
             void receiveQueryMakerData( Meta::TrackList );

@@ -28,7 +28,8 @@
 #include "MetaTagLib.h"
 #include "scripting/scriptengine/ScriptingDefines.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
 
 #include <QScriptContext>
 #include <QScriptEngine>
@@ -407,8 +408,8 @@ MetaTrackPrototype::changeTags( const Meta::FieldHash &changes, bool respectConf
     if( changes.isEmpty() )
         return;
     WriteTagsJob *job = new WriteTagsJob( m_track->playableUrl().path(), changes, respectConfig );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 
 QImage

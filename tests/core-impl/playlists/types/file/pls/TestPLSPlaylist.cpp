@@ -31,7 +31,7 @@
 
 #include <KStandardDirs>
 #include <qtest_kde.h>
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 QTEST_KDEMAIN_CORE( TestPLSPlaylist )
 
@@ -82,7 +82,7 @@ void TestPLSPlaylist::initTestCase()
 void TestPLSPlaylist::cleanupTestCase()
 {
     // Wait for other jobs, like MetaProxys fetching meta data, to finish
-    ThreadWeaver::Weaver::instance()->finish();
+    ThreadWeaver::Queue::instance()->finish();
 
     delete m_testPlaylist1;
     delete Amarok::Components::setEngineController( 0 );

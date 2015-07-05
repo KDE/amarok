@@ -46,7 +46,7 @@ namespace Mpris1
 
     int TrackListHandler::AddTrack( const QString &url, bool playImmediately )
     {
-        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( QUrl::fromUserInput(url) );
         if( track )
         {
             Playlist::AddOptions options = playImmediately ?

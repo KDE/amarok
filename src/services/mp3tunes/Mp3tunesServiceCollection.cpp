@@ -24,7 +24,9 @@
 #include "Mp3tunesWorkers.h"
 #include "core/support/Debug.h"
 
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
 
 #include <QRegExp>
 
@@ -92,7 +94,7 @@ Mp3tunesServiceCollection::trackForUrl( const QUrl &url )
     m_tracksFetching[filekey] = serviceTrack;
     connect( trackFetcher, SIGNAL(trackFetched(Mp3tunesLockerTrack&)), this, SLOT(trackForUrlComplete(Mp3tunesLockerTrack&)) );
     //debug() << "Connection complete. Enqueueing..";
-    ThreadWeaver::Weaver::instance()->enqueue( trackFetcher );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(trackFetcher) );
     //debug() << "m_trackFetcher queue";
 
     return Meta::TrackPtr( serviceTrack );

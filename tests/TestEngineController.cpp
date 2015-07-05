@@ -20,23 +20,50 @@
 #include "core/support/Components.h"
 
 #include <qtest_kde.h>
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Job>
 
 #include <QtTest>
 
 QTEST_KDEMAIN_CORE( TestEngineController )
 
-class CallSupportedMimeTypesJob : public ThreadWeaver::Job
+class CallSupportedMimeTypesJob : public QObject, public ThreadWeaver::Job
 {
     protected:
-        void run()
+        void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
         {
+            Q_UNUSED(self);
+            Q_UNUSED(thread);
             EngineController *ec = Amarok::Components::engineController();
             QVERIFY( ec );
             QStringList types = ec->supportedMimeTypes();
             QVERIFY( !types.isEmpty() );
         }
+
+        void QObjectDecorator::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        {
+            Q_EMIT started(self);
+            ThreadWeaver::Job::defaultBegin(self, thread);
+        }
+
+        void QObjectDecorator::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        {
+            ThreadWeaver::Job::defaultEnd(self, thread);
+            if (!self->success()) {
+                Q_EMIT failed(self);
+            }
+            Q_EMIT done(self);
+        }
+
+    Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
 };
 
 void
@@ -51,8 +78,8 @@ void
 TestEngineController::cleanup()
 {
     // we cannot simply call WeaverInterface::finish(), it stops event loop
-    if( !ThreadWeaver::Weaver::instance()->isIdle() )
-        QVERIFY2( QTest::kWaitForSignal( ThreadWeaver::Weaver::instance(),
+    if( !ThreadWeaver::Queue::instance()->isIdle() )
+        QVERIFY2( QTest::kWaitForSignal( ThreadWeaver::Queue::instance(),
                 SIGNAL(finished()), 5000 ), "threads did not finish in timeout" );
     delete Amarok::Components::setEngineController( 0 );
 }
@@ -69,6 +96,6 @@ TestEngineController::testSupportedMimeTypesInMainThread()
 void
 TestEngineController::testSupportedMimeTypesInAnotherThread()
 {
-    ThreadWeaver::Job *job = new CallSupportedMimeTypesJob();
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    ThreadWeaver::Job* job = new CallSupportedMimeTypesJob();
+    ThreadWeaver::Queue::instance()->enqueue( job );
 }

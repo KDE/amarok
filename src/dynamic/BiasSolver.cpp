@@ -166,6 +166,23 @@ BiasSolver::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread )
 }
 
 void
+BiasSolver::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+BiasSolver::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
+void
 BiasSolver::addTracks( SolverList *list )
 {
     bool firstTrack = ( list->m_trackList.count() == list->m_contextCount );

@@ -32,7 +32,7 @@
 
 #include <QTest>
 #include <QScopedPointer>
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 QTEST_KDEMAIN_CORE( TestSqlScanManager )
 
@@ -101,8 +101,8 @@ TestSqlScanManager::cleanupTestCase()
     delete m_collection;
 
     // we cannot simply call WeaverInterface::finish(), it stops event loop
-    if( !ThreadWeaver::Weaver::instance()->isIdle() )
-        QVERIFY2( QTest::kWaitForSignal( ThreadWeaver::Weaver::instance(),
+    if( !ThreadWeaver::Queue::instance()->isIdle() )
+        QVERIFY2( QTest::kWaitForSignal( ThreadWeaver::Queue::instance(),
                 SIGNAL(finished()), 5000 ), "threads did not finish in timeout" );
 
     //m_storage is deleted by SqlCollection

@@ -55,23 +55,36 @@ class DecodedAudioData
         QByteArray *m_data;
 };
 
-class MusicDNSAudioDecoder : public ThreadWeaver::Job
+class MusicDNSAudioDecoder : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
         MusicDNSAudioDecoder( const Meta::TrackList &tracks, const int sampleLength = DEFAULT_SAMPLE_LENGTH );
         virtual ~MusicDNSAudioDecoder();
 
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
         void trackDecoded( const Meta::TrackPtr, const QString );
+
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
 
     private:
         int decode( const QString &fileName, DecodedAudioData *data, const int length );
 
         Meta::TrackList m_tracks;
         int m_sampleLength;
+
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+
 };
 
 #endif // MUSICDNSAUDIODECODER_H

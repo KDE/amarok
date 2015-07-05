@@ -23,6 +23,7 @@ using namespace MetaProxy;
 
 Worker::Worker( const QUrl &url, Collections::TrackProvider *provider )
     : QObject()
+    , ThreadWeaver::Job()
     , m_url( url )
     , m_provider( provider )
     , m_stepsDoneReceived( 0 )
@@ -66,6 +67,23 @@ Worker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
         return;
     }
 
+}
+
+void
+Worker::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+Worker::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void

@@ -20,7 +20,8 @@
 #include "NetworkAccessManagerProxy.h"
 
 #include <KLocale>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
 #include <QDomDocument>
 #include <QNetworkReply>
@@ -78,7 +79,7 @@ AmpacheServiceCollection::trackForUrl( const QUrl &url )
     AmpacheTrackForUrlWorker *worker = new AmpacheTrackForUrlWorker( url, trackptr,
         m_server, m_sessionId, service() );
     connect( worker, SIGNAL(authenticationNeeded()), SLOT(slotAuthenticationNeeded()) );
-    ThreadWeaver::Weaver::instance()->enqueue( worker );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(worker) );
 
     return Meta::TrackPtr::staticCast( trackptr );
 }

@@ -21,7 +21,7 @@
 
 #include "../ServiceSqlRegistry.h"
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 
 /**
 A small helper class to do some simple asynchroneous database queries
@@ -29,7 +29,7 @@ A small helper class to do some simple asynchroneous database queries
 	@author Nikolaj Hald Nielsen <nhn@kde.org>   
 */
 
-class MagnatuneDatabaseWorker : public ThreadWeaver::Job
+class MagnatuneDatabaseWorker : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 public:
@@ -37,13 +37,20 @@ public:
 
     ~MagnatuneDatabaseWorker();
 
-    void run();
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     void fetchMoodMap();
     void fetchTrackswithMood( const QString &mood, int noOfTracks, ServiceSqlRegistry * registry );
     void fetchAlbumBySku( const QString &sku, ServiceSqlRegistry * registry );
 
 Q_SIGNALS:
+    /** This signal is emitted when this job is being processed by a thread. */
+    void started(ThreadWeaver::JobPointer);
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed.
+     * This signal is emitted when success() returns false after the job is executed. */
+    void failed(ThreadWeaver::JobPointer);
 
     void gotMoodMap( QMap<QString, int> map );
     void gotMoodyTracks( Meta::TrackList tracks );
@@ -71,8 +78,10 @@ private:
     Meta::MagnatuneAlbum * m_album;
 
     ServiceSqlRegistry * m_registry;
-    
 
+protected:
+    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 };
 
 #endif

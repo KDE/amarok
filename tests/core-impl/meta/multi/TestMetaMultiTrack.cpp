@@ -31,7 +31,7 @@
 #include <QFileInfo>
 
 #include <qtest_kde.h>
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 QTEST_KDEMAIN( TestMetaMultiTrack, GUI )
 
@@ -82,7 +82,7 @@ void
 TestMetaMultiTrack::cleanupTestCase()
 {
     // Wait for other jobs, like MetaProxys fetching meta data, to finish
-    ThreadWeaver::Weaver::instance()->finish();
+    ThreadWeaver::Queue::instance()->finish();
 }
 
 void TestMetaMultiTrack::init()

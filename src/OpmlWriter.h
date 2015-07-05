@@ -19,12 +19,12 @@
 
 #include "OpmlOutline.h"
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 #include <QUrl>
 
 #include <QXmlStreamWriter>
 
-class AMAROK_EXPORT OpmlWriter : public ThreadWeaver::Job
+class AMAROK_EXPORT OpmlWriter : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
@@ -45,7 +45,7 @@ class AMAROK_EXPORT OpmlWriter : public ThreadWeaver::Job
          * Note the work is performed in a separate thread
          * @return Returns true on success and false on failure
          */
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
         QIODevice *device() { return m_xmlWriter->device(); }
 
@@ -55,6 +55,14 @@ class AMAROK_EXPORT OpmlWriter : public ThreadWeaver::Job
          */
         void result( int error );
 
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
     private:
         void writeOutline( const OpmlOutline *outline );
         QList<OpmlOutline *> m_rootOutlines;
@@ -62,6 +70,11 @@ class AMAROK_EXPORT OpmlWriter : public ThreadWeaver::Job
 
         QUrl m_fileUrl;
         QXmlStreamWriter *m_xmlWriter;
+
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+
 };
 
 #endif // OPMLWRITER_H

@@ -25,7 +25,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 
 #include <QUrl>
 
@@ -39,7 +39,7 @@ class KDirWatch;
     You need to implement the collectionFolders method.
 
     Use the Watcher like this:
-    ThreadWeaver::Weaver::instance()->enqueue( ScanDirectoryWatcherJob( this ) );
+    ThreadWeaver::Queue::instance()->enqueue( ScanDirectoryWatcherJob( this ) );
 
     Note: When Amarok is started we wait a minute (so that the scanner does not slow down
     the application startup) and then we do a full incremental scan.
@@ -50,14 +50,14 @@ class KDirWatch;
     time adding recursive directories.
     This will prevent the directory adding from blocking the UI.
 */
-class AMAROK_EXPORT AbstractDirectoryWatcher : public ThreadWeaver::Job
+class AMAROK_EXPORT AbstractDirectoryWatcher : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 
     public:
         AbstractDirectoryWatcher();
 
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
         void abort();
 
         /** Pauses the emitting of the scan signal */
@@ -70,6 +70,13 @@ class AMAROK_EXPORT AbstractDirectoryWatcher : public ThreadWeaver::Job
          *  collection folder should be checked for changes.
          */
         void requestScan( QList<QUrl> directories, GenericScanManager::ScanType type );
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
 
     protected Q_SLOTS:
         void delayTimeout();
@@ -80,6 +87,9 @@ class AMAROK_EXPORT AbstractDirectoryWatcher : public ThreadWeaver::Job
 
         /** Adds the given directory to the list of directories for the next scan.  */
         void addDirToList( const QString &directory );
+
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 
         QTimer* m_delayedScanTimer;
         KDirWatch *m_watcher;

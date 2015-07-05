@@ -1194,6 +1194,23 @@ ParseWorkerThread::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
 }
 
 void
+ParseWorkerThread::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+ParseWorkerThread::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
+void
 ParseWorkerThread::slotDoneSuccess( ThreadWeaver::JobPointer )
 {
     if (m_handler->m_memColl)
@@ -1235,6 +1252,23 @@ CopyWorkerThread::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *threa
     Q_UNUSED(self);
     Q_UNUSED(thread);
     m_success = m_handler->privateCopyTrackToDevice( m_track );
+}
+
+void
+CopyWorkerThread::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+CopyWorkerThread::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void

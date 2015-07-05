@@ -26,7 +26,6 @@
 #include "playlistmanager/SyncedPodcast.h"
 #include "PodcastCategory.h"
 #include "SvgHandler.h"
-#include <ThreadWeaver/Weaver>
 #include "widgets/PrettyTreeRoles.h"
 
 #include <QIcon>
@@ -126,7 +125,7 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastChannelPtr &channel ) const
         return pixmap;
     }
     else
-        return QIcon::fromTheme( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
+        return ( QIcon(new KIconEngine( "podcast-amarok", 0, emblems )).pixmap( 32, 32 ) );
 }
 
 QVariant
@@ -137,9 +136,9 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastEpisodePtr &episode ) const
         emblems << "go-down";
 
     if( episode->isNew() )
-        return QIcon::fromTheme( "rating", 0, emblems ).pixmap( 24, 24 );
+        return ( QIcon( new KIconEngine( "rating", 0, emblems )).pixmap( 24, 24 ) );
     else
-        return QIcon::fromTheme( "podcast-amarok", 0, emblems ).pixmap( 24, 24 );
+        return ( QIcon( new KIconEngine( "podcast-amarok", 0, emblems )).pixmap( 24, 24 ));
 }
 
 QVariant

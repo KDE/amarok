@@ -47,8 +47,10 @@ AmazonParser::success() const
 /* protected */
 
 void
-AmazonParser::run()
+AmazonParser::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     m_responseDocument = new QDomDocument;
 
     QFile responseFile( m_tempFileName );
@@ -152,6 +154,20 @@ AmazonParser::run()
     emit( done( QSharedPointer<ThreadWeaver::Job>(this) ) );
 }
 
+void AmazonParser::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void AmazonParser::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
 
 /* private */
 

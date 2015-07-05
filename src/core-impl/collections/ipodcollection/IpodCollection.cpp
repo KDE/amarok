@@ -38,7 +38,7 @@
 #include <solid/device.h>
 #include <solid/predicate.h>
 #include <solid/storageaccess.h>
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 #include <QTemporaryFile>
 #include <QWeakPointer>
@@ -135,8 +135,8 @@ bool IpodCollection::init()
         // parse tracks in a thread in order not to block main thread
         IpodParseTracksJob *job = new IpodParseTracksJob( this );
         m_parseTracksJob = job;
-        connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-        ThreadWeaver::Weaver::instance()->enqueue( job );
+        connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
     }
     else
         slotShowConfigureDialog( parseErrorMessage ); // shows error message and allows initializing
@@ -362,9 +362,9 @@ IpodCollection::slotDestroy()
         m_writeDatabaseTimer.stop();
         IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
         m_writeDatabaseJob = job;
-        connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+        connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
         connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotRemove()) );
-        ThreadWeaver::Weaver::instance()->enqueue( job );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
     }
     else
         slotRemove();
@@ -391,9 +391,9 @@ IpodCollection::slotEject()
         m_writeDatabaseTimer.stop();
         IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
         m_writeDatabaseJob = job;
-        connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+        connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
         connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotPerformTeardownAndRemove()) );
-        ThreadWeaver::Weaver::instance()->enqueue( job );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
     }
     else
         slotPerformTeardownAndRemove();
@@ -483,8 +483,8 @@ IpodCollection::slotInitialize()
         // there will be probably 0 tracks, but it may do more in future, for example stale
         // & orphaned track search.
         IpodParseTracksJob *job = new IpodParseTracksJob( this );
-        connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-        ThreadWeaver::Weaver::instance()->enqueue( job );
+        connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
     }
     else
         slotShowConfigureDialog( errorMessage ); // shows error message and allows initializing
@@ -547,8 +547,8 @@ void IpodCollection::slotInitiateDatabaseWrite()
     }
     IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
     m_writeDatabaseJob = job;
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 
 void IpodCollection::slotPerformTeardownAndRemove()

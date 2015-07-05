@@ -375,7 +375,7 @@ void CoverFoundDialog::saveAs()
         return;
     }
 
-    KFileDialog dlg( tracks.first()->playableUrl().directory(), QString(), this );
+    KFileDialog dlg( tracks.first()->playableUrl().adjusted(QUrl::RemoveFilename).path(), QString(), this );
     dlg.setCaption( i18n("Cover Image Save Location") );
     dlg.setMode( KFile::File | KFile::LocalOnly );
     dlg.setOperationMode( KFileDialog::Saving );

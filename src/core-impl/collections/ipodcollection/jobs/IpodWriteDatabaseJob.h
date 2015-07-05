@@ -27,13 +27,26 @@ class IpodCollection;
  * destory itself while this job is alive. Memory management of this job is up to
  * the caller of it.
  */
-class IpodWriteDatabaseJob : public ThreadWeaver::Job
+class IpodWriteDatabaseJob : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 
     public:
         explicit IpodWriteDatabaseJob( IpodCollection *collection );
-        virtual void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+
+    Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 
     private:
         IpodCollection *m_coll;

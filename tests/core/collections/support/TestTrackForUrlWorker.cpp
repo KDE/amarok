@@ -22,7 +22,7 @@
 
 #include <QUrl>
 #include <ThreadWeaver/Job>
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 #include <qtest_kde.h>
 
 #include <QMetaType>
@@ -97,7 +97,7 @@ TestTrackForUrlWorker::testCompleteJobInternal( MockTrackForUrlWorker *trackForU
     QSignalSpy spyFinishedLookup( trackForUrlWorker, SIGNAL(finishedLookup(Meta::TrackPtr)) );
 
     // Enqueue the job for execution and verify that it emits done when finished, which triggers completeJob
-    ThreadWeaver::Weaver::instance()->enqueue( trackForUrlWorker );
+    ThreadWeaver::Queue::instance()->enqueue( trackForUrlWorker );
     bool receivedDone = QTest::kWaitForSignal( trackForUrlWorker, SIGNAL(done(ThreadWeaver::Job*)), 1000 );
     QVERIFY( receivedDone );
 

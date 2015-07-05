@@ -75,7 +75,7 @@ void FileCollectionLocation::startRemoveJobs()
 
         KIO::DeleteJob *job = 0;
 
-        src.cleanPath();
+        src.setPath( QDir::cleanPath(src.path()) );
         debug() << "deleting  " << src;
         KIO::JobFlags flags = KIO::HideProgressInfo;
         job = KIO::del( src, flags );

@@ -34,7 +34,8 @@
 
 #include <QDomElement>
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/QObjectDecorator>
 
 APG::PresetPtr
 APG::Preset::createFromXml( QDomElement& xmlelem )
@@ -130,19 +131,19 @@ void APG::Preset::queueSolver() {
 
     ConstraintSolver* s = static_cast<ConstraintSolver*>( sender() );
     Amarok::Components::logger()->newProgressOperation( s, i18n("Generating a new playlist"), s->iterationCount(), s, SLOT(requestAbort()), Qt::QueuedConnection );
-    connect( s, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(solverFinished(ThreadWeaver::Job*)), Qt::QueuedConnection );
+    connect( s, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(solverFinished(ThreadWeaver::JobPointer)), Qt::QueuedConnection );
 
     m_constraintTreeRoot->addChild( ConstraintTypes::TrackSpreader::createNew( m_constraintTreeRoot ), 0 ); // private mandatory constraint
 
-    ThreadWeaver::Weaver::instance()->enqueue( s );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(s) );
 }
 
 void
-APG::Preset::solverFinished( ThreadWeaver::Job* job )
+APG::Preset::solverFinished( ThreadWeaver::JobPointer job )
 {
     m_constraintTreeRoot->removeChild( 0 ); // remove the TrackSpreader
 
-    ConstraintSolver* solver = static_cast<ConstraintSolver*>( job );
+    ConstraintSolver* solver = static_cast<ConstraintSolver*>( job.data() );
     if ( job->success() ) {
         debug() << "Solver" << solver->serial() << "finished successfully";
         if ( !solver->satisfied() ) {
@@ -156,7 +157,8 @@ APG::Preset::solverFinished( ThreadWeaver::Job* job )
     } else {
         debug() << "Ignoring results from aborted Solver" << solver->serial();
     }
-    job->deleteLater();
+    ThreadWeaver::QObjectDecorator *qs = new ThreadWeaver::QObjectDecorator(job.data());
+    qs->deleteLater();
 
     emit lock( false );
 }

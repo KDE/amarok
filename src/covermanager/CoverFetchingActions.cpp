@@ -152,7 +152,8 @@ SetCustomCoverAction::slotTriggered()
     if( m_albums.isEmpty() || m_albums.first()->tracks().isEmpty() )
         return;
 
-    const QString& startPath = m_albums.first()->tracks().first()->playableUrl().directory();
+    const QString& startPath = m_albums.first()->tracks().first()->playableUrl().adjusted(QUrl::RemoveFilename).path();
+
     const QStringList mimetypes( KImageIO::mimeTypes( KImageIO::Reading ) );
     KFileDialog dlg( startPath,
                      mimetypes.join(" "),

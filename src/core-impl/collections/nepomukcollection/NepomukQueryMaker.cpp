@@ -27,7 +27,8 @@
 
 #include "core/support/Debug.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
 
 #include <QStack>
 
@@ -495,8 +496,8 @@ NepomukQueryMaker::run()
     }
 
     d->inquirer = new NepomukInquirer(query, parser);
-    connect(d->inquirer, SIGNAL(done(ThreadWeaver::Job*)), SLOT(inquirerDone()));
-    ThreadWeaver::Weaver::instance()->enqueue(d->inquirer);
+    connect(d->inquirer, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(inquirerDone()));
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(d->inquirer) );
 }
 
 QueryMaker*

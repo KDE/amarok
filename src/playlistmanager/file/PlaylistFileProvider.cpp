@@ -54,7 +54,7 @@ PlaylistFileProvider::PlaylistFileProvider()
     {
         QUrl url( key );
         //Don't load these from the config file, they are read from the directory anyway
-        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
+        if( KIO::upUrl(url).matches( QUrl::fromUserInput(Amarok::saveLocation("playlists")), QUrl::StripTrailingSlash ) )
             continue;
         m_urlsToLoad << url;
     }
@@ -82,7 +82,7 @@ PlaylistFileProvider::~PlaylistFileProvider()
     {
         QUrl url = playlistFile->uidUrl();
         //only save files NOT in "playlists", those are automatically loaded.
-        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
+        if( KIO::upUrl(url).matches( QUrl::fromUserInput(Amarok::saveLocation( "playlists" )), QUrl::StripTrailingSlash ) )
             continue;
 
         //debug() << "storing to rc-file: " << url.url();
@@ -139,7 +139,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     filename.replace( QLatin1Char('/'), QLatin1Char('-') );
     filename.replace( QLatin1Char('\\'), QLatin1Char('-') );
 
-    Playlists::PlaylistFormat format = Playlists::getFormat( filename );
+    Playlists::PlaylistFormat format = Playlists::getFormat( QUrl::fromUserInput(filename) );
     if( format == Playlists::Unknown ) // maybe the name just had a dot in it. We just add .xspf
     {
         format = Playlists::XSPF;
@@ -217,7 +217,7 @@ PlaylistFileProvider::import( const QUrl &path )
     }
 
     debug() << "Importing playlist file " << path;
-    if( path == Amarok::defaultPlaylistPath() )
+    if( path == QUrl::fromLocalFile(Amarok::defaultPlaylistPath()) )
     {
         error() << "trying to load saved session playlist at %s" << path.path();
         return false;

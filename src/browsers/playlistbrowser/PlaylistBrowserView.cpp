@@ -552,7 +552,7 @@ PlaylistBrowserView::slotExport()
 
     // --- actually save the playlist
     if( !playlistPath.isEmpty() )
-        Playlists::exportPlaylistFile( playlist->tracks(), playlistPath, saveRelativeCheck->isChecked() );
+        Playlists::exportPlaylistFile( playlist->tracks(), QUrl::fromLocalFile(playlistPath), saveRelativeCheck->isChecked() );
 }
 
 void

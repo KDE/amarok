@@ -56,7 +56,7 @@ class MusicBrainzFinder : public QObject
         void gotReplyError( QNetworkReply::NetworkError code );
         void gotReply( QNetworkReply *reply );
 
-        void parsingDone( ThreadWeaver::Job *_parser );
+        void parsingDone( ThreadWeaver::JobPointer _parser );
 
     private:
         QVariantMap guessMetadata( const Meta::TrackPtr &track ) const;

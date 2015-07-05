@@ -26,7 +26,8 @@
 #include "MusicBrainzMeta.h"
 #include "TagsFromFileNameGuesser.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
 
 #include <QAuthenticator>
 #include <QNetworkAccessManager>
@@ -177,9 +178,9 @@ MusicBrainzFinder::gotReply( QNetworkReply *reply )
             MusicBrainzXmlParser *parser = new MusicBrainzXmlParser( document );
             m_parsers.insert( parser, m_replies.value( reply ) );
 
-            connect( parser, SIGNAL(done(ThreadWeaver::Job*)),
-                     SLOT(parsingDone(ThreadWeaver::Job*)) );
-            ThreadWeaver::Weaver::instance()->enqueue( parser );
+            connect( parser, SIGNAL(done(ThreadWeaver::JobPointer)),
+                     SLOT(parsingDone(ThreadWeaver::JobPointer)) );
+            ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(parser) );
         }
         else
             /*
@@ -195,12 +196,12 @@ MusicBrainzFinder::gotReply( QNetworkReply *reply )
 }
 
 void
-MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
+MusicBrainzFinder::parsingDone( ThreadWeaver::JobPointer _parser )
 {
     DEBUG_BLOCK
     MusicBrainzXmlParser *parser = qobject_cast<MusicBrainzXmlParser *>( _parser );
-    disconnect( parser, SIGNAL(done(ThreadWeaver::Job*)),
-                this, SLOT(parsingDone(ThreadWeaver::Job*)) );
+    disconnect( parser, SIGNAL(done(ThreadWeaver::JobPointer)),
+                this, SLOT(parsingDone(ThreadWeaver::JobPointer)) );
 
     if( m_parsers.contains( parser ) && !m_parsers.value( parser ).isNull() )
     {

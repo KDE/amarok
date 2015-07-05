@@ -50,7 +50,7 @@ InfoScript::version() const
 QString
 InfoScript::scriptPath() const
 {
-    return m_scriptUrl.directory();
+    return m_scriptUrl.adjusted(QUrl::RemoveFilename).path();
 }
 
 QString

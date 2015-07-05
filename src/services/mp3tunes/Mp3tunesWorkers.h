@@ -22,21 +22,29 @@
 #include <QList>
 #include <QStringList>
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 
 /**
  * Allows for threading the logging in process.
  */
-class Mp3tunesLoginWorker :  public ThreadWeaver::Job
+class Mp3tunesLoginWorker : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
         Mp3tunesLoginWorker( Mp3tunesLocker* locker, const QString &username, const QString &password );
         ~Mp3tunesLoginWorker();
 
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
         void finishedLogin( const QString &sessionId );
 
     private Q_SLOTS:
@@ -47,21 +55,32 @@ class Mp3tunesLoginWorker :  public ThreadWeaver::Job
         QString m_sessionId;
         QString m_username;
         QString m_password;
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 };
 
 /**
  * Allows for threading the artist fetching process
  */
-class Mp3tunesArtistFetcher : public ThreadWeaver::Job
+class Mp3tunesArtistFetcher : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
         Mp3tunesArtistFetcher( Mp3tunesLocker * locker );
         ~Mp3tunesArtistFetcher();
 
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
         void artistsFetched( QList<Mp3tunesLockerArtist> );
 
     private Q_SLOTS:
@@ -70,21 +89,32 @@ class Mp3tunesArtistFetcher : public ThreadWeaver::Job
     private:
         Mp3tunesLocker* m_locker;
         QList<Mp3tunesLockerArtist> m_artists;
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 };
 
 /**
  * Allows for threading the albumWithArtistId fetching process
  */
-class Mp3tunesAlbumWithArtistIdFetcher : public ThreadWeaver::Job
+class Mp3tunesAlbumWithArtistIdFetcher : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
         Mp3tunesAlbumWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId );
         ~Mp3tunesAlbumWithArtistIdFetcher();
 
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
         void albumsFetched( QList<Mp3tunesLockerAlbum> );
 
     private Q_SLOTS:
@@ -94,21 +124,32 @@ class Mp3tunesAlbumWithArtistIdFetcher : public ThreadWeaver::Job
         int m_artistId;
         Mp3tunesLocker* m_locker;
         QList<Mp3tunesLockerAlbum> m_albums;
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 };
 
 /**
  * Allows for threading the trackWithAlbumId fetching process
  */
-class Mp3tunesTrackWithAlbumIdFetcher : public ThreadWeaver::Job
+class Mp3tunesTrackWithAlbumIdFetcher : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
         Mp3tunesTrackWithAlbumIdFetcher( Mp3tunesLocker * locker, int albumId );
         ~Mp3tunesTrackWithAlbumIdFetcher();
 
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
         void tracksFetched( QList<Mp3tunesLockerTrack> );
 
     private Q_SLOTS:
@@ -118,21 +159,31 @@ class Mp3tunesTrackWithAlbumIdFetcher : public ThreadWeaver::Job
         int m_albumId;
         Mp3tunesLocker* m_locker;
         QList<Mp3tunesLockerTrack> m_tracks;
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 };
 
 /**
  * Allows for threading the trackWithArtistId fetching process
  */
-class Mp3tunesTrackWithArtistIdFetcher : public ThreadWeaver::Job
+class Mp3tunesTrackWithArtistIdFetcher : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
         Mp3tunesTrackWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId );
         ~Mp3tunesTrackWithArtistIdFetcher();
 
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
         void tracksFetched( QList<Mp3tunesLockerTrack> );
 
     private Q_SLOTS:
@@ -142,21 +193,33 @@ class Mp3tunesTrackWithArtistIdFetcher : public ThreadWeaver::Job
         int m_artistId;
         Mp3tunesLocker* m_locker;
         QList<Mp3tunesLockerTrack> m_tracks;
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+
 };
 
 /**
  * Allows for threading the searching process
  */
-class Mp3tunesSearchMonkey : public ThreadWeaver::Job
+class Mp3tunesSearchMonkey : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
         Mp3tunesSearchMonkey( Mp3tunesLocker * locker, QString query, int searchFor );
         ~Mp3tunesSearchMonkey();
 
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
         void searchComplete( QList<Mp3tunesLockerArtist> );
         void searchComplete( QList<Mp3tunesLockerAlbum> );
         void searchComplete( QList<Mp3tunesLockerTrack> );
@@ -169,21 +232,32 @@ class Mp3tunesSearchMonkey : public ThreadWeaver::Job
         int m_searchFor;
         Mp3tunesLocker* m_locker;
         Mp3tunesSearchResult m_result;
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 };
 
 /**
  * Allows for threading a track list upload
  */
-class Mp3tunesSimpleUploader : public ThreadWeaver::Job
+class Mp3tunesSimpleUploader : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
         Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStringList tracklist );
         ~Mp3tunesSimpleUploader();
 
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
         void uploadComplete();
         void incrementProgress();
         void endProgressOperation( QObject * );
@@ -194,21 +268,32 @@ class Mp3tunesSimpleUploader : public ThreadWeaver::Job
     private:
         Mp3tunesLocker* m_locker;
         QStringList m_tracklist;
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 };
 
 /**
  * Allows for threading a track from filekey job.
  */
-class Mp3tunesTrackFromFileKeyFetcher : public ThreadWeaver::Job
+class Mp3tunesTrackFromFileKeyFetcher : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
         Mp3tunesTrackFromFileKeyFetcher( Mp3tunesLocker * locker, QString filekey );
         ~Mp3tunesTrackFromFileKeyFetcher();
 
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
         void trackFetched( Mp3tunesLockerTrack &track );
 
     private Q_SLOTS:
@@ -218,6 +303,10 @@ class Mp3tunesTrackFromFileKeyFetcher : public ThreadWeaver::Job
         Mp3tunesLocker* m_locker;
         Mp3tunesLockerTrack m_track;
         QString m_filekey;
+
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 };
 
 #endif

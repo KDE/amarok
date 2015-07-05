@@ -26,15 +26,18 @@
 
 IpodDeleteTracksJob::IpodDeleteTracksJob( const Meta::TrackList &sources,
                                           const QWeakPointer<IpodCollection> &collection )
-    : Job()
+    : QObject()
+    , ThreadWeaver::Job()
     , m_sources( sources )
     , m_coll( collection )
 {
 }
 
 void
-IpodDeleteTracksJob::run()
+IpodDeleteTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     if( !m_coll )
         return;
     int trackCount = m_sources.size();
@@ -67,3 +70,19 @@ IpodDeleteTracksJob::run()
         itdb_stop_sync( m_coll.data()->m_itdb );
 }
 
+void
+IpodDeleteTracksJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+IpodDeleteTracksJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}

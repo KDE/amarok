@@ -240,7 +240,7 @@ Reader::songListFinished( int /*id*/, bool error )
     QByteArray result = http->results();
     http->deleteLater();
 
-    ThreadWeaver::Queue::instance()->enqueue( new WorkerThread( result, this, m_memColl ) );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(new WorkerThread( result, this, m_memColl )) );
 }
 
 bool
@@ -590,9 +590,26 @@ WorkerThread::success() const
 }
 
 void
-WorkerThread::run()
+WorkerThread::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     m_success = m_reader->parseSongList( m_data, true );
 }
 
+void
+WorkerThread::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
 
+void
+WorkerThread::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}

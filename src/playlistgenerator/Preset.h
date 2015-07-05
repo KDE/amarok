@@ -24,6 +24,7 @@
 #include <QDomElement>
 #include <QObject>
 #include <QSharedData>
+#include <ThreadWeaver/Job>
 
 namespace ThreadWeaver {
     class Job;
@@ -56,7 +57,7 @@ namespace APG {
 
         private Q_SLOTS:
             void queueSolver();
-            void solverFinished( ThreadWeaver::Job* );
+            void solverFinished( ThreadWeaver::JobPointer );
 
         private:
             Preset( const QString&, QDomElement& );

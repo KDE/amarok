@@ -24,8 +24,9 @@
 #include "Mp3tunesWorkers.h"
 #include "core-impl/collections/support/MemoryMatcher.h"
 
-#include <threadweaver/Job.h>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
 #include <QList>
 
@@ -208,13 +209,13 @@ void Mp3tunesServiceQueryMaker::fetchArtists()
         debug() << "Artist Filtering";
         Mp3tunesSearchMonkey * searchMonkey = new Mp3tunesSearchMonkey( m_locker, m_artistFilter, Mp3tunesSearchResult::ArtistQuery );
         connect( searchMonkey, SIGNAL(searchComplete(QList<Mp3tunesLockerArtist>)), this, SLOT(artistDownloadComplete(QList<Mp3tunesLockerArtist>)) );
-        ThreadWeaver::Weaver::instance()->enqueue( searchMonkey ); //Go!
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(searchMonkey) ); //Go!
     } else if( m_locker->sessionValid() )
     {
         debug() << "Artist Fetching";
         Mp3tunesArtistFetcher * artistFetcher = new Mp3tunesArtistFetcher( m_locker );
         connect( artistFetcher, SIGNAL(artistsFetched(QList<Mp3tunesLockerArtist>)), this, SLOT(artistDownloadComplete(QList<Mp3tunesLockerArtist>)) );
-        ThreadWeaver::Weaver::instance()->enqueue( artistFetcher );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(artistFetcher) );
     }
 }
 
@@ -239,7 +240,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
         Mp3tunesAlbumWithArtistIdFetcher * albumFetcher = new Mp3tunesAlbumWithArtistIdFetcher( m_locker, m_parentArtistId.toInt() );
         connect( albumFetcher, SIGNAL(albumsFetched(QList<Mp3tunesLockerAlbum>)), this, SLOT(albumDownloadComplete(QList<Mp3tunesLockerAlbum>)) );
 
-        ThreadWeaver::Weaver::instance()->enqueue( albumFetcher );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(albumFetcher) );
     } else {
         debug() << "Session Invalid";
     }
@@ -275,12 +276,12 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
             debug() << "Creating track w/ artist id Fetch Worker";
             Mp3tunesTrackWithArtistIdFetcher * trackFetcher = new Mp3tunesTrackWithArtistIdFetcher( m_locker, m_parentArtistId.toInt() );
             connect( trackFetcher, SIGNAL(tracksFetched(QList<Mp3tunesLockerTrack>)), this, SLOT(trackDownloadComplete(QList<Mp3tunesLockerTrack>)) );
-            ThreadWeaver::Weaver::instance()->enqueue( trackFetcher ); //Go!
+            ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(trackFetcher) ); //Go!
         } else if ( !m_parentAlbumId.isEmpty() ) {
             debug() << "Creating track w/ album id Fetch Worker";
             Mp3tunesTrackWithAlbumIdFetcher * trackFetcher = new Mp3tunesTrackWithAlbumIdFetcher( m_locker, m_parentAlbumId.toInt() );
             connect( trackFetcher, SIGNAL(tracksFetched(QList<Mp3tunesLockerTrack>)), this, SLOT(trackDownloadComplete(QList<Mp3tunesLockerTrack>)) );
-            ThreadWeaver::Weaver::instance()->enqueue( trackFetcher ); //Go!
+            ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(trackFetcher) ); //Go!
         }
     } else {
         debug() << "Session Invalid";

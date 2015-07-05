@@ -43,7 +43,8 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
                                       QStringList scanDirsRequested,
                                       GenericScanManager::ScanType type,
                                       bool recursive, bool detectCharset )
-    : ThreadWeaver::Job( 0 )
+    : QObject()
+    , ThreadWeaver::Job( 0 )
     , m_manager( manager )
     , m_type( type )
     , m_scanDirsRequested( scanDirsRequested )
@@ -55,14 +56,15 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_recursive( recursive )
     , m_charsetDetect( detectCharset )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)),
+    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)),
              this, SLOT(deleteLater()) ); // auto delete
 }
 
 GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
                                       QIODevice *input,
                                       GenericScanManager::ScanType type )
-    : ThreadWeaver::Job( 0 )
+    : QObject()
+    , ThreadWeaver::Job( 0 )
     , m_manager( manager )
     , m_type( type )
     , m_input( input )
@@ -73,7 +75,7 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_recursive( true )
     , m_charsetDetect( false )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)),
+    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)),
              this, SLOT(deleteLater()) ); // auto delete
 }
 
@@ -88,8 +90,10 @@ GenericScannerJob::~GenericScannerJob()
 }
 
 void
-GenericScannerJob::run()
+GenericScannerJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     // -- initialize the input
     // - from io device
     if( m_input )
@@ -155,6 +159,23 @@ GenericScannerJob::run()
             return;
         }
     }
+}
+
+void
+GenericScannerJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+GenericScannerJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void

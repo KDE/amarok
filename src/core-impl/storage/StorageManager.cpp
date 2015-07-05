@@ -25,6 +25,7 @@
 #include <core/support/Debug.h>
 
 #include <KConfigGroup>
+#include <KLocalizedString>
 
 /** A SqlStorage that doesn't do anything.
  *

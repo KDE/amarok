@@ -984,7 +984,7 @@ TagDialog::getTagsFromMultipleTracks() const
     Meta::TrackPtr first = m_tracks.first();
     map = getTagsFromTrack( first );
 
-    QString directory = first->playableUrl().directory();
+    QString directory = first->playableUrl().adjusted(QUrl::RemoveFilename).path();
     int scoreCount = 0;
     double scoreSum = map.value( Meta::Field::SCORE ).toDouble();
     if( map.value( Meta::Field::SCORE ).toDouble() )
@@ -1023,7 +1023,8 @@ TagDialog::getTagsFromMultipleTracks() const
         // -- special handling for values
 
         // go up in the directories until we find a common one
-        QString newDirectory = track->playableUrl().directory();
+        QString newDirectory = track->playableUrl().adjusted(QUrl::RemoveFilename).path();
+
         while( newDirectory != directory )
         {
             if( newDirectory.length() > directory.length() )

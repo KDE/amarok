@@ -27,7 +27,7 @@
 #include "FileType.h"
 
 #include <KTemporaryFile>
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 #include <cmath>
 #include <gpod/itdb.h>
@@ -744,8 +744,8 @@ Track::commitIfInNonBatchUpdate()
 
     // write tags to file in a thread in order not to block
     WriteTagsJob *job = new WriteTagsJob( path, m_changedFields );
-    job->connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    job->connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 
     notifyObservers();
     m_trackLock.lockForWrite(); // reset to original state when this was called

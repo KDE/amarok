@@ -42,3 +42,18 @@ void WriteTagsJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
     if( m_changes.contains( Meta::valImage ) && ( AmarokConfig::writeBackCover() || !m_respectConfig ) )
         Meta::Tag::setEmbeddedCover( m_path, m_changes.value( Meta::valImage ).value<QImage>() );
 }
+
+void WriteTagsJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void WriteTagsJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}

@@ -102,7 +102,7 @@ APG::PresetModel::index( int row, int column, const QModelIndex& ) const
     if ( rowCount() <= row )
         return QModelIndex();
 
-    return createIndex( row, column, 0 );
+    return createIndex( row, column);
 }
 
 int
@@ -308,7 +308,7 @@ APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
     setSelection( ps->title() + ".xml" );
     setOperationMode( KFileDialog::Saving );
     setKeepLocation( true );
-    setCaption( i18n( "Export \"%1\" preset", ps->title() ) );
+    QWidget::setWindowTitle( i18n( "Export \"%1\" preset", ps->title() ) );
     connect( this, SIGNAL(okClicked()), this, SLOT(recvAccept()) );
 }
 

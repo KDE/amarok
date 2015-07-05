@@ -37,6 +37,8 @@
 #include <QTimer>
 #include <QReadWriteLock>
 
+#include <KGlobal>
+
 typedef QPair<Collections::Collection*, CollectionManager::CollectionStatus> CollectionPair;
 
 

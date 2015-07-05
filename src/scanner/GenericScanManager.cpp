@@ -27,7 +27,7 @@
 #include "core/support/Debug.h"
 #include "scanner/GenericScannerJob.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 #include <QFileInfo>
 #include <QSharedPointer>
@@ -81,7 +81,7 @@ GenericScanManager::requestScan( QList<QUrl> directories, ScanType type )
             continue;
         }
 
-        QString path = url.path( QUrl::RemoveTrailingSlash );
+        QString path = url.adjusted(QUrl::StripTrailingSlash).path();
         if( !QFileInfo( path ).isDir() )
         {
             warning() << "scan of a non-directory" << path << "requested, skipping it.";
@@ -98,7 +98,7 @@ GenericScanManager::requestScan( QList<QUrl> directories, ScanType type )
 
     m_scannerJob = new GenericScannerJob( this, scanDirsSet.toList(), type );
     connectSignalsToJob();
-    ThreadWeaver::Weaver::instance()->enqueue( m_scannerJob );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_scannerJob) );
 }
 
 void
@@ -114,7 +114,7 @@ GenericScanManager::requestImport( QIODevice *input, ScanType type )
 
     m_scannerJob = new GenericScannerJob( this, input, type );
     connectSignalsToJob();
-    ThreadWeaver::Weaver::instance()->enqueue( m_scannerJob );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_scannerJob) );
 }
 
 void

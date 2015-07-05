@@ -27,7 +27,7 @@
 
 #include <KStandardDirs>
 #include <qtest_kde.h>
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 #include <QDebug>
 #include <QTest>
@@ -87,7 +87,7 @@ void TestXSPFPlaylist::cleanupTestCase()
 {
     QFile::remove( KStandardDirs::locateLocal( "tmp", "test.xspf" ) );
     // Wait for other jobs, like MetaProxys fetching meta data, to finish
-    ThreadWeaver::Weaver::instance()->finish();
+    ThreadWeaver::Queue::instance()->finish();
 
     delete m_testPlaylist1;
     delete Amarok::Components::setEngineController( 0 );

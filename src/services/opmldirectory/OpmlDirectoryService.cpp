@@ -32,7 +32,6 @@
 
 #include <KStandardDirs>
 #include <KTemporaryFile>
-#include <threadweaver/ThreadWeaver.h>
 
 #include <typeinfo>
 

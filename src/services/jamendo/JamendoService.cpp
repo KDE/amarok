@@ -35,7 +35,7 @@
 #include <KShell>
 #include <KStandardDirs>
 #include <KTemporaryFile>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
 
 #include <QDesktopServices>
 #include <QToolBar>
@@ -225,7 +225,7 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
         m_xmlParser = new JamendoXmlParser( m_tempFileName );
     connect( m_xmlParser, SIGNAL(doneParsing()), SLOT(doneParsing()) );
 
-    ThreadWeaver::Weaver::instance()->enqueue( m_xmlParser );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_xmlParser) );
     downloadJob->deleteLater();
 }
 

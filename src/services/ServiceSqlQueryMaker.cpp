@@ -49,14 +49,17 @@ class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
         }
 
     Q_SIGNALS:
-            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
-            void done(ThreadWeaver::JobPointer);
-            /** This job has failed. */
-            void failed(ThreadWeaver::JobPointer);
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
 
     protected:
 
-        virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread = 0)
+        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0)
         {
             Q_UNUSED(self);
             Q_UNUSED(thread);
@@ -70,6 +73,22 @@ class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
             else
                 setStatus(Status_Running);
         }
+        
+        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        {
+            Q_EMIT started(self);
+            ThreadWeaver::Job::defaultBegin(self, thread);
+        }
+
+        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        {
+            ThreadWeaver::Job::defaultEnd(self, thread);
+            if (!self->success()) {
+                Q_EMIT failed(self);
+            }
+            Q_EMIT done(self);
+        }
+        
     private:
         ServiceSqlQueryMaker *m_queryMaker;
         bool m_aborted;

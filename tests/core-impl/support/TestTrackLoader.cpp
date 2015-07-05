@@ -27,7 +27,7 @@
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core-impl/support/TrackLoader.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 #include <qtest_kde.h>
 
 QTEST_KDEMAIN_CORE( TestTrackLoader )
@@ -45,7 +45,7 @@ void
 TestTrackLoader::cleanupTestCase()
 {
     // Wait for other jobs, like MetaProxys fetching meta data, to finish
-    ThreadWeaver::Weaver::instance()->finish();
+    ThreadWeaver::Queue::instance()->finish();
 }
 
 void

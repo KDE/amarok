@@ -186,9 +186,6 @@ Q_SIGNALS:
     void copyTracksDone( bool success );
     void removeTracksDone();
 
-    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
-    void done(ThreadWeaver::JobPointer);
-
     /* File I/O Methods */
 
 public Q_SLOTS:
@@ -388,9 +385,12 @@ successfully.
     virtual bool success() const;
 
 Q_SIGNALS:
+    /** This signal is emitted when this job is being processed by a thread. */
+    void started(ThreadWeaver::JobPointer);
     /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
     void done(ThreadWeaver::JobPointer);
-    /** This job has failed.    */
+    /** This job has failed.
+     * This signal is emitted when success() returns false after the job is executed. */
     void failed(ThreadWeaver::JobPointer);
 
 private Q_SLOTS:
@@ -406,7 +406,9 @@ protected:
     /**
     * Reimplemented, simply runs the parse method.
     */
-    virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+    virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 
 private:
     bool m_success; ///< Whether or not the parse was successful
@@ -463,9 +465,12 @@ Q_SIGNALS:
     */
     void copyTrackFailed( ThreadWeaver::JobPointer, const Meta::TrackPtr& track );
 
+    /** This signal is emitted when this job is being processed by a thread. */
+    void started(ThreadWeaver::JobPointer);
     /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
     void done(ThreadWeaver::JobPointer);
-    /** This job has failed.    */
+    /** This job has failed.
+     * This signal is emitted when success() returns false after the job is executed. */
     void failed(ThreadWeaver::JobPointer);
 
 private Q_SLOTS:
@@ -489,7 +494,10 @@ protected:
     /**
     * Reimplemented, simply runs the copy track method.
     */
-    virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+    virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+
 private:
     bool m_success; ///< Whether or not the copy was successful
     Meta::TrackPtr m_track; ///< The source track to copy from

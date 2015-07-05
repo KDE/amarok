@@ -43,7 +43,8 @@
 #include <KStandardDirs>  //locate()
 #include <KTemporaryFile>
 #include <QUrl>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
 #include <QDateTime>
 #include <QMenu>
@@ -361,7 +362,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
     connect( parser, SIGNAL(doneParsing()), SLOT(doneParsing()) );
 
-    ThreadWeaver::Weaver::instance()->enqueue( parser );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(parser) );
 }
 
 
@@ -472,7 +473,7 @@ void MagnatuneStore::addMoodyTracksToPlaylist( const QString &mood, int count )
     databaseWorker->fetchTrackswithMood( mood, count, m_registry );
     connect( databaseWorker, SIGNAL(gotMoodyTracks(Meta::TrackList)), this, SLOT(moodyTracksReady(Meta::TrackList)) );
 
-    ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(databaseWorker) );
 }
 
 
@@ -521,7 +522,7 @@ void MagnatuneStore::polish()
     MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
     databaseWorker->fetchMoodMap();
     connect( databaseWorker, SIGNAL(gotMoodMap(QMap<QString,int>)), this, SLOT(moodMapReady(QMap<QString,int>)) );
-    ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(databaseWorker) );
 
     if ( MagnatuneConfig().autoUpdateDatabase() )
         checkForUpdates();
@@ -685,7 +686,7 @@ void MagnatuneStore::download( const QString &sku )
     databaseWorker->fetchAlbumBySku( sku, m_registry );
     connect( databaseWorker, SIGNAL(gotAlbumBySku(Meta::MagnatuneAlbum*)), this, SLOT(download(Meta::MagnatuneAlbum*)) );
 
-    ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(databaseWorker) );
 }
 
 void MagnatuneStore::addToFavorites( const QString &sku )
