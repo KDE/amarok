@@ -107,7 +107,7 @@ NavigationUrlRunner::run( AmarokUrl url )
         {
             if( args.keys().contains( "path" ) )
             {
-                fileBrowser->setDir( args.value( "path" ) );
+                fileBrowser->setDir( QUrl::fromUserInput(args.value( "path" )) );
             }
         }
     }

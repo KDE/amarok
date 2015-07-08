@@ -28,6 +28,7 @@
 
 #include <KAction>
 #include <KMenu>
+#include <KLocalizedString>
 
 #include <QFrame>
 #include <QHeaderView>

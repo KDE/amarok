@@ -30,7 +30,7 @@
 #include <QScriptEngine>
 #include <QTextStream>
 #include <QDir>
-#include <QScriptEngineDebugger>
+#include <QtScriptTools/QScriptEngineDebugger>
 #include <QMainWindow>
 
 using namespace ScriptConsoleNS;
@@ -42,7 +42,7 @@ ScriptConsoleItem::ScriptConsoleItem( QObject *parent, const QString &name, cons
 , m_viewFactory( document )
 {
     document->setParent( this );
-    document->save( url().path() );
+    document->save( url() );
     initializeScriptEngine();
 }
 

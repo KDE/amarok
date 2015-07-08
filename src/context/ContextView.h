@@ -48,7 +48,12 @@ namespace Context
 
 class ContextScene;
 class ControlBox;
+class ViewPrivate;
 
+/**
+ * Plasma::View is no longer present in the plasma API in KF5 and hence it has been replaced
+ * with QGraphicsView from which it was derived.
+ */
 class AMAROK_EXPORT ContextView : public QGraphicsView, public ContextSubject
 {
     Q_OBJECT
@@ -96,6 +101,11 @@ public:
     */
     void addCollapseAnimation( QAbstractAnimation *anim );
 
+    /**
+     * @return the containment associated, or 0 if none is
+     */
+    Containment *containment() const;
+
 public Q_SLOTS:
     /**
      * Convenience methods to show and hide the applet explorer.
@@ -103,8 +113,35 @@ public Q_SLOTS:
     void hideAppletExplorer();
     void showAppletExplorer();
 
+    /**
+     * @param containment the containment to center the view on
+     */
+    virtual void setContainment(Plasma::Containment *containment);
+
 Q_SIGNALS:
     void appletExplorerHid();
+
+    /**
+     * This signal is emitted whenever the containment being viewed has
+     * changed its geometry, but before the View has shifted the viewd scene rect
+     * to the new geometry. This is useful for Views which want to keep
+     * their rect() in sync with the containment'sa
+     */
+    void sceneRectAboutToChange();
+
+    /**
+     * This signal is emitted whenever the containment being viewed has
+     * changed its geometry, and after the View has shifted the viewd scene rect
+     * to the new geometry. This is useful for Views which want to keep
+     * their rect() in sync with the containment's.
+     */
+    void sceneRectChanged();
+
+    /**
+     * This is emitted after the containment is destroyed, for views that need to do something about
+     * it (like find a new one).
+     */
+    void lostContainment();
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -131,6 +168,9 @@ private:
     QParallelAnimationGroup *m_collapseAnimations;
     QAnimationGroup *m_queuedAnimations;
     QTimer *m_collapseGroupTimer;
+    ViewPrivate * const d;
+
+    friend class ViewPrivate;
 };
 
 } // Context namespace

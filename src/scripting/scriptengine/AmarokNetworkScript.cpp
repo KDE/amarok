@@ -24,6 +24,7 @@
 
 #include <QScriptEngine>
 #include <QTextCodec>
+#include <KLocalizedString>
 
 using namespace AmarokScript;
 
@@ -202,8 +203,6 @@ AmarokDownloadHelper::resultString( const QUrl &url, QByteArray data, NetworkAcc
     else
     {
         QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
-        QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
-        QTextCodec::setCodecForCStrings( utf8codec );
         str = codec->toUnicode( data );
     }
 

@@ -27,9 +27,6 @@ using namespace StatSyncing;
 
 TestImporterBase::TestImporterBase()
 {
-    // This is normally set in App.cpp
-    QTextCodec *utf8codec = QTextCodec::codecForName( "UTF-8" );
-    QTextCodec::setCodecForCStrings( utf8codec );
 }
 
 ProviderPtr

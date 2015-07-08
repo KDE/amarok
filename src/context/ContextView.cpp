@@ -48,6 +48,86 @@
 namespace Context
 {
 
+class ViewPrivate
+{
+public:
+    ViewPrivate(QGraphicsView *view, int uniqueId)
+        : q(view),
+          containment(0),
+          drawWallpaper(true),
+          trackChanges(true),
+          viewId(0),
+          lastScreen(-1),
+          lastDesktop(-2)
+    {
+        if (uniqueId > s_maxViewId) {
+            s_maxViewId = uniqueId;
+            viewId = uniqueId;
+        }
+
+        if (viewId == 0) {
+            // we didn't get a sane value assigned to us, so lets
+            // grab the next available id
+            viewId = ++s_maxViewId;
+        }
+    }
+
+    ~ViewPrivate()
+    {
+    }
+
+    void updateSceneRect()
+    {
+        if (!containment || !trackChanges) {
+            return;
+        }
+
+        kDebug() << "!!!!!!!!!!!!!!!!! setting the scene rect to"
+                 << containment->sceneBoundingRect()
+                 << "associated screen is" << containment->screen();
+
+        emit q->sceneRectAboutToChange();
+        if (q->transform().isIdentity()) { //we're not zoomed out
+            q->setSceneRect(containment->sceneBoundingRect());
+        } else {
+            q->ensureVisible(containment->sceneBoundingRect());
+        }
+        emit q->sceneRectChanged();
+    }
+
+    void containmentDestroyed()
+    {
+        containment = 0;
+    }
+
+    void containmentScreenChanged(int wasScreen, int newScreen, Plasma::Containment *containment)
+    {
+        lastScreen = newScreen;
+        lastDesktop = this->containment->desktop();
+    }
+
+    void initGraphicsView()
+    {
+        q->setFrameShape(QFrame::NoFrame);
+        q->setAutoFillBackground(true);
+        q->setDragMode(QGraphicsView::NoDrag);
+        q->setInteractive(true);
+        q->setAcceptDrops(true);
+        q->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+        q->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        q->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    }
+
+    QGraphicsView *q;
+    Plasma::Containment *containment;
+    bool drawWallpaper;
+    bool trackChanges;
+    int viewId;
+    int lastScreen;
+    int lastDesktop;
+    static int s_maxViewId;
+};
+
 ContextView* ContextView::s_self = 0;
 
 
@@ -59,6 +139,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     , m_collapseAnimations(0)
     , m_queuedAnimations(0)
     , m_collapseGroupTimer(0)
+    , d(new ViewPrivate(this, 0))
 {
     Q_UNUSED( corona )
     DEBUG_BLOCK
@@ -82,6 +163,11 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     setPalette( p );
 
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
+
+    if (cont) {
+        setScene(cont->scene());
+        setContainment(cont);
+    }
 
     cont->setPos( 0, 0 );
     cont->updateConstraints();
@@ -334,7 +420,7 @@ ContextView::contextScene()
 void
 ContextView::resizeEvent( QResizeEvent* event )
 {
-    Plasma::View::resizeEvent( event );
+    QGraphicsView::resizeEvent( event );
     if( testAttribute( Qt::WA_PendingResizeEvent ) )
         return; // lets not do this more than necessary, shall we?
 
@@ -355,7 +441,7 @@ void
 ContextView::wheelEvent( QWheelEvent* event )
 {
     if( event->orientation() != Qt::Horizontal )
-        Plasma::View::wheelEvent( event );
+        QGraphicsView::wheelEvent( event );
 }
 
 QStringList
@@ -389,6 +475,68 @@ QStringList ContextView::currentAppletNames()
     debug() << "current applets: " << appletNames;
 
     return appletNames; 
+}
+
+Containment *ContextView::containment() const
+{
+    return d->containment;
+}
+
+void ContextView::setContainment(Plasma::Containment *containment)
+{
+    if (containment == d->containment) {
+        return;
+    }
+
+    if (d->containment) {
+        disconnect(d->containment, SIGNAL(destroyed(QObject*)), this, SLOT(containmentDestroyed()));
+        disconnect(d->containment, SIGNAL(geometryChanged()), this, SLOT(updateSceneRect()));
+        disconnect(d->containment, SIGNAL(screenChanged(int, int, Plasma::Containment *)), this, SLOT(containmentScreenChanged(int, int, Plasma::Containment *)));
+        d->containment->removeAssociatedWidget(this);
+    }
+
+    if (!containment) {
+        d->containment = 0;
+        return;
+    }
+
+    Containment *oldContainment = d->containment;
+
+    int screen = -1;
+    int desktop = -1;
+    if (oldContainment) {
+        screen = d->containment->screen();
+        desktop = d->containment->desktop();
+    } else {
+        setScene(containment->scene());
+    }
+
+    d->containment = containment;
+
+    //add keyboard-shortcut actions
+    d->containment->addAssociatedWidget(this);
+
+    int otherScreen = containment->screen();
+    int otherDesktop = containment->desktop();
+
+    if (screen > -1) {
+        d->lastScreen = screen;
+        d->lastDesktop = desktop;
+        containment->setScreen(screen, desktop);
+    } else {
+        d->lastScreen = otherScreen;
+        d->lastDesktop = otherDesktop;
+    }
+
+    if (oldContainment && otherScreen > -1) {
+        // assign the old containment the old screen/desktop
+        oldContainment->setScreen(otherScreen, otherDesktop);
+    }
+
+    d->updateSceneRect();
+    connect(containment, SIGNAL(destroyed(QObject*)), this, SLOT(containmentDestroyed()));
+    connect(containment, SIGNAL(geometryChanged()), this, SLOT(updateSceneRect()));
+    connect(containment, SIGNAL(screenChanged(int, int, Plasma::Containment *)), this, SLOT(containmentScreenChanged(int, int, Plasma::Containment *)));
 }
 
 } // Context namespace

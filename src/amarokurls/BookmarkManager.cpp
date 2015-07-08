@@ -32,7 +32,7 @@ BookmarkManager::BookmarkManager( QWidget* parent )
 {
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
-    setWindowTitle( QDialog::makeStandardCaption( i18n("Bookmark Manager") ) );
+    setWindowTitle( i18n("Bookmark Manager") );
     setAttribute( Qt::WA_DeleteOnClose );
     setObjectName( "BookmarkManager" );
 

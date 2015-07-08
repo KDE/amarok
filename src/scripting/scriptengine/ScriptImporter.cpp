@@ -74,7 +74,7 @@ ScriptImporter::loadQtBinding( const QString& binding )
 bool
 ScriptImporter::include( const QString& relativeFilename )
 {
-    QUrl includeUrl = m_scriptUrl.upUrl();
+    QUrl includeUrl = KIO::upUrl(m_scriptUrl);
     includeUrl = includeUrl.adjusted(QUrl::StripTrailingSlash);
     includeUrl.setPath(includeUrl.path() + '/' + ( relativeFilename ));
     QFile file( includeUrl.toLocalFile() );

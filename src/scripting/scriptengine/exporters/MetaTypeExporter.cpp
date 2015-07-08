@@ -232,7 +232,7 @@ QString
 MetaTrackPrototype::imageUrl() const
 {
     CHECK_TRACK( QString() )
-    return m_track->album() ? m_track->album()->imageLocation().prettyUrl() : QString();
+    return m_track->album() ? m_track->album()->imageLocation().toDisplayString() : QString();
 }
 
 QString

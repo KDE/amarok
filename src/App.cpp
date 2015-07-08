@@ -431,8 +431,6 @@ App::continueInit()
                                 || args->isSet( "queue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
-    QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
-    QTextCodec::setCodecForCStrings( utf8codec ); //We need this to make CollectionViewItem showing the right characters.
 
     new Amarok::DefaultApplicationController( this );
     Amarok::Components::applicationController()->start();

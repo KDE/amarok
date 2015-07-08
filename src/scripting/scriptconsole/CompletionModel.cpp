@@ -23,7 +23,6 @@
 #include <KStandardDirs>
 #include <KTextEditor/View>
 #include <KTextEditor/Document>
-#include <KTextEditor/TemplateInterface2>
 
 using namespace ScriptConsoleNS;
 

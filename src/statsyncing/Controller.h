@@ -23,6 +23,8 @@
 
 #include <QWeakPointer>
 #include <QDateTime>
+#include <QMap>
+#include <KLocalizedString>
 
 class QTimer;
 

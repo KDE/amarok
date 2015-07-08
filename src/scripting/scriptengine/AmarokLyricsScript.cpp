@@ -99,9 +99,6 @@ AmarokLyricsScript::toUtf8( const QByteArray &lyrics, const QString &encoding )
     QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
     if( !codec )
         return QString();
-
-    QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
-    QTextCodec::setCodecForCStrings( utf8codec );
     return codec->toUnicode( lyrics );
 }
 
@@ -111,9 +108,6 @@ AmarokLyricsScript::QStringtoUtf8( const QString &lyrics, const QString &encodin
     QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
     if( !codec )
         return QString();
-
-    QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
-    QTextCodec::setCodecForCStrings( utf8codec );
     return codec->toUnicode( lyrics.toLatin1() );
 }
 

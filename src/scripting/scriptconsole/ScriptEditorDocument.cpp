@@ -22,11 +22,9 @@
 #include <KTextEditor/Attribute>
 #include <KTextEditor/CodeCompletionInterface>
 #include <KTextEditor/ConfigInterface>
-#include <KTextEditor/HighlightInterface>
 #include <KTextEditor/Document>
 #include <KTextEditor/MovingInterface>
 #include <KTextEditor/MovingRange>
-#include <KTextEditor/SmartInterface>
 #include <KTextEditor/View>
 
 using namespace ScriptConsoleNS;
@@ -99,8 +97,6 @@ ScriptEditorDocument::highlight( KTextEditor::View *view, int line, const QColor
     if( !movingIf )
       return;
 
-    clearHighlights( view );
-
     KTextEditor::MovingRange *movingRange = movingIf->newMovingRange( KTextEditor::Range( line, 0, line, 500 ) );
     movingRange->setView( view );
     movingRange->setZDepth( -999 );
@@ -108,12 +104,4 @@ ScriptEditorDocument::highlight( KTextEditor::View *view, int line, const QColor
     KTextEditor::Attribute::Ptr attrb( new KTextEditor::Attribute() );
     attrb->setBackground( color );
     movingRange->setAttribute( attrb );
-}
-
-void
-ScriptEditorDocument::clearHighlights( KTextEditor::View *view )
-{
-    KTextEditor::SmartInterface *smartIf = qobject_cast<KTextEditor::SmartInterface*>( view->document() );
-    if( smartIf )
-        smartIf->clearDocumentHighlights();
 }

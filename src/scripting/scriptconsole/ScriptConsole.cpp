@@ -34,10 +34,10 @@
 #include <KAction>
 #include <KMessageBox>
 #include <KStandardDirs>
-#include <KTextEditor/ContainerInterface>
 #include <KTextEditor/Editor>
-#include <KTextEditor/EditorChooser>
 #include <KTextEditor/View>
+#include <KLocalizedString>
+#include <KGlobal>
 
 using namespace AmarokScript;
 using namespace ScriptConsoleNS;
@@ -57,7 +57,7 @@ ScriptConsole::instance()
 ScriptConsole::ScriptConsole( QWidget *parent )
     : QMainWindow( parent, Qt::Window )
 {
-    m_editor = KTextEditor::EditorChooser::editor();
+    m_editor = KTextEditor::Editor::instance();
     if ( !m_editor )
     {
         KMessageBox::error( 0, i18n("A KDE text-editor component could not be found.\n"
@@ -65,7 +65,6 @@ ScriptConsole::ScriptConsole( QWidget *parent )
         deleteLater();
         return;
     }
-    m_editor->readConfig( KGlobal::config().data() );
     m_scriptListDock = new ScriptListDockWidget( this );
     m_debugger = new QScriptEngineDebugger( this );
 
@@ -135,10 +134,6 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     }
     menuBar()->addMenu( viewMenu );
 
-    KTextEditor::ContainerInterface *iface = qobject_cast<KTextEditor::ContainerInterface*>( m_editor );
-    if (iface)
-        iface->setContainer( parent );
-
     addDockWidget( Qt::BottomDockWidgetArea, m_scriptListDock );
     connect( m_scriptListDock, SIGNAL(edit(ScriptConsoleItem*)), SLOT(slotEditScript(ScriptConsoleItem*)) );
     connect( m_scriptListDock, SIGNAL(currentItemChanged(ScriptConsoleItem*)), SLOT(setCurrentScriptItem(ScriptConsoleItem*)) );
@@ -185,7 +180,6 @@ ScriptConsole::slotExecuteNewScript()
         int response = KMessageBox::warningContinueCancel( this, i18n( "Syntax error at line %1, continue anyway?\nError: %2",
                                                   syntaxResult.errorLineNumber(), syntaxResult.errorMessage() ),
                                             i18n( "Syntax Error" ) );
-        ScriptEditorDocument::clearHighlights( view );
         if( response == KMessageBox::Cancel )
             return;
     }

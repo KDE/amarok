@@ -59,7 +59,7 @@ DeviceConfigureDialog::DeviceConfigureDialog( MediaDevice *device )
 
 
     kapp->setTopWidget( this );
-    setWindowTitle( QDialog::makeStandardCaption( i18n( "Configure Media Device" ) ) );
+    setWindowTitle( i18n( "Configure Media Device" ) );
     buttonBox->button(QDialogButtonBox::Apply)->setVisible(false);
 
     KVBox* vbox = new KVBox( this );

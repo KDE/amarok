@@ -699,13 +699,13 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
     // -- the windows title
     if( m_perTrack )
     {
-        setWindowTitle( KDialog::makeStandardCaption( i18n("Track Details: %1 by %2",
-                                                           m_currentTrack->name(),  m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString() ) ) );
+        setWindowTitle( i18n("Track Details: %1 by %2",
+                                                           m_currentTrack->name(),  m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString() ) );
 
     }
     else
     {
-        setWindowTitle( KDialog::makeStandardCaption( i18ncp( "The amount of tracks being edited", "1 Track", "Information for %1 Tracks", m_tracks.count() ) ) );
+        setWindowTitle( i18ncp( "The amount of tracks being edited", "1 Track", "Information for %1 Tracks", m_tracks.count() ) );
 
     }
 
