@@ -24,6 +24,7 @@
 #include <QRadioButton>
 #include <QDebug>
 #include <KConfigGroup>
+#include <QPushButton>
 
 namespace StatSyncing
 {

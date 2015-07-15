@@ -31,7 +31,7 @@
 #include "dialogs/TagDialog.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 
-#include <KMenu>
+#include <QMenu>
 
 #include <QObject>
 #include <QModelIndex>
@@ -52,7 +52,7 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
 {
     DEBUG_BLOCK
 
-    KMenu *menu = new KMenu( parent );
+    QMenu *menu = new QMenu( parent );
 
     menu->addActions( parentCheckActions( parent, trackActionsFor( parent, index ) ) );
     menu->addSeparator();
@@ -61,7 +61,7 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
     if( !albumActionsList.isEmpty() )
     {
         // there are no cover actions if the song/album is not in the collection
-        KMenu *menuCover = new KMenu( i18n( "Album" ), menu );
+        QMenu *menuCover = new QMenu( i18n( "Album" ), menu );
         menuCover->addActions( albumActionsList );
         menuCover->setIcon( QIcon::fromTheme( "filename-album-amarok" ) );
         menu->addMenu( menuCover );

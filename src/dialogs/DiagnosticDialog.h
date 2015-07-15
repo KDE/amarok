@@ -30,7 +30,7 @@ class AMAROK_EXPORT DiagnosticDialog : public KDialog
     Q_OBJECT
 
 public:
-    explicit DiagnosticDialog( const KAboutData *aboutData, QWidget *parent = 0 );
+    explicit DiagnosticDialog( const KAboutData about, QWidget *parent = 0 );
 
 private:
     QPlainTextEdit *m_textBox;

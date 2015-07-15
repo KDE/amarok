@@ -123,7 +123,7 @@ Process::slotMatchTracks()
 void
 Process::slotTracksMatched( ThreadWeaver::JobPointer job )
 {
-    MatchTracksJob *matchJob = dynamic_cast<MatchTracksJob *>( job );
+    MatchTracksJob *matchJob = dynamic_cast<MatchTracksJob *>( job.data() );
     if( !matchJob )
     {
         error() << __PRETTY_FUNCTION__ << "Failed cast, should never happen";
@@ -216,7 +216,7 @@ void
 Process::slotLogSynchronization( ThreadWeaver::JobPointer job )
 {
     deleteLater(); // our work is done
-    SynchronizeTracksJob *syncJob = qobject_cast<SynchronizeTracksJob *>( job );
+    SynchronizeTracksJob *syncJob = dynamic_cast<SynchronizeTracksJob *>( job.data() );
     if( !syncJob )
     {
         warning() << __PRETTY_FUNCTION__ << "syncJob is null";

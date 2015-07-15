@@ -38,7 +38,7 @@
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"
 
-#include <KAction>
+#include <QAction>
 #include <KMenuBar>
 #include <KStandardDirs>  //locate()
 #include <KTemporaryFile>
@@ -231,7 +231,7 @@ void MagnatuneStore::initTopPanel( )
     action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum()) );
 
-    KAction *filterMenuAction = new KAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
+    QAction *filterMenuAction = new QAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
     filterMenuAction->setMenu( filterMenu );
 
     m_searchWidget->toolBar()->addSeparator();
@@ -249,7 +249,7 @@ void MagnatuneStore::initTopPanel( )
     m_updateAction = actionsMenu->addAction( i18n( "Update Database" ) );
     connect( m_updateAction, SIGNAL(triggered(bool)), SLOT(updateButtonClicked()) );
 
-    KAction *actionsMenuAction = new KAction( QIcon::fromTheme( "list-add" ), i18n( "Tools" ), this );
+    QAction *actionsMenuAction = new QAction( QIcon::fromTheme( "list-add" ), i18n( "Tools" ), this );
     actionsMenuAction->setMenu( actionsMenu );
 
     m_searchWidget->toolBar()->addAction( actionsMenuAction );

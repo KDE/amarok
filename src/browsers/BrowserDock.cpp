@@ -25,7 +25,7 @@
 #include "PaletteHandler.h"
 #include "widgets/HorizontalDivider.h"
 
-#include <KAction>
+#include <QAction>
 #include <QIcon>
 #include <KLocale>
 
@@ -78,11 +78,12 @@ void BrowserDock::polish()
     connect( m_breadcrumbWidget, SIGNAL(toHome()), this, SLOT(home()) );
 
     // Keyboard shortcut for going back one level
-    KAction *action = new KAction( QIcon::fromTheme( "go-up" ), i18n( "Go Up in Media Sources Pane" ),
+    QAction *action = new QAction( QIcon::fromTheme( "go-up" ), i18n( "Go Up in Media Sources Pane" ),
                                   m_mainWidget );
     Amarok::actionCollection()->addAction( "browser_previous", action );
     connect( action, SIGNAL(triggered(bool)), m_categoryList.data(), SLOT(back()) );
-    action->setShortcut( KShortcut( Qt::Key_Backspace ) );
+//    action->setShortcut( QKeySequence( Qt::Key_Backspace ) );
+    action->setShortcut( Qt::Key_Backspace );
 
     paletteChanged( palette() );
 

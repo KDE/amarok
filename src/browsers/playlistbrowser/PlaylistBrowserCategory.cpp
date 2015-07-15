@@ -74,7 +74,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
 
     m_toolBar->addSeparator();
 
-    m_addFolderAction = new KAction( QIcon::fromTheme( "folder-new" ), i18n( "Add Folder" ), this  );
+    m_addFolderAction = new QAction( QIcon::fromTheme( "folder-new" ), i18n( "Add Folder" ), this  );
     m_addFolderAction->setPriority( QAction::LowPriority );
     m_toolBar->addAction( m_addFolderAction );
     connect( m_addFolderAction, SIGNAL(triggered(bool)), SLOT(createNewFolder()) );
@@ -84,7 +84,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_providerMenu->setPriority( QAction::HighPriority );
     m_toolBar->addAction( m_providerMenu );
 
-    KAction *toggleAction = new KAction( QIcon::fromTheme( "view-list-tree" ), i18n( "Merged View" ),
+    QAction *toggleAction = new QAction( QIcon::fromTheme( "view-list-tree" ), i18n( "Merged View" ),
                                          m_toolBar );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( Amarok::config( m_configGroup ).readEntry( s_mergeViewKey, false ) );
@@ -177,20 +177,30 @@ PlaylistBrowserCategory::toggleView( bool merged )
         m_filterProxy->setSourceModel( m_byFolderProxy );
         m_playlistView->setItemDelegate( m_defaultItemDelegate );
         m_playlistView->setRootIsDecorated( true );
-        m_addFolderAction->setHelpText( m_addFolderAction->text() );
+        setHelpText( m_addFolderAction->text(), m_addFolderAction );
     }
     else
     {
         m_filterProxy->setSourceModel( m_byProviderProxy );
         m_playlistView->setItemDelegate( m_byProviderDelegate );
         m_playlistView->setRootIsDecorated( false );
-        m_addFolderAction->setHelpText( i18n( "Folders are only shown in <b>merged view</b>." ) );
+        setHelpText( i18n( "Folders are only shown in <b>merged view</b>." ), m_addFolderAction );
     }
 
     //folders don't make sense in per-provider view
     m_addFolderAction->setEnabled( merged );
 
     Amarok::config( m_configGroup ).writeEntry( s_mergeViewKey, merged );
+}
+
+void
+PlaylistBrowserCategory::setHelpText(const QString &text, QAction *qa)
+{
+    qa->setStatusTip(text);
+    qa->setToolTip(text);
+    if ((qa->whatsThis()).isEmpty()) {
+        qa->setWhatsThis(text);
+    }
 }
 
 void

@@ -22,7 +22,7 @@
 
 #include <KApplication>
 #include <K4AboutData>
-#include <KAction>
+#include <QAction>
 #include <KCmdLineArgs>
 #include <KLocale>
 #include <KService>

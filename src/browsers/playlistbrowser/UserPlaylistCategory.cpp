@@ -28,7 +28,7 @@
 
 #include "UserPlaylistModel.h"
 
-#include <KAction>
+#include <QAction>
 #include <KActionMenu>
 #include <KButtonGroup>
 #include <QIcon>

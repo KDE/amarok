@@ -19,7 +19,7 @@
 #include "klocalizedstring.h"
 
 #include <QIcon>
-#include <KMenu>
+#include <QMenu>
 
 AmazonShoppingCartView::AmazonShoppingCartView( QWidget *parent ) :
     QListView( parent )
@@ -59,7 +59,7 @@ AmazonShoppingCartView::contextMenuEvent( QContextMenuEvent *event )
         return;
     }
 
-    KMenu menu( this );
+    QMenu menu( this );
     QList< QAction * > actions;
 
     QAction *removeFromCartAction = new QAction( QIcon::fromTheme( "amarok_cart_remove" ), QString( i18n( "Remove from Cart" ) ), &menu );

@@ -62,7 +62,7 @@
 
 #include <iostream>
 
-#include <KAction>
+#include <QAction>
 #include <KCalendarSystem>
 #include <KCmdLineArgs>                  //initCliArgs()
 #include <KDirLister>
@@ -75,6 +75,7 @@
 #include <KMessageBox>
 #include <KShortcutsDialog>              //slotConfigShortcuts()
 #include <KStandardDirs>
+#include <KGlobal>
 
 #include <QByteArray>
 #include <QDesktopServices>
@@ -194,7 +195,7 @@ App::~App()
         Meta::TrackPtr engineTrack = The::engineController()->currentTrack();
         if( engineTrack )
         {
-            AmarokConfig::setResumeTrack( engineTrack->playableUrl().prettyUrl() );
+            AmarokConfig::setResumeTrack( engineTrack->playableUrl().toDisplayString() );
             AmarokConfig::setResumeTime( The::engineController()->trackPositionMs() );
             AmarokConfig::setResumePaused( The::engineController()->isPaused() );
         }
@@ -606,8 +607,8 @@ void App::handleFirstRun()
     if( !config.readEntry( "First Run", true ) )
         return;
 
-    const QUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
-    const QString musicDir = musicUrl.toLocalFile( QUrl::RemoveTrailingSlash );
+    const QUrl musicUrl = QUrl::fromUserInput(QDesktopServices::storageLocation( QDesktopServices::MusicLocation ));
+    const QString musicDir = musicUrl.adjusted(QUrl::StripTrailingSlash).toLocalFile();
     const QDir dir( musicDir );
 
     int result = KMessageBox::No;

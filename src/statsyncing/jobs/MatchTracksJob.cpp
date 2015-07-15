@@ -79,7 +79,7 @@ MatchTracksJob::comparisonFields()
 
 MatchTracksJob::MatchTracksJob( const ProviderPtrList &providers, QObject *parent )
     : QObject(parent)
-    , Job( parent )
+    , ThreadWeaver::Job()
     , m_abort( false )
     , m_providers( providers )
 {

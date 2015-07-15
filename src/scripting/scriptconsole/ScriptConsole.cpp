@@ -31,7 +31,7 @@
 #include <QTemporaryFile>
 #include <QToolBar>
 
-#include <KAction>
+#include <QAction>
 #include <KMessageBox>
 #include <KStandardDirs>
 #include <KTextEditor/Editor>
@@ -100,25 +100,25 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     action->setIcon( QApplication::style()->standardIcon( QStyle::SP_MediaStop ) );
     connect( action, SIGNAL(toggled(bool)), SLOT(slotAbortEvaluation()) );
     toolBar->addAction( action );
-    action = new KAction( QIcon::fromTheme( "media-playback-start" ), i18n("Execute Script"), this );
+    action = new QAction( QIcon::fromTheme( "media-playback-start" ), i18n("Execute Script"), this );
     action->setShortcut( Qt::CTRL + Qt::Key_Enter );
     connect( action, SIGNAL(triggered(bool)), SLOT(slotExecuteNewScript()) );
     toolBar->addAction( action );
-    action = new KAction( QIcon::fromTheme( "document-new" ), i18n( "&New Script" ), this );
+    action = new QAction( QIcon::fromTheme( "document-new" ), i18n( "&New Script" ), this );
     action->setShortcut( Qt::CTRL + Qt::Key_N );
     toolBar->addAction( action );
     connect( action, SIGNAL(triggered(bool)), SLOT(slotNewScript()) );
-    action = new KAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete Script" ), this );
+    action = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete Script" ), this );
     toolBar->addAction( action );
     connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(removeCurrentScript()) );
-    action = new KAction( i18n( "&Clear All Scripts" ), this );
+    action = new QAction( i18n( "&Clear All Scripts" ), this );
     toolBar->addAction( action );
     connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(clear()) );
-    action = new KAction( i18n("Previous Script"), this );
+    action = new QAction( i18n("Previous Script"), this );
     action->setShortcut( QKeySequence::MoveToPreviousPage );
     connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(prev()) );
     toolBar->addAction( action );
-    action = new KAction( i18n("Next Script"), this );
+    action = new QAction( i18n("Next Script"), this );
     action->setShortcut( QKeySequence::MoveToNextPage );
     connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(next()) );
     toolBar->addAction( action );

@@ -24,6 +24,7 @@
 #include <KPluginInfo>
 #include <KStandardDirs>
 #include <KTar>
+#include <KGlobal>
 
 #include <QDir>
 #include <QFileInfo>

@@ -25,7 +25,7 @@
 
 #include <QIcon>
 #include <KLocale>
-#include <KMenu>
+#include <QMenu>
 
 AnalyzerWidget::AnalyzerWidget( QWidget *parent )
     : QWidget( parent )
@@ -65,7 +65,7 @@ void
 AnalyzerWidget::contextMenuEvent( QContextMenuEvent *e)
 {
 #if defined HAVE_LIBVISUAL
-    KMenu menu;
+    QMenu menu;
     menu.addAction( QIcon::fromTheme( "view-media-visualization-amarok" ), i18n("&Visualizations"),
                            Vis::Selector::instance(), SLOT(show()) );
 

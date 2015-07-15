@@ -20,7 +20,7 @@
 #include "browsers/BrowserCategory.h"
 
 #include <QMap>
-#include <KAction>
+#include <QAction>
 
 namespace Amarok {
     class PrettyTreeView;
@@ -29,7 +29,7 @@ namespace Amarok {
 class QAbstractItemDelegate;
 class QTreeView;
 
-class KAction;
+class QAction;
 class KActionMenu;
 class KLineEdit;
 class KToolBar;
@@ -63,6 +63,22 @@ public:
     virtual QString filter() const;
     virtual void setFilter( const QString &filter );
 
+    /**
+     * Sets the help text for the action.
+     * This help text will be set for all help mechanisms:
+     *  - the status-bar help text
+     *  - the tooltip (for toolbar buttons)
+     *  - the "WhatsThis" help text (unless one was already set)
+     *
+     * This is more convenient than calling all three methods with the
+     * same text, and this level of abstraction can allow to change
+     * the default implementation of help one day more easily.
+     * Of course you can also call setStatusTip, setToolTip and setWhatsThis
+     * separately for more flexibility.
+     *
+     */
+    void setHelpText(const QString &text, QAction *qa);
+
 protected:
     KToolBar *m_toolBar;
 
@@ -93,7 +109,7 @@ private:
 
     Amarok::PrettyTreeView *m_playlistView;
 
-    KAction *m_addFolderAction;
+    QAction *m_addFolderAction;
 
     QAbstractItemDelegate *m_byProviderDelegate;
     QAbstractItemDelegate *m_defaultItemDelegate;

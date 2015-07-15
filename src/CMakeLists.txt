@@ -881,6 +881,11 @@ target_link_libraries(amaroklib
     KF5::ThreadWeaver
     KF5::KDELibs4Support
     KF5::KCMUtils
+    KF5::GlobalAccel
+    KF5::KIOCore
+    KF5::KIOFileWidgets
+    KF5::KIOWidgets
+    KF5::KIONTLM
     KF5::NewStuff
     KF5::TextEditor
     Qt5::Script

@@ -282,7 +282,7 @@ Plugins::PluginManager::handleNoPluginsFound()
     m_pluginInfos = findPlugins();
     if( m_pluginInfos.isEmpty() )
     {
-        if( QApplication::type() != QApplication::Tty )
+        if( qobject_cast<QGuiApplication*>(qApp) )
         {
             KMessageBox::error( 0, i18n( "Amarok could not find any plugins. This indicates an installation problem." ) );
         }

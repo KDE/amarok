@@ -23,7 +23,7 @@
 #include "amarokurls/PlayUrlGenerator.h"
 #include "widgets/ProgressWidget.h"
 
-#include <KAction>
+#include <QAction>
 #include <QIcon>
 #include <KLocale>
 #include <KVBox>
@@ -41,11 +41,11 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_toolBar = new QToolBar( topLayout );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    KAction * addGroupAction = new KAction( QIcon::fromTheme("media-track-add-amarok" ), i18n( "Add Group" ), this  );
+    QAction * addGroupAction = new QAction( QIcon::fromTheme("media-track-add-amarok" ), i18n( "Add Group" ), this  );
     m_toolBar->addAction( addGroupAction );
     connect( addGroupAction, SIGNAL(triggered(bool)), BookmarkModel::instance(), SLOT(createNewGroup()) );
 
-    /*KAction * addBookmarkAction = new KAction( QIcon::fromTheme("bookmark-new" ), i18n( "New Bookmark" ), this  );
+    /*QAction * addBookmarkAction = new QAction( QIcon::fromTheme("bookmark-new" ), i18n( "New Bookmark" ), this  );
     m_toolBar->addAction( addBookmarkAction );
     connect( addBookmarkAction, SIGNAL(triggered(bool)), BookmarkModel::instance(), SLOT(createNewBookmark()) );*/
 

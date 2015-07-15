@@ -28,7 +28,6 @@
 #include "OcsPersonListWidget.h"
 #include "AnimatedBarWidget.h"
 
-#include <KAboutData>
 #include <QDialog>
 #include <QWeakPointer>
 
@@ -36,7 +35,7 @@ class AMAROK_EXPORT ExtendedAboutDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ExtendedAboutDialog( const KAboutData *aboutData, const OcsData *ocsData, QWidget *parent = 0 );
+    explicit ExtendedAboutDialog( const KAboutData aboutData, const OcsData *ocsData, QWidget *parent = 0 );
     virtual ~ExtendedAboutDialog();
 
 private Q_SLOTS:

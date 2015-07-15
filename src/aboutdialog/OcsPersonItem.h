@@ -23,7 +23,7 @@
 #include "libattica-ocsclient/provider.h"
 #include "OcsData.h"
 
-#include <KAboutPerson>
+#include <kaboutdata.h>
 #include <KToolBar>
 
 #include <QLabel>

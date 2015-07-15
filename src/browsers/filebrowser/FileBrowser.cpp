@@ -34,7 +34,7 @@
 #include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
 
-#include <KAction>
+#include <QAction>
 #include <KComboBox>
 #include <KConfigGroup>
 #include <KDirLister>
@@ -66,7 +66,7 @@ FileBrowser::Private::Private( FileBrowser *parent )
 
     upAction = KStandardAction::up( q, SLOT(up()), topHBox );
     homeAction = KStandardAction::home( q, SLOT(home()), topHBox );
-    refreshAction = new KAction( QIcon::fromTheme("view-refresh"), i18n( "Refresh" ), topHBox );
+    refreshAction = new QAction( QIcon::fromTheme("view-refresh"), i18n( "Refresh" ), topHBox );
     QObject::connect( refreshAction, SIGNAL(triggered(bool)), q, SLOT(refresh()) );
 
     navigationToolbar->addAction( backAction );

@@ -273,7 +273,7 @@ Playlist::Dock::playlistProviderAdded( Playlists::PlaylistProvider *provider, in
             dynamic_cast<Playlists::UserPlaylistProvider *>(provider);
     if( userProvider == 0 )
         return;
-    QAction *action = new KAction( userProvider->icon(),
+    QAction *action = new QAction( userProvider->icon(),
                                    i18n("&Save playlist to \"%1\"", provider->prettyName() ),
                                    this );
     action->setData( QVariant::fromValue(

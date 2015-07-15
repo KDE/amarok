@@ -287,7 +287,7 @@ EngineController::restoreSession()
 
     if( AmarokConfig::resumePlayback() )
     {
-        const QUrl url = AmarokConfig::resumeTrack();
+        const QUrl url = QUrl::fromUserInput(AmarokConfig::resumeTrack());
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
         // Only give a resume time for local files, because resuming remote protocols can have weird side effects.

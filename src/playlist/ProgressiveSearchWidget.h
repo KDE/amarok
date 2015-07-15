@@ -21,7 +21,7 @@
 
 #include <KVBox>
 
-class KAction;
+class QAction;
 class QKeyEvent;
 class QLabel;
 class QMenu;
@@ -207,8 +207,8 @@ private:
     void readConfig();
 
     Amarok::LineEdit *m_searchEdit;
-    KAction   *m_nextAction;
-    KAction   *m_previousAction;
+    QAction *m_nextAction;
+    QAction *m_previousAction;
     QMenu     *m_menu;
     QToolBar  *m_toolBar;
 

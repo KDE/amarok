@@ -26,7 +26,7 @@
 #include <QWeakPointer>
 
 class EventFilter;
-class KMenu;
+class QMenu;
 class QMainWindow;
 class QMenu;
 class QScriptEngine;
@@ -86,7 +86,7 @@ namespace AmarokScript
               *
               * @return true if adding the action was successful, false otherwise
               */
-            bool addMenuAction( QWeakPointer<KMenu> menu, QString id, QString menuTitle, QString menuProperty, QString icon );
+            bool addMenuAction( QWeakPointer<QMenu> menu, QString id, QString menuTitle, QString menuProperty, QString icon );
 
             QString activeBrowserName();
             bool isTrayIconShown();
@@ -98,8 +98,8 @@ namespace AmarokScript
             QPalette palette() const;
             void setPalette( const QPalette & palette );
 
-            QWeakPointer<KMenu> m_toolsMenu;
-            QWeakPointer<KMenu> m_settingsMenu;
+            QWeakPointer<QMenu> m_toolsMenu;
+            QWeakPointer<QMenu> m_settingsMenu;
             AmarokScriptEngine*   m_scriptEngine;
     };
 }

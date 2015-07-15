@@ -35,7 +35,7 @@
 #include "core-impl/support/TrackLoader.h"
 #include "dialogs/TagDialog.h"
 
-#include <KAction>
+#include <QAction>
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <QDialog>
@@ -45,7 +45,7 @@
 #include <KMessageBox>
 #include <QIcon>
 #include <KLocale>
-#include <KMenu>
+#include <QMenu>
 #include <QUrl>
 
 #include <QContextMenuEvent>
@@ -94,7 +94,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     if( indices.isEmpty() )
         return;
 
-    KMenu menu;
+    QMenu menu;
     foreach( QAction *action, actionsForIndices( indices, PlaylistAction ) )
         menu.addAction( action );
     menu.addSeparator();
@@ -402,7 +402,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 
     if( !m_moveToTrashAction )
     {
-        m_moveToTrashAction = new KAction( QIcon::fromTheme( "user-trash" ), i18n( "&Move to Trash" ), this );
+        m_moveToTrashAction = new QAction( QIcon::fromTheme( "user-trash" ), i18n( "&Move to Trash" ), this );
         m_moveToTrashAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_moveToTrashAction->setShortcut( Qt::Key_Delete );
@@ -414,7 +414,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 
     if( !m_deleteAction )
     {
-        m_deleteAction = new KAction( QIcon::fromTheme( "remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new QAction( QIcon::fromTheme( "remove-amarok" ), i18n( "&Delete" ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );

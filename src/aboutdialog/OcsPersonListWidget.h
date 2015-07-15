@@ -20,6 +20,7 @@
 #include "OcsPersonItem.h"
 #include "OcsData.h"
 #include "libattica-ocsclient/provider.h"
+#include <KAboutData>
 
 class OcsPersonListWidget : public QWidget
 {

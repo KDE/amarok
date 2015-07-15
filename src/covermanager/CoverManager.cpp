@@ -40,7 +40,7 @@
 #include <KApplication>
 #include <KIO/NetAccess>
 #include <KLocalizedString>
-#include <KMenu>    //showCoverMenu()
+#include <QMenu>    //showCoverMenu()
 #include <KPushButton>
 #include <KSqueezedTextLabel> //status label
 #include <KStatusBar>
@@ -193,7 +193,7 @@ CoverManager::slotContinueConstruction() //SLOT
     // view menu
     m_viewButton = new KPushButton( hbox );
 
-    m_viewMenu = new KMenu( m_viewButton );
+    m_viewMenu = new QMenu( m_viewButton );
     m_selectAllAlbums          = m_viewMenu->addAction( i18n("All Albums"),           this, SLOT(slotShowAllAlbums()) );
     m_selectAlbumsWithCover    = m_viewMenu->addAction( i18n("Albums With Cover"),    this, SLOT(slotShowAlbumsWithCover()) );
     m_selectAlbumsWithoutCover = m_viewMenu->addAction( i18n("Albums Without Cover"), this, SLOT(slotShowAlbumsWithoutCover()) );
@@ -755,8 +755,8 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
     QList<QListWidgetItem*> items = selectedItems();
     const int itemsCount = items.count();
 
-    KMenu menu;
-    menu.addTitle( i18n( "Cover Image" ) );
+    QMenu menu;
+    menu.addSection( i18n( "Cover Image" ) );
 
     if( itemsCount == 1 )
     {

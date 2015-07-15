@@ -27,7 +27,7 @@
 #include <KMainWindow>
 #include <KVBox>
 #include <Phonon/Global>
-
+#include <KToggleAction>
 #include <QWeakPointer>
 
 class CollectionWidget;
@@ -44,8 +44,8 @@ namespace Playlist { class Dock; }
 class ContextDock;
 
 
-class KMenu;
-class KAction;
+class QMenu;
+class QAction;
 class QMenuBar;
 class QSplitter;
 class QTimer;
@@ -88,8 +88,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void showDock( AmarokDockId dockId );
 
         BrowserDock *browserDock() const { return m_browserDock.data(); }
-        KMenu *ToolsMenu() const { return m_toolsMenu.data(); }
-        KMenu *SettingsMenu() const { return m_settingsMenu.data(); }
+        QMenu *ToolsMenu() const { return m_toolsMenu.data(); }
+        QMenu *SettingsMenu() const { return m_settingsMenu.data(); }
         Playlist::Dock *playlistDock() const { return m_playlistDock.data(); }
         void deleteBrowsers();
 
@@ -189,8 +189,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         PlaylistBrowserNS::PlaylistBrowser * m_playlistBrowser;
 
         QWeakPointer<QMenuBar>  m_menubar;
-        QWeakPointer<KMenu>     m_toolsMenu;
-        QWeakPointer<KMenu>     m_settingsMenu;
+        QWeakPointer<QMenu>     m_toolsMenu;
+        QWeakPointer<QMenu>     m_settingsMenu;
 #ifdef DEBUG_BUILD_TYPE
         QWeakPointer<NetworkAccessViewer> m_networkViewer;
 #endif // DEBUG_BUILD_TYPE
@@ -205,7 +205,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void createActions();
         void createMenus();
 
-        KAction* m_showMenuBar;
+        KToggleAction* m_showMenuBar;
 
         int m_lastBrowser;
         int m_searchField;

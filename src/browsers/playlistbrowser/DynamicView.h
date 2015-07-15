@@ -24,7 +24,7 @@
 #include <QMutex>
 
 class PopupDropper;
-class KAction;
+class QAction;
 class QKeyEvent;
 class QMouseEvent;
 class QContextMenuEvent;

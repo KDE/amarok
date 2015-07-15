@@ -71,7 +71,7 @@ SqlScanResultProcessor::scanSucceeded()
     // -- error reporting
     m_messages.append( m_collection->sqlStorage()->getLastErrors() );
 
-    if( !m_messages.isEmpty() && QApplication::type() != QApplication::Tty )
+    if( !m_messages.isEmpty() && qobject_cast<QGuiApplication*>(qApp) )
         QTimer::singleShot(0, this, SLOT(displayMessages())); // do in the UI thread
 
     unblockUpdates();

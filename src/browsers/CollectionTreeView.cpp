@@ -45,11 +45,11 @@
 #include "playlist/PlaylistModelStack.h"
 #include "scripting/scriptengine/AmarokCollectionViewScript.h"
 
-#include <KAction>
+#include <QAction>
 #include <KGlobalSettings>
 #include <QIcon>
 #include <KComboBox>
-#include <KMenu>
+#include <QMenu>
 #include <KMessageBox> // NOTE: for delete dialog, will move to CollectionCapability later
 
 #include <QContextMenuEvent>
@@ -255,7 +255,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
                         );
     }
 
-    KMenu menu( this );
+    QMenu menu( this );
 
     // Destroy the menu when the model is reset (collection update), so that we don't
     // operate on invalid data. see BUG 190056
@@ -270,7 +270,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     actions.clear();
 
     QActionList albumActions = createCustomActions( indices );
-    KMenu menuAlbum( i18n( "Album" )  );
+    QMenu menuAlbum( i18n( "Album" )  );
     foreach( QAction *action, albumActions )
     {
         if( !action->parent() )
@@ -290,7 +290,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     }
 
     QActionList collectionActions = createCollectionActions( indices );
-    KMenu menuCollection( i18n( "Collection" ) );
+    QMenu menuCollection( i18n( "Collection" ) );
     foreach( QAction *action, collectionActions )
     {
         if( !action->parent() )
@@ -314,7 +314,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     if( !m_currentCopyDestination.empty() )
     {
-        KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
+        QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), &menu );
         copyMenu->setIcon( QIcon::fromTheme( "edit-copy" ) );
         copyMenu->addActions( m_currentCopyDestination.keys() );
         menu.addMenu( copyMenu );
@@ -323,7 +323,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     //Move = copy + delete from source
     if( !m_currentMoveDestination.empty() )
     {
-        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
+        QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), &menu );
         moveMenu->setIcon( QIcon::fromTheme( "go-jump" ) );
         moveMenu->addActions( m_currentMoveDestination.keys() );
         menu.addMenu( moveMenu );
@@ -336,7 +336,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
         if( collection && collection->isWritable() )
         {
             //TODO: don't recreate action
-            KAction *trashAction = new KAction( QIcon::fromTheme( "user-trash" ),
+            QAction *trashAction = new QAction( QIcon::fromTheme( "user-trash" ),
                                                 i18n( "Move Tracks to Trash" ),
                                                 &menu );
             trashAction->setProperty( "popupdropper_svg_id", "delete" );
@@ -347,7 +347,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
                      SLOT(slotTrashTracks(Qt::MouseButtons,Qt::KeyboardModifiers)) );
             menu.addAction( trashAction );
 
-            KAction *deleteAction = new KAction( QIcon::fromTheme( "remove-amarok" ),
+            QAction *deleteAction = new QAction( QIcon::fromTheme( "remove-amarok" ),
                                                  i18n( "Delete Tracks" ),
                                                  &menu );
             deleteAction->setProperty( "popupdropper_svg_id", "delete" );

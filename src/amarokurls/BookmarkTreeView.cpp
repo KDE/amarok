@@ -26,8 +26,8 @@
 #include "SvgHandler.h"
 #include "core-impl/meta/timecode/TimecodeMeta.h"
 
-#include <KAction>
-#include <KMenu>
+#include <QAction>
+#include <QMenu>
 #include <KLocalizedString>
 
 #include <QFrame>
@@ -98,7 +98,7 @@ BookmarkTreeView::keyPressEvent( QKeyEvent *event )
     QTreeView::keyPressEvent( event );
 }
 
-QList<KAction *>
+QList<QAction *>
 BookmarkTreeView::createCommonActions( QModelIndexList indices )
 {
     DEBUG_BLOCK
@@ -106,23 +106,23 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
     //there are 4 columns, so for each selected row we get 4 indices...
     int selectedRowCount = indices.count() / 4;
 
-    QList< KAction * > actions;
+    QList< QAction * > actions;
     if ( m_loadAction == 0 )
     {
-        m_loadAction = new KAction( QIcon::fromTheme( "folder-open" ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
+        m_loadAction = new QAction( QIcon::fromTheme( "folder-open" ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
         connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotLoad()) );
     }
 
     if ( m_deleteAction == 0 )
     {
-        m_deleteAction = new KAction( QIcon::fromTheme( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
         connect( m_deleteAction, SIGNAL(triggered()), this, SLOT(slotDelete()) );
     }
 
     if ( m_createTimecodeTrackAction == 0 )
     {
         debug() << "creating m_createTimecodeTrackAction";
-        m_createTimecodeTrackAction = new KAction( QIcon::fromTheme( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
+        m_createTimecodeTrackAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
         connect( m_createTimecodeTrackAction, SIGNAL(triggered()), this, SLOT(slotCreateTimecodeTrack()) );
     }
 
@@ -182,11 +182,11 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
 
     QModelIndexList indices = selectionModel()->selectedIndexes();
 
-    KMenu* menu = new KMenu( this );
+    QMenu* menu = new QMenu( this );
 
-    QList<KAction *> actions = createCommonActions( indices );
+    QList<QAction *> actions = createCommonActions( indices );
 
-    foreach( KAction * action, actions )
+    foreach( QAction * action, actions )
         menu->addAction( action );
 
     if( indices.count() == 0 )
@@ -265,7 +265,7 @@ BookmarkTreeView::selectedItems() const
     return selected;
 }
 
-void BookmarkTreeView::setNewGroupAction( KAction * action )
+void BookmarkTreeView::setNewGroupAction( QAction * action )
 {
     m_addGroupAction = action;
 }
@@ -293,10 +293,10 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
     
 }
 
-KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
+QMenu* BookmarkTreeView::contextMenu( const QPoint& point )
 {
     DEBUG_BLOCK
-    KMenu* menu = new KMenu( 0 );
+    QMenu* menu = new QMenu( 0 );
 
     debug() << "getting menu for point:" << point;
     QModelIndex index = m_proxyModel->mapToSource( indexAt( point ) );
@@ -307,9 +307,9 @@ KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
         
         QModelIndexList indices = selectionModel()->selectedIndexes();
 
-        QList<KAction *> actions = createCommonActions( indices );
+        QList<QAction *> actions = createCommonActions( indices );
 
-        foreach( KAction * action, actions )
+        foreach( QAction * action, actions )
             menu->addAction( action );
 
         if( indices.count() == 0 )

@@ -41,7 +41,7 @@
 #include <QTemporaryFile>
 #include <QToolBar>
 
-#include <KAction>
+#include <QAction>
 #include "kio/jobclasses.h"
 #include <KCMultiDialog>
 #include <KStandardDirs>

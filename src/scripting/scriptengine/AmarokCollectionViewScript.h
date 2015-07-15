@@ -37,7 +37,7 @@ namespace Collections
     class Collection;
     class QueryMaker;
 }
-class KMenu;
+class QMenu;
 class QScriptEngine;
 typedef QList<QAction*> QActionList;
 
@@ -75,7 +75,7 @@ namespace AmarokScript
         public:
             AmarokCollectionViewScript( AmarokScriptEngine *scriptEngine, const QString &scriptName );
             ~AmarokCollectionViewScript();
-            static void createScriptedActions( KMenu &menu, const QModelIndexList &indices );
+            static void createScriptedActions( QMenu &menu, const QModelIndexList &indices );
             QActionList actions();
             static Selection *selection();
             // SCRIPTDOX ENUM Amarok.CollectionView.Category

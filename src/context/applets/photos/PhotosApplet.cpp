@@ -27,7 +27,7 @@
 #include "context/widgets/AppletHeader.h"
 
 // KDE
-#include <KAction>
+#include <QAction>
 #include <KColorScheme>
 #include <KConfigDialog>
 #include <KGlobalSettings>

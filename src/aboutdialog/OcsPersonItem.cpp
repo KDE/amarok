@@ -21,7 +21,7 @@
 #include "libattica-ocsclient/providerinitjob.h"
 #include "libattica-ocsclient/personjob.h"
 
-#include <KAction>
+#include <QAction>
 #include <KRun>
 #include <KStandardDirs>
 
@@ -92,7 +92,7 @@ OcsPersonItem::init()
 
     if( !m_person->emailAddress().isEmpty() )
     {
-        KAction *email = new KAction( QIcon::fromTheme( "internet-mail" ), i18n("Email contributor"), this );
+        QAction *email = new QAction( QIcon::fromTheme( "internet-mail" ), i18n("Email contributor"), this );
         email->setToolTip( m_person->emailAddress() );
         email->setData( QString( "mailto:" + m_person->emailAddress() ) );
         m_iconsBar->addAction( email );
@@ -100,7 +100,7 @@ OcsPersonItem::init()
 
     if( !m_person->webAddress().isEmpty() )
     {
-        KAction *homepage = new KAction( QIcon::fromTheme( "applications-internet" ), i18n("Visit contributor's homepage"), this );
+        QAction *homepage = new QAction( QIcon::fromTheme( "applications-internet" ), i18n("Visit contributor's homepage"), this );
         homepage->setToolTip( m_person->webAddress() );
         homepage->setData( m_person->webAddress() );
         m_iconsBar->addAction( homepage );
@@ -213,7 +213,7 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
         }
     }
 
-    KAction *visitProfile = new KAction( QIcon( QPixmap( KStandardDirs::locate( "data",
+    QAction *visitProfile = new QAction( QIcon( QPixmap( KStandardDirs::locate( "data",
             "amarok/images/opendesktop-22.png" ) ) ), i18n( "Visit %1's openDesktop.org profile", ocsPerson.firstName() ), this );
 
     visitProfile->setToolTip( i18n( "Visit %1's profile on openDesktop.org", ocsPerson.firstName() ) );
@@ -271,7 +271,7 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
             {
                 if( fillHomepageFromOcs )
                 {
-                    KAction *homepage = new KAction( QIcon::fromTheme( "applications-internet" ), i18n("Visit contributor's homepage"), this );
+                    QAction *homepage = new QAction( QIcon::fromTheme( "applications-internet" ), i18n("Visit contributor's homepage"), this );
                     homepage->setToolTip( url );
                     homepage->setData( url );
                     m_iconsBar->addAction( homepage );
@@ -338,7 +338,7 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
             }
             else
                 break;
-            KAction *action = new KAction( icon, text, this );
+            QAction *action = new QAction( icon, text, this );
             action->setToolTip( url );
             action->setData( url );
             m_snBar->addAction( action );

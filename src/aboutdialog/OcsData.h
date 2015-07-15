@@ -20,7 +20,7 @@
 #include "core/support/Amarok.h"
 #include "amarok_export.h"
 
-#include "kaboutdata.h"
+#include <KAboutData>
 
 #include <QList>
 #include <QPair>

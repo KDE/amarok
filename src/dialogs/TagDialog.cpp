@@ -44,7 +44,7 @@
 #include "TagGuesserDialog.h"
 
 #include <KLineEdit>
-#include <KMenu>
+#include <QMenu>
 #include <KRun>
 
 namespace Meta {
@@ -682,7 +682,7 @@ TagDialog::showCoverMenu( const QPoint &pos )
         unsetCoverAction->setEnabled( false );
     }
 
-    KMenu *menu = new KMenu( this );
+    QMenu *menu = new QMenu( this );
     menu->addAction( displayCoverAction );
     menu->addAction( new FetchCoverAction( this, album ) );
     menu->addAction( new SetCustomCoverAction( this, album ) );

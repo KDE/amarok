@@ -51,7 +51,7 @@
 #include "SourceSelectionPopup.h"
 
 #include <KApplication>
-#include <KMenu>
+#include <QMenu>
 #include <QUrl>
 #include <KLocale>
 

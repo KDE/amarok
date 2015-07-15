@@ -23,6 +23,7 @@
 #include <QSharedPointer>
 #include <QMap>
 
+#include <KDialog>
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Job>
 #include <ThreadWeaver/ThreadWeaver>

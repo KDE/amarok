@@ -34,7 +34,7 @@ SynchronizeTracksJob::SynchronizeTracksJob( const QList<TrackTuple> &tuples,
                                             const TrackList &tracksToScrobble,
                                             const Options &options, QObject *parent )
     : QObject( parent )
-    , Job( parent )
+    , ThreadWeaver::Job()
     , m_abort( false )
     , m_tuples( tuples )
     , m_tracksToScrobble( tracksToScrobble )
@@ -114,7 +114,7 @@ SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
 
     if( !m_tracksToScrobble.isEmpty() )
         // wait 3 seconds so that we have chance to catch slotTrackScrobbled()..
-        thread()->msleep( 3000 );
+        QObject::thread()->msleep( 3000 );
     if( controller )
         disconnect( controller, SIGNAL(trackScrobbled(ScrobblingServicePtr,Meta::TrackPtr)), this, 0 );
         disconnect( controller, SIGNAL(scrobbleFailed(ScrobblingServicePtr,Meta::TrackPtr,int)), this, 0 );

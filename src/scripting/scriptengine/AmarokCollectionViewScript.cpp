@@ -30,7 +30,7 @@
 #include "ScriptingDefines.h"
 #include "widgets/SearchWidget.h"
 
-#include <KMenu>
+#include <QMenu>
 
 #include <QMetaEnum>
 #include <QScriptEngine>
@@ -102,7 +102,7 @@ AmarokCollectionViewScript::setAction( const QScriptValue &value )
 }
 
 void
-AmarokCollectionViewScript::createScriptedActions( KMenu &menu, const QModelIndexList &indices )
+AmarokCollectionViewScript::createScriptedActions( QMenu &menu, const QModelIndexList &indices )
 {
     debug() << "Checking for scripted actions";
     if( s_selection )

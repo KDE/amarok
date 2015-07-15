@@ -17,10 +17,10 @@
 #ifndef NAVIGATORCONFIGACTION_H
 #define NAVIGATORCONFIGACTION_H
 
-#include <KAction>
+#include <QAction>
 
 
-class NavigatorConfigAction : public KAction
+class NavigatorConfigAction : public QAction
 {
     Q_OBJECT
 public:

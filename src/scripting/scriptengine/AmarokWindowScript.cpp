@@ -26,7 +26,7 @@
 #include "PaletteHandler.h"
 #include "ScriptingDefines.h"
 
-#include <KAction>
+#include <QAction>
 #include <KActionCollection>
 
 #include <QClipboard>
@@ -124,13 +124,13 @@ AmarokWindowScript::addSettingsSeparator()
 }
 
 bool
-AmarokWindowScript::addMenuAction( QWeakPointer<KMenu> menu, QString id, QString menuTitle, QString menuProperty, QString icon )
+AmarokWindowScript::addMenuAction( QWeakPointer<QMenu> menu, QString id, QString menuTitle, QString menuProperty, QString icon )
 {
     KActionCollection* const ac = Amarok::actionCollection();
     if( ac->action( id ) )
         return false;
 
-    KAction *action = new KAction( QIcon::fromTheme( icon ), menuTitle, this );
+    QAction *action = new QAction( QIcon::fromTheme( icon ), menuTitle, this );
     ac->addAction( id, action );
 
     // don't forget to read the shortcut settings from the config file so

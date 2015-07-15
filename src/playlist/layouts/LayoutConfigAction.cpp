@@ -34,15 +34,15 @@ namespace Playlist
 {
 
 LayoutConfigAction::LayoutConfigAction( QWidget * parent )
-    : KAction( parent )
+    : QAction( parent )
     , m_layoutDialog( 0 )
 {
     QIcon actionIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-layouts-22.png") ) );    //TEMPORARY ICON
     setIcon( actionIcon );
-    m_layoutMenu = new KMenu( parent );
+    m_layoutMenu = new QMenu( parent );
     setMenu( m_layoutMenu );
     setText( i18n( "Playlist Layouts" ) );
-    m_configAction = new KAction( m_layoutMenu );
+    m_configAction = new QAction( m_layoutMenu );
     
     m_layoutMenu->addAction( m_configAction );
     m_layoutMenu->addSeparator();

@@ -34,7 +34,7 @@
 #include <QModelIndexList>
 #include <QTextBrowser>
 
-#include <KAction>
+#include <QAction>
 #include <QIcon>
 #include <KStandardDirs>
 #include <KUrlRequesterDialog>

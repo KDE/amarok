@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QScriptValue>
 #include <QString>
+#include <QXmlStreamReader>
 
 class QScriptContext;
 class QScriptEngine;

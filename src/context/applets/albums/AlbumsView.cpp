@@ -31,10 +31,10 @@
 #include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
-#include <KAction>
+#include <QAction>
 #include <KGlobalSettings>
 #include <QIcon>
-#include <KMenu>
+#include <QMenu>
 #include <Plasma/Svg>
 #include <Plasma/SvgWidget>
 #include <Plasma/ScrollBar>
@@ -237,11 +237,11 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
         return;
     }
 
-    KMenu menu;
-    KAction *appendAction = new KAction( QIcon::fromTheme( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), &menu );
-    KAction *loadAction   = new KAction( QIcon::fromTheme( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), &menu );
-    KAction *queueAction  = new KAction( QIcon::fromTheme( "media-track-queue-amarok" ), i18n( "&Queue" ), &menu );
-    KAction *editAction   = new KAction( QIcon::fromTheme( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), &menu );
+    QMenu menu;
+    QAction *appendAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), &menu );
+    QAction *loadAction   = new QAction( QIcon::fromTheme( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), &menu );
+    QAction *queueAction  = new QAction( QIcon::fromTheme( "media-track-queue-amarok" ), i18n( "&Queue" ), &menu );
+    QAction *editAction   = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), &menu );
 
     menu.addAction( appendAction );
     menu.addAction( loadAction );
@@ -253,7 +253,7 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
     connect( queueAction , SIGNAL(triggered()), this, SLOT(slotQueueSelected()) );
     connect( editAction  , SIGNAL(triggered()), this, SLOT(slotEditSelected()) );
 
-    KMenu menuCover( i18n( "Album" ), &menu );
+    QMenu menuCover( i18n( "Album" ), &menu );
     const QStandardItem *item = m_model->itemFromIndex( m_proxyModel->mapToSource(index) );
     if( item->type() == AlbumType )
     {

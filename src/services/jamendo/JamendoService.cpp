@@ -28,7 +28,7 @@
 #include "ServiceSqlRegistry.h"
 #include "widgets/SearchWidget.h"
 
-#include <KAction>
+#include <QAction>
 #include <KFileDialog>
 #include <KMenuBar>
 #include <KRun>
@@ -164,7 +164,7 @@ JamendoService::polish()
     action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum()) );
 
-    KAction *filterMenuAction = new KAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
+    QAction *filterMenuAction = new QAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
     filterMenuAction->setMenu( filterMenu );
 
     m_searchWidget->toolBar()->addSeparator();

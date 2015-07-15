@@ -19,7 +19,7 @@
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModel.h"
 
-#include <KAction>
+#include <QAction>
 #include <KColorScheme>
 #include <KConfigGroup>
 #include <KHBox>
@@ -58,10 +58,10 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     connect( m_searchEdit, SIGNAL(downPressed()), this, SIGNAL(downPressed()) );
     connect( m_searchEdit, SIGNAL(upPressed()), this, SIGNAL(upPressed()) );
 
-    m_nextAction = new KAction( QIcon::fromTheme( "go-down" ), i18n( "&Next" ), this );
+    m_nextAction = new QAction( QIcon::fromTheme( "go-down" ), i18n( "&Next" ), this );
     connect( m_nextAction, SIGNAL(triggered()), this, SLOT(slotNext()) );
 
-    m_previousAction = new KAction( QIcon::fromTheme( "go-up" ), i18n( "&Previous" ), this );
+    m_previousAction = new QAction( QIcon::fromTheme( "go-up" ), i18n( "&Previous" ), this );
     connect( m_previousAction, SIGNAL(triggered()), this, SLOT(slotPrevious()) );
 
     m_nextAction->setEnabled( false );
@@ -69,49 +69,49 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     m_menu = new QMenu( this );
 
-    KAction * searchTracksAction = new KAction( i18n( "Tracks" ), this );
+    QAction * searchTracksAction = new QAction( i18n( "Tracks" ), this );
     searchTracksAction->setCheckable( true );
     connect( searchTracksAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchTracks(bool)) );
     if( m_searchFieldsMask & Playlist::MatchTrack )
         searchTracksAction->setChecked( true );
     m_menu->addAction( searchTracksAction );
 
-    KAction * searchAlbumsAction = new KAction( i18n( "Albums" ), this );
+    QAction * searchAlbumsAction = new QAction( i18n( "Albums" ), this );
     searchAlbumsAction->setCheckable( true );
     connect( searchAlbumsAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchAlbums(bool)) );
     if( m_searchFieldsMask & Playlist::MatchAlbum )
         searchAlbumsAction->setChecked( true );
     m_menu->addAction( searchAlbumsAction );
 
-    KAction * searchArtistsAction = new KAction( i18n( "Artists" ), this );
+    QAction * searchArtistsAction = new QAction( i18n( "Artists" ), this );
     searchArtistsAction->setCheckable( true );
     connect( searchArtistsAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchArtists(bool)) );
     if( m_searchFieldsMask & Playlist::MatchArtist )
         searchArtistsAction->setChecked( true );
     m_menu->addAction( searchArtistsAction );
 
-    KAction * searchGenreAction = new KAction( i18n( "Genre" ), this );
+    QAction * searchGenreAction = new QAction( i18n( "Genre" ), this );
     searchGenreAction->setCheckable( true );
     connect( searchGenreAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchGenre(bool)) );
     if( m_searchFieldsMask & Playlist::MatchGenre )
         searchGenreAction->setChecked( true );
     m_menu->addAction( searchGenreAction );
 
-    KAction * searchComposersAction = new KAction( i18n( "Composers" ), this );
+    QAction * searchComposersAction = new QAction( i18n( "Composers" ), this );
     searchComposersAction->setCheckable( true );
     connect( searchComposersAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchComposers(bool)) );
     if( m_searchFieldsMask & Playlist::MatchComposer )
         searchComposersAction->setChecked( true );
     m_menu->addAction( searchComposersAction );
 
-    KAction * searchRatingAction = new KAction( i18n( "Rating" ), this );
+    QAction * searchRatingAction = new QAction( i18n( "Rating" ), this );
     searchRatingAction->setCheckable( true );
     connect( searchRatingAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchRating(bool)) );
     if( m_searchFieldsMask & Playlist::MatchRating )
         searchRatingAction->setChecked( true );
     m_menu->addAction( searchRatingAction );
 
-    KAction * searchYearsAction = new KAction( i18n( "Years" ), this );
+    QAction * searchYearsAction = new QAction( i18n( "Years" ), this );
     searchYearsAction->setCheckable( true );
     connect( searchYearsAction, SIGNAL(toggled(bool)), this, SLOT(slotSearchYears(bool)) );
     if( m_searchFieldsMask & Playlist::MatchYear)
@@ -120,7 +120,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     m_menu->addSeparator();
 
-    KAction * showOnlyMatchesAction = new KAction( i18n( "Show only matches" ), this );
+    QAction * showOnlyMatchesAction = new QAction( i18n( "Show only matches" ), this );
     showOnlyMatchesAction->setCheckable( true );
     connect( showOnlyMatchesAction, SIGNAL(toggled(bool)), this, SLOT(slotShowOnlyMatches(bool)) );
 
@@ -132,7 +132,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     m_nextAction->setVisible( !m_showOnlyMatches );
     m_previousAction->setVisible( !m_showOnlyMatches );
 
-    KAction *searchMenuAction = new KAction( QIcon::fromTheme( "preferences-other" ), i18n( "Search Preferences" ), this );
+    QAction *searchMenuAction = new QAction( QIcon::fromTheme( "preferences-other" ), i18n( "Search Preferences" ), this );
     searchMenuAction->setMenu( m_menu );
 
     m_toolBar->addAction( searchMenuAction );

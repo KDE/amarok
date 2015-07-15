@@ -37,7 +37,7 @@
 
 #include <KFileDialog>
 #include <KGlobalSettings>
-#include <KMenu>
+#include <QMenu>
 
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -267,7 +267,7 @@ void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent
         return;
     }
 
-    KMenu menu;
+    QMenu menu;
     foreach( QAction *action, actions )
         menu.addAction( action );
     menu.exec( mapToGlobal( event->pos() ) );

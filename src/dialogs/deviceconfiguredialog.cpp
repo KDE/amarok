@@ -64,7 +64,8 @@ DeviceConfigureDialog::DeviceConfigureDialog( MediaDevice *device )
 
     KVBox* vbox = new KVBox( this );
     mainLayout->addWidget(vbox);
-    //TODO KF5     vbox->setSpacing( KDialog::spacingHint() );
+        vbox->setSpacing( QApplication::style()->pixelMetric(QStyle::PM_DefaultLayoutSpacing) );
+//TODO KF5:PM_DefaultLayoutSpacing is obsolete. Look in QStyle docs for correctly replacing it.
 
     QLabel *connectLabel = 0;
     m_connectEdit = 0;

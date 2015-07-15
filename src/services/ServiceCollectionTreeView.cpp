@@ -21,7 +21,7 @@
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 
-#include <KMenu>
+#include <QMenu>
 
 #include <QAction>
 #include <QContextMenuEvent>
@@ -63,7 +63,7 @@ ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
 
         if( !indices.isEmpty() )
         {
-            KMenu menu;
+            QMenu menu;
             if( indices.count() == 1 )
             {
                 if( indices.first().isValid() && indices.first().internalPointer() )

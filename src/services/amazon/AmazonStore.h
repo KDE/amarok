@@ -37,7 +37,7 @@
 #include <QUrl>
 #include <QStack>
 
-#include <KAction>
+#include <QAction>
 #include <ThreadWeaver/ThreadWeaver>
 #include <ThreadWeaver/Job>
 #include <ThreadWeaver/Queue>
@@ -179,8 +179,8 @@ private:
     AmazonWantCountryWidget* m_wantCountryWidget;
 
     QSpinBox* m_resultpageSpinBox;
-    KAction* m_forwardAction;
-    KAction* m_backwardAction;
+    QAction * m_forwardAction;
+    QAction * m_backwardAction;
 
     bool m_isNavigation;
 

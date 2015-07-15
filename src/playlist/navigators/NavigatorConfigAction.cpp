@@ -20,15 +20,15 @@
 #include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"
 
-#include <KMenu>
+#include <QMenu>
 #include <KLocale>
 #include <KStandardDirs>
 
 NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
-    : KAction( parent )
+    : QAction( parent )
 {
 
-    KMenu * navigatorMenu = new KMenu( 0 );
+    QMenu * navigatorMenu = new QMenu( 0 );
     setMenu( navigatorMenu );
     setText( i18n( "Track Progression" ) );
 

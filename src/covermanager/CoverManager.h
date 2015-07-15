@@ -37,7 +37,7 @@ class QTreeWidget;
 class QTreeWidgetItem;
 class KSqueezedTextLabel;
 class KPushButton;
-class KMenu;
+class QMenu;
 class QLabel;
 class CoverView;
 class KHBox;
@@ -111,7 +111,7 @@ class CoverManager : public QDialog, public Meta::Observer
         Amarok::LineEdit *m_searchEdit;
         KPushButton      *m_fetchButton;
         KPushButton      *m_viewButton;
-        KMenu            *m_viewMenu;
+        QMenu            *m_viewMenu;
         View              m_currentView;
 
         Meta::ArtistList m_artistList;

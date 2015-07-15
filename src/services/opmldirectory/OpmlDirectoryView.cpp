@@ -20,7 +20,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KMenu>
+#include <QMenu>
 
 #include <QContextMenuEvent>
 
@@ -46,7 +46,7 @@ OpmlDirectoryView::contextMenuEvent( QContextMenuEvent *event )
         return;
     }
 
-    KMenu menu;
+    QMenu menu;
     foreach( QAction *action, actions )
     {
         if( action )

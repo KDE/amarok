@@ -35,10 +35,10 @@
 #include "widgets/SearchWidget.h"
 #include "widgets/PrettyTreeDelegate.h"
 
-#include <KAction>
+#include <QAction>
 #include <QIcon>
 #include <KLocale>
-#include <KMenu>
+#include <QMenu>
 #include <KMenuBar>
 #include <KStandardDirs>
 #include <KStandardGuiItem>
@@ -264,14 +264,14 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     d->searchWidget->toolBar()->addSeparator();
 
-    KAction *toggleAction = new KAction( QIcon::fromTheme( "view-list-tree" ), i18n( "Merged View" ), this );
+    QAction *toggleAction = new QAction( QIcon::fromTheme( "view-list-tree" ), i18n( "Merged View" ), this );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( d->viewMode == CollectionWidget::UnifiedCollection );
     toggleView( d->viewMode == CollectionWidget::UnifiedCollection );
     connect( toggleAction, SIGNAL(triggered(bool)), SLOT(toggleView(bool)) );
     d->searchWidget->toolBar()->addAction( toggleAction );
 
-    KAction *searchMenuAction = new KAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
+    QAction *searchMenuAction = new QAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
     searchMenuAction->setMenu( filterMenu );
     d->searchWidget->toolBar()->addAction( searchMenuAction );
 

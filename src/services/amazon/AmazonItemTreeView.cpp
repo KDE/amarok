@@ -33,7 +33,7 @@
 #include <kstandarddirs.h>
 
 #include <QIcon>
-#include <KMenu>
+#include <QMenu>
 
 AmazonItemTreeView::AmazonItemTreeView( QWidget *parent ) :
     Amarok::PrettyTreeView( parent )
@@ -64,7 +64,7 @@ AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
         return;
     }
 
-    KMenu menu( this );
+    QMenu menu( this );
     QList< QAction * > actions;
 
     AmazonItemTreeModel *amazonModel;

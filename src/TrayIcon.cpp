@@ -33,11 +33,12 @@
 #include "playlist/PlaylistActions.h"
 
 #include <K4AboutData>
-#include <KAction>
+#include <QAction>
 #include <KCmdLineArgs>
 #include <KLocale>
-#include <KMenu>
+#include <QMenu>
 #include <KStandardDirs>
+#include <KIconLoader>
 
 #include <QAction>
 #include <QFontMetrics>

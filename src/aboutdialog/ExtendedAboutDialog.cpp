@@ -45,7 +45,7 @@
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
-
+#include <kdeversion.h>
 
 class ExtendedAboutDialog::Private
 {
@@ -59,22 +59,21 @@ public:
 
     ExtendedAboutDialog *q;
 
-    const K4AboutData *aboutData;
+    const KAboutData *aboutData;
 };
 
-ExtendedAboutDialog::ExtendedAboutDialog(const K4AboutData *aboutData, const OcsData *ocsData, QWidget *parent)
+ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *ocsData, QWidget *parent)
   : QDialog(parent)
   , d(new Private(this))
 {
     DEBUG_BLOCK
-    if (aboutData == 0)
-        aboutData = KGlobal::mainComponent().aboutData();
+    const KAboutData *aboutData = &about;
 
     d->aboutData = aboutData;
 
     if (!aboutData) {
         QLabel *errorLabel = new QLabel(i18n("<qt>No information available.<br />"
-                                             "The supplied K4AboutData object does not exist.</qt>"), this);
+                                             "The supplied KAboutData object does not exist.</qt>"), this);
 
         errorLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
         QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -95,7 +94,8 @@ ExtendedAboutDialog::ExtendedAboutDialog(const K4AboutData *aboutData, const Ocs
     }
     m_ocsData = *ocsData;
 
-    setPlainCaption(i18n("About %1", aboutData->programName()));
+    setWindowTitle(i18n("About %1", aboutData->displayName()));
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
     QWidget *mainWidget = new QWidget(this);
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -124,7 +124,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const K4AboutData *aboutData, const Ocs
         titleWidget->setPixmap(QPixmap::fromImage(aboutData->programLogo().value<QImage>()), KTitleWidget::ImageLeft);
 
     titleWidget->setText(i18n("<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</html>",
-                         aboutData->programName(), aboutData->version(), KDE::versionString()));
+                         aboutData->displayName(), aboutData->version(), KDE::versionString()));
 
 
     //Now let's add the tab bar...
@@ -164,7 +164,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const K4AboutData *aboutData, const Ocs
         QLabel *showLicenseLabel = new QLabel;
         showLicenseLabel->setText(QString("<a href=\"%1\">%2</a>").arg(QString::number(i),
                                                                        i18n("License: %1",
-                                                                            license.name(K4AboutData::FullName))));
+                                                                            license.name(KAboutLicense::FullName))));
         showLicenseLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
         connect(showLicenseLabel, SIGNAL(linkActivated(QString)), this, SLOT(_k_showLicense(QString)));
 
@@ -329,7 +329,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const K4AboutData *aboutData, const Ocs
             translatorPageText += "<p style=\"margin: 0px;\">&nbsp;</p>";
         }
 
-        translatorPageText += K4AboutData::aboutTranslationTeam();
+        translatorPageText += KAboutData::aboutTranslationTeam();
 
         KTextBrowser *translatorTextBrowser = new KTextBrowser;
         translatorTextBrowser->setFrameStyle(QFrame::NoFrame);
@@ -356,12 +356,12 @@ ExtendedAboutDialog::~ExtendedAboutDialog()
 void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 {
     QDialog *dialog = new QDialog(q);
-    QWidget *mainWidget = new QWidget(this);
+    QWidget *mainWidget = new QWidget;
 
     dialog->setWindowTitle(i18n("License Agreement"));
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-    dialog->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    dialog->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    dialog->connect(buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
+    dialog->connect(buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
     buttonBox->button(QDialogButtonBox::Close)->setDefault(true);
 
     const QFont font = KGlobalSettings::fixedFont();
@@ -381,8 +381,10 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 
     // try to set up the dialog such that the full width of the
     // document is visible without horizontal scroll-bars being required
-    const qreal idealWidth = licenseBrowser->document()->idealWidth() + (2 * dialog->marginHint())
+    const qreal idealWidth = licenseBrowser->document()->idealWidth()
+        + (2 * QApplication::style()->pixelMetric(QStyle::PM_DefaultChildMargin))
         + licenseBrowser->verticalScrollBar()->width() * 2;
+//TODO KF5:PM_DefaultChildMargin is obsolete. Look in QStyle docs for correctly replacing it.
 
     // try to allow enough height for a reasonable number of lines to be shown
     const int idealHeight = metrics.height() * 30;

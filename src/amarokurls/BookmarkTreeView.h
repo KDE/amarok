@@ -25,12 +25,12 @@
 
 #include <QSortFilterProxyModel>
 
-class KMenu;
+class QMenu;
  
 class PopupDropper;
 class QAction;
 
-class KAction;
+class QAction;
 
 class AMAROK_EXPORT BookmarkTreeView : public QTreeView
 {
@@ -40,8 +40,8 @@ public:
     BookmarkTreeView( QWidget *parent = 0 );
     ~BookmarkTreeView();
 
-    void setNewGroupAction( KAction * action );
-    KMenu* contextMenu( const QPoint& point );
+    void setNewGroupAction( QAction * action );
+    QMenu* contextMenu( const QPoint& point );
 
     void setProxy( QSortFilterProxyModel *proxy );
 
@@ -69,19 +69,19 @@ protected Q_SLOTS:
 
 Q_SIGNALS:
     void bookmarkSelected( AmarokUrl bookmark );
-    void showMenu( KMenu*, const QPointF& );
+    void showMenu( QMenu*, const QPointF& );
     
 private:
     QSet<BookmarkViewItemPtr> selectedItems() const;
-    QList<KAction *> createCommonActions( QModelIndexList indices );
+    QList<QAction *> createCommonActions( QModelIndexList indices );
 
-    KAction *m_loadAction;
-    KAction *m_deleteAction;
+    QAction *m_loadAction;
+    QAction *m_deleteAction;
 
     //for testing...
-    KAction *m_createTimecodeTrackAction;
+    QAction *m_createTimecodeTrackAction;
 
-    KAction *m_addGroupAction;
+    QAction *m_addGroupAction;
 
     QMap<BookmarkModel::Column, qreal> m_columnsSize;
 

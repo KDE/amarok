@@ -35,7 +35,7 @@ class QSortFilterProxyModel;
 class DirBrowserModel;
 class SearchWidget;
 class FileView;
-class KAction;
+class QAction;
 class KFilePlacesModel;
 class DirPlaylistTrackFilterProxyModel;
 
@@ -79,12 +79,12 @@ public:
     QUrl currentPath;
     FileView *fileView;
 
-    KAction *upAction;
-    KAction *homeAction;
-    KAction *refreshAction;
+    QAction *upAction;
+    QAction *homeAction;
+    QAction *refreshAction;
 
-    KAction *backAction;
-    KAction *forwardAction;
+    QAction *backAction;
+    QAction *forwardAction;
 
     UniqueStack<QUrl> backStack;
     UniqueStack<QUrl> forwardStack;

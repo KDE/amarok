@@ -26,6 +26,7 @@
 #include <QVBoxLayout>
 #include <QRadioButton>
 #include <KConfigGroup>
+#include <QPushButton>
 
 namespace StatSyncing
 {

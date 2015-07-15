@@ -26,7 +26,7 @@
 #include "core/support/Debug.h"
 #include "services/lastfm/LastFmTreeModel.h" // FIXME just for enums
 
-#include <KMenu>
+#include <QMenu>
 
 #include <QHeaderView>
 
@@ -66,7 +66,7 @@ LastFmTreeView::contextMenuEvent ( QContextMenuEvent* event )
     QActionList actions = createBasicActions( m_currentItems );
 
     actions += &separator;
-    KMenu menu;
+    QMenu menu;
     foreach ( QAction * action, actions )
         menu.addAction ( action );
 

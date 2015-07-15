@@ -37,6 +37,7 @@
 
 #include <KMessageBox>
 #include <KStandardDirs>
+#include <KGlobal>
 
 #include <QFileInfo>
 #include <QScriptEngine>
