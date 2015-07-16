@@ -46,6 +46,7 @@
 #include <KLineEdit>
 #include <QMenu>
 #include <KRun>
+#include <KGlobalSettings>
 
 namespace Meta {
 namespace Field {
@@ -359,7 +360,7 @@ TagDialog::accept() //SLOT
 inline void
 TagDialog::openPressed() //SLOT
 {
-    new KRun( m_path, this );
+    new KRun( QUrl::fromLocalFile(m_path), this );
 }
 
 
@@ -503,7 +504,7 @@ void TagDialog::initUi()
     ui->kTabWidget->addTab( ui->labelsTab , i18n( "Labels" ) );
 
     ui->kComboBox_label->completionObject()->setIgnoreCase( true );
-    ui->kComboBox_label->setCompletionMode( KGlobalSettings::CompletionPopup );
+    ui->kComboBox_label->setCompletionMode( KCompletion::CompletionPopup );
 
     m_labelModel = new LabelListModel( QStringList(), this );
     ui->labelsList->setModel( m_labelModel );
@@ -512,22 +513,22 @@ void TagDialog::initUi()
     ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
     ui->kComboBox_artist->completionObject()->setIgnoreCase( true );
-    ui->kComboBox_artist->setCompletionMode( KGlobalSettings::CompletionPopup );
+    ui->kComboBox_artist->setCompletionMode( KCompletion::CompletionPopup );
 
     ui->kComboBox_album->completionObject()->setIgnoreCase( true );
-    ui->kComboBox_album->setCompletionMode( KGlobalSettings::CompletionPopup );
+    ui->kComboBox_album->setCompletionMode( KCompletion::CompletionPopup );
 
     ui->kComboBox_albumArtist->completionObject()->setIgnoreCase( true );
-    ui->kComboBox_albumArtist->setCompletionMode( KGlobalSettings::CompletionPopup );
+    ui->kComboBox_albumArtist->setCompletionMode( KCompletion::CompletionPopup );
 
     ui->kComboBox_composer->completionObject()->setIgnoreCase( true );
-    ui->kComboBox_composer->setCompletionMode( KGlobalSettings::CompletionPopup );
+    ui->kComboBox_composer->setCompletionMode( KCompletion::CompletionPopup );
 
     ui->kComboBox_genre->completionObject()->setIgnoreCase( true );
-    ui->kComboBox_genre->setCompletionMode( KGlobalSettings::CompletionPopup );
+    ui->kComboBox_genre->setCompletionMode( KCompletion::CompletionPopup );
 
     ui->kComboBox_label->completionObject()->setIgnoreCase( true );
-    ui->kComboBox_label->setCompletionMode( KGlobalSettings::CompletionPopup );
+    ui->kComboBox_label->setCompletionMode( KCompletion::CompletionPopup );
 
     ui->addButton->setEnabled( false );
     ui->removeButton->setEnabled( false );
@@ -818,13 +819,13 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
     QString urlString = tags.value( Meta::Field::URL ).toString();
     QUrl url( urlString );
     //pathOrUrl will give localpath or proper url for remote.
-    ui->kLineEdit_location->setText( url.pathOrUrl() );
+    ui->kLineEdit_location->setText( url.toDisplayString() );
     if( url.isLocalFile() )
     {
         ui->locationLabel->show();
         ui->kLineEdit_location->show();
         QFileInfo fi( urlString );
-        m_path = fi.isDir() ? urlString : url.directory( QUrl::AppendTrailingSlash );
+        m_path = fi.isDir() ? urlString : url.adjusted(QUrl::RemoveFilename).path();
         ui->pushButton_open->setEnabled( true );
     }
     else

@@ -200,7 +200,7 @@ MusicBrainzTagsView::openArtistPage() const
 
     QString url = QString( "http://musicbrainz.org/artist/%1.html" ).arg( artistID );
 
-    QDesktopServices::openUrl( url );
+    QDesktopServices::openUrl( QUrl::fromUserInput(url) );
 }
 
 void
@@ -216,7 +216,7 @@ MusicBrainzTagsView::openReleasePage() const
 
     QString url = QString( "http://musicbrainz.org/release/%1.html" ).arg( releaseID );
 
-    QDesktopServices::openUrl( url );
+    QDesktopServices::openUrl( QUrl::fromUserInput(url) );
 }
 
 void
@@ -232,6 +232,6 @@ MusicBrainzTagsView::openTrackPage() const
 
     QString url = QString( "http://musicbrainz.org/recording/%1.html" ).arg( trackID );
 
-    QDesktopServices::openUrl( url );
+    QDesktopServices::openUrl( QUrl::fromUserInput(url) );
 }
 

@@ -22,6 +22,7 @@
 #include "core/meta/forward_declarations.h"
 
 #include <QHash>
+#include <QPushButton>
 
 class QAbstractButton;
 class QButtonGroup;

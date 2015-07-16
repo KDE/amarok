@@ -603,8 +603,7 @@ set( importers_SRCS
 set(amaroklib_LIB_SRCS
     ${libscriptableservice_SRCS}
     ${libbrowserframework_SRCS}
-#    ${libcontextview_SRCS}               TODO KF5: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5
-#                                         components.
+    ${libcontextview_SRCS}     #TODO KF5: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
     ${libplaylist_SRCS}
@@ -888,6 +887,7 @@ target_link_libraries(amaroklib
     KF5::KIONTLM
     KF5::NewStuff
     KF5::TextEditor
+    KF5::Archive
     Qt5::Script
     ${QT_QTSCRIPTTOOLS_LIBRARY}
     Qt5::Sql

@@ -110,7 +110,7 @@ private:
     CoverFoundSideBar *m_sideBar;     //!< View of selected cover and its metadata
     KComboBox *m_search;              //!< Custom search input
     KListWidget *m_view;              //!< View of retrieved covers
-    KPushButton *m_save;              //!< Save Button
+    QPushButton *m_save;              //!< Save Button
     KPushButton *m_searchButton;      //!< Button to start search or get more results for last query
     Meta::AlbumPtr m_album;           //!< Album associated with @ref m_unit;
     QAction *m_sortAction;            //!< Action to sort covers by size

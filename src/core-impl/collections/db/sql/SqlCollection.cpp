@@ -331,7 +331,8 @@ SqlCollection::possiblyContainsTrack( const QUrl &url ) const
     {
         foreach( const QString &folder, collectionFolders() )
         {
-            if( QUrl( folder ).isParentOf( url ) )
+            QUrl q = QUrl( folder );
+            if( q.isParentOf( url ) || q.matches( url , QUrl::StripTrailingSlash) )
                 return true;
         }
         return false;

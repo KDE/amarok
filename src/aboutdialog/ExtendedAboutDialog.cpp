@@ -47,20 +47,45 @@
 #include <QVBoxLayout>
 #include <kdeversion.h>
 
-class ExtendedAboutDialog::Private
+void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 {
-public:
-    Private(ExtendedAboutDialog *parent)
-        : q(parent),
-          aboutData(0)
-    {}
+    QDialog *dialog = new QDialog(q);
+    QWidget *mainWidget = new QWidget;
 
-    void _k_showLicense( const QString &number );
+    dialog->setWindowTitle(i18n("License Agreement"));
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+    dialog->connect(buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
+    dialog->connect(buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
+    buttonBox->button(QDialogButtonBox::Close)->setDefault(true);
 
-    ExtendedAboutDialog *q;
+    const QFont font = KGlobalSettings::fixedFont();
+    QFontMetrics metrics(font);
 
-    const KAboutData *aboutData;
-};
+    const QString licenseText = aboutData->licenses().at(number.toInt()).text();
+    KTextBrowser *licenseBrowser = new KTextBrowser;
+    licenseBrowser->setFont(font);
+    licenseBrowser->setLineWrapMode(QTextEdit::NoWrap);
+    licenseBrowser->setText(licenseText);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    dialog->setLayout(mainLayout);
+    mainLayout->addWidget(licenseBrowser);
+    mainLayout->addWidget(mainWidget);
+    mainLayout->addWidget(buttonBox);
+
+    // try to set up the dialog such that the full width of the
+    // document is visible without horizontal scroll-bars being required
+    const qreal idealWidth = licenseBrowser->document()->idealWidth()
+        + (2 * QApplication::style()->pixelMetric(QStyle::PM_DefaultChildMargin))
+        + licenseBrowser->verticalScrollBar()->width() * 2;
+//TODO KF5:PM_DefaultChildMargin is obsolete. Look in QStyle docs for correctly replacing it.
+
+    // try to allow enough height for a reasonable number of lines to be shown
+    const int idealHeight = metrics.height() * 30;
+
+    dialog->resize(dialog->sizeHint().expandedTo(QSize((int)idealWidth,idealHeight)));
+    dialog->show();
+}
 
 ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *ocsData, QWidget *parent)
   : QDialog(parent)
@@ -351,46 +376,6 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
 ExtendedAboutDialog::~ExtendedAboutDialog()
 {
     delete d;
-}
-
-void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
-{
-    QDialog *dialog = new QDialog(q);
-    QWidget *mainWidget = new QWidget;
-
-    dialog->setWindowTitle(i18n("License Agreement"));
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-    dialog->connect(buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
-    dialog->connect(buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
-    buttonBox->button(QDialogButtonBox::Close)->setDefault(true);
-
-    const QFont font = KGlobalSettings::fixedFont();
-    QFontMetrics metrics(font);
-
-    const QString licenseText = aboutData->licenses().at(number.toInt()).text();
-    KTextBrowser *licenseBrowser = new KTextBrowser;
-    licenseBrowser->setFont(font);
-    licenseBrowser->setLineWrapMode(QTextEdit::NoWrap);
-    licenseBrowser->setText(licenseText);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    dialog->setLayout(mainLayout);
-    mainLayout->addWidget(licenseBrowser);
-    mainLayout->addWidget(mainWidget);
-    mainLayout->addWidget(buttonBox);
-
-    // try to set up the dialog such that the full width of the
-    // document is visible without horizontal scroll-bars being required
-    const qreal idealWidth = licenseBrowser->document()->idealWidth()
-        + (2 * QApplication::style()->pixelMetric(QStyle::PM_DefaultChildMargin))
-        + licenseBrowser->verticalScrollBar()->width() * 2;
-//TODO KF5:PM_DefaultChildMargin is obsolete. Look in QStyle docs for correctly replacing it.
-
-    // try to allow enough height for a reasonable number of lines to be shown
-    const int idealHeight = metrics.height() * 30;
-
-    dialog->resize(dialog->sizeHint().expandedTo(QSize((int)idealWidth,idealHeight)));
-    dialog->show();
 }
 
 void

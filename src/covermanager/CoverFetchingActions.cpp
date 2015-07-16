@@ -155,7 +155,7 @@ SetCustomCoverAction::slotTriggered()
     const QString& startPath = m_albums.first()->tracks().first()->playableUrl().adjusted(QUrl::RemoveFilename).path();
 
     const QStringList mimetypes( KImageIO::mimeTypes( KImageIO::Reading ) );
-    KFileDialog dlg( startPath,
+    KFileDialog dlg( QUrl::fromLocalFile(startPath),
                      mimetypes.join(" "),
                      qobject_cast<QWidget*>( parent() ) );
 

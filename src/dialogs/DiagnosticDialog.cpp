@@ -42,7 +42,7 @@ DiagnosticDialog::DiagnosticDialog( const KAboutData about, QWidget *parent )
 
     m_textBox = new QPlainTextEdit( generateReport( aboutData ), this );
 
-    setPlainCaption( i18nc( "%1 is the program name", "%1 Diagnostics", aboutData->programName() ) );
+    setPlainCaption( i18nc( "%1 is the program name", "%1 Diagnostics", KAboutData::applicationData().displayName() ) );
 
     setButtons( Close | User1 );
     setButtonText( User1, i18n( "Copy to Clipboard" ) );
@@ -116,7 +116,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
                "   Phonon Backend: %6 (%7)\n"
                "   PulseAudio: %8\n\n",
 
-               aboutData->programName(), aboutData->version(),      // Amarok
+               KAboutData::applicationData().displayName(), aboutData->version(),      // Amarok
                KDE::versionString(),                                // KDE
                qVersion(),                                          // QT
                Phonon::phononVersion(),                             // Phonon

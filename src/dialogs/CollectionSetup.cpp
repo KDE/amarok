@@ -225,7 +225,7 @@ CollectionSetup::isDirInCollection( const QString& path ) const
         }
         else //scan recursively
         {
-            if ( parentUrl.isParentOf( path ) )
+            if (parentUrl.isParentOf( QUrl::fromLocalFile(path) ) || parentUrl.matches(QUrl::fromLocalFile(path), QUrl::StripTrailingSlash))
                 return true;
         }
     }

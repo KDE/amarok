@@ -33,6 +33,7 @@ using namespace Collections;
 
 class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
 {
+    Q_OBJECT
     public:
         ServiceSqlWorkerThread( ServiceSqlQueryMaker *queryMaker )
             : QObject()
@@ -73,7 +74,7 @@ class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
             else
                 setStatus(Status_Running);
         }
-        
+
         void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
         {
             Q_EMIT started(self);
@@ -88,7 +89,7 @@ class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
             }
             Q_EMIT done(self);
         }
-        
+
     private:
         ServiceSqlQueryMaker *m_queryMaker;
         bool m_aborted;
@@ -877,3 +878,4 @@ ServiceSqlQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
     return this;
 }
 
+#include "ServiceSqlQueryMaker.moc"

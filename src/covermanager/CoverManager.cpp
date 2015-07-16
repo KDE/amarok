@@ -46,6 +46,7 @@
 #include <KStatusBar>
 #include <KToolBar>
 #include <KVBox>
+#include <KIconLoader>
 
 #include <QAction>
 #include <QDesktopWidget>
@@ -109,7 +110,6 @@ CoverManager::CoverManager( QWidget *parent )
     QDialogButtonBox *buttonBox = new QDialogButtonBox();
     QVBoxLayout *mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
-    mainLayout->addWidget(mainWidget);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
     setWindowTitle( i18n("Cover Manager") );

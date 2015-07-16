@@ -314,3 +314,4 @@ namespace The
     }
 }
 
+#include "moc_NetworkAccessManagerProxy.cpp"

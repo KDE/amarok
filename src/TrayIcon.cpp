@@ -253,6 +253,17 @@ Amarok::TrayIcon::slotScrollRequested( int delta, Qt::Orientation orientation )
     The::engineController()->increaseVolume( delta / Amarok::VOLUME_SENSITIVITY );
 }
 
+QAction*
+Amarok::TrayIcon::action( const QString& name, QMap<QString, QAction*> actionByName )
+{
+  QAction* action = 0L;
+
+  if ( !name.isEmpty() )
+    action = actionByName.value(name);
+
+  return action;
+}
+
 void
 Amarok::TrayIcon::updateMenu()
 {
@@ -265,6 +276,13 @@ Amarok::TrayIcon::updateMenu()
             delete action;
         }
     }
+
+    QMap<QString, QAction*> actionByName;
+    foreach (QAction* action, actionCollection())
+    {
+        actionByName.insert(action->text(), action);
+    }
+
     m_extraActions.clear();
 
     contextMenu()->removeAction( m_separator.data() );
@@ -293,19 +311,19 @@ Amarok::TrayIcon::updateMenu()
 
     // second statement checks if the menu has already been populated (first startup), if not: do it
     if( m_extraActions.count() > 0 ||
-        contextMenu()->actions().last() != actionCollection()->action( "file_quit" ) )
+        contextMenu()->actions().last() != actionByName.value( "file_quit" ) )
     {
         // remove the 2 bottom items, so we can push them to the bottom again
-        contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
-        contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
+        contextMenu()->removeAction( action( "file_quit", actionByName ) );
+        contextMenu()->removeAction( action( "minimizeRestore", actionByName ) );
 
         foreach( QAction* action, m_extraActions )
             contextMenu()->addAction( action );
 
         m_separator = contextMenu()->addSeparator();
         // readd
-        contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
-        contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
+        contextMenu()->addAction( action( "minimizeRestore", actionByName  ) );
+        contextMenu()->addAction( action( "file_quit", actionByName  ) );
     }
 }
 

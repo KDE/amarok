@@ -38,6 +38,7 @@
 #include <QIcon>
 #include <KLocale>
 #include <KWindowSystem>
+#include <KIconLoader>
 
 #include <QDesktopWidget>
 #include <QMouseEvent>

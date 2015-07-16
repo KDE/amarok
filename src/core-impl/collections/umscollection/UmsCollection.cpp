@@ -518,7 +518,7 @@ UmsCollection::slotEject()
 void
 UmsCollection::slotTrackAdded( QUrl location )
 {
-    Q_ASSERT( m_musicPath.isParentOf( location ) );
+    Q_ASSERT( m_musicPath.isParentOf( location ) || m_musicPath.matches( location , QUrl::StripTrailingSlash) )
     MetaFile::Track *fileTrack = new MetaFile::Track( location );
     fileTrack->setCollection( this );
     Meta::TrackPtr fileTrackPtr = Meta::TrackPtr( fileTrack );

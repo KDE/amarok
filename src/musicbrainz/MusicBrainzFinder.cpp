@@ -199,7 +199,7 @@ void
 MusicBrainzFinder::parsingDone( ThreadWeaver::JobPointer _parser )
 {
     DEBUG_BLOCK
-    MusicBrainzXmlParser *parser = qobject_cast<MusicBrainzXmlParser *>( _parser );
+    MusicBrainzXmlParser *parser = dynamic_cast<MusicBrainzXmlParser*>( _parser.data() );
     disconnect( parser, SIGNAL(done(ThreadWeaver::JobPointer)),
                 this, SLOT(parsingDone(ThreadWeaver::JobPointer)) );
 

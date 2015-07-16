@@ -129,7 +129,7 @@ LabelsApplet::init()
     p.setColor( QPalette::Base, c );
     m_addLabel.data()->setPalette( p );
     m_addLabel.data()->completionObject()->setIgnoreCase( true );
-    m_addLabel.data()->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_addLabel.data()->setCompletionMode( KCompletion::CompletionPopup );
     connect( m_addLabel.data(), SIGNAL(returnPressed()), this, SLOT(addLabelPressed()) );
     m_addLabelProxy.data()->setWidget( m_addLabel.data() );
 

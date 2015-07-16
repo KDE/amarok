@@ -40,6 +40,7 @@ using namespace Collections;
 
 class QueryJob : public QObject, public ThreadWeaver::Job
 {
+    Q_OBJECT
     public:
         QueryJob( MemoryQueryMakerInternal *qmInternal )
             : QObject()
@@ -518,3 +519,4 @@ MemoryQueryMaker::setLabelQueryMode( LabelQueryMode mode )
     return this;
 }
 
+#include "MemoryQueryMaker.moc"

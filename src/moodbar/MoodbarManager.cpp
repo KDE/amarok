@@ -174,7 +174,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
         else
             moodFilePath = moodPath( track->playableUrl().path() );
 
-        data = readMoodFile( moodFilePath );
+        data = readMoodFile( QUrl::fromUserInput(moodFilePath) );
 
         if ( data.size() > 10 )
             m_moodDataMap.insert( track, data );

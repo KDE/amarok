@@ -20,6 +20,7 @@
 #include "dialogs/EditFilterDialog.h"
 
 #include <KLocale>
+#include <KGlobalSettings>
 
 #include <QAction>
 #include <QToolBar>
@@ -46,7 +47,7 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     m_sw = new Amarok::ComboBox( searchBox );
     m_sw->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_sw->setFrame( true );
-    m_sw->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_sw->setCompletionMode( KCompletion::CompletionPopup );
     m_sw->completionObject()->setIgnoreCase( true );
     m_sw->setToolTip( i18n( "Enter space-separated terms to search." ) );
     m_sw->addItem( KStandardGuiItem::find().icon(), QString() );

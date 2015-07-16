@@ -21,7 +21,7 @@
 #include "core/playlists/PlaylistProvider.h"
 
 #include <QAbstractItemModel>
-
+#include <QAction>
 //Playlist & Track index differentiator macros
 //QModelIndex::intenalId() is a qint64 to support 64-bit pointers in a union with the ID
 #define TRACK_MASK (0x1<<31)
@@ -31,7 +31,6 @@
 
 class QAction;
 
-Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QActionList )
 
 namespace PlaylistBrowserNS {

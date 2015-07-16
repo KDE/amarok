@@ -22,6 +22,8 @@
 #include <KApplication>
 
 #include <QMouseEvent>
+#include <QMimeData>
+#include <QDrag>
 
 #include "core/support/Debug.h"
 

@@ -128,7 +128,7 @@ MusicDNSFinder::parsingDone( ThreadWeaver::JobPointer _parser )
 {
     DEBUG_BLOCK
 
-    MusicDNSXmlParser *parser = qobject_cast< MusicDNSXmlParser * >( _parser );
+    MusicDNSXmlParser *parser = dynamic_cast< MusicDNSXmlParser * >( _parser.data() );
     disconnect( parser, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(parsingDone(ThreadWeaver::JobPointer)) );
     if( m_parsers.contains( parser ) )
     {
@@ -164,7 +164,7 @@ void
 MusicDNSFinder::decodingDone( ThreadWeaver::JobPointer _decoder )
 {
     DEBUG_BLOCK
-    MusicDNSAudioDecoder *decoder = ( MusicDNSAudioDecoder * )_decoder;
+    MusicDNSAudioDecoder *decoder = dynamic_cast<MusicDNSAudioDecoder*>(_decoder.data());
     disconnect( decoder, SIGNAL(trackDecoded(Meta::TrackPtr,QString)),
                 this, SLOT(trackDecoded(Meta::TrackPtr,QString)) );
     disconnect( decoder, SIGNAL(done(ThreadWeaver::JobPointer)),

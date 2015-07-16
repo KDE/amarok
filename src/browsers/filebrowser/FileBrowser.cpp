@@ -18,8 +18,8 @@
 
 #define DEBUG_PREFIX "FileBrowser"
 
-#include "FileBrowser.h"
 #include "FileBrowser_p.h"
+#include "FileBrowser.h"
 
 #include "amarokconfig.h"
 #include "EngineController.h"
@@ -43,6 +43,7 @@
 #include <KStandardAction>
 #include <KStandardDirs>
 #include <KToolBar>
+#include <KLocalizedString>
 
 #include <QHeaderView>
 
@@ -377,7 +378,7 @@ FileBrowser::addItemActivated( const QString &callbackString )
                     d->bottomPlacesModel->requestSetup( d->placesModel->mapToSource( idx ) );
                     return;
                 }
-                newPath = idx.data( KFilePlacesModel::UrlRole ).toString();
+                newPath = QUrl::fromUserInput(idx.data( KFilePlacesModel::UrlRole ).toString());
                 break;
             }
         }
@@ -388,7 +389,7 @@ FileBrowser::addItemActivated( const QString &callbackString )
         }
     }
     else
-        newPath = callbackString;
+        newPath = QUrl::fromUserInput(callbackString);
 
     d->backStack.push( d->currentPath );
     d->forwardStack.clear(); // navigating resets forward stack
@@ -403,7 +404,7 @@ FileBrowser::setupAddItems()
     if( d->currentPath == placesUrl )
         return; // no more items to add
 
-    QString workingUrl = d->currentPath.prettyUrl( QUrl::RemoveTrailingSlash );
+    QString workingUrl = d->currentPath.toDisplayString( QUrl::StripTrailingSlash );
     int currentPosition = 0;
 
     QString name;
@@ -422,9 +423,9 @@ FileBrowser::setupAddItems()
         if( placesIndex.isValid() )
             break; // found shown placesindex, good!
 
-        if( tempUrl.upUrl() == tempUrl )
+        if( KIO::upUrl(tempUrl) == tempUrl )
             break; // prevent infinite loop
-        tempUrl = tempUrl.upUrl();
+        tempUrl = KIO::upUrl(tempUrl);
     } while( true );
 
     // special handling for the first additional item
@@ -434,7 +435,8 @@ FileBrowser::setupAddItems()
         callback = placesIndex.data( KFilePlacesModel::UrlRole ).toString();
 
         QUrl currPlaceUrl = d->placesModel->data( placesIndex, KFilePlacesModel::UrlRole ).toUrl();
-        currentPosition = currPlaceUrl.url( QUrl::AddTrailingSlash ).length();
+        currPlaceUrl.setPath( QDir::toNativeSeparators(currPlaceUrl.path() + '/') );
+        currentPosition = currPlaceUrl.toString().length();
     }
     else
     {
@@ -467,7 +469,7 @@ FileBrowser::setupAddItems()
         name.remove( QRegExp( "/$" ) );
         callback = workingUrl.left( nextPosition );
 
-        siblings = d->siblingsForDir( callback );
+        siblings = d->siblingsForDir( QUrl::fromLocalFile(callback) );
         addAdditionalItem( new BrowserBreadcrumbItem( name, callback, siblings, this ) );
 
         currentPosition = nextPosition;
@@ -548,7 +550,7 @@ FileBrowser::up()
     if( d->currentPath == placesUrl )
         return; // nothing to do, we consider places as the root view
 
-    QUrl upUrl = d->currentPath.upUrl();
+    QUrl upUrl = KIO::upUrl(d->currentPath);
     if( upUrl == d->currentPath ) // apparently, we cannot go up withn url
         upUrl = placesUrl;
 
@@ -581,7 +583,7 @@ FileBrowser::setupDone( const QModelIndex &index, bool success )
         {
             d->backStack.push( d->currentPath );
             d->forwardStack.clear(); // navigating resets forward stack
-            setDir( url );
+            setDir( QUrl::fromLocalFile(url) );
         }
     }
 }
@@ -626,3 +628,4 @@ DelayedActivator::slotRowsInserted( const QModelIndex &parent, int start )
     deleteLater();
 }
 
+#include "moc_FileBrowser.cpp"

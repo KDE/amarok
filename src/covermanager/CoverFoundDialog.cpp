@@ -40,6 +40,7 @@
 #include <KPushButton>
 #include <KSaveFile>
 #include <KStandardDirs>
+#include <KGlobalSettings>
 
 #include <QCloseEvent>
 #include <QDir>
@@ -110,7 +111,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_search->setEditable( true ); // creates a KLineEdit for the combobox
     m_search->setTrapReturnKey( true );
     m_search->setInsertPolicy( QComboBox::NoInsert ); // insertion is handled by us
-    m_search->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_search->setCompletionMode( KCompletion::CompletionPopup );
     m_search->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     qobject_cast<KLineEdit*>( m_search->lineEdit() )->setClickMessage( i18n( "Enter Custom Search" ) );
     m_search->completionObject()->setOrder( KCompletion::Insertion );
@@ -375,8 +376,8 @@ void CoverFoundDialog::saveAs()
         return;
     }
 
-    KFileDialog dlg( tracks.first()->playableUrl().adjusted(QUrl::RemoveFilename).path(), QString(), this );
-    dlg.setCaption( i18n("Cover Image Save Location") );
+    KFileDialog dlg( QUrl::fromLocalFile(tracks.first()->playableUrl().adjusted(QUrl::RemoveFilename).path()), QString(), this );
+    QWidget::setWindowTitle( i18n("Cover Image Save Location") );
     dlg.setMode( KFile::File | KFile::LocalOnly );
     dlg.setOperationMode( KFileDialog::Saving );
     dlg.setConfirmOverwrite( true );
@@ -408,6 +409,7 @@ void CoverFoundDialog::saveAs()
     }
 
     const QImage &image = item->bigPix();
+    QMimeDatabase db;
     const QString &ext = db.suffixForFileName( saveUrl.path() ).toLower();
     if( ext == "jpg" || ext == "jpeg" )
         image.save( &saveFile, "JPG" );

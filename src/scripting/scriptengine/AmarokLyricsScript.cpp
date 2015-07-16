@@ -32,6 +32,7 @@
 #include <QScriptEngine>
 #include <QTextCodec>
 #include <QTextDocument>
+#include <QScriptEngineDebugger>
 
 using namespace AmarokScript;
 

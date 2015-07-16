@@ -52,7 +52,7 @@ TrackLoader::init( const QUrl &url )
 void
 TrackLoader::init( const QList<QUrl> &qurls )
 {
-    m_sourceUrls = urls;
+    m_sourceUrls = qurls;
     QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
 }
 
@@ -205,7 +205,7 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
     static const QSet<QString> remoteProtocols = QSet<QString>()
             << "http" << "https" << "mms" << "smb"; // consider unifying with CollectionManager::trackForUrl()
     if( m_flags.testFlag( RemotePlaylistsAreStreams ) && tracks.count() > 1
-        && remoteProtocols.contains( playlist->uidUrl().protocol() ) )
+        && remoteProtocols.contains( playlist->uidUrl().scheme() ) )
     {
         m_tracks << Meta::TrackPtr( new Meta::MultiTrack( playlist ) );
     }
@@ -267,8 +267,8 @@ TrackLoader::finish()
 bool
 TrackLoader::directorySensitiveLessThan( const QUrl &left, const QUrl &right )
 {
-    QString leftDir = left.directory( QUrl::AppendTrailingSlash );
-    QString rightDir = right.directory( QUrl::AppendTrailingSlash );
+    QString leftDir = left.adjusted(QUrl::RemoveFilename).path();
+    QString rightDir = right.adjusted(QUrl::RemoveFilename).path();
 
     // filter out tracks from same directories:
     if( leftDir == rightDir )

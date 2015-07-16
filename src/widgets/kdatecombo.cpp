@@ -21,12 +21,13 @@
 //Added by qt3to4:
 #include <QKeyEvent>
 #include <QEvent>
+#include <QVBoxLayout>
 
-#include <kglobal.h>
-#include <klocale.h>
-#include <kdatepicker.h>
-#include <kdatetable.h>
-#include <kdebug.h>
+#include <KGlobal>
+#include <KLocale>
+#include <KDatePicker>
+#include <KPopupFrame>
+#include <KDebug>
 #include <KConfigGroup>
 
 KDateCombo::KDateCombo(QWidget *parent) : QComboBox(parent)

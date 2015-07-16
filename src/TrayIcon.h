@@ -49,7 +49,7 @@ private Q_SLOTS:
     void metadataChanged( Meta::AlbumPtr album );
 
     void slotScrollRequested( int delta, Qt::Orientation orientation );
-
+    QAction* action( const QString& name, QMap<QString, QAction*> actionByName );
 private:
     Meta::TrackPtr m_track;
 

@@ -22,6 +22,7 @@
 #include "ServiceSqlRegistry.h"
 #include "core/collections/QueryMaker.h"
 
+#include <QObject>
 #include <ThreadWeaver/Job>
 #include <ThreadWeaver/ThreadWeaver>
 #include <ThreadWeaver/Queue>

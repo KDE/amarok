@@ -70,7 +70,7 @@ class AMAROK_EXPORT TagGuesserWidget : public FilenameLayoutWidget
 };
 
 
-class AMAROK_EXPORT TagGuesserDialog : public KDialog
+class AMAROK_EXPORT TagGuesserDialog : public QDialog
 {
     Q_OBJECT
 

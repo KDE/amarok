@@ -23,7 +23,9 @@
 #include "widgets/PrettyTreeRoles.h"
 #include "widgets/PrettyTreeView.h"
 
-#include <kcapacitybar.h>
+#include <KCapacityBar>
+#include <KGlobal>
+#include <KLocalizedString>
 
 #include <QAction>
 #include <QApplication>

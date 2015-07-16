@@ -23,7 +23,7 @@
 #include "EngineController.h"
 
 #include <Solid/PowerManagement>
-
+#include <KLocalizedString>
 #include <QAction>
 
 PowerManager::PowerManager( EngineController *engine )

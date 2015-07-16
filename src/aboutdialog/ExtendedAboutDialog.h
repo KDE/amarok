@@ -73,4 +73,19 @@ private:
 
 };
 
+class ExtendedAboutDialog::Private
+{
+public:
+    Private(ExtendedAboutDialog *parent)
+        : q(parent),
+          aboutData(0)
+    {}
+
+    void _k_showLicense( const QString &number );
+
+    ExtendedAboutDialog *q;
+
+    const KAboutData *aboutData;
+};
+
 #endif  //AMAROK_EXTENDEDABOUTDIALOG_H

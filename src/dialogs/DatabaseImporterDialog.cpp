@@ -24,6 +24,7 @@
 #include <KLocale>
 #include <KPageWidgetItem>
 #include <KVBox>
+#include <KDialog>
 
 #include <QButtonGroup>
 #include <QLabel>
@@ -36,7 +37,7 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     , m_importerConfig( 0 )
 {
     setAttribute( Qt::WA_DeleteOnClose );
-    setCaption( i18n( "Import Collection" ) );
+    QWidget::setWindowTitle( i18n( "Import Collection" ) );
 
     KVBox *importerBox = new KVBox( this );
     importerBox->setSpacing( KDialog::spacingHint() );
@@ -86,7 +87,8 @@ DatabaseImporterDialog::pageChanged( KPageWidgetItem *current, KPageWidgetItem *
         if( m_importer && !m_importer->importing() )
             m_importer->startImporting();
 
-        enableButton( KDialog::User1, false );
+        QPushButton* user1Button = new QPushButton();
+        user1Button->setEnabled( false );
         return;
     }
 }
@@ -104,7 +106,8 @@ DatabaseImporterDialog::importSucceeded()
 
     m_results->appendHtml( text );
 
-    enableButton( KDialog::User1, true );
+    QPushButton* user1Button = new QPushButton();
+    user1Button->setEnabled( true );
 }
 
 void
@@ -113,7 +116,9 @@ DatabaseImporterDialog::importFailed()
     QString text = i18n( "<b><font color='red'>Failed:</font></b> Unable to import statistics" );
     m_results->appendHtml( text );
 
-    enableButton( KDialog::User1, true );
+    QPushButton* user1Button = new QPushButton();
+    user1Button->setEnabled( true );
+
 }
 
 void

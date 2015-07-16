@@ -288,7 +288,7 @@ CoverFetchInfoPayload::prepareDiscogsUrls( const QByteArray &data )
                         if( xml.name() == "uri" )
                         {
                             QUrl releaseUrl( xml.readElementText() );
-                            QString releaseStr = releaseUrl.url( QUrl::RemoveTrailingSlash );
+                            QString releaseStr = releaseUrl.adjusted(QUrl::StripTrailingSlash).toString();
                             QString releaseId = releaseStr.split( '/' ).last();
 
                             QUrl url;

@@ -30,6 +30,7 @@
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "covermanager/CoverCache.h"
+#include "File.h"
 
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Job>

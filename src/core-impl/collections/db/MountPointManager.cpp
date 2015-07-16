@@ -75,7 +75,7 @@ MountPointManager::handleMusicLocation()
     if( folders.readEntry( entryKey, false ) )
     {
         const QUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
-        const QString musicDir = musicUrl.toLocalFile( QUrl::RemoveTrailingSlash );
+        const QString musicDir = musicUrl.adjusted(QUrl::StripTrailingSlash).toLocalFile()
         const QDir dir( musicDir );
         if( dir.exists() && dir.isReadable() )
         {
@@ -290,7 +290,7 @@ MountPointManager::collectionFolders() const
         foreach( const QString &strIt, rpaths )
         {
             const QUrl url = ( strIt == "./" ) ? getMountPointForId( id ) : getAbsolutePath( id, strIt );
-            const QString absPath = url.toLocalFile( QUrl::RemoveTrailingSlash );
+            const QString absPath = url.adjusted(QUrl::StripTrailingSlash).toLocalFile()
             if ( !result.contains( absPath ) )
                 result.append( absPath );
         }

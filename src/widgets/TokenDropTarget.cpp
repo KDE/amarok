@@ -26,7 +26,7 @@
 #include <QDropEvent>
 #include <QPainter>
 #include <QVBoxLayout>
-
+#include <QMimeData>
 
 TokenDropTarget::TokenDropTarget( QWidget *parent )
     : QWidget( parent )

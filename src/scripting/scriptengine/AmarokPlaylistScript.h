@@ -173,6 +173,4 @@ namespace AmarokScript
     };
 }
 
-Q_DECLARE_METATYPE( QList<QUrl> )
-
 #endif

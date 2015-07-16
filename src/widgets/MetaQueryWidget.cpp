@@ -733,7 +733,7 @@ MetaQueryWidget::makeGenericComboSelection( bool editable, Collections::QueryMak
             SLOT(valueChanged(QString)) );
 
     combo->completionObject()->setIgnoreCase( true );
-    combo->setCompletionMode( KGlobalSettings::CompletionPopup );
+    combo->setCompletionMode( KCompletion::CompletionPopup );
     combo->setInsertPolicy( QComboBox::InsertAtTop );
     m_valueSelection1 = combo;
 }

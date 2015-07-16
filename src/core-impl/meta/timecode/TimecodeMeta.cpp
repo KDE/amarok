@@ -59,7 +59,7 @@ TimecodeTrack::name() const
 QUrl
 TimecodeTrack::playableUrl() const
 {
-    return m_playableUrl;
+    return QUrl::fromLocalFile(m_playableUrl);
 }
 
 QString
