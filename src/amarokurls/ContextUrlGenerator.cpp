@@ -45,20 +45,22 @@ ContextUrlGenerator::~ContextUrlGenerator()
 AmarokUrl
 ContextUrlGenerator::createContextBookmark()
 {
+/*  FIXME: disabled temporarily for KF5 porting
     QStringList pluginNames = Context::ContextView::self()->currentApplets();
     QStringList appletNames = Context::ContextView::self()->currentAppletNames();
-
+*/
     AmarokUrl url;
 
     url.setCommand( "context" );
+/*  FIXME: disabled temporarily for KF5 porting
     url.setArg( "applets", pluginNames.join( "," ) );
 
     url.setName( i18n( "Context: %1", appletNames.join( "," ) ) );
-
+*/
     return url;
 }
 
-    
+
 QString
 ContextUrlGenerator::description()
 {

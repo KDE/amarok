@@ -143,8 +143,10 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
     m_ongoingDrag = true;
     m_dragMutex.unlock();
 
+/*  FIXME: disabled temporarily for KF5 porting
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
+*/
 
     if( m_pd && m_pd->isHidden() )
     {

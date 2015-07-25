@@ -603,7 +603,7 @@ set( importers_SRCS
 set(amaroklib_LIB_SRCS
     ${libscriptableservice_SRCS}
     ${libbrowserframework_SRCS}
-    ${libcontextview_SRCS}     #TODO KF5: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
+#    ${libcontextview_SRCS}        #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
     ${libplaylist_SRCS}

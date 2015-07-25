@@ -50,6 +50,7 @@ bool ContextUrlRunner::run( AmarokUrl url )
     debug() << "applet string: " << appletsString;
     QStringList appletList = appletsString.split( ',' );
 
+/*  FIXME: disabled temporarily for KF5 porting
     Context::ContextView::self()->clearNoSave();
     Context::Containment* cont = dynamic_cast< Context::Containment* >( Context::ContextView::self()->containment() );
     if( cont )
@@ -59,7 +60,7 @@ bool ContextUrlRunner::run( AmarokUrl url )
             cont->addApplet( appletPluginName, -1 );
         }
     }
-
+*/
     The::mainWindow()->showDock( MainWindow::AmarokDockContext );
 
     return true;

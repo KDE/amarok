@@ -53,7 +53,9 @@ AmarokLyricsScript::showLyrics( const QString &lyrics ) const
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
+/*  FIXME: disabled temporarily for KF5 porting.
     LyricsManager::self()->lyricsResult( lyrics, false );
+*/
 }
 
 void
@@ -63,14 +65,18 @@ AmarokLyricsScript::showLyricsHtml( const QString &lyrics ) const
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
+/*  FIXME: disabled temporarily for KF5 porting.
     LyricsManager::self()->lyricsResultHtml( lyrics, false );
+*/
 }
 
 void
 AmarokLyricsScript::showLyricsError( const QString &error ) const
 {
     DEBUG_BLOCK
+/*  FIXME: disabled temporarily for KF5 porting.
     LyricsManager::self()->lyricsError( error );
+*/
 }
 
 
@@ -78,7 +84,9 @@ void
 AmarokLyricsScript::showLyricsNotFound( const QString &msg ) const
 {
     DEBUG_BLOCK
+/*  FIXME: disabled temporarily for KF5 porting.
     LyricsManager::self()->lyricsNotFound( msg );
+*/
 }
  
 
@@ -91,7 +99,9 @@ AmarokLyricsScript::escape( const QString &str )
 void
 AmarokLyricsScript::setLyricsForTrack( const QString &trackUrl, const QString &lyrics ) const
 {
+/*  FIXME: disabled temporarily for KF5 porting.
     LyricsManager::self()->setLyricsForTrack( trackUrl, lyrics );
+*/
 }
 
 QString

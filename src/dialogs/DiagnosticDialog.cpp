@@ -91,15 +91,16 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
 
 
     // Get applets
-    const QStringList appletList = Context::ContextView::self()->currentAppletNames();
     QString appletString;
+/*  FIXME: disabled temporarily for KF5 porting
+    const QStringList appletList = Context::ContextView::self()->currentAppletNames();
 
     foreach( const QString &applet, appletList )
     {
         // Currently we cannot extract the applet version number this way
         appletString += "   " + applet + '\n';
     }
-
+*/
 
     const KService::Ptr aPhononBackend =
         KServiceTypeTrader::self()->preferredService( "PhononBackend" );

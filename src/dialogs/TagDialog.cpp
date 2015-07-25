@@ -365,20 +365,20 @@ TagDialog::openPressed() //SLOT
 
 
 inline void
-TagDialog::previousTrack()
+TagDialog::previousTrack() //SLOT
 {
     setCurrentTrack( m_currentTrackNum - 1 );
 }
 
 
 inline void
-TagDialog::nextTrack()
+TagDialog::nextTrack() //SLOT
 {
     setCurrentTrack( m_currentTrackNum + 1 );
 }
 
 inline void
-TagDialog::perTrack( bool enabled )
+TagDialog::perTrack( bool enabled ) //SLOT
 {
     if( enabled == m_perTrack )
         return;
@@ -1408,4 +1408,4 @@ TagDialog::musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap> resu
         setTagsToUi( getTagsFromMultipleTracks() );
 }
 
-
+#include "moc_TagDialog.cpp"

@@ -133,9 +133,10 @@ AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
     if( indices.isEmpty() )
         return;
 
+/*  FIXME: disabled temporarily for KF5 porting
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
-
+*/
     if( m_pd && m_pd->isHidden() )
     {
         AmazonItemTreeModel *amazonModel;

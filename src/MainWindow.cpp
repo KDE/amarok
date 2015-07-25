@@ -236,9 +236,10 @@ MainWindow::init()
     PERF_LOG( "Playlist created" )
 
     PERF_LOG( "Creating ContextWidget" )
+/*  FIXME: disabled temporarily for KF5 porting. Also take care of the usage of the m_contextDock instance below.
     m_contextDock = new ContextDock( this );
     m_contextDock.data()->installEventFilter( this );
-
+*/
     PERF_LOG( "ContextScene created" )
     //END Creating Widgets
 

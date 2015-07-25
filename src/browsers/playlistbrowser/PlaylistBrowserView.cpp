@@ -157,9 +157,10 @@ void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supporte
         return;
     m_ongoingDrag = true;
 
+/*  FIXME: disabled temporarily for KF5 porting
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
-
+*/
     if( m_pd && m_pd->isHidden() )
     {
         QActionList actions = actionsFor( selectedIndexes() );

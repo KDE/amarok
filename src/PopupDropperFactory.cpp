@@ -88,11 +88,6 @@ PopupDropper * PopupDropperFactory::createPopupDropper( QWidget * parent, bool i
     return pd;
 }
 
-PopupDropper * PopupDropperFactory::createPopupDropper()
-{
-    return createPopupDropper( Context::ContextView::self() );
-}
-
 PopupDropperItem * PopupDropperFactory::createItem( QAction * action )
 {
     PopupDropperItem* pdi = new PopupDropperItem();

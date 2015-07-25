@@ -712,9 +712,10 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         return;
     ongoingDrags = true;
 
+/*  FIXME: disabled temporarily for KF5 porting
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
-
+*/
     if( m_pd && m_pd->isHidden() )
     {
         m_pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
