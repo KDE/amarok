@@ -13,6 +13,8 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
+include(CMakePushCheckState)
+
 if(NOT WIN32)
     find_program(MYSQLCONFIG_EXECUTABLE NAMES mysql_config mysql_config5 HINTS ${BIN_INSTALL_DIR})
 endif()
@@ -88,12 +90,12 @@ else()
         /opt/ports/lib/mysql5/mysql
     )
 
-    macro_push_required_vars()
+    cmake_push_check_state()
     set( CMAKE_REQUIRED_INCLUDES ${MYSQL_INCLUDE_DIR} )
     set( CMAKE_REQUIRED_LIBRARIES ${MYSQL_EMBEDDED_LIBRARIES} )
     include_directories( ${MYSQL_INCLUDE_DIR} )
     check_cxx_source_compiles( "#if (defined(_WIN32) || defined(_WIN64))\n#define __LCC__\n#endif\n#include <mysql.h>\nint main() { int i = MYSQL_OPT_USE_EMBEDDED_CONNECTION; }" HAVE_MYSQL_EMBEDDED )
-    macro_pop_required_vars()
+    cmake_push_check_state()
 
 endif()
 
