@@ -95,7 +95,7 @@ else()
     set( CMAKE_REQUIRED_LIBRARIES ${MYSQL_EMBEDDED_LIBRARIES} )
     include_directories( ${MYSQL_INCLUDE_DIR} )
     check_cxx_source_compiles( "#if (defined(_WIN32) || defined(_WIN64))\n#define __LCC__\n#endif\n#include <mysql.h>\nint main() { int i = MYSQL_OPT_USE_EMBEDDED_CONNECTION; }" HAVE_MYSQL_EMBEDDED )
-    cmake_push_check_state()
+    cmake_pop_check_state()
 
 endif()
 
