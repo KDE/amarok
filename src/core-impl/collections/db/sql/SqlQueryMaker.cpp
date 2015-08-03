@@ -36,6 +36,7 @@ using namespace Collections;
 
 class SqlWorkerThread : public QObject, public ThreadWeaver::Job
 {
+    Q_OBJECT
     public:
         SqlWorkerThread( SqlQueryMakerInternal *queryMakerInternal )
             : QObject()
@@ -67,7 +68,10 @@ class SqlWorkerThread : public QObject, public ThreadWeaver::Job
             Q_UNUSED(self);
             Q_UNUSED(thread);
             m_queryMakerInternal->run();
-            setFinished( !m_aborted );
+            if( m_aborted )
+                setStatus(Status_Aborted);
+            else
+                setStatus(Status_Running);
         }
         void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
         {
@@ -367,7 +371,7 @@ SqlQueryMaker::addMatch( const Meta::TrackPtr &track )
         {
             path = track->playableUrl().path();
         }
-        int deviceid = m_collection->mountPointManager()->getIdForUrl( path );
+        int deviceid = m_collection->mountPointManager()->getIdForUrl( QUrl::fromUserInput(path) );
         QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, path );
         d->queryMatch += QString( " AND urls.deviceid = %1 AND urls.rpath = '%2'" )
                         .arg( QString::number( deviceid ), escape( rpath ) );
@@ -1184,4 +1188,4 @@ SqlQueryMaker::blockingNewResultReady(const Meta::LabelList &labels )
     d->blockingLabels = labels;
 }
 
-
+#include "SqlQueryMaker.moc"

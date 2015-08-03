@@ -33,11 +33,11 @@ TestPrivateMetaRegistry::~TestPrivateMetaRegistry()
 void
 TestPrivateMetaRegistry::initTestCase()
 {
-    m_track1 = CollectionManager::instance()->trackForUrl( datapath( "data/audio/album/Track01.ogg" ) );
-    m_track2 = CollectionManager::instance()->trackForUrl( datapath( "data/audio/album/Track02.ogg" ) );
-    m_track3 = CollectionManager::instance()->trackForUrl( datapath( "data/audio/Platz 01.mp3" ) );
-    m_track4 = CollectionManager::instance()->trackForUrl( datapath( "data/audio/Platz 02.mp3" ) );
-    m_track5 = CollectionManager::instance()->trackForUrl( datapath( "data/audio/Platz 03.mp3" ) );
+    m_track1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/album/Track01.ogg" )) );
+    m_track2 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/album/Track02.ogg" )) );
+    m_track3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/Platz 01.mp3" )) );
+    m_track4 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/Platz 02.mp3" )) );
+    m_track5 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/Platz 03.mp3" )) );
 }
 
 QString

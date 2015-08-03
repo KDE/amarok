@@ -64,7 +64,7 @@ MountPointManager::handleMusicLocation()
 {
     // For users who were using QDesktopServices::MusicLocation exclusively up
     // to v2.2.2, which did not store the location into config.
-    // and also for versions up to 2.7-git that did wrote the Use MusicLocation entry
+    // and also for versions up to 2.7-git that did write the Use MusicLocation entry
 
     KConfigGroup folders = Amarok::config( "Collection Folders" );
     const QString entryKey( "Use MusicLocation" );
@@ -74,8 +74,8 @@ MountPointManager::handleMusicLocation()
     // write the music location as another collection folder in this case
     if( folders.readEntry( entryKey, false ) )
     {
-        const QUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
-        const QString musicDir = musicUrl.adjusted(QUrl::StripTrailingSlash).toLocalFile()
+        const QUrl musicUrl = QUrl::fromLocalFile(QDesktopServices::storageLocation( QDesktopServices::MusicLocation ));
+        const QString musicDir = musicUrl.adjusted(QUrl::StripTrailingSlash).toLocalFile();
         const QDir dir( musicDir );
         if( dir.exists() && dir.isReadable() )
         {
@@ -199,7 +199,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
         absolutePath = absolutePath.adjusted(QUrl::StripTrailingSlash);
         absolutePath.setPath(absolutePath.path() + '/' + ( rpath.path() ));
 #endif
-        absolutePath.cleanPath();
+        absolutePath.setPath( QDir::cleanPath(absolutePath.path()) );
         // debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path();
     }
     else
@@ -227,7 +227,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
                 absolutePath.setPath( lastMountPoint.first() );
                 absolutePath = absolutePath.adjusted(QUrl::StripTrailingSlash);
                 absolutePath.setPath(absolutePath.path() + '/' + ( rpath.path() ));
-                absolutePath.cleanPath();
+                absolutePath.setPath( QDir::cleanPath(absolutePath.path()) );
                 //debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path();
             }
         }
@@ -247,7 +247,7 @@ MountPointManager::getRelativePath( const int deviceId, const QString& absoluteP
     if ( deviceId != -1 && m_handlerMap.contains( deviceId ) )
     {
         //FIXME max: returns garbage if the absolute path is actually not under the device's mount point
-        return QUrl::relativePath( m_handlerMap[deviceId]->getDevicePath(), absolutePath );
+        return QDir( m_handlerMap[deviceId]->getDevicePath() ).relativeFilePath( absolutePath );
     }
     else
     {
@@ -255,7 +255,7 @@ MountPointManager::getRelativePath( const int deviceId, const QString& absoluteP
 #ifdef Q_OS_WIN32
         return QUrl( absolutePath ).toLocalFile();
 #else
-        return QUrl::relativePath( "/", absolutePath );
+        return QDir("/").relativeFilePath(absolutePath);
 #endif
     }
 }
@@ -289,8 +289,8 @@ MountPointManager::collectionFolders() const
         const QStringList rpaths = folders.readEntry( QString::number( id ), QStringList() );
         foreach( const QString &strIt, rpaths )
         {
-            const QUrl url = ( strIt == "./" ) ? getMountPointForId( id ) : getAbsolutePath( id, strIt );
-            const QString absPath = url.adjusted(QUrl::StripTrailingSlash).toLocalFile()
+            const QUrl url = QUrl::fromLocalFile( ( strIt == "./" ) ? getMountPointForId( id ) : getAbsolutePath( id, strIt ) );
+            const QString absPath = url.adjusted(QUrl::StripTrailingSlash).toLocalFile();
             if ( !result.contains( absPath ) )
                 result.append( absPath );
         }
@@ -308,7 +308,7 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
 
     foreach( const QString &folder, folders )
     {
-        int id = getIdForUrl( folder );
+        int id = getIdForUrl( QUrl::fromLocalFile(folder) );
         const QString rpath = getRelativePath( id, folder );
         if( folderMap.contains( id ) ) {
             if( !folderMap[id].contains( rpath ) )

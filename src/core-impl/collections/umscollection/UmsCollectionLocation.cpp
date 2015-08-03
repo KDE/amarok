@@ -44,7 +44,7 @@ UmsCollectionLocation::~UmsCollectionLocation()
 QString
 UmsCollectionLocation::prettyLocation() const
 {
-    return m_umsCollection->musicPath().adjusted(QUrl::StripTrailingSlash).toLocalFile()
+    return m_umsCollection->musicPath().adjusted(QUrl::StripTrailingSlash).toLocalFile();
 }
 
 QStringList

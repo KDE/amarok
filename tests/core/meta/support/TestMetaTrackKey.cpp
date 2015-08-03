@@ -34,7 +34,7 @@ void
 TestMetaTrackKey::testTrackKey()
 {
     Meta::TrackPtr track;
-    track = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track01.ogg" ) );
+    track = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
 
     Meta::TrackKey trackKey1( track );
 
@@ -49,7 +49,7 @@ void
 TestMetaTrackKey::testOperatorAssignment()
 {
     Meta::TrackPtr track;
-    track = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track01.ogg" ) );
+    track = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
 
     Meta::TrackKey trackKey1( track ), trackKey2;
 

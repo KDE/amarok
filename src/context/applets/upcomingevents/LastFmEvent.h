@@ -24,6 +24,7 @@
 
 #include <QSharedData>
 #include <QStringList>
+#include <QHash>
 
 class LastFmEvent;
 class LastFmLocation;

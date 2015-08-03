@@ -17,6 +17,7 @@
 #define TESTTRACKFORURLWORKER_H
 
 #include "core/meta/forward_declarations.h"
+#include "core/meta/Meta.h"
 
 #include <QtTest>
 

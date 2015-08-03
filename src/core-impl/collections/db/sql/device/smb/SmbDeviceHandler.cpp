@@ -23,6 +23,7 @@
 #include <core/storage/SqlStorage.h>
 
 #include <QUrl>
+#include <QDir>
 #include <Solid/Device>
 #include <Solid/StorageAccess>
 #include <Solid/NetworkShare>
@@ -80,7 +81,7 @@ void SmbDeviceHandler::getURL( QUrl &absolutePath, const QUrl &relativePath )
     absolutePath.setPath( m_mountPoint );
     absolutePath = absolutePath.adjusted(QUrl::StripTrailingSlash);
     absolutePath.setPath(absolutePath.path() + '/' + ( relativePath.path() ));
-    absolutePath.cleanPath();
+    absolutePath.setPath( QDir::cleanPath(absolutePath.path()) );
 }
 
 void SmbDeviceHandler::getPlayableURL( QUrl &absolutePath, const QUrl &relativePath )

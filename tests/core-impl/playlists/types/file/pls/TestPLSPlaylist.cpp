@@ -59,7 +59,7 @@ void TestPLSPlaylist::initTestCase()
     CollectionManager::instance();
 
     const QString testPls = "data/playlists/test.pls";
-    const QUrl url = dataPath( testPls );
+    const QUrl url = QUrl::fromLocalFile( dataPath(testPls) );
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
@@ -72,7 +72,7 @@ void TestPLSPlaylist::initTestCase()
     playlistStream.setDevice( &playlistFile1 );
     QVERIFY( playlistStream.device() );
 
-    m_testPlaylist1 = new Playlists::PLSPlaylist( tempPath );
+    m_testPlaylist1 = new Playlists::PLSPlaylist( QUrl::fromLocalFile(tempPath) );
     QVERIFY( m_testPlaylist1 );
     QVERIFY( m_testPlaylist1->load( playlistStream ) );
     QCOMPARE( m_testPlaylist1->tracks().size(), 4 );
@@ -122,7 +122,7 @@ void TestPLSPlaylist::testUidUrl()
 {
     QString tempPath = KStandardDirs::locateLocal( "tmp", "test.pls" );
     m_testPlaylist1->setName( "test" );
-    QCOMPARE( m_testPlaylist1->uidUrl().pathOrUrl(), tempPath );
+    QCOMPARE( m_testPlaylist1->uidUrl().toDisplayString(), tempPath );
 }
 void TestPLSPlaylist::testIsWritable()
 {

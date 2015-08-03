@@ -16,7 +16,6 @@
 #include "TestTrackForUrlWorker.h"
 
 #include "config-amarok-test.h"
-#include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "mocks/MockTrackForUrlWorker.h"
 
@@ -24,6 +23,7 @@
 #include <ThreadWeaver/Job>
 #include <ThreadWeaver/Queue>
 #include <qtest_kde.h>
+#include <KSharedPtr>
 
 #include <QMetaType>
 #include <QSignalSpy>
@@ -51,7 +51,7 @@ TestTrackForUrlWorker::testCompleteJobKUrl_data()
 }
 
 void
-TestTrackForUrlWorker::testCompleteJobKUrl()
+TestTrackForUrlWorker::testCompleteJobQUrl()
 {
     QUrl url;
 
@@ -82,9 +82,9 @@ TestTrackForUrlWorker::testCompleteJobInternal_data()
 {
     QTest::addColumn<Meta::TrackPtr>( "track" );
 
-    QTest::newRow( "track 1" ) << CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track01.ogg" ) );
-    QTest::newRow( "track 2" ) << CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track02.ogg" ) );
-    QTest::newRow( "track 3" ) << CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track03.ogg" ) );
+    QTest::newRow( "track 1" ) << CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
+    QTest::newRow( "track 2" ) << CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track02.ogg" )) );
+    QTest::newRow( "track 3" ) << CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track03.ogg" )) );
 }
 
 void
@@ -97,7 +97,7 @@ TestTrackForUrlWorker::testCompleteJobInternal( MockTrackForUrlWorker *trackForU
     QSignalSpy spyFinishedLookup( trackForUrlWorker, SIGNAL(finishedLookup(Meta::TrackPtr)) );
 
     // Enqueue the job for execution and verify that it emits done when finished, which triggers completeJob
-    ThreadWeaver::Queue::instance()->enqueue( trackForUrlWorker );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(trackForUrlWorker) );
     bool receivedDone = QTest::kWaitForSignal( trackForUrlWorker, SIGNAL(done(ThreadWeaver::Job*)), 1000 );
     QVERIFY( receivedDone );
 

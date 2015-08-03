@@ -64,7 +64,7 @@ TestASXPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const QUrl url = dataPath( "data/playlists/test.asx" );
+    const QUrl url = QUrl::fromLocalFile(dataPath( "data/playlists/test.asx" ));
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
@@ -77,7 +77,7 @@ TestASXPlaylist::initTestCase()
     playlistStream.setDevice( &playlistFile1 );
     QVERIFY( playlistStream.device() );
 
-    m_testPlaylist = new Playlists::ASXPlaylist( tempPath );
+    m_testPlaylist = new Playlists::ASXPlaylist( QUrl::fromLocalFile(tempPath) );
     QVERIFY( m_testPlaylist );
     QVERIFY( m_testPlaylist->load( playlistStream ) );
     QCOMPARE( m_testPlaylist->tracks().size(), 1 );
@@ -127,7 +127,7 @@ TestASXPlaylist::testUidUrl()
     QString tempPath = KStandardDirs::locateLocal( "tmp", "test.asx" );
     //we have chaged the name around so much, better reset it
     m_testPlaylist->setName( "test" );
-    QCOMPARE( m_testPlaylist->uidUrl().pathOrUrl(), tempPath );
+    QCOMPARE( m_testPlaylist->uidUrl().toDisplayString(), tempPath );
 }
 
 void

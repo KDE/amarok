@@ -51,7 +51,7 @@ void TestMetaTrack::initTestCase()
     m_trackPath = m_tempDir.name() + "TestMetaTrack-testTrack.mp3";
     QVERIFY( QFile::copy( oldPath, m_trackPath ) );
 
-    m_testTrack1 = CollectionManager::instance()->trackForUrl( m_trackPath );
+    m_testTrack1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(m_trackPath) );
 
     // If the pointer is 0, it makes no sense to continue. We would crash with a qFatal().
     QVERIFY2( m_testTrack1, "The pointer to the test track is 0." );
@@ -67,7 +67,7 @@ void TestMetaTrack::testPrettyName()
 
 void TestMetaTrack::testPlayableUrl()
 {
-    QCOMPARE( m_testTrack1->playableUrl().pathOrUrl(), m_trackPath );
+    QCOMPARE( m_testTrack1->playableUrl().toDisplayString(), m_trackPath );
 }
 
 void TestMetaTrack::testPrettyUrl()
@@ -246,9 +246,9 @@ void TestMetaTrack::testLessThan()
 {
     Meta::TrackPtr albumTrack1, albumTrack2, albumTrack3;
 
-    albumTrack1 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track01.ogg" ) );
-    albumTrack2 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track02.ogg" ) );
-    albumTrack3 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track03.ogg" ) );
+    albumTrack1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
+    albumTrack2 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track02.ogg" )) );
+    albumTrack3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track03.ogg" )) );
 
     QVERIFY( albumTrack1 );
     QVERIFY( albumTrack2 );

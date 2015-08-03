@@ -18,6 +18,7 @@
 
 #include "BansheeConfigWidget.h"
 #include "BansheeProvider.h"
+#include <KLocalizedString>
 
 AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( banshee,
                                       "BansheeImporter",
@@ -26,3 +27,5 @@ AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( banshee,
                                       QIcon::fromTheme( "view-importers-banshee-amarok" ),
                                       StatSyncing::BansheeConfigWidget,
                                       StatSyncing::BansheeProvider )
+
+#include "BansheeManager.moc"

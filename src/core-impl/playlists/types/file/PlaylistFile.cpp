@@ -22,6 +22,7 @@
 #include "playlistmanager/PlaylistManager.h"
 
 #include <QUrl>
+#include <QDir>
 #include <KMimeType>
 
 #include <ThreadWeaver/Queue>

@@ -60,7 +60,7 @@ void TestMetaFileTrack::init()
     m_tmpFileName = QString( "%1%2-%3" ).arg( m_tmpDir->name() ).arg( i++ ).arg( tmpFileNameBase );
     QVERIFY( QFile::copy( m_origTrackPath, m_tmpFileName ) );
 
-    m_track = new MetaFile::Track( m_tmpFileName );
+    m_track = new MetaFile::Track( QUrl::fromLocalFile(m_tmpFileName) );
     QVERIFY( m_track );
 }
 
@@ -133,14 +133,14 @@ void TestMetaFileTrack::testPlayableUrl()
 void TestMetaFileTrack::testPrettyUrl()
 {
     QUrl tempUrl;
-    tempUrl = m_track->prettyUrl();
+    tempUrl = QUrl::fromLocalFile(m_track->prettyUrl());
     QCOMPARE( tempUrl.toLocalFile(), m_tmpFileName );
 }
 
 void TestMetaFileTrack::testUidUrl()
 {
     QUrl tempUrl;
-    tempUrl = m_track->uidUrl();
+    tempUrl = QUrl::fromLocalFile(m_track->uidUrl());
     QCOMPARE( tempUrl.toLocalFile(), m_tmpFileName );
 }
 

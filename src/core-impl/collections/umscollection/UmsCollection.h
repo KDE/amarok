@@ -24,7 +24,7 @@
 
 #include <KDirWatch>
 #include <QIcon>
-
+#include <QDir>
 #include <solid/device.h>
 
 #include <QtGlobal>

@@ -39,7 +39,7 @@ public:
     TrackForUrlWorker( const QString &url );
     ~TrackForUrlWorker();
 
-    virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) = 0;
+    virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) = 0 ;
 
 Q_SIGNALS:
     void finishedLookup( const Meta::TrackPtr &track );

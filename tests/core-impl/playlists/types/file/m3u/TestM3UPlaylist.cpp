@@ -55,7 +55,7 @@ void TestM3UPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const QUrl url = dataPath( "data/playlists/test.m3u" );
+    const QUrl url = QUrl::fromLocalFile(dataPath( "data/playlists/test.m3u" ));
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
@@ -68,7 +68,7 @@ void TestM3UPlaylist::initTestCase()
     playlistStream.setDevice( &playlistFile1 );
     QVERIFY( playlistStream.device() );
 
-    m_testPlaylist = new Playlists::M3UPlaylist( tempPath );
+    m_testPlaylist = new Playlists::M3UPlaylist( QUrl::fromLocalFile(tempPath) );
     QVERIFY( m_testPlaylist );
     QVERIFY( m_testPlaylist->load( playlistStream ) );
     QCOMPARE( m_testPlaylist->tracks().size(), 10 );
@@ -116,7 +116,7 @@ void TestM3UPlaylist::testUidUrl()
     QString tempPath = KStandardDirs::locateLocal( "tmp", "test.m3u" );
     //we have chaged the name around so much, better reset it
     m_testPlaylist->setName( "test" );
-    QCOMPARE( m_testPlaylist->uidUrl().pathOrUrl(), tempPath );
+    QCOMPARE( m_testPlaylist->uidUrl().toDisplayString(), tempPath );
 }
 
 void TestM3UPlaylist::testSetAndGetGroups()

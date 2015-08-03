@@ -25,6 +25,7 @@
 #include "core/capabilities/BoundedPlaybackCapability.h"
 #include "core/meta/Observer.h"
 #include "playback/EqualizerController.h"
+#include "core/meta/Meta.h"
 
 #include <QUrl>
 

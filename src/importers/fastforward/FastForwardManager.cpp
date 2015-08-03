@@ -26,3 +26,4 @@ AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( fastforward,
                                       QIcon::fromTheme( "amarok" ),
                                       StatSyncing::FastForwardConfigWidget,
                                       StatSyncing::FastForwardProvider )
+#include "FastForwardManager.moc"

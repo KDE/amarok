@@ -144,7 +144,7 @@ public:
     virtual void setIsOrganizing( bool organizing ) = 0;
     virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration ) = 0;
     virtual void setCaption( const QString &caption ) = 0;
-
+ 
     virtual void show() = 0;
 
     virtual bool overwriteDestinations() const = 0;

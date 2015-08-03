@@ -60,7 +60,7 @@ void TestTimecodeTrackProvider::testPossiblyContainsTrack()
 void TestTimecodeTrackProvider::testTrackForUrl()
 {
     QUrl testUrl;
-    testUrl = dataPath( "data/audio/album/" );
+    testUrl = QUrl::fromLocalFile(dataPath( "data/audio/album/" ));
     testUrl = testUrl.adjusted(QUrl::StripTrailingSlash);
     testUrl.setPath(testUrl.path() + '/' + ( "Track01.ogg:23-42" ));
 
@@ -68,5 +68,5 @@ void TestTimecodeTrackProvider::testTrackForUrl()
 
     QVERIFY( resultTrack );
 
-    QCOMPARE( resultTrack->playableUrl().pathOrUrl(), dataPath( "data/audio/album/Track01.ogg" ) );
+    QCOMPARE( resultTrack->playableUrl().toDisplayString(), dataPath( "data/audio/album/Track01.ogg" ) );
 }

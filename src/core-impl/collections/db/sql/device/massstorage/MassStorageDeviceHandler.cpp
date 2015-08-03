@@ -22,6 +22,7 @@
 #include <core/storage/SqlStorage.h>
 
 #include <QUrl>
+#include <QDir>
 #include <Solid/Device>
 #include <Solid/StorageAccess>
 #include <Solid/StorageVolume>
@@ -69,7 +70,7 @@ void MassStorageDeviceHandler::getURL( QUrl &absolutePath, const QUrl &relativeP
     absolutePath.setPath( m_mountPoint );
     absolutePath = absolutePath.adjusted(QUrl::StripTrailingSlash);
     absolutePath.setPath(absolutePath.path() + '/' + ( relativePath.path() ));
-    absolutePath.cleanPath();
+    absolutePath.setPath( QDir::cleanPath(absolutePath.path()) );
 }
 
 void MassStorageDeviceHandler::getPlayableURL( QUrl &absolutePath, const QUrl &relativePath )

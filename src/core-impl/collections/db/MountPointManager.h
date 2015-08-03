@@ -24,6 +24,7 @@
 #include <QMap>
 #include <QMutex>
 #include <QObject>
+#include <QUrl>
 
 class DeviceHandler;
 class DeviceHandlerFactory;

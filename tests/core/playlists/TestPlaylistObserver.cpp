@@ -70,7 +70,7 @@ void
 TestPlaylistObserver::init()
 {
     const QString testXspf = "test.xspf";
-    const QUrl url = dataPath( testXspf );
+    const QUrl url = QUrl::fromLocalFile(dataPath( testXspf ));
 
     m_testPlaylist = new Playlists::XSPFPlaylist( url );
 

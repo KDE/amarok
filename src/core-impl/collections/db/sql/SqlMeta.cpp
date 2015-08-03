@@ -58,6 +58,7 @@
 #include <KCodecs>
 #include <KLocale>
 #include <KSharedPtr>
+#include <KMD5>
 #include <ThreadWeaver/Queue>
 
 // additional constants
@@ -125,7 +126,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection *collection, int deviceId,
     m_statisticsId = -1;
 
     setUrl( deviceId, rpath, directoryId );
-    m_url = m_cache.value( Meta::valUrl ).toString(); // SqlRegistry already has this url
+    m_url = QUrl::fromUserInput(m_cache.value( Meta::valUrl ).toString()); // SqlRegistry already has this url
     setUidUrl( uidUrl );
     m_uid = m_cache.value( Meta::valUniqueId ).toString(); // SqlRegistry already has this uid
 
@@ -175,7 +176,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection *collection, const QStringList &r
     m_rpath = *(iter++);
     m_directoryId = (*(iter++)).toInt();
     Q_ASSERT( m_directoryId > 0 && "refusing to create SqlTrack with non-positive directoryId, please file a bug" );
-    m_url = QUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
+    m_url = QUrl::fromUserInput( m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
     m_uid = *(iter++);
     m_trackId = (*(iter++)).toInt();
     m_title = *(iter++);
@@ -851,7 +852,7 @@ SqlTrack::commitIfInNonBatchUpdate()
         // At least the ScanResultProcessor handles this problem
 
         QUrl oldUrl = m_url;
-        QUrl newUrl = m_cache.value( Meta::valUrl ).toString();
+        QUrl newUrl = QUrl::fromUserInput(m_cache.value( Meta::valUrl ).toString());
         if( oldUrl != newUrl )
             m_collection->registry()->updateCachedUrl( oldUrl.path(), newUrl.path() );
         m_url = newUrl;
@@ -1623,7 +1624,7 @@ SqlAlbum::imageLocation( int size )
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
     if( size <= 1 )
-        return m_imagePath;
+        return QUrl::fromUserInput(m_imagePath);
 
     QString cachedImagePath = scaledDiskCachePath( size );
 
@@ -1641,7 +1642,7 @@ SqlAlbum::imageLocation( int size )
     if( !QFile( cachedImagePath ).exists() )
         return QUrl();
 
-    return cachedImagePath;
+    return QUrl::fromUserInput(cachedImagePath);
 }
 
 void

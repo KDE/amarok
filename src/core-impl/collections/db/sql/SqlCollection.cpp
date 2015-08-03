@@ -48,7 +48,7 @@
 #include <QApplication>
 #include <QDir>
 #include <KConfigGroup>
-
+#include <KGlobal>
 
 /** Concrete implementation of the directory watcher */
 class SqlDirectoryWatcher : public AbstractDirectoryWatcher
@@ -157,7 +157,7 @@ public:
     virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration )
     { m_targetFileExtension =
       Amarok::Components::transcodingController()->format( configuration.encoder() )->fileExtension(); }
-    virtual void setWindowTitle( const QString &caption ) { m_caption = caption; }
+    virtual void setCaption( const QString &caption ) { m_caption = caption; }
 
     virtual void show()
     {

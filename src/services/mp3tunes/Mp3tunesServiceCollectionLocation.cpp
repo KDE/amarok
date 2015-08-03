@@ -62,15 +62,15 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
     foreach( const Meta::TrackPtr &track, sources.keys() )
     {
         debug() << "copying " << sources[ track ] << " to mp3tunes locker";
-        debug() << "file is at " << sources[ track ].pathOrUrl();
+        debug() << "file is at " << sources[ track ].toDisplayString();
 
         QString supported_types = "mp3 mp4 m4a m4b m4p aac wma ogg";
         
         if( supported_types.contains( track->type() ) )
         {   
 
-            debug() << "Added " << sources[ track ].pathOrUrl() << " to queue.";
-            urls.push_back( sources[ track ].pathOrUrl() );
+            debug() << "Added " << sources[ track ].toDisplayString() << " to queue.";
+            urls.push_back( sources[ track ].toDisplayString() );
 
         } 
         else 

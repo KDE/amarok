@@ -512,5 +512,5 @@ TestAggregateMeta::testPrettyUrl()
 
     Meta::AggregateTrack track( 0, trackPtr );
 
-    QCOMPARE( track.toDisplayString(), QString( "foo" ) );
+    QCOMPARE( track.prettyUrl(), QString( "foo" ) );
 }

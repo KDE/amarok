@@ -76,7 +76,7 @@ void TestPlaylistFileProvider::testSave_data()
 void TestPlaylistFileProvider::testSave()
 {
     Meta::TrackList tempTrackList;
-    const QUrl trackUrl = dataPath( "data/audio/Platz 01.mp3" );
+    const QUrl trackUrl = QUrl::fromLocalFile(dataPath( "data/audio/Platz 01.mp3" ));
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
     QCOMPARE( tempTrackList.size(), 1 );
 
@@ -102,7 +102,7 @@ void TestPlaylistFileProvider::testImportAndDeletePlaylists()
     QFile::copy( dataPath( "data/playlists/test.m3u" ), QDir::tempPath() + QDir::separator() + "test.m3u" );
     QVERIFY( QFile::exists( QDir::tempPath() + QDir::separator() + "test.m3u" ) );
 
-    QVERIFY( m_testPlaylistFileProvider->import( QDir::tempPath() + QDir::separator() + "test.m3u" ) );
+    QVERIFY( m_testPlaylistFileProvider->import( QUrl::fromLocalFile( QDir::tempPath() + QDir::separator() + "test.m3u") ) );
     tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 );
 
@@ -121,7 +121,7 @@ void TestPlaylistFileProvider::testRename()
     QFile::copy( dataPath( "data/playlists/test.m3u" ), QDir::tempPath() + QDir::separator() + "test.m3u" );
     QVERIFY( QFile::exists( QDir::tempPath() + QDir::separator() + "test.m3u" ) );
 
-    QVERIFY( m_testPlaylistFileProvider->import( QDir::tempPath() + QDir::separator() + "test.m3u" ) );
+    QVERIFY( m_testPlaylistFileProvider->import( QUrl::fromLocalFile( QDir::tempPath() + QDir::separator() + "test.m3u") ) );
     tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 );
 

@@ -198,7 +198,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     }
     uid = m_collection->generateUidUrl( uid );
 
-    int deviceId = m_collection->mountPointManager()->getIdForUrl( track->path() );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromUserInput(track->path()) );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, track->path() );
 
     if( m_foundTracks.contains( uid ) )
@@ -501,7 +501,7 @@ SqlScanResultProcessor::relocateTracksToNewDirectory( int oldDirId, int newDirId
         Q_ASSERT( track );
 
         // not strictly needed, but we want to sanity check it to prevent corrupt db
-        int deviceId = manager->getIdForUrl( entry.path );
+        int deviceId = manager->getIdForUrl( QUrl::fromUserInput(entry.path) );
         if( newDirDeviceId != deviceId )
         {
             warning() << "relocateTracksToNewDirectory(): device id from newDirId ("

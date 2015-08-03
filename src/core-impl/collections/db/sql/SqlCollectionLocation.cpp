@@ -47,6 +47,7 @@
 #include <kio/jobclasses.h>
 #include <kio/deletejob.h>
 #include <KConfigGroup>
+#include <KLocalizedString>
 
 using namespace Collections;
 
@@ -160,7 +161,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 
     // -- the target url
     SqlRegistry *registry = m_collection->registry();
-    int deviceId = m_collection->mountPointManager()->getIdForUrl( url );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(url) );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, url );
     int directoryId = registry->getDirectory( QFileInfo( url ).path() );
 
@@ -340,7 +341,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
     delegate->setFolders( available_folders );
     delegate->setIsOrganizing( ( collection() == source()->collection() ) );
     delegate->setTranscodingConfiguration( configuration );
-    delegate->setWindowTitle( operationText( configuration ) );
+    delegate->setCaption( operationText( configuration ) );
 
     connect( delegate, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
     connect( delegate, SIGNAL(rejected()), SLOT(slotDialogRejected()) );
@@ -509,9 +510,9 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         Meta::TrackPtr track = m_sources.keys().first();
         QUrl src = m_sources.take( track );
 
-        QUrl dest = m_destinations[ track ];
-        dest.cleanPath();
-        src.cleanPath();
+        QUrl dest = QUrl::fromLocalFile(m_destinations[ track ]);
+        dest.setPath( QDir::cleanPath(dest.path()) );
+        src.setPath( QDir::cleanPath(src.path()) );
 
         bool hasMoodFile = QFile::exists( moodFile( src ).toLocalFile() );
         bool isJustCopy = configuration.isJustCopy( track );
@@ -521,15 +522,15 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         else
             debug() << "transcoding from " << src << " to " << dest;
 
-        KFileItem srcInfo( src, src.toMimeDataString(), KFileItem::Unknown );
+        KFileItem srcInfo( src );
         if( !srcInfo.isFile() )
         {
             warning() << "Source track" << src << "was no file";
-            source()->transferError( track, i18n( "Source track does not exist: %1", src.pathOrUrl() ) );
+            source()->transferError( track, i18n( "Source track does not exist: %1", src.toDisplayString() ) );
             return true; // Attempt to copy/move the next item in m_sources
         }
 
-        QFileInfo destInfo( dest.pathOrUrl() );
+        QFileInfo destInfo( dest.toDisplayString() );
         QDir dir = destInfo.dir();
         if( !dir.exists() )
         {
@@ -554,7 +555,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         KJob *job = 0;
         KJob *moodJob = 0;
 
-        if( src.equals( dest ) )
+        if( src.matches( dest, QUrl::StripTrailingSlash ) )
         {
             warning() << "move to itself found: " << destInfo.absoluteFilePath();
             m_transferjob->slotJobFinished( 0 );
@@ -640,13 +641,13 @@ bool SqlCollectionLocation::startNextRemoveJob()
             SqlCollectionLocation* destinationloc = dynamic_cast<SqlCollectionLocation*>( destination() );
 
             // src = destinationloc->m_originalUrls[track];
-            if( destinationloc && src == destinationloc->m_destinations[track] ) {
+            if( destinationloc && src == QUrl::fromUserInput(destinationloc->m_destinations[track]) ) {
                 debug() << "src == dst ("<<src<<")";
                 continue;
             }
         }
 
-        src.cleanPath();
+        src.setPath( QDir::cleanPath(src.path()) );
         debug() << "deleting  " << src;
         KIO::DeleteJob *job = KIO::del( src, KIO::HideProgressInfo );
         if( job )   //just to be safe

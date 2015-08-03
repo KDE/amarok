@@ -79,7 +79,7 @@ int
 SqlRegistry::getDirectory( const QString &path, uint mtime )
 {
     int dirId;
-    int deviceId = m_collection->mountPointManager()->getIdForUrl( path );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(path) );
     QString rdir = m_collection->mountPointManager()->getRelativePath( deviceId, path );
 
     SqlStorage *storage = m_collection->sqlStorage();
@@ -170,7 +170,7 @@ SqlRegistry::getTrack( int urlId )
 Meta::TrackPtr
 SqlRegistry::getTrack( const QString &path )
 {
-    int deviceId = m_collection->mountPointManager()->getIdForUrl( path );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(path) );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, path );
     TrackPath id( deviceId, rpath );
 
@@ -268,11 +268,11 @@ SqlRegistry::getTrack( int trackId, const QStringList &rowData )
 bool
 SqlRegistry::updateCachedUrl( const QString &oldUrl, const QString &newUrl )
 {
-    int deviceId = m_collection->mountPointManager()->getIdForUrl( oldUrl );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(oldUrl) );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, oldUrl );
     TrackPath oldId( deviceId, rpath );
 
-    int newdeviceId = m_collection->mountPointManager()->getIdForUrl( newUrl );
+    int newdeviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(newUrl) );
     QString newRpath = m_collection->mountPointManager()->getRelativePath( newdeviceId, newUrl );
     TrackPath newId( newdeviceId, newRpath );
 
@@ -331,7 +331,7 @@ SqlRegistry::getTrackFromUid( const QString &uid )
         Meta::SqlTrack *sqlTrack = new Meta::SqlTrack( m_collection, result );
         Meta::TrackPtr trackPtr( sqlTrack );
 
-        int deviceid = m_collection->mountPointManager()->getIdForUrl( trackPtr->playableUrl().path() );
+        int deviceid = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(trackPtr->playableUrl().path()) );
         QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, trackPtr->playableUrl().path() );
         TrackPath id(deviceid, rpath);
         m_trackMap.insert( id, trackPtr );
@@ -368,7 +368,7 @@ SqlRegistry::removeTrack( int urlId, const QString uid )
         Meta::TrackPtr track = m_uidMap.take( uid );
         Meta::SqlTrack *sqlTrack = static_cast<Meta::SqlTrack*>( track.data() );
 
-        int deviceId = m_collection->mountPointManager()->getIdForUrl( sqlTrack->playableUrl().path() );
+        int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(sqlTrack->playableUrl().path()) );
         QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, sqlTrack->playableUrl().path() );
         TrackPath id(deviceId, rpath);
         m_trackMap.remove( id );

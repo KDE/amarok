@@ -61,7 +61,7 @@ void TestXSPFPlaylist::initTestCase()
     CollectionManager::instance();
 
     const QString testXspf = "data/playlists/test.xspf";
-    const QUrl url = dataPath( testXspf );
+    const QUrl url = QUrl::fromLocalFile(dataPath( testXspf ));
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream1;
 
@@ -78,7 +78,7 @@ void TestXSPFPlaylist::initTestCase()
     QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
     QVERIFY( QFile::exists( tempPath ) );
 
-    m_testPlaylist1 = new Playlists::XSPFPlaylist( tempPath );
+    m_testPlaylist1 = new Playlists::XSPFPlaylist( QUrl::fromLocalFile(tempPath) );
     QVERIFY( m_testPlaylist1 );
     QVERIFY( m_testPlaylist1->load( playlistStream1 ) );
 }
@@ -170,38 +170,38 @@ void TestXSPFPlaylist::testSetAndGetInfo()
 {
     QUrl testUrl;
 
-    QCOMPARE( m_testPlaylist1->info().pathOrUrl(), QString( "" ) );
+    QCOMPARE( m_testPlaylist1->info().toDisplayString(), QString( "" ) );
 
-    testUrl = "http://amarok.kde.org";
+    testUrl = QUrl::fromUserInput("http://amarok.kde.org");
     m_testPlaylist1->setInfo( testUrl );
-    QCOMPARE( m_testPlaylist1->info().pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->info().toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "http://öko.de";
+    testUrl = QUrl::fromUserInput("http://öko.de");
     m_testPlaylist1->setInfo( testUrl );
-    QCOMPARE( m_testPlaylist1->info().pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->info().toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "";
+    testUrl = QUrl::fromUserInput("");
     m_testPlaylist1->setInfo( testUrl );
-    QCOMPARE( m_testPlaylist1->info().pathOrUrl(), QUrl( "" ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->info().toDisplayString(), QUrl( "" ).toDisplayString() );
 }
 
 void TestXSPFPlaylist::testSetAndGetLocation()
 {
     QUrl testUrl;
 
-    QCOMPARE( m_testPlaylist1->location().pathOrUrl(), QString( "" ) );
+    QCOMPARE( m_testPlaylist1->location().toDisplayString(), QString( "" ) );
 
-    testUrl = "http://amarok.kde.org";
+    testUrl = QUrl::fromUserInput("http://amarok.kde.org");
     m_testPlaylist1->setLocation( testUrl );
-    QCOMPARE( m_testPlaylist1->location().pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->location().toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "http://öko.de";
+    testUrl = QUrl::fromUserInput("http://öko.de");
     m_testPlaylist1->setLocation( testUrl );
-    QCOMPARE( m_testPlaylist1->location().pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->location().toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "";
+    testUrl = QUrl::fromUserInput("");
     m_testPlaylist1->setLocation( testUrl );
-    QCOMPARE( m_testPlaylist1->location().pathOrUrl(), QUrl( "" ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->location().toDisplayString(), QUrl( "" ).toDisplayString() );
 }
 
 void TestXSPFPlaylist::testSetAndGetIdentifier()
@@ -222,19 +222,19 @@ void TestXSPFPlaylist::testSetAndGetImage()
 {
     QUrl testUrl;
 
-    QCOMPARE( m_testPlaylist1->image().pathOrUrl(), QString( "" ) );
+    QCOMPARE( m_testPlaylist1->image().toDisplayString(), QString( "" ) );
 
-    testUrl = "http://amarok.kde.org";
+    testUrl = QUrl::fromUserInput("http://amarok.kde.org");
     m_testPlaylist1->setImage( testUrl );
-    QCOMPARE( m_testPlaylist1->image().pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->image().toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "http://öko.de";
+    testUrl = QUrl::fromUserInput("http://öko.de");
     m_testPlaylist1->setImage( testUrl );
-    QCOMPARE( m_testPlaylist1->image().pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->image().toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "";
+    testUrl = QUrl::fromUserInput("");
     m_testPlaylist1->setImage( testUrl );
-    QCOMPARE( m_testPlaylist1->image().pathOrUrl(), QUrl( "" ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->image().toDisplayString(), QUrl( "" ).toDisplayString() );
 }
 
 void TestXSPFPlaylist::testSetAndGetDate()
@@ -255,19 +255,19 @@ void TestXSPFPlaylist::testSetAndGetLicense()
 {
     QUrl testUrl;
 
-    QCOMPARE( m_testPlaylist1->license().pathOrUrl(), QString( "" ) );
+    QCOMPARE( m_testPlaylist1->license().toDisplayString(), QString( "" ) );
 
-    testUrl = "http://amarok.kde.org";
+    testUrl = QUrl::fromUserInput("http://amarok.kde.org");
     m_testPlaylist1->setLicense( testUrl );
-    QCOMPARE( m_testPlaylist1->license().pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->license().toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "http://öko.de";
+    testUrl = QUrl::fromUserInput("http://öko.de");
     m_testPlaylist1->setLicense( testUrl );
-    QCOMPARE( m_testPlaylist1->license().pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->license().toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "";
+    testUrl = QUrl::fromUserInput("");
     m_testPlaylist1->setLicense( testUrl );
-    QCOMPARE( m_testPlaylist1->license().pathOrUrl(), QUrl( "" ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->license().toDisplayString(), QUrl( "" ).toDisplayString() );
 }
 
 void TestXSPFPlaylist::testSetAndGetAttribution()
@@ -276,23 +276,23 @@ void TestXSPFPlaylist::testSetAndGetAttribution()
 
     QCOMPARE( m_testPlaylist1->attribution().size(), 0 );
 
-    testUrl = "http://amarok.kde.org";
+    testUrl = QUrl::fromUserInput("http://amarok.kde.org");
     m_testPlaylist1->setAttribution( testUrl );
     QCOMPARE( m_testPlaylist1->attribution().size(), 1 );
-    QCOMPARE( m_testPlaylist1->attribution().at( 0 ).pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->attribution().at( 0 ).toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "http://öko.de";
+    testUrl = QUrl::fromUserInput("http://öko.de");
     m_testPlaylist1->setAttribution( testUrl );
     QCOMPARE( m_testPlaylist1->attribution().size(), 2 );
-    QCOMPARE( m_testPlaylist1->attribution().at( 0 ).pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
-    QCOMPARE( m_testPlaylist1->attribution().at( 1 ).pathOrUrl(), QUrl("http://amarok.kde.org").pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->attribution().at( 0 ).toDisplayString(), QUrl( testUrl ).toDisplayString() );
+    QCOMPARE( m_testPlaylist1->attribution().at( 1 ).toDisplayString(), QUrl("http://amarok.kde.org").toDisplayString() );
 
-    testUrl = "http://test.com";
+    testUrl = QUrl::fromUserInput("http://test.com");
     m_testPlaylist1->setAttribution( testUrl, false );
     QCOMPARE( m_testPlaylist1->attribution().size(), 1 );
-    QCOMPARE( m_testPlaylist1->attribution().at( 0 ).pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->attribution().at( 0 ).toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "";
+    testUrl = QUrl::fromUserInput("");
     m_testPlaylist1->setAttribution( testUrl );
     QCOMPARE( m_testPlaylist1->attribution().size(), 1 ); // empty url won't be added, but size is 1 from last addition
 }
@@ -301,19 +301,19 @@ void TestXSPFPlaylist::testSetAndGetLink()
 {
     QUrl testUrl;
 
-    QCOMPARE( m_testPlaylist1->link().pathOrUrl(), QString( "" ) );
+    QCOMPARE( m_testPlaylist1->link().toDisplayString(), QString( "" ) );
 
-    testUrl = "http://amarok.kde.org";
+    testUrl = QUrl::fromUserInput("http://amarok.kde.org");
     m_testPlaylist1->setLink( testUrl );
-    QCOMPARE( m_testPlaylist1->link().pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->link().toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "http://öko.de";
+    testUrl = QUrl::fromUserInput("http://öko.de");
     m_testPlaylist1->setLink( testUrl );
-    QCOMPARE( m_testPlaylist1->link().pathOrUrl(), QUrl( testUrl ).pathOrUrl() );
+    QCOMPARE( m_testPlaylist1->link().toDisplayString(), QUrl( testUrl ).toDisplayString() );
 
-    testUrl = "";
+    testUrl = QUrl::fromUserInput("");
     m_testPlaylist1->setLink( testUrl );
-    QCOMPARE( m_testPlaylist1->link().pathOrUrl(), QString( "" ) );
+    QCOMPARE( m_testPlaylist1->link().toDisplayString(), QString( "" ) );
 }
 
 void TestXSPFPlaylist::testUidUrl()
@@ -322,7 +322,7 @@ void TestXSPFPlaylist::testUidUrl()
     
     //we have chaged the name around so much, better reset it
     m_testPlaylist1->setName( "test" );
-    QCOMPARE( m_testPlaylist1->uidUrl().pathOrUrl(), tempPath );
+    QCOMPARE( m_testPlaylist1->uidUrl().toDisplayString(), tempPath );
 }
 
 void TestXSPFPlaylist::testIsWritable()

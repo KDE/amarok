@@ -18,6 +18,7 @@
 
 #include "ClementineConfigWidget.h"
 #include "ClementineProvider.h"
+#include <KLocalizedString>
 
 AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( clementine,
                                       "ClementineImporter",
@@ -26,3 +27,4 @@ AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( clementine,
                                       QIcon::fromTheme( "view-importers-clementine-amarok" ),
                                       StatSyncing::ClementineConfigWidget,
                                       StatSyncing::ClementineProvider )
+#include "ClementineManager.moc"

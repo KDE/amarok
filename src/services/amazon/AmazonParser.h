@@ -31,6 +31,7 @@
 
 class AmazonParser : public QObject, public ThreadWeaver::Job
 {
+    Q_OBJECT
 public:
     AmazonParser( QString tempFileName, Collections::AmazonCollection* collection, AmazonMetaFactory* factory );
     ~AmazonParser();

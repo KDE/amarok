@@ -19,6 +19,7 @@
 
 #define DEBUG_PREFIX "DatabaseCollection"
 
+#include <KLocalizedString>
 #include "DatabaseCollection.h"
 
 #include "core/support/Debug.h"

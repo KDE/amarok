@@ -22,13 +22,14 @@
 #include <qtest_kde.h>
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Job>
-
 #include <QtTest>
 
 QTEST_KDEMAIN_CORE( TestEngineController )
 
 class CallSupportedMimeTypesJob : public QObject, public ThreadWeaver::Job
 {
+    Q_OBJECT
+
     protected:
         void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
         {
@@ -40,13 +41,13 @@ class CallSupportedMimeTypesJob : public QObject, public ThreadWeaver::Job
             QVERIFY( !types.isEmpty() );
         }
 
-        void QObjectDecorator::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
         {
             Q_EMIT started(self);
             ThreadWeaver::Job::defaultBegin(self, thread);
         }
 
-        void QObjectDecorator::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
         {
             ThreadWeaver::Job::defaultEnd(self, thread);
             if (!self->success()) {
@@ -96,6 +97,8 @@ TestEngineController::testSupportedMimeTypesInMainThread()
 void
 TestEngineController::testSupportedMimeTypesInAnotherThread()
 {
-    ThreadWeaver::Job* job = new CallSupportedMimeTypesJob();
+    ThreadWeaver::JobPointer job = QSharedPointer<ThreadWeaver::Job>(new CallSupportedMimeTypesJob());
     ThreadWeaver::Queue::instance()->enqueue( job );
 }
+
+#include "TestEngineController.moc"

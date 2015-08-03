@@ -63,7 +63,7 @@ void TestMetaMultiTrack::initTestCase()
     const QFileInfo file( QDir::toNativeSeparators( path ) );
     QVERIFY( file.exists() );
     const QString filePath = file.absoluteFilePath();
-    m_playlist = Playlists::loadPlaylistFile( filePath ).data();
+    m_playlist = Playlists::loadPlaylistFile( QUrl::fromLocalFile(filePath) ).data();
     QVERIFY( m_playlist ); // no playlist -> no test. that's life ;)
     subscribeTo( m_playlist );
     m_playlist->triggerTrackLoad();

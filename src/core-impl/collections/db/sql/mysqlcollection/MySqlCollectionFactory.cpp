@@ -41,3 +41,4 @@ MySqlCollectionFactory::init()
     emit newCollection( collection );
 }
 
+#include "MySqlCollectionFactory.moc"

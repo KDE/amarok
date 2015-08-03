@@ -73,3 +73,5 @@ AmarokManager::newInstance( const QVariantMap &config )
 {
     return ProviderPtr( new AmarokProvider( config, this ) );
 }
+
+#include "AmarokManager.moc"
