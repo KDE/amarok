@@ -62,7 +62,7 @@ AMAROK_EXPORT_SERVICE_PLUGIN( magnatunestore, MagnatuneServiceFactory )
 MagnatuneServiceFactory::MagnatuneServiceFactory( QObject *parent, const QVariantList &args )
     : ServiceFactory( parent, args )
 {
-    KPluginInfo pluginInfo( "amarok_service_magnatunestore.desktop", "services" );
+    KPluginInfo pluginInfo( "amarok_service_magnatunestore.desktop" );
     pluginInfo.setConfig( config() );
     m_info = pluginInfo;
 }

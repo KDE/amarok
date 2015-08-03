@@ -57,7 +57,7 @@ AMAROK_EXPORT_COLLECTION( UmsCollectionFactory, umscollection )
 UmsCollectionFactory::UmsCollectionFactory( QObject *parent, const QVariantList &args )
     : CollectionFactory( parent, args )
 {
-    m_info = KPluginInfo( "amarok_collection-umscollection.desktop", "services" );
+    m_info = KPluginInfo( "amarok_collection-umscollection.desktop", );
 }
 
 UmsCollectionFactory::~UmsCollectionFactory()
@@ -285,7 +285,7 @@ UmsCollection::init()
         m_musicPath = QUrl( m_mountPoint );
         m_musicPath = m_musicPath.adjusted(QUrl::StripTrailingSlash);
         m_musicPath.setPath(m_musicPath.path() + '/' + ( entries.readPathEntry( s_musicFolderKey, QString() ) ));
-        m_musicPath.cleanPath();
+        m_musicPath.setPath( QDir::cleanPath(m_musicPath.path()) );
         if( !QDir( m_musicPath.toLocalFile() ).exists() )
         {
             QString message = i18n( "File <i>%1</i> suggests that we should use <i>%2</i> "
@@ -314,7 +314,7 @@ UmsCollection::init()
         m_podcastPath = QUrl( m_mountPoint );
         m_podcastPath = m_podcastPath.adjusted(QUrl::StripTrailingSlash);
         m_podcastPath.setPath(m_podcastPath.path() + '/' + ( entries.readPathEntry( s_podcastFolderKey, QString() ) ));
-        m_podcastPath.cleanPath();
+        m_podcastPath.setPath( QDir::cleanPath(m_podcastPath.path()) );
     }
     m_autoConnect = entries.readEntry( s_autoConnectKey, m_autoConnect );
     m_collectionName = entries.readEntry( s_collectionName, m_collectionName );
@@ -686,8 +686,7 @@ UmsCollection::slotConfigure()
         KConfig config( m_mountPoint + '/' + s_settingsFileName, KConfig::SimpleConfig );
         KConfigGroup entries = config.group( QString() ); // default group
         if( !m_musicPath.isEmpty() )
-            entries.writePathEntry( s_musicFolderKey, QUrl::relativePath( m_mountPoint,
-                m_musicPath.toLocalFile() ) );
+            entries.writePathEntry( s_musicFolderKey, QDir( m_mountPoint ).relativeFilePath( m_musicPath.toLocalFile() );
         else
             entries.deleteEntry( s_musicFolderKey );
         entries.writeEntry( s_musicFilenameSchemeKey, m_musicFilenameScheme );
@@ -698,8 +697,7 @@ UmsCollection::slotConfigure()
         entries.writeEntry( s_regexTextKey, m_regexText );
         entries.writeEntry( s_replaceTextKey, m_replaceText );
         if( !m_podcastPath.isEmpty() )
-            entries.writePathEntry( s_podcastFolderKey, QUrl::relativePath( m_mountPoint,
-                m_podcastPath.toLocalFile() ) );
+            entries.writePathEntry( s_podcastFolderKey, QDir( m_mountPoint ).relativeFilePath( m_podcastPath.toLocalFile() );
         else
             entries.deleteEntry( s_podcastFolderKey );
         entries.writeEntry( s_autoConnectKey, m_autoConnect );

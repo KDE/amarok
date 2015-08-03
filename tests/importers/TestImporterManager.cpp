@@ -30,7 +30,7 @@ using namespace ::testing;
 void
 TestImporterManager::initShouldSetInfo()
 {
-    KPluginInfo expectedInfo( "testinfo", "services" );
+    KPluginInfo expectedInfo( "testinfo" );
     EXPECT_CALL( *m_mockManager, pluginInfo() ).WillOnce( Return( expectedInfo ) );
 
     m_mockManager->init();

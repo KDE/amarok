@@ -32,7 +32,7 @@ AMAROK_EXPORT_COLLECTION( IpodCollectionFactory, ipodcollection )
 IpodCollectionFactory::IpodCollectionFactory( QObject *parent, const QVariantList &args )
     : CollectionFactory( parent, args )
 {
-    m_info = KPluginInfo( "amarok_collection-ipodcollection.desktop", "services" );
+    m_info = KPluginInfo( "amarok_collection-ipodcollection.desktop", );
 }
 
 IpodCollectionFactory::~IpodCollectionFactory()

@@ -39,7 +39,7 @@ AMAROK_EXPORT_COLLECTION( UpnpCollectionFactory, upnpcollection )
 UpnpCollectionFactory::UpnpCollectionFactory( QObject *parent, const QVariantList &args )
     : Collections::CollectionFactory( parent, args )
 {
-    m_info = KPluginInfo( "amarok_collection-upnpcollection.desktop", "services" );
+    m_info = KPluginInfo( "amarok_collection-upnpcollection.desktop" );
     qRegisterMetaType<DeviceInfo>();
     qDBusRegisterMetaType< QHash<QString, QString> >();
     qDBusRegisterMetaType<DeviceInfo0_1_0>();

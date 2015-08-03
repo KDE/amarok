@@ -59,7 +59,7 @@ static const QString unknownCddbId( "unknown" );
 AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVariantList &args )
     : MediaDeviceCollectionFactory<AudioCdCollection>( parent, args, new AudioCdConnectionAssistant() )
 {
-    m_info = KPluginInfo( "amarok_collection-audiocdcollection.desktop", "services" );
+    m_info = KPluginInfo( "amarok_collection-audiocdcollection.desktop", );
 }
 
 AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )

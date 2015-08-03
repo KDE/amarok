@@ -38,7 +38,7 @@ AMAROK_EXPORT_SERVICE_PLUGIN( mp3tunes, Mp3tunesServiceFactory )
 Mp3tunesServiceFactory::Mp3tunesServiceFactory( QObject *parent, const QVariantList &args )
     : ServiceFactory( parent, args )
 {
-    KPluginInfo pluginInfo(  "amarok_service_mp3tunes.desktop", "services" );
+    KPluginInfo pluginInfo(  "amarok_service_mp3tunes.desktop" );
     pluginInfo.setConfig( config() );
     m_info = pluginInfo;
 }

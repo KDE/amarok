@@ -57,7 +57,7 @@ AMAROK_EXPORT_SERVICE_PLUGIN( amazonstore, AmazonServiceFactory )
 AmazonServiceFactory::AmazonServiceFactory( QObject *parent, const QVariantList &args )
     : ServiceFactory( parent, args )
 {
-    KPluginInfo pluginInfo( "amarok_service_amazonstore.desktop", "services" );
+    KPluginInfo pluginInfo( "amarok_service_amazonstore.desktop" );
     pluginInfo.setConfig( config() );
     m_info = pluginInfo;
 }

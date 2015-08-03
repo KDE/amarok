@@ -30,7 +30,7 @@ class MySqlCollectionFactory : public Collections::CollectionFactory
         MySqlCollectionFactory( QObject *parent, const QVariantList &args )
             : Collections::CollectionFactory( parent, args )
         {
-            m_info = KPluginInfo( "amarok_collection-mysqlcollection.desktop", "services" );
+            m_info = KPluginInfo( "amarok_collection-mysqlcollection.desktop" );
         }
         virtual ~MySqlCollectionFactory() {}
 

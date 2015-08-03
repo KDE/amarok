@@ -50,7 +50,7 @@ AMAROK_EXPORT_SERVICE_PLUGIN( jamendo, JamendoServiceFactory )
 JamendoServiceFactory::JamendoServiceFactory( QObject *parent, const QVariantList &args )
     : ServiceFactory( parent, args )
 {
-    KPluginInfo pluginInfo(  "amarok_service_jamendo.desktop", "services" );
+    KPluginInfo pluginInfo(  "amarok_service_jamendo.desktop" );
     pluginInfo.setConfig( config() );
     m_info = pluginInfo;
 }

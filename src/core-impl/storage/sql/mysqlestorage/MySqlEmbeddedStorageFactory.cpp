@@ -24,7 +24,7 @@ AMAROK_EXPORT_STORAGE( MySqleStorageFactory, mysqlestorage )
 MySqleStorageFactory::MySqleStorageFactory( QObject *parent, const QVariantList &args )
     : StorageFactory( parent, args )
 {
-    m_info = KPluginInfo( "amarok_storage-mysqlestorage.desktop", "services" );
+    m_info = KPluginInfo( "amarok_storage-mysqlestorage.desktop" );
 }
 
 MySqleStorageFactory::~MySqleStorageFactory()

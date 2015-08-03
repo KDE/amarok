@@ -63,7 +63,7 @@ QString md5( const QByteArray& src )
 LastFmServiceFactory::LastFmServiceFactory( QObject *parent, const QVariantList &args )
     : ServiceFactory( parent, args )
 {
-    KPluginInfo pluginInfo(  "amarok_service_lastfm.desktop", "services" );
+    KPluginInfo pluginInfo(  "amarok_service_lastfm.desktop" );
     pluginInfo.setConfig( config() );
     m_info = pluginInfo;
 }

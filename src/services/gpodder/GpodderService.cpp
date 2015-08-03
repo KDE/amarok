@@ -44,7 +44,7 @@ AMAROK_EXPORT_SERVICE_PLUGIN( gpodder, GpodderServiceFactory )
 GpodderServiceFactory::GpodderServiceFactory( QObject *parent, const QVariantList &args )
     : ServiceFactory( parent, args )
 {
-    KPluginInfo pluginInfo( "amarok_service_gpodder.desktop", "services" );
+    KPluginInfo pluginInfo( "amarok_service_gpodder.desktop" );
     pluginInfo.setConfig( config() );
     m_info = pluginInfo;
 }

@@ -44,7 +44,7 @@ namespace Collections
         , m_controller( 0 )
         , m_collectionIsManaged( false )
     {
-        m_info = KPluginInfo( "amarok_collection-playdarcollection.desktop", "services" );
+        m_info = KPluginInfo( "amarok_collection-playdarcollection.desktop", );
         DEBUG_BLOCK
     }
 

@@ -45,7 +45,7 @@ DaapCollectionFactory::DaapCollectionFactory( QObject *parent, const QVariantLis
     : Collections::CollectionFactory( parent, args )
     , m_browser( 0 )
 {
-    m_info = KPluginInfo( "amarok_collection-daapcollection.desktop", "services" );
+    m_info = KPluginInfo( "amarok_collection-daapcollection.desktop", );
 }
 
 DaapCollectionFactory::~DaapCollectionFactory()

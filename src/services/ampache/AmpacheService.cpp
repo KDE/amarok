@@ -40,7 +40,7 @@ AMAROK_EXPORT_SERVICE_PLUGIN( ampache, AmpacheServiceFactory )
 AmpacheServiceFactory::AmpacheServiceFactory( QObject *parent, const QVariantList &args )
     : ServiceFactory( parent, args )
 {
-    KPluginInfo pluginInfo( "amarok_service_ampache.desktop", "services" );
+    KPluginInfo pluginInfo( "amarok_service_ampache.desktop" );
     pluginInfo.setConfig( config() );
     m_info = pluginInfo;
 }

@@ -41,7 +41,7 @@ AmarokManager::type() const
 KPluginInfo
 AmarokManager::pluginInfo() const
 {
-    return KPluginInfo( "amarok_importer-amarok.desktop", "services" );
+    return KPluginInfo( "amarok_importer-amarok.desktop" );
 }
 
 QString
