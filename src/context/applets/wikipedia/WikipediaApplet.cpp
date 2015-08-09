@@ -19,7 +19,7 @@
 
 #include "WikipediaApplet.h"
 #include "WikipediaApplet_p.h"
-#include "WikipediaApplet_p.moc"
+#include "moc_WikipediaApplet_p.cpp"
 
 #include "App.h"
 #include "core/support/Amarok.h"
