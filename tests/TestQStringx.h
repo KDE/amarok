@@ -23,6 +23,7 @@
 #include "QStringx.h"
 
 #include <QStringList>
+#include <QObject>
 
 class TestQStringx : public QObject
 {

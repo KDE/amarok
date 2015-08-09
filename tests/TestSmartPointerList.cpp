@@ -21,6 +21,7 @@
 
 #include "core/support/SmartPointerList.h"
 
+#include <QObject>
 #include <QTest>
 #include <QTimer>
 

@@ -20,6 +20,7 @@
 #include "ScanningState.h"
 
 #include <QBuffer>
+#include <QDataStream>
 #include <QtDebug>
 
 #ifdef Q_CC_MSVC

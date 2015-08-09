@@ -21,6 +21,7 @@
 #define TESTEXPRESSION_H
 
 #include <QStringList>
+#include <QObject>
 
 class TestExpression : public QObject
 {

@@ -21,6 +21,7 @@
 #define TESTSMARTPOINTERLIST_H
 
 #include <QStringList>
+#include <QObject>
 
 class TestSmartPointerList : public QObject
 {
