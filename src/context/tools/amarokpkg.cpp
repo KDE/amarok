@@ -26,7 +26,7 @@
 #include <QTextStream>
 
 #include <KAboutData>
-#include <klocalizedstring.h>
+#include <KLocalizedString>
 #include <KService>
 #include <KServiceTypeTrader>
 #include <KShell>
@@ -127,7 +127,7 @@ int main(int argc, char **argv)
         // install, remove or upgrade
         if (!installer) {
             installer = new KPackage::Package();
-            installer->setServicePrefixPaths(servicePrefix);
+            installer->setContentsPrefixPaths(QStringList() << servicePrefix);
         }
 
         if (parser.isSet("packageroot")) {
@@ -135,7 +135,8 @@ int main(int argc, char **argv)
         } else if (parser.isSet("global")) {
             packageRoot = QStandardPaths::locate(QStandardPaths::GenericDataLocation, packageRoot);
         } else {
-            packageRoot = KStandardDirs::locateLocal("data", packageRoot);
+            //@FIXME Maybe we need to check whether the folders exist or not.
+            packageRoot = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + packageRoot;
         }
 
         QString package;
