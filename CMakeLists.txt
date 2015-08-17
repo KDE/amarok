@@ -2,10 +2,6 @@ project(Amarok)
 
 cmake_minimum_required(VERSION 2.8.12)
 
-# Remove all warnings, ease the porting to cmake 3.x
-cmake_policy(SET CMP0063 NEW)
-cmake_policy(SET CMP0028 NEW)
-
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
 message(STATUS "${CMAKE_MODULE_PATH}")
@@ -26,8 +22,8 @@ include(ECMAddAppIcon)
 
 #find_package( Qt4 4.8.3 COMPONENTS QtCore QtGui QtScript QtSvg QtXml QtWebKit REQUIRED )
 #find_package( KDE4 4.8.4 REQUIRED )
-find_package( Qt5 REQUIRED COMPONENTS Core DBus Widgets Test Gui Svg Xml Script Sql Quick Qml ScriptTools WebKitWidgets)
-find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid KDELibs4Support Codecs I18n ThreadWeaver Plasma PlasmaQuick KCMUtils NewStuff TextEditor GlobalAccel KIO NotifyConfig Archive DNSSD)
+find_package( Qt5 REQUIRED COMPONENTS Core DBus Widgets Test Gui Svg Xml Script Sql Quick Qml ScriptTools)
+find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid KDELibs4Support Codecs I18n ThreadWeaver Plasma PlasmaQuick KCMUtils NewStuff TextEditor GlobalAccel KIO NotifyConfig Archive)
 
 ###############
 option(WITH_UTILITIES "Enable building of utilities" ON)
