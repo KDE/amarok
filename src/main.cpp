@@ -22,6 +22,7 @@
 #include <KAboutData>
 #include <KCmdLineArgs>
 #include <KDebug>
+#include <KLocalizedString>
 
 #include <qglobal.h>
 
@@ -30,6 +31,7 @@
 #endif
 
 #include <csignal>
+#include <QCommandLineParser>
 
 //#define AMAROK_USE_DRKONQI
 #ifdef Q_OS_WIN
@@ -275,7 +277,14 @@ int main( int argc, char *argv[] )
     ocsData.addDonor( QString(), KAboutPerson( ki18n( "ZImin Stanislav" ).toString() ) );
 
     KCmdLineArgs::reset();
-    KCmdLineArgs::init( argc, argv, &aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
+    QApplication app(argc, argv);
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
 
     App::initCliArgs();
     KUniqueApplication::addCmdLineOptions();
@@ -326,8 +335,8 @@ int main( int argc, char *argv[] )
     XInitThreads();
 #endif
 
-    App app;
-    app.setUniqueInstance( startFlag == KUniqueApplication::NonUniqueInstance );
+    App ap;
+    ap.setUniqueInstance( startFlag == KUniqueApplication::NonUniqueInstance );
     return app.exec();
 }
 
