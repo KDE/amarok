@@ -24,6 +24,7 @@
 #include "core/support/Debug.h"
 
 #include <KDialog>
+#include <KLocalizedString>
 #include <KWallet/Wallet>
 
 #include <QLabel>

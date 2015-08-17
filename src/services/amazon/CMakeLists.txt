@@ -43,8 +43,7 @@ target_link_libraries( amarok_service_amazonstore
     amaroklib
     amarokpud
     KF5::KDELibs4Support
-    
-    
+    KF5::ConfigWidgets
     KF5::KIOCore
     KF5::ThreadWeaver
 )

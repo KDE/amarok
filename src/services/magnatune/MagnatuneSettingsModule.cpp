@@ -30,7 +30,7 @@ K_PLUGIN_FACTORY( MagnatuneSettingsFactory, registerPlugin<MagnatuneSettingsModu
 K_EXPORT_PLUGIN( MagnatuneSettingsFactory( "kcm_amarok_magnatunestore" ) )
 
 MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVariantList &args )
-    : KCModule( MagnatuneSettingsFactory::componentData(), parent, args )
+    : KCModule( parent, args )
 {
     m_configDialog = new Ui::MagnatuneConfigWidget;
     m_configDialog->setupUi( this );

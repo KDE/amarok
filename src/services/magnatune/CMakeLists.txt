@@ -45,9 +45,11 @@ target_link_libraries(amarok_service_magnatunestore
     amarokcore
     amaroklib
     KF5::KDELibs4Support
-    
+    KF5::ConfigWidgets
     KF5::KIOCore
     KF5::ThreadWeaver
+    Qt5::Core
+    Qt5::Widgets
 )
 
 
@@ -66,7 +68,13 @@ ki18n_wrap_ui( kcm_amarok_service_magnatune_PART_SRCSS MagnatuneConfigWidget.ui 
 add_library(kcm_amarok_service_magnatunestore MODULE ${kcm_amarok_service_magnatune_PART_SRCSS} )
 
 
-target_link_libraries( kcm_amarok_service_magnatunestore   Qt5::Core Qt5::Gui   )
+target_link_libraries( kcm_amarok_service_magnatunestore
+    KF5::KDELibs4Support
+    KF5::ConfigWidgets
+    KF5::ThreadWeaver
+    Qt5::Core
+    Qt5::Gui
+)
 
 install(TARGETS kcm_amarok_service_magnatunestore  DESTINATION ${PLUGIN_INSTALL_DIR})
 
