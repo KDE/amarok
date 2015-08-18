@@ -2,6 +2,14 @@ project(Amarok)
 
 cmake_minimum_required(VERSION 2.8.12)
 
+# Remove all warnings, ease the porting to cmake 3.x
+if (POLICY CMP0063)
+    cmake_policy(SET CMP0063 NEW)
+endif()
+if (POLICY CMP0028)
+    cmake_policy(SET CMP0028 NEW)
+endif()
+
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
 message(STATUS "${CMAKE_MODULE_PATH}")
