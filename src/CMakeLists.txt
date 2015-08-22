@@ -607,7 +607,6 @@ set(amaroklib_LIB_SRCS
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
     ${libplaylist_SRCS}
-    ${libtooltip_SRCS}
     ${aggregatecollection_SRCS}
     ${libpodcasts_SRCS}
     ${libmediadeviceframework_SRCS}
@@ -615,7 +614,6 @@ set(amaroklib_LIB_SRCS
     ${libservicebrowser_SRCS}
     ${libdynamic_SRCS}
     ${libmetaimpl_SRCS}
-    ${core_interfaces_SRCS}
     ${apg_SRCS}
     ${collection_SRCS}
     ${storage_SRCS}
@@ -623,7 +621,6 @@ set(amaroklib_LIB_SRCS
     ${mac_SRCS}
     ${network_access_SRCS}
     ${libplaylistbrowser_SRCS}
-    ${libqueuemanager_SRCS}
     ${libplaylistmanager_SRCS}
     ${dbus_SRCS}
     ${scriptengine_SRCS}
