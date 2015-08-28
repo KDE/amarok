@@ -45,8 +45,6 @@
 #include <QLabel>
 #include <KConfigGroup>
 
-Q_DECLARE_METATYPE( QModelIndexList )
-
 using namespace PlaylistBrowserNS;
 
 PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel *model,
