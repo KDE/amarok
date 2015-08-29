@@ -32,9 +32,9 @@
 
 #include <QIcon>
 
-#include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
+#include <DNSSD/RemoteService>
 
-namespace DNSSD {
+namespace KDNSSD {
     class ServiceBrowser;
 }
 
@@ -56,8 +56,8 @@ class DaapCollectionFactory : public Collections::CollectionFactory
 
     private Q_SLOTS:
         void connectToManualServers();
-        void serverOffline( DNSSD::RemoteService::Ptr );
-        void foundDaap( DNSSD::RemoteService::Ptr );
+        void serverOffline( KDNSSD::RemoteService::Ptr );
+        void foundDaap( KDNSSD::RemoteService::Ptr );
         void resolvedDaap( bool );
         void slotCollectionReady();
         void slotCollectionDownloadFailed();
@@ -66,7 +66,7 @@ class DaapCollectionFactory : public Collections::CollectionFactory
         void resolvedManualServerIp(QHostInfo);
 
     private:
-        DNSSD::ServiceBrowser* m_browser;
+        KDNSSD::ServiceBrowser* m_browser;
 
         QMap<QString, QWeakPointer<DaapCollection> > m_collectionMap;
 

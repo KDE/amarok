@@ -2,7 +2,6 @@ include_directories( ../..
     ${CMAKE_BINARY_DIR}/src
     ${AMAROK_COLLECTION_SUPPORT_DIR}
     daapreader
-    
      )
 
 remove_definitions(-DQT_NO_HTTP)
@@ -23,10 +22,8 @@ target_link_libraries(amarok_collection-daapcollection
     amarokcore
     amaroklib
     KF5::KDELibs4Support
-    
     KF5::ThreadWeaver
     KF5::DNSSD
-    
     Qt5::Network
 )
 

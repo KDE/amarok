@@ -33,9 +33,9 @@
 
 #include <KLocale>
 
-#include <dnssd/remoteservice.h>
-#include <dnssd/servicebase.h>
-#include <dnssd/servicebrowser.h>
+#include <DNSSD/RemoteService>
+#include <DNSSD/ServiceBase>
+#include <DNSSD/ServiceBrowser>
 
 using namespace Collections;
 
@@ -45,7 +45,7 @@ DaapCollectionFactory::DaapCollectionFactory( QObject *parent, const QVariantLis
     : Collections::CollectionFactory( parent, args )
     , m_browser( 0 )
 {
-    m_info = KPluginInfo( "amarok_collection-daapcollection.desktop", );
+    m_info = KPluginInfo( "amarok_collection-daapcollection.desktop" );
 }
 
 DaapCollectionFactory::~DaapCollectionFactory()
@@ -57,25 +57,25 @@ void
 DaapCollectionFactory::init()
 {
     DEBUG_BLOCK
-    switch( DNSSD::ServiceBrowser::isAvailable() )
+    switch( KDNSSD::ServiceBrowser::isAvailable() )
     {
-    case DNSSD::ServiceBrowser::Working:
+    case KDNSSD::ServiceBrowser::Working:
         //don't block Amarok's startup by connecting to DAAP servers
         QTimer::singleShot( 1000, this, SLOT(connectToManualServers()) );
-        m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
+        m_browser = new KDNSSD::ServiceBrowser("_daap._tcp");
         m_browser->setObjectName("daapServiceBrowser");
-        connect( m_browser, SIGNAL(serviceAdded(DNSSD::RemoteService::Ptr)),
-                 this,   SLOT(foundDaap(DNSSD::RemoteService::Ptr)) );
-        connect( m_browser, SIGNAL(serviceRemoved(DNSSD::RemoteService::Ptr)),
-                 this,   SLOT(serverOffline(DNSSD::RemoteService::Ptr)) );
+        connect( m_browser, SIGNAL(serviceAdded(KDNSSD::RemoteService::Ptr)),
+                 this,   SLOT(foundDaap(KDNSSD::RemoteService::Ptr)) );
+        connect( m_browser, SIGNAL(serviceRemoved(KDNSSD::RemoteService::Ptr)),
+                 this,   SLOT(serverOffline(KDNSSD::RemoteService::Ptr)) );
         m_browser->startBrowse();
         break;
 
-    case DNSSD::ServiceBrowser::Stopped:
+    case KDNSSD::ServiceBrowser::Stopped:
         debug() << "The Zeroconf daemon is not running";
         break;
 
-    case DNSSD::ServiceBrowser::Unsupported:
+    case KDNSSD::ServiceBrowser::Unsupported:
         debug() << "Zeroconf support is not available";
         break;
 
@@ -110,7 +110,7 @@ DaapCollectionFactory::connectToManualServers()
 }
 
 void
-DaapCollectionFactory::serverOffline( DNSSD::RemoteService::Ptr service )
+DaapCollectionFactory::serverOffline( KDNSSD::RemoteService::Ptr service )
 {
     DEBUG_BLOCK
     QString key =  serverKey( service.data()->hostName(), service.data()->port() );
@@ -130,7 +130,7 @@ DaapCollectionFactory::serverOffline( DNSSD::RemoteService::Ptr service )
 }
 
 void
-DaapCollectionFactory::foundDaap( DNSSD::RemoteService::Ptr service )
+DaapCollectionFactory::foundDaap( KDNSSD::RemoteService::Ptr service )
 {
     DEBUG_BLOCK
 
@@ -141,7 +141,7 @@ DaapCollectionFactory::foundDaap( DNSSD::RemoteService::Ptr service )
 void
 DaapCollectionFactory::resolvedDaap( bool success )
 {
-    const DNSSD::RemoteService* service =  dynamic_cast<const DNSSD::RemoteService*>(sender());
+    const KDNSSD::RemoteService* service =  dynamic_cast<const KDNSSD::RemoteService*>(sender());
     if( !success || !service ) return;
     debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type();
 
