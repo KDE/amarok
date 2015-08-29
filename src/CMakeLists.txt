@@ -889,6 +889,7 @@ target_link_libraries(amaroklib
     ${QT_QTSCRIPTTOOLS_LIBRARY}
     Qt5::Sql
     Qt5::Gui
+    Qt5::Svg
     ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
