@@ -1,9 +1,9 @@
 #include( KDELibsDependencies ) # for KDE version
 
-add_subdirectory( applets )
-add_subdirectory( engines )
-add_subdirectory( containments )
-add_subdirectory( tools )
+#add_subdirectory( applets )        #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
+#add_subdirectory( engines )        #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
+#add_subdirectory( containments )   #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
+#add_subdirectory( tools )          #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
                     ..
