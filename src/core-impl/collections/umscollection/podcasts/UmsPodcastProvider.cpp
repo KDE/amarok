@@ -20,7 +20,7 @@
 #include <KIO/DeleteJob>
 #include <KIO/FileCopyJob>
 #include <KIO/Job>
-
+#include <KMimeType>
 
 #include <QAction>
 #include <QDirIterator>
@@ -449,7 +449,7 @@ UmsPodcastProvider::scan()
         return;
     m_dirList.clear();
     debug() << "scan directory for podcasts: " <<
-            m_scanDirectory.toLocalFile( QUrl::AddTrailingSlash );
+            m_scanDirectory.toLocalFile();
     QDirIterator it( m_scanDirectory.toLocalFile(), QDirIterator::Subdirectories );
     while( it.hasNext() )
         addPath( it.next() );
@@ -460,14 +460,14 @@ UmsPodcastProvider::addPath( const QString &path )
 {
     DEBUG_BLOCK
     int acc = 0;
+    QMimeDatabase db;
     debug() << path;
-    QMimeType mime = KMimeType::findByFileContent( path, &acc );
-    if( !mime || mime.name() == KMimeType::defaultMimeType() )
+    QMimeType mime = db.mimeTypeForFile( path, QMimeDatabase::MatchContent );
+    if( !mime.isValid() || mime.isDefault() )
     {
         debug() << "Trying again with findByPath:" ;
-        QMimeDatabase db;
-        mime = db.mimeTypeForFile( path, 0, true, &acc );
-        if( mime.name() == KMimeType::defaultMimeType() )
+        mime = db.mimeTypeForFile( path, QMimeDatabase::MatchExtension);
+        if( mime.isDefault() )
             return 0;
     }
     debug() << "Got type: " << mime.name() << ", with accuracy: " << acc;

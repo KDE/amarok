@@ -17,11 +17,15 @@
 #define DEBUG_PREFIX "UpnpCollectionFactory"
 #include "UpnpCollectionFactory.h"
 
-#include <kio/jobclasses.h>
-#include <kio/scheduler.h>
-#include <kio/netaccess.h>
+#include <KIO/JobClasses>
+#include <KIO/Scheduler>
+#include <KIO/NetAccess>
 #include <kdirlister.h>
 #include <QUrl>
+#include <QDBusMetaType>
+#include <QDBusInterface>
+#include <QDBusReply>
+
 #include <solid/device.h>
 #include <solid/devicenotifier.h>
 #include <solid/storageaccess.h>
@@ -186,7 +190,7 @@ void UpnpCollectionFactory::createCollection( const QString &udn )
         return;
     }
     debug() << "|||| Creating collection " << info.uuid();
-    KIO::ListJob *job = KIO::listDir( QString( "upnp-ms://" + info.uuid() + "/?searchcapabilities=1" ) );
+    KIO::ListJob *job = KIO::listDir( QUrl( "upnp-ms://" + info.uuid() + "/?searchcapabilities=1" ) );
     job->setProperty( "deviceInfo", QVariant::fromValue( info ) );
     connect( job, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
             this, SLOT(slotSearchEntries(KIO::Job*,KIO::UDSEntryList)) );

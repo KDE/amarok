@@ -401,7 +401,7 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
         }
         else
         {
-            urls.insert( trackptr, filename );
+            urls.insert( trackptr, QUrl(filename) );
         }
     }
 
@@ -1301,7 +1301,7 @@ MtpHandler::prepareToPlay( Meta::MediaDeviceTrackPtr &track )
     else
     {
         QString tempPath = setTempFile( track, libGetType( track ) );
-        track->setPlayableUrl( tempPath );
+        track->setPlayableUrl( QUrl(tempPath) );
 
         debug() << "Beginning temporary file copy";
 //        m_tempfile.open();
@@ -1363,7 +1363,7 @@ MtpHandler::slotDeviceMatchFailed( ThreadWeaver::JobPointer job )
         return;
 
     debug() << "Running slot device match failed";
-    disconnect( job, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(slotDeviceMatchSucceeded()) );
+    disconnect( job, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(slotDeviceMatchSucceeded(ThreadWeaver::JobPointer)) );
     m_memColl->slotAttemptConnectionDone( false );
 }
 

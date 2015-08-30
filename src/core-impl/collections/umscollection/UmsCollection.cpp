@@ -57,7 +57,7 @@ AMAROK_EXPORT_COLLECTION( UmsCollectionFactory, umscollection )
 UmsCollectionFactory::UmsCollectionFactory( QObject *parent, const QVariantList &args )
     : CollectionFactory( parent, args )
 {
-    m_info = KPluginInfo( "amarok_collection-umscollection.desktop", );
+    m_info = KPluginInfo( "amarok_collection-umscollection.desktop" );
 }
 
 UmsCollectionFactory::~UmsCollectionFactory()
@@ -293,14 +293,14 @@ UmsCollection::init()
                     "<i>%3</i> instead", m_mountPoint + '/' + s_settingsFileName,
                     m_musicPath.toLocalFile(), m_mountPoint );
             Amarok::Components::logger()->longMessage( message, Amarok::Logger::Warning );
-            m_musicPath = m_mountPoint;
+            m_musicPath = QUrl(m_mountPoint);
         }
     }
     else if( !entries.keyList().isEmpty() )
         // config file exists, but has no s_musicFolderKey -> music should be disabled
         m_musicPath = QUrl();
     else
-        m_musicPath = m_mountPoint; // related BR 259849
+        m_musicPath = QUrl(m_mountPoint); // related BR 259849
     QString scheme = entries.readEntry( s_musicFilenameSchemeKey );
     m_musicFilenameScheme = !scheme.isEmpty() ? scheme : m_musicFilenameScheme;
     m_vfatSafe = entries.readEntry( s_vfatSafeKey, m_vfatSafe );
@@ -518,7 +518,7 @@ UmsCollection::slotEject()
 void
 UmsCollection::slotTrackAdded( QUrl location )
 {
-    Q_ASSERT( m_musicPath.isParentOf( location ) || m_musicPath.matches( location , QUrl::StripTrailingSlash) )
+    Q_ASSERT( m_musicPath.isParentOf( location ) || m_musicPath.matches( location , QUrl::StripTrailingSlash) );
     MetaFile::Track *fileTrack = new MetaFile::Track( location );
     fileTrack->setCollection( this );
     Meta::TrackPtr fileTrackPtr = Meta::TrackPtr( fileTrack );
@@ -667,7 +667,7 @@ UmsCollection::slotConfigure()
             {
                 debug() << "podcast location changed from " << m_podcastPath << " to ";
                 debug() << settings->m_podcastFolder->url().url();
-                m_podcastPath = settings->m_podcastFolder->url().toLocalFile();
+                m_podcastPath = QUrl(settings->m_podcastFolder->url().toLocalFile());
                 //TODO: reparse podcasts
             }
         }
@@ -686,7 +686,7 @@ UmsCollection::slotConfigure()
         KConfig config( m_mountPoint + '/' + s_settingsFileName, KConfig::SimpleConfig );
         KConfigGroup entries = config.group( QString() ); // default group
         if( !m_musicPath.isEmpty() )
-            entries.writePathEntry( s_musicFolderKey, QDir( m_mountPoint ).relativeFilePath( m_musicPath.toLocalFile() );
+            entries.writePathEntry( s_musicFolderKey, QDir( m_mountPoint ).relativeFilePath( m_musicPath.toLocalFile() ));
         else
             entries.deleteEntry( s_musicFolderKey );
         entries.writeEntry( s_musicFilenameSchemeKey, m_musicFilenameScheme );
@@ -697,7 +697,7 @@ UmsCollection::slotConfigure()
         entries.writeEntry( s_regexTextKey, m_regexText );
         entries.writeEntry( s_replaceTextKey, m_replaceText );
         if( !m_podcastPath.isEmpty() )
-            entries.writePathEntry( s_podcastFolderKey, QDir( m_mountPoint ).relativeFilePath( m_podcastPath.toLocalFile() );
+            entries.writePathEntry( s_podcastFolderKey, QDir( m_mountPoint ).relativeFilePath( m_podcastPath.toLocalFile() ));
         else
             entries.deleteEntry( s_podcastFolderKey );
         entries.writeEntry( s_autoConnectKey, m_autoConnect );
@@ -724,7 +724,7 @@ UmsCollection::slotDirectoryScanned( QSharedPointer<CollectionScanner::Directory
     {
         //TODO: use proxy tracks so no real file read is required
         // following method calls startUpdateTimer(), no need to emit updated()
-        slotTrackAdded( scannerTrack->path() );
+        slotTrackAdded( QUrl(scannerTrack->path()) );
     }
 
     //TODO: read playlists

@@ -25,9 +25,10 @@
 
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
-#include <kio/job.h>
+#include <KIO/Job>
 #include <QUrl>
-#include <kio/jobclasses.h>
+#include <KIO/JobClasses>
+#include <KLocalizedString>
 
 #include <QDir>
 

@@ -30,9 +30,7 @@ target_link_libraries(
     amarokcore
     amaroklib
     KF5::ThreadWeaver
-    
     KF5::KIOCore
-    
 )
 
 if(APPLE)

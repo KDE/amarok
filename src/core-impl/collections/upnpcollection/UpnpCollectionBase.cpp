@@ -19,9 +19,9 @@
 #include "UpnpCollectionBase.h"
 
 #include "upnptypes.h"
-#include <kio/scheduler.h>
-#include <kio/jobclasses.h>
-#include <kio/slave.h>
+#include <KIO/Scheduler>
+#include <KIO/JobClasses>
+#include <KIO/Slave>
 
 #include "core/support/Debug.h"
 
@@ -40,7 +40,7 @@ UpnpCollectionBase::UpnpCollectionBase( const DeviceInfo& dev )
                              this, SLOT(slotSlaveError(KIO::Slave*,int,QString)) );
     KIO::Scheduler::connect( SIGNAL(slaveConnected(KIO::Slave*)),
                              this, SLOT(slotSlaveConnected(KIO::Slave*)) );
-    m_slave = KIO::Scheduler::getConnectedSlave( collectionId() );
+    m_slave = KIO::Scheduler::getConnectedSlave( QUrl(collectionId()) );
 }
 
 UpnpCollectionBase::~UpnpCollectionBase()

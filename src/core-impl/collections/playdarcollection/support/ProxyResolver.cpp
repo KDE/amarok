@@ -74,7 +74,7 @@ Playdar::ProxyResolver::collectSolution( Meta::PlaydarTrackPtr track )
         if( !m_collection.isNull() )
         {
             track->addToCollection( m_collection );
-            realTrack = m_collection->trackForUrl( track->uidUrl() );
+            realTrack = m_collection->trackForUrl( QUrl(track->uidUrl()) );
         }
         else
             realTrack = Meta::TrackPtr::staticCast( track );

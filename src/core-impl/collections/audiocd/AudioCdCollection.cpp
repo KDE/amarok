@@ -35,9 +35,9 @@
 #include "support/AudioCdConnectionAssistant.h"
 #include "support/AudioCdDeviceInfo.h"
 
-#include <kio/job.h>
-#include <kio/netaccess.h>
-#include <kio/udsentry.h>
+#include <KIO/Job>
+#include <KIO/NetAccess>
+#include <KIO/UDSEntry>
 
 #include <solid/device.h>
 #include <solid/opticaldrive.h>
@@ -46,6 +46,7 @@
 #include <KEncodingProber>
 
 #include <KSharedConfig>
+#include <KUrl>
 
 #include <QDir>
 #include <QTextCodec>
@@ -59,7 +60,7 @@ static const QString unknownCddbId( "unknown" );
 AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVariantList &args )
     : MediaDeviceCollectionFactory<AudioCdCollection>( parent, args, new AudioCdConnectionAssistant() )
 {
-    m_info = KPluginInfo( "amarok_collection-audiocdcollection.desktop", );
+    m_info = KPluginInfo( "amarok_collection-audiocdcollection.desktop" );
 }
 
 AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
@@ -484,13 +485,13 @@ AudioCdCollection::noInfoAvailable()
     QString prefix( "0" );
     QString trackName = "Track " + prefix + QString::number( i );
 
-    while( KIO::NetAccess::exists( QString( "audiocd:/" + trackName + ".wav" ), KIO::NetAccess::SourceSide, 0 ) )
+    while( KIO::NetAccess::exists( KUrl( "audiocd:/" + trackName + ".wav" ), KIO::NetAccess::SourceSide, 0 ) )
     {
         debug() << "got track: " << "audiocd:/" + trackName + ".wav";
 
         QString baseUrl = "audiocd:/" + m_discCddbId + '/' + QString::number( i );
 
-        Meta::AudioCdTrackPtr trackPtr = Meta::AudioCdTrackPtr( new Meta::AudioCdTrack( this, trackName, baseUrl ) );
+        Meta::AudioCdTrackPtr trackPtr = Meta::AudioCdTrackPtr( new Meta::AudioCdTrack( this, trackName, QUrl(baseUrl) ) );
 
         trackPtr->setTrackNumber( i );
         trackPtr->setFileNameBase( trackName );

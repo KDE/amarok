@@ -504,7 +504,7 @@ namespace Collections
         DEBUG_BLOCK
         
         track->addToCollection( m_collection.data() );
-        if( m_collection.data()->trackForUrl( track->uidUrl() ) == Meta::TrackPtr::staticCast( track ) )
+        if( m_collection.data()->trackForUrl( QUrl(track->uidUrl()) ) == Meta::TrackPtr::staticCast( track ) )
             m_collectionUpdated = true;
     }
     

@@ -28,8 +28,9 @@
 #include "support/ProxyResolver.h"
 #include "core/support/Debug.h"
 
-#include <QIcon>
+#include <KLocalizedString>
 
+#include <QIcon>
 #include <QObject>
 #include <QString>
 #include <QTimer>
@@ -44,7 +45,7 @@ namespace Collections
         , m_controller( 0 )
         , m_collectionIsManaged( false )
     {
-        m_info = KPluginInfo( "amarok_collection-playdarcollection.desktop", );
+        m_info = KPluginInfo( "amarok_collection-playdarcollection.desktop" );
         DEBUG_BLOCK
     }
 

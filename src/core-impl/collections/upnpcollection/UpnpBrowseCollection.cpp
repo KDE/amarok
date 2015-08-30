@@ -28,14 +28,16 @@
 #include "UpnpMeta.h"
 #include "UpnpCache.h"
 
+#include <QDir>
+#include <QFileInfo>
 #include <QStringList>
 #include <QTimer>
 
 #include <KLocale>
 #include <kdatetime.h>
 #include "upnptypes.h"
-#include <kio/scheduler.h>
-#include <kio/jobclasses.h>
+#include <KIO/Scheduler>
+#include <KIO/JobClasses>
 
 using namespace Meta;
 
@@ -160,7 +162,7 @@ UpnpBrowseCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
     foreach( const KIO::UDSEntry &entry, list ) {
         if( entry.contains( KIO::UPNP_CLASS )
             && entry.stringValue( KIO::UPNP_CLASS ).startsWith( "object.item.audioItem" ) ) {
-            createTrack( entry, sj->url().prettyUrl() );
+            createTrack( entry, sj->url().toDisplayString() );
         }
         count++;
         emit totalSteps( count );

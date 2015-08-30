@@ -25,6 +25,7 @@
 #include <QHash>
 #include <QHostInfo>
 #include <QPointer>
+#include <QQueue>
 #include <QtGlobal>
 #include <QSharedPointer>
 
