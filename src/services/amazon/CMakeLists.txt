@@ -61,7 +61,13 @@ ki18n_wrap_ui( kcm_amarok_service_amazonstore_PART_SRCSS AmazonConfigWidget.ui )
 
 add_library(kcm_amarok_service_amazonstore MODULE ${kcm_amarok_service_amazonstore_PART_SRCSS} )
 
-target_link_libraries( kcm_amarok_service_amazonstore  Qt5::Core Qt5::Gui   )
+target_link_libraries( kcm_amarok_service_amazonstore
+    Qt5::Core
+    Qt5::Gui
+    KF5::ConfigWidgets
+    KF5::KDELibs4Support
+    KF5::ThreadWeaver
+)
 
 install(TARGETS kcm_amarok_service_amazonstore DESTINATION ${PLUGIN_INSTALL_DIR})
 

@@ -19,7 +19,7 @@
 #ifndef AMAZONSETTINGSMODULE_H
 #define AMAZONSETTINGSMODULE_H
 
-#include <kcmodule.h>
+#include <KCModule>
 
 namespace Ui { class AmazonConfigWidget; }
 
