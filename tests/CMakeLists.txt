@@ -31,7 +31,6 @@ add_subdirectory( playlist )
 add_subdirectory( playlistmanager )
 add_subdirectory( timecode )
 add_subdirectory( scanner )
-add_subdirectory( services )
 add_subdirectory( synchronization )
 
 #------------------------ Test Amarok namespace -----------------------------
