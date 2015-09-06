@@ -18,7 +18,7 @@ find_path(LIBMYGPO_QT_INCLUDE_DIR NAMES ApiRequest.h
   PATH_SUFFIXES mygpo-qt
 )
 
-find_library( LIBMYGPO_QT_LIBRARY NAMES mygpo-qt
+find_library( LIBMYGPO_QT_LIBRARY NAMES mygpo-qt5
     PATHS
     ~/usr/lib
     ~/usr/lib64
@@ -39,7 +39,7 @@ if(LIBMYGPO_QT_INCLUDE_DIR AND LIBMYGPO_QT_LIBRARY)
    set(LIBMYGPO_QT_FOUND TRUE)
    message(STATUS "Found libmygpo-qt: ${LIBMYGPO_QT_INCLUDE_DIR}, ${LIBMYGPO_QT_LIBRARY}")
 else()
-   set(LIBMYGPO_QT_FOUND FALSE)   
+   set(LIBMYGPO_QT_FOUND FALSE)
    if (LIBMYGPO_QT_FIND_REQUIRED)
       message(FATAL_ERROR "Could NOT find required package libmygpo-qt")
    endif()

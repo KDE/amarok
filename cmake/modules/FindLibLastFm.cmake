@@ -18,7 +18,7 @@ find_path(LIBLASTFM_INCLUDE_DIR NAMES global.h
    PATH_SUFFIXES lastfm
 )
 
-find_library( LIBLASTFM_LIBRARY NAMES lastfm
+find_library( LIBLASTFM_LIBRARY NAMES lastfm5
     PATHS
     ~/usr/lib
    /opt/local/lib
