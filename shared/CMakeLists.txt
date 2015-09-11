@@ -41,6 +41,7 @@ if( TAGLIB-EXTRAS_FOUND )
 endif()
 
 target_link_libraries( amarokshared
+    KF5::KDELibs4Support
     Qt5::Core
     Qt5::Gui # for QImage, ...
 )
