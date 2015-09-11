@@ -72,7 +72,7 @@ SECTION 4: The Release Day
  * Send a witty, intelligent and diligently crafted email to the following lists:
      To:  kde-announce-apps@kde.org, amarok@kde.org
      CC:  amarok-promo@kde.org
-     BCC: kde-extra-gear@kde.org, kde-multimedia@kde.org, kde-packagers@kde.org,
+     BCC: kde-extra-gear@kde.org, kde-multimedia@kde.org, kde-packager@kde.org,
           (kde-press-announce@kde.org)
  * Update IRC channel topics
  * Update social networks
