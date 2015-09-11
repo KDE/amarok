@@ -42,15 +42,14 @@ SECTION 3: Once Happy with the Tarball
    transfered to stable/amarok/$version/src/ or unstable/amarok/$beta-version/src
    Instructions at ftp://upload.kde.org/README
  * Notify packagers:
-To: kde-packager@kde.org, Patrick von Reth (TheOneRing, Windows) <vonreth@kde.org>
+To: kde-distro-packagers@kde.org, Patrick von Reth (TheOneRing, Windows) <vonreth@kde.org>
 "
 Dear packagers
 
 Here you can find the beta tarball for the upcoming $version release:
 http://download.kde.org/download.php?url=unstable/amarok/$beta-version/src/amarok-$beta-version.tar.bz2
 
-MD5Sum: $(md5sum tarball.tar.bz2)
-SHA1Sum: $(sha1sum tarball.tar.bz2)
+sha256sum: $(sha256sum tarball.tar.bz2)
 
 We plan to release the final about 3 weeks from now but please make
 this available to users via a specialized beta archive for packaging
@@ -72,7 +71,7 @@ SECTION 4: The Release Day
  * Send a witty, intelligent and diligently crafted email to the following lists:
      To:  kde-announce-apps@kde.org, amarok@kde.org
      CC:  amarok-promo@kde.org
-     BCC: kde-extra-gear@kde.org, kde-multimedia@kde.org, kde-packager@kde.org,
+     BCC: kde-extra-gear@kde.org, kde-multimedia@kde.org, kde-distro-packagers@kde.org,
           (kde-press-announce@kde.org)
  * Update IRC channel topics
  * Update social networks
