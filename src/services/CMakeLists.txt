@@ -2,7 +2,6 @@ include_directories(
                     ${Amarok_SOURCE_DIR}/src
                    )
 
-add_subdirectory( amazon )
 add_subdirectory( magnatune )
 add_subdirectory( jamendo )
 add_subdirectory( mp3tunes )
