@@ -44,7 +44,7 @@ public:
 
 //using a static variable is ok in this case as ComponentsPrivate does nothing on destruction
 //in particular it does not delete any objects
-K_GLOBAL_STATIC( ComponentsPrivate, d )
+Q_GLOBAL_STATIC( ComponentsPrivate, d )
 
 //a define might be helpful for these getter/setters
 

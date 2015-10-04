@@ -21,6 +21,7 @@
 
 #include "TrayIcon.h"
 
+#include "App.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "SvgHandler.h"
@@ -32,16 +33,13 @@
 #include "core/support/Amarok.h"
 #include "playlist/PlaylistActions.h"
 
-#include <K4AboutData>
-#include <QAction>
-#include <KCmdLineArgs>
-#include <KLocale>
-#include <QMenu>
+#include <KLocalizedString>
 #include <KStandardDirs>
 #include <KIconLoader>
 
 #include <QAction>
 #include <QFontMetrics>
+#include <QMenu>
 #include <QPixmap>
 #include <QToolTip>
 
@@ -198,7 +196,7 @@ Amarok::TrayIcon::updateToolTip()
     }
     else
     {
-        setToolTipTitle( KCmdLineArgs::aboutData()->programName() );
+        setToolTipTitle( pApp->applicationDisplayName() );
         setToolTipSubTitle( The::engineController()->prettyNowPlaying( false ) );
     }
 }

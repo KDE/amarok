@@ -34,7 +34,7 @@
 
 GenericScanManager::GenericScanManager( QObject *parent )
     : QObject( parent )
-    , m_scannerJob( 0 )
+    , m_scannerJob( )
 {
     qRegisterMetaType<GenericScanManager::ScanType>( "GenericScanManager::ScanType" );
     qRegisterMetaType<QSharedPointer<CollectionScanner::Directory> >( "QSharedPointer<CollectionScanner::Directory>" );

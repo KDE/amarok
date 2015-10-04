@@ -30,7 +30,7 @@ add_subdirectory( core-impl/collections )
 add_subdirectory( core-impl/storage/sql )
 #don't use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
-#add_subdirectory( services )   #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
+#add_subdirectory( services )  #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
 add_subdirectory( scripting/scripts )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
@@ -866,29 +866,28 @@ ki18n_wrap_ui(amaroklib_LIB_SRCS
 add_library(amaroklib SHARED ${amaroklib_LIB_SRCS} ${AMAROK_MPRIS1_ADAPTOR_SRCS})
 
 target_link_libraries(amaroklib
-    KF5::NewStuff
-    KF5::NotifyConfig
     Phonon::phonon4qt5
-    KF5::Plasma
-    KF5::PlasmaQuick
-    KF5::I18n
+    KF5::Archive
+    KF5::CoreAddons
     ${KDE4_SOLID_LIBRARY}
-    KF5::TextEditor
-    KF5::ThreadWeaver
     KF5::KDELibs4Support
-    KF5::KCMUtils
     KF5::GlobalAccel
+    KF5::I18n
+    KF5::KCMUtils
     KF5::KIOCore
     KF5::KIOFileWidgets
     KF5::KIOWidgets
     KF5::KIONTLM
     KF5::NewStuff
+    KF5::NotifyConfig
+    KF5::Plasma
+    KF5::PlasmaQuick
     KF5::TextEditor
-    KF5::Archive
-    Qt5::Script
+    KF5::ThreadWeaver
     ${QT_QTSCRIPTTOOLS_LIBRARY}
     Qt5::Sql
     Qt5::Gui
+    Qt5::Script
     Qt5::Svg
     ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
@@ -952,12 +951,21 @@ if(APPLE)
     set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/amarok.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 endif()
 
-target_link_libraries(amarok KF5::KDELibs4Support  amarokcore amaroklib ${X11_LIBRARIES})
+target_link_libraries(amarok
+    KF5::CoreAddons
+    KF5::DBusAddons
+    KF5::I18n
+
+    amarokcore
+    amaroklib
+    ${X11_LIBRARIES}
+)
+
 install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(PROGRAMS amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+install(PROGRAMS org.kde.amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 install(PROGRAMS amarok_containers.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 install(FILES amarok.appdata.xml DESTINATION ${SHARE_INSTALL_PREFIX}/appdata)
 

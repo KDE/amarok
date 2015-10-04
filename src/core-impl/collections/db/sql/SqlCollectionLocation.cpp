@@ -56,7 +56,7 @@ SqlCollectionLocation::SqlCollectionLocation( SqlCollection *collection )
     , m_collection( collection )
     , m_delegateFactory( 0 )
     , m_overwriteFiles( false )
-    , m_transferjob( 0 )
+    , m_transferjob( )
 {
     //nothing to do
 }

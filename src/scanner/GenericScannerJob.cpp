@@ -44,7 +44,7 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
                                       GenericScanManager::ScanType type,
                                       bool recursive, bool detectCharset )
     : QObject()
-    , ThreadWeaver::Job( 0 )
+    , ThreadWeaver::Job( )
     , m_manager( manager )
     , m_type( type )
     , m_scanDirsRequested( scanDirsRequested )
@@ -64,7 +64,7 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
                                       QIODevice *input,
                                       GenericScanManager::ScanType type )
     : QObject()
-    , ThreadWeaver::Job( 0 )
+    , ThreadWeaver::Job( )
     , m_manager( manager )
     , m_type( type )
     , m_input( input )

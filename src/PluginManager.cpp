@@ -28,6 +28,8 @@
 
 #include <KLocalizedString>
 #include <KMessageBox>
+#include <KPluginLoader>
+#include <KPluginFactory>
 #include <KProcess>
 #include <KServiceTypeTrader>
 #include <KStandardDirs>
@@ -112,11 +114,11 @@ Plugins::PluginManager::checkPluginEnabledStates()
     m_factoriesByType.clear();
 
     m_pluginInfos = findPlugins(); // reload all the plugins plus their enabled state
+
     if( m_pluginInfos.isEmpty() ) // try it a second time with syscoca
         handleNoPluginsFound();
 
     QList<PluginFactory*> allFactories;
-
     // sort the plugin infos by type
     foreach( const KPluginInfo &pluginInfo, m_pluginInfos )
     {
@@ -134,9 +136,9 @@ Plugins::PluginManager::checkPluginEnabledStates()
             continue;
         }
         m_pluginInfosByType[ type ] << pluginInfo;
-
         // create the factories and sort them by type
         PluginFactory *factory = createFactory( pluginInfo );
+
         if( factory )
         {
             m_factoriesByType[ type ] << factory;
@@ -210,9 +212,9 @@ Plugins::PluginManager::createFactory( const KPluginInfo &pluginInfo )
     //   We can't very well just destroy a factory being
     //   currently used.
     const QString name = pluginInfo.pluginName();
+
     if( m_factoryCreated.contains(name) )
         return m_factoryCreated.value(name);
-
 
     KService::Ptr service = pluginInfo.service();
     KPluginLoader loader( *( service.constData() ) );

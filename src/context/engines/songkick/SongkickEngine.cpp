@@ -37,7 +37,7 @@ using namespace Context;
 SongkickEngine::SongkickEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
-    , m_datesJob( 0 )
+    , m_datesJob( )
     , m_currentTrack( 0 )
     , m_ontour( true )
     , m_dates( true )

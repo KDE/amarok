@@ -28,7 +28,7 @@
 
 MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
     : QObject()
-    , m_albumDownloadJob( 0 )
+    , m_albumDownloadJob( )
     , m_currentAlbumFileName()
 {
     m_tempDir = new KTempDir();

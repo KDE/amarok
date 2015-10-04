@@ -27,6 +27,7 @@
 #include <QUrl>
 
 #include <QHash>
+#include <QCommandLineParser>
 #include <QWeakPointer>
 #include <QString>
 
@@ -45,22 +46,22 @@ namespace KIO { class Job; }
 class KJob;
 class MediaDeviceManager;
 
-class AMAROK_EXPORT App : public KUniqueApplication
+class AMAROK_EXPORT App : public QApplication
 {
     Q_OBJECT
 
     public:
-        App();
+        App(int &argc, char **argv);
        ~App();
 
-        static App *instance() { return static_cast<App*>( kapp ); }
+        static App *instance() { return static_cast<App*>( qApp ); }
 
         void setUniqueInstance( bool isUnique ) { m_isUniqueInstance = isUnique; }
         bool isNonUniqueInstance() const { return m_isUniqueInstance; }
-
+        void continueInit();
         Amarok::TrayIcon* trayIcon() const { return m_tray; }
-        static void handleCliArgs();
-        static void initCliArgs();
+        void handleCliArgs(const QString &cwd);
+        void initCliArgs(QCommandLineParser *parsers);
 
         virtual int newInstance();
 
@@ -74,9 +75,10 @@ class AMAROK_EXPORT App : public KUniqueApplication
         void settingsChanged();
 
     private Q_SLOTS:
-        void continueInit();
+
 
     public Q_SLOTS:
+        void activateRequested(const QStringList &  arguments, const QString & cwd);
         void applySettings( bool firstTime = false );
         void slotConfigAmarok( const QString& page = QString() );
         void slotConfigShortcuts();
@@ -98,11 +100,12 @@ class AMAROK_EXPORT App : public KUniqueApplication
         Amarok::TrayIcon            *m_tray;
         MediaDeviceManager          *m_mediaDeviceManager;
         QWeakPointer<ScriptConsoleNS::ScriptConsole> m_scriptConsole;
-
+        QCommandLineParser          *m_args;
+        QString                     m_cwd;
         static QStringList       s_delayedAmarokUrls;
 };
 
-#define pApp static_cast<App*>(kapp)
+#define pApp static_cast<App*>(qApp)
 
 
 #endif  // AMAROK_APP_H

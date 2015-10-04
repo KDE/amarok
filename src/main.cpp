@@ -22,6 +22,7 @@
 #include <KAboutData>
 #include <KCmdLineArgs>
 #include <KDebug>
+#include <KDBusService>
 #include <KLocalizedString>
 
 #include <qglobal.h>
@@ -40,16 +41,23 @@ AMAROK_EXPORT OcsData ocsData;
 
 int main( int argc, char *argv[] )
 {
-    KAboutData aboutData(
-        "amarok",
-        ki18n( "Amarok" ).toString(),
-        AMAROK_VERSION,
-        ki18n( "The audio player for KDE" ).toString(),
-        KAboutLicense::GPL,
-        ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2013, The Amarok Development Squad" ).toString(),
-        ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ).toString(),
-        ( "http://amarok.kde.org" ) );
+    App app(argc, argv);
+    app.setApplicationDisplayName(i18n("Amarok"));
 
+    QCoreApplication::setApplicationName("amarok");
+    QCoreApplication::setOrganizationDomain("kde.org");
+    QCoreApplication::setApplicationVersion(AMAROK_VERSION);
+
+    KAboutData aboutData( "amarok",
+            ki18n( "Amarok" ).toString(),
+            AMAROK_VERSION,
+            ki18n( "The audio player for KDE" ).toString(),
+            KAboutLicense::GPL,
+            ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2013, The Amarok Development Squad" ).toString(),
+            ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ).toString(),
+            ( "http://amarok.kde.org" ) );
+
+    //------------ About data ----------------------
     //Currently active Authors
     extern OcsData ocsData;
     aboutData.addAuthor( ki18n("Bart 'Where are my toothpicks' Cerneels").toString(),
@@ -276,47 +284,47 @@ int main( int argc, char *argv[] )
     ocsData.addDonor( QString(), KAboutPerson( ki18n( "Chris Wales" ).toString() ) );
     ocsData.addDonor( QString(), KAboutPerson( ki18n( "ZImin Stanislav" ).toString() ) );
 
-    KCmdLineArgs::reset();
-    QApplication app(argc, argv);
-    QCommandLineParser parser;
     KAboutData::setApplicationData(aboutData);
+
+    // Command line parser
+    QCommandLineParser parser;
     parser.addVersionOption();
     parser.addHelpOption();
+
     aboutData.setupCommandLine(&parser);
+    app.initCliArgs(&parser);
     parser.process(app);
     aboutData.processCommandLine(&parser);
 
-    App::initCliArgs();
-    KUniqueApplication::addCmdLineOptions();
+    KDBusService::StartupOptions startOptions = parser.isSet( "multipleinstances" ) ? KDBusService::Multiple
+                                                                                    : KDBusService::Unique ;
+    // register  the app  to dbus
+    KDBusService dbusService( startOptions );
 
-    KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
+    QObject::connect(&dbusService, SIGNAL(activateRequested(QStringList,QString)),
+                     &app, SLOT(activateRequested(QStringList,QString)));
 
-    KUniqueApplication::StartFlag startFlag;
-    startFlag = args->isSet( "multipleinstances" )
-                ? KUniqueApplication::NonUniqueInstance
-                : KUniqueApplication::StartFlag( 0 );
-
-    const bool debugColorsEnabled = !args->isSet( "coloroff" );
-    const bool debugEnabled = args->isSet( "debug" );
+    const bool debugColorsEnabled = !parser.isSet( "coloroff" );
+    const bool debugEnabled = parser.isSet( "debug" );
 
     Debug::setDebugEnabled( debugEnabled );
     Debug::setColoredDebug( debugColorsEnabled );
 
-    if ( args->isSet( "debug-audio" ) ) {
+    if ( parser.isSet( "debug-audio" ) ) {
         qputenv( "PHONON_DEBUG", QByteArray( "3" ) );
         qputenv( "PHONON_BACKEND_DEBUG", QByteArray( "3" ) );
         qputenv( "PHONON_PULSEAUDIO_DEBUG", QByteArray( "3" ) );
     }
 
-    if( !KUniqueApplication::start( startFlag ) ) {
+#pragma message("PORT KF5: This *if* hould be moved to activateRequested() slot")
+    if( !dbusService.isRegistered() ) {
         QList<QByteArray> instanceOptions;
         instanceOptions << "previous" << "play" << "play-pause" << "stop" << "next"
                 << "append" << "queue" << "load";
-
         // Check if an option for a running instance is set
         bool isSet = false;
         for( int i = 0; i < instanceOptions.size(); ++i )
-            if( args->isSet( instanceOptions[ i ] ) )
+            if( parser.isSet( instanceOptions[ i ] ) )
                 isSet = true;
 
         if ( !isSet )
@@ -335,8 +343,7 @@ int main( int argc, char *argv[] )
     XInitThreads();
 #endif
 
-    App ap;
-    ap.setUniqueInstance( startFlag == KUniqueApplication::NonUniqueInstance );
+    app.continueInit();
     return app.exec();
 }
 

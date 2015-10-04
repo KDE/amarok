@@ -253,10 +253,12 @@ MainWindow::init()
                     | QMainWindow::AnimatedDocks | QMainWindow::VerticalTabs );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
-    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
+#pragma message("PORTME KF5: line here")
+    //addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
     addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock.data(), Qt::Horizontal );
 
-    setLayoutLocked( AmarokConfig::lockLayout() );
+#pragma message("PORTME KF5: line here")
+    //setLayoutLocked( AmarokConfig::lockLayout() );
 
     //<Browsers>
     {
@@ -271,7 +273,6 @@ MainWindow::init()
         m_collectionBrowser->setShortDescription( i18n( "Local sources of content" ) );
         m_browserDock.data()->list()->addCategory( m_collectionBrowser );
         PERF_LOG( "Created CollectionWidget" )
-
 
         PERF_LOG( "Creating ServiceBrowser" )
         ServiceBrowser *serviceBrowser = ServiceBrowser::instance();
@@ -294,6 +295,7 @@ MainWindow::init()
         FileBrowser *fileBrowser = new FileBrowser( "files", 0 );
         fileBrowser->setPrettyName( i18n("Files") );
         fileBrowser->setIcon( QIcon::fromTheme( "folder-amarok" ) );
+
         fileBrowser->setShortDescription( i18n( "Browse local hard drive for content" ) );
         m_browserDock.data()->list()->addCategory( fileBrowser );
         PERF_LOG( "Created FileBrowser" )
@@ -305,13 +307,12 @@ MainWindow::init()
         m_browserDock.data()->list()->addCategory( The::podcastCategory() );
         PERF_LOG( "Created Podcast Category" )
 
-        // If Amarok is started for the first time, set initial dock widget sizes
+    // If Amarok is started for the first time, set initial dock widget sizes
         if( !Amarok::config( "MainWindow" ).hasKey( "State" ) )
             QTimer::singleShot( 0, this, SLOT(setDefaultDockSizes()) );
 
         PERF_LOG( "finished MainWindow::init" )
     }
-
     The::amarokUrlHandler(); //Instantiate
     The::coverFetcher(); //Instantiate
 
@@ -1327,6 +1328,7 @@ MainWindow::setDefaultDockSizes() // SLOT
     const int widgetWidth = totalWidgetWidth / 3;
     const int leftover = totalWidgetWidth - 3 * widgetWidth;
 
+    #pragma message("PORTME KF5")/*
     //We need to set fixed widths initially, just until the main window has been properly laid out. As soon as this has
     //happened, we will unlock these sizes again so that the elements can be resized by the user.
     const int mins[3] = { m_browserDock.data()->minimumWidth(), m_contextDock.data()->minimumWidth(), m_playlistDock.data()->minimumWidth() };
@@ -1342,6 +1344,7 @@ MainWindow::setDefaultDockSizes() // SLOT
     m_browserDock.data()->setMinimumWidth( mins[0] ); m_browserDock.data()->setMaximumWidth( maxs[0] );
     m_contextDock.data()->setMinimumWidth( mins[1] ); m_contextDock.data()->setMaximumWidth( maxs[1] );
     m_playlistDock.data()->setMinimumWidth( mins[2] ); m_playlistDock.data()->setMaximumWidth( maxs[2] );
+    */
 }
 
 bool

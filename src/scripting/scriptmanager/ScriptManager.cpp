@@ -57,14 +57,15 @@ ScriptManager::ScriptManager( QObject* parent )
 
     if( AmarokConfig::enableScripts() == false )
     {
-        if( !minimumBindingsAvailable() )
+#pragma message("PORTEME KF5: not sure if this is relevant in QT5")
+        /*if( !minimumBindingsAvailable() )
         {
             KMessageBox::error( 0,
                                 i18n( "Scripts have been disabled since you are missing the QtScriptQtBindings "
                                       "package. Please install the package and restart Amarok for scripts to work." ),
                                 i18n( "Scripts Disabled!" )  );
             return;
-        }
+        }*/
         AmarokConfig::setEnableScripts( true );
     }
 

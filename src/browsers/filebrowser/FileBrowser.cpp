@@ -90,7 +90,7 @@ FileBrowser::Private::~Private()
 void
 FileBrowser::Private::readConfig()
 {
-    const QUrl homeUrl( QDir::homePath() );
+    const QUrl homeUrl = QUrl::fromLocalFile( QDir::homePath() );
     const QUrl savedUrl = Amarok::config( "File Browser" ).readEntry( "Current Directory", homeUrl );
     bool useHome( true );
     // fall back to $HOME if the saved dir has since disappeared or is a remote one
@@ -221,6 +221,7 @@ FileBrowser::FileBrowser( const char *name, QWidget *parent )
                         "You can then add these files to the playlist as well as perform basic "
                         "file operations." )
                        );
+
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
 
     // set background
@@ -512,7 +513,6 @@ FileBrowser::setDir( const QUrl &dir )
             d->fileView->setDragEnabled( true );
             d->fileView->header()->setVisible( true );
         }
-
         d->kdirModel->dirLister()->openUrl( dir );
     }
 

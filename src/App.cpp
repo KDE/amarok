@@ -62,7 +62,6 @@
 
 #include <iostream>
 
-#include <QAction>
 #include <KCalendarSystem>
 #include <KCmdLineArgs>                  //initCliArgs()
 #include <KDirLister>
@@ -77,6 +76,7 @@
 #include <KStandardDirs>
 #include <KGlobal>
 
+#include <QAction>
 #include <QByteArray>
 #include <QDesktopServices>
 #include <QFile>
@@ -93,9 +93,10 @@ extern void setupEventHandler_mac(SRefCon);
 QStringList App::s_delayedAmarokUrls = QStringList();
 AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
-App::App()
-    : KUniqueApplication()
-    , m_tray(0)
+App::App(int &argc, char **argv)
+    : QApplication(argc, argv)
+    , m_args(nullptr)
+    , m_tray(nullptr)
 {
     DEBUG_BLOCK
     PERF_LOG( "Begin Application ctor" )
@@ -121,7 +122,6 @@ App::App()
     qRegisterMetaType<Meta::LabelList>();
     qRegisterMetaType<Playlists::PlaylistPtr>();
     qRegisterMetaType<Playlists::PlaylistList>();
-
 
 #ifdef Q_WS_MAC
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp
@@ -170,14 +170,13 @@ App::App()
 #endif
 
     PERF_LOG( "Done App ctor" )
-
-    continueInit();
 }
 
 App::~App()
 {
     DEBUG_BLOCK
 
+    delete m_args;
     CollectionManager::instance()->stopScan();
 
     // Hiding the OSD before exit prevents crash
@@ -256,22 +255,24 @@ App::~App()
 }
 
 void
-App::handleCliArgs() //static
+App::handleCliArgs(const QString &cwd)
 {
     DEBUG_BLOCK
 
-    KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-
-    if( args->isSet( "cwd" ) )
-        KCmdLineArgs::setCwd( args->getOption( "cwd" ).toLocal8Bit() );
+    //TODO Resolve positional arguments using cwd
+    if( m_args->isSet( "cwd" ) ) {
+        m_cwd = m_args->value( "cwd" );
+    } else {
+        m_cwd = cwd;
+    }
 
     bool haveArgs = true; // assume having args in first place
-    if( args->count() > 0 )
+    if( !m_args->positionalArguments().isEmpty() )
     {
         QList<QUrl> list;
-        for( int i = 0; i < args->count(); i++ )
+        for( int i = 0; i < m_args->positionalArguments().count() ; i++ )
         {
-            QUrl url = args->url( i );
+            QUrl url(  m_args->positionalArguments().at( i ) );
             //TODO:PORTME
             if( Podcasts::PodcastProvider::couldBeFeed( url.url() ) )
             {
@@ -285,18 +286,18 @@ App::handleCliArgs() //static
         }
 
         Playlist::AddOptions options;
-        if( args->isSet( "queue" ) )
+        if( m_args->isSet( "queue" ) )
            options = Playlist::OnQueueToPlaylistAction;
-        else if( args->isSet( "append" ) )
+        else if( m_args->isSet( "append" ) )
            options = Playlist::OnAppendToPlaylistAction;
-        else if( args->isSet( "load" ) )
+        else if( m_args->isSet( "load" ) )
             options = Playlist::OnReplacePlaylistAction;
         else
             options = Playlist::OnPlayMediaAction;
 
         The::playlistController()->insertOptioned( list, options );
     }
-    else if ( args->isSet( "cdplay" ) )
+    else if ( m_args->isSet( "cdplay" ) )
         The::mainWindow()->playAudioCd();
 
     //we shouldn't let the user specify two of these since it is pointless!
@@ -304,17 +305,17 @@ App::handleCliArgs() //static
     //thus pause is the least destructive, followed by stop as brakes are the most important bit of a car(!)
     //then the others seemed sensible. Feel free to modify this order, but please leave justification in the cvs log
     //I considered doing some sanity checks (eg only stop if paused or playing), but decided it wasn't worth it
-    else if ( args->isSet( "pause" ) )
+    else if ( m_args->isSet( "pause" ) )
         The::engineController()->pause();
-    else if ( args->isSet( "stop" ) )
+    else if ( m_args->isSet( "stop" ) )
         The::engineController()->stop();
-    else if ( args->isSet( "play-pause" ) )
+    else if ( m_args->isSet( "play-pause" ) )
         The::engineController()->playPause();
-    else if ( args->isSet( "play" ) ) //will restart if we are playing
+    else if ( m_args->isSet( "play" ) ) //will restart if we are playing
         The::engineController()->play();
-    else if ( args->isSet( "next" ) )
+    else if ( m_args->isSet( "next" ) )
         The::playlistActions()->next();
-    else if ( args->isSet( "previous" ) )
+    else if ( m_args->isSet( "previous" ) )
         The::playlistActions()->back();
     else // no args given
         haveArgs = false;
@@ -340,7 +341,7 @@ App::handleCliArgs() //static
     }
 
     firstTime = false;
-    args->clear();    //free up memory
+    m_args->clearPositionalArguments();    //free up memory
 }
 
 
@@ -349,40 +350,32 @@ App::handleCliArgs() //static
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-App::initCliArgs() //static
+App::initCliArgs(QCommandLineParser *parser)
 {
+    m_args = parser;
     // Update main.cpp (below KUniqueApplication::start() wrt instanceOptions) aswell if needed!
-    KCmdLineOptions options;
+    QList<QCommandLineOption> options;
 
-    options.add("+[URL(s)]", ki18n( "Files/URLs to open" ));
-    options.add("cdplay", ki18n("Immediately start playing an audio cd"));
-    options.add("r");
-    options.add("previous", ki18n( "Skip backwards in playlist" ));
-    options.add("p");
-    options.add("play", ki18n( "Start playing current playlist" ));
-    options.add("t");
-    options.add("play-pause", ki18n( "Play if stopped, pause if playing" ));
-    options.add("pause", ki18n( "Pause playback" ));
-    options.add("s");
-    options.add("stop", ki18n( "Stop playback" ));
-    options.add("f");
-    options.add("next", ki18n( "Skip forwards in playlist" ));
-    options.add(":", ki18n("Additional options:"));
-    options.add("a");
-    options.add("append", ki18n( "Append files/URLs to playlist" ));
-    options.add("queue", ki18n("Queue URLs after the currently playing track"));
-    options.add("l");
-    options.add("load", ki18n("Load URLs, replacing current playlist"));
-    options.add("d");
-    options.add("debug", ki18n("Print verbose debugging information"));
-    options.add("debug-audio", ki18n("Print verbose debugging information from the audio system"));
-    options.add("c");
-    options.add("coloroff", ki18n("Disable colorization for debug output."));
-    options.add("m");
-    options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
-    options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
+    options.append(QCommandLineOption("+[URL(s)]", i18n( "Files/URLs to open" )));
+    options.append(QCommandLineOption("cdplay", i18n("Immediately start playing an audio cd")));
+    options.append(QCommandLineOption(QStringList() << "r" << "previous", i18n( "Skip backwards in playlist" )));
+    options.append(QCommandLineOption(QStringList() << "p" << "play", i18n( "Start playing current playlist" )));
+    options.append(QCommandLineOption(QStringList() << "t" << "play-pause", i18n( "Play if stopped, pause if playing" )));
+    options.append(QCommandLineOption("pause", i18n( "Pause playback" )));
+    options.append(QCommandLineOption(QStringList() << "s" << "stop", i18n( "Stop playback" )));
+    options.append(QCommandLineOption(QStringList() << "f" << "next", i18n( "Skip forwards in playlist" )
+    + "\n\n\n"
+    + i18n("Additional options:")));
+    options.append(QCommandLineOption(QStringList() << "a" << "append", i18n( "Append files/URLs to playlist" )));
+    options.append(QCommandLineOption("queue", i18n("Queue URLs after the currently playing track")));
+    options.append(QCommandLineOption(QStringList() << "l" << "load", i18n("Load URLs, replacing current playlist")));
+    options.append(QCommandLineOption(QStringList() << "d" << "debug", i18n("Print verbose debugging information")));
+    options.append(QCommandLineOption("debug-audio", i18n("Print verbose debugging information from the audio system")));
+    options.append(QCommandLineOption(QStringList() << "c" << "coloroff", i18n("Disable colorization for debug output.")));
+    options.append(QCommandLineOption(QStringList() << "m" << "multipleinstances", i18n("Allow running multiple Amarok instances")));
+    options.append(QCommandLineOption("cwd", i18n( "Base for relative filenames/URLs" )));
 
-    KCmdLineArgs::addCmdLineOptions( options );   //add our own options
+    parser->addOptions(options);      //add our own options
 }
 
 
@@ -427,9 +420,11 @@ App::continueInit()
     DEBUG_BLOCK
 
     PERF_LOG( "Begin App::continueInit" )
-    const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-    const bool restoreSession = args->count() == 0 || args->isSet( "append" )
-                                || args->isSet( "queue" )
+
+    newInstance();
+
+    const bool restoreSession = m_args->positionalArguments().isEmpty() || m_args->isSet( "append" )
+                                || m_args->isSet( "queue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
 
@@ -465,7 +460,6 @@ App::continueInit()
 
     // Create engine, show TrayIcon etc.
     applySettings( true );
-
     // Must be created _after_ MainWindow.
     PERF_LOG( "Starting ScriptManager" )
     ScriptManager::instance();
@@ -479,7 +473,6 @@ App::continueInit()
 
     // Restore keyboard shortcuts etc from config
     Amarok::actionCollection()->readSettings();
-
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
     if( !Amarok::config().readEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon() )
@@ -498,11 +491,11 @@ App::continueInit()
     // check that the amarok sql configuration is valid.
     if( !StorageManager::instance()->getLastErrors().isEmpty() )
     {
-        KMessageBox::error( The::mainWindow(), i18n( "The amarok database reported "
-                 "the following errors:\n%1\nIn most cases you will need to resolve "
-                 "these errors before Amarok will run properly." ).
-                 arg( StorageManager::instance()->getLastErrors().join( "\n" ) ),
-                 i18n( "Database Error" ));
+        QMessageBox::critical( The::mainWindow(), i18n( "Database Error" ),
+                 i18n( "The amarok database reported the following errors:"
+                 "\n%1\nIn most cases you will need to resolve these errors "
+                 "before Amarok will run properly." ).
+                 arg( StorageManager::instance()->getLastErrors().join( "\n" ) ) );
         StorageManager::instance()->clearLastErrors();
         slotConfigAmarok( "DatabaseConfig" );
     }
@@ -511,8 +504,7 @@ App::continueInit()
         handleFirstRun();
     }
 
-
-    if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
+    if( AmarokConfig::resumePlayback() && restoreSession && m_args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
         //do this after applySettings() so OSD displays correctly
         The::engineController()->restoreSession();
@@ -523,7 +515,20 @@ App::continueInit()
         AmarokUrl aUrl( urlString );
         aUrl.run();
     }
+    
     s_delayedAmarokUrls.clear();
+}
+
+//SLOT
+void App::activateRequested(const QStringList &arguments, const QString & cwd)
+{
+        qDebug() << "activateRequested";
+    if (!arguments.isEmpty()) {
+        m_args->parse(arguments);
+        handleCliArgs(cwd);
+    } else {
+        newInstance( );
+    }
 }
 
 void App::slotConfigAmarok( const QString& page )
@@ -565,7 +570,7 @@ void App::quit()
 
     // Following signal is relayed to scripts, which may block quitting for a while
     emit prepareToQuit();
-    KApplication::quit();
+    QApplication::quit();
 }
 
 bool App::event( QEvent *event )
@@ -580,7 +585,7 @@ bool App::event( QEvent *event )
             return true;
         }
         default:
-            return KUniqueApplication::event( event );
+            return QApplication::event( event );
     }
 }
 
@@ -597,7 +602,7 @@ int App::newInstance()
 
     first = false;
 
-    handleCliArgs();
+    handleCliArgs(QDir::currentPath());
     return 0;
 }
 
@@ -637,6 +642,6 @@ void App::handleFirstRun()
         default:
             break;
     }
+
     config.writeEntry( "First Run", false );
 }
-

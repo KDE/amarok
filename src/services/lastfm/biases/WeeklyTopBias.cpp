@@ -58,7 +58,7 @@ Dynamic::WeeklyTopBiasFactory::createBias()
 
 Dynamic::WeeklyTopBias::WeeklyTopBias()
     : SimpleMatchBias()
-    , m_weeklyTimesJob( 0 )
+    , m_weeklyTimesJob( )
 {
     m_range.from = QDateTime::currentDateTime();
     m_range.to = QDateTime::currentDateTime();
