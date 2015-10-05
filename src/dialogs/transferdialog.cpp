@@ -57,7 +57,7 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     m_accepted = false;
     m_sort1LastIndex = m_sort2LastIndex = -1;
 
-    kapp->setTopWidget( this );
+    //kapp->setTopWidget( this );
     setWindowTitle( i18n( "Transfer Queue to Device" ) );
 
     KVBox *vbox = new KVBox( this );

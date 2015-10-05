@@ -24,7 +24,7 @@
 
 #include "widgets/ProgressWidget.h"
 
-#include <KApplication>
+#include <QApplication>
 #include <QIcon>
 #include <KLocale>
 #include <KVBox>
@@ -75,7 +75,7 @@ SlimToolbar::eventFilter( QObject* object, QEvent* event )
     // This makes it possible to change volume by using the mouse wheel anywhere on the toolbar
     if( event->type() == QEvent::Wheel && object == this )
     {
-        kapp->sendEvent( m_volumePopupButton, event );
+        qApp->sendEvent( m_volumePopupButton, event );
         return true;
     }
 

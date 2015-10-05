@@ -48,7 +48,7 @@ namespace Mpris1
 {
 
     RootHandler::RootHandler()
-        : QObject( kapp )
+        : QObject( qApp )
     {
         qDBusRegisterMetaType<Version>();
 

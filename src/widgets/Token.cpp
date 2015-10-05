@@ -21,7 +21,7 @@
 #include "Token.h"
 #include "TokenDropTarget.h"
 
-#include <KApplication>
+#include <QApplication>
 
 #include <QHBoxLayout>
 #include <QPainter>
@@ -214,7 +214,7 @@ Token::mouseMoveEvent( QMouseEvent* event )
         event->buttons() & Qt::LeftButton )
     {
         int distance = ( event->pos() - m_startPos ).manhattanLength();
-        if ( distance >= KApplication::startDragDistance() )
+        if ( distance >= QApplication::startDragDistance() )
             performDrag();
     }
     QWidget::mouseMoveEvent( event );

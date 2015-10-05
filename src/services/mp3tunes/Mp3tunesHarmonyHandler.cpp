@@ -28,7 +28,7 @@
 Mp3tunesHarmonyHandler::Mp3tunesHarmonyHandler( QString identifier,
                                                 QString email,
                                                 QString pin )
-    : QObject( kapp )
+    : QObject( qApp )
     , m_daemon( 0 )
     , m_identifier( identifier )
     , m_email( email )

@@ -40,7 +40,7 @@
 #include "collectionscanner/BatchFile.h"
 
 #include <KStandardDirs>
-#include <KApplication>
+#include <QApplication>
 #include <ThreadWeaver/ThreadWeaver>
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Job>
@@ -250,12 +250,12 @@ SqlCollection::SqlCollection( SqlStorage* storage )
             dialog.show();
             dialog.raise();
             // otherwise the splash screen doesn't load image and this dialog is not shown:
-            kapp->processEvents();
+            qApp->processEvents();
 
             updater.update();
 
             dialog.hide();
-            kapp->processEvents();
+            qApp->processEvents();
         }
         else // this is new schema creation
             updater.update();

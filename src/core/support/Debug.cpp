@@ -55,7 +55,7 @@ IndentPrivate::IndentPrivate(QObject* parent)
 /**
  * We can't use a statically instantiated QString for the indent, because
  * static namespaces are unique to each dlopened library. So we piggy back
- * the QString on the KApplication instance
+ * the QString on the QApplication instance
  */
 IndentPrivate* IndentPrivate::instance()
 {

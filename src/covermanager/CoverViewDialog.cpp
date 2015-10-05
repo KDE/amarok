@@ -20,7 +20,7 @@
 #include "core/meta/Meta.h"
 #include "widgets/PixmapViewer.h"
 
-#include <KApplication>
+#include <QApplication>
 #include <QDialog>
 #include <KLocalizedString>
 #include <KWindowSystem>
@@ -72,7 +72,7 @@ CoverViewDialog::zoomFactorChanged( qreal value )
 void
 CoverViewDialog::createViewer( const QImage &image, const QWidget *widget )
 {
-    int screenNumber = KApplication::desktop()->screenNumber( widget );
+    int screenNumber = QApplication::desktop()->screenNumber( widget );
     PixmapViewer *pixmapViewer = new PixmapViewer( this, QPixmap::fromImage(image), screenNumber );
     QHBoxLayout *layout = new QHBoxLayout( this );
     layout->addWidget( pixmapViewer );

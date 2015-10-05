@@ -67,7 +67,7 @@ namespace Amarok
     inline QString xmlVersion() { return "2.4"; }
 
     /**
-     * Convenience function to return the KApplication instance KConfig object
+     * Convenience function to return the QApplication instance KConfig object
      * pre-set to a specific group.
      * @param group Will pre-set the KConfig object to this group.
      */

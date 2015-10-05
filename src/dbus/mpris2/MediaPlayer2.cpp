@@ -30,7 +30,7 @@
 #include <QWidget>
 
 #include <K4AboutData>
-#include <KApplication>
+#include <QApplication>
 #include <KCmdLineArgs>
 #include <KWindowSystem>
 

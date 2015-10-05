@@ -62,7 +62,7 @@ namespace Mpris1
 {
 
     PlayerHandler::PlayerHandler()
-        : QObject(kapp)
+        : QObject(qApp)
     {
         qDBusRegisterMetaType<Status>();
 

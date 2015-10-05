@@ -22,7 +22,7 @@
 #include "scripting/scriptmanager/ScriptManager.h"
 
 #include <KAboutData>
-#include <KApplication>
+#include <QApplication>
 #include <KGlobal>
 #include <KPluginInfo>
 #include <KService>

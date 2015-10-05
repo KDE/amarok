@@ -32,7 +32,7 @@
 #include <QScrollBar>
 #include <QTabWidget>
 
-#include <kapplication.h>
+#include <qapplication.h>
 #include <kglobal.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>

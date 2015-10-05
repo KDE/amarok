@@ -19,7 +19,7 @@
 
 #include "TokenPool.h"
 
-#include <KApplication>
+#include <QApplication>
 
 #include <QMouseEvent>
 #include <QMimeData>
@@ -99,7 +99,7 @@ TokenPool::mouseMoveEvent( QMouseEvent *event )
     if( event->buttons() & Qt::LeftButton )
     {
         int distance = ( event->pos() - m_startPos ).manhattanLength();
-        if ( distance >= KApplication::startDragDistance() )
+        if ( distance >= QApplication::startDragDistance() )
             performDrag();
     }
     KListWidget::mouseMoveEvent( event );

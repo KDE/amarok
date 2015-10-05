@@ -36,7 +36,7 @@ namespace Mpris1
 {
 
     TrackListHandler::TrackListHandler()
-        : QObject( kapp )
+        : QObject( qApp )
     {
         new Mpris1TrackListAdaptor(this);
         QDBusConnection::sessionBus().registerObject( "/TrackList", this );

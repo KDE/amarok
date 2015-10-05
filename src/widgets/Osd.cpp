@@ -34,7 +34,7 @@
 #include "core/support/Debug.h"
 #include "widgets/StarManager.h"
 
-#include <KApplication>
+#include <QApplication>
 #include <QIcon>
 #include <KLocale>
 #include <KWindowSystem>
@@ -97,7 +97,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     connect( m_fadeTimeLine, SIGNAL(valueChanged(qreal)), SLOT(setFadeOpacity(qreal)) );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
-    kapp->setTopWidget( this );
+    //kapp->setTopWidget( this );
 }
 
 OSDWidget::~OSDWidget()

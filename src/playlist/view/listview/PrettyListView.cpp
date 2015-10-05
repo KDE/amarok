@@ -50,7 +50,7 @@
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
 
-#include <KApplication>
+#include <QApplication>
 #include <QMenu>
 #include <QUrl>
 #include <KLocale>
@@ -670,7 +670,7 @@ Playlist::PrettyListView::paintEvent( QPaintEvent *event )
         if( m_dropIndicator.isValid() )
         {
             const QPoint offset( 6, 0 );
-            QColor c = KApplication::palette().color( QPalette::Highlight );
+            QColor c = QApplication::palette().color( QPalette::Highlight );
             painter.setPen( QPen( c, 6, Qt::SolidLine, Qt::RoundCap ) );
             painter.drawLine( m_dropIndicator.topLeft() + offset,
                               m_dropIndicator.topRight() - offset );
@@ -685,7 +685,7 @@ Playlist::PrettyListView::paintEvent( QPaintEvent *event )
             else
                 emptyText = i18n( "Add some songs here by dragging them from all around." );
 
-            QColor c = KApplication::palette().color( foregroundRole() );
+            QColor c = QApplication::palette().color( foregroundRole() );
             c.setAlpha( c.alpha() / 2 );
             painter.setPen( c );
             painter.drawText( rect(),

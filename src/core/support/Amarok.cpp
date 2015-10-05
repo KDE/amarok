@@ -236,7 +236,7 @@ namespace Amarok
     {
         if( !actionCollectionObject )
         {
-            actionCollectionObject = new KActionCollection( kapp );
+            actionCollectionObject = new KActionCollection( qApp );
             actionCollectionObject.data()->setObjectName( "Amarok-KActionCollection" );
         }
 

@@ -26,7 +26,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <KApplication>
+#include <QApplication>
 
 #include <QByteArray>
 #include <QScriptEngine>

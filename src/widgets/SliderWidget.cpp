@@ -252,7 +252,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
     /*
     // TODO: Phonon
     menu.addSeparator();
-    menu.addAction( QIcon::fromTheme( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), kapp, SLOT(slotConfigEqualizer()) )->setData( -1 );
+    menu.addAction( QIcon::fromTheme( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), qApp, SLOT(slotConfigEqualizer()) )->setData( -1 );
     */
 
     QAction* a = menu.exec( mapToGlobal( e->pos() ) );

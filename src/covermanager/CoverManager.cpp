@@ -37,7 +37,7 @@
 #include "widgets/LineEdit.h"
 #include "widgets/PixmapViewer.h"
 
-#include <KApplication>
+#include <QApplication>
 #include <KIO/NetAccess>
 #include <KLocalizedString>
 #include <QMenu>    //showCoverMenu()
@@ -105,7 +105,7 @@ CoverManager::CoverManager( QWidget *parent )
     s_instance = this;
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
-    kapp->setTopWidget( this );
+    //kapp->setTopWidget( this );
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox();
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -427,7 +427,7 @@ CoverManager::slotArtistQueryDone() //SLOT
     m_coverViewSpacer->show();
     foreach( const Meta::AlbumPtr &album, m_albumList )
     {
-        kapp->processEvents( QEventLoop::ExcludeSocketNotifiers );
+        qApp->processEvents( QEventLoop::ExcludeSocketNotifiers );
         if( isHidden() )
         {
             m_progress->endProgressOperation( m_coverView );

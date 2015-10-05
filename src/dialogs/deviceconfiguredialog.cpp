@@ -58,7 +58,7 @@ DeviceConfigureDialog::DeviceConfigureDialog( MediaDevice *device )
 //  showButtonSeparator( true );
 
 
-    kapp->setTopWidget( this );
+    //kapp->setTopWidget( this );
     setWindowTitle( i18n( "Configure Media Device" ) );
     buttonBox->button(QDialogButtonBox::Apply)->setVisible(false);
 

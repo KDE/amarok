@@ -24,7 +24,7 @@
 #include "CoverManager.h"
 #include "CoverViewDialog.h"
 
-#include <KApplication>
+#include <QApplication>
 #include <KDirOperator>
 #include <KFile>
 #include <KFileDialog>
@@ -122,7 +122,7 @@ UnsetCoverAction::slotTriggered()
             if( album && album->canUpdateImage() )
                 album->removeImage();
         }
-        kapp->processEvents();
+        qApp->processEvents();
     }
 }
 

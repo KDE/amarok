@@ -69,7 +69,7 @@
 
 #include <QAction>          //m_actionCollection
 #include <KActionCollection>
-#include <KApplication>     //kapp
+#include <QApplication>     //qApp
 #include <KFileDialog>      //openPlaylist()
 #include <KInputDialog>     //slotAddStream()
 #include <KMessageBox>
@@ -433,7 +433,7 @@ MainWindow::closeEvent( QCloseEvent *e )
 
     //KDE policy states we should hide to tray and not quit() when the
     //close window button is pushed for the main widget
-    if( AmarokConfig::showTrayIcon() && e->spontaneous() && !kapp->sessionSaving() )
+    if( AmarokConfig::showTrayIcon() && e->spontaneous() && !qApp->isSavingSession() )
     {
         KMessageBox::information( this,
                 i18n( "<qt>Closing the main window will keep Amarok running in the System Tray. "
@@ -748,9 +748,9 @@ MainWindow::createActions()
     const Playlist::Actions* const pa = The::playlistActions();
     const Playlist::Controller* const pc = The::playlistController();
 
-    KStandardAction::keyBindings( kapp, SLOT(slotConfigShortcuts()), ac );
+    KStandardAction::keyBindings( qApp, SLOT(slotConfigShortcuts()), ac );
     m_showMenuBar = KStandardAction::showMenubar(this, SLOT(slotShowMenuBar()), ac);
-    KStandardAction::preferences( kapp, SLOT(slotConfigAmarok()), ac );
+    KStandardAction::preferences( qApp, SLOT(slotConfigAmarok()), ac );
     ac->action( KStandardAction::name( KStandardAction::KeyBindings ) )->setIcon( QIcon::fromTheme( "configure-shortcuts-amarok" ) );
     ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setIcon( QIcon::fromTheme( "configure-amarok" ) );
     ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setMenuRole(QAction::PreferencesRole); // Define OS X Prefs menu here, removes need for ifdef later
