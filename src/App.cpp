@@ -176,7 +176,7 @@ App::~App()
 {
     DEBUG_BLOCK
 
-    delete m_args;
+    //delete m_args;
     CollectionManager::instance()->stopScan();
 
     // Hiding the OSD before exit prevents crash
