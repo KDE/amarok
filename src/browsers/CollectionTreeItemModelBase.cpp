@@ -579,7 +579,8 @@ CollectionTreeItemModelBase::setLevels( const QList<CategoryId::CatMenuId> &leve
     m_runningQueries.clear();
     m_childQueries.clear();
     m_compilationQueries.clear();
-    filterChildren();
+#pragma message("KF5Port: 1 line here")
+    //filterChildren();
 }
 
 Collections::QueryMaker::QueryType

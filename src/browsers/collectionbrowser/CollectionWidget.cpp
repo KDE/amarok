@@ -261,7 +261,6 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     showCovers->setChecked( AmarokConfig::showAlbumArt() );
     connect( showCovers, SIGNAL(toggled(bool)), SLOT(slotShowCovers(bool)) );
 
-
     d->searchWidget->toolBar()->addSeparator();
 
     QAction *toggleAction = new QAction( QIcon::fromTheme( "view-list-tree" ), i18n( "Merged View" ), this );

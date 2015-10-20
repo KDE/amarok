@@ -173,7 +173,6 @@ Playlist::Dock::polish()
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setMovable( false );
 
-
         QActionGroup *playlistActions = new QActionGroup( m_mainWidget );
         playlistActions->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
 
