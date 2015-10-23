@@ -70,7 +70,11 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
                << "--default-storage-engine=MyISAM"
                << "--innodb=OFF"
                << "--skip-grant-tables"
+#if (defined(MYSQL_VERSION_ID)) && (MYSQL_VERSION_ID >= 50700)
+               << "--myisam-recover-options=FORCE"
+#else
                << "--myisam-recover=FORCE"
+#endif
                << "--key-buffer-size=16777216" // (16Mb)
                << "--character-set-server=utf8"
                << "--collation-server=utf8_bin";
