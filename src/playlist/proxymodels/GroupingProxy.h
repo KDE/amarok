@@ -37,7 +37,7 @@ namespace Playlist
 // Extension of Playlist::DataRoles
 enum GroupDataRoles
 {
-    GroupRole = 256,
+    GroupRole = 0x1000,
     GroupedTracksRole // deprecated
 };
 
