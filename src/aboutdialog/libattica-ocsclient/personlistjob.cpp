@@ -33,7 +33,7 @@
 using namespace AmarokAttica;
 
 PersonListJob::PersonListJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 

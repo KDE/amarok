@@ -32,7 +32,7 @@ static const int DELAYED_SCAN_INTERVAL = 2 * 1000; // = 2 seconds
 
 AbstractDirectoryWatcher::AbstractDirectoryWatcher()
     : QObject()
-    , ThreadWeaver::Job( 0 )
+    , ThreadWeaver::Job( )
     , m_delayedScanTimer( 0 )
     , m_watcher( 0 )
     , m_aborted( false )

@@ -33,7 +33,7 @@
 using namespace AmarokAttica;
 
 ContentJob::ContentJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 

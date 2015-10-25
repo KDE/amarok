@@ -21,7 +21,7 @@
 #include <QScrollArea>
 
 
-OcsPersonListWidget::OcsPersonListWidget( const QList< KAboutPerson > &persons,
+OcsPersonListWidget::OcsPersonListWidget( const QList< K4AboutPerson > &persons,
                                           const OcsData::OcsPersonList *ocsPersons,
                                           OcsPersonItem::PersonStatus status,
                                           QWidget *parent )

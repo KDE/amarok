@@ -71,6 +71,7 @@
 #include <KActionCollection>
 #include <KApplication>     //kapp
 #include <KFileDialog>      //openPlaylist()
+#include <KCmdLineArgs>
 #include <KInputDialog>     //slotAddStream()
 #include <KMessageBox>
 #include <KLocale>
@@ -253,7 +254,7 @@ MainWindow::init()
                     | QMainWindow::AnimatedDocks | QMainWindow::VerticalTabs );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
-    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
+    //addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
     addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock.data(), Qt::Horizontal );
 
     setLayoutLocked( AmarokConfig::lockLayout() );
@@ -501,7 +502,8 @@ MainWindow::slotShowCoverManager() //SLOT
 void
 MainWindow::slotShowDiagnosticsDialog()
 {
-    DiagnosticDialog *dialog = new DiagnosticDialog( KAboutData::applicationData(), this );
+    const K4AboutData * about(KCmdLineArgs::aboutData());
+    DiagnosticDialog *dialog = new DiagnosticDialog( *about, this );
     dialog->show();
 }
 
@@ -1191,14 +1193,15 @@ MainWindow::slotShowMenuBar()
 void
 MainWindow::showAbout()
 {
-    ExtendedAboutDialog dialog( KAboutData::applicationData(), &ocsData );
+    ExtendedAboutDialog dialog( KCmdLineArgs::aboutData(), &ocsData );
     dialog.exec();
 }
 
 void
 MainWindow::showReportBug()
 {
-    KBugReport * rbDialog = new KBugReport( KAboutData::applicationData() ,this  );
+    const K4AboutData * about(KCmdLineArgs::aboutData());
+    KBugReport * rbDialog = new KBugReport( *about ,this  );
     rbDialog->setObjectName( "KBugReport" );
     rbDialog->exec();
 }
@@ -1252,13 +1255,13 @@ MainWindow::activeBrowserName()
 
 void
 MainWindow::setLayoutLocked( bool locked )
-{
+{/*
     DEBUG_BLOCK
 
     if( locked )
     {
         m_browserDock.data()->setMovable( false );
-        m_contextDock.data()->setMovable( false );
+//        m_contextDock.data()->setMovable( false );
         m_playlistDock.data()->setMovable( false );
 
         m_slimToolbar.data()->setFloatable( false );
@@ -1270,7 +1273,7 @@ MainWindow::setLayoutLocked( bool locked )
     else
     {
         m_browserDock.data()->setMovable( true );
-        m_contextDock.data()->setMovable( true );
+//        m_contextDock.data()->setMovable( true );
         m_playlistDock.data()->setMovable( true );
 
         m_slimToolbar.data()->setFloatable( true );
@@ -1281,7 +1284,7 @@ MainWindow::setLayoutLocked( bool locked )
     }
 
     AmarokConfig::setLockLayout( locked );
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->writeConfig();*/
 }
 
 void
@@ -1292,19 +1295,19 @@ MainWindow::resetLayout()
 
     // Remove all dock widgets, then add them again. This resets their state completely.
     removeDockWidget( m_browserDock.data() );
-    removeDockWidget( m_contextDock.data() );
+ //   removeDockWidget( m_contextDock.data() );
     removeDockWidget( m_playlistDock.data() );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
-    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
+//    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
     addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock.data(), Qt::Horizontal );
 
     m_browserDock.data()->setFloating( false );
-    m_contextDock.data()->setFloating( false );
+//    m_contextDock.data()->setFloating( false );
     m_playlistDock.data()->setFloating( false );
 
     m_browserDock.data()->show();
-    m_contextDock.data()->show();
+//    m_contextDock.data()->show();
     m_playlistDock.data()->show();
 
     // Now set Amarok's default dockwidget sizes
@@ -1326,7 +1329,7 @@ MainWindow::setDefaultDockSizes() // SLOT
 
     const int widgetWidth = totalWidgetWidth / 3;
     const int leftover = totalWidgetWidth - 3 * widgetWidth;
-
+/*
     //We need to set fixed widths initially, just until the main window has been properly laid out. As soon as this has
     //happened, we will unlock these sizes again so that the elements can be resized by the user.
     const int mins[3] = { m_browserDock.data()->minimumWidth(), m_contextDock.data()->minimumWidth(), m_playlistDock.data()->minimumWidth() };
@@ -1342,7 +1345,7 @@ MainWindow::setDefaultDockSizes() // SLOT
     m_browserDock.data()->setMinimumWidth( mins[0] ); m_browserDock.data()->setMaximumWidth( maxs[0] );
     m_contextDock.data()->setMinimumWidth( mins[1] ); m_contextDock.data()->setMaximumWidth( maxs[1] );
     m_playlistDock.data()->setMinimumWidth( mins[2] ); m_playlistDock.data()->setMaximumWidth( maxs[2] );
-}
+*/}
 
 bool
 MainWindow::playAudioCd()

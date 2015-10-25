@@ -27,7 +27,7 @@ class OcsPersonListWidget : public QWidget
     Q_OBJECT
 
 public:
-    OcsPersonListWidget( const QList< KAboutPerson > &persons,
+    OcsPersonListWidget( const QList< K4AboutPerson > &persons,
                          const OcsData::OcsPersonList *ocsPersons,
                          OcsPersonItem::PersonStatus status = OcsPersonItem::Author,
                          QWidget *parent = 0 );

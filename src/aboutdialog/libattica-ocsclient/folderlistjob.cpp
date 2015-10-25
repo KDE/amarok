@@ -31,7 +31,7 @@
 using namespace AmarokAttica;
 
 FolderListJob::FolderListJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 

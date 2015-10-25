@@ -119,7 +119,7 @@ ServiceAlbumWithCover::imageDownloadCanceled() const
 ///////////////////////////////////////////////////////////////////////////////
 
 ServiceAlbumCoverDownloader::ServiceAlbumCoverDownloader()
-    : m_albumDownloadJob( 0 )
+    : m_albumDownloadJob( )
 {
     m_tempDir = new KTempDir();
     m_tempDir->setAutoRemove( true );

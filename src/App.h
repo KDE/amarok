@@ -22,7 +22,7 @@
 #include <config.h>
 #include "aboutdialog/OcsData.h"
 
-#include <KAboutData>
+#include <K4AboutData>
 #include <KUniqueApplication>   //baseclass
 #include <QUrl>
 

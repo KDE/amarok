@@ -30,7 +30,7 @@
 #include <QPainter>
 #include <QStyleOption>
 
-OcsPersonItem::OcsPersonItem( const KAboutPerson &person, const QString ocsUsername, PersonStatus status, QWidget *parent )
+OcsPersonItem::OcsPersonItem( const K4AboutPerson &person, const QString ocsUsername, PersonStatus status, QWidget *parent )
     : QWidget( parent )
     , m_status( status )
     , m_state( Offline )
@@ -237,7 +237,7 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
             debug() << ocsHomepages.last().first << " :: " << ocsHomepages.last().second;
         }
 
-        bool fillHomepageFromOcs = m_person->webAddress().isEmpty();    //We check if the person already has a homepage in KAboutPerson.
+        bool fillHomepageFromOcs = m_person->webAddress().isEmpty();    //We check if the person already has a homepage in K4AboutPerson.
 
         for( QList< QPair< QString, QString > >::const_iterator entry = ocsHomepages.constBegin();
              entry != ocsHomepages.constEnd(); ++entry )

@@ -57,7 +57,7 @@ PodcastReader::PodcastReader( PodcastProvider *podcastProvider, QObject *parent 
         : QObject( parent )
         , m_xmlReader()
         , m_podcastProvider( podcastProvider )
-        , m_transferJob( 0 )
+        , m_transferJob(  )
         , m_current( 0 )
         , m_actionStack()
         , m_contentType( TextContent )

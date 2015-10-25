@@ -20,7 +20,7 @@
 #include "core/support/Amarok.h"
 #include "amarok_export.h"
 
-#include <KAboutData>
+#include <K4AboutData>
 
 #include <QList>
 #include <QPair>
@@ -29,13 +29,13 @@
 class AMAROK_EXPORT OcsData
 {
 public:
-    typedef QList< QPair< QString, KAboutPerson > > OcsPersonList;
+    typedef QList< QPair< QString, K4AboutPerson > > OcsPersonList;
 
     OcsData( const QByteArray &providerId = "opendesktop" );
     virtual ~OcsData();
-    void addAuthor( const QString &username, const KAboutPerson &person );
-    void addCredit( const QString &username, const KAboutPerson &person );
-    void addDonor( const QString &username, const KAboutPerson &person );
+    void addAuthor( const QString &username, const K4AboutPerson &person );
+    void addCredit( const QString &username, const K4AboutPerson &person );
+    void addDonor( const QString &username, const K4AboutPerson &person );
 
     const OcsPersonList * authors() const { return &m_authors; }
     const OcsPersonList * credits() const { return &m_credits; }
@@ -43,9 +43,9 @@ public:
     const QString providerId() const { return m_providerId; }
 
 private:
-    QList< QPair< QString, KAboutPerson > > m_authors;
-    QList< QPair< QString, KAboutPerson > > m_credits;
-    QList< QPair< QString, KAboutPerson > > m_donors;
+    QList< QPair< QString, K4AboutPerson > > m_authors;
+    QList< QPair< QString, K4AboutPerson > > m_credits;
+    QList< QPair< QString, K4AboutPerson > > m_donors;
     QString m_providerId;
 };
 

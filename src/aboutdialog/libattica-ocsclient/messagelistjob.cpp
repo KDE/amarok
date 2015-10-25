@@ -33,7 +33,7 @@
 using namespace AmarokAttica;
 
 MessageListJob::MessageListJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 

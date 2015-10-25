@@ -25,19 +25,19 @@ OcsData::~OcsData()
 {}
 
 void
-OcsData::addAuthor( const QString &username, const KAboutPerson &person )
+OcsData::addAuthor( const QString &username, const K4AboutPerson &person )
 {
-    m_authors.append( QPair< QString, KAboutPerson >( username, person ) );
+    m_authors.append( QPair< QString, K4AboutPerson >( username, person ) );
 }
 
 void
-OcsData::addCredit( const QString &username, const KAboutPerson &person )
+OcsData::addCredit( const QString &username, const K4AboutPerson &person )
 {
-    m_credits.append( QPair< QString, KAboutPerson >( username, person ) );
+    m_credits.append( QPair< QString, K4AboutPerson >( username, person ) );
 }
 
 void
-OcsData::addDonor( const QString &username, const KAboutPerson &person )
+OcsData::addDonor( const QString &username, const K4AboutPerson &person )
 {
-    m_donors.append( QPair< QString, KAboutPerson >( username, person) );
+    m_donors.append( QPair< QString, K4AboutPerson >( username, person) );
 }

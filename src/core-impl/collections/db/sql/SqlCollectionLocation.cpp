@@ -56,7 +56,7 @@ SqlCollectionLocation::SqlCollectionLocation( SqlCollection *collection )
     , m_collection( collection )
     , m_delegateFactory( 0 )
     , m_overwriteFiles( false )
-    , m_transferjob( 0 )
+    , m_transferjob(  )
 {
     //nothing to do
 }
@@ -679,7 +679,7 @@ SqlCollectionLocation::moodFile( const QUrl &track ) const
 }
 
 TransferJob::TransferJob( SqlCollectionLocation * location, const Transcoding::Configuration & configuration )
-    : KCompositeJob( 0 )
+    : KCompositeJob( )
     , m_location( location )
     , m_killed( false )
     , m_transcodeFormat( configuration )

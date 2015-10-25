@@ -33,7 +33,7 @@
 using namespace AmarokAttica;
 
 ActivityListJob::ActivityListJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 

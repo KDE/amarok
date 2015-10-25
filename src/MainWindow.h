@@ -25,6 +25,7 @@
 #include "browsers/BrowserDock.h"
 
 #include <KMainWindow>
+#include <K4AboutData>
 #include <KVBox>
 #include <Phonon/Global>
 #include <KToggleAction>

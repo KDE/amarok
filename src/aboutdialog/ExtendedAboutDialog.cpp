@@ -87,12 +87,12 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
     dialog->show();
 }
 
-ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *ocsData, QWidget *parent)
+ExtendedAboutDialog::ExtendedAboutDialog(const K4AboutData *about, const OcsData *ocsData, QWidget *parent)
   : QDialog(parent)
   , d(new Private(this))
 {
     DEBUG_BLOCK
-    const KAboutData *aboutData = &about;
+    const K4AboutData *aboutData = about;
 
     d->aboutData = aboutData;
 
@@ -119,7 +119,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
     }
     m_ocsData = *ocsData;
 
-    setWindowTitle(i18n("About %1", aboutData->displayName()));
+    setWindowTitle(i18n("About %1", aboutData->programName()));
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
     QWidget *mainWidget = new QWidget(this);
@@ -149,7 +149,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
         titleWidget->setPixmap(QPixmap::fromImage(aboutData->programLogo().value<QImage>()), KTitleWidget::ImageLeft);
 
     titleWidget->setText(i18n("<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</html>",
-                         aboutData->displayName(), aboutData->version(), KDE::versionString()));
+                         aboutData->programName(), aboutData->version(), KDE::versionString()));
 
 
     //Now let's add the tab bar...
@@ -184,12 +184,12 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
     debug()<< "About to show license stuff";
     debug()<< "License count is"<<licenseCount;
     for (int i = 0; i < licenseCount; ++i) {
-        const KAboutLicense &license = aboutData->licenses().at(i);
+        const K4AboutLicense &license = aboutData->licenses().at(i);
 
         QLabel *showLicenseLabel = new QLabel;
         showLicenseLabel->setText(QString("<a href=\"%1\">%2</a>").arg(QString::number(i),
                                                                        i18n("License: %1",
-                                                                            license.name(KAboutLicense::FullName))));
+                                                                            license.name(K4AboutData::FullName))));
         showLicenseLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
         connect(showLicenseLabel, SIGNAL(linkActivated(QString)), this, SLOT(_k_showLicense(QString)));
 
@@ -307,8 +307,8 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
         connect( m_showOcsDonorButton.data(), SIGNAL(clicked()), this, SLOT(switchToOcsWidgets()) );
         donorLayout->addWidget( m_showOcsDonorButton.data() );
 
-        QList< KAboutPerson > donors;
-        for( QList< QPair< QString, KAboutPerson > >::const_iterator it = m_ocsData.donors()->constBegin();
+        QList< K4AboutPerson > donors;
+        for( QList< QPair< QString, K4AboutPerson > >::const_iterator it = m_ocsData.donors()->constBegin();
              it != m_ocsData.donors()->constEnd(); ++it )
         {
             donors << ( *it ).second;
@@ -341,12 +341,12 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
     transparentBackgroundPalette.setColor( QPalette::Text, transparentBackgroundPalette.color( QPalette::WindowText ) );
 
 
-    const QList<KAboutPerson> translatorList = aboutData->translators();
+    const QList<K4AboutPerson> translatorList = aboutData->translators();
 
     if(translatorList.count() > 0) {
         QString translatorPageText;
 
-        QList<KAboutPerson>::ConstIterator it;
+        QList<K4AboutPerson>::ConstIterator it;
         for(it = translatorList.begin(); it != translatorList.end(); ++it) {
             translatorPageText += QString("<p style=\"margin: 0px;\">%1</p>").arg((*it).name());
             if (!(*it).emailAddress().isEmpty())
@@ -354,7 +354,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
             translatorPageText += "<p style=\"margin: 0px;\">&nbsp;</p>";
         }
 
-        translatorPageText += KAboutData::aboutTranslationTeam();
+        translatorPageText += K4AboutData::aboutTranslationTeam();
 
         KTextBrowser *translatorTextBrowser = new KTextBrowser;
         translatorTextBrowser->setFrameStyle(QFrame::NoFrame);

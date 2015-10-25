@@ -30,7 +30,7 @@
 using namespace AmarokAttica;
 
 PostJob::PostJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 

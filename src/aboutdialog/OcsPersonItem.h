@@ -44,7 +44,7 @@ public:
         Online = 1
     };
 
-    OcsPersonItem( const KAboutPerson &person, const QString ocsUsername, PersonStatus status, QWidget *parent = 0 );
+    OcsPersonItem( const K4AboutPerson &person, const QString ocsUsername, PersonStatus status, QWidget *parent = 0 );
 
     virtual ~OcsPersonItem();
 
@@ -63,7 +63,7 @@ private Q_SLOTS:
 private:
     void init();
     void fillOcsData( const AmarokAttica::Person &ocsPerson );
-    const KAboutPerson *m_person;
+    const K4AboutPerson *m_person;
     QString m_ocsUsername;
     QString m_aboutText;
     KToolBar *m_iconsBar;   //!< holds the icons for email, homepage and oD.o profile

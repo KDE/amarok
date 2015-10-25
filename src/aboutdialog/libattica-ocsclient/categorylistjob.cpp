@@ -33,7 +33,7 @@
 using namespace AmarokAttica;
 
 CategoryListJob::CategoryListJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 

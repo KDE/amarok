@@ -19,7 +19,7 @@
 #include "App.h"
 #include "aboutdialog/OcsData.h"
 
-#include <KAboutData>
+#include <K4AboutData>
 #include <KCmdLineArgs>
 #include <KDebug>
 #include <KLocalizedString>
@@ -40,251 +40,244 @@ AMAROK_EXPORT OcsData ocsData;
 
 int main( int argc, char *argv[] )
 {
-    KAboutData aboutData(
+    K4AboutData aboutData(
         "amarok",
-        ki18n( "Amarok" ).toString(),
+        "0",
+        ki18n( "Amarok" ),
         AMAROK_VERSION,
-        ki18n( "The audio player for KDE" ).toString(),
-        KAboutLicense::GPL,
-        ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2013, The Amarok Development Squad" ).toString(),
-        ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ).toString(),
-        ( "http://amarok.kde.org" ) );
+        ki18n( "The audio player for KDE" ),
+        K4AboutData::License_GPL,
+        ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2013, The Amarok Development Squad" ),
+        ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
+        "http://amarok.kde.org" );
 
     //Currently active Authors
     extern OcsData ocsData;
-    aboutData.addAuthor( ki18n("Bart 'Where are my toothpicks' Cerneels").toString(),
-            ki18n("Developer (Stecchino)").toString(), "bart.cerneels@kde.org", "http://commonideas.blogspot.com" );
+    aboutData.addAuthor( ki18n("Bart 'Where are my toothpicks' Cerneels"),
+            ki18n("Developer (Stecchino)"), "bart.cerneels@kde.org", "http://commonideas.blogspot.com" );
     ocsData.addAuthor( "Stecchino", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Edward \"Hades\" Toroshchin").toString(),
-            ki18n("Developer (dr_lepper)").toString(), "edward.hades@gmail.com" );
+    aboutData.addAuthor( ki18n("Edward \"Hades\" Toroshchin"),
+            ki18n("Developer (dr_lepper)"), "edward.hades@gmail.com" );
     ocsData.addAuthor( "hadeschief", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Mark Kretschmann" ).toString(),
-            ki18n("Project founder (markey)").toString(), "kretschmann@kde.org", "https://plus.google.com/102602725322221030250/posts" );
+    aboutData.addAuthor( ki18n("Mark Kretschmann" ),
+            ki18n("Project founder (markey)"), "kretschmann@kde.org", "https://plus.google.com/102602725322221030250/posts" );
         ocsData.addAuthor( "MarkKretschmann", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Matěj Laitl").toString(),
-            ki18n("iPod collection rewrite & more (strohel)").toString(), "matej@laitl.cz", "http://strohel.blogspot.com/" );
+    aboutData.addAuthor( ki18n("Matěj Laitl"),
+            ki18n("iPod collection rewrite & more (strohel)"), "matej@laitl.cz", "http://strohel.blogspot.com/" );
     ocsData.addAuthor( "strohel", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Myriam Schweingruber").toString(), ki18n("Rokymoter, Bug triaging (Mamarok)").toString(), "myriam@kde.org", "http://blogs.fsfe.org/myriam" );
+    aboutData.addAuthor( ki18n("Myriam Schweingruber"), ki18n("Rokymoter, Bug triaging (Mamarok)"), "myriam@kde.org", "http://blogs.fsfe.org/myriam" );
     ocsData.addAuthor( "Mamarok", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Ralf 'SalsaMaster' Engels").toString(),
-            ki18n("Developer (rengels)").toString(), "ralf.engels@nokia.com" );
+    aboutData.addAuthor( ki18n("Ralf 'SalsaMaster' Engels"),
+            ki18n("Developer (rengels)"), "ralf.engels@nokia.com" );
     ocsData.addAuthor( QString(), aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Patrick von Reth").toString(), ki18n("Windows build (TheOneRing)").toString(),
+    aboutData.addAuthor( ki18n("Patrick von Reth"), ki18n("Windows build (TheOneRing)"),
             "patrick.vonreth@gmail.com" );
     ocsData.addAuthor( QString(), aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Rick W. Chen").toString(),
-            ki18n("Developer (stuffcorpse)").toString(), "stuffcorpse@archlinux.us" );
+    aboutData.addAuthor( ki18n("Rick W. Chen"),
+            ki18n("Developer (stuffcorpse)"), "stuffcorpse@archlinux.us" );
     ocsData.addAuthor( "stuffcorpse", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Sam Lade").toString(), ki18n("Developer (Sentynel)").toString(),
+    aboutData.addAuthor( ki18n("Sam Lade"), ki18n("Developer (Sentynel)"),
             "sam@sentynel.com" );
     ocsData.addAuthor( "Sentynel", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Sven Krohlas").toString(), ki18n("Rokymoter, Developer (sven423)").toString(), "sven@asbest-online.de" );
+    aboutData.addAuthor( ki18n("Sven Krohlas"), ki18n("Rokymoter, Developer (sven423)"), "sven@asbest-online.de" );
     ocsData.addAuthor( "krohlas", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Téo Mrnjavac").toString(),
-            ki18n("Developer (Teo`)").toString(), "teo@kde.org", "http://teom.wordpress.com/" );
+    aboutData.addAuthor( ki18n("Téo Mrnjavac"),
+            ki18n("Developer (Teo`)"), "teo@kde.org", "http://teom.wordpress.com/" );
     ocsData.addAuthor( "teom", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Valorie Zimmerman").toString(),
-            ki18n("Rokymoter, Handbook (valorie)").toString(), "valorie@kde.org" );
+    aboutData.addAuthor( ki18n("Valorie Zimmerman"),
+            ki18n("Rokymoter, Handbook (valorie)"), "valorie@kde.org" );
     ocsData.addAuthor( "valorie", aboutData.authors().last() );
 
     //Inactive authors
     /* This list should contain people who still hold major copyright on the current code
      * For instance: does not include authors of 1.4 who have not contributed to 2.x */
-    aboutData.addAuthor( ki18n("<i>Inactive authors</i>").toString(),
+    aboutData.addAuthor( ki18n("<i>Inactive authors</i>"),
                          ki18n("Amarok authorship is not a hobby, it's a lifestyle. "
                                "But when people move on we want to keep respecting "
-                               "them by mentioning them here:").toString(), "" );
+                               "them by mentioning them here:"), "" );
         ocsData.addAuthor( "%%category%%", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Ian 'The Beard' Monroe").toString(), ki18n("Developer (eean)").toString(), "ian@monroe.nu" );
+    aboutData.addAuthor( ki18n("Ian 'The Beard' Monroe"), ki18n("Developer (eean)"), "ian@monroe.nu" );
         ocsData.addAuthor( "eean", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Jeff 'IROKSOHARD' Mitchell").toString(), ki18n("Developer (jefferai)").toString(), "mitchell@kde.org" );
+    aboutData.addAuthor( ki18n("Jeff 'IROKSOHARD' Mitchell"), ki18n("Developer (jefferai)"), "mitchell@kde.org" );
         ocsData.addAuthor( "jefferai", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Leo Franchi").toString(), ki18n("Developer (lfranchi)").toString(), "lfranchi@kde.org" );
+    aboutData.addAuthor( ki18n("Leo Franchi"), ki18n("Developer (lfranchi)"), "lfranchi@kde.org" );
         ocsData.addAuthor( "lfranchi", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Lydia 'is wrong(TM)' Pintscher").toString(), ki18n("Release Vixen (Nightrose)").toString(), "lydia@kde.org" );
+    aboutData.addAuthor( ki18n("Lydia 'is wrong(TM)' Pintscher"), ki18n("Release Vixen (Nightrose)"), "lydia@kde.org" );
         ocsData.addAuthor( "nightrose", aboutData.authors().last() );
 
-    aboutData.addCredit( ki18n("Max Howell").toString(), ki18n("Developer, Vision").toString(), "max.howell@methylblue.com" );
+    aboutData.addCredit( ki18n("Max Howell"), ki18n("Developer, Vision"), "max.howell@methylblue.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
-    aboutData.addAuthor( ki18n("Maximilian Kossick").toString(), ki18n("Developer (maxx_k)").toString(), "maximilian.kossick@gmail.com" );
+    aboutData.addAuthor( ki18n("Maximilian Kossick"), ki18n("Developer (maxx_k)"), "maximilian.kossick@gmail.com" );
         ocsData.addAuthor( QString(), aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Nikolaj Hald 'Also very hot' Nielsen").toString(), ki18n("Developer (nhn)").toString(), "nhn@kde.org" );
+    aboutData.addAuthor( ki18n("Nikolaj Hald 'Also very hot' Nielsen"), ki18n("Developer (nhn)"), "nhn@kde.org" );
         ocsData.addAuthor( "nhnFreespirit", aboutData.authors().last() );
 
-    aboutData.addCredit( ki18n("Seb 'Surfin' down under' Ruiz").toString(), ki18n("Developer (sebr)").toString(), "ruiz@kde.org" );
+    aboutData.addCredit( ki18n("Seb 'Surfin' down under' Ruiz"), ki18n("Developer (sebr)"), "ruiz@kde.org" );
            ocsData.addCredit( "seb", aboutData.credits().last() );
 
 
     //Contributors
-    aboutData.addCredit( ki18n("Alejandro Wainzinger").toString(), ki18n("Developer (xevix)").toString(), "aikawarazuni@gmail.com" );
+    aboutData.addCredit( ki18n("Alejandro Wainzinger"), ki18n("Developer (xevix)"), "aikawarazuni@gmail.com" );
         ocsData.addCredit( "xevix", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Alex Merry").toString(), ki18n("Developer, Replay Gain support").toString(), "kde@randomguy3.me.uk" );
+    aboutData.addCredit( ki18n("Alex Merry"), ki18n("Developer, Replay Gain support"), "kde@randomguy3.me.uk" );
         ocsData.addCredit( "randomguy3", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Casey Link").toString(), ki18n("MP3tunes integration").toString(), "unnamedrambler@gmail.com" );
+    aboutData.addCredit( ki18n("Casey Link"), ki18n("MP3tunes integration"), "unnamedrambler@gmail.com" );
         ocsData.addCredit( "Ramblurr", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Casper van Donderen").toString(), ki18n("Windows porting").toString(), "casper.vandonderen@gmail.com" );
+    aboutData.addCredit( ki18n("Casper van Donderen"), ki18n("Windows porting"), "casper.vandonderen@gmail.com" );
         ocsData.addCredit( "cvandonderen", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Christie Harris").toString(), ki18n("Rokymoter (dangle)").toString(), "dangle.baby@gmail.com" );
+    aboutData.addCredit( ki18n("Christie Harris"), ki18n("Rokymoter (dangle)"), "dangle.baby@gmail.com" );
         ocsData.addCredit( "dangle", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Dan Leinir Turthra Jensen").toString(), ki18n("Usability").toString(), "admin@leinir.dk" );
+    aboutData.addCredit( ki18n("Dan Leinir Turthra Jensen"), ki18n("Usability"), "admin@leinir.dk" );
         ocsData.addCredit( "leinir", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Dan 'Hey, it compiled...' Meltzer").toString(), ki18n("Developer (hydrogen)").toString(), "parallelgrapefruit@gmail.com" );
+    aboutData.addCredit( ki18n("Dan 'Hey, it compiled...' Meltzer"), ki18n("Developer (hydrogen)"), "parallelgrapefruit@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Daniel Caleb Jones").toString(), ki18n("Biased playlists").toString(), "danielcjones@gmail.com" );
+    aboutData.addCredit( ki18n("Daniel Caleb Jones"), ki18n("Biased playlists"), "danielcjones@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Daniel Dewald").toString(), ki18n("Tag Guesser, Labels, Spectrum Analyzer").toString(), "Daniel.Dewald@time-shift.de" );
+    aboutData.addCredit( ki18n("Daniel Dewald"), ki18n("Tag Guesser, Labels, Spectrum Analyzer"), "Daniel.Dewald@time-shift.de" );
         ocsData.addCredit( "TheCrasher", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Daniel Winter").toString(), ki18n("Nepomuk integration").toString(), "dw@danielwinter.de" );
+    aboutData.addCredit( ki18n("Daniel Winter"), ki18n("Nepomuk integration"), "dw@danielwinter.de" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-      aboutData.addCredit( ki18n("Frank Meerkötter").toString(), ki18n("Podcast improvements").toString(), "frank@meerkoetter.org" );
+      aboutData.addCredit( ki18n("Frank Meerkötter"), ki18n("Podcast improvements"), "frank@meerkoetter.org" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Greg Meyer").toString(), ki18n("Live CD, Bug squashing (oggb4mp3)").toString(), "greg@gkmweb.com" );
+    aboutData.addCredit( ki18n("Greg Meyer"), ki18n("Live CD, Bug squashing (oggb4mp3)"), "greg@gkmweb.com" );
         ocsData.addCredit( "oggb4mp3", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Harald Sitter").toString(), ki18n("Phonon, Lord-President of KDE Multimedia (apachelogger)").toString(), "harald.sitter@kdemail.net" );
+    aboutData.addCredit( ki18n("Harald Sitter"), ki18n("Phonon, Lord-President of KDE Multimedia (apachelogger)"), "harald.sitter@kdemail.net" );
         ocsData.addCredit( "apachelogger", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("John Atkinson").toString(), ki18n("Assorted patches").toString(), "john@fauxnetic.co.uk" );
+    aboutData.addCredit( ki18n("John Atkinson"), ki18n("Assorted patches"), "john@fauxnetic.co.uk" );
         ocsData.addCredit( "fauxnetic", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Kenneth Wesley Wimer II").toString(), ki18n("Icons").toString(), "kwwii@bootsplash.org" );
+    aboutData.addCredit( ki18n("Kenneth Wesley Wimer II"), ki18n("Icons"), "kwwii@bootsplash.org" );
         ocsData.addCredit( "kwwii", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Kevin Funk").toString(), ki18n("Developer, Website theme (KRF)").toString(), "krf@electrostorm.net" );
+    aboutData.addCredit( ki18n("Kevin Funk"), ki18n("Developer, Website theme (KRF)"), "krf@electrostorm.net" );
         ocsData.addCredit( "krf", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Kuba Serafinowski").toString(), ki18n("Rokymoter").toString(), "zizzfizzix@gmail.com" );
+    aboutData.addCredit( ki18n("Kuba Serafinowski"), ki18n("Rokymoter"), "zizzfizzix@gmail.com" );
         ocsData.addCredit( "zizzfizzix", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Lee Olson").toString(), ki18n("Artwork").toString(), "leetolson@gmail.com" );
+    aboutData.addCredit( ki18n("Lee Olson"), ki18n("Artwork"), "leetolson@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Ljubomir Simin").toString(), ki18n("Rokymoter (ljubomir)").toString(), "ljubomir.simin@gmail.com" );
+    aboutData.addCredit( ki18n("Ljubomir Simin"), ki18n("Rokymoter (ljubomir)"), "ljubomir.simin@gmail.com" );
         ocsData.addCredit( "ljubomir", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Lucas Gomes").toString(), ki18n("Developer (MaskMaster)").toString(), "x8lucas8x@gmail.com" );
+    aboutData.addCredit( ki18n("Lucas Gomes"), ki18n("Developer (MaskMaster)"), "x8lucas8x@gmail.com" );
         ocsData.addCredit( "x8lucas8x", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Mathias Panzenböck").toString(), ki18n("Podcast improvements").toString(), "grosser.meister.morti@gmx.net" );
+    aboutData.addCredit( ki18n("Mathias Panzenböck"), ki18n("Podcast improvements"), "grosser.meister.morti@gmx.net" );
         ocsData.addCredit( "panzi", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Mikko Caldara").toString(), ki18n("Bug triaging and sanitizing").toString(), "mikko.cal@gmail.com" );
+    aboutData.addCredit( ki18n("Mikko Caldara"), ki18n("Bug triaging and sanitizing"), "mikko.cal@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Nikhil Marathe").toString(), ki18n("UPnP support and patches (nsm)").toString(), "nsm.nikhil@gmail.com" );
+    aboutData.addCredit( ki18n("Nikhil Marathe"), ki18n("UPnP support and patches (nsm)"), "nsm.nikhil@gmail.com" );
         ocsData.addCredit( "nikhilm", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Nuno Pinheiro").toString(), ki18n("Artwork").toString(), "nuno@oxygen-icons.org" );
+    aboutData.addCredit( ki18n("Nuno Pinheiro"), ki18n("Artwork"), "nuno@oxygen-icons.org" );
         ocsData.addCredit( "nunopinheirokde", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Olivier Bédard").toString(), ki18n("Website hosting").toString(), "paleo@pwsp.net" );
+    aboutData.addCredit( ki18n("Olivier Bédard"), ki18n("Website hosting"), "paleo@pwsp.net" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Pasi Lalinaho").toString(), ki18n("Rokymoter (emunkki)").toString(), "pasi@getamarok.com" );
+    aboutData.addCredit( ki18n("Pasi Lalinaho"), ki18n("Rokymoter (emunkki)"), "pasi@getamarok.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Peter Zhou Lei").toString(), ki18n("Scripting interface").toString(), "peterzhoulei@gmail.com" );
+    aboutData.addCredit( ki18n("Peter Zhou Lei"), ki18n("Scripting interface"), "peterzhoulei@gmail.com" );
         ocsData.addCredit( "peterzl", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Phalgun Guduthur").toString(), ki18n("Nepomuk Collection (phalgun)").toString(), "me@phalgun.in" );
+    aboutData.addCredit( ki18n("Phalgun Guduthur"), ki18n("Nepomuk Collection (phalgun)"), "me@phalgun.in" );
         ocsData.addCredit( "phalgun", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Scott Wheeler").toString(), ki18n("TagLib & ktrm code").toString(), "wheeler@kde.org" );
+    aboutData.addCredit( ki18n("Scott Wheeler"), ki18n("TagLib & ktrm code"), "wheeler@kde.org" );
         ocsData.addCredit( "wheels", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Shane King").toString(), ki18n("Patches & Windows porting (shakes)").toString(), "kde@dontletsstart.com" );
+    aboutData.addCredit( ki18n("Shane King"), ki18n("Patches & Windows porting (shakes)"), "kde@dontletsstart.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Simon Esneault").toString(), ki18n("Photos & Videos applets, Context View").toString(), "simon.esneault@gmail.com" );
+    aboutData.addCredit( ki18n("Simon Esneault"), ki18n("Photos & Videos applets, Context View"), "simon.esneault@gmail.com" );
         ocsData.addCredit( "Takahani", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Soren Harward").toString(), ki18n("Developer, Automated Playlist Generator").toString(), "stharward@gmail.com" );
+    aboutData.addCredit( ki18n("Soren Harward"), ki18n("Developer, Automated Playlist Generator"), "stharward@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Thomas Lübking").toString(), ki18n("Developer").toString(), "thomas.luebking@web.de" );
+    aboutData.addCredit( ki18n("Thomas Lübking"), ki18n("Developer"), "thomas.luebking@web.de" );
         ocsData.addCredit( "thomas12777", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Valentin Rouet").toString(), ki18n("Developer").toString(), "v.rouet@gmail.com" );
+    aboutData.addCredit( ki18n("Valentin Rouet"), ki18n("Developer"), "v.rouet@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Wade Olson").toString(), ki18n("Splash screen artist").toString(), "wade@corefunction.com" );
+    aboutData.addCredit( ki18n("Wade Olson"), ki18n("Splash screen artist"), "wade@corefunction.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("William Viana Soares").toString(), ki18n("Context view").toString(), "vianasw@gmail.com" );
+    aboutData.addCredit( ki18n("William Viana Soares"), ki18n("Context view"), "vianasw@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
     //Former Contributors
-    aboutData.addCredit( ki18n("Former contributors").toString(), ki18n("People listed below have contributed to Amarok in the past. Thank you!").toString(), "" );
+    aboutData.addCredit( ki18n("Former contributors"), ki18n("People listed below have contributed to Amarok in the past. Thank you!"), "" );
         ocsData.addCredit( "%%category%%", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Adam Pigg").toString(), ki18n("Analyzers, patches, shoutcast").toString(), "adam@piggz.co.uk" );
+    aboutData.addCredit( ki18n("Adam Pigg"), ki18n("Analyzers, patches, shoutcast"), "adam@piggz.co.uk" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Adeodato Simó").toString(), ki18n("Patches").toString(), "asp16@alu.ua.es" );
+    aboutData.addCredit( ki18n("Adeodato Simó"), ki18n("Patches"), "asp16@alu.ua.es" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Alexandre Oliveira").toString(), ki18n("Developer").toString(), "aleprj@gmail.com" );
+    aboutData.addCredit( ki18n("Alexandre Oliveira"), ki18n("Developer"), "aleprj@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Andreas Mair").toString(), ki18n("MySQL support").toString(), "am_ml@linogate.com" );
+    aboutData.addCredit( ki18n("Andreas Mair"), ki18n("MySQL support"), "am_ml@linogate.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Andrew de Quincey").toString(), ki18n("Postgresql support").toString(), "adq_dvb@lidskialf.net" );
+    aboutData.addCredit( ki18n("Andrew de Quincey"), ki18n("Postgresql support"), "adq_dvb@lidskialf.net" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Andrew Turner").toString(), ki18n("Patches").toString(), "andrewturner512@googlemail.com" );
+    aboutData.addCredit( ki18n("Andrew Turner"), ki18n("Patches"), "andrewturner512@googlemail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Andy Kelk").toString(), ki18n("MTP and Rio Karma media devices, patches").toString(), "andy@mopoke.co.uk" );
+    aboutData.addCredit( ki18n("Andy Kelk"), ki18n("MTP and Rio Karma media devices, patches"), "andy@mopoke.co.uk" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Christian Muehlhaeuser").toString(), ki18n("Developer").toString(), "chris@chris.de" );
+    aboutData.addCredit( ki18n("Christian Muehlhaeuser"), ki18n("Developer"), "chris@chris.de" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Derek Nelson").toString(), ki18n("Graphics, splash-screen").toString(), "admrla@gmail.com" );
+    aboutData.addCredit( ki18n("Derek Nelson"), ki18n("Graphics, splash-screen"), "admrla@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Enrico Ros").toString(), ki18n("Analyzers, Context Browser and systray eye-candy").toString(), "eros.kde@email.it" );
+    aboutData.addCredit( ki18n("Enrico Ros"), ki18n("Analyzers, Context Browser and systray eye-candy"), "eros.kde@email.it" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Frederik Holljen").toString(), ki18n("Developer").toString(), "fh@ez.no" );
+    aboutData.addCredit( ki18n("Frederik Holljen"), ki18n("Developer"), "fh@ez.no" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Gábor Lehel").toString(), ki18n("Developer").toString(), "illissius@gmail.com" );
+    aboutData.addCredit( ki18n("Gábor Lehel"), ki18n("Developer"), "illissius@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Gérard Dürrmeyer").toString(), ki18n("Icons and image work").toString(), "gerard@randomtree.com" );
+    aboutData.addCredit( ki18n("Gérard Dürrmeyer"), ki18n("Icons and image work"), "gerard@randomtree.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Giovanni Venturi").toString(), ki18n("Dialog to filter the collection titles").toString(), "giovanni@ksniffer.org" );
+    aboutData.addCredit( ki18n("Giovanni Venturi"), ki18n("Dialog to filter the collection titles"), "giovanni@ksniffer.org" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Jarkko Lehti").toString(), ki18n("Tester, IRC channel operator, whipping").toString(), "grue@iki.fi" );
+    aboutData.addCredit( ki18n("Jarkko Lehti"), ki18n("Tester, IRC channel operator, whipping"), "grue@iki.fi" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Jocke Andersson").toString(), ki18n("Rokymoter, bug fixer (Firetech)").toString(), "ajocke@gmail.com" );
+    aboutData.addCredit( ki18n("Jocke Andersson"), ki18n("Rokymoter, bug fixer (Firetech)"), "ajocke@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Marco Gulino").toString(), ki18n("Konqueror Sidebar, some DCOP methods").toString(), "marco@kmobiletools.org" );
+    aboutData.addCredit( ki18n("Marco Gulino"), ki18n("Konqueror Sidebar, some DCOP methods"), "marco@kmobiletools.org" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Martin Aumueller").toString(), ki18n("Developer").toString(), "aumuell@reserv.at" );
+    aboutData.addCredit( ki18n("Martin Aumueller"), ki18n("Developer"), "aumuell@reserv.at" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Melchior Franz").toString(), ki18n("FHT routine, bugfixes").toString(), "mfranz@kde.org" );
+    aboutData.addCredit( ki18n("Melchior Franz"), ki18n("FHT routine, bugfixes"), "mfranz@kde.org" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Michael Pyne").toString(), ki18n("K3b export code").toString(), "michael.pyne@kdemail.net" );
+    aboutData.addCredit( ki18n("Michael Pyne"), ki18n("K3b export code"), "michael.pyne@kdemail.net" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Mike Diehl").toString(), ki18n("Developer").toString(), "madpenguin8@yahoo.com" );
+    aboutData.addCredit( ki18n("Mike Diehl"), ki18n("Developer"), "madpenguin8@yahoo.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Paul Cifarelli").toString(), ki18n("Developer").toString(), "paul@cifarelli.net" );
+    aboutData.addCredit( ki18n("Paul Cifarelli"), ki18n("Developer"), "paul@cifarelli.net" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Peter C. Ndikuwera").toString(), ki18n("Bugfixes, PostgreSQL support").toString(), "pndiku@gmail.com" );
+    aboutData.addCredit( ki18n("Peter C. Ndikuwera"), ki18n("Bugfixes, PostgreSQL support"), "pndiku@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Pierpaolo Panfilo").toString(), ki18n("Developer").toString(), "pippo_dp@libero.it" );
+    aboutData.addCredit( ki18n("Pierpaolo Panfilo"), ki18n("Developer"), "pippo_dp@libero.it" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Reigo Reinmets").toString(), ki18n("Wikipedia support, patches").toString(), "xatax@hot.ee" );
+    aboutData.addCredit( ki18n("Reigo Reinmets"), ki18n("Wikipedia support, patches"), "xatax@hot.ee" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Roman Becker").toString(), ki18n("Former Amarok logo, former splash screen, former icons").toString(), "roman@formmorf.de" );
+    aboutData.addCredit( ki18n("Roman Becker"), ki18n("Former Amarok logo, former splash screen, former icons"), "roman@formmorf.de" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Sami Nieminen").toString(), ki18n("Audioscrobbler support").toString(), "sami.nieminen@iki.fi" );
+    aboutData.addCredit( ki18n("Sami Nieminen"), ki18n("Audioscrobbler support"), "sami.nieminen@iki.fi" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Stanislav Karchebny").toString(), ki18n("Developer").toString(), "berkus@madfire.net" );
+    aboutData.addCredit( ki18n("Stanislav Karchebny"), ki18n("Developer"), "berkus@madfire.net" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Stefan Bogner").toString(), ki18n("Loads of stuff").toString(), "bochi@online.ms" );
+    aboutData.addCredit( ki18n("Stefan Bogner"), ki18n("Loads of stuff"), "bochi@online.ms" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Tomasz Dudzik").toString(), ki18n("Splash screen").toString(), "madsheytan@gmail.com" );
+    aboutData.addCredit( ki18n("Tomasz Dudzik"), ki18n("Splash screen"), "madsheytan@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
     //Donors:
     //Last update: 2012/11/07, post Roktober 2012
-    ocsData.addDonor( "ayleph", KAboutPerson( ki18n( "Andrew Browning" ).toString() ) );
-    ocsData.addDonor( QString(), KAboutPerson( ki18n( "Chris Wales" ).toString() ) );
-    ocsData.addDonor( QString(), KAboutPerson( ki18n( "ZImin Stanislav" ).toString() ) );
+    ocsData.addDonor( "ayleph", K4AboutPerson( ki18n( "Andrew Browning" ) ) );
+    ocsData.addDonor( QString(), K4AboutPerson( ki18n( "Chris Wales" ) ) );
+    ocsData.addDonor( QString(), K4AboutPerson( ki18n( "ZImin Stanislav" ) ) );
 
-    KCmdLineArgs::reset();
-    QApplication app(argc, argv);
-    QCommandLineParser parser;
-    KAboutData::setApplicationData(aboutData);
-    parser.addVersionOption();
-    parser.addHelpOption();
-    aboutData.setupCommandLine(&parser);
-    parser.process(app);
-    aboutData.processCommandLine(&parser);
+    KCmdLineArgs::init( argc, argv, &aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
 
     App::initCliArgs();
     KUniqueApplication::addCmdLineOptions();
@@ -337,6 +330,6 @@ int main( int argc, char *argv[] )
 
     App ap;
     ap.setUniqueInstance( startFlag == KUniqueApplication::NonUniqueInstance );
-    return app.exec();
+    return ap.exec();
 }
 

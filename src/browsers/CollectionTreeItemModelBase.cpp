@@ -483,7 +483,7 @@ CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item )
     //only start a query if necessary and we are not querying for the item's children already
     if ( item->requiresUpdate() && !m_runningQueries.contains( item ) )
     {
-        listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
+     //   listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
     }
 }
 

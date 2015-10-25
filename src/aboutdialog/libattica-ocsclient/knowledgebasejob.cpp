@@ -32,7 +32,7 @@
 using namespace AmarokAttica;
 
 KnowledgeBaseJob::KnowledgeBaseJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 

@@ -214,7 +214,8 @@ ScriptsConfig::slotReloadScriptSelector()
     connect( m_selector, SIGNAL(filtered(bool)), m_uninstallButton, SLOT(setDisabled(bool)) );
     m_verticalLayout->insertWidget( 0, m_selector );
     m_verticalLayout->removeWidget( m_oldSelector );
-    m_selector->setFilter( m_oldSelector->filter() );
+#pragma message("PORTME KF5:  Line to port here")
+    //m_selector->setFilter( m_oldSelector->filter() );
     QTimer::singleShot( 0, this, SLOT(restoreScrollBar()) );
 }
 

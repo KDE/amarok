@@ -42,7 +42,7 @@ public:
 
 Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesServiceCollection * collection, const QString &sessionId  )
     : DynamicServiceQueryMaker()
-        , m_storedTransferJob( 0 )
+        , m_storedTransferJob( )
         , d( new Private )
 
 {
@@ -56,7 +56,7 @@ Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesServiceCollection 
 
 Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesLocker * locker, const QString &sessionId, Mp3tunesServiceCollection * collection  )
     : DynamicServiceQueryMaker()
-        , m_storedTransferJob( 0 )
+        , m_storedTransferJob( )
         , d( new Private )
 {
     DEBUG_BLOCK
