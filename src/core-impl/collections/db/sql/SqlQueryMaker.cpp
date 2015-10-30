@@ -159,8 +159,7 @@ SqlQueryMaker::~SqlQueryMaker()
     abortQuery();
     if( d->worker )
     {
-        ThreadWeaver::QObjectDecorator *qs = new ThreadWeaver::QObjectDecorator(d->worker);
-        qs->deleteLater();
+	d->worker->deleteLater();
     }
     delete d;
 }
@@ -231,8 +230,6 @@ SqlQueryMaker::run()
 void
 SqlQueryMaker::done( ThreadWeaver::JobPointer job )
 {
-    ThreadWeaver::QObjectDecorator *qs = new ThreadWeaver::QObjectDecorator(job.data());
-    qs->deleteLater();
     d->worker = 0; // d->worker *is* the job, prevent stale pointer
     emit queryDone();
 }
