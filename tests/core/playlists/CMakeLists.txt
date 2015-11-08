@@ -7,7 +7,7 @@ include_directories( .
 
 set( testplaylistformat_SRCS TestPlaylistFormat.cpp )
 add_executable( testplaylistformat ${testplaylistformat_SRCS} )
-add_test(testplaylistformat testplaylistformat)
+add_test(NAME testplaylistformat COMMAND $<TARGET_FILE:testplaylistformat>)
 ecm_mark_as_test(testplaylistformat)
 target_link_libraries( testplaylistformat KF5::KDELibs4Support Qt5::Test amarokcore amaroklib )
 
@@ -18,6 +18,6 @@ set( testplaylistobserver_SRCS
      ${AMAROK_SOURCE_TREE}/core/playlists/Playlist.cpp
      )
 add_executable( testplaylistobserver ${testplaylistobserver_SRCS} )
-add_test(testplaylistobserver testplaylistobserver)
+add_test(NAME testplaylistobserver COMMAND $<TARGET_FILE:testplaylistobserver>)
 ecm_mark_as_test(testplaylistobserver)
 target_link_libraries( testplaylistobserver KF5::ThreadWeaver KF5::KDELibs4Support Qt5::Test Qt5::Core amarokcore amaroklib )

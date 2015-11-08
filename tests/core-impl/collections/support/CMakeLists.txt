@@ -19,7 +19,7 @@ set( testmemoryquerymaker_SRCS
     )
 
 add_executable( testmemoryquerymaker ${testmemoryquerymaker_SRCS} )
-add_test(testmemoryquerymaker testmemoryquerymaker)
+add_test(NAME testmemoryquerymaker COMMAND $<TARGET_FILE:testmemoryquerymaker>)
 ecm_mark_as_test(testmemoryquerymaker)
 
 if(APPLE)
@@ -46,7 +46,7 @@ set( testartisthelper_SRCS
 
 
 add_executable( testartisthelper ${testartisthelper_SRCS} )
-add_test(testartisthelper testartisthelper)
+add_test(NAME testartisthelper COMMAND $<TARGET_FILE:testartisthelper>)
 ecm_mark_as_test(testartisthelper)
 
     if(APPLE)

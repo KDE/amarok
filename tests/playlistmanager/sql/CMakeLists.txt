@@ -18,6 +18,6 @@ set( testsqluserplaylistprovider_SRCS
      ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
     )
 add_executable( testsqluserplaylistprovider ${testsqluserplaylistprovider_SRCS} )
-add_test(testsqluserplaylistprovider testsqluserplaylistprovider)
+add_test(NAME testsqluserplaylistprovider COMMAND $<TARGET_FILE:testsqluserplaylistprovider>)
 ecm_mark_as_test(testsqluserplaylistprovider)
 target_link_libraries( testsqluserplaylistprovider  KF5::KIOCore Qt5::Test Qt5::Core amarokcore amaroklib )

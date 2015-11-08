@@ -16,7 +16,7 @@ set( testsinglecollectiontreeitemmodel_SRCS
     )
 
 add_executable( testsinglecollectiontreeitemmodel  ${testsinglecollectiontreeitemmodel_SRCS} )
-add_test(testsinglecollectiontreeitemmodel testsinglecollectiontreeitemmodel)
+add_test(NAME testsinglecollectiontreeitemmodel COMMAND $<TARGET_FILE:testsinglecollectiontreeitemmodel>)
 ecm_mark_as_test(testsinglecollectiontreeitemmodel)
 
 add_dependencies( testsinglecollectiontreeitemmodel amarokcore )

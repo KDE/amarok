@@ -19,7 +19,7 @@ set( testsimilarartistsengine_SRCS
 )
 
 add_executable( testsimilarartistsengine ${testsimilarartistsengine_SRCS} )
-add_test(testsimilarartistsengine testsimilarartistsengine)
+add_test(NAME testsimilarartistsengine COMMAND $<TARGET_FILE:testsimilarartistsengine>)
 ecm_mark_as_test(testsimilarartistsengine)
 
 add_dependencies( testsimilarartistsengine amaroklib)

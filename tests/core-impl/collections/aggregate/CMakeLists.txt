@@ -16,7 +16,7 @@ add_executable( testaggregatemeta
                         TestAggregateMeta.cpp
                         ${GOOGLEMOCK_SRCS}
                   )
-add_test(testaggregatemeta testaggregatemeta)
+add_test(NAME testaggregatemeta COMMAND $<TARGET_FILE:testaggregatemeta>)
 ecm_mark_as_test(testaggregatemeta)
 
 add_dependencies( testaggregatemeta amarokconfig_h )

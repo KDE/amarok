@@ -19,7 +19,7 @@ set( testmasterslave_SRCS
 )
 
 add_executable( testmasterslavesynchronizationjob  ${testmasterslave_SRCS} )
-add_test(testmasterslavesynchronizationjob testmasterslavesynchronizationjob)
+add_test(NAME testmasterslavesynchronizationjob COMMAND $<TARGET_FILE:testmasterslavesynchronizationjob>)
 ecm_mark_as_test(testmasterslavesynchronizationjob)
 
 add_dependencies( testmasterslavesynchronizationjob amarokcore )
@@ -47,7 +47,7 @@ set( testunion_SRCS
 )
 
 add_executable( testunionjob  ${testunion_SRCS} )
-add_test(testunionjob testunionjob)
+add_test(NAME testunionjob COMMAND $<TARGET_FILE:testunionjob>)
 ecm_mark_as_test(testunionjob)
 add_dependencies( testunionjob amarokcore )
 add_dependencies( testunionjob amaroklib )
@@ -75,7 +75,7 @@ set( testonewaysynchronization_SRCS
 )
 
 add_executable( testonewaysynchronizationjob  ${testonewaysynchronization_SRCS} )
-add_test(testonewaysynchronizationjob testonewaysynchronizationjob)
+add_test(NAME testonewaysynchronizationjob COMMAND $<TARGET_FILE:testonewaysynchronizationjob>)
 ecm_mark_as_test(testonewaysynchronizationjob)
 add_dependencies( testonewaysynchronizationjob amarokcore )
 add_dependencies( testonewaysynchronizationjob amaroklib )

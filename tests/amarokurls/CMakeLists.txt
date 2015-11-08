@@ -5,7 +5,7 @@ include_directories(
 
 set( testamarokurls_SRCS TestAmarokUrls.cpp )
 add_executable( testamarokurls ${testamarokurls_SRCS} )
-add_test(testamarokurls testamarokurls)
+add_test(NAME testamarokurls COMMAND $<TARGET_FILE:testamarokurls>)
 ecm_mark_as_test(testamarokurls)
 target_link_libraries( testamarokurls amarokcore amaroklib KF5::KDELibs4Support Qt5::Test )
 

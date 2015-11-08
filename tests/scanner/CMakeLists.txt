@@ -10,7 +10,7 @@ macro(add_database_test test_target test_sources)
         ${test_sources_internal}
         ${GOOGLEMOCK_SRCS}
         )
-    add_test(${test_target} ${test_target})
+    add_test(NAME ${test_target} COMMAND $<TARGET_FILE:${test_target}>)
     ecm_mark_as_test(${test_target})
 
     if(APPLE)

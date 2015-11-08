@@ -22,7 +22,7 @@ set( testproxylogger_SRCS
 add_executable( testproxylogger
     ${testproxylogger_SRCS}
     )
-add_test(testproxylogger testproxylogger)
+add_test(NAME testproxylogger COMMAND $<TARGET_FILE:testproxylogger>)
 ecm_mark_as_test(testproxylogger)
 
 target_link_libraries( testproxylogger

@@ -27,7 +27,7 @@ set( testmetamultitrack_SRCS
 add_executable( testmetamultitrack
     ${testmetamultitrack_SRCS}
     )
-add_test(testmetamultitrack testmetamultitrack)
+add_test(NAME testmetamultitrack COMMAND $<TARGET_FILE:testmetamultitrack>)
 ecm_mark_as_test(testmetamultitrack)
 
 add_dependencies( testmetamultitrack amarokcore )

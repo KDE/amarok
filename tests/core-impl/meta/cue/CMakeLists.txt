@@ -22,7 +22,7 @@ set( testcuefilesupport_SRCS
     )
 
 add_executable( testcuefilesupport ${testcuefilesupport_SRCS} )
-add_test(testcuefilesupport testcuefilesupport)
+add_test(NAME testcuefilesupport COMMAND $<TARGET_FILE:testcuefilesupport>)
 ecm_mark_as_test(testcuefilesupport)
 
 add_dependencies( testcuefilesupport amarokcore )

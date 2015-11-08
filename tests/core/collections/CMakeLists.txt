@@ -18,7 +18,7 @@ set( testcollectionlocation_SRCS
     )
 
 add_executable( testcollectionlocation ${testcollectionlocation_SRCS} )
-add_test(testcollectionlocation testcollectionlocation)
+add_test(NAME testcollectionlocation COMMAND $<TARGET_FILE:testcollectionlocation>)
 ecm_mark_as_test(testcollectionlocation)
 
 add_dependencies( testcollectionlocation amarokconfig_h )
@@ -42,7 +42,7 @@ target_link_libraries(testcollectionlocation
 
 set( testcollection_SRCS TestCollection.cpp )
 add_executable( testcollection ${testcollection_SRCS} )
-add_test(testcollection testcollection)
+add_test(NAME testcollection COMMAND $<TARGET_FILE:testcollection>)
 ecm_mark_as_test(testcollection)
 target_link_libraries( testcollection KF5::KDELibs4Support  Qt5::Test amarokcore )
 
@@ -50,6 +50,6 @@ target_link_libraries( testcollection KF5::KDELibs4Support  Qt5::Test amarokcore
 
 set( testquerymaker_SRCS TestQueryMaker.cpp ../../mocks/MockQueryMaker.cpp )
 add_executable( testquerymaker ${testquerymaker_SRCS} )
-add_test(testquerymaker testquerymaker)
+add_test(NAME testquerymaker COMMAND $<TARGET_FILE:testquerymaker>)
 ecm_mark_as_test(testquerymaker)
 target_link_libraries( testquerymaker KF5::KDELibs4Support Qt5::Gui Qt5::Test amarokcore )

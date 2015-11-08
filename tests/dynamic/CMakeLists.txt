@@ -48,7 +48,7 @@ set( dynamicmodel_SRCS
     )
 
 add_executable( testdynamicmodel ${dynamicmodel_SRCS} )
-add_test(testdynamicmodel testdynamicmodel)
+add_test(NAME testdynamicmodel COMMAND $<TARGET_FILE:testdynamicmodel>)
 ecm_mark_as_test(testdynamicmodel)
 link_database_test( testdynamicmodel )
 
@@ -59,7 +59,7 @@ set( trackset_SRCS
     )
 
 add_executable( testtrackset ${trackset_SRCS} )
-add_test(testtrackset testtrackset)
+add_test(NAME testtrackset COMMAND $<TARGET_FILE:testtrackset>)
 ecm_mark_as_test(testtrackset)
 link_database_test( testtrackset )
 

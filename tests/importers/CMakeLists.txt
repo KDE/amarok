@@ -23,7 +23,7 @@ set( testimportermanager_SRCS
 )
 
 add_executable( testimportermanager ${testimportermanager_SRCS} )
-add_test(testimportermanager testimportermanager)
+add_test(NAME testimportermanager COMMAND $<TARGET_FILE:testimportermanager>)
 ecm_mark_as_test(testimportermanager)
 target_link_libraries( testimportermanager ${testimporterscommon_LIBS} )
 
@@ -36,7 +36,7 @@ set( testimporterprovider_SRCS
 )
 
 add_executable( testimporterprovider ${testimporterprovider_SRCS} )
-add_test(testimporterprovider testimporterprovider)
+add_test(NAME testimporterprovider COMMAND $<TARGET_FILE:testimporterprovider>)
 ecm_mark_as_test(testimporterprovider)
 target_link_libraries( testimporterprovider ${testimporterscommon_LIBS} )
 
@@ -44,7 +44,7 @@ target_link_libraries( testimporterprovider ${testimporterscommon_LIBS} )
 
 set( testsimpleimporterconfigwidget_SRCS TestSimpleImporterConfigWidget.cpp )
 add_executable( testsimpleimporterconfigwidget ${testsimpleimporterconfigwidget_SRCS} )
-add_test(testsimpleimporterconfigwidget testsimpleimporterconfigwidget)
+add_test(NAME testsimpleimporterconfigwidget COMMAND $<TARGET_FILE:testsimpleimporterconfigwidget>)
 ecm_mark_as_test(testsimpleimporterconfigwidget)
 target_link_libraries( testsimpleimporterconfigwidget ${testimporterscommon_LIBS} )
 
@@ -64,7 +64,7 @@ ki18n_wrap_ui( testamarokimporter_SRCS
 )
 
 add_executable( testamarokimporter ${testamarokimporter_SRCS} )
-add_test(testamarokimporter testamarokimporter)
+add_test(NAME testamarokimporter COMMAND $<TARGET_FILE:testamarokimporter>)
 ecm_mark_as_test(testamarokimporter)
 add_dependencies( testamarokimporter importers_files )
 target_link_libraries( testamarokimporter
@@ -84,7 +84,7 @@ set( testbansheeimporter_SRCS
 )
 
 add_executable( testbansheeimporter ${testbansheeimporter_SRCS} )
-add_test(testbansheeimporter testbansheeimporter)
+add_test(NAME testbansheeimporter COMMAND $<TARGET_FILE:testbansheeimporter>)
 ecm_mark_as_test(testbansheeimporter)
 add_dependencies( testbansheeimporter importers_files )
 target_link_libraries( testbansheeimporter
@@ -104,7 +104,7 @@ set( testclementineimporter_SRCS
 )
 
 add_executable( testclementineimporter ${testclementineimporter_SRCS} )
-add_test(testclementineimporter testclementineimporter)
+add_test(NAME testclementineimporter COMMAND $<TARGET_FILE:testclementineimporter>)
 ecm_mark_as_test(testclementineimporter)
 add_dependencies( testclementineimporter importers_files )
 target_link_libraries( testclementineimporter
@@ -127,7 +127,7 @@ ki18n_wrap_ui( testfastforwardimporter_SRCS
 )
 
 add_executable( testfastforwardimporter ${testfastforwardimporter_SRCS} )
-add_test(testfastforwardimporter testfastforwardimporter)
+add_test(NAME testfastforwardimporter COMMAND $<TARGET_FILE:testfastforwardimporter>)
 ecm_mark_as_test(testfastforwardimporter)
 add_dependencies( testfastforwardimporter importers_files )
 target_link_libraries( testfastforwardimporter
@@ -147,7 +147,7 @@ set( testitunesimporter_SRCS
 )
 
 add_executable( testitunesimporter ${testitunesimporter_SRCS} )
-add_test(testitunesimporter testitunesimporter)
+add_test(NAME testitunesimporter COMMAND $<TARGET_FILE:testitunesimporter>)
 ecm_mark_as_test(testitunesimporter)
 add_dependencies( testitunesimporter importers_files )
 target_link_libraries( testitunesimporter
@@ -167,7 +167,7 @@ set( testrhytmboximporter_SRCS
 )
 
 add_executable( testrhytmboximporter ${testrhytmboximporter_SRCS} )
-add_test(testrhytmboximporter testrhytmboximporter)
+add_test(NAME testrhytmboximporter COMMAND $<TARGET_FILE:testrhytmboximporter>)
 ecm_mark_as_test(testrhytmboximporter)
 add_dependencies( testrhytmboximporter importers_files )
 target_link_libraries( testrhytmboximporter

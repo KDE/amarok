@@ -34,7 +34,7 @@ set( testplaylistmodels_SRCS
 )
 
 add_executable( testplaylistmodels ${testplaylistmodels_SRCS} )
-add_test(testplaylistmodels testplaylistmodels)
+add_test(NAME testplaylistmodels COMMAND $<TARGET_FILE:testplaylistmodels>)
 ecm_mark_as_test(testplaylistmodels)
 
 add_dependencies( testplaylistmodels amaroklib )

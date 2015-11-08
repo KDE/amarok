@@ -22,7 +22,7 @@ set( testupcomingeventsengine_SRCS
 )
 
 add_executable( testupcomingeventsengine ${testupcomingeventsengine_SRCS} )
-add_test(testupcomingeventsengine testupcomingeventsengine)
+add_test(NAME testupcomingeventsengine COMMAND $<TARGET_FILE:testupcomingeventsengine>)
 ecm_mark_as_test(testupcomingeventsengine)
 
 add_dependencies( testupcomingeventsengine amaroklib)

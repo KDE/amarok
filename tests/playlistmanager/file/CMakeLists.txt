@@ -22,6 +22,6 @@ set( testplaylistfileprovider_SRCS
      ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
     )
 add_executable( testplaylistfileprovider ${testplaylistfileprovider_SRCS} )
-add_test(testplaylistfileprovider testplaylistfileprovider)
+add_test(NAME testplaylistfileprovider COMMAND $<TARGET_FILE:testplaylistfileprovider>)
 ecm_mark_as_test(testplaylistfileprovider)
 target_link_libraries( testplaylistfileprovider  KF5::KIOCore Qt5::Test Qt5::Core amarokcore amaroklib )
