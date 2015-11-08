@@ -27,13 +27,13 @@
 
 #include <KConfigGroup>
 #include <KMessageBox>
-#include <KStandardDirs>
-#include <QUrl>
 
 #include <QDir>
 #include <QDomDocument>
 #include <QFile>
+#include <QStandardPaths>
 #include <QStringList>
+
 
 namespace Playlist {
 
@@ -155,8 +155,12 @@ void LayoutManager::loadUserLayouts()
 
 void LayoutManager::loadDefaultLayouts()
 {
-    const QUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
-    QString configFile = url.toLocalFile() + "DefaultPlaylistLayouts.xml";
+    const QString dataLocation = QStandardPaths::locate(QStandardPaths::GenericDataLocation,
+                                                       "amarok/data",
+                                                       QStandardPaths::LocateDirectory);
+
+
+    QString configFile = dataLocation + "/DefaultPlaylistLayouts.xml";
     loadLayouts( configFile, false );
 }
 
