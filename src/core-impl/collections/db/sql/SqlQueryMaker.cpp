@@ -159,7 +159,7 @@ SqlQueryMaker::~SqlQueryMaker()
     abortQuery();
     if( d->worker )
     {
-	d->worker->deleteLater();
+        d->worker->deleteLater();
     }
     delete d;
 }

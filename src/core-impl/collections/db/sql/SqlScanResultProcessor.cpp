@@ -398,7 +398,7 @@ SqlScanResultProcessor::deleteDeletedDirectories()
          */
         QString path = m_collection->mountPointManager()->getAbsolutePath( e.deviceId, e.dir );
         bool deleteThisDir = false;
-        if( !m_foundDirectories.contains( path ) )
+        if( !m_foundDirectories.contains( path+'/' ) )
             deleteThisDir = true;
         else if( m_foundDirectories.value( path ) != e.dirId )
         {

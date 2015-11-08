@@ -501,7 +501,6 @@ MemoryQueryMaker::done( ThreadWeaver::JobPointer job )
 {
     ThreadWeaver::Queue::instance()->dequeue( job );
     ThreadWeaver::QObjectDecorator *qs = new ThreadWeaver::QObjectDecorator(job.data());
-    qs->deleteLater();
     d->job = 0;
     emit queryDone();
 }
