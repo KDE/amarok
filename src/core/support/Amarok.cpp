@@ -21,7 +21,6 @@
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/playlists/PlaylistFormat.h"
 
-#include <KCalendarSystem>
 #include <KConfigGroup>
 #include <KDirLister>
 #include <KGlobalSettings>
@@ -57,10 +56,8 @@ namespace Amarok
             return i18nc( "When this track was last played", "Unknown" );
 
         if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
-            const KCalendarSystem *cal = KGlobal::locale()->calendar();
-            const QDate date = datetime.date();
-            return i18nc( "monthname year", "%1 %2", cal->monthName(date),
-                          cal->formatDate( date, KLocale::Year, KLocale::LongNumber ) );
+            QString month_year = datetime.date().toString("MM yyyy");
+            return i18nc( "monthname year", "%1", month_year );
         }
 
         //TODO "last week" = maybe within 7 days, but prolly before last Sunday
