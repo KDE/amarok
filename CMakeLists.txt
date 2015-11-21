@@ -28,8 +28,6 @@ include(ECMSetupVersion)
 include(ECMAddTests)
 include(ECMAddAppIcon)
 
-#find_package( Qt4 4.8.3 COMPONENTS QtCore QtGui QtScript QtSvg QtXml QtWebKit REQUIRED )
-#find_package( KDE4 4.8.4 REQUIRED )
 find_package( Qt5 REQUIRED COMPONENTS Core DBus Widgets Test Gui Svg Xml Script Sql Quick Qml ScriptTools WebKitWidgets)
 find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid KDELibs4Support Codecs I18n ThreadWeaver Plasma PlasmaQuick KCMUtils NewStuff TextEditor GlobalAccel KIO NotifyConfig Archive DNSSD)
 
@@ -42,7 +40,7 @@ option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recomm
 option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
 
 ############### Taglib
-set(TAGLIB_MIN_VERSION "1.7")
+set(TAGLIB_MIN_VERSION "1.07")
 find_package(Taglib REQUIRED)
 
 # Check if TagLib is built with ASF and MP4 support
