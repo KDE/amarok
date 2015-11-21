@@ -29,11 +29,11 @@
 #include "core/support/Debug.h"
 #include "collectionscanner/ScanningState.h"
 
-#include <KStandardDirs>
 #include <KProcess>
 
 #include <QFile>
 #include <QSharedMemory>
+#include <QStandardPaths>
 #include <QUuid>
 
 static const int MAX_RESTARTS = 40;
@@ -193,16 +193,17 @@ GenericScannerJob::scannerPath()
     QString path;
     if( overridePath.isEmpty() ) // Not running a test
     {
-        path = KStandardDirs::locate( "exe", "amarokcollectionscanner" );
+        path = QStandardPaths::findExecutable( "amarokcollectionscanner" );
 
+        // TODO: Not sure this is still useful...
         // If the binary is not in $PATH, then search in the application folder too
         if( path.isEmpty() )
-            path = App::applicationDirPath() + QDir::separator() + "amarokcollectionscanner";
+            path = App::applicationDirPath() + "/amarokcollectionscanner";
     }
     else
     {
         // Running a test, use the path + append collectionscanner
-        path = overridePath + QDir::separator() + "collectionscanner" + QDir::separator() + "amarokcollectionscanner";
+        path = overridePath + "/collectionscanner/amarokcollectionscanner";
     }
 
     if( !QFile::exists( path ) )
@@ -373,6 +374,7 @@ GenericScannerJob::parseScannerOutput()
             else if( name == "directory" )
             {
                 QSharedPointer<CollectionScanner::Directory> dir( new CollectionScanner::Directory( &m_reader ) );
+
                 emit directoryScanned( dir );
             }
             else
