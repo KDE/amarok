@@ -40,7 +40,7 @@ option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recomm
 option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
 
 ############### Taglib
-set(TAGLIB_MIN_VERSION "1.07")
+set(TAGLIB_MIN_VERSION "1.7")
 find_package(Taglib REQUIRED)
 
 # Check if TagLib is built with ASF and MP4 support
