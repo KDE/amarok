@@ -7,6 +7,7 @@
   <name xml:lang="ast">Amarok</name>
   <name xml:lang="bs">Amarok</name>
   <name xml:lang="ca">Amarok</name>
+  <name xml:lang="ca-valencia">Amarok</name>
   <name xml:lang="cs">Amarok</name>
   <name xml:lang="da">Amarok</name>
   <name xml:lang="de">Amarok</name>
@@ -15,6 +16,7 @@
   <name xml:lang="es">Amarok</name>
   <name xml:lang="fi">Amarok</name>
   <name xml:lang="fr">Amarok</name>
+  <name xml:lang="gl">Amarok</name>
   <name xml:lang="id">Amarok</name>
   <name xml:lang="it">Amarok</name>
   <name xml:lang="ko">Amarok</name>
@@ -37,6 +39,7 @@
     <p xml:lang="ar">أماروك مشغّل موسيقى مجّانيّ، وقويّ متعدّد الاستعمالات.</p>
     <p xml:lang="bs">Amarok je besplatan, prilagodljiv i snažan muzički  player.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música lliure, versàtil i potent.</p>
+    <p xml:lang="ca-valencia">L'Amarok és un reproductor de música lliure, versàtil i potent.</p>
     <p xml:lang="cs">Amarok je svobodný, univerzální a mocný přehrávač hudby.</p>
     <p xml:lang="da">Amarok er en fri, alsidig og kraftfuld musikafspiller.</p>
     <p xml:lang="de">Amarok ist eine freie, vielfältige und leistungsfähige Anwendung zur Musikwiedergabe.</p>
@@ -45,6 +48,7 @@
     <p xml:lang="es">Amarok es un potente y versátil reproductor de música libre.</p>
     <p xml:lang="fi">Amarok on vapaa, monipuolinen ja tehokas musiikkisoitin.</p>
     <p xml:lang="fr">Amarok est un lecteur de musique libre, polyvalent et puissant.</p>
+    <p xml:lang="gl">Amarok é un reprodutor de música libre, versátil e potente.</p>
     <p xml:lang="id">Amarok adalah bebas, serbaguna dan pemutar musik perkasa.</p>
     <p xml:lang="it">Amarok è un lettore musicale libero, versatile e potente.</p>
     <p xml:lang="ko">Amarok은 강력한 자유 소프트웨어 음악 재생기입니다.</p>
@@ -66,6 +70,7 @@
     <p xml:lang="ar">الميزات:</p>
     <p xml:lang="bs">Svojstva:</p>
     <p xml:lang="ca">Característiques:</p>
+    <p xml:lang="ca-valencia">Característiques:</p>
     <p xml:lang="cs">Vlastnosti:</p>
     <p xml:lang="da">Funktioner:</p>
     <p xml:lang="de">Funktionen:</p>
@@ -74,6 +79,7 @@
     <p xml:lang="es">Funciones:</p>
     <p xml:lang="fi">Ominaisuudet:</p>
     <p xml:lang="fr">Fonctionnalités :</p>
+    <p xml:lang="gl">Funcionalidades:</p>
     <p xml:lang="id">Fitur:</p>
     <p xml:lang="it">Funzionalità:</p>
     <p xml:lang="ko">기능:</p>
@@ -96,6 +102,7 @@
       <li xml:lang="ar">قوائم تشغيل حركيّة تطابق معايير مختلفة</li>
       <li xml:lang="bs">Dinamičke muzičke liste odgovaraju različitim kriterijima</li>
       <li xml:lang="ca">Llistes de reproducció dinàmiques coincidint amb diferents criteris</li>
+      <li xml:lang="ca-valencia">Llistes de reproducció dinàmiques coincidint amb diferents criteris</li>
       <li xml:lang="cs">Dynamické seznamy skladeb odpovídající různým požadavkům</li>
       <li xml:lang="da">Dynamiske spillelister som matcher forskellige kriterier</li>
       <li xml:lang="de">Dynamische Wiedergabelisten nach verschiedenen Kriterien</li>
@@ -104,6 +111,7 @@
       <li xml:lang="es">Listas de reproducción dinámicas según distintos criterios</li>
       <li xml:lang="fi">Eri ehtoja vastaavat dynaamiset soittolistat</li>
       <li xml:lang="fr">Listes de lectures dynamiques selon différents critères</li>
+      <li xml:lang="gl">Listas de reprodución dinámicas que se axeitan a distintos criterios.</li>
       <li xml:lang="id">Daftar putar dinamis menyesuaikan kriteria yang berbeda</li>
       <li xml:lang="it">Scalette dinamiche che verificano diversi criteri</li>
       <li xml:lang="ko">조건에 따른 동적 재생 목록</li>
@@ -124,6 +132,7 @@
       <li xml:lang="ar">إدارة التّجميعات مع دعم التّقييم</li>
       <li xml:lang="bs">Kolekcija upravljanja sa podrškom procjene</li>
       <li xml:lang="ca">Gestió de les col·leccions amb implementació per a les qualificacions</li>
+      <li xml:lang="ca-valencia">Gestió de les col·leccions amb implementació per a les qualificacions</li>
       <li xml:lang="cs">Správa sbírek s podporou hodnocení</li>
       <li xml:lang="da">Samlingshåndtering med understøttelse af vurderinger</li>
       <li xml:lang="de">Verwaltung von Sammlungen wit Unterstützung durch Bewertungen</li>
@@ -132,6 +141,7 @@
       <li xml:lang="es">Gestión de colección con uso de puntuaciones</li>
       <li xml:lang="fi">Kokoelmanhallinta arviointituella</li>
       <li xml:lang="fr">Gestion de collection avec prise en charge des évaluations</li>
+      <li xml:lang="gl">Xestión da colección cun sistema de puntuación.</li>
       <li xml:lang="id">Mengelola koleksi dengan dukungan peringkat</li>
       <li xml:lang="it">Gestione della collezione con supporto per la valutazione</li>
       <li xml:lang="ko">별점 기능이 있는 모음집 관리</li>
@@ -152,6 +162,7 @@
       <li xml:lang="ar">دعم أجهة مشغّلات الوسائط iPod، وMTP وUMS الأساسيّة</li>
       <li xml:lang="bs">Podrška za osnovne iPod, MTP i UMS muzičke player uređaje</li>
       <li xml:lang="ca">Implementació pels dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
+      <li xml:lang="ca-valencia">Implementació pels dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
       <li xml:lang="cs">Podpora pro zařízení iPod, MTP a UMS</li>
       <li xml:lang="da">Understøttelse af basale iPod-, MTP- og UMS-musikafspillere</li>
       <li xml:lang="de">Unterstützung für Wiedergabegeräte wie iPod, MTP und UMS</li>
@@ -160,6 +171,7 @@
       <li xml:lang="es">Implementación básica de dispositivos de reproducción de música como iPod y los que usan los protocolos MTP y UMS</li>
       <li xml:lang="fi">Tuki tavallisille iPod-, MTP- ja UMS-musiikkisoitinlaitteille</li>
       <li xml:lang="fr">Prise en charge basique des iPod et des lecteurs de musique conformes à MTP et UMS</li>
+      <li xml:lang="gl">Compatíbel con dispositivos de reprodución de música básicos: iPod, MTP e UMS.</li>
       <li xml:lang="id">Terutama mendukung perangkat pemutar musik iPod, MTP dan UMS</li>
       <li xml:lang="it">Supporto per i lettori musicali iPod, MTP e UMS</li>
       <li xml:lang="ko">iPod, MTP, UMS 음악 재생기 장치 지원</li>
@@ -178,7 +190,8 @@
       <li xml:lang="x-test">xxSupport for basic iPod, MTP and UMS music player devicesxx</li>
       <li>Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
       <li xml:lang="bs">Integrisane Internet usluge: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i još mnogo toga.</li>
-      <li xml:lang="ca">Serveis integrats d'Internet: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i més</li>
+      <li xml:lang="ca">Serveis integrats d'Internet: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i més.</li>
+      <li xml:lang="ca-valencia">Serveis integrats d'Internet: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i més.</li>
       <li xml:lang="cs">Integrované internetové služby: last.fm, Magnatune, Jamendo, Ampache, mp3tunes a další.</li>
       <li xml:lang="da">Integrerede internettjenester: last.fm, Magnatune, Jamendo, Ampache, mp3tunes og andre.</li>
       <li xml:lang="de">Integrierte Internet-Dienste: last.fm, Magnatune, Jamendo, Ampache, mp3tunes und weitere.</li>
@@ -187,6 +200,7 @@
       <li xml:lang="es">Servicios de Internet integrados: last.fm, Magnatune, Jamendo, Ampache, mp3tunes y más.</li>
       <li xml:lang="fi">Sisäänrakennetut internetpalvelut: Last.fm, Magnatune, Jamendo, Ampache, mp3tunes ja muita.</li>
       <li xml:lang="fr">Intégration des services Internet : last.fm, Magnatune, Jamendo, Ampache, mp3tune et plus.</li>
+      <li xml:lang="gl">Compatíbel con servizos de internet: last.fm, Magnatune, Jamendo, Ampache, mp3tunes e máis.</li>
       <li xml:lang="id">Layanan Internet terpadu: last.fm, Magnatune, Jamendo, Ampache, mp3tunes dan lebih banyak lagi.</li>
       <li xml:lang="it">Servizi Internet integrati: last.fm, Magnatune, Jamendo, Ampache, mp3tunes e altri.</li>
       <li xml:lang="ko">last.fm, Magnatune, Jamendo, Ampache, mp3tunes 등 온라인 서비스 지원</li>
@@ -206,6 +220,7 @@
       <li>Scripting support</li>
       <li xml:lang="bs">Podrška za skriptiranje</li>
       <li xml:lang="ca">Implementació de la creació de scripts</li>
+      <li xml:lang="ca-valencia">Implementació de la creació de scripts</li>
       <li xml:lang="cs">Podpora pro skripty</li>
       <li xml:lang="da">Understøttelse af scripts</li>
       <li xml:lang="de">Skript-Unterstützung</li>
@@ -214,6 +229,7 @@
       <li xml:lang="es">Uso de guiones</li>
       <li xml:lang="fi">Skriptaustuki</li>
       <li xml:lang="fr">Gestion de scripts</li>
+      <li xml:lang="gl">Permite automatización.</li>
       <li xml:lang="id">Dukungan skrip</li>
       <li xml:lang="it">Supporto per la creazione di script</li>
       <li xml:lang="ko">스크립팅 지원</li>
@@ -234,6 +250,7 @@
       <li xml:lang="ar">إدارة الأغلفة</li>
       <li xml:lang="bs">Upravitelj naslovnicom</li>
       <li xml:lang="ca">Gestor de cobertes</li>
+      <li xml:lang="ca-valencia">Gestor de cobertes</li>
       <li xml:lang="cs">Správce obalů</li>
       <li xml:lang="da">Omslagshåndtering</li>
       <li xml:lang="de">Cover-Verwaltung</li>
@@ -242,6 +259,7 @@
       <li xml:lang="es">Gestor de carátulas</li>
       <li xml:lang="fi">Kansikuvien hallinta</li>
       <li xml:lang="fr">Gestionnaire de pochettes</li>
+      <li xml:lang="gl">Xestor de portadas.</li>
       <li xml:lang="id">Manajer sampul</li>
       <li xml:lang="it">Gestore delle copertine</li>
       <li xml:lang="ko">커버 관리자</li>
@@ -261,6 +279,7 @@
       <li>Replay gain support</li>
       <li xml:lang="bs">Ponoviti dobijanje podrške</li>
       <li xml:lang="ca">Implementació de la repetició de guany</li>
+      <li xml:lang="ca-valencia">Implementació de la repetició de guany</li>
       <li xml:lang="cs">Podpora Replay gain</li>
       <li xml:lang="da">Replay Gain-understøttelse</li>
       <li xml:lang="de">Unterstützung für Lautstärkeanpassung</li>
@@ -269,6 +288,7 @@
       <li xml:lang="es">Implementación de normalización de audio</li>
       <li xml:lang="fi">Voimakkuudentasauksen tuki</li>
       <li xml:lang="fr">Prise en charge de Replay Gain</li>
+      <li xml:lang="gl">Permite normalizar o volume.</li>
       <li xml:lang="id">Dukungan gain putar lagi</li>
       <li xml:lang="it">Supporto del guadagno di riproduzione</li>
       <li xml:lang="ko">리플레이게인 지원</li>

@@ -164,7 +164,8 @@ APG::ConstraintSolver::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *
     quint32 generation = 0;
     Meta::TrackList* best = NULL;
     while ( !m_abortRequested && ( generation < m_maxGenerations ) ) {
-        m_suggestedPlaylistSize = m_constraintTreeRoot->suggestPlaylistSize();
+        quint32 s = m_constraintTreeRoot->suggestPlaylistSize();
+        m_suggestedPlaylistSize = (s > 0) ? s : m_suggestedPlaylistSize;
         fill_population( population );
         best = find_best( population );
         if ( population.value( best ) < m_satisfactionThreshold ) {
