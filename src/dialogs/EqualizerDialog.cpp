@@ -27,20 +27,13 @@
 EqualizerDialog * EqualizerDialog::s_instance = 0;
 
 EqualizerDialog::EqualizerDialog( QWidget* parent )
-    : KPageDialog( parent )
+    : QDialog( parent )
 {
     DEBUG_BLOCK
 
     setWindowTitle( i18n( "Configure Equalizer" ) );
 
     setupUi( this );
-
-    // again the ui file does not define the dialog but a widget.
-    // Since we inherit from QDialog we have to do the following three
-    // lines.
-    QGridLayout* layout = new QGridLayout( this );
-    layout->addWidget( EqualizerWidget );
-    layout->addWidget(EqualizerWidget);
 
     EqualizerController *equalizer = The::engineController()->equalizerController();
     // Check if equalizer is supported - disable controls if not
@@ -51,7 +44,8 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
         activeCheckBox->setChecked( false );
     }
 
-    connect(buttonBox()->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(restoreOriginalSettings()));
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(restoreOriginalSettings()));
 
     // Assign slider items to vectors
     m_bands.append( eqPreampSlider );
@@ -195,6 +189,7 @@ EqualizerDialog::restoreOriginalSettings()
     The::engineController()->equalizerController()->applyEqualizerPreset( originalPresetIndex );
     eqPresets->setEditText( m_originalPreset );
     The::engineController()->equalizerController()->setGains( m_originalGains );
+    this->reject();
 }
 
 void
