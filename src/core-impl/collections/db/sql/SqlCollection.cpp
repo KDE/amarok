@@ -278,7 +278,6 @@ SqlCollection::SqlCollection( SqlStorage* storage )
     connect( m_directoryWatcher, SIGNAL(requestScan(QList<QUrl>,GenericScanManager::ScanType)),
              m_scanManager,      SLOT(requestScan(QList<QUrl>,GenericScanManager::ScanType)) );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_directoryWatcher) );
-
 }
 
 SqlCollection::~SqlCollection()

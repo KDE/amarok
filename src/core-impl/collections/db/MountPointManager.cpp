@@ -233,6 +233,9 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
         }
     }
 
+    if (QFileInfo(absolutePath.path()).isDir())
+        absolutePath.setPath( absolutePath.adjusted(QUrl::StripTrailingSlash).path() + '/' );
+
     #ifdef Q_OS_WIN32
         return absolutePath.toLocalFile();
     #else
