@@ -127,7 +127,7 @@ TestASXPlaylist::testUidUrl()
     QString tempPath = KStandardDirs::locateLocal( "tmp", "test.asx" );
     //we have chaged the name around so much, better reset it
     m_testPlaylist->setName( "test" );
-    QCOMPARE( m_testPlaylist->uidUrl().toDisplayString(), tempPath );
+    QCOMPARE( m_testPlaylist->uidUrl().toLocalFile(), tempPath );
 }
 
 void

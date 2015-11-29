@@ -116,7 +116,7 @@ void TestM3UPlaylist::testUidUrl()
     QString tempPath = KStandardDirs::locateLocal( "tmp", "test.m3u" );
     //we have chaged the name around so much, better reset it
     m_testPlaylist->setName( "test" );
-    QCOMPARE( m_testPlaylist->uidUrl().toDisplayString(), tempPath );
+    QCOMPARE( m_testPlaylist->uidUrl().toLocalFile(), tempPath );
 }
 
 void TestM3UPlaylist::testSetAndGetGroups()

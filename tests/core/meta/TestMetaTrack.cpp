@@ -48,7 +48,7 @@ TestMetaTrack::dataPath( const QString &relPath )
 void TestMetaTrack::initTestCase()
 {
     QString oldPath = m_trackPath;
-    m_trackPath = m_tempDir.name() + "TestMetaTrack-testTrack.mp3";
+    m_trackPath = m_tempDir.path() + "TestMetaTrack-testTrack.mp3";
     QVERIFY( QFile::copy( oldPath, m_trackPath ) );
 
     m_testTrack1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(m_trackPath) );
@@ -67,7 +67,7 @@ void TestMetaTrack::testPrettyName()
 
 void TestMetaTrack::testPlayableUrl()
 {
-    QCOMPARE( m_testTrack1->playableUrl().toDisplayString(), m_trackPath );
+    QCOMPARE( m_testTrack1->playableUrl().path(), m_trackPath );
 }
 
 void TestMetaTrack::testPrettyUrl()
@@ -77,7 +77,7 @@ void TestMetaTrack::testPrettyUrl()
 
 void TestMetaTrack::testUidUrl()
 {
-    QCOMPARE( m_testTrack1->uidUrl(), QUrl( m_trackPath ).url() );
+    QCOMPARE( m_testTrack1->uidUrl(), QUrl::fromLocalFile(m_trackPath ).url() );
 }
 
 void TestMetaTrack::testIsPlayable()

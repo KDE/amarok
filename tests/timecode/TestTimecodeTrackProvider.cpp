@@ -68,5 +68,5 @@ void TestTimecodeTrackProvider::testTrackForUrl()
 
     QVERIFY( resultTrack );
 
-    QCOMPARE( resultTrack->playableUrl().toDisplayString(), dataPath( "data/audio/album/Track01.ogg" ) );
+    QCOMPARE( resultTrack->playableUrl().path(), dataPath( "data/audio/album/Track01.ogg" ) );
 }

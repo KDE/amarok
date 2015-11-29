@@ -87,7 +87,6 @@ void AmarokUrl::initFromString( const QString & urlString )
     m_path = parts.join( "/" );
 
     m_path = unescape( m_path );
-
 }
 
 void AmarokUrl::setCommand( const QString & command )
@@ -127,7 +126,7 @@ QString AmarokUrl::url() const
     QUrl url;
     url.setScheme( "amarok" );
     url.setHost( m_command );
-    url.setPath( m_path );
+    url.setPath( '/' + m_path ); // the path must begin by /
 
     foreach( const QString &argName, m_arguments.keys() )
         url.addQueryItem( argName, m_arguments[argName] );

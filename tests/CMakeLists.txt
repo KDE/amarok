@@ -158,11 +158,10 @@ ecm_mark_as_test(testtrackorganizer)
 # we have to build it our own
 if(GOOGLEMOCK_GTEST_SOURCES)
     add_subdirectory( ${GOOGLEMOCK_GTEST_SOURCES} gtest )
+    add_dependencies( testtrackorganizer gtest )
 endif()
 
 add_dependencies( testtrackorganizer amarokcore )
 add_dependencies( testtrackorganizer amaroklib )
-add_dependencies( testtrackorganizer gtest )
 
 target_link_libraries( testtrackorganizer amarokcore amaroklib KF5::KDELibs4Support  ${KDE4_SOLID_LIBRARY} Qt5::Test Qt5::Core Qt5::Gui ${GOOGLEMOCK_LIBRARIES})
-

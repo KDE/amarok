@@ -27,18 +27,18 @@
 #include <QDataStream>
 
 #include <QSignalSpy>
-#include <KTempDir>
+#include <QTemporaryDir>
 
 #include <qtest_kde.h>
 
 Q_DECLARE_METATYPE(QModelIndex);
 
-KTempDir *s_tmpDir = 0;
+QTemporaryDir *s_tmpDir = 0;   // Memory leak here now, but if it's deleted, we have a segfault
 
 // We return a special saveLocation.
 QString Amarok::saveLocation( const QString &directory )
 {
-    return s_tmpDir->name() + directory;
+    return s_tmpDir->path() + directory;
 }
 
 QTEST_KDEMAIN( TestDynamicModel, GUI )
@@ -51,13 +51,12 @@ TestDynamicModel::TestDynamicModel()
 void
 TestDynamicModel::init()
 {
-    s_tmpDir = new KTempDir();
+    s_tmpDir = new QTemporaryDir();
 }
 
 void
 TestDynamicModel::cleanup()
 {
-    delete s_tmpDir;
 }
 
 void

@@ -45,7 +45,7 @@ class TestTrackForUrlWorker : public QObject
         /**
          * Both use testCompleteJobInternal_data() to add test data to avoid redundancy
          */
-        void testCompleteJobKUrl_data();
+        void testCompleteJobQUrl_data();
         void testCompleteJobQString_data();
 
     private:

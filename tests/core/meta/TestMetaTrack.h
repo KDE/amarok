@@ -24,7 +24,7 @@
 
 #include <QObject>
 #include <QString>
-#include <KTempDir>
+#include <QTemporaryDir>
 
 class TestMetaTrack : public QObject
 {
@@ -74,7 +74,7 @@ private:
     Meta::TrackPtr m_testTrack1;
     Meta::TrackPtr m_testTrack2;
     QString  m_trackPath;
-    KTempDir m_tempDir;
+    QTemporaryDir m_tempDir;
 
     QString dataPath( const QString &relPath );
 };

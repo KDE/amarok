@@ -122,7 +122,7 @@ void TestPLSPlaylist::testUidUrl()
 {
     QString tempPath = KStandardDirs::locateLocal( "tmp", "test.pls" );
     m_testPlaylist1->setName( "test" );
-    QCOMPARE( m_testPlaylist1->uidUrl().toDisplayString(), tempPath );
+    QCOMPARE( m_testPlaylist1->uidUrl().toLocalFile(), tempPath );
 }
 void TestPLSPlaylist::testIsWritable()
 {

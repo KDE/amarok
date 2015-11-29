@@ -45,7 +45,7 @@ TestTrackForUrlWorker::dataPath( const QString &relPath )
 }
 
 void
-TestTrackForUrlWorker::testCompleteJobKUrl_data()
+TestTrackForUrlWorker::testCompleteJobQUrl_data()
 {
     testCompleteJobInternal_data();
 }
@@ -95,10 +95,10 @@ TestTrackForUrlWorker::testCompleteJobInternal( MockTrackForUrlWorker *trackForU
              this, SLOT(setEmittedTrack(Meta::TrackPtr)) );
 
     QSignalSpy spyFinishedLookup( trackForUrlWorker, SIGNAL(finishedLookup(Meta::TrackPtr)) );
-
+    
     // Enqueue the job for execution and verify that it emits done when finished, which triggers completeJob
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(trackForUrlWorker) );
-    bool receivedDone = QTest::kWaitForSignal( trackForUrlWorker, SIGNAL(done(ThreadWeaver::Job*)), 1000 );
+    bool receivedDone = QTest::kWaitForSignal( trackForUrlWorker, SIGNAL(done(ThreadWeaver::JobPointer)), 1000 );
     QVERIFY( receivedDone );
 
     // Verify that finishedLookup was emitted

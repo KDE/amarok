@@ -9,7 +9,7 @@ macro(add_database_test test_target test_sources)
     #one cannot link to plugins on OS X. As a workaround, add anything relevant that goes into the mysqle plugin to each test
         set( test_sources_internal
                 ${test_sources}
-                ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/MySqlStorage.cpp
+                ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/mysql-shared/MySqlStorage.cpp
                 ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.cpp )
     endif()
 
@@ -37,8 +37,7 @@ macro(add_database_test test_target test_sources)
         amarok-sqlcollection
         KF5::KDELibs4Support
         KF5::KIOCore
-        KF5::ThreadWeaver
-        
+        KF5::ThreadWeaver      
         Qt5::Test
         Qt5::Core
         ${MYSQL_EMBEDDED_LIBRARIES}
