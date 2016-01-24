@@ -244,7 +244,7 @@ TabsEngine::queryUltimateGuitar( const QString &artist, const QString &title )
 {
     // Query UltimateGuitar.com (filtering guitar (tabs + chords) and bass tabs)
     KUrl ultimateGuitarUrl;
-    ultimateGuitarUrl.setScheme( "http" );
+    ultimateGuitarUrl.setScheme( "https";
     ultimateGuitarUrl.setHost( "www.ultimate-guitar.com" );
     ultimateGuitarUrl.setPath( "/search.php" );
     ultimateGuitarUrl.addQueryItem( "view_state", "advanced" );
