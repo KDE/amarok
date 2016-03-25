@@ -103,6 +103,13 @@ private:
 
     // Helper function to build the audiocd url.
     KUrl audiocdUrl( const QString &path = "" ) const;
+    // The file name of the track without extension
+    QString trackBaseFileName( int i ) const;
+    // The file name of the track in .wav format
+    QString trackWavFileName( int i ) const;
+    // The name of the track that should be displayed
+    QString trackDisplayName( int i ) const;
+    // The length of the track in milliseconds
     qint64 trackLength( int i ) const;
 
     /**

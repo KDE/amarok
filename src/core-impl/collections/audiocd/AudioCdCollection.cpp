@@ -91,7 +91,9 @@ KUrl
 AudioCdCollection::audiocdUrl( const QString &path ) const
 {
     KUrl url("audiocd:/");
-    url.addPath( path );
+
+    if( !path.isEmpty() )
+        url.addPath( path );
 
     if( !m_device.isEmpty() )
         url.addQueryItem( "device", m_device );
@@ -346,10 +348,32 @@ AudioCdCollection::checkForStartPlayRequest()
     }
 }
 
-qint64
-AudioCdCollection::trackLength(int i) const
+
+QString
+AudioCdCollection::trackBaseFileName( int i ) const
 {
-    KUrl kioUrl = audiocdUrl( QString("Track%1.wav").arg(i, 2, 10, QChar('0') ) );
+    return QString( "Track%1" ).arg( i, 2, 10, QChar('0') );
+}
+
+
+QString
+AudioCdCollection::trackWavFileName( int i ) const
+{
+    return trackBaseFileName( i ) + ".wav";
+}
+
+
+QString
+AudioCdCollection::trackDisplayName( int i ) const
+{
+    return i18n( "Track" ) + ' ' + QString::number( i );
+}
+
+
+qint64
+AudioCdCollection::trackLength( int i ) const
+{
+    KUrl kioUrl = audiocdUrl( trackWavFileName( i ) );
     KIO::UDSEntry uds;
     if ( KIO::NetAccess::stat(kioUrl, uds, NULL) )
     {
@@ -480,19 +504,21 @@ AudioCdCollection::noInfoAvailable()
 
 
     int i = 1;
-    QString prefix( "0" );
-    QString trackName = "Track " + prefix + QString::number( i );
+    QString trackWav = trackWavFileName( i );
 
-    while( KIO::NetAccess::exists( QString( "audiocd:/" + trackName + ".wav" ), KIO::NetAccess::SourceSide, 0 ) )
+    // This will find also data tracks on mixed CDs:
+    // a better way to discover the available audio tracks should be found
+    while( KIO::NetAccess::exists( audiocdUrl( trackWav ), KIO::NetAccess::SourceSide, 0 ) )
     {
-        debug() << "got track: " << "audiocd:/" + trackName + ".wav";
+        debug() << "got track url: " << audiocdUrl( trackWav );
 
-        QString baseUrl = "audiocd:/" + m_discCddbId + '/' + QString::number( i );
+        //we hack the url so the engine controller knows what track on the CD to play..
+        KUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i ) );
 
-        Meta::AudioCdTrackPtr trackPtr = Meta::AudioCdTrackPtr( new Meta::AudioCdTrack( this, trackName, baseUrl ) );
+        Meta::AudioCdTrackPtr trackPtr = Meta::AudioCdTrackPtr( new Meta::AudioCdTrack( this, trackDisplayName( i ), baseUrl ) );
 
         trackPtr->setTrackNumber( i );
-        trackPtr->setFileNameBase( trackName );
+        trackPtr->setFileNameBase( trackBaseFileName( i ) );
         trackPtr->setLength( trackLength( i ) );
 
         memoryCollection()->addTrack( Meta::TrackPtr::staticCast( trackPtr ) );
@@ -513,8 +539,7 @@ AudioCdCollection::noInfoAvailable()
         trackPtr->setYear( yearPtr );
 
         i++;
-        prefix = i < 10 ? "0" : "";
-        trackName = "Track " + prefix + QString::number( i );
+        trackWav = trackWavFileName( i );
     }
 
     updateProxyTracks();
