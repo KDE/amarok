@@ -108,8 +108,8 @@ OrganizeCollectionWidget::buildFormatTip() const
 {
     QMap<QString, QString> args;
     args["albumartist"] = i18n( "%1 or %2", QLatin1String("Album Artist, The") , QLatin1String("The Album Artist") );
-    args["thealbumartist"] = "The Album Artist";
-    args["theartist"] = "The Artist";
+    args["thealbumartist"] = i18n( "The Album Artist" );
+    args["theartist"] = i18n( "The Artist" );
     args["artist"] = i18n( "%1 or %2", QLatin1String("Artist, The") , QLatin1String("The Artist") );
     args["initial"] = i18n( "Artist's Initial" );
     args["filetype"] = i18n( "File Extension of Source" );
