@@ -82,7 +82,6 @@ DatabaseConfig::testDatabaseConnection() //SLOT
     factories = Plugins::PluginManager::instance()->factories( Plugins::PluginManager::Storage );
 
     // try if they have a testSettings slot that we can call
-    bool tested = false;
     foreach( Plugins::PluginFactory* factory, factories )
     {
         bool callSucceeded = false;
@@ -100,7 +99,6 @@ DatabaseConfig::testDatabaseConnection() //SLOT
 
         if( callSucceeded )
         {
-            tested = true;
             if( connectionErrors.isEmpty() )
                 KMessageBox::messageBox( this, KMessageBox::Information,
                                          i18n( "Amarok was able to establish a successful connection to the database." ),

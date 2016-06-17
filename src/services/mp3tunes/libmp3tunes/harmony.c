@@ -643,7 +643,7 @@ gboolean mp3tunes_harmony_disconnect(MP3tunesHarmony *harmony, GError** err) {
     gboolean success = close_connection(harmony);
     harmony->connected = FALSE;
     if (success == FALSE) {
-        err = &harmony->error;
+        *err = harmony->error;
         return success;
     }
     return success;
@@ -658,7 +658,7 @@ gboolean mp3tunes_harmony_connect(MP3tunesHarmony* harmony, GError** err) {
     success = open_connection(harmony);
 
     if (success == FALSE) {
-        err = &harmony->error;
+        *err = harmony->error;
         mp3tunes_harmony_disconnect(harmony, err);
         return success;
     }

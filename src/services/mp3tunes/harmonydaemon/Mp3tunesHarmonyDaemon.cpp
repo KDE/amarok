@@ -155,8 +155,11 @@ Mp3tunesHarmonyDaemon::init()
 {
 
     qDebug()  << "Begin initing";
-        /* g_type_init required for using the GObjects for Harmony. */
-    g_type_init();
+
+#if !GLIB_CHECK_VERSION(2,36,0)
+    /* g_type_init required for using the GObjects in versions of glib older than 2.36. */
+    g_type_init ();
+#endif
 
     m_harmony = mp3tunes_harmony_new();
 

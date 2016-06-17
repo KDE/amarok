@@ -301,7 +301,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     metaTrack->setType( track->filetype() );
 
     if( m_type == GenericScanManager::FullScan ||
-        !track->bpm() >= 0 )
+        track->bpm() >= 0 )
         metaTrack->setBpm( track->bpm() );
 
     if( m_type == GenericScanManager::FullScan ||

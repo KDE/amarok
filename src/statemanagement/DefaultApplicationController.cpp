@@ -32,6 +32,7 @@ DefaultApplicationController::DefaultApplicationController( QObject *parent )
     //there can be only one applicationcontroller
     ApplicationController *oldController = Components::setApplicationController( this );
     Q_ASSERT( !oldController );
+    Q_UNUSED( oldController );
 }
 
 DefaultApplicationController::~DefaultApplicationController()
@@ -88,6 +89,7 @@ DefaultApplicationController::initEngineController()
     Components::setEngineController( controller );
     bool invoked = QMetaObject::invokeMethod( controller, "initializePhonon", Qt::DirectConnection );
     Q_ASSERT( invoked );
+    Q_UNUSED( invoked );
 }
 
 void

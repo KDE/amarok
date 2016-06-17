@@ -69,6 +69,7 @@ MySqlServerStorageFactory::testSettings( const QString &host, const QString &use
 
     MySqlServerStorage* storage = new MySqlServerStorage();
     bool initResult = storage->init( host, user, password, port, databaseName );
+    Q_UNUSED( initResult );
 
     // we are just interested in the errors.
     errors = storage->getLastErrors();
