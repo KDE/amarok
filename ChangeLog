@@ -12,6 +12,7 @@ VERSION 2.9.0
   BUGFIXES:
    * Fix integer fields, like length, always showing up as zero in filter creation
      dialog; thanks to Stefano Pettini. (BR 341661)
+   * Fix background color of the lyrics applet, thanks to Stefano Pettini. (BR 314854)
 
 
 VERSION 2.8.90
