@@ -656,7 +656,6 @@ WikipediaApplet::init()
     // Read config and inform the engine.
     d->langList = Amarok::config("Wikipedia Applet").readEntry( "PreferredLang", QStringList() << "en" );
     d->useMobileWikipedia = Amarok::config("Wikipedia Applet").readEntry( "UseMobile", false );
-    d->useSSL = Amarok::config( "Wikipedia Applet" ).readEntry( "UseSSL", true );
     d->_paletteChanged( App::instance()->palette() );
     d->dataContainer->setData( "lang", d->langList );
     d->dataContainer->setData( "mobile", d->useMobileWikipedia );
