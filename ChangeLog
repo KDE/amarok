@@ -70,7 +70,8 @@ VERSION 2.8.90
    * Check for QtBindings at runtime instead. Disable scripts and display error message
      if missing. (BR 325006)
    * Print playlist download errors to the debug log. (BR 325120)
-
+   * Wikipedia Applet only connect with SSL, so that redirects are handled
+     correctly. (BR 349313)
 
 VERSION 2.8
   FEATURES:
