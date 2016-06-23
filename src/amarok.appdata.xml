@@ -132,7 +132,7 @@
       <li xml:lang="ar">إدارة التّجميعات مع دعم التّقييم</li>
       <li xml:lang="bs">Kolekcija upravljanja sa podrškom procjene</li>
       <li xml:lang="ca">Gestió de les col·leccions permetent qualificacions</li>
-      <li xml:lang="ca-valencia">Gestió de les col·leccions amb implementació per a les qualificacions</li>
+      <li xml:lang="ca-valencia">Gestió de les col·leccions permetent qualificacions</li>
       <li xml:lang="cs">Správa sbírek s podporou hodnocení</li>
       <li xml:lang="da">Samlingshåndtering med understøttelse af vurderinger</li>
       <li xml:lang="de">Verwaltung von Sammlungen wit Unterstützung durch Bewertungen</li>
@@ -162,7 +162,7 @@
       <li xml:lang="ar">دعم أجهة مشغّلات الوسائط iPod، وMTP وUMS الأساسيّة</li>
       <li xml:lang="bs">Podrška za osnovne iPod, MTP i UMS muzičke player uređaje</li>
       <li xml:lang="ca">Admet els dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
-      <li xml:lang="ca-valencia">Implementació pels dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
+      <li xml:lang="ca-valencia">Admet els dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
       <li xml:lang="cs">Podpora pro zařízení iPod, MTP a UMS</li>
       <li xml:lang="da">Understøttelse af basale iPod-, MTP- og UMS-musikafspillere</li>
       <li xml:lang="de">Unterstützung für Wiedergabegeräte wie iPod, MTP und UMS</li>
@@ -220,7 +220,7 @@
       <li>Scripting support</li>
       <li xml:lang="bs">Podrška za skriptiranje</li>
       <li xml:lang="ca">Permet la creació de scripts</li>
-      <li xml:lang="ca-valencia">Implementació de la creació de scripts</li>
+      <li xml:lang="ca-valencia">Permet la creació de scripts</li>
       <li xml:lang="cs">Podpora pro skripty</li>
       <li xml:lang="da">Understøttelse af scripts</li>
       <li xml:lang="de">Skript-Unterstützung</li>
@@ -279,7 +279,7 @@
       <li>Replay gain support</li>
       <li xml:lang="bs">Ponoviti dobijanje podrške</li>
       <li xml:lang="ca">Permet el guany de repetició</li>
-      <li xml:lang="ca-valencia">Implementació de la repetició de guany</li>
+      <li xml:lang="ca-valencia">Permet el guany de repetició</li>
       <li xml:lang="cs">Podpora Replay gain</li>
       <li xml:lang="da">Replay Gain-understøttelse</li>
       <li xml:lang="de">Unterstützung für Lautstärkeanpassung</li>
