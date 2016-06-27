@@ -488,7 +488,7 @@ SqlScanResultProcessor::relocateTracksToNewDirectory( int oldDirId, int newDirId
     if( res.count() != 1 )
     {
         warning() << "relocateTracksToNewDirectory(): no or multiple entries when"
-                  << "quering directory with id" << newDirId;
+                  << "querying directory with id" << newDirId;
         return false;
     }
     int newDirDeviceId = res.at( 0 ).toInt();

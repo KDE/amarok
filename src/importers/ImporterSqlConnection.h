@@ -68,7 +68,7 @@ public:
     /**
      * Executes a query given in QString @param query , first using QSqlQuery::bindValue
      * to bind parameters given in @param bindValues . If @param ok is not null the bool
-     * it points at is set to true if the query was successful and false if error occured.
+     * it points at is set to true if the query was successful and false if error occurred.
      * Note that if no transaction is started, the connection is opened for the query and
      * then closed again.
      *

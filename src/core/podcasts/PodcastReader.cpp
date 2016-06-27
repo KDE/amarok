@@ -1060,7 +1060,7 @@ PodcastReader::beginFeed()
 void
 PodcastReader::endDocument()
 {
-    debug() << "successfuly parsed feed: " << m_url.url();
+    debug() << "successfully parsed feed: " << m_url.url();
     emit finished( this );
 }
 

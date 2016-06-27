@@ -3465,7 +3465,7 @@ VERSION 1.4.4
     * Deleting files from generic media devices would not update the progress
       bar, resulting in the progress staying at 0%. (BR 130009)
     * If nothing at all existed on a generic device, the first item
-      transferred would incorrectly show that an error had occured during
+      transferred would incorrectly show that an error had occurred during
       transfer. (BR 133528)
     * Synchronising a smart playlist to a device when it didn't exist before
       would crash Amarok. (BR 135956)

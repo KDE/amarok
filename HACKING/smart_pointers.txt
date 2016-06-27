@@ -20,7 +20,7 @@ then the object is deleted and the normal pointers dangle. Segfaults ensue.
 The solution is to just make sure that any normal pointers are temporary and
 everything else is a KSharedPtr if reference counting is required for your class. Even
 if the pointer is temporary, but is then handed off to some other class that
-might keep it around, thats a potentional crash now or in the future.
+might keep it around, that's a potentional crash now or in the future.
 
 
 == Reference Cycles ==

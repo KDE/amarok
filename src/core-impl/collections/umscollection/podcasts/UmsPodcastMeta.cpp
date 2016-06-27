@@ -264,7 +264,7 @@ UmsPodcastChannel::removeEpisode( UmsPodcastEpisodePtr episode )
 
     if( position == -1 )
     {
-        error() << title() << " does't have this episode";
+        error() << title() << " doesn't have this episode";
         return;
     }
 
