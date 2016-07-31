@@ -1,6 +1,6 @@
 Amarok ChangeLog
 ================
-(C) 2002-2015 the Amarok authors.
+(C) 2002-2016 the Amarok authors.
 
 VERSION 2.9.0
   FEATURES:
@@ -13,6 +13,8 @@ VERSION 2.9.0
    * Fix integer fields, like length, always showing up as zero in filter creation
      dialog; thanks to Stefano Pettini. (BR 341661)
    * Fix background color of the lyrics applet, thanks to Stefano Pettini. (BR 314854)
+   * Fix Organize tracks / Guess tags presets not persisted properly;
+     thanks to Stefano Pettini. (BR 226144)
 
 
 VERSION 2.8.90

@@ -90,14 +90,15 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 
     // - the preset buttons
     m_addPresetButton = new QPushButton( i18n("Add preset"), this );
-    m_addPresetButton->setToolTip( i18n("Saves the current scheme/format above as a preset.") );
+    m_addPresetButton->setToolTip( i18n("Saves the current scheme/format as new preset.") );
     presetLayout1->addWidget( m_addPresetButton, 0 );
 
     m_updatePresetButton = new QPushButton( i18n("Update preset"), this );
+    m_updatePresetButton->setToolTip( i18n("Updates the preset with the current scheme/format.") );
     presetLayout1->addWidget( m_updatePresetButton, 0 );
 
     m_removePresetButton = new QPushButton( i18n("Remove preset"), this );
-    m_removePresetButton->setToolTip( i18n("Removes the currently selected format preset") );
+    m_removePresetButton->setToolTip( i18n("Removes the currently selected preset.") );
     presetLayout1->addWidget( m_removePresetButton, 0 );
 
     schemeGroupLayout->addLayout( presetLayout1 );
@@ -167,7 +168,8 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 
     connect( m_filenameLayoutEdit, SIGNAL(textChanged(QString)),
              this, SIGNAL(schemeChanged()) );
-debug() << "st3.1";
+    connect( m_filenameLayoutEdit, SIGNAL(textChanged(QString)),
+             this, SLOT(slotUpdatePresetButton()) );
 }
 
 Token*
@@ -233,16 +235,17 @@ FilenameLayoutWidget::createStaticToken(qint64 value) const
 void
 FilenameLayoutWidget::onAccept()    //SLOT
 {
-    slotSaveFormatList();
+    QString custom = getParsableScheme();
+
+    // Custom scheme is stored per dialog
+    debug() << "--- saving custom scheme for" << m_configCategory << custom;
+    Amarok::config( m_configCategory ).writeEntry( "Custom Scheme", custom );
 }
 
 QString
 FilenameLayoutWidget::getParsableScheme() const
 {
-    QString scheme = m_advancedMode ? m_filenameLayoutEdit->text() : dropTargetScheme();
-
-    Amarok::config( m_configCategory ).writeEntry( "Custom Scheme", scheme );
-    return scheme;
+    return m_advancedMode ? m_filenameLayoutEdit->text() : dropTargetScheme();
 }
 
 // attempts to set the scheme
@@ -254,8 +257,6 @@ void FilenameLayoutWidget::setScheme(const QString& scheme)
     slotUpdatePresetButton();
     emit schemeChanged();
 }
-
-
 
 //Handles the modifications to the dialog to toggle between advanced and basic editing mode.
 void
@@ -286,7 +287,6 @@ FilenameLayoutWidget::setAdvancedMode( bool isAdvanced )
 
     Amarok::config( m_configCategory ).writeEntry( "Mode", entryValue );
 }
-
 
 QString
 FilenameLayoutWidget::dropTargetScheme() const
@@ -342,28 +342,34 @@ FilenameLayoutWidget::populateConfiguration()
     QString mode = Amarok::config( m_configCategory ).readEntry( "Mode" );
     setAdvancedMode( mode == QLatin1String( "Advanced" ) );
 
-    setScheme( Amarok::config( m_configCategory ).readEntryUntranslated( "Custom Scheme" ) );
+    // Custom scheme is stored per dialog
+    QString custom = Amarok::config( m_configCategory ).readEntryUntranslated( "Custom Scheme" );
+    debug() << "--- got custom scheme for" << m_configCategory << custom;
 
-    populateFormatList();
+    populateFormatList( custom );
+
+    setScheme( custom );
 }
 
-
 void
-FilenameLayoutWidget::populateFormatList()
+FilenameLayoutWidget::populateFormatList( const QString& custom )
 {
     DEBUG_BLOCK
 
+    // Configuration is not symmetric: dialog-specific settings are saved
+    // using m_configCategory, that is different per dialog. The presets are saved
+    // only in one single place, so these can be shared. This place is the "default" one,
+    // that is the configuration for OrganizeCollectionDialog.
+
     // items are stored in the config list in the following format:
-    // Label#DELIM#format string#DELIM#selected
-    // the last item to have the third parameter is the default selected preset
-    // the third param isnis optional
+    // Label#DELIM#format string
     QStringList presets_raw;
     int selected_index = -1;
     m_presetCombo->clear();
-    presets_raw = AmarokConfig::formatPresets();
+    presets_raw = AmarokConfig::formatPresets(); // Always use the one in OrganizeCollectionDialog
     // presets_raw = Amarok::config( m_configCategory ).readEntry( QString::fromLatin1( "Format Presets" ), QStringList() );
 
-    debug() << "--- got preset for" << m_configCategory << presets_raw;
+    debug() << "--- got presets" << presets_raw;
 
     foreach( const QString &str, presets_raw )
     {
@@ -372,49 +378,44 @@ FilenameLayoutWidget::populateFormatList()
         if( items.size() < 2 )
             continue;
         m_presetCombo->addItem( items.at( 0 ), items.at( 1 ) ); // Label, format string
-        if( items.size() == 3 )
+        if( items.at( 1 ) == custom )
             selected_index = m_presetCombo->findData( items.at( 1 ) );
     }
 
-    if( selected_index > 0 )
+    if( selected_index >= 0 )
         m_presetCombo->setCurrentIndex( selected_index );
 
-    slotFormatPresetSelected( selected_index );
+    connect( m_presetCombo, SIGNAL(activated(int)), this, SLOT(slotFormatPresetSelected(int)) );
     connect( m_presetCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(slotFormatPresetSelected(int)) );
+}
+
+void
+FilenameLayoutWidget::saveFormatList() const
+{
+    DEBUG_BLOCK
+
+    QStringList presets_raw;
+    int n = m_presetCombo->count();
+
+    for( int i = 0; i < n; ++i )
+    {
+        QString item = "%1#DELIM#%2";
+        QString scheme = m_presetCombo->itemData( i ).toString();
+        QString label = m_presetCombo->itemText( i );
+        item = item.arg( label, scheme );
+        presets_raw.append( item );
+    }
+
+   debug() << "--- saving presets" << presets_raw;
+   AmarokConfig::setFormatPresets( presets_raw ); // Always use the one in OrganizeCollectionDialog
+   // Amarok::config( m_configCategory ).writeEntry( QString::fromLatin1( "Format Presets" ), presets_raw );
 }
 
 void
 FilenameLayoutWidget::slotUpdatePresetButton()
 {
-    QString comboScheme = m_presetCombo->itemData( m_presetCombo->currentIndex() ).  toString();
+    QString comboScheme = m_presetCombo->itemData( m_presetCombo->currentIndex() ).toString();
     m_updatePresetButton->setEnabled( comboScheme != getParsableScheme() );
-}
-
-void
-FilenameLayoutWidget::slotSaveFormatList()
-{
-    if( !m_formatListModified )
-        return;
-
-    QStringList presets;
-    int n = m_presetCombo->count();
-    int current_idx = m_presetCombo->currentIndex();
-
-    for( int i = 0; i < n; ++i )
-    {
-        QString item;
-        if( i == current_idx )
-            item = "%1#DELIM#%2#DELIM#selected";
-        else
-            item = "%1#DELIM#%2";
-
-        QString scheme = m_presetCombo->itemData( i ).toString();
-        QString label = m_presetCombo->itemText( i );
-        item = item.arg( label, scheme );
-        presets.append( item );
-    }
-
-   Amarok::config( m_configCategory ).writeEntry( QString::fromLatin1( "Format Presets" ), presets );
 }
 
 void
@@ -428,14 +429,15 @@ void
 FilenameLayoutWidget::slotAddFormat()
 {
     bool ok = false;
-    QString name = KInputDialog::getText( i18n( "New Format Preset" ), i18n( "Preset Name" ), i18n( "New Preset" ),  &ok, this );
+    QString name = KInputDialog::getText( i18n( "New Preset" ), i18n( "Preset Name" ), i18n( "New Preset" ), &ok, this );
     if( !ok )
         return; // user canceled.
 
     QString format = getParsableScheme();
-    m_presetCombo->insertItem(0, name, format);
-    m_presetCombo->setCurrentIndex( 0 );
-    m_formatListModified = true;
+    m_presetCombo->addItem( name, format );
+    m_presetCombo->setCurrentIndex( m_presetCombo->count() - 1 );
+
+    saveFormatList();
 }
 
 void
@@ -443,7 +445,8 @@ FilenameLayoutWidget::slotRemoveFormat()
 {
     int idx = m_presetCombo->currentIndex();
     m_presetCombo->removeItem( idx );
-    m_formatListModified = true;
+
+    saveFormatList();
 }
 
 void
@@ -453,5 +456,6 @@ FilenameLayoutWidget::slotUpdateFormat()
     QString formatString = getParsableScheme();
     m_presetCombo->setItemData( idx, formatString );
     m_updatePresetButton->setEnabled( false );
-    m_formatListModified = true;
+
+    saveFormatList();
 }

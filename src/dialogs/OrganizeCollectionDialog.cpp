@@ -139,8 +139,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
                                                     QFlags<KDialog::ButtonCode> buttonMask )
     : KDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
-    , m_detailed( true )
-    , m_schemeModified( false )
     , m_conflict( false )
 {
     Q_UNUSED( name )
@@ -196,7 +194,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     // to show the conflict error
     connect( ui->overwriteCheck, SIGNAL(stateChanged(int)), SLOT(slotOverwriteModeChanged()) );
 
-    connect( this, SIGNAL(finished(int)), ui->organizeCollectionWidget, SLOT(slotSaveFormatList()) );
     connect( this, SIGNAL(accepted()), ui->organizeCollectionWidget, SLOT(onAccept()) );
     connect( this, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
     connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)),
@@ -397,8 +394,6 @@ OrganizeCollectionDialog::slotDialogAccepted()
     AmarokConfig::setAsciiOnly( ui->optionsWidget->asciiOnly() );
     AmarokConfig::setReplacementRegexp( ui->optionsWidget->regexpText() );
     AmarokConfig::setReplacementString( ui->optionsWidget->replaceText() );
-
-    ui->organizeCollectionWidget->onAccept();
 }
 
 //The Ok button should be disabled when there's no collection root selected, and when there is no .%filetype in format string
