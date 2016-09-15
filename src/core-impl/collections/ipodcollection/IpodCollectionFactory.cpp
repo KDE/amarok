@@ -231,7 +231,7 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
                 pmp->supportedDrivers().contains( "usbmux" ) )
             {
                 uuid = pmp->driverHandle( "usbmux" ).toString();
-                debug() << "Above device suports ipod/usbmux protocol/driver combo, good";
+                debug() << "Above device supports ipod/usbmux protocol/driver combo, good";
                 break;
             }
 

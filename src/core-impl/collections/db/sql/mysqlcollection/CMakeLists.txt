@@ -21,10 +21,13 @@ target_link_libraries(amarok_collection-mysqlcollection
     KF5::KDELibs4Support
     Qt5::Core
     Qt5::Gui
-    ${MYSQL_EMBEDDED_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES}
 )
+
+if(WITH_MYSQL_EMBEDDED)
+    target_link_libraries( amarok_collection-mysqlcollection ${MYSQL_EMBEDDED_LIBRARIES} )
+endif(WITH_MYSQL_EMBEDDED)
 
 if(NOT WIN32 AND NOT APPLE)
     target_link_libraries( amarok_collection-mysqlcollection crypt pthread )

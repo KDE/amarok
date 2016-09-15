@@ -28,6 +28,7 @@
 #include "playlist/PlaylistModelStack.h"
 
 using namespace Playlists;
+using namespace Playlist;
 
 XSPFPlaylist::XSPFPlaylist( const QUrl &url, Playlists::PlaylistProvider *provider, OnLoadAction onLoad )
     : PlaylistFile( url, provider )
@@ -101,7 +102,7 @@ XSPFPlaylist::load()
     //FIXME: this needs to be moved to whatever is creating the XSPFPlaylist
     if( m_autoAppendAfterLoad )
         The::playlistController()->insertPlaylist(
-                    ::Playlist::ModelStack::instance()->bottom()->rowCount(),
+                    ModelStack::instance()->bottom()->rowCount(),
                     Playlists::PlaylistPtr( this )
                 );
 }

@@ -70,14 +70,12 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget
             , CollectionRoot
         };
 
-
         explicit FilenameLayoutWidget( QWidget *parent = 0 );
         virtual ~FilenameLayoutWidget() {}
 
         QString getParsableScheme() const;
 
         void setScheme( const QString &scheme );
-
 
     public Q_SLOTS:
         virtual void onAccept();
@@ -91,7 +89,6 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget
 
         /* Updates the update preset button */
         void slotUpdatePresetButton();
-        void slotSaveFormatList();
         void slotFormatPresetSelected( int );
         void slotAddFormat();
         void slotRemoveFormat();
@@ -109,7 +106,6 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget
         /** Fills the m_dropTarget according to the given string scheme. */
         void inferScheme( const QString &scheme );
 
-        bool m_formatListModified;
         bool m_advancedMode;
 
     protected:
@@ -119,7 +115,10 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget
         void populateConfiguration();
 
         /** Populates the preset combo box */
-        void populateFormatList();
+        void populateFormatList( const QString &custom );
+
+        /** Saves the preset combo box */
+        void saveFormatList() const;
 
         virtual Token* createToken(qint64 value) const;
 
@@ -144,7 +143,6 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget
         QLabel *m_syntaxLabel;
         QFrame *m_filenameLayout;
         KLineEdit *m_filenameLayoutEdit;
-
 
         /** The name of the category used for storing the configuration */
         QString m_configCategory;

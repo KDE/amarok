@@ -143,7 +143,6 @@ public:
     bool isForwardHistory;
     bool isBackwardHistory;
     bool useMobileWikipedia;
-    bool useSSL;
 };
 
 class WikipediaSearchLineEdit : public Plasma::LineEdit

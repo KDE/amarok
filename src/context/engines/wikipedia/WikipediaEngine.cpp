@@ -45,7 +45,6 @@ public:
         : q_ptr( parent )
         , currentSelection( Artist )
         , useMobileVersion( false )
-        , useSSL( true )
         , dataContainer( 0 )
     {}
     ~WikipediaEnginePrivate() {}
@@ -89,7 +88,6 @@ public:
         }
     } m_previousTrackMetadata;
     bool useMobileVersion;
-    bool useSSL;
 
     Plasma::DataContainer *dataContainer;
 
@@ -167,16 +165,6 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
         {
             debug() << (mobile ? "switching to mobile wikipedia" : "switching to normal wikipedia");
             useMobileVersion = mobile;
-            updateEngine();
-        }
-    }
-
-    if( data.contains( QLatin1String("ssl") ) )
-    {
-        const bool ssl = data.value( QLatin1String("ssl") ).toBool();
-        if( ssl != useSSL )
-        {
-            useSSL = ssl;
             updateEngine();
         }
     }
@@ -544,7 +532,7 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
     Q_Q( WikipediaEngine );
     QUrl pageUrl;
     QString host( ".wikipedia.org" );
-    pageUrl.setScheme( useSSL ? QLatin1String( "https" ) : QLatin1String( "http" ) );
+    pageUrl.setScheme( QLatin1String( "https" ) );
 
     if( useMobileVersion )
     {
@@ -582,7 +570,7 @@ WikipediaEnginePrivate::fetchLangLinks( const QString &title,
 {
     Q_Q( WikipediaEngine );
     QUrl url;
-    url.setScheme( useSSL ? QLatin1String( "https" ) : QLatin1String( "http" ) );
+    url.setScheme( QLatin1String( "https" ) );
     url.setHost( hostLang + QLatin1String(".wikipedia.org") );
     url.setPath( QLatin1String("/w/api.php") );
     url.addQueryItem( QLatin1String("action"), QLatin1String("query") );
@@ -604,7 +592,7 @@ WikipediaEnginePrivate::fetchListing( const QString &title, const QString &hostL
 {
     Q_Q( WikipediaEngine );
     QUrl url;
-    url.setScheme( useSSL ? QLatin1String( "https" ) : QLatin1String( "http" ) );
+    url.setScheme( QLatin1String( "https" ) );
     url.setHost( hostLang + QLatin1String(".wikipedia.org") );
     url.setPath( QLatin1String("/w/api.php") );
     url.addQueryItem( QLatin1String("action"), QLatin1String("query") );

@@ -41,7 +41,6 @@ LyricsBrowser::LyricsBrowser( QGraphicsWidget *parent )
     native->setWordWrapMode( QTextOption::WordWrap );
     native->setCursorWidth( 0 );
     native->document()->setDocumentMargin( 10 );
-    native->viewport()->setAutoFillBackground( true );
     native->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
 
     Plasma::Svg *borderSvg = new Plasma::Svg( this );
@@ -105,10 +104,11 @@ void LyricsBrowser::setLyrics( const QString &lyrics )
 
 void LyricsBrowser::setReadOnly( bool readOnly )
 {
-    QPalette::ColorRole bg = readOnly ? QPalette::Base : QPalette::AlternateBase;
-    nativeWidget()->viewport()->setBackgroundRole( bg );
-    nativeWidget()->setReadOnly( readOnly );
-    nativeWidget()->setCursorWidth( !readOnly ? 1 : 0 );
+    KTextBrowser *native = nativeWidget();
+
+    native->viewport()->setAutoFillBackground( !readOnly );
+    native->setReadOnly( readOnly );
+    native->setCursorWidth( !readOnly ? 1 : 0 );
 }
 
 void LyricsBrowser::setRichText( bool richText )
@@ -122,8 +122,6 @@ void LyricsBrowser::paletteChanged( const QPalette &palette )
     // set text color using app theme instead of plasma theme
     p.setColor( QPalette::Text, qApp->palette().text().color() );
 
-    QPalette::ColorRole bg = isReadOnly() ? QPalette::Base : QPalette::AlternateBase;
-    nativeWidget()->viewport()->setBackgroundRole( bg );
     nativeWidget()->setPalette( p );
 }
 

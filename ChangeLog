@@ -1,6 +1,22 @@
 Amarok ChangeLog
 ================
-(C) 2002-2015 the Amarok authors.
+(C) 2002-2016 the Amarok authors.
+
+VERSION 2.9.0
+  FEATURES:
+
+  CHANGES:
+   * Substitute deprecated MySQL option --myisam-recover for compatibility with
+     MySQL 5.7+ thanks to Terje Rosten, Stefano Pettini. (BR 354255)
+
+  BUGFIXES:
+   * Fix integer fields, like length, always showing up as zero in filter creation
+     dialog; thanks to Stefano Pettini. (BR 341661)
+   * Fix background color of the lyrics applet, thanks to Stefano Pettini. (BR 314854)
+   * Fix Organize tracks / Guess tags presets not persisted properly;
+     thanks to Stefano Pettini. (BR 226144)
+   * Fix MPRIS2 DesktopEntry name, makes media controls in Plasma 5.7 taskbar work
+     again; thanks to Antonio Rojas, Rex Dieter. (BR 365275)
 
 
 VERSION 2.8.90
@@ -70,7 +86,8 @@ VERSION 2.8.90
    * Check for QtBindings at runtime instead. Disable scripts and display error message
      if missing. (BR 325006)
    * Print playlist download errors to the debug log. (BR 325120)
-
+   * Wikipedia Applet only connect with SSL, so that redirects are handled
+     correctly. (BR 349313)
 
 VERSION 2.8
   FEATURES:
@@ -3464,7 +3481,7 @@ VERSION 1.4.4
     * Deleting files from generic media devices would not update the progress
       bar, resulting in the progress staying at 0%. (BR 130009)
     * If nothing at all existed on a generic device, the first item
-      transferred would incorrectly show that an error had occured during
+      transferred would incorrectly show that an error had occurred during
       transfer. (BR 133528)
     * Synchronising a smart playlist to a device when it didn't exist before
       would crash Amarok. (BR 135956)

@@ -32,13 +32,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QCheckBox" name="sslCheckBox">
-       <property name="text">
-        <string>Use &amp;SSL</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
   </layout>

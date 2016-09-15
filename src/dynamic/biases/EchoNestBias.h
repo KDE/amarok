@@ -97,7 +97,7 @@ namespace Dynamic
             void readSimilarArtists( QXmlStreamReader *reader );
             void loadDataFromFile();
 
-            /** The artist we are currently quering. */
+            /** The artist we are currently querying. */
             mutable QStringList m_currentArtists;
             mutable QMap< KIO::StoredTransferJob*, QString> m_artistNameQueries;
             mutable KIO::StoredTransferJob* m_artistSuggestedQuery;

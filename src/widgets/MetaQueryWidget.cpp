@@ -1081,7 +1081,11 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
     }
     else if( isNumeric() )
     {
-        if (numValue < numValue2) // two values are only used for "between". We want to order them by size
+        if ( condition != Between )
+        {
+            strValue1 = QString::number( numValue );
+        }
+        else if (numValue < numValue2) // two values are only used for "between". We want to order them by size
         {
             strValue1 = QString::number( numValue );
             strValue2 = QString::number( numValue2 );

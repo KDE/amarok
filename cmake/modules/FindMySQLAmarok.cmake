@@ -66,15 +66,15 @@ else()
       PATHS
         ~/usr/lib/mysql
         /opt/mysql/mysql/lib 
-        usr/mysql/lib/mysql
-        opt/local/lib/mysql5/mysql
-        opt/mysqle/lib/mysql
-        usr/lib/mysql
-        usr/lib64/mysql
-        usr/lib64
-        usr/local/lib/mysql
-        opt/local/lib/mysql
-        opt/ports/lib/mysql5/mysql
+        /usr/mysql/lib/mysql
+        /opt/local/lib/mysql5/mysql
+        /opt/mysqle/lib/mysql
+        /usr/lib/mysql
+        /usr/lib64/mysql
+        /usr/lib64
+        /usr/local/lib/mysql
+        /opt/local/lib/mysql
+        /opt/ports/lib/mysql5/mysql
     )
 
     find_library(MYSQL_EMBEDDED_LIBRARIES NAMES mysqld_pic mysqld libmysqld

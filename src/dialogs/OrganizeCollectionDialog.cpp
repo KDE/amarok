@@ -108,8 +108,8 @@ OrganizeCollectionWidget::buildFormatTip() const
 {
     QMap<QString, QString> args;
     args["albumartist"] = i18n( "%1 or %2", QLatin1String("Album Artist, The") , QLatin1String("The Album Artist") );
-    args["thealbumartist"] = "The Album Artist";
-    args["theartist"] = "The Artist";
+    args["thealbumartist"] = i18n( "The Album Artist" );
+    args["theartist"] = i18n( "The Artist" );
     args["artist"] = i18n( "%1 or %2", QLatin1String("Artist, The") , QLatin1String("The Artist") );
     args["initial"] = i18n( "Artist's Initial" );
     args["filetype"] = i18n( "File Extension of Source" );
@@ -139,8 +139,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
                                                     QFlags<KDialog::ButtonCode> buttonMask )
     : KDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
-    , m_detailed( true )
-    , m_schemeModified( false )
     , m_conflict( false )
 {
     Q_UNUSED( name )
@@ -196,7 +194,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     // to show the conflict error
     connect( ui->overwriteCheck, SIGNAL(stateChanged(int)), SLOT(slotOverwriteModeChanged()) );
 
-    connect( this, SIGNAL(finished(int)), ui->organizeCollectionWidget, SLOT(slotSaveFormatList()) );
     connect( this, SIGNAL(accepted()), ui->organizeCollectionWidget, SLOT(onAccept()) );
     connect( this, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
     connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)),
@@ -397,8 +394,6 @@ OrganizeCollectionDialog::slotDialogAccepted()
     AmarokConfig::setAsciiOnly( ui->optionsWidget->asciiOnly() );
     AmarokConfig::setReplacementRegexp( ui->optionsWidget->regexpText() );
     AmarokConfig::setReplacementString( ui->optionsWidget->replaceText() );
-
-    ui->organizeCollectionWidget->onAccept();
 }
 
 //The Ok button should be disabled when there's no collection root selected, and when there is no .%filetype in format string

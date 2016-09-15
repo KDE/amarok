@@ -1329,7 +1329,7 @@ TagDialog::saveTags()
             Meta::TrackEditorPtr ec = track->editor();
             if( !ec )
             {
-                debug() << "Track" << track->prettyUrl() << "does not have Meta::TrackEditor. Skiping.";
+                debug() << "Track" << track->prettyUrl() << "does not have Meta::TrackEditor. Skipping.";
                 continue;
             }
 
