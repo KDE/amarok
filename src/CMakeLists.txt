@@ -948,9 +948,9 @@ install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(PROGRAMS amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
-install(PROGRAMS amarok_containers.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
-install(FILES amarok.appdata.xml DESTINATION ${SHARE_INSTALL_PREFIX}/appdata)
+install(PROGRAMS org.kde.amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+install(PROGRAMS org.kde.amarok_containers.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+install(FILES org.kde.amarok.appdata.xml DESTINATION ${SHARE_INSTALL_PREFIX}/metainfo)
 
 install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_codecinstall.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
