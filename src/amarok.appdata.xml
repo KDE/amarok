@@ -17,6 +17,7 @@
   <name xml:lang="fi">Amarok</name>
   <name xml:lang="fr">Amarok</name>
   <name xml:lang="gl">Amarok</name>
+  <name xml:lang="ia">Amarok</name>
   <name xml:lang="id">Amarok</name>
   <name xml:lang="it">Amarok</name>
   <name xml:lang="ko">Amarok</name>
@@ -50,6 +51,7 @@
     <p xml:lang="fi">Amarok on vapaa, monipuolinen ja tehokas musiikkisoitin.</p>
     <p xml:lang="fr">Amarok est un lecteur de musique libre, polyvalent et puissant.</p>
     <p xml:lang="gl">Amarok é un reprodutor de música libre, versátil e potente.</p>
+    <p xml:lang="ia">Amarok es un libere, versatile e potente reproductor musical</p>
     <p xml:lang="id">Amarok adalah bebas, serbaguna dan pemutar musik perkasa.</p>
     <p xml:lang="it">Amarok è un lettore musicale libero, versatile e potente.</p>
     <p xml:lang="ko">Amarok은 강력한 자유 소프트웨어 음악 재생기입니다.</p>
@@ -82,6 +84,7 @@
     <p xml:lang="fi">Ominaisuudet:</p>
     <p xml:lang="fr">Fonctionnalités :</p>
     <p xml:lang="gl">Funcionalidades:</p>
+    <p xml:lang="ia">Characteristicas:</p>
     <p xml:lang="id">Fitur:</p>
     <p xml:lang="it">Funzionalità:</p>
     <p xml:lang="ko">기능:</p>
@@ -237,6 +240,7 @@
       <li xml:lang="fi">Skriptaustuki</li>
       <li xml:lang="fr">Gestion de scripts</li>
       <li xml:lang="gl">Permite automatización.</li>
+      <li xml:lang="ia">Supporto de scripting</li>
       <li xml:lang="id">Dukungan skrip</li>
       <li xml:lang="it">Supporto per la creazione di script</li>
       <li xml:lang="ko">스크립팅 지원</li>
