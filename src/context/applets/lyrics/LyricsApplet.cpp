@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
  * Copyright (c) 2009 simon.esneault <simon.esneault@gmail.com>                         *
+ * Copyright (c) 2014 Yash Ladia <yashladia1@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -80,7 +81,8 @@ public:
     void _toggleAutoScroll();
     void _suggestionChosen( const LyricsSuggestion &suggestion );
     void _unsetCursor();
-    void _trackDataChanged( Meta::TrackPtr );
+    void _trackChanged( Meta::TrackPtr );
+    void _trackMetadataChanged( Meta::TrackPtr );
     void _trackPositionChanged( qint64 position, bool userSeek );
 
     void _lyricsChangedMessageButtonPressed( const Plasma::MessageButton button );
@@ -369,11 +371,17 @@ LyricsAppletPrivate::_unsetCursor()
 }
 
 void
-LyricsAppletPrivate::_trackDataChanged( Meta::TrackPtr track )
+LyricsAppletPrivate::_trackChanged( Meta::TrackPtr track )
 {
     userAutoScrollOffset = 0;
     oldSliderPosition = 0;
+    // meta data also changed, so to avoid code duplication
+    _trackMetadataChanged( track );
+}
 
+void
+LyricsAppletPrivate::_trackMetadataChanged( Meta::TrackPtr track )
+{
     // Check if we previously had a track.
     // If the lyrics currently shown in the browser (which
     // additionally is in edit mode) are different from the
@@ -512,15 +520,15 @@ LyricsApplet::init()
 
     EngineController* engine = The::engineController();
 
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)), this, SLOT(_trackDataChanged(Meta::TrackPtr)) );
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), this, SLOT(_trackDataChanged(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)), this, SLOT(_trackChanged(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), this, SLOT(_trackMetadataChanged(Meta::TrackPtr)) );
     connect( engine, SIGNAL(trackPositionChanged(qint64,bool)), this, SLOT(_trackPositionChanged(qint64,bool)) );
     connect( d->suggestView, SIGNAL(selected(LyricsSuggestion)), SLOT(_suggestionChosen(LyricsSuggestion)) );
     connect( dataEngine("amarok-lyrics"), SIGNAL(sourceAdded(QString)), this, SLOT(connectSource(QString)) );
 
     // This is needed as a track might be playing when the lyrics applet
     // is added to the ContextView.
-    d->_trackDataChanged( engine->currentTrack() );
+    d->_trackChanged( engine->currentTrack() );
     d->_trackPositionChanged( engine->trackPositionMs(), false );
 
     d->determineActionIconsState();

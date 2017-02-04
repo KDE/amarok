@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
  * Copyright (c) 2009 simon.esneault <simon.esneault@gmail.com>                         *
+ * Copyright (c) 2014 Yash Ladia <yashladia1@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -57,7 +58,8 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _toggleAutoScroll() )
     Q_PRIVATE_SLOT( d_ptr, void _suggestionChosen(LyricsSuggestion) )
     Q_PRIVATE_SLOT( d_ptr, void _unsetCursor() )
-    Q_PRIVATE_SLOT( d_ptr, void _trackDataChanged( Meta::TrackPtr ) )
+    Q_PRIVATE_SLOT( d_ptr, void _trackChanged( Meta::TrackPtr ) )
+    Q_PRIVATE_SLOT( d_ptr, void _trackMetadataChanged( Meta::TrackPtr ) )
     Q_PRIVATE_SLOT( d_ptr, void _trackPositionChanged( qint64 position, bool userSeek ) )
     Q_PRIVATE_SLOT( d_ptr, void _lyricsChangedMessageButtonPressed(const Plasma::MessageButton) )
     Q_PRIVATE_SLOT( d_ptr, void _refetchMessageButtonPressed(const Plasma::MessageButton) )
