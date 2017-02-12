@@ -110,6 +110,72 @@ class DelayedScroller : public QObject
         int m_topOffset;
 };
 
+/**
+ * RAII class to auto-expand collection tree entries after filtering.
+ * AutoExpander auto-deletes itself once its job is over (or if it finds
+ * it is useless).
+ */
+class AutoExpander : public QObject
+{
+    Q_OBJECT
+
+    public:
+        AutoExpander( CollectionTreeView *treeView,
+                      CollectionTreeItemModelBase *treeModel,
+                      QAbstractItemModel *filterModel)
+            : QObject( treeView )
+            , m_treeView( treeView )
+            , m_filterModel( filterModel )
+        {
+            connect( filterModel, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
+            connect( treeModel, SIGNAL(allQueriesFinished(bool)), SLOT(slotExpandMore()) );
+
+            // start with the root index
+            m_indicesToCheck.enqueue( QModelIndex() );
+            slotExpandMore();
+        }
+
+    private slots:
+        void slotExpandMore()
+        {
+            const int maxChildrenToExpand = 3;
+
+            QQueue<QModelIndex> pendingIndices;
+            while( !m_indicesToCheck.isEmpty() )
+            {
+                QModelIndex current = m_indicesToCheck.dequeue();
+
+                if( m_filterModel->canFetchMore( current ) )
+                {
+                    m_filterModel->fetchMore( current );
+                    pendingIndices.enqueue( current );
+                    continue;
+                }
+
+                if( m_filterModel->rowCount( current ) <= maxChildrenToExpand )
+                {
+                    m_treeView->expand( current );
+                    for( int i = 0; i < m_filterModel->rowCount( current ); i++ )
+                        m_indicesToCheck.enqueue( m_filterModel->index( i, 0, current ) );
+                }
+            }
+
+            if( pendingIndices.isEmpty() )
+                // nothing left to do
+                deleteLater();
+            else
+                // process pending indices when queries finish
+                m_indicesToCheck.swap( pendingIndices );
+        }
+
+    private:
+        Q_DISABLE_COPY(AutoExpander)
+
+        CollectionTreeView *m_treeView;
+        QAbstractItemModel *m_filterModel;
+        QQueue<QModelIndex> m_indicesToCheck;
+};
+
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : Amarok::PrettyTreeView( parent )
     , m_filterModel( 0 )
@@ -709,26 +775,8 @@ CollectionTreeView::slotCheckAutoExpand( bool reallyExpand )
     if( !m_filterModel || !reallyExpand )
         return;
 
-    // Cases where root is not collections but
-    // for example magnatunes's plethora of genres, don't expand by default
-    if( m_filterModel->rowCount() > 6 )
-        return;
-
-    QModelIndexList indicesToCheck;
-    for( int i = 0; i < m_filterModel->rowCount(); i++ ) //need something to start for'ing with
-        indicesToCheck += m_filterModel->index( i, 0 ); //lowest level is fine for that
-
-    QModelIndex current;
-    for( int j = 0; j < indicesToCheck.size(); j++)
-    {
-        current = indicesToCheck.at( j );
-        if( m_filterModel->rowCount( current ) < 4 )
-        { //don't expand if many results
-            expand( current );
-            for( int i = 0; i < m_filterModel->rowCount( current ); i++ )
-                indicesToCheck += m_filterModel->index( i, 0, current );
-        }
-    }
+    // auto-deletes itself:
+    new AutoExpander( this, m_treeModel, m_filterModel );
 }
 
 void

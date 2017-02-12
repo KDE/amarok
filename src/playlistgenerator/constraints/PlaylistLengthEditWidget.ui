@@ -12,7 +12,7 @@
    </rect>
   </property>
   <property name="whatsThis">
-   <string>An editor for a Playlist Length constraint.  The user can the target number of tracks and whether the playlist contain fewer than, equal to, or more than that number of tracks; and the strictness with which the APG should match the target number of tracks.</string>
+   <string>An editor for a Playlist Length constraint.  The user can specify the target number of tracks and whether the playlist contain fewer than, equal to, or more than that number of tracks; and the strictness with which the APG should match the target number of tracks.</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

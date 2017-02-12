@@ -17,6 +17,7 @@ VERSION 2.9.0
      thanks to Stefano Pettini. (BR 226144)
    * Fix MPRIS2 DesktopEntry name, makes media controls in Plasma 5.7 taskbar work
      again; thanks to Antonio Rojas, Rex Dieter. (BR 365275)
+   * Auto-expand after search in Collection Browser works correctly again. (BR 335217)
 
 
 VERSION 2.8.90
