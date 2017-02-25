@@ -18,6 +18,7 @@
 #define STATSYNCING_TRACK_H
 
 #include "amarok_export.h"
+#include "core/meta/Meta.h"
 
 #include <KSharedPtr>
 
@@ -27,7 +28,6 @@
 #include <QStringList>
 
 namespace Meta {
-    class Track;
     typedef KSharedPtr<Track> TrackPtr;
 }
 
