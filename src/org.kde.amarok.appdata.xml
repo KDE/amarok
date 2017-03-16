@@ -36,6 +36,7 @@
   <name xml:lang="uk">Amarok</name>
   <name xml:lang="x-test">xxAmarokxx</name>
   <name xml:lang="zh-CN">Amarok</name>
+  <summary>Audio Player</summary>
   <description>
     <p>Amarok is a free, versatile and powerful music player.</p>
     <p xml:lang="ar">أماروك مشغّل موسيقى مجّانيّ، وقويّ متعدّد الاستعمالات.</p>
