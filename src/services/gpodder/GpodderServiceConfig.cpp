@@ -131,11 +131,6 @@ GpodderServiceConfig::save()
         if( m_wallet->writePassword( "gpodder_password", m_password ) != 0 )
             debug() << "Failed to save gpodder.net pw to kwallet!";
     }
-    else if( m_ignoreWallet )
-    {
-        config.writeEntry( "username", m_username );
-        config.writeEntry( "password", m_password );
-    }
     else
     {
         if( m_enableProvider )
@@ -212,7 +207,9 @@ GpodderServiceConfig::textDialogYes() //SLOT
         KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
         m_ignoreWallet = true;
-        config.writeEntry( "ignoreWallet ", m_ignoreWallet );
+        config.writeEntry( "ignoreWallet", m_ignoreWallet );
+        config.writeEntry( "username", m_username );
+        config.writeEntry( "password", m_password );
 
         config.sync();
     }
@@ -228,7 +225,9 @@ GpodderServiceConfig::textDialogNo() //SLOT
         KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
         m_ignoreWallet = false;
-        config.writeEntry( "ignoreWallet ", m_ignoreWallet );
+        config.writeEntry( "ignoreWallet", m_ignoreWallet );
+        config.writeEntry( "username", QString() );
+        config.writeEntry( "password", QString() );
 
         config.sync();
     }
