@@ -21,6 +21,7 @@
 #include "core/meta/forward_declarations.h"
 
 #include <QAbstractItemModel>
+#include <QMutex>
 
 class MusicBrainzTagsItem;
 
@@ -69,6 +70,7 @@ class MusicBrainzTagsModel : public QAbstractItemModel
 
     private:
         MusicBrainzTagsItem *m_rootItem;
+        mutable QMutex m_modelLock;
 };
 
 #endif // MUSICBRAINZTAGSMDOEL_H

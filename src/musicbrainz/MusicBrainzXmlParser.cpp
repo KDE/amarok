@@ -26,7 +26,7 @@
 #include <QStringList>
 #include <QVariantList>
 
-MusicBrainzXmlParser::MusicBrainzXmlParser( QString &doc )
+MusicBrainzXmlParser::MusicBrainzXmlParser( const QString &doc )
     : ThreadWeaver::Job()
     , m_doc( "musicbrainz" )
     , m_type( 0 )
@@ -38,6 +38,7 @@ void
 MusicBrainzXmlParser::run()
 {
     DEBUG_BLOCK
+
     QDomElement docElem = m_doc.documentElement();
     parseElement( docElem );
 }

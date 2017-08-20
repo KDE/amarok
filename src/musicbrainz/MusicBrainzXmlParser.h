@@ -34,7 +34,7 @@ class MusicBrainzXmlParser : public ThreadWeaver::Job
             ReleaseGroup
         };
 
-        explicit MusicBrainzXmlParser( QString &doc );
+        explicit MusicBrainzXmlParser( const QString &doc );
 
         void run();
 
