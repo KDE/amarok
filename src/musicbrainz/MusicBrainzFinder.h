@@ -51,8 +51,7 @@ class MusicBrainzFinder : public QObject
 
     private Q_SLOTS:
         void sendNewRequest();
-        void gotAuthenticationRequest( const QNetworkReply *reply,
-                                       QAuthenticator *authenticator ) const;
+        void gotAuthenticationRequest( const QNetworkReply *reply, QAuthenticator *authenticator );
         void gotReplyError( QNetworkReply::NetworkError code );
         void gotReply( QNetworkReply *reply );
 

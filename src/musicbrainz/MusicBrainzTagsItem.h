@@ -42,6 +42,7 @@ class MusicBrainzTagsItem
         QVariantMap data() const;
         QVariant data( const int column ) const;
         void setData( const QVariantMap &tags );
+        void mergeData( const QVariantMap &tags );
         bool dataContains( const QString &key ) const;
         QVariant dataValue( const QString &key ) const;
 
@@ -52,12 +53,15 @@ class MusicBrainzTagsItem
         bool chooseBestMatchFromRelease( const QStringList &releases );
         void clearChoices();
 
+        bool isSimilar( const QVariantMap &tags ) const;
+
         bool operator==( const MusicBrainzTagsItem *item ) const;
+        bool operator==( const Meta::TrackPtr &track) const;
 
     private:
         void setParent( MusicBrainzTagsItem *parent );
-        void mergeWith( MusicBrainzTagsItem *item );
         void dataInsert( const QString &key, const QVariant &value );
+        void recalcSimilarityRate();
 
         MusicBrainzTagsItem *m_parent;
         QList<MusicBrainzTagsItem *> m_childItems;

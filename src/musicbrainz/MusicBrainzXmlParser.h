@@ -34,7 +34,7 @@ class MusicBrainzXmlParser : public QObject, public ThreadWeaver::Job
             ReleaseGroup
         };
 
-        explicit MusicBrainzXmlParser( QString &doc );
+        explicit MusicBrainzXmlParser( const QString &doc );
 
         void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 

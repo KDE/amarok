@@ -133,8 +133,7 @@ MusicBrainzFinder::sendNewRequest()
 }
 
 void
-MusicBrainzFinder::gotAuthenticationRequest( const QNetworkReply *reply,
-                                             QAuthenticator *authenticator ) const
+MusicBrainzFinder::gotAuthenticationRequest( const QNetworkReply *reply, QAuthenticator *authenticator )
 {
     if( reply->url().host() == mb_host )
     {
@@ -645,8 +644,9 @@ MusicBrainzFinder::compileRequest( QUrl &url )
     url.setPort( mb_port );
 
     QNetworkRequest req( url );
-    req.setRawHeader( "User-Agent" , "Amarok" );
+    req.setRawHeader( "Accept", "application/xml");
     req.setRawHeader( "Connection", "Keep-Alive" );
+    req.setRawHeader( "User-Agent" , "Amarok" );
 
     if( !m_timer->isActive() )
         m_timer->start();

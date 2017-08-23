@@ -65,146 +65,75 @@ MusicBrainzTagsItem::child( const int row ) const
 void
 MusicBrainzTagsItem::appendChild( MusicBrainzTagsItem *newItem )
 {
-    DEBUG_BLOCK
+    QWriteLocker lock( &m_childrenLock );
+    m_childItems.append( newItem );
+    newItem->setParent( this );
 
-    if( newItem->track().isNull() )
+    if( !newItem->data().isEmpty() )
     {
-        delete newItem;
-        return;
-    }
+        newItem->recalcSimilarityRate();
 
-    if( m_track.isNull() )
-    {
-        // Root item.
-        bool found = false;
+#define MAKE_DATA_LIST( k ) { QVariantList list; if( newItem->dataContains( k ) ) list.append( newItem->dataValue( k ) ); newItem->dataInsert( k, list ); }
 
-        /*
-         * A write lock is required, because with a read lock two or more threads
-         * referencing the same track could search for a matching item at the same time,
-         * fail, and queue up to create a new one, thus resulting in duplicates.
-         */
-        QWriteLocker lock( &m_childrenLock );
-        foreach( MusicBrainzTagsItem *item, m_childItems )
-        {
-            if( item->track() == newItem->track() )
-            {
-                found = true;
-                if( !newItem->data().isEmpty() )
-                    item->appendChild( newItem );
-                break;
-            }
-        }
+        MAKE_DATA_LIST( MusicBrainz::TRACKID );
+        MAKE_DATA_LIST( MusicBrainz::ARTISTID );
+        MAKE_DATA_LIST( MusicBrainz::RELEASEID );
 
-        if( !found )
-        {
-            MusicBrainzTagsItem *newChild = new MusicBrainzTagsItem( this, newItem->track() );
-            if( !newItem->data().isEmpty() )
-                newChild->appendChild( newItem );
-            m_childItems.append( newChild );
-        }
-    }
-    else
-    {
-        if( m_track != newItem->track() )
-        {
-            debug() << "Trying to insert track data to the wrong tree branch.";
-            delete newItem;
-            return;
-        }
-
-        bool found = false;
-        newItem->setParent( this );
-
-        // Already locked in parent call (the same logic applies).
-        foreach( MusicBrainzTagsItem *item, m_childItems )
-        {
-            if( newItem == item )
-            {
-                found = true;
-                // Merge the two matching results.
-                debug() << "Track" << newItem->dataValue( MusicBrainz::TRACKID ).toString() << "already in the tree.";
-                item->mergeWith( newItem );
-                delete newItem;
-                break;
-            }
-        }
-
-        if( !found )
-        {
-            newItem->dataInsert( MusicBrainz::SIMILARITY,
-                                 newItem->dataValue( MusicBrainz::MUSICBRAINZ ).toFloat() +
-                                 newItem->dataValue( MusicBrainz::MUSICDNS ).toFloat() );
-
-            QVariantList trackList;
-            QVariantList artistList;
-            QVariantList releaseList;
-            if( newItem->dataContains( MusicBrainz::TRACKID ) )
-                trackList.append( newItem->dataValue( MusicBrainz::TRACKID ) );
-            if( newItem->dataContains( MusicBrainz::ARTISTID ) )
-                artistList.append( newItem->dataValue( MusicBrainz::ARTISTID ) );
-            if( newItem->dataContains( MusicBrainz::RELEASEID ) )
-                releaseList.append( newItem->dataValue( MusicBrainz::RELEASEID ) );
-            newItem->dataInsert( MusicBrainz::TRACKID, trackList );
-            newItem->dataInsert( MusicBrainz::ARTISTID, artistList );
-            newItem->dataInsert( MusicBrainz::RELEASEID, releaseList );
-
-            m_childItems.append( newItem );
-        }
+#undef MAKE_DATA_LIST
     }
 }
 
 void
-MusicBrainzTagsItem::mergeWith( MusicBrainzTagsItem *item )
+MusicBrainzTagsItem::mergeData( const QVariantMap &tags )
 {
-    /*
-     * The lock is inherited from appendChild(). This method is not supposed to be called
-     * elsewhere.
-     */
+    if( tags.isEmpty() )
+        return;
 
+    MusicBrainzTagsItem fakeItem( this, m_track, tags );
     // Calculate the future score of the result when merged.
-    if( !item->dataContains( MusicBrainz::MUSICBRAINZ ) &&
-        dataContains( MusicBrainz::MUSICBRAINZ ) )
-        item->dataInsert( MusicBrainz::MUSICBRAINZ,
-                          dataValue( MusicBrainz::MUSICBRAINZ ) );
-    if( !item->dataContains( MusicBrainz::MUSICDNS ) &&
-        dataContains( MusicBrainz::MUSICDNS ) )
-        item->dataInsert( MusicBrainz::MUSICDNS,
-                          dataValue( MusicBrainz::MUSICDNS ) );
-    item->dataInsert( MusicBrainz::SIMILARITY,
-                      item->dataValue( MusicBrainz::MUSICBRAINZ ).toFloat() +
-                      item->dataValue( MusicBrainz::MUSICDNS ).toFloat() );
+    if( !fakeItem.dataContains( MusicBrainz::MUSICBRAINZ ) && dataContains( MusicBrainz::MUSICBRAINZ ) )
+        fakeItem.dataInsert( MusicBrainz::MUSICBRAINZ, dataValue( MusicBrainz::MUSICBRAINZ ) );
+
+    if( !fakeItem.dataContains( MusicBrainz::MUSICDNS ) && dataContains( MusicBrainz::MUSICDNS ) )
+        fakeItem.dataInsert( MusicBrainz::MUSICDNS, dataValue( MusicBrainz::MUSICDNS ) );
+
+    fakeItem.recalcSimilarityRate();
 
     QVariantList trackList = dataValue( MusicBrainz::TRACKID ).toList();
     QVariantList artistList = dataValue( MusicBrainz::ARTISTID ).toList();
     QVariantList releaseList = dataValue( MusicBrainz::RELEASEID ).toList();
-    if( item->score() > score() )
+    if( fakeItem.score() > score() )
     {
         // Update the score.
-        if( item->dataContains( MusicBrainz::MUSICBRAINZ ) )
-            dataInsert( MusicBrainz::MUSICBRAINZ,
-                        item->dataValue( MusicBrainz::MUSICBRAINZ ) );
-        if( item->dataContains( MusicBrainz::MUSICDNS ) )
-            dataInsert( MusicBrainz::MUSICDNS,
-                        item->dataValue( MusicBrainz::MUSICDNS ) );
-        dataInsert( MusicBrainz::SIMILARITY,
-                    item->dataValue( MusicBrainz::SIMILARITY ) );
+        if( fakeItem.dataContains( MusicBrainz::MUSICBRAINZ ) )
+            dataInsert( MusicBrainz::MUSICBRAINZ, fakeItem.dataValue( MusicBrainz::MUSICBRAINZ ) );
 
-        if( item->dataContains( MusicBrainz::TRACKID ) )
-            trackList.prepend( item->dataValue( MusicBrainz::TRACKID ) );
-        if( item->dataContains( MusicBrainz::ARTISTID ) )
-            artistList.prepend( item->dataValue( MusicBrainz::ARTISTID ) );
-        if( item->dataContains( MusicBrainz::RELEASEID ) )
-            releaseList.prepend( item->dataValue( MusicBrainz::RELEASEID ) );
+        if( fakeItem.dataContains( MusicBrainz::MUSICDNS ) )
+            dataInsert( MusicBrainz::MUSICDNS, fakeItem.dataValue( MusicBrainz::MUSICDNS ) );
+
+        recalcSimilarityRate();
+
+        if( fakeItem.dataContains( MusicBrainz::TRACKID ) )
+            trackList.prepend( fakeItem.dataValue( MusicBrainz::TRACKID ) );
+
+        if( fakeItem.dataContains( MusicBrainz::ARTISTID ) )
+            artistList.prepend( fakeItem.dataValue( MusicBrainz::ARTISTID ) );
+
+        if( fakeItem.dataContains( MusicBrainz::RELEASEID ) )
+            releaseList.prepend( fakeItem.dataValue( MusicBrainz::RELEASEID ) );
     }
     else
     {
-        if( item->dataContains( MusicBrainz::TRACKID ) )
-            trackList.append( item->dataValue( MusicBrainz::TRACKID ) );
-        if( item->dataContains( MusicBrainz::ARTISTID ) )
-            artistList.append( item->dataValue( MusicBrainz::ARTISTID ) );
-        if( item->dataContains( MusicBrainz::RELEASEID ) )
-            releaseList.append( item->dataValue( MusicBrainz::RELEASEID ) );
+        if( fakeItem.dataContains( MusicBrainz::TRACKID ) )
+            trackList.append( fakeItem.dataValue( MusicBrainz::TRACKID ) );
+
+        if( fakeItem.dataContains( MusicBrainz::ARTISTID ) )
+            artistList.append( fakeItem.dataValue( MusicBrainz::ARTISTID ) );
+
+        if( fakeItem.dataContains( MusicBrainz::RELEASEID ) )
+            releaseList.append( fakeItem.dataValue( MusicBrainz::RELEASEID ) );
     }
+
     dataInsert( MusicBrainz::TRACKID, trackList );
     dataInsert( MusicBrainz::ARTISTID, artistList );
     dataInsert( MusicBrainz::RELEASEID, releaseList );
@@ -476,10 +405,11 @@ MusicBrainzTagsItem::clearChoices()
 }
 
 bool
-MusicBrainzTagsItem::operator==( const MusicBrainzTagsItem* item ) const
+MusicBrainzTagsItem::isSimilar( const QVariantMap &tags ) const
 {
     QReadLocker lock( &m_dataLock );
-#define MATCH( k, t ) dataValue( k ).t() == item->dataValue( k ).t()
+    QVariant empty;
+#define MATCH( k, t ) ( dataValue( k ).t() == ( tags.contains( k ) ? tags.value( k ) : empty ).t() )
     /*
      * This is the information shown to the user: he will never be able to
      * distinguish between two tracks with the same information.
@@ -493,4 +423,22 @@ MusicBrainzTagsItem::operator==( const MusicBrainzTagsItem* item ) const
            MATCH( Meta::Field::DISCNUMBER, toInt ) &&
            MATCH( Meta::Field::TRACKNUMBER, toInt );
 #undef MATCH
+}
+
+bool
+MusicBrainzTagsItem::operator==( const MusicBrainzTagsItem* item ) const
+{
+    return isSimilar( item->data() );
+}
+
+bool
+MusicBrainzTagsItem::operator==( const Meta::TrackPtr &track) const
+{
+    return m_track == track;
+}
+
+void
+MusicBrainzTagsItem::recalcSimilarityRate()
+{
+    dataInsert( MusicBrainz::SIMILARITY, dataValue( MusicBrainz::MUSICBRAINZ ).toFloat() + dataValue( MusicBrainz::MUSICDNS ).toFloat() );
 }

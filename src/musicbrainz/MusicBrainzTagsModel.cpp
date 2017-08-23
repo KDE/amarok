@@ -204,7 +204,10 @@ MusicBrainzTagsModel::setData( const QModelIndex &index, const QVariant &value, 
 Qt::ItemFlags
 MusicBrainzTagsModel::flags( const QModelIndex &index ) const
 {
-    if( !index.isValid() || !parent( index ).isValid() )
+    if( !index.isValid() )
+        return QAbstractItemModel::flags( index );
+
+    if( !parent( index ).isValid() )
         // Disable items with no children.
         return QAbstractItemModel::flags( index ) ^
                ( ( !static_cast<MusicBrainzTagsItem *>( index.internalPointer() )->childCount() )?
@@ -248,22 +251,67 @@ MusicBrainzTagsModel::columnCount( const QModelIndex &parent ) const
 void
 MusicBrainzTagsModel::addTrack( const Meta::TrackPtr track, const QVariantMap tags )
 {
-    QModelIndex parent;
-    int row = rowCount();
-    for( int i = 0; i < m_rootItem->childCount(); i++ )
+    DEBUG_BLOCK
+
+    if( track.isNull() )
+        return;
+
+    QMutexLocker lock( &m_modelLock );
+
+    MusicBrainzTagsItem *trackItem = nullptr;
+    QModelIndex trackIndex;
+    for( int i = 0; i < m_rootItem->childCount(); ++i )
     {
         MusicBrainzTagsItem *item = m_rootItem->child( i );
         if( track == item->track() )
         {
-            parent = index( i, 0 );
-            row = rowCount( parent );
+            trackItem = item;
+            trackIndex = index( i, 0 );
+
             break;
         }
     }
 
-    beginInsertRows( parent, row, row );
-    m_rootItem->appendChild( new MusicBrainzTagsItem( m_rootItem, track, tags ) );
-    endInsertRows();
+    if( !trackItem )
+    {
+        trackItem = new MusicBrainzTagsItem( m_rootItem, track );
+
+        beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
+        m_rootItem->appendChild( trackItem );
+        endInsertRows();
+
+        trackIndex = index( m_rootItem->childCount() - 1, 0 );
+    }
+
+    if( tags.isEmpty() )
+    {
+        warning() << "Search result contains no data for track: " << track->prettyName();
+        return;
+    }
+
+    MusicBrainzTagsItem *similarItem = nullptr;
+    for( int i = 0; i < trackItem->childCount(); ++i )
+    {
+        MusicBrainzTagsItem *item = trackItem->child( i );
+        if( item->isSimilar( tags ) )
+        {
+            similarItem = item;
+
+            item->mergeData( tags );
+            emit dataChanged( index( i, 0, trackIndex ), index(i, columnCount() - 1, trackIndex ) );
+
+            break;
+        }
+    }
+
+    if( !similarItem )
+    {
+        MusicBrainzTagsItem *item = new MusicBrainzTagsItem( trackItem, track, tags );
+
+        beginInsertRows( trackIndex, trackItem->childCount(), trackItem->childCount() );
+        trackItem->appendChild( item );
+        endInsertRows();
+    }
 }
 
 QMap<Meta::TrackPtr, QVariantMap>
