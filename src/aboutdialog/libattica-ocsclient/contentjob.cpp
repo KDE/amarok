@@ -44,7 +44,7 @@ void ContentJob::setUrl( const QUrl &url )
 
 void ContentJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &ContentJob::doWork );
 }
 
 Content ContentJob::content() const
@@ -56,11 +56,13 @@ void ContentJob::doWork()
 {
   qDebug() << m_url;
 
-  m_job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
-  connect( m_job, SIGNAL(result(KJob*)),
-    SLOT(slotJobResult(KJob*)) );
-  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-    SLOT(slotJobData(KIO::Job*,QByteArray)) );
+  auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+  connect( job, &KIO::TransferJob::result,
+           this, &ContentJob::slotJobResult );
+  connect( job, &KIO::TransferJob::data,
+           this, &ContentJob::slotJobData );
+
+  m_job = job;
 }
 
 void ContentJob::slotJobResult( KJob *job )

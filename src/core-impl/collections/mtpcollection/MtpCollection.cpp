@@ -28,7 +28,7 @@
 
 using namespace Collections;
 
-AMAROK_EXPORT_COLLECTION( MtpCollectionFactory, mtpcollection )
+Q_PLUGIN_METADATA(IID KPluginFactory_iid FILE "amarok_collection-mtpcollection.json" )
 
 MtpCollectionFactory::MtpCollectionFactory( QObject *parent, const QVariantList &args )
     : MediaDeviceCollectionFactory<MtpCollection>( parent, args, new MtpConnectionAssistant() )

@@ -50,9 +50,9 @@ KNotificationBackend::KNotificationBackend()
     : m_enabled( false )
 {
     EngineController *engine = The::engineController();
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)), SLOT(showCurrentTrack()) );
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), SLOT(showCurrentTrack()) );
-    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)), SLOT(showCurrentTrack()) );
+    connect( engine, &EngineController::trackPlaying, this, &KNotificationBackend::showCurrentTrack );
+    connect( engine, &EngineController::trackMetadataChanged, this, &KNotificationBackend::showCurrentTrack );
+    connect( engine, &EngineController::albumMetadataChanged, this, &KNotificationBackend::showCurrentTrack );
 
     if( engine->isPlaying() )
         showCurrentTrack();

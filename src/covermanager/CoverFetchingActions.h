@@ -36,13 +36,13 @@ class AMAROK_EXPORT BaseCoverAction : public QAction
             : QAction( parent )
         {
             m_albums.append( album );
-            connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+            connect( this, &QAction::triggered, this, &BaseCoverAction::slotTriggered );
         }
         BaseCoverAction( QObject *parent, Meta::AlbumList albums )
             : QAction( parent )
         {
             m_albums = albums;
-            connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+            connect( this, &QAction::triggered, this, &BaseCoverAction::slotTriggered );
         }
 
     protected Q_SLOTS:

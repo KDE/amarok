@@ -56,8 +56,8 @@ void AudioCdCollectionLocation::showSourceDialog( const Meta::TrackList &tracks,
     Q_UNUSED( removeSources )
     FormatSelectionDialog * dlg = new FormatSelectionDialog();
 
-    connect( dlg, SIGNAL(formatSelected(int)), this, SLOT(onFormatSelected(int)) );
-    connect( dlg, SIGNAL(rejected()), this, SLOT(onCancel()) );
+    connect( dlg, &FormatSelectionDialog::formatSelected, this, &AudioCdCollectionLocation::onFormatSelected );
+    connect( dlg, &FormatSelectionDialog::rejected, this, &AudioCdCollectionLocation::onCancel );
 
     dlg->show();
 }

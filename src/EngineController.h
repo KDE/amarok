@@ -204,6 +204,14 @@ public Q_SLOTS:
     void stop( bool forceInstant = false, bool playingWillContinue = false );
 
     /**
+     * Stops playing
+     * This happens asynchronously.
+     * Doesn't skip any fade-out effects
+     * Emits stopped() and trackChanged( 0 ) signals
+     */
+    void regularStop();
+
+    /**
      * Pauses if Amarok is currently playing, plays if Amarok is stopped or paused
      * This happens asynchronously.
      */

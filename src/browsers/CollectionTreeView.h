@@ -106,6 +106,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotExpandIndex( const QModelIndex &index );
 
         void slotCheckAutoExpand( bool reallyExpand = true );
+        void slotCheckAutoExpandReally() { slotCheckAutoExpand( true ); }
 
         void slotReplacePlaylistWithChildTracks();
         void slotAppendChildTracks();
@@ -113,7 +114,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotEditTracks();
         void slotCopyTracks();
         void slotMoveTracks();
-        void slotTrashTracks( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+        void slotTrashTracks();
         void slotDeleteTracks();
         void slotOrganize();
 

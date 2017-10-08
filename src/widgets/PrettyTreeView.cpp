@@ -42,7 +42,7 @@ PrettyTreeView::PrettyTreeView( QWidget *parent )
     setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
 
     The::paletteHandler()->updateItemView( this );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(newPalette(QPalette)) );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &PrettyTreeView::newPalette );
 
 #ifdef Q_WS_MAC
     // for some bizarre reason w/ some styles on mac per-pixel scrolling is slower than

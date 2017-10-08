@@ -145,9 +145,8 @@ APG::PresetModel::editPreset( const QModelIndex& index )
 void
 APG::PresetModel::exportActive()
 {
-    KFileDialog* d = new ExportDialog( activePreset() );
-    connect( d, SIGNAL(pleaseExport(QString,QList<APG::PresetPtr>)),
-          this, SLOT(savePresetsToXml(QString,QList<APG::PresetPtr>)) );
+    auto d = new ExportDialog( activePreset() );
+    connect( d, &ExportDialog::pleaseExport, this, &PresetModel::savePresetsToXml );
     d->exec();
 }
 
@@ -192,7 +191,7 @@ APG::PresetModel::setActivePreset( const QModelIndex& index )
 }
 
 void
-APG::PresetModel::savePresetsToXml() const
+APG::PresetModel::savePresetsToXmlDefault() const
 {
     savePresetsToXml( Amarok::saveLocation() + "playlistgenerator.xml", m_presetList );
 }
@@ -309,7 +308,7 @@ APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
     setOperationMode( KFileDialog::Saving );
     setKeepLocation( true );
     QWidget::setWindowTitle( i18n( "Export \"%1\" preset", ps->title() ) );
-    connect( this, SIGNAL(okClicked()), this, SLOT(recvAccept()) );
+    connect( this, &ExportDialog::accept, this, &ExportDialog::recvAccept );
 }
 
 APG::PresetModel::ExportDialog::~ExportDialog() {}

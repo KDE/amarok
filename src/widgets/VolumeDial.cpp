@@ -40,8 +40,8 @@ VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
     m_anim.timer = 0;
     setMouseTracking( true );
 
-    connect ( this, SIGNAL(valueChanged(int)), SLOT(valueChangedSlot(int)) );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
+    connect( this, &VolumeDial::valueChanged, this, &VolumeDial::valueChangedSlot );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &VolumeDial::paletteChanged );
 }
 
 void VolumeDial::addWheelProxies( QList<QWidget*> proxies )
@@ -51,7 +51,7 @@ void VolumeDial::addWheelProxies( QList<QWidget*> proxies )
         if ( !m_wheelProxies.contains( proxy ) )
         {
             proxy->installEventFilter( this );
-            connect ( proxy, SIGNAL(destroyed(QObject*)), this, SLOT(removeWheelProxy(QObject*)) );
+            connect ( proxy, &QWidget::destroyed, this, &VolumeDial::removeWheelProxy );
             m_wheelProxies << proxy;
         }
     }

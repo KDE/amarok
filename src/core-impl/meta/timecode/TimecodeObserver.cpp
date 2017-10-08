@@ -31,12 +31,12 @@ TimecodeObserver::TimecodeObserver( QObject *parent )
 {
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL(stopped(qint64,qint64)),
-             this, SLOT(stopped(qint64,qint64)) );
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-             this, SLOT(trackPlaying(Meta::TrackPtr)) );
-    connect( engine, SIGNAL(trackPositionChanged(qint64,bool)),
-             this, SLOT(trackPositionChanged(qint64,bool)) );
+    connect( engine, &EngineController::stopped,
+             this, &TimecodeObserver::stopped );
+    connect( engine, &EngineController::trackPlaying,
+             this, &TimecodeObserver::trackPlaying );
+    connect( engine, &EngineController::trackPositionChanged,
+             this, &TimecodeObserver::trackPositionChanged );
 }
 
 TimecodeObserver::~TimecodeObserver()

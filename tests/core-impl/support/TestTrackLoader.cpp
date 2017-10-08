@@ -64,7 +64,7 @@ TestTrackLoader::testFullMetadataInit()
     foreach( const StringIntPair &pair, pathsCounts )
     {
         TrackLoader *loader = new TrackLoader( TrackLoader::FullMetadataRequired );
-        QSignalSpy spy( loader, SIGNAL(finished(Meta::TrackList)) );
+        QSignalSpy spy( loader, &TrackLoader::finished );
         loader->init( QUrl( pair.first ) );
         if( spy.isEmpty() )
             QVERIFY2( QTest::kWaitForSignal( loader, SIGNAL(finished(Meta::TrackList)), 5000 ),
@@ -89,7 +89,7 @@ void
 TestTrackLoader::testInit()
 {
     TrackLoader *loader1 = new TrackLoader();
-    QSignalSpy spy1( loader1, SIGNAL(finished(Meta::TrackList)) );
+    QSignalSpy spy1( loader1, &TrackLoader::finished );
     loader1->init( QUrl( dataPath( "data/audio" ) ) ); // test the convenience overload
     if( spy1.isEmpty() )
         QVERIFY2( QTest::kWaitForSignal( loader1, SIGNAL(finished(Meta::TrackList)), 5000 ),
@@ -106,7 +106,7 @@ TestTrackLoader::testInit()
     QVERIFY2( found.at( 14 )->uidUrl().endsWith( "audio/Platz%2010.mp3" ), found.at( 14 )->uidUrl().toLocal8Bit().data() );
 
     TrackLoader *loader2 = new TrackLoader();
-    QSignalSpy spy2( loader2, SIGNAL(finished(Meta::TrackList)) );
+    QSignalSpy spy2( loader2, &TrackLoader::finished );
     loader2->init( QList<QUrl>() << QUrl( dataPath( "data/audio/album2" ) ) );
     if( spy2.isEmpty() )
         QVERIFY2( QTest::kWaitForSignal( loader2, SIGNAL(finished(Meta::TrackList)), 5000 ),
@@ -121,7 +121,7 @@ void
 TestTrackLoader::testInitWithPlaylists()
 {
     TrackLoader *loader = new TrackLoader();
-    QSignalSpy spy( loader, SIGNAL(finished(Meta::TrackList)) );
+    QSignalSpy spy( loader, &TrackLoader::finished );
     QList<QUrl> urls;
     urls << QUrl( dataPath( "data/playlists/test.asx" ) )
          << QUrl( dataPath( "data/audio/album" ) )
@@ -146,7 +146,7 @@ TestTrackLoader::testDirectlyPassingPlaylists()
 {
     using namespace Playlists;
     TrackLoader *loader = new TrackLoader();
-    QSignalSpy spy( loader, SIGNAL(finished(Meta::TrackList)) );
+    QSignalSpy spy( loader, &TrackLoader::finished );
     PlaylistList playlists;
     playlists << PlaylistPtr::staticCast( loadPlaylistFile( QUrl( dataPath( "data/playlists/test.asx" ) ) ) )
               << PlaylistPtr::staticCast( loadPlaylistFile( QUrl( dataPath( "data/playlists/test.xspf" ) ) ) );

@@ -103,20 +103,20 @@ bool IpodCollection::init()
         return false;  // we have already displayed sorry message
 
     m_updateTimer.setSingleShot( true );
-    connect( this, SIGNAL(startUpdateTimer()), SLOT(slotStartUpdateTimer()) );
-    connect( &m_updateTimer, SIGNAL(timeout()), SLOT(collectionUpdated()) );
+    connect( this, &IpodCollection::startUpdateTimer, this, &IpodCollection::slotStartUpdateTimer );
+    connect( &m_updateTimer, &QTimer::timeout, this, &IpodCollection::collectionUpdated );
 
     m_writeDatabaseTimer.setSingleShot( true );
-    connect( this, SIGNAL(startWriteDatabaseTimer()), SLOT(slotStartWriteDatabaseTimer()) );
-    connect( &m_writeDatabaseTimer, SIGNAL(timeout()), SLOT(slotInitiateDatabaseWrite()) );
+    connect( this, &IpodCollection::startWriteDatabaseTimer, this, &IpodCollection::slotStartWriteDatabaseTimer );
+    connect( &m_writeDatabaseTimer, &QTimer::timeout, this, &IpodCollection::slotInitiateDatabaseWrite );
 
     m_configureAction = new QAction( QIcon::fromTheme( "configure" ), i18n( "&Configure Device" ), this );
     m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
-    connect( m_configureAction, SIGNAL(triggered()), SLOT(slotShowConfigureDialog()) );
+    connect( m_configureAction, &QAction::triggered, this, &IpodCollection::slotShowConfigureDialog );
 
     m_ejectAction = new QAction( QIcon::fromTheme( "media-eject" ), i18n( "&Eject Device" ), this );
     m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
-    connect( m_ejectAction, SIGNAL(triggered()), SLOT(slotEject()) );
+    connect( m_ejectAction, &QAction::triggered, this, &IpodCollection::slotEject );
 
     QString parseErrorMessage;
     m_itdb = IpodDeviceHelper::parseItdb( m_mountPoint, parseErrorMessage );
@@ -126,8 +126,8 @@ bool IpodCollection::init()
     m_consolidateAction = new QAction( QIcon::fromTheme( "dialog-ok-apply" ), i18n( "Re-add orphaned and forget stale tracks" ), this );
     // provider needs to be up before IpodParseTracksJob is started
     m_playlistProvider = new IpodPlaylistProvider( this );
-    connect( m_playlistProvider, SIGNAL(startWriteDatabaseTimer()), SIGNAL(startWriteDatabaseTimer()) );
-    connect( m_consolidateAction, SIGNAL(triggered()), m_playlistProvider, SLOT(slotConsolidateStaleOrphaned()) );
+    connect( m_playlistProvider, &IpodPlaylistProvider::startWriteDatabaseTimer, this, &IpodCollection::startWriteDatabaseTimer );
+    connect( m_consolidateAction, &QAction::triggered, m_playlistProvider, &IpodPlaylistProvider::slotConsolidateStaleOrphaned );
     The::playlistManager()->addProvider( m_playlistProvider, m_playlistProvider->category() );
 
     if( m_itdb )
@@ -135,11 +135,11 @@ bool IpodCollection::init()
         // parse tracks in a thread in order not to block main thread
         IpodParseTracksJob *job = new IpodParseTracksJob( this );
         m_parseTracksJob = job;
-        connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+        connect( job, &IpodParseTracksJob::done, job, &QObject::deleteLater );
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
     }
     else
-        slotShowConfigureDialog( parseErrorMessage ); // shows error message and allows initializing
+        slotShowConfigureDialogWithError( parseErrorMessage ); // shows error message and allows initializing
 
     return true;  // we have found iPod, even if it might not be initialised
 }
@@ -350,9 +350,9 @@ IpodCollection::slotDestroy()
     {
         IpodWriteDatabaseJob *job = m_writeDatabaseJob.data();
         // don't create duplicate connections:
-        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotRemove()) );
-        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotPerformTeardownAndRemove()) );
-        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotRemove()) );
+        disconnect( job, &QObject::destroyed, this, &IpodCollection::slotRemove );
+        disconnect( job, &QObject::destroyed, this, &IpodCollection::slotPerformTeardownAndRemove );
+        connect( job, &QObject::destroyed, this, &IpodCollection::slotRemove );
     }
     // this is not racy: slotDestroy() is delivered to main thread, the timer fires in the
     // same thread
@@ -362,8 +362,8 @@ IpodCollection::slotDestroy()
         m_writeDatabaseTimer.stop();
         IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
         m_writeDatabaseJob = job;
-        connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
-        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotRemove()) );
+        connect( job, &IpodWriteDatabaseJob::done, job, &QObject::deleteLater );
+        connect( job, &QObject::destroyed, this, &IpodCollection::slotRemove );
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
     }
     else
@@ -379,9 +379,9 @@ IpodCollection::slotEject()
     {
         IpodWriteDatabaseJob *job = m_writeDatabaseJob.data();
         // don't create duplicate connections:
-        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotRemove()) );
-        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotPerformTeardownAndRemove()) );
-        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotPerformTeardownAndRemove()) );
+        disconnect( job, &QObject::destroyed, this, &IpodCollection::slotRemove );
+        disconnect( job, &QObject::destroyed, this, &IpodCollection::slotPerformTeardownAndRemove );
+        connect( job, &QObject::destroyed, this, &IpodCollection::slotPerformTeardownAndRemove );
     }
     // this is not racy: slotEject() is delivered to main thread, the timer fires in the
     // same thread
@@ -391,8 +391,8 @@ IpodCollection::slotEject()
         m_writeDatabaseTimer.stop();
         IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
         m_writeDatabaseJob = job;
-        connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
-        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotPerformTeardownAndRemove()) );
+        connect( job, &IpodWriteDatabaseJob::done, job, &QObject::deleteLater );
+        connect( job, &QObject::destroyed, this, &IpodCollection::slotPerformTeardownAndRemove );
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
     }
     else
@@ -400,7 +400,13 @@ IpodCollection::slotEject()
 }
 
 void
-IpodCollection::slotShowConfigureDialog( const QString &errorMessage )
+IpodCollection::slotShowConfigureDialog()
+{
+    slotShowConfigureDialogWithError( QString() );
+}
+
+void
+IpodCollection::slotShowConfigureDialogWithError( const QString &errorMessage )
 {
     if( !m_configureDialog )
     {
@@ -417,8 +423,8 @@ IpodCollection::slotShowConfigureDialog( const QString &errorMessage )
         QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
         okButton->setDefault(true);
         okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-        m_configureDialog->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-        m_configureDialog->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+        connect(buttonBox, &QDialogButtonBox::accepted, m_configureDialog, &QDialog::accept);
+        connect(buttonBox, &QDialogButtonBox::rejected, m_configureDialog, &QDialog::reject);
 
         mainLayout->addWidget(settingsWidget);
         mainLayout->addWidget(buttonBox);
@@ -433,8 +439,8 @@ IpodCollection::slotShowConfigureDialog( const QString &errorMessage )
             m_configureDialogUi.initializeButton->hide();
         }
 
-        connect( m_configureDialogUi.initializeButton, SIGNAL(clicked(bool)), SLOT(slotInitialize()) );
-        connect( m_configureDialog, SIGNAL(clicked()), SLOT(slotApplyConfiguration()) );
+        connect( m_configureDialogUi.initializeButton, &QPushButton::clicked, this, &IpodCollection::slotInitialize );
+        connect( m_configureDialog, &QDialog::accepted, this, &IpodCollection::slotApplyConfiguration );
     }
     QScopedPointer<Capabilities::TranscodeCapability> tc( create<Capabilities::TranscodeCapability>() );
     IpodDeviceHelper::fillInConfigureDialog( m_configureDialog, &m_configureDialogUi,
@@ -464,7 +470,7 @@ IpodCollection::slotInitialize()
     bool success = IpodDeviceHelper::initializeIpod( m_mountPoint, &m_configureDialogUi, errorMessage );
     if( !success )
     {
-        slotShowConfigureDialog( errorMessage );
+        slotShowConfigureDialogWithError( errorMessage );
         return;
     }
 
@@ -483,11 +489,11 @@ IpodCollection::slotInitialize()
         // there will be probably 0 tracks, but it may do more in future, for example stale
         // & orphaned track search.
         IpodParseTracksJob *job = new IpodParseTracksJob( this );
-        connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+        connect( job, &IpodParseTracksJob::done, job, &QObject::deleteLater );
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
     }
     else
-        slotShowConfigureDialog( errorMessage ); // shows error message and allows initializing
+        slotShowConfigureDialogWithError( errorMessage ); // shows error message and allows initializing
 }
 
 void
@@ -547,7 +553,7 @@ void IpodCollection::slotInitiateDatabaseWrite()
     }
     IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
     m_writeDatabaseJob = job;
-    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    connect( job, &IpodWriteDatabaseJob::done, job, &QObject::deleteLater );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 
@@ -579,8 +585,8 @@ void IpodCollection::slotRemove()
         // we need to wait until parseTracksJob finishes, because it acceses IpodCollection
         // and IpodPlaylistProvider in an asynchronous way that cannot safely cope with
         // IpodCollection disappearing
-        connect( m_parseTracksJob.data(), SIGNAL(destroyed(QObject*)), SIGNAL(remove()) );
-        m_parseTracksJob.data()->abort();
+        connect( m_parseTracksJob.data(), &QObject::destroyed, this, &IpodCollection::remove );
+        m_parseTracksJob->abort();
     }
     else
         emit remove();

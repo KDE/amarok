@@ -78,7 +78,7 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
     {
         QAction *action = new QAction( QIcon::fromTheme( "filename-album-amarok" ),
                                        i18n( "Choose Best Matches from This Album" ), menu );
-        connect( action, SIGNAL(triggered()), SLOT(chooseBestMatchesFromRelease()) );
+        connect( action, &QAction::triggered, this, &MusicBrainzTagsView::chooseBestMatchesFromRelease );
         menu->addAction( action );
         menu->addSeparator();
     }
@@ -95,14 +95,14 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
             {
                 QAction *subAction = new QAction( artists.value( id.toString() ).toString(), action );
                 subAction->setData( id );
-                connect( subAction, SIGNAL(triggered()), SLOT(openArtistPage()) );
+                connect( subAction, &QAction::triggered, this, &MusicBrainzTagsView::openArtistPage );
                 action->addAction( subAction );
             }
         }
         else
         {
             action->setData( artists.keys().first() );
-            connect( action, SIGNAL(triggered()), SLOT(openArtistPage()) );
+            connect( action, &QAction::triggered, this, &MusicBrainzTagsView::openArtistPage );
         }
         actions << action;
     }
@@ -110,14 +110,14 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
     if( !index.data( MusicBrainzTagsModel::ReleasesRole ).toList().isEmpty() )
     {
         QAction *action = new QAction( m_releaseIcon, i18n( "Go to Album Page" ), menu );
-        connect( action, SIGNAL(triggered()), SLOT(openReleasePage()) );
+        connect( action, &QAction::triggered, this, &MusicBrainzTagsView::openReleasePage );
         actions << action;
     }
 
     if( !index.data( MusicBrainzTagsModel::TracksRole ).toList().isEmpty() )
     {
         QAction *action = new QAction( m_trackIcon, i18n( "Go to Track Page" ), menu );
-        connect( action, SIGNAL(triggered()), SLOT(openTrackPage()) );
+        connect( action, &QAction::triggered, this, &MusicBrainzTagsView::openTrackPage );
         actions << action;
     }
 

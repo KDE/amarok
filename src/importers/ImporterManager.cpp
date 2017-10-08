@@ -59,8 +59,8 @@ ImporterManager::init()
 
     if( Controller *controller = Amarok::Components::statSyncingController() )
         if( Config *config = controller->config() )
-            connect( config, SIGNAL(providerForgotten(QString)),
-                                                   SLOT(slotProviderForgotten(QString)) );
+            connect( config, &Config::providerForgotten,
+                     this, &ImporterManager::slotProviderForgotten );
 
     m_initialized = true;
 }
@@ -99,8 +99,8 @@ ImporterManager::createProvider( QVariantMap config )
         return provider;
     }
 
-    connect( provider.data(), SIGNAL(reconfigurationRequested(QVariantMap)),
-                                SLOT(createProvider(QVariantMap)), Qt::QueuedConnection);
+    connect( provider.data(), &StatSyncing::ImporterProvider::reconfigurationRequested,
+             this, &ImporterManager::createProvider, Qt::QueuedConnection);
     m_providers.insert( provider->id(), provider );
 
     // Register the provider

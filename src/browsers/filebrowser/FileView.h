@@ -75,6 +75,7 @@ protected Q_SLOTS:
     void slotMoveTracks( const Meta::TrackList &tracks );
     void slotCopyTracks( const Meta::TrackList &tracks );
     void slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+    void slotMoveToTrashWithoutModifiers() { slotMoveToTrash( Qt::NoButton, Qt::NoModifier ); }
     void slotDelete();
 
 protected:

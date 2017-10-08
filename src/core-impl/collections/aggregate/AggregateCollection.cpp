@@ -36,7 +36,7 @@ AggregateCollection::AggregateCollection()
     QTimer *timer = new QTimer( this );
     timer->setSingleShot( false );
     timer->setInterval( 60000 ); //clean up every 60 seconds
-    connect( timer, SIGNAL(timeout()), this, SLOT(emptyCache()) );
+    connect( timer, &QTimer::timeout, this, &AggregateCollection::emptyCache );
     timer->start();
 }
 
@@ -117,7 +117,7 @@ AggregateCollection::addCollection( Collections::Collection *collection, Collect
 }
 
 void
-AggregateCollection::removeCollection( const QString &collectionId )
+AggregateCollection::removeCollectionById( const QString &collectionId )
 {
     m_idCollectionMap.remove( collectionId );
     emit updated();

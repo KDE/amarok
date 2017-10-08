@@ -52,11 +52,11 @@ DatabaseConfig::DatabaseConfig( QWidget* parent, KConfigSkeleton *config )
     button_Test->setEnabled( testFunctionAvailable );
 
     // connect slots
-    connect( kcfg_UseServer, SIGNAL(stateChanged(int)), SLOT(toggleExternalConfigAvailable(int)) );
+    connect( kcfg_UseServer, &QCheckBox::stateChanged, this, &DatabaseConfig::toggleExternalConfigAvailable );
 
-    connect( kcfg_Database, SIGNAL(textChanged(QString)), SLOT(updateSQLQuery()) );
-    connect( kcfg_User,     SIGNAL(textChanged(QString)), SLOT(updateSQLQuery()) );
-    connect( button_Test,   SIGNAL(clicked(bool)),  SLOT(testDatabaseConnection()));
+    connect( kcfg_Database, &QLineEdit::textChanged, this, &DatabaseConfig::updateSQLQuery );
+    connect( kcfg_User,     &QLineEdit::textChanged, this, &DatabaseConfig::updateSQLQuery );
+    connect( button_Test,   &QAbstractButton::clicked,  this, &DatabaseConfig::testDatabaseConnection );
 
     toggleExternalConfigAvailable( kcfg_UseServer->checkState() );
 

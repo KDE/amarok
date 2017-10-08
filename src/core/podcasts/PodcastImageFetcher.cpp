@@ -114,7 +114,7 @@ PodcastImageFetcher::run()
         //remove channel from the todo list
         m_channels.removeAll( channel );
         m_jobChannelMap.insert( job, channel );
-        connect( job, SIGNAL(finished(KJob*)), SLOT(slotDownloadFinished(KJob*)) );
+        connect( job, &KIO::FileCopyJob::finished, this, &PodcastImageFetcher::slotDownloadFinished );
     }
 
     //TODO: episodes

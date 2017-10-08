@@ -64,7 +64,7 @@ namespace Playdar {
         debug() << "Starting storedGetJob for " << resolveUrl.url();
         
         KJob* resolveJob = KIO::storedGet( resolveUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( resolveJob, SIGNAL(result(KJob*)), this, SLOT(processQuery(KJob*)) );
+        connect( resolveJob, &KJob::result, this, &Controller::processQuery );
     }
     
     void
@@ -78,7 +78,7 @@ namespace Playdar {
         getResultsUrl.addQueryItem( QString( "qid" ), query->qid() );
         
         KJob* getResultsJob = KIO::storedGet( getResultsUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( getResultsJob, SIGNAL(result(KJob*)), query, SLOT(receiveResults(KJob*)) );
+        connect( getResultsJob, &KJob::result, query, &Query::receiveResults );
     }
     
     void
@@ -92,7 +92,7 @@ namespace Playdar {
         getResultsUrl.addQueryItem( QString( "qid" ), query->qid() );
         
         KJob* getResultsJob = KIO::storedGet( getResultsUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( getResultsJob, SIGNAL(result(KJob*)), query, SLOT(receiveResults(KJob*)) );
+        connect( getResultsJob, &KJob::result, query, &Query::receiveResults );
     }
     
     QUrl
@@ -118,7 +118,7 @@ namespace Playdar {
         QUrl statusUrl( baseUrl );
         
         KJob* statusJob = KIO::storedGet( statusUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( statusJob, SIGNAL(result(KJob*)), this, SLOT(processStatus(KJob*)) );
+        connect( statusJob, &KJob::result, this, &Controller::processStatus );
     }
     
     void
@@ -199,7 +199,6 @@ namespace Playdar {
         debug() << "All good! Emitting queryReady( Playdar::Query* )...";
         emit queryReady( query );
         
-        connect( query, SIGNAL(playdarError(Playdar::Controller::ErrorState)),
-                 this, SIGNAL(playdarError(Playdar::Controller::ErrorState)) );
+        connect( query, &Query::playdarError, this, &Controller::playdarError );
     }
 }

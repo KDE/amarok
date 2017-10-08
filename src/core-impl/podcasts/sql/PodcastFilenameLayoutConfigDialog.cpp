@@ -43,8 +43,8 @@ PodcastFilenameLayoutConfigDialog::PodcastFilenameLayoutConfigDialog( Podcasts::
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &PodcastFilenameLayoutConfigDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &PodcastFilenameLayoutConfigDialog::reject);
 
     mainLayout->addWidget(main);
     mainLayout->addWidget(buttonBox);
@@ -74,7 +74,7 @@ PodcastFilenameLayoutConfigDialog::init()
         m_choice = 1;
     }
 
-    connect( buttonBox()->button(QDialogButtonBox::Ok) , SIGNAL(clicked()), this, SLOT(slotApply()) );
+    connect( buttonBox()->button(QDialogButtonBox::Ok) , &QAbstractButton::clicked, this, &PodcastFilenameLayoutConfigDialog::slotApply );
 }
 
 

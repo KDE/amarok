@@ -48,12 +48,12 @@ Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &preSel
     m_dialog.data()->setInitialSize( QSize( 860, 500 ) );
     m_dialog.data()->restoreDialogSize( Amarok::config( "StatSyncingDialog" ) );
     // delete this process when user hits the close button
-    connect( m_dialog.data(), SIGNAL(finished()), SLOT(slotSaveSizeAndDelete()) );
+    connect( m_dialog.data(), &KDialog::finished, this, &Process::slotSaveSizeAndDelete );
 
     /* we need to delete all QWidgets on application exit well before QApplication
      * is destroyed. We however don't set MainWindow as parent as this would make
      * StatSyncing dialog share taskbar entry with Amarok main window */
-    connect( The::mainWindow(), SIGNAL(destroyed(QObject*)), SLOT(slotDeleteDialog()) );
+    connect( The::mainWindow(), &MainWindow::destroyed, this, &Process::slotDeleteDialog );
 }
 
 Process::~Process()
@@ -70,8 +70,10 @@ Process::start()
         m_providersPage.data()->setFields( Controller::availableFields(), m_checkedFields );
         m_providersPage.data()->setProvidersModel( m_providersModel, m_providersModel->selectionModel() );
 
-        connect( m_providersPage.data(), SIGNAL(accepted()), SLOT(slotMatchTracks()) );
-        connect( m_providersPage.data(), SIGNAL(rejected()), SLOT(slotSaveSizeAndDelete()) );
+        connect( m_providersPage.data(), &StatSyncing::ChooseProvidersPage::accepted,
+                 this, &Process::slotMatchTracks );
+        connect( m_providersPage.data(), &StatSyncing::ChooseProvidersPage::rejected,
+                 this, &Process::slotSaveSizeAndDelete );
         m_dialog.data()->mainWidget()->hide(); // otherwise it may last as a ghost image
         m_dialog.data()->setMainWidget( m_providersPage.data() ); // takes ownership
         raise();
@@ -105,18 +107,20 @@ Process::slotMatchTracks()
 
         page->disableControls();
         page->setProgressBarText( text );
-        connect( job, SIGNAL(totalSteps(int)), page, SLOT(setProgressBarMaximum(int)) );
-        connect( job, SIGNAL(incrementProgress()), page, SLOT(progressBarIncrementProgress()) );
-        connect( page, SIGNAL(rejected()), job, SLOT(abort()) );
-        connect( m_dialog.data(), SIGNAL(finished()), job, SLOT(abort()) );
+        connect( job, &StatSyncing::MatchTracksJob::totalSteps,
+                 page, &StatSyncing::ChooseProvidersPage::setProgressBarMaximum );
+        connect( job, &StatSyncing::MatchTracksJob::incrementProgress, page,
+                 &StatSyncing::ChooseProvidersPage::progressBarIncrementProgress );
+        connect( page, &StatSyncing::ChooseProvidersPage::rejected, job, &StatSyncing::MatchTracksJob::abort );
+        connect( m_dialog.data(), &KDialog::finished, job, &StatSyncing::MatchTracksJob::abort );
     }
     else // background operation
     {
         Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
     }
 
-    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(slotTracksMatched(ThreadWeaver::JobPointer)) );
-    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    connect( job, &StatSyncing::MatchTracksJob::done, this, &Process::slotTracksMatched );
+    connect( job, &StatSyncing::MatchTracksJob::done, job, &StatSyncing::MatchTracksJob::deleteLater );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 
@@ -178,9 +182,9 @@ Process::slotTracksMatched( ThreadWeaver::JobPointer job )
         }
         page->setTracksToScrobble( m_tracksToScrobble, services );
 
-        connect( page, SIGNAL(back()), SLOT(slotBack()) );
-        connect( page, SIGNAL(accepted()), SLOT(slotSynchronize()) );
-        connect( page, SIGNAL(rejected()), SLOT(slotSaveSizeAndDelete()) );
+        connect( page, &StatSyncing::MatchedTracksPage::back, this, &Process::slotBack );
+        connect( page, &StatSyncing::MatchedTracksPage::accepted, this, &Process::slotSynchronize );
+        connect( page, &StatSyncing::MatchedTracksPage::rejected, this, &Process::slotSaveSizeAndDelete );
         m_dialog.data()->mainWidget()->hide(); // otherwise it may last as a ghost image
         m_dialog.data()->setMainWidget( page ); // takes ownership
         raise();
@@ -200,15 +204,15 @@ void
 Process::slotSynchronize()
 {
     // disconnect, otherwise we prematurely delete Process and thus m_matchedTracksModel
-    disconnect( m_dialog.data(), SIGNAL(finished()), this, SLOT(slotSaveSizeAndDelete()) );
+    disconnect( m_dialog.data(), &KDialog::finished, this, &Process::slotSaveSizeAndDelete );
     m_dialog.data()->close();
 
     SynchronizeTracksJob *job = new SynchronizeTracksJob(
             m_matchedTracksModel->matchedTuples(), m_tracksToScrobble, m_options );
     QString text = i18n( "Synchronizing Track Statistics" );
     Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
-    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(slotLogSynchronization(ThreadWeaver::JobPointer)) );
-    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    connect( job, &StatSyncing::SynchronizeTracksJob::done, this, &Process::slotLogSynchronization );
+    connect( job, &StatSyncing::SynchronizeTracksJob::done, job, &StatSyncing::SynchronizeTracksJob::deleteLater );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 

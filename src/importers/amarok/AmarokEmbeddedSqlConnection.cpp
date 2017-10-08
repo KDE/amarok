@@ -34,7 +34,7 @@ AmarokEmbeddedSqlConnection::AmarokEmbeddedSqlConnection( const QFileInfo &mysql
     , m_mysqld( mysqld )
     , m_datadir( datadir )
 {
-    connect( &m_shutdownTimer, SIGNAL(timeout()), SLOT(stopServer()) );
+    connect( &m_shutdownTimer, &QTimer::timeout, SLOT(stopServer()) );
     m_shutdownTimer.setSingleShot( true );
 }
 

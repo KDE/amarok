@@ -151,25 +151,25 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 
     m_mainLayout->addWidget( schemeGroup );
 
-    connect( m_tokenPool, SIGNAL(onDoubleClick(Token*)),
-             m_dropTarget, SLOT(insertToken(Token*)) );
-    connect( m_advancedButton, SIGNAL(clicked()),
-             this, SLOT(toggleAdvancedMode()) );
-    connect( m_dropTarget, SIGNAL(changed()),
-             this, SIGNAL(schemeChanged()) );
-    connect( m_dropTarget, SIGNAL(changed()),
-             this, SLOT(slotUpdatePresetButton()) );
-    connect( m_addPresetButton, SIGNAL(clicked(bool)),
-             this, SLOT(slotAddFormat()) );
-    connect( m_removePresetButton, SIGNAL(clicked(bool)),
-             this, SLOT(slotRemoveFormat()) );
-    connect( m_updatePresetButton, SIGNAL(clicked(bool)),
-             this, SLOT(slotUpdateFormat()) );
+    connect( m_tokenPool, &TokenPool::onDoubleClick,
+             m_dropTarget, &TokenDropTarget::appendToken );
+    connect( m_advancedButton, &QAbstractButton::clicked,
+             this, &FilenameLayoutWidget::toggleAdvancedMode );
+    connect( m_dropTarget, &TokenDropTarget::changed,
+             this, &FilenameLayoutWidget::schemeChanged );
+    connect( m_dropTarget, &TokenDropTarget::changed,
+             this, &FilenameLayoutWidget::slotUpdatePresetButton );
+    connect( m_addPresetButton, &QPushButton::clicked,
+             this, &FilenameLayoutWidget::slotAddFormat );
+    connect( m_removePresetButton, &QPushButton::clicked,
+             this, &FilenameLayoutWidget::slotRemoveFormat );
+    connect( m_updatePresetButton, &QPushButton::clicked,
+             this, &FilenameLayoutWidget::slotUpdateFormat );
 
-    connect( m_filenameLayoutEdit, SIGNAL(textChanged(QString)),
-             this, SIGNAL(schemeChanged()) );
-    connect( m_filenameLayoutEdit, SIGNAL(textChanged(QString)),
-             this, SLOT(slotUpdatePresetButton()) );
+    connect( m_filenameLayoutEdit, &KLineEdit::textChanged,
+             this, &FilenameLayoutWidget::schemeChanged );
+    connect( m_filenameLayoutEdit, &KLineEdit::textChanged,
+             this, &FilenameLayoutWidget::slotUpdatePresetButton );
 }
 
 Token*
@@ -322,7 +322,7 @@ FilenameLayoutWidget::inferScheme( const QString &s ) //SLOT
             Type type = static_cast<Type>(j);
             if( s.midRef( i, typeNameLength ) == typeElements[j] )
             {
-                m_dropTarget->insertToken( createToken( type ) );
+                m_dropTarget->appendToken( createToken( type ) );
                 i += typeNameLength;
                 found = true;
             }
@@ -385,8 +385,10 @@ FilenameLayoutWidget::populateFormatList( const QString& custom )
     if( selected_index >= 0 )
         m_presetCombo->setCurrentIndex( selected_index );
 
-    connect( m_presetCombo, SIGNAL(activated(int)), this, SLOT(slotFormatPresetSelected(int)) );
-    connect( m_presetCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(slotFormatPresetSelected(int)) );
+    connect( m_presetCombo, QOverload<int>::of(&QComboBox::activated),
+             this, &FilenameLayoutWidget::slotFormatPresetSelected );
+    connect( m_presetCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+             this, &FilenameLayoutWidget::slotFormatPresetSelected );
 }
 
 void

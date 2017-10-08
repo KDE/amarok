@@ -81,7 +81,7 @@ TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> 
         }
 
         KIO::CopyJob *job = KIO::trash( files, KIO::HideProgressInfo );
-        connect( job, SIGNAL(result(KJob*)), SLOT(slotTrashJobFinished(KJob*)) );
+        connect( job, &KJob::result, this, &TrashCollectionLocation::slotTrashJobFinished );
 
         Meta::TrackList tracks = sources.keys();
         m_trashJobs.insert( job, tracks );

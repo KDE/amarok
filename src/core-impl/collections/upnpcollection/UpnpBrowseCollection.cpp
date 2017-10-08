@@ -56,7 +56,7 @@ UpnpBrowseCollection::UpnpBrowseCollection( const DeviceInfo& dev )
 
     // experimental code, will probably be moved to a better place
     OrgKdeKDirNotifyInterface *notify = new OrgKdeKDirNotifyInterface("", "", QDBusConnection::sessionBus(), this );
-    connect( notify, SIGNAL(FilesChanged(QStringList)), SLOT(slotFilesChanged(QStringList)) );
+    connect( notify, &OrgKdeKDirNotifyInterface::FilesChanged, this, &UpnpBrowseCollection::slotFilesChanged );
 }
 
 UpnpBrowseCollection::~UpnpBrowseCollection()
@@ -122,12 +122,8 @@ UpnpBrowseCollection::startFullScan()
 
     m_fullScanInProgress = true;
     m_fullScanTimer = new QTimer( this );
-    Q_ASSERT(
-        connect( m_fullScanTimer,
-                 SIGNAL(timeout()),
-                 this,
-                 SLOT(updateMemoryCollection()) )
-        );
+    connect( m_fullScanTimer, &QTimer::timeout,
+             this, &UpnpBrowseCollection::updateMemoryCollection );
     m_fullScanTimer->start(5000);
 }
 
@@ -145,10 +141,8 @@ UpnpBrowseCollection::startIncrementalScan( const QString &directory )
     url.setPath( directory );
     KIO::ListJob *listJob = KIO::listRecursive( url, KIO::HideProgressInfo );
     addJob( listJob );
-    Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
-                       this, SLOT(entries(KIO::Job*,KIO::UDSEntryList)), Qt::UniqueConnection ) );
-    Q_ASSERT( connect( listJob, SIGNAL(result(KJob*)),
-                       this, SLOT(done(KJob*)), Qt::UniqueConnection ) );
+    Q_ASSERT( connect( listJob, &KIO::ListJob::entries, this, &UpnpBrowseCollection::entries, Qt::UniqueConnection ) );
+    Q_ASSERT( connect( listJob, &KJob::result, this, &UpnpBrowseCollection::done, Qt::UniqueConnection ) );
     listJob->start();
 
 }
@@ -246,7 +240,7 @@ UpnpBrowseCollection::queryMaker()
 {
     DEBUG_BLOCK;
     UpnpMemoryQueryMaker *umqm = new UpnpMemoryQueryMaker(m_mc.toWeakRef(), collectionId() );
-    Q_ASSERT( connect( umqm, SIGNAL(startFullScan()), this, SLOT(startFullScan()) ) );
+    connect( umqm, &UpnpMemoryQueryMaker::startFullScan, this, &UpnpBrowseCollection::startFullScan );
     return umqm;
 }
 

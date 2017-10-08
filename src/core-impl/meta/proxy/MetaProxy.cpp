@@ -63,8 +63,8 @@ MetaProxy::Track::Track( const QUrl &url, LookupType lookupType )
         if( foreignThread )
             worker->moveToThread( mainThread );
 
-        QObject::connect( worker, SIGNAL(finishedLookup(Meta::TrackPtr)),
-                          d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
+        QObject::connect( worker, &Worker::finishedLookup,
+                          d, &Track::Private::slotUpdateTrack );
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(worker) );
     }
 }
@@ -82,8 +82,8 @@ MetaProxy::Track::lookupTrack( Collections::TrackProvider *provider )
     if( QThread::currentThread() != mainThread )
         worker->moveToThread( mainThread );
 
-    QObject::connect( worker, SIGNAL(finishedLookup(Meta::TrackPtr)),
-                      d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
+    QObject::connect( worker, &MetaProxy::Worker::finishedLookup,
+                      d, &Private::slotUpdateTrack );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(worker) );
 }
 

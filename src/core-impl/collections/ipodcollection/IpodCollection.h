@@ -159,7 +159,13 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          * Shows the configuration dialog in a non-modal window. If m_itdb is null, shows
          * some info and a button to try to initialize iPod.
          */
-        void slotShowConfigureDialog( const QString &errorMessage = QString() );
+        void slotShowConfigureDialog();
+
+        /**
+         * Shows the configuration dialog in a non-modal window. If m_itdb is null, shows
+         * some info and a button to try to initialize iPod.
+         */
+        void slotShowConfigureDialogWithError( const QString &errorMessage );
 
     private Q_SLOTS:
         /**

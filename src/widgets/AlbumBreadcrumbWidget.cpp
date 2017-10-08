@@ -39,8 +39,8 @@ AlbumBreadcrumbWidget::AlbumBreadcrumbWidget( const Meta::AlbumPtr album, QWidge
     setStretchFactor( m_albumButton, 1 );
     setStretchFactor( spacer, 1 );
 
-    connect( m_artistButton, SIGNAL(clicked()), SLOT(artistClicked()) );
-    connect( m_albumButton, SIGNAL(clicked()), SLOT(albumClicked()) );
+    connect( m_artistButton, &BreadcrumbItemButton::clicked, this, &AlbumBreadcrumbWidget::slotArtistClicked );
+    connect( m_albumButton, &BreadcrumbItemButton::clicked, this, &AlbumBreadcrumbWidget::slotAlbumClicked );
 
     updateBreadcrumbs();
 }
@@ -64,13 +64,13 @@ void AlbumBreadcrumbWidget::updateBreadcrumbs()
     m_albumButton->setText( album );
 }
 
-void AlbumBreadcrumbWidget::artistClicked()
+void AlbumBreadcrumbWidget::slotArtistClicked()
 {
     if( m_album->hasAlbumArtist() )
         emit artistClicked( m_album->albumArtist()->name() );
 }
 
-void AlbumBreadcrumbWidget::albumClicked()
+void AlbumBreadcrumbWidget::slotAlbumClicked()
 {
     emit albumClicked( m_album->name() );
 }

@@ -56,7 +56,7 @@ MediaDeviceCollectionLocation::isWritable() const
 void
 MediaDeviceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
-    connect( m_handler, SIGNAL(gotCopyableUrls(QMap<Meta::TrackPtr,QUrl>)),SLOT(slotGetKIOCopyableUrlsDone(QMap<Meta::TrackPtr,QUrl>)) );
+    connect( m_handler, &Meta::MediaDeviceHandler::gotCopyableUrls, this, &MediaDeviceCollectionLocation::slotGetKIOCopyableUrlsDone );
     m_handler->getCopyableUrls( tracks );
 }
 
@@ -68,8 +68,8 @@ MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, 
     DEBUG_BLOCK
     Q_UNUSED( configuration )
 
-    connect( m_handler, SIGNAL(copyTracksDone(bool)),
-             this,      SLOT(copyOperationFinished(bool)),
+    connect( m_handler, &Meta::MediaDeviceHandler::copyTracksDone,
+             this, &MediaDeviceCollectionLocation::copyOperationFinished,
              Qt::QueuedConnection );
     m_handler->copyTrackListToDevice( sources.keys() );
 
@@ -120,8 +120,8 @@ void
 MediaDeviceCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources )
 {
     DEBUG_BLOCK
-    connect( m_handler, SIGNAL(removeTracksDone()),
-             this, SLOT(removeOperationFinished()) );
+    connect( m_handler, &Meta::MediaDeviceHandler::removeTracksDone,
+             this, &MediaDeviceCollectionLocation::removeOperationFinished );
 
     m_handler->removeTrackListFromDevice( sources );
 }

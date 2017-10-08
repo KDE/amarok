@@ -196,7 +196,7 @@ namespace StatSyncing
                                       CollectionManager::CollectionStatus status );
             void slotCollectionRemoved( const QString &id );
             void startNonInteractiveSynchronization();
-            void synchronize( int mode );
+            void synchronizeWithMode( int mode );
 
             void slotTrackFinishedPlaying( const Meta::TrackPtr &track, double playedFraction );
             void slotResetLastSubmittedNowPlayingTrack();

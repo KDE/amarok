@@ -367,7 +367,7 @@ ScriptableBias::ScriptableBias( ScriptableBiasFactory *biasProto )
 , m_engine( biasProto->engine() )
 {
     m_biasObject = m_engine->newQObject( this, QScriptEngine::QtOwnership, QScriptEngine::ExcludeDeleteLater );
-    connect( m_engine, SIGNAL(destroyed(QObject*)), SLOT(removeBias()) );
+    connect( m_engine, &QObject::destroyed, this, &ScriptableBias::removeBias );
 }
 
 ScriptableBias::~ScriptableBias()

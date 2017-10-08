@@ -59,6 +59,7 @@ public:
 
 public Q_SLOTS:
     void clearFilterIfActive();
+    void slotEditQueue();
 
 protected:
     QSize sizeHint() const;
@@ -71,7 +72,6 @@ private Q_SLOTS:
     void playlistProviderAdded( Playlists::PlaylistProvider *provider, int category );
     void playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category );
     void slotSaveCurrentPlaylist();
-    void slotEditQueue();
     void slotDynamicHintLinkActivated( const QString &href );
 
 private:

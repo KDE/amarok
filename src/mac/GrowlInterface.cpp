@@ -30,8 +30,8 @@ GrowlInterface::GrowlInterface( QString appName ) :
 {
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
-             this, SLOT(show(Meta::TrackPtr)) );
+    connect( engine, &EngineController::trackChanged,
+             this, &GrowlInterface::show );
 }
 
 void

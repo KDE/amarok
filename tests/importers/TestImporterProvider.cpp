@@ -107,7 +107,7 @@ TestImporterProvider::reconfigureShouldEmitSignal()
     QVariantMap cfg = m_mockProvider->config();
     cfg["customField"] = QString( "Selena" );
 
-    QSignalSpy spy( m_mockProvider, SIGNAL(reconfigurationRequested(QVariantMap)) );
+    QSignalSpy spy( m_mockProvider, &MockProvider::reconfigurationRequested );
     m_mockProvider->reconfigure( cfg );
 
     QCOMPARE( spy.count(), 1 );
@@ -120,7 +120,7 @@ TestImporterProvider::reconfigureShouldNotEmitSignalOnDifferentUid()
     QVariantMap cfg;
     cfg["uid"] = "Different";
 
-    QSignalSpy spy( m_mockProvider, SIGNAL(reconfigurationRequested(QVariantMap)) );
+    QSignalSpy spy( m_mockProvider, &MockProvider::reconfigurationRequested );
     m_mockProvider->reconfigure( cfg );
 
     QCOMPARE( spy.count(), 0 );

@@ -205,7 +205,7 @@ EqualizerController::equalizerPreset() const
 }
 
 void
-EqualizerController::applyEqualizerPreset( int index )
+EqualizerController::applyEqualizerPresetByIndex( int index )
 {
     if( index > -1 )
     {
@@ -220,11 +220,11 @@ EqualizerController::applyEqualizerPreset( int index )
 }
 
 void
-EqualizerController::applyEqualizerPreset( const QString &name )
+EqualizerController::applyEqualizerPresetByName( const QString &name )
 {
     DEBUG_BLOCK
     int index = EqualizerPresets::eqGlobalTranslatedList().indexOf( name );
-    return applyEqualizerPreset( index > 0 ? index : 0 );
+    return applyEqualizerPresetByIndex( index > 0 ? index : 0 );
 }
 
 void

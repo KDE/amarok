@@ -46,7 +46,7 @@ void PostJob::setData( const QString &name, const QString &value )
 
 void PostJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &PostJob::doWork );
 }
 
 QString PostJob::status() const
@@ -70,11 +70,13 @@ void PostJob::doWork()
 
   qDebug() << m_url;
 
-  m_job = KIO::http_post( m_url, postData.toUtf8(), KIO::HideProgressInfo );
-  connect( m_job, SIGNAL(result(KJob*)),
-    SLOT(slotJobResult(KJob*)) );
-  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-    SLOT(slotJobData(KIO::Job*,QByteArray)) );
+  auto job = KIO::http_post( m_url, postData.toUtf8(), KIO::HideProgressInfo );
+  connect( job, &KIO::TransferJob::result,
+           this, &PostJob::slotJobResult );
+  connect( job, &KIO::TransferJob::data,
+           this, &PostJob::slotJobData );
+
+  m_job = job;
 }
 
 void PostJob::slotJobResult( KJob *job )

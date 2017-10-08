@@ -51,10 +51,10 @@ class UpnpQueryMakerInternal : public QObject
         void results( bool error, const KIO::UDSEntryList list );
         void done();
 
-        void newResultReady( Meta::TrackList );
-        void newResultReady( Meta::ArtistList );
-        void newResultReady( Meta::AlbumList );
-        void newResultReady( Meta::GenreList );
+        void newTracksReady( Meta::TrackList );
+        void newArtistsReady( Meta::ArtistList );
+        void newAlbumsReady( Meta::AlbumList );
+        void newGenresReady( Meta::GenreList );
         void newResultReady( const KIO::UDSEntryList & );
     private Q_SLOTS:
         void slotEntries( KIO::Job *, const KIO::UDSEntryList & );

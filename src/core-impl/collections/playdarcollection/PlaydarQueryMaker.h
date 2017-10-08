@@ -80,14 +80,14 @@ namespace Collections
             int validFilterMask();
 
         Q_SIGNALS:
-            void newResultReady( Meta::TrackList );
-            void newResultReady( Meta::ArtistList );
-            void newResultReady( Meta::AlbumList );
-            void newResultReady( Meta::GenreList );
-            void newResultReady( Meta::ComposerList );
-            void newResultReady( Meta::YearList );
+            void newTracksReady( Meta::TrackList );
+            void newArtistsReady( Meta::ArtistList );
+            void newAlbumsReady( Meta::AlbumList );
+            void newGenresReady( Meta::GenreList );
+            void newComposersReady( Meta::ComposerList );
+            void newYearsReady( Meta::YearList );
             void newResultReady( QStringList );
-            void newResultReady( Meta::LabelList );
+            void newLabelsReady( Meta::LabelList );
 
             void queryDone();
 

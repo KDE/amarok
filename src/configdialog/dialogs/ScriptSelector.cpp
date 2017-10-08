@@ -34,7 +34,7 @@ ScriptSelector::ScriptSelector( QWidget * parent )
     if( m_lineEdit )
     {
         m_lineEdit->setClickMessage( i18n( "Search Scripts" ) );
-        connect( m_lineEdit, SIGNAL(textChanged(QString)), SLOT(slotFiltered(QString)) );
+        connect( m_lineEdit, &QLineEdit::textChanged, this, &ScriptSelector::slotFiltered );
     }
 
     m_listView = this->findChild<KCategorizedView*>();

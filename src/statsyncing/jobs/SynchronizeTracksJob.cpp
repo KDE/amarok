@@ -59,15 +59,13 @@ SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
     Controller *controller = Amarok::Components::statSyncingController();
     if( controller )
     {
-        connect( this, SIGNAL(scrobble(Meta::TrackPtr,double,QDateTime)),
-                 controller, SLOT(scrobble(Meta::TrackPtr,double,QDateTime)) );
+        connect( this, &SynchronizeTracksJob::scrobble,
+                 controller, &StatSyncing::Controller::scrobble );
         // we don't run an event loop, we must use direct connection for controller to talk to us
-        connect( controller, SIGNAL(trackScrobbled(ScrobblingServicePtr,Meta::TrackPtr)),
-                 SLOT(slotTrackScrobbled(ScrobblingServicePtr,Meta::TrackPtr)),
-                 Qt::DirectConnection );
-        connect( controller, SIGNAL(scrobbleFailed(ScrobblingServicePtr,Meta::TrackPtr,int)),
-                 SLOT(slotScrobbleFailed(ScrobblingServicePtr,Meta::TrackPtr,int)),
-                 Qt::DirectConnection );
+        connect( controller, &StatSyncing::Controller::trackScrobbled,
+                 this, &SynchronizeTracksJob::slotTrackScrobbled, Qt::DirectConnection );
+        connect( controller, &StatSyncing::Controller::scrobbleFailed,
+                 this, &SynchronizeTracksJob::slotScrobbleFailed, Qt::DirectConnection );
     }
     else
         warning() << __PRETTY_FUNCTION__ << "StatSyncing::Controller not available!";
@@ -116,8 +114,8 @@ SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
         // wait 3 seconds so that we have chance to catch slotTrackScrobbled()..
         QObject::thread()->msleep( 3000 );
     if( controller )
-        disconnect( controller, SIGNAL(trackScrobbled(ScrobblingServicePtr,Meta::TrackPtr)), this, 0 );
-        disconnect( controller, SIGNAL(scrobbleFailed(ScrobblingServicePtr,Meta::TrackPtr,int)), this, 0 );
+        disconnect( controller, &StatSyncing::Controller::trackScrobbled, this, 0 );
+    disconnect( controller, &StatSyncing::Controller::scrobbleFailed, this, 0 );
 
     emit endProgressOperation( this );
 }

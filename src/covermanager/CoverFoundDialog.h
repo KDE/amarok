@@ -89,9 +89,9 @@ private Q_SLOTS:
     void currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
-    void processQuery();
+    void processCurrentQuery(); // Same as processQuery( QString() )
     void display(); ///< Opens a pixmap viewer
-    void processQuery( const QString &query );
+    void processQuery( const QString &input = QString() );
     void saveAs();
     void selectDiscogs();
     void selectLastFm();

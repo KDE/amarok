@@ -70,7 +70,7 @@ ScriptManager::ScriptManager( QObject* parent )
     }
 
     // Delay this call via eventloop, because it's a bit slow and would block
-    QTimer::singleShot( 0, this, SLOT(updateAllScripts()) );
+    QTimer::singleShot( 0, this, &ScriptManager::updateAllScripts );
 }
 
 bool
@@ -214,9 +214,9 @@ ScriptManager::updateAllScripts() // SLOT
             // tell them which script to work on
             updater->setScriptPath( foundScripts.at( i ) );
             // tell them whom to signal when they're finished
-            connect( updater, SIGNAL(finished(QString)), SLOT(updaterFinished(QString)) );
+            connect( updater, &ScriptUpdater::finished, this, &ScriptManager::updaterFinished );
             // and finally tell them to get to work
-            QTimer::singleShot( 0, updater, SLOT(updateScript()) );
+            QTimer::singleShot( 0, updater, &ScriptUpdater::updateScript );
         }
         // store current timestamp
         config.writeEntry( "LastUpdateCheck", QVariant( now ) );
@@ -256,8 +256,8 @@ bool
 ScriptManager::slotRunScript( const QString &name, bool silent )
 {
     ScriptItem *item = m_scripts.value( name );
-    connect( item, SIGNAL(signalHandlerException(QScriptValue)),
-             SLOT(handleException(QScriptValue)));
+    connect( item, &ScriptItem::signalHandlerException,
+             this, &ScriptManager::handleException );
     if( item->info().category() == "Lyrics" )
     {
         m_lyricsScript = name;
@@ -308,7 +308,7 @@ ScriptManager::configChanged( bool changed )
     if( !changed )
         return;
     //evil scripts may prevent the config dialog from dismissing, delay execution
-    QTimer::singleShot( 0, this, SLOT(slotConfigChanged()) );
+    QTimer::singleShot( 0, this, &ScriptManager::slotConfigChanged );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

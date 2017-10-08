@@ -73,9 +73,9 @@ void UpnpQueryMakerInternal::runQuery( QUrl query, bool filter )
     }
 
     KIO::ListJob *job = KIO::listDir( query, KIO::HideProgressInfo );
-    connect( job, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
-             this, SLOT(slotEntries(KIO::Job*,KIO::UDSEntryList)) );
-    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotDone(KJob*)) );
+    connect( job, &KIO::ListJob::entries,
+             this, &UpnpQueryMakerInternal::slotEntries );
+    connect( job, &KJob::result, this, &UpnpQueryMakerInternal::slotDone );
     queueJob( job );
 }
 
@@ -85,7 +85,7 @@ void UpnpQueryMakerInternal::runStat( const QString& id )
     url.addQueryItem( "id", id );
     debug() << "STAT URL" << url;
     KIO::StatJob *job = KIO::stat( url, KIO::HideProgressInfo );
-    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotStatDone(KJob*)) );
+    connect( job, &KJob::result, this, &UpnpQueryMakerInternal::slotStatDone );
     queueJob( job );
 }
 
@@ -181,7 +181,7 @@ void UpnpQueryMakerInternal::handleArtists( const KIO::UDSEntryList &list )
             }
         }
     }
-    emit newResultReady( ret );
+    emit newArtistsReady( ret );
 }
 
 void UpnpQueryMakerInternal::handleAlbums( const KIO::UDSEntryList &list )
@@ -203,7 +203,7 @@ DEBUG_BLOCK
             }
         }
     }
-    emit newResultReady( ret );
+    emit newAlbumsReady( ret );
 }
 
 void UpnpQueryMakerInternal::handleTracks( const KIO::UDSEntryList &list )
@@ -239,7 +239,7 @@ DEBUG_BLOCK
         }
         ret << m_collection->cache()->getTrack( entry );
     }
-    emit newResultReady( ret );
+    emit newTracksReady( ret );
 }
 
 void UpnpQueryMakerInternal::handleCustom( const KIO::UDSEntryList &list )

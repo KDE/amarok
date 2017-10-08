@@ -36,18 +36,17 @@ PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     m_renameFolderAction =  new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
                                          i18n( "&Rename Folder..." ), this );
     m_renameFolderAction->setProperty( "popupdropper_svg_id", "edit_group" );
-    connect( m_renameFolderAction, SIGNAL(triggered()), this,
-             SLOT(slotRenameFolder()) );
+    connect( m_renameFolderAction, &QAction::triggered, this, &PlaylistsInFoldersProxy::slotRenameFolder );
 
     m_deleteFolderAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
                                         i18n( "&Delete Folder" ), this );
     m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
     m_deleteFolderAction->setObjectName( "deleteAction" );
-    connect( m_deleteFolderAction, SIGNAL(triggered()), this,
-             SLOT(slotDeleteFolder()) );
+    connect( m_deleteFolderAction, &QAction::triggered, this, &PlaylistsInFoldersProxy::slotDeleteFolder );
 
-    connect( sourceModel(), SIGNAL(renameIndex(QModelIndex)),
-             SLOT(slotRenameIndex(QModelIndex)) );
+    if( auto m = static_cast<PlaylistBrowserNS::PlaylistBrowserModel*>(sourceModel()) )
+        connect( m, &PlaylistBrowserNS::PlaylistBrowserModel::renameIndex,
+                 this, &PlaylistsInFoldersProxy::slotRenameIndex );
 }
 
 PlaylistsInFoldersProxy::~PlaylistsInFoldersProxy()

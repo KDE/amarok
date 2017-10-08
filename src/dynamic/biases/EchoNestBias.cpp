@@ -146,8 +146,8 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
     rb1->setChecked( m_match == PreviousTrack );
     rb2->setChecked( m_match == Playlist );
 
-    connect( rb2, SIGNAL(toggled(bool)),
-             this, SLOT(setMatchTypePlaylist(bool)) );
+    connect( rb2, &QRadioButton::toggled,
+             this, &Dynamic::EchoNestBias::setMatchTypePlaylist );
 
     layout->addWidget( imageLabel );
     layout->addWidget( label );
@@ -184,7 +184,7 @@ Dynamic::EchoNestBias::matchingTracks( const Meta::TrackList& playlist,
     m_currentArtists = artists;
     QTimer::singleShot(0,
                        const_cast<EchoNestBias*>(this),
-                       SLOT(newQuery())); // create the new query from my parent thread
+                       &EchoNestBias::newQuery); // create the new query from my parent thread
 
     return Dynamic::TrackSet();
 }
@@ -264,10 +264,10 @@ Dynamic::EchoNestBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
-             this, SLOT(updateReady(QStringList)) );
-    connect( m_qm.data(), SIGNAL(queryDone()),
-             this, SLOT(updateFinished()) );
+    connect( m_qm.data(), &Collections::QueryMaker::newResultReady,
+             this, &EchoNestBias::updateReady );
+    connect( m_qm.data(), &Collections::QueryMaker::queryDone,
+             this, &EchoNestBias::updateFinished );
 
     // - run the query
     m_qm.data()->run();
@@ -282,8 +282,8 @@ Dynamic::EchoNestBias::newSimilarArtistQuery()
     params.insert( "results", "30" );
     params.insert( "name", m_currentArtists.join(", ") );
     m_artistSuggestedQuery = KIO::storedGet( createUrl( "artist/similar", params ), KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_artistSuggestedQuery, SIGNAL(result(KJob*)),
-             this, SLOT(similarArtistQueryDone(KJob*)) );
+    connect( m_artistSuggestedQuery, &KJob::result,
+             this, &EchoNestBias::similarArtistQueryDone );
 }
 
 void

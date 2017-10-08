@@ -35,14 +35,14 @@ Fadeouter::Fadeouter( const QWeakPointer<Phonon::MediaObject> &media,
 
     m_fader.data()->fadeOut( fadeOutLength );
     // add a bit of a second so that the effect is not cut even if there are some delays
-    QTimer::singleShot( fadeOutLength + safetyDelay, this, SLOT(slotFinalizeFadeout()) );
+    QTimer::singleShot( fadeOutLength + safetyDelay, this, &Fadeouter::slotFinalizeFadeout );
 
     // in case a new track starts playing before the fadeout ends, we skip
     // slotFinalizeFadeout() and go directly to destructor, which resets fader volume
-    connect( media.data(), SIGNAL(currentSourceChanged(Phonon::MediaSource)), SLOT(deleteLater()) );
+    connect( media.data(), &Phonon::MediaObject::currentSourceChanged, this, &QObject::deleteLater );
 
     // no point in having dangling Fadeouters
-    connect( media.data(), SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
+    connect( media.data(), &QObject::destroyed, this, &QObject::deleteLater );
 }
 
 Fadeouter::~Fadeouter()

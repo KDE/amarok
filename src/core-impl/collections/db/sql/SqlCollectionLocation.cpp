@@ -343,8 +343,8 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
     delegate->setTranscodingConfiguration( configuration );
     delegate->setCaption( operationText( configuration ) );
 
-    connect( delegate, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
-    connect( delegate, SIGNAL(rejected()), SLOT(slotDialogRejected()) );
+    connect( delegate, &OrganizeCollectionDelegate::accepted, this, &SqlCollectionLocation::slotDialogAccepted );
+    connect( delegate, &OrganizeCollectionDelegate::rejected, this, &SqlCollectionLocation::slotDialogRejected );
     delegate->show();
 }
 
@@ -481,7 +481,8 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &s
     m_transferjob = new TransferJob( this, configuration );
     Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this,
                                                         SLOT(slotTransferJobAborted()) );
-    connect( m_transferjob, SIGNAL(result(KJob*)), SLOT(slotTransferJobFinished(KJob*)) );
+    connect( m_transferjob, &Collections::TransferJob::result,
+             this, &SqlCollectionLocation::slotTransferJobFinished );
     m_transferjob->start();
 }
 
@@ -599,13 +600,13 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         }
         if( job )   //just to be safe
         {
-            connect( job, SIGNAL(result(KJob*)), SLOT(slotJobFinished(KJob*)) );
-            connect( job, SIGNAL(result(KJob*)), m_transferjob, SLOT(slotJobFinished(KJob*)) );
+            connect( job, &KJob::result, this, &SqlCollectionLocation::slotJobFinished );
+            connect( job, &KJob::result, m_transferjob, &Collections::TransferJob::slotJobFinished );
             m_transferjob->addSubjob( job );
 
             if( moodJob )
             {
-                connect( moodJob, SIGNAL(result(KJob*)), m_transferjob, SLOT(slotJobFinished(KJob*)) );
+                connect( moodJob, &KJob::result, m_transferjob, &Collections::TransferJob::slotJobFinished );
                 m_transferjob->addSubjob( moodJob );
             }
 
@@ -655,7 +656,7 @@ bool SqlCollectionLocation::startNextRemoveJob()
             if( QFile::exists( srcMoodFile.toLocalFile() ) )
                 KIO::del( srcMoodFile, KIO::HideProgressInfo );
            
-            connect( job, SIGNAL(result(KJob*)), SLOT(slotRemoveJobFinished(KJob*)) );
+            connect( job, &KIO::DeleteJob::result, this, &SqlCollectionLocation::slotRemoveJobFinished );
             QString name = track->prettyName();
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
@@ -690,8 +691,8 @@ TransferJob::TransferJob( SqlCollectionLocation * location, const Transcoding::C
 
 bool TransferJob::addSubjob( KJob* job )
 {
-    connect( job, SIGNAL(processedAmount(KJob*,KJob::Unit,qulonglong)),
-             this, SLOT(propagateProcessedAmount(KJob*,KJob::Unit,qulonglong)) );
+    connect( job, SIGNAL(processedAmount(KJob*, KJob::Unit, qulonglong)),
+             this, SLOT(propagateProcessedAmount(KJob*, KJob::Unit, qulonglong)) );
     //KCompositeJob::addSubjob doesn't handle progress reporting.
     return KCompositeJob::addSubjob( job );
 }
@@ -721,7 +722,7 @@ void TransferJob::start()
         emitResult();
         return;
     }
-    QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &TransferJob::doWork );
 }
 
 void TransferJob::doWork()

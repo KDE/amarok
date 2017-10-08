@@ -37,13 +37,16 @@ AbstractScanResultProcessor::AbstractScanResultProcessor( GenericScanManager* ma
     , m_manager( manager )
     , m_type( GenericScanManager::PartialUpdateScan )
 {
-    connect( manager, SIGNAL(started(GenericScanManager::ScanType)),
-             SLOT(scanStarted(GenericScanManager::ScanType)) );
-    connect( manager, SIGNAL(directoryCount(int)), SLOT(scanDirectoryCount(int)) );
-    connect( manager, SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)),
-             SLOT(scanDirectoryScanned(QSharedPointer<CollectionScanner::Directory>)) );
-    connect( manager, SIGNAL(succeeded()), SLOT(scanSucceeded()) );
-    connect( manager, SIGNAL(failed(QString)), SLOT(scanFailed(QString)) );
+    connect( manager, &GenericScanManager::started,
+             this, &AbstractScanResultProcessor::scanStarted );
+    connect( manager, &GenericScanManager::directoryCount,
+             this, &AbstractScanResultProcessor::scanDirectoryCount );
+    connect( manager, &GenericScanManager::directoryScanned,
+             this, &AbstractScanResultProcessor::scanDirectoryScanned );
+    connect( manager, &GenericScanManager::succeeded,
+             this, &AbstractScanResultProcessor::scanSucceeded );
+    connect( manager, &GenericScanManager::failed,
+             this, &AbstractScanResultProcessor::scanFailed );
 }
 
 AbstractScanResultProcessor::~AbstractScanResultProcessor()

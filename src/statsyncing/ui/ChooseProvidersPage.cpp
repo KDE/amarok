@@ -35,8 +35,8 @@ ChooseProvidersPage::ChooseProvidersPage( QWidget *parent, Qt::WindowFlags f )
     configure.setText( i18n( "Configure Synchronization..." ) );
     buttonBox->addButton( configure, QDialogButtonBox::ActionRole, this, SLOT(openConfiguration()) );
     buttonBox->addButton( KGuiItem( i18n( "Next" ), "go-next" ), QDialogButtonBox::AcceptRole );
-    connect( buttonBox, SIGNAL(accepted()), SIGNAL(accepted()) );
-    connect( buttonBox, SIGNAL(rejected()), SIGNAL(rejected()) );
+    connect( buttonBox, &QDialogButtonBox::accepted, this, &ChooseProvidersPage::accepted );
+    connect( buttonBox, &QDialogButtonBox::rejected, this, &ChooseProvidersPage::rejected );
     progressBar->hide();
 }
 
@@ -55,11 +55,11 @@ ChooseProvidersPage::setFields( const QList<qint64> &fields, qint64 checkedField
         fieldsLayout->addWidget( checkBox );
         checkBox->setCheckState( ( field & checkedFields ) ? Qt::Checked : Qt::Unchecked );
         checkBox->setProperty( "field", field );
-        connect( checkBox, SIGNAL(stateChanged(int)), SIGNAL(checkedFieldsChanged()) );
+        connect( checkBox, &QCheckBox::stateChanged, this, &ChooseProvidersPage::checkedFieldsChanged );
     }
     fieldsLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
 
-    connect( this, SIGNAL(checkedFieldsChanged()), SLOT(updateEnabledFields()) );
+    connect( this, &ChooseProvidersPage::checkedFieldsChanged, this, &ChooseProvidersPage::updateEnabledFields );
     updateEnabledFields();
 }
 
@@ -86,8 +86,10 @@ ChooseProvidersPage::setProvidersModel( ProvidersModel *model, QItemSelectionMod
     providersView->setModel( model );
     providersView->setSelectionModel( selectionModel );
 
-    connect( model, SIGNAL(selectedProvidersChanged()), SLOT(updateMatchedLabel()) );
-    connect( model, SIGNAL(selectedProvidersChanged()), SLOT(updateEnabledFields()) );
+    connect( model, &StatSyncing::ProvidersModel::selectedProvidersChanged,
+             this, &ChooseProvidersPage::updateMatchedLabel );
+    connect( model, &StatSyncing::ProvidersModel::selectedProvidersChanged,
+             this, &ChooseProvidersPage::updateEnabledFields );
     updateMatchedLabel();
     updateEnabledFields();
 }

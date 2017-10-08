@@ -28,8 +28,8 @@ Worker::Worker( const QUrl &url, Collections::TrackProvider *provider )
     , m_provider( provider )
     , m_stepsDoneReceived( 0 )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(slotStepDone()) );
-    connect( this, SIGNAL(finishedLookup(Meta::TrackPtr)), SLOT(slotStepDone()) );
+    connect( this, &Worker::done, this, &Worker::slotStepDone );
+    connect( this, &Worker::finishedLookup, this, &Worker::slotStepDone );
 }
 
 void
@@ -56,14 +56,10 @@ Worker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
     // no TrackProvider has a track for us yet, query new ones that are added.
     if( !track )
     {
-        connect( CollectionManager::instance(),
-                 SIGNAL(trackProviderAdded(Collections::TrackProvider*)),
-                 SLOT(slotNewTrackProvider(Collections::TrackProvider*)),
-                 Qt::DirectConnection ); // we may live in a thread w/out event loop
-        connect( CollectionManager::instance(),
-                 SIGNAL(collectionAdded(Collections::Collection*)),
-                 SLOT(slotNewCollection(Collections::Collection*)),
-                 Qt::DirectConnection ); // we may live in a thread w/out event loop
+        connect( CollectionManager::instance(), &CollectionManager::trackProviderAdded,
+                 this, &Worker::slotNewTrackProvider, Qt::DirectConnection ); // we may live in a thread w/out event loop
+        connect( CollectionManager::instance(),&CollectionManager::collectionAdded,
+                 this, &Worker::slotNewCollection, Qt::DirectConnection ); // we may live in a thread w/out event loop
         return;
     }
 

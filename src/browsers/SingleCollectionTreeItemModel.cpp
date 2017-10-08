@@ -34,7 +34,7 @@ SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Colle
     : m_collection( collection )
 {
     m_rootItem = new CollectionTreeItem( m_collection, 0, this );
-    connect( collection, SIGNAL(updated()), this, SLOT(slotFilter()) ) ;
+    connect( collection, &Collections::Collection::updated, this, &SingleCollectionTreeItemModel::slotFilterWithoutAutoExpand ) ;
     m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
     //we only have one collection that, by its very nature, is always expanded
     m_expandedCollections.insert( m_collection );

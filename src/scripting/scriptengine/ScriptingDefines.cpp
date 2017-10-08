@@ -63,7 +63,7 @@ AmarokScriptEngine::setTimeout( const QScriptValue &function, int time, const QS
     timer->setSingleShot( true );
     timer->setInterval( time );
     m_callbacks[timer] = QScriptValueList() << function << thisObject << args;
-    connect( timer, SIGNAL(timeout()), this, SLOT(slotTimeout()) );
+    connect( timer, &QTimer::timeout, this, &AmarokScriptEngine::slotTimeout );
     timer->start();
 }
 

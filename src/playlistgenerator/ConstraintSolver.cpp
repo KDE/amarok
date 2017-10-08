@@ -74,8 +74,10 @@ APG::ConstraintSolver::ConstraintSolver( ConstraintNode* r, int qualityFactor )
     if ( m_qm ) {
         debug() << "New ConstraintSolver with serial number" << m_serialNumber;
         m_qm->setQueryType( Collections::QueryMaker::Track );
-        connect( m_qm, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(receiveQueryMakerData(Meta::TrackList)), Qt::QueuedConnection );
-        connect( m_qm, SIGNAL(queryDone()), this, SLOT(receiveQueryMakerDone()), Qt::QueuedConnection );
+        connect( m_qm, &Collections::QueryMaker::newTracksReady,
+                 this, &APG::ConstraintSolver::receiveQueryMakerData, Qt::QueuedConnection );
+        connect( m_qm, &Collections::QueryMaker::queryDone,
+                 this, &APG::ConstraintSolver::receiveQueryMakerDone, Qt::QueuedConnection );
         m_constraintTreeRoot->initQueryMaker( m_qm );
         m_qm->run();
     } else {
@@ -237,8 +239,10 @@ APG::ConstraintSolver::receiveQueryMakerDone()
         // need a new query maker without constraints
         m_qm = CollectionManager::instance()->queryMaker();
         if ( m_qm ) {
-            connect( m_qm, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(receiveQueryMakerData(Meta::TrackList)), Qt::QueuedConnection );
-            connect( m_qm, SIGNAL(queryDone()), this, SLOT(receiveQueryMakerDone()), Qt::QueuedConnection );
+            connect( m_qm, &Collections::QueryMaker::newTracksReady,
+                     this, &APG::ConstraintSolver::receiveQueryMakerData, Qt::QueuedConnection );
+            connect( m_qm, &Collections::QueryMaker::queryDone,
+                     this, &APG::ConstraintSolver::receiveQueryMakerDone, Qt::QueuedConnection );
 
             m_qm->setQueryType( Collections::QueryMaker::Track );
             m_qm->run();

@@ -77,7 +77,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_addFolderAction = new QAction( QIcon::fromTheme( "folder-new" ), i18n( "Add Folder" ), this  );
     m_addFolderAction->setPriority( QAction::LowPriority );
     m_toolBar->addAction( m_addFolderAction );
-    connect( m_addFolderAction, SIGNAL(triggered(bool)), SLOT(createNewFolder()) );
+    connect( m_addFolderAction, &QAction::triggered, this, &PlaylistBrowserCategory::createNewFolder );
 
     m_providerMenu = new KActionMenu( QIcon::fromTheme( "checkbox" ), i18n( "Visible Sources"), this );
     m_providerMenu->setDelayed( false );
@@ -90,7 +90,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     toggleAction->setChecked( Amarok::config( m_configGroup ).readEntry( s_mergeViewKey, false ) );
     toggleAction->setPriority( QAction::LowPriority );
     m_toolBar->addAction( toggleAction );
-    connect( toggleAction, SIGNAL(triggered(bool)), SLOT(toggleView(bool)) );
+    connect( toggleAction, &QAction::triggered, this, &PlaylistBrowserCategory::toggleView );
 
     m_toolBar->addSeparator();
 
@@ -128,13 +128,13 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
         createProviderButton( provider );
     }
 
-    connect( The::playlistManager(), SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)),
-             SLOT(slotProviderAdded(Playlists::PlaylistProvider*,int)) );
-    connect( The::playlistManager(), SIGNAL(providerRemoved(Playlists::PlaylistProvider*,int)),
-             SLOT(slotProviderRemoved(Playlists::PlaylistProvider*,int)) );
+    connect( The::playlistManager(), &PlaylistManager::providerAdded,
+             this, &PlaylistBrowserCategory::slotProviderAdded );
+    connect( The::playlistManager(), &PlaylistManager::providerRemoved,
+             this, &PlaylistBrowserCategory::slotProviderRemoved );
 
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)),
-             SLOT(newPalette(QPalette)) );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette,
+             this, &PlaylistBrowserCategory::newPalette );
 }
 
 PlaylistBrowserCategory::~PlaylistBrowserCategory()
@@ -237,7 +237,7 @@ PlaylistBrowserCategory::createProviderButton( const Playlists::PlaylistProvider
     providerToggle->setCheckable( true );
     providerToggle->setChecked( true );
     providerToggle->setData( QVariant::fromValue( provider ) );
-    connect( providerToggle, SIGNAL(toggled(bool)), SLOT(slotToggleProviderButton()) );
+    connect( providerToggle, &QAction::toggled, this, &PlaylistBrowserCategory::slotToggleProviderButton );
     m_providerMenu->addAction( providerToggle );
 
     //if there is only one provider the button needs to be disabled.

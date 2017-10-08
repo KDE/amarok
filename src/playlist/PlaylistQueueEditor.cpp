@@ -34,16 +34,16 @@ PlaylistQueueEditor::PlaylistQueueEditor()
 {
     m_ui.setupUi( this );
     updateView();
-    connect( The::playlist()->qaim(), SIGNAL(queueChanged()), SLOT(queueChanged()) );
+    connect( qobject_cast<Playlist::Model*>(The::playlist()->qaim()), &Playlist::Model::queueChanged, this, &PlaylistQueueEditor::queueChanged );
     m_ui.upButton->setIcon( QIcon::fromTheme( "go-up" ) );
     m_ui.downButton->setIcon( QIcon::fromTheme( "go-down" ) );
     m_ui.dequeueTrackButton->setIcon( QIcon::fromTheme( "list-remove" ) );
     m_ui.clearButton->setIcon( QIcon::fromTheme( "edit-clear-list" ) );
-    connect( m_ui.upButton, SIGNAL(clicked()), SLOT(moveUp()) );
-    connect( m_ui.downButton, SIGNAL(clicked()), SLOT(moveDown()) );
-    connect( m_ui.clearButton, SIGNAL(clicked()), SLOT(clear()) );
-    connect( m_ui.dequeueTrackButton, SIGNAL(clicked()), SLOT(dequeueTrack()) );
-    connect( m_ui.buttonBox->buttons().first(), SIGNAL(clicked()), SLOT(accept()) );
+    connect( m_ui.upButton, &QAbstractButton::clicked, this, &PlaylistQueueEditor::moveUp );
+    connect( m_ui.downButton, &QAbstractButton::clicked, this, &PlaylistQueueEditor::moveDown );
+    connect( m_ui.clearButton, &QAbstractButton::clicked, this, &PlaylistQueueEditor::clear );
+    connect( m_ui.dequeueTrackButton, &QAbstractButton::clicked, this, &PlaylistQueueEditor::dequeueTrack );
+    connect( m_ui.buttonBox->buttons().first(), &QAbstractButton::clicked, this, &PlaylistQueueEditor::accept );
 }
 
 void

@@ -49,8 +49,8 @@ ExcludedLabelsDialog::ExcludedLabelsDialog( StatSyncing::Config *config, QWidget
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &ExcludedLabelsDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &ExcludedLabelsDialog::reject);
     setWindowTitle( i18n( "Excluded Labels" ) );
     mainLayout->addWidget(buttonBox);
 
@@ -58,13 +58,13 @@ ExcludedLabelsDialog::ExcludedLabelsDialog( StatSyncing::Config *config, QWidget
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     qm->setQueryType( Collections::QueryMaker::Label );
     qm->setAutoDelete( true );
-    connect( qm, SIGNAL(newResultReady(Meta::LabelList)),
-             SLOT(slowNewResultReady(Meta::LabelList)) );
+    connect( qm, &Collections::QueryMaker::newLabelsReady,
+             this, &ExcludedLabelsDialog::slowNewResultReady );
     qm->run();
 
-    connect( addButton, SIGNAL(clicked(bool)), SLOT(slotAddExcludedLabel()) );
-    connect( addLabelLine, SIGNAL(returnPressed(QString)), SLOT(slotAddExcludedLabel()) );
-    connect(okButton, SIGNAL(clicked()), SLOT(slotSaveToConfig()) );
+    connect( addButton, &QAbstractButton::clicked, this, &ExcludedLabelsDialog::slotAddExcludedLabel );
+    connect( addLabelLine, &KLineEdit::returnPressed, this, &ExcludedLabelsDialog::slotAddExcludedLabel );
+    connect( okButton, &QAbstractButton::clicked, this, &ExcludedLabelsDialog::slotSaveToConfig );
 }
 
 void

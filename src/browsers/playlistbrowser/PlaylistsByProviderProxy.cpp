@@ -33,10 +33,10 @@ PlaylistsByProviderProxy::PlaylistsByProviderProxy( int playlistCategory, QObjec
     , m_playlistCategory( playlistCategory )
 {
     // we need this to track providers with no playlists
-    connect( The::playlistManager(), SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)),
-             this, SLOT(slotProviderAdded(Playlists::PlaylistProvider*,int)) );
-    connect( The::playlistManager(), SIGNAL(providerRemoved(Playlists::PlaylistProvider*,int)),
-             this, SLOT(slotProviderRemoved(Playlists::PlaylistProvider*,int)) );
+    connect( The::playlistManager(), &PlaylistManager::providerAdded,
+             this, &PlaylistsByProviderProxy::slotProviderAdded );
+    connect( The::playlistManager(), &PlaylistManager::providerRemoved,
+             this, &PlaylistsByProviderProxy::slotProviderRemoved );
 }
 
 //TODO: remove this contructor
@@ -47,10 +47,10 @@ PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, i
     setSourceModel( model );
 
     // we need this to track providers with no playlists
-    connect( The::playlistManager(), SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)),
-             this, SLOT(slotProviderAdded(Playlists::PlaylistProvider*,int)) );
-    connect( The::playlistManager(), SIGNAL(providerRemoved(Playlists::PlaylistProvider*,int)),
-             this, SLOT(slotProviderRemoved(Playlists::PlaylistProvider*,int)) );
+    connect( The::playlistManager(), &PlaylistManager::providerAdded,
+             this, &PlaylistsByProviderProxy::slotProviderAdded );
+    connect( The::playlistManager(), &PlaylistManager::providerRemoved,
+             this, &PlaylistsByProviderProxy::slotProviderRemoved );
 }
 
 QVariant

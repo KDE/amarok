@@ -56,19 +56,20 @@ QtGroupingProxy::setSourceModel( QAbstractItemModel *sourceModel )
 {
     QAbstractProxyModel::setSourceModel( sourceModel );
     // signal proxies
-    connect( sourceModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-             SLOT(modelDataChanged(QModelIndex,QModelIndex)) );
-    connect( sourceModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
-             SLOT(modelRowsInserted(QModelIndex,int,int)) );
-    connect( sourceModel, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
-             SLOT(modelRowsAboutToBeInserted(QModelIndex,int,int)));
-    connect( sourceModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-             SLOT(modelRowsRemoved(QModelIndex,int,int)) );
-    connect( sourceModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
-             SLOT(modelRowsAboutToBeRemoved(QModelIndex,int,int)) );
-    connect( sourceModel, SIGNAL(layoutChanged()), SLOT(buildTree()) );
-    connect( sourceModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-             SLOT(modelDataChanged(QModelIndex,QModelIndex)) );
+    connect( sourceModel, &QAbstractItemModel::dataChanged,
+             this, &QtGroupingProxy::modelDataChanged );
+    connect( sourceModel, &QAbstractItemModel::rowsInserted,
+             this, &QtGroupingProxy::modelRowsInserted );
+    connect( sourceModel, &QAbstractItemModel::rowsAboutToBeInserted,
+             this, &QtGroupingProxy::modelRowsAboutToBeInserted );
+    connect( sourceModel, &QAbstractItemModel::rowsRemoved,
+             this, &QtGroupingProxy::modelRowsRemoved );
+    connect( sourceModel, &QAbstractItemModel::rowsAboutToBeRemoved,
+             this, &QtGroupingProxy::modelRowsAboutToBeRemoved );
+    connect( sourceModel, &QAbstractItemModel::layoutChanged,
+             this, &QtGroupingProxy::buildTree );
+    connect( sourceModel, &QAbstractItemModel::dataChanged,
+             this, &QtGroupingProxy::modelDataChanged );
     //set invalid index from source as root index
     m_rootIndex = sourceModel->index( -1, -1 );
 }

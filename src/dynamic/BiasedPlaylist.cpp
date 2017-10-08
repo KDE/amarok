@@ -118,7 +118,7 @@ Dynamic::BiasedPlaylist::startSolver( int numRequested )
     {
         debug() << "assigning new m_solver";
         m_solver = new BiasSolver( numRequested, m_bias, getContext() );
-        connect( m_solver, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(solverFinished()) );
+        connect( m_solver, &BiasSolver::done, this, &BiasedPlaylist::solverFinished );
 
         Amarok::Components::logger()->newProgressOperation( m_solver,
                                                             i18n( "Generating playlist..." ), 100,
@@ -165,10 +165,10 @@ Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPt
     if( inModel )
         Dynamic::DynamicModel::instance()->endInsertBias();
 
-    connect( m_bias.data(), SIGNAL(changed(Dynamic::BiasPtr)),
-             this, SLOT(biasChanged()) );
-    connect( m_bias.data(), SIGNAL(replaced(Dynamic::BiasPtr,Dynamic::BiasPtr)),
-             this, SLOT(biasReplaced(Dynamic::BiasPtr,Dynamic::BiasPtr)) );
+    connect( m_bias.data(), &AbstractBias::changed,
+             this, &BiasedPlaylist::biasChanged );
+    connect( m_bias.data(), &AbstractBias::replaced,
+             this, &BiasedPlaylist::biasReplaced );
 
     if( oldBias ) // don't emit a changed during construction
         biasChanged();

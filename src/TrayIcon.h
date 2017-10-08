@@ -45,8 +45,8 @@ private Q_SLOTS:
     void trackPlaying( Meta::TrackPtr track );
     void stopped();
     void paused();
-    void metadataChanged( Meta::TrackPtr track );
-    void metadataChanged( Meta::AlbumPtr album );
+    void trackMetadataChanged( Meta::TrackPtr track );
+    void albumMetadataChanged( Meta::AlbumPtr album );
 
     void slotScrollRequested( int delta, Qt::Orientation orientation );
     QAction* action( const QString& name, QMap<QString, QAction*> actionByName );

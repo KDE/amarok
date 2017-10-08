@@ -65,12 +65,12 @@ CoverFetcher::CoverFetcher()
     qRegisterMetaType<CoverFetchUnit::Ptr>("CoverFetchUnit::Ptr");
 
     m_queue = new CoverFetchQueue( this );
-    connect( m_queue, SIGNAL(fetchUnitAdded(CoverFetchUnit::Ptr)),
-                      SLOT(slotFetch(CoverFetchUnit::Ptr)) );
+    connect( m_queue, &CoverFetchQueue::fetchUnitAdded,
+             this, &CoverFetcher::slotFetch );
     s_instance = this;
 
-    connect( The::networkAccessManager(), SIGNAL(requestRedirected(QNetworkReply*,QNetworkReply*)),
-             this, SLOT(fetchRequestRedirected(QNetworkReply*,QNetworkReply*)) );
+    connect( The::networkAccessManager(), &NetworkAccessManagerProxy::requestRedirectedReply,
+             this, &CoverFetcher::fetchRequestRedirected );
 }
 
 CoverFetcher::~CoverFetcher()
@@ -351,10 +351,12 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
         }
 
         m_dialog = new CoverFoundDialog( unit, data, static_cast<QWidget*>( parent() ) );
-        connect( m_dialog.data(), SIGNAL(newCustomQuery(Meta::AlbumPtr,QString,int)),
-                           SLOT(queueQuery(Meta::AlbumPtr,QString,int)) );
-        connect( m_dialog.data(), SIGNAL(accepted()), SLOT(slotDialogFinished()) );
-        connect( m_dialog.data(), SIGNAL(rejected()), SLOT(slotDialogFinished()) );
+        connect( m_dialog.data(), &CoverFoundDialog::newCustomQuery,
+                 this, &CoverFetcher::queueQuery );
+        connect( m_dialog.data(), &CoverFoundDialog::accepted,
+                 this, &CoverFetcher::slotDialogFinished );
+        connect( m_dialog.data(),&CoverFoundDialog::rejected,
+                 this, &CoverFetcher::slotDialogFinished );
 
         if( fetchSource() == CoverFetch::LastFm )
             queueQueryForAlbum( album );

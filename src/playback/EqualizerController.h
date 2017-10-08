@@ -75,7 +75,7 @@ public:
     /**
      * Changes equaliser preset to preset @param name if it exists.
      */
-    void applyEqualizerPreset( const QString &name );
+    void applyEqualizerPresetByName( const QString &name );
 
     QList<int> gains() const;
     void setGains( const QList<int> &gains );
@@ -94,7 +94,7 @@ public Q_SLOTS:
      * Change equalizer to preset with index @param index in the global equalizer list.
      * Pass -1 to disable.
      */
-    void applyEqualizerPreset( int index );
+    void applyEqualizerPresetByIndex( int index );
 
 Q_SIGNALS:
 

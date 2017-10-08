@@ -26,9 +26,14 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 
-#include <solid/device.h>
-#include <solid/devicenotifier.h>
-#include <solid/storageaccess.h>
+#include <KDirLister>
+#include <KIO/ListJob>
+#include <KIO/Scheduler>
+#include <KPluginFactory>
+
+#include <Solid/Device>
+#include <Solid/DeviceNotifier>
+#include <Solid/StorageAccess>
 
 #include "core/support/Debug.h"
 #include "UpnpBrowseCollection.h"
@@ -192,9 +197,8 @@ void UpnpCollectionFactory::createCollection( const QString &udn )
     debug() << "|||| Creating collection " << info.uuid();
     KIO::ListJob *job = KIO::listDir( QUrl( "upnp-ms://" + info.uuid() + "/?searchcapabilities=1" ) );
     job->setProperty( "deviceInfo", QVariant::fromValue( info ) );
-    connect( job, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
-            this, SLOT(slotSearchEntries(KIO::Job*,KIO::UDSEntryList)) );
-    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotSearchCapabilitiesDone(KJob*)) );
+    connect( job, &KIO::ListJob::entries, this, &UpnpCollectionFactory::slotSearchEntries );
+    connect( job, &KJob::result, this, &UpnpCollectionFactory::slotSearchCapabilitiesDone );
 }
 
 bool UpnpCollectionFactory::cagibi0_1_0DeviceDetails( const QString &udn, DeviceInfo *info )

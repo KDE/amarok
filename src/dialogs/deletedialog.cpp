@@ -105,7 +105,7 @@ DeleteDialog::DeleteDialog( QWidget *parent, const char *name )
     adjustSize();
 
     slotShouldDelete(shouldDelete());
-    connect(m_widget->ddShouldDelete, SIGNAL(toggled(bool)), SLOT(slotShouldDelete(bool)));
+    connect(m_widget->ddShouldDelete, &QCheckBox::toggled, this, &DeleteDialog::slotShouldDelete);
 
 }
 

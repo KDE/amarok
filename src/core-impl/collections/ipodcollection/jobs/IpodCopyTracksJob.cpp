@@ -46,11 +46,11 @@ IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,QUrl> &sources,
     , m_aborted( false )
     , m_goingToRemoveSources( goingToRemoveSources )
 {
-    connect( this, SIGNAL(startDuplicateTrackSearch(Meta::TrackPtr)),
-                   SLOT(slotStartDuplicateTrackSearch(Meta::TrackPtr)) );
-    connect( this, SIGNAL(startCopyOrTranscodeJob(QUrl,QUrl,bool)),
-                   SLOT(slotStartCopyOrTranscodeJob(QUrl,QUrl,bool)) );
-    connect( this, SIGNAL(displaySorryDialog()), SLOT(slotDisplaySorryDialog()) );
+    connect( this, &IpodCopyTracksJob::startDuplicateTrackSearch,
+             this, &IpodCopyTracksJob::slotStartDuplicateTrackSearch );
+    connect( this, &IpodCopyTracksJob::startCopyOrTranscodeJob,
+             this, &IpodCopyTracksJob::slotStartCopyOrTranscodeJob );
+    connect( this, &IpodCopyTracksJob::displaySorryDialog, this, &IpodCopyTracksJob::slotDisplaySorryDialog );
 }
 
 void
@@ -292,9 +292,9 @@ IpodCopyTracksJob::slotStartDuplicateTrackSearch( const Meta::TrackPtr &track )
     // we don't want to match by filesize, track length, filetype etc - these change during
     // transcoding. We don't match album artist because handling of it is inconsistent
 
-    connect( qm, SIGNAL(newResultReady(Meta::TrackList)),
-             SLOT(slotDuplicateTrackSearchNewResult(Meta::TrackList)) );
-    connect( qm, SIGNAL(queryDone()), SLOT(slotDuplicateTrackSearchQueryDone()) );
+    connect( qm, &Collections::QueryMaker::newTracksReady,
+             this, &IpodCopyTracksJob::slotDuplicateTrackSearchNewResult );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &IpodCopyTracksJob::slotDuplicateTrackSearchQueryDone );
     qm->setAutoDelete( true );
     m_duplicateTrack = Meta::TrackPtr(); // reset duplicate track from previous query
     qm->run();
@@ -341,8 +341,8 @@ IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const QUrl &sourceUrl, const QUr
         job = new Transcoding::Job( sourceUrl, destUrl, m_transcodingConfig );
     }
     job->setUiDelegate( 0 ); // be non-interactive
-    connect( job, SIGNAL(finished(KJob*)), // we must use this instead of result() to prevent deadlock
-             SLOT(slotCopyOrTranscodeJobFinished(KJob*)) );
+    connect( job, &Transcoding::Job::finished, // we must use this instead of result() to prevent deadlock
+             this, &IpodCopyTracksJob::slotCopyOrTranscodeJobFinished );
     job->start();  // no-op for KIO job, but matters for transcoding job
 }
 

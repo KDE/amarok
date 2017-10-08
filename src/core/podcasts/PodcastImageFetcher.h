@@ -36,8 +36,8 @@ public:
     static QUrl cachedImagePath( Podcasts::PodcastChannel *channel );
 
 Q_SIGNALS:
-    void imageReady( Podcasts::PodcastChannelPtr channel, QImage image );
-    void imageReady( Podcasts::PodcastEpisodePtr episode, QImage image );
+    void channelImageReady( Podcasts::PodcastChannelPtr channel, QImage image );
+    void episodeImageReady( Podcasts::PodcastEpisodePtr episode, QImage image );
     void done( PodcastImageFetcher * );
 
 private Q_SLOTS:

@@ -50,7 +50,8 @@ ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceColle
     m_collection = collection;
     m_name = name;
 
-    connect( collection, SIGNAL(updateComplete()), this, SLOT(slotScriptComplete()) );
+    connect( collection, &Collections::ScriptableServiceCollection::updateComplete,
+             this, &ScriptableServiceQueryMaker::slotScriptComplete );
 
     d->type = Private::NONE;
     d->closestParent = Private::NONE;
@@ -83,7 +84,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT(fetchGenre()) );
+        QTimer::singleShot( 0, this, &ScriptableServiceQueryMaker::fetchGenre );
     }
     else if ( d->type == Private::ARTIST )
     {
@@ -91,7 +92,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT(fetchArtists()) );
+        QTimer::singleShot( 0, this, &ScriptableServiceQueryMaker::fetchArtists );
     }
     else if ( d->type == Private::ALBUM )
     {
@@ -99,7 +100,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT(fetchAlbums()) );
+        QTimer::singleShot( 0, this, &ScriptableServiceQueryMaker::fetchAlbums );
     }
     else if ( d->type == Private::TRACK )
     {
@@ -107,7 +108,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT(fetchTracks()) );
+        QTimer::singleShot( 0, this, &ScriptableServiceQueryMaker::fetchTracks );
     }
 
 }
@@ -195,25 +196,25 @@ ScriptableServiceQueryMaker::setConvertToMultiTracks( bool convert )
 void ScriptableServiceQueryMaker::handleResult( const Meta::GenreList & genres )
 {
     if ( d->maxsize >= 0 && genres.count() > d->maxsize )
-        emit newResultReady( genres.mid( 0, d->maxsize ) );
+        emit newGenresReady( genres.mid( 0, d->maxsize ) );
     else
-        emit newResultReady( genres );
+        emit newGenresReady( genres );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::AlbumList & albums )
 {
     if ( d->maxsize >= 0 && albums.count() > d->maxsize )
-        emit newResultReady( albums.mid( 0, d->maxsize ) );
+        emit newAlbumsReady( albums.mid( 0, d->maxsize ) );
     else
-        emit newResultReady( albums );
+        emit newAlbumsReady( albums );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::ArtistList & artists )
 {
     if ( d->maxsize >= 0 && artists.count() > d->maxsize )
-        emit newResultReady( artists.mid( 0, d->maxsize ) );
+        emit newArtistsReady( artists.mid( 0, d->maxsize ) );
     else
-        emit newResultReady( artists );
+        emit newArtistsReady( artists );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList &tracks )
@@ -238,9 +239,9 @@ void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList &tracks )
         ret = tracks;
 
     if ( d->maxsize >= 0 && ret.count() > d->maxsize )
-        emit newResultReady( ret.mid( 0, d->maxsize ) );
+        emit newTracksReady( ret.mid( 0, d->maxsize ) );
     else
-        emit newResultReady( ret );
+        emit newTracksReady( ret );
 }
 
 void ScriptableServiceQueryMaker::fetchGenre()

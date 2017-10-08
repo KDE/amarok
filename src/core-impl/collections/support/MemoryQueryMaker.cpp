@@ -177,17 +177,17 @@ MemoryQueryMaker::run()
         qmi->setOrderByField( d->orderByField );
         qmi->setCollectionId( d->collectionId );
 
-        connect( qmi, SIGNAL(newResultReady(Meta::AlbumList)), SIGNAL(newResultReady(Meta::AlbumList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::ArtistList)), SIGNAL(newResultReady(Meta::ArtistList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::GenreList)), SIGNAL(newResultReady(Meta::GenreList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SIGNAL(newResultReady(Meta::ComposerList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::YearList)), SIGNAL(newResultReady(Meta::YearList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QStringList)), SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::LabelList)), SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newAlbumsReady, this, &MemoryQueryMaker::newAlbumsReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newArtistsReady, this, &MemoryQueryMaker::newArtistsReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newGenresReady, this, &MemoryQueryMaker::newGenresReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newComposersReady, this, &MemoryQueryMaker::newComposersReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newYearsReady, this, &MemoryQueryMaker::newYearsReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newTracksReady, this, &MemoryQueryMaker::newTracksReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newResultReady, this, &MemoryQueryMaker::newResultReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newLabelsReady, this, &MemoryQueryMaker::newLabelsReady, Qt::DirectConnection );
 
         d->job = new QueryJob( qmi );
-        connect( d->job, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(done(ThreadWeaver::JobPointer)) );
+        connect( d->job, &QueryJob::done, this, &MemoryQueryMaker::done );
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(d->job) );
     }
 }

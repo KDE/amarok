@@ -42,7 +42,7 @@ void FolderListJob::setUrl( const QUrl &url )
 
 void FolderListJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &FolderListJob::doWork );
 }
 
 Folder::List FolderListJob::folderList() const
@@ -54,11 +54,13 @@ void FolderListJob::doWork()
 {
   qDebug() << m_url;
 
-  m_job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
-  connect( m_job, SIGNAL(result(KJob*)),
-    SLOT(slotJobResult(KJob*)) );
-  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-    SLOT(slotJobData(KIO::Job*,QByteArray)) );
+  auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+  connect( job, &KIO::TransferJob::result,
+           this, &FolderListJob::slotJobResult );
+  connect( job, &KIO::TransferJob::data,
+           this, &FolderListJob::slotJobData );
+
+  m_job = job;
 }
 
 void FolderListJob::slotJobResult( KJob *job )

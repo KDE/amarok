@@ -30,8 +30,12 @@ MockTrackForUrlWorker::MockTrackForUrlWorker( const QString &url )
 void
 MockTrackForUrlWorker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
-    Q_UNUSED(self);
     Q_UNUSED(thread);
+    
+    emit started(self);
+    
     QFETCH( Meta::TrackPtr, track );
     m_track = track;
+    
+    emit done(self);
 }

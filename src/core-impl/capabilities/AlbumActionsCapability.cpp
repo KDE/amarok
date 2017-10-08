@@ -31,7 +31,7 @@ class CompilationAction : public QAction
                 : QAction( parent )
                 , m_album( album )
             {
-                connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
+                connect( this, &CompilationAction::triggered, this, &CompilationAction::slotTriggered );
                 if( m_album->isCompilation() )
                 {
                     setIcon( QIcon::fromTheme( "filename-artist-amarok" ) );

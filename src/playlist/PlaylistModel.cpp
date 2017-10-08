@@ -179,18 +179,18 @@ Playlist::Model::Model( QObject *parent )
 
     m_saveStateTimer->setInterval( 5000 );
     m_saveStateTimer->setSingleShot( true );
-    connect( m_saveStateTimer, SIGNAL(timeout()),
-             this, SLOT(saveState()) );
-    connect( this, SIGNAL(modelReset()),
-             this, SLOT(queueSaveState()) );
-    connect( this, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-             this, SLOT(queueSaveState()) );
-    connect( this, SIGNAL(rowsInserted(QModelIndex,int,int)),
-             this, SLOT(queueSaveState()) );
-    connect( this, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
-             this, SLOT(queueSaveState()) );
-    connect( this, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-             this, SLOT(queueSaveState()) );
+    connect( m_saveStateTimer, &QTimer::timeout,
+             this, &Playlist::Model::saveState );
+    connect( this, &Playlist::Model::modelReset,
+             this, &Playlist::Model::queueSaveState );
+    connect( this, &Playlist::Model::dataChanged,
+             this, &Playlist::Model::queueSaveState );
+    connect( this, &Playlist::Model::rowsInserted,
+             this, &Playlist::Model::queueSaveState );
+    connect( this, &Playlist::Model::rowsMoved,
+             this, &Playlist::Model::queueSaveState );
+    connect( this, &Playlist::Model::rowsRemoved,
+             this, &Playlist::Model::queueSaveState );
 }
 
 Playlist::Model::~Model()
@@ -707,7 +707,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         debug() << "this is _something_ with a url....";
         TrackLoader *dl = new TrackLoader(); // auto-deletes itself
         dl->setProperty( "beginRow", beginRow );
-        connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(insertTracksFromTrackLoader(Meta::TrackList)) );
+        connect( dl, &TrackLoader::finished, this, &Model::insertTracksFromTrackLoader );
         dl->init( data->urls() );
         return true;
     }
@@ -1117,7 +1117,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList &passedCmds )
     // BUG: 259675
     // FIXME: removing the track and normalizing the playlist should be grouped together
     //        so that an undo operation undos both.
-    QTimer::singleShot(0, Playlist::Actions::instance(), SLOT(normalizeDynamicPlaylist()));
+    QTimer::singleShot(0, Playlist::Actions::instance(), &Playlist::Actions::normalizeDynamicPlaylist);
 }
 
 

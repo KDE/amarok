@@ -744,7 +744,7 @@ Track::commitIfInNonBatchUpdate()
 
     // write tags to file in a thread in order not to block
     WriteTagsJob *job = new WriteTagsJob( path, m_changedFields );
-    job->connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    job->connect( job, &WriteTagsJob::done, job, &QObject::deleteLater );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 
     notifyObservers();

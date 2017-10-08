@@ -57,12 +57,12 @@ MediaDeviceMonitor::init()
     DEBUG_BLOCK
 
     // connect to device cache so new devices are tested too
-    connect(  MediaDeviceCache::instance(),  SIGNAL(deviceAdded(QString)),
-              SLOT(deviceAdded(QString)) );
-    connect(  MediaDeviceCache::instance(),  SIGNAL(deviceRemoved(QString)),
-              SLOT(slotDeviceRemoved(QString)) );
-    connect(  MediaDeviceCache::instance(), SIGNAL(accessibilityChanged(bool,QString)),
-              SLOT(slotAccessibilityChanged(bool,QString)) );
+    connect(  MediaDeviceCache::instance(),  &MediaDeviceCache::deviceAdded,
+              this, &MediaDeviceMonitor::deviceAdded );
+    connect(  MediaDeviceCache::instance(),  &MediaDeviceCache::deviceRemoved,
+              this, &MediaDeviceMonitor::slotDeviceRemoved );
+    connect(  MediaDeviceCache::instance(), &MediaDeviceCache::accessibilityChanged,
+              this, &MediaDeviceMonitor::slotAccessibilityChanged );
 }
 
 QStringList
@@ -142,7 +142,7 @@ MediaDeviceMonitor::registerDeviceType( ConnectionAssistant* assistant )
         // keep track of this type of device from now on
         m_waitingassistants << assistant;
 
-        QTimer::singleShot( 1000, this, SLOT(slotDequeueWaitingAssistant()) );
+        QTimer::singleShot( 1000, this, &MediaDeviceMonitor::slotDequeueWaitingAssistant );
     }
     else
     {

@@ -53,8 +53,8 @@ DeviceConfigureDialog::DeviceConfigureDialog( MediaDevice *device )
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, SLOT(accept()));
+    connect(buttonBox, &QDialogButtonBox::rejected, this, SLOT(reject()));
 //  showButtonSeparator( true );
 
 
@@ -112,7 +112,7 @@ DeviceConfigureDialog::DeviceConfigureDialog( MediaDevice *device )
         m_transcodeWhenNecessary = new QRadioButton( transcodeGroup );
         m_transcodeWhenNecessary->setText( i18n( "When necessary" ) );
         m_transcodeWhenNecessary->setChecked( !device->m_transcodeAlways );
-        connect( m_transcodeCheck, SIGNAL(toggled(bool)),
+        connect( m_transcodeCheck, &QCheckBox::toggled,
                 transcodeGroup, SLOT(setEnabled(bool)) );
         transcodeGroup->insert( m_transcodeAlways );
         transcodeGroup->insert( m_transcodeWhenNecessary );

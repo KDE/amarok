@@ -94,6 +94,13 @@ private Q_SLOTS:
     void addLevel( QString internalColumnName, Qt::SortOrder sortOrder = Qt::AscendingOrder );
 
     /**
+     * Adds a level to the breadcrumb path.
+     * Orders the level in ascending order.
+     * @param internalColumnName the name of the level.
+     */
+    void addLevelAscending( QString internalColumnName );
+
+    /**
      * Handles the (possible) deletion of further levels when an item is clicked.
      */
     void onItemClicked();

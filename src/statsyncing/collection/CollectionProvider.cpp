@@ -29,9 +29,9 @@ CollectionProvider::CollectionProvider( Collections::Collection *collection )
     : m_coll( collection )
 {
     Q_ASSERT( m_coll );
-    connect( collection, SIGNAL(updated()), SIGNAL(updated()) );
-    connect( this, SIGNAL(startArtistSearch()), SLOT(slotStartArtistSearch()) );
-    connect( this, SIGNAL(startTrackSearch(QString)), SLOT(slotStartTrackSearch(QString)) );
+    connect( collection, &Collections::Collection::updated, this, &CollectionProvider::updated );
+    connect( this, &CollectionProvider::startArtistSearch, this, &CollectionProvider::slotStartArtistSearch );
+    connect( this, &CollectionProvider::startTrackSearch, this, &CollectionProvider::slotStartTrackSearch );
 }
 
 CollectionProvider::~CollectionProvider()
@@ -131,9 +131,9 @@ CollectionProvider::slotStartArtistSearch()
     Collections::QueryMaker *qm = m_coll.data()->queryMaker();
     qm->setAutoDelete( true );
     qm->setQueryType( Collections::QueryMaker::Artist );
-    connect( qm, SIGNAL(newResultReady(Meta::ArtistList)),
-             SLOT(slotNewResultReady(Meta::ArtistList)) );
-    connect( qm, SIGNAL(queryDone()), SLOT(slotQueryDone()) );
+    connect( qm, &Collections::QueryMaker::newArtistsReady,
+             this, &CollectionProvider::slotNewArtistsReady );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &CollectionProvider::slotQueryDone );
     qm->run();
 }
 
@@ -151,14 +151,14 @@ CollectionProvider::slotStartTrackSearch( QString artistName )
     qm->setQueryType( Collections::QueryMaker::Track );
     m_currentArtistName = artistName;
     qm->addFilter( Meta::valArtist, m_currentArtistName, true, true );
-    connect( qm, SIGNAL(newResultReady(Meta::TrackList)),
-             SLOT(slotNewResultReady(Meta::TrackList)) );
-    connect( qm, SIGNAL(queryDone()), SLOT(slotQueryDone()) );
+    connect( qm, &Collections::QueryMaker::newTracksReady,
+             this, &CollectionProvider::slotNewTracksReady );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &CollectionProvider::slotQueryDone );
     qm->run();
 }
 
 void
-CollectionProvider::slotNewResultReady( Meta::ArtistList list )
+CollectionProvider::slotNewArtistsReady( Meta::ArtistList list )
 {
     foreach( const Meta::ArtistPtr &artist, list )
     {
@@ -167,7 +167,7 @@ CollectionProvider::slotNewResultReady( Meta::ArtistList list )
 }
 
 void
-CollectionProvider::slotNewResultReady( Meta::TrackList list )
+CollectionProvider::slotNewTracksReady( Meta::TrackList list )
 {
     foreach( Meta::TrackPtr track, list )
     {

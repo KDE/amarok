@@ -92,9 +92,9 @@ QWidget*
 ConstraintTypes::PlaylistLength::editWidget() const
 {
     PlaylistLengthEditWidget* e = new PlaylistLengthEditWidget( m_length, m_comparison, static_cast<int>( 10*m_strictness ) );
-    connect( e, SIGNAL(comparisonChanged(int)), this, SLOT(setComparison(int)) );
-    connect( e, SIGNAL(lengthChanged(int)), this, SLOT(setLength(int)) );
-    connect( e, SIGNAL(strictnessChanged(int)), this, SLOT(setStrictness(int)) );
+    connect( e, &PlaylistLengthEditWidget::comparisonChanged, this, &PlaylistLength::setComparison );
+    connect( e, &PlaylistLengthEditWidget::lengthChanged, this, &PlaylistLength::setLength );
+    connect( e, &PlaylistLengthEditWidget::strictnessChanged, this, &PlaylistLength::setStrictness );
     return e;
 }
 

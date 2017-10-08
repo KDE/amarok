@@ -87,7 +87,7 @@ ScriptUpdater::updateScript()
     debug() << m_scriptname << ": Accessing " << versionUrl.toDisplayString() << " ...";
     QUrl versionDest( m_versionFile.fileName() );
     KIO::FileCopyJob *versionJob = KIO::file_copy( versionUrl, versionDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
-    connect ( versionJob, SIGNAL(result(KJob*)), this, SLOT(phase2(KJob*)) );
+    connect ( versionJob, &KIO::FileCopyJob::result, this, &ScriptUpdater::phase2 );
 }
 
 void
@@ -126,7 +126,7 @@ ScriptUpdater::phase2( KJob * job )
     m_archiveFile.open(); // temporary files only have a fileName() after they've been opened
     QUrl archiveDest( m_archiveFile.fileName() );
     KIO::FileCopyJob *archiveJob = KIO::file_copy( archiveSrc, archiveDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
-    connect ( archiveJob, SIGNAL(result(KJob*)), this, SLOT(phase3(KJob*)) );
+    connect ( archiveJob, &KIO::FileCopyJob::result, this, &ScriptUpdater::phase3 );
 }
 
 void ScriptUpdater::phase3( KJob * job )
@@ -147,7 +147,7 @@ void ScriptUpdater::phase3( KJob * job )
     m_sigFile.open();
     QUrl sigDest( m_sigFile.fileName() );
     KIO::FileCopyJob *sigJob = KIO::file_copy( sigSrc, sigDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
-    connect ( sigJob, SIGNAL(result(KJob*)), this, SLOT(phase4(KJob*)) );
+    connect ( sigJob, &KIO::FileCopyJob::result, this, &ScriptUpdater::phase4 );
 }
 
 void

@@ -56,8 +56,8 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_recursive( recursive )
     , m_charsetDetect( detectCharset )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)),
-             this, SLOT(deleteLater()) ); // auto delete
+    connect( this, &GenericScannerJob::done,
+             this, &GenericScannerJob::deleteLater ); // auto delete
 }
 
 GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
@@ -75,8 +75,8 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_recursive( true )
     , m_charsetDetect( false )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)),
-             this, SLOT(deleteLater()) ); // auto delete
+    connect( this, &GenericScannerJob::done,
+             this, &GenericScannerJob::deleteLater ); // auto delete
 }
 
 

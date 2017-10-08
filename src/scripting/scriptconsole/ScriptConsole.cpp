@@ -98,29 +98,29 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     QToolBar *toolBar = m_debugger->createStandardToolBar( this );
     QAction *action = new QAction( i18n( "Stop" ), this );
     action->setIcon( QApplication::style()->standardIcon( QStyle::SP_MediaStop ) );
-    connect( action, SIGNAL(toggled(bool)), SLOT(slotAbortEvaluation()) );
+    connect( action, &QAction::toggled, this, &ScriptConsole::slotAbortEvaluation );
     toolBar->addAction( action );
     action = new QAction( QIcon::fromTheme( "media-playback-start" ), i18n("Execute Script"), this );
     action->setShortcut( Qt::CTRL + Qt::Key_Enter );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotExecuteNewScript()) );
+    connect( action, &QAction::triggered, this, &ScriptConsole::slotExecuteNewScript );
     toolBar->addAction( action );
     action = new QAction( QIcon::fromTheme( "document-new" ), i18n( "&New Script" ), this );
     action->setShortcut( Qt::CTRL + Qt::Key_N );
     toolBar->addAction( action );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotNewScript()) );
+    connect( action, &QAction::triggered, this, &ScriptConsole::slotNewScript );
     action = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete Script" ), this );
     toolBar->addAction( action );
-    connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(removeCurrentScript()) );
+    connect( action, &QAction::triggered, m_scriptListDock, &ScriptListDockWidget::removeCurrentScript );
     action = new QAction( i18n( "&Clear All Scripts" ), this );
     toolBar->addAction( action );
-    connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(clear()) );
+    connect( action, &QAction::triggered, m_scriptListDock, &ScriptListDockWidget::clear );
     action = new QAction( i18n("Previous Script"), this );
     action->setShortcut( QKeySequence::MoveToPreviousPage );
-    connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(prev()) );
+    connect( action, &QAction::triggered, m_scriptListDock, &ScriptListDockWidget::prev );
     toolBar->addAction( action );
     action = new QAction( i18n("Next Script"), this );
     action->setShortcut( QKeySequence::MoveToNextPage );
-    connect( action, SIGNAL(triggered(bool)), m_scriptListDock, SLOT(next()) );
+    connect( action, &QAction::triggered, m_scriptListDock, &ScriptListDockWidget::next );
     toolBar->addAction( action );
 
     addToolBar( toolBar );
@@ -135,8 +135,8 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     menuBar()->addMenu( viewMenu );
 
     addDockWidget( Qt::BottomDockWidgetArea, m_scriptListDock );
-    connect( m_scriptListDock, SIGNAL(edit(ScriptConsoleItem*)), SLOT(slotEditScript(ScriptConsoleItem*)) );
-    connect( m_scriptListDock, SIGNAL(currentItemChanged(ScriptConsoleItem*)), SLOT(setCurrentScriptItem(ScriptConsoleItem*)) );
+    connect( m_scriptListDock, &ScriptListDockWidget::edit, this, &ScriptConsole::slotEditScript );
+    connect( m_scriptListDock, &ScriptListDockWidget::currentItemChanged, this, &ScriptConsole::setCurrentScriptItem );
 
     QListWidgetItem *item = new QListWidgetItem( "The Amarok Script Console allows you to easily execute"
                                                 "JavaScript with access to all functions\nand methods you would"
@@ -159,8 +159,8 @@ ScriptConsole::ScriptConsole( QWidget *parent )
         m_savePath = QUrl( KStandardDirs::locateLocal( "data", "amarok/scriptconsole/" ) ).path();
 
     slotNewScript();
-    connect( m_debugger, SIGNAL(evaluationSuspended()), SLOT(slotEvaluationSuspended()) );
-    connect( m_debugger, SIGNAL(evaluationResumed()), SLOT(slotEvaluationResumed()) );
+    connect( m_debugger, &QScriptEngineDebugger::evaluationSuspended, this, &ScriptConsole::slotEvaluationSuspended );
+    connect( m_debugger, &QScriptEngineDebugger::evaluationResumed, this, &ScriptConsole::slotEvaluationResumed );
     show();
     raise();
 }
@@ -342,9 +342,10 @@ ScriptListDockWidget::ScriptListDockWidget( QWidget *parent )
     setWidget( widget );
     m_scriptListWidget = new QListWidget( widget );
     m_scriptListWidget->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    connect( m_scriptListWidget, SIGNAL(doubleClicked(QModelIndex)), SLOT(slotDoubleClicked(QModelIndex)) );
-    connect( m_scriptListWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-             SLOT(slotCurrentItemChanged(QListWidgetItem*,QListWidgetItem*)) );
+    connect( m_scriptListWidget, &QListWidget::doubleClicked,
+             this, &ScriptListDockWidget::slotDoubleClicked );
+    connect( m_scriptListWidget, &QListWidget::currentItemChanged,
+             this, &ScriptListDockWidget::slotCurrentItemChanged );
 }
 
 void

@@ -31,7 +31,8 @@
 #include <QStringList>
 #include <QTimer>
 
-#include <KLocale>
+#include <KLocalizedString>
+#include <KPluginFactory>
 
 #include <DNSSD/RemoteService>
 #include <DNSSD/ServiceBase>

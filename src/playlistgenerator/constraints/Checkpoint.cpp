@@ -119,9 +119,9 @@ QWidget*
 ConstraintTypes::Checkpoint::editWidget() const
 {
     CheckpointEditWidget* e = new CheckpointEditWidget( m_position, static_cast<int>( 10*m_strictness ), m_checkpointObject );
-    connect( e, SIGNAL(positionChanged(int)), this, SLOT(setPosition(int)) );
-    connect( e, SIGNAL(strictnessChanged(int)), this, SLOT(setStrictness(int)) );
-    connect( e, SIGNAL(checkpointChanged(Meta::DataPtr)), this, SLOT(setCheckpoint(Meta::DataPtr)) );
+    connect( e, &CheckpointEditWidget::positionChanged, this, &Checkpoint::setPosition );
+    connect( e, &CheckpointEditWidget::strictnessChanged, this, &Checkpoint::setStrictness );
+    connect( e, &CheckpointEditWidget::checkpointChanged, this, &Checkpoint::setCheckpoint );
     return e;
 }
 

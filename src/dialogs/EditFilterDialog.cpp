@@ -58,24 +58,24 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     updateDropTarget( text );
     updateAttributeEditor();
 
-    connect( m_ui->mqwAttributeEditor, SIGNAL(changed(MetaQueryWidget::Filter)),
-             SLOT(slotAttributeChanged(MetaQueryWidget::Filter)) );
-    connect( this, SIGNAL(resetClicked()), SLOT(slotReset()) );
-    connect( m_ui->cbInvert, SIGNAL(toggled(bool)),
-             SLOT(slotInvert(bool)) );
-    connect( m_ui->rbAnd, SIGNAL(toggled(bool)),
-             SLOT(slotSeparatorChange()) );
-    connect( m_ui->rbOr, SIGNAL(toggled(bool)),
-             SLOT(slotSeparatorChange()) );
-    connect( m_ui->tpTokenPool, SIGNAL(onDoubleClick(Token*)),
-             m_ui->dropTarget, SLOT(insertToken(Token*)) );
-    connect( m_ui->dropTarget, SIGNAL(tokenSelected(Token*)),
-             SLOT(slotTokenSelected(Token*)) );
-    connect( m_ui->dropTarget, SIGNAL(changed()),
-             SLOT(updateSearchEdit()) ); // in case someone dragged a token around.
+    connect( m_ui->mqwAttributeEditor, &MetaQueryWidget::changed,
+             this, &EditFilterDialog::slotAttributeChanged );
+    connect( this, &EditFilterDialog::resetClicked, this, &EditFilterDialog::slotReset );
+    connect( m_ui->cbInvert, &QCheckBox::toggled,
+             this, &EditFilterDialog::slotInvert );
+    connect( m_ui->rbAnd, &QCheckBox::toggled,
+             this, &EditFilterDialog::slotSeparatorChange );
+    connect( m_ui->rbOr, &QCheckBox::toggled,
+             this, &EditFilterDialog::slotSeparatorChange );
+    connect( m_ui->tpTokenPool, &TokenPool::onDoubleClick,
+             m_ui->dropTarget, &TokenDropTarget::appendToken );
+    connect( m_ui->dropTarget, &TokenDropTarget::tokenSelected,
+             this, &EditFilterDialog::slotTokenSelected );
+    connect( m_ui->dropTarget, &TokenDropTarget::changed,
+             this, &EditFilterDialog::updateSearchEdit ); // in case someone dragged a token around.
 
-    connect( m_ui->searchEdit, SIGNAL(textEdited(QString)),
-             SLOT(slotSearchEditChanged(QString)) );
+    connect( m_ui->searchEdit, &QLineEdit::textEdited,
+             this, &EditFilterDialog::slotSearchEditChanged );
 }
 
 EditFilterDialog::~EditFilterDialog()
@@ -136,8 +136,8 @@ EditFilterDialog::filterForToken( Token *token )
         newFilter.inverted = false;
 
         m_filters.insert( token, newFilter );
-        connect( token, SIGNAL(destroyed(QObject*)),
-                 this, SLOT(slotTokenDestroyed(QObject*)) );
+        connect( token, &Token::destroyed,
+                 this, &EditFilterDialog::slotTokenDestroyed );
     }
 
     return m_filters[token];
@@ -289,9 +289,9 @@ EditFilterDialog::updateDropTarget( const QString &text )
         foreach( const expression_element &elem, orList )
         {
             if( AND )
-                m_ui->dropTarget->insertToken( AND_TOKEN_CONSTRUCT );
+                m_ui->dropTarget->appendToken( AND_TOKEN_CONSTRUCT );
             else if( OR )
-                m_ui->dropTarget->insertToken( OR_TOKEN_CONSTRUCT );
+                m_ui->dropTarget->appendToken( OR_TOKEN_CONSTRUCT );
 
             Filter filter;
             filter.filter.setField( !elem.field.isEmpty() ? Meta::fieldForName( elem.field ) : 0 );
@@ -443,10 +443,10 @@ EditFilterDialog::updateDropTarget( const QString &text )
                             ? tokenForField( filter.filter.field() )
                             : SIMPLE_TEXT_CONSTRUCT;
             m_filters.insert( nToken, filter );
-            connect( nToken, SIGNAL(destroyed(QObject*)),
-                     this, SLOT(slotTokenDestroyed(QObject*)) );
+            connect( nToken, &Token::destroyed,
+                     this, &EditFilterDialog::slotTokenDestroyed );
 
-            m_ui->dropTarget->insertToken( nToken );
+            m_ui->dropTarget->appendToken( nToken );
 
             OR = true;
         }

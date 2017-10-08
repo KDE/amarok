@@ -73,7 +73,7 @@ CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     m_timeLine = new QTimeLine( 10000, this );
     m_timeLine->setFrameRange( 0, 20 );
     m_timeLine->setLoopCount ( 0 );
-    connect( m_timeLine, SIGNAL(frameChanged(int)), this, SLOT(loadingAnimationTick()) );
+    connect( m_timeLine, &QTimeLine::frameChanged, this, &CollectionTreeItemModelBase::loadingAnimationTick );
 }
 
 CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
@@ -562,7 +562,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
 
         //some very quick queries may be done so fast that the loading
         //animation creates an unnecessary flicker, therefore delay it for a bit
-        QTimer::singleShot( 150, this, SLOT(startAnimationTick()) );
+        QTimer::singleShot( 150, this, &CollectionTreeItemModelBase::startAnimationTick );
     }
 }
 
@@ -622,15 +622,15 @@ void
 CollectionTreeItemModelBase::addQueryMaker( CollectionTreeItem* item,
                                             Collections::QueryMaker *qm ) const
 {
-    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(newResultReady(Meta::TrackList)), Qt::QueuedConnection );
-    connect( qm, SIGNAL(newResultReady(Meta::ArtistList)), SLOT(newResultReady(Meta::ArtistList)), Qt::QueuedConnection );
-    connect( qm, SIGNAL(newResultReady(Meta::AlbumList)), SLOT(newResultReady(Meta::AlbumList)), Qt::QueuedConnection );
-    connect( qm, SIGNAL(newResultReady(Meta::GenreList)), SLOT(newResultReady(Meta::GenreList)), Qt::QueuedConnection );
-    connect( qm, SIGNAL(newResultReady(Meta::ComposerList)), SLOT(newResultReady(Meta::ComposerList)), Qt::QueuedConnection );
-    connect( qm, SIGNAL(newResultReady(Meta::YearList)), SLOT(newResultReady(Meta::YearList)), Qt::QueuedConnection );
-    connect( qm, SIGNAL(newResultReady(Meta::LabelList)), SLOT(newResultReady(Meta::LabelList)), Qt::QueuedConnection );
-    connect( qm, SIGNAL(newResultReady(Meta::DataList)), SLOT(newResultReady(Meta::DataList)), Qt::QueuedConnection );
-    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()), Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newTracksReady, this, &CollectionTreeItemModelBase::newTracksReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newArtistsReady, this, &CollectionTreeItemModelBase::newArtistsReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newAlbumsReady, this, &CollectionTreeItemModelBase::newAlbumsReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newGenresReady, this, &CollectionTreeItemModelBase::newGenresReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newComposersReady, this, &CollectionTreeItemModelBase::newComposersReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newYearsReady, this, &CollectionTreeItemModelBase::newYearsReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newLabelsReady, this, &CollectionTreeItemModelBase::newLabelsReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newDataReady, this, &CollectionTreeItemModelBase::newDataReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &CollectionTreeItemModelBase::queryDone, Qt::QueuedConnection );
     m_runningQueries.insert( item, qm );
 }
 
@@ -683,49 +683,49 @@ convertToDataList( const ListType& list )
 }
 
 void
-CollectionTreeItemModelBase::newResultReady( Meta::TrackList res )
+CollectionTreeItemModelBase::newTracksReady( Meta::TrackList res )
 {
-    newResultReady( convertToDataList<Meta::TrackPtr, Meta::TrackList>( res ) );
+    newDataReady( convertToDataList<Meta::TrackPtr, Meta::TrackList>( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newResultReady( Meta::ArtistList res )
+CollectionTreeItemModelBase::newArtistsReady( Meta::ArtistList res )
 {
-    newResultReady( convertToDataList<Meta::ArtistPtr, Meta::ArtistList>( res ) );
+    newDataReady( convertToDataList<Meta::ArtistPtr, Meta::ArtistList>( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newResultReady( Meta::AlbumList res )
+CollectionTreeItemModelBase::newAlbumsReady( Meta::AlbumList res )
 {
-    newResultReady( convertToDataList<Meta::AlbumPtr, Meta::AlbumList>( res ) );
+    newDataReady( convertToDataList<Meta::AlbumPtr, Meta::AlbumList>( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newResultReady( Meta::GenreList res )
+CollectionTreeItemModelBase::newGenresReady( Meta::GenreList res )
 {
-    newResultReady( convertToDataList<Meta::GenrePtr, Meta::GenreList>( res ) );
+    newDataReady( convertToDataList<Meta::GenrePtr, Meta::GenreList>( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newResultReady( Meta::ComposerList res )
+CollectionTreeItemModelBase::newComposersReady( Meta::ComposerList res )
 {
-    newResultReady( convertToDataList<Meta::ComposerPtr, Meta::ComposerList>( res ) );
+    newDataReady( convertToDataList<Meta::ComposerPtr, Meta::ComposerList>( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newResultReady( Meta::YearList res )
+CollectionTreeItemModelBase::newYearsReady( Meta::YearList res )
 {
-    newResultReady( convertToDataList<Meta::YearPtr, Meta::YearList>( res ) );
+    newDataReady( convertToDataList<Meta::YearPtr, Meta::YearList>( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newResultReady( Meta::LabelList res )
+CollectionTreeItemModelBase::newLabelsReady( Meta::LabelList res )
 {
-    newResultReady( convertToDataList<Meta::LabelPtr, Meta::LabelList>( res ) );
+    newDataReady( convertToDataList<Meta::LabelPtr, Meta::LabelList>( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newResultReady( Meta::DataList data )
+CollectionTreeItemModelBase::newDataReady( Meta::DataList data )
 {
     //if we are expanding an item, we'll find the sender in childQueries
     //otherwise we are filtering all collections

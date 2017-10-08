@@ -78,7 +78,7 @@ CoverViewDialog::createViewer( const QImage &image, const QWidget *widget )
     layout->addWidget( pixmapViewer );
     layout->setSizeConstraint( QLayout::SetFixedSize );
     layout->setContentsMargins( 0, 0, 0, 0 );
-    connect( pixmapViewer, SIGNAL(zoomFactorChanged(qreal)), SLOT(zoomFactorChanged(qreal)) );
+    connect( pixmapViewer, &PixmapViewer::zoomFactorChanged, this, &CoverViewDialog::zoomFactorChanged );
 
     qreal zoom = pixmapViewer->zoomFactor();
     zoomFactorChanged( zoom );

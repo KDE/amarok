@@ -385,10 +385,8 @@ App::initCliArgs(QCommandLineParser *parser)
 
 
 //SLOT
-void App::applySettings( bool firstTime )
+void App::applySettings()
 {
-    ///Called when the configDialog is closed with OK or Apply
-
     DEBUG_BLOCK
 
     if( AmarokConfig::showTrayIcon() && ! m_tray )
@@ -401,11 +399,29 @@ void App::applySettings( bool firstTime )
         m_tray = 0;
     }
 
-    if( !firstTime ) // prevent OSD from popping up during startup
-        Amarok::OSD::instance()->applySettings();
+    Amarok::OSD::instance()->applySettings();
 
-    if( !firstTime )
-        emit settingsChanged();
+    emit settingsChanged();
+
+    if( AmarokConfig::enableScriptConsole() && !m_scriptConsole )
+        m_scriptConsole = ScriptConsoleNS::ScriptConsole::instance();
+    else if( !AmarokConfig::enableScriptConsole() && m_scriptConsole )
+        m_scriptConsole.data()->deleteLater();}
+
+//SLOT
+void App::applySettingsFirstTime()
+{
+    DEBUG_BLOCK
+
+    if( AmarokConfig::showTrayIcon() && ! m_tray )
+    {
+        m_tray = new Amarok::TrayIcon( m_mainWindow.data() );
+    }
+    else if( !AmarokConfig::showTrayIcon() && m_tray )
+    {
+        delete m_tray;
+        m_tray = 0;
+    }
 
     if( AmarokConfig::enableScriptConsole() && !m_scriptConsole )
         m_scriptConsole = ScriptConsoleNS::ScriptConsole::instance();
@@ -459,7 +475,7 @@ App::continueInit()
     //init playlist window as soon as the database is guaranteed to be usable
 
     // Create engine, show TrayIcon etc.
-    applySettings( true );
+    applySettingsFirstTime();
     // Must be created _after_ MainWindow.
     PERF_LOG( "Starting ScriptManager" )
     ScriptManager::instance();
@@ -538,9 +554,15 @@ void App::slotConfigAmarok( const QString& page )
     {
         //KConfigDialog didn't find an instance of this dialog, so lets create it :
         dialog = new Amarok2ConfigDialog( mainWindow(), "settings", AmarokConfig::self() );
-        connect( dialog, SIGNAL(settingsChanged(QString)), SLOT(applySettings()) );
+        connect( dialog, &KConfigDialog::settingsChanged,
+                 this, &App::applySettings );
     }
     static_cast<Amarok2ConfigDialog*>( dialog )->show( page );
+}
+
+void App::slotConfigAmarokWithEmptyPage()
+{
+    slotConfigAmarok( QString() );
 }
 
 void App::slotConfigShortcuts()
@@ -553,7 +575,7 @@ KIO::Job *App::trashFiles( const QList<QUrl> &files )
 {
     KIO::Job *job = KIO::trash( files );
     Amarok::Components::logger()->newProgressOperation( job, i18n("Moving files to trash") );
-    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotTrashResult(KJob*)) );
+    connect( job, &KIO::Job::result, this, &App::slotTrashResult );
     return job;
 }
 

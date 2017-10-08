@@ -27,7 +27,7 @@
 PlayPauseButton::PlayPauseButton( QWidget *parent ) : IconButton( parent )
     , m_isPlaying( false )
 {
-    connect (this, SIGNAL(clicked()), this, SLOT(toggle()) );
+    connect (this, &PlayPauseButton::clicked, this, &PlayPauseButton::toggle );
     setToolTip( i18n( "Play" ) );
 }
 

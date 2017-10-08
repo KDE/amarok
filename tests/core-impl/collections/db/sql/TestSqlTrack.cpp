@@ -273,7 +273,7 @@ TestSqlTrack::testSetAllValuesSingleNotExisting()
         // get a new track
         Meta::TrackPtr track1 = m_collection->registry()->getTrack( -1, "./IamANewTrack.mp3", 1, "1e34fb213489" );
 
-        QSignalSpy spy( m_collection, SIGNAL(updated()));
+        QSignalSpy spy( m_collection, &Collections::SqlCollection::updated);
         MetaNotificationSpy metaSpy;
         metaSpy.subscribeTo( track1 );
 
@@ -373,7 +373,7 @@ TestSqlTrack::testSetAllValuesBatch()
         Meta::TrackPtr track1 = m_collection->registry()->getTrack( "/IDoNotExist.mp3" );
         Meta::SqlTrack *sqlTrack1 = static_cast<Meta::SqlTrack*>( track1.data() );
 
-        QSignalSpy spy( m_collection, SIGNAL(updated()));
+        QSignalSpy spy( m_collection, &Collections::SqlCollection::updated);
         MetaNotificationSpy metaSpy;
         metaSpy.subscribeTo( track1 );
 

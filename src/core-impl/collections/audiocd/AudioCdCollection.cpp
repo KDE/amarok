@@ -44,7 +44,7 @@
 
 #include <KConfigGroup>
 #include <KEncodingProber>
-
+#include <KPluginFactory>
 #include <KSharedConfig>
 #include <KUrl>
 
@@ -69,8 +69,8 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
 {
     DEBUG_BLOCK
     // so that `amarok --cdplay` works:
-    connect( this, SIGNAL(collectionReady(Collections::Collection*)),
-                   SLOT(checkForStartPlayRequest()) );
+    connect( this, &AudioCdCollection::collectionReady,
+             this, &AudioCdCollection::checkForStartPlayRequest );
 
     debug() << "Getting Audio CD info";
     AudioCdDeviceInfo *cdInfo = qobject_cast<AudioCdDeviceInfo *>( info );
@@ -108,9 +108,8 @@ AudioCdCollection::readCd()
     DEBUG_BLOCK
     //get the CDDB info file if possible.
     KIO::ListJob *listJob = KIO::listRecursive( audiocdUrl(), KIO::HideProgressInfo, false );
-    connect( listJob, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
-             this, SLOT(audioCdEntries(KIO::Job*,KIO::UDSEntryList)) );
-    connect( listJob, SIGNAL(result(KJob*)), SLOT(slotEntriesJobDone(KJob*)) );
+    connect( listJob, &KIO::ListJob::entries, this, &AudioCdCollection::audioCdEntries );
+    connect( listJob, &KIO::ListJob::result, this, &AudioCdCollection::slotEntriesJobDone );
 }
 
 void
@@ -145,7 +144,7 @@ AudioCdCollection::slotEntriesJobDone( KJob *job )
     QUrl url = m_cddbTextFiles.value( biggestTextFile );
     m_cddbTextFiles.clear(); // save memory
     KIO::StoredTransferJob *tjob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( tjob, SIGNAL(result(KJob*)), SLOT(infoFetchComplete(KJob*)) );
+    connect( tjob, &KIO::StoredTransferJob::result, this, &AudioCdCollection::infoFetchComplete );
 }
 
 void

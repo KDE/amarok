@@ -238,7 +238,7 @@ BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QW
 {
     setToolTip( i18n( "List and run bookmarks, or create new ones" ) );
 
-    connect( this, SIGNAL(clicked(bool)), this, SLOT(showMenu()) );
+    connect( this, &QAbstractButton::clicked, this, &BreadcrumbUrlMenuButton::showMenu );
 }
 
 BreadcrumbUrlMenuButton::~BreadcrumbUrlMenuButton()
@@ -274,7 +274,7 @@ BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
     if( !m_copyToClipboardAction )
     {
         m_copyToClipboardAction = new QAction( QIcon::fromTheme( "klipper" ), i18n( "Copy Current View Bookmark to Clipboard" ), this );
-        connect( m_copyToClipboardAction, SIGNAL(triggered(bool)), this, SLOT(copyCurrentToClipboard()) );
+        connect( m_copyToClipboardAction, &QAction::triggered, this, &BreadcrumbUrlMenuButton::copyCurrentToClipboard );
     }
 
     menu->addAction( m_copyToClipboardAction );

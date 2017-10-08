@@ -39,7 +39,7 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
     : QObject()
     , m_playlist( playlist )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(slotDone()) );
+    connect( this, &PlaylistFileLoaderJob::done, this, &PlaylistFileLoaderJob::slotDone );
 
     // we must handle remove downloading here as KIO is coupled with GUI as is not
     // designed to work from another thread
@@ -66,7 +66,7 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
                 i18n("Downloading remote playlist" ) );
         if( playlist->isLoadingAsync() )
             // job is started automatically by KIO
-            connect( job, SIGNAL(finished(KJob*)), SLOT(slotDonwloadFinished(KJob*)) );
+            connect( job, &KIO::FileCopyJob::finished, this, &PlaylistFileLoaderJob::slotDonwloadFinished );
         else
         {
             job->exec();

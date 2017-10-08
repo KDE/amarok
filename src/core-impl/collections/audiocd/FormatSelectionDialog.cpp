@@ -25,12 +25,12 @@ FormatSelectionDialog::FormatSelectionDialog( QWidget *parent )
 {
     setupUi( this );
 
-    connect( oggButton, SIGNAL(toggled(bool)), this, SLOT(selectionChanged(bool)) );
-    connect( flacButton, SIGNAL(toggled(bool)), this, SLOT(selectionChanged(bool)) );
-    connect( wavButton, SIGNAL(toggled(bool)), this, SLOT(selectionChanged(bool)) );
-    connect( mp3Button, SIGNAL(toggled(bool)), this, SLOT(selectionChanged(bool)) );
+    connect( oggButton, &QRadioButton::toggled, this, &FormatSelectionDialog::selectionChanged );
+    connect( flacButton,  &QRadioButton::toggled, this, &FormatSelectionDialog::selectionChanged );
+    connect( wavButton,  &QRadioButton::toggled, this, &FormatSelectionDialog::selectionChanged );
+    connect( mp3Button,  &QRadioButton::toggled, this, &FormatSelectionDialog::selectionChanged );
 
-    connect( advancedButton, SIGNAL(clicked(bool)), this, SLOT(showAdvancedSettings()) );
+    connect( advancedButton,  &QRadioButton::clicked, this, &FormatSelectionDialog::showAdvancedSettings );
 
 
     //restore format from last time, if any.

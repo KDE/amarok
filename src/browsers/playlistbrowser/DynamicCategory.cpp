@@ -74,7 +74,8 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_previous->setMinimum( 0 );
     m_previous->setToolTip( i18n( "Number of previous tracks to remain in the playlist." ) );
     m_previous->setValue( AmarokConfig::previousTracks() );
-    QObject::connect( m_previous, SIGNAL(valueChanged(int)), this, SLOT(setPreviousTracks(int)) );
+    connect( m_previous, QOverload<int>::of(&QSpinBox::valueChanged),
+             this, &PlaylistBrowserNS::DynamicCategory::setPreviousTracks );
 
     label = new QLabel( i18n( "Upcoming:" ), controls2Layout );
     // label->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
@@ -84,11 +85,12 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_upcoming->setMinimum( 1 );
     m_upcoming->setToolTip( i18n( "Number of upcoming tracks to add to the playlist." ) );
     m_upcoming->setValue( AmarokConfig::upcomingTracks() );
-    QObject::connect( m_upcoming, SIGNAL(valueChanged(int)), this, SLOT(setUpcomingTracks(int)) );
+    connect( m_upcoming, QOverload<int>::of(&QSpinBox::valueChanged),
+             this, &PlaylistBrowserNS::DynamicCategory::setUpcomingTracks );
 
 
-    QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL(triggered(bool)),  this, SLOT(playlistCleared()) );
-    QObject::connect( (const QObject*)Amarok::actionCollection()->action( "disable_dynamic" ),  SIGNAL(triggered(bool)),  this, SLOT(playlistCleared()), Qt::DirectConnection );
+    connect( Amarok::actionCollection()->action( "playlist_clear" ),  &QAction::triggered,  this, &DynamicCategory::playlistCleared );
+    connect( Amarok::actionCollection()->action( "disable_dynamic" ),  &QAction::triggered,  this, &DynamicCategory::playlistCleared, Qt::DirectConnection );
 
 
     // -- the tool bar
@@ -142,27 +144,27 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_repopulateButton->setIcon( QIcon::fromTheme( "view-refresh-amarok" ) );
     m_repopulateButton->setEnabled( enabled );
     // m_repopulateButton->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    QObject::connect( m_repopulateButton, SIGNAL(clicked(bool)), The::playlistActions(), SLOT(repopulateDynamicPlaylist()) );
+    QObject::connect( m_repopulateButton, &QAbstractButton::clicked, The::playlistActions(), &Playlist::Actions::repopulateDynamicPlaylist );
 
 
     // -- the tree view
 
     m_tree = new DynamicView( this );
-    connect( m_tree->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-             this, SLOT(selectionChanged()) );
+    connect( m_tree->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &DynamicCategory::selectionChanged );
 
-    connect( m_onOffButton, SIGNAL(toggled(bool)), The::playlistActions(), SLOT(enableDynamicMode(bool)) );
-    connect( m_duplicateButton, SIGNAL(toggled(bool)), this, SLOT(setAllowDuplicates(bool)) );
+    connect( m_onOffButton, &QAbstractButton::toggled, The::playlistActions(), &Playlist::Actions::enableDynamicMode );
+    connect( m_duplicateButton, &QAbstractButton::toggled, this, &DynamicCategory::setAllowDuplicates );
 
-    connect( m_addButton, SIGNAL(clicked(bool)), m_tree, SLOT(addPlaylist()) );
-    connect( m_editButton, SIGNAL(clicked(bool)), m_tree, SLOT(editSelected()) );
-    connect( m_deleteButton, SIGNAL(clicked(bool)), m_tree, SLOT(removeSelected()) );
+    connect( m_addButton, &QAbstractButton::clicked, m_tree, &DynamicView::addPlaylist );
+    connect( m_editButton, &QAbstractButton::clicked, m_tree, &DynamicView::editSelected );
+    connect( m_deleteButton, &QAbstractButton::clicked, m_tree, &DynamicView::removeSelected );
 
     navigatorChanged();
     selectionChanged();
 
-    connect( The::playlistActions(), SIGNAL(navigatorChanged()),
-             this, SLOT(navigatorChanged()) );
+    connect( The::playlistActions(), &Playlist::Actions::navigatorChanged,
+             this, &DynamicCategory::navigatorChanged );
 }
 
 

@@ -54,8 +54,8 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 
     dialog->setWindowTitle(i18n("License Agreement"));
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-    dialog->connect(buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
-    dialog->connect(buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
+    dialog->connect(buttonBox, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
+    dialog->connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
     buttonBox->button(QDialogButtonBox::Close)->setDefault(true);
 
     const QFont font = KGlobalSettings::fixedFont();
@@ -126,8 +126,8 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
     QVBoxLayout *mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
     mainLayout->addWidget(mainWidget);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &ExtendedAboutDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &ExtendedAboutDialog::reject);
     buttonBox->button(QDialogButtonBox::Close)->setDefault(true);
 
     setModal(false);
@@ -191,7 +191,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
                                                                        i18n("License: %1",
                                                                             license.name(KAboutLicense::FullName))));
         showLicenseLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        connect(showLicenseLabel, SIGNAL(linkActivated(QString)), this, SLOT(_k_showLicense(QString)));
+        connect(showLicenseLabel, &QLabel::linkActivated, this, &ExtendedAboutDialog::showLicense);
 
         aboutLayout->addWidget(showLicenseLabel);
     }
@@ -221,7 +221,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
         m_showOcsAuthorButton = new AnimatedBarWidget( openDesktopIcon,
                                      i18n( "Get data from openDesktop.org to learn more about the team" ),
                                      "process-working", m_authorWidget.data() );
-        connect( m_showOcsAuthorButton.data(), SIGNAL(clicked()), this, SLOT(switchToOcsWidgets()) );
+        connect( m_showOcsAuthorButton.data(), &AnimatedBarWidget::clicked, this, &ExtendedAboutDialog::switchToOcsWidgets );
         authorLayout->addWidget( m_showOcsAuthorButton.data() );
 
         if (!aboutData->customAuthorTextEnabled() || !aboutData->customAuthorRichText().isEmpty())
@@ -253,8 +253,10 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
         }
 
         m_authorListWidget = new OcsPersonListWidget( d->aboutData->authors(), m_ocsData.authors(), OcsPersonItem::Author, m_authorWidget.data() );
-        connect( m_authorListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsAuthorButton.data(), SLOT(stop()) );
-        connect( m_authorListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsAuthorButton.data(), SLOT(fold()) );
+        connect( m_authorListWidget.data(), &OcsPersonListWidget::switchedToOcs,
+                 m_showOcsAuthorButton.data(), &AnimatedBarWidget::stop );
+        connect( m_authorListWidget.data(), &OcsPersonListWidget::switchedToOcs,
+                 m_showOcsAuthorButton.data(), &AnimatedBarWidget::fold );
 
         authorLayout->addWidget( m_authorListWidget.data() );
         authorLayout->setMargin( 0 );
@@ -277,12 +279,14 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
         m_showOcsCreditButton = new AnimatedBarWidget( openDesktopIcon,
                                      i18n( "Get data from openDesktop.org to learn more about contributors" ),
                                      "process-working", m_creditWidget.data() );
-        connect( m_showOcsCreditButton.data(), SIGNAL(clicked()), this, SLOT(switchToOcsWidgets()) );
+        connect( m_showOcsCreditButton.data(), &AnimatedBarWidget::clicked, this, &ExtendedAboutDialog::switchToOcsWidgets );
         creditLayout->addWidget( m_showOcsCreditButton.data() );
 
         m_creditListWidget = new OcsPersonListWidget( d->aboutData->credits(), m_ocsData.credits(), OcsPersonItem::Contributor, m_creditWidget.data() );
-        connect( m_creditListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsCreditButton.data(), SLOT(stop()) );
-        connect( m_creditListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsCreditButton.data(), SLOT(fold()) );
+        connect( m_creditListWidget.data(), &OcsPersonListWidget::switchedToOcs,
+                 m_showOcsCreditButton.data(), &AnimatedBarWidget::stop );
+        connect( m_creditListWidget.data(), &OcsPersonListWidget::switchedToOcs,
+                 m_showOcsCreditButton.data(), &AnimatedBarWidget::fold );
 
         creditLayout->addWidget( m_creditListWidget.data() );
         creditLayout->setMargin( 0 );
@@ -304,7 +308,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
         m_showOcsDonorButton = new AnimatedBarWidget( openDesktopIcon,
                                      i18n( "Get data from openDesktop.org to learn more about our generous donors" ),
                                      "process-working", m_donorWidget.data() );
-        connect( m_showOcsDonorButton.data(), SIGNAL(clicked()), this, SLOT(switchToOcsWidgets()) );
+        connect( m_showOcsDonorButton.data(), &AnimatedBarWidget::clicked, this, &ExtendedAboutDialog::switchToOcsWidgets );
         donorLayout->addWidget( m_showOcsDonorButton.data() );
 
         QList< KAboutPerson > donors;
@@ -314,8 +318,8 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
             donors << ( *it ).second;
         }
         m_donorListWidget = new OcsPersonListWidget( donors , m_ocsData.donors(), OcsPersonItem::Contributor, m_donorWidget.data() );
-        connect( m_donorListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsDonorButton.data(), SLOT(stop()) );
-        connect( m_donorListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsDonorButton.data(), SLOT(fold()) );
+        connect( m_donorListWidget.data(), &OcsPersonListWidget::switchedToOcs, m_showOcsDonorButton.data(), &AnimatedBarWidget::stop );
+        connect( m_donorListWidget.data(), &OcsPersonListWidget::switchedToOcs, m_showOcsDonorButton.data(), &AnimatedBarWidget::fold );
 
         donorLayout->addWidget( m_donorListWidget.data() );
         donorLayout->setMargin( 0 );
@@ -395,7 +399,7 @@ ExtendedAboutDialog::switchToOcsWidgets()
     if( m_showOcsDonorButton )
         m_showOcsDonorButton.data()->animate();
     AmarokAttica::ProviderInitJob *providerJob = AmarokAttica::Provider::byId( m_ocsData.providerId() );
-    connect( providerJob, SIGNAL(result(KJob*)), this, SLOT(onProviderFetched(KJob*)) );
+    connect( providerJob, &AmarokAttica::ProviderInitJob::result, this, &ExtendedAboutDialog::onProviderFetched );
 }
 
 void
@@ -415,5 +419,11 @@ ExtendedAboutDialog::onProviderFetched( KJob *job )
     }
     else
         warning() << "OCS provider fetch failed";
+}
+
+void
+ExtendedAboutDialog::showLicense(const QString& number)
+{
+    d->_k_showLicense(number);
 }
 

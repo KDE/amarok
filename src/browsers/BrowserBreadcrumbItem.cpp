@@ -55,7 +55,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
             BrowserCategory *siblingCategory = siblingMap.value( siblingName );
 
             QAction *action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
-            connect( action, SIGNAL(triggered()), siblingMap.value( siblingName ), SLOT(activate()) );
+            connect( action, &QAction::triggered, siblingMap.value( siblingName ), &BrowserCategory::activate );
         }
 
         m_menuButton->setMenu( menu );
@@ -70,18 +70,18 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
         m_mainButton->setIcon( QIcon::fromTheme( "user-home" ) );
     }
 
-    connect( m_mainButton, SIGNAL(sizePolicyChanged()), this, SLOT(updateSizePolicy()) );
+    connect( m_mainButton, &BreadcrumbItemButton::sizePolicyChanged, this, &BrowserBreadcrumbItem::updateSizePolicy );
 
     //if this is a list, make cliking on this item cause us
     //to navigate to its home.
     BrowserCategoryList *list = qobject_cast<BrowserCategoryList*>( category );
     if ( list )
     {
-        connect( m_mainButton, SIGNAL(clicked(bool)), list, SLOT(home()) );
+        connect( m_mainButton, &QAbstractButton::clicked, list, &BrowserCategoryList::home );
     }
     else  
     {
-        connect( m_mainButton, SIGNAL(clicked(bool)), category, SLOT(reActivate()) );
+        connect( m_mainButton, &QAbstractButton::clicked, category, &BrowserCategory::reActivate );
     }
 
     adjustSize();
@@ -118,16 +118,16 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
                 font.setBold( true );
                 action->setFont( font );
             }
-            connect( action, SIGNAL(triggered()), this, SLOT(activateSibling()) );
+            connect( action, &QAction::triggered, this, &BrowserBreadcrumbItem::activateSibling );
             i++;
         }
         m_menuButton->setMenu( menu );
     }
 
     m_mainButton = new BreadcrumbItemButton( name, this );
-    connect( m_mainButton, SIGNAL(sizePolicyChanged()), this, SLOT(updateSizePolicy()) );
-    connect( m_mainButton, SIGNAL(clicked(bool)), this, SLOT(activate()) );
-    connect( this, SIGNAL(activated(QString)), handler, SLOT(addItemActivated(QString)) );
+    connect( m_mainButton, &BreadcrumbItemButton::sizePolicyChanged, this, &BrowserBreadcrumbItem::updateSizePolicy );
+    connect( m_mainButton, &QAbstractButton::clicked, this, &BrowserBreadcrumbItem::activate );
+    connect( this, &BrowserBreadcrumbItem::activated, handler, &FileBrowser::addItemActivated );
 
     adjustSize();
     m_nominalWidth = width();

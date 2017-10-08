@@ -53,7 +53,8 @@ protected:
   virtual void mousePressEvent (QMouseEvent * e);
 
 protected Q_SLOTS:
-   void dateEnteredEvent(const QDate &d=QDate());
+   void dateEnteredEvent(const QDate &d);
+   void nullDateEnteredEvent();
 };
 
 #endif

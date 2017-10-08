@@ -345,7 +345,8 @@ CollectionViewItem::loadChildren()
     if( !m_item->requiresUpdate() )
         return;
     CollectionTreeItemModelBase *model = getModel();
-    connect( model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(slotDataChanged(QModelIndex,QModelIndex)) );
+    connect( model, &CollectionTreeItemModelBase::dataChanged,
+             this, &CollectionViewItem::slotDataChanged );
     model->ensureChildrenLoaded( m_item );
 }
 
@@ -356,7 +357,7 @@ CollectionViewItem::slotDataChanged( const QModelIndex &topLeft, const QModelInd
     if( static_cast<CollectionTreeItem*>( topLeft.internalPointer() ) != m_item )
         return;
     emit loaded( m_item );
-    Q_ASSERT( disconnect( sender(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, 0 ) );
+    Q_ASSERT( disconnect( qobject_cast<QAbstractItemModel*>(sender()), &QAbstractItemModel::dataChanged, this, 0 ) );
 }
 
 Collections::QueryMaker*

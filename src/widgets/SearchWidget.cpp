@@ -51,11 +51,14 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     m_sw->completionObject()->setIgnoreCase( true );
     m_sw->setToolTip( i18n( "Enter space-separated terms to search." ) );
     m_sw->addItem( KStandardGuiItem::find().icon(), QString() );
-    connect( m_sw, SIGNAL(activated(int)), SLOT(onComboItemActivated(int)) );
-    connect( m_sw, SIGNAL(editTextChanged(QString)), SLOT(resetFilterTimeout()) );
-    connect( m_sw, SIGNAL(returnPressed()), SLOT(filterNow()) ); // filterNow() calls addCompletion()
-    connect( m_sw, SIGNAL(returnPressed()), SIGNAL(returnPressed()) );
-    connect( m_sw, SIGNAL(downPressed()), SLOT(advanceFocus()) );
+    connect( m_sw, QOverload<int>::of(&QComboBox::activated),
+             this, &SearchWidget::onComboItemActivated );
+    connect( m_sw, &Amarok::ComboBox::editTextChanged, this, &SearchWidget::resetFilterTimeout );
+    connect( m_sw, QOverload<>::of(&KComboBox::returnPressed),
+             this, &SearchWidget::filterNow ); // filterNow() calls addCompletion()
+             connect( m_sw, QOverload<>::of(&KComboBox::returnPressed),
+            this, &SearchWidget::returnPressed );
+    connect( m_sw, &Amarok::ComboBox::downPressed, this, &SearchWidget::advanceFocus );
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( searchBox );
@@ -72,14 +75,14 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
         m_filterAction->setObjectName( "filter" );
         m_toolBar->addAction( m_filterAction );
 
-        connect( m_filterAction, SIGNAL(triggered()), this, SLOT(slotShowFilterEditor()) );
+        connect( m_filterAction, &QAction::triggered, this, &SearchWidget::slotShowFilterEditor );
     }
 
     m_filterTimer.setSingleShot( true );
-    connect( &m_filterTimer, SIGNAL(timeout()), SLOT(filterNow()) );
+    connect( &m_filterTimer, &QTimer::timeout, this, &SearchWidget::filterNow );
 
     m_animationTimer.setInterval( 500 );
-    connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(nextAnimationTick()) );
+    connect( &m_animationTimer, &QTimer::timeout, this, &SearchWidget::nextAnimationTick );
 }
 
 void
@@ -134,8 +137,8 @@ SearchWidget::slotShowFilterEditor()
     fd->setAttribute( Qt::WA_DeleteOnClose );
     m_filterAction->setEnabled( false );
 
-    connect( fd, SIGNAL(filterChanged(QString)), m_sw, SLOT(setEditText(QString)) );
-    connect( fd, SIGNAL(finished(int)), this, SLOT(slotFilterEditorFinished(int)) );
+    connect( fd, &EditFilterDialog::filterChanged, m_sw, &Amarok::ComboBox::setEditText );
+    connect( fd, &QDialog::finished, this, &SearchWidget::slotFilterEditorFinished );
 
     fd->show();
 }
@@ -165,7 +168,7 @@ SearchWidget::showAdvancedButton( bool show )
             m_filterAction = new QAction( QIcon::fromTheme( "document-properties" ), i18n( "Edit filter" ), this );
             m_filterAction->setObjectName( "filter" );
             m_toolBar->addAction( m_filterAction );
-            connect( m_filterAction, SIGNAL(triggered()), this, SLOT(slotShowFilterEditor()) );
+            connect( m_filterAction, &QAction::triggered, this, &SearchWidget::slotShowFilterEditor );
         }
     }
     else

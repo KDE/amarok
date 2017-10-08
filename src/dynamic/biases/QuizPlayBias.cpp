@@ -150,8 +150,8 @@ Dynamic::QuizPlayBias::widget( QWidget* parent )
     case ArtistToArtist: combo->setCurrentIndex(1); break;
     case AlbumToAlbum:   combo->setCurrentIndex(2); break;
     }
-    connect( combo, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(selectionChanged(int)) );
+    connect( combo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+             this, &QuizPlayBias::selectionChanged );
     layout->addWidget( combo );
 
     return widget;
@@ -195,7 +195,7 @@ Dynamic::QuizPlayBias::matchingTracks( const Meta::TrackList& playlist,
     m_tracks = Dynamic::TrackSet( universe, false );
     QTimer::singleShot(0,
                        const_cast<QuizPlayBias*>(this),
-                       SLOT(newQuery())); // create the new query from my parent thread
+                       &QuizPlayBias::newQuery); // create the new query from my parent thread
 
     return Dynamic::TrackSet();
 }
@@ -297,10 +297,10 @@ Dynamic::QuizPlayBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
-             this, SLOT(updateReady(QStringList)) );
-    connect( m_qm.data(), SIGNAL(queryDone()),
-             this, SLOT(updateFinished()) );
+    connect( m_qm.data(), &Collections::QueryMaker::newResultReady,
+             this, &QuizPlayBias::updateReady );
+    connect( m_qm.data(), &Collections::QueryMaker::queryDone,
+             this, &QuizPlayBias::updateFinished );
     m_qm.data()->run();
 }
 

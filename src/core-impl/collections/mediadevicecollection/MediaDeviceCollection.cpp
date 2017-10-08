@@ -44,11 +44,11 @@ void
 MediaDeviceCollectionFactoryBase::init()
 {
     // When assistant identifies a device, Factory will attempt to build Collection
-    connect( m_assistant, SIGNAL(identified(MediaDeviceInfo*)), SLOT(slotDeviceDetected(MediaDeviceInfo*)) );
+    connect( m_assistant, &ConnectionAssistant::identified, this, &MediaDeviceCollectionFactoryBase::slotDeviceDetected );
 
     // When assistant told to disconnect, Factory will disconnect
     // the device, and have the Collection destroyed
-    connect( m_assistant, SIGNAL(disconnected(QString)), SLOT(slotDeviceDisconnected(QString)) );
+    connect( m_assistant, &ConnectionAssistant::disconnected, this, &MediaDeviceCollectionFactoryBase::slotDeviceDisconnected );
 
     // Register the device type with the Monitor
     MediaDeviceMonitor::instance()->registerDeviceType( m_assistant );
@@ -70,10 +70,10 @@ void MediaDeviceCollectionFactoryBase::slotDeviceDetected(MediaDeviceInfo* info)
         {
             // insert it into the map of known collections
             m_collectionMap.insert( info->udi(), coll );
-            connect( coll, SIGNAL(collectionReady(Collections::Collection*)),
-                     this, SIGNAL(newCollection(Collections::Collection*)) );
-            connect( coll, SIGNAL(collectionDisconnected(QString)),
-                     this, SLOT(slotDeviceDisconnected(QString)) );
+            connect( coll, &Collections::MediaDeviceCollection::collectionReady,
+                     this, &MediaDeviceCollectionFactoryBase::newCollection );
+            connect( coll, &Collections::MediaDeviceCollection::collectionDisconnected,
+                     this, &MediaDeviceCollectionFactoryBase::slotDeviceDisconnected );
             coll->init();
         }
     }
@@ -109,8 +109,8 @@ MediaDeviceCollection::MediaDeviceCollection()
     , m_ejectAction( 0 )
     , m_mc( new MemoryCollection() )
 {
-    connect( this, SIGNAL(attemptConnectionDone(bool)),
-             this, SLOT(slotAttemptConnectionDone(bool)) );
+    connect( this, &MediaDeviceCollection::attemptConnectionDone,
+             this, &MediaDeviceCollection::slotAttemptConnectionDone );
 }
 
 MediaDeviceCollection::~MediaDeviceCollection()
@@ -243,7 +243,7 @@ MediaDeviceCollection::ejectAction() const
                                      const_cast<MediaDeviceCollection*>(this) );
         m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
 
-        connect( m_ejectAction, SIGNAL(triggered()), SLOT(eject()) );
+        connect( m_ejectAction, &QAction::triggered, this, &MediaDeviceCollection::eject );
     }
     return m_ejectAction;
 }

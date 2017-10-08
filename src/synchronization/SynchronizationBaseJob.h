@@ -64,9 +64,9 @@ class SynchronizationBaseJob : public QObject
         virtual void synchronize();
 
     private Q_SLOTS:
-        void slotResultReady( const Meta::TrackList &artists );
-        void slotResultReady( const Meta::AlbumList &albums );
-        void slotResultReady( const Meta::ArtistList &tracks );
+        void slotTracksReady( const Meta::TrackList &artists );
+        void slotAlbumsReady( const Meta::AlbumList &albums );
+        void slotArtistsReady( const Meta::ArtistList &tracks );
         void slotQueryDone();
         void slotSyncTracks( const Meta::TrackList &tracks );
         void slotSyncQueryDone();

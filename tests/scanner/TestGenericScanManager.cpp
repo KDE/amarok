@@ -50,13 +50,13 @@ TestGenericScanManager::initTestCase()
 
     m_scanManager = new GenericScanManager( this );
 
-    connect( m_scanManager, SIGNAL(started(GenericScanManager::ScanType)),
-             SLOT(slotStarted(GenericScanManager::ScanType)) );
-    connect( m_scanManager, SIGNAL(directoryCount(int)), SLOT(slotDirectoryCount(int)) );
-    connect( m_scanManager, SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)),
-             SLOT(slotDirectoryScanned(QSharedPointer<CollectionScanner::Directory>)) );
-    connect( m_scanManager, SIGNAL(succeeded()), SLOT(slotSucceeded()) );
-    connect( m_scanManager, SIGNAL(failed(QString)), SLOT(slotFailed(QString)) );
+    connect( m_scanManager, &GenericScanManager::started,
+             this, &TestGenericScanManager::slotStarted );
+             connect( m_scanManager, &GenericScanManager::directoryCount, this, &TestGenericScanManager::slotDirectoryCount );
+    connect( m_scanManager, &GenericScanManager::directoryScanned,
+             this, &TestGenericScanManager::slotDirectoryScanned );
+    connect( m_scanManager, &GenericScanManager::succeeded, this, &TestGenericScanManager::slotSucceeded );
+    connect( m_scanManager, &GenericScanManager::failed, this, &TestGenericScanManager::slotFailed );
 
     AmarokConfig::setScanRecursively( true );
     AmarokConfig::setMonitorChanges( false );

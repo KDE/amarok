@@ -75,8 +75,8 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &Amarok2ConfigDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &Amarok2ConfigDialog::reject);
     mainLayout->addWidget(buttonBox);
     KWindowConfig::restoreWindowSize(windowHandle(), Amarok::config( "ConfigDialog" ));
 }
@@ -111,7 +111,7 @@ void Amarok2ConfigDialog::updateButtons() //SLOT
 /** Reimplemented from KConfigDialog */
 void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName, const QString &header, bool manage )
 {
-    connect( page, SIGNAL(settingsChanged(QString)), this, SIGNAL(settingsChanged(QString)) );
+    connect( page, &ConfigDialogBase::settingsChanged, this, &Amarok2ConfigDialog::settingsChanged );
 
     // Add the widget pointer to our list, for later reference
     m_pageList << page;

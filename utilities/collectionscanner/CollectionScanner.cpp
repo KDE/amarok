@@ -373,7 +373,7 @@ CollectionScanner::Scanner::readArgs()
     CollectionScanner::Track::setUseCharsetDetector( m_charset );
 
     // Start the actual scanning job
-    QTimer::singleShot( 0, this, SLOT(doJob()) );
+    QTimer::singleShot( 0, this, &Scanner::doJob );
 }
 
 void

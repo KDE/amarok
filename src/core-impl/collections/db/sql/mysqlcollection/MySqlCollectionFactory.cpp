@@ -21,7 +21,8 @@
 #include <core-impl/collections/db/sql/SqlCollection.h>
 #include <core-impl/collections/db/sql/SqlCollectionFactory.h>
 
-#include <KLocale>
+#include <KLocalizedString>
+#include <KPluginFactory>
 
 using namespace Collections;
 

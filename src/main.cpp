@@ -301,8 +301,8 @@ int main( int argc, char *argv[] )
     // register  the app  to dbus
     KDBusService dbusService( startOptions );
 
-    QObject::connect(&dbusService, SIGNAL(activateRequested(QStringList,QString)),
-                     &app, SLOT(activateRequested(QStringList,QString)));
+    QObject::connect(&dbusService, &KDBusService::activateRequested,
+                     &app, &App::activateRequested);
 
     const bool debugColorsEnabled = !parser.isSet( "coloroff" );
     const bool debugEnabled = parser.isSet( "debug" );

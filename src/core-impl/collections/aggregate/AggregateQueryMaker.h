@@ -76,20 +76,17 @@ class AMAROK_EXPORT AggregateQueryMaker : public QueryMaker
         virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
     private:
-        template <class PointerType>
-        void emitProperResult( const QList<PointerType> &list );
-
         void handleResult();
 
     private Q_SLOTS:
         void slotQueryDone();
-        void slotNewResultReady( const Meta::TrackList &tracks );
-        void slotNewResultReady( const Meta::ArtistList &artists );
-        void slotNewResultReady( const Meta::AlbumList &albums );
-        void slotNewResultReady( const Meta::GenreList &genres );
-        void slotNewResultReady( const Meta::ComposerList &composers );
-        void slotNewResultReady( const Meta::YearList &years );
-        void slotNewResultReady( const Meta::LabelList &labels );
+        void slotNewTracksReady( const Meta::TrackList &tracks );
+        void slotNewArtistsReady( const Meta::ArtistList &artists );
+        void slotNewAlbumsReady( const Meta::AlbumList &albums );
+        void slotNewGenresReady( const Meta::GenreList &genres );
+        void slotNewComposersReady( const Meta::ComposerList &composers );
+        void slotNewYearsReady( const Meta::YearList &years );
+        void slotNewLabelsReady( const Meta::LabelList &labels );
 
     private:
         AggregateCollection *m_collection;

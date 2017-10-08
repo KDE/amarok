@@ -76,7 +76,7 @@ bool UpnpCollectionBase::possiblyContainsTrack( const QUrl &url ) const
 
 void UpnpCollectionBase::addJob( KIO::SimpleJob *job )
 {
-    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotRemoveJob(KJob*)) );
+    connect( job, &KJob::result, this, &UpnpCollectionBase::slotRemoveJob );
     m_jobSet.insert( job );
     KIO::Scheduler::assignJobToSlave( m_slave, job );
 }

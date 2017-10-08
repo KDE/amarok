@@ -100,12 +100,12 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &s
             transferJob->addTranscode( i.value(), destination );
     }
 
-    connect( transferJob, SIGNAL(sourceFileTransferDone(QUrl)),
-             this, SLOT(slotTrackTransferred(QUrl)) );
-    connect( transferJob, SIGNAL(fileTransferDone(QUrl)),
-             m_umsCollection, SLOT(slotTrackAdded(QUrl)) );
-    connect( transferJob, SIGNAL(finished(KJob*)),
-             this, SLOT(slotCopyOperationFinished()) );
+    connect( transferJob, &UmsTransferJob::sourceFileTransferDone,
+             this, &UmsCollectionLocation::slotTrackTransferred );
+    connect( transferJob, &UmsTransferJob::fileTransferDone,
+             m_umsCollection, &UmsCollection::slotTrackAdded );
+    connect( transferJob, &UmsTransferJob::finished,
+             this, &UmsCollectionLocation::slotCopyOperationFinished );
 
     QString loggerText = operationInProgressText( configuration, sources.count(), m_umsCollection->prettyName() );
     Amarok::Components::logger()->newProgressOperation( transferJob, loggerText, transferJob,
@@ -130,7 +130,7 @@ UmsCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources 
     KIO::DeleteJob *delJob = KIO::del( sourceUrls, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( delJob, loggerText, delJob, SLOT(kill()) );
 
-    connect( delJob, SIGNAL(finished(KJob*)), SLOT(slotRemoveOperationFinished()) );
+    connect( delJob, &KIO::DeleteJob::finished, this, &UmsCollectionLocation::slotRemoveOperationFinished );
 }
 
 void

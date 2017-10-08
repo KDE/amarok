@@ -89,10 +89,10 @@ ScriptTerminatorWidget::ScriptTerminatorWidget( const QString &message )
 
     KPushButton *button = new KPushButton( i18n( "Terminate" ), this );
     button->setPalette(p);;
-    connect( button, SIGNAL(clicked()), SIGNAL(terminate()) );
+    connect( button, &QAbstractButton::clicked, this, &ScriptTerminatorWidget::terminate );
     button = new KPushButton( KStandardGuiItem::close(), this );
     button->setPalette(p);
-    connect( button, SIGNAL(clicked()), SLOT(hide()) );
+    connect( button, &QAbstractButton::clicked, this, &ScriptTerminatorWidget::hide );
 
     reposition();
 }
@@ -175,7 +175,8 @@ ScriptItem::timerEvent( QTimerEvent* event )
                     i18n( "Script %1 has been evaluating for over"
                     " 5 seconds now, terminate?"
                     , m_name ) );
-            connect( m_popupWidget.data(), SIGNAL(terminate()), SLOT(stop()) );
+                connect( m_popupWidget.data(), &ScriptTerminatorWidget::terminate,
+                         this, &ScriptItem::stop );
             m_popupWidget.data()->show();
         }
     }
@@ -251,9 +252,10 @@ ScriptItem::initializeScriptEngine()
         return;
 
     m_engine = new AmarokScript::AmarokScriptEngine( this );
-    connect( m_engine.data(), SIGNAL(deprecatedCall(QString)), this, SLOT(slotDeprecatedCall(QString)) );
-    connect( m_engine.data(), SIGNAL(signalHandlerException(QScriptValue)), this,
-             SIGNAL(signalHandlerException(QScriptValue)));
+    connect( m_engine.data(), &AmarokScript::AmarokScriptEngine::deprecatedCall,
+             this, &ScriptItem::slotDeprecatedCall );
+    connect( m_engine.data(), &AmarokScript::AmarokScriptEngine::signalHandlerException,
+             this, &ScriptItem::signalHandlerException );
     m_engine.data()->setProcessEventsInterval( 50 );
     debug() << "starting script engine:" << m_name;
 

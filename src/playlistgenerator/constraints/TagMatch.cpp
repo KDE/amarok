@@ -136,11 +136,11 @@ ConstraintTypes::TagMatch::editWidget() const
                                             m_invert,
                                             static_cast<int>( m_strictness * 10 ),
                                             m_value );
-    connect( e, SIGNAL(comparisonChanged(int)), this, SLOT(setComparison(int)) );
-    connect( e, SIGNAL(fieldChanged(QString)), this, SLOT(setField(QString)) );
-    connect( e, SIGNAL(invertChanged(bool)), this, SLOT(setInvert(bool)) );
-    connect( e, SIGNAL(strictnessChanged(int)), this, SLOT(setStrictness(int)) );
-    connect( e, SIGNAL(valueChanged(QVariant)), this, SLOT(setValue(QVariant)) );
+    connect( e, &TagMatchEditWidget::comparisonChanged, this, &TagMatch::setComparison );
+    connect( e, &TagMatchEditWidget::fieldChanged, this, &TagMatch::setField );
+    connect( e, &TagMatchEditWidget::invertChanged, this, &TagMatch::setInvert );
+    connect( e, &TagMatchEditWidget::strictnessChanged, this, &TagMatch::setStrictness );
+    connect( e, &TagMatchEditWidget::valueChanged, this, &TagMatch::setValue );
     return e;
 }
 
@@ -530,7 +530,8 @@ ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget(
     ui.setupUi( this );
 
     // plural support in combobox labels
-    connect( ui.spinBox_ValueDateValue, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateComboBoxLabels(int)) );
+    connect( ui.spinBox_ValueDateValue, QOverload<int>::of(&KIntSpinBox::valueChanged),
+             this, &TagMatchEditWidget::slotUpdateComboBoxLabels );
     ui.comboBox_ValueDateUnit->insertItem(0, i18ncp("within the last %1 days", "day", "days", 0));
     ui.comboBox_ValueDateUnit->insertItem(1, i18ncp("within the last %1 months", "month", "months", 0));
     ui.comboBox_ValueDateUnit->insertItem(2, i18ncp("within the last %1 years", "year", "years", 0));

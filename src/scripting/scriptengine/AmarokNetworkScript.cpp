@@ -112,8 +112,8 @@ Downloader::init( QScriptContext* context, QScriptEngine *engine, bool stringRes
 AmarokDownloadHelper::AmarokDownloadHelper()
 {
     s_instance = this;
-    connect( The::networkAccessManager(), SIGNAL(requestRedirected(QUrl,QUrl)),
-             this, SLOT(requestRedirected(QUrl,QUrl)) );
+    connect( The::networkAccessManager(), &NetworkAccessManagerProxy::requestRedirectedUrl,
+             this, &AmarokDownloadHelper::requestRedirected );
 }
 
 void

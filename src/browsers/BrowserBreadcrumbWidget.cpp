@@ -76,7 +76,7 @@ BrowserBreadcrumbWidget::setRootList( BrowserCategoryList * rootList )
     m_rootList = rootList;
 
     //update the breadcrumbs every time the view changes.
-    connect( m_rootList, SIGNAL(viewChanged()), this, SLOT(updateBreadcrumbs()) );
+    connect( m_rootList, &BrowserCategoryList::viewChanged, this, &BrowserBreadcrumbWidget::updateBreadcrumbs );
 
     updateBreadcrumbs();
 }
@@ -159,7 +159,7 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList *list )
                 BrowserCategory * siblingCategory = childMap.value( siblingName );
 
                 QAction * action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
-                connect( action, SIGNAL(triggered()), childMap.value( siblingName ), SLOT(activate()) );
+                connect( action, &QAction::triggered, childMap.value( siblingName ), &BrowserCategory::activate );
 
             }
 
@@ -186,7 +186,7 @@ void BrowserBreadcrumbWidget::resizeEvent( QResizeEvent *event )
 {
     Q_UNUSED( event )
     // we need to postpone the call, because hideAsNeeded() itself may trigger resizeEvent
-    QTimer::singleShot( 0 , this, SLOT(showAsNeeded()) );
+    QTimer::singleShot( 0 , this, &BrowserBreadcrumbWidget::showAsNeeded );
 }
 
 void BrowserBreadcrumbWidget::showAsNeeded()

@@ -101,17 +101,17 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         */
         void addTrack( Meta::TrackPtr &track );
 
-        void resultReady( const Meta::TrackList &tracks );
+        void tracksReady( const Meta::TrackList &tracks );
         void queryDone();
 
-        void resultReady( const Meta::AlbumList &albums );
-        void resultReady( const Meta::ArtistList &artists );
-        void resultReady( const Meta::ComposerList &composers );
-        void resultReady( const Meta::GenreList &genres );
+        void albumsReady( const Meta::AlbumList &albums );
+        void artistsReady( const Meta::ArtistList &artists );
+        void composersReady( const Meta::ComposerList &composers );
+        void genresReady( const Meta::GenreList &genres );
         /**
         *   Updates global label list by querying all collections for all existing labels.
         */
-        void resultReady( const Meta::LabelList &labels );
+        void labelsReady( const Meta::LabelList &labels );
         void dataQueryDone();
 
         /**
@@ -134,7 +134,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void setCurrentTrack( int num );
 
         /** Start a query maker for the given query type */
-        void startDataQuery( Collections::QueryMaker::QueryType type, const char* signal, const char* slot );
+        void startDataQuery( Collections::QueryMaker::QueryType type, const QMetaMethod &signal, const QMetaMethod &slot );
 
         /** Start queries for artists, albums, composers, genres and labels to fill out the combo boxes */
         void startDataQueries();

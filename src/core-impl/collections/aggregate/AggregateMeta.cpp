@@ -32,7 +32,7 @@ namespace Meta
 {
 
 #define FORWARD( call ) { foreach( TrackEditorPtr e, m_editors ) { e->call; } \
-                            if( !m_batchMode ) QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) ); }
+                            if( !m_batchMode ) QTimer::singleShot( 0, m_collection, &Collections::AggregateCollection::slotUpdated ); }
 
 class AggregateTrackEditor : public TrackEditor
 {
@@ -53,7 +53,7 @@ public:
     {
         foreach( TrackEditorPtr ec, m_editors ) ec->endUpdate();
         m_batchMode = false;
-        QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) );
+        QTimer::singleShot( 0, m_collection, &Collections::AggregateCollection::slotUpdated );
     }
     void setComment( const QString &newComment ) { FORWARD( setComment( newComment ) ) }
     void setTrackNumber( int newTrackNumber ) { FORWARD( setTrackNumber( newTrackNumber ) ) }

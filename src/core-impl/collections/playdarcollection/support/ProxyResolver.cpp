@@ -32,10 +32,10 @@ Playdar::ProxyResolver::ProxyResolver( Collections::PlaydarCollection *collectio
     , m_controller( new Playdar::Controller( true ) )
     , m_query()
 {
-    connect( m_controller, SIGNAL(playdarError(Playdar::Controller::ErrorState)),
-             this, SLOT(slotPlaydarError(Playdar::Controller::ErrorState)) );
-    connect( m_controller, SIGNAL(queryReady(Playdar::Query*)),
-             this, SLOT(collectQuery(Playdar::Query*)) );
+    connect( m_controller, &Playdar::Controller::playdarError,
+             this, &Playdar::ProxyResolver::slotPlaydarError );
+    connect( m_controller, &Playdar::Controller::queryReady,
+             this, &Playdar::ProxyResolver::collectQuery );
     m_controller->resolve( QUrlQuery(url).queryItemValue( "artist" ),
                            QUrlQuery(url).queryItemValue( "album" ),
                            QUrlQuery(url).queryItemValue( "title" ) );
@@ -58,10 +58,10 @@ void
 Playdar::ProxyResolver::collectQuery( Playdar::Query *query )
 {
     m_query = query;
-    connect( m_query, SIGNAL(querySolved(Meta::PlaydarTrackPtr)),
-             this, SLOT(collectSolution(Meta::PlaydarTrackPtr)) );
-    connect( m_query, SIGNAL(queryDone(Playdar::Query*,Meta::PlaydarTrackList)),
-             this, SLOT(slotQueryDone(Playdar::Query*,Meta::PlaydarTrackList)) );
+    connect( m_query, &Playdar::Query::querySolved,
+             this, &Playdar::ProxyResolver::collectSolution );
+    connect( m_query, &Playdar::Query::queryDone,
+             this, &Playdar::ProxyResolver::slotQueryDone );
 }
 
 void

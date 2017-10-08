@@ -42,7 +42,7 @@ ConfigureProviderDialog::ConfigureProviderDialog( const QString &providerId,
 
     mainWidget = configWidget;
 
-    connect( this, SIGNAL(accepted()), SLOT(slotAccepted()) );
+    connect( this, &ConfigureProviderDialog::accepted, this, &ConfigureProviderDialog::slotAccepted );
 }
 
 ConfigureProviderDialog::~ConfigureProviderDialog()

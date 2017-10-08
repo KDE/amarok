@@ -44,13 +44,15 @@
 #include <solid/storagedrive.h>
 #include <solid/storagevolume.h>
 
-#include <KDiskFreeSpaceInfo>
 #include <kmimetype.h>
 #include <QUrl>
 
 #include <QThread>
 #include <QTimer>
 #include <KConfigGroup>
+
+#include <KDiskFreeSpaceInfo>
+#include <KPluginFactory>
 
 AMAROK_EXPORT_COLLECTION( UmsCollectionFactory, umscollection )
 
@@ -67,10 +69,10 @@ UmsCollectionFactory::~UmsCollectionFactory()
 void
 UmsCollectionFactory::init()
 {
-    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(QString)),
-             SLOT(slotAddSolidDevice(QString)) );
-    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(QString)),
-             SLOT(slotRemoveSolidDevice(QString)) );
+    connect( Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded,
+             this, &UmsCollectionFactory::slotAddSolidDevice );
+    connect( Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved,
+             this, &UmsCollectionFactory::slotRemoveSolidDevice );
 
     // detect UMS devices that were already connected on startup
     QString query( "IS StorageAccess" );
@@ -184,9 +186,9 @@ UmsCollectionFactory::createCollectionForSolidDevice( const QString &udi )
     }
 
     // we are definitely interested in this device, listen for accessibility changes
-    disconnect( ssa, SIGNAL(accessibilityChanged(bool,QString)), this, 0 );
-    connect( ssa, SIGNAL(accessibilityChanged(bool,QString)),
-             SLOT(slotAccessibilityChanged(bool,QString)) );
+    disconnect( ssa, &Solid::StorageAccess::accessibilityChanged, this, 0 );
+    connect( ssa, &Solid::StorageAccess::accessibilityChanged,
+             this, &UmsCollectionFactory::slotAccessibilityChanged );
 
     if( !ssa->isAccessible() )
     {
@@ -198,12 +200,12 @@ UmsCollectionFactory::createCollectionForSolidDevice( const QString &udi )
     m_collectionMap.insert( udi, collection );
 
     // when the collection is destroyed by someone else, remove it from m_collectionMap:
-    connect( collection, SIGNAL(destroyed(QObject*)), SLOT(slotCollectionDestroyed(QObject*)) );
+    connect( collection, &QObject::destroyed, this, &UmsCollectionFactory::slotCollectionDestroyed );
 
     // try to gracefully destroy collection when unmounting is requested using
     // external means: (Device notifier plasmoid etc.). Because the original action could
     // fail if we hold some files on the device open, we try to tearDown the device too.
-    connect( ssa, SIGNAL(teardownRequested(QString)), SLOT(slotRemoveAndTeardownSolidDevice(QString)) );
+    connect( ssa, &Solid::StorageAccess::teardownRequested, this, &UmsCollectionFactory::slotRemoveAndTeardownSolidDevice );
 
     emit newCollection( collection );
 }
@@ -244,21 +246,21 @@ UmsCollection::UmsCollection( Solid::Device device )
     debug() << "Creating UmsCollection for device with udi: " << m_device.udi();
 
     m_updateTimer.setSingleShot( true );
-    connect( this, SIGNAL(startUpdateTimer()), SLOT(slotStartUpdateTimer()) );
-    connect( &m_updateTimer, SIGNAL(timeout()), SLOT(collectionUpdated()) );
+    connect( this, &UmsCollection::startUpdateTimer, this, &UmsCollection::slotStartUpdateTimer );
+    connect( &m_updateTimer, &QTimer::timeout, this, &UmsCollection::collectionUpdated );
 
     m_configureAction = new QAction( QIcon::fromTheme( "configure" ), i18n( "&Configure Device" ), this );
     m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
-    connect( m_configureAction, SIGNAL(triggered()), SLOT(slotConfigure()) );
+    connect( m_configureAction, &QAction::triggered, this, &UmsCollection::slotConfigure );
 
     m_parseAction = new QAction( QIcon::fromTheme( "checkbox" ), i18n(  "&Activate This Collection" ), this );
     m_parseAction->setProperty( "popupdropper_svg_id", "edit" );
-    connect( m_parseAction, SIGNAL(triggered()), this, SLOT(slotParseActionTriggered()) );
+    connect( m_parseAction, &QAction::triggered, this, &UmsCollection::slotParseActionTriggered );
 
     m_ejectAction = new QAction( QIcon::fromTheme( "media-eject" ), i18n( "&Eject Device" ),
                                  const_cast<UmsCollection*>( this ) );
     m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
-    connect( m_ejectAction, SIGNAL(triggered()), SLOT(slotEject()) );
+    connect( m_ejectAction, &QAction::triggered, this, &UmsCollection::slotEject );
 
     init();
 }
@@ -562,8 +564,8 @@ UmsCollection::slotParseTracks()
     if( !m_scanManager )
     {
         m_scanManager = new GenericScanManager( this );
-        connect( m_scanManager, SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)),
-                 SLOT(slotDirectoryScanned(QSharedPointer<CollectionScanner::Directory>)) );
+        connect( m_scanManager, &GenericScanManager::directoryScanned,
+                 this, &UmsCollection::slotDirectoryScanned );
     }
 
     m_tracksParsed = true;

@@ -150,10 +150,10 @@ StorageManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
         if( !factory )
             continue;
 
-        connect( factory, SIGNAL(newStorage(SqlStorage*)),
-                 this, SLOT(slotNewStorage(SqlStorage*)) );
-        connect( factory, SIGNAL(newError(QStringList)),
-                 this, SLOT(slotNewError(QStringList)) );
+        connect( factory, &StorageFactory::newStorage,
+                 this, &StorageManager::slotNewStorage );
+        connect( factory, &StorageFactory::newError,
+                 this, &StorageManager::slotNewError );
     }
 }
 

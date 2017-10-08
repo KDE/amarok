@@ -41,17 +41,17 @@ lessThanPlaylistTitles( const Playlists::PlaylistPtr &lhs, const Playlists::Play
 PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     : m_playlistCategory( playlistCategory )
 {
-    connect( The::playlistManager(), SIGNAL(updated(int)), SLOT(slotUpdate(int)) );
+    connect( The::playlistManager(), &PlaylistManager::updated, this, &PlaylistBrowserModel::slotUpdate );
 
-    connect( The::playlistManager(), SIGNAL(playlistAdded(Playlists::PlaylistPtr,int)),
-             SLOT(slotPlaylistAdded(Playlists::PlaylistPtr,int)) );
-    connect( The::playlistManager(), SIGNAL(playlistRemoved(Playlists::PlaylistPtr,int)),
-             SLOT(slotPlaylistRemoved(Playlists::PlaylistPtr,int)) );
-    connect( The::playlistManager(), SIGNAL(playlistUpdated(Playlists::PlaylistPtr,int)),
-             SLOT(slotPlaylistUpdated(Playlists::PlaylistPtr,int)) );
+    connect( The::playlistManager(), &PlaylistManager::playlistAdded,
+             this, &PlaylistBrowserModel::slotPlaylistAdded );
+    connect( The::playlistManager(), &PlaylistManager::playlistRemoved,
+             this, &PlaylistBrowserModel::slotPlaylistRemoved );
+    connect( The::playlistManager(), &PlaylistManager::playlistUpdated,
+             this, &PlaylistBrowserModel::slotPlaylistUpdated );
 
-    connect( The::playlistManager(), SIGNAL(renamePlaylist(Playlists::PlaylistPtr)),
-             SLOT(slotRenamePlaylist(Playlists::PlaylistPtr)) );
+    connect( The::playlistManager(), &PlaylistManager::renamePlaylist,
+             this, &PlaylistBrowserModel::slotRenamePlaylist );
 
     m_playlists = loadPlaylists();
 }

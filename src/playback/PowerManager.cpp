@@ -30,12 +30,12 @@ PowerManager::PowerManager( EngineController *engine )
     : QObject( engine )
     , m_inhibitionCookie( -1 )
 {
-    connect( engine, SIGNAL(stopped(qint64,qint64)), this, SLOT(slotNotPlaying()) );
-    connect( engine, SIGNAL(paused()), this, SLOT(slotNotPlaying()) );
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)), this, SLOT(slotPlaying()) );
-    connect( App::instance(), SIGNAL(settingsChanged()), SLOT(slotSettingsChanged()) );
-    connect( Solid::PowerManagement::notifier(), SIGNAL(resumingFromSuspend()),
-            this, SLOT(slotResumingFromSuspend()) );
+    connect( engine, &EngineController::stopped, this, &PowerManager::slotNotPlaying );
+    connect( engine, &EngineController::paused, this, &PowerManager::slotNotPlaying );
+    connect( engine, &EngineController::trackPlaying, this, &PowerManager::slotPlaying );
+    connect( App::instance(), &App::settingsChanged, this, &PowerManager::slotSettingsChanged );
+    connect( Solid::PowerManagement::notifier(), &Solid::PowerManagement::Notifier::resumingFromSuspend,
+            this, &PowerManager::slotResumingFromSuspend );
 }
 
 PowerManager::~PowerManager()

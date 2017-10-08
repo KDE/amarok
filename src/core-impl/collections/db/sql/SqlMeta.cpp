@@ -1690,7 +1690,7 @@ SqlAlbum::setImage( const QImage &image )
                 Meta::FieldHash fields;
                 fields.insert( Meta::valImage, scaledImage );
                 WriteTagsJob *job = new WriteTagsJob( metaTrack->playableUrl().path(), fields );
-                QObject::connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+                QObject::connect( job, &WriteTagsJob::done, job, &WriteTagsJob::deleteLater );
                 ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
             }
             // note: we might want to update the track file size after writing the image

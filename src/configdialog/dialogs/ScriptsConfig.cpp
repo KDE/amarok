@@ -19,6 +19,7 @@
 #include "ScriptsConfig.h"
 
 #include "amarokconfig.h"
+#include "configdialog/ConfigDialog.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "scripting/scriptmanager/ScriptManager.h"
@@ -53,23 +54,26 @@ ScriptsConfig::ScriptsConfig( QWidget *parent )
 
     m_uninstallButton = gui.uninstallButton;
     m_timer = new QTimer(this);
-    connect( m_timer, SIGNAL(timeout()), this, SLOT(slotUpdateScripts()) );
+    connect( m_timer, &QTimer::timeout, this, &ScriptsConfig::slotUpdateScripts );
     m_timer->setInterval( 200 );
 
     // Load config
     gui.kcfg_AutoUpdateScripts->setChecked( AmarokConfig::autoUpdateScripts() );
     gui.manageButton->setIcon( QIcon::fromTheme( "get-hot-new-stuff-amarok" ) );
-    connect( gui.manageButton, SIGNAL(clicked()), SLOT(slotManageScripts()) );
-    connect( gui.installButton, SIGNAL(clicked(bool)), SLOT(installLocalScript()) );
+    connect( gui.manageButton, &QAbstractButton::clicked,
+             this, &ScriptsConfig::slotManageScripts );
+    connect( gui.installButton, &QAbstractButton::clicked,
+             this, &ScriptsConfig::installLocalScript );
 
     m_selector = gui.scriptSelector;
     m_verticalLayout = gui.verticalLayout;
     slotReloadScriptSelector();
 
-    connect( gui.reloadButton, SIGNAL(clicked(bool)), m_timer, SLOT(start()) );
-    connect( gui.uninstallButton, SIGNAL(clicked(bool)), this, SLOT(slotUninstallScript()) );
+    connect( gui.reloadButton, &QAbstractButton::clicked, m_timer, QOverload<>::of(&QTimer::start) );
+    connect( gui.uninstallButton, &QAbstractButton::clicked, this, &ScriptsConfig::slotUninstallScript );
 
-    connect( ScriptManager::instance(), SIGNAL(scriptsChanged()), SLOT(slotReloadScriptSelector()) );
+    connect( ScriptManager::instance(), &ScriptManager::scriptsChanged,
+             this, &ScriptsConfig::slotReloadScriptSelector );
 
     this->setEnabled( AmarokConfig::enableScripts() );
 }
@@ -209,16 +213,18 @@ ScriptsConfig::slotReloadScriptSelector()
     key = QLatin1String( "Scriptable Service" );
     m_selector->addScripts( ScriptManager::instance()->scripts( key ),
                             KPluginSelector::ReadConfigFile, i18n("Scriptable Service"), key );
-    connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
-    connect( m_selector, SIGNAL(changed(bool)), m_parent, SLOT(updateButtons()) );
-    connect( m_selector, SIGNAL(filtered(bool)), m_uninstallButton, SLOT(setDisabled(bool)) );
+    connect( m_selector, &ScriptSelector::changed, this, &ScriptsConfig::slotConfigChanged );
+    connect( m_selector, &ScriptSelector::filtered, m_uninstallButton, &QPushButton::setDisabled );
+
+    if (auto dialog = qobject_cast<Amarok2ConfigDialog*>(m_parent))
+        connect( m_selector, &ScriptSelector::changed, dialog, &Amarok2ConfigDialog::updateButtons );
 
     m_verticalLayout->insertWidget( 0, m_selector );
     m_verticalLayout->removeWidget( m_oldSelector );
 
 #pragma message("PORTME KF5:  Line to port here")
     //m_selector->setFilter( m_oldSelector->filter() );
-    QTimer::singleShot( 0, this, SLOT(restoreScrollBar()) );
+    QTimer::singleShot( 0, this, &ScriptsConfig::restoreScrollBar );
 }
 
 void

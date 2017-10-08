@@ -44,8 +44,8 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
         activeCheckBox->setChecked( false );
     }
 
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(restoreOriginalSettings()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &EqualizerDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &EqualizerDialog::restoreOriginalSettings);
 
     // Assign slider items to vectors
     m_bands.append( eqPreampSlider );
@@ -108,29 +108,30 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     updatePresets();
     activeCheckBox->setChecked( equalizer->enabled() );
 
-    equalizer->applyEqualizerPreset( AmarokConfig::equalizerMode() - 1 );
+    equalizer->applyEqualizerPresetByIndex( AmarokConfig::equalizerMode() - 1 );
     equalizer->setGains( equalizer->gains() );
     updateUi();
 
-    connect( equalizer, SIGNAL(presetsChanged(QString)), SLOT(presetsChanged(QString)) );
-    connect( equalizer, SIGNAL(gainsChanged(QList<int>)), SLOT(gainsChanged(QList<int>)) );
-    connect( equalizer, SIGNAL(presetApplied(int)), SLOT(presetApplied(int)) );
+    connect( equalizer, &EqualizerController::presetsChanged, this, &EqualizerDialog::presetsChanged );
+    connect( equalizer, &EqualizerController::gainsChanged, this, &EqualizerDialog::gainsChanged );
+    connect( equalizer, &EqualizerController::presetApplied, this, &EqualizerDialog::presetApplied );
 
     // Configure signal and slots to handle presets
-    connect( activeCheckBox, SIGNAL(toggled(bool)), SLOT(toggleEqualizer(bool)) );
-    connect( eqPresets, SIGNAL(currentIndexChanged(int)), equalizer, SLOT(applyEqualizerPreset(int)) );
-    connect( eqPresets, SIGNAL(editTextChanged(QString)), SLOT(updateUi()) );
+    connect( activeCheckBox, &QCheckBox::toggled, this, &EqualizerDialog::toggleEqualizer );
+    connect( eqPresets, QOverload<int>::of(&QComboBox::currentIndexChanged),
+             equalizer, &EqualizerController::applyEqualizerPresetByIndex );
+    connect( eqPresets, &QComboBox::editTextChanged, this, &EqualizerDialog::updateUi );
     foreach( QSlider* mSlider, m_bands )
-        connect( mSlider, SIGNAL(valueChanged(int)), SLOT(bandsChanged()) );
+        connect( mSlider, &QSlider::valueChanged, this, &EqualizerDialog::bandsChanged );
 
     eqPresetSaveBtn->setIcon( QIcon::fromTheme( "document-save" ) );
-    connect( eqPresetSaveBtn, SIGNAL(clicked()), SLOT(savePreset()) );
+    connect( eqPresetSaveBtn, &QAbstractButton::clicked, this, &EqualizerDialog::savePreset );
 
     eqPresetDeleteBtn->setIcon( QIcon::fromTheme( "edit-delete" ) );
-    connect( eqPresetDeleteBtn, SIGNAL(clicked()), SLOT(deletePreset()) );
+    connect( eqPresetDeleteBtn, &QAbstractButton::clicked, this, &EqualizerDialog::deletePreset );
 
     eqPresetResetBtn->setIcon( QIcon::fromTheme( "edit-undo" ) );
-    connect( eqPresetResetBtn, SIGNAL(clicked()), SLOT(restorePreset()) );
+    connect( eqPresetResetBtn, &QAbstractButton::clicked, this, &EqualizerDialog::restorePreset );
 }
 
 EqualizerDialog::~EqualizerDialog()
@@ -186,7 +187,7 @@ EqualizerDialog::restoreOriginalSettings()
 {
     activeCheckBox->setChecked( m_originalActivated );
     int originalPresetIndex = EqualizerPresets::eqGlobalList().indexOf( m_originalPreset );
-    The::engineController()->equalizerController()->applyEqualizerPreset( originalPresetIndex );
+    The::engineController()->equalizerController()->applyEqualizerPresetByIndex( originalPresetIndex );
     eqPresets->setEditText( m_originalPreset );
     The::engineController()->equalizerController()->setGains( m_originalGains );
     this->reject();
@@ -314,8 +315,8 @@ EqualizerDialog::toggleEqualizer( bool enabled )
 
     EqualizerController *eq = The::engineController()->equalizerController();
     if( !enabled )
-        eq->applyEqualizerPreset( -1 );
+        eq->applyEqualizerPresetByIndex( -1 );
     else
-        eq->applyEqualizerPreset( eqPresets->currentIndex() );
+        eq->applyEqualizerPresetByIndex( eqPresets->currentIndex() );
 }
 

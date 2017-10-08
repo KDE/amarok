@@ -102,7 +102,7 @@ UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
     debug() << QString( "Copy episode \"%1\" to %2" ).arg( localFilePath.path())
             .arg( destination.path() );
     KIO::FileCopyJob *copyJob = KIO::file_copy( localFilePath, destination );
-    connect( copyJob, SIGNAL(result(KJob*)), SLOT(slotCopyComplete(KJob*)) );
+    connect( copyJob, &KJob::result, this, &UmsPodcastProvider::slotCopyComplete );
     copyJob->start();
     //we have not copied the data over yet so we can't return an episode yet
     //TODO: return a proxy for the episode we are still copying.
@@ -190,7 +190,7 @@ UmsPodcastProvider::episodeActions( PodcastEpisodeList episodes )
     {
         m_deleteEpisodeAction = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete Episode" ), this );
         m_deleteEpisodeAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_deleteEpisodeAction, SIGNAL(triggered()), SLOT(slotDeleteEpisodes()) );
+        connect( m_deleteEpisodeAction, &QAction::triggered, this, &UmsPodcastProvider::slotDeleteEpisodes );
     }
     // set the episode list as data that we'll retrieve in the slot
     m_deleteEpisodeAction->setData( QVariant::fromValue( episodes ) );
@@ -285,8 +285,7 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
     //keep track of these episodes until the job is done
     m_deleteJobMap.insert( deleteJob, umsEpisodes );
 
-    connect( deleteJob, SIGNAL(result(KJob*)),
-             SLOT(deleteJobComplete(KJob*)) );
+    connect( deleteJob, &KJob::result, this, &UmsPodcastProvider::deleteJobComplete );
 }
 
 void
@@ -333,7 +332,7 @@ UmsPodcastProvider::channelActions( PodcastChannelList channels )
         m_deleteChannelAction = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete "
                 "Channel and Episodes" ), this );
         m_deleteChannelAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_deleteChannelAction, SIGNAL(triggered()), SLOT(slotDeleteChannels()) );
+        connect( m_deleteChannelAction, &QAction::triggered, this, &UmsPodcastProvider::slotDeleteChannels );
     }
     // set the episode list as data that we'll retrieve in the slot
     m_deleteChannelAction->setData( QVariant::fromValue( channels ) );

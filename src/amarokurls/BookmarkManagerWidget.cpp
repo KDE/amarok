@@ -43,11 +43,11 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
 
     QAction * addGroupAction = new QAction( QIcon::fromTheme("media-track-add-amarok" ), i18n( "Add Group" ), this  );
     m_toolBar->addAction( addGroupAction );
-    connect( addGroupAction, SIGNAL(triggered(bool)), BookmarkModel::instance(), SLOT(createNewGroup()) );
+    connect( addGroupAction, &QAction::triggered, BookmarkModel::instance(), &BookmarkModel::createNewGroup );
 
     /*QAction * addBookmarkAction = new QAction( QIcon::fromTheme("bookmark-new" ), i18n( "New Bookmark" ), this  );
     m_toolBar->addAction( addBookmarkAction );
-    connect( addBookmarkAction, SIGNAL(triggered(bool)), BookmarkModel::instance(), SLOT(createNewBookmark()) );*/
+    connect( addBookmarkaction, &QAction::triggered, BookmarkModel::instance(), &BookmarkModel::createNewBookmark );*/
 
     m_toolBar->addWidget( new BookmarkCurrentButton( 0 ) );
 
@@ -73,8 +73,8 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_bookmarkView->setSortingEnabled( true );
     m_bookmarkView->resizeColumnToContents( 0 );
 
-    connect( BookmarkModel::instance(), SIGNAL(editIndex(QModelIndex)), m_bookmarkView, SLOT(slotEdit(QModelIndex)) );
-    connect( m_searchEdit, SIGNAL(textChanged(QString)), m_proxyModel, SLOT(setFilterFixedString(QString)) );
+    connect( BookmarkModel::instance(), &BookmarkModel::editIndex, m_bookmarkView, &BookmarkTreeView::slotEdit );
+    connect( m_searchEdit, &Amarok::LineEdit::textChanged, m_proxyModel, &QSortFilterProxyModel::setFilterFixedString );
 
     m_currentBookmarkId = -1;
 

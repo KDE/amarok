@@ -103,7 +103,7 @@ public:
     DirBrowserModel( QObject *parent = 0 ) : KDirModel( parent )
     {
         updateRowHeight();
-        connect( KGlobalSettings::self(), SIGNAL(appearanceChanged()), SLOT(updateRowHeight()) );
+        connect( KGlobalSettings::self(), &KGlobalSettings::appearanceChanged, this, &DirBrowserModel::updateRowHeight );
     }
 
     virtual ~DirBrowserModel() {}
@@ -135,7 +135,7 @@ public:
     FilePlacesModel( QObject *parent = 0 ) : KFilePlacesModel( parent )
     {
         updateRowHeight();
-        connect( KGlobalSettings::self(), SIGNAL(appearanceChanged()), SLOT(updateRowHeight()) );
+        connect( KGlobalSettings::self(), &KGlobalSettings::appearanceChanged, this, &FilePlacesModel::updateRowHeight );
     }
 
     virtual ~FilePlacesModel() {}

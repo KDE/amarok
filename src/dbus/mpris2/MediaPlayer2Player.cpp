@@ -59,38 +59,38 @@ MediaPlayer2Player::MediaPlayer2Player(QObject* parent)
     : DBusAbstractAdaptor(parent)
     , m_lastPosition(-1)
 {
-    connect( The::engineController(), SIGNAL(trackPositionChanged(qint64,bool)),
-             this,                    SLOT(trackPositionChanged(qint64,bool)) );
+    connect( The::engineController(), &EngineController::trackPositionChanged,
+             this, &MediaPlayer2Player::trackPositionChanged );
     // it is important that we receive this signal *after* the playlist code
     // has dealt with it, in order to get the right value for mpris:trackid
-    connect( The::engineController(), SIGNAL(trackChanged(Meta::TrackPtr)),
-             this,                    SLOT(trackChanged(Meta::TrackPtr)),
+    connect( The::engineController(), &EngineController::trackChanged,
+             this, &MediaPlayer2Player::trackChanged,
              Qt::QueuedConnection );
-    connect( The::engineController(), SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
-             this,                    SLOT(trackMetadataChanged(Meta::TrackPtr)) );
-    connect( The::engineController(), SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
-             this,                    SLOT(albumMetadataChanged(Meta::AlbumPtr)) );
-    connect( The::engineController(), SIGNAL(seekableChanged(bool)),
-             this,                    SLOT(seekableChanged(bool)) );
-    connect( The::engineController(), SIGNAL(volumeChanged(int)),
-             this,                    SLOT(volumeChanged(int)) );
-    connect( The::engineController(), SIGNAL(trackLengthChanged(qint64)),
-             this,                    SLOT(trackLengthChanged(qint64)) );
-    connect( The::engineController(), SIGNAL(playbackStateChanged()),
-             this,                    SLOT(playbackStateChanged()) );
-    connect( The::playlistActions(),  SIGNAL(navigatorChanged()),
-             this,                    SLOT(playlistNavigatorChanged()) );
-    connect( The::playlist()->qaim(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-             this,                    SLOT(playlistRowsInserted(QModelIndex,int,int)) );
-    connect( The::playlist()->qaim(), SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
-             this,                    SLOT(playlistRowsMoved(QModelIndex,int,int,QModelIndex,int)) );
-    connect( The::playlist()->qaim(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
-             this,                    SLOT(playlistRowsRemoved(QModelIndex,int,int)) );
-    connect( The::playlist()->qaim(), SIGNAL(modelReset()),
-             this,                    SLOT(playlistReplaced()) );
+    connect( The::engineController(), &EngineController::trackMetadataChanged,
+             this, &MediaPlayer2Player::trackMetadataChanged );
+    connect( The::engineController(), &EngineController::albumMetadataChanged,
+             this, &MediaPlayer2Player::albumMetadataChanged );
+    connect( The::engineController(), &EngineController::seekableChanged,
+             this, &MediaPlayer2Player::seekableChanged );
+    connect( The::engineController(), &EngineController::volumeChanged,
+             this, &MediaPlayer2Player::volumeChanged );
+    connect( The::engineController(), &EngineController::trackLengthChanged,
+             this, &MediaPlayer2Player::trackLengthChanged );
+    connect( The::engineController(), &EngineController::playbackStateChanged,
+             this, &MediaPlayer2Player::playbackStateChanged );
+    connect( The::playlistActions(),  &Playlist::Actions::navigatorChanged,
+             this, &MediaPlayer2Player::playlistNavigatorChanged );
+    connect( The::playlist()->qaim(), &QAbstractItemModel::rowsInserted,
+             this, &MediaPlayer2Player::playlistRowsInserted );
+    connect( The::playlist()->qaim(), &QAbstractItemModel::rowsMoved,
+             this, &MediaPlayer2Player::playlistRowsMoved );
+    connect( The::playlist()->qaim(), &QAbstractItemModel::rowsRemoved,
+             this, &MediaPlayer2Player::playlistRowsRemoved );
+    connect( The::playlist()->qaim(), &QAbstractItemModel::modelReset,
+             this, &MediaPlayer2Player::playlistReplaced );
     connect( qobject_cast<Playlist::ProxyBase*>(The::playlist()->qaim()),
-                                      SIGNAL(activeTrackChanged(quint64)),
-             this,                    SLOT(playlistActiveTrackChanged(quint64)) );
+             &Playlist::ProxyBase::activeTrackChanged,
+             this, &MediaPlayer2Player::playlistActiveTrackChanged );
 }
 
 MediaPlayer2Player::~MediaPlayer2Player()

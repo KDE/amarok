@@ -91,8 +91,8 @@ PopupDropperItem::PopupDropperItem( QGraphicsItem *parent )
     , QAbstractGraphicsShapeItem( parent )
     , d( new PopupDropperItemPrivate( this ) )
 {
-    connect( &d->hoverTimer, SIGNAL(finished()), this, SLOT(hoverFinished()) );
-    connect( &d->hoverTimer, SIGNAL(frameChanged(int)), this, SLOT(hoverFrameChanged(int)) );
+    connect( &d->hoverTimer, &QTimeLine::finished, this, &PopupDropperItem::hoverFinished );
+    connect( &d->hoverTimer, &QTimeLine::frameChanged, this, &PopupDropperItem::hoverFrameChanged );
 }
 
 PopupDropperItem::PopupDropperItem( const QString &file, QGraphicsItem *parent )
@@ -101,8 +101,8 @@ PopupDropperItem::PopupDropperItem( const QString &file, QGraphicsItem *parent )
     , d( new PopupDropperItemPrivate( this ) )
 {
     d->file = file;
-    connect( &d->hoverTimer, SIGNAL(finished()), this, SLOT(hoverFinished()) );
-    connect( &d->hoverTimer, SIGNAL(frameChanged(int)), this, SLOT(hoverFrameChanged(int)) );
+    connect( &d->hoverTimer, &QTimeLine::finished, this, &PopupDropperItem::hoverFinished );
+    connect( &d->hoverTimer, &QTimeLine::frameChanged, this, &PopupDropperItem::hoverFrameChanged );
 }
 
 PopupDropperItem::~PopupDropperItem()

@@ -143,7 +143,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
     Q_SIGNALS:
         //deprecated, use collectionAdded( Collections::Collection*, CollectionStatus ) instead
-        void collectionAdded( Collections::Collection *newCollection );
+//         void collectionAdded( Collections::Collection *newCollection );
 
         void collectionAdded( Collections::Collection *newCollection, CollectionManager::CollectionStatus status );
         void collectionRemoved( QString collectionId );

@@ -121,11 +121,12 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider *provider, int categor
     provider->disconnect( this, 0 );
 
     m_providerMap.insert( category, provider );
-    connect( provider, SIGNAL(updated()), SLOT(slotUpdated()));
-    connect( provider, SIGNAL(playlistAdded(Playlists::PlaylistPtr)),
-             SLOT(slotPlaylistAdded(Playlists::PlaylistPtr)));
-    connect( provider, SIGNAL(playlistRemoved(Playlists::PlaylistPtr)),
-             SLOT(slotPlaylistRemoved(Playlists::PlaylistPtr)));
+    connect( provider, &Playlists::PlaylistProvider::updated,
+             this, &PlaylistManager::slotUpdated );
+    connect( provider, &Playlists::PlaylistProvider::playlistAdded,
+             this, &PlaylistManager::slotPlaylistAdded );
+    connect( provider, &Playlists::PlaylistProvider::playlistRemoved,
+             this, &PlaylistManager::slotPlaylistRemoved );
 
     if( newCategory )
         emit categoryAdded( category );
@@ -177,7 +178,7 @@ PlaylistManager::addPlaylist( Playlists::PlaylistPtr playlist, int category )
 
             //The synchronosation will be done in the next mainloop run
             m_syncNeeded.append( syncedPlaylist );
-            QTimer::singleShot( 0, this, SLOT(slotSyncNeeded()) );
+            QTimer::singleShot( 0, this, &PlaylistManager::slotSyncNeeded );
         }
 
         //deliberatly reusing the passed argument

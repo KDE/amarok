@@ -54,7 +54,7 @@ class ProgressWidget : public QWidget
         virtual void mousePressEvent( QMouseEvent * );
 
     private Q_SLOTS:
-        void addBookmark( const QString &name, int milliSeconds );
+        void addBookmarkNoPopup( const QString &name, int milliSeconds );
         void redrawBookmarks(const QString *BookmarkName = 0);
 
     private:

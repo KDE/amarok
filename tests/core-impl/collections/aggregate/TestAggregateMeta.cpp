@@ -472,7 +472,7 @@ TestAggregateMeta::testEditableCapabilityOnMultipleTracks()
 
     Collections::AggregateCollection *collection = new Collections::AggregateCollection();
 
-    QSignalSpy spy( collection, SIGNAL(updated()));
+    QSignalSpy spy( collection, &Collections::AggregateCollection::updated);
     QVERIFY( spy.isValid() );
 
     Meta::AggregateTrack cut( collection, ptr1 );

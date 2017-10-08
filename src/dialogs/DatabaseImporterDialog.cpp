@@ -48,16 +48,14 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     m_configPage = addPage( m_configBox, i18n("Import configuration") );
 
     m_importer = new SqlBatchImporter( this );
-    connect( m_importer, SIGNAL(importSucceeded()), this, SLOT(importSucceeded()) );
-    connect( m_importer, SIGNAL(importFailed()), this, SLOT(importFailed()) );
-    connect( m_importer, SIGNAL(trackAdded(Meta::TrackPtr)), this, SLOT(importedTrack(Meta::TrackPtr)) );
-    connect( m_importer, SIGNAL(trackDiscarded(QString)), this, SLOT(discardedTrack(QString)) );
-    connect( m_importer, SIGNAL(trackMatchFound(Meta::TrackPtr,QString)),
-             this, SLOT(matchedTrack(Meta::TrackPtr,QString)) );
-    connect( m_importer, SIGNAL(trackMatchMultiple(Meta::TrackList,QString)),
-             this, SLOT(ambigousTrack(Meta::TrackList,QString)) );
-    connect( m_importer, SIGNAL(importError(QString)), this, SLOT(importError(QString)) );
-    connect( m_importer, SIGNAL(showMessage(QString)), this, SLOT(showMessage(QString)) );
+    connect( m_importer, &SqlBatchImporter::importSucceeded, this, &DatabaseImporterDialog::importSucceeded );
+    connect( m_importer, &SqlBatchImporter::importFailed, this, &DatabaseImporterDialog::importFailed );
+    connect( m_importer, &SqlBatchImporter::trackAdded, this, &DatabaseImporterDialog::importedTrack );
+    connect( m_importer, &SqlBatchImporter::trackDiscarded, this, &DatabaseImporterDialog::discardedTrack );
+    connect( m_importer, &SqlBatchImporter::trackMatchFound, this, &DatabaseImporterDialog::matchedTrack );
+    connect( m_importer, &SqlBatchImporter::trackMatchMultiple, this, &DatabaseImporterDialog::ambigousTrack );
+    connect( m_importer, &SqlBatchImporter::importError, this, &DatabaseImporterDialog::importError );
+    connect( m_importer, &SqlBatchImporter::showMessage, this, &DatabaseImporterDialog::showMessage );
     m_importerConfig = m_importer->configWidget( m_configBox );
 
     KVBox *resultBox = new KVBox( this );
@@ -69,7 +67,7 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
 
     m_resultsPage = addPage( resultBox, i18n("Migrating") );
 
-    connect( this, SIGNAL(currentPageChanged(KPageWidgetItem*,KPageWidgetItem*)), SLOT(pageChanged(KPageWidgetItem*,KPageWidgetItem*)) );
+    connect( this, &DatabaseImporterDialog::currentPageChanged, this, &DatabaseImporterDialog::pageChanged );
 }
 
 DatabaseImporterDialog::~DatabaseImporterDialog()

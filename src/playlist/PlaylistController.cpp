@@ -95,8 +95,8 @@ Controller::Controller()
     m_topModel = The::playlist();
 
     m_undoStack->setUndoLimit( 20 );
-    connect( m_undoStack, SIGNAL(canRedoChanged(bool)), this, SIGNAL(canRedoChanged(bool)) );
-    connect( m_undoStack, SIGNAL(canUndoChanged(bool)), this, SIGNAL(canUndoChanged(bool)) );
+    connect( m_undoStack, &QUndoStack::canRedoChanged, this, &Controller::canRedoChanged );
+    connect( m_undoStack, &QUndoStack::canUndoChanged, this, &Controller::canUndoChanged );
 }
 
 Controller::~Controller() {}
@@ -242,8 +242,8 @@ Controller::insertOptioned( Playlists::PlaylistList list, AddOptions options )
         flags |= TrackLoader::RemotePlaylistsAreStreams;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
     loader->setProperty( "options", QVariant::fromValue<AddOptions>( options ) );
-    connect( loader, SIGNAL(finished(Meta::TrackList)),
-                 SLOT(slotLoaderWithOptionsFinished(Meta::TrackList)) );
+    connect( loader, &TrackLoader::finished,
+             this, &Controller::slotLoaderWithOptionsFinished );
     loader->init( list );
 }
 
@@ -267,8 +267,8 @@ Controller::insertOptioned( QList<QUrl> &urls, AddOptions options )
         flags |= TrackLoader::RemotePlaylistsAreStreams;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
     loader->setProperty( "options", QVariant::fromValue<AddOptions>( options ) );
-    connect( loader, SIGNAL(finished(Meta::TrackList)),
-                 SLOT(slotLoaderWithOptionsFinished(Meta::TrackList)) );
+    connect( loader, &TrackLoader::finished,
+             this, &Controller::slotLoaderWithOptionsFinished );
     loader->init( urls );
 }
 
@@ -297,8 +297,8 @@ Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList playlists 
 {
     TrackLoader *loader = new TrackLoader(); // auto-deletes itself
     loader->setProperty( "topModelRow", QVariant( topModelRow ) );
-    connect( loader, SIGNAL(finished(Meta::TrackList)),
-             SLOT(slotLoaderWithRowFinished(Meta::TrackList)) );
+    connect( loader, &TrackLoader::finished,
+             this, &Controller::slotLoaderWithRowFinished );
     loader->init( playlists );
 }
 
@@ -307,8 +307,8 @@ Controller::insertUrls( int topModelRow, QList<QUrl> &urls )
 {
     TrackLoader *loader = new TrackLoader(); // auto-deletes itself
     loader->setProperty( "topModelRow", QVariant( topModelRow ) );
-    connect( loader, SIGNAL(finished(Meta::TrackList)),
-             SLOT(slotLoaderWithRowFinished(Meta::TrackList)) );
+    connect( loader, &TrackLoader::finished,
+             this, &Controller::slotLoaderWithRowFinished );
     loader->init( urls );
 }
 

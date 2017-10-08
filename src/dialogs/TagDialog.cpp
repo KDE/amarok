@@ -93,7 +93,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     initUi();
     setCurrentTrack( 0 );
 
-    QTimer::singleShot( 0, this, SLOT(show()) );
+    QTimer::singleShot( 0, this, &TagDialog::show );
 }
 
 TagDialog::TagDialog( Collections::QueryMaker *qm )
@@ -110,8 +110,13 @@ TagDialog::TagDialog( Collections::QueryMaker *qm )
     resize( minimumSizeHint() );
 
     qm->setQueryType( Collections::QueryMaker::Track );
-    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(resultReady(Meta::TrackList)), Qt::QueuedConnection );
-    connect( qm, SIGNAL(queryDone()), this, SLOT(queryDone()), Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newArtistsReady, this, &TagDialog::artistsReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newTracksReady, this, &TagDialog::tracksReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newAlbumsReady, this, &TagDialog::albumsReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newComposersReady, this, &TagDialog::composersReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newGenresReady, this, &TagDialog::genresReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newLabelsReady, this, &TagDialog::labelsReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &TagDialog::queryDone, Qt::QueuedConnection );
     qm->run();
 }
 
@@ -157,7 +162,7 @@ TagDialog::addTrack( Meta::TrackPtr &track )
 }
 
 void
-TagDialog::resultReady( const Meta::TrackList &tracks )
+TagDialog::tracksReady( const Meta::TrackList &tracks )
 {
     foreach( Meta::TrackPtr track, tracks )
         addTrack( track );
@@ -172,7 +177,7 @@ TagDialog::queryDone()
         initUi();
         setCurrentTrack( 0 );
 
-        QTimer::singleShot( 0, this, SLOT(show()) );
+        QTimer::singleShot( 0, this, &TagDialog::show );
     }
     else
     {
@@ -181,7 +186,7 @@ TagDialog::queryDone()
 }
 
 void
-TagDialog::resultReady( const Meta::AlbumList &albums )
+TagDialog::albumsReady( const Meta::AlbumList &albums )
 {
     foreach( const Meta::AlbumPtr &album, albums )
     {
@@ -194,7 +199,7 @@ TagDialog::resultReady( const Meta::AlbumList &albums )
 }
 
 void
-TagDialog::resultReady( const Meta::ArtistList &artists )
+TagDialog::artistsReady( const Meta::ArtistList &artists )
 {
     foreach( const Meta::ArtistPtr &artist, artists )
     {
@@ -204,7 +209,7 @@ TagDialog::resultReady( const Meta::ArtistList &artists )
 }
 
 void
-TagDialog::resultReady( const Meta::ComposerList &composers )
+TagDialog::composersReady( const Meta::ComposerList &composers )
 {
     foreach( const Meta::ComposerPtr &composer, composers )
     {
@@ -214,7 +219,7 @@ TagDialog::resultReady( const Meta::ComposerList &composers )
 }
 
 void
-TagDialog::resultReady( const Meta::GenreList &genres )
+TagDialog::genresReady( const Meta::GenreList &genres )
 {
     foreach( const Meta::GenrePtr &genre, genres )
     {
@@ -225,7 +230,7 @@ TagDialog::resultReady( const Meta::GenreList &genres )
 
 
 void
-TagDialog::resultReady( const Meta::LabelList &labels )
+TagDialog::labelsReady( const Meta::LabelList &labels )
 {
     foreach( const Meta::LabelPtr &label, labels )
     {
@@ -536,49 +541,49 @@ void TagDialog::initUi()
     // set an icon for the open-in-konqui button
     ui->pushButton_open->setIcon( QIcon::fromTheme( "folder-amarok" ) );
 
-    connect( ui->pushButton_guessTags, SIGNAL(clicked()), SLOT(guessFromFilename()) );
+    connect( ui->pushButton_guessTags, &QAbstractButton::clicked, this, &TagDialog::guessFromFilename );
 
     // Connects for modification check
     // only set to overwrite-on-save if the text has changed
-    connect( ui->kLineEdit_title,       SIGNAL(textChanged(QString)),     SLOT(checkChanged()) );
-    connect( ui->kComboBox_composer,    SIGNAL(activated(int)),                  SLOT(checkChanged()) );
-    connect( ui->kComboBox_composer,    SIGNAL(editTextChanged(QString)), SLOT(checkChanged()) );
-    connect( ui->kComboBox_artist,      SIGNAL(activated(int)),                  SLOT(checkChanged()) );
-    connect( ui->kComboBox_artist,      SIGNAL(editTextChanged(QString)), SLOT(checkChanged()) );
-    connect( ui->kComboBox_album,       SIGNAL(activated(int)),                  SLOT(checkChanged()) );
-    connect( ui->kComboBox_album,       SIGNAL(editTextChanged(QString)), SLOT(checkChanged()) );
-    connect( ui->kComboBox_albumArtist, SIGNAL(activated(int)),                  SLOT(checkChanged()) );
-    connect( ui->kComboBox_albumArtist, SIGNAL(editTextChanged(QString)), SLOT(checkChanged()) );
-    connect( ui->kComboBox_genre,       SIGNAL(activated(int)),                  SLOT(checkChanged()) );
-    connect( ui->kComboBox_genre,       SIGNAL(editTextChanged(QString)), SLOT(checkChanged()) );
-    connect( ui->kLineEdit_Bpm,         SIGNAL(textChanged(QString))    , SLOT(checkChanged()) );
-    connect( ui->ratingWidget,          SIGNAL(ratingChanged(int)),              SLOT(checkChanged()) );
-    connect( ui->qSpinBox_track,        SIGNAL(valueChanged(int)),               SLOT(checkChanged()) );
-    connect( ui->qSpinBox_year,         SIGNAL(valueChanged(int)),               SLOT(checkChanged()) );
-    connect( ui->qSpinBox_score,        SIGNAL(valueChanged(int)),               SLOT(checkChanged()) );
-    connect( ui->qPlainTextEdit_comment,SIGNAL(textChanged()),                     SLOT(checkChanged()) );
-    connect( ui->kRichTextEdit_lyrics,  SIGNAL(textChanged()),                     SLOT(checkChanged()) );
-    connect( ui->qSpinBox_discNumber,   SIGNAL(valueChanged(int)),               SLOT(checkChanged()) );
+    connect( ui->kLineEdit_title,       &KLineEdit::textChanged, this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_composer,    QOverload<int>::of(&QComboBox::activated), this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_composer,    &KComboBox::editTextChanged, this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_artist,      QOverload<int>::of(&QComboBox::activated), this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_artist,      &KComboBox::editTextChanged, this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_album,       QOverload<int>::of(&QComboBox::activated), this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_album,       &KComboBox::editTextChanged, this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_albumArtist, QOverload<int>::of(&QComboBox::activated), this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_albumArtist, &KComboBox::editTextChanged, this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_genre,       QOverload<int>::of(&QComboBox::activated), this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_genre,       &KComboBox::editTextChanged, this, &TagDialog::checkChanged );
+    connect( ui->kLineEdit_Bpm,         &QLineEdit::textChanged, this, &TagDialog::checkChanged );
+    connect( ui->ratingWidget,          QOverload<int>::of(&KRatingWidget::ratingChanged), this, &TagDialog::checkChanged );
+    connect( ui->qSpinBox_track,        QOverload<int>::of(&QSpinBox::valueChanged), this, &TagDialog::checkChanged );
+    connect( ui->qSpinBox_year,         QOverload<int>::of(&QSpinBox::valueChanged), this, &TagDialog::checkChanged );
+    connect( ui->qSpinBox_score,        QOverload<int>::of(&QSpinBox::valueChanged), this, &TagDialog::checkChanged );
+    connect( ui->qPlainTextEdit_comment, &QPlainTextEdit::textChanged, this, &TagDialog::checkChanged );
+    connect( ui->kRichTextEdit_lyrics,  &QTextEdit::textChanged, this, &TagDialog::checkChanged );
+    connect( ui->qSpinBox_discNumber,   QOverload<int>::of(&QSpinBox::valueChanged), this, &TagDialog::checkChanged );
 
-    connect( ui->pushButton_cancel,   SIGNAL(clicked()), SLOT(cancelPressed()) );
-    connect( ui->pushButton_ok,       SIGNAL(clicked()), SLOT(accept()) );
-    connect( ui->pushButton_open,     SIGNAL(clicked()), SLOT(openPressed()) );
-    connect( ui->pushButton_previous, SIGNAL(clicked()), SLOT(previousTrack()) );
-    connect( ui->pushButton_next,     SIGNAL(clicked()), SLOT(nextTrack()) );
-    connect( ui->checkBox_perTrack,   SIGNAL(toggled(bool)), SLOT(perTrack(bool)) );
+    connect( ui->pushButton_cancel,   &QAbstractButton::clicked, this, &TagDialog::cancelPressed );
+    connect( ui->pushButton_ok,       &QAbstractButton::clicked, this, &TagDialog::accept );
+    connect( ui->pushButton_open,     &QAbstractButton::clicked, this, &TagDialog::openPressed );
+    connect( ui->pushButton_previous, &QAbstractButton::clicked, this, &TagDialog::previousTrack );
+    connect( ui->pushButton_next,     &QAbstractButton::clicked, this, &TagDialog::nextTrack );
+    connect( ui->checkBox_perTrack,   &QCheckBox::toggled, this, &TagDialog::perTrack );
 
-    connect( ui->addButton,           SIGNAL(clicked()),                          SLOT(addLabelPressed()) );
-    connect( ui->removeButton,        SIGNAL(clicked()),                          SLOT(removeLabelPressed()) );
-    connect( ui->kComboBox_label,     SIGNAL(activated(int)),                   SLOT(labelModified()) );
-    connect( ui->kComboBox_label,     SIGNAL(editTextChanged(QString)),  SLOT(labelModified()) );
-    connect( ui->kComboBox_label,     SIGNAL(returnPressed()),                    SLOT(addLabelPressed()) );
-    connect( ui->kComboBox_label,     SIGNAL(returnPressed()),                    SLOT(checkChanged()) );
-    connect( ui->labelsList,          SIGNAL(pressed(QModelIndex)),      SLOT(labelSelected()) );
+    connect( ui->addButton,           &QAbstractButton::clicked, this, &TagDialog::addLabelPressed );
+    connect( ui->removeButton,        &QAbstractButton::clicked, this, &TagDialog::removeLabelPressed );
+    connect( ui->kComboBox_label,     QOverload<int>::of(&QComboBox::activated), this, &TagDialog::labelModified );
+    connect( ui->kComboBox_label,     &KComboBox::editTextChanged, this, &TagDialog::labelModified );
+    connect( ui->kComboBox_label,     QOverload<>::of(&KComboBox::returnPressed), this, &TagDialog::addLabelPressed );
+    connect( ui->kComboBox_label,     QOverload<>::of(&KComboBox::returnPressed), this, &TagDialog::checkChanged );
+    connect( ui->labelsList,          &QListView::pressed, this, &TagDialog::labelSelected );
 
     ui->pixmap_cover->setContextMenuPolicy( Qt::CustomContextMenu );
-    connect( ui->pixmap_cover, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showCoverMenu(QPoint)) );
+    connect( ui->pixmap_cover, &CoverLabel::customContextMenuRequested, this, &TagDialog::showCoverMenu );
 
-    connect( ui->pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzTagger()) );
+    connect( ui->pushButton_musicbrainz, &QAbstractButton::clicked, this, &TagDialog::musicbrainzTagger );
 
     if( m_tracks.count() > 1 )
         setPerTrack( false );
@@ -617,14 +622,14 @@ TagDialog::setCurrentTrack( int num )
 }
 
 void
-TagDialog::startDataQuery( Collections::QueryMaker::QueryType type, const char *signal,
-                           const char *slot )
+TagDialog::startDataQuery( Collections::QueryMaker::QueryType type, const QMetaMethod &signal,
+                           const QMetaMethod &slot )
 {
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     qm->setQueryType( type );
 
-    connect( qm, SIGNAL(queryDone()), SLOT(dataQueryDone()), Qt::QueuedConnection );
-    connect( qm, signal, slot,  Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &TagDialog::dataQueryDone, Qt::QueuedConnection );
+    connect( qm, signal, this, slot, Qt::QueuedConnection );
 
     qm->setAutoDelete( true );
     qm->run();
@@ -634,20 +639,20 @@ void
 TagDialog::startDataQueries()
 {
     startDataQuery( Collections::QueryMaker::Artist,
-                    SIGNAL(newResultReady(Meta::ArtistList)),
-                    SLOT(resultReady(Meta::ArtistList)) );
+                    QMetaMethod::fromSignal(&Collections::QueryMaker::newArtistsReady),
+                    QMetaMethod::fromSignal(&TagDialog::artistsReady) );
     startDataQuery( Collections::QueryMaker::Album,
-                    SIGNAL(newResultReady(Meta::AlbumList)),
-                    SLOT(resultReady(Meta::AlbumList)) );
+                    QMetaMethod::fromSignal(&Collections::QueryMaker::newAlbumsReady),
+                    QMetaMethod::fromSignal(&TagDialog::albumsReady) );
     startDataQuery( Collections::QueryMaker::Composer,
-                    SIGNAL(newResultReady(Meta::ComposerList)),
-                    SLOT(resultReady(Meta::ComposerList)) );
+                    QMetaMethod::fromSignal(&Collections::QueryMaker::newComposersReady),
+                    QMetaMethod::fromSignal(&TagDialog::composersReady) );
     startDataQuery( Collections::QueryMaker::Genre,
-                    SIGNAL(newResultReady(Meta::GenreList)),
-                    SLOT(resultReady(Meta::GenreList)) );
+                    QMetaMethod::fromSignal(&Collections::QueryMaker::newGenresReady),
+                    QMetaMethod::fromSignal(&TagDialog::genresReady) );
     startDataQuery( Collections::QueryMaker::Label,
-                    SIGNAL(newResultReady(Meta::LabelList)),
-                    SLOT(resultReady(Meta::LabelList)) );
+                    QMetaMethod::fromSignal(&Collections::QueryMaker::newLabelsReady),
+                    QMetaMethod::fromSignal(&TagDialog::labelsReady) );
 }
 
 
@@ -1385,8 +1390,8 @@ TagDialog::musicbrainzTagger()
 
     MusicBrainzTagger *dialog = new MusicBrainzTagger( m_tracks, this );
     dialog->setWindowTitle( i18n( "MusicBrainz Tagger" ) );
-    connect( dialog, SIGNAL(sendResult(QMap<Meta::TrackPtr,QVariantMap>)),
-             this, SLOT(musicbrainzTaggerResult(QMap<Meta::TrackPtr,QVariantMap>)) );
+    connect( dialog, &MusicBrainzTagger::sendResult,
+             this, &TagDialog::musicbrainzTaggerResult );
     dialog->show();
 }
 

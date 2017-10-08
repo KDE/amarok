@@ -143,7 +143,7 @@ NotifyObserversWaiter::NotifyObserversWaiter( const QSet<Meta::TrackPtr> &tracks
 {
     // we need to filter already resovled tracks in the next event loop iteration because
     // the user wouldn't be able to get the done() signal yet.
-    QTimer::singleShot( 0, this, SLOT(slotFilterResovled()) );
+    QTimer::singleShot( 0, this, &NotifyObserversWaiter::slotFilterResovled );
 }
 
 void

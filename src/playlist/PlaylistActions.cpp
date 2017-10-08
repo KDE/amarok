@@ -80,10 +80,10 @@ Playlist::Actions::Actions()
 
     if( engine ) // test cases might create a playlist without having an EngineController
     {
-        connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-                 this, SLOT(slotTrackPlaying(Meta::TrackPtr)) );
-        connect( engine, SIGNAL(stopped(qint64,qint64)),
-                 this, SLOT(slotPlayingStopped(qint64,qint64)) );
+        connect( engine, &EngineController::trackPlaying,
+                 this, &Playlist::Actions::slotTrackPlaying );
+        connect( engine, &EngineController::stopped,
+                 this, &Playlist::Actions::slotPlayingStopped );
     }
 }
 
@@ -522,7 +522,7 @@ Playlist::Actions::restoreDefaultPlaylist()
     The::playlistManager();
     Playlist::Restorer *restorer = new Playlist::Restorer();
     restorer->restore( QUrl::fromLocalFile(Amarok::defaultPlaylistPath()) );
-    connect( restorer, SIGNAL(restoreFinished()), restorer, SLOT(deleteLater()) );
+    connect( restorer, &Playlist::Restorer::restoreFinished, restorer, &QObject::deleteLater );
 }
 
 namespace The

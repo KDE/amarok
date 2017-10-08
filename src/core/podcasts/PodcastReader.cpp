@@ -439,19 +439,17 @@ PodcastReader::read( const QUrl &url )
 
     m_transferJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
 
-    connect( m_transferJob, SIGNAL(data(KIO::Job*,QByteArray)),
-             SLOT(slotAddData(KIO::Job*,QByteArray)) );
+    connect( m_transferJob, &KIO::TransferJob::data,
+             this, &PodcastReader::slotAddData );
 
-    connect( m_transferJob, SIGNAL(result(KJob*)),
-             SLOT(downloadResult(KJob*)) );
+    connect( m_transferJob, &KIO::TransferJob::result,
+             this, &PodcastReader::downloadResult );
 
-    connect( m_transferJob, SIGNAL(redirection(KIO::Job*,QUrl)),
-             SLOT(slotRedirection(KIO::Job*,QUrl)) );
+    connect( m_transferJob, &KIO::TransferJob::redirection,
+             this, &PodcastReader::slotRedirection );
 
-    connect( m_transferJob, SIGNAL( permanentRedirection( KIO::Job *,
-                                    const QUrl &, const QUrl & ) ),
-             SLOT( slotPermanentRedirection( KIO::Job *, const QUrl &,
-                                             const QUrl & ) ) );
+    connect( m_transferJob, &KIO::TransferJob::permanentRedirection,
+             this, &PodcastReader::slotPermanentRedirection );
 
     QString description = i18n( "Importing podcast channel from %1", url.url() );
     if( m_channel )

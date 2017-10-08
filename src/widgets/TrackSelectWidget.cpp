@@ -58,8 +58,8 @@ TrackSelectWidget::TrackSelectWidget( QWidget* parent )
     m_model->setParent( this );
     m_view->setModel( m_model );
 
-    connect( m_view, SIGNAL(itemSelected(CollectionTreeItem*)),
-             this, SLOT(recvNewSelection(CollectionTreeItem*)) );
+    connect( m_view, &CollectionTreeView::itemSelected,
+             this, &TrackSelectWidget::recvNewSelection );
 }
 
 TrackSelectWidget::~TrackSelectWidget() {}

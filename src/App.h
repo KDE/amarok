@@ -79,8 +79,10 @@ class AMAROK_EXPORT App : public QApplication
 
     public Q_SLOTS:
         void activateRequested(const QStringList &  arguments, const QString & cwd);
-        void applySettings( bool firstTime = false );
+        void applySettings();
+        void applySettingsFirstTime();
         void slotConfigAmarok( const QString& page = QString() );
+        void slotConfigAmarokWithEmptyPage();
         void slotConfigShortcuts();
         KIO::Job *trashFiles( const QList<QUrl> &files );
         void quit();

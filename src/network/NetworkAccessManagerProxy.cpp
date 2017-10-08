@@ -114,8 +114,8 @@ public:
                 // Let's try to fetch the data again, but this time from the new url.
                 QNetworkReply *newReply = q->getData( redirectUrl, cb->receiver.data(), cb->method, cb->type );
 
-                emit q->requestRedirected( url, redirectUrl );
-                emit q->requestRedirected( reply, newReply );
+                emit q->requestRedirectedUrl( url, redirectUrl );
+                emit q->requestRedirectedReply( reply, newReply );
             }
         }
 
@@ -204,7 +204,7 @@ NetworkAccessManagerProxy::getData( const QUrl &url, QObject *receiver, const ch
     typedef NetworkAccessManagerProxyPrivate::CallBackData PrivateCallBackData;
     PrivateCallBackData *cbm = new PrivateCallBackData( receiver, r, method, type );
     d->urlMap.insert( url, cbm );
-    connect( r, SIGNAL(finished()), this, SLOT(_replyFinished()), type );
+    connect( r, &QNetworkReply::finished, this, &NetworkAccessManagerProxy::replyFinished, type );
     return r;
 }
 
@@ -305,6 +305,13 @@ NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &r
 #endif // DEBUG_BUILD_TYPE
     return reply;
 }
+
+void
+NetworkAccessManagerProxy::replyFinished()
+{
+    d->_replyFinished();
+}
+
 
 namespace The
 {

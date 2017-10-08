@@ -45,7 +45,7 @@ void EventJob::setUrl(const QUrl &url)
 
 void EventJob::start()
 {
-    QTimer::singleShot(0, this, SLOT(doWork()));
+    QTimer::singleShot(0, this, &EventJob::doWork);
 }
 
 
@@ -57,10 +57,13 @@ Event EventJob::event() const
 
 void EventJob::doWork()
 {
-    m_job = KIO::get(m_url, KIO::NoReload, KIO::HideProgressInfo);
-    connect(m_job, SIGNAL(result(KJob*)), SLOT(slotJobResult(KJob*)));
-    connect(m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-        SLOT(slotJobData(KIO::Job*,QByteArray)));
+    auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+    connect( job, &KIO::TransferJob::result,
+             this, &EventJob::slotJobResult );
+    connect( job, &KIO::TransferJob::data,
+             this, &EventJob::slotJobData );
+
+    m_job = job;
 }
 
 

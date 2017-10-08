@@ -131,7 +131,7 @@ Dynamic::BiasFactory::instance()
 Dynamic::ReplacementBias::ReplacementBias( const QString &n )
     : m_name( n )
 {
-    connect( BiasFactory::instance(), SIGNAL(changed()), this, SLOT(factoryChanged()) );
+    connect( BiasFactory::instance(), &Dynamic::BiasFactory::changed, this, &ReplacementBias::factoryChanged );
 }
 
 Dynamic::ReplacementBias::ReplacementBias( const QString &n, QXmlStreamReader *reader )
@@ -151,9 +151,9 @@ Dynamic::ReplacementBias::ReplacementBias( const QString &n, QXmlStreamReader *r
     device->seek( start );
     m_html = device->read( end - start );
 
-debug() << "replacement bias for"<<n<<"is"<<m_html;
+    debug() << "replacement bias for"<<n<<"is"<<m_html;
 
-    connect( BiasFactory::instance(), SIGNAL(changed()), this, SLOT(factoryChanged()) );
+    connect( BiasFactory::instance(), &Dynamic::BiasFactory::changed, this, &ReplacementBias::factoryChanged );
 }
 
 void

@@ -61,8 +61,8 @@ namespace StatSyncing
             void slotStartArtistSearch();
             void slotStartTrackSearch( QString artistName );
 
-            void slotNewResultReady( Meta::ArtistList list );
-            void slotNewResultReady( Meta::TrackList list );
+            void slotNewArtistsReady( Meta::ArtistList list );
+            void slotNewTracksReady( Meta::TrackList list );
             void slotQueryDone();
 
         private:

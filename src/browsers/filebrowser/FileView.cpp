@@ -72,8 +72,8 @@ FileView::FileView( QWidget *parent )
     setEditTriggers( EditKeyPressed );
 
     The::paletteHandler()->updateItemView( this );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)),
-                                    SLOT(newPalette(QPalette)) );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette,
+             this, &FileView::newPalette );
 }
 
 void
@@ -120,7 +120,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
         foreach( Collections::Collection *coll, writableCollections )
         {
             CollectionAction *copyAction = new CollectionAction( coll, &menu );
-            connect( copyAction, SIGNAL(triggered()), this, SLOT(slotPrepareCopyTracks()) );
+            connect( copyAction, &QAction::triggered, this, &FileView::slotPrepareCopyTracks );
             copyMenu->addAction( copyAction );
         }
         menu.addMenu( copyMenu );
@@ -130,7 +130,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
         foreach( Collections::Collection *coll, writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, &menu );
-            connect( moveAction, SIGNAL(triggered()), this, SLOT(slotPrepareMoveTracks()) );
+            connect( moveAction, &QAction::triggered, this, &FileView::slotPrepareMoveTracks );
             moveMenu->addAction( moveAction );
         }
         menu.addMenu( moveMenu );
@@ -286,7 +286,7 @@ FileView::slotPrepareMoveTracks()
 
     // prevent bug 313003, require full metadata
     TrackLoader* dl = new TrackLoader( TrackLoader::FullMetadataRequired ); // auto-deletes itself
-    connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotMoveTracks(Meta::TrackList)) );
+    connect( dl, &TrackLoader::finished, this, &FileView::slotMoveTracks );
     dl->init( list.urlList() );
 }
 
@@ -308,7 +308,7 @@ FileView::slotPrepareCopyTracks()
 
     // prevent bug 313003, require full metadata
     TrackLoader* dl = new TrackLoader( TrackLoader::FullMetadataRequired ); // auto-deletes itself
-    connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotCopyTracks(Meta::TrackList)) );
+    connect( dl, &TrackLoader::finished, this, &FileView::slotMoveTracks );
     dl->init( list.urlList() );
 }
 
@@ -385,7 +385,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_appendAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
                                       this );
         m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-        connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppendToPlaylist()) );
+        connect( m_appendAction, &QAction::triggered, this, &FileView::slotAppendToPlaylist );
     }
     if( type & PlaylistAction )
         actions.append( m_appendAction );
@@ -395,7 +395,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_loadAction = new QAction( i18nc( "Replace the currently loaded tracks with these",
                                            "&Replace Playlist" ), this );
         m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-        connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotReplacePlaylist()) );
+        connect( m_loadAction, &QAction::triggered, this, &FileView::slotReplacePlaylist );
     }
     if( type & PlaylistAction )
         actions.append( m_loadAction );
@@ -406,8 +406,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_moveToTrashAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_moveToTrashAction->setShortcut( Qt::Key_Delete );
-        connect( m_moveToTrashAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                 this, SLOT(slotMoveToTrash(Qt::MouseButtons,Qt::KeyboardModifiers)) );
+        connect( m_moveToTrashAction, &QAction::triggered, this, &FileView::slotMoveToTrashWithoutModifiers );
     }
     if( type & OrganizeAction )
         actions.append( m_moveToTrashAction );
@@ -418,7 +417,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
-        connect( m_deleteAction, SIGNAL(triggered(bool)), SLOT(slotDelete()) );
+        connect( m_deleteAction, &QAction::triggered, this, &FileView::slotDelete );
     }
     if( type & OrganizeAction )
         actions.append( m_deleteAction );
@@ -428,7 +427,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_editAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
                                     i18n( "&Edit Track Details" ), this );
         m_editAction->setProperty( "popupdropper_svg_id", "edit" );
-        connect( m_editAction, SIGNAL(triggered()), this, SLOT(slotEditTracks()) );
+        connect( m_editAction, &QAction::triggered, this, &FileView::slotEditTracks );
     }
     if( type & EditAction )
     {
@@ -513,7 +512,7 @@ FileView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd )
     {
-        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
+        connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &PopupDropper::clear );
         m_pd->hide();
     }
 

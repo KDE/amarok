@@ -25,7 +25,7 @@ MultiSourceCapabilityImpl::MultiSourceCapabilityImpl(Meta::MultiTrack * track)
     , m_track( track )
 {
     //forward from track, as there might  be several instances of MultiSourceCapabilityImpl active for one track.
-    connect( m_track, SIGNAL(urlChanged(QUrl)), this, SIGNAL(urlChanged(QUrl)) );
+    connect( m_track, &Meta::MultiTrack::urlChanged, this, &MultiSourceCapabilityImpl::urlChanged );
 }
 
 MultiSourceCapabilityImpl::~MultiSourceCapabilityImpl()

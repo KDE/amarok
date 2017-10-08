@@ -18,6 +18,7 @@
 #include "SqlBatchImporterConfig.h"
 
 #include "core/collections/Collection.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core/capabilities/CollectionImportCapability.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -32,10 +33,10 @@ SqlBatchImporter::SqlBatchImporter( QObject *parent )
     , m_count( 0 )
     , m_importing( false )
 {
-    connect( this, SIGNAL(importSucceeded()), SLOT(importingFinished()) );
-    connect( this, SIGNAL(importFailed()), SLOT(importingFinished()) );
-    connect( this, SIGNAL(trackAdded(Meta::TrackPtr)), SLOT(trackImported(Meta::TrackPtr)) );
-    connect( this, SIGNAL(trackMatchFound(Meta::TrackPtr,QString)), SLOT(trackMatched(Meta::TrackPtr,QString)) );
+    connect( this, &SqlBatchImporter::importSucceeded, this, &SqlBatchImporter::importingFinished );
+    connect( this, &SqlBatchImporter::importFailed, this, &SqlBatchImporter::importingFinished );
+    connect( this, &SqlBatchImporter::trackAdded, this, &SqlBatchImporter::trackImported );
+    connect( this, &SqlBatchImporter::trackMatchFound, this, &SqlBatchImporter::trackMatched );
 }
 
 SqlBatchImporter::~SqlBatchImporter()

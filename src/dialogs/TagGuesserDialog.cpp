@@ -85,22 +85,22 @@ TagGuessOptionWidget::TagGuessOptionWidget( QWidget *parent )
     cbEliminateSpaces->setChecked(    Amarok::config( "TagGuesser" ).readEntry( "Eliminate trailing spaces", false ) );
     cbReplaceUnderscores->setChecked( Amarok::config( "TagGuesser" ).readEntry( "Replace underscores", false ) );
 
-    connect( cbCase, SIGNAL(toggled(bool)),
-             this, SLOT(editStateEnable(bool)) );
-    connect( cbCase, SIGNAL(toggled(bool)),
-             this, SIGNAL(changed()) );
-    connect( rbTitleCase, SIGNAL(toggled(bool)),
-             this, SIGNAL(changed()) );
-    connect( rbFirstLetter, SIGNAL(toggled(bool)),
-             this, SIGNAL(changed()) );
-    connect( rbAllLower, SIGNAL(toggled(bool)),
-             this, SIGNAL(changed()) );
-    connect( rbAllUpper, SIGNAL(toggled(bool)),
-             this, SIGNAL(changed()) );
-    connect( cbEliminateSpaces, SIGNAL(toggled(bool)),
-             this, SIGNAL(changed()) );
-    connect( cbReplaceUnderscores, SIGNAL(toggled(bool)),
-             this, SIGNAL(changed()) );
+    connect( cbCase, &QCheckBox::toggled,
+             this, &TagGuessOptionWidget::editStateEnable );
+    connect( cbCase, &QCheckBox::toggled,
+             this, &TagGuessOptionWidget::changed );
+    connect( rbTitleCase, &QCheckBox::toggled,
+             this, &TagGuessOptionWidget::changed );
+    connect( rbFirstLetter, &QCheckBox::toggled,
+             this, &TagGuessOptionWidget::changed );
+    connect( rbAllLower, &QCheckBox::toggled,
+             this, &TagGuessOptionWidget::changed );
+    connect( rbAllUpper, &QCheckBox::toggled,
+             this, &TagGuessOptionWidget::changed );
+    connect( cbEliminateSpaces, &QCheckBox::toggled,
+             this, &TagGuessOptionWidget::changed );
+    connect( cbReplaceUnderscores, &QCheckBox::toggled,
+             this, &TagGuessOptionWidget::changed );
 }
 
 void
@@ -229,8 +229,8 @@ TagGuesserDialog::TagGuesserDialog( const QString &fileName, QWidget *parent )
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &TagGuesserDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &TagGuesserDialog::reject);
 
     m_layoutWidget = new TagGuesserWidget( this );
     mainLayout->addWidget( m_layoutWidget );
@@ -242,10 +242,10 @@ TagGuesserDialog::TagGuesserDialog( const QString &fileName, QWidget *parent )
     m_optionsWidget =  new TagGuessOptionWidget();
     mainLayout->addWidget( m_optionsWidget );
 
-    connect( m_layoutWidget, SIGNAL(schemeChanged()),
-             this, SLOT(updatePreview()) );
-    connect( m_optionsWidget, SIGNAL(changed()),
-             this, SLOT(updatePreview()) );
+    connect( m_layoutWidget, &TagGuesserWidget::schemeChanged,
+             this, &TagGuesserDialog::updatePreview );
+    connect( m_optionsWidget, &TagGuessOptionWidget::changed,
+             this, &TagGuesserDialog::updatePreview );
 
     updatePreview();
 

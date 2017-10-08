@@ -110,7 +110,7 @@ Dynamic::SimpleMatchBias::matchingTracks( const Meta::TrackList& playlist,
 
     QTimer::singleShot(0,
                        const_cast<SimpleMatchBias*>(this),
-                       SLOT(newQuery())); // create the new query from my parent thread
+                       &SimpleMatchBias::newQuery); // create the new query from my parent thread
 
     return Dynamic::TrackSet();
 }
@@ -185,10 +185,10 @@ Dynamic::TagMatchBiasWidget::TagMatchBiasWidget( Dynamic::TagMatchBias* bias,
 
     syncControlsToBias();
 
-    connect( m_invertBox, SIGNAL(toggled(bool)),
-             SLOT(syncBiasToControls()));
-    connect( m_queryWidget, SIGNAL(changed(MetaQueryWidget::Filter)),
-             SLOT(syncBiasToControls()));
+    connect( m_invertBox, &QCheckBox::toggled,
+             this, &TagMatchBiasWidget::syncBiasToControls );
+    connect( m_queryWidget, &MetaQueryWidget::changed,
+             this, &TagMatchBiasWidget::syncBiasToControls );
 }
 
 void
@@ -412,10 +412,10 @@ Dynamic::TagMatchBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
-             this, SLOT(updateReady(QStringList)), Qt::QueuedConnection );
-    connect( m_qm.data(), SIGNAL(queryDone()),
-             this, SLOT(updateFinished()), Qt::QueuedConnection );
+    connect( m_qm.data(), &Collections::QueryMaker::newResultReady,
+             this, &TagMatchBias::updateReady, Qt::QueuedConnection );
+    connect( m_qm.data(), &Collections::QueryMaker::queryDone,
+             this, &TagMatchBias::updateFinished, Qt::QueuedConnection );
     m_qm.data()->run();
 }
 

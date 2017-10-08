@@ -75,19 +75,19 @@ void BrowserDock::polish()
 
     m_categoryList.data()->setMinimumSize( 100, 300 );
 
-    connect( m_breadcrumbWidget, SIGNAL(toHome()), this, SLOT(home()) );
+    connect( m_breadcrumbWidget, &BrowserBreadcrumbWidget::toHome, this, &BrowserDock::home );
 
     // Keyboard shortcut for going back one level
     QAction *action = new QAction( QIcon::fromTheme( "go-up" ), i18n( "Go Up in Media Sources Pane" ),
                                   m_mainWidget );
     Amarok::actionCollection()->addAction( "browser_previous", action );
-    connect( action, SIGNAL(triggered(bool)), m_categoryList.data(), SLOT(back()) );
+    connect( action, &QAction::triggered, m_categoryList.data(), &BrowserCategoryList::back );
 //    action->setShortcut( QKeySequence( Qt::Key_Backspace ) );
     action->setShortcut( Qt::Key_Backspace );
 
     paletteChanged( palette() );
 
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &BrowserDock::paletteChanged );
 }
 
 BrowserCategoryList *BrowserDock::list() const

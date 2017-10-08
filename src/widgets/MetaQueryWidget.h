@@ -26,14 +26,15 @@
 #include "core/meta/forward_declarations.h"
 #include "core/meta/support/MetaConstants.h"
 
+#include <KComboBox>
+#include <KNumInput>
+
 class QFrame;
 class QGridLayout;
 class QHBoxLayout;
 class QVBoxLayout;
 class QLabel;
 class QToolButton;
-class KComboBox;
-class KIntSpinBox;
 class KToolBar;
 class KVBox;
 
@@ -53,7 +54,15 @@ public:
     TimeDistanceWidget( QWidget *parent = 0 );
     qint64 timeDistance() const;
     void setTimeDistance( qint64 value );
-    void connectChanged( QObject *receiver, const char *slot );
+
+    template<typename Func>
+    void connectChanged( typename QtPrivate::FunctionPointer<Func>::Object *receiver, Func slot )
+    {
+        connect( m_timeEdit, static_cast<void(KIntSpinBox::*)(int)>(&KIntSpinBox::valueChanged),
+                 receiver, slot );
+        connect( m_unitSelection, static_cast<void(KComboBox::*)(int)>(&KComboBox::currentIndexChanged),
+                 receiver, slot );
+    }
 
 protected:
     KIntSpinBox *m_timeEdit;

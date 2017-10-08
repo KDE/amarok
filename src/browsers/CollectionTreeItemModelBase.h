@@ -114,14 +114,14 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
     public Q_SLOTS:
         virtual void queryDone();
-        void newResultReady( Meta::TrackList );
-        void newResultReady( Meta::ArtistList );
-        void newResultReady( Meta::AlbumList );
-        void newResultReady( Meta::GenreList );
-        void newResultReady( Meta::ComposerList );
-        void newResultReady( Meta::YearList );
-        void newResultReady( Meta::LabelList );
-        virtual void newResultReady( Meta::DataList data );
+        void newTracksReady( Meta::TrackList );
+        void newArtistsReady( Meta::ArtistList );
+        void newAlbumsReady( Meta::AlbumList );
+        void newGenresReady( Meta::GenreList );
+        void newComposersReady( Meta::ComposerList );
+        void newYearsReady( Meta::YearList );
+        void newLabelsReady( Meta::LabelList );
+        virtual void newDataReady( Meta::DataList data );
 
         /**
          * Apply the current filter.
@@ -131,6 +131,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
          * user has actually just typed something and defaults to false.
          */
         void slotFilter( bool autoExpand = false );
+        void slotFilterWithoutAutoExpand() { slotFilter( false ); }
 
         void slotCollapsed( const QModelIndex &index );
         void slotExpanded( const QModelIndex &index );

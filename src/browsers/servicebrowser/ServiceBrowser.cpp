@@ -53,7 +53,8 @@ ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptab
 {
     m_scriptableServiceManager = scriptableServiceManager;
     m_scriptableServiceManager->setParent( this );
-    connect ( m_scriptableServiceManager, SIGNAL(addService(ServiceBase*)), this, SLOT(addService(ServiceBase*)) );
+    connect ( m_scriptableServiceManager, &ScriptableServiceManager::addService,
+              this, &ServiceBrowser::addService );
 }
 
 void

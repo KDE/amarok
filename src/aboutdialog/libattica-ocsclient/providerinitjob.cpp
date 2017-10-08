@@ -37,7 +37,7 @@ ProviderInitJob::ProviderInitJob(const QString& id, QObject* parent)
 
 void ProviderInitJob::start()
 {
-    QTimer::singleShot(0, this, SLOT(doWork()));
+    QTimer::singleShot(0, this, &ProviderInitJob::doWork);
 }
 
 

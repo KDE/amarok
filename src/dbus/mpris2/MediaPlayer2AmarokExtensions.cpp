@@ -31,8 +31,8 @@ using namespace Amarok;
 MediaPlayer2AmarokExtensions::MediaPlayer2AmarokExtensions(QObject* parent)
     : DBusAbstractAdaptor(parent)
 {
-    connect( The::engineController(), SIGNAL(muteStateChanged(bool)),
-             this,                    SLOT(mutedChanged(bool)) );
+    connect( The::engineController(), &EngineController::muteStateChanged,
+             this, &MediaPlayer2AmarokExtensions::mutedChanged );
 }
 
 MediaPlayer2AmarokExtensions::~MediaPlayer2AmarokExtensions()

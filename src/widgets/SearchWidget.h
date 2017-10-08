@@ -59,6 +59,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
 
     public Q_SLOTS:
         void setSearchString( const QString &searchString = QString() );
+        void emptySearchString() { setSearchString( QString() ); }
 
         /**
          * Tells the widget that a search operation has started. As a consequence the

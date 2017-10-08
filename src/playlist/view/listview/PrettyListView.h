@@ -88,6 +88,7 @@ public Q_SLOTS:
     void findPrevious( const QString & searchTerm, int fields  );
     void clearSearchTerm();
     void showOnlyMatches( bool onlyMatches );
+    void findInSource();
 
 protected:
     void showEvent( QShowEvent* );
@@ -121,7 +122,6 @@ private Q_SLOTS:
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
     void redrawActive();
     void playlistLayoutChanged();
-    void findInSource();
 
 private:
     bool mouseEventInHeader( const QMouseEvent* ) const;

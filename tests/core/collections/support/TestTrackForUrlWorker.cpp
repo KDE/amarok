@@ -91,14 +91,15 @@ void
 TestTrackForUrlWorker::testCompleteJobInternal( MockTrackForUrlWorker *trackForUrlWorker )
 {
     // Connect finishedLookup with setEmittedTrack() that will store the emitted track
-    connect( trackForUrlWorker, SIGNAL(finishedLookup(Meta::TrackPtr)),
-             this, SLOT(setEmittedTrack(Meta::TrackPtr)) );
+    connect( trackForUrlWorker, &MockTrackForUrlWorker::finishedLookup,
+             this, &TestTrackForUrlWorker::setEmittedTrack );
 
-    QSignalSpy spyFinishedLookup( trackForUrlWorker, SIGNAL(finishedLookup(Meta::TrackPtr)) );
+    QSignalSpy spyFinishedLookup( trackForUrlWorker, &MockTrackForUrlWorker::finishedLookup );
+    QSignalSpy spyDone( trackForUrlWorker, &MockTrackForUrlWorker::done );
     
     // Enqueue the job for execution and verify that it emits done when finished, which triggers completeJob
-    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(trackForUrlWorker) );
-    bool receivedDone = QTest::kWaitForSignal( trackForUrlWorker, SIGNAL(done(ThreadWeaver::JobPointer)), 1000 );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>( trackForUrlWorker ) );
+    bool receivedDone = spyDone.wait( 1000 );
     QVERIFY( receivedDone );
 
     // Verify that finishedLookup was emitted
@@ -107,10 +108,6 @@ TestTrackForUrlWorker::testCompleteJobInternal( MockTrackForUrlWorker *trackForU
     // Verify that the track emitted with finishedLookup is indeed the track set by run()
     QFETCH( Meta::TrackPtr, track );
     QCOMPARE( m_emittedTrack, track );
-
-    // Check for emission of the destroyed signal after deferred delete ( deleteLater )
-    bool receivedDestroyed = QTest::kWaitForSignal( trackForUrlWorker, SIGNAL(destroyed()), 1000 );
-    QVERIFY( receivedDestroyed );
 }
 
 void

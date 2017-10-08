@@ -43,12 +43,12 @@ OrganizeCollectionOptionWidget::OrganizeCollectionOptionWidget( QWidget *parent 
 {
     setupUi( this );
 
-    connect( spaceCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( ignoreTheCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( vfatCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( asciiCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( regexpEdit, SIGNAL(editingFinished()), SIGNAL(optionsChanged()) );
-    connect( replaceEdit, SIGNAL(editingFinished()), SIGNAL(optionsChanged()) );
+    connect( spaceCheck, &QCheckBox::toggled, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( ignoreTheCheck, &QCheckBox::toggled, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( vfatCheck, &QCheckBox::toggled, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( asciiCheck, &QCheckBox::toggled, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( regexpEdit, &KLineEdit::editingFinished, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( replaceEdit, &KLineEdit::editingFinished, this, &OrganizeCollectionOptionWidget::optionsChanged );
 }
 
 // ------------------------- OrganizeCollectionWidget -------------------
@@ -183,26 +183,27 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->previewTableWidget->sortItems( 0, Qt::AscendingOrder );
 
     // only show the options when the Options button is checked
-    connect( ui->optionsButton, SIGNAL(toggled(bool)), ui->organizeCollectionWidget, SLOT(setVisible(bool)) );
-    connect( ui->optionsButton, SIGNAL(toggled(bool)), ui->optionsWidget, SLOT(setVisible(bool)) );
+    connect( ui->optionsButton, &QAbstractButton::toggled, ui->organizeCollectionWidget, &OrganizeCollectionWidget::setVisible );
+    connect( ui->optionsButton, &QAbstractButton::toggled, ui->optionsWidget, &OrganizeCollectionOptionWidget::setVisible );
     ui->organizeCollectionWidget->hide();
     ui->optionsWidget->hide();
 
-    connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)), SLOT(slotUpdatePreview()) );
-    connect( ui->organizeCollectionWidget, SIGNAL(schemeChanged()), SLOT(slotUpdatePreview()) );
-    connect( ui->optionsWidget, SIGNAL(optionsChanged()), SLOT(slotUpdatePreview()));
+    connect( ui->folderCombo, QOverload<const QString&>::of(&KComboBox::currentIndexChanged),
+             this, &OrganizeCollectionDialog::slotUpdatePreview );
+    connect( ui->organizeCollectionWidget, &OrganizeCollectionWidget::schemeChanged, this, &OrganizeCollectionDialog::slotUpdatePreview );
+    connect( ui->optionsWidget, &OrganizeCollectionOptionWidget::optionsChanged, this, &OrganizeCollectionDialog::slotUpdatePreview);
     // to show the conflict error
-    connect( ui->overwriteCheck, SIGNAL(stateChanged(int)), SLOT(slotOverwriteModeChanged()) );
+    connect( ui->overwriteCheck, &QCheckBox::stateChanged, this, &OrganizeCollectionDialog::slotOverwriteModeChanged );
 
-    connect( this, SIGNAL(accepted()), ui->organizeCollectionWidget, SLOT(onAccept()) );
-    connect( this, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
-    connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)),
-             SLOT(slotEnableOk(QString)) );
+    connect( this, &OrganizeCollectionDialog::accepted, ui->organizeCollectionWidget, &OrganizeCollectionWidget::onAccept );
+    connect( this, &OrganizeCollectionDialog::accepted, this, &OrganizeCollectionDialog::slotDialogAccepted );
+    connect( ui->folderCombo, QOverload<const QString&>::of(&KComboBox::currentIndexChanged),
+             this, &OrganizeCollectionDialog::slotEnableOk );
 
     slotEnableOk( ui->folderCombo->currentText() );
     restoreDialogSize( Amarok::config( "OrganizeCollectionDialog" ) );
 
-    QTimer::singleShot( 0, this, SLOT(slotUpdatePreview()) );
+    QTimer::singleShot( 0, this, &OrganizeCollectionDialog::slotUpdatePreview );
 }
 
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
@@ -259,7 +260,7 @@ OrganizeCollectionDialog::slotUpdatePreview()
     setCursor( Qt::BusyCursor );
 
     // be nice do the UI, try not to block for too long
-    QTimer::singleShot( 0, this, SLOT(processPreviewPaths()) );
+    QTimer::singleShot( 0, this, &OrganizeCollectionDialog::processPreviewPaths );
 }
 
 void
@@ -321,7 +322,7 @@ OrganizeCollectionDialog::processPreviewPaths()
         m_previews << previews.at( i ).mid( m_previewPrefix.length() );
     }
 
-    QTimer::singleShot( 0, this, SLOT(previewNextBatch()) );
+    QTimer::singleShot( 0, this, &OrganizeCollectionDialog::previewNextBatch );
 }
 
 void
@@ -358,7 +359,7 @@ OrganizeCollectionDialog::previewNextBatch()
         if( processed >= batchSize )
         {
             // yield some room to the other events in the main loop
-            QTimer::singleShot( 0, this, SLOT(previewNextBatch()) );
+            QTimer::singleShot( 0, this, &OrganizeCollectionDialog::previewNextBatch );
             return;
         }
     }

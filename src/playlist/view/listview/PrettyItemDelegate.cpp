@@ -66,9 +66,9 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
     connect( m_animationTimeLine, SIGNAL( frameChanged( int ) ), this, SIGNAL( redrawRequested() ) );
 
 #ifdef Q_WS_X11
-    connect( KWindowSystem::self(), SIGNAL( currentDesktopChanged( int ) ), this, SLOT( currentDesktopChanged() ) );
+    connect( KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, &PrettyItemDelegate::currentDesktopChanged );
 #endif
-    connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SIGNAL( redrawRequested() ) );
+    connect( EngineController::instance(), &EngineController::playbackStateChanged, this, &PrettyItemDelegate::redrawRequested );
 }
 
 PrettyItemDelegate::~PrettyItemDelegate() { }
@@ -764,8 +764,8 @@ QWidget* Playlist::PrettyItemDelegate::createEditor( QWidget * parent, const QSt
     InlineEditorWidget *editor = new InlineEditorWidget( parent, index,
                      LayoutManager::instance()->activeLayout(), editorHeight, editorWidth );
 
-    connect( editor, SIGNAL(editingDone(InlineEditorWidget*)),
-             this, SLOT(editorDone(InlineEditorWidget*)) );
+    connect( editor, &InlineEditorWidget::editingDone,
+             this, &PrettyItemDelegate::editorDone );
     return editor;
 }
 

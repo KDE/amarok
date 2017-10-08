@@ -141,8 +141,8 @@ CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation
     m_destination = destination;
     m_removeSources = false;
     m_isRemoveAction = false;
-    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(resultReady(Meta::TrackList)) );
-    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()) );
+    connect( qm, &Collections::QueryMaker::newTracksReady, this, &CollectionLocation::resultReady );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &CollectionLocation::queryDone );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
@@ -189,8 +189,8 @@ CollectionLocation::prepareMove( Collections::QueryMaker *qm, CollectionLocation
     m_destination = destination;
     m_isRemoveAction = false;
     m_removeSources = true;
-    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(resultReady(Meta::TrackList)) );
-    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()) );
+    connect( qm, &Collections::QueryMaker::newTracksReady, this, &CollectionLocation::resultReady );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &CollectionLocation::queryDone );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
@@ -225,8 +225,8 @@ CollectionLocation::prepareRemove( Collections::QueryMaker *qm )
     m_isRemoveAction = true;
     m_removeSources = false;
 
-    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(resultReady(Meta::TrackList)) );
-    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()) );
+    connect( qm, &Collections::QueryMaker::newTracksReady, this, &CollectionLocation::resultReady );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &CollectionLocation::queryDone );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 }
@@ -621,25 +621,27 @@ CollectionLocation::queryDone()
 void
 CollectionLocation::setupConnections()
 {
-    connect( this, SIGNAL(prepareOperation(Meta::TrackList,bool,Transcoding::Configuration)),
-             m_destination, SLOT(slotPrepareOperation(Meta::TrackList,bool,Transcoding::Configuration)) );
-    connect( m_destination, SIGNAL(operationPrepared()), SLOT(slotOperationPrepared()) );
-    connect( this, SIGNAL(startCopy(QMap<Meta::TrackPtr,QUrl>,Transcoding::Configuration)),
-             m_destination, SLOT(slotStartCopy(QMap<Meta::TrackPtr,QUrl>,Transcoding::Configuration)) );
-    connect( m_destination, SIGNAL(finishCopy()),
-             this, SLOT(slotFinishCopy()) );
-    connect( this, SIGNAL(aborted()), SLOT(slotAborted()) );
-    connect( m_destination, SIGNAL(aborted()), SLOT(slotAborted()) );
+    connect( this, &CollectionLocation::prepareOperation,
+             m_destination, &Collections::CollectionLocation::slotPrepareOperation );
+    connect( m_destination, &Collections::CollectionLocation::operationPrepared,
+             this, &CollectionLocation::slotOperationPrepared );
+    connect( this, &CollectionLocation::startCopy,
+             m_destination, &Collections::CollectionLocation::slotStartCopy );
+    connect( m_destination, &Collections::CollectionLocation::finishCopy,
+             this, &CollectionLocation::slotFinishCopy );
+    connect( this, &CollectionLocation::aborted, this, &CollectionLocation::slotAborted );
+    connect( m_destination, &Collections::CollectionLocation::aborted, this, &CollectionLocation::slotAborted );
 }
 
 void
 CollectionLocation::setupRemoveConnections()
 {
-    connect( this, SIGNAL(aborted()), SLOT(slotAborted()) );
-    connect( this, SIGNAL(startRemove()),
-             this, SLOT(slotStartRemove()) );
-    connect( this, SIGNAL(finishRemove()),
-             this, SLOT(slotFinishRemove()) );
+    connect( this, &CollectionLocation::aborted,
+             this, &CollectionLocation::slotAborted );
+    connect( this, &CollectionLocation::startRemove,
+             this, &CollectionLocation::slotStartRemove );
+    connect( this, &CollectionLocation::finishRemove,
+             this, &CollectionLocation::slotFinishRemove );
 }
 
 void
@@ -653,7 +655,7 @@ CollectionLocation::startWorkflow( const Meta::TrackList &tracks, bool removeSou
         abort();
     else
         // show dialog in next mainloop iteration so that prepare[Something]() returns quickly
-        QTimer::singleShot( 0, this, SLOT(slotShowSourceDialog()) );
+        QTimer::singleShot( 0, this, &CollectionLocation::slotShowSourceDialog );
 }
 
 void

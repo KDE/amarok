@@ -75,19 +75,15 @@ public:
     void setLabelQueryMode( Collections::QueryMaker::LabelQueryMode mode ) { m_labelQueryMode = mode; }
 
 Q_SIGNALS:
-    void newResultReady( Meta::TrackList );
-    void newResultReady( Meta::ArtistList );
-    void newResultReady( Meta::AlbumList );
-    void newResultReady( Meta::GenreList );
-    void newResultReady( Meta::ComposerList );
-    void newResultReady( Meta::YearList );
+    void newTracksReady( Meta::TrackList );
+    void newArtistsReady( Meta::ArtistList );
+    void newAlbumsReady( Meta::AlbumList );
+    void newGenresReady( Meta::GenreList );
+    void newComposersReady( Meta::ComposerList );
+    void newYearsReady( Meta::YearList );
     void newResultReady( QStringList );
-    void newResultReady( Meta::LabelList );
-    void newResultReady( Meta::DataList );
-
-private:
-    template <class PointerType>
-    void emitProperResult( const QList<PointerType > &list );
+    void newLabelsReady( Meta::LabelList );
+    void newDataReady( Meta::DataList );
 
 private:
     QWeakPointer<Collections::MemoryCollection> m_collection;

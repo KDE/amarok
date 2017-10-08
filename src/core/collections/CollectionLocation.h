@@ -393,7 +393,6 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void setupRemoveConnections();
         void startWorkflow( const Meta::TrackList &tracks, bool removeSources );
         void startRemoveWorkflow( const Meta::TrackList &tracks );
-        void startRemove( const Meta::TrackList &tracks );
         void removeSourceTracks( const Meta::TrackList &tracks );
         void setSource( CollectionLocation *source );
 

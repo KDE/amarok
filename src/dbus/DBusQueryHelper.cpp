@@ -34,12 +34,12 @@ DBusQueryHelper::DBusQueryHelper( QObject *parent, Collections::QueryMaker *qm, 
 {
     qm->setAutoDelete( true );
     qm->setQueryType( Collections::QueryMaker::Track );
-    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(slotResultReady(Meta::TrackList)), Qt::QueuedConnection );
-    connect( qm, SIGNAL(queryDone()), this, SLOT(slotQueryDone()), Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::newTracksReady, this, &DBusQueryHelper::slotResultReady, Qt::QueuedConnection );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &DBusQueryHelper::slotQueryDone, Qt::QueuedConnection );
     qm->run();
 
     //abort query after 15 seconds in case the query does not return
-    QTimer::singleShot( 15000, this, SLOT(abortQuery()) );
+    QTimer::singleShot( 15000, this, &DBusQueryHelper::abortQuery );
 }
 
 void

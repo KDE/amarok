@@ -82,10 +82,10 @@ Job::init()
     *m_transcoder << format->ffmpegParameters( m_configuration )
                   << m_dest.path();
 
-    connect( m_transcoder, SIGNAL(readyRead()),
-             this, SLOT(processOutput()) );
-    connect( m_transcoder, SIGNAL(finished(int,QProcess::ExitStatus)),
-             this, SLOT(transcoderDone(int,QProcess::ExitStatus)) );
+    connect( m_transcoder, &KProcess::readyRead,
+             this, &Job::processOutput );
+    connect( m_transcoder, QOverload<int, QProcess::ExitStatus>::of(&KProcess::finished),
+             this, &Job::transcoderDone );
 }
 
 void
@@ -95,7 +95,7 @@ Job::start()
     if( QFile::exists( m_dest.path() ) )
     {
         debug() << "Not starting ffmpeg encoder, file already exists:" << m_dest.path();
-        QTimer::singleShot( 0, this, SLOT(transcoderDone()) );
+        QTimer::singleShot( 0, this, &Job::transcoderDoneDefault );
     }
     else
     {
@@ -117,6 +117,12 @@ Job::transcoderDone( int exitCode, QProcess::ExitStatus exitStatus ) //SLOT
         setErrorText( QString( "Calling `" ) + m_transcoder->program().join(" ") + "` failed" );
     }
     emitResult();
+}
+
+void
+Job::transcoderDoneDefault()
+{
+    transcoderDone( -1, QProcess::CrashExit );
 }
 
 void

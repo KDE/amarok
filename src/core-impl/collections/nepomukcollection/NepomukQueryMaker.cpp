@@ -496,7 +496,7 @@ NepomukQueryMaker::run()
     }
 
     d->inquirer = new NepomukInquirer(query, parser);
-    connect(d->inquirer, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(inquirerDone()));
+    connect(d->inquirer, &ThreadWeaver::Job::done, SLOT(inquirerDone()));
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(d->inquirer) );
 }
 

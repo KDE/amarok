@@ -187,15 +187,15 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
     else
         stopped();
 
-    connect( this, SIGNAL(triggered()),
-             engine, SLOT(playPause()) );
+    connect( this, &PlayPauseAction::triggered,
+             engine, &EngineController::playPause );
 
-    connect( engine, SIGNAL(stopped(qint64,qint64)),
-             this, SLOT(stopped()) );
-    connect( engine, SIGNAL(paused()),
-             this, SLOT(paused()) );
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-             this, SLOT(playing()) );
+    connect( engine, &EngineController::stopped,
+             this, &PlayPauseAction::stopped );
+    connect( engine, &EngineController::paused,
+             this, &PlayPauseAction::paused );
+    connect( engine, &EngineController::trackPlaying,
+             this, &PlayPauseAction::playing );
 }
 
 void
@@ -367,7 +367,7 @@ BurnMenuAction::createWidget( QWidget *w )
 
         //addContainer( bar, id );
         w->addAction( this );
-        connect( bar, SIGNAL(destroyed()), SLOT(slotDestroyed()) );
+        //connect( bar, &KToolBar::destroyed, this, &BurnMenuAction::slotDestroyed );
 
         //bar->insertButton( QString::null, id, true, i18n( "Burn" ), index );
 
@@ -391,8 +391,8 @@ BurnMenu::BurnMenu( QWidget* parent )
 {
     s_instance = this;
 
-    addAction( i18n("Current Playlist"), this, SLOT(slotBurnCurrentPlaylist()) );
-    addAction( i18n("Selected Tracks"), this, SLOT(slotBurnSelectedTracks()) );
+    addAction( i18n("Current Playlist"), this, &BurnMenu::slotBurnCurrentPlaylist );
+    addAction( i18n("Selected Tracks"), this, &BurnMenu::slotBurnSelectedTracks );
     //TODO add "album" and "all tracks by artist"
 }
 
@@ -426,7 +426,7 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
     setText( i18n( "Stop" ) );
     setIcon( QIcon::fromTheme("media-playback-stop-amarok") );
     KGlobalAccel::setGlobalShortcut(this, QKeySequence() );
-    connect( this, SIGNAL(triggered()), this, SLOT(stop()) );
+    connect( this, &StopAction::triggered, this, &StopAction::stop );
 
     EngineController *engine = The::engineController();
 
@@ -435,10 +435,10 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
     else
         playing();
 
-    connect( engine, SIGNAL(stopped(qint64,qint64)),
-             this, SLOT(stopped()) );
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-             this, SLOT(playing()) );
+    connect( engine, &EngineController::stopped,
+             this, &StopAction::stopped );
+    connect( engine, &EngineController::trackPlaying,
+             this, &StopAction::playing );
 
 }
 
@@ -472,7 +472,7 @@ StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionC
     setText( i18n( "Stop after current Track" ) );
     setIcon( QIcon::fromTheme("media-playback-stop-amarok") );
     KGlobalAccel::setGlobalShortcut(this, QKeySequence( Qt::META + Qt::SHIFT + Qt::Key_V ) );
-    connect( this, SIGNAL(triggered()), SLOT(stopPlayingAfterCurrentTrack()) );
+    connect( this, &StopPlayingAfterCurrentTrackAction::triggered, this, &StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack );
 }
 
 void

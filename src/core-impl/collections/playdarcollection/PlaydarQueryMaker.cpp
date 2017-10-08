@@ -46,29 +46,29 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker = new MemoryQueryMaker( m_collection.data()->memoryCollection().toWeakRef(),
-                                                   m_collection.data()->collectionId() );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::TrackList)),
-                 this, SIGNAL(newResultReady(Meta::TrackList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::ArtistList)),
-                 this, SIGNAL(newResultReady(Meta::ArtistList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::AlbumList)),
-                 this, SIGNAL(newResultReady(Meta::AlbumList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::GenreList)),
-                 this, SIGNAL(newResultReady(Meta::GenreList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::ComposerList)),
-                 this, SIGNAL(newResultReady(Meta::ComposerList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::YearList)),
-                 this, SIGNAL(newResultReady(Meta::YearList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::DataList)),
-                 this, SIGNAL(newResultReady(Meta::DataList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(QStringList)),
-                 this, SIGNAL(newResultReady(QStringList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::LabelList)),
-                 this, SIGNAL(newResultReady(Meta::LabelList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(queryDone()),
-                 this, SLOT(memoryQueryDone()) );
-        m_memoryQueryMaker.data()->setAutoDelete( true );
+        m_memoryQueryMaker = new MemoryQueryMaker( m_collection->memoryCollection().toWeakRef(),
+                                                   m_collection->collectionId() );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newTracksReady,
+                 this, &PlaydarQueryMaker::newTracksReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newArtistsReady,
+                 this, &PlaydarQueryMaker::newArtistsReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newAlbumsReady,
+                 this, &PlaydarQueryMaker::newAlbumsReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newGenresReady,
+                 this, &PlaydarQueryMaker::newGenresReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newComposersReady,
+                 this, &PlaydarQueryMaker::newComposersReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newYearsReady,
+                 this, &PlaydarQueryMaker::newYearsReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newDataReady,
+                 this, &PlaydarQueryMaker::newDataReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newLabelsReady,
+                 this, &PlaydarQueryMaker::newLabelsReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newResultReady,
+                 this, &PlaydarQueryMaker::newResultReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::queryDone,
+                 this, &PlaydarQueryMaker::memoryQueryDone );
+        m_memoryQueryMaker->setAutoDelete( true );
     }
 
     PlaydarQueryMaker::~PlaydarQueryMaker()
@@ -92,10 +92,10 @@ namespace Collections
         
         if( !m_filterMap.isEmpty() )
         {
-            connect( m_controller.data(), SIGNAL(playdarError(Playdar::Controller::ErrorState)),
-                     this, SLOT(slotPlaydarError(Playdar::Controller::ErrorState)) );
-            connect( m_controller.data(), SIGNAL(queryReady(Playdar::Query*)),
-                    this, SLOT(collectQuery(Playdar::Query*)) );
+            connect( m_controller, &Playdar::Controller::playdarError,
+                     this, &PlaydarQueryMaker::slotPlaydarError );
+            connect( m_controller, &Playdar::Controller::queryReady,
+                     this, &PlaydarQueryMaker::collectQuery );
 
             QString artist( "" );
             QString album( "" );
@@ -492,10 +492,10 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        connect( query, SIGNAL(newTrackAdded(Meta::PlaydarTrackPtr)),
-                 this, SLOT(collectResult(Meta::PlaydarTrackPtr)) );
-        connect( query, SIGNAL(queryDone(Playdar::Query*,Meta::PlaydarTrackList)),
-                 this, SLOT(aQueryEnded(Playdar::Query*,Meta::PlaydarTrackList)) );
+        connect( query, &Playdar::Query::newTrackAdded,
+                 this, &PlaydarQueryMaker::collectResult );
+        connect( query, &Playdar::Query::queryDone,
+                 this, &PlaydarQueryMaker::aQueryEnded );
     }
 
     void
@@ -559,29 +559,29 @@ namespace Collections
         if( m_memoryQueryMaker.data() )
             return;
         
-        m_memoryQueryMaker = new MemoryQueryMaker( m_collection.data()->memoryCollection().toWeakRef(),
-                                                   m_collection.data()->collectionId() );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::TrackList)),
-                 this, SIGNAL(newResultReady(Meta::TrackList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::ArtistList)),
-                 this, SIGNAL(newResultReady(Meta::ArtistList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::AlbumList)),
-                 this, SIGNAL(newResultReady(Meta::AlbumList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::GenreList)),
-                 this, SIGNAL(newResultReady(Meta::GenreList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::ComposerList)),
-                 this, SIGNAL(newResultReady(Meta::ComposerList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::YearList)),
-                 this, SIGNAL(newResultReady(Meta::YearList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::DataList)),
-                 this, SIGNAL(newResultReady(Meta::DataList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(QStringList)),
-                 this, SIGNAL(newResultReady(QStringList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(newResultReady(Meta::LabelList)),
-                 this, SIGNAL(newResultReady(Meta::LabelList)) );
-        connect( m_memoryQueryMaker.data(), SIGNAL(queryDone()),
-                 this, SLOT(memoryQueryDone()) );
-        m_memoryQueryMaker.data()->setAutoDelete( true );
+        m_memoryQueryMaker = new MemoryQueryMaker( m_collection->memoryCollection().toWeakRef(),
+                                                   m_collection->collectionId() );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newTracksReady,
+                 this, &PlaydarQueryMaker::newTracksReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newArtistsReady,
+                 this, &PlaydarQueryMaker::newArtistsReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newAlbumsReady,
+                 this, &PlaydarQueryMaker::newAlbumsReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newGenresReady,
+                 this, &PlaydarQueryMaker::newGenresReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newComposersReady,
+                 this, &PlaydarQueryMaker::newComposersReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newYearsReady,
+                 this, &PlaydarQueryMaker::newYearsReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newDataReady,
+                 this, &PlaydarQueryMaker::newDataReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newResultReady,
+                 this, &PlaydarQueryMaker::newResultReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::newLabelsReady,
+                 this, &PlaydarQueryMaker::newLabelsReady );
+        connect( m_memoryQueryMaker, &MemoryQueryMaker::queryDone,
+                 this, &PlaydarQueryMaker::memoryQueryDone );
+        m_memoryQueryMaker->setAutoDelete( true );
 
         foreach( CurriedQMFunction *funPtr, m_queryMakerFunctions )
             (*funPtr)( m_memoryQueryMaker.data() );

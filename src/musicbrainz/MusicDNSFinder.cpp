@@ -49,18 +49,18 @@ MusicDNSFinder::MusicDNSFinder( QObject *parent,
 
     decodingComplete = false;
 
-    connect( net, SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)) );
-    connect( _timer, SIGNAL(timeout()), SLOT(sendNewRequest()) );
+    connect( net, &NetworkAccessManagerProxy::finished, this, &MusicDNSFinder::gotReply );
+    connect( _timer, &QTimer::timeout, this, &MusicDNSFinder::sendNewRequest );
 }
 
 void
 MusicDNSFinder::run( const Meta::TrackList &tracks )
 {
     MusicDNSAudioDecoder *decoder = new MusicDNSAudioDecoder( tracks );
-    connect( decoder, SIGNAL(trackDecoded(Meta::TrackPtr,QString)),
-                      SLOT(trackDecoded(Meta::TrackPtr,QString)) );
-    connect( decoder, SIGNAL(done(ThreadWeaver::JobPointer)),
-                      SLOT(decodingDone(ThreadWeaver::JobPointer)) );
+    connect( decoder, &MusicDNSAudioDecoder::trackDecoded,
+             this, &MusicDNSFinder::trackDecoded );
+    connect( decoder, &MusicDNSAudioDecoder::done,
+             this, &MusicDNSFinder::decodingDone );
 
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(decoder) );
 
@@ -78,8 +78,8 @@ void MusicDNSFinder::sendNewRequest()
     QPair < Meta::TrackPtr, QNetworkRequest > req = m_requests.takeFirst();
     QNetworkReply *reply = net->get( req.second );
     m_replyes.insert( reply, req.first );
-    connect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
-             this, SLOT(replyError(QNetworkReply::NetworkError)) );
+    connect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+             this, &MusicDNSFinder::replyError );
     debug() << "Request sent: " << req.second.url().toString();
 }
 
@@ -94,7 +94,7 @@ MusicDNSFinder::gotReply( QNetworkReply *reply )
         if( !m_replyes.value( reply ).isNull() )
             m_parsers.insert( parser, m_replyes.value( reply ) );
 
-        connect( parser, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(parsingDone(ThreadWeaver::JobPointer)) );
+        connect( parser, &MusicDNSXmlParser::done, this, &MusicDNSFinder::parsingDone );
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(parser) );
     }
 
@@ -114,8 +114,8 @@ MusicDNSFinder::replyError( QNetworkReply::NetworkError code )
     if( !m_replyes.contains( reply ) || code == QNetworkReply::NoError )
         return;
 
-    disconnect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
-                this, SLOT(replyError(QNetworkReply::NetworkError)) );
+    disconnect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+                this, &MusicDNSFinder::replyError );
 
     debug() << "Error occurred during network request: " << reply->errorString();
     m_replyes.remove( reply );
@@ -129,7 +129,7 @@ MusicDNSFinder::parsingDone( ThreadWeaver::JobPointer _parser )
     DEBUG_BLOCK
 
     MusicDNSXmlParser *parser = dynamic_cast< MusicDNSXmlParser * >( _parser.data() );
-    disconnect( parser, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(parsingDone(ThreadWeaver::JobPointer)) );
+    disconnect( parser, &MusicDNSXmlParser::done, this, &MusicDNSFinder::parsingDone );
     if( m_parsers.contains( parser ) )
     {
         bool found = false;
@@ -165,10 +165,10 @@ MusicDNSFinder::decodingDone( ThreadWeaver::JobPointer _decoder )
 {
     DEBUG_BLOCK
     MusicDNSAudioDecoder *decoder = dynamic_cast<MusicDNSAudioDecoder*>(_decoder.data());
-    disconnect( decoder, SIGNAL(trackDecoded(Meta::TrackPtr,QString)),
-                this, SLOT(trackDecoded(Meta::TrackPtr,QString)) );
-    disconnect( decoder, SIGNAL(done(ThreadWeaver::JobPointer)),
-                this, SLOT(decodingDone(ThreadWeaver::JobPointer)) );
+    disconnect( decoder, &MusicDNSAudioDecoder::trackDecoded,
+                this, &MusicDNSFinder::trackDecoded );
+    disconnect( decoder, &MusicDNSAudioDecoder::done,
+                this, &MusicDNSFinder::decodingDone );
     decoder->deleteLater();
     decodingComplete = true;
     checkDone();

@@ -53,8 +53,8 @@ MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
         return;
     }
 
-    connect( MediaDeviceCache::instance(), SIGNAL(deviceAdded(QString)), SLOT(deviceAdded(QString)) );
-    connect( MediaDeviceCache::instance(), SIGNAL(deviceRemoved(QString)), SLOT(deviceRemoved(QString)) );
+    connect( MediaDeviceCache::instance(), &MediaDeviceCache::deviceAdded, this, &MountPointManager::slotDeviceAdded );
+    connect( MediaDeviceCache::instance(), &MediaDeviceCache::deviceRemoved, this, &MountPointManager::slotDeviceRemoved );
 
     createDeviceFactories();
 }
@@ -338,7 +338,7 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
 }
 
 void
-MountPointManager::deviceAdded( const QString &udi )
+MountPointManager::slotDeviceAdded( const QString &udi )
 {
     DEBUG_BLOCK
     Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageAccess );
@@ -360,7 +360,7 @@ MountPointManager::deviceAdded( const QString &udi )
 }
 
 void
-MountPointManager::deviceRemoved( const QString &udi )
+MountPointManager::slotDeviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
     m_handlerMapMutex.lock();

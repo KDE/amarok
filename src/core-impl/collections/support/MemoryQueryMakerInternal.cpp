@@ -93,17 +93,6 @@ MemoryQueryMakerInternal::runQuery()
         coll->releaseLock();
 }
 
-template <class PointerType>
-void MemoryQueryMakerInternal::emitProperResult( const QList<PointerType>& list )
-{
-    QList<PointerType> resultList = list;
-
-    if ( m_maxSize >= 0 && resultList.count() > m_maxSize )
-        resultList = resultList.mid( 0, m_maxSize );
-
-    emit newResultReady( list );
-}
-
 template<typename T>
 static inline QList<T> reverse(const QList<T> &l)
 {
@@ -199,7 +188,7 @@ MemoryQueryMakerInternal::handleResult()
                     tracks = MemoryQueryMakerHelper::orderListByString( tracks, m_orderByField, m_orderDescending );
             }
 
-            emitProperResult<Meta::TrackPtr>( tracks );
+            emit newTracksReady( tracks );
             break;
         }
         case QueryMaker::Album :
@@ -227,7 +216,7 @@ MemoryQueryMakerInternal::handleResult()
 
             albums = MemoryQueryMakerHelper::orderListByName<Meta::AlbumPtr>( albums, m_orderDescending );
 
-            emitProperResult<Meta::AlbumPtr>( albums );
+            emit newAlbumsReady( albums );
             break;
         }
         case QueryMaker::Artist :
@@ -252,7 +241,7 @@ MemoryQueryMakerInternal::handleResult()
                 }
             }
             artists = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( artists, m_orderDescending );
-            emitProperResult<Meta::ArtistPtr>( artists );
+            emit newArtistsReady( artists );
             break;
         }
         case QueryMaker::AlbumArtist :
@@ -280,7 +269,7 @@ MemoryQueryMakerInternal::handleResult()
                 }
             }
             artists = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( artists, m_orderDescending );
-            emitProperResult<Meta::ArtistPtr>( artists );
+            emit newArtistsReady( artists );
             break;
         }
         case QueryMaker::Composer :
@@ -306,7 +295,7 @@ MemoryQueryMakerInternal::handleResult()
             }
             composers = MemoryQueryMakerHelper::orderListByName<Meta::ComposerPtr>( composers, m_orderDescending );
 
-            emitProperResult<Meta::ComposerPtr>( composers );
+            emit newComposersReady( composers );
             break;
         }
         case QueryMaker::Genre :
@@ -333,7 +322,7 @@ MemoryQueryMakerInternal::handleResult()
 
             genres = MemoryQueryMakerHelper::orderListByName<Meta::GenrePtr>( genres, m_orderDescending );
 
-            emitProperResult<Meta::GenrePtr>( genres );
+            emit newGenresReady( genres );
             break;
         }
         case QueryMaker::Year :
@@ -365,7 +354,7 @@ MemoryQueryMakerInternal::handleResult()
                 years = MemoryQueryMakerHelper::orderListByYear( years, m_orderDescending );
             }
 
-            emitProperResult<Meta::YearPtr>( years );
+            emit newYearsReady( years );
             break;
         }
         case QueryMaker::Label:
@@ -392,7 +381,7 @@ MemoryQueryMakerInternal::handleResult()
 
             labels = MemoryQueryMakerHelper::orderListByName<Meta::LabelPtr>( labels, m_orderDescending );
 
-            emitProperResult<Meta::LabelPtr>( labels );
+            emit newLabelsReady( labels );
             break;
         }
         case QueryMaker::None :
@@ -472,7 +461,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             else
                 newResult = tracks;
 
-            emitProperResult<Meta::TrackPtr>( newResult );
+            emit newTracksReady( newResult );
             break;
         }
         case QueryMaker::Album :
@@ -484,7 +473,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             }
             Meta::AlbumList albumList = albumSet.toList();
             albumList = MemoryQueryMakerHelper::orderListByName<Meta::AlbumPtr>( albumList, m_orderDescending );
-            emitProperResult<Meta::AlbumPtr>( albumList );
+            emit newAlbumsReady( albumList );
             break;
         }
         case QueryMaker::Artist :
@@ -496,7 +485,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             }
             Meta::ArtistList list = artistSet.toList();
             list = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( list, m_orderDescending );
-            emitProperResult<Meta::ArtistPtr>( list );
+            emit newArtistsReady( list );
             break;
         }
         case QueryMaker::AlbumArtist :
@@ -509,7 +498,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             }
             Meta::ArtistList list = artistSet.toList();
             list = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( list, m_orderDescending );
-            emitProperResult<Meta::ArtistPtr>( list );
+            emit newArtistsReady( list );
             break;
         }
         case QueryMaker::Genre :
@@ -521,7 +510,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             }
             Meta::GenreList list = genreSet.toList();
             list = MemoryQueryMakerHelper::orderListByName<Meta::GenrePtr>( list, m_orderDescending );
-            emitProperResult<Meta::GenrePtr>( list );
+            emit newGenresReady( list );
             break;
         }
         case QueryMaker::Composer :
@@ -533,7 +522,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             }
             Meta::ComposerList list = composerSet.toList();
             list = MemoryQueryMakerHelper::orderListByName<Meta::ComposerPtr>( list, m_orderDescending );
-            emitProperResult<Meta::ComposerPtr>( list );
+            emit newComposersReady( list );
             break;
         }
         case QueryMaker::Year :
@@ -549,7 +538,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
                 years = MemoryQueryMakerHelper::orderListByYear( years, m_orderDescending );
             }
 
-            emitProperResult<Meta::YearPtr>( years );
+            emit newYearsReady( years );
             break;
         }
         case QueryMaker::Label:
@@ -564,7 +553,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             {
                 labels = MemoryQueryMakerHelper::orderListByName<Meta::LabelPtr>( labels, m_orderDescending );
             }
-            emitProperResult<Meta::LabelPtr>( labels );
+            emit newLabelsReady( labels );
             break;
         }
         case QueryMaker::None:

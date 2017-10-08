@@ -122,7 +122,7 @@ TestMemoryQueryMaker::testDeleteCollectionWhileQueryIsRunning()
     Collections::MemoryQueryMaker *qm = new Collections::MemoryQueryMaker( mc, "test" );
     qm->setQueryType( Collections::QueryMaker::Track );
 
-    QSignalSpy spy( qm, SIGNAL(queryDone()));
+    QSignalSpy spy( qm, &Collections::QueryMaker::queryDone);
 
     qm->run();
     mc.clear();
@@ -193,13 +193,13 @@ TestMemoryQueryMaker::testStringMemoryFilterSpeedMatchAnywhere()
 Meta::TrackList
 TestMemoryQueryMaker::executeQueryMaker( Collections::QueryMaker *qm )
 {
-    QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(Meta::TrackList)));
+    QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newResultReady );
 
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy1.wait( 1000 );
 
     if( resultSpy1.count() != 1 ) return Meta::TrackList();
     if( doneSpy1.count() != 1 ) return Meta::TrackList();

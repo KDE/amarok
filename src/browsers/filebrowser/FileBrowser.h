@@ -44,10 +44,11 @@ public:
      */
     QString currentDir() const;
 
+public Q_SLOTS:
+    void addItemActivated( const QString &callback );
+
 protected Q_SLOTS:
     void slotNavigateToDirectory( const QModelIndex &index );
-
-    void addItemActivated( const QString &callback );
 
     virtual void reActivate();
 
@@ -93,12 +94,11 @@ protected Q_SLOTS:
 
 private Q_SLOTS:
     void initView();
+    void updateHeaderState();
 
 private:
     class Private;
     Private *const d;
-
-    Q_PRIVATE_SLOT( d, void updateHeaderState() )
 };
 
 /**

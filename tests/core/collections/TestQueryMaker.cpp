@@ -53,8 +53,8 @@ TestQueryMaker::testSetAutoDelete()
 {
     QFETCH( bool, autoDelete );
 
-    QSignalSpy spyQueryDone( m_mockQueryMaker, SIGNAL(queryDone()) );
-    QSignalSpy spyDestroyed( m_mockQueryMaker, SIGNAL(destroyed()) );
+    QSignalSpy spyQueryDone( m_mockQueryMaker, &MockQueryMaker::queryDone );
+    QSignalSpy spyDestroyed( m_mockQueryMaker, &MockQueryMaker::destroyed );
 
     m_mockQueryMaker->setAutoDelete( autoDelete );
     QVERIFY( m_mockQueryMaker );

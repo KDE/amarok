@@ -49,7 +49,7 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
     setContentsMargins( 0, 0, 0, 0 );
 
     APG::PresetModel* presetmodel = APG::PresetModel::instance();
-    connect( presetmodel, SIGNAL(lock(bool)), this, SLOT(setDisabled(bool)) );
+    connect( presetmodel, &APG::PresetModel::lock, this, &APGCategory::setDisabled );
 
     /* Create the toolbar -- Qt's Designer doesn't let us put a toolbar
      * anywhere except in a MainWindow, so we've got to create it by hand here. */
@@ -61,33 +61,33 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
 
     QAction* a;
     a = toolBar_Actions->addAction( QIcon::fromTheme( "list-add-amarok" ), i18n("Add new preset") );
-    connect( a, SIGNAL(triggered(bool)), presetmodel, SLOT(addNew()) );
+    connect( a, &QAction::triggered, presetmodel, &APG::PresetModel::addNew );
 
     a = toolBar_Actions->addAction( QIcon::fromTheme( "document-properties-amarok" ), i18n("Edit selected preset") );
     a->setEnabled( false );
-    connect( a, SIGNAL(triggered(bool)), presetmodel, SLOT(edit()) );
-    connect( this, SIGNAL(validIndexSelected(bool)), a, SLOT(setEnabled(bool)) );
+    connect( a, &QAction::triggered, presetmodel, &APG::PresetModel::edit );
+    connect( this, &APGCategory::validIndexSelected, a, &QAction::setEnabled );
 
     a = toolBar_Actions->addAction( QIcon::fromTheme( "list-remove-amarok" ), i18n("Delete selected preset") );
     a->setEnabled( false );
-    connect( a, SIGNAL(triggered(bool)), presetmodel, SLOT(removeActive()) );
-    connect( this, SIGNAL(validIndexSelected(bool)), a, SLOT(setEnabled(bool)) );
+    connect( a, &QAction::triggered, presetmodel, &APG::PresetModel::removeActive );
+    connect( this, &APGCategory::validIndexSelected, a, &QAction::setEnabled );
 
     a = toolBar_Actions->addAction( QIcon::fromTheme( "document-import-amarok" ), i18n("Import a new preset") );
     a->setEnabled( true );
-    connect( a, SIGNAL(triggered(bool)), presetmodel, SLOT(import()) );
+    connect( a, &QAction::triggered, presetmodel, &APG::PresetModel::import );
 
     a = toolBar_Actions->addAction( QIcon::fromTheme( "document-export-amarok" ), i18n("Export the selected preset") );
     a->setEnabled( false );
-    connect( a, SIGNAL(triggered(bool)), presetmodel, SLOT(exportActive()) );
-    connect( this, SIGNAL(validIndexSelected(bool)), a, SLOT(setEnabled(bool)) );
+    connect( a, &QAction::triggered, presetmodel, &APG::PresetModel::exportActive );
+    connect( this, &APGCategory::validIndexSelected, a, &QAction::setEnabled );
 
     toolBar_Actions->addSeparator();
 
     a = toolBar_Actions->addAction( QIcon::fromTheme( "go-next-amarok" ), i18n("Run APG with selected preset") );
     a->setEnabled( false );
-    connect( a, SIGNAL(triggered(bool)), this, SLOT(runGenerator()) );
-    connect( this, SIGNAL(validIndexSelected(bool)), a, SLOT(setEnabled(bool)) );
+    connect( a, &QAction::triggered, this, &APGCategory::runGenerator );
+    connect( this, &APGCategory::validIndexSelected, a, &QAction::setEnabled );
 
     /* Create the preset list view */
     QLabel* label_Title = new QLabel( i18n("APG Presets"), this );
@@ -100,8 +100,8 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
     listView->setSelectionMode( QAbstractItemView::SingleSelection );
     listView->setFrameShape( QFrame::NoFrame );
     listView->setAutoFillBackground( false );
-    connect( listView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(activeChanged(QModelIndex)) );
-    connect( listView, SIGNAL(doubleClicked(QModelIndex)), presetmodel, SLOT(editPreset(QModelIndex)) );
+    connect( listView->selectionModel(), &QItemSelectionModel::currentChanged, this, &APGCategory::activeChanged );
+    connect( listView, &Amarok::PrettyTreeView::doubleClicked, presetmodel, &APG::PresetModel::editPreset );
 
     // Speed/Quality tradeoff slider
     QLabel* label_Tradeoff = new QLabel( i18n("Generator Optimization"), this );
@@ -112,7 +112,7 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
     QSlider* qual_Slider = new QSlider( Qt::Horizontal, qual_Frame );
     qual_Slider->setRange( 0, APG::ConstraintSolver::QUALITY_RANGE );
     qual_Slider->setValue( m_qualityFactor );
-    connect( qual_Slider, SIGNAL(sliderMoved(int)), this, SLOT (setQualityFactor(int)) );
+    connect( qual_Slider, &QSlider::sliderMoved, this, &APGCategory::setQualityFactor );
     QLabel* label_Quality = new QLabel( i18n("Accuracy"), qual_Frame );
 
     QLayout* qf_Layout = new QHBoxLayout( qual_Frame );
@@ -147,6 +147,6 @@ PlaylistBrowserNS::APGCategory::setQualityFactor( int f )
 void
 PlaylistBrowserNS::APGCategory::runGenerator()
 {
-    APG::PresetModel::instance()->savePresetsToXml();
+    APG::PresetModel::instance()->savePresetsToXmlDefault();
     APG::PresetModel::instance()->runGenerator( m_qualityFactor );
 }

@@ -152,12 +152,14 @@ GenericScanManager::connectSignalsToJob()
     // we used to have direct connections here, but that caused too much work being done
     // int the non-main thread, even in code that wasn't thread-safe, which lead to
     // crashes (bug 319835) and other potential data races
-    connect( m_scannerJob, SIGNAL(started(GenericScanManager::ScanType)),
-             SIGNAL(started(GenericScanManager::ScanType)) );
-    connect( m_scannerJob, SIGNAL(directoryCount(int)), SIGNAL(directoryCount(int)) );
-    connect( m_scannerJob, SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)),
-             SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)) );
-
-    connect( m_scannerJob, SIGNAL(succeeded()), SLOT(slotSucceeded()) );
-    connect( m_scannerJob, SIGNAL(failed(QString)), SLOT(slotFailed(QString)) );
+    connect( m_scannerJob, QOverload<ScanType>::of(&GenericScannerJob::started),
+             this, &GenericScanManager::started );
+    connect( m_scannerJob, &GenericScannerJob::directoryCount,
+             this, &GenericScanManager::directoryCount);
+    connect( m_scannerJob, &GenericScannerJob::directoryScanned,
+             this, &GenericScanManager::directoryScanned );
+    connect( m_scannerJob, &GenericScannerJob::succeeded,
+             this, &GenericScanManager::slotSucceeded );
+    connect( m_scannerJob, QOverload<QString>::of(&GenericScannerJob::failed),
+             this, &GenericScanManager::slotFailed );
 }

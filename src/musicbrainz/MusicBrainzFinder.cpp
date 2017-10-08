@@ -82,11 +82,11 @@ MusicBrainzFinder::MusicBrainzFinder( QObject *parent, const QString &host,
     m_timer = new QTimer( this );
     m_timer->setInterval( 1000 );
 
-    connect( net, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
-             SLOT(gotAuthenticationRequest(QNetworkReply*,QAuthenticator*)) );
-    connect( net, SIGNAL(finished(QNetworkReply*)),
-             SLOT(gotReply(QNetworkReply*)) );
-    connect( m_timer, SIGNAL(timeout()), SLOT(sendNewRequest()) );
+    connect( net, &QNetworkAccessManager::authenticationRequired,
+             this, &MusicBrainzFinder::gotAuthenticationRequest );
+    connect( net, &QNetworkAccessManager::finished,
+             this, &MusicBrainzFinder::gotReply );
+    connect( m_timer, &QTimer::timeout, this, &MusicBrainzFinder::sendNewRequest );
 }
 
 bool
@@ -126,8 +126,8 @@ MusicBrainzFinder::sendNewRequest()
     QPair<Meta::TrackPtr, QNetworkRequest> req = m_requests.takeFirst();
     QNetworkReply *reply = net->get( req.second );
     m_replies.insert( reply, req.first );
-    connect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
-             this, SLOT(gotReplyError(QNetworkReply::NetworkError)) );
+    connect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+             this, &MusicBrainzFinder::gotReplyError );
 
     debug() << "Request sent:" << req.second.url().toString();
 }
@@ -154,8 +154,8 @@ MusicBrainzFinder::gotReplyError( QNetworkReply::NetworkError code )
         return;
 
     debug() << "Error occurred during network request:" << reply->errorString();
-    disconnect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
-                this, SLOT(gotReplyError(QNetworkReply::NetworkError)) );
+    disconnect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+                this, &MusicBrainzFinder::gotReplyError );
 
     // Send an empty result to populate the tagger.
     sendTrack( m_replies.value( reply ), QVariantMap() );
@@ -177,8 +177,8 @@ MusicBrainzFinder::gotReply( QNetworkReply *reply )
             MusicBrainzXmlParser *parser = new MusicBrainzXmlParser( document );
             m_parsers.insert( parser, m_replies.value( reply ) );
 
-            connect( parser, SIGNAL(done(ThreadWeaver::JobPointer)),
-                     SLOT(parsingDone(ThreadWeaver::JobPointer)) );
+            connect( parser, &MusicBrainzXmlParser::done,
+                     this, &MusicBrainzFinder::parsingDone );
             ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(parser) );
         }
         else
@@ -199,8 +199,8 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::JobPointer _parser )
 {
     DEBUG_BLOCK
     MusicBrainzXmlParser *parser = dynamic_cast<MusicBrainzXmlParser*>( _parser.data() );
-    disconnect( parser, SIGNAL(done(ThreadWeaver::JobPointer)),
-                this, SLOT(parsingDone(ThreadWeaver::JobPointer)) );
+    disconnect( parser, &MusicBrainzXmlParser::done,
+                this, &MusicBrainzFinder::parsingDone );
 
     if( m_parsers.contains( parser ) && !m_parsers.value( parser ).isNull() )
     {

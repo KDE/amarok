@@ -60,7 +60,7 @@ namespace APG {
             void removeActive();
             void runGenerator( int );
             void setActivePreset( const QModelIndex& );
-            void savePresetsToXml() const; // force saving to default location
+            void savePresetsToXmlDefault() const; // force saving to default location
 
         private Q_SLOTS:
             void savePresetsToXml( const QString&, const QList<APG::PresetPtr> & ) const;

@@ -110,13 +110,14 @@ CoverManager::CoverManager( QWidget *parent )
     QDialogButtonBox *buttonBox = new QDialogButtonBox();
     QVBoxLayout *mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &CoverManager::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &CoverManager::reject);
     setWindowTitle( i18n("Cover Manager") );
     setAttribute( Qt::WA_DeleteOnClose );
 
-    connect( this, SIGNAL(hidden()), SLOT(delayedDestruct()) );
-    connect(buttonBox->button(QDialogButtonBox::Close), SIGNAL(clicked()), SLOT(delayedDestruct()) );
+    // TODO: There is no hidden signal in QDialog. Needs porting to QT5.
+//     connect( this, &CoverManager::hidden, this, &CoverManager::delayedDestruct );
+    connect( buttonBox->button(QDialogButtonBox::Close), &QAbstractButton::clicked, this, &CoverManager::delayedDestruct );
 
     m_splitter = new QSplitter( this );
     mainLayout->addWidget(m_splitter);
@@ -145,10 +146,10 @@ CoverManager::CoverManager( QWidget *parent )
     qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
     qm->orderBy( Meta::valArtist );
 
-    connect( qm, SIGNAL(newResultReady(Meta::ArtistList)),
-             this, SLOT(slotArtistQueryResult(Meta::ArtistList)) );
+    connect( qm, &Collections::QueryMaker::newArtistsReady,
+             this, &CoverManager::slotArtistQueryResult );
 
-    connect( qm, SIGNAL(queryDone()), this, SLOT(slotContinueConstruction()) );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &CoverManager::slotContinueConstruction );
 
     qm->run();
 }
@@ -194,9 +195,9 @@ CoverManager::slotContinueConstruction() //SLOT
     m_viewButton = new KPushButton( hbox );
 
     m_viewMenu = new QMenu( m_viewButton );
-    m_selectAllAlbums          = m_viewMenu->addAction( i18n("All Albums"),           this, SLOT(slotShowAllAlbums()) );
-    m_selectAlbumsWithCover    = m_viewMenu->addAction( i18n("Albums With Cover"),    this, SLOT(slotShowAlbumsWithCover()) );
-    m_selectAlbumsWithoutCover = m_viewMenu->addAction( i18n("Albums Without Cover"), this, SLOT(slotShowAlbumsWithoutCover()) );
+    m_selectAllAlbums          = m_viewMenu->addAction( i18n("All Albums"),           this, &CoverManager::slotShowAllAlbums );
+    m_selectAlbumsWithCover    = m_viewMenu->addAction( i18n("Albums With Cover"),    this, &CoverManager::slotShowAlbumsWithCover );
+    m_selectAlbumsWithoutCover = m_viewMenu->addAction( i18n("Albums Without Cover"), this, &CoverManager::slotShowAlbumsWithoutCover );
 
     QActionGroup *viewGroup = new QActionGroup( m_viewButton );
     viewGroup->setExclusive( true );
@@ -206,11 +207,11 @@ CoverManager::slotContinueConstruction() //SLOT
 
     m_viewButton->setMenu( m_viewMenu );
     m_viewButton->setIcon( QIcon::fromTheme( "filename-album-amarok" ) );
-    connect( m_viewMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotAlbumFilterTriggered(QAction*)) );
+    connect( m_viewMenu, &QMenu::triggered, this, &CoverManager::slotAlbumFilterTriggered );
 
     //fetch missing covers button
     m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "get-hot-new-stuff-amarok" ), hbox );
-    connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
+    connect( m_fetchButton, &QAbstractButton::clicked, this, &CoverManager::fetchMissingCovers );
 
     m_selectAllAlbums->setChecked( true );
     m_selectAllAlbums->trigger();
@@ -230,7 +231,7 @@ CoverManager::slotContinueConstruction() //SLOT
     statusBar->addWidget( m_statusLabel, 4 );
     statusBar->addPermanentWidget( m_progress, 1 );
 
-    connect( m_progress, SIGNAL(allDone()), this, SLOT(progressAllDone()) );
+    connect( m_progress, &CompoundProgressBar::allDone, this, &CoverManager::progressAllDone );
 
     QSize size = QApplication::desktop()->screenGeometry( this ).size() / 1.5;
     QSize sz = Amarok::config( "Cover Manager" ).readEntry( "Window Size", size );
@@ -255,14 +256,14 @@ CoverManager::slotContinueConstruction() //SLOT
     }
 
     // signals and slots connections
-    connect( m_artistView, SIGNAL(itemSelectionChanged()),
-                           SLOT(slotArtistSelected()) );
-    connect( m_coverView,  SIGNAL(itemActivated(QListWidgetItem*)),
-                           SLOT(coverItemClicked(QListWidgetItem*)) );
-    connect( m_timer,      SIGNAL(timeout()),
-                           SLOT(slotSetFilter()) );
-    connect( m_searchEdit, SIGNAL(textChanged(QString)),
-                           SLOT(slotSetFilterTimeout()) );
+    connect( m_artistView, &QTreeWidget::itemSelectionChanged,
+             this, &CoverManager::slotArtistSelected );
+    connect( m_coverView, &CoverView::itemActivated,
+             this, &CoverManager::coverItemClicked );
+    connect( m_timer, &QTimer::timeout,
+             this, &CoverManager::slotSetFilter );
+    connect( m_searchEdit, &Amarok::LineEdit::textChanged,
+             this, &CoverManager::slotSetFilterTimeout );
 
     if( item == 0 )
         item = m_artistView->invisibleRootItem()->child( 0 );
@@ -325,7 +326,7 @@ CoverManager::fetchMissingCovers() //SLOT
 
     updateStatusBar();
     m_fetchButton->setEnabled( false );
-    connect( m_fetcher, SIGNAL(finishedSingle(int)), SLOT(updateFetchingProgress(int)) );
+    connect( m_fetcher, &CoverFetcher::finishedSingle, this, &CoverManager::updateFetchingProgress );
 }
 
 void
@@ -380,10 +381,10 @@ CoverManager::slotArtistSelected() //SLOT
     qm->excludeFilter( Meta::valAlbum, QString(), true, true );
     qm->endAndOr();
 
-    connect( qm, SIGNAL(newResultReady(Meta::AlbumList)),
-             this, SLOT(slotAlbumQueryResult(Meta::AlbumList)) );
+    connect( qm, &Collections::QueryMaker::newAlbumsReady,
+             this, &CoverManager::slotAlbumQueryResult );
 
-    connect( qm, SIGNAL(queryDone()), this, SLOT(slotArtistQueryDone()) );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &CoverManager::slotArtistQueryDone );
 
     qm->run();
 }
@@ -412,7 +413,8 @@ CoverManager::slotArtistQueryDone() //SLOT
     ProgressBar *coverLoadProgressBar = new ProgressBar( this );
     coverLoadProgressBar->setDescription( i18n( "Loading" ) );
     coverLoadProgressBar->setMaximum( albumCount );
-    connect( coverLoadProgressBar, SIGNAL(cancelled()), this, SLOT(cancelCoverViewLoading()) );
+    connect( coverLoadProgressBar, &ProgressBar::cancelled,
+             this, &CoverManager::cancelCoverViewLoading );
 
     m_progress->addProgressBar( coverLoadProgressBar, m_coverView );
     m_progress->show();
@@ -630,8 +632,8 @@ CoverManager::updateStatusBar()
             m_fetchingCovers = false;
             m_progress->endProgressOperation( m_fetcher );
 
-            disconnect( m_fetcher, SIGNAL(finishedSingle(int)), this, SLOT(updateFetchingProgress(int)) );
-            QTimer::singleShot( 2000, this, SLOT(updateStatusBar()) );
+            disconnect( m_fetcher, &CoverFetcher::finishedSingle, this, &CoverManager::updateFetchingProgress );
+            QTimer::singleShot( 2000, this, &CoverManager::updateStatusBar );
         }
 
         if( m_fetchCovers.size() == 1 )
@@ -716,6 +718,15 @@ CoverManager::updateStatusBar()
 }
 
 void
+CoverManager::delayedDestruct()
+{
+    if ( isVisible() )
+        hide();
+
+    deleteLater();
+}
+
+void
 CoverManager::setStatusText( QString text )
 {
     m_oldStatusText = m_statusLabel->text();
@@ -745,8 +756,8 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setContextMenuPolicy( Qt::DefaultContextMenu );
     setMouseTracking( true ); // required for setting status text when itemEntered signal is emitted
 
-    connect( this, SIGNAL(itemEntered(QListWidgetItem*)), SLOT(setStatusText(QListWidgetItem*)) );
-    connect( this, SIGNAL(viewportEntered()), CoverManager::instance(), SLOT(updateStatusBar()) );
+    connect( this, &CoverView::itemEntered, this, &CoverView::setStatusText );
+    connect( this, &CoverView::viewportEntered, CoverManager::instance(), &CoverManager::updateStatusBar );
 }
 
 void

@@ -106,8 +106,8 @@ OcsPersonItem::init()
         m_iconsBar->addAction( homepage );
     }
 
-    connect( m_iconsBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(launchUrl(QAction*)) );
-    connect( m_snBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(launchUrl(QAction*)) );
+    connect( m_iconsBar, &KToolBar::actionTriggered, this, &OcsPersonItem::launchUrl );
+    connect( m_snBar, &KToolBar::actionTriggered, this, &OcsPersonItem::launchUrl );
     m_textLabel->setText( m_aboutText );
 }
 
@@ -144,7 +144,7 @@ OcsPersonItem::switchToOcs( const AmarokAttica::Provider &provider )
             return;
 
         personJob = provider.requestPerson( m_ocsUsername );
-        connect( personJob, SIGNAL(result(KJob*)), this, SLOT(onJobFinished(KJob*)) );
+        connect( personJob, &AmarokAttica::PersonJob::result, this, &OcsPersonItem::onJobFinished );
         emit ocsFetchStarted();
         m_state = Online;
     }

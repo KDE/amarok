@@ -36,11 +36,9 @@
 #include <QListView>
 #include <QTimeEdit>
 
-#include <KComboBox>
 #include <QIcon>
 #include <KLocale>
 #include <klocalizeddate.h>
-#include <KNumInput>
 #include <KRatingWidget>
 
 using namespace Amarok;
@@ -55,7 +53,8 @@ TimeDistanceWidget::TimeDistanceWidget( QWidget *parent )
     m_timeEdit->setMaximum( 600 );
 
     m_unitSelection = new KComboBox(this);
-    connect( m_timeEdit, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateComboBoxLabels(int)) );
+    connect( m_timeEdit, QOverload<int>::of(&KIntSpinBox::valueChanged),
+             this, &TimeDistanceWidget::slotUpdateComboBoxLabels );
     for (int i = 0; i < 7; ++i) {
         m_unitSelection->addItem( QString() );
     }
@@ -125,13 +124,6 @@ void TimeDistanceWidget::setTimeDistance( qint64 value )
     m_unitSelection->setCurrentIndex( unit );
     m_timeEdit->setValue( value );
 }
-
-void TimeDistanceWidget::connectChanged( QObject *receiver, const char *slot )
-{
-    connect( m_timeEdit, SIGNAL(valueChanged(QString)), receiver, slot );
-    connect( m_unitSelection, SIGNAL(currentIndexChanged(int)), receiver, slot );
-}
-
 
 void TimeDistanceWidget::slotUpdateComboBoxLabels( int value )
 {
@@ -354,7 +346,8 @@ MetaQueryWidget::makeFieldSelection()
     if (!m_onlyNumeric)
         addIconItem( m_fieldSelection, Meta::valLabel );
     addIconItem( m_fieldSelection, Meta::valModified );
-    connect( m_fieldSelection, SIGNAL(currentIndexChanged(int)), this, SLOT(fieldChanged(int)) );
+    connect( m_fieldSelection, QOverload<int>::of(&KComboBox::currentIndexChanged),
+             this, &MetaQueryWidget::fieldChanged );
 }
 
 void
@@ -647,8 +640,8 @@ MetaQueryWidget::makeCompareSelection()
     }
     m_compareSelection->setCurrentIndex( index == -1 ? 0 : index );
 
-    connect( m_compareSelection, SIGNAL(currentIndexChanged(int)),
-            SLOT(compareChanged(int)) );
+    connect( m_compareSelection, QOverload<int>::of(&KComboBox::currentIndexChanged),
+             this, &MetaQueryWidget::compareChanged );
 }
 
 void
@@ -720,17 +713,17 @@ MetaQueryWidget::makeGenericComboSelection( bool editable, Collections::QueryMak
     if( populateQuery != 0 )
     {
         m_runningQueries.insert(populateQuery, QWeakPointer<KComboBox>(combo));
-        connect( populateQuery, SIGNAL(newResultReady(QStringList)),
-                SLOT(populateComboBox(QStringList)) );
-        connect( populateQuery, SIGNAL(queryDone()),
-                SLOT(comboBoxPopulated()) );
+        connect( populateQuery, &Collections::QueryMaker::newResultReady,
+                 this, &MetaQueryWidget::populateComboBox );
+        connect( populateQuery, &Collections::QueryMaker::queryDone,
+                 this, &MetaQueryWidget::comboBoxPopulated );
 
         populateQuery->run();
     }
     combo->setEditText( m_filter.value );
 
-    connect( combo, SIGNAL(editTextChanged(QString)),
-            SLOT(valueChanged(QString)) );
+    connect( combo, &KComboBox::editTextChanged,
+             this, &MetaQueryWidget::valueChanged );
 
     combo->completionObject()->setIgnoreCase( true );
     combo->setCompletionMode( KCompletion::CompletionPopup );
@@ -774,8 +767,8 @@ MetaQueryWidget::populateComboBox( QStringList results )
 
     // reset the text and re-enable the signal
     combo.data()->setEditText( m_filter.value );
-    connect( combo.data(), SIGNAL(editTextChanged(QString)),
-            SLOT(valueChanged(QString)) );
+    connect( combo.data(), &KComboBox::editTextChanged,
+             this, &MetaQueryWidget::valueChanged );
 }
 
 void
@@ -792,9 +785,8 @@ MetaQueryWidget::makeFormatComboSelection()
     int index = m_fieldSelection->findData( (int)m_filter.numValue );
     combo->setCurrentIndex( index == -1 ? 0 : index );
 
-    connect( combo,
-             SIGNAL(currentIndexChanged(int)),
-             SLOT(numValueFormatChanged(int)) );
+    connect( combo, QOverload<int>::of(&KComboBox::currentIndexChanged),
+             this, &MetaQueryWidget::numValueFormatChanged );
 
     m_valueSelection1 = combo;
 }
@@ -822,8 +814,8 @@ MetaQueryWidget::makeRatingSelection()
 {
     KRatingWidget* ratingWidget = new KRatingWidget();
     ratingWidget->setRating( (int)m_filter.numValue );
-    connect( ratingWidget, SIGNAL(ratingChanged(int)),
-             this, SLOT(numValueChanged(int)) );
+    connect( ratingWidget, QOverload<int>::of(&KRatingWidget::ratingChanged),
+             this, QOverload<int>::of(&MetaQueryWidget::numValueChanged) );
 
     m_valueSelection1 = ratingWidget;
 
@@ -833,8 +825,8 @@ MetaQueryWidget::makeRatingSelection()
     // second KRatingWidget for the between selection
     KRatingWidget* ratingWidget2 = new KRatingWidget();
     ratingWidget2->setRating( (int)m_filter.numValue2 );
-    connect( ratingWidget2, SIGNAL(ratingChanged(int)),
-             this, SLOT(numValue2Changed(int)) );
+    connect( ratingWidget2, QOverload<int>::of(&KRatingWidget::ratingChanged),
+             this, QOverload<int>::of(&MetaQueryWidget::numValue2Changed) );
 
     m_valueSelection2 = ratingWidget2;
 }
@@ -850,8 +842,8 @@ MetaQueryWidget::makeLengthSelection()
     timeSpin->setMaximumTime( QTime( maxHours - 1, 59, 59 ) );
     timeSpin->setTime( QTime().addSecs( m_filter.numValue ) );
 
-    connect( timeSpin, SIGNAL(timeChanged(QTime)),
-            SLOT(numValueChanged(QTime)) );
+    connect( timeSpin, &QTimeEdit::timeChanged,
+             this, QOverload<const QTime&>::of(&MetaQueryWidget::numValueChanged) );
 
     m_valueSelection1 = timeSpin;
 
@@ -864,8 +856,8 @@ MetaQueryWidget::makeLengthSelection()
     timeSpin2->setMaximumTime( QTime( maxHours - 1, 59, 59 ) );
     timeSpin2->setTime( QTime().addSecs( m_filter.numValue2 ) );
 
-    connect( timeSpin2, SIGNAL(timeChanged(QTime)),
-            SLOT(numValue2Changed(QTime)) );
+    connect( timeSpin2, &QTimeEdit::timeChanged,
+             this, QOverload<const QTime&>::of(&MetaQueryWidget::numValue2Changed) );
 
     m_valueSelection2 = timeSpin2;
 }
@@ -880,8 +872,8 @@ MetaQueryWidget::makeGenericNumberSelection( qint64 field, const QString& unit )
         spin->setSuffix( ' ' + unit );
     spin->setValue( m_filter.numValue );
 
-    connect( spin, SIGNAL(valueChanged(int)),
-            this, SLOT(numValueChanged(int)) );
+    connect( spin, QOverload<int>::of(&KIntSpinBox::valueChanged),
+             this, QOverload<int>::of(&MetaQueryWidget::numValueChanged) );
 
     m_valueSelection1 = spin;
 
@@ -896,8 +888,8 @@ MetaQueryWidget::makeGenericNumberSelection( qint64 field, const QString& unit )
         spin2->setSuffix( ' ' + unit );
     spin2->setValue( m_filter.numValue2 );
 
-    connect( spin2, SIGNAL(valueChanged(int)),
-            this, SLOT(numValue2Changed(int)) );
+    connect( spin2, QOverload<int>::of(&KIntSpinBox::valueChanged),
+             this, QOverload<int>::of(&MetaQueryWidget::numValue2Changed) );
 
     m_valueSelection2 = spin2;
 }
@@ -911,7 +903,7 @@ MetaQueryWidget::makeDateTimeSelection()
         TimeDistanceWidget* distanceSelection = new TimeDistanceWidget();
         distanceSelection->setTimeDistance( m_filter.numValue );
 
-        distanceSelection->connectChanged( this, SLOT(numValueTimeDistanceChanged()));
+        distanceSelection->connectChanged( this, &MetaQueryWidget::numValueTimeDistanceChanged);
 
         m_valueSelection1 = distanceSelection;
     }
@@ -926,8 +918,8 @@ MetaQueryWidget::makeDateTimeSelection()
         dt.setTime_t( m_filter.numValue );
         dateSelection->setDate( dt.date() );
 
-        connect( dateSelection, SIGNAL(currentIndexChanged(int)),
-                SLOT(numValueDateChanged()) );
+        connect( dateSelection, QOverload<int>::of(&KDateCombo::currentIndexChanged),
+                 this, &MetaQueryWidget::numValueDateChanged );
 
         m_valueSelection1 = dateSelection;
 
@@ -939,8 +931,8 @@ MetaQueryWidget::makeDateTimeSelection()
         dt.setTime_t( m_filter.numValue2 );
         dateSelection2->setDate( dt.date() );
 
-        connect( dateSelection2, SIGNAL(currentIndexChanged(int)),
-                SLOT(numValue2DateChanged()) );
+        connect( dateSelection2, QOverload<int>::of(&KDateCombo::currentIndexChanged),
+                 this, &MetaQueryWidget::numValue2DateChanged );
 
         m_valueSelection2 = dateSelection2;
     }

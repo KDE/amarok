@@ -117,7 +117,7 @@ PlaylistFileProvider::playlists()
     if( !m_playlistsLoaded )
     {
         //trigger a lazy load the playlists
-        QTimer::singleShot(0, this, SLOT(loadPlaylists()) );
+        QTimer::singleShot(0, this, &PlaylistFileProvider::loadPlaylists );
         return playlists;
     }
 
@@ -301,7 +301,7 @@ PlaylistFileProvider::loadPlaylists()
 
     //give the mainloop time to run
     if( !m_urlsToLoad.isEmpty() )
-        QTimer::singleShot( 0, this, SLOT(loadPlaylists()) );
+        QTimer::singleShot( 0, this, &PlaylistFileProvider::loadPlaylists );
 }
 
 void
@@ -319,7 +319,7 @@ PlaylistFileProvider::saveLater( Playlists::PlaylistFilePtr playlist )
         m_saveLaterTimer = new QTimer( this );
         m_saveLaterTimer->setSingleShot( true );
         m_saveLaterTimer->setInterval( 0 );
-        connect( m_saveLaterTimer, SIGNAL(timeout()), SLOT(slotSaveLater()) );
+        connect( m_saveLaterTimer, &QTimer::timeout, this, &PlaylistFileProvider::slotSaveLater );
     }
 
     m_saveLaterTimer->start();

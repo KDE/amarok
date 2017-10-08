@@ -18,6 +18,7 @@
 
 #include "amarokconfig.h"
 #include <config.h>
+#include "configdialog/ConfigDialog.h"
 #include "core/support/Amarok.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "dialogs/CollectionSetup.h"
@@ -26,7 +27,6 @@ CollectionConfig::CollectionConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
     m_collectionSetup = new CollectionSetup( this );
-    connect( m_collectionSetup, SIGNAL(changed()), parent, SLOT(updateButtons()) );
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( m_collectionSetup );
@@ -34,7 +34,13 @@ CollectionConfig::CollectionConfig( QWidget* parent )
 
     KConfigGroup transcodeGroup = Amarok::config( Collections::SQL_TRANSCODING_GROUP_NAME );
     m_collectionSetup->transcodingConfig()->fillInChoices( Transcoding::Configuration::fromConfigGroup( transcodeGroup ) );
-    connect( m_collectionSetup->transcodingConfig(), SIGNAL(currentIndexChanged(int)), parent, SLOT(updateButtons()) );
+
+    if (auto dialog = qobject_cast<Amarok2ConfigDialog*>(parent))
+    {
+        connect( m_collectionSetup, &CollectionSetup::changed, dialog, &Amarok2ConfigDialog::updateButtons );
+        connect( m_collectionSetup->transcodingConfig(), QOverload<int>::of(&QComboBox::currentIndexChanged),
+                 dialog, &Amarok2ConfigDialog::updateButtons );
+    }
 }
 
 CollectionConfig::~CollectionConfig()

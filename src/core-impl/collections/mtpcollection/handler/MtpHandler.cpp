@@ -1509,7 +1509,7 @@ CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MtpHandler* han
 {
     connect( this, SIGNAL(failed(ThreadWeaver::Job*)), m_handler, SLOT(slotCopyNextTrackFailed(ThreadWeaver::Job*)) );
     connect( this, SIGNAL(done(ThreadWeaver::Job*)), m_handler, SLOT(slotCopyNextTrackToDevice(ThreadWeaver::Job*)) );
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
+    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, &QObject::deleteLater );
 }
 
 CopyWorkerThread::~CopyWorkerThread()

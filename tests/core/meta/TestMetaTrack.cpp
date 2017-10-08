@@ -169,7 +169,7 @@ void TestMetaTrack::testSampleRate()
 
 void TestMetaTrack::testBitrate()
 {
-    QCOMPARE( m_testTrack1->bitrate(), 256 );
+    QCOMPARE( m_testTrack1->bitrate(), 257 );
 }
 
 void TestMetaTrack::testTrackNumber()

@@ -57,7 +57,7 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
     setFrameStyle( QFrame::NoFrame );
     applyStyleSheet();
 
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(applyStyleSheet()) );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &Context::ToolbarView::applyStyleSheet );
 
     //Padding required to prevent view scrolling, probably caused by the 1px ridge
     setSceneRect( TOOLBAR_X_OFFSET, 0, size().width()-TOOLBAR_SCENE_PADDING,
@@ -75,18 +75,18 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
     m_toolbar.data()->setZValue( m_toolbar.data()->zValue() + 1000 );
     m_toolbar.data()->setPos( TOOLBAR_X_OFFSET, 0 );
 
-   connect( m_toolbar.data(), SIGNAL(configModeToggled()), SLOT(toggleConfigMode()) );
-   connect( m_toolbar.data(), SIGNAL(hideAppletExplorer()), SIGNAL(hideAppletExplorer()) );
-   connect( m_toolbar.data(), SIGNAL(showAppletExplorer()), SIGNAL(showAppletExplorer()) );
+   connect( m_toolbar.data(), &Context::AppletToolbar::configModeToggled, this, &Context::ToolbarView::toggleConfigMode );
+   connect( m_toolbar.data(), &Context::AppletToolbar::hideAppletExplorer, this, &Context::ToolbarView::hideAppletExplorer );
+   connect( m_toolbar.data(), &Context::AppletToolbar::showAppletExplorer, this, &Context::ToolbarView::showAppletExplorer );
 
    Context::Containment* cont = dynamic_cast< Context::Containment* >( containment );
    if( cont )
    {
-       connect( cont, SIGNAL(appletAdded(Plasma::Applet*,int)), m_toolbar.data(), SLOT(appletAdded(Plasma::Applet*,int)) );
-       connect( m_toolbar.data(), SIGNAL(appletAddedToToolbar(Plasma::Applet*,int)), this, SLOT(appletAdded(Plasma::Applet*,int)) );
-       connect( cont, SIGNAL(appletRemoved(Plasma::Applet*)), this, SLOT(appletRemoved(Plasma::Applet*)) );
-       connect( m_toolbar.data(), SIGNAL(showApplet(Plasma::Applet*)), cont, SLOT(showApplet(Plasma::Applet*)) );
-       connect( m_toolbar.data(), SIGNAL(moveApplet(Plasma::Applet*,int,int)), cont, SLOT(moveApplet(Plasma::Applet*,int,int)) );
+       connect( cont, &Context::Containment::appletAdded, m_toolbar.data(), &Context::AppletToolbar::appletAdded );
+       connect( m_toolbar.data(), &Context::AppletToolbar::appletAddedToToolbar, this, &Context::ToolbarView::appletAdded );
+       connect( cont, &Context::Containment::appletRemoved, this, &Context::ToolbarView::appletRemoved );
+       connect( m_toolbar.data(), &Context::AppletToolbar::showApplet, cont, &Context::Containment::showApplet );
+       connect( m_toolbar.data(), &Context::AppletToolbar::moveApplet, cont, &Context::Containment::moveApplet );
    }
 
 }
@@ -169,9 +169,9 @@ Context::ToolbarView::toggleConfigMode()
             if( item )
             {
                 Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar.data()->appletLayout(), this );
-                connect( moveOverlay, SIGNAL(moveApplet(Plasma::Applet*,int,int)), m_cont, SLOT(moveApplet(Plasma::Applet*,int,int)) );
-                connect( moveOverlay, SIGNAL(moveApplet(Plasma::Applet*,int,int)), this, SLOT(refreshOverlays()) );
-                connect( moveOverlay, SIGNAL(deleteApplet(Plasma::Applet*)), this, SLOT(appletRemoved(Plasma::Applet*)) );
+                connect( moveOverlay, &Context::AppletItemOverlay::moveApplet, m_cont, &Context::Containment::moveApplet );
+                connect( moveOverlay, &Context::AppletItemOverlay::moveApplet, this, &Context::ToolbarView::refreshOverlays );
+                connect( moveOverlay, &Context::AppletItemOverlay::deleteApplet, this, &Context::ToolbarView::appletRemoved );
                 moveOverlay->setPalette( p );
                 moveOverlay->show();
                 moveOverlay->raise();
@@ -243,9 +243,9 @@ Context::ToolbarView::recreateOverlays()
         if( item )
         {
             Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar.data()->appletLayout(), this );
-            connect( moveOverlay, SIGNAL(moveApplet(Plasma::Applet*,int,int)), m_cont, SLOT(moveApplet(Plasma::Applet*,int,int)) );
-            connect( moveOverlay, SIGNAL(moveApplet(Plasma::Applet*,int,int)), this, SLOT(refreshOverlays()) );
-            connect( moveOverlay, SIGNAL(deleteApplet(Plasma::Applet*)), this, SLOT(appletRemoved(Plasma::Applet*)) );
+            connect( moveOverlay, &Context::AppletItemOverlay::moveApplet, m_cont, &Context::Containment::moveApplet );
+            connect( moveOverlay, &Context::AppletItemOverlay::moveApplet, this, &Context::ToolbarView::refreshOverlays );
+            connect( moveOverlay, &Context::AppletItemOverlay::deleteApplet, this, &Context::ToolbarView::appletRemoved );
             moveOverlay->setPalette( p );
             moveOverlay->show();
             moveOverlay->raise();

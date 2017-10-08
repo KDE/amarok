@@ -57,8 +57,8 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &AssistantDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &AssistantDialog::reject);
     mainLayout->addWidget(uiBase);
     okButton->setText( i18n( "Transc&ode" ) );
     okButton->setEnabled( false );
@@ -98,23 +98,23 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     ui.justCopyButton->setText( justCopyText );
     ui.justCopyButton->setDescription( justCopyDescription );
     ui.justCopyButton->setMinimumHeight( ui.justCopyButton->iconSize().height() + 2*10 ); //we make room for the pretty icon
-    connect( ui.justCopyButton, SIGNAL(clicked()),
-             this, SLOT(onJustCopyClicked()) );
+    connect( ui.justCopyButton, &QAbstractButton::clicked,
+             this, &AssistantDialog::onJustCopyClicked );
 
     //Let's set up the codecs page...
     populateFormatList();
-    connect( ui.formatListWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-             this, SLOT(onFormatSelect(QListWidgetItem*)) );
+    connect( ui.formatListWidget, &QListWidget::currentItemChanged,
+             this, &AssistantDialog::onFormatSelect );
 
     ui.formatIconLabel->hide();
     ui.formatNameLabel->hide();
-    connect( buttonBox->button(QDialogButtonBox::Ok) , SIGNAL(clicked()),
-             this, SLOT(onTranscodeClicked()) );
+    connect( buttonBox->button(QDialogButtonBox::Ok), &QAbstractButton::clicked,
+             this, &AssistantDialog::onTranscodeClicked );
 
     ui.rememberCheckBox->setChecked( m_save );
     ui.rememberCheckBox->setEnabled( saveSupported );
-    connect( ui.rememberCheckBox, SIGNAL(toggled(bool)),
-             this, SLOT(onRememberToggled(bool)) );
+    connect( ui.rememberCheckBox, &QCheckBox::toggled,
+             this, &AssistantDialog::onRememberToggled );
 
     switch( prevConfiguration.trackSelection() ) //restore the previously selected TrackSelection radio button
     {

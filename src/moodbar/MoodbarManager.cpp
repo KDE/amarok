@@ -60,7 +60,7 @@ MoodbarManager::MoodbarManager()
     : m_cache( new KImageCache( "Amarok-moodbars", 10 * 1024 ) )
     , m_lastPaintMode( 0 )
 {
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &MoodbarManager::paletteChanged );
 }
 
 MoodbarManager::~MoodbarManager()

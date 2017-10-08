@@ -61,7 +61,7 @@ SvgHandler::SvgHandler( QObject* parent )
     , m_customTheme( false )
 {
     DEBUG_BLOCK
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), this, SLOT(discardCache()) );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &SvgHandler::discardCache );
 }
 
 SvgHandler::~SvgHandler()

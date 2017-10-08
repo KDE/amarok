@@ -60,8 +60,8 @@ QueryMakerPrototype::blockingRun()
     if( !m_querymaker )
         return Meta::TrackList();
     QEventLoop loop;
-    connect( m_querymaker.data(), SIGNAL(newResultReady(Meta::TrackList)), SLOT(slotResult(Meta::TrackList)) );
-    connect( m_querymaker.data(), SIGNAL(queryDone()), &loop, SLOT(quit()) );
+    connect( m_querymaker.data(), &Collections::QueryMaker::newTracksReady, this, &QueryMakerPrototype::slotResult );
+    connect( m_querymaker.data(), &Collections::QueryMaker::queryDone, &loop, &QEventLoop::quit );
     run();
     loop.exec();
     return m_result;
@@ -82,8 +82,8 @@ QueryMakerPrototype::QueryMakerPrototype( QueryMaker *queryMaker )
 {
     if( !queryMaker )
         return;
-    connect( queryMaker, SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)) );
-    connect( queryMaker, SIGNAL(queryDone()), SIGNAL(queryDone()) );
+    connect( queryMaker, &Collections::QueryMaker::newTracksReady, this, &QueryMakerPrototype::newResultReady );
+    connect( queryMaker, &Collections::QueryMaker::queryDone, this, &QueryMakerPrototype::queryDone );
     queryMaker->setAutoDelete( true );
 }
 

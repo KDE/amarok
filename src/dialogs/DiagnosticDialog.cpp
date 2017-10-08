@@ -52,8 +52,8 @@ DiagnosticDialog::DiagnosticDialog( const KAboutData about, QWidget *parent )
     setMainWidget( m_textBox );
     setInitialSize( QSize( 480, 460 ) );
 
-    connect( this, SIGNAL(user1Clicked()), SLOT(slotCopyToClipboard()) );
-    connect( this, SIGNAL(finished()), SLOT(deleteLater()) );
+    connect( this, &DiagnosticDialog::user1Clicked, this, &DiagnosticDialog::slotCopyToClipboard );
+    connect( this, &DiagnosticDialog::finished, this, &DiagnosticDialog::deleteLater );
 }
 
 const QString

@@ -58,8 +58,8 @@ void KDateCombo::initObject(const QDate & date)
   mainLayout->addWidget(datePicker);
   setDate(date);
 
-  connect(datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(dateEnteredEvent(QDate)));
-  connect(datePicker, SIGNAL(dateEntered(QDate)), this, SLOT(dateEnteredEvent(QDate)));
+  connect(datePicker, &KDatePicker::dateSelected, this, &KDateCombo::dateEnteredEvent);
+  connect(datePicker, &KDatePicker::dateEntered, this, &KDateCombo::dateEnteredEvent);
 }
 
 KDateCombo::~KDateCombo()
@@ -104,6 +104,12 @@ void KDateCombo::dateEnteredEvent(const QDate &newDate)
   setDate(tempDate);
 }
 
+void KDateCombo::nullDateEnteredEvent()
+{
+    dateEnteredEvent(QDate());
+}
+
+
 void KDateCombo::mousePressEvent (QMouseEvent * e)
 {
   if (e->button() & Qt::LeftButton)
@@ -126,7 +132,7 @@ bool KDateCombo::eventFilter (QObject*, QEvent* e)
       QPoint p = mapFromGlobal( me->globalPos() );
       if (rect().contains( p ) )
       {
-        QTimer::singleShot(10, this, SLOT(dateEnteredEvent()));
+          QTimer::singleShot(10, this, &KDateCombo::nullDateEnteredEvent);
         return true;
       }
   }

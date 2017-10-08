@@ -99,14 +99,14 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlQueryMaker : public QueryMaker
 
     public Q_SLOTS:
         void done( ThreadWeaver::JobPointer job );
-        void blockingNewResultReady( const QStringList &customData );
-        void blockingNewResultReady( const Meta::AlbumList &albums );
-        void blockingNewResultReady( const Meta::ArtistList &artists );
-        void blockingNewResultReady( const Meta::GenreList &genres );
-        void blockingNewResultReady( const Meta::ComposerList &composers );
-        void blockingNewResultReady( const Meta::YearList &years );
-        void blockingNewResultReady( const Meta::TrackList &tracks );
-        void blockingNewResultReady( const Meta::LabelList &labels );
+        void blockingNewTracksReady( const Meta::TrackList& );
+        void blockingNewArtistsReady( const Meta::ArtistList& );
+        void blockingNewAlbumsReady( const Meta::AlbumList& );
+        void blockingNewGenresReady( const Meta::GenreList& );
+        void blockingNewComposersReady( const Meta::ComposerList& );
+        void blockingNewYearsReady( const Meta::YearList& );
+        void blockingNewResultReady( const QStringList& );
+        void blockingNewLabelsReady( const Meta::LabelList& );
 
     private:
 

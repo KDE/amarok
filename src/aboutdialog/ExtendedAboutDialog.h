@@ -41,12 +41,11 @@ public:
 private Q_SLOTS:
     void switchToOcsWidgets();
     void onProviderFetched( KJob *job );
+    void showLicense( const QString &number );
 
 private:
     class Private;
     Private* const d;
-
-    Q_PRIVATE_SLOT( d, void _k_showLicense(const QString&) )
 
     Q_DISABLE_COPY( ExtendedAboutDialog )
 

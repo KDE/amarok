@@ -45,8 +45,8 @@ PodcastSettingsDialog::PodcastSettingsDialog( Podcasts::SqlPodcastChannelPtr cha
 
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &PodcastSettingsDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &PodcastSettingsDialog::reject);
 
     okButton->setDefault(true);
     mainLayout->addWidget(buttonBox);
@@ -91,20 +91,22 @@ PodcastSettingsDialog::init()
     buttonBox()->button(QDialogButtonBox::Apply)->setEnabled( false );
 
     // Connects for modification check
-    connect( m_ps->m_urlLineEdit, SIGNAL(textChanged(QString)),
-             SLOT(checkModified()) );
-    connect( m_ps->m_saveLocation, SIGNAL(textChanged(QString)),
-             SLOT(checkModified()) );
-    connect( m_ps->m_autoFetchCheck, SIGNAL(clicked()), SLOT(checkModified()) );
-    connect( m_ps->m_streamRadio, SIGNAL(clicked()), SLOT(checkModified()) );
-    connect( m_ps->m_downloadRadio, SIGNAL(clicked()), SLOT(checkModified()) );
-    connect( m_ps->m_purgeCheck, SIGNAL(clicked()), SLOT(checkModified()) );
-    connect( m_ps->m_purgeCountSpinBox, SIGNAL(valueChanged(int)), SLOT(checkModified()) );
-    connect( m_ps->m_writeTagsCheck, SIGNAL(clicked()), SLOT(checkModified()) );
-    connect( m_ps->m_filenameLayoutConfigWidgetButton, SIGNAL(clicked()), SLOT(launchFilenameLayoutConfigDialog()) );
+    connect( m_ps->m_urlLineEdit, &QLineEdit::textChanged,
+             this, &PodcastSettingsDialog::checkModified );
+    connect( m_ps->m_saveLocation, &KUrlRequester::textChanged,
+             this, &PodcastSettingsDialog::checkModified );
+    connect( m_ps->m_autoFetchCheck, &QAbstractButton::clicked, this, &PodcastSettingsDialog::checkModified );
+    connect( m_ps->m_streamRadio, &QAbstractButton::clicked, this, &PodcastSettingsDialog::checkModified );
+    connect( m_ps->m_downloadRadio, &QAbstractButton::clicked, this, &PodcastSettingsDialog::checkModified );
+    connect( m_ps->m_purgeCheck, &QAbstractButton::clicked, this, &PodcastSettingsDialog::checkModified );
+    connect( m_ps->m_purgeCountSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
+             this, &PodcastSettingsDialog::checkModified );
+    connect( m_ps->m_writeTagsCheck, &QAbstractButton::clicked, this, &PodcastSettingsDialog::checkModified );
+    connect( m_ps->m_filenameLayoutConfigWidgetButton, &QAbstractButton::clicked,
+             this, &PodcastSettingsDialog::launchFilenameLayoutConfigDialog );
 
-    connect(buttonBox()->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this ,SLOT(slotApply()) );
-    connect(buttonBox()->button(QDialogButtonBox::Ok), SIGNAL(clicked()), this, SLOT(slotApply()) );
+    connect(buttonBox()->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, this, &PodcastSettingsDialog::slotApply );
+    connect(buttonBox()->button(QDialogButtonBox::Ok), &QAbstractButton::clicked, this, &PodcastSettingsDialog::slotApply );
 }
 
 void

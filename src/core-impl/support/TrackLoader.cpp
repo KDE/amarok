@@ -53,7 +53,7 @@ void
 TrackLoader::init( const QList<QUrl> &qurls )
 {
     m_sourceUrls = qurls;
-    QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
+    QTimer::singleShot( 0, this, &TrackLoader::processNextSourceUrl );
 }
 
 void
@@ -61,7 +61,7 @@ TrackLoader::init( const Playlists::PlaylistList &playlists )
 {
     m_resultPlaylists = playlists;
     // no need to process source urls here, short-cut to result urls (just playlists)
-    QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
+    QTimer::singleShot( 0, this, &TrackLoader::processNextResultUrl );
 }
 
 void
@@ -69,7 +69,7 @@ TrackLoader::processNextSourceUrl()
 {
     if( m_sourceUrls.isEmpty() )
     {
-        QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
+        QTimer::singleShot( 0, this, &TrackLoader::processNextResultUrl );
         return;
     }
 
@@ -78,16 +78,15 @@ TrackLoader::processNextSourceUrl()
     {
         // KJobs delete themselves
         KIO::ListJob *lister = KIO::listRecursive( sourceUrl, KIO::HideProgressInfo );
-        connect( lister, SIGNAL(finished(KJob*)), SLOT(listJobFinished()) );
-        connect( lister, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
-                 SLOT(directoryListResults(KIO::Job*,KIO::UDSEntryList)) );
+        connect( lister, &KIO::ListJob::finished, this, &TrackLoader::listJobFinished );
+        connect( lister, &KIO::ListJob::entries, this, &TrackLoader::directoryListResults );
         // listJobFinished() calls processNextSourceUrl() in the end, don't do it here:
         return;
     }
     else
         m_resultUrls.append( sourceUrl );
 
-    QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
+    QTimer::singleShot( 0, this, &TrackLoader::processNextSourceUrl );
 }
 
 void
@@ -113,7 +112,7 @@ TrackLoader::listJobFinished()
     m_resultUrls << m_listJobResults;
     m_listJobResults.clear();
 
-    QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
+    QTimer::singleShot( 0, this, &TrackLoader::processNextSourceUrl );
 }
 
 void
@@ -168,7 +167,7 @@ TrackLoader::processNextResultUrl()
         warning() << __PRETTY_FUNCTION__ << resultUrl
                   << "is neither a playlist or a track, skipping";
 
-    QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
+                  QTimer::singleShot( 0, this, &TrackLoader::processNextResultUrl );
 }
 
 void
@@ -213,7 +212,7 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
         m_tracks << tracks;
 
     // this also ensures that processNextResultUrl() will resume in the main thread
-    QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
+    QTimer::singleShot( 0, this, &TrackLoader::processNextResultUrl );
 }
 
 void
@@ -229,7 +228,7 @@ TrackLoader::metadataChanged( Meta::TrackPtr track )
 
     Observer::unsubscribeFrom( track );
     if( m_status == MayFinish && isEmpty )
-        QTimer::singleShot( 0, this, SLOT(finish()) );
+        QTimer::singleShot( 0, this, &TrackLoader::finish );
 }
 
 void
@@ -248,7 +247,7 @@ TrackLoader::mayFinish()
     }
 
     // we must wait for tracks to resolve, but with a timeout
-    QTimer::singleShot( m_timeout, this, SLOT(finish()) );
+    QTimer::singleShot( m_timeout, this, &TrackLoader::finish );
 }
 
 void

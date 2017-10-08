@@ -30,6 +30,7 @@
 #include "covermanager/CoverFetchingActions.h"
 #include "dialogs/TagDialog.h"
 #include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/view/listview/PrettyListView.h"
 
 #include <QMenu>
 
@@ -128,12 +129,15 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
             m_cueTrackAction->setText( queueText );
         }
 
-        if( isQueued )
-            QObject::connect( m_cueTrackAction, SIGNAL(triggered()),
-                              parent, SLOT(dequeueSelection()) );
-        else
-            QObject::connect( m_cueTrackAction, SIGNAL(triggered()),
-                              parent, SLOT(queueSelection()) );
+        if( auto p = static_cast<Playlist::PrettyListView*>(parent))
+        {
+            if( isQueued )
+                QObject::connect( m_cueTrackAction, &QAction::triggered,
+                                  p, &Playlist::PrettyListView::dequeueSelection );
+            else
+                QObject::connect( m_cueTrackAction, &QAction::triggered,
+                                  p, &Playlist::PrettyListView::queueSelection );
+        }
 
         actions << m_cueTrackAction;
 
@@ -150,8 +154,10 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         {
             m_stopAfterTrackAction = new QAction( QIcon::fromTheme( "media-playback-stop-amarok" ),
                                                   i18n( "Stop Playing After This Track" ), parent );
-            QObject::connect( m_stopAfterTrackAction, SIGNAL(triggered()),
-                              parent, SLOT(stopAfterTrack()) );
+
+            if ( auto p = static_cast<Playlist::PrettyListView*>(parent) )
+                QObject::connect( m_stopAfterTrackAction, &QAction::triggered,
+                                  p, &Playlist::PrettyListView::stopAfterTrack );
         }
         actions << m_stopAfterTrackAction;
     }
@@ -162,8 +168,10 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     {
         m_removeTracTrackAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
                                                i18n( "Remove From Playlist" ), parent );
-        QObject::connect( m_removeTracTrackAction, SIGNAL(triggered()),
-                          parent, SLOT(removeSelection()) );
+
+        if ( auto p = static_cast<Playlist::PrettyListView*>(parent) )
+            QObject::connect( m_removeTracTrackAction, &QAction::triggered,
+                              p, &Playlist::PrettyListView::removeSelection );
     }
     actions << m_removeTracTrackAction;
 
@@ -191,8 +199,10 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         {
             m_findInSourceAction = new QAction( QIcon::fromTheme( "edit-find" ),
                                                 i18n( "Show in Media Sources" ), parent );
-            QObject::connect( m_findInSourceAction, SIGNAL(triggered()),
-                              parent, SLOT(findInSource()) );
+
+            if( auto p = static_cast<Playlist::PrettyListView*>(parent) )
+                QObject::connect( m_findInSourceAction, &QAction::triggered,
+                                  p, &Playlist::PrettyListView::findInSource );
         }
         actions << m_findInSourceAction;
     }
@@ -232,7 +242,9 @@ Playlist::ViewCommon::multiSourceActionsFor( QWidget *parent, const QModelIndex 
     {
         QAction *selectSourceAction = new QAction( QIcon::fromTheme( "media-playlist-repeat" ),
                                                    i18n( "Select Source" ), parent );
-        QObject::connect( selectSourceAction, SIGNAL(triggered()), parent, SLOT(selectSource()) );
+
+        if( auto p = static_cast<Playlist::PrettyListView*>(parent) )
+            QObject::connect( selectSourceAction, &QAction::triggered, p, &Playlist::PrettyListView::selectSource );
 
         actions << selectSourceAction;
     }
@@ -251,7 +263,10 @@ Playlist::ViewCommon::editActionsFor( QWidget *parent, const QModelIndex *index 
     QAction *editAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
                                        i18n( "Edit Track Details" ), parent );
     editAction->setProperty( "popupdropper_svg_id", "edit" );
-    QObject::connect( editAction, SIGNAL(triggered()), parent, SLOT(editTrackInformation()) );
+
+    if( auto p = static_cast<Playlist::PrettyListView*>(parent) )
+        QObject::connect( editAction, &QAction::triggered, p, &Playlist::PrettyListView::editTrackInformation );
+
     actions << editAction;
 
     return actions;

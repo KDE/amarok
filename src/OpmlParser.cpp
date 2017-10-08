@@ -86,11 +86,11 @@ OpmlParser::read( const QUrl &url )
 
     m_transferJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
 
-    connect( m_transferJob, SIGNAL(data(KIO::Job*,QByteArray)),
-             SLOT(slotAddData(KIO::Job*,QByteArray)) );
+    connect( m_transferJob, &KIO::TransferJob::data,
+             this, &OpmlParser::slotAddData );
 
-    connect( m_transferJob, SIGNAL(result(KJob*)),
-             SLOT(downloadResult(KJob*)) );
+    connect( m_transferJob, &KIO::TransferJob::result,
+             this, &OpmlParser::downloadResult );
 
     // parse data
     return read();

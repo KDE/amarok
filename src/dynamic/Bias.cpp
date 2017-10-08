@@ -325,12 +325,12 @@ Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
     if( inModel )
         DynamicModel::instance()->endInsertBias();
 
-    connect( bias.data(), SIGNAL(resultReady(Dynamic::TrackSet)),
-             this,  SLOT(resultReceived(Dynamic::TrackSet)) );
-    connect( bias.data(), SIGNAL(replaced(Dynamic::BiasPtr,Dynamic::BiasPtr)),
-             this, SLOT(biasReplaced(Dynamic::BiasPtr,Dynamic::BiasPtr)) );
-    connect( bias.data(), SIGNAL(changed(Dynamic::BiasPtr)),
-             this, SLOT(biasChanged(Dynamic::BiasPtr)) );
+    connect( bias.data(), &Dynamic::AbstractBias::resultReady,
+             this, &AndBias::resultReceived );
+    connect( bias.data(), &Dynamic::AbstractBias::replaced,
+             this, &AndBias::biasReplaced );
+    connect( bias.data(), &Dynamic::AbstractBias::changed,
+             this, &AndBias::biasChanged );
     emit biasAppended( bias );
 
     // creating a shared pointer and destructing it just afterwards would
@@ -393,12 +393,12 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
 
     if( newBias )
     {
-        connect( newBias.data(), SIGNAL(resultReady(Dynamic::TrackSet)),
-                 this,  SLOT(resultReceived(Dynamic::TrackSet)) );
-        connect( newBias.data(), SIGNAL(replaced(Dynamic::BiasPtr,Dynamic::BiasPtr)),
-                 this, SLOT(biasReplaced(Dynamic::BiasPtr,Dynamic::BiasPtr)) );
-        connect( newBias.data(), SIGNAL(changed(Dynamic::BiasPtr)),
-                 this, SIGNAL(changed(Dynamic::BiasPtr)) );
+        connect( newBias.data(), &Dynamic::AbstractBias::resultReady,
+                 this, &AndBias::resultReceived );
+        connect( newBias.data(), &Dynamic::AbstractBias::replaced,
+                 this, &AndBias::biasReplaced );
+        connect( newBias.data(), &Dynamic::AbstractBias::changed,
+                 this, &AndBias::changed );
 
         if( inModel )
             DynamicModel::instance()->beginInsertBias( thisPtr, index );

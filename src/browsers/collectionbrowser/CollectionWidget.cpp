@@ -93,7 +93,8 @@ CollectionWidget::Private::view( CollectionWidget::ViewMode mode )
             v->setAlternatingRowColors( true );
             v->setFrameShape( QFrame::NoFrame );
             v->setRootIsDecorated( false );
-            connect( v, SIGNAL(leavingTree()), searchWidget->comboBox(), SLOT(setFocus()) );
+            connect( v, &CollectionBrowserTreeView::leavingTree,
+                     searchWidget->comboBox(), QOverload<>::of(&QWidget::setFocus) );
             PrettyTreeDelegate *delegate = new PrettyTreeDelegate( v );
             v->setItemDelegate( delegate );
             CollectionTreeItemModelBase *multiModel = new CollectionTreeItemModel( QList<CategoryId::CatMenuId>() );
@@ -114,12 +115,10 @@ CollectionWidget::Private::view( CollectionWidget::ViewMode mode )
             v->setAlternatingRowColors( true );
             v->setFrameShape( QFrame::NoFrame );
             Collections::AggregateCollection *aggregateColl = new Collections::AggregateCollection();
-            connect( CollectionManager::instance(),
-                     SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)),
-                     aggregateColl,
-                     SLOT(addCollection(Collections::Collection*,CollectionManager::CollectionStatus)));
-            connect( CollectionManager::instance(), SIGNAL(collectionRemoved(QString)),
-                     aggregateColl, SLOT(removeCollection(QString)));
+            connect( CollectionManager::instance(), &CollectionManager::collectionAdded,
+                     aggregateColl, &Collections::AggregateCollection::addCollection );
+            connect( CollectionManager::instance(), &CollectionManager::collectionRemoved,
+                     aggregateColl, &Collections::AggregateCollection::removeCollectionById );
             foreach( Collections::Collection* coll, CollectionManager::instance()->viewableCollections() )
             {
                 aggregateColl->addCollection( coll, CollectionManager::CollectionViewable );
@@ -201,7 +200,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
         action->setData( QVariant::fromValue( levels ) );
     }
     // following catches all actions in the filter menu
-    connect( filterMenu, SIGNAL(triggered(QAction*)), SLOT(sortByActionPayload(QAction*)) );
+    connect( filterMenu, &QMenu::triggered, this, &CollectionWidget::sortByActionPayload );
     filterMenu->addSeparator();
 
     // -- read the view level settings from the configuration
@@ -241,7 +240,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
         }
 
         d->levelGroups[i] = actionGroup;
-        connect( menuLevel, SIGNAL(triggered(QAction*)), SLOT(sortLevelSelected(QAction*)) );
+        connect( menuLevel, &QMenu::triggered, this, &CollectionWidget::sortLevelSelected );
     }
 
     // -- create the checkboxesh
@@ -249,17 +248,17 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     QAction *showYears = filterMenu->addAction( i18n( "Show Years" ) );
     showYears->setCheckable( true );
     showYears->setChecked( AmarokConfig::showYears() );
-    connect( showYears, SIGNAL(toggled(bool)), SLOT(slotShowYears(bool)) );
+    connect( showYears, &QAction::toggled, this, &CollectionWidget::slotShowYears );
 
     QAction *showTrackNumbers = filterMenu->addAction( i18nc("@action:inmenu", "Show Track Numbers") );
     showTrackNumbers->setCheckable( true );
     showTrackNumbers->setChecked( AmarokConfig::showTrackNumbers() );
-    connect( showTrackNumbers, SIGNAL(toggled(bool)), SLOT(slotShowTrackNumbers(bool)) );
+    connect( showTrackNumbers, &QAction::toggled, this, &CollectionWidget::slotShowTrackNumbers );
 
     QAction *showCovers = filterMenu->addAction( i18n( "Show Cover Art" ) );
     showCovers->setCheckable( true );
     showCovers->setChecked( AmarokConfig::showAlbumArt() );
-    connect( showCovers, SIGNAL(toggled(bool)), SLOT(slotShowCovers(bool)) );
+    connect( showCovers, &QAction::toggled, this, &CollectionWidget::slotShowCovers );
 
     d->searchWidget->toolBar()->addSeparator();
 
@@ -267,7 +266,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     toggleAction->setCheckable( true );
     toggleAction->setChecked( d->viewMode == CollectionWidget::UnifiedCollection );
     toggleView( d->viewMode == CollectionWidget::UnifiedCollection );
-    connect( toggleAction, SIGNAL(triggered(bool)), SLOT(toggleView(bool)) );
+    connect( toggleAction, &QAction::triggered, this, &CollectionWidget::toggleView );
     d->searchWidget->toolBar()->addAction( toggleAction );
 
     QAction *searchMenuAction = new QAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
@@ -400,13 +399,13 @@ void CollectionWidget::toggleView( bool merged )
     }
 
     CollectionBrowserTreeView *newView = d->view( newMode );
-    connect( d->searchWidget, SIGNAL(filterChanged(QString)),
-             newView, SLOT(slotSetFilter(QString)) );
-    connect( d->searchWidget, SIGNAL(returnPressed()),
-             newView, SLOT(slotAddFilteredTracksToPlaylist()) );
+    connect( d->searchWidget, &SearchWidget::filterChanged,
+             newView, &CollectionBrowserTreeView::slotSetFilter );
+    connect( d->searchWidget, &SearchWidget::returnPressed,
+             newView, &CollectionBrowserTreeView::slotAddFilteredTracksToPlaylist );
     // reset search string after successful adding of filtered items to playlist
-    connect( newView, SIGNAL(addingFilteredTracksDone()),
-             d->searchWidget, SLOT(setSearchString()) );
+    connect( newView, &CollectionBrowserTreeView::addingFilteredTracksDone,
+             d->searchWidget, &SearchWidget::emptySearchString );
 
     if( d->stack->indexOf( newView ) == -1 )
         d->stack->addWidget( newView );

@@ -86,8 +86,8 @@ public:
 #endif // DEBUG_BUILD_TYPE
 
 Q_SIGNALS:
-    void requestRedirected( const QUrl &sourceUrl, const QUrl &targetUrl );
-    void requestRedirected( QNetworkReply* oldReply, QNetworkReply *newReply );
+    void requestRedirectedUrl( const QUrl &sourceUrl, const QUrl &targetUrl );
+    void requestRedirectedReply( QNetworkReply* oldReply, QNetworkReply *newReply );
 
 public Q_SLOTS:
     void slotError( QObject *reply );
@@ -98,6 +98,7 @@ protected:
 
 private:
     NetworkAccessManagerProxy( QObject *parent = 0 );
+    void replyFinished();
     static NetworkAccessManagerProxy *s_instance;
 
     class NetworkAccessManagerProxyPrivate;
@@ -105,7 +106,6 @@ private:
     friend class NetworkAccessManagerProxyPrivate;
 
     Q_DISABLE_COPY( NetworkAccessManagerProxy )
-    Q_PRIVATE_SLOT( d, void _replyFinished() )
 };
 
 Q_DECLARE_METATYPE( NetworkAccessManagerProxy::Error )

@@ -72,7 +72,7 @@ SqlScanResultProcessor::scanSucceeded()
     m_messages.append( m_collection->sqlStorage()->getLastErrors() );
 
     if( !m_messages.isEmpty() && qobject_cast<QGuiApplication*>(qApp) )
-        QTimer::singleShot(0, this, SLOT(displayMessages())); // do in the UI thread
+        QTimer::singleShot(0, this, &SqlScanResultProcessor::displayMessages); // do in the UI thread
 
     unblockUpdates();
 }

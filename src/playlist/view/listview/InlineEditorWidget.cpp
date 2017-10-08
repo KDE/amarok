@@ -132,7 +132,7 @@ void InlineEditorWidget::createChildWidgets()
         const int elementCount = row.count();
 
         QSplitter *rowWidget = new QSplitter( rowsWidget );
-        connect( rowWidget, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int,int)) );
+        connect( rowWidget, &QSplitter::splitterMoved, this, &InlineEditorWidget::splitterMoved );
 
         m_splitterRowMap.insert( rowWidget, i );
 
@@ -193,7 +193,8 @@ void InlineEditorWidget::createChildWidgets()
                 ratingWidget->setRating( rating );
                 ratingWidget->setAttribute( Qt::WA_NoMousePropagation, true );
 
-                connect( ratingWidget, SIGNAL(ratingChanged(uint)), this, SLOT(ratingValueChanged()) );
+                connect( ratingWidget, QOverload<uint>::of(&KRatingWidget::ratingChanged),
+                         this, &InlineEditorWidget::ratingValueChanged );
 
                 m_editorRoleMap.insert( ratingWidget, value );
                 widget = ratingWidget;
@@ -256,7 +257,7 @@ void InlineEditorWidget::createChildWidgets()
                 font.setUnderline( underline );
                 edit->setFont( font );
 
-                connect( edit, SIGNAL(editingFinished()), this, SLOT(editValueChanged()) );
+                connect( edit, &QLineEdit::editingFinished, this, &InlineEditorWidget::editValueChanged );
 
                 //check if this is a column that is editable. If not, make the
                 //line edit read only.

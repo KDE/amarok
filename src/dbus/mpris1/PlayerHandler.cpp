@@ -73,15 +73,15 @@ namespace Mpris1
         new Mpris1AmarokPlayerAdaptor( this );
         QDBusConnection::sessionBus().registerObject("/Player", this);
 
-        connect( The::playlistActions(), SIGNAL(navigatorChanged()),
-                 this, SLOT(updateStatus()) );
+        connect( The::playlistActions(), &Playlist::Actions::navigatorChanged,
+                 this, &PlayerHandler::updateStatus );
 
         EngineController *engine = The::engineController();
 
-        connect( engine, SIGNAL(playbackStateChanged()),
-                 this, SLOT(slotStateChanged()) );
-        connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
-                 this, SLOT(slotTrackChanged(Meta::TrackPtr)) );
+        connect( engine, &EngineController::playbackStateChanged,
+                 this, &PlayerHandler::slotStateChanged );
+        connect( engine, &EngineController::trackChanged,
+                 this, &PlayerHandler::slotTrackChanged );
     }
 
     Status PlayerHandler::GetStatus()

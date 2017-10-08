@@ -44,8 +44,8 @@ Controller::Controller( QObject *parent )
     verifyAvailability->setOutputChannelMode( KProcess::MergedChannels );
     verifyAvailability->setProgram( "ffmpeg" );
     *verifyAvailability << QString( "-codecs" );
-    connect( verifyAvailability, SIGNAL(finished(int,QProcess::ExitStatus)),
-             this, SLOT(onAvailabilityVerified(int,QProcess::ExitStatus)) );
+    connect( verifyAvailability, QOverload<int, KProcess::ExitStatus>::of(&KProcess::finished),
+             this, &Controller::onAvailabilityVerified );
     verifyAvailability->start();
 }
 

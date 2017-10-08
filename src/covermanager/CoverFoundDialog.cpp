@@ -70,7 +70,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                 KDialog::User1 ); // User1: clear icon view
 
     setButtonGuiItem( KDialog::User1, KStandardGuiItem::clear() );
-    connect( button( KDialog::User1 ), SIGNAL(clicked()), SLOT(clearView()) );
+    connect( button( KDialog::User1 ), &QAbstractButton::clicked, this, &CoverFoundDialog::clearView );
 
     m_save = button( KDialog::Ok );
 
@@ -89,8 +89,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     breadcrumbLabel->setFont( breadcrumbLabelFont );
     breadcrumbLabel->setIndent( 4 );
 
-    connect( breadcrumb, SIGNAL(artistClicked(QString)), SLOT(addToCustomSearch(QString)) );
-    connect( breadcrumb, SIGNAL(albumClicked(QString)), SLOT(addToCustomSearch(QString)) );
+    connect( breadcrumb, &AlbumBreadcrumbWidget::artistClicked, this, &CoverFoundDialog::addToCustomSearch );
+    connect( breadcrumb, &AlbumBreadcrumbWidget::albumClicked, this, &CoverFoundDialog::addToCustomSearch );
 
     KHBox *searchBox = new KHBox( vbox );
     vbox->setSpacing( 4 );
@@ -134,13 +134,13 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     lastFmAct->setCheckable( true );
     googleAct->setCheckable( true );
     discogsAct->setCheckable( true );
-    connect( lastFmAct, SIGNAL(triggered()), this, SLOT(selectLastFm()) );
-    connect( googleAct, SIGNAL(triggered()), this, SLOT(selectGoogle()) );
-    connect( discogsAct, SIGNAL(triggered()), this, SLOT(selectDiscogs()) );
+    connect( lastFmAct, &QAction::triggered, this, &CoverFoundDialog::selectLastFm );
+    connect( googleAct, &QAction::triggered, this, &CoverFoundDialog::selectGoogle );
+    connect( discogsAct, &QAction::triggered, this, &CoverFoundDialog::selectDiscogs );
 
     m_sortAction = new QAction( i18n( "Sort by size" ), sourceMenu );
     m_sortAction->setCheckable( true );
-    connect( m_sortAction, SIGNAL(triggered(bool)), this, SLOT(sortingTriggered(bool)) );
+    connect( m_sortAction, &QAction::triggered, this, &CoverFoundDialog::sortingTriggered );
 
     QActionGroup *ag = new QActionGroup( sourceButton );
     ag->addAction( lastFmAct );
@@ -151,12 +151,16 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     sourceMenu->addAction( m_sortAction );
     sourceButton->setMenu( sourceMenu );
 
-    connect( m_search, SIGNAL(returnPressed(QString)), SLOT(insertComboText(QString)) );
-    connect( m_search, SIGNAL(returnPressed(QString)), SLOT(processQuery(QString)) );
-    connect( m_search, SIGNAL(returnPressed(QString)), SLOT(updateSearchButton(QString)) );
-    connect( m_search, SIGNAL(editTextChanged(QString)), SLOT(updateSearchButton(QString)) );
-    connect( m_search->lineEdit(), SIGNAL(clearButtonClicked()), SLOT(clearQueryButtonClicked()));
-    connect( m_searchButton, SIGNAL(clicked()), SLOT(processQuery()) );
+    connect( m_search, QOverload<const QString&>::of(&KComboBox::returnPressed),
+             this, &CoverFoundDialog::insertComboText );
+    connect( m_search, QOverload<const QString&>::of(&KComboBox::returnPressed),
+             this, &CoverFoundDialog::processQuery );
+    connect( m_search, QOverload<const QString&>::of(&KComboBox::returnPressed),
+             this, &CoverFoundDialog::updateSearchButton );
+    connect( m_search, &KComboBox::editTextChanged, this, &CoverFoundDialog::updateSearchButton );
+    connect( dynamic_cast<KLineEdit*>(m_search->lineEdit()), &KLineEdit::clearButtonClicked,
+             this, &CoverFoundDialog::clearQueryButtonClicked);
+    connect( m_searchButton, &KPushButton::clicked, this, &CoverFoundDialog::processCurrentQuery );
 
     m_view = new KListWidget( vbox );
     m_view->setAcceptDrops( false );
@@ -171,12 +175,12 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_view->setViewMode( QListView::IconMode );
     m_view->setResizeMode( QListView::Adjust );
 
-    connect( m_view, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-             this,   SLOT(currentItemChanged(QListWidgetItem*,QListWidgetItem*)) );
-    connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-             this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
-    connect( m_view, SIGNAL(customContextMenuRequested(QPoint)),
-             this,   SLOT(itemMenuRequested(QPoint)) );
+    connect( m_view, &KListWidget::currentItemChanged,
+             this, &CoverFoundDialog::currentItemChanged );
+    connect( m_view, &KListWidget::itemDoubleClicked,
+             this, &CoverFoundDialog::itemDoubleClicked );
+    connect( m_view, &KListWidget::customContextMenuRequested,
+             this, &CoverFoundDialog::itemMenuRequested );
 
     splitter->addWidget( m_sideBar );
     splitter->addWidget( vbox );
@@ -207,8 +211,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_view->setCurrentItem( m_view->item( 0 ) );
     updateGui();
     
-    connect( The::networkAccessManager(), SIGNAL(requestRedirected(QNetworkReply*,QNetworkReply*)),
-             this, SLOT(fetchRequestRedirected(QNetworkReply*,QNetworkReply*)) );
+    connect( The::networkAccessManager(), &NetworkAccessManagerProxy::requestRedirectedReply,
+             this, &CoverFoundDialog::fetchRequestRedirected );
 }
 
 CoverFoundDialog::~CoverFoundDialog()
@@ -353,10 +357,10 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
 
     QMenu menu( this );
     QAction *display = new QAction( QIcon::fromTheme("zoom-original"), i18n("Display Cover"), &menu );
-    connect( display, SIGNAL(triggered()), this, SLOT(display()) );
+    connect( display, &QAction::triggered, this, &CoverFoundDialog::display );
 
     QAction *save = new QAction( QIcon::fromTheme("document-save"), i18n("Save As"), &menu );
-    connect( save, SIGNAL(triggered()), this, SLOT(saveAs()) );
+    connect( save, &QAction::triggered, this, &CoverFoundDialog::saveAs );
 
     menu.addAction( display );
     menu.addAction( save );
@@ -519,8 +523,8 @@ bool CoverFoundDialog::fetchBigPix()
         m_dialog.data()->setAutoReset( true );
         m_dialog.data()->progressBar()->setMinimum( 0 );
         m_dialog.data()->setMinimumWidth( 300 );
-        connect( reply, SIGNAL(downloadProgress(qint64,qint64)),
-                        SLOT(downloadProgressed(qint64,qint64)) );
+        connect( reply, &QNetworkReply::downloadProgress,
+                 this, &CoverFoundDialog::downloadProgressed );
     }
     int result = m_dialog.data()->exec();
     bool success = (result == QDialog::Accepted) && !m_dialog.data()->wasCancelled();
@@ -554,7 +558,7 @@ void CoverFoundDialog::display()
     dlg.data()->activateWindow();
 }
 
-void CoverFoundDialog::processQuery()
+void CoverFoundDialog::processCurrentQuery()
 {
     const QString text = m_search->currentText();
     processQuery( text );
@@ -594,7 +598,7 @@ void CoverFoundDialog::selectDiscogs()
     config.writeEntry( "Interactive Image Source", "Discogs" );
     m_sortAction->setEnabled( true );
     m_queryPage = 0;
-    processQuery();
+    processCurrentQuery();
     debug() << "Select Discogs as source";
 }
 
@@ -604,7 +608,7 @@ void CoverFoundDialog::selectLastFm()
     config.writeEntry( "Interactive Image Source", "LastFm" );
     m_sortAction->setEnabled( false );
     m_queryPage = 0;
-    processQuery();
+    processCurrentQuery();
     debug() << "Select Last.fm as source";
 }
 
@@ -614,7 +618,7 @@ void CoverFoundDialog::selectGoogle()
     config.writeEntry( "Interactive Image Source", "Google" );
     m_sortAction->setEnabled( true );
     m_queryPage = 0;
-    processQuery();
+    processCurrentQuery();
     debug() << "Select Google as source";
 }
 

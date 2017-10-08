@@ -33,8 +33,8 @@ CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )
 
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
-             this, SLOT(handleAddActions()) );
+    connect( engine, &EngineController::trackChanged,
+             this, &CurrentTrackToolbar::handleAddActions );
 }
 
 CurrentTrackToolbar::~CurrentTrackToolbar()

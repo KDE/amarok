@@ -58,11 +58,11 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 {
     DEBUG_BLOCK
 
-    connect( m_memColl, SIGNAL(deletingCollection()),
-             this, SLOT(slotDeletingHandler()), Qt::QueuedConnection );
+    connect( m_memColl, &Collections::MediaDeviceCollection::deletingCollection,
+             this, &MediaDeviceHandler::slotDeletingHandler, Qt::QueuedConnection );
 
-    connect( this, SIGNAL(databaseWritten(bool)),
-             this, SLOT(slotDatabaseWritten(bool)), Qt::QueuedConnection );
+    connect( this, &MediaDeviceHandler::databaseWritten,
+             this, &MediaDeviceHandler::slotDatabaseWritten, Qt::QueuedConnection );
 }
 
 MediaDeviceHandler::~MediaDeviceHandler()
@@ -894,12 +894,12 @@ MediaDeviceHandler::privateParseTracks()
         }
 
         // When the provider saves a playlist, the handler should save it internally
-        connect( m_provider, SIGNAL(playlistSaved(Playlists::MediaDevicePlaylistPtr,QString)),
-                 SLOT(savePlaylist(Playlists::MediaDevicePlaylistPtr,QString)) );
-        connect( m_provider, SIGNAL(playlistRenamed(Playlists::MediaDevicePlaylistPtr)),
-                 SLOT(renamePlaylist(Playlists::MediaDevicePlaylistPtr)) );
-        connect( m_provider, SIGNAL(playlistsDeleted(Playlists::MediaDevicePlaylistList)),
-                 SLOT(deletePlaylists(Playlists::MediaDevicePlaylistList)) );
+        connect( m_provider, &Playlists::MediaDeviceUserPlaylistProvider::playlistSaved,
+                 this, &MediaDeviceHandler::savePlaylist );
+        connect( m_provider, &Playlists::MediaDeviceUserPlaylistProvider::playlistRenamed,
+                 this, &MediaDeviceHandler::renamePlaylist );
+        connect( m_provider, &Playlists::MediaDeviceUserPlaylistProvider::playlistsDeleted,
+                 this, &MediaDeviceHandler::deletePlaylists );
 
         The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
         m_provider->sendUpdated();
@@ -1171,7 +1171,7 @@ ParseWorkerThread::ParseWorkerThread( MediaDeviceHandler* handler )
         , m_success( false )
         , m_handler( handler )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(slotDoneSuccess(ThreadWeaver::JobPointer)) );
+    connect( this, &ParseWorkerThread::done, this, &ParseWorkerThread::slotDoneSuccess );
 }
 
 ParseWorkerThread::~ParseWorkerThread()
@@ -1226,13 +1226,13 @@ CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MediaDeviceHand
         , m_track( track )
         , m_handler( handler )
 {
-    //connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), m_handler, SLOT(slotCopyNextTrackToDevice(ThreadWeaver::JobPointer)), Qt::QueuedConnection );
-    connect( this, SIGNAL(failed(ThreadWeaver::JobPointer)), this, SLOT(slotDoneFailed(ThreadWeaver::JobPointer)), Qt::QueuedConnection );
-    connect( this, SIGNAL(copyTrackFailed(ThreadWeaver::JobPointer,Meta::TrackPtr)), m_handler, SLOT(slotCopyNextTrackFailed(ThreadWeaver::JobPointer,Meta::TrackPtr)) );
-    connect( this, SIGNAL(copyTrackDone(ThreadWeaver::JobPointer,Meta::TrackPtr)), m_handler, SLOT(slotCopyNextTrackDone(ThreadWeaver::JobPointer,Meta::TrackPtr)) );
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(slotDoneSuccess(ThreadWeaver::JobPointer)) );
+    //connect( this, &CopyWorkerThread::done, m_handler, &Meta::MediaDeviceHandler::slotCopyNextTrackToDevice, Qt::QueuedConnection );
+    connect( this, &CopyWorkerThread::failed, this, &CopyWorkerThread::slotDoneFailed, Qt::QueuedConnection );
+    connect( this, &CopyWorkerThread::copyTrackFailed, m_handler, &Meta::MediaDeviceHandler::slotCopyNextTrackFailed );
+    connect( this, &CopyWorkerThread::copyTrackDone, m_handler, &Meta::MediaDeviceHandler::slotCopyNextTrackDone );
+    connect( this, &CopyWorkerThread::done, this, &CopyWorkerThread::slotDoneSuccess );
 
-    //connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(deleteLater()) );
+    //connect( this, &CopyWorkerThread::done, this, &CopyWorkerThread::deleteLater );
 }
 
 CopyWorkerThread::~CopyWorkerThread()

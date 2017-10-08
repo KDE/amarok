@@ -79,7 +79,7 @@ void FileCollectionLocation::startRemoveJobs()
         debug() << "deleting  " << src;
         KIO::JobFlags flags = KIO::HideProgressInfo;
         job = KIO::del( src, flags );
-        connect( job, SIGNAL(result(KJob*)), SLOT(slotRemoveJobFinished(KJob*)) );
+        connect( job, &KIO::Job::result, this, &FileCollectionLocation::slotRemoveJobFinished );
         QString name = track->prettyName();
         if( track->artist() )
             name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );

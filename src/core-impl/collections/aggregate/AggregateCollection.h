@@ -98,7 +98,7 @@ namespace Collections {
         void setLabel( Meta::AggregateLabel *label );
 
         public Q_SLOTS:
-        void removeCollection( const QString &collectionId );
+        void removeCollectionById( const QString &collectionId );
         void removeCollection( Collections::Collection *collection );
         void addCollection( Collections::Collection *collection, CollectionManager::CollectionStatus status );
         void slotUpdated();

@@ -44,6 +44,7 @@ public:
     QMenu* contextMenu( const QPoint& point );
 
     void setProxy( QSortFilterProxyModel *proxy );
+    void slotEdit( const QModelIndex &index );
 
 protected:
     void keyPressEvent( QKeyEvent *event );
@@ -57,7 +58,6 @@ protected Q_SLOTS:
     void slotDelete();
     void slotRename();
 
-    void slotEdit( const QModelIndex &index );
 
     //for testing...
     void slotCreateTimecodeTrack() const;

@@ -18,6 +18,7 @@
 
 #include "PluginsConfig.h"
 
+#include "configdialog/ConfigDialog.h"
 #include "core/support/Debug.h"
 #include "services/ServiceBase.h"
 #include "PluginManager.h"
@@ -48,8 +49,10 @@ PluginsConfig::PluginsConfig( QWidget *parent )
     m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Importer ),
                             KPluginSelector::ReadConfigFile, i18n("Statistics importers"), "Importer" );
 
-    connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
-    connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );
+    connect( m_selector, &KPluginSelector::changed, this, &PluginsConfig::slotConfigChanged );
+
+    if (auto dialog = qobject_cast<Amarok2ConfigDialog*>(parent))
+        connect( m_selector, &KPluginSelector::changed, dialog, &Amarok2ConfigDialog::updateButtons );
 }
 
 PluginsConfig::~PluginsConfig()

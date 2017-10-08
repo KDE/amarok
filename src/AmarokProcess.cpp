@@ -27,9 +27,10 @@
 AmarokProcess::AmarokProcess(QObject *parent) 
     : KProcess(parent), lowPriority(false) 
 {
-    connect( this, SIGNAL(finished(int)), this, SLOT(finished()) );
-    connect( this, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()) );
-    connect( this, SIGNAL(readyReadStandardError()), this, SLOT(readyReadStandardError()) );
+    connect( this, QOverload<int>::of(&QProcess::finished),
+             this, QOverload<>::of(&AmarokProcess::finished) );
+    connect( this, &QProcess::readyReadStandardOutput, this, &AmarokProcess::readyReadStandardOutput );
+    connect( this, &QProcess::readyReadStandardError, this, &AmarokProcess::readyReadStandardError );
 }
 
 /** 
@@ -115,7 +116,7 @@ AmarokProcIO::readln (QString &line)
 void
 AmarokProcIO::start()
 {
-    connect (this, SIGNAL (readyReadStandardOutput()), this, SLOT (readyReadStandardOutput()));
+    connect (this, &AmarokProcIO::readyReadStandardOutput, this, &AmarokProcIO::readyReadStandardOutput);
 
     KProcess::start ();
 }

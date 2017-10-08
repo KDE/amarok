@@ -31,7 +31,7 @@ BookmarkCurrentButton::BookmarkCurrentButton( QWidget *parent )
     setIcon( QIcon::fromTheme( "bookmark-new" ) );
     setText( i18n( "New Bookmark" ) );
     setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-    connect( this, SIGNAL(clicked(bool)), this, SLOT(showMenu()) );
+    connect( this, &BookmarkCurrentButton::clicked, this, &BookmarkCurrentButton::showMenu );
 }
 
 BookmarkCurrentButton::~BookmarkCurrentButton()

@@ -64,48 +64,48 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
 
     m_createEmptyPlaylistAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ),
                                                i18n( "Create an Empty Playlist" ), this );
-    connect( m_createEmptyPlaylistAction, SIGNAL(triggered()), SLOT(slotCreateEmptyPlaylist()) );
+    connect( m_createEmptyPlaylistAction, &QAction::triggered, this, &PlaylistBrowserView::slotCreateEmptyPlaylist );
 
     m_appendAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ),
             i18n( "&Add to Playlist" ), this );
     m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-    connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppend()) );
+    connect( m_appendAction, &QAction::triggered, this, &PlaylistBrowserView::slotAppend );
 
     m_loadAction = new QAction( QIcon::fromTheme( "folder-open" ), i18nc( "Replace the currently "
             "loaded tracks with these", "&Replace Playlist" ), this );
     m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-    connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotLoad()) );
+    connect( m_loadAction, &QAction::triggered, this, &PlaylistBrowserView::slotLoad );
 
     m_setNewAction = new QAction( QIcon::fromTheme( "rating" ), i18nc( "toggle the \"new\" status "
             " of this podcast episode", "&New" ), this );
     m_setNewAction->setProperty( "popupdropper_svg_id", "new" );
     m_setNewAction->setCheckable( true );
-    connect( m_setNewAction, SIGNAL(triggered(bool)), SLOT(slotSetNew(bool)) );
+    connect( m_setNewAction, &QAction::triggered, this, &PlaylistBrowserView::slotSetNew );
 
     m_renamePlaylistAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
             i18n( "&Rename..." ), this );
     m_renamePlaylistAction->setProperty( "popupdropper_svg_id", "edit" );
     // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
     m_renamePlaylistAction->setShortcut( Qt::Key_F2 );
-    connect( m_renamePlaylistAction, SIGNAL(triggered()), this, SLOT(slotRename()) );
+    connect( m_renamePlaylistAction, &QAction::triggered, this, &PlaylistBrowserView::slotRename );
 
     m_deletePlaylistAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
             i18n( "&Delete..." ), this );
     m_deletePlaylistAction->setProperty( "popupdropper_svg_id", "delete" );
     // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
     m_deletePlaylistAction->setShortcut( Qt::Key_Delete );
-    connect( m_deletePlaylistAction, SIGNAL(triggered()), SLOT(slotDelete()) );
+    connect( m_deletePlaylistAction, &QAction::triggered, this, &PlaylistBrowserView::slotDelete );
 
     m_removeTracksAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
             QString( "<placeholder>" ), this );
     m_removeTracksAction->setProperty( "popupdropper_svg_id", "delete" );
     // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
     m_removeTracksAction->setShortcut( Qt::Key_Delete );
-    connect( m_removeTracksAction, SIGNAL(triggered()), SLOT(slotRemoveTracks()) );
+    connect( m_removeTracksAction, &QAction::triggered, this, &PlaylistBrowserView::slotRemoveTracks );
 
     m_exportAction = new QAction( QIcon::fromTheme( "document-export-amarok" ),
             i18n( "&Export As..." ), this );
-    connect( m_exportAction, SIGNAL(triggered()), this, SLOT(slotExport()) );
+    connect( m_exportAction, &QAction::triggered, this, &PlaylistBrowserView::slotExport );
 
     m_separatorAction = new QAction( this );
     m_separatorAction->setSeparator( true );
@@ -126,7 +126,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
 {
     if( m_pd )
     {
-        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(deleteLater()) );
+        connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &QObject::deleteLater );
         m_pd->hide();
         m_pd = 0;
     }
@@ -176,7 +176,7 @@ void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supporte
 
     if( m_pd )
     {
-        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
+        connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &PopupDropper::clear );
         m_pd->hide();
     }
     m_ongoingDrag = false;
@@ -483,8 +483,8 @@ PlaylistBrowserView::slotDelete()
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
 
-    connect(buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
 
     QLabel *label = new QLabel( i18np( "Are you sure you want to delete this playlist?",
             "Are you sure you want to delete these %1 playlists?",

@@ -85,13 +85,12 @@ EngineController::EngineController()
     DEBUG_BLOCK
     // ensure this object is created in a main thread
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
-    connect( this, SIGNAL(fillInSupportedMimeTypes()), SLOT(slotFillInSupportedMimeTypes()) );
-    connect( this, SIGNAL(trackFinishedPlaying(Meta::TrackPtr,double)),
-             SLOT(slotTrackFinishedPlaying(Meta::TrackPtr,double)) );
+    connect( this, &EngineController::fillInSupportedMimeTypes, &EngineController::slotFillInSupportedMimeTypes );
+    connect( this, &EngineController::trackFinishedPlaying, &EngineController::slotTrackFinishedPlaying );
     new PowerManager( this ); // deals with inhibiting suspend etc.
 
     m_pauseTimer->setSingleShot( true );
-    connect( m_pauseTimer, SIGNAL(timeout()), SLOT(slotPause() ) );
+    connect( m_pauseTimer, &QTimer::timeout, this, &EngineController::slotPause );
     m_equalizerController = new EqualizerController( this );
 }
 
@@ -186,29 +185,19 @@ EngineController::initializePhonon()
     // Get the next track when there is 2 seconds left on the current one.
     m_media.data()->setPrefinishMark( 2000 );
 
-    connect( m_media.data(), SIGNAL(finished()), SLOT(slotFinished()));
-    connect( m_media.data(), SIGNAL(aboutToFinish()), SLOT(slotAboutToFinish()) );
-    connect( m_media.data(), SIGNAL(metaDataChanged()), SLOT(slotMetaDataChanged()) );
-    connect( m_media.data(), SIGNAL(stateChanged(Phonon::State,Phonon::State)),
-             SLOT(slotStateChanged(Phonon::State,Phonon::State)) );
-    connect( m_media.data(), SIGNAL(tick(qint64)), SLOT(slotTick(qint64)) );
-    connect( m_media.data(), SIGNAL(totalTimeChanged(qint64)),
-             SLOT(slotTrackLengthChanged(qint64)) );
-    connect( m_media.data(), SIGNAL(currentSourceChanged(Phonon::MediaSource)),
-             SLOT(slotNewTrackPlaying(Phonon::MediaSource)) );
-    connect( m_media.data(), SIGNAL(seekableChanged(bool)),
-             SLOT(slotSeekableChanged(bool)) );
-    connect( m_audio.data(), SIGNAL(volumeChanged(qreal)),
-             SLOT(slotVolumeChanged(qreal)) );
-    connect( m_audio.data(), SIGNAL(mutedChanged(bool)),
-             SLOT(slotMutedChanged(bool)) );
-    connect( m_audioDataOutput.data(),
-             SIGNAL(dataReady(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)),
-             SIGNAL(audioDataReady(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >))
-           );
+    connect( m_media.data(), &MediaObject::finished, this, &EngineController::slotFinished );
+    connect( m_media.data(), &MediaObject::aboutToFinish, this, &EngineController::slotAboutToFinish );
+    connect( m_media.data(), &MediaObject::metaDataChanged, this, &EngineController::slotMetaDataChanged );
+    connect( m_media.data(), &MediaObject::stateChanged, this, &EngineController::slotStateChanged );
+    connect( m_media.data(), &MediaObject::tick, this, &EngineController::slotTick );
+    connect( m_media.data(), &MediaObject::totalTimeChanged, this, &EngineController::slotTrackLengthChanged );
+    connect( m_media.data(), &MediaObject::currentSourceChanged, this, &EngineController::slotNewTrackPlaying );
+    connect( m_media.data(), &MediaObject::seekableChanged, this, &EngineController::slotSeekableChanged );
+    connect( m_audio.data(), &AudioOutput::volumeChanged, this, &EngineController::slotVolumeChanged );
+    connect( m_audio.data(), &AudioOutput::mutedChanged, this, &EngineController::slotMutedChanged );
+    connect( m_audioDataOutput.data(), &AudioDataOutput::dataReady, this, &EngineController::audioDataReady );
 
-    connect( m_controller.data(), SIGNAL(titleChanged(int)),
-             SLOT(slotTitleChanged(int)) );
+    connect( m_controller.data(), &MediaController::titleChanged, this, &EngineController::slotTitleChanged );
 
     // Read the volume from phonon
     m_volume = qBound<qreal>( 0, qRound(m_audio.data()->volume()*100), 100 );
@@ -376,8 +365,8 @@ EngineController::play( Meta::TrackPtr track, uint offset, bool startPaused )
 
     if( m_multiPlayback )
     {
-        connect( m_multiPlayback, SIGNAL(playableUrlFetched(QUrl)),
-                 SLOT(slotPlayableUrlFetched(QUrl)) );
+        connect( m_multiPlayback, &Capabilities::MultiPlayableCapability::playableUrlFetched,
+                 this, &EngineController::slotPlayableUrlFetched );
         m_multiPlayback->fetchFirst();
     }
     else if( m_boundedPlayback )
@@ -450,8 +439,8 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
         m_media.data()->pause();
         DelayedTrackChanger *trackChanger = new DelayedTrackChanger( m_media.data(),
                 m_controller.data(), m_currentAudioCdTrack, offset, startPaused );
-        connect( trackChanger, SIGNAL(trackPositionChanged(qint64,bool)),
-                 SIGNAL(trackPositionChanged(qint64,bool)) );
+        connect( trackChanger, &DelayedTrackChanger::trackPositionChanged,
+                 this, &EngineController::trackPositionChanged );
     }
     else if( offset )
     {
@@ -460,8 +449,8 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
         // so call pause() that doesn't suffer from such problem.
         m_media.data()->pause();
         DelayedSeeker *seeker = new DelayedSeeker( m_media.data(), offset, startPaused );
-        connect( seeker, SIGNAL(trackPositionChanged(qint64,bool)),
-                 SIGNAL(trackPositionChanged(qint64,bool)) );
+        connect( seeker, &DelayedSeeker::trackPositionChanged,
+                 this, &EngineController::trackPositionChanged );
     }
     else
     {
@@ -501,7 +490,7 @@ EngineController::slotPause()
         m_fader.data()->setVolume( 1.0 );
 
         // Wait a bit before pausing the pipeline. Necessary for the new fader setting to take effect.
-        QTimer::singleShot( 1000, m_media.data(), SLOT(pause()) );
+        QTimer::singleShot( 1000, m_media.data(), &Phonon::MediaObject::pause );
     }
     else
     {
@@ -570,13 +559,20 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
         m_fadeouter = new Fadeouter( m_media, m_fader, AmarokConfig::fadeoutLength() );
         // even though we don't pass forceInstant, doFadeOut will be false because
         // m_fadeouter will be still valid
-        connect( m_fadeouter.data(), SIGNAL(fadeoutFinished()), SLOT(stop()) );
+        connect( m_fadeouter.data(), &Fadeouter::fadeoutFinished,
+                 this, &EngineController::regularStop );
     }
     else
     {
         m_media.data()->stop();
         m_media.data()->setCurrentSource( Phonon::MediaSource() );
     }
+}
+
+void
+EngineController::regularStop()
+{
+    stop( false, false );
 }
 
 bool
@@ -994,8 +990,8 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         if( m_multiSource )
         {
             debug() << "Got a MultiSource Track with" <<  m_multiSource->sources().count() << "sources";
-            connect( m_multiSource.data(), SIGNAL(urlChanged(QUrl)),
-                     SLOT(slotPlayableUrlFetched(QUrl)) );
+            connect( m_multiSource.data(), &Capabilities::MultiSourceCapability::urlChanged,
+                     this, &EngineController::slotPlayableUrlFetched );
         }
     }
 

@@ -88,11 +88,8 @@ public:
 
 private Q_SLOTS:
     void processOutput();
-    /**
-     * Default arguments are for convenience (read: lazyness) so that this can be
-     * connected to QTimer::singleShot()
-     */
-    void transcoderDone( int exitCode = -1, QProcess::ExitStatus exitStatus = QProcess::CrashExit );
+    void transcoderDone( int exitCode, QProcess::ExitStatus exitStatus );
+    void transcoderDoneDefault();
     void init();
 
 private:

@@ -94,9 +94,10 @@ void
 TestPlaylistObserver::testMetadataChanged( )
 {
     QSKIP( "Functionality this test tests has not yet been implemented", SkipAll );
-    QSignalSpy spy( m_observer, SIGNAL(metadataChangedSignal()) );
+    QSignalSpy spy( m_observer, &Observer::metadataChangedSignal );
     m_testPlaylist->triggerTrackLoad();
-    QVERIFY( QTest::kWaitForSignal( m_observer, SIGNAL(tracksLoadedSignal()), 10000 ) );
+    QSignalSpy spyTracksLoaded(m_observer, &Observer::tracksLoadedSignal);
+    QVERIFY( spyTracksLoaded.wait( 10000 ) );
 
     QVERIFY( spy.count() > 0 );
     // changed methadata means that we should get new name
@@ -107,18 +108,20 @@ void
 TestPlaylistObserver::testTracksLoaded()
 {
     m_testPlaylist->triggerTrackLoad();
-    QVERIFY( QTest::kWaitForSignal( m_observer, SIGNAL(tracksLoadedSignal()), 10000 ) );
-
+    QSignalSpy spyTracksLoaded(m_observer, &Observer::tracksLoadedSignal);
+    QVERIFY( spyTracksLoaded.wait( 10000 ) );
+    
     QCOMPARE( m_testPlaylist->trackCount(), 23 );
 }
 
 void
 TestPlaylistObserver::testTrackAdded( )
 {
-    QSignalSpy spy( m_observer, SIGNAL(trackAddedSignal()) );
+    QSignalSpy spy( m_observer, &Observer::trackAddedSignal );
     m_testPlaylist->triggerTrackLoad();
-    QVERIFY( QTest::kWaitForSignal( m_observer, SIGNAL(tracksLoadedSignal()), 10000 ) );
-
+    QSignalSpy spyTracksLoaded(m_observer, &Observer::tracksLoadedSignal);
+    QVERIFY( spyTracksLoaded.wait( 10000 ) );
+    
     QCOMPARE( spy.count(), 23 );
 }
 
@@ -126,17 +129,20 @@ void
 TestPlaylistObserver::testTrackRemoved()
 {
     m_testPlaylist->triggerTrackLoad();
-    QVERIFY( QTest::kWaitForSignal( m_observer, SIGNAL(tracksLoadedSignal()), 10000 ) );
+    
+    QSignalSpy spyTracksLoaded( m_observer, &Observer::tracksLoadedSignal );
+    QVERIFY( spyTracksLoaded.wait( 10000 ) );
 
     QString newName = "test playlist written to.xspf";
     m_testPlaylist->setName( newName ); // don't overwrite original playlist
-    QSignalSpy spy( m_observer, SIGNAL(trackRemovedSignal()) );
+    QSignalSpy spyTrackRemoved( m_observer, &Observer::trackRemovedSignal );
+    QCOMPARE( m_testPlaylist->trackCount(), 23 );
     m_testPlaylist->removeTrack( -1 ); // no effect
     m_testPlaylist->removeTrack( 0 ); // has effect
     m_testPlaylist->removeTrack( 22 ); // no effect, too far
     m_testPlaylist->removeTrack( 21 ); // has effect
     QCOMPARE( m_testPlaylist->trackCount(), 21 );
-    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( spyTrackRemoved.count(), 2 );
 
     qDebug() << dataPath( newName );
     QVERIFY( QFile::remove( dataPath( newName ) ) );

@@ -44,7 +44,7 @@ void CategoryListJob::setUrl( const QUrl &url )
 
 void CategoryListJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &CategoryListJob::doWork );
 }
 
 Category::List CategoryListJob::categoryList() const
@@ -56,11 +56,13 @@ void CategoryListJob::doWork()
 {
   qDebug() << m_url;
 
-  m_job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
-  connect( m_job, SIGNAL(result(KJob*)),
-    SLOT(slotJobResult(KJob*)) );
-  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-    SLOT(slotJobData(KIO::Job*,QByteArray)) );
+  auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+  connect( job, &KIO::TransferJob::result,
+           this, &CategoryListJob::slotJobResult );
+  connect( job, &KIO::TransferJob::data,
+           this, &CategoryListJob::slotJobData );
+
+  m_job = job;
 }
 
 void CategoryListJob::slotJobResult( KJob *job )

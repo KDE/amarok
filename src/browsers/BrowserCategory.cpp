@@ -35,8 +35,8 @@ BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setFrameShape( QFrame::NoFrame );
 
-    connect( App::instance(), SIGNAL(settingsChanged()), SLOT(slotSettingsChanged()) );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(slotSettingsChanged()) );
+    connect( App::instance(), &App::settingsChanged, this, &BrowserCategory::slotSettingsChanged );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &BrowserCategory::slotSettingsChanged );
 }
 
 BrowserCategory::~BrowserCategory()

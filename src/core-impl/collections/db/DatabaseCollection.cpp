@@ -80,13 +80,13 @@ DatabaseCollection::setMountPointManager( MountPointManager *mpm )
 
     if( m_mpm )
     {
-        disconnect( mpm, SIGNAL(deviceAdded(int)), this, SLOT(slotDeviceAdded(int)) );
-        disconnect( mpm, SIGNAL(deviceRemoved(int)), this, SLOT(slotDeviceRemoved(int)) );
+        disconnect( mpm, &MountPointManager::deviceAdded, this, &DatabaseCollection::slotDeviceAdded );
+        disconnect( mpm, &MountPointManager::deviceRemoved, this, &DatabaseCollection::slotDeviceRemoved );
     }
 
     m_mpm = mpm;
-    connect( mpm, SIGNAL(deviceAdded(int)), this, SLOT(slotDeviceAdded(int)) );
-    connect( mpm, SIGNAL(deviceRemoved(int)), this, SLOT(slotDeviceRemoved(int)) );
+    connect( mpm, &MountPointManager::deviceAdded, this, &DatabaseCollection::slotDeviceAdded );
+    connect( mpm, &MountPointManager::deviceRemoved, this, &DatabaseCollection::slotDeviceRemoved );
 }
 
 

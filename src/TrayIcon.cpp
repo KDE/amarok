@@ -86,32 +86,31 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     updateMenu();
 
     const EngineController* engine = The::engineController();
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-             this, SLOT(trackPlaying(Meta::TrackPtr)) );
-    connect( engine, SIGNAL(stopped(qint64,qint64)),
-             this, SLOT(stopped()) );
-    connect( engine, SIGNAL(paused()),
-             this, SLOT(paused()) );
+    connect( engine, &EngineController::trackPlaying,
+             this, &TrayIcon::trackPlaying );
+    connect( engine, &EngineController::stopped,
+             this, &TrayIcon::stopped );
+    connect( engine, &EngineController::paused,
+             this, &TrayIcon::paused );
 
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
-             this, SLOT(metadataChanged(Meta::TrackPtr)) );
+    connect( engine, &EngineController::trackMetadataChanged,
+             this, &TrayIcon::trackMetadataChanged );
 
-    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
-             this, SLOT(metadataChanged(Meta::AlbumPtr)) );
+    connect( engine, &EngineController::albumMetadataChanged,
+             this, &TrayIcon::albumMetadataChanged );
 
-    connect( engine, SIGNAL(volumeChanged(int)),
-             this, SLOT(updateToolTip()) );
+    connect( engine, &EngineController::volumeChanged,
+             this, &TrayIcon::updateToolTip );
 
-    connect( engine, SIGNAL(muteStateChanged(bool)),
-             this, SLOT(updateToolTip()) );
+    connect( engine, &EngineController::muteStateChanged,
+             this, &TrayIcon::updateToolTip );
 
-    connect( engine, SIGNAL(playbackStateChanged()),
-             this, SLOT(updateOverlayIcon()) );
+    connect( engine, &EngineController::playbackStateChanged,
+             this, &TrayIcon::updateOverlayIcon );
 
-    connect( this, SIGNAL(scrollRequested(int,Qt::Orientation)),
-             SLOT(slotScrollRequested(int,Qt::Orientation)) );
-    connect( this, SIGNAL(secondaryActivateRequested(QPoint)),
-             The::engineController(), SLOT(playPause()) );
+    connect( this, &TrayIcon::scrollRequested, this, &TrayIcon::slotScrollRequested );
+    connect( this, &TrayIcon::secondaryActivateRequested,
+             The::engineController(), &EngineController::playPause );
 }
 
 void
@@ -226,7 +225,7 @@ Amarok::TrayIcon::stopped()
 }
 
 void
-Amarok::TrayIcon::metadataChanged( Meta::TrackPtr track )
+Amarok::TrayIcon::trackMetadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
 
@@ -235,7 +234,7 @@ Amarok::TrayIcon::metadataChanged( Meta::TrackPtr track )
 }
 
 void
-Amarok::TrayIcon::metadataChanged( Meta::AlbumPtr album )
+Amarok::TrayIcon::albumMetadataChanged( Meta::AlbumPtr album )
 {
     Q_UNUSED( album )
 

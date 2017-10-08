@@ -62,7 +62,7 @@ CreateProviderDialog::CreateProviderDialog( QWidget *parent, Qt::WindowFlags f )
     providerTypeWidget->hide();
     addPage( m_providerTypePage );
 
-    connect( this, SIGNAL(accepted()), SLOT(slotAccepted()) );
+    connect( this, &CreateProviderDialog::accepted, this, &CreateProviderDialog::slotAccepted );
 }
 
 CreateProviderDialog::~CreateProviderDialog()
@@ -89,8 +89,8 @@ CreateProviderDialog::addProviderType( const QString &id, const QString &prettyN
     addPage( configPage );
     setAppropriate( configPage, false );
 
-    connect( providerTypeButton, SIGNAL(toggled(bool)),
-             SLOT(providerButtonToggled(bool)) );
+    connect( providerTypeButton, &QAbstractButton::toggled,
+             this, &CreateProviderDialog::providerButtonToggled );
 
     if( !m_providerButtons.checkedButton() )
         providerTypeButton->setChecked( true );

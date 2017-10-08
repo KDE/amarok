@@ -108,8 +108,8 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     l4->addWidget( m_automaticWidth = new QRadioButton( i18nc( "automatic width", "Automatic" ), this ) );
     m_automaticWidth->setToolTip( i18n( "Take homogeneous part of the space available to all elements with automatic width" ) );
     l4->addStretch();
-    boxWidget->connect( m_fixedWidth, SIGNAL(toggled(bool)), SLOT(setEnabled(bool)) );
-    connect( m_automaticWidth, SIGNAL(toggled(bool)), SLOT(setAutomaticWidth(bool)) );
+    boxWidget->connect( m_fixedWidth, &QRadioButton::toggled, this, &LayoutEditDialog::setEnabled );
+    connect( m_automaticWidth, &QRadioButton::toggled, this, &LayoutEditDialog::setAutomaticWidth );
     l1->addLayout( l4 );
 
     QHBoxLayout *l5 = new QHBoxLayout( boxWidget );
@@ -119,7 +119,7 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     l5->addWidget( l );
 //         width->connect( sizeMode, SIGNAL(currentIndexChanged(int)), SLOT(setDisabled()) )
     l->setNum( 0 );
-    l->connect( m_width, SIGNAL(valueChanged(int)), SLOT(setNum(int)) );
+    connect( m_width, &QSlider::valueChanged, l, QOverload<int>::of(&QLabel::setNum) );
 
 #define HAVE_METRICS 0
 #if HAVE_METRICS
@@ -162,8 +162,8 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     QDialogButtonBox *box = new QDialogButtonBox(this);
     box->addButton( QDialogButtonBox::Cancel );
     box->addButton( QDialogButtonBox::Ok );
-    connect( box, SIGNAL(rejected()), SLOT(close()) );
-    connect( box, SIGNAL(accepted()), SLOT(apply()) );
+    connect( box, &QDialogButtonBox::rejected, this, &LayoutEditDialog::close );
+    connect( box, &QDialogButtonBox::accepted, this, &LayoutEditDialog::apply );
     l1->addWidget( box );
 
     l1->addStretch();

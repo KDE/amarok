@@ -408,7 +408,7 @@ MetaTrackPrototype::changeTags( const Meta::FieldHash &changes, bool respectConf
     if( changes.isEmpty() )
         return;
     WriteTagsJob *job = new WriteTagsJob( m_track->playableUrl().path(), changes, respectConfig );
-    connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+    connect( job, &WriteTagsJob::done, job, &QObject::deleteLater );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 

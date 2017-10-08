@@ -74,7 +74,7 @@ QWidget*
 ConstraintTypes::PreventDuplicates::editWidget() const
 {
     PreventDuplicatesEditWidget* e = new PreventDuplicatesEditWidget( m_field );
-    connect( e, SIGNAL(fieldChanged(int)), this, SLOT(setField(int)) );
+    connect( e, &PreventDuplicatesEditWidget::fieldChanged, this, &PreventDuplicates::setField );
     return e;
 }
 

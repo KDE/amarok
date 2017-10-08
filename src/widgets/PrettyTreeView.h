@@ -92,7 +92,7 @@ namespace Amarok
              */
             QAction *decoratorActionAt( const QModelIndex &idx, const QPoint &pos );
 
-        private Q_SLOTS:
+        protected Q_SLOTS:
             virtual void newPalette( const QPalette &palette );
 
         private:

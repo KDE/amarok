@@ -71,6 +71,7 @@ class CoverManager : public QDialog, public Meta::Observer
 
     public Q_SLOTS:
         void updateStatusBar();
+        void delayedDestruct();
 
     private:
         enum View { AllAlbums = 0, AlbumsWithCover, AlbumsWithoutCover };

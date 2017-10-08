@@ -634,25 +634,25 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
                 emit newResultReady( QStringList() );
                 break;
             case QueryMaker::Track:
-                emit newResultReady( Meta::TrackList() );
+                emit newTracksReady( Meta::TrackList() );
                 break;
             case QueryMaker::Artist:
-                emit newResultReady( Meta::ArtistList() );
+                emit newArtistsReady( Meta::ArtistList() );
                 break;
             case QueryMaker::Album:
-                emit newResultReady( Meta::AlbumList() );
+                emit newAlbumsReady( Meta::AlbumList() );
                 break;
             case QueryMaker::AlbumArtist:
-                emit newResultReady( Meta::ArtistList() );
+                emit newArtistsReady( Meta::ArtistList() );
                 break;
             case QueryMaker::Genre:
-                emit newResultReady( Meta::GenreList() );
+                emit newGenresReady( Meta::GenreList() );
                 break;
             case QueryMaker::Composer:
-                emit newResultReady( Meta::ComposerList() );
+                emit newComposersReady( Meta::ComposerList() );
                 break;
             case QueryMaker::Year:
-                emit newResultReady( Meta::YearList() );
+                emit newYearsReady( Meta::YearList() );
                 break;
 
         case QueryMaker::None:
@@ -719,7 +719,7 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
         tracks.append( trackptr );
     }
 
-    emit newResultReady( tracks );
+    emit newTracksReady( tracks );
 }
 
 void
@@ -734,7 +734,7 @@ ServiceSqlQueryMaker::handleArtists( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         artists.append( m_registry->getArtist( row ) );
     }
-    emit newResultReady( artists );
+    emit newArtistsReady( artists );
 }
 
 void
@@ -749,7 +749,7 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         albums.append( m_registry->getAlbum( row ) );
     }
-    emit newResultReady( albums );
+    emit newAlbumsReady( albums );
 }
 
 void
@@ -764,7 +764,7 @@ ServiceSqlQueryMaker::handleGenres( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         genres.append( m_registry->getGenre( row ) );
     }
-    emit newResultReady( genres );
+    emit newGenresReady( genres );
 }
 
 /*void

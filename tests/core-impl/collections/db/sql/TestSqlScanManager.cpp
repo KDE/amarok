@@ -63,7 +63,7 @@ TestSqlScanManager::initTestCase()
     QVERIFY( m_storage->init( m_tmpDatabaseDir->name() ) );
 
     m_collection = new Collections::SqlCollection( m_storage );
-    connect( m_collection, SIGNAL(updated()), this, SLOT(slotCollectionUpdated()) );
+    connect( m_collection, &Collections::SqlCollection::updated, this, &TestSqlScanManager::slotCollectionUpdated );
 
     // TODO: change the mock mount point manager so that it doesn't pull
     //       in all the devices. Not much of a mock like this.
@@ -1103,15 +1103,15 @@ void
 TestSqlScanManager::waitScannerFinished()
 {
     QVERIFY( m_scanManager->isRunning() );
-    QSignalSpy succeedSpy( m_scanManager, SIGNAL(succeeded()) );
-    QSignalSpy failSpy( m_scanManager, SIGNAL(failed(QString)) );
+    QSignalSpy succeedSpy( m_scanManager, &GenericScanManager::succeeded );
+    QSignalSpy failSpy( m_scanManager, &GenericScanManager::failed );
 
     // connect the result signal *after* the spies to ensure they are updated first
-    connect( m_scanManager, SIGNAL(succeeded()), this, SIGNAL(scanManagerResult()) );
-    connect( m_scanManager, SIGNAL(failed(QString)), this, SIGNAL(scanManagerResult()));
+    connect( m_scanManager, &GenericScanManager::succeeded, this, &TestSqlScanManager::scanManagerResult );
+    connect( m_scanManager, &GenericScanManager::failed, this, &TestSqlScanManager::scanManagerResult);
     const bool ok = QTest::kWaitForSignal( this, SIGNAL(scanManagerResult()), 60*1000 );
-    disconnect( m_scanManager, SIGNAL(succeeded()), this, SIGNAL(scanManagerResult()) );
-    disconnect( m_scanManager, SIGNAL(failed(QString)), this, SIGNAL(scanManagerResult()) );
+    disconnect( m_scanManager, &GenericScanManager::succeeded, this, &TestSqlScanManager::scanManagerResult );
+    disconnect( m_scanManager, &GenericScanManager::failed, this, &TestSqlScanManager::scanManagerResult );
     QVERIFY2( ok, "Scan Manager timed out without a result" );
 
     if( failSpy.count() > 0 )

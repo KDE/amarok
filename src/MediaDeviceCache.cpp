@@ -50,10 +50,10 @@ MediaDeviceCache::MediaDeviceCache() : QObject()
 {
     DEBUG_BLOCK
     s_instance = this;
-    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(QString)),
-             this, SLOT(slotAddSolidDevice(QString)) );
-    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(QString)),
-             this, SLOT(slotRemoveSolidDevice(QString)) );
+    connect( Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded,
+             this, &MediaDeviceCache::slotAddSolidDevice );
+    connect( Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved,
+             this, &MediaDeviceCache::slotRemoveSolidDevice );
 }
 
 MediaDeviceCache::~MediaDeviceCache()
@@ -92,8 +92,8 @@ MediaDeviceCache::refreshCache()
         {
             if( !m_volumes.contains( device.udi() ) )
             {
-                connect( ssa, SIGNAL(accessibilityChanged(bool,QString)),
-                    this, SLOT(slotAccessibilityChanged(bool,QString)) );
+                connect( ssa, &Solid::StorageAccess::accessibilityChanged,
+                    this, &MediaDeviceCache::slotAccessibilityChanged );
                 m_volumes.append( device.udi() );
             }
             if( ssa->isAccessible() )
@@ -171,8 +171,8 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
         debug() << "volume is generic storage";
         if( !m_volumes.contains( device.udi() ) )
         {
-            connect( ssa, SIGNAL(accessibilityChanged(bool,QString)),
-                this, SLOT(slotAccessibilityChanged(bool,QString)) );
+            connect( ssa, &Solid::StorageAccess::accessibilityChanged,
+                this, &MediaDeviceCache::slotAccessibilityChanged );
             m_volumes.append( device.udi() );
         }
         if( ssa->isAccessible() )
@@ -244,8 +244,8 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
     Solid::Device device( udi );
     if( m_volumes.contains( udi ) )
     {
-        disconnect( device.as<Solid::StorageAccess>(), SIGNAL(accessibilityChanged(bool,QString)),
-                    this, SLOT(slotAccessibilityChanged(bool,QString)) );
+        disconnect( device.as<Solid::StorageAccess>(), &Solid::StorageAccess::accessibilityChanged,
+                    this, &MediaDeviceCache::slotAccessibilityChanged );
         m_volumes.removeAll( udi );
         emit deviceRemoved( udi );
     }

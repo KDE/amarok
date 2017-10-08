@@ -220,8 +220,8 @@ private:
 //Solid specific
     void createHandlerFromDevice( const Solid::Device &device, const QString &udi );
 private Q_SLOTS:
-    void deviceAdded( const QString &udi );
-    void deviceRemoved( const QString &udi );
+    void slotDeviceAdded( const QString &udi );
+    void slotDeviceRemoved( const QString &udi );
 
 };
 

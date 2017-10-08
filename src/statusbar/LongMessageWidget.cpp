@@ -74,7 +74,7 @@ LongMessageWidget::LongMessageWidget( QWidget *anchor, const QString &message,
 
     KPushButton *button = new KPushButton( KStandardGuiItem::close(), hbox );
     button->setObjectName( "closeButton" );
-    connect( button, SIGNAL(clicked()), SLOT(close()) );
+    connect( button, &QAbstractButton::clicked, this, &LongMessageWidget::close );
 
     reposition();
 

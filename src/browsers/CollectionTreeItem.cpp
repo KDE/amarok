@@ -73,7 +73,7 @@ CollectionTreeItem::CollectionTreeItem( Collections::Collection *parentCollectio
     if ( m_parent )
         m_parent->appendChild( this );
 
-    connect( parentCollection, SIGNAL(updated()), SLOT(collectionUpdated()) );
+    connect( parentCollection, &Collections::Collection::updated, this, &CollectionTreeItem::collectionUpdated );
 }
 
 CollectionTreeItem::CollectionTreeItem( Type type, const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
@@ -163,8 +163,8 @@ CollectionTreeItem::data( int role ) const
                 m_isCounting = true;
 
                 Collections::QueryMaker *qm = m_parentCollection->queryMaker();
-                connect( qm, SIGNAL(newResultReady(QStringList)),
-                         SLOT(tracksCounted(QStringList)) );
+                connect( qm, &Collections::QueryMaker::newResultReady,
+                         this, &CollectionTreeItem::tracksCounted );
 
                 qm->setAutoDelete( true )
                   ->setQueryType( Collections::QueryMaker::Custom )

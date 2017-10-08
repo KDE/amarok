@@ -53,8 +53,8 @@ Q_SIGNALS:
     void albumClicked( const QString& );
 
 private Q_SLOTS:
-    void artistClicked();
-    void albumClicked();
+    void slotArtistClicked();
+    void slotAlbumClicked();
 
 private:
     Meta::AlbumPtr m_album;

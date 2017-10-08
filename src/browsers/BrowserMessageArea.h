@@ -19,6 +19,9 @@
 
 #include "core-impl/logger/ProxyLogger.h"
 #include "statusbar/CompoundProgressBar.h"
+#include "statusbar/KJobProgressBar.h"
+#include "statusbar/NetworkProgressBar.h"
+
 
 #include <QFrame>
 #include <QTimer>
@@ -39,13 +42,14 @@ public:
     virtual void longMessage( const QString &text, MessageType type );
 
     virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj,
-                                      const char *slot, Qt::ConnectionType type );
+                                       const char *slot, Qt::ConnectionType type );
 
     virtual void newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj,
-                                      const char *slot, Qt::ConnectionType type );
+                                       const char *slot, Qt::ConnectionType type );
 
     virtual void newProgressOperation( QObject *sender, const QString &text, int maximum,
                                        QObject *obj, const char *slot, Qt::ConnectionType type );
+
 Q_SIGNALS:
     void signalLongMessage( const QString & text, MessageType type );
 

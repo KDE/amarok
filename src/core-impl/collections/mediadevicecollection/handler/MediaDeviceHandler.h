@@ -215,6 +215,8 @@ public Q_SLOTS:
     void removeNextTrackFromDevice();
     void privateRemoveTrackFromDevice( const Meta::TrackPtr &track );
 
+    void slotCopyNextTrackFailed( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track );
+    void slotCopyNextTrackDone( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track );
 
 protected:
 
@@ -261,9 +263,6 @@ protected:
     TitleMap          m_titlemap; ///< Map of track titles to tracks, used to detect duplicates
 
 protected Q_SLOTS:
-
-    void slotCopyNextTrackFailed( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track );
-    void slotCopyNextTrackDone( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track );
 
     void slotFinalizeTrackCopy( const Meta::TrackPtr & track );
     void slotCopyTrackFailed( const Meta::TrackPtr & track );

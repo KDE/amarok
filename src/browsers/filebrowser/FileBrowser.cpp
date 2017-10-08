@@ -60,15 +60,15 @@ FileBrowser::Private::Private( FileBrowser *parent )
     navigationToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     navigationToolbar->setIconDimensions( 16 );
 
-    backAction = KStandardAction::back( q, SLOT(back()), topHBox );
-    forwardAction = KStandardAction::forward( q, SLOT(forward()), topHBox );
+    backAction = KStandardAction::back( q, &FileBrowser::back, topHBox );
+    forwardAction = KStandardAction::forward( q, &FileBrowser::forward, topHBox );
     backAction->setEnabled( false );
     forwardAction->setEnabled( false );
 
-    upAction = KStandardAction::up( q, SLOT(up()), topHBox );
-    homeAction = KStandardAction::home( q, SLOT(home()), topHBox );
+    upAction = KStandardAction::up( q, &FileBrowser::up, topHBox );
+    homeAction = KStandardAction::home( q, &FileBrowser::home, topHBox );
     refreshAction = new QAction( QIcon::fromTheme("view-refresh"), i18n( "Refresh" ), topHBox );
-    QObject::connect( refreshAction, SIGNAL(triggered(bool)), q, SLOT(refresh()) );
+    QObject::connect( refreshAction, &QAction::triggered, q, &FileBrowser::refresh );
 
     navigationToolbar->addAction( backAction );
     navigationToolbar->addAction( forwardAction );
@@ -235,8 +235,8 @@ void
 FileBrowser::initView()
 {
     d->bottomPlacesModel = new FilePlacesModel( this );
-    connect( d->bottomPlacesModel, SIGNAL(setupDone(QModelIndex,bool)),
-                                   SLOT(setupDone(QModelIndex,bool)) );
+    connect( d->bottomPlacesModel, &KFilePlacesModel::setupDone,
+             this, &FileBrowser::setupDone );
     d->placesModel = new QSortFilterProxyModel( this );
     d->placesModel->setSourceModel( d->bottomPlacesModel );
     d->placesModel->setSortRole( -1 );
@@ -252,8 +252,8 @@ FileBrowser::initView()
     d->mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setDynamicSortFilter( true );
-    connect( d->searchWidget, SIGNAL(filterChanged(QString)),
-             d->mimeFilterProxyModel, SLOT(setFilterFixedString(QString)) );
+    connect( d->searchWidget, &SearchWidget::filterChanged,
+             d->mimeFilterProxyModel, &DirPlaylistTrackFilterProxyModel::setFilterFixedString );
 
     d->fileView->setModel( d->mimeFilterProxyModel );
     d->fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -277,16 +277,23 @@ FileBrowser::initView()
         action->setCheckable( true );
         if( !d->fileView->isColumnHidden( i ) )
             action->setChecked( true );
-        connect( action, SIGNAL(toggled(bool)), this, SLOT(toggleColumn(bool)) );
+        connect( action, &QAction::toggled, this, &FileBrowser::toggleColumn );
     }
 
-    connect( d->fileView->header(), SIGNAL(geometriesChanged()),
-                                    SLOT(updateHeaderState()) );
-    connect( d->fileView, SIGNAL(navigateToDirectory(QModelIndex)),
-                          SLOT(slotNavigateToDirectory(QModelIndex)) );
-    connect( d->fileView, SIGNAL(refreshBrowser()),
-                          SLOT(refresh()) );
+    connect( d->fileView->header(), &QHeaderView::geometriesChanged,
+             this, &FileBrowser::updateHeaderState );
+    connect( d->fileView, &FileView::navigateToDirectory,
+             this, &FileBrowser::slotNavigateToDirectory );
+    connect( d->fileView, &FileView::refreshBrowser,
+             this, &FileBrowser::refresh );
 }
+
+void
+FileBrowser::updateHeaderState()
+{
+    d->updateHeaderState();
+}
+
 
 FileBrowser::~FileBrowser()
 {
@@ -606,12 +613,11 @@ DelayedActivator::DelayedActivator( QAbstractItemView *view )
         return;
     }
 
-    connect( model, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                    SLOT(slotRowsInserted(QModelIndex,int)) );
+    connect( model, &QAbstractItemModel::rowsInserted, this, &DelayedActivator::slotRowsInserted );
 
-    connect( model, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
-    connect( model, SIGNAL(layoutChanged()), SLOT(deleteLater()) );
-    connect( model, SIGNAL(modelReset()), SLOT(deleteLater()) );
+    connect( model, &QAbstractItemModel::destroyed, this, &DelayedActivator::deleteLater );
+    connect( model, &QAbstractItemModel::layoutChanged, this, &DelayedActivator::deleteLater );
+    connect( model, &QAbstractItemModel::modelReset, this, &DelayedActivator::deleteLater );
 }
 
 void

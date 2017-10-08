@@ -43,7 +43,7 @@ void KnowledgeBaseJob::setUrl( const QUrl &url )
 
 void KnowledgeBaseJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &KnowledgeBaseJob::doWork );
 }
 
 KnowledgeBase KnowledgeBaseJob::knowledgeBase() const
@@ -60,11 +60,13 @@ void KnowledgeBaseJob::doWork()
 {
   qDebug() << m_url;
 
-  m_job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
-  connect( m_job, SIGNAL(result(KJob*)),
-    SLOT(slotJobResult(KJob*)) );
-  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-    SLOT(slotJobData(KIO::Job*,QByteArray)) );
+  auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+  connect( job, &KIO::TransferJob::result,
+           this, &KnowledgeBaseJob::slotJobResult );
+  connect( job, &KIO::TransferJob::data,
+           this, &KnowledgeBaseJob::slotJobData );
+
+  m_job = job;
 }
 
 void KnowledgeBaseJob::slotJobResult( KJob *job )

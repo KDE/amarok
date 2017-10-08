@@ -170,8 +170,10 @@ public:
                     m_caption //caption
                 );
 
-        connect( m_dialog, SIGNAL(accepted()), SIGNAL(accepted()) );
-        connect( m_dialog, SIGNAL(rejected()), SIGNAL(rejected()) );
+        connect( m_dialog, &OrganizeCollectionDialog::accepted,
+                 this, &OrganizeCollectionDelegateImpl::accepted );
+        connect( m_dialog, &OrganizeCollectionDialog::rejected,
+                 this, &OrganizeCollectionDelegateImpl::rejected );
         m_dialog->show();
     }
 
@@ -273,10 +275,10 @@ SqlCollection::SqlCollection( SqlStorage* storage )
     m_scanManager = new SqlScanManager( this, this );
     m_scanProcessor = new SqlScanResultProcessor( m_scanManager, this, this );
     m_directoryWatcher = new SqlDirectoryWatcher( this );
-    connect( m_directoryWatcher, SIGNAL(done(ThreadWeaver::JobPointer)),
-             m_directoryWatcher, SLOT(deleteLater()) ); // auto delete
-    connect( m_directoryWatcher, SIGNAL(requestScan(QList<QUrl>,GenericScanManager::ScanType)),
-             m_scanManager,      SLOT(requestScan(QList<QUrl>,GenericScanManager::ScanType)) );
+    connect( m_directoryWatcher, &AbstractDirectoryWatcher::done,
+             m_directoryWatcher, &AbstractDirectoryWatcher::deleteLater ); // auto delete
+    connect( m_directoryWatcher, &AbstractDirectoryWatcher::requestScan,
+             m_scanManager, &GenericScanManager::requestScan );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_directoryWatcher) );
 }
 
