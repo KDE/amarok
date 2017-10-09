@@ -29,12 +29,12 @@ class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
     Q_OBJECT
 
     public:
-        MetadataConfig( QWidget *parent );
+        MetadataConfig( Amarok2ConfigDialog *parent );
         virtual ~MetadataConfig();
 
-        virtual bool isDefault();
-        virtual bool hasChanged();
-        virtual void updateSettings();
+        bool isDefault() Q_DECL_OVERRIDE;
+        bool hasChanged() Q_DECL_OVERRIDE;
+        void updateSettings() Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
         void changed();

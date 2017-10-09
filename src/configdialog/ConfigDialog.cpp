@@ -19,6 +19,7 @@
 #include "ConfigDialog.h"
 
 #include "amarokconfig.h"
+#include "ConfigDialogBase.h"
 #include "configdialog/dialogs/CollectionConfig.h"
 #include "configdialog/dialogs/DatabaseConfig.h"
 #include "configdialog/dialogs/GeneralConfig.h"
@@ -77,7 +78,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &Amarok2ConfigDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &Amarok2ConfigDialog::reject);
-    mainLayout->addWidget(buttonBox);
+    setButtonBox(buttonBox);
     KWindowConfig::restoreWindowSize(windowHandle(), Amarok::config( "ConfigDialog" ));
 }
 
@@ -98,7 +99,7 @@ Amarok2ConfigDialog::~Amarok2ConfigDialog()
 
     KConfigGroup config = Amarok::config( "ConfigDialog" );
     KWindowConfig::saveWindowSize(windowHandle(), config);
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
 }
 
 void Amarok2ConfigDialog::updateButtons() //SLOT

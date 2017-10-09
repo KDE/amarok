@@ -43,7 +43,6 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage()
 bool
 MySqlEmbeddedStorage::init( const QString &storageLocation )
 {
-
     // -- figuring out and setting the database path.
     QString storagePath = storageLocation;
     QString databaseDir;
@@ -142,10 +141,7 @@ MySqlEmbeddedStorage::~MySqlEmbeddedStorage()
     if( m_db )
     {
         mysql_close( m_db );
-        if( !libraryInitRef.deref() )
-        {
-            mysql_library_end();
-        }
+        libraryInitRef.deref();
     }
 }
 

@@ -27,11 +27,11 @@
 
 #include "MetaValues.h"
 
-MetadataConfig::MetadataConfig( QWidget *parent )
+MetadataConfig::MetadataConfig( Amarok2ConfigDialog *parent )
     : ConfigDialogBase( parent )
 {
-    if( auto p = static_cast<Amarok2ConfigDialog*>(parent) )
-        connect( this, &MetadataConfig::changed, p, &Amarok2ConfigDialog::updateButtons );
+    connect( this, &MetadataConfig::changed,
+             parent, &Amarok2ConfigDialog::updateButtons );
 
     setupUi( this );
 
@@ -150,7 +150,10 @@ MetadataConfig::MetadataConfig( QWidget *parent )
 MetadataConfig::~MetadataConfig()
 {
     if( m_statSyncingConfig )
+    {
+        disconnect( this, &MetadataConfig::changed, 0, 0 );
         m_statSyncingConfig.data()->read(); // reset unsaved changes
+    }
 }
 
 bool

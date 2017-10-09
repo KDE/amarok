@@ -17,11 +17,12 @@
 #ifndef AMAROK2CONFIGDIALOG_H
 #define AMAROK2CONFIGDIALOG_H
 
-#include "ConfigDialogBase.h"
-
 #include <KConfigDialog>
 #include <KConfigSkeleton>
 #include <KWindowConfig>
+
+
+class ConfigDialogBase;
 
 class Amarok2ConfigDialog : public KConfigDialog
 {
@@ -48,15 +49,13 @@ class Amarok2ConfigDialog : public KConfigDialog
         void updateButtons();
 
     protected Q_SLOTS:
-        void updateSettings();
-        void updateWidgets();
-        void updateWidgetsDefault();
-
-    private Q_SLOTS:
+        void updateSettings() Q_DECL_OVERRIDE;
+        void updateWidgets() Q_DECL_OVERRIDE;
+        void updateWidgetsDefault() Q_DECL_OVERRIDE;
 
     protected:
-        bool hasChanged();
-        bool isDefault();
+        bool hasChanged() Q_DECL_OVERRIDE;
+        bool isDefault() Q_DECL_OVERRIDE;
 
     private:
         QList<ConfigDialogBase*> m_pageList;

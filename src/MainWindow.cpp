@@ -203,13 +203,13 @@ MainWindow::init()
     layout()->setSpacing( 0 );
 
     //create main toolbar
-    m_mainToolbar = new MainToolbar( 0 );
+    m_mainToolbar = new MainToolbar( this );
     m_mainToolbar.data()->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_mainToolbar.data()->setMovable ( true );
     addToolBar( Qt::TopToolBarArea, m_mainToolbar.data() );
 
     //create slim toolbar
-    m_slimToolbar = new SlimToolbar( 0 );
+    m_slimToolbar = new SlimToolbar( this );
     m_slimToolbar.data()->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_slimToolbar.data()->setMovable ( true );
     addToolBar( Qt::TopToolBarArea, m_slimToolbar.data() );
@@ -1256,33 +1256,29 @@ MainWindow::setLayoutLocked( bool locked )
 {
     DEBUG_BLOCK
 
-    if( locked )
+    if( m_browserDock )
+        m_browserDock.data()->setMovable( !locked );
+
+    if( m_contextDock )
+        m_contextDock.data()->setMovable( !locked );
+
+    if( m_playlistDock )
+        m_playlistDock.data()->setMovable( !locked );
+
+    if( m_slimToolbar )
     {
-        m_browserDock.data()->setMovable( false );
-        m_contextDock.data()->setMovable( false );
-        m_playlistDock.data()->setMovable( false );
-
-        m_slimToolbar.data()->setFloatable( false );
-        m_slimToolbar.data()->setMovable( false );
-
-        m_mainToolbar.data()->setFloatable( false );
-        m_mainToolbar.data()->setMovable( false );
+        m_slimToolbar.data()->setFloatable( !locked );
+        m_slimToolbar.data()->setMovable( !locked );
     }
-    else
+
+    if( m_mainToolbar )
     {
-        m_browserDock.data()->setMovable( true );
-        m_contextDock.data()->setMovable( true );
-        m_playlistDock.data()->setMovable( true );
-
-        m_slimToolbar.data()->setFloatable( true );
-        m_slimToolbar.data()->setMovable( true );
-
-        m_mainToolbar.data()->setFloatable( true );
-        m_mainToolbar.data()->setMovable( true );
+        m_mainToolbar.data()->setFloatable( !locked );
+        m_mainToolbar.data()->setMovable( !locked );
     }
 
     AmarokConfig::setLockLayout( locked );
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
 }
 
 void

@@ -145,6 +145,9 @@ class AutoExpander : public QObject
             QQueue<QModelIndex> pendingIndices;
             while( !m_indicesToCheck.isEmpty() )
             {
+                if( !m_filterModel )
+                    return;
+
                 QModelIndex current = m_indicesToCheck.dequeue();
 
                 if( m_filterModel->canFetchMore( current ) )
@@ -174,7 +177,7 @@ class AutoExpander : public QObject
         Q_DISABLE_COPY(AutoExpander)
 
         CollectionTreeView *m_treeView;
-        QAbstractItemModel *m_filterModel;
+        QPointer<QAbstractItemModel> m_filterModel;
         QQueue<QModelIndex> m_indicesToCheck;
 };
 

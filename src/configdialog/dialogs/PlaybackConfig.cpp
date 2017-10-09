@@ -27,7 +27,7 @@
 #include <kmessagebox.h>
 
 
-PlaybackConfig::PlaybackConfig( QWidget* parent )
+PlaybackConfig::PlaybackConfig( Amarok2ConfigDialog* parent )
     : ConfigDialogBase( parent )
 {
     setupUi( this );

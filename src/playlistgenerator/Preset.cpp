@@ -157,8 +157,6 @@ APG::Preset::solverFinished( ThreadWeaver::JobPointer job )
     } else {
         debug() << "Ignoring results from aborted Solver" << solver->serial();
     }
-    ThreadWeaver::QObjectDecorator *qs = new ThreadWeaver::QObjectDecorator(job.data());
-    qs->deleteLater();
 
     emit lock( false );
 }

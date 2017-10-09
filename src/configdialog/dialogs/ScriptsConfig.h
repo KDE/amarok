@@ -36,12 +36,12 @@ class ScriptsConfig : public ConfigDialogBase
     Q_OBJECT
 
 public:
-    ScriptsConfig( QWidget *parent );
+    ScriptsConfig( Amarok2ConfigDialog *parent );
     virtual ~ScriptsConfig();
 
-    virtual void updateSettings();
-    virtual bool hasChanged();
-    virtual bool isDefault();
+    void updateSettings() Q_DECL_OVERRIDE;
+    bool hasChanged() Q_DECL_OVERRIDE;
+    bool isDefault() Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
     void slotConfigChanged( bool changed );

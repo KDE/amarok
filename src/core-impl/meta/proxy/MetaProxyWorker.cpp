@@ -28,8 +28,6 @@ Worker::Worker( const QUrl &url, Collections::TrackProvider *provider )
     , m_provider( provider )
     , m_stepsDoneReceived( 0 )
 {
-    connect( this, &Worker::done, this, &Worker::slotStepDone );
-    connect( this, &Worker::finishedLookup, this, &Worker::slotStepDone );
 }
 
 void
@@ -99,12 +97,4 @@ void
 Worker::slotNewCollection( Collections::Collection *newCollection )
 {
     slotNewTrackProvider( newCollection );
-}
-
-void
-Worker::slotStepDone()
-{
-    m_stepsDoneReceived++;
-    if( m_stepsDoneReceived >= 2 )
-        deleteLater();
 }

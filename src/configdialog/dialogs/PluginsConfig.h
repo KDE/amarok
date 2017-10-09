@@ -30,12 +30,12 @@ class PluginsConfig : public ConfigDialogBase
     Q_OBJECT
 
 public:
-    PluginsConfig( QWidget *parent );
+    PluginsConfig( Amarok2ConfigDialog *parent );
     virtual ~PluginsConfig();
 
-    virtual void updateSettings();
-    virtual bool hasChanged();
-    virtual bool isDefault();
+    void updateSettings() Q_DECL_OVERRIDE;
+    bool hasChanged() Q_DECL_OVERRIDE;
+    bool isDefault() Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
     void slotConfigChanged( bool changed );

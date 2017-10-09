@@ -73,7 +73,6 @@ class AMAROK_EXPORT ProgressBar : public QFrame
 
     Q_SIGNALS:
         void cancelled( ProgressBar * );
-//         void cancelled();
         void complete( ProgressBar * );
         void percentageChanged( int );
 

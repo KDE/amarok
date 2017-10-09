@@ -244,7 +244,8 @@ void SvgHandler::discardCache()
     //redraw entire app....
     reTint();
     m_cache->clear();
-    App::instance()->mainWindow()->update();
+    if( auto window = App::instance()->mainWindow() )
+        window->update();
 }
 
 QPixmap

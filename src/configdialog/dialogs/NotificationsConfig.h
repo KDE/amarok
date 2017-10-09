@@ -29,12 +29,12 @@ class NotificationsConfig : public ConfigDialogBase, public Ui_NotificationsConf
     Q_OBJECT
 
     public:
-        NotificationsConfig( QWidget* parent );
+        NotificationsConfig( Amarok2ConfigDialog* parent );
         virtual ~NotificationsConfig();
 
-        virtual bool hasChanged();
-        virtual bool isDefault();
-        virtual void updateSettings();
+        bool hasChanged() Q_DECL_OVERRIDE;
+        bool isDefault() Q_DECL_OVERRIDE;
+        void updateSettings() Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
         void changed();

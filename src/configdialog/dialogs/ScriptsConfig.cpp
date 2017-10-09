@@ -42,7 +42,7 @@
 #include <QMimeDatabase>
 #include <QMimeType>
 
-ScriptsConfig::ScriptsConfig( QWidget *parent )
+ScriptsConfig::ScriptsConfig( Amarok2ConfigDialog *parent )
     : ConfigDialogBase( parent )
     , m_configChanged( false )
     , m_parent( parent )
@@ -216,8 +216,8 @@ ScriptsConfig::slotReloadScriptSelector()
     connect( m_selector, &ScriptSelector::changed, this, &ScriptsConfig::slotConfigChanged );
     connect( m_selector, &ScriptSelector::filtered, m_uninstallButton, &QPushButton::setDisabled );
 
-    if (auto dialog = qobject_cast<Amarok2ConfigDialog*>(m_parent))
-        connect( m_selector, &ScriptSelector::changed, dialog, &Amarok2ConfigDialog::updateButtons );
+    connect( m_selector, &ScriptSelector::changed,
+             qobject_cast<Amarok2ConfigDialog*>(m_parent), &Amarok2ConfigDialog::updateButtons );
 
     m_verticalLayout->insertWidget( 0, m_selector );
     m_verticalLayout->removeWidget( m_oldSelector );

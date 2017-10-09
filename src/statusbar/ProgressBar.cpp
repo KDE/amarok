@@ -84,7 +84,7 @@ ProgressBar::setAbortSlot( QObject *receiver, const char *slot, Qt::ConnectionTy
 {
     cancelButton()->setHidden( false );
     if( receiver )
-        connect( this, SIGNAL(cancelled()), receiver, slot, type );
+        connect( this, SIGNAL(cancelled(ProgressBar*)), receiver, slot, type );
     connect( cancelButton(), &QAbstractButton::clicked, this, &ProgressBar::cancel );
 
     return this;
@@ -94,7 +94,6 @@ void ProgressBar::cancel()
 {
     DEBUG_BLOCK
     debug() << "cancelling operation: " << m_descriptionLabel->text();
-//     emit( cancelled() );
     emit( cancelled( this ) );
 }
 

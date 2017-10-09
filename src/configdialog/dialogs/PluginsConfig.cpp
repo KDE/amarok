@@ -28,7 +28,7 @@
 
 #include <QVBoxLayout>
 
-PluginsConfig::PluginsConfig( QWidget *parent )
+PluginsConfig::PluginsConfig( Amarok2ConfigDialog *parent )
     : ConfigDialogBase( parent )
     , m_configChanged( false )
 {
@@ -51,8 +51,8 @@ PluginsConfig::PluginsConfig( QWidget *parent )
 
     connect( m_selector, &KPluginSelector::changed, this, &PluginsConfig::slotConfigChanged );
 
-    if (auto dialog = qobject_cast<Amarok2ConfigDialog*>(parent))
-        connect( m_selector, &KPluginSelector::changed, dialog, &Amarok2ConfigDialog::updateButtons );
+    connect( m_selector, &KPluginSelector::changed,
+             parent, &Amarok2ConfigDialog::updateButtons );
 }
 
 PluginsConfig::~PluginsConfig()

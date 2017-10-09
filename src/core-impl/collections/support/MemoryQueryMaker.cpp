@@ -23,7 +23,6 @@
 #include "MemoryQueryMakerInternal.h"
 #include "core/support/Debug.h"
 
-#include <ThreadWeaver/QObjectDecorator>
 #include <ThreadWeaver/Queue>
 
 #include <QList>

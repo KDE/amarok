@@ -25,7 +25,7 @@
 #include <KCMultiDialog>
 
 
-DatabaseConfig::DatabaseConfig( QWidget* parent, KConfigSkeleton *config )
+DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KConfigSkeleton *config )
     : ConfigDialogBase( parent )
     , m_configManager( new KConfigDialogManager( this, config ) )
 {

@@ -23,7 +23,7 @@
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "dialogs/CollectionSetup.h"
 
-CollectionConfig::CollectionConfig( QWidget* parent )
+CollectionConfig::CollectionConfig( Amarok2ConfigDialog* parent )
     : ConfigDialogBase( parent )
 {
     m_collectionSetup = new CollectionSetup( this );
@@ -35,12 +35,10 @@ CollectionConfig::CollectionConfig( QWidget* parent )
     KConfigGroup transcodeGroup = Amarok::config( Collections::SQL_TRANSCODING_GROUP_NAME );
     m_collectionSetup->transcodingConfig()->fillInChoices( Transcoding::Configuration::fromConfigGroup( transcodeGroup ) );
 
-    if (auto dialog = qobject_cast<Amarok2ConfigDialog*>(parent))
-    {
-        connect( m_collectionSetup, &CollectionSetup::changed, dialog, &Amarok2ConfigDialog::updateButtons );
-        connect( m_collectionSetup->transcodingConfig(), QOverload<int>::of(&QComboBox::currentIndexChanged),
-                 dialog, &Amarok2ConfigDialog::updateButtons );
-    }
+
+    connect( m_collectionSetup, &CollectionSetup::changed, parent, &Amarok2ConfigDialog::updateButtons );
+    connect( m_collectionSetup->transcodingConfig(), QOverload<int>::of(&QComboBox::currentIndexChanged),
+             parent, &Amarok2ConfigDialog::updateButtons );
 }
 
 CollectionConfig::~CollectionConfig()

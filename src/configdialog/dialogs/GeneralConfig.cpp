@@ -17,7 +17,10 @@
 
 #include "GeneralConfig.h"
 
-GeneralConfig::GeneralConfig( QWidget* parent )
+#include "amarokconfig.h"
+
+
+GeneralConfig::GeneralConfig( Amarok2ConfigDialog* parent )
     : ConfigDialogBase( parent )
 {
     setupUi( this );
@@ -46,4 +49,6 @@ void
 GeneralConfig::updateSettings() //SLOT
 {
 }
+
+
 

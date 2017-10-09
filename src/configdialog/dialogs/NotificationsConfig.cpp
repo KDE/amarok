@@ -26,15 +26,15 @@
 
 #include <QDesktopWidget>
 
-NotificationsConfig::NotificationsConfig( QWidget* parent )
+NotificationsConfig::NotificationsConfig( Amarok2ConfigDialog* parent )
     : ConfigDialogBase( parent ) 
     , m_oldAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) )
     , m_oldYOffset( AmarokConfig::osdYOffset() )
 {
     setupUi( this );
 
-    if (auto dialog = qobject_cast<Amarok2ConfigDialog*>(parent))
-        connect( this, &NotificationsConfig::changed, dialog, &Amarok2ConfigDialog::updateButtons );
+    connect( this, &NotificationsConfig::changed,
+             parent, &Amarok2ConfigDialog::updateButtons );
 
     m_osdPreview = new OSDPreviewWidget( this ); //must be child!!!
     m_osdPreview->setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
