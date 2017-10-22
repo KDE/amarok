@@ -197,10 +197,11 @@ if( WITH_PLAYER )
         set_package_properties(LIBOFA PROPERTIES DESCRIPTION "Enable MusicDNS service" URL "http://code.google.com/p/musicip-libofa/" TYPE OPTIONAL)
     endif()
 
-    ##gpodder Service
-    find_package( Mygpo-qt 1.0.7 QUIET )
-    set_package_properties( LIBMYGPO_QT PROPERTIES DESCRIPTION "Enable gpodder.net service" URL "http://wiki.gpodder.org/wiki/Libmygpo-qt" TYPE OPTIONAL )
-    macro_bool_to_01( LIBMYGPO_QT_FOUND HAVE_LIBMYGPOQT )
+    ## gpodder Service
+    ## Currently disabled as it can crash Amarok on startup, during dynamic linking phase, before main() is reached.
+    #    find_package( Mygpo-qt 1.0.7 QUIET )
+    #    set_package_properties( LIBMYGPO_QT PROPERTIES DESCRIPTION "Enable gpodder.net service" URL "http://wiki.gpodder.org/wiki/Libmygpo-qt" TYPE OPTIONAL )
+    #    macro_bool_to_01( LIBMYGPO_QT_FOUND HAVE_LIBMYGPOQT )
 
     if( WITH_IPOD )
         find_package(Ipod)
