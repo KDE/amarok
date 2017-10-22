@@ -219,7 +219,7 @@ public:
 
 using namespace Collections;
 
-SqlCollection::SqlCollection( SqlStorage* storage )
+SqlCollection::SqlCollection( QSharedPointer<SqlStorage> storage )
     : DatabaseCollection()
     , m_registry( 0 )
     , m_sqlStorage( storage )
@@ -284,11 +284,12 @@ SqlCollection::SqlCollection( SqlStorage* storage )
 
 SqlCollection::~SqlCollection()
 {
+    DEBUG_BLOCK
+
     m_directoryWatcher->abort();
     delete m_scanProcessor; // this prevents any further commits from the scanner
     delete m_collectionLocationFactory;
     delete m_queryMakerFactory;
-    delete m_sqlStorage;
     delete m_registry;
 }
 
@@ -318,7 +319,7 @@ SqlCollection::registry() const
     return m_registry;
 }
 
-SqlStorage*
+QSharedPointer<SqlStorage>
 SqlCollection::sqlStorage() const
 {
     Q_ASSERT( m_sqlStorage );

@@ -28,13 +28,9 @@
 
 using namespace Collections;
 
-Q_PLUGIN_METADATA(IID KPluginFactory_iid FILE "amarok_collection-mtpcollection.json" )
-
-MtpCollectionFactory::MtpCollectionFactory( QObject *parent, const QVariantList &args )
-    : MediaDeviceCollectionFactory<MtpCollection>( parent, args, new MtpConnectionAssistant() )
-{
-    m_info = KPluginInfo( "amarok_collection-mtpcollection.desktop" );
-}
+MtpCollectionFactory::MtpCollectionFactory()
+    : MediaDeviceCollectionFactory<MtpCollection>( new MtpConnectionAssistant() )
+{}
 
 MtpCollectionFactory::~MtpCollectionFactory()
 {
@@ -80,7 +76,3 @@ MtpCollection::prettyName() const
 {
     return m_handler->prettyName();
 }
-
-
-
-

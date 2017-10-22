@@ -82,7 +82,7 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
     int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(path) );
     QString rdir = m_collection->mountPointManager()->getRelativePath( deviceId, path );
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     // - find existing entry
     QString query = QString( "SELECT id, changedate FROM directories "
@@ -124,8 +124,7 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
 Meta::TrackPtr
 SqlRegistry::getTrack( int urlId )
 {
-    QString query = "SELECT %1 FROM urls %2 "
-        "WHERE urls.id = %3";
+    QString query = "SELECT %1 FROM urls %2 WHERE urls.id = %3";
     query = query.arg( Meta::SqlTrack::getTrackReturnValues(),
                        Meta::SqlTrack::getTrackJoinConditions(),
                        QString::number( urlId ) );

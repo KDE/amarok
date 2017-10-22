@@ -17,17 +17,13 @@
  ****************************************************************************************/
 
 #include "MagnatuneSettingsModule.h"
-
 #include "MagnatuneMeta.h"
-
 #include "ui_MagnatuneConfigWidget.h"
 
 #include <kgenericfactory.h>
 
 
-
-K_PLUGIN_FACTORY( MagnatuneSettingsFactory, registerPlugin<MagnatuneSettingsModule>(); )
-K_EXPORT_PLUGIN( MagnatuneSettingsFactory( "kcm_amarok_magnatunestore" ) )
+K_PLUGIN_FACTORY_WITH_JSON( MagnatuneSettingsModuleFactory, "amarok_service_magnatunestore_config.json", registerPlugin<MagnatuneSettingsModule>(); )
 
 MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVariantList &args )
     : KCModule( parent, args )

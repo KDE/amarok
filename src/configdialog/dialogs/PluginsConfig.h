@@ -18,7 +18,6 @@
 #define AMAROK_PLUGINSCONFIG_H
 
 #include "configdialog/ConfigDialogBase.h"
-#include <KLocalizedString>
 
 class KPluginSelector;
 

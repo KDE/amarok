@@ -18,6 +18,7 @@
 
 #include "RhythmboxConfigWidget.h"
 #include "RhythmboxProvider.h"
+
 #include <KLocalizedString>
 
 AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( rhythmbox,
@@ -27,4 +28,3 @@ AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( rhythmbox,
                                       QIcon::fromTheme( "view-importers-rhythmbox-amarok" ),
                                       StatSyncing::RhythmboxConfigWidget,
                                       StatSyncing::RhythmboxProvider )
-#include "RhythmboxManager.moc"

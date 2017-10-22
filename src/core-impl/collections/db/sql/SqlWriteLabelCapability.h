@@ -22,6 +22,8 @@
 #include "core/capabilities/WriteLabelCapability.h"
 #include "SqlMeta.h"
 
+#include <QSharedPointer>
+
 class SqlStorage;
 
 namespace Capabilities
@@ -31,12 +33,12 @@ class SqlWriteLabelCapability : public WriteLabelCapability
 {
     Q_OBJECT
     public:
-        SqlWriteLabelCapability( Meta::SqlTrack *track, SqlStorage *storage );
+        SqlWriteLabelCapability( Meta::SqlTrack *track, QSharedPointer<SqlStorage> storage );
         void setLabels( const QStringList &removedLabels, const QStringList &newlabels );
 
     private:
         Meta::TrackPtr m_track;
-        SqlStorage *m_storage;
+        QSharedPointer<SqlStorage> m_storage;
 };
 
 }

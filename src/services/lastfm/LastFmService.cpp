@@ -52,7 +52,6 @@
 
 #include <XmlQuery.h>
 
-AMAROK_EXPORT_SERVICE_PLUGIN( lastfm, LastFmServiceFactory )
 
 QString md5( const QByteArray& src )
 {
@@ -60,13 +59,9 @@ QString md5( const QByteArray& src )
     return QString::fromLatin1( digest.toHex() ).rightJustified( 32, '0' );
 }
 
-LastFmServiceFactory::LastFmServiceFactory( QObject *parent, const QVariantList &args )
-    : ServiceFactory( parent, args )
-{
-    KPluginInfo pluginInfo(  "amarok_service_lastfm.desktop" );
-    pluginInfo.setConfig( config() );
-    m_info = pluginInfo;
-}
+LastFmServiceFactory::LastFmServiceFactory()
+    : ServiceFactory()
+{}
 
 void
 LastFmServiceFactory::init()
@@ -241,12 +236,12 @@ LastFmService::continueReconfiguring()
     {
         debug() << __PRETTY_FUNCTION__ << "unregistering and destorying ScrobblerAdapter";
         controller->unregisterScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
-        m_scrobbler = 0;
+        m_scrobbler.clear();
     }
     else if( !m_scrobbler && authenticated && m_config->scrobble() )
     {
         debug() << __PRETTY_FUNCTION__ << "creating and registering ScrobblerAdapter";
-        m_scrobbler = new ScrobblerAdapter( "Amarok", m_config );
+        m_scrobbler = QSharedPointer<ScrobblerAdapter>( new ScrobblerAdapter( "Amarok", m_config ) );
         controller->registerScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
     }
 
@@ -259,7 +254,7 @@ LastFmService::continueReconfiguring()
     else if( !m_synchronizationAdapter && authenticated )
     {
         debug() << __PRETTY_FUNCTION__ << "creating and registering SynchronizationAdapter";
-        m_synchronizationAdapter = new SynchronizationAdapter( m_config );
+        m_synchronizationAdapter = StatSyncing::ProviderPtr( new SynchronizationAdapter( m_config ) );
         controller->registerProvider( m_synchronizationAdapter );
     }
 

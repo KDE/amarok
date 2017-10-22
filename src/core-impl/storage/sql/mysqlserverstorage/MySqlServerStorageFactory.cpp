@@ -20,13 +20,10 @@
 #include <amarokconfig.h>
 #include <core/support/Amarok.h>
 
-AMAROK_EXPORT_STORAGE( MySqlServerStorageFactory, mysqlserverstorage )
 
-MySqlServerStorageFactory::MySqlServerStorageFactory( QObject *parent, const QVariantList &args )
-    : StorageFactory( parent, args )
-{
-    m_info = KPluginInfo( "amarok_storage-mysqlserverstorage.desktop" );
-}
+MySqlServerStorageFactory::MySqlServerStorageFactory()
+    : StorageFactory()
+{}
 
 MySqlServerStorageFactory::~MySqlServerStorageFactory()
 {
@@ -42,13 +39,12 @@ MySqlServerStorageFactory::init()
 
     if( Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
     {
-        MySqlServerStorage* storage = new MySqlServerStorage();
-        bool initResult = storage->init(
-                Amarok::config( "MySQL" ).readEntry( "Host", "localhost" ),
-                Amarok::config( "MySQL" ).readEntry( "User", "amarokuser" ),
-                Amarok::config( "MySQL" ).readEntry( "Password", "password" ),
-                Amarok::config( "MySQL" ).readEntry( "Port", "3306" ).toInt(),
-                Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" ) );
+        auto storage = QSharedPointer<MySqlServerStorage>::create();
+        bool initResult = storage->init( Amarok::config( "MySQL" ).readEntry( "Host", "localhost" ),
+                                         Amarok::config( "MySQL" ).readEntry( "User", "amarokuser" ),
+                                         Amarok::config( "MySQL" ).readEntry( "Password", "password" ),
+                                         Amarok::config( "MySQL" ).readEntry( "Port", "3306" ).toInt(),
+                                         Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" ) );
 
         // handle errors during creation
         if( !storage->getLastErrors().isEmpty() )
@@ -57,8 +53,6 @@ MySqlServerStorageFactory::init()
 
         if( initResult )
             emit newStorage( storage );
-        else
-            delete storage;
     }
 }
 
@@ -78,5 +72,3 @@ MySqlServerStorageFactory::testSettings( const QString &host, const QString &use
 
     return errors;
 }
-
-#include <MySqlServerStorageFactory.moc>

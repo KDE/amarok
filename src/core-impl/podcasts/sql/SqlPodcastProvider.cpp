@@ -79,7 +79,7 @@ SqlPodcastProvider::SqlPodcastProvider()
 {
     connect( m_updateTimer, &QTimer::timeout, this, &SqlPodcastProvider::autoUpdate );
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
 
     if( !sqlStorage )
     {
@@ -165,7 +165,7 @@ void
 SqlPodcastProvider::loadPodcasts()
 {
     m_channels.clear();
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -195,7 +195,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
     if( string.isEmpty() )
         return SqlPodcastEpisodePtr();
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return SqlPodcastEpisodePtr();
 
@@ -243,7 +243,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
 bool
 SqlPodcastProvider::possiblyContainsTrack( const QUrl &url ) const
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return false;
 
@@ -460,7 +460,7 @@ SqlPodcastProvider::addPodcast( const QUrl &url )
     QUrl kurl = QUrl( url );
     debug() << "importing " << kurl.url();
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -573,7 +573,7 @@ SqlPodcastProvider::removeSubscription( Podcasts::SqlPodcastChannelPtr sqlChanne
     //Remove it when we know it's supposed to be empty.
     if( m_channels.isEmpty() )
     {
-        SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+        auto sqlStorage = StorageManager::instance()->sqlStorage();
         if( !sqlStorage )
             return;
         debug() << "Unsubscribed from last channel, cleaning out the podcastepisodes table.";
@@ -1438,7 +1438,7 @@ SqlPodcastProvider::redirected( KIO::Job *job, const QUrl &redirectedUrl )
 void
 SqlPodcastProvider::createTables() const
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -1486,7 +1486,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
     debug() << QString( "Updating Podcast tables from version %1 to version %2" )
             .arg( fromVersion ).arg( toVersion );
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 #define escape(x) sqlStorage->escape(x)

@@ -37,7 +37,7 @@
 #include <QStringList>
 #include <QTimer>
 
-MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
+MountPointManager::MountPointManager( QObject *parent, QSharedPointer<SqlStorage> storage )
     : QObject( parent )
     , m_storage( storage )
     , m_ready( false )

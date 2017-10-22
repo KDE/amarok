@@ -27,15 +27,19 @@
   */
 #define AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( libname, TYPE, PRETTY_NAME, DESCRIPTION, \
                                               ICON, ConfigWidget_T, ImporterProvider_T ) \
-    class libname ## ImporterManager : public StatSyncing::ImporterManager \
+    class libname : public StatSyncing::ImporterManager \
     { \
+        Q_OBJECT \
+        Q_INTERFACES(Plugins::PluginFactory) \
+        Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE JSON) \
+    \
     public: \
-        libname ## ImporterManager( QObject *parent, const QVariantList &args ) \
-            : StatSyncing::ImporterManager( parent, args ) \
+        libname() \
+            : StatSyncing::ImporterManager() \
         { \
         } \
     \
-        ~ libname ## ImporterManager() \
+        ~ libname() \
         { \
         } \
     \
@@ -76,7 +80,5 @@
                                                new ImporterProvider_T( config, this ) ); \
         } \
     }; \
-    \
-    AMAROK_EXPORT_IMPORTER_PLUGIN( libname, libname ## ImporterManager )
 
 #endif // STATSYNCING_SIMPLE_IMPORTER_MANAGER_H

@@ -52,15 +52,10 @@
 #include <KConfigGroup>
 
 #include <KDiskFreeSpaceInfo>
-#include <KPluginFactory>
 
-AMAROK_EXPORT_COLLECTION( UmsCollectionFactory, umscollection )
-
-UmsCollectionFactory::UmsCollectionFactory( QObject *parent, const QVariantList &args )
-    : CollectionFactory( parent, args )
-{
-    m_info = KPluginInfo( "amarok_collection-umscollection.desktop" );
-}
+UmsCollectionFactory::UmsCollectionFactory()
+    : CollectionFactory()
+{}
 
 UmsCollectionFactory::~UmsCollectionFactory()
 {

@@ -40,3 +40,5 @@ endif()
 install(TARGETS amarok_collection-mysqlcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 install(FILES amarok_collection-mysqlcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+
+kcoreaddons_desktop_to_json(amarok_collection-mysqlcollection amarok_collection-mysqlcollection.desktop)

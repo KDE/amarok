@@ -19,12 +19,12 @@
 
 #include <core/support/Amarok.h>
 
-AMAROK_EXPORT_STORAGE( MySqleStorageFactory, mysqlestorage )
+#include <KConfigGroup>
 
-MySqleStorageFactory::MySqleStorageFactory( QObject *parent, const QVariantList &args )
-    : StorageFactory( parent, args )
+
+MySqleStorageFactory::MySqleStorageFactory()
+    : StorageFactory()
 {
-    m_info = KPluginInfo( "amarok_storage-mysqlestorage.desktop" );
 }
 
 MySqleStorageFactory::~MySqleStorageFactory()
@@ -50,10 +50,8 @@ MySqleStorageFactory::init()
         storage->clearLastErrors();
 
         if( initResult )
-            emit newStorage( storage );
+            emit newStorage( QSharedPointer<SqlStorage>( storage ) );
         else
             delete storage;
     }
 }
-
-#include "MySqlEmbeddedStorageFactory.moc"

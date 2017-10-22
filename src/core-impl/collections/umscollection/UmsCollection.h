@@ -40,10 +40,12 @@ using namespace Collections;
 
 class UmsCollectionFactory : public CollectionFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-umscollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        UmsCollectionFactory( QObject *parent, const QVariantList &args );
+        UmsCollectionFactory();
         virtual ~UmsCollectionFactory();
 
         virtual void init();

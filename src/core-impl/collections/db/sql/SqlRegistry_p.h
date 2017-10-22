@@ -20,6 +20,7 @@
 #include "SqlMeta.h"
 
 #include <QList>
+#include <QSharedPointer>
 #include <QString>
 
 class SqlStorage;
@@ -52,7 +53,7 @@ class AbstractTrackTableCommitter
         QString nullDate( const QDateTime &date ) const;
         QString escape( const QString &str ) const;
 
-        SqlStorage *m_storage;
+        QSharedPointer<SqlStorage> m_storage;
 };
 
 class TrackUrlsTableCommitter: public AbstractTrackTableCommitter

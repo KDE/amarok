@@ -365,7 +365,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
 void
 SqlScanResultProcessor::deleteDeletedDirectories()
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     QList<DirectoryEntry> toCheck;
     switch( m_type )
@@ -479,7 +479,7 @@ SqlScanResultProcessor::relocateTracksToNewDirectory( int oldDirId, int newDirId
 
     MountPointManager *manager = m_collection->mountPointManager();
     SqlRegistry *reg = m_collection->registry();
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     // sanity checking, not strictly needed, but imagine new device appearing in the
     // middle of the scan, so rather prevent db corruption:
@@ -536,7 +536,7 @@ SqlScanResultProcessor::removeTrack( const UrlEntry &entry )
 QList<SqlScanResultProcessor::DirectoryEntry>
 SqlScanResultProcessor::mountedDirectories() const
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     // -- get a list of all mounted device ids
     QList<int> idList = m_collection->mountPointManager()->getMountedDeviceIds();
@@ -569,7 +569,7 @@ SqlScanResultProcessor::mountedDirectories() const
 QList<SqlScanResultProcessor::DirectoryEntry>
 SqlScanResultProcessor::deletedDirectories() const
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     QHash<int, DirectoryEntry> idToDirEntryMap; // for faster processing during filtering
     foreach( int directoryId, m_scannedDirectoryIds )
@@ -627,7 +627,7 @@ SqlScanResultProcessor::deletedDirectories() const
 void
 SqlScanResultProcessor::urlsCacheInit()
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     QString query = QString( "SELECT id, deviceid, rpath, directory, uniqueid FROM urls;");
     QStringList res = storage->query( query );

@@ -21,10 +21,9 @@
 
 using namespace StatSyncing;
 
-AMAROK_EXPORT_IMPORTER_PLUGIN( amarok, AmarokManager )
 
-AmarokManager::AmarokManager( QObject *parent, const QVariantList &args )
-    : ImporterManager( parent, args )
+AmarokManager::AmarokManager()
+    : ImporterManager()
 {
 }
 
@@ -73,5 +72,3 @@ AmarokManager::newInstance( const QVariantMap &config )
 {
     return ProviderPtr( new AmarokProvider( config, this ) );
 }
-
-#include "AmarokManager.moc"

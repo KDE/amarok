@@ -28,10 +28,12 @@
 
 class JamendoServiceFactory : public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_jamendo.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        JamendoServiceFactory( QObject *parent, const QVariantList &args );
+        JamendoServiceFactory();
         virtual ~JamendoServiceFactory() {}
 
         virtual void init();

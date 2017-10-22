@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QSharedPointer>
 #include <QStringList>
 
 namespace Plugins {
@@ -64,7 +65,7 @@ class AMAROK_EXPORT StorageManager : public QObject
                     to an internal dummy SqlStorage if that cannot be found.
                     It never returns a null pointer.
         */
-        SqlStorage* sqlStorage() const;
+        QSharedPointer<SqlStorage> sqlStorage() const;
 
         /**
          * Set the list of current factories
@@ -93,7 +94,7 @@ class AMAROK_EXPORT StorageManager : public QObject
          *  StorageManager will take ownership of the pointer and free it
          *  after all other plugins are done.
          */
-        void slotNewStorage( SqlStorage* newStorage );
+        void slotNewStorage( QSharedPointer<SqlStorage> newStorage );
 
         /** Will be called whenever a factory emits a newError signal.
          *

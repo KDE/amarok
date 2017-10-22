@@ -34,7 +34,7 @@ namespace StatSyncing
 {
 
 class ImporterProvider;
-typedef QExplicitlySharedDataPointer<ImporterProvider> ImporterProviderPtr;
+typedef QSharedPointer<ImporterProvider> ImporterProviderPtr;
 typedef QMap<QString, ProviderPtr> ProviderPtrMap;
 
 /**
@@ -53,7 +53,7 @@ public:
     /**
      * Constructor. Sets the Plugins::PluginFactory m_type variable to type Importer
      */
-    ImporterManager( QObject *parent, const QVariantList &args );
+    ImporterManager();
 
     /**
      * Destructor.

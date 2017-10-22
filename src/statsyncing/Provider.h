@@ -22,7 +22,6 @@
 #include "support/QSharedDataPointerMisc.h" // operator<() for ProviderPtr
 
 #include <QIcon>
-
 #include <QMap>
 #include <QSet>
 #include <QString>
@@ -57,7 +56,7 @@ namespace StatSyncing
      * Providers are memory-managed as explicitly shared data, always use ProviderPtr
      * to stora a reference to Provider.
      */
-    class AMAROK_EXPORT Provider : public QObject, public QSharedData
+    class AMAROK_EXPORT Provider : public QObject
     {
         Q_OBJECT
 
@@ -176,7 +175,7 @@ namespace StatSyncing
             void updated();
     };
 
-    typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
+    typedef QSharedPointer<Provider> ProviderPtr;
     typedef QList<ProviderPtr> ProviderPtrList;
     typedef QSet<ProviderPtr> ProviderPtrSet;
 

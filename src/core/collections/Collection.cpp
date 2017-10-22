@@ -19,8 +19,8 @@
 #include "core/collections/CollectionLocation.h"
 #include "core/meta/Meta.h"
 
-Collections::CollectionFactory::CollectionFactory( QObject *parent, const QVariantList &args )
-    : Plugins::PluginFactory( parent, args )
+Collections::CollectionFactory::CollectionFactory()
+    : Plugins::PluginFactory()
 {
 }
 

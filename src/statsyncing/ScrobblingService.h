@@ -22,6 +22,7 @@
 
 #include <QDateTime>
 #include <QMetaType>
+#include <QSharedPointer>
 
 template<class T> class KSharedPtr;
 namespace Meta {
@@ -40,7 +41,7 @@ namespace StatSyncing
      */
     // virtual inheritance to fight dreaded diamond problem in last.fm class
     // http://www.parashift.com/c++-faq-lite/mi-diamond.html
-    class AMAROK_EXPORT ScrobblingService : public virtual QSharedData
+    class AMAROK_EXPORT ScrobblingService
     {
         public:
             virtual ~ScrobblingService();
@@ -87,7 +88,7 @@ namespace StatSyncing
             virtual void updateNowPlaying( const Meta::TrackPtr &track ) = 0;
     };
 
-    typedef QExplicitlySharedDataPointer<ScrobblingService> ScrobblingServicePtr;
+    typedef QSharedPointer<ScrobblingService> ScrobblingServicePtr;
 }
 
 Q_DECLARE_METATYPE( StatSyncing::ScrobblingServicePtr )

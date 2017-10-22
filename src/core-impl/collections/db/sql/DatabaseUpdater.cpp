@@ -155,7 +155,7 @@ DatabaseUpdater::upgradeVersion2to3()
 {
     DEBUG_BLOCK;
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
     storage->query( "DROP TABLE devices;" );
 
     QString create = "CREATE TABLE devices "
@@ -176,7 +176,7 @@ DatabaseUpdater::upgradeVersion2to3()
 void
 DatabaseUpdater::upgradeVersion3to4()
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     storage->query( "CREATE TABLE statistics_permanent "
                          "(url " + storage->exactTextColumnType() +
@@ -204,7 +204,7 @@ DatabaseUpdater::upgradeVersion3to4()
 void
 DatabaseUpdater::upgradeVersion4to5()
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     //first the database
     storage->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" );
@@ -328,7 +328,7 @@ DatabaseUpdater::upgradeVersion5to6()
 {
     DEBUG_BLOCK
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     //first, drop tables that can easily be recreated by doing an update
     QStringList dropTables;
@@ -384,7 +384,7 @@ DatabaseUpdater::upgradeVersion6to7()
 {
     DEBUG_BLOCK
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     typedef QPair<QString, int> vcpair;
     QMultiMap<QString, vcpair> columns;
@@ -410,7 +410,7 @@ DatabaseUpdater::upgradeVersion7to8()
 {
     DEBUG_BLOCK
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     QHash< int, int > trackLengthHash;
 
@@ -443,7 +443,7 @@ DatabaseUpdater::upgradeVersion9to10()
 {
     DEBUG_BLOCK
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     //first the database
     storage->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" );
@@ -598,7 +598,7 @@ void
 DatabaseUpdater::upgradeVersion13to14()
 {
     DEBUG_BLOCK
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     /* Following commands transition lyrics table from text-based urls (in fact just rpath
      * parts) to references to urls table. */
@@ -638,7 +638,7 @@ DatabaseUpdater::upgradeVersion14to15()
      * Amarok 2.6-git.
      */
     DEBUG_BLOCK
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     // zero length = TEXT datatype
     typedef QPair<QString, int> vcpair;
@@ -726,7 +726,7 @@ DatabaseUpdater::checkTables( bool full )
 {
     DEBUG_BLOCK
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     QStringList res = storage->query( "SHOW TABLES" );
     if( res.count() > 0 )
@@ -742,7 +742,7 @@ DatabaseUpdater::createTables() const
 {
     DEBUG_BLOCK
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     // see docs/database/amarokTables.svg for documentation about database layout
     {
@@ -954,7 +954,7 @@ DatabaseUpdater::createTables() const
 int
 DatabaseUpdater::adminValue( const QString &key ) const
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     QStringList columns = storage->query(
             QString( "SELECT column_name FROM INFORMATION_SCHEMA.columns "
@@ -974,7 +974,7 @@ DatabaseUpdater::adminValue( const QString &key ) const
 void
 DatabaseUpdater::deleteAllRedundant( const QString &type )
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     const QString tablename = type + 's';
     if( type == "artist" )
@@ -990,7 +990,7 @@ DatabaseUpdater::deleteAllRedundant( const QString &type )
 void
 DatabaseUpdater::deleteOrphanedByDirectory( const QString &table )
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
     QString query( "DELETE FROM %1 WHERE directory NOT IN ( SELECT id FROM directories )" );
     storage->query( query.arg( table ) );
 }
@@ -998,7 +998,7 @@ DatabaseUpdater::deleteOrphanedByDirectory( const QString &table )
 void
 DatabaseUpdater::deleteOrphanedByUrl( const QString &table )
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
     QString query( "DELETE FROM %1 WHERE url NOT IN ( SELECT id FROM urls )" );
     storage->query( query.arg( table ) );
 }
@@ -1006,7 +1006,7 @@ DatabaseUpdater::deleteOrphanedByUrl( const QString &table )
 void
 DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     QString select = QString( "SELECT urls.id FROM urls LEFT JOIN directories ON urls.directory = directories.id "
                               "WHERE directories.deviceid = %1 AND directories.dir = '%2';" )
@@ -1032,7 +1032,7 @@ DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
 void
 DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bool forceDebug )
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     if( !forceDebug && !m_debugDatabaseContent )
         return;

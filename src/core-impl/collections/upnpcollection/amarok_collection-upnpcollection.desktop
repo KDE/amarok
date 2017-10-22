@@ -116,9 +116,8 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Nikhil Marathe
 X-KDE-Amarok-email=nsm.nikhil@gmail.com
-X-KDE-Amarok-framework-version=72
+X-KDE-Amarok-framework-version=73
 X-KDE-Amarok-name=upnp-collection
-X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
 

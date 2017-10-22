@@ -102,7 +102,7 @@ SqlPlaylist::saveToDb( bool tracks )
     if( m_parent )
         parentId = m_parent->id();
 
-    SqlStorage *sql = StorageManager::instance()->sqlStorage();
+    auto sql = StorageManager::instance()->sqlStorage();
 
     //figure out if we have a urlId and if this id is already in the db, if so, update it instead of creating a new one.
     if( !m_urlId.isEmpty() )
@@ -173,7 +173,7 @@ void
 SqlPlaylist::saveTracks()
 {
     int trackNum = 1;
-    SqlStorage *sql = StorageManager::instance()->sqlStorage();
+    auto sql = StorageManager::instance()->sqlStorage();
 
     foreach( Meta::TrackPtr trackPtr, m_tracks )
     {

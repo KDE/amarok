@@ -17,6 +17,7 @@
 #ifndef TESTSQLTRACK_H
 #define TESTSQLTRACK_H
 
+#include <QSharedPointer>
 #include <QtTest>
 
 #include <KTempDir>
@@ -65,7 +66,7 @@ private:
     void getAllValues( Meta::SqlTrack *track );
 
     Collections::SqlCollection *m_collection;
-    MySqlEmbeddedStorage *m_storage;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
     KTempDir *m_tmpDir;
 };
 

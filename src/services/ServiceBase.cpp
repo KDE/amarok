@@ -32,8 +32,8 @@
 #include <QLabel>
 
 
-ServiceFactory::ServiceFactory( QObject *parent, const QVariantList &args )
-    : Plugins::PluginFactory( parent, args )
+ServiceFactory::ServiceFactory()
+    : Plugins::PluginFactory()
 {
     CollectionManager::instance()->addTrackProvider( this );
     connect( this, SIGNAL(newService(ServiceBase*)), SLOT(slotNewService(ServiceBase*)) );

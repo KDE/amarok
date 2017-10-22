@@ -24,6 +24,7 @@
 #include <QWeakPointer>
 #include <QDateTime>
 #include <QMap>
+
 #include <KLocalizedString>
 
 class QTimer;
@@ -34,11 +35,11 @@ namespace StatSyncing
     class CreateProviderDialog;
     class Process;
     class Provider;
-    typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
+    typedef QSharedPointer<Provider> ProviderPtr;
     typedef QList<ProviderPtr> ProviderPtrList;
     class ProviderFactory;
     class ScrobblingService;
-    typedef QExplicitlySharedDataPointer<ScrobblingService> ScrobblingServicePtr;
+    typedef QSharedPointer<ScrobblingService> ScrobblingServicePtr;
 
     /**
      * A singleton class that controls statistics synchronization and related tasks.

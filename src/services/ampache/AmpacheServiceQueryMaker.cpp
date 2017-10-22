@@ -383,7 +383,7 @@ AmpacheServiceQueryMaker::artistDownloadComplete( const QUrl &url, QByteArray da
     {
         warning() << "Error getting Artist List" << domError.text();
         AmpacheService *parentService = dynamic_cast< AmpacheService * >( d->collection->service() );
-        if( parentService == 0 )
+        if( !parentService )
             return;
         else
             parentService->reauthenticate();

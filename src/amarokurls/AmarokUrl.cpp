@@ -143,7 +143,7 @@ bool AmarokUrl::saveToDb()
 
     const int parentId = m_parent ? m_parent->id() : -1;
 
-    SqlStorage * sql =  StorageManager::instance()->sqlStorage();
+    auto sql =  StorageManager::instance()->sqlStorage();
 
     if( m_id != -1 )
     {

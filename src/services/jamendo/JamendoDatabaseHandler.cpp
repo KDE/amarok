@@ -34,7 +34,7 @@ void
 JamendoDatabaseHandler::createDatabase( )
 {
     //Get database instance
-    SqlStorage *db = StorageManager::instance()->sqlStorage();
+    auto db = StorageManager::instance()->sqlStorage();
 
 
     QString autoIncrement = "AUTO_INCREMENT";
@@ -114,7 +114,7 @@ JamendoDatabaseHandler::destroyDatabase( )
 {
     debug() << "Destroy Jamendo database ";
 
-    SqlStorage *db = StorageManager::instance()->sqlStorage();
+    auto db = StorageManager::instance()->sqlStorage();
 
     QStringList  result = db->query( "DROP INDEX jamendo_tracks_id ON jamendo_tracks;");
     result = db->query( "DROP INDEX jamendo_tracks_artist_id ON jamendo_tracks;");
@@ -143,7 +143,7 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
     JamendoTrack * jTrack = static_cast<JamendoTrack *> ( track );
     QString numberString;
 
-    SqlStorage *db = StorageManager::instance()->sqlStorage();
+    auto db = StorageManager::instance()->sqlStorage();
     QString queryString = "INSERT INTO jamendo_tracks ( id, name, track_number, length, "
                           "album_id, artist_id, preview_url ) VALUES ( "
                           + QString::number( jTrack->id() ) + ", '"
@@ -180,7 +180,7 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
     JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album );
 
     QString queryString, popularity;
-    SqlStorage *sqlDb = StorageManager::instance()->sqlStorage();
+    auto sqlDb = StorageManager::instance()->sqlStorage();
 
     popularity = QString::number( jAlbum->popularity() );
     if( popularity == "nan" ) // sometimes this seems to happen, I don't know why
@@ -211,7 +211,7 @@ JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
 {
     JamendoArtist * jArtist = static_cast<JamendoArtist *> ( artist );
     QString queryString;
-    SqlStorage *sqlDb = StorageManager::instance()->sqlStorage();
+    auto sqlDb = StorageManager::instance()->sqlStorage();
     queryString = "INSERT INTO jamendo_artists ( id, name, description, "
                   "country, photo_url, jamendo_url, home_url "
                   ") VALUES ( "
@@ -236,7 +236,7 @@ JamendoDatabaseHandler::insertArtist( ServiceArtist *artist )
 int JamendoDatabaseHandler::insertGenre(ServiceGenre * genre)
 {
     QString queryString;
-    SqlStorage *sqlDb = StorageManager::instance()->sqlStorage();
+    auto sqlDb = StorageManager::instance()->sqlStorage();
     queryString = "INSERT INTO jamendo_genre ( album_id, name "
                   ") VALUES ( "
                   + QString::number ( genre->albumId() ) + ", '"
@@ -268,7 +268,7 @@ JamendoDatabaseHandler::trimGenres( int minCount )
 {
     QString query = QString("delete from jamendo_genre where name IN ( SELECT name from jamendo_genre GROUP BY jamendo_genre.name HAVING COUNT ( jamendo_genre.name ) < %1 );").arg( minCount );
 
-    SqlStorage *sqlDb = StorageManager::instance()->sqlStorage();
+    auto sqlDb = StorageManager::instance()->sqlStorage();
     sqlDb->query( query );
 
     //also trim genre names that have only 1 or 2 chars

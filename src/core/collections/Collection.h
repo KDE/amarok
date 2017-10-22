@@ -23,6 +23,7 @@
 #include "core/support/PluginFactory.h"
 
 #include <KSharedPtr>
+
 #include <QObject>
 
 namespace Meta {
@@ -49,7 +50,7 @@ namespace Collections
         Q_OBJECT
 
         public:
-            CollectionFactory( QObject *parent, const QVariantList &args );
+            CollectionFactory();
             virtual ~CollectionFactory();
 
         Q_SIGNALS:
@@ -178,9 +179,5 @@ namespace Collections
 
 Q_DECLARE_METATYPE( Collections::Collection* )
 Q_DECLARE_METATYPE( Collections::CollectionList )
-
-#define AMAROK_EXPORT_COLLECTION( classname, libname ) \
-    K_PLUGIN_FACTORY( factory, registerPlugin<classname>(); ) \
-            K_EXPORT_PLUGIN( factory( "amarok_collection-" #libname ) )
 
 #endif /* AMAROK_COLLECTION_H */

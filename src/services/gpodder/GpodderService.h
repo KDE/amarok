@@ -32,6 +32,8 @@ namespace The { GpodderService *gpodderService(); }
 
 class GpodderServiceFactory : public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_gpodder.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
 public:

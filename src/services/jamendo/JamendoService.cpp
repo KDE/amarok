@@ -41,14 +41,14 @@
 #include <QToolBar>
 #include <QToolButton>
 
-#include <typeinfo>
+#include <KShell>
+#include <ThreadWeaver/ThreadWeaver>
 
 using namespace Meta;
 
-AMAROK_EXPORT_SERVICE_PLUGIN( jamendo, JamendoServiceFactory )
 
-JamendoServiceFactory::JamendoServiceFactory( QObject *parent, const QVariantList &args )
-    : ServiceFactory( parent, args )
+JamendoServiceFactory::JamendoServiceFactory()
+    : ServiceFactory()
 {
     KPluginInfo pluginInfo(  "amarok_service_jamendo.desktop" );
     pluginInfo.setConfig( config() );
@@ -292,6 +292,3 @@ JamendoService::download() // SLOT
     CollectionTreeView *treeView = static_cast<CollectionTreeView*>( view() );
     treeView->copySelectedToLocalCollection();
 }
-
-
-

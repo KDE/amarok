@@ -37,10 +37,12 @@ class QNetworkReply;
 
 class LastFmServiceFactory : public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_lastfm.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
 public:
-    LastFmServiceFactory( QObject *parent, const QVariantList &args );
+    LastFmServiceFactory();
 
     virtual void init();
     virtual QString name();
@@ -79,7 +81,7 @@ private:
     void playLastFmStation( const QUrl &url );
     void updateProfileInfo();
 
-    QExplicitlySharedDataPointer<ScrobblerAdapter> m_scrobbler;
+    QSharedPointer<ScrobblerAdapter> m_scrobbler;
     StatSyncing::ProviderPtr m_synchronizationAdapter;
     Collections::LastFmServiceCollection *m_collection;
     QList<Dynamic::AbstractBiasFactory *> m_biasFactories;

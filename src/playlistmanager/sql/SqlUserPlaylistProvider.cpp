@@ -189,7 +189,7 @@ SqlUserPlaylistProvider::createTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
     {
         debug() << "No SQL Storage available!";
@@ -230,7 +230,7 @@ SqlUserPlaylistProvider::deleteTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
 
     if( !sqlStorage )
     {
@@ -254,7 +254,7 @@ SqlUserPlaylistProvider::checkTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     QStringList values;
 
     //Prevents amarok from crashing on bad DB
@@ -300,7 +300,7 @@ void
 SqlUserPlaylistProvider::upgradeVersion2to3()
 {
     DEBUG_BLOCK
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     sqlStorage->query( "ALTER TABLE playlists DROP COLUMN description" );
 }
 

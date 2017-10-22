@@ -37,6 +37,7 @@
 #include <QTimer>
 #include <QReadWriteLock>
 
+#include <KConfigGroup>
 #include <KGlobal>
 
 typedef QPair<Collections::Collection*, CollectionManager::CollectionStatus> CollectionPair;
@@ -100,7 +101,9 @@ CollectionManager::~CollectionManager()
     {
         QWriteLocker locker( &d->lock );
 
-        d->collections.clear();
+        while (!d->collections.isEmpty() )
+            delete d->collections.takeFirst().first;
+
         d->trackProviders.clear();
         delete d->timecodeTrackProvider;
         delete d->fileTrackProvider;
@@ -180,7 +183,7 @@ CollectionManager::startFullScan()
 
     foreach( const CollectionPair &pair, d->collections )
     {
-        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>() );
         if( csc )
             csc->startFullScan();
     }
@@ -193,7 +196,7 @@ CollectionManager::startIncrementalScan( const QString &directory )
 
     foreach( const CollectionPair &pair, d->collections )
     {
-        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>() );
         if( csc )
             csc->startIncrementalScan( directory );
     }
@@ -206,7 +209,7 @@ CollectionManager::stopScan()
 
     foreach( const CollectionPair &pair, d->collections )
     {
-        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>() );
         if( csc )
             csc->stopScan();
     }

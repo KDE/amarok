@@ -31,11 +31,13 @@ class OpmlOutline;
 
 class OpmlDirectoryServiceFactory: public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_opmldirectory.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        OpmlDirectoryServiceFactory( QObject *parent, const QVariantList &args );
-        virtual ~OpmlDirectoryServiceFactory() {}
+        OpmlDirectoryServiceFactory();
+        virtual ~OpmlDirectoryServiceFactory();
 
         virtual void init();
         virtual QString name();

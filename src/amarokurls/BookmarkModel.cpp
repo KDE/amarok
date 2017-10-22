@@ -424,7 +424,7 @@ void BookmarkModel::createTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -450,7 +450,7 @@ void BookmarkModel::deleteTables()
 
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -464,7 +464,7 @@ void BookmarkModel::checkTables()
 
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -687,7 +687,7 @@ BookmarkModel::renameBookmarkRecursively( BookmarkGroupPtr group, const QString&
 
 void BookmarkModel::upgradeTables( int from )
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
     

@@ -24,6 +24,7 @@
 #include <QMap>
 #include <QMutex>
 #include <QObject>
+#include <QSharedPointer>
 #include <QUrl>
 
 class DeviceHandler;
@@ -66,11 +67,11 @@ public:
      * @param volume the Volume for which a DeviceHandler is required
      * @return a DeviceHandler or 0 if the factory cannot handle the Medium
      */
-    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &udi, SqlStorage *s ) const = 0;
+    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &udi, QSharedPointer<SqlStorage> s ) const = 0;
 
     virtual bool canCreateFromConfig() const = 0;
 
-    virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const = 0;
+    virtual DeviceHandler* createHandler( KSharedConfigPtr c, QSharedPointer<SqlStorage> s ) const = 0;
 
     /**
      * returns the type of the DeviceHandler. Should be the same as the value used in
@@ -141,7 +142,7 @@ class AMAROK_SQLCOLLECTION_EXPORT MountPointManager : public QObject
     Q_OBJECT
 
 public:
-    MountPointManager( QObject *parent, SqlStorage *storage );
+    MountPointManager( QObject *parent, QSharedPointer<SqlStorage> storage );
     ~MountPointManager();
 
     /**
@@ -206,7 +207,7 @@ private:
      */
     bool isMounted ( const int deviceId ) const;
 
-    SqlStorage *m_storage;
+    QSharedPointer<SqlStorage> m_storage;
     /**
      * maps a device id to a mount point. does only work for mountable filesystems and needs to be
      * changed for the real Dynamic Collection implementation.
@@ -224,9 +225,5 @@ private Q_SLOTS:
     void slotDeviceRemoved( const QString &udi );
 
 };
-
-#define AMAROK_EXPORT_DEVICE_PLUGIN(libname, classname) \
-K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
-K_EXPORT_PLUGIN(factory("amarok_device_" #libname))\
 
 #endif

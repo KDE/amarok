@@ -121,7 +121,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChann
     : Podcasts::PodcastEpisode( Podcasts::PodcastChannelPtr::staticCast( sqlChannel ) )
     , m_channel( sqlChannel )
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
     m_dbId = (*(iter++)).toInt();
     m_url = QUrl( *(iter++) );
@@ -437,7 +437,7 @@ SqlPodcastEpisode::writeTagsToFile()
 void
 SqlPodcastEpisode::updateInDb()
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
 
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
@@ -508,7 +508,7 @@ SqlPodcastEpisode::updateInDb()
 void
 SqlPodcastEpisode::deleteFromDb()
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     sqlStorage->query(
         QString( "DELETE FROM podcastepisodes WHERE id = %1;" ).arg( dbId() ) );
 }
@@ -534,7 +534,7 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     , m_trackCacheIsValid( false )
     , m_provider( provider )
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
     m_dbId = (*(iter++)).toInt();
     m_url = QUrl( *(iter++) );
@@ -777,7 +777,7 @@ SqlPodcastChannel::applyPurge()
 void
 SqlPodcastChannel::updateInDb()
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
 
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
@@ -853,7 +853,7 @@ SqlPodcastChannel::updateInDb()
 void
 SqlPodcastChannel::deleteFromDb()
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     foreach( SqlPodcastEpisodePtr sqlEpisode, m_episodes )
     {
        sqlEpisode->deleteFromDb();
@@ -870,7 +870,7 @@ SqlPodcastChannel::loadEpisodes()
 {
     m_episodes.clear();
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
 
     //If purge is enabled we must limit the number of results
     QString command;

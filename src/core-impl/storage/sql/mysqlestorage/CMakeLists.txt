@@ -39,3 +39,5 @@ endif()
 install(TARGETS amarok_storage-mysqlestorage DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 install(FILES amarok_storage-mysqlestorage.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+
+kcoreaddons_desktop_to_json(amarok_storage-mysqlestorage amarok_storage-mysqlestorage.desktop)

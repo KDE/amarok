@@ -20,8 +20,8 @@
 
 using namespace StatSyncing;
 
-ProviderFactory::ProviderFactory( QObject *parent, const QVariantList &args )
-    : Plugins::PluginFactory( parent, args )
+ProviderFactory::ProviderFactory()
+    : Plugins::PluginFactory()
 {
 }
 

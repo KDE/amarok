@@ -26,10 +26,12 @@ class AmpacheAccountLogin;
 
 class AmpacheServiceFactory: public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_ampache.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        AmpacheServiceFactory( QObject *parent, const QVariantList &args );
+        AmpacheServiceFactory();
         virtual ~AmpacheServiceFactory() {}
 
         virtual bool possiblyContainsTrack( const QUrl &url ) const;

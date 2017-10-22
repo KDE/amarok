@@ -19,14 +19,12 @@
 #include "AddServerDialog.h"
 #include "ui_AmpacheConfigWidget.h"
 
-#include <kgenericfactory.h>
-
 #include <QTableWidget>
 #include <QHeaderView>
 
-K_PLUGIN_FACTORY( AmpacheSettingsFactory, registerPlugin<AmpacheSettings>(); )
-K_EXPORT_PLUGIN( AmpacheSettingsFactory( "kcm_amarok_ampache" ) )
+#include <KPluginFactory>
 
+K_PLUGIN_FACTORY_WITH_JSON( ampachesettings, "amarok_service_ampache_config.json", registerPlugin<AmpacheSettings>(); )
 
 AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
     : KCModule( AmpacheSettingsFactory::componentData(), parent, args )

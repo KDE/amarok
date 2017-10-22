@@ -44,9 +44,12 @@ class DaapCollection;
 
 class DaapCollectionFactory : public Collections::CollectionFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-daapcollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
+
     public:
-        DaapCollectionFactory( QObject *parent, const QVariantList &args );
+        DaapCollectionFactory();
         virtual ~DaapCollectionFactory();
 
         virtual void init();

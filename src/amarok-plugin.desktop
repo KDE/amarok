@@ -60,9 +60,6 @@ Comment[x-test]=xxPlugin for Amarokxx
 Comment[zh_CN]=Amarok 插件
 Comment[zh_TW]=Amarok 的外掛程式
 
-# Type of plugin, e.g. "engine".
-[PropertyDef::X-KDE-Amarok-plugintype]
-Type=QString
 
 # Internal name for identification, not translated.
 [PropertyDef::X-KDE-Amarok-name]
@@ -76,7 +73,7 @@ Type=QStringList
 [PropertyDef::X-KDE-Amarok-email]
 Type=QStringList
 
-# Priority of the plugin. When KTrader returns multiple offers, the one with the highest rank is chosen.
+# Priority of the plugin. When KPluginLoader returns multiple offers, the one with the highest rank is chosen.
 # Range: 0 (disabled) - 255 (highest)
 [PropertyDef::X-KDE-Amarok-rank]
 Type=int

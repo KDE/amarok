@@ -42,10 +42,12 @@ class MagnatuneNeedUpdateWidget;
 
 class MagnatuneServiceFactory : public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_magnatunestore.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        MagnatuneServiceFactory( QObject *parent, const QVariantList &args );
+        MagnatuneServiceFactory();
         virtual ~MagnatuneServiceFactory() {}
 
         virtual void init();

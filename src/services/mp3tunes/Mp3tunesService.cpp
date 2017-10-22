@@ -31,17 +31,10 @@
 #include <ThreadWeaver/ThreadWeaver>
 #include <ThreadWeaver/Queue>
 
-#include <QRegExp>
 
-AMAROK_EXPORT_SERVICE_PLUGIN( mp3tunes, Mp3tunesServiceFactory )
-
-Mp3tunesServiceFactory::Mp3tunesServiceFactory( QObject *parent, const QVariantList &args )
-    : ServiceFactory( parent, args )
-{
-    KPluginInfo pluginInfo(  "amarok_service_mp3tunes.desktop" );
-    pluginInfo.setConfig( config() );
-    m_info = pluginInfo;
-}
+Mp3tunesServiceFactory::Mp3tunesServiceFactory()
+    : ServiceFactory()
+{}
 
 void Mp3tunesServiceFactory::init()
 {
@@ -377,5 +370,3 @@ void Mp3tunesService::harmonyDownloadPending( const QVariantMap &download )
     DEBUG_BLOCK
     debug() << "Got message about ready: " << download["trackTitle"].toString() << " by " << download["artistName"].toString() << " on " << download["albumTitle"].toString();
 }
-
-

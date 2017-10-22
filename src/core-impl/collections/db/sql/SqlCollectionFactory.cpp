@@ -24,7 +24,7 @@ Collections::SqlCollectionFactory::SqlCollectionFactory()
 }
 
 Collections::SqlCollection*
-Collections::SqlCollectionFactory::createSqlCollection( SqlStorage *storage ) const
+Collections::SqlCollectionFactory::createSqlCollection( QSharedPointer<SqlStorage> storage ) const
 {
     SqlCollection *coll = new SqlCollection( storage );
     MountPointManager *mpm = new MountPointManager( coll, storage );

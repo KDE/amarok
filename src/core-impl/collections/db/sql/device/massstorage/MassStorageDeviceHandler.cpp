@@ -125,12 +125,12 @@ MassStorageDeviceHandlerFactory::~MassStorageDeviceHandlerFactory( )
 {
 }
 
-DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( KSharedConfigPtr, SqlStorage* ) const
+DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( KSharedConfigPtr, QSharedPointer<SqlStorage> ) const
 {
     return 0;
 }
 
-DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, SqlStorage *s ) const
+DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, QSharedPointer<SqlStorage> s ) const
 {
     DEBUG_BLOCK
     if( !s )

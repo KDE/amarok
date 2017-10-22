@@ -35,15 +35,10 @@
 
 #include <KLocale>
 
-AMAROK_EXPORT_SERVICE_PLUGIN( ampache, AmpacheServiceFactory )
 
-AmpacheServiceFactory::AmpacheServiceFactory( QObject *parent, const QVariantList &args )
-    : ServiceFactory( parent, args )
-{
-    KPluginInfo pluginInfo( "amarok_service_ampache.desktop" );
-    pluginInfo.setConfig( config() );
-    m_info = pluginInfo;
-}
+AmpacheServiceFactory::AmpacheServiceFactory()
+    : ServiceFactory()
+{}
 
 void AmpacheServiceFactory::init()
 {
@@ -90,10 +85,10 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
     : ServiceBase( name,  parent )
     , m_infoParser( 0 )
     , m_collection( 0 )
-    , m_ampacheLogin(new AmpacheAccountLogin(url, username, password, this))
+    , m_ampacheLogin( new AmpacheAccountLogin( url, username, password, this ) )
 {
     DEBUG_BLOCK
-    connect(m_ampacheLogin, SIGNAL(loginSuccessful()), this, SLOT(onLoginSuccessful()));
+    connect( m_ampacheLogin, &AmpacheAccountLogin::loginSuccessful, this, &AmpacheService::onLoginSuccessful );
     setShortDescription( i18n( "Amarok frontend for your Ampache server" ) );
     setIcon( QIcon::fromTheme( "view-services-ampache-amarok" ) );
     setLongDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server. This lets you browse and play all the Ampache contents from within Amarok." ) );
@@ -141,4 +136,3 @@ AmpacheService::onLoginSuccessful()
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
     setServiceReady( true );
 }
-

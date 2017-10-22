@@ -35,9 +35,12 @@ class AudioCdCollection;
 
 class AudioCdCollectionFactory : public MediaDeviceCollectionFactory<AudioCdCollection>
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-audiocdcollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
+
 public:
-    AudioCdCollectionFactory( QObject *parent, const QVariantList &args );
+    AudioCdCollectionFactory();
     virtual ~AudioCdCollectionFactory() {};
 
 /*    virtual void init();

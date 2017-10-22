@@ -50,7 +50,7 @@ private:
 
 private:
     Collections::SqlCollection *m_collection;
-    MySqlEmbeddedStorage *m_storage;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
     KTempDir *m_tmpDir;
 };
 

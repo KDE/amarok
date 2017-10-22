@@ -17,8 +17,6 @@
 #ifndef MTPCOLLECTION_H
 #define MTPCOLLECTION_H
 
-#include <libmtp.h>
-
 #include "MtpHandler.h"
 
 #include "MediaDeviceCollection.h"
@@ -36,9 +34,12 @@ class MtpCollection;
 
 class MtpCollectionFactory : public MediaDeviceCollectionFactory<MtpCollection>
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-mtpcollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
+
     public:
-        MtpCollectionFactory( QObject *parent, const QVariantList &args );
+        MtpCollectionFactory();
         virtual ~MtpCollectionFactory();
 
 };
@@ -46,6 +47,7 @@ class MtpCollectionFactory : public MediaDeviceCollectionFactory<MtpCollection>
 class MtpCollection : public MediaDeviceCollection
 {
     Q_OBJECT
+
 	public:
 
     MtpCollection( MediaDeviceInfo* );

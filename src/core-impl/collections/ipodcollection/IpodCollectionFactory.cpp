@@ -27,15 +27,9 @@
 
 #include <QDir>
 
-#include <KPluginFactory>
-
-K_PLUGIN_FACTORY_WITH_JSON( ipodcollection, "amarok_collection-ipodcollection.json", registerPlugin<IpodCollectionFactory>(); )
-
-IpodCollectionFactory::IpodCollectionFactory( QObject *parent, const QVariantList &args )
-    : CollectionFactory( parent, args )
-{
-    m_info = KPluginInfo( "amarok_collection-ipodcollection.desktop", );
-}
+IpodCollectionFactory::IpodCollectionFactory()
+    : CollectionFactory()
+{}
 
 IpodCollectionFactory::~IpodCollectionFactory()
 {
@@ -272,4 +266,3 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
     else
         collection->deleteLater();
 }
-

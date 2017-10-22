@@ -36,10 +36,8 @@
 #include <KPasswordDialog>
 #include <KStandardDirs>
 #include <QUrl>
-
 #include <QHostInfo>
 
-AMAROK_EXPORT_SERVICE_PLUGIN( gpodder, GpodderServiceFactory )
 
 GpodderServiceFactory::GpodderServiceFactory( QObject *parent, const QVariantList &args )
     : ServiceFactory( parent, args )

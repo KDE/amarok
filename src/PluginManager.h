@@ -20,14 +20,15 @@
 #include "amarok_export.h"
 #include "core/support/PluginFactory.h"
 
-class ServicePluginManager;
+#include <KPluginInfo>
+#include <KPluginMetaData>
+
 
 namespace Plugins {
 
 class AMAROK_EXPORT PluginManager : public QObject
 {
     Q_OBJECT
-    Q_ENUMS( Type )
     Q_PROPERTY( int pluginFrameworkVersion READ pluginFrameworkVersion )
 
     public:
@@ -39,9 +40,10 @@ class AMAROK_EXPORT PluginManager : public QObject
         {
             Collection = 1, ///< the plugin implements a CollectionFactory
             Service = 2,    ///< this is a service plugin
-            Importer = 3,   ///< this plugin implements importer functionity
-            Storage = 4     ///< the plugin implements a StorageFactory
+            Importer = 3,   ///< this plugin implements importer functionality
+            Storage = 4,    ///< the plugin implements a StorageFactory
         };
+        Q_ENUM( Type )
 
         ~PluginManager();
 
@@ -62,9 +64,6 @@ class AMAROK_EXPORT PluginManager : public QObject
          */
         void init();
 
-        /** Returns plugin factories for the given plugin type */
-        KPluginInfo::List plugins( Type type ) const;
-
         /** Returns enabled plugin factories for the given plugin type.
          *
          *  This function will only return enable factories.
@@ -73,6 +72,10 @@ class AMAROK_EXPORT PluginManager : public QObject
          *  and the pointers will only be valid while the PluginManager exists.
          */
         QList<PluginFactory*> factories( Type type ) const;
+
+        KPluginInfo::List plugins( Type type ) const;
+
+        QList<KPluginMetaData> enabledPlugins (Type type ) const;
 
         /** Check if any services were disabled and needs to be removed, or any
          *  that are hidden needs to be enabled
@@ -84,31 +87,24 @@ class AMAROK_EXPORT PluginManager : public QObject
 
     private:
         /** Tries finding Amarok plugins */
-        KPluginInfo::List findPlugins();
-
-        /** Does additional effort to find plugins.
-         *
-         *  Starts kbuildsycoca4 thingie
-         *  Stops Amarok if it still can't find plugins
-         */
-        void handleNoPluginsFound();
+        QVector<KPluginMetaData> findPlugins();
 
         /** Returns true if the plugin is enabled.
-         *  This function will theck the default enabled state,
+         *  This function will check the default enabled state,
          *  the Amarok configuration state and the primary collection.
          *
          *  @returns true if the plugin is enabled.
          */
-        bool isPluginEnabled( const KPluginInfo &factory ) const;
+        bool isPluginEnabled( const KPluginMetaData &plugin ) const;
 
         /** Creates a factories for an info */
-        PluginFactory* createFactory( const KPluginInfo &plugin );
+        PluginFactory* createFactory( const KPluginMetaData &pluginInfo );
 
         /// contains the names of all KPluginInfos that have factories created
-        QHash<QString, PluginFactory*> m_factoryCreated;
+        QVector<KPluginMetaData> m_plugins;
+        QHash<Type, QList<KPluginMetaData> > m_pluginsByType;
         QHash<Type, QList<PluginFactory*> > m_factoriesByType;
-        KPluginInfo::List m_pluginInfos;
-        QHash<Type, KPluginInfo::List > m_pluginInfosByType;
+        QHash<QString, PluginFactory*> m_factoryCreated;
 
         static const int s_pluginFrameworkVersion;
         static PluginManager *s_instance;

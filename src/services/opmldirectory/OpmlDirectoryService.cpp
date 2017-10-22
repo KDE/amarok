@@ -37,15 +37,13 @@
 
 using namespace Meta;
 
-AMAROK_EXPORT_SERVICE_PLUGIN( opmldirectory, OpmlDirectoryServiceFactory )
 
-OpmlDirectoryServiceFactory::OpmlDirectoryServiceFactory( QObject *parent, const QVariantList &args )
-    : ServiceFactory( parent, args )
-{
-    KPluginInfo pluginInfo( "amarok_service_opmldirectory.desktop" );
-    pluginInfo.setConfig( config() );
-    m_info = pluginInfo;
-}
+OpmlDirectoryServiceFactory::OpmlDirectoryServiceFactory()
+    : ServiceFactory()
+{}
+
+OpmlDirectoryServiceFactory::~OpmlDirectoryServiceFactory()
+{}
 
 void OpmlDirectoryServiceFactory::init()
 {

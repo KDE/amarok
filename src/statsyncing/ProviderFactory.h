@@ -28,7 +28,7 @@
 namespace StatSyncing
 {
     class Provider;
-    typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
+    typedef QSharedPointer<Provider> ProviderPtr;
     class ProviderConfigWidget;
 
     /**
@@ -39,7 +39,7 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
-            ProviderFactory( QObject *parent, const QVariantList &args );
+            ProviderFactory();
             virtual ~ProviderFactory();
 
             /**

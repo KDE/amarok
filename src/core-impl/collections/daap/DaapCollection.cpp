@@ -32,7 +32,6 @@
 #include <QTimer>
 
 #include <KLocalizedString>
-#include <KPluginFactory>
 
 #include <DNSSD/RemoteService>
 #include <DNSSD/ServiceBase>
@@ -40,13 +39,10 @@
 
 using namespace Collections;
 
-AMAROK_EXPORT_COLLECTION( DaapCollectionFactory, daapcollection )
-
-DaapCollectionFactory::DaapCollectionFactory( QObject *parent, const QVariantList &args )
-    : Collections::CollectionFactory( parent, args )
+DaapCollectionFactory::DaapCollectionFactory()
+    : Collections::CollectionFactory()
     , m_browser( 0 )
 {
-    m_info = KPluginInfo( "amarok_collection-daapcollection.desktop" );
 }
 
 DaapCollectionFactory::~DaapCollectionFactory()
@@ -314,5 +310,3 @@ DaapCollection::parsingFailed()
     DEBUG_BLOCK
     emit remove();
 }
-
-

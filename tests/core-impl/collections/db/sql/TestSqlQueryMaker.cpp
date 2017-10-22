@@ -68,7 +68,7 @@ void
 TestSqlQueryMaker::initTestCase()
 {
     m_tmpDir = new KTempDir();
-    m_storage = new MySqlEmbeddedStorage();
+    m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
     QVERIFY( m_storage->init( m_tmpDir->name() ) );
     m_collection = new Collections::SqlCollection( m_storage );
 
@@ -404,7 +404,7 @@ TestSqlQueryMaker::testAsyncComposerQuery()
     qm->run();
 
     doneSpy1.wait( 1000 );
-    
+
     QCOMPARE( resultSpy1.count(), 1 );
     QList<QVariant> args1 = resultSpy1.takeFirst();
     QVERIFY( args1.value(0).canConvert<Meta::ComposerList>() );
@@ -478,7 +478,7 @@ TestSqlQueryMaker::testAsyncGenreQuery()
     qm->run();
 
     doneSpy1.wait( 1000 );
-    
+
     QCOMPARE( resultSpy1.count(), 1 );
     QList<QVariant> args1 = resultSpy1.takeFirst();
     QVERIFY( args1.value(0).canConvert<Meta::GenreList>() );
@@ -496,7 +496,7 @@ TestSqlQueryMaker::testAsyncGenreQuery()
     qm->run();
 
     doneSpy2.wait( 1000 );
-    
+
     QCOMPARE( resultSpy2.count(), 1 );
     QList<QVariant> args2 = resultSpy2.takeFirst();
     QVERIFY( args2.value(0).canConvert<Meta::GenreList>() );
@@ -515,7 +515,7 @@ TestSqlQueryMaker::testAsyncYearQuery()
     qm->run();
 
     doneSpy1.wait( 1000 );
-    
+
     QCOMPARE( resultSpy1.count(), 1 );
     QList<QVariant> args1 = resultSpy1.takeFirst();
     QVERIFY( args1.value(0).canConvert<Meta::YearList>() );
@@ -533,7 +533,7 @@ TestSqlQueryMaker::testAsyncYearQuery()
     qm->run();
 
     doneSpy2.wait( 1000 );
-    
+
     QCOMPARE( resultSpy2.count(), 1 );
     QList<QVariant> args2 = resultSpy2.takeFirst();
     QVERIFY( args2.value(0).canConvert<Meta::YearList>() );
@@ -553,7 +553,7 @@ TestSqlQueryMaker::testAsyncCustomQuery()
     qm->run();
 
     doneSpy1.wait( 1000 );
-    
+
     QCOMPARE( resultSpy1.count(), 1 );
     QList<QVariant> args1 = resultSpy1.takeFirst();
     QVERIFY( args1.value(0).canConvert<QStringList>() );
@@ -573,7 +573,7 @@ TestSqlQueryMaker::testAsyncCustomQuery()
     qm->run();
 
     doneSpy2.wait( 1000 );
-    
+
     QCOMPARE( resultSpy2.count(), 1 );
     QList<QVariant> args2 = resultSpy2.takeFirst();
     QVERIFY( args2.value(0).canConvert<QStringList>() );

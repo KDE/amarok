@@ -29,7 +29,6 @@
 #include "core/support/Debug.h"
 
 #include <KLocalizedString>
-#include <KPluginFactory>
 
 #include <QIcon>
 #include <QObject>
@@ -38,10 +37,8 @@
 
 namespace Collections
 {
-    K_PLUGIN_FACTORY_WITH_JSON( playdarcollection, "amarok_collection-playdarcollection.json", registerPlugin<PlaydarCollectionFactory>(); )
-
-    PlaydarCollectionFactory::PlaydarCollectionFactory( QObject* parent, const QVariantList &args )
-        : CollectionFactory( parent, args )
+    PlaydarCollectionFactory::PlaydarCollectionFactory()
+        : CollectionFactory()
         , m_controller( 0 )
         , m_collectionIsManaged( false )
     {

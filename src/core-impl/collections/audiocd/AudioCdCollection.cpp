@@ -44,7 +44,6 @@
 
 #include <KConfigGroup>
 #include <KEncodingProber>
-#include <KPluginFactory>
 #include <KSharedConfig>
 #include <KUrl>
 
@@ -53,15 +52,11 @@
 
 using namespace Collections;
 
-AMAROK_EXPORT_COLLECTION( AudioCdCollectionFactory, audiocdcollection )
-
 static const QString unknownCddbId( "unknown" );
 
-AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVariantList &args )
-    : MediaDeviceCollectionFactory<AudioCdCollection>( parent, args, new AudioCdConnectionAssistant() )
-{
-    m_info = KPluginInfo( "amarok_collection-audiocdcollection.desktop" );
-}
+AudioCdCollectionFactory::AudioCdCollectionFactory()
+    : MediaDeviceCollectionFactory<AudioCdCollection>( new AudioCdConnectionAssistant() )
+{}
 
 AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
    : MediaDeviceCollection()

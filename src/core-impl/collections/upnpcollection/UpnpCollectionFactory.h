@@ -41,9 +41,12 @@ class UpnpCollectionBase;
 
 class UpnpCollectionFactory : public Collections::CollectionFactory
 {
-  Q_OBJECT
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-upnpcollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
+    Q_OBJECT
+
   public:
-    UpnpCollectionFactory( QObject *parent, const QVariantList &args );
+    UpnpCollectionFactory();
     virtual ~UpnpCollectionFactory();
 
     virtual void init();

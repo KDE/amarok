@@ -88,7 +88,7 @@ ServiceSqlCollection::trackForUrl(const QUrl &url)
 
     QString pristineUrl = url.url();
 
-    SqlStorage *sqlDb = StorageManager::instance()->sqlStorage();
+    auto sqlDb = StorageManager::instance()->sqlStorage();
 
     QString from =  prefix + "_tracks";
     from += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";

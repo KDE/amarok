@@ -52,7 +52,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
         /**
          * Constructor.
          */
-        ServiceFactory( QObject *parent, const QVariantList &args );
+        ServiceFactory();
 
         /**
          * Destructor.

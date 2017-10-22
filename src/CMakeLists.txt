@@ -880,6 +880,7 @@ target_link_libraries(amaroklib
     KF5::KIONTLM
     KF5::NewStuff
     KF5::NotifyConfig
+    KF5::Package
     KF5::Plasma
     KF5::PlasmaQuick
     KF5::TextEditor
@@ -969,7 +970,7 @@ install(PROGRAMS org.kde.amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 install(PROGRAMS org.kde.amarok_containers.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 install(FILES org.kde.amarok.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
-install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
+install(FILES amarok-plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_codecinstall.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_append.desktop DESTINATION ${SERVICES_INSTALL_DIR}/ServiceMenus)
 install(FILES amarok-play-audiocd.desktop DESTINATION ${DATA_INSTALL_DIR}/solid/actions)

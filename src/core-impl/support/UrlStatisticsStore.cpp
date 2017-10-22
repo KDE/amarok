@@ -27,7 +27,7 @@ UrlStatisticsStore::UrlStatisticsStore( Meta::Track *track, const QString &perma
 {
     if( m_permanentUrl.isEmpty() )
         m_permanentUrl = track->uidUrl();
-    SqlStorage *sql = StorageManager::instance()->sqlStorage();
+    auto sql = StorageManager::instance()->sqlStorage();
     if( !sql )
     {
         warning() << __PRETTY_FUNCTION__ << "could not get SqlStorage, aborting";
@@ -51,7 +51,7 @@ UrlStatisticsStore::UrlStatisticsStore( Meta::Track *track, const QString &perma
 void
 UrlStatisticsStore::save()
 {
-    SqlStorage *sql = StorageManager::instance()->sqlStorage();
+    auto sql = StorageManager::instance()->sqlStorage();
     if( !sql )
     {
         warning() << __PRETTY_FUNCTION__ << "could not get SqlStorage, aborting";

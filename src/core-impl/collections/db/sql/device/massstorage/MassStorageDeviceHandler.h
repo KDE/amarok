@@ -31,11 +31,11 @@ public:
 
     virtual bool canCreateFromMedium() const;
 
-    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &uuid, SqlStorage *s ) const;
+    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &uuid, QSharedPointer<SqlStorage> s ) const;
 
     virtual bool canCreateFromConfig() const;
 
-    virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const;
+    virtual DeviceHandler* createHandler( KSharedConfigPtr c, QSharedPointer<SqlStorage> s ) const;
 
     virtual QString type() const;
 

@@ -17,6 +17,7 @@
 #ifndef DATABASEUPDATERTEST_H
 #define DATABASEUPDATERTEST_H
 
+#include <QSharedPointer>
 #include <QtTest>
 
 #include <KTempDir>
@@ -47,7 +48,7 @@ private Q_SLOTS:
 
 private:
     Collections::SqlCollection *m_collection;
-    MySqlEmbeddedStorage *m_storage;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
     KTempDir *m_tmpDir;
 };
 

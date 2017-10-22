@@ -28,9 +28,8 @@
 
 using namespace Collections;
 
-MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( QObject *parent, const QVariantList &args,
-                                                                    ConnectionAssistant* assistant )
-    : Collections::CollectionFactory( parent, args )
+MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant )
+    : Collections::CollectionFactory()
     , m_assistant( assistant )
 {
 }

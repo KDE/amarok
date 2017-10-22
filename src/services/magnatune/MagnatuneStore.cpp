@@ -53,18 +53,14 @@
 
 #include <typeinfo>
 
-AMAROK_EXPORT_SERVICE_PLUGIN( magnatunestore, MagnatuneServiceFactory )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // class MagnatuneServiceFactory
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-MagnatuneServiceFactory::MagnatuneServiceFactory( QObject *parent, const QVariantList &args )
-    : ServiceFactory( parent, args )
+MagnatuneServiceFactory::MagnatuneServiceFactory()
+    : ServiceFactory()
 {
-    KPluginInfo pluginInfo( "amarok_service_magnatunestore.desktop" );
-    pluginInfo.setConfig( config() );
-    m_info = pluginInfo;
 }
 
 void MagnatuneServiceFactory::init()
@@ -749,8 +745,3 @@ MagnatuneStore::showSignupDialog()
 
      m_signupInfoWidget->show();
 }
-
-
-
-
-

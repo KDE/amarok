@@ -112,7 +112,7 @@ SqlTrack::getTrackReturnValueCount()
 }
 
 SqlTrack::SqlTrack( Collections::SqlCollection *collection, int deviceId,
-                    const QString &rpath, int directoryId, const QString uidUrl )
+                    const QString &rpath, int directoryId, const QString &uidUrl )
     : Track()
     , m_collection( collection )
     , m_batchUpdate( 0 )
@@ -1057,7 +1057,7 @@ SqlTrack::updatePlaylistsToDb( const FieldHash &fields, const QString &oldUid )
     if( fields.isEmpty() )
         return; // nothing to do
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
     QStringList tags;
 
     // keep this in sync with SqlPlaylist::saveTracks()!
@@ -1092,7 +1092,7 @@ SqlTrack::updateEmbeddedCoversToDb( const FieldHash &fields, const QString &oldU
     if( fields.isEmpty() )
         return; // nothing to do
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
     QString tags;
 
     if( fields.contains( Meta::valUniqueId ) )

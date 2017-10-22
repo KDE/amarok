@@ -147,13 +147,13 @@ NfsDeviceHandlerFactory::~NfsDeviceHandlerFactory( )
 }
 
 DeviceHandler *
-NfsDeviceHandlerFactory::createHandler( KSharedConfigPtr, SqlStorage* ) const
+NfsDeviceHandlerFactory::createHandler( KSharedConfigPtr, QSharedPointer<SqlStorage> ) const
 {
     return 0;
 }
 
 DeviceHandler *
-NfsDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, SqlStorage *s ) const
+NfsDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, QSharedPointer<SqlStorage> s ) const
 {
     DEBUG_BLOCK
     if( !s )

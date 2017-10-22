@@ -22,6 +22,8 @@
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
+#include <KConfigGroup>
+
 class QTimer;
 
 namespace Playlists {

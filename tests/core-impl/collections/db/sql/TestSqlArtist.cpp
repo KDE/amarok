@@ -38,7 +38,7 @@ void
 TestSqlArtist::initTestCase()
 {
     m_tmpDir = new KTempDir();
-    m_storage = new MySqlEmbeddedStorage();
+    m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
     QVERIFY( m_storage->init( m_tmpDir->name() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
@@ -48,7 +48,6 @@ void
 TestSqlArtist::cleanupTestCase()
 {
     delete m_collection;
-    //m_storage is deleted by SqlCollection
     delete m_tmpDir;
 }
 

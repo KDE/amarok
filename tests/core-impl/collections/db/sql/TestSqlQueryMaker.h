@@ -17,6 +17,7 @@
 #ifndef TESTSQLQUERYMAKER_H
 #define TESTSQLQUERYMAKER_H
 
+#include <QSharedPointer>
 #include <QTest>
 #include <core/collections/QueryMaker.h>
 
@@ -95,7 +96,7 @@ private:
 
     Collections::SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpm;
-    MySqlEmbeddedStorage *m_storage;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
     KTempDir *m_tmpDir;
 };
 

@@ -22,6 +22,8 @@
 #include "core/capabilities/ReadLabelCapability.h"
 #include "SqlMeta.h"
 
+#include <QSharedPointer>
+
 class SqlStorage;
 
 namespace Capabilities
@@ -31,7 +33,7 @@ class SqlReadLabelCapability : public Capabilities::ReadLabelCapability
 {
     Q_OBJECT
     public:
-        SqlReadLabelCapability( Meta::SqlTrack *track, SqlStorage *storage );
+        SqlReadLabelCapability( Meta::SqlTrack *track, QSharedPointer<SqlStorage> storage );
 
         /**
         *   fetches a list of labels assigned to this track
@@ -51,7 +53,7 @@ class SqlReadLabelCapability : public Capabilities::ReadLabelCapability
     private:
         QStringList m_labels;
         Meta::TrackPtr m_track;
-        SqlStorage *m_storage;
+        QSharedPointer<SqlStorage> m_storage;
         void fetch( QString uniqueURL );
 };
 

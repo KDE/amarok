@@ -230,6 +230,8 @@ SqlQueryMaker::run()
 void
 SqlQueryMaker::done( ThreadWeaver::JobPointer job )
 {
+    Q_UNUSED( job )
+
     d->worker = 0; // d->worker *is* the job, prevent stale pointer
     emit queryDone();
 }

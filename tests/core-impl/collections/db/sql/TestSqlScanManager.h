@@ -18,6 +18,7 @@
 #ifndef TESTSQLSCANMANAGER_H
 #define TESTSQLSCANMANAGER_H
 
+#include <QSharedPointer>
 #include <QTest>
 
 #include "core/meta/support/MetaConstants.h"
@@ -169,7 +170,7 @@ private:
 
     int m_collectionUpdatedCount;
 
-    MySqlEmbeddedStorage *m_storage;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
     KTempDir *m_tmpDatabaseDir;
     KTempDir *m_tmpCollectionDir;
     QString m_sourcePath; // the path to the template .mp3 file

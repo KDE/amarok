@@ -22,11 +22,9 @@
 #include <core-impl/collections/db/sql/SqlCollectionFactory.h>
 
 #include <KLocalizedString>
-#include <KPluginFactory>
 
 using namespace Collections;
 
-AMAROK_EXPORT_COLLECTION( MySqlCollectionFactory, mysqlcollection )
 
 void
 MySqlCollectionFactory::init()
@@ -35,11 +33,9 @@ MySqlCollectionFactory::init()
         return;
 
     SqlCollectionFactory fac;
-    SqlStorage *storage = StorageManager::instance()->sqlStorage();
+    auto storage = StorageManager::instance()->sqlStorage();
     SqlCollection *collection = fac.createSqlCollection( storage );
     m_initialized = true;
 
     emit newCollection( collection );
 }
-
-#include "MySqlCollectionFactory.moc"

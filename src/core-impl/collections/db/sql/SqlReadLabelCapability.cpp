@@ -25,7 +25,7 @@
 namespace Capabilities
 {
 
-SqlReadLabelCapability::SqlReadLabelCapability( Meta::SqlTrack *track, SqlStorage *storage )
+SqlReadLabelCapability::SqlReadLabelCapability( Meta::SqlTrack *track, QSharedPointer<SqlStorage> storage )
     : ReadLabelCapability()
     , m_track( track )
     , m_storage( storage )

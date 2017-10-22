@@ -37,9 +37,12 @@ namespace Collections
 
     class PlaydarCollectionFactory : public CollectionFactory
     {
+        Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-playdarcollection.json")
+        Q_INTERFACES(Plugins::PluginFactory)
         Q_OBJECT
+
         public:
-            PlaydarCollectionFactory( QObject* parent, const QVariantList &args );
+            PlaydarCollectionFactory();
             virtual ~PlaydarCollectionFactory();
             
             virtual void init();

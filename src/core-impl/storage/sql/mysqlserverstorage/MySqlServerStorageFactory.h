@@ -1,3 +1,4 @@
+
 /****************************************************************************************
  * Copyright (c) 2014 Ralf Engels <ralf-engels@gmx.de>                                   *
  *                                                                                      *
@@ -21,19 +22,21 @@
 
 class MySqlServerStorageFactory : public StorageFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_storage-mysqlserverstorage.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
-    public:
-        MySqlServerStorageFactory( QObject *parent, const QVariantList &args );
-        virtual ~MySqlServerStorageFactory();
+public:
+    MySqlServerStorageFactory();
+    virtual ~MySqlServerStorageFactory();
 
-        virtual void init();
+    virtual void init();
 
-    public Q_SLOTS:
+public Q_SLOTS:
 
-        /** Returns the error messages created during establishing the connection.
-         */
-        QStringList testSettings( const QString &host, const QString &user, const QString &password, int port, const QString &databaseName );
+    /** Returns the error messages created during establishing the connection.
+     */
+    QStringList testSettings( const QString &host, const QString &user, const QString &password, int port, const QString &databaseName );
 };
 
 

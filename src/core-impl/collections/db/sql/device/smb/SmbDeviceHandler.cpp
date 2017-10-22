@@ -147,13 +147,13 @@ SmbDeviceHandlerFactory::~SmbDeviceHandlerFactory( )
 }
 
 DeviceHandler *
-SmbDeviceHandlerFactory::createHandler( KSharedConfigPtr, SqlStorage* ) const
+SmbDeviceHandlerFactory::createHandler( KSharedConfigPtr, QSharedPointer<SqlStorage> ) const
 {
     return 0;
 }
 
 DeviceHandler *
-SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, SqlStorage *s ) const
+SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, QSharedPointer<SqlStorage> s ) const
 {
     DEBUG_BLOCK
     if( !s )

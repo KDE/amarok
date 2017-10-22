@@ -59,7 +59,7 @@ TestSqlScanManager::initTestCase()
 
     m_tmpDatabaseDir = new KTempDir();
     QVERIFY( m_tmpDatabaseDir->exists() );
-    m_storage = new MySqlEmbeddedStorage();
+    m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
     QVERIFY( m_storage->init( m_tmpDatabaseDir->name() ) );
 
     m_collection = new Collections::SqlCollection( m_storage );

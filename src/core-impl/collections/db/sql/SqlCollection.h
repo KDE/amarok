@@ -25,6 +25,8 @@
 #include <core-impl/collections/db/DatabaseCollection.h>
 #include "SqlRegistry.h"
 
+#include <QSharedPointer>
+
 class SqlScanResultProcessor;
 class AbstractDirectoryWatcher;
 
@@ -45,7 +47,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         /** Creates a new SqlCollection.
          *  @param storage The storage this collection should work on. It will be freed by the collection.
          */
-        SqlCollection( SqlStorage *storage );
+        SqlCollection( QSharedPointer<SqlStorage> storage );
         virtual ~SqlCollection();
 
         virtual QueryMaker *queryMaker();
@@ -64,7 +66,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         // physical locations (even network components)
 
         SqlRegistry* registry() const;
-        SqlStorage* sqlStorage() const;
+        QSharedPointer<SqlStorage> sqlStorage() const;
 
         /** Every collection has this function. */
         virtual bool possiblyContainsTrack( const QUrl &url ) const;
@@ -95,7 +97,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
 
     private:
         SqlRegistry* m_registry;
-        SqlStorage* m_sqlStorage;
+        QSharedPointer<SqlStorage> m_sqlStorage;
 
         SqlScanResultProcessor* m_scanProcessor;
         AbstractDirectoryWatcher* m_directoryWatcher;

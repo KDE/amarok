@@ -1,3 +1,4 @@
+
 /****************************************************************************************
  * Copyright (c) 2014 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
@@ -21,6 +22,7 @@
 #include "core/support/PluginFactory.h"
 
 #include <QObject>
+#include <QSharedPointer>
 
 class SqlStorage;
 
@@ -36,14 +38,14 @@ class AMAROK_CORE_EXPORT StorageFactory : public Plugins::PluginFactory
     Q_OBJECT
 
 public:
-    StorageFactory( QObject *parent, const QVariantList &args );
+    StorageFactory();
     virtual ~StorageFactory();
 
 Q_SIGNALS:
     /** Emitted whenever the factory produces a new storage.
      *
      */
-    void newStorage( SqlStorage *newStorage );
+    void newStorage( QSharedPointer<SqlStorage> newStorage );
 
     /**
      *  The factories will not emit the newStorage signal in case
@@ -53,10 +55,5 @@ Q_SIGNALS:
      */
     void newError( QStringList errorMessageList );
 };
-
-
-#define AMAROK_EXPORT_STORAGE( classname, libname ) \
-    K_PLUGIN_FACTORY( factory, registerPlugin<classname>(); ) \
-            K_EXPORT_PLUGIN( factory( "amarok_storage-" #libname ) )
 
 #endif /* AMAROK_STORAGE_FACTORY_H */

@@ -116,7 +116,7 @@ TestSqlCollectionLocation::initTestCase()
 {
     Amarok::Components::setLogger( new ProxyLogger() );
     m_tmpDir = new KTempDir();
-    m_storage = new MySqlEmbeddedStorage();
+    m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
     QVERIFY( m_storage->init( m_tmpDir->name() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );

@@ -29,7 +29,6 @@
 #include <KDirLister>
 #include <KIO/ListJob>
 #include <KIO/Scheduler>
-#include <KPluginFactory>
 
 #include <Solid/Device>
 #include <Solid/DeviceNotifier>
@@ -43,12 +42,9 @@
 
 namespace Collections {
 
-AMAROK_EXPORT_COLLECTION( UpnpCollectionFactory, upnpcollection )
-
-UpnpCollectionFactory::UpnpCollectionFactory( QObject *parent, const QVariantList &args )
-    : Collections::CollectionFactory( parent, args )
+UpnpCollectionFactory::UpnpCollectionFactory()
+    : Collections::CollectionFactory()
 {
-    m_info = KPluginInfo( "amarok_collection-upnpcollection.desktop" );
     qRegisterMetaType<DeviceInfo>();
     qDBusRegisterMetaType< QHash<QString, QString> >();
     qDBusRegisterMetaType<DeviceInfo0_1_0>();
