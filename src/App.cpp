@@ -508,10 +508,10 @@ App::continueInit()
     if( !StorageManager::instance()->getLastErrors().isEmpty() )
     {
         QMessageBox::critical( The::mainWindow(), i18n( "Database Error" ),
-                 i18n( "The amarok database reported the following errors:"
+                 i18n( "The Amarok database reported the following errors:"
                  "\n%1\nIn most cases you will need to resolve these errors "
-                 "before Amarok will run properly." ).
-                 arg( StorageManager::instance()->getLastErrors().join( "\n" ) ) );
+                 "before Amarok will run properly.",
+                 StorageManager::instance()->getLastErrors().join( "\n" ) ) );
         StorageManager::instance()->clearLastErrors();
         slotConfigAmarok( "DatabaseConfig" );
     }
