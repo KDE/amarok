@@ -101,6 +101,8 @@ App::App(int &argc, char **argv)
     DEBUG_BLOCK
     PERF_LOG( "Begin Application ctor" )
 
+    KLocalizedString::setApplicationDomain("amarok");
+
     // required for last.fm plugin to grab app version
     setApplicationVersion( AMAROK_VERSION );
 
