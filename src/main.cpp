@@ -51,7 +51,7 @@ int main( int argc, char *argv[] )
     KAboutData aboutData( "amarok",
             ki18n( "Amarok" ).toString(),
             AMAROK_VERSION,
-            ki18n( "The audio player for KDE" ).toString(),
+            ki18n( "The audio player by KDE" ).toString(),
             KAboutLicense::GPL,
             ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2013, The Amarok Development Squad" ).toString(),
             ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ).toString(),
