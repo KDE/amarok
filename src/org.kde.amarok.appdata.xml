@@ -342,7 +342,7 @@
   </description>
   <url type="homepage">http://amarok.kde.org</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=amarok</url>
-  <url type="help">http://docs.kde.org/development/en/extragear-multimedia/amarok/index.html</url>
+  <url type="help">https://docs.kde.org/index.php?application=amarok</url>
   <screenshots>
     <screenshot type="default">
       <image>http://kde.org/images/screenshots/amarok.png</image>
