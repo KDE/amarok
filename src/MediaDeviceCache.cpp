@@ -33,8 +33,6 @@
 #include <solid/block.h>
 #include <solid/storagevolume.h>
 
-#include <kdeversion.h>
-
 #include <kmountpoint.h>
 
 #include <QDir>

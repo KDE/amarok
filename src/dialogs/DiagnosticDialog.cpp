@@ -22,6 +22,7 @@
 #include "scripting/scriptmanager/ScriptManager.h"
 
 #include <KAboutData>
+#include <KCoreAddons>
 #include <QApplication>
 #include <KGlobal>
 #include <KPluginInfo>
@@ -111,15 +112,15 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     return i18n(
                "%1 Diagnostics\n\nGeneral Information:\n"
                "   %1 Version: %2\n"
-               "   KDE Version: %3\n"
+               "   KDE Frameworks Version: %3\n"
                "   Qt Version: %4\n"
                "   Phonon Version: %5\n"
                "   Phonon Backend: %6 (%7)\n"
                "   PulseAudio: %8\n\n",
 
                KAboutData::applicationData().displayName(), aboutData->version(),      // Amarok
-               KDE::versionString(),                                // KDE
-               qVersion(),                                          // QT
+               KCoreAddons::versionString(),                        // KDE Frameworks
+               qVersion(),                                          // Qt
                Phonon::phononVersion(),                             // Phonon
                aPhononBackend.data()->name(),
                aPhononBackend.data()->property( "X-KDE-PhononBackendInfo-Version", QVariant::String ).toString(), // & Backend

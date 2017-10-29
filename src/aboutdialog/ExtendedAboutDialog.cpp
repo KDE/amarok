@@ -33,6 +33,7 @@
 #include <QTabWidget>
 
 #include <qapplication.h>
+#include <KCoreAddons>
 #include <kglobal.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>
@@ -45,7 +46,6 @@
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
-#include <kdeversion.h>
 
 void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 {
@@ -149,7 +149,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
         titleWidget->setPixmap(QPixmap::fromImage(aboutData->programLogo().value<QImage>()), KTitleWidget::ImageLeft);
 
     titleWidget->setText(i18n("<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE Frameworks %3</html>",
-                         aboutData->displayName(), aboutData->version(), KDE::versionString()));
+                         aboutData->displayName(), aboutData->version(), KCoreAddons::versionString()));
 
 
     //Now let's add the tab bar...
