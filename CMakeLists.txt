@@ -216,7 +216,7 @@ if( WITH_PLAYER )
         set_package_properties( LOUDMOUTH PROPERTIES DESCRIPTION "Loudmouth is the communication backend needed by mp3tunes for syncing." URL "http://www.loudmouth-project.org" TYPE OPTIONAL )
 
         include(CheckQtGlib)
-        set_package_properties( QT4_GLIB PROPERTIES DESCRIPTION "Qt4 must be compiled with glib support for mp3tunes" URL "http://www.trolltech.com" TYPE OPTIONAL )
+        set_package_properties( QT5_GLIB PROPERTIES DESCRIPTION "Qt5 must be compiled with glib support for mp3tunes" URL "http://www.trolltech.com" TYPE OPTIONAL )
     endif()
 
     if( WITH_IPOD OR WITH_MP3Tunes )
