@@ -1,6 +1,6 @@
-project(Amarok)
-
 cmake_minimum_required(VERSION 2.8.12)
+
+project(Amarok)
 
 # Remove all warnings, ease the porting to cmake 3.x
 if (POLICY CMP0028)
