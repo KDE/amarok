@@ -3,9 +3,6 @@ project(Amarok)
 cmake_minimum_required(VERSION 2.8.12)
 
 # Remove all warnings, ease the porting to cmake 3.x
-if (POLICY CMP0063)
-    cmake_policy(SET CMP0063 NEW)
-endif()
 if (POLICY CMP0028)
     cmake_policy(SET CMP0028 NEW)
 endif()
@@ -22,7 +19,7 @@ set(CMAKE_AUTOMOC ON)
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
-include(KDECompilerSettings)
+include(KDECompilerSettings NO_POLICY_SCOPE)
 include(FeatureSummary)
 include(ECMInstallIcons)
 include(ECMSetupVersion)
