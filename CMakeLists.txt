@@ -7,15 +7,10 @@ if (POLICY CMP0028)
     cmake_policy(SET CMP0028 NEW)
 endif()
 
-set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
-
-message(STATUS "${CMAKE_MODULE_PATH}")
-
 ###############
 find_package(PkgConfig REQUIRED)
 find_package(ECM 1.7.0 REQUIRED CONFIG)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
-set(CMAKE_AUTOMOC ON)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
