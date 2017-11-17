@@ -145,6 +145,8 @@ add_subdirectory( shared )
 if( WITH_PLAYER )
     set_package_properties( QTOPENGL PROPERTIES DESCRIPTION "Required for the spectrum analyzer" URL "http://qt-project.org" TYPE OPTIONAL )
 
+    find_package(X11)
+
     find_package(MySQLAmarok REQUIRED)
     if( WITH_MYSQL_EMBEDDED )
         set( BUILD_MYSQLE_COLLECTION TRUE )

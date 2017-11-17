@@ -917,8 +917,6 @@ set( amarok_SRCS main.cpp )
 file(GLOB ICONS_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../images/*-apps-amarok.png)
 ecm_add_app_icon(amarok_SRCS ICONS ${ICONS_SRCS})
 
-find_package(X11)
-
 add_executable(amarok ${amarok_SRCS})
 if(APPLE)
     set_target_properties(amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
