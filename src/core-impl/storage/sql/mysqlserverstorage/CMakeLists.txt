@@ -40,4 +40,4 @@ install(TARGETS amarok_storage-mysqlserverstorage DESTINATION ${PLUGIN_INSTALL_D
 
 install(FILES amarok_storage-mysqlserverstorage.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-kcoreaddons_desktop_to_json(amarok_storage-mysqlserverstorage amarok_storage-mysqlserverstorage.desktop)
+kcoreaddons_desktop_to_json(amarok_storage-mysqlserverstorage amarok_storage-mysqlserverstorage.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
