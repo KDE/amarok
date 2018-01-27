@@ -128,7 +128,7 @@ void LastFmServiceConfig::save()
         case NoPasswordEnteredYet:
             if( m_username.isEmpty() && m_password.isEmpty() )
                 break; // stay in this state
-            // otherwise
+            /* Falls through. */
         case PasswodInKWallet:
             openWalletToWrite();
             config.deleteEntry( "username" ); // prevent possible stray credentials

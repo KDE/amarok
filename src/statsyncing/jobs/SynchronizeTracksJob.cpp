@@ -113,8 +113,10 @@ SynchronizeTracksJob::run()
         // wait 3 seconds so that we have chance to catch slotTrackScrobbled()..
         thread()->msleep( 3000 );
     if( controller )
+    {
         disconnect( controller, SIGNAL(trackScrobbled(ScrobblingServicePtr,Meta::TrackPtr)), this, 0 );
         disconnect( controller, SIGNAL(scrobbleFailed(ScrobblingServicePtr,Meta::TrackPtr,int)), this, 0 );
+    }
 
     emit endProgressOperation( this );
 }

@@ -280,14 +280,19 @@ APG::ConstraintSolver::mutate_population( APG::ConstraintSolver::Population& pop
         switch (op) {
             case 0:
                 child->removeAt( KRandom::random() % s );
+                break;
             case 1:
                 child->insert( KRandom::random() % ( s + 1 ), random_track_from_domain() );
+                break;
             case 2:
                 child->replace( KRandom::random() % s, random_track_from_domain() );
+                break;
             case 3:
                 child->swap( KRandom::random() % s, KRandom::random() % s );
+                break;
             case 4:
                 child = crossover( child, parents.at( KRandom::random() % parents.size() ) );
+                break;
             default:
                 (void)0; // effectively a no-op. the default is here so that the compiler doesn't complain about missing default in switch
         }

@@ -80,6 +80,7 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel,
                 case Playlist::Title:
                 {
                     const int compareResult = compareBySortableName( trackA, trackB );
+
                     if( compareResult != 0 )
                         return ( compareResult < 0 ) != inverted;
 
@@ -94,6 +95,7 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel,
                         return ( compareResult < 0 ) != inverted;
 
                     // Fall through to sorting by album artist if albums have same name
+                    __attribute__ ((fallthrough));
                 }
                 case Playlist::AlbumArtist:
                 {
@@ -104,6 +106,7 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel,
                             (trackB->album() ? trackB->album()->albumArtist() : Meta::ArtistPtr());
 
                     const int compareResult = compareBySortableName( artistA, artistB );
+
                     if( compareResult != 0 )
                         return ( compareResult < 0 ) != inverted;
 

@@ -85,7 +85,7 @@ IpodCopyTracksJob::run()
         if( !m_coll )
             break;  // destructed behind our back
 
-            bool isJustCopy = m_transcodingConfig.isJustCopy( track, m_coll.data()->supportedFormats() );
+        bool isJustCopy = m_transcodingConfig.isJustCopy( track, m_coll.data()->supportedFormats() );
 
         if( isJustCopy  // if not copying, we catch big files later
             && track->filesize() > totalSafeCapacity - m_coll.data()->usedCapacity() )

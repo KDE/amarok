@@ -435,27 +435,26 @@ LastFmTreeModel::data( const QModelIndex &index, int role ) const
             break;
         }
 
-        if( role == LastFm::TrackRole )
+    if( role == LastFm::TrackRole )
+        switch( i->type() )
         {
-            switch( i->type() )
-            {
-                case LastFm::MyRecommendations:
-                case LastFm::PersonalRadio:
-                case LastFm::MixRadio:
-                case LastFm::NeighborhoodRadio:
-                case LastFm::FriendsChild:
-                case LastFm::NeighborsChild:
-                case LastFm::MyTagsChild:
-                case LastFm::ArtistsChild:
-                case LastFm::UserChildPersonal:
-                case LastFm::UserChildNeighborhood:
-                    return QVariant::fromValue( i->track() );
-                default:
-                    break;
-            }
+        case LastFm::MyRecommendations:
+        case LastFm::PersonalRadio:
+        case LastFm::MixRadio:
+        case LastFm::NeighborhoodRadio:
+        case LastFm::FriendsChild:
+        case LastFm::NeighborsChild:
+        case LastFm::MyTagsChild:
+        case LastFm::ArtistsChild:
+        case LastFm::UserChildPersonal:
+        case LastFm::UserChildNeighborhood:
+            return QVariant::fromValue( i->track() );
+        default:
+            break;
         }
-        if( role == LastFm::TypeRole )
-            return i->type();
+
+    if( role == LastFm::TypeRole )
+        return i->type();
 
     return QVariant();
 }

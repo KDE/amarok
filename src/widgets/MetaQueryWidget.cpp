@@ -82,11 +82,14 @@ qint64 TimeDistanceWidget::timeDistance() const
         time *=   7*24*60*60; // weeks
         break;
     case 3:
-        time *= 24; // days
+        time *=     24*60*60; // days
+        break;
     case 2:
-        time *= 60; // hours
+        time *=        60*60; // hours
+        break;
     case 1:
-        time *= 60; // minutes
+        time *=           60; // minutes
+        break;
     }
 
     return time;
@@ -438,11 +441,14 @@ MetaQueryWidget::compareChanged( int index )
                 value *=   7*24*60*60; // weeks
                 break;
             case 3:
-                value *= 24; // days
+                value *=     24*60*60; // days
+                break;
             case 2:
-                value *= 60; // hours
+                value *=        60*60; // hours
+                break;
             case 1:
-                value *= 60; // minutes
+                value *=           60; // minutes
+                break;
             }
             m_filter.numValue = value;
         }

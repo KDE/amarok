@@ -491,15 +491,14 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
             return new FindInSourceCapabilityImpl( this );
 
 #ifdef HAVE_LIBLASTFM
-       case Capabilities::Capability::ReadLabel:
-           if( !d->readLabelCapability )
-               d->readLabelCapability = new Capabilities::LastfmReadLabelCapability( this );
+        case Capabilities::Capability::ReadLabel:
+            if( !d->readLabelCapability )
+                d->readLabelCapability = new Capabilities::LastfmReadLabelCapability( this );
+            return 0;
 #endif
 
-        default: // fall-through
-
-
-        return 0;
+        default:
+            return 0;
     }
 }
 

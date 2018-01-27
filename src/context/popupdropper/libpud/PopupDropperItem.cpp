@@ -459,11 +459,11 @@ void PopupDropperItem::scaleAndReposSvgItem()
             rightside = sceneBoundingRect().width();
         else
             rightside = d->pd->viewSize().width();
-            d->svgItem->setPos( 
-                rightside
-                - d->svgItem->sceneBoundingRect().width()
-                - d->horizontalOffset
-                , item_center - ( d->svgElementRect.height() / 2 ) );
+        d->svgItem->setPos(
+            rightside
+            - d->svgItem->sceneBoundingRect().width()
+            - d->horizontalOffset
+            , item_center - ( d->svgElementRect.height() / 2 ) );
     }
 }
 

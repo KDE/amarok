@@ -60,7 +60,7 @@ namespace Collections
     PlaydarCollectionFactory::init()
     {
         DEBUG_BLOCK
-        m_controller = new Playdar::Controller( this );
+        m_controller = new Playdar::Controller();
         connect( m_controller, SIGNAL(playdarReady()),
                  this, SLOT(playdarReady()) );
         connect( m_controller, SIGNAL(playdarError(Playdar::Controller::ErrorState)),

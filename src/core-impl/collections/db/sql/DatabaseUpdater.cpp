@@ -85,32 +85,45 @@ DatabaseUpdater::update()
         {
             case 1:
                 upgradeVersion1to2();
+                /* Falls through. */
             case 2:
                 upgradeVersion2to3();
+                /* Falls through. */
             case 3:
                 upgradeVersion3to4();
+                /* Falls through. */
             case 4:
                 upgradeVersion4to5();
+                /* Falls through. */
             case 5:
                 upgradeVersion5to6();
+                /* Falls through. */
             case 6:
                 upgradeVersion6to7();
+                /* Falls through. */
             case 7:
                 upgradeVersion7to8();
+                /* Falls through. */
             case 8:
                 //removes stray rows from albums that were caused by the initial full scan
                 upgradeVersion8to9();
+                /* Falls through. */
             case 9:
                 //removes stray rows from albums that were caused by the initial full scan
                 upgradeVersion9to10();
+                /* Falls through. */
             case 10:
                 upgradeVersion10to11();
+                /* Falls through. */
             case 11:
                 upgradeVersion11to12();
+                /* Falls through. */
             case 12:
                 upgradeVersion12to13();
+                /* Falls through. */
             case 13:
                 upgradeVersion13to14();
+                /* Falls through. */
             case 14:
                 upgradeVersion14to15();
                 dbVersion = 15; // be sure to update this manually when introducing new version!

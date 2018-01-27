@@ -105,10 +105,9 @@ TrackList ArtistMatcher::match( Collections::MemoryCollection *memColl )
             foreach( AlbumPtr album, memColl->albumMap() )
                 if( album->albumArtist() == artist )
                     matchingTracks.append( album->tracks() );
-
             if( m_queryMode != Collections::QueryMaker::AlbumOrTrackArtists )
                 break;
-
+            /* Falls through. */
         case Collections::QueryMaker::TrackArtists:
             matchingTracks.append( artist->tracks() );
     }
@@ -136,6 +135,7 @@ TrackList ArtistMatcher::match( const TrackList &tracks )
                     matchingTracks.append( track );
                 if( m_queryMode != Collections::QueryMaker::AlbumOrTrackArtists )
                     break;
+                /* Falls through. */
             case Collections::QueryMaker::TrackArtists:
                 if( track->artist()->name() == name )
                     matchingTracks.append( track );

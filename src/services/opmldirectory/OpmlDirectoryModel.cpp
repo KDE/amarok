@@ -167,7 +167,6 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
         case Qt::DecorationRole:
             return m_imageMap.contains( outline ) ? m_imageMap.value( outline ) : QVariant();
         case ActionRole:
-        {
             if( outline->opmlNodeType() == RegularNode ) //probably a folder
             {
                 //store the index the new item should get added to
@@ -175,7 +174,7 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
                 m_addFolderAction->setData( QVariant::fromValue( idx ) );
                 return QVariant::fromValue( QActionList() << m_addOpmlAction << m_addFolderAction );
             }
-        }
+            return QVariant();
         default:
             return QVariant();
     }

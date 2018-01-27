@@ -85,7 +85,7 @@ Amarok::QStringx::namedArgs( const QMap<QString, QString> &args, bool opt ) cons
     if( opt )
         formatString = QLatin1Char( '{' ) + formatString + QLatin1Char( '}' );
 
-        QStringx fmtx( formatString );
+    QStringx fmtx( formatString );
     return fmtx.namedOptArgs( args );
 }
 

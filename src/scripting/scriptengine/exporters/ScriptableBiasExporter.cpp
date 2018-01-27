@@ -468,8 +468,10 @@ TrackSetExporter::trackSetConstructor( QScriptContext *context, QScriptEngine *e
                 }
                 else
                     invalid = true;
-                break;
             }
+            else
+                invalid = true;
+            break;
 
         default:
             invalid = true;

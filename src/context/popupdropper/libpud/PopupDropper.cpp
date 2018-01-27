@@ -68,11 +68,11 @@ PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget
 {
     if( widget )
         widgetRect = widget->rect();
-	windowBackgroundBrush.setColor( windowColor );
-	hoveredBorderPen.setColor( Qt::blue );
+    windowBackgroundBrush.setColor( windowColor );
+    hoveredBorderPen.setColor( Qt::blue );
     hoveredBorderPen.setWidth( 2 );
     hoveredBorderPen.setStyle( Qt::SolidLine );
-	QColor hoveredFillColor = QColor( Qt::blue );
+    QColor hoveredFillColor = QColor( Qt::blue );
     hoveredFillColor.setAlpha( 32 );
     hoveredFillBrush.setColor( hoveredFillColor );
     hoveredFillBrush.setStyle( Qt::SolidPattern );
