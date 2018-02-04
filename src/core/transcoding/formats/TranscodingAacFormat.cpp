@@ -70,7 +70,7 @@ AacFormat::description() const
 KIcon
 AacFormat::icon() const
 {
-    return KIcon( "audio-ac3" ); //TODO: get a *real* icon!
+    return KIcon( "audio-x-mpeg" ); //TODO: get a *real* icon!
 }
 
 QStringList

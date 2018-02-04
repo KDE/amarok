@@ -77,7 +77,7 @@ Mp3Format::description() const
 KIcon
 Mp3Format::icon() const
 {
-    return KIcon( "audio-x-generic" );  //TODO: get a *real* icon!
+    return KIcon( "audio-x-mpeg" );  //TODO: get a *real* icon!
 }
 
 QStringList
@@ -104,5 +104,5 @@ Mp3Format::ffmpegParameters( const Configuration &configuration ) const
 bool
 Mp3Format::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA....*libmp3lame" ) );
+    return ffmpegOutput.contains( QRegExp( "^ .EA... mp3 +.*libmp3lame" ) );
 }

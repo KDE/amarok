@@ -81,7 +81,7 @@ WmaFormat::description() const
 KIcon
 WmaFormat::icon() const
 {
-    return KIcon( "audio-x-generic" );  //TODO: get a *real* icon!
+    return KIcon( "audio-x-wav" );  //TODO: get a *real* icon!
 }
 
 QStringList
@@ -115,5 +115,5 @@ WmaFormat::toFfmpegBitrate( int setting ) const
 bool
 WmaFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA....*wmav2" ) );
+    return ffmpegOutput.contains( QRegExp( "^ .EA... wmav2 +" ) );
 }

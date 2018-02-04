@@ -82,7 +82,7 @@ VorbisFormat::description() const
 KIcon
 VorbisFormat::icon() const
 {
-    return KIcon( "audio-x-wav" );  //TODO: get a *real* icon!
+    return KIcon( "audio-x-generic" );  //TODO: get a *real* icon!
 }
 
 QStringList
@@ -110,5 +110,5 @@ VorbisFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 VorbisFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA....*libvorbis" ) );
+    return ffmpegOutput.contains( QRegExp( "^ .EA... vorbis +.*libvorbis" ) );
 }

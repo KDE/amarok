@@ -89,5 +89,5 @@ FlacFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 FlacFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA....*flac" ) );
+    return ffmpegOutput.contains( QRegExp( "^ .EA... flac +" ) );
 }
