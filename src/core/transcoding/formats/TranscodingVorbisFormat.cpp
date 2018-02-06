@@ -100,10 +100,10 @@ VorbisFormat::ffmpegParameters( const Configuration &configuration ) const
             {
                 int ffmpegQuality = configuration.property( "quality" ).toInt() - 1;
                 parameters << "-aq" << QString::number( ffmpegQuality );
-                parameters << "-vn"; // -vn == no video stream (some devices can't handle that)
             }
         }
     }
+    parameters << "-vn"; // no video stream or album art, some devices can't handle that
     return parameters;
 }
 

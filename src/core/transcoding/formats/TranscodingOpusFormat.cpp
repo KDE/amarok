@@ -101,10 +101,10 @@ OpusFormat::ffmpegParameters( const Configuration &configuration ) const
             {
                 int ffmpegBitrate = toFfmpegBitrate( configuration.property( "bitrate" ).toInt() );
                 parameters << "-ab" << QString::number( ffmpegBitrate );
-                parameters << "-vn"; // -vn == no video stream
             }
         }
     }
+    parameters << "-vn"; // no video stream or album art
     return parameters;
 }
 

@@ -54,7 +54,10 @@ QStringList
 AlacFormat::ffmpegParameters( const Configuration &configuration ) const
 {
     Q_UNUSED( configuration )
-    return QStringList() << "-acodec" << "alac";
+    QStringList parameters;
+    parameters << "-acodec" << "alac";
+    parameters << "-vn"; // no album art, writing it to m4a is not supported by ffmpeg
+    return parameters;
 }
 
 bool

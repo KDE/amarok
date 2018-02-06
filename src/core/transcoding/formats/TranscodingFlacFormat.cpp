@@ -83,6 +83,7 @@ FlacFormat::ffmpegParameters( const Configuration &configuration ) const
             }
         }
     }
+    parameters << "-vn"; // no album art, writing it to flac is not supported by ffmpeg
     return parameters;
 }
 

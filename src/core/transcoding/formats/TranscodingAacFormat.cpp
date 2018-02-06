@@ -90,6 +90,7 @@ AacFormat::ffmpegParameters( const Configuration &configuration ) const
             }
         }
     }
+    parameters << "-vn"; // no album art, writing it to m4a is not supported by ffmpeg
     return parameters;
 }
 
