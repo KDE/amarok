@@ -9,11 +9,10 @@ find_package(QCA2 REQUIRED)
 # we need the QtCrypto library for the signer
 if( QCA2_FOUND )
     include_directories(
-        
         ${CMAKE_CURRENT_BINARY_DIR}
         ${QCA2_INCLUDE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/shared
-        )
+    )
 
     set(amarok-update-signer_SRCS signer.cpp amarok-update-signer.cpp)
     qt4_automoc(${amarok-update-signer_SRCS})
@@ -25,6 +24,6 @@ if( QCA2_FOUND )
         # install to app bundle on os x, otherwise amarok fails to load it
         install(TARGETS amarok-update-signer DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/MacOS )
     else()
-        install(TARGETS amarok-update-signer RUNTIME DESTINATION ${BIN_INSTALL_DIR} )
+        install(TARGETS amarok-update-signer RUNTIME DESTINATION ${KDE_INSTALL_BINDIR} )
     endif()
 endif()

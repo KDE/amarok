@@ -26,6 +26,7 @@
 #include "ServiceCapabilities.h"
 
 #include <QAction>
+#include <QPointer>
 #include <QStringList>
 
 namespace Amarok
@@ -107,7 +108,7 @@ class AMAROK_EXPORT BookmarkThisProvider : public QObject
         virtual QAction * bookmarkAction() { return 0; };
 
     protected:
-        QWeakPointer<QAction> m_bookmarkAction;
+        QPointer<QAction> m_bookmarkAction;
 };
 
 
@@ -120,12 +121,12 @@ class ServiceGenre;
 class ServiceComposer;
 class ServiceYear;
 
-typedef KSharedPtr<ServiceTrack> ServiceTrackPtr;
-typedef KSharedPtr<ServiceArtist> ServiceArtistPtr;
-typedef KSharedPtr<ServiceAlbum> ServiceAlbumPtr;
-typedef KSharedPtr<ServiceGenre> ServiceGenrePtr;
-typedef KSharedPtr<ServiceComposer> ServiceComposerPtr;
-typedef KSharedPtr<ServiceYear> ServiceYearPtr;
+typedef AmarokSharedPointer<ServiceTrack> ServiceTrackPtr;
+typedef AmarokSharedPointer<ServiceArtist> ServiceArtistPtr;
+typedef AmarokSharedPointer<ServiceAlbum> ServiceAlbumPtr;
+typedef AmarokSharedPointer<ServiceGenre> ServiceGenrePtr;
+typedef AmarokSharedPointer<ServiceComposer> ServiceComposerPtr;
+typedef AmarokSharedPointer<ServiceYear> ServiceYearPtr;
 
 typedef QList<ServiceTrackPtr > ServiceTrackList;
 typedef QList<ServiceArtistPtr > ServiceArtistList;
@@ -303,7 +304,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
 
             if ( isBookmarkable() ) {
                 if ( m_bookmarkAction.isNull())
-                    m_bookmarkAction = QWeakPointer<QAction>( new BookmarkArtistAction( this, ArtistPtr( this ) ) );
+                    m_bookmarkAction = QPointer<QAction>( new BookmarkArtistAction( this, ArtistPtr( this ) ) );
                 return m_bookmarkAction.data();
             }
             else
@@ -376,7 +377,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
 
             if ( isBookmarkable() ) {
                 if ( m_bookmarkAction.isNull())
-                    m_bookmarkAction = QWeakPointer<QAction>( new BookmarkAlbumAction( this, AlbumPtr( this ) ) );
+                    m_bookmarkAction = QPointer<QAction>( new BookmarkAlbumAction( this, AlbumPtr( this ) ) );
                 return m_bookmarkAction.data();
             }
             else

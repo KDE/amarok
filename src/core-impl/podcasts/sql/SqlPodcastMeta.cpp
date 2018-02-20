@@ -276,7 +276,7 @@ SqlPodcastEpisode::setLocalUrl( const QUrl &url )
     }
     else
     {
-        //if we had a local file previously it should get deleted by the KSharedPtr.
+        //if we had a local file previously it should get deleted by the AmarokSharedPointer.
         m_localFile = new MetaFile::Track( m_localUrl );
         if( m_channel->writeTags() )
             writeTagsToFile();
@@ -820,7 +820,7 @@ SqlPodcastChannel::updateInDb()
         stream << "' WHERE id=";
         stream << m_dbId;
         stream << ";";
-        kDebug() << command;
+        debug() << command;
         sqlStorage->query( command );
     }
     else
@@ -845,7 +845,7 @@ SqlPodcastChannel::updateInDb()
         stream << (m_writeTags ? boolTrue : boolFalse) << ", '";
         stream << escape(m_filenameLayout);
         stream << "');";
-        kDebug() << command;
+        debug() << command;
         m_dbId = sqlStorage->insert( command, "podcastchannels" );
     }
 }

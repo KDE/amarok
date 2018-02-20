@@ -21,21 +21,18 @@
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
 #include "PaletteHandler.h"
-
 #include "core/support/Debug.h"
 
-#include <QWidget>
 
 BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
-    : KVBox( parent )
+    : BoxWidget( true, parent )
     , m_name( name )
     , m_parentList( 0 )
 {
     setObjectName( name );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    setFrameShape( QFrame::NoFrame );
 
-    connect( App::instance(), &App::settingsChanged, this, &BrowserCategory::slotSettingsChanged );
+    connect( pApp, &App::settingsChanged, this, &BrowserCategory::slotSettingsChanged );
     connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &BrowserCategory::slotSettingsChanged );
 }
 

@@ -27,9 +27,7 @@
 #include "SvgHandler.h"
 #include "browsers/CollectionSortFilterProxyModel.h"
 #include "browsers/CollectionTreeItemModel.h"
-#include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
+// #include "context/ContextView.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/collections/CollectionLocation.h"
@@ -46,15 +44,14 @@
 #include "scripting/scriptengine/AmarokCollectionViewScript.h"
 
 #include <QAction>
-#include <KGlobalSettings>
 #include <QIcon>
-#include <KComboBox>
+#include <QComboBox>
 #include <QMenu>
-#include <KMessageBox> // NOTE: for delete dialog, will move to CollectionCapability later
 
 #include <QContextMenuEvent>
 #include <QHash>
 #include <QMouseEvent>
+#include <QQueue>
 #include <QSortFilterProxyModel>
 #include <QScrollBar>
 
@@ -462,7 +459,7 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
     // mind bug 279513
     bool isExpandable = model()->hasChildren( index );
     bool wouldExpand = !visualRect( index ).contains( event->pos() ) || // clicked outside item, perhaps on expander icon
-                       ( isExpandable && !KGlobalSettings::singleClick() ); // we're in doubleClick
+                       ( isExpandable && !style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) ); // we're in doubleClick
     if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         !wouldExpand )
@@ -643,10 +640,10 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         return;
     m_ongoingDrag = true;
 
-/*  FIXME: disabled temporarily for KF5 porting
+/* FIXME: disabled temporarily for KF5 porting
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
-*/
+
     if( m_pd && m_pd->isHidden() )
     {
         if( m_filterModel )
@@ -705,6 +702,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 
         m_pd->show();
     }
+*/
 
     QTreeView::startDrag( supportedActions );
     debug() << "After the drag!";

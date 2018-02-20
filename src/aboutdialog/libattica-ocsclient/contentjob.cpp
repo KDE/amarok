@@ -26,8 +26,7 @@
 #include <QDebug>
 #include <QTimer>
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
 
 
 using namespace AmarokAttica;

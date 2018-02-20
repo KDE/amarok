@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 ServiceBrowser * ServiceBrowser::s_instance = 0;
 
@@ -38,7 +38,7 @@ ServiceBrowser::ServiceBrowser( const QString& name, QWidget* parent )
 
     setLongDescription( i18n( "The Internet browser lets you browse online sources of content that integrates directly into Amarok. Amarok ships with a number of these sources, but many more can be added using scripts." ) );
 
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_internet.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_internet.png" ) );
 }
 
 

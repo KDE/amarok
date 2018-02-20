@@ -25,8 +25,7 @@
 #include "FileType.h"
 #include "core/support/Debug.h"
 
-#include <KLocale>
-#include <klocalizeddate.h>
+#include <KLocalizedString>
 
 using namespace Meta;
 
@@ -262,13 +261,12 @@ Collections::semanticDateTimeParser( const QString &text, bool *absolute )
 
     const QString lowerText = text.toLower();
     const QDateTime curTime = QDateTime::currentDateTime();
-    QDateTime result;
 
     if( absolute )
         *absolute = false;
 
     // parse date using local settings
-    KLocalizedDate localizedDate = KLocalizedDate::readDate( text, KLocale::ShortFormat );
+    QDateTime result = QLocale().toDateTime( text, QLocale::ShortFormat );
 
     // parse date using a backup standard independent from local settings
     QRegExp shortDateReg("(\\d{1,2})[-.](\\d{1,2})");
@@ -287,9 +285,8 @@ Collections::semanticDateTimeParser( const QString &text, bool *absolute )
         else if( ( lowerText.compare( "three months ago" ) == 0 ) || ( lowerText.compare( i18n( "three months ago" ) ) == 0 ) )
             result = curTime.addMonths( -3 );
     }
-    else if( localizedDate.isValid() )
+    else if( result.isValid() )
     {
-        result = QDateTime( localizedDate.date() );
         if( absolute )
             *absolute = true;
     }

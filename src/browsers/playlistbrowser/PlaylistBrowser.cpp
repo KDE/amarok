@@ -24,16 +24,16 @@
 #include "core/support/Debug.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KLocale>
-#include <KStandardDirs>
-
+#include <QLayout>
 #include <QList>
+#include <QStandardPaths>
 #include <QString>
 
+#include <KLocalizedString>
+
 PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const QString &name, QWidget *parent )
- : BrowserCategoryList( name, parent )
+    : BrowserCategoryList( name, parent )
 {
-    setMargin( 0 );
     setContentsMargins(0,0,0,0);
 
     addCategory( new DynamicCategory( 0 ) );
@@ -42,7 +42,7 @@ PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const QString &name, QWidge
 
     setLongDescription( i18n( "The playlist browser contains your list of imported and saved playlists. It is also where you can specify powerful dynamic playlists and manage your podcast subscriptions and episodes." ) );
 
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_playlists.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_playlists.png" ) );
 }
 
 PlaylistBrowserNS::PlaylistBrowser::~PlaylistBrowser()

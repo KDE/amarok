@@ -52,7 +52,7 @@ class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
         int writeBackCoverDimensions() const;
         qint64 checkedFields() const;
 
-        QWeakPointer<StatSyncing::Config> m_statSyncingConfig;
+        QPointer<StatSyncing::Config> m_statSyncingConfig;
 
 };
 

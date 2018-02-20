@@ -21,15 +21,13 @@
 #include "amarok_export.h"
 #include "OpmlOutline.h"
 
-#include <QDomElement>
 #include <QMap>
 #include <QStack>
-#include <QString>
 #include <QStringList>
+#include <QUrl>
 #include <QXmlStreamReader>
 
-#include <kjob.h>
-#include <QUrl>
+#include <KJob>
 #include <ThreadWeaver/Job>
 
 namespace KIO

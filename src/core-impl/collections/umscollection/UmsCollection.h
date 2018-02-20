@@ -137,8 +137,8 @@ class UmsCollection : public Collection, public Meta::Observer
         using Meta::Observer::metadataChanged; // silence compiler warning about hidder overloads
 
         /* own methods */
-        const QUrl &musicPath() const { return m_musicPath; }
-        const QUrl &podcastPath() const { return m_podcastPath; }
+        const QUrl &musicUrl() const { return m_musicUrl; }
+        const QUrl &podcastUrl() const { return m_podcastUrl; }
 
         /**
          * Get location where track @param track should be transferred to.
@@ -216,8 +216,8 @@ class UmsCollection : public Collection, public Meta::Observer
 
         bool m_autoConnect;
         QString m_mountPoint;
-        QUrl m_musicPath;
-        QUrl m_podcastPath;
+        QUrl m_musicUrl;
+        QUrl m_podcastUrl;
         QString m_musicFilenameScheme;
         bool m_vfatSafe;
         bool m_asciiOnly;

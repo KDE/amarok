@@ -26,23 +26,22 @@
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/view/listview/PrettyItemDelegate.h"
 
-#include <KHBox>
 #include <KRatingWidget>
-#include <KVBox>
 
 #include <QEvent>
-#include <QBoxLayout>
+#include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QVBoxLayout>
 
 using namespace Playlist;
 
 InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index,
                                         PlaylistLayout layout, int height, int width )
-    : KHBox( parent )
+    : BoxWidget( false, parent )
     , m_index( index )
     , m_layout( layout )
     , m_widgetHeight( height )
@@ -123,7 +122,7 @@ void InlineEditorWidget::createChildWidgets()
         }
     }
 
-    KVBox *rowsWidget = new KVBox( this );
+    BoxWidget *rowsWidget = new BoxWidget( true, this );
 
     // --- paint all the rows
     for( int i = 0; i < rowCount; i++ )
@@ -418,6 +417,6 @@ InlineEditorWidget::eventFilter( QObject *obj, QEvent *event )
             return false;
     }
     else
-        return KHBox::eventFilter( obj, event );
+        return BoxWidget::eventFilter( obj, event );
 }
 

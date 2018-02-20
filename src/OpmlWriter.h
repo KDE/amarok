@@ -20,8 +20,8 @@
 #include "OpmlOutline.h"
 
 #include <ThreadWeaver/Job>
-#include <QUrl>
 
+#include <QUrl>
 #include <QXmlStreamWriter>
 
 class AMAROK_EXPORT OpmlWriter : public QObject, public ThreadWeaver::Job

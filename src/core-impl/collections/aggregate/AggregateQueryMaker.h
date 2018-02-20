@@ -27,7 +27,7 @@
 #include <QMutex>
 #include <QSet>
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 
 class CustomReturnFunction;
 class CustomReturnValue;
@@ -99,15 +99,15 @@ class AMAROK_EXPORT AggregateQueryMaker : public QueryMaker
         qint64 m_orderField;
         bool m_orderByNumberField;
         QMutex m_queryDoneCountMutex;
-        // store AggregateCollection meta stuff using KSharedPtr,
+        // store AggregateCollection meta stuff using AmarokSharedPointer,
         // otherwise AggregateCollection might delete it (as soon as it gets garbage collection)
-        QSet<KSharedPtr<Meta::AggregateTrack> > m_tracks;
-        QSet<KSharedPtr<Meta::AggregateArtist> > m_artists;
-        QSet<KSharedPtr<Meta::AggregateAlbum> > m_albums;
-        QSet<KSharedPtr<Meta::AggregateGenre> > m_genres;
-        QSet<KSharedPtr<Meta::AggregateComposer> > m_composers;
-        QSet<KSharedPtr<Meta::AggreagateYear> > m_years;
-        QSet<KSharedPtr<Meta::AggregateLabel> > m_labels;
+        QSet<AmarokSharedPointer<Meta::AggregateTrack> > m_tracks;
+        QSet<AmarokSharedPointer<Meta::AggregateArtist> > m_artists;
+        QSet<AmarokSharedPointer<Meta::AggregateAlbum> > m_albums;
+        QSet<AmarokSharedPointer<Meta::AggregateGenre> > m_genres;
+        QSet<AmarokSharedPointer<Meta::AggregateComposer> > m_composers;
+        QSet<AmarokSharedPointer<Meta::AggreagateYear> > m_years;
+        QSet<AmarokSharedPointer<Meta::AggregateLabel> > m_labels;
         QList<CustomReturnFunction*> m_returnFunctions;
         QList<CustomReturnValue*> m_returnValues;
 };

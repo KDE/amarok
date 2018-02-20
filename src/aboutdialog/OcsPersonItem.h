@@ -28,6 +28,8 @@
 
 #include <QLabel>
 
+class KJob;
+
 class OcsPersonItem : public QWidget, private Ui::OcsPersonItem
 {
     Q_OBJECT

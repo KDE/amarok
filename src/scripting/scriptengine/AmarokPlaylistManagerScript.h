@@ -27,7 +27,7 @@ namespace Playlists
     class Playlist;
     class PlaylistProvider;
 
-    typedef KSharedPtr<Playlist> PlaylistPtr;
+    typedef AmarokSharedPointer<Playlist> PlaylistPtr;
     typedef QList<PlaylistPtr> PlaylistList;
     typedef QList<Playlists::PlaylistProvider *> PlaylistProviderList;
 }

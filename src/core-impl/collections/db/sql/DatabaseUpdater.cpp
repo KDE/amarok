@@ -17,6 +17,7 @@
 #include "DatabaseUpdater.h"
 
 #include "amarokconfig.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include <core/storage/SqlStorage.h>
 #include "SqlCollection.h"
@@ -27,7 +28,6 @@
 #include <QMultiMap>
 #include <QTextStream>
 
-#include <KGlobal>
 #include <KMessageBox>
 
 static const int DB_VERSION = 15;
@@ -42,7 +42,7 @@ DatabaseUpdater::DatabaseUpdater( Collections::SqlCollection *collection )
     : m_collection( collection )
     , m_debugDatabaseContent( false )
 {
-    m_debugDatabaseContent = KGlobal::config()->group( "SqlCollection" ).readEntry( "DebugDatabaseContent", false );
+    m_debugDatabaseContent = Amarok::config( "SqlCollection" ).readEntry( "DebugDatabaseContent", false );
 }
 
 DatabaseUpdater::~DatabaseUpdater()

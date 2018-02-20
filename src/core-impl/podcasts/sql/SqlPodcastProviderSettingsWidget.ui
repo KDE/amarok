@@ -37,7 +37,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="KIntSpinBox" name="m_autoUpdateInterval">
+    <widget class="QSpinBox" name="m_autoUpdateInterval">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -117,9 +117,9 @@ This can be changed for each channel individually.</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KIntSpinBox</class>
+   <class>QSpinBox</class>
    <extends>QSpinBox</extends>
-   <header>knuminput.h</header>
+   <header>qspinbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

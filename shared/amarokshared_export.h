@@ -17,16 +17,16 @@
 #ifndef AMAROKSHARED_EXPORT_H
 #define AMAROKSHARED_EXPORT_H
 
-/* needed for KDE_EXPORT and KDE_IMPORT macros */
-#include <kdemacros.h>
+/* needed for Q_DECL_EXPORT and Q_DECL_IMPORT macros */
+#include <QtCore/QtGlobal>
 
 #ifndef AMAROKSHARED_EXPORT
 # ifdef MAKE_AMAROKSHARED_LIB
    /* We are building this library */
-#  define AMAROKSHARED_EXPORT KDE_EXPORT
+#  define AMAROKSHARED_EXPORT Q_DECL_EXPORT
 # else
    /* We are using this library */
-#  define AMAROKSHARED_EXPORT KDE_IMPORT
+#  define AMAROKSHARED_EXPORT Q_DECL_IMPORT
 # endif
 #endif // AMAROKSHARED_EXPORT
 

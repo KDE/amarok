@@ -16,6 +16,7 @@
 
 #include "IpodTranscodeCapability.h"
 
+#include <KConfig>
 
 using namespace Capabilities;
 
@@ -35,7 +36,7 @@ QStringList
 IpodTranscodeCapability::playableFileTypes()
 {
     if( m_coll )
-        return m_coll.data()->supportedFormats();
+        return m_coll->supportedFormats();
     return QStringList();
 }
 

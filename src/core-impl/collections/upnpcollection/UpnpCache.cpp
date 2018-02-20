@@ -17,7 +17,6 @@
 
 #include <QMutexLocker>
 
-#include <KDateTime>
 #include "upnptypes.h"
 
 #include "UpnpMeta.h"

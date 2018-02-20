@@ -48,11 +48,12 @@ AmarokCollectionScript::AmarokCollectionScript( AmarokScriptEngine *engine )
     engine->globalObject().property( "Amarok" ).setProperty( "CollectionManager", scriptObject );
 
     CollectionManager *instance = CollectionManager::instance();
-    connect( instance, SIGNAL(collectionDataChanged(Collections::Collection*)),
-            SIGNAL(collectionDataChanged(Collections::Collection*)) );
-    connect( instance, SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)),
-             SIGNAL(collectionAdded(Collections::Collection*)) );
-    connect( instance, SIGNAL(collectionRemoved(QString)), SIGNAL(collectionRemoved(QString)) );
+    connect( instance, &CollectionManager::collectionDataChanged,
+             this, &AmarokCollectionScript::collectionDataChanged );
+    connect( instance, &CollectionManager::collectionAdded,
+             this, &AmarokCollectionScript::collectionAdded );
+    connect( instance, &CollectionManager::collectionRemoved,
+             this, &AmarokCollectionScript::collectionRemoved );
 }
 
 int

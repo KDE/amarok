@@ -25,7 +25,7 @@
 #include "widgets/ProgressWidget.h"
 
 #include <QIcon>
-#include <KLocale>
+#include <KLocalizedString>
 
 BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album )
     : QAction( i18n( "Bookmark this Album" ), parent )

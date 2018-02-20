@@ -28,7 +28,7 @@ using namespace MemoryMeta;
 Meta::TrackList
 Base::tracks()
 {
-    // construct KSharedPtrs on demand, see m_track comment
+    // construct AmarokSharedPointers on demand, see m_track comment
     QReadLocker locker( &m_tracksLock );
     Meta::TrackList list;
     foreach( Track *track, m_tracks )

@@ -177,7 +177,7 @@ ConstraintTypes::TagMatch::getName() const
         double r = m_value.toDouble() / 2.0;
         return v.arg( i18ncp("number of stars in the rating of a track", "%1 star", "%1 stars", r) );
     } else if ( m_field == "length" ) {
-        return v.arg( QTime().addMSecs( m_value.toInt() ).toString( "H:mm:ss" ) );
+        return v.arg( QTime(0, 0, 0).addMSecs( m_value.toInt() ).toString( "H:mm:ss" ) );
     } else {
         if ( m_fieldsModel->type_of( m_field ) == FieldTypeString ) {
             // put quotes around any strings (eg, track title or artist name) ...
@@ -530,14 +530,14 @@ ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget(
     ui.setupUi( this );
 
     // plural support in combobox labels
-    connect( ui.spinBox_ValueDateValue, QOverload<int>::of(&KIntSpinBox::valueChanged),
+    connect( ui.spinBox_ValueDateValue, QOverload<int>::of(&QSpinBox::valueChanged),
              this, &TagMatchEditWidget::slotUpdateComboBoxLabels );
     ui.comboBox_ValueDateUnit->insertItem(0, i18ncp("within the last %1 days", "day", "days", 0));
     ui.comboBox_ValueDateUnit->insertItem(1, i18ncp("within the last %1 months", "month", "months", 0));
     ui.comboBox_ValueDateUnit->insertItem(2, i18ncp("within the last %1 years", "year", "years", 0));
 
     // fill in appropriate defaults for some attributes
-    ui.kdatewidget_DateSpecific->setDate( QDate::currentDate() );
+    ui.qcalendarwidget_DateSpecific->setSelectedDate( QDate::currentDate() );
 
     // fill in user-specified values before the slots have been connected to we don't have to call back to the constraint a dozen times
     ui.comboBox_Field->setModel( m_fieldsModel );
@@ -550,7 +550,7 @@ ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget(
     } else if ( field == "length" ) {
         ui.comboBox_ComparisonTime->setCurrentIndex( comparison );
         ui.slider_StrictnessTime->setValue( strictness );
-        ui.timeEdit_TimeValue->setTime( QTime().addMSecs( value.toInt() ) );
+        ui.timeEdit_TimeValue->setTime( QTime(0, 0, 0).addMSecs( value.toInt() ) );
     } else if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeInt ) {
         ui.comboBox_ComparisonInt->setCurrentIndex( comparison );
         ui.slider_StrictnessInt->setValue( strictness );
@@ -564,7 +564,7 @@ ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget(
             ui.comboBox_ValueDateUnit->setCurrentIndex( value.value<DateRange>().second );
         } else {
             ui.stackedWidget_Date->setCurrentIndex( 0 );
-            ui.kdatewidget_DateSpecific->setDate( value.toDate() );
+            ui.qcalendarwidget_DateSpecific->setSelectedDate( value.toDate() );
         }
     } else if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeString ) {
         ui.comboBox_ComparisonString->setCurrentIndex( comparison );
@@ -627,7 +627,7 @@ ConstraintTypes::TagMatchEditWidget::on_comboBox_Field_currentIndexChanged( int 
         ui.stackedWidget_Field->setCurrentIndex( 3 );
         c = ui.comboBox_ComparisonTime->currentIndex();
         s = ui.slider_StrictnessTime->value();
-        v = QTime().msecsTo( ui.timeEdit_TimeValue->time() );
+        v = QTime(0, 0, 0).msecsTo( ui.timeEdit_TimeValue->time() );
     } else if ( field == "rating" ) {
         ui.stackedWidget_Field->setCurrentIndex( 4 );
         c = ui.comboBox_ComparisonRating->currentIndex();
@@ -650,7 +650,7 @@ ConstraintTypes::TagMatchEditWidget::on_comboBox_Field_currentIndexChanged( int 
                 v = QVariant::fromValue( DateRange( a, b ) );
             } else {
                 ui.stackedWidget_Date->setCurrentIndex( 0 );
-                v = ui.kdatewidget_DateSpecific->date();
+                v = ui.qcalendarwidget_DateSpecific->selectedDate();
             }
         } else if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeString ) {
             ui.stackedWidget_Field->setCurrentIndex( 2 );
@@ -742,7 +742,7 @@ ConstraintTypes::TagMatchEditWidget::on_rating_RatingValue_ratingChanged( int v 
 void
 ConstraintTypes::TagMatchEditWidget::on_timeEdit_TimeValue_timeChanged( const QTime& t )
 {
-    int v = QTime().msecsTo( t );
+    int v = QTime(0, 0, 0).msecsTo( t );
     emit valueChanged( QVariant( v ) );
 }
 

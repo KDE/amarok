@@ -50,9 +50,7 @@ PluginsConfig::PluginsConfig( Amarok2ConfigDialog *parent )
                             KPluginSelector::ReadConfigFile, i18n("Statistics importers"), "Importer" );
 
     connect( m_selector, &KPluginSelector::changed, this, &PluginsConfig::slotConfigChanged );
-
-    connect( m_selector, &KPluginSelector::changed,
-             parent, &Amarok2ConfigDialog::updateButtons );
+    connect( m_selector, &KPluginSelector::changed, parent, &Amarok2ConfigDialog::updateButtons );
 }
 
 PluginsConfig::~PluginsConfig()

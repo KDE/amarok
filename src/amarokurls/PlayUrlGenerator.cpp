@@ -24,7 +24,7 @@
 #include "EngineController.h"
 #include "BookmarkModel.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 PlayUrlGenerator * PlayUrlGenerator::s_instance = 0;
 

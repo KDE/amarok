@@ -19,12 +19,13 @@
 #include "CoverFetchUnit.h"
 
 #include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <QRegExp>
 #include <QSet>
+#include <QUrlQuery>
 #include <QXmlStreamReader>
 
-#include "core/support/Debug.h"
 #include <KLocalizedString>
 
 /*
@@ -34,24 +35,21 @@
 CoverFetchUnit::CoverFetchUnit( Meta::AlbumPtr album,
                                 const CoverFetchPayload *payload,
                                 CoverFetch::Option opt )
-    : QSharedData()
-    , m_album( album )
+    : m_album( album )
     , m_options( opt )
     , m_payload( payload )
 {
 }
 
 CoverFetchUnit::CoverFetchUnit( const CoverFetchPayload *payload, CoverFetch::Option opt )
-    : QSharedData()
-    , m_album( payload->album() )
+    : m_album( payload->album() )
     , m_options( opt )
     , m_payload( payload )
 {
 }
 
 CoverFetchUnit::CoverFetchUnit( const CoverFetchSearchPayload *payload )
-    : QSharedData()
-    , m_album( payload->album() )
+    : m_album( payload->album() )
     , m_options( CoverFetch::WildInteractive )
     , m_payload( payload )
 {
@@ -241,14 +239,16 @@ CoverFetchInfoPayload::prepareUrls()
         url.setScheme( "http" );
         url.setHost( "ws.audioscrobbler.com" );
         url.setPath( "/2.0/" );
-        url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-        url.addQueryItem( "album", sanitizeQuery( album()->name() ) );
+        QUrlQuery query;
+        query.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+        query.addQueryItem( "album", sanitizeQuery( album()->name() ) );
 
         if( album()->hasAlbumArtist() )
         {
-            url.addQueryItem( "artist", sanitizeQuery( album()->albumArtist()->name() ) );
+            query.addQueryItem( "artist", sanitizeQuery( album()->albumArtist()->name() ) );
         }
-        url.addQueryItem( "method", method() );
+        query.addQueryItem( "method", method() );
+        url.setQuery( query );
 
         metadata[ "source" ] = "Last.fm";
         metadata[ "method" ] = method();
@@ -295,8 +295,10 @@ CoverFetchInfoPayload::prepareDiscogsUrls( const QByteArray &data )
                             url.setScheme( "http" );
                             url.setHost( "www.discogs.com" );
                             url.setPath( "/release/" + releaseId );
-                            url.addQueryItem( "api_key", Amarok::discogsApiKey() );
-                            url.addQueryItem( "f", "xml" );
+                            QUrlQuery query;
+                            query.addQueryItem( "api_key", Amarok::discogsApiKey() );
+                            query.addQueryItem( "f", "xml" );
+                            url.setQuery( query );
 
                             CoverFetch::Metadata metadata;
                             metadata[ "source" ] = "Discogs";
@@ -344,6 +346,7 @@ void
 CoverFetchSearchPayload::prepareUrls()
 {
     QUrl url;
+    QUrlQuery query;
     url.setScheme( "http" );
     CoverFetch::Metadata metadata;
 
@@ -353,11 +356,11 @@ CoverFetchSearchPayload::prepareUrls()
     case CoverFetch::LastFm:
         url.setHost( "ws.audioscrobbler.com" );
         url.setPath( "/2.0/" );
-        url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-        url.addQueryItem( "limit", QString::number( 20 ) );
-        url.addQueryItem( "page", QString::number( m_page ) );
-        url.addQueryItem( "album", sanitizeQuery( m_query ) );
-        url.addQueryItem( "method", method() );
+        query.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+        query.addQueryItem( "limit", QString::number( 20 ) );
+        query.addQueryItem( "page", QString::number( m_page ) );
+        query.addQueryItem( "album", sanitizeQuery( m_query ) );
+        query.addQueryItem( "method", method() );
         metadata[ "source" ] = "Last.fm";
         metadata[ "method" ] = method();
         break;
@@ -366,11 +369,11 @@ CoverFetchSearchPayload::prepareUrls()
         debug() << "Setting up a Discogs fetch";
         url.setHost( "www.discogs.com" );
         url.setPath( "/search" );
-        url.addQueryItem( "api_key", Amarok::discogsApiKey() );
-        url.addQueryItem( "page", QString::number( m_page + 1 ) );
-        url.addQueryItem( "type", "all" );
-        url.addQueryItem( "q", sanitizeQuery( m_query ) );
-        url.addQueryItem( "f", "xml" );
+        query.addQueryItem( "api_key", Amarok::discogsApiKey() );
+        query.addQueryItem( "page", QString::number( m_page + 1 ) );
+        query.addQueryItem( "type", "all" );
+        query.addQueryItem( "q", sanitizeQuery( m_query ) );
+        query.addQueryItem( "f", "xml" );
         debug() << "Discogs Url: " << url;
         metadata[ "source" ] = "Discogs";
         break;
@@ -378,13 +381,14 @@ CoverFetchSearchPayload::prepareUrls()
     case CoverFetch::Google:
         url.setHost( "images.google.com" );
         url.setPath( "/images" );
-        url.addQueryItem( "q", sanitizeQuery( m_query ) );
-        url.addQueryItem( "gbv", QChar( '1' ) );
-        url.addQueryItem( "filter", QChar( '1' ) );
-        url.addQueryItem( "start", QString::number( 20 * m_page ) );
+        query.addQueryItem( "q", sanitizeQuery( m_query ) );
+        query.addQueryItem( "gbv", QChar( '1' ) );
+        query.addQueryItem( "filter", QChar( '1' ) );
+        query.addQueryItem( "start", QString::number( 20 * m_page ) );
         metadata[ "source" ] = "Google";
         break;
     }
+    url.setQuery( query );
     debug() << "Fetching From URL: " << url;
     if( url.isValid() )
         m_urls.insert( url, metadata );
@@ -447,6 +451,7 @@ CoverFetchArtPayload::prepareUrls()
     }
 
     QXmlStreamReader xml( m_xml );
+    xml.setNamespaceProcessing( false );
     switch( m_src )
     {
     default:
@@ -460,7 +465,7 @@ CoverFetchArtPayload::prepareUrls()
 
     if( xml.hasError() )
     {
-        debug() << QString( "Error occurred when preparing %1 urls for %2: %3" )
+        warning() << QString( "Error occurred when preparing %1 urls for %2: %3" )
             .arg( sourceString(), (album() ? album()->name() : "'unknown'"), xml.errorString() );
         debug() << urls();
     }
@@ -546,13 +551,14 @@ CoverFetchArtPayload::prepareGoogleUrls()
     while( ( (pos = rx.indexIn( html, pos ) ) != -1 ) )
     {
         QUrl url( "http://www.google.com" + rx.cap( 1 ) );
+        QUrlQuery query( url.query() );
 
         CoverFetch::Metadata metadata;
-        metadata[ "width" ] = url.queryItemValue( "w" );
-        metadata[ "height" ] = url.queryItemValue( "h" );
-        metadata[ "size" ] = url.queryItemValue( "sz" );
-        metadata[ "imgrefurl" ] = url.queryItemValue( "imgrefurl" );
-        metadata[ "normalarturl" ] = url.queryItemValue("imgurl");
+        metadata[ "width" ] = query.queryItemValue( "w" );
+        metadata[ "height" ] = query.queryItemValue( "h" );
+        metadata[ "size" ] = query.queryItemValue( "sz" );
+        metadata[ "imgrefurl" ] = query.queryItemValue( "imgrefurl" );
+        metadata[ "normalarturl" ] = query.queryItemValue("imgurl");
         metadata[ "source" ] = "Google";
 
         if( !rx.cap( 2 ).isEmpty() )

@@ -23,12 +23,13 @@
 
 #include <qjson/parser.h>
 
-#include <QUrl>
 #include <KIO/Job>
 
-#include <QString>
-#include <QVariant>
 #include <QMap>
+#include <QString>
+#include <QUrl>
+#include <QUrlQuery>
+#include <QVariant>
 #include <QVariantMap>
 
 namespace Playdar {
@@ -56,10 +57,11 @@ namespace Playdar {
         
         const QString baseUrl( "http://localhost:60210/api/?method=resolve" );
         QUrl resolveUrl( baseUrl );
-        
-        resolveUrl.addQueryItem( QString( "artist" ), artist );
-        resolveUrl.addQueryItem( QString( "album" ), album );
-        resolveUrl.addQueryItem( QString( "track" ), title );
+        QUrlQuery query( resolveUrl );
+        query.addQueryItem( QString( "artist" ), artist );
+        query.addQueryItem( QString( "album" ), album );
+        query.addQueryItem( QString( "track" ), title );
+        resolveUrl.setQuery( query );
         
         debug() << "Starting storedGetJob for " << resolveUrl.url();
         
@@ -74,9 +76,11 @@ namespace Playdar {
         
         const QString baseUrl( "http://localhost:60210/api/?method=get_results" );
         QUrl getResultsUrl( baseUrl );
-        
-        getResultsUrl.addQueryItem( QString( "qid" ), query->qid() );
-        
+        QUrlQuery q( getResultsUrl );
+
+        q.addQueryItem( QString( "qid" ), query->qid() );
+        getResultsUrl.setQuery( q );
+
         KJob* getResultsJob = KIO::storedGet( getResultsUrl, KIO::Reload, KIO::HideProgressInfo );
         connect( getResultsJob, &KJob::result, query, &Query::receiveResults );
     }
@@ -88,9 +92,11 @@ namespace Playdar {
         
         const QString baseUrl( "http://localhost:60210/api/?method=get_results_long" );
         QUrl getResultsUrl( baseUrl );
-        
-        getResultsUrl.addQueryItem( QString( "qid" ), query->qid() );
-        
+        QUrlQuery q( getResultsUrl );
+
+        q.addQueryItem( QString( "qid" ), query->qid() );
+        getResultsUrl.setQuery( q );
+
         KJob* getResultsJob = KIO::storedGet( getResultsUrl, KIO::Reload, KIO::HideProgressInfo );
         connect( getResultsJob, &KJob::result, query, &Query::receiveResults );
     }

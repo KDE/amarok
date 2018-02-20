@@ -38,8 +38,8 @@
 #include <kdirlister.h>
 #include <kio/jobclasses.h>
 #include <kio/job.h>
-#include <KInputDialog>
-#include <KLocale>
+#include <QInputDialog>
+#include <KLocalizedString>
 #include <QUrl>
 
 #include <QFileInfo>

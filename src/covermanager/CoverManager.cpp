@@ -37,30 +37,27 @@
 #include "widgets/LineEdit.h"
 #include "widgets/PixmapViewer.h"
 
-#include <QApplication>
-#include <KIO/NetAccess>
-#include <KLocalizedString>
-#include <QMenu>    //showCoverMenu()
-#include <KPushButton>
-#include <KSqueezedTextLabel> //status label
-#include <KStatusBar>
-#include <KToolBar>
-#include <KVBox>
-#include <KIconLoader>
-
 #include <QAction>
+#include <QApplication>
 #include <QDesktopWidget>
+#include <QDialogButtonBox>
+#include <QMenu>    //showCoverMenu()
 #include <QProgressBar>
+#include <QPushButton>
 #include <QSplitter>
+#include <QStatusBar>
 #include <QStringList>
 #include <QTimer>    //search filter timer
 #include <QToolButton>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
-#include <KConfigGroup>
-#include <QDialogButtonBox>
-#include <QPushButton>
 #include <QVBoxLayout>
+
+#include <KConfigGroup>
+#include <KIconLoader>
+#include <KLocalizedString>
+#include <KSqueezedTextLabel> //status label
+#include <KToolBar>
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
@@ -107,7 +104,7 @@ CoverManager::CoverManager( QWidget *parent )
     // Sets caption and icon correctly (needed e.g. for GNOME)
     //kapp->setTopWidget( this );
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox();
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close );
     QVBoxLayout *mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &CoverManager::accept);
@@ -174,25 +171,24 @@ CoverManager::slotContinueConstruction() //SLOT
     }
     m_artistView->insertTopLevelItems( 0, m_items );
 
-    KVBox *vbox = new KVBox( m_splitter );
-    KHBox *hbox = new KHBox( vbox );
-
-    vbox->setSpacing( 4 );
-    hbox->setSpacing( 4 );
+    BoxWidget *vbox = new BoxWidget( true, m_splitter );
+    BoxWidget *hbox = new BoxWidget( false, vbox );
+    vbox->layout()->setSpacing( 4 );
+    hbox->layout()->setSpacing( 4 );
 
     { //<Search LineEdit>
         m_searchEdit = new Amarok::LineEdit( hbox );
-        m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
+        m_searchEdit->setPlaceholderText( i18n( "Enter search terms here" ) );
         m_searchEdit->setFrame( true );
 
         m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-        m_searchEdit->setClearButtonShown( true );
+        m_searchEdit->setClearButtonEnabled( true );
 
-        hbox->setStretchFactor( m_searchEdit, 1 );
+        static_cast<QHBoxLayout*>( hbox->layout() )->setStretchFactor( m_searchEdit, 1 );
     } //</Search LineEdit>
 
     // view menu
-    m_viewButton = new KPushButton( hbox );
+    m_viewButton = new QPushButton( hbox );
 
     m_viewMenu = new QMenu( m_viewButton );
     m_selectAllAlbums          = m_viewMenu->addAction( i18n("All Albums"),           this, &CoverManager::slotShowAllAlbums );
@@ -210,7 +206,7 @@ CoverManager::slotContinueConstruction() //SLOT
     connect( m_viewMenu, &QMenu::triggered, this, &CoverManager::slotAlbumFilterTriggered );
 
     //fetch missing covers button
-    m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "get-hot-new-stuff-amarok" ), hbox );
+    m_fetchButton = new QPushButton( QIcon( "get-hot-new-stuff-amarok" ), i18n("Fetch Missing Covers"), hbox );
     connect( m_fetchButton, &QAbstractButton::clicked, this, &CoverManager::fetchMissingCovers );
 
     m_selectAllAlbums->setChecked( true );
@@ -222,7 +218,7 @@ CoverManager::slotContinueConstruction() //SLOT
     m_coverViewSpacer->hide();
 
     //status bar
-    KStatusBar *statusBar = new KStatusBar( vbox );
+    QStatusBar *statusBar = new QStatusBar( vbox );
 
     m_statusLabel = new KSqueezedTextLabel( statusBar );
     m_statusLabel->setIndent( 3 );
@@ -254,6 +250,19 @@ CoverManager::slotContinueConstruction() //SLOT
                 break;
         }
     }
+
+    // signals and slots connections
+    connect( m_artistView, &QTreeWidget::itemSelectionChanged,
+             this, &CoverManager::slotArtistSelected );
+    connect( m_coverView, &CoverView::itemActivated,
+             this, &CoverManager::coverItemClicked );
+    connect( m_timer, &QTimer::timeout,
+             this, &CoverManager::slotSetFilter );
+    connect( m_searchEdit, &Amarok::LineEdit::textChanged,
+             this, &CoverManager::slotSetFilterTimeout );
+
+    if( item == 0 )
+        item = m_artistView->invisibleRootItem()->child( 0 );
 
     // signals and slots connections
     connect( m_artistView, &QTreeWidget::itemSelectionChanged,
@@ -737,7 +746,7 @@ CoverManager::setStatusText( QString text )
 //    CLASS CoverView
 /////////////////////////////////////////////////////////////////////
 
-CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
+CoverView::CoverView( QWidget *parent, const char *name, Qt::WindowFlags f )
     : QListWidget( parent )
 {
     DEBUG_BLOCK

@@ -20,15 +20,15 @@
 #include "statsyncing/Options.h"
 #include "statsyncing/Provider.h"
 
-#include <QSharedPointer>
+#include <QDialog>
 #include <QMap>
+#include <QPointer>
 
-#include <KDialog>
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Job>
 #include <ThreadWeaver/ThreadWeaver>
 
-class KDialog;
+class QDialog;
 namespace ThreadWeaver {
     class Job;
 }
@@ -100,9 +100,9 @@ namespace StatSyncing
             TrackList m_tracksToScrobble;
 
             // gets deleted when MainWindow is deleted
-            QWeakPointer<KDialog> m_dialog;
-            QWeakPointer<ChooseProvidersPage> m_providersPage;
-            QWeakPointer<MatchedTracksPage> m_tracksPage;
+            QPointer<QDialog> m_dialog;
+            QPointer<ChooseProvidersPage> m_providersPage;
+            QPointer<MatchedTracksPage> m_tracksPage;
     };
 
 } // namespace StatSyncing

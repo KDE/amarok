@@ -27,7 +27,7 @@
 #include "core-impl/collections/support/TextualQueryFilter.h"
 #include "dynamic/TrackSet.h"
 
-#include <KLineEdit>
+#include <QLineEdit>
 
 #include <QLabel>
 #include <QCheckBox>
@@ -124,10 +124,10 @@ Dynamic::SearchQueryBias::widget( QWidget* parent )
     QWidget *widget = new QWidget( parent );
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
-    KLineEdit *edit = new KLineEdit( m_filter );
+    QLineEdit *edit = new QLineEdit( m_filter );
     layout->addWidget( edit );
 
-    connect( edit, &KLineEdit::textChanged,
+    connect( edit, &QLineEdit::textChanged,
              this, &SearchQueryBias::setFilter );
 
     return widget;

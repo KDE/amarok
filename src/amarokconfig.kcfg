@@ -6,7 +6,7 @@
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
 <include>qdir.h</include>
 
-<kcfgfile name="amarokrc"/>
+<kcfgfile arg="true"/>
 
 <group name="General Options">
     <entry key="Left Time Display Enabled" type="Bool">

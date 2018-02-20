@@ -20,7 +20,7 @@
 #include "configdialog/ConfigDialogBase.h"
 
 #include <QStringList>
-#include <KGlobal>
+
 
 class KArchiveDirectory;
 class KArchiveFile;

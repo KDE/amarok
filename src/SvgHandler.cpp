@@ -32,13 +32,14 @@
 
 #include <KColorScheme>
 #include <KColorUtils>
-#include <KStandardDirs>
 
 #include <QHash>
 #include <QPainter>
 #include <QPalette>
 #include <QReadLocker>
+#include <QStandardPaths>
 #include <QStyleOptionSlider>
+#include <QSvgRenderer>
 #include <QWriteLocker>
 
 
@@ -77,7 +78,7 @@ SvgHandler::~SvgHandler()
 
 bool SvgHandler::loadSvg( const QString& name )
 {
-    const QString &svgFilename = !m_customTheme ? KStandardDirs::locate( "data", name ) : name;
+    const QString &svgFilename = !m_customTheme ? QStandardPaths::locate( QStandardPaths::GenericDataLocation, name ) : name;
     QSvgRenderer *renderer = new QSvgRenderer( The::svgTinter()->tint( svgFilename ) );
 
     if ( !renderer->isValid() )
@@ -244,7 +245,8 @@ void SvgHandler::discardCache()
     //redraw entire app....
     reTint();
     m_cache->clear();
-    if( auto window = App::instance()->mainWindow() )
+
+    if( auto window = pApp->mainWindow() )
         window->update();
 }
 

@@ -36,14 +36,16 @@
 #include "ScriptUpdater.h"
 
 #include <KMessageBox>
-#include <KStandardDirs>
-#include <KGlobal>
+#include <KPluginMetaData>
 
 #include <QFileInfo>
 #include <QScriptEngine>
+#include <QStandardPaths>
+#include <QTimer>
 
 #include <sys/stat.h>
 #include <sys/types.h>
+
 
 ScriptManager* ScriptManager::s_instance = 0;
 
@@ -57,40 +59,11 @@ ScriptManager::ScriptManager( QObject* parent )
 
     if( AmarokConfig::enableScripts() == false )
     {
-#pragma message("PORTEME KF5: not sure if this is relevant in QT5")
-        /*if( !minimumBindingsAvailable() )
-        {
-            KMessageBox::error( 0,
-                                i18n( "Scripts have been disabled since you are missing the QtScriptQtBindings "
-                                      "package. Please install the package and restart Amarok for scripts to work." ),
-                                i18n( "Scripts Disabled!" )  );
-            return;
-        }*/
         AmarokConfig::setEnableScripts( true );
     }
 
     // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, &ScriptManager::updateAllScripts );
-}
-
-bool
-ScriptManager::minimumBindingsAvailable()
-{
-    QStringList minimumBindings;
-    minimumBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.xml" << "qt.uitools" << "qt.network";
-    QScriptEngine engine;
-    foreach( const QString &binding, minimumBindings )
-    {
-        // simply compare with availableExtensions()? Or can import still fail?
-        QScriptValue error = engine.importExtension( binding );
-        if( error.isUndefined() )
-            continue; // undefined indicates success
-
-        debug() << "Extension" << binding <<  "not found:" << error.toString();
-        debug() << "Available extensions:" << engine.availableExtensions();
-        return false;
-    }
-    return true;
 }
 
 ScriptManager::~ScriptManager()
@@ -176,9 +149,23 @@ ScriptManager::updateAllScripts() // SLOT
 {
     DEBUG_BLOCK
     // find all scripts (both in $KDEHOME and /usr)
-    QStringList foundScripts = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js",
-                                                                  KStandardDirs::Recursive |
-                                                                  KStandardDirs::NoDuplicates );
+    QStringList foundScripts;
+    QStringList locations = QStandardPaths::standardLocations( QStandardPaths::GenericDataLocation );
+    for( const auto &location : locations )
+    {
+        QDir dir( location + "/amarok/scripts" );
+
+        if( !dir.exists() )
+            continue;
+
+        for( const auto &scriptLocation : dir.entryList( QDir::NoDotAndDotDot | QDir::Dirs ) )
+        {
+            QDir scriptDir( dir.absoluteFilePath( scriptLocation ) );
+            if( scriptDir.exists( QStringLiteral( "main.js" ) ) )
+                foundScripts << scriptDir.absoluteFilePath( QStringLiteral( "main.js" ) );
+        }
+    }
+
     // remove deleted scripts
     foreach( ScriptItem *item, m_scripts )
     {
@@ -345,29 +332,31 @@ ScriptManager::loadScript( const QString& path )
     SupportAPIVersion << QLatin1String("API V1.0.0") << QLatin1String("API V1.0.1");
     QString ScriptVersion;
     QFileInfo info( path );
-    const QString specPath = QString( "%1/script.spec" ).arg( info.path() );
-    if( !QFile::exists( specPath ) )
+    const QString jsonPath = QString( "%1/script.json" ).arg( info.path() );
+    if( !QFile::exists( jsonPath ) )
     {
-        error() << "script.spec for "<< path << " is missing!";
+        error() << "script.json for "<< path << " is missing!";
         return false;
     }
 
-    KPluginInfo pluginInfo( specPath );
-    if( !pluginInfo.isValid() )
+    KPluginMetaData pluginMetadata( jsonPath );
+    if( !pluginMetadata.isValid() )
     {
-        error() << "PluginInfo invalid for" << specPath;
+        error() << "PluginMetaData invalid for" << jsonPath;
         return false;
     }
 
-    const QString pluginName = pluginInfo.pluginName();
-    const QString category   = pluginInfo.category();
-    const QString version    = pluginInfo.version();
+    const QString pluginName = pluginMetadata.pluginId();
+    const QString category   = pluginMetadata.category();
+    const QString version    = pluginMetadata.version();
 
     if( pluginName.isEmpty() || category.isEmpty() || version.isEmpty() )
     {
-        error() << "PluginInfo has empty values for" << specPath;
+        error() << "PluginMetaData has empty values for" << jsonPath;
         return false;
     }
+
+    KPluginInfo pluginInfo( pluginMetadata );
 
     ScriptItem *item;
     if( !m_scripts.contains( pluginName ) )

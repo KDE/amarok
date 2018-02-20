@@ -20,8 +20,9 @@
 #include "MusicBrainzTagsItem.h"
 
 #include "AmarokMimeData.h"
-#include "core/support/Debug.h"
 #include "MusicBrainzMeta.h"
+#include "core/support/Debug.h"
+#include "core/collections/QueryMaker.h"
 
 MusicBrainzTagsItem::MusicBrainzTagsItem( MusicBrainzTagsItem *parent,
                                           const Meta::TrackPtr track,

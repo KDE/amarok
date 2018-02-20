@@ -22,21 +22,20 @@
 #define AMAROK_METAQUERY_H
 
 #include <QWidget>
-#include <QWeakPointer>
+#include <QPointer>
 #include "core/meta/forward_declarations.h"
 #include "core/meta/support/MetaConstants.h"
 
 #include <KComboBox>
-#include <KNumInput>
+#include <QSpinBox>
 
 class QFrame;
 class QGridLayout;
 class QHBoxLayout;
-class QVBoxLayout;
 class QLabel;
 class QToolButton;
+class QVBoxLayout;
 class KToolBar;
-class KVBox;
 
 namespace Collections
 {
@@ -58,15 +57,15 @@ public:
     template<typename Func>
     void connectChanged( typename QtPrivate::FunctionPointer<Func>::Object *receiver, Func slot )
     {
-        connect( m_timeEdit, static_cast<void(KIntSpinBox::*)(int)>(&KIntSpinBox::valueChanged),
+        connect( m_timeEdit, QOverload<int>::of(&QSpinBox::valueChanged),
                  receiver, slot );
-        connect( m_unitSelection, static_cast<void(KComboBox::*)(int)>(&KComboBox::currentIndexChanged),
+        connect( m_unitSelection, QOverload<int>::of(&QComboBox::currentIndexChanged),
                  receiver, slot );
     }
 
 protected:
-    KIntSpinBox *m_timeEdit;
-    KComboBox *m_unitSelection;
+    QSpinBox *m_timeEdit;
+    QComboBox *m_unitSelection;
 
 private Q_SLOTS:
     void slotUpdateComboBoxLabels( int value );
@@ -217,15 +216,15 @@ class MetaQueryWidget : public QWidget
         QVBoxLayout* m_layoutValueLabels;
         QVBoxLayout* m_layoutValueValues;
 
-        KComboBox*   m_fieldSelection;
+        QComboBox*   m_fieldSelection;
         QLabel*      m_andLabel;
-        KComboBox*   m_compareSelection;
+        QComboBox*   m_compareSelection;
         QWidget*     m_valueSelection1;
         QWidget*     m_valueSelection2;
 
         Filter m_filter;
 
-        QMap< QObject*, QWeakPointer<KComboBox> > m_runningQueries;
+        QMap< QObject*, QPointer<KComboBox> > m_runningQueries;
 };
 
 #endif

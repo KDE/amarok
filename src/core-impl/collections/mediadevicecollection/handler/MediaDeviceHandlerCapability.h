@@ -26,7 +26,7 @@
  *
  * Following rules apply when working with capabilities:
  *  * Capabilities get deleted along their media device handler. Therefore use
- *    QWeakPointer everywhere to detect that.
+ *    QPointer everywhere to detect that.
  *  * the one who creates capability using create<Type>() must deleteLater() it when no
  *    longer used.
  */

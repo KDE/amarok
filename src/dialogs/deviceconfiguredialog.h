@@ -18,7 +18,7 @@
 #ifndef DEVICECONFIGUREDIALOG_H
 #define DEVICECONFIGUREDIALOG_H
 
-#include <kdialog.h>
+#include <QDialog>
 
 class HintLineEdit;
 class MediaDevice;

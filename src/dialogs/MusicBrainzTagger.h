@@ -21,7 +21,7 @@
 #include <config.h>
 #include "core/meta/forward_declarations.h"
 
-#include <KDialog>
+#include <QDialog>
 
 namespace Ui
 {
@@ -37,7 +37,7 @@ class MusicDNSFinder;
 
 class QSortFilterProxyModel;
 
-class MusicBrainzTagger : public KDialog
+class MusicBrainzTagger : public QDialog
 {
     Q_OBJECT
 

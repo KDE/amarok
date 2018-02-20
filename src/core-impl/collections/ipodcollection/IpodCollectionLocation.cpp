@@ -28,7 +28,7 @@
 
 #include <gpod/itdb.h>
 
-IpodCollectionLocation::IpodCollectionLocation( QWeakPointer<IpodCollection> parentCollection )
+IpodCollectionLocation::IpodCollectionLocation( QPointer<IpodCollection> parentCollection )
     : CollectionLocation()  // we implement collection(), we need not pass parentCollection
     , m_coll( parentCollection )
 {
@@ -49,7 +49,7 @@ QString
 IpodCollectionLocation::prettyLocation() const
 {
     if( m_coll )
-        return m_coll.data()->prettyName();
+        return m_coll->prettyName();
     // match string with IpodCopyTracksJob::slotDisplaySorryDialog()
     return i18n( "Disconnected iPod/iPad/iPhone" );
 }
@@ -59,7 +59,7 @@ IpodCollectionLocation::isWritable() const
 {
     if( !m_coll )
         return false;
-    return m_coll.data()->isWritable(); // no infinite loop, IpodCollection iplements this
+    return m_coll->isWritable(); // no infinite loop, IpodCollection iplements this
 }
 
 void
@@ -120,7 +120,7 @@ IpodCollectionLocation::slotCopyTrackProcessed( Meta::TrackPtr srcTrack, Meta::T
 
 void IpodCollectionLocation::ensureDirectoriesExist()
 {
-    QByteArray mountPoint = m_coll ? QFile::encodeName( m_coll.data()->mountPoint() ) : QByteArray();
+    QByteArray mountPoint = m_coll ? QFile::encodeName( m_coll->mountPoint() ) : QByteArray();
     if( mountPoint.isEmpty() )
         return;
 

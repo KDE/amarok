@@ -42,16 +42,17 @@
 #include "playback/PowerManager.h"
 #include "playlist/PlaylistActions.h"
 
-#include <KLocale>
-
 #include <Phonon/AudioOutput>
 #include <Phonon/BackendCapabilities>
 #include <Phonon/MediaObject>
 #include <Phonon/VolumeFaderEffect>
 
 #include <QCoreApplication>
-#include <QTextDocument> // for Qt::escape
-#include <qmath.h>
+#include <QUrlQuery>
+#include <QTimer>
+#include <QtMath>
+
+#include <KLocalizedString>
 
 // for slotMetaDataChanged()
 typedef QPair<Phonon::MetaData, QString> FieldPair;
@@ -85,8 +86,10 @@ EngineController::EngineController()
     DEBUG_BLOCK
     // ensure this object is created in a main thread
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
-    connect( this, &EngineController::fillInSupportedMimeTypes, &EngineController::slotFillInSupportedMimeTypes );
-    connect( this, &EngineController::trackFinishedPlaying, &EngineController::slotTrackFinishedPlaying );
+
+    connect( this, &EngineController::fillInSupportedMimeTypes, this, &EngineController::slotFillInSupportedMimeTypes );
+    connect( this, &EngineController::trackFinishedPlaying, this, &EngineController::slotTrackFinishedPlaying );
+
     new PowerManager( this ); // deals with inhibiting suspend etc.
 
     m_pauseTimer->setSingleShot( true );
@@ -102,8 +105,8 @@ EngineController::~EngineController()
     // the media is stopped - that's what endSession() is for
     if( m_media )
     {
-        m_media.data()->blockSignals(true);
-        m_media.data()->stop();
+        m_media->blockSignals(true);
+        m_media->stop();
     }
 
     delete m_boundedPlayback;
@@ -138,11 +141,11 @@ EngineController::initializePhonon()
 
     // Enable zeitgeist support on linux
     //TODO: make this configurable by the user.
-    m_media.data()->setProperty( "PlaybackTracking", true );
+    m_media->setProperty( "PlaybackTracking", true );
 
     m_audio = new AudioOutput( MusicCategory, this );
     m_audioDataOutput = new AudioDataOutput( this );
-    m_audioDataOutput.data()->setDataSize( DATAOUTPUT_DATA_SIZE ); // The number of samples that Phonon sends per signal
+    m_audioDataOutput->setDataSize( DATAOUTPUT_DATA_SIZE ); // The number of samples that Phonon sends per signal
 
     m_path = createPath( m_media.data(), m_audio.data() );
 
@@ -333,8 +336,8 @@ EngineController::play() //SLOT
         {
             m_pauseTimer->stop();
             if( supportsFadeout() )
-                m_fader.data()->setVolume( 1.0 );
-            m_media.data()->play();
+                m_fader->setVolume( 1.0 );
+            m_media->play();
             emit trackPlaying( m_currentTrack );
             return;
         }
@@ -395,7 +398,7 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
 {
     DEBUG_BLOCK
 
-    m_media.data()->stop();
+    m_media->stop();
 
     debug() << "URL: " << url << url.url();
     debug() << "Offset: " << offset;
@@ -418,25 +421,22 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
         }
         QString device = QUrlQuery(url).queryItemValue( "device" );
 
-        m_media.data()->setCurrentSource( Phonon::MediaSource( Phonon::Cd, device ) );
+        m_media->setCurrentSource( Phonon::MediaSource( Phonon::Cd, device ) );
         m_currentAudioCdTrack = trackNumber;
     }
     else
     {
         // keep in sync with setNextTrack(), slotPlayableUrlFetched()
-        if( url.isLocalFile() )
-            m_media.data()->setCurrentSource( url.toLocalFile() );
-        else
-            m_media.data()->setCurrentSource( url );
+        m_media->setCurrentSource( url );
     }
 
-    m_media.data()->clearQueue();
+    m_media->clearQueue();
 
     if( m_currentAudioCdTrack )
     {
         // call to play() is asynchronous and ->setCurrentTitle() can be only called on
         // playing, buffering or paused media.
-        m_media.data()->pause();
+        m_media->pause();
         DelayedTrackChanger *trackChanger = new DelayedTrackChanger( m_media.data(),
                 m_controller.data(), m_currentAudioCdTrack, offset, startPaused );
         connect( trackChanger, &DelayedTrackChanger::trackPositionChanged,
@@ -447,7 +447,7 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
         // call to play() is asynchronous and ->seek() can be only called on playing,
         // buffering or paused media. Calling play() would lead to audible glitches,
         // so call pause() that doesn't suffer from such problem.
-        m_media.data()->pause();
+        m_media->pause();
         DelayedSeeker *seeker = new DelayedSeeker( m_media.data(), offset, startPaused );
         connect( seeker, &DelayedSeeker::trackPositionChanged,
                  this, &EngineController::trackPositionChanged );
@@ -456,14 +456,14 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
     {
         if( startPaused )
         {
-            m_media.data()->pause();
+            m_media->pause();
         }
         else
         {
             m_pauseTimer->stop();
             if( supportsFadeout() )
-                m_fader.data()->setVolume( 1.0 );
-            m_media.data()->play();
+                m_fader->setVolume( 1.0 );
+            m_media->play();
         }
     }
 }
@@ -473,7 +473,7 @@ EngineController::pause() //SLOT
 {
     if( supportsFadeout() && AmarokConfig::fadeoutOnPause() )
     {
-        m_fader.data()->fadeOut( AmarokConfig::fadeoutLength() );
+        m_fader->fadeOut( AmarokConfig::fadeoutLength() );
         m_pauseTimer->start( AmarokConfig::fadeoutLength() + 500 );
         return;
     }
@@ -487,14 +487,14 @@ EngineController::slotPause()
     if( supportsFadeout() && AmarokConfig::fadeoutOnPause() )
     {
         // Reset VolumeFaderEffect to full volume
-        m_fader.data()->setVolume( 1.0 );
+        m_fader->setVolume( 1.0 );
 
         // Wait a bit before pausing the pipeline. Necessary for the new fader setting to take effect.
         QTimer::singleShot( 1000, m_media.data(), &Phonon::MediaObject::pause );
     }
     else
     {
-        m_media.data()->pause();
+        m_media->pause();
     }
 
     emit paused();
@@ -515,7 +515,7 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
      */
     bool doFadeOut = !forceInstant
                   && !m_fadeouter
-                  && m_media.data()->state() == Phonon::PlayingState
+                  && m_media->state() == Phonon::PlayingState
                   && AmarokConfig::fadeoutOnStop()
                   && AmarokConfig::fadeoutLength() > 0
                   && m_fader;
@@ -551,7 +551,7 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
 
         m_nextTrack.clear();
         m_nextUrl.clear();
-        m_media.data()->clearQueue();
+        m_media->clearQueue();
     }
 
     if( doFadeOut )
@@ -564,8 +564,8 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
     }
     else
     {
-        m_media.data()->stop();
-        m_media.data()->setCurrentSource( Phonon::MediaSource() );
+        m_media->stop();
+        m_media->setCurrentSource( Phonon::MediaSource() );
     }
 }
 
@@ -578,7 +578,7 @@ EngineController::regularStop()
 bool
 EngineController::isPaused() const
 {
-    return m_media.data()->state() == Phonon::PausedState;
+    return m_media->state() == Phonon::PausedState;
 }
 
 bool
@@ -591,16 +591,16 @@ bool
 EngineController::isStopped() const
 {
     return
-        m_media.data()->state() == Phonon::StoppedState ||
-        m_media.data()->state() == Phonon::LoadingState ||
-        m_media.data()->state() == Phonon::ErrorState;
+        m_media->state() == Phonon::StoppedState ||
+        m_media->state() == Phonon::LoadingState ||
+        m_media->state() == Phonon::ErrorState;
 }
 
 void
 EngineController::playPause() //SLOT
 {
     DEBUG_BLOCK
-    debug() << "PlayPause: EngineController state" << m_media.data()->state();
+    debug() << "PlayPause: EngineController state" << m_media->state();
 
     if( isPlaying() )
         pause();
@@ -613,7 +613,7 @@ EngineController::seekTo( int ms ) //SLOT
 {
     DEBUG_BLOCK
 
-    if( m_media.data()->isSeekable() )
+    if( m_media->isSeekable() )
     {
 
         debug() << "seek to: " << ms;
@@ -630,7 +630,7 @@ EngineController::seekTo( int ms ) //SLOT
         else
             seekTo = ms;
 
-        m_media.data()->seek( static_cast<qint64>( seekTo ) );
+        m_media->seek( static_cast<qint64>( seekTo ) );
         emit trackPositionChanged( seekTo, true ); /* User seek */
     }
     else
@@ -641,7 +641,7 @@ EngineController::seekTo( int ms ) //SLOT
 void
 EngineController::seekBy( int ms ) //SLOT
 {
-    qint64 newPos = m_media.data()->currentTime() + ms;
+    qint64 newPos = m_media->currentTime() + ms;
     seekTo( newPos <= 0 ? 0 : newPos );
 }
 
@@ -664,10 +664,10 @@ EngineController::setVolume( int percent ) //SLOT
     m_volume = percent;
 
     const qreal volume =  percent / 100.0;
-    if ( !m_ignoreVolumeChangeAction && m_audio.data()->volume() != volume )
+    if ( !m_ignoreVolumeChangeAction && m_audio->volume() != volume )
     {
         m_ignoreVolumeChangeObserve = true;
-        m_audio.data()->setVolume( volume );
+        m_audio->setVolume( volume );
 
         AmarokConfig::setMasterVolume( percent );
         emit volumeChanged( percent );
@@ -686,13 +686,13 @@ EngineController::volume() const
 bool
 EngineController::isMuted() const
 {
-    return m_audio.data()->isMuted();
+    return m_audio->isMuted();
 }
 
 void
 EngineController::setMuted( bool mute ) //SLOT
 {
-    m_audio.data()->setMuted( mute ); // toggle mute
+    m_audio->setMuted( mute ); // toggle mute
     if( !isMuted() )
         setVolume( m_volume );
 
@@ -720,7 +720,7 @@ EngineController::trackLength() const
     if( m_currentTrack && m_currentTrack->length() > 0 )
         return m_currentTrack->length();
     else
-        return m_media.data()->totalTime(); //may return -1
+        return m_media->totalTime(); //may return -1
 }
 
 void
@@ -738,12 +738,10 @@ EngineController::setNextTrack( Meta::TrackPtr track )
     QMutexLocker locker( &m_mutex );
     if( isPlaying() )
     {
-        m_media.data()->clearQueue();
+        m_media->clearQueue();
         // keep in sync with playUrl(), slotPlayableUrlFetched()
-        if( url.isLocalFile() )
-            m_media.data()->enqueue( url.toLocalFile() );
-        else if( url.scheme() != "audiocd" ) // we don't support gapless for CD, bug 305708
-            m_media.data()->enqueue( url );
+        if( url.scheme() != "audiocd" ) // we don't support gapless for CD, bug 305708
+            m_media->enqueue( url );
         m_nextTrack = track;
         m_nextUrl = url;
     }
@@ -758,7 +756,7 @@ EngineController::isStream()
     if( m_media )
         // type is determined purely from the MediaSource constructor used in
         // setCurrentSource(). For streams we use the QUrl one, see playUrl()
-        type = m_media.data()->currentSource().type();
+        type = m_media->currentSource().type();
     return type == Phonon::MediaSource::Url || type == Phonon::MediaSource::Stream;
 }
 
@@ -766,7 +764,7 @@ bool
 EngineController::isSeekable() const
 {
     if( m_media )
-        return m_media.data()->isSeekable();
+        return m_media->isSeekable();
     return false;
 }
 
@@ -779,7 +777,7 @@ EngineController::trackPosition() const
 qint64
 EngineController::trackPositionMs() const
 {
-    return m_media.data()->currentTime();
+    return m_media->currentTime();
 }
 
 bool
@@ -858,7 +856,7 @@ EngineController::slotAboutToFinish()
         m_playWhenFetched = false;
         m_mutex.unlock();
         m_multiPlayback->fetchNext();
-        debug() << "The queue has: " << m_media.data()->queue().size() << " tracks in it";
+        debug() << "The queue has: " << m_media->queue().size() << " tracks in it";
     }
     else if( m_multiSource )
     {
@@ -873,7 +871,7 @@ EngineController::slotAboutToFinish()
             debug() << "playing next source: " << nextSource;
             slotPlayableUrlFetched( nextSource );
         }
-        else if( m_media.data()->queue().isEmpty() )
+        else if( m_media->queue().isEmpty() )
         {
             debug() << "no more sources, skip to next track";
             m_multiSource.reset(); // don't cofuse slotFinished
@@ -889,7 +887,7 @@ EngineController::slotAboutToFinish()
         stop( true );
         The::playlistActions()->requestNextTrack();
     }
-    else if( m_media.data()->queue().isEmpty() )
+    else if( m_media->queue().isEmpty() )
         The::playlistActions()->requestNextTrack();
 }
 
@@ -921,7 +919,7 @@ EngineController::slotFinished()
         m_currentAlbum = 0;
         if( !m_nextTrack && m_nextUrl.isEmpty() ) // we will the trackChanged signal later
             emit trackChanged( Meta::TrackPtr() );
-        m_media.data()->setCurrentSource( Phonon::MediaSource() );
+        m_media->setCurrentSource( Phonon::MediaSource() );
     }
 
     m_mutex.lock(); // in case setNextTrack is being handled right now.
@@ -1019,9 +1017,9 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         if( m_preamp )
         {
             debug() << "Using gain of" << gain << "with relative peak of" << peak;
-            // we calculate the volume change ourselves, because m_preamp.data()->setVolumeDecibel is
+            // we calculate the volume change ourselves, because m_preamp->setVolumeDecibel is
             // a little confused about minus signs
-            m_preamp.data()->setVolume( qExp( gain * log10over20 ) );
+            m_preamp->setVolume( qExp( gain * log10over20 ) );
         }
         else
             warning() << "Would use gain of" << gain << ", but current Phonon backend"
@@ -1029,7 +1027,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     }
     else if( m_preamp )
     {
-        m_preamp.data()->setVolume( 1.0 );
+        m_preamp->setVolume( 1.0 );
     }
 
     bool useTrackWithinStreamDetection = false;
@@ -1067,7 +1065,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
     {
         emit trackError( m_currentTrack );
 
-        warning() << "Phonon failed to play this URL. Error: " << m_media.data()->errorString();
+        warning() << "Phonon failed to play this URL. Error: " << m_media->errorString();
         warning() << "Forcing phonon engine reinitialization.";
 
         /* In case of error Phonon MediaObject automatically switches to KioMediaSource,
@@ -1121,12 +1119,9 @@ EngineController::slotPlayableUrlFetched( const QUrl &url )
     {
         DEBUG_LINE_INFO
         m_mutex.lock();
-        m_media.data()->clearQueue();
+        m_media->clearQueue();
         // keep synced with setNextTrack(), playUrl()
-        if( url.isLocalFile() )
-            m_media.data()->enqueue( url.toLocalFile() );
-        else
-            m_media.data()->enqueue( url );
+        m_media->enqueue( url );
         m_nextTrack.clear();
         m_nextUrl = url;
         debug() << "The next url we're playing is: " << m_nextUrl;
@@ -1155,7 +1150,7 @@ void
 EngineController::slotMetaDataChanged()
 {
     QVariantMap meta;
-    meta.insert( Meta::Field::URL, m_media.data()->currentSource().url() );
+    meta.insert( Meta::Field::URL, m_media->currentSource().url() );
     static const QList<FieldPair> fieldPairs = QList<FieldPair>()
             << FieldPair( Phonon::ArtistMetaData, Meta::Field::ARTIST )
             << FieldPair( Phonon::AlbumMetaData, Meta::Field::ALBUM )
@@ -1165,7 +1160,7 @@ EngineController::slotMetaDataChanged()
             << FieldPair( Phonon::DescriptionMetaData, Meta::Field::COMMENT );
     foreach( const FieldPair &pair, fieldPairs )
     {
-        QStringList values = m_media.data()->metaData( pair.first );
+        QStringList values = m_media->metaData( pair.first );
         if( !values.isEmpty() )
             meta.insert( pair.second, values.first() );
     }
@@ -1276,10 +1271,10 @@ QString EngineController::prettyNowPlaying( bool progress ) const
 
     if( track )
     {
-        QString title       = Qt::escape( track->name() );
-        QString prettyTitle = Qt::escape( track->prettyName() );
-        QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
-        QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
+        QString title       = track->name().toHtmlEscaped();
+        QString prettyTitle = track->prettyName().toHtmlEscaped();
+        QString artist      = track->artist() ? track->artist()->name().toHtmlEscaped() : QString();
+        QString album       = track->album() ? track->album()->name().toHtmlEscaped() : QString();
 
         // ugly because of translation requirements
         if( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
@@ -1305,10 +1300,10 @@ QString EngineController::prettyNowPlaying( bool progress ) const
 
         if( track->length() > 0 )
         {
-            QString length = Qt::escape( Meta::msToPrettyTime( track->length() ) );
+            QString length = Meta::msToPrettyTime( track->length() ).toHtmlEscaped();
             title += " (";
             if( progress )
-                    title+= Qt::escape( Meta::msToPrettyTime( m_lastTickPosition ) ) + '/';
+                    title += Meta::msToPrettyTime( m_lastTickPosition ).toHtmlEscaped() + '/';
             title += length + ')';
         }
 

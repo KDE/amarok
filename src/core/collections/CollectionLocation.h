@@ -207,7 +207,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
          * TODO: Remove this hack
          * @return true if the database entry was inserted, false otherwise
          */
-        virtual bool insert( const Meta::TrackPtr &track, const QString &url );
+        virtual bool insert( const Meta::TrackPtr &track, const QString &path );
 
         /**
           explicitly inform the source collection of successful transfer.

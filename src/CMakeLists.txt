@@ -28,7 +28,6 @@ include_directories(
 add_subdirectory( core )
 add_subdirectory( core-impl/collections )
 add_subdirectory( core-impl/storage/sql )
-#don't use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 #add_subdirectory( services )  #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
 add_subdirectory( scripting/scripts )
@@ -279,30 +278,28 @@ set( scanner_SRCS
 # CONTEXT
 #####################################################################
 set( libcontextview_SRCS
-    context/Applet.cpp
-    context/Containment.cpp
-    context/ContextObserver.cpp
-    context/ContextScene.cpp
-    context/ContextDock.cpp
-    context/ContextView.cpp
+#    context/AmarokContextPackageStructure.cpp
+#    context/AppletLoader.cpp
+#    context/AppletModel.cpp
+#    context/ContextDock.cpp
+#    context/ContextView.cpp
     context/LyricsManager.cpp
-    context/ToolbarView.cpp
-    context/toolbar/AppletItemOverlay.cpp
-    context/toolbar/AppletToolbar.cpp
-    context/toolbar/AppletToolbarAddItem.cpp
-    context/toolbar/AppletToolbarAppletItem.cpp
-    context/toolbar/AppletToolbarBase.cpp
-    context/toolbar/AppletToolbarConfigItem.cpp
-    context/widgets/AppletHeader.cpp
-    context/widgets/RatingWidget.cpp
-    context/widgets/TextScrollingWidget.cpp
-    context/widgets/DropPixmapItem.cpp
-    context/widgets/ToolBoxIcon.cpp
-    # context/widgets/ContainmentArrow.cpp
-    # context/widgets/ContainmentSelectionLayer.cpp
-    context/widgets/appletexplorer/AppletExplorer.cpp
-    context/widgets/appletexplorer/AppletIcon.cpp
-    context/widgets/RecentlyPlayedListWidget.cpp
+#    context/ToolbarView.cpp
+#    context/toolbar/AppletItemOverlay.cpp
+#    context/toolbar/AppletToolbarAddItem.cpp
+#    context/toolbar/AppletToolbarAppletItem.cpp
+#    context/toolbar/AppletToolbarBase.cpp
+#    context/toolbar/AppletToolbarConfigItem.cpp
+#    context/widgets/AppletHeader.cpp
+#    context/widgets/RatingWidget.cpp
+#    context/widgets/TextScrollingWidget.cpp
+#    context/widgets/DropPixmapItem.cpp
+#    context/widgets/ToolBoxIcon.cpp
+#    context/widgets/ContainmentArrow.cpp
+#    context/widgets/ContainmentSelectionLayer.cpp
+#    context/widgets/appletexplorer/AppletExplorer.cpp
+#    context/widgets/appletexplorer/AppletIcon.cpp
+#    context/widgets/RecentlyPlayedListWidget.cpp
 )
 
 #####################################################################
@@ -473,6 +470,7 @@ set(scriptengine_SRCS
     scripting/scriptengine/AmarokStatusbarScript.cpp
     scripting/scriptengine/AmarokStreamItemScript.cpp
     scripting/scriptengine/AmarokWindowScript.cpp
+    scripting/scriptengine/AmarokScriptXml.cpp
     scripting/scriptengine/ScriptImporter.cpp
     scripting/scriptengine/ScriptingDefines.cpp
     scripting/scriptengine/exporters/CollectionTypeExporter.cpp
@@ -603,7 +601,7 @@ set( importers_SRCS
 set(amaroklib_LIB_SRCS
     ${libscriptableservice_SRCS}
     ${libbrowserframework_SRCS}
-#    ${libcontextview_SRCS}        #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
+    ${libcontextview_SRCS}
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
     ${libplaylist_SRCS}
@@ -710,6 +708,7 @@ set(amaroklib_LIB_SRCS
     widgets/AlbumBreadcrumbWidget.cpp
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp
+    widgets/BoxWidget.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/ClearSpinBox.cpp
     widgets/CoverLabel.cpp
@@ -763,7 +762,7 @@ if( LIBLASTFM_FOUND )
     set( EXTRA_LIBS ${LIBLASTFM_LIBRARY} )
 endif()
 
-if( LIBOFA_FOUND )
+if( LIBOFA_FOUND AND AVCODEC_FOUND AND AVFORMAT_FOUND AND AVUTIL_FOUND )
     add_definitions(
         ${AVCODEC_DEFINITIONS}
         ${AVFORMAT_DEFINITIONS}
@@ -869,26 +868,30 @@ target_link_libraries(amaroklib
     Phonon::phonon4qt5
     KF5::Archive
     KF5::CoreAddons
-    ${KDE4_SOLID_LIBRARY}
-    KF5::KDELibs4Support
     KF5::GlobalAccel
+    KF5::GuiAddons
     KF5::I18n
+    KF5::IconThemes
     KF5::KCMUtils
     KF5::KIOCore
     KF5::KIOFileWidgets
     KF5::KIOWidgets
     KF5::KIONTLM
     KF5::NewStuff
+    KF5::Notifications
     KF5::NotifyConfig
     KF5::Package
     KF5::Plasma
     KF5::PlasmaQuick
     KF5::TextEditor
     KF5::ThreadWeaver
+    KF5::WindowSystem
     ${QT_QTSCRIPTTOOLS_LIBRARY}
-    Qt5::Sql
     Qt5::Gui
+    Qt5::QuickWidgets
     Qt5::Script
+    Qt5::ScriptTools
+    Qt5::Sql
     Qt5::Svg
     ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
@@ -907,16 +910,6 @@ if( TAGLIB-EXTRAS_FOUND )
     include_directories(${TAGLIB-EXTRAS_INCLUDES})
     add_definitions(${TAGLIB-EXTRAS_CFLAGS})
     target_link_libraries(amaroklib ${TAGLIB-EXTRAS_LIBRARIES})
-endif()
-
-if( QCA2_FOUND )
-    include_directories( ${QCA2_INCLUDE_DIR} )
-    target_link_libraries(amaroklib ${QCA2_LIBRARIES})
-endif()
-
-
-if(KDE4_BUILD_TESTS)
-    target_link_libraries(amaroklib Qt5::Test)
 endif()
 
 if(WIN32)
@@ -971,21 +964,17 @@ install(PROGRAMS org.kde.amarok_containers.desktop DESTINATION ${XDG_APPS_INSTAL
 install(FILES org.kde.amarok.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 install(FILES amarok-plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
+# install(FILES amarok-contextapplet.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_codecinstall.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_append.desktop DESTINATION ${SERVICES_INSTALL_DIR}/ServiceMenus)
 install(FILES amarok-play-audiocd.desktop DESTINATION ${DATA_INSTALL_DIR}/solid/actions)
 
 install(FILES amarok.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
-install(FILES context/amarokapplets.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 
 # protocol handlers
 install(FILES amarokurls/amarok.protocol  DESTINATION  ${SERVICES_INSTALL_DIR})
 install(FILES amarokitpc.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 #install(FILES amarokpcast.protocol DESTINATION ${SERVICES_INSTALL_DIR})
-
-install(FILES context/servicetypes/amarok_context_applet.desktop
-              context/servicetypes/amarok_data_engine.desktop
-              DESTINATION ${SERVICETYPES_INSTALL_DIR} )
 
 install(FILES amarokconfig.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
 install(FILES dbus/mpris1/org.freedesktop.MediaPlayer.root.xml

@@ -26,7 +26,7 @@
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 using namespace Playlist;
 
@@ -55,7 +55,7 @@ Restorer::runJingle()
     DEBUG_BLOCK
     if( AmarokConfig::playFirstRunJingle() )
     {
-        QString jingle = KStandardDirs::locate( "data", "amarok/data/first_run_jingle.ogg" );
+        QString jingle = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/first_run_jingle.ogg" );
         The::playlistController()->clear();
         The::playlistController()->insertTrack( 0, CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(jingle) ) );
         AmarokConfig::setPlayFirstRunJingle( false );

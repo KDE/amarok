@@ -279,7 +279,7 @@ IpodCollection::totalCapacity() const
 Collections::CollectionLocation*
 IpodCollection::location()
 {
-    return new IpodCollectionLocation( QWeakPointer<IpodCollection>( this ) );
+    return new IpodCollectionLocation( QPointer<IpodCollection>( this ) );
 }
 
 bool
@@ -416,7 +416,7 @@ IpodCollection::slotShowConfigureDialogWithError( const QString &errorMessage )
         m_configureDialogUi.setupUi( settingsWidget );
 
         QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-        QWidget *mainWidget = new QWidget(this);
+        QWidget *mainWidget = new QWidget;
         QVBoxLayout *mainLayout = new QVBoxLayout;
         m_configureDialog->setLayout(mainLayout);
         mainLayout->addWidget(mainWidget);
@@ -613,7 +613,7 @@ IpodCollection::addTrack( IpodMeta::Track *track )
         justAdded = true;
         emit startWriteDatabaseTimer();
     }
-    track->setCollection( QWeakPointer<IpodCollection>( this ) );
+    track->setCollection( QPointer<IpodCollection>( this ) );
 
     Meta::TrackPtr trackPtr( track );
     Meta::TrackPtr memTrack = MemoryMeta::MapChanger( m_mc.data() ).addTrack( trackPtr );

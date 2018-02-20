@@ -26,8 +26,8 @@
 #include <QChar>
 #include <QFile>
 
-#include <klocale.h>
-#include <kio/global.h>
+#include <KIO/Global>
+#include <KLocalizedString>
 
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
         static const QString XESAM_ALBUMARTIST    = "http://freedesktop.org/standards/xesam/1.0/core#albumArtist";
@@ -131,11 +131,11 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
                 map[ "albumartist" ] = track->album()->albumArtist()->name();
 
             QImage image = track->album()->image();
-            QUrl url = QUrl::fromLocalFile(track->album()->imageLocation().toString());
+            QUrl url = track->album()->imageLocation();
             if ( url.isValid() && !url.isLocalFile() ) {
                 // embedded id?  Request a version to be put in the cache
                 int width = track->album()->image().width();
-                url = QUrl::fromLocalFile( track->album()->imageLocation( width ).toString() );
+                url = track->album()->imageLocation( width );
                 debug() << "MPRIS: New location for width" << width << "is" << url;
             }
             if ( url.isValid() && url.isLocalFile() )
@@ -190,12 +190,13 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
 
         if( album ) {
             QImage image = album->image();
-            QUrl url = QUrl::fromLocalFile( album->imageLocation().toString() );
+            QUrl url = album->imageLocation();
             debug() << "MPRIS2: Album image location is" << url;
-            if ( url.isValid() && !url.isLocalFile() ) {
+            if ( url.isValid() && !url.isLocalFile() )
+            {
                 // embedded id?  Request a version to be put in the cache
                 int width = album->image().width();
-                url = QUrl::fromLocalFile( album->imageLocation( width ).toString() );
+                url = album->imageLocation( width );
                 debug() << "MPRIS2: New location for width" << width << "is" << url;
             }
             if ( url.isValid() && url.isLocalFile() )
@@ -411,7 +412,7 @@ QString
 Meta::secToPrettyTime( int seconds )
 {
     if( seconds < 60 * 60 ) // one hour
-        return QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is below 1 hour see QTime documentation.", "m:ss" ) );
+        return QTime(0, 0, 0).addSecs( seconds ).toString( i18nc("the time format for a time length when the time is below 1 hour see QTime documentation.", "m:ss" ) );
     // split days off for manual formatting (QTime doesn't work properly > 1 day,
     // QDateTime isn't suitable as it thinks it's a date)
     int days = seconds / 86400;
@@ -419,7 +420,7 @@ Meta::secToPrettyTime( int seconds )
     QString reply = "";
     if ( days > 0 )
         reply += i18ncp("number of days with spacing for the pretty time", "%1 day, ", "%1 days, ", days);
-    reply += QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 hour or above see QTime documentation.", "h:mm:ss" ) );
+    reply += QTime(0, 0, 0).addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 hour or above see QTime documentation.", "h:mm:ss" ) );
     return reply;
 }
 

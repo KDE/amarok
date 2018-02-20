@@ -101,7 +101,7 @@ EqualizerController::eqMaxGain() const
 {
    if( !m_equalizer )
        return 100;
-   QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
+   QList<Phonon::EffectParameter> equalizerParameters = m_equalizer->parameters();
    if( equalizerParameters.isEmpty() )
        return 100.0;
    double mScale;
@@ -121,7 +121,7 @@ EqualizerController::eqBandsFreq() const
     QStringList bandFrequencies;
     if( !m_equalizer )
         return bandFrequencies;
-    QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
+    QList<Phonon::EffectParameter> equalizerParameters = m_equalizer->parameters();
     if( equalizerParameters.isEmpty() )
         return bandFrequencies;
     QRegExp rx( "\\d+(?=Hz)" );
@@ -158,7 +158,7 @@ EqualizerController::eqUpdate()
     else
     {
         // Set equalizer parameter according to the gains from settings
-        QList<Phonon::EffectParameter> equalizerParameters = m_equalizer.data()->parameters();
+        QList<Phonon::EffectParameter> equalizerParameters = m_equalizer->parameters();
         equalizerParametersCfg = AmarokConfig::equalizerGains();
 
         QListIterator<int> equalizerParametersIt( equalizerParametersCfg );
@@ -176,7 +176,7 @@ EqualizerController::eqUpdate()
             scaledVal *= qAbs(mParam.maximumValue().toDouble() )
                          + qAbs( mParam.minimumValue().toDouble() );
             scaledVal /= 200.0;
-            m_equalizer.data()->setParameterValue( mParam, scaledVal );
+            m_equalizer->setParameterValue( mParam, scaledVal );
         }
         // Insert effect into path if needed
         if( m_path.effects().indexOf( m_equalizer.data() ) == -1 )

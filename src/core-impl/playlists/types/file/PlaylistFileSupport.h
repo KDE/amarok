@@ -27,7 +27,7 @@ namespace Playlists
 
     AMAROK_EXPORT PlaylistFilePtr loadPlaylistFile( const QUrl &url, PlaylistFileProvider *provider = 0 );
 
-    bool exportPlaylistFile( const Meta::TrackList &list, const QUrl &path, bool relative = false,
+    bool exportPlaylistFile( const Meta::TrackList &list, const QUrl &url, bool relative = false,
                              const QList<int> &queued = QList<int>() );
 
     /* HACK:

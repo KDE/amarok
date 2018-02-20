@@ -28,7 +28,7 @@
 #include "core/support/Debug.h"
 
 TokenPool::TokenPool( QWidget *parent )
-    : KListWidget( parent )
+    : QListWidget( parent )
 {
     setAcceptDrops( true );
     setWrapping( true );
@@ -89,7 +89,7 @@ TokenPool::mousePressEvent( QMouseEvent *event )
 {
     if( event->button() == Qt::LeftButton )
         m_startPos = event->pos();            //store the start position
-    KListWidget::mousePressEvent( event );    //feed it to parent's event
+    QListWidget::mousePressEvent( event );    //feed it to parent's event
 }
 
 //Executed on mouse move, handles start of drag.
@@ -102,7 +102,7 @@ TokenPool::mouseMoveEvent( QMouseEvent *event )
         if ( distance >= QApplication::startDragDistance() )
             performDrag();
     }
-    KListWidget::mouseMoveEvent( event );
+    QListWidget::mouseMoveEvent( event );
 }
 
 void

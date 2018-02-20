@@ -32,7 +32,7 @@
 #include "playlist/PlaylistViewUrlGenerator.h"
 
 #include <QIcon>
-#include <KLocale>
+#include <KLocalizedString>
 
 namespace The {
     static AmarokUrlHandler* s_AmarokUrlHandler_instance = 0;

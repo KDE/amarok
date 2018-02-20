@@ -24,6 +24,7 @@
 
 #include <QScriptEngine>
 #include <QTextCodec>
+
 #include <KLocalizedString>
 
 using namespace AmarokScript;
@@ -83,14 +84,19 @@ Downloader::init( QScriptContext* context, QScriptEngine *engine, bool stringRes
 
     if( !context->argument( 1 ).isFunction() ) //TODO: check QUrl
     {
-        debug() << "ERROR! Constructor not called with a QUrl and function!";
+        debug() << "ERROR! Constructor not called with a Url and function!";
         return object;
     }
 
-    QUrl url( qscriptvalue_cast<QUrl>( context->argument( 0 ) ) );
+    QUrl url = QUrl::fromEncoded( context->argument( 0 ).toString().toLatin1(), QUrl::StrictMode );
+
+    if( !url.isValid() )
+    {
+        debug() << "ERROR! Constructor not called with a valid Url!";
+        return object;
+    }
 
     // start download, and connect to it
-    //FIXME: url is not working directly.
     if( stringResult )
     {
         QString encoding = "UTF-8";

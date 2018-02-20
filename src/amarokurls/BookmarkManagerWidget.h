@@ -19,9 +19,8 @@
 
 #include "amarok_export.h"
 #include "amarokurls/BookmarkTreeView.h"
+#include "widgets/BoxWidget.h"
 #include "widgets/LineEdit.h"
-
-#include <KVBox>
 
 #include <QLineEdit>
 #include <QPushButton>
@@ -34,11 +33,11 @@ A widget for managing amarok:// bookmark urls
 
 	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class AMAROK_EXPORT BookmarkManagerWidget : public KVBox
+class AMAROK_EXPORT BookmarkManagerWidget : public BoxWidget
 {
     Q_OBJECT
 public:
-    BookmarkManagerWidget( QWidget * parent = 0);
+    BookmarkManagerWidget( QWidget *parent = Q_NULLPTR );
     ~BookmarkManagerWidget();
 
     BookmarkTreeView * treeView();

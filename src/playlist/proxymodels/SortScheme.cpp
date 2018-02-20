@@ -20,7 +20,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 namespace Playlist
 {

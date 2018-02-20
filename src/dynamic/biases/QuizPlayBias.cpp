@@ -35,7 +35,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 QString
 Dynamic::QuizPlayBiasFactory::i18nName() const

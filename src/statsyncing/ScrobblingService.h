@@ -18,16 +18,15 @@
 #define STATSYNCING_SCROBBLINGSERVICE_H
 
 #include "amarok_export.h"
-#include "support/QSharedDataPointerMisc.h" // operator<() for ScrobblingServicePtr
 
 #include <QDateTime>
 #include <QMetaType>
 #include <QSharedPointer>
 
-template<class T> class KSharedPtr;
+template<class T> class AmarokSharedPointer;
 namespace Meta {
     class Track;
-    typedef KSharedPtr<Track> TrackPtr;
+    typedef AmarokSharedPointer<Track> TrackPtr;
 }
 
 namespace StatSyncing

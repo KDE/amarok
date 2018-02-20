@@ -36,7 +36,7 @@ class QPushButton;
 class QVBoxLayout;
 class QHBoxLayout;
 
-class KLineEdit;
+class QLineEdit;
 
 //Holds the TokenLayoutWidget and TokenPool and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
 class AMAROK_EXPORT FilenameLayoutWidget : public QWidget
@@ -142,7 +142,7 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget
 
         QLabel *m_syntaxLabel;
         QFrame *m_filenameLayout;
-        KLineEdit *m_filenameLayoutEdit;
+        QLineEdit *m_filenameLayoutEdit;
 
         /** The name of the category used for storing the configuration */
         QString m_configCategory;

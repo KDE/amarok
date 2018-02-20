@@ -27,13 +27,12 @@
 #include "playback/EqualizerController.h"
 #include "core/meta/Meta.h"
 
-#include <QUrl>
-
 #include <QMutex>
 #include <QObject>
+#include <QPointer>
 #include <QSemaphore>
 #include <QStringList>
-#include <QWeakPointer>
+#include <QUrl>
 
 #include <Phonon/Path>
 #include <Phonon/MediaController>
@@ -532,16 +531,16 @@ private:
     Q_DISABLE_COPY( EngineController )
 
     EqualizerController                     *m_equalizerController;
-    QWeakPointer<Phonon::MediaObject>       m_media;
-    QWeakPointer<Phonon::VolumeFaderEffect> m_preamp;
-    QWeakPointer<Phonon::AudioOutput>       m_audio;
-    QWeakPointer<Phonon::AudioDataOutput>   m_audioDataOutput;
-    QWeakPointer<Phonon::MediaController>   m_controller;
+    QPointer<Phonon::MediaObject>       m_media;
+    QPointer<Phonon::VolumeFaderEffect> m_preamp;
+    QPointer<Phonon::AudioOutput>       m_audio;
+    QPointer<Phonon::AudioDataOutput>   m_audioDataOutput;
+    QPointer<Phonon::MediaController>   m_controller;
     Phonon::Path                            m_path;
     Phonon::Path                            m_dataPath;
 
-    QWeakPointer<Fadeouter> m_fadeouter;
-    QWeakPointer<Phonon::VolumeFaderEffect> m_fader;
+    QPointer<Fadeouter> m_fadeouter;
+    QPointer<Phonon::VolumeFaderEffect> m_fader;
 
     Meta::TrackPtr  m_currentTrack;
     Meta::AlbumPtr  m_currentAlbum;

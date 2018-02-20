@@ -23,7 +23,6 @@
 
 #include <QtDebug>
 #include <QSvgRenderer>
-#include <QGraphicsSvgItem>
 #include <QAction>
 #include <QFont>
 
@@ -432,7 +431,7 @@ void PopupDropperItem::scaleAndReposSvgItem()
 
     if( d->separator )
     {
-        d->svgItem->scale( 0, 0 );
+        d->svgItem->setScale( 1.0 );
         d->svgItem->setPos( 0, 0 );
         return;
     }
@@ -444,7 +443,7 @@ void PopupDropperItem::scaleAndReposSvgItem()
     qreal horizScaleValue = maxwidth / d->svgItem->sceneBoundingRect().width();
     qreal scaleValue = vertScaleValue < horizScaleValue ? vertScaleValue : horizScaleValue;
     
-    d->svgItem->scale( scaleValue, scaleValue );
+    d->svgItem->setScale( scaleValue );
 
     qreal item_center = ( d->borderRectItem->sceneBoundingRect().height() / 2 ) + d->borderRectItem->pos().y();
 
@@ -459,11 +458,12 @@ void PopupDropperItem::scaleAndReposSvgItem()
             rightside = sceneBoundingRect().width();
         else
             rightside = d->pd->viewSize().width();
-            d->svgItem->setPos( 
-                rightside
-                - d->svgItem->sceneBoundingRect().width()
-                - d->horizontalOffset
-                , item_center - ( d->svgElementRect.height() / 2 ) );
+
+        d->svgItem->setPos(
+            rightside
+            - d->svgItem->sceneBoundingRect().width()
+            - d->horizontalOffset
+            , item_center - ( d->svgElementRect.height() / 2 ) );
     }
 }
 

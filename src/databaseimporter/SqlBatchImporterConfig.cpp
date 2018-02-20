@@ -18,7 +18,7 @@
 
 #include "core/support/Amarok.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QComboBox>
 #include <QCompleter>
@@ -26,9 +26,10 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QVBoxLayout>
 
 SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )
-    : KVBox( parent )
+    : BoxWidget( true, parent )
 {
     QWidget *gridHolder = new QWidget( this );
 

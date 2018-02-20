@@ -30,14 +30,12 @@
 
 #include "amarokconfig.h"
 
-
-#include <KLocale>
-#include <KTemporaryFile>
-#include <QUrl>
+#include <KLocalizedString>
 #include <KMessageBox>
 
 #include <QFile>
 #include <QFileInfo>
+#include <QUrl>
 
 using namespace Playlists;
 
@@ -86,29 +84,29 @@ Playlists::loadPlaylistFile( const QUrl &url, PlaylistFileProvider *provider )
 }
 
 bool
-Playlists::exportPlaylistFile( const Meta::TrackList &list, const QUrl &path, bool relative,
+Playlists::exportPlaylistFile( const Meta::TrackList &list, const QUrl &url, bool relative,
                     const QList<int> &queued )
 {
-    PlaylistFormat format = Playlists::getFormat( path );
+    PlaylistFormat format = Playlists::getFormat( url );
     bool result = false;
     PlaylistFilePtr playlist;
 
     switch( format )
     {
         case ASX:
-            playlist = new ASXPlaylist( QUrl::fromLocalFile(path.toLocalFile()) );
+            playlist = new ASXPlaylist( url );
             break;
         case PLS:
-            playlist = new PLSPlaylist( QUrl::fromLocalFile(path.toLocalFile()) );
+            playlist = new PLSPlaylist( url );
             break;
         case M3U:
-            playlist = new M3UPlaylist( QUrl::fromLocalFile(path.toLocalFile()) );
+            playlist = new M3UPlaylist( url );
             break;
         case XSPF:
-            playlist = new XSPFPlaylist( QUrl::fromLocalFile(path.toLocalFile()) );
+            playlist = new XSPFPlaylist( url );
             break;
         default:
-            debug() << "Could not export playlist file " << path;
+            debug() << "Could not export playlist file " << url;
             break;
     }
 
@@ -148,13 +146,15 @@ Playlists::newPlaylistFilePath( const QString &fileExtension )
 {
     int trailingNumber = 1;
     KLocalizedString fileName = ki18n("Playlist_%1");
-    QUrl url( Amarok::saveLocation( "playlists" ) );
+    QUrl url = QUrl::fromLocalFile( Amarok::saveLocation( "playlists" ) );
     url = url.adjusted(QUrl::StripTrailingSlash);
     url.setPath(url.path() + '/' + ( fileName.subs( trailingNumber ).toString() ));
 
     while( QFileInfo( url.path() ).exists() )
+    {
         url = url.adjusted(QUrl::RemoveFilename);
         url.setPath(url.path() +  fileName.subs( ++trailingNumber ).toString() );
+    }
 
-    return QUrl( QString( "%1.%2" ).arg( url.path(), fileExtension ) );
+    return QUrl::fromLocalFile( QString( "%1.%2" ).arg( url.path(), fileExtension ) );
 }

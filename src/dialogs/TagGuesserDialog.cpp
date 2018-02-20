@@ -224,7 +224,7 @@ TagGuesserDialog::TagGuesserDialog( const QString &fileName, QWidget *parent )
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
     QWidget* mainWidget = new QWidget( this );
-    QBoxLayout* mainLayout = new QVBoxLayout( mainWidget );
+    QBoxLayout* mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);

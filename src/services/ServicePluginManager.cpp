@@ -92,8 +92,8 @@ ServicePluginManager::setFactories( const QList<Plugins::PluginFactory*> &factor
         if( !factory )
             continue;
 
-        connect( factory, SIGNAL(newService(ServiceBase*)), SLOT(slotNewService(ServiceBase*)) );
-        connect( factory, SIGNAL(removeService(ServiceBase*)), SLOT(slotRemoveService(ServiceBase*)) );
+        connect( factory, &ServiceFactory::newService, this, &ServicePluginManager::slotNewService );
+        connect( factory, &ServiceFactory::removeService, this, &ServicePluginManager::slotRemoveService );
     }
 
     m_factories = factories;

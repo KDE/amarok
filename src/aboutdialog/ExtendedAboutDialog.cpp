@@ -26,26 +26,24 @@
 #include "OcsPersonItem.h"
 #include "libattica-ocsclient/providerinitjob.h"
 
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QFontDatabase>
 #include <QLabel>
 #include <QLayout>
+#include <QNetworkConfigurationManager>
 #include <QPushButton>
 #include <QScrollBar>
+#include <QStandardPaths>
 #include <QTabWidget>
-
-#include <qapplication.h>
-#include <KCoreAddons>
-#include <kglobal.h>
-#include <kglobalsettings.h>
-#include <kiconloader.h>
-#include <klocale.h>
-#include <kmessagebox.h>
-#include <kstandarddirs.h>
-#include <ktextbrowser.h>
-#include <ktitlewidget.h>
-#include <solid/networking.h>
-#include <KConfigGroup>
-#include <QDialogButtonBox>
+#include <QTextBrowser>
 #include <QVBoxLayout>
+
+#include <KConfigGroup>
+#include <KCoreAddons>
+#include <KIconLoader>
+#include <KMessageBox>
+#include <KTitleWidget>
 
 void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 {
@@ -58,11 +56,11 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
     dialog->connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
     buttonBox->button(QDialogButtonBox::Close)->setDefault(true);
 
-    const QFont font = KGlobalSettings::fixedFont();
+    const QFont font = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     QFontMetrics metrics(font);
 
     const QString licenseText = aboutData->licenses().at(number.toInt()).text();
-    KTextBrowser *licenseBrowser = new KTextBrowser;
+    QTextBrowser *licenseBrowser = new QTextBrowser;
     licenseBrowser->setFont(font);
     licenseBrowser->setLineWrapMode(QTextEdit::NoWrap);
     licenseBrowser->setText(licenseText);
@@ -151,7 +149,6 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
     titleWidget->setText(i18n("<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE Frameworks %3</html>",
                          aboutData->displayName(), aboutData->version(), KCoreAddons::versionString()));
 
-
     //Now let's add the tab bar...
     QTabWidget *tabWidget = new QTabWidget;
     tabWidget->setUsesScrollButtons(false);
@@ -206,7 +203,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
 
 
     //Stuff needed by both Authors and Credits pages:
-    QPixmap openDesktopPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/opendesktop-22.png" ) );
+    QPixmap openDesktopPixmap = QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/opendesktop-22.png" ) );
     QIcon openDesktopIcon = QIcon( openDesktopPixmap );
 
 
@@ -261,7 +258,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
         authorLayout->addWidget( m_authorListWidget.data() );
         authorLayout->setMargin( 0 );
         authorLayout->setSpacing( 2 );
-        m_authorWidget.data()->setLayout( authorLayout );
+        m_authorWidget->setLayout( authorLayout );
 
         m_authorPageTitle = ( authorCount == 1 ) ? i18n("A&uthor") : i18n("A&uthors");
         tabWidget->addTab(m_authorWidget.data(), m_authorPageTitle);
@@ -291,7 +288,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
         creditLayout->addWidget( m_creditListWidget.data() );
         creditLayout->setMargin( 0 );
         creditLayout->setSpacing( 2 );
-        m_creditWidget.data()->setLayout( creditLayout );
+        m_creditWidget->setLayout( creditLayout );
 
         tabWidget->addTab( m_creditWidget.data(), i18n("&Contributors"));
         m_isOfflineCreditWidget = true; //is this still used?
@@ -332,7 +329,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
                             "during Roktober</a> and opt-in.</p>"));
         roktoberLabel->setOpenExternalLinks(true);
         donorLayout->addWidget(roktoberLabel);
-        m_donorWidget.data()->setLayout( donorLayout );
+        m_donorWidget->setLayout( donorLayout );
 
         tabWidget->addTab( m_donorWidget.data(), i18n("&Donors"));
         m_isOfflineDonorWidget = true;
@@ -360,7 +357,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
 
         translatorPageText += KAboutData::aboutTranslationTeam();
 
-        KTextBrowser *translatorTextBrowser = new KTextBrowser;
+        QTextBrowser *translatorTextBrowser = new QTextBrowser;
         translatorTextBrowser->setFrameStyle(QFrame::NoFrame);
         translatorTextBrowser->setPalette(transparentBackgroundPalette);
         translatorTextBrowser->setHtml(translatorPageText);
@@ -385,19 +382,18 @@ ExtendedAboutDialog::~ExtendedAboutDialog()
 void
 ExtendedAboutDialog::switchToOcsWidgets()
 {    
-    if( !( Solid::Networking::status() == Solid::Networking::Connected ||
-           Solid::Networking::status() == Solid::Networking::Unknown ) )
+    if( !QNetworkConfigurationManager().isOnline() )
     {
         KMessageBox::error( this, i18n( "Internet connection not available" ), i18n( "Network error" ) );
         return;
     }
 
     if( m_showOcsAuthorButton )
-        m_showOcsAuthorButton.data()->animate();
+        m_showOcsAuthorButton->animate();
     if( m_showOcsCreditButton )
-        m_showOcsCreditButton.data()->animate();
+        m_showOcsCreditButton->animate();
     if( m_showOcsDonorButton )
-        m_showOcsDonorButton.data()->animate();
+        m_showOcsDonorButton->animate();
     AmarokAttica::ProviderInitJob *providerJob = AmarokAttica::Provider::byId( m_ocsData.providerId() );
     connect( providerJob, &AmarokAttica::ProviderInitJob::result, this, &ExtendedAboutDialog::onProviderFetched );
 }
@@ -411,11 +407,11 @@ ExtendedAboutDialog::onProviderFetched( KJob *job )
         debug()<<"Successfully fetched OCS provider"<< providerJob->provider().name();
         debug()<<"About to request OCS data";
         if( m_authorListWidget )
-            m_authorListWidget.data()->switchToOcs( providerJob->provider() );
+            m_authorListWidget->switchToOcs( providerJob->provider() );
         if( m_creditListWidget )
-            m_creditListWidget.data()->switchToOcs( providerJob->provider() );
+            m_creditListWidget->switchToOcs( providerJob->provider() );
         if( m_donorListWidget )
-            m_donorListWidget.data()->switchToOcs( providerJob->provider() );
+            m_donorListWidget->switchToOcs( providerJob->provider() );
     }
     else
         warning() << "OCS provider fetch failed";

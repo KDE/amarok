@@ -18,13 +18,14 @@
 #define AMAROK_PLUGINMANAGER_H
 
 #include "amarok_export.h"
-#include "core/support/PluginFactory.h"
 
 #include <KPluginInfo>
 #include <KPluginMetaData>
 
 
 namespace Plugins {
+
+class PluginFactory;
 
 class AMAROK_EXPORT PluginManager : public QObject
 {

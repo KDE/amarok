@@ -17,7 +17,7 @@
 #ifndef BROWSERBREADCRUMBITEM_H
 #define BROWSERBREADCRUMBITEM_H
 
-#include <KHBox>
+#include "widgets/BoxWidget.h"
 
 #include <QIcon>
 
@@ -43,7 +43,7 @@ typedef QList<BreadcrumbSibling> BreadcrumbSiblingList;
  *  @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 
-class BrowserBreadcrumbItem : public KHBox
+class BrowserBreadcrumbItem : public BoxWidget
 {
     Q_OBJECT
 public:

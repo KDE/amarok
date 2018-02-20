@@ -23,9 +23,7 @@
 #include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
-#include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
+// #include "context/ContextView.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -36,23 +34,21 @@
 #include "dialogs/TagDialog.h"
 
 #include <QAction>
-#include <KIO/CopyJob>
-#include <KIO/DeleteJob>
-#include <QDialog>
-#include <KDirModel>
-#include <KFileItem>
-#include <KGlobalSettings>
-#include <KMessageBox>
-#include <QIcon>
-#include <KLocale>
-#include <QMenu>
-#include <QUrl>
-
 #include <QContextMenuEvent>
 #include <QFileSystemModel>
+#include <QIcon>
 #include <QItemDelegate>
+#include <QMenu>
 #include <QPainter>
+#include <QUrl>
+
 #include <KConfigGroup>
+#include <KDirModel>
+#include <KFileItem>
+#include <KIO/CopyJob>
+#include <KIO/DeleteJob>
+#include <KLocalizedString>
+#include <KMessageBox>
 
 FileView::FileView( QWidget *parent )
     : Amarok::PrettyTreeView( parent )
@@ -166,7 +162,7 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
     if( state() == QAbstractItemView::NoState &&
         event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
-        KGlobalSettings::singleClick() &&
+        style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) &&
         ( file.isDir() || file.isNull() ) )
     {
         emit navigateToDirectory( index );
@@ -333,7 +329,7 @@ FileView::slotCopyTracks( const Meta::TrackList& tracks )
         else
             source = new Collections::FileCollectionLocation();
 
-        Collections::CollectionLocation *destination = m_copyDestinationCollection.data()->location();
+        Collections::CollectionLocation *destination = m_copyDestinationCollection->location();
         source->prepareCopy( tracks, destination );
     }
     else
@@ -363,7 +359,7 @@ FileView::slotMoveTracks( const Meta::TrackList& tracks )
         else
             source = new Collections::FileCollectionLocation();
 
-        Collections::CollectionLocation *destination = m_moveDestinationCollection.data()->location();
+        Collections::CollectionLocation *destination = m_moveDestinationCollection->location();
         source->prepareMove( tracks, destination );
     }
     else
@@ -491,7 +487,7 @@ FileView::startDrag( Qt::DropActions supportedActions )
 /*  FIXME: disabled temporarily for KF5 porting
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
-*/
+
     if( m_pd && m_pd->isHidden() )
     {
         QModelIndexList indices = selectedIndexes();
@@ -507,6 +503,7 @@ FileView::startDrag( Qt::DropActions supportedActions )
 
         m_pd->show();
     }
+*/
 
     QTreeView::startDrag( supportedActions );
 

@@ -24,7 +24,7 @@
 #include "widgets/PrettyTreeView.h"
 
 #include <KCapacityBar>
-#include <KGlobal>
+#include <KFormat>
 #include <KLocalizedString>
 
 #include <QAction>
@@ -115,9 +115,9 @@ PrettyTreeDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option
     style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
 
     if ( option.state & QStyle::State_Selected )
-        painter->setPen( App::instance()->palette().highlightedText().color() );
+        painter->setPen( pApp->palette().highlightedText().color() );
     else
-        painter->setPen( App::instance()->palette().text().color() );
+        painter->setPen( pApp->palette().text().color() );
 
     painter->setRenderHint( QPainter::Antialiasing );
 
@@ -217,7 +217,7 @@ PrettyTreeDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option
         KCapacityBar capacityBar( KCapacityBar::DrawTextInline );
         capacityBar.setValue( percentage );
         capacityBar.setText( i18nc( "Example: 3.5 GB free (unit is part of %1)", "%1 free",
-                                    KGlobal::locale()->formatByteSize( bytesTotal - bytesUsed, 1 ) ) );
+                                    KFormat().formatByteSize( bytesTotal - bytesUsed ) ) );
 
         QRect capacityRect( remainingRect );
         capacityRect.setTop( titleRect.bottom() );

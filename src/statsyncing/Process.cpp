@@ -32,6 +32,8 @@
 #include "statsyncing/ui/ChooseProvidersPage.h"
 #include "statsyncing/ui/MatchedTracksPage.h"
 
+#include <KWindowConfig>
+
 using namespace StatSyncing;
 
 Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &preSelectedProviders,
@@ -41,14 +43,14 @@ Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &preSel
     , m_providersModel( new ProvidersModel( providers, preSelectedProviders, this ) )
     , m_checkedFields( checkedFields )
     , m_matchedTracksModel( 0 )
-    , m_dialog( new KDialog() )
+    , m_dialog( new QDialog() )
 {
-    m_dialog.data()->setCaption( i18n( "Synchronize Statistics" ) );
-    m_dialog.data()->setButtons( KDialog::None );
-    m_dialog.data()->setInitialSize( QSize( 860, 500 ) );
-    m_dialog.data()->restoreDialogSize( Amarok::config( "StatSyncingDialog" ) );
+    m_dialog->setWindowTitle( i18n( "Synchronize Statistics" ) );
+    m_dialog->resize( QSize( 860, 500 ) );
+    KWindowConfig::restoreWindowSize( m_dialog->windowHandle(), Amarok::config( "StatSyncingDialog" ) );
+
     // delete this process when user hits the close button
-    connect( m_dialog.data(), &KDialog::finished, this, &Process::slotSaveSizeAndDelete );
+    connect( m_dialog.data(), &QDialog::finished, this, &Process::slotSaveSizeAndDelete );
 
     /* we need to delete all QWidgets on application exit well before QApplication
      * is destroyed. We however don't set MainWindow as parent as this would make
@@ -67,15 +69,24 @@ Process::start()
     if( m_mode == Interactive )
     {
         m_providersPage = new ChooseProvidersPage();
-        m_providersPage.data()->setFields( Controller::availableFields(), m_checkedFields );
-        m_providersPage.data()->setProvidersModel( m_providersModel, m_providersModel->selectionModel() );
+        m_providersPage->setFields( Controller::availableFields(), m_checkedFields );
+        m_providersPage->setProvidersModel( m_providersModel, m_providersModel->selectionModel() );
 
         connect( m_providersPage.data(), &StatSyncing::ChooseProvidersPage::accepted,
                  this, &Process::slotMatchTracks );
         connect( m_providersPage.data(), &StatSyncing::ChooseProvidersPage::rejected,
                  this, &Process::slotSaveSizeAndDelete );
-        m_dialog.data()->mainWidget()->hide(); // otherwise it may last as a ghost image
-        m_dialog.data()->setMainWidget( m_providersPage.data() ); // takes ownership
+
+        for( const auto &child : m_dialog->children() )
+        {
+            auto widget = qobject_cast<QWidget*>( child );
+            if( widget )
+            {
+                widget->hide(); // otherwise it may last as a ghost image
+                widget->deleteLater();
+            }
+        }
+        m_providersPage->setParent( m_dialog ); // takes ownership
         raise();
     }
     else if( m_checkedFields )
@@ -87,9 +98,9 @@ Process::raise()
 {
     if( m_providersPage || m_tracksPage )
     {
-        m_dialog.data()->show();
-        m_dialog.data()->activateWindow();
-        m_dialog.data()->raise();
+        m_dialog->show();
+        m_dialog->activateWindow();
+        m_dialog->raise();
     }
     else
         m_mode = Interactive; // schedule dialog should be shown when something happens
@@ -112,7 +123,7 @@ Process::slotMatchTracks()
         connect( job, &StatSyncing::MatchTracksJob::incrementProgress, page,
                  &StatSyncing::ChooseProvidersPage::progressBarIncrementProgress );
         connect( page, &StatSyncing::ChooseProvidersPage::rejected, job, &StatSyncing::MatchTracksJob::abort );
-        connect( m_dialog.data(), &KDialog::finished, job, &StatSyncing::MatchTracksJob::abort );
+        connect( m_dialog.data(), &QDialog::finished, job, &StatSyncing::MatchTracksJob::abort );
     }
     else // background operation
     {
@@ -168,25 +179,32 @@ Process::slotTracksMatched( ThreadWeaver::JobPointer job )
     if( m_matchedTracksModel->hasConflict() || m_mode == Interactive )
     {
         m_tracksPage = new MatchedTracksPage();
-        MatchedTracksPage *page = m_tracksPage.data(); // convenience
-        page->setProviders( matchJob->providers() );
-        page->setMatchedTracksModel( m_matchedTracksModel );
+        m_tracksPage->setProviders( matchJob->providers() );
+        m_tracksPage->setMatchedTracksModel( m_matchedTracksModel );
         foreach( ProviderPtr provider, matchJob->providers() )
         {
             if( !matchJob->uniqueTracks().value( provider ).isEmpty() )
-                page->addUniqueTracksModel( provider, new SingleTracksModel(
-                        matchJob->uniqueTracks().value( provider ), columns, m_options, page ) );
+                m_tracksPage->addUniqueTracksModel( provider, new SingleTracksModel(
+                    matchJob->uniqueTracks().value( provider ), columns, m_options, m_tracksPage ) );
             if( !matchJob->excludedTracks().value( provider ).isEmpty() )
-                page->addExcludedTracksModel( provider, new SingleTracksModel(
-                    matchJob->excludedTracks().value( provider ), columns, m_options, page ) );
+                m_tracksPage->addExcludedTracksModel( provider, new SingleTracksModel(
+                    matchJob->excludedTracks().value( provider ), columns, m_options, m_tracksPage ) );
         }
-        page->setTracksToScrobble( m_tracksToScrobble, services );
+        m_tracksPage->setTracksToScrobble( m_tracksToScrobble, services );
 
-        connect( page, &StatSyncing::MatchedTracksPage::back, this, &Process::slotBack );
-        connect( page, &StatSyncing::MatchedTracksPage::accepted, this, &Process::slotSynchronize );
-        connect( page, &StatSyncing::MatchedTracksPage::rejected, this, &Process::slotSaveSizeAndDelete );
-        m_dialog.data()->mainWidget()->hide(); // otherwise it may last as a ghost image
-        m_dialog.data()->setMainWidget( page ); // takes ownership
+        connect( m_tracksPage, &StatSyncing::MatchedTracksPage::back, this, &Process::slotBack );
+        connect( m_tracksPage, &StatSyncing::MatchedTracksPage::accepted, this, &Process::slotSynchronize );
+        connect( m_tracksPage, &StatSyncing::MatchedTracksPage::rejected, this, &Process::slotSaveSizeAndDelete );
+        for( const auto &child : m_dialog->children() )
+        {
+            auto widget = qobject_cast<QWidget*>( child );
+            if( widget )
+            {
+                widget->hide(); // otherwise it may last as a ghost image
+                widget->deleteLater();
+            }
+        }
+        m_tracksPage->setParent( m_dialog ); // takes ownership
         raise();
     }
     else // NonInteractive mode without conflict
@@ -204,7 +222,7 @@ void
 Process::slotSynchronize()
 {
     // disconnect, otherwise we prematurely delete Process and thus m_matchedTracksModel
-    disconnect( m_dialog.data(), &KDialog::finished, this, &Process::slotSaveSizeAndDelete );
+    disconnect( m_dialog.data(), &QDialog::finished, this, &Process::slotSaveSizeAndDelete );
     m_dialog.data()->close();
 
     SynchronizeTracksJob *job = new SynchronizeTracksJob(
@@ -288,7 +306,7 @@ Process::slotSaveSizeAndDelete()
     if( m_dialog )
     {
         KConfigGroup group = Amarok::config( "StatSyncingDialog" );
-        m_dialog.data()->saveDialogSize( group );
+        group.writeEntry( "geometry", m_dialog->saveGeometry() );
     }
     deleteLater();
 }

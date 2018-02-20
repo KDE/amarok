@@ -27,8 +27,8 @@
 #include <QReadLocker>
 #include <QWriteLocker>
 
-#include <KStandardDirs>
-#include <KLocale>
+#include <QStandardPaths>
+#include <KLocalizedString>
 
 CoverCache* CoverCache::s_instance = 0;
 
@@ -53,6 +53,7 @@ CoverCache::CoverCache()
 CoverCache::~CoverCache()
 {
     m_lock.lockForWrite();
+    m_lock.unlock();
 }
 
 void
@@ -112,7 +113,7 @@ CoverCache::getCover( const Meta::AlbumPtr &album, int size ) const
         }
         else
         {
-            const QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
+            const QPixmap orgPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/nocover.png" ) );
             pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
             pixmap.save( cacheCoverDir.filePath( noCoverKey ), "PNG" );
         }

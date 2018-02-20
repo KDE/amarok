@@ -86,8 +86,8 @@ QUrl
 IpodPlaylist::uidUrl() const
 {
     // integer reading is atomic, no lock needed
-    QString collId = m_coll ? m_coll.data()->collectionId() : "removedipodcolleciton:/";
-    return QString( "%1/playlists/%2" ).arg( collId ).arg( m_playlist->id );
+    QString collId = m_coll ? m_coll->collectionId() : "removedipodcollection:/";
+    return QUrl( QString( "%1/playlists/%2" ).arg( collId ).arg( m_playlist->id ) );
 }
 
 QString
@@ -108,7 +108,7 @@ IpodPlaylist::setName( const QString &name )
 Playlists::PlaylistProvider*
 IpodPlaylist::provider() const
 {
-    return m_coll ? m_coll.data()->playlistProvider() : 0;
+    return m_coll ? m_coll->playlistProvider() : 0;
 }
 
 int
@@ -126,7 +126,7 @@ IpodPlaylist::tracks()
 void
 IpodPlaylist::addTrack( Meta::TrackPtr track, int position )
 {
-    if( m_type != Normal || !m_coll || !m_coll.data()->isWritable() )
+    if( m_type != Normal || !m_coll || !m_coll->isWritable() )
         return;
 
     if( position < 0 || position > m_tracks.count() )
@@ -156,14 +156,14 @@ IpodPlaylist::removeTrack( int position )
         return; // do not fire following machinery for special playlists
     }
 
-    KSharedPtr<MemoryMeta::Track> proxyTrack = KSharedPtr<MemoryMeta::Track>::dynamicCast( removedTrack );
+    AmarokSharedPointer<MemoryMeta::Track> proxyTrack = AmarokSharedPointer<MemoryMeta::Track>::dynamicCast( removedTrack );
     if( !proxyTrack )
     {
         error() << __PRETTY_FUNCTION__ << "track" << removedTrack.data() << "from m_track was not MemoryMeta track!";
         return;
     }
 
-    KSharedPtr<IpodMeta::Track> ipodTrack = KSharedPtr<IpodMeta::Track>::dynamicCast( proxyTrack->originalTrack() );
+    AmarokSharedPointer<IpodMeta::Track> ipodTrack = AmarokSharedPointer<IpodMeta::Track>::dynamicCast( proxyTrack->originalTrack() );
     if( !proxyTrack )
     {
         error() << __PRETTY_FUNCTION__ << "originalTrack of the proxyTrack was not IpodMeta track!";
@@ -199,7 +199,7 @@ IpodPlaylist::scheduleCopyAndInsert()
     if( !prov )
         return;  // we can do nothing
     static_cast<IpodPlaylistProvider *>( prov )->scheduleCopyAndInsertToPlaylist(
-        KSharedPtr<IpodPlaylist>( this ) );
+        AmarokSharedPointer<IpodPlaylist>( this ) );
 }
 
 void
@@ -208,13 +208,13 @@ IpodPlaylist::addIpodTrack( Meta::TrackPtr track, int position )
     Q_ASSERT( position >= 0 && position <= m_tracks.count() );
 
     Meta::TrackPtr proxyTrack = Meta::TrackPtr();
-    KSharedPtr<MemoryMeta::Track> memoryTrack = KSharedPtr<MemoryMeta::Track>::dynamicCast( track );
+    AmarokSharedPointer<MemoryMeta::Track> memoryTrack = AmarokSharedPointer<MemoryMeta::Track>::dynamicCast( track );
     if( memoryTrack )
     {
         track = memoryTrack->originalTrack();  // iPod track is usually hidden below MemoryMeta proxy
         proxyTrack = track;
     }
-    KSharedPtr<IpodMeta::Track> ipodTrack = KSharedPtr<IpodMeta::Track>::dynamicCast( track );
+    AmarokSharedPointer<IpodMeta::Track> ipodTrack = AmarokSharedPointer<IpodMeta::Track>::dynamicCast( track );
     if( !ipodTrack )
     {
         error() << __PRETTY_FUNCTION__ << "Could not get IpodMeta::Track out of supplied track."
@@ -224,7 +224,7 @@ IpodPlaylist::addIpodTrack( Meta::TrackPtr track, int position )
     }
 
     if( !proxyTrack)  // we got IpodTrack directly, expose its MemoryMeta proxy
-        proxyTrack = m_coll ? m_coll.data()->trackForUidUrl( ipodTrack->uidUrl() ) : Meta::TrackPtr();
+        proxyTrack = m_coll ? m_coll->trackForUidUrl( ipodTrack->uidUrl() ) : Meta::TrackPtr();
     if( !proxyTrack )
     {
         error() << __PRETTY_FUNCTION__ << "was passed IpodMeta::Track but we could not find"

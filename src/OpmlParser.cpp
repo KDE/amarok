@@ -23,7 +23,7 @@
 #include <QFile>
 #include <QXmlStreamReader>
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <kio/job.h>
 
 const QString OpmlParser::OPML_MIME = "text/x-opml+xml";

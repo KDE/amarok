@@ -19,10 +19,12 @@
 #include <config.h>
 #include "EngineController.h"
 #include "KNotificationBackend.h"
+#include "MainWindow.h"
 #include "PluginManager.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 #include "TrayIcon.h"
 #include "amarokconfig.h"
+#include "aboutdialog/OcsData.h"
 #include "amarokurls/AmarokUrl.h"
 #include "configdialog/ConfigDialog.h"
 #include "configdialog/dialogs/PlaybackConfig.h"
@@ -62,26 +64,20 @@
 
 #include <iostream>
 
-#include <KCalendarSystem>
-#include <KCmdLineArgs>                  //initCliArgs()
 #include <KDirLister>
 #include <KEditToolBar>                  //slotConfigToolbars()
-#include <KGlobalSettings>
 #include <KIO/CopyJob>
-#include <KJob>
 #include <KJobUiDelegate>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KShortcutsDialog>              //slotConfigShortcuts()
-#include <KStandardDirs>
-#include <KGlobal>
 
 #include <QAction>
 #include <QByteArray>
 #include <QDesktopServices>
 #include <QFile>
+#include <QFileOpenEvent>
 #include <QStringList>
-#include <QTextDocument>                // for Qt::escape()
 #include <QTimer>                       //showHyperThreadingWarning()
 #include <QtDBus>
 
@@ -90,13 +86,12 @@
 extern void setupEventHandler_mac(SRefCon);
 #endif
 
-QStringList App::s_delayedAmarokUrls = QStringList();
 AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App(int &argc, char **argv)
     : QApplication(argc, argv)
-    , m_args(nullptr)
     , m_tray(nullptr)
+    , m_args(nullptr)
 {
     DEBUG_BLOCK
     PERF_LOG( "Begin Application ctor" )
@@ -209,12 +204,12 @@ App::~App()
 #ifndef Q_WS_MAC
     // do even if trayicon is not shown, it is safe
     Amarok::config().writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
 #else
     // for some reason on OS X the main window always reports being hidden
     // this means if you have the tray icon enabled, amarok will always open minimized
     Amarok::config().writeEntry( "HiddenOnExit", false );
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
 #endif
 
     ScriptManager::destroy();
@@ -225,10 +220,9 @@ App::~App()
     Amarok::OSD::destroy();
     Amarok::KNotificationBackend::destroy();
 
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
 
-    //mainWindow()->deleteBrowsers();
-    delete mainWindow();
+    delete m_mainWindow.data();
 
     Playlist::Controller::destroy();
     Playlist::ModelStack::destroy();
@@ -408,7 +402,8 @@ void App::applySettings()
     if( AmarokConfig::enableScriptConsole() && !m_scriptConsole )
         m_scriptConsole = ScriptConsoleNS::ScriptConsole::instance();
     else if( !AmarokConfig::enableScriptConsole() && m_scriptConsole )
-        m_scriptConsole.data()->deleteLater();}
+        m_scriptConsole.data()->deleteLater();
+}
 
 //SLOT
 void App::applySettingsFirstTime()
@@ -445,6 +440,7 @@ App::continueInit()
                                 || m_args->isSet( "queue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
+    AmarokConfig::instance( "amarokrc" );
 
     new Amarok::DefaultApplicationController( this );
     Amarok::Components::applicationController()->start();
@@ -458,7 +454,7 @@ App::continueInit()
     PERF_LOG( "Done creating MainWindow" )
 
     if( AmarokConfig::showTrayIcon() )
-        m_tray = new Amarok::TrayIcon( mainWindow() );
+        m_tray = new Amarok::TrayIcon( m_mainWindow );
 
     PERF_LOG( "Creating DBus handlers" )
     new Mpris1::RootHandler();
@@ -473,7 +469,7 @@ App::continueInit()
     //Reason: in ~App we have to call the deleteBrowsers method or else we run afoul of refcount foobar in KHTMLPart
     //But if you click the X (not Action->Quit) it automatically kills MainWindow because KMainWindow sets this
     //for us as default (bad KMainWindow)
-    mainWindow()->setAttribute( Qt::WA_DeleteOnClose, false );
+    m_mainWindow->setAttribute( Qt::WA_DeleteOnClose, false );
     //init playlist window as soon as the database is guaranteed to be usable
 
     // Create engine, show TrayIcon etc.
@@ -496,7 +492,7 @@ App::continueInit()
     if( !Amarok::config().readEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon() )
     {
         PERF_LOG( "showing main window again" )
-        m_mainWindow.data()->show();
+        m_mainWindow->show();
         PERF_LOG( "after showing mainWindow" )
     }
 
@@ -556,6 +552,7 @@ void App::slotConfigAmarok( const QString& page )
     {
         //KConfigDialog didn't find an instance of this dialog, so lets create it :
         dialog = new Amarok2ConfigDialog( mainWindow(), "settings", AmarokConfig::self() );
+
         connect( dialog, &KConfigDialog::settingsChanged,
                  this, &App::applySettings );
     }
@@ -570,7 +567,7 @@ void App::slotConfigAmarokWithEmptyPage()
 void App::slotConfigShortcuts()
 {
     KShortcutsDialog::configure( Amarok::actionCollection(), KShortcutsEditor::LetterShortcutsAllowed, mainWindow() );
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
 }
 
 KIO::Job *App::trashFiles( const QList<QUrl> &files )
@@ -632,18 +629,17 @@ int App::newInstance()
 
 void App::handleFirstRun()
 {
-    KConfigGroup config = KGlobal::config()->group( "General" );
+    KConfigGroup config = Amarok::config( "General" );
     if( !config.readEntry( "First Run", true ) )
         return;
 
-    const QUrl musicUrl = QUrl::fromUserInput(QDesktopServices::storageLocation( QDesktopServices::MusicLocation ));
-    const QString musicDir = musicUrl.adjusted(QUrl::StripTrailingSlash).toLocalFile();
+    const QString musicDir = QStandardPaths::writableLocation( QStandardPaths::MusicLocation );
     const QDir dir( musicDir );
 
     int result = KMessageBox::No;
     if( dir.exists() && dir.isReadable() )
     {
-        result = KMessageBox::questionYesNoCancel( mainWindow(), i18n( "A music path, "
+        result = KMessageBox::questionYesNoCancel( m_mainWindow, i18n( "A music path, "
                 "%1, is set in System Settings.\nWould you like to use that as a "
                 "collection folder?", musicDir ) );
     }

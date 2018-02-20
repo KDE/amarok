@@ -36,7 +36,6 @@
 #include "support/AudioCdDeviceInfo.h"
 
 #include <KIO/Job>
-#include <KIO/NetAccess>
 #include <KIO/UDSEntry>
 
 #include <solid/device.h>
@@ -45,10 +44,10 @@
 #include <KConfigGroup>
 #include <KEncodingProber>
 #include <KSharedConfig>
-#include <KUrl>
 
 #include <QDir>
 #include <QTextCodec>
+#include <QUrlQuery>
 
 using namespace Collections;
 
@@ -91,7 +90,11 @@ AudioCdCollection::audiocdUrl( const QString &path ) const
     url.setPath(url.path() + '/' + ( path ));
 
     if( !m_device.isEmpty() )
-        url.addQueryItem( "device", m_device );
+    {
+        QUrlQuery query;
+        query.addQueryItem( "device", m_device );
+        url.setQuery( query );
+    }
 
     return url;
 }
@@ -368,9 +371,10 @@ qint64
 AudioCdCollection::trackLength( int i ) const
 {
     QUrl kioUrl = audiocdUrl( trackWavFileName( i ) );
-    KIO::UDSEntry uds;
-    if ( KIO::NetAccess::stat(kioUrl, uds, NULL) )
+    KIO::StatJob *statJob = KIO::stat( kioUrl );
+    if ( statJob->exec() )
     {
+        KIO::UDSEntry uds = statJob->statResult();
         qint64 samples = (uds.numberValue(KIO::UDSEntry::UDS_SIZE, 44) - 44) / 4;
         return (samples - 44) * 10 / 441;
     }
@@ -502,7 +506,7 @@ AudioCdCollection::noInfoAvailable()
 
     // This will find also data tracks on mixed CDs:
     // a better way to discover the available audio tracks should be found
-    while( KIO::NetAccess::exists( audiocdUrl( trackWav ), KIO::NetAccess::SourceSide, 0 ) )
+    while( KIO::stat( audiocdUrl( trackWav ), KIO::StatJob::SourceSide, 0 )->exec() )
     {
         debug() << "got track url: " << audiocdUrl( trackWav );
 

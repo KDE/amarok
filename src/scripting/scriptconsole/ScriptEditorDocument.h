@@ -17,10 +17,10 @@
 #ifndef SCRIPT_EDITOR_DOCUMENT_H
 #define SCRIPT_EDITOR_DOCUMENT_H
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 
 namespace KTextEditor
 {
@@ -52,7 +52,7 @@ namespace ScriptConsoleNS
 
         private:
             KTextEditor::Document *m_document;
-            static QWeakPointer<AmarokScriptCodeCompletionModel> s_completionModel;
+            static QPointer<AmarokScriptCodeCompletionModel> s_completionModel;
     };
 }
 

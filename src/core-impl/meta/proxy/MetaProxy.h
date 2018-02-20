@@ -33,7 +33,7 @@ namespace Collections
 namespace MetaProxy
 {
     class Track;
-    typedef KSharedPtr<Track> TrackPtr;
+    typedef AmarokSharedPointer<Track> TrackPtr;
     class AMAROK_EXPORT Track : public Meta::Track, public Meta::TrackEditor
     {
         public:
@@ -46,7 +46,7 @@ namespace MetaProxy
 
             /**
              * Construct a lazy-loading proxying track. You must assign this track to a
-             * KSharedPtr right after constructing it.
+             * AmarokSharedPointer right after constructing it.
              *
              * If @param lookupType is AutomaticLookup (the default), an asynchronous
              * job employing CollectionManager to lookup the track in TrackProviders is

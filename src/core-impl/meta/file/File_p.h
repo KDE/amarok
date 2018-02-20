@@ -38,7 +38,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 #include <QSet>
 #include <QString>
 
@@ -121,8 +121,8 @@ namespace MetaFile
         Meta::GenrePtr genre;
         Meta::ComposerPtr composer;
         Meta::YearPtr year;
-        QWeakPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
-        QWeakPointer<Collections::Collection> collection;
+        QPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
+        QPointer<Collections::Collection> collection;
 
         /**
          * Number of current batch operations started by @see beginUpdate() and not
@@ -245,7 +245,7 @@ namespace MetaFile
             return name() == other.name();
         }
 
-        QWeakPointer<MetaFile::Track::Private> const d;
+        QPointer<MetaFile::Track::Private> const d;
         const bool m_isAlbumArtist;
     };
 
@@ -375,7 +375,7 @@ namespace MetaFile
             return name() == other.name();
         }
 
-        QWeakPointer<MetaFile::Track::Private> const d;
+        QPointer<MetaFile::Track::Private> const d;
     };
 
     class FileGenre : public Meta::Genre
@@ -401,7 +401,7 @@ namespace MetaFile
             return name() == other.name();
         }
 
-        QWeakPointer<MetaFile::Track::Private> const d;
+        QPointer<MetaFile::Track::Private> const d;
     };
 
     class FileComposer : public Meta::Composer
@@ -427,7 +427,7 @@ namespace MetaFile
             return name() == other.name();
         }
 
-        QWeakPointer<MetaFile::Track::Private> const d;
+        QPointer<MetaFile::Track::Private> const d;
     };
 
     class FileYear : public Meta::Year
@@ -453,7 +453,7 @@ namespace MetaFile
             return name() == other.name();
         }
 
-        QWeakPointer<MetaFile::Track::Private> const d;
+        QPointer<MetaFile::Track::Private> const d;
     };
 }
 

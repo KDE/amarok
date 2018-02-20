@@ -37,8 +37,7 @@
 #include <QTimeEdit>
 
 #include <QIcon>
-#include <KLocale>
-#include <klocalizeddate.h>
+#include <KLocalizedString>
 #include <KRatingWidget>
 
 using namespace Amarok;
@@ -48,12 +47,12 @@ static const int maxHours = 24;
 TimeDistanceWidget::TimeDistanceWidget( QWidget *parent )
     : QWidget( parent )
 {
-    m_timeEdit = new KIntSpinBox(this);
+    m_timeEdit = new QSpinBox(this);
     m_timeEdit->setMinimum( 0 );
     m_timeEdit->setMaximum( 600 );
 
-    m_unitSelection = new KComboBox(this);
-    connect( m_timeEdit, QOverload<int>::of(&KIntSpinBox::valueChanged),
+    m_unitSelection = new QComboBox(this);
+    connect( m_timeEdit, QOverload<int>::of(&QSpinBox::valueChanged),
              this, &TimeDistanceWidget::slotUpdateComboBoxLabels );
     for (int i = 0; i < 7; ++i) {
         m_unitSelection->addItem( QString() );
@@ -299,7 +298,7 @@ MetaQueryWidget::setFilter( const MetaQueryWidget::Filter &value )
     emit changed(m_filter);
 }
 
-static void addIconItem( KComboBox *box, qint64 field )
+static void addIconItem( QComboBox *box, qint64 field )
 {
     QString icon = Meta::iconForField( field );
     QString text = Meta::i18nForField( field );
@@ -312,7 +311,7 @@ static void addIconItem( KComboBox *box, qint64 field )
 void
 MetaQueryWidget::makeFieldSelection()
 {
-    m_fieldSelection = new KComboBox( this );
+    m_fieldSelection = new QComboBox( this );
     if (!m_onlyNumeric)
     {
         m_fieldSelection->addItem( i18n( "Simple Search" ), 0 );
@@ -346,7 +345,7 @@ MetaQueryWidget::makeFieldSelection()
     if (!m_onlyNumeric)
         addIconItem( m_fieldSelection, Meta::valLabel );
     addIconItem( m_fieldSelection, Meta::valModified );
-    connect( m_fieldSelection, QOverload<int>::of(&KComboBox::currentIndexChanged),
+    connect( m_fieldSelection, QOverload<int>::of(&QComboBox::currentIndexChanged),
              this, &MetaQueryWidget::fieldChanged );
 }
 
@@ -560,7 +559,7 @@ MetaQueryWidget::numValueTimeDistanceChanged()
 void
 MetaQueryWidget::numValueFormatChanged(int index)
 {
-    KComboBox* combo = static_cast<KComboBox*>(sender());
+    QComboBox* combo = static_cast<QComboBox*>(sender());
     if( combo ) {
         m_filter.numValue = combo->itemData( index ).toInt();
 
@@ -607,7 +606,7 @@ MetaQueryWidget::makeCompareSelection()
 
     else if( isDate(field) )
     {
-        m_compareSelection = new KComboBox();
+        m_compareSelection = new QComboBox();
         m_compareSelection->addItem( conditionToString( Equals, field ), (int)Equals );
         m_compareSelection->addItem( conditionToString( LessThan, field ), (int)LessThan );
         m_compareSelection->addItem( conditionToString( GreaterThan, field ), (int)GreaterThan );
@@ -617,7 +616,7 @@ MetaQueryWidget::makeCompareSelection()
     }
     else if( isNumeric(field) )
     {
-        m_compareSelection = new KComboBox();
+        m_compareSelection = new QComboBox();
         m_compareSelection->addItem( conditionToString( Equals, field ), (int)Equals );
         m_compareSelection->addItem( conditionToString( LessThan, field ), (int)LessThan );
         m_compareSelection->addItem( conditionToString( GreaterThan, field ), (int)GreaterThan );
@@ -625,7 +624,7 @@ MetaQueryWidget::makeCompareSelection()
     }
     else
     {
-        m_compareSelection = new KComboBox();
+        m_compareSelection = new QComboBox();
         m_compareSelection->addItem( conditionToString( Contains, field ), (int)Contains );
         m_compareSelection->addItem( conditionToString( Equals, field ), (int)Equals );
     }
@@ -640,7 +639,7 @@ MetaQueryWidget::makeCompareSelection()
     }
     m_compareSelection->setCurrentIndex( index == -1 ? 0 : index );
 
-    connect( m_compareSelection, QOverload<int>::of(&KComboBox::currentIndexChanged),
+    connect( m_compareSelection, QOverload<int>::of(&QComboBox::currentIndexChanged),
              this, &MetaQueryWidget::compareChanged );
 }
 
@@ -712,7 +711,7 @@ MetaQueryWidget::makeGenericComboSelection( bool editable, Collections::QueryMak
 
     if( populateQuery != 0 )
     {
-        m_runningQueries.insert(populateQuery, QWeakPointer<KComboBox>(combo));
+        m_runningQueries.insert(populateQuery, QPointer<KComboBox>(combo));
         connect( populateQuery, &Collections::QueryMaker::newResultReady,
                  this, &MetaQueryWidget::populateComboBox );
         connect( populateQuery, &Collections::QueryMaker::queryDone,
@@ -727,7 +726,7 @@ MetaQueryWidget::makeGenericComboSelection( bool editable, Collections::QueryMak
 
     combo->completionObject()->setIgnoreCase( true );
     combo->setCompletionMode( KCompletion::CompletionPopup );
-    combo->setInsertPolicy( QComboBox::InsertAtTop );
+    combo->setInsertPolicy( KComboBox::InsertAtTop );
     m_valueSelection1 = combo;
 }
 
@@ -748,7 +747,7 @@ MetaQueryWidget::populateComboBox( QStringList results )
     if( !query )
         return;
 
-    QWeakPointer<KComboBox> combo = m_runningQueries.value(query);
+    QPointer<KComboBox> combo = m_runningQueries.value(query);
     if( combo.isNull() )
         return;
 
@@ -760,21 +759,21 @@ MetaQueryWidget::populateComboBox( QStringList results )
     const QSet<QString> dataSet = results.toSet();
     QStringList dataList = dataSet.toList();
     dataList.sort();
-    combo.data()->addItems( dataList );
+    combo->addItems( dataList );
 
-    KCompletion* comp = combo.data()->completionObject();
+    KCompletion* comp = combo->completionObject();
     comp->setItems( dataList );
 
     // reset the text and re-enable the signal
     combo.data()->setEditText( m_filter.value );
-    connect( combo.data(), &KComboBox::editTextChanged,
+    connect( combo.data(), &QComboBox::editTextChanged,
              this, &MetaQueryWidget::valueChanged );
 }
 
 void
 MetaQueryWidget::makeFormatComboSelection()
 {
-    KComboBox* combo = new KComboBox( this );
+    QComboBox* combo = new QComboBox( this );
     combo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
     QStringList filetypes = Amarok::FileTypeSupport::possibleFileTypes();
     for (int listpos=0;listpos<filetypes.size();listpos++)
@@ -785,7 +784,7 @@ MetaQueryWidget::makeFormatComboSelection()
     int index = m_fieldSelection->findData( (int)m_filter.numValue );
     combo->setCurrentIndex( index == -1 ? 0 : index );
 
-    connect( combo, QOverload<int>::of(&KComboBox::currentIndexChanged),
+    connect( combo, QOverload<int>::of(&QComboBox::currentIndexChanged),
              this, &MetaQueryWidget::numValueFormatChanged );
 
     m_valueSelection1 = combo;
@@ -840,7 +839,7 @@ MetaQueryWidget::makeLengthSelection()
     timeSpin->setDisplayFormat( displayFormat );
     timeSpin->setMinimumTime( QTime( 0, 0, 0 ) );
     timeSpin->setMaximumTime( QTime( maxHours - 1, 59, 59 ) );
-    timeSpin->setTime( QTime().addSecs( m_filter.numValue ) );
+    timeSpin->setTime( QTime(0, 0, 0).addSecs( m_filter.numValue ) );
 
     connect( timeSpin, &QTimeEdit::timeChanged,
              this, QOverload<const QTime&>::of(&MetaQueryWidget::numValueChanged) );
@@ -854,7 +853,7 @@ MetaQueryWidget::makeLengthSelection()
     timeSpin2->setDisplayFormat( displayFormat );
     timeSpin2->setMinimumTime( QTime( 0, 0, 0 ) );
     timeSpin2->setMaximumTime( QTime( maxHours - 1, 59, 59 ) );
-    timeSpin2->setTime( QTime().addSecs( m_filter.numValue2 ) );
+    timeSpin2->setTime( QTime(0, 0, 0).addSecs( m_filter.numValue2 ) );
 
     connect( timeSpin2, &QTimeEdit::timeChanged,
              this, QOverload<const QTime&>::of(&MetaQueryWidget::numValue2Changed) );
@@ -865,14 +864,14 @@ MetaQueryWidget::makeLengthSelection()
 void
 MetaQueryWidget::makeGenericNumberSelection( qint64 field, const QString& unit )
 {
-    KIntSpinBox* spin = new KIntSpinBox();
+    QSpinBox* spin = new QSpinBox();
     spin->setMinimum( Filter::minimumValue( field ) );
     spin->setMaximum( Filter::maximumValue( field ) );
     if( !unit.isEmpty() )
         spin->setSuffix( ' ' + unit );
     spin->setValue( m_filter.numValue );
 
-    connect( spin, QOverload<int>::of(&KIntSpinBox::valueChanged),
+    connect( spin, QOverload<int>::of(&QSpinBox::valueChanged),
              this, QOverload<int>::of(&MetaQueryWidget::numValueChanged) );
 
     m_valueSelection1 = spin;
@@ -881,14 +880,14 @@ MetaQueryWidget::makeGenericNumberSelection( qint64 field, const QString& unit )
         return;
 
     // second spin box for the between selection
-    KIntSpinBox* spin2 = new KIntSpinBox();
+    QSpinBox* spin2 = new QSpinBox();
     spin2->setMinimum( Filter::minimumValue( field ) );
     spin2->setMaximum( Filter::maximumValue( field ) );
     if( !unit.isEmpty() )
         spin2->setSuffix( ' ' + unit );
     spin2->setValue( m_filter.numValue2 );
 
-    connect( spin2, QOverload<int>::of(&KIntSpinBox::valueChanged),
+    connect( spin2, QOverload<int>::of(&QSpinBox::valueChanged),
              this, QOverload<int>::of(&MetaQueryWidget::numValue2Changed) );
 
     m_valueSelection2 = spin2;
@@ -1065,10 +1064,8 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
         }
         else
         {
-            KLocalizedDate localizedDate1( QDateTime::fromTime_t(numValue).date() );
-            strValue1 = localizedDate1.formatDate( KLocale::ShortDate );
-            KLocalizedDate localizedDate2( QDateTime::fromTime_t(numValue2).date() );
-            strValue2 = localizedDate2.formatDate( KLocale::ShortDate );
+            strValue1 = QLocale().toString( QDateTime::fromTime_t(numValue).date(), QLocale::ShortFormat );
+            strValue2 = QLocale().toString( QDateTime::fromTime_t(numValue2).date(), QLocale::ShortFormat );
         }
     }
     else if( isNumeric() )

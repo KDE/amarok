@@ -22,7 +22,7 @@
 #include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
 
 #include <KJob>
-#include <KLocale>
+#include <KLocalizedString>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 

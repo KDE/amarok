@@ -54,9 +54,9 @@ namespace Meta {
              * destruction.
              */
             template <typename T>
-            void subscribeTo( KSharedPtr<T> entity ) { subscribeTo( entity.data() ); }
+            void subscribeTo( AmarokSharedPointer<T> entity ) { subscribeTo( entity.data() ); }
             template <typename T>
-            void unsubscribeFrom( KSharedPtr<T> entity ) { unsubscribeFrom( entity.data() ); }
+            void unsubscribeFrom( AmarokSharedPointer<T> entity ) { unsubscribeFrom( entity.data() ); }
 
             /**
              * This method is called when the metadata of a track has changed.
@@ -76,7 +76,7 @@ namespace Meta {
             virtual void entityDestroyed();
 
         private:
-            friend class ::PersistentStatisticsStore; // so that it can call KSharedPtr-free subscribe:
+            friend class ::PersistentStatisticsStore; // so that it can call AmarokSharedPointer-free subscribe:
             void subscribeTo( Base *ptr );
             void unsubscribeFrom( Base *ptr );
 

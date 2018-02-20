@@ -25,19 +25,18 @@
 #include "CoverViewDialog.h"
 
 #include <QApplication>
+#include <QDesktopWidget>
+#include <QFileDialog>
+#include <QIcon>
+#include <QImageReader>
+#include <QTemporaryDir>
+
+#include <KConfigGroup>
 #include <KDirOperator>
 #include <KFile>
-#include <KFileDialog>
-#include <KFileWidget>
-#include <QIcon>
-#include <KImageIO>
+#include <KIO/CopyJob>
 #include <KLocalizedString>
 #include <KMessageBox>
-#include <KTempDir>
-#include <KIO/NetAccess>
-
-#include <QDesktopWidget>
-#include <KConfigGroup>
 
 /////////////////////////////////////
 //  FetchCoverAction
@@ -154,18 +153,21 @@ SetCustomCoverAction::slotTriggered()
 
     const QString& startPath = m_albums.first()->tracks().first()->playableUrl().adjusted(QUrl::RemoveFilename).path();
 
-    const QStringList mimetypes( KImageIO::mimeTypes( KImageIO::Reading ) );
-    KFileDialog dlg( QUrl::fromLocalFile(startPath),
-                     mimetypes.join(" "),
-                     qobject_cast<QWidget*>( parent() ) );
+    const auto mt( QImageReader::supportedMimeTypes() );
+    QStringList mimetypes;
+    for( const auto &mimetype : mt )
+        mimetypes << QString( mimetype );
 
-    dlg.setOperationMode( KFileDialog::Opening );
-    dlg.setMode( KFile::File );
+    QFileDialog dlg;
+
+    dlg.setDirectory( startPath );
+    dlg.setAcceptMode( QFileDialog::AcceptOpen );
+    dlg.setFileMode( QFileDialog::ExistingFile );
+    dlg.setMimeTypeFilters( mimetypes );
     dlg.setWindowTitle( i18n("Select Cover Image File") );
-    dlg.setInlinePreviewShown( true );
 
     dlg.exec();
-    QUrl file = dlg.selectedUrl();
+    QUrl file = dlg.selectedUrls().value( 0 );
 
     if( !file.isEmpty() )
     {
@@ -177,16 +179,15 @@ SetCustomCoverAction::slotTriggered()
         }
         else
         {
-            debug() << "Custom Cover Fetch: " << file.toDisplayString() << endl;
+            debug() << "Custom Cover Fetch: " << file.toDisplayString();
 
-            KTempDir tempDir;
+            QTemporaryDir tempDir;
             tempDir.setAutoRemove( true );
 
-            const QString coverDownloadPath = tempDir.name() + file.fileName();
+            const QString coverDownloadPath = tempDir.path() + '/' + file.fileName();
 
-            bool ret = KIO::NetAccess::file_copy( file,
-                                                  QUrl( coverDownloadPath ),
-                                                  qobject_cast<QWidget*>( parent() ) );
+            auto copyJob = KIO::copy( file, QUrl::fromLocalFile( coverDownloadPath ) );
+            bool ret = copyJob->exec();
 
             if( ret )
                 image.load( coverDownloadPath );

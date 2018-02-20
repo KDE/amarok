@@ -39,16 +39,16 @@
 
 #include "collectionscanner/BatchFile.h"
 
-#include <KStandardDirs>
 #include <QApplication>
+#include <QDir>
+#include <QMessageBox>
+#include <QStandardPaths>
+
+#include <KConfigGroup>
 #include <ThreadWeaver/ThreadWeaver>
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Job>
 
-#include <QApplication>
-#include <QDir>
-#include <KConfigGroup>
-#include <KGlobal>
 
 /** Concrete implementation of the directory watcher */
 class SqlDirectoryWatcher : public AbstractDirectoryWatcher
@@ -120,7 +120,7 @@ protected:
         QList<QPair<QString, uint> > knownDirs = getKnownDirs();
         if( !knownDirs.isEmpty() )
         {
-            QString path = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchscan.xml";
+            QString path = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + "/amarok/amarokcollectionscanner_batchscan.xml";
             while( QFile::exists( path ) )
                 path += '_';
 
@@ -239,14 +239,10 @@ SqlCollection::SqlCollection( QSharedPointer<SqlStorage> storage )
     {
         if( updater.schemaExists() ) // this is an update
         {
-            KDialog dialog( 0, Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint );
-            QLabel label( i18n( "Updating Amarok database schema. Please don't terminate "
-                "Amarok now as it may result in database corruption." ) );
-            label.setWordWrap( true );
-            dialog.setMainWidget( &label );
-            dialog.setCaption( i18n( "Updating Amarok database schema" ) );
-            dialog.setButtons( KDialog::None );
-
+            QMessageBox dialog;
+            dialog.setText( i18n( "Updating Amarok database schema. Please don't terminate "
+                                              "Amarok now as it may result in database corruption." ) );
+            dialog.setWindowTitle( i18n( "Updating Amarok database schema" ) );
 
             dialog.setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
             dialog.show();
@@ -333,7 +329,7 @@ SqlCollection::possiblyContainsTrack( const QUrl &url ) const
     {
         foreach( const QString &folder, collectionFolders() )
         {
-            QUrl q = QUrl( folder );
+            QUrl q = QUrl::fromLocalFile( folder );
             if( q.isParentOf( url ) || q.matches( url , QUrl::StripTrailingSlash) )
                 return true;
         }

@@ -28,7 +28,7 @@
 
 class QVBoxLayout;
 class QLabel;
-class KComboBox;
+class QComboBox;
 
 namespace PlaylistBrowserNS
 {
@@ -60,7 +60,7 @@ namespace PlaylistBrowserNS
             QVBoxLayout* m_mainLayout;
             QVBoxLayout* m_biasLayout;
 
-            KComboBox* m_biasSelection;
+            QComboBox* m_biasSelection;
             QLabel *m_descriptionLabel;
             QWidget *m_biasWidget;
 

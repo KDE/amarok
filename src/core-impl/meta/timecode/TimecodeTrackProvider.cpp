@@ -42,11 +42,11 @@ Meta::TrackPtr TimecodeTrackProvider::trackForUrl( const QUrl &url )
     rx.setPattern( "^(.+):(\\d+)-(\\d+)$" );
     if( rx.indexIn( urlString ) != -1 )
     {
-        QString baseUrl = rx.cap(1);
+        QString baseUrlString = rx.cap(1);
         int start = rx.cap(2).toInt();
         int end = rx.cap(3).toInt();
 
-        Meta::TimecodeTrack * track = new Meta::TimecodeTrack( "TimecodeTrack", baseUrl, start, end );
+        Meta::TimecodeTrack * track = new Meta::TimecodeTrack( "TimecodeTrack", QUrl( baseUrlString ), start, end );
         return Meta::TrackPtr( track );
     }
     return Meta::TrackPtr();

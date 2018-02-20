@@ -23,7 +23,7 @@
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "services/ServiceBase.h"
 
-#include <KVBox>
+#include <QVBoxLayout>
 
 #include <QTimer>
 #include <QTreeView>

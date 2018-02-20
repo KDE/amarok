@@ -27,10 +27,9 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "dialogs/DatabaseImporterDialog.h"
 
-#include <KLocale>
-#include <KGlobalSettings>
-#include <KPushButton>
-#include <KVBox>
+#include <KLocalizedString>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include <QAction>
 #include <QApplication>
@@ -54,8 +53,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     setObjectName( "CollectionSetup" );
     s_instance = this;
 
-    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
-        m_ui.view->setAnimated( true );
+    m_ui.view->setAnimated( true );
     connect( m_ui.view, &QTreeView::clicked,
              this, &CollectionSetup::changed );
 
@@ -64,11 +62,11 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     connect( m_rescanDirAction, &QAction::triggered,
              this, &CollectionSetup::slotRescanDirTriggered );
 
-    KPushButton *rescan = new KPushButton( QIcon::fromTheme( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui.buttonContainer );
+    QPushButton *rescan = new QPushButton( QIcon::fromTheme( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui.buttonContainer );
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
     connect( rescan, &QAbstractButton::clicked, CollectionManager::instance(), &CollectionManager::startFullScan );
 
-    KPushButton *import = new KPushButton( QIcon::fromTheme( "tools-wizard" ), i18n( "Import batch file..." ), m_ui.buttonContainer );
+    QPushButton *import = new QPushButton( QIcon::fromTheme( "tools-wizard" ), i18n( "Import batch file..." ), m_ui.buttonContainer );
     import->setToolTip( i18n( "Import collection from file produced by amarokcollectionscanner." ) );
     connect( import, &QAbstractButton::clicked, this, &CollectionSetup::importCollection );
 
@@ -210,14 +208,12 @@ CollectionSetup::isDirInCollection( const QString& path ) const
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
 
-    QUrl url = QUrl( path );
-    QUrl parentUrl;
     foreach( const QString &dir, collectionFolders )
     {
         debug() << "Collection Location: " << dir;
         debug() << "path: " << path;
         debug() << "scan Recursively: " << AmarokConfig::scanRecursively();
-        parentUrl.setPath( dir );
+        QUrl parentUrl = QUrl::fromLocalFile( dir );
         if ( !AmarokConfig::scanRecursively() )
         {
             if ( ( dir == path ) || ( QString( dir + '/' ) == path ) )

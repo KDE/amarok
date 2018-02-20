@@ -18,11 +18,13 @@
 
 #include "core/support/Debug.h"
 
-#include <KLocalizedString>
-
+#include <QDialogButtonBox>
 #include <QFile>
 #include <QFileInfo>
+
 #include <KConfigGroup>
+#include <KFormat>
+#include <KLocalizedString>
 
 
 Itdb_iTunesDB*
@@ -273,7 +275,7 @@ fillInModelComboBox( QComboBox *comboBox, bool someSysInfoFound )
     while( info->model_number )
     {
         QString generation = QString::fromUtf8( itdb_info_get_ipod_generation_string( info->ipod_generation) );
-        QString capacity = KGlobal::locale()->formatByteSize( info->capacity * 1073741824.0, 0 );
+        QString capacity = KFormat().formatByteSize( info->capacity * 1073741824.0, 0 );
         QString modelName = QString::fromUtf8( itdb_info_get_ipod_model_name_string( info->ipod_model ) );
         QString modelNumber = QString::fromUtf8( info->model_number );
         QString label = i18nc( "Examples: "
@@ -399,7 +401,7 @@ IpodDeviceHelper::fillInConfigureDialog( QDialog *configureDialog,
     configureDialogUi->notesPlaceholder->setText( notes );
     configureDialogUi->notesPlaceholder->adjustSize();
 
-    configureDialog->okButton->setEnabled( isSafeToWrite );
+    configureDialog->findChild<QDialogButtonBox*>()->button( QDialogButtonBox::Ok )->setEnabled( isSafeToWrite );
 }
 
 bool

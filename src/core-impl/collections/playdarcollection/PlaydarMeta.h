@@ -22,9 +22,9 @@
 #include <QDateTime>
 #include <QList>
 #include <QString>
-#include <QWeakPointer>
+#include <QPointer>
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 #include <QUrl>
 
 namespace Collections
@@ -43,19 +43,19 @@ namespace Meta
     class PlaydarYear;
     class PlaydarLabel;
 
-    typedef KSharedPtr< PlaydarTrack > PlaydarTrackPtr;
+    typedef AmarokSharedPointer< PlaydarTrack > PlaydarTrackPtr;
     typedef QList< PlaydarTrackPtr > PlaydarTrackList;
-    typedef KSharedPtr< PlaydarArtist > PlaydarArtistPtr;
+    typedef AmarokSharedPointer< PlaydarArtist > PlaydarArtistPtr;
     typedef QList< PlaydarArtistPtr > PlaydarArtistList;
-    typedef KSharedPtr< PlaydarAlbum > PlaydarAlbumPtr;
+    typedef AmarokSharedPointer< PlaydarAlbum > PlaydarAlbumPtr;
     typedef QList< PlaydarAlbumPtr > PlaydarAlbumList;
-    typedef KSharedPtr< PlaydarComposer > PlaydarComposerPtr;
+    typedef AmarokSharedPointer< PlaydarComposer > PlaydarComposerPtr;
     typedef QList< PlaydarComposerPtr > PlaydarComposerList;
-    typedef KSharedPtr< PlaydarGenre > PlaydarGenrePtr;
+    typedef AmarokSharedPointer< PlaydarGenre > PlaydarGenrePtr;
     typedef QList< PlaydarGenrePtr > PlaydarGenreList;
-    typedef KSharedPtr< PlaydarYear > PlaydarYearPtr;
+    typedef AmarokSharedPointer< PlaydarYear > PlaydarYearPtr;
     typedef QList< PlaydarYearPtr > PlaydarYearList;
-    typedef KSharedPtr< PlaydarLabel > PlaydarLabelPtr;
+    typedef AmarokSharedPointer< PlaydarLabel > PlaydarLabelPtr;
     typedef QList< PlaydarLabelPtr > PlaydarLabelList;
     
     class PlaydarTrack : public Track
@@ -131,7 +131,7 @@ namespace Meta
             PlaydarLabelList playdarLabels();
 
         private:
-            QWeakPointer< Collections::PlaydarCollection > m_collection;
+            QPointer< Collections::PlaydarCollection > m_collection;
             
             PlaydarAlbumPtr m_album;
             PlaydarArtistPtr m_artist;

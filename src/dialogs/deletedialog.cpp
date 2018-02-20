@@ -25,11 +25,11 @@
 #include "statusbar/StatusBar.h"
 
 #include <KConfigGroup>
-#include <KDialog>
-#include <KGlobal>
+#include <QDialog>
+
 #include <KIconLoader>
 #include <KIO/DeleteJob>
-#include <KLocale>
+#include <KLocalizedString>
 #include <KStandardGuiItem>
 #include <QUrl>
 
@@ -83,7 +83,7 @@ void DeleteWidget::slotShouldDelete(bool shouldDelete)
 //////////////////////////////////////////////////////////////////////////////
 
 DeleteDialog::DeleteDialog( QWidget *parent, const char *name )
-    : KDialog( parent ),
+    : QDialog( parent ),
     m_trashGuiItem(i18n("&Send to Trash"), "user-trash-full")
 {
 //Swallow, Qt::WStyle_DialogBorder, parent, name,
@@ -130,7 +130,7 @@ void DeleteDialog::accept()
     messageGroup.writeEntry("deleteInsteadOfTrash", shouldDelete());
     messageGroup.sync();
 
-    KDialog::accept();
+    QDialog::accept();
 }
 
 void DeleteDialog::slotShouldDelete(bool shouldDelete)
@@ -148,7 +148,7 @@ bool DeleteDialog::showTrashDialog(QWidget* parent, const QList<QUrl>& files)
         KIO::Job* job = 0;
         bool shouldDelete = dialog.shouldDelete();
         if ( ( shouldDelete && (job = KIO::del( files )) ) ||
-             ( job = App::instance()->trashFiles( files )   ) )
+             ( job = pApp->trashFiles( files )   ) )
         {
             if(shouldDelete) //amarok::trashFiles already does the progress operation
                 The::statusBar()->newProgressOperation( job, i18n("Deleting files") );

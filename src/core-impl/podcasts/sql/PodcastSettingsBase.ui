@@ -107,7 +107,7 @@
     </widget>
    </item>
    <item>
-    <widget class="KButtonGroup" name="kbuttongroup">
+    <widget class="QGroupBox" name="qgroupbox">
      <property name="title">
       <string>Media Download</string>
      </property>
@@ -186,7 +186,7 @@
       </widget>
      </item>
      <item>
-      <widget class="KIntSpinBox" name="m_purgeCountSpinBox">
+      <widget class="QSpinBox" name="m_purgeCountSpinBox">
        <property name="toolTip">
         <string>The maximum number of podcast items to store</string>
        </property>
@@ -257,9 +257,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>KIntSpinBox</class>
+   <class>QSpinBox</class>
    <extends>QSpinBox</extends>
-   <header>knuminput.h</header>
+   <header>qspinbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -269,16 +269,16 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>KButtonGroup</class>
+   <class>QGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>kbuttongroup.h</header>
+   <header>qgroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <includes>
   <include location="local">kurlrequester.h</include>
-  <include location="local">klineedit.h</include>
-  <include location="local">kpushbutton.h</include>
+  <include location="local">qlineedit.h</include>
+  <include location="local">qpushbutton.h</include>
  </includes>
  <resources/>
  <connections>

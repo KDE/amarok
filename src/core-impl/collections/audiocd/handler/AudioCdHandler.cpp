@@ -17,7 +17,7 @@
 #include "AudioCdHandler.h"
 #include "MediaDeviceCollection.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 
 using namespace Meta;

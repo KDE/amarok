@@ -50,7 +50,7 @@ class Base
 
     private:
         QString m_name;
-        /* We cannot easily store KSharedPtr to tracks, because it creates reference
+        /* We cannot easily store AmarokSharedPointer to tracks, because it creates reference
          * counting cycle: MemoryMeta::Track::m_album -> MemoryMeta::Album::tracks() ->
          * MemoryMeta::Track. We therefore store plain pointers and rely on
          * MemoryMeta::Track to notify when it is destroyed. */
@@ -210,7 +210,7 @@ class AMAROK_EXPORT Track : public Meta::Track
 
         // MemoryMeta::Track methods:
 
-        /* All of these set* methods pass the pointer to KSharedPtr (thus memory-manage it),
+        /* All of these set* methods pass the pointer to AmarokSharedPointer (thus memory-manage it),
          * remove this track from previous {Album,Artist,Composer,Genre,Year} entity (if any)
          * and add this track to newly set entity. (if non-null)
          * All these methods are reentrant, but not thread-safe: caller must ensure that

@@ -47,7 +47,7 @@
 #include "playlist/PlaylistRestorer.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <typeinfo>
 
 Playlist::Actions* Playlist::Actions::s_instance = 0;
@@ -248,7 +248,7 @@ Playlist::Actions::enableDynamicMode( bool enable )
     AmarokConfig::setDynamicMode( enable );
     // TODO: turn off other incompatible modes
     // TODO: should we restore the state of other modes?
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
 
     Playlist::Dock *dock = The::mainWindow()->playlistDock();
     Playlist::SortWidget *sorting = dock ? dock->sortWidget() : 0;

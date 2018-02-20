@@ -26,8 +26,7 @@
 #include <QDebug>
 #include <QTimer>
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
 
 
 using namespace AmarokAttica;
@@ -54,8 +53,6 @@ Category::List CategoryListJob::categoryList() const
 
 void CategoryListJob::doWork()
 {
-  qDebug() << m_url;
-
   auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
   connect( job, &KIO::TransferJob::result,
            this, &CategoryListJob::slotJobResult );
@@ -75,7 +72,6 @@ void CategoryListJob::slotJobResult( KJob *job )
   
     emitResult();
   } else {
-    qDebug() << m_data;
     m_categoryList = CategoryParser().parseList(
       QString::fromUtf8( m_data.data() ) );
 

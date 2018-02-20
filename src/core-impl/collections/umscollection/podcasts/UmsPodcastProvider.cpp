@@ -16,21 +16,22 @@
 #include "UmsPodcastProvider.h"
 #include "core/support/Debug.h"
 
-#include <KDialog>
+#include <KConfigGroup>
 #include <KIO/DeleteJob>
 #include <KIO/FileCopyJob>
 #include <KIO/Job>
-#include <KMimeType>
 
 #include <QAction>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QDirIterator>
 #include <QLabel>
 #include <QListWidget>
 #include <QObject>
+#include <QPushButton>
 #include <QVBoxLayout>
 #include <QMimeDatabase>
 #include <QMimeType>
-#include <KConfigGroup>
 
 using namespace Podcasts;
 
@@ -92,7 +93,7 @@ UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
     if( !localFilePath.isLocalFile() )
         return PodcastEpisodePtr();
 
-    QUrl destination = QUrl( m_scanDirectory );
+    QUrl destination = m_scanDirectory;
     destination = destination.adjusted(QUrl::StripTrailingSlash);
     destination.setPath(destination.path() + '/' + ( Amarok::vfatPath( episode->channel()->prettyName() ) ));
     KIO::mkdir( destination );
@@ -251,31 +252,29 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
     foreach( UmsPodcastEpisodePtr umsEpisode, umsEpisodes )
         urlsToDelete << umsEpisode->playableUrl();
 
-    KDialog dialog;
-    dialog.setCaption( i18n( "Confirm Delete" ) );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialog dialog;
+    dialog.setWindowTitle( i18n( "Confirm Delete" ) );
 
-    QLabel label( i18np( "Are you sure you want to delete this episode?",
-                         "Are you sure you want to delete these %1 episodes?",
-                         urlsToDelete.count() )
-                    , &dialog
-                  );
-    QListWidget listWidget( &dialog );
-    listWidget.setSelectionMode( QAbstractItemView::NoSelection );
+    QLabel *label = new QLabel( i18np( "Are you sure you want to delete this episode?",
+                                       "Are you sure you want to delete these %1 episodes?",
+                                       urlsToDelete.count() ),
+                                &dialog );
+    QListWidget *listWidget = new QListWidget( &dialog );
+    listWidget->setSelectionMode( QAbstractItemView::NoSelection );
     foreach( const QUrl &url, urlsToDelete )
     {
-        new QListWidgetItem( url.toLocalFile(), &listWidget );
+        new QListWidgetItem( url.toLocalFile(), listWidget );
     }
 
     QWidget *widget = new QWidget( &dialog );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
     QVBoxLayout *layout = new QVBoxLayout( widget );
-    layout->addWidget( &label );
-    layout->addWidget( &listWidget );
+    layout->addWidget( label );
+    layout->addWidget( listWidget );
+    layout->addWidget( buttonBox );
 
-    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from %1.",
-                                             QString("TODO: replace me") ) );
-
-    dialog.setMainWidget( widget );
+    buttonBox->button( QDialogButtonBox::Ok )->setText( i18n( "Yes, delete from %1.",
+                                                        QString("TODO: replace me") ) );
 
     if( dialog.exec() != QDialog::Accepted )
         return;
@@ -486,7 +485,7 @@ UmsPodcastProvider::addPath( const QString &path )
 //            if( mime.inherits( mimetype ) )
 //            {
                 addFile( MetaFile::TrackPtr( new MetaFile::Track(
-                        QUrl( info.canonicalFilePath() ) ) ) );
+                    QUrl::fromLocalFile( info.canonicalFilePath() ) ) ) );
                 return 2;
 //            }
 //        }

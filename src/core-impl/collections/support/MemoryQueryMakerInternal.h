@@ -47,9 +47,6 @@ public:
       * Creates a new MemoryQueryMakerInternal that will query collection.
       * This class will run in a dedicated thread. It exists so the actual MemoryQueryMaker
       * can be safely deleted in the original thread while the query is still running.
-      * @param guard a class that will be deleted before collection. It is used to
-      * ensure that MemoryQueryMakerInternal does not access a dangling MemoryCollection
-      * pointer.
       * @param collection the MemoryCollection instance that the query should be run on.
       */
     MemoryQueryMakerInternal( const QWeakPointer<Collections::MemoryCollection> &collection );
@@ -87,7 +84,6 @@ Q_SIGNALS:
 
 private:
     QWeakPointer<Collections::MemoryCollection> m_collection;
-    QWeakPointer<QObject> m_guard;
     MemoryMatcher *m_matchers;
     MemoryFilter *m_filters;
     int m_maxSize;

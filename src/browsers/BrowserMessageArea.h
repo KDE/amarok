@@ -21,12 +21,11 @@
 #include "statusbar/CompoundProgressBar.h"
 #include "statusbar/KJobProgressBar.h"
 #include "statusbar/NetworkProgressBar.h"
+#include "widgets/BoxWidget.h"
 
-
-#include <QFrame>
 #include <QTimer>
 
-class BrowserMessageArea : public QFrame, public Amarok::Logger
+class BrowserMessageArea : public BoxWidget, public Amarok::Logger
 {
     Q_OBJECT
 

@@ -22,8 +22,6 @@ set( amarok_collection-sqlcollection_SRCS
 add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
 
 target_link_libraries(amarok-sqlcollection
-    KF5::KDELibs4Support
-    
     KF5::KIOCore
     ${KDE4_SOLID_LIBRARY}
     KF5::ThreadWeaver

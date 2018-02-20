@@ -26,8 +26,8 @@
 
 #include <QApplication>
 #include <QIcon>
-#include <KLocale>
-#include <KVBox>
+#include <KLocalizedString>
+#include <QVBoxLayout>
 
 #include <QEvent>
 #include <QLayout>

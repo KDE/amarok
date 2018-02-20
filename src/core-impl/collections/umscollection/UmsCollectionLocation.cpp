@@ -23,14 +23,13 @@
 #include "core-impl/meta/file/File.h"
 #include "transcoding/TranscodingJob.h"
 
+#include <QDir>
+#include <QUrl>
+
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KIO/Job>
-#include <QUrl>
-#include <KIO/JobClasses>
 #include <KLocalizedString>
-
-#include <QDir>
 
 UmsCollectionLocation::UmsCollectionLocation( UmsCollection *umsCollection )
     : CollectionLocation( umsCollection )
@@ -45,7 +44,7 @@ UmsCollectionLocation::~UmsCollectionLocation()
 QString
 UmsCollectionLocation::prettyLocation() const
 {
-    return m_umsCollection->musicPath().adjusted(QUrl::StripTrailingSlash).toLocalFile();
+    return m_umsCollection->musicUrl().adjusted(QUrl::StripTrailingSlash).toLocalFile();
 }
 
 QStringList
@@ -57,7 +56,7 @@ UmsCollectionLocation::actualLocation() const
 bool
 UmsCollectionLocation::isWritable() const
 {
-    const QFileInfo info( m_umsCollection->musicPath().toLocalFile() );
+    const QFileInfo info( m_umsCollection->musicUrl().toLocalFile() );
     return info.isWritable();
 }
 

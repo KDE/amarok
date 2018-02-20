@@ -16,7 +16,7 @@
 
 #include "TranscodingMp3Format.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 using namespace Transcoding;
 

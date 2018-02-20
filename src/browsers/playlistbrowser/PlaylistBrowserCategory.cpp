@@ -34,7 +34,7 @@
 #include <KActionMenu>
 #include <KConfigGroup>
 #include <QIcon>
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <KToolBar>
 
 #include <QHeaderView>
@@ -56,7 +56,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_playlistCategory( playlistCategory )
 {
     setContentsMargins( 0, 0, 0, 0 );
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_podcasts.png" ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )

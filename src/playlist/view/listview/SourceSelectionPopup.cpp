@@ -17,7 +17,7 @@
 #include "SourceSelectionPopup.h"
 
 #include <QIcon>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QPushButton>
 #include <QLabel>
@@ -31,7 +31,6 @@ namespace Playlist {
     : QDialog( parent )
     , m_msc( msc )
 {
-
     QLabel * label = new QLabel( i18n( "The following sources are available for this track:" ) );
     label->setWordWrap( true );
     

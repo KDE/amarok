@@ -29,7 +29,7 @@
 #include <QString>
 #include <QTextStream>
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 #include <QUrl>
 
 class QTextStream;
@@ -42,7 +42,7 @@ namespace Playlists
     class Playlist;
     class PlaylistProvider;
 
-    typedef KSharedPtr<Playlist> PlaylistPtr;
+    typedef AmarokSharedPointer<Playlist> PlaylistPtr;
     typedef QList<PlaylistPtr> PlaylistList;
 
     enum PlaylistCategory
@@ -232,7 +232,7 @@ namespace Playlists
              * Call this method to assure synchronously loading.
              * @note not all playlist implemetations support asynchronous loading
              */
-            KDE_DEPRECATED void makeLoadingSync() { m_async = false; }
+            QT_DEPRECATED void makeLoadingSync() { m_async = false; }
             /**
              * Allows to check if asynchronously loading is deactivated
              */

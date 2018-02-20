@@ -26,7 +26,7 @@ namespace Playlists
 
     class MediaDevicePlaylist;
 
-    typedef KSharedPtr<MediaDevicePlaylist> MediaDevicePlaylistPtr;
+    typedef AmarokSharedPointer<MediaDevicePlaylist> MediaDevicePlaylistPtr;
     typedef QList<MediaDevicePlaylistPtr> MediaDevicePlaylistList;
 
     class MediaDevicePlaylist : public Playlist

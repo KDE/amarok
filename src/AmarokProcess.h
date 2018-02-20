@@ -51,7 +51,7 @@ class AMAROK_EXPORT AmarokProcess : public KProcess
         virtual void setupChildProcess();
 
     private Q_SLOTS:
-        void finished();
+        void finished();  // TODO: This has the same name as a signal in QProcess. Rename it.
         void readyReadStandardOutput();
         void readyReadStandardError();
 

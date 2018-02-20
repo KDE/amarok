@@ -20,10 +20,11 @@
 
 #include "ActionClasses.h"
 
-
 #include "App.h"
 #include "EngineController.h"
+#include "KNotificationBackend.h"
 #include "MainWindow.h"
+#include "aboutdialog/OcsData.h"
 #include "amarokconfig.h"
 #include <config.h>
 #include "core/support/Amarok.h"
@@ -31,14 +32,14 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/Osd.h"
-#include "KNotificationBackend.h"
+
+#include <QKeySequence>
 
 #include <KAuthorized>
 #include <KHelpMenu>
-#include <KLocale>
+#include <KLocalizedString>
 #include <KToolBar>
 #include <KGlobalAccel>
-#include <QKeySequence>
 
 extern OcsData ocsData;
 
@@ -439,7 +440,6 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
              this, &StopAction::stopped );
     connect( engine, &EngineController::trackPlaying,
              this, &StopAction::playing );
-
 }
 
 void
@@ -459,7 +459,6 @@ StopAction::stop()
 {
     The::engineController()->stop();
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // StopPlayingAfterCurrentTrackAction

@@ -12,10 +12,8 @@ install( FILES
     DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/librivox_service
 )
 
-# Scripty is tailored to process desktop files only. On the other hand, there are standard spec files
-# for RH-packaging. We use desktop files for translation and install them as spec files for use.
-install( FILES
-    script.desktop
+kcoreaddons_desktop_to_json("" script.desktop)
+
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/script.json
     DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/librivox_service
-    RENAME script.spec
 )

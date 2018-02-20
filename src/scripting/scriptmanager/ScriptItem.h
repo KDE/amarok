@@ -94,16 +94,16 @@ private:
     QString                                             m_name;
     QUrl                                                m_url;
     KPluginInfo                                         m_info;
-    QWeakPointer<AmarokScript::AmarokScriptEngine>      m_engine;
+    QPointer<AmarokScript::AmarokScriptEngine>      m_engine;
     /** Currently activated in the Script Manager */
     bool                                                m_running;
     bool                                                m_evaluating;
     QStringList                                         m_log;
-    QWeakPointer<AmarokScript::ScriptableServiceScript> m_service;
+    QPointer<AmarokScript::ScriptableServiceScript> m_service;
     QStringList                                         m_output;
     int                                                 m_runningTime;
     int                                                 m_timerId;
-    QWeakPointer<ScriptTerminatorWidget>                m_popupWidget;
+    QPointer<ScriptTerminatorWidget>                m_popupWidget;
 };
 
 #endif /* AMAROK_SCRIPTITEM_H */

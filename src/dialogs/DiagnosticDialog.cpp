@@ -17,44 +17,50 @@
 
 #include "DiagnosticDialog.h"
 
-#include "context/ContextView.h"
+// #include "context/ContextView.h"
 #include "PluginManager.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
+#include <QApplication>
+#include <QClipboard>
+#include <QDialogButtonBox>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
+
 #include <KAboutData>
 #include <KCoreAddons>
-#include <QApplication>
-#include <KGlobal>
+#include <KLocalizedString>
 #include <KPluginInfo>
 #include <KService>
 #include <KServiceTypeTrader>
-#include <Plasma/Applet>
-#include <phonon/pulsesupport.h>
-#include <kdeversion.h>
 
-#include <QClipboard>
-#include <QPlainTextEdit>
+#include <phonon/pulsesupport.h>
+
 
 
 DiagnosticDialog::DiagnosticDialog( const KAboutData about, QWidget *parent )
-        : KDialog( parent )
+    : QDialog( parent )
 {
-    const KAboutData *aboutData = &about;
-
-    m_textBox = new QPlainTextEdit( generateReport( aboutData ), this );
-
-    setPlainCaption( i18nc( "%1 is the program name", "%1 Diagnostics", KAboutData::applicationData().displayName() ) );
-
-    setButtons( Close | User1 );
-    setButtonText( User1, i18n( "Copy to Clipboard" ) );
-
+    setLayout( new QVBoxLayout );
+    m_textBox = new QPlainTextEdit( generateReport( &about ), this );
     m_textBox->setReadOnly( true );
+    layout()->addWidget( m_textBox );
 
-    setMainWidget( m_textBox );
-    setInitialSize( QSize( 480, 460 ) );
+    auto buttonBox = new QDialogButtonBox( this );
+    auto closeButton = buttonBox->addButton( QDialogButtonBox::Close );
+    auto copyButton = new QPushButton( i18n( "Copy to Clipboard" ) );
+    buttonBox->addButton( copyButton, QDialogButtonBox::ActionRole );
+    layout()->addWidget( buttonBox );
 
-    connect( this, &DiagnosticDialog::user1Clicked, this, &DiagnosticDialog::slotCopyToClipboard );
-    connect( this, &DiagnosticDialog::finished, this, &DiagnosticDialog::deleteLater );
+    setWindowTitle( i18nc( "%1 is the program name", "%1 Diagnostics", KAboutData::applicationData().displayName() ) );
+
+    resize( QSize( 480, 460 ) );
+
+    connect( closeButton, &QPushButton::clicked, this, &DiagnosticDialog::close );
+    connect( copyButton, &QPushButton::clicked, this, &DiagnosticDialog::slotCopyToClipboard );
+
+    setAttribute( Qt::WA_DeleteOnClose );
 }
 
 const QString
@@ -62,7 +68,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
 {
     // Get scripts -- we have to assemble 3 lists into one
     KPluginInfo::List aScripts;
-    const ScriptManager *aScriptManager = ScriptManager::instance();
+    const auto aScriptManager = ScriptManager::instance();
     aScripts.append( aScriptManager->scripts( QLatin1String( "Generic" ) ) );
     aScripts.append( aScriptManager->scripts( QLatin1String( "Lyrics" ) ) );
     aScripts.append( aScriptManager->scripts( QLatin1String( "Scriptable Service" ) ) );
@@ -77,23 +83,21 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
 
 
     // Get plugins -- we have to assemble a list again.
-    KPluginInfo::List aPlugins;
-    const Plugins::PluginManager *aPluginManager = Plugins::PluginManager::instance();
-    aPlugins.append( aPluginManager->plugins( Plugins::PluginManager::Collection ) );
-    aPlugins.append( aPluginManager->plugins( Plugins::PluginManager::Service ) );
-    aPlugins.append( aPluginManager->plugins( Plugins::PluginManager::Importer ) );
+    QList<KPluginMetaData> aPlugins;
+    const auto aPluginManager = Plugins::PluginManager::instance();
+    aPlugins.append( aPluginManager->enabledPlugins( Plugins::PluginManager::Collection ) );
+    aPlugins.append( aPluginManager->enabledPlugins( Plugins::PluginManager::Service ) );
+    aPlugins.append( aPluginManager->enabledPlugins( Plugins::PluginManager::Importer ) );
 
     QString aPluginString;
-    foreach( KPluginInfo aInfo, aPlugins )
+    for( const auto &aInfo : aPlugins )
     {
-        if( aInfo.isPluginEnabled() )
-            aPluginString += "   " + aInfo.name() + " (" + aInfo.version() + ")\n";
+        aPluginString += "   " + aInfo.name() + " (" + aInfo.version() + ")\n";
     }
 
-
+/*  FIXME: disabled temporarily for KF5 porting
     // Get applets
     QString appletString;
-/*  FIXME: disabled temporarily for KF5 porting
     const QStringList appletList = Context::ContextView::self()->currentAppletNames();
 
     foreach( const QString &applet, appletList )
@@ -102,7 +106,6 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
         appletString += "   " + applet + '\n';
     }
 */
-
     const KService::Ptr aPhononBackend =
         KServiceTypeTrader::self()->preferredService( "PhononBackend" );
 
@@ -122,14 +125,14 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
                KCoreAddons::versionString(),                        // KDE Frameworks
                qVersion(),                                          // Qt
                Phonon::phononVersion(),                             // Phonon
-               aPhononBackend.data()->name(),
-               aPhononBackend.data()->property( "X-KDE-PhononBackendInfo-Version", QVariant::String ).toString(), // & Backend
+               aPhononBackend->name(),
+               aPhononBackend->property( "X-KDE-PhononBackendInfo-Version", QVariant::String ).toString(), // & Backend
                pulse                                                // PulseAudio
            ) + i18n(
                "Enabled Scripts:\n%1\n"
                "Enabled Plugins:\n%2\n"
                "Enabled Applets:\n%3\n",
-               aScriptString, aPluginString, appletString
+               aScriptString, aPluginString //FIXME: disabled temporarily for KF5 porting: //, appletString
            );
 }
 

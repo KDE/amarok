@@ -45,8 +45,6 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include <klocale.h>
-
 /* general note:
    For the sake of this file we are handling a modified active playlist as
    a different one.
@@ -59,7 +57,7 @@ Dynamic::DynamicModel::instance()
 {
     if( !s_instance )
     {
-        s_instance = new DynamicModel( App::instance() );
+        s_instance = new DynamicModel( pApp );
         s_instance->loadPlaylists();
     }
     return s_instance;

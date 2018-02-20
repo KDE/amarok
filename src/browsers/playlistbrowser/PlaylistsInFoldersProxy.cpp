@@ -17,6 +17,7 @@
 #include "PlaylistsInFoldersProxy.h"
 
 #include "AmarokMimeData.h"
+#include "MainWindow.h"
 #include "core/support/Debug.h"
 #include "core/playlists/Playlist.h"
 #include "SvgHandler.h"
@@ -24,11 +25,10 @@
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KDialog>
 #include <QIcon>
-#include <KInputDialog>
-
+#include <QInputDialog>
 #include <QLabel>
+#include <QMessageBox>
 
 PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::LabelColumn )
@@ -316,11 +316,13 @@ PlaylistsInFoldersProxy::slotRenameFolder()
     QModelIndex folder = indexes.first();
     QString folderName = folder.data( Qt::DisplayRole ).toString();
     bool ok;
-    const QString newName = KInputDialog::getText( i18n("New name"),
-                i18nc("Enter a new name for a folder that already exists",
-                      "Enter new folder name:"),
-                folderName,
-                &ok );
+    const QString newName = QInputDialog::getText( Q_NULLPTR,
+                                                   i18n("New name"),
+                                                   i18nc("Enter a new name for a folder that already exists",
+                                                         "Enter new folder name:"),
+                                                   QLineEdit::Normal,
+                                                   folderName,
+                                                   &ok );
     if( !ok || newName == folderName )
         return;
 
@@ -333,19 +335,12 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
     int childCount = rowCount( groupIdx );
     if( childCount > 0 )
     {
-        KDialog dialog;
-        dialog.setCaption( i18n( "Confirm Delete" ) );
-        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-
-        QLabel label( i18n( "Are you sure you want to delete this folder and its contents?" )
-                      , &dialog
-                    );
+        auto button = QMessageBox::question( The::mainWindow(),
+                                             i18n( "Confirm Delete" ),
+                                             i18n( "Are you sure you want to delete this folder and its contents?" ) );
         //TODO:include a text area with all the names of the playlists
 
-        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete folder." ) );
-        dialog.setMainWidget( &label );
-
-        if( dialog.exec() != QDialog::Accepted )
+        if( button != QMessageBox::Yes )
             return;
 
         removeRows( 0, childCount, groupIdx );

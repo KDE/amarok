@@ -30,7 +30,6 @@
 #include <QMenu>
 #include <KLocalizedString>
 
-#include <QFrame>
 #include <QHeaderView>
 #include <QHelpEvent>
 #include <QKeyEvent>
@@ -369,7 +368,7 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
     //Now we really should pop up a menu to get the user to enter some info about this
     //new track, but for now, just fake it as this is just for testing anyway
 
-    QString url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url1->path().toUtf8() ) ).toString();
+    QUrl url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url1->path().toUtf8() ) );
     Meta::TimecodeTrackPtr track = Meta::TimecodeTrackPtr( new Meta::TimecodeTrack( i18n( "New Timecode Track" ), url, start, end ) );
     Meta::TimecodeAlbumPtr album = Meta::TimecodeAlbumPtr( new Meta::TimecodeAlbum( i18n( "Unknown" ) ) );
     Meta::TimecodeArtistPtr artist = Meta::TimecodeArtistPtr( new Meta::TimecodeArtist( i18n(  "Unknown" ) ) );
@@ -429,7 +428,7 @@ void BookmarkTreeView::slotSectionCountChanged( int oldCount, int newCount )
         const BookmarkModel::Column col = BookmarkModel::Column( index );
 
         if( col == BookmarkModel::Command )
-            header()->setResizeMode( index, QHeaderView::ResizeToContents );
+            header()->setSectionResizeMode( index, QHeaderView::ResizeToContents );
 
         m_columnsSize[ col ] = ratio;
     }

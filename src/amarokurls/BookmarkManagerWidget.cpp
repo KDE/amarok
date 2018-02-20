@@ -24,19 +24,19 @@
 #include "widgets/ProgressWidget.h"
 
 #include <QAction>
+#include <QHBoxLayout>
 #include <QIcon>
-#include <KLocale>
-#include <KVBox>
-
 #include <QLabel>
+#include <QVBoxLayout>
+
+#include <KLocalizedString>
 
 BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
- : KVBox( parent )
+    : BoxWidget( true, parent )
 {
+    layout()->setContentsMargins( 0,0,0,0 );
 
-    setContentsMargins( 0,0,0,0 );
-
-    KHBox * topLayout = new KHBox( this );
+    BoxWidget * topLayout = new BoxWidget( false, this );
     
     m_toolBar = new QToolBar( topLayout );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -52,9 +52,9 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_toolBar->addWidget( new BookmarkCurrentButton( 0 ) );
 
     m_searchEdit = new Amarok::LineEdit( topLayout );
-    m_searchEdit->setClickMessage( i18n( "Filter bookmarks" ) );
+    m_searchEdit->setPlaceholderText( i18n( "Filter bookmarks" ) );
     m_searchEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    m_searchEdit->setClearButtonShown( true );
+    m_searchEdit->setClearButtonEnabled( true );
     m_searchEdit->setFrame( true );
     m_searchEdit->setToolTip( i18n( "Start typing to progressively filter the bookmarks" ) );
     m_searchEdit->setFocusPolicy( Qt::ClickFocus ); // Without this, the widget goes into text input mode directly on startup

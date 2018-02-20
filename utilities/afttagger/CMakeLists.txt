@@ -1,7 +1,7 @@
 include_directories( ../
-                                  
-                     ${TAGLIB_INCLUDES}         
-                   )                            
+
+                     ${TAGLIB_INCLUDES}
+                   )
 
 add_definitions(${TAGLIB_CFLAGS})
 
@@ -29,5 +29,5 @@ if(APPLE)
     # install to app bundle on os x, otherwise amarok fails to load it
     install(TARGETS amarok_afttagger DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/MacOS )
 else()
-    install(TARGETS amarok_afttagger RUNTIME DESTINATION ${BIN_INSTALL_DIR} )
+    install(TARGETS amarok_afttagger RUNTIME DESTINATION ${KDE_INSTALL_BINDIR} )
 endif()

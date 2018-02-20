@@ -27,7 +27,6 @@
 
 #include <QStack>
 #include <QSharedPointer>
-#include <ThreadWeaver/QObjectDecorator>
 
 using namespace Collections;
 
@@ -112,7 +111,7 @@ struct ServiceSqlQueryMaker::Private
     AlbumQueryMode albumMode;
     bool withoutDuplicates;
     int maxResultSize;
-    ServiceSqlWorkerThread *worker;
+    QSharedPointer<ServiceSqlWorkerThread> worker;
     QStack<bool> andStack;
 };
 
@@ -125,7 +124,6 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
 {
     //d->includedBuilder = true;
     //d->collectionRestriction = false;
-    d->worker = NULL;
 
     d->queryType = Private::NONE;
     d->linkedTables = 0;
@@ -135,10 +133,7 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
 }
 
 ServiceSqlQueryMaker::~ServiceSqlQueryMaker()
-{
-    // what about d->worker?
-    delete d;
-}
+{}
 
 void
 ServiceSqlQueryMaker::abortQuery()
@@ -155,13 +150,13 @@ ServiceSqlQueryMaker::run()
     if( d->worker && !d->worker->isFinished() )
     {
         //the worker thread seems to be running
-        //TODO: wait or job to complete
+        //TODO: wait for job to complete
 
     }
     else
     {
-        d->worker = new ServiceSqlWorkerThread( this );
-        connect( d->worker, SIGNAL(done(ThreadWeaver::JobPointer)),SLOT(done(ThreadWeaver::JobPointer)) );
+        d->worker.reset( new ServiceSqlWorkerThread( this ) );
+        connect( d->worker.data(), &ServiceSqlWorkerThread::done, this, &ServiceSqlQueryMaker::done );
 
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(d->worker) );
     }
@@ -170,10 +165,9 @@ ServiceSqlQueryMaker::run()
 void
 ServiceSqlQueryMaker::done( ThreadWeaver::JobPointer job )
 {
-    ThreadWeaver::Queue::instance()->dequeue( job );
-    ThreadWeaver::QObjectDecorator *qs = new ThreadWeaver::QObjectDecorator(job.data());
-    qs->deleteLater();
-    d->worker = NULL;
+    Q_UNUSED( job )
+
+    d->worker.clear();
     emit queryDone();
 }
 

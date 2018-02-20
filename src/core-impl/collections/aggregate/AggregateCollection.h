@@ -109,13 +109,13 @@ namespace Collections {
         private:
         QHash<QString, Collections::Collection*> m_idCollectionMap;
 
-        QHash<QString, KSharedPtr<Meta::AggreagateYear> > m_yearMap;
-        QHash<QString, KSharedPtr<Meta::AggregateGenre> > m_genreMap;
-        QHash<QString, KSharedPtr<Meta::AggregateComposer> > m_composerMap;
-        QHash<QString, KSharedPtr<Meta::AggregateArtist> > m_artistMap;
-        QHash<Meta::AlbumKey, KSharedPtr<Meta::AggregateAlbum> > m_albumMap;
-        QHash<Meta::TrackKey, KSharedPtr<Meta::AggregateTrack> > m_trackMap;
-        QHash<QString, KSharedPtr<Meta::AggregateLabel> > m_labelMap;
+        QHash<QString, AmarokSharedPointer<Meta::AggreagateYear> > m_yearMap;
+        QHash<QString, AmarokSharedPointer<Meta::AggregateGenre> > m_genreMap;
+        QHash<QString, AmarokSharedPointer<Meta::AggregateComposer> > m_composerMap;
+        QHash<QString, AmarokSharedPointer<Meta::AggregateArtist> > m_artistMap;
+        QHash<Meta::AlbumKey, AmarokSharedPointer<Meta::AggregateAlbum> > m_albumMap;
+        QHash<Meta::TrackKey, AmarokSharedPointer<Meta::AggregateTrack> > m_trackMap;
+        QHash<QString, AmarokSharedPointer<Meta::AggregateLabel> > m_labelMap;
 
         QReadWriteLock m_yearLock;
         QReadWriteLock m_genreLock;

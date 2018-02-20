@@ -35,17 +35,17 @@
 #include "widgets/SearchWidget.h"
 
 #include <QAction>
-#include <KComboBox>
+#include <QComboBox>
+#include <QHeaderView>
+#include <QHBoxLayout>
+#include <QStandardPaths>
+
 #include <KConfigGroup>
 #include <KDirLister>
-#include <KIO/NetAccess>
-#include <KSaveFile>
-#include <KStandardAction>
-#include <KStandardDirs>
-#include <KToolBar>
 #include <KLocalizedString>
-
-#include <QHeaderView>
+#include <KIO/StatJob>
+#include <KStandardAction>
+#include <KToolBar>
 
 static const QString placesString( "places://" );
 static const QUrl placesUrl( placesString );
@@ -54,7 +54,7 @@ FileBrowser::Private::Private( FileBrowser *parent )
     : placesModel( 0 )
     , q( parent )
 {
-    KHBox *topHBox = new KHBox( q );
+    BoxWidget *topHBox = new BoxWidget( q );
 
     KToolBar *navigationToolbar = new KToolBar( topHBox );
     navigationToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -100,9 +100,14 @@ FileBrowser::Private::readConfig()
         if( dir.exists() )
             useHome = false;
     }
-    else if( KIO::NetAccess::exists( savedUrl, KIO::NetAccess::DestinationSide, 0 ) )
+    else
     {
-        useHome = false;
+        KIO::StatJob *statJob = KIO::stat( savedUrl, KIO::StatJob::DestinationSide, 0 );
+        statJob->exec();
+        if( statJob->statResult().isDir() )
+        {
+            useHome = false;
+        }
     }
     currentPath = useHome ? homeUrl : savedUrl;
 }
@@ -185,7 +190,7 @@ void
 FileBrowser::Private::saveHeaderState()
 {
     //save the state of the header (column size and order). Yay, another QByteArray thingie...
-    KSaveFile file( Amarok::saveLocation() + "file_browser_layout" );
+    QFile file( Amarok::saveLocation() + "file_browser_layout" );
     if( !file.open( QIODevice::WriteOnly ) )
     {
         warning() << "unable to save header state";
@@ -194,11 +199,6 @@ FileBrowser::Private::saveHeaderState()
     if( file.write( fileView->header()->saveState() ) < 0 )
     {
         warning() << "unable to save header state, writing failed";
-        return;
-    }
-    if( !file.finalize() )
-    {
-        warning() << "failed to write header state";
         return;
     }
 }
@@ -222,7 +222,7 @@ FileBrowser::FileBrowser( const char *name, QWidget *parent )
                         "file operations." )
                        );
 
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_files.png" ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )
@@ -477,7 +477,7 @@ FileBrowser::setupAddItems()
         name.remove( QRegExp( "/$" ) );
         callback = workingUrl.left( nextPosition );
 
-        siblings = d->siblingsForDir( QUrl::fromLocalFile(callback) );
+        siblings = d->siblingsForDir( QUrl::fromLocalFile( callback ) );
         addAdditionalItem( new BrowserBreadcrumbItem( name, callback, siblings, this ) );
 
         currentPosition = nextPosition;
@@ -571,7 +571,7 @@ FileBrowser::home()
 {
     d->backStack.push( d->currentPath );
     d->forwardStack.clear(); // navigating resets forward stack
-    setDir( QUrl( QDir::homePath() ) );
+    setDir( QUrl::fromLocalFile( QDir::homePath() ) );
 }
 
 void

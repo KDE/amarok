@@ -20,10 +20,10 @@
 #include "core/support/Debug.h"
 
 #include <QSharedData>
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 class BookmarkGroup;
 
-typedef KSharedPtr<BookmarkGroup> BookmarkGroupPtr;
+typedef AmarokSharedPointer<BookmarkGroup> BookmarkGroupPtr;
 typedef QList<BookmarkGroupPtr> BookmarkGroupList;
 
 /**
@@ -31,7 +31,7 @@ typedef QList<BookmarkGroupPtr> BookmarkGroupList;
 */
 
 class BookmarkViewItem;
-typedef KSharedPtr<BookmarkViewItem> BookmarkViewItemPtr;
+typedef AmarokSharedPointer<BookmarkViewItem> BookmarkViewItemPtr;
 
 class BookmarkViewItem : public virtual QSharedData
 {

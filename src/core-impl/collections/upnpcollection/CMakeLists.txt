@@ -39,7 +39,4 @@ endif()
 
 install(TARGETS amarok_collection-upnpcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-
-########### install files ###############
-
-install( FILES amarok_collection-upnpcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+kcoreaddons_desktop_to_json(amarok_collection-upnpcollection amarok_collection-upnpcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

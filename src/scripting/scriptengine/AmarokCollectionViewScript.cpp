@@ -31,9 +31,9 @@
 #include "widgets/SearchWidget.h"
 
 #include <QMenu>
-
 #include <QMetaEnum>
 #include <QScriptEngine>
+#include <QSortFilterProxyModel>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
@@ -41,7 +41,7 @@ Q_DECLARE_METATYPE( QList<QAction*> )
 using namespace AmarokScript;
 
 QMap<QString, AmarokCollectionViewScript*> AmarokCollectionViewScript::s_instances;
-QWeakPointer<Selection> AmarokCollectionViewScript::s_selection;
+QPointer<Selection> AmarokCollectionViewScript::s_selection;
 
 AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engine, const QString &scriptName )
     : QObject( engine )
@@ -64,7 +64,7 @@ AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engi
     engine->registerArrayType< QList<CollectionTreeItem*> >();
     engine->registerArrayType<QActionList>();
     s_instances[m_scriptName] = this;
-    connect( The::mainWindow()->collectionBrowser()->searchWidget(), SIGNAL(filterChanged(QString)), SIGNAL(filterChanged(QString)) );
+    connect( The::mainWindow()->collectionBrowser()->searchWidget(), &SearchWidget::filterChanged, this, &AmarokCollectionViewScript::filterChanged );
 }
 
 AmarokCollectionViewScript::~AmarokCollectionViewScript()

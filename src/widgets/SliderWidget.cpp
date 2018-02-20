@@ -32,9 +32,8 @@
 #include "ProgressWidget.h"
 
 #include <QIcon>
-#include <KLocale>
-#include <KStandardDirs>
-#include <KGlobalSettings>
+#include <KLocalizedString>
+#include <QStandardPaths>
 
 #include <QAction>
 #include <QContextMenuEvent>

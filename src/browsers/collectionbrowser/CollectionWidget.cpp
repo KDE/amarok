@@ -35,20 +35,20 @@
 #include "widgets/SearchWidget.h"
 #include "widgets/PrettyTreeDelegate.h"
 
-#include <QAction>
-#include <QIcon>
-#include <KLocale>
-#include <QMenu>
-#include <KMenuBar>
-#include <KStandardDirs>
+#include <KLocalizedString>
 #include <KStandardGuiItem>
 
+#include <QAction>
 #include <QActionGroup>
+#include <QBoxLayout>
+#include <QIcon>
+#include <QMenu>
 #include <QMetaEnum>
 #include <QMetaObject>
 #include <QRect>
 #include <QSortFilterProxyModel>
 #include <QStackedWidget>
+#include <QStandardPaths>
 #include <QToolBar>
 #include <QToolButton>
 
@@ -143,18 +143,17 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 {
     s_instance = this;
     setObjectName( name );
-    setMargin( 0 );
-    setSpacing( 0 );
     //TODO: we have a really nice opportunity to make these info blurbs both helpful and pretty
     setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and CDs." ) );
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_collections.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_collections.png" ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )
         setBackgroundImage( imagePath() );
 
     // --- the box for the UI elements.
-    KHBox *hbox = new KHBox( this );
+    BoxWidget *hbox = new BoxWidget( false, this );
+
     d->stack = new QStackedWidget( this );
 
     // -- read the current view mode from the configuration
@@ -169,7 +168,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     d->searchWidget->setClickMessage( i18n( "Search collection" ) );
 
     // Filter presets. UserRole is used to store the actual syntax.
-    KComboBox *combo = d->searchWidget->comboBox();
+    QComboBox *combo = d->searchWidget->comboBox();
     const QIcon icon = KStandardGuiItem::find().icon();
     combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added This Hour"),
                     QString(Meta::shortI18nForField( Meta::valCreateDate ) + ":<1h") );

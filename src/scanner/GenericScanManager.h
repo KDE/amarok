@@ -142,15 +142,11 @@ class AMAROK_EXPORT GenericScanManager : public QObject
         void succeeded();
         void failed( const QString& message );
 
-    protected Q_SLOTS:
-        void slotSucceeded();
-        void slotFailed( const QString& message );
-
     protected:
         /** Connects all the signals to m_scannerJob */
         void connectSignalsToJob();
 
-        GenericScannerJob* m_scannerJob;
+        QWeakPointer<GenericScannerJob> m_scannerJob;
 
         /**
          * This mutex is protecting the variables:

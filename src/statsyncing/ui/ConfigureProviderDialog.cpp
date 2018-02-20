@@ -18,7 +18,7 @@
 
 #include "statsyncing/Provider.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QVBoxLayout>
 #include <QRadioButton>

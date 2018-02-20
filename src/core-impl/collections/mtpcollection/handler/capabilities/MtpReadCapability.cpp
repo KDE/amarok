@@ -30,165 +30,165 @@ void
 MtpReadCapability::prepareToParseTracks()
 {
     if( m_handler )
-        m_handler.data()->prepareToParseTracks();
+        m_handler->prepareToParseTracks();
 }
 
 bool
 MtpReadCapability::isEndOfParseTracksList()
 {
-    return m_handler.data()->isEndOfParseTracksList();
+    return m_handler->isEndOfParseTracksList();
 }
 
 void
 MtpReadCapability::prepareToParseNextTrack()
 {
     if( m_handler )
-        m_handler.data()->prepareToParseNextTrack();
+        m_handler->prepareToParseNextTrack();
 }
 
 void
 MtpReadCapability::nextTrackToParse()
 {
     if( m_handler )
-        m_handler.data()->nextTrackToParse();
+        m_handler->nextTrackToParse();
 }
 
 void
 MtpReadCapability::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
     if( m_handler )
-        m_handler.data()->setAssociateTrack( track );
+        m_handler->setAssociateTrack( track );
 }
 
 QString
 MtpReadCapability::libGetTitle( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetTitle( track );
+    return m_handler->libGetTitle( track );
 }
 
 QString
 MtpReadCapability::libGetAlbum( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetAlbum( track );
+    return m_handler->libGetAlbum( track );
 }
 
 QString
 MtpReadCapability::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetArtist( track );
+    return m_handler->libGetArtist( track );
 }
 
 QString
 MtpReadCapability::libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetAlbumArtist( track );
+    return m_handler->libGetAlbumArtist( track );
 }
 
 QString
 MtpReadCapability::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetComposer( track );
+    return m_handler->libGetComposer( track );
 }
 
 QString
 MtpReadCapability::libGetGenre( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetGenre( track );
+    return m_handler->libGetGenre( track );
 }
 
 int
 MtpReadCapability::libGetYear( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetYear( track );
+    return m_handler->libGetYear( track );
 }
 
 qint64
 MtpReadCapability::libGetLength( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetLength( track );
+    return m_handler->libGetLength( track );
 }
 
 int
 MtpReadCapability::libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track )
 {
-   return  m_handler.data()->libGetTrackNumber( track );
+   return  m_handler->libGetTrackNumber( track );
 }
 
 QString
 MtpReadCapability::libGetComment( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetComment( track );
+    return m_handler->libGetComment( track );
 }
 
 int
 MtpReadCapability::libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track )
 {
-   return  m_handler.data()->libGetDiscNumber( track );
+   return  m_handler->libGetDiscNumber( track );
 }
 
 int
 MtpReadCapability::libGetBitrate( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetBitrate( track );
+    return m_handler->libGetBitrate( track );
 }
 
 int
 MtpReadCapability::libGetSamplerate( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetSamplerate( track );
+    return m_handler->libGetSamplerate( track );
 }
 
 qreal
 MtpReadCapability::libGetBpm( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetBpm( track );
+    return m_handler->libGetBpm( track );
 }
 
 int
 MtpReadCapability::libGetFileSize( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetFileSize( track );
+    return m_handler->libGetFileSize( track );
 }
 
 int
 MtpReadCapability::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetPlayCount( track );
+    return m_handler->libGetPlayCount( track );
 }
 
 QDateTime
 MtpReadCapability::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetLastPlayed( track );
+    return m_handler->libGetLastPlayed( track );
 }
 
 int
 MtpReadCapability::libGetRating( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetRating( track );
+    return m_handler->libGetRating( track );
 }
 
 QString
 MtpReadCapability::libGetType( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetType( track );
+    return m_handler->libGetType( track );
 }
 
 QUrl
 MtpReadCapability::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_handler.data()->libGetPlayableUrl( track );
+    return m_handler->libGetPlayableUrl( track );
 }
 
 float
 MtpReadCapability::usedCapacity() const
 {
-    return m_handler.data()->usedCapacity();
+    return m_handler->usedCapacity();
 }
 
 float
 MtpReadCapability::totalCapacity() const
 {
-    return m_handler.data()->totalCapacity();
+    return m_handler->totalCapacity();
 }
 

@@ -34,7 +34,6 @@
 
 GenericScanManager::GenericScanManager( QObject *parent )
     : QObject( parent )
-    , m_scannerJob( )
 {
     qRegisterMetaType<GenericScanManager::ScanType>( "GenericScanManager::ScanType" );
     qRegisterMetaType<QSharedPointer<CollectionScanner::Directory> >( "QSharedPointer<CollectionScanner::Directory>" );
@@ -96,9 +95,10 @@ GenericScanManager::requestScan( QList<QUrl> directories, ScanType type )
     if( scanDirsSet.isEmpty() && type == PartialUpdateScan )
         return; // nothing to do
 
-    m_scannerJob = new GenericScannerJob( this, scanDirsSet.toList(), type );
+    auto scannerJob = QSharedPointer<GenericScannerJob>( new GenericScannerJob( this, scanDirsSet.toList(), type ) );
+    m_scannerJob = scannerJob.toWeakRef();
     connectSignalsToJob();
-    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_scannerJob) );
+    ThreadWeaver::Queue::instance()->enqueue( scannerJob );
 }
 
 void
@@ -112,9 +112,10 @@ GenericScanManager::requestImport( QIODevice *input, ScanType type )
         return;
     }
 
-    m_scannerJob = new GenericScannerJob( this, input, type );
+    auto scannerJob = QSharedPointer<GenericScannerJob>( new GenericScannerJob( this, input, type ) );
+    m_scannerJob = scannerJob.toWeakRef();
     connectSignalsToJob();
-    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_scannerJob) );
+    ThreadWeaver::Queue::instance()->enqueue( scannerJob );
 }
 
 void
@@ -122,44 +123,26 @@ GenericScanManager::abort()
 {
     QMutexLocker locker( &m_mutex );
 
-    if( m_scannerJob )
-        m_scannerJob->abort();
-}
-
-void
-GenericScanManager::slotSucceeded()
-{
-    {
-        QMutexLocker locker( &m_mutex );
-        m_scannerJob = 0;
-    }
-    emit succeeded();
-}
-
-void
-GenericScanManager::slotFailed( const QString& message )
-{
-    {
-        QMutexLocker locker( &m_mutex );
-        m_scannerJob = 0;
-    }
-    emit failed( message );
+    auto scannerJob = m_scannerJob.toStrongRef();
+    if( scannerJob )
+        scannerJob->abort();
 }
 
 void
 GenericScanManager::connectSignalsToJob()
 {
+    auto scannerJob = m_scannerJob.data();
     // we used to have direct connections here, but that caused too much work being done
-    // int the non-main thread, even in code that wasn't thread-safe, which lead to
+    // in the non-main thread, even in code that wasn't thread-safe, which lead to
     // crashes (bug 319835) and other potential data races
-    connect( m_scannerJob, QOverload<ScanType>::of(&GenericScannerJob::started),
+    connect( scannerJob, QOverload<ScanType>::of(&GenericScannerJob::started),
              this, &GenericScanManager::started );
-    connect( m_scannerJob, &GenericScannerJob::directoryCount,
+    connect( scannerJob, &GenericScannerJob::directoryCount,
              this, &GenericScanManager::directoryCount);
-    connect( m_scannerJob, &GenericScannerJob::directoryScanned,
+    connect( scannerJob, &GenericScannerJob::directoryScanned,
              this, &GenericScanManager::directoryScanned );
-    connect( m_scannerJob, &GenericScannerJob::succeeded,
-             this, &GenericScanManager::slotSucceeded );
-    connect( m_scannerJob, QOverload<QString>::of(&GenericScannerJob::failed),
-             this, &GenericScanManager::slotFailed );
+    connect( scannerJob, &GenericScannerJob::succeeded,
+             this, &GenericScanManager::succeeded );
+    connect( scannerJob, QOverload<QString>::of(&GenericScannerJob::failed),
+             this, &GenericScanManager::failed );
 }

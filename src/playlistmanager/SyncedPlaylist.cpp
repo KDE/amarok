@@ -21,7 +21,7 @@
 #include "core/playlists/PlaylistProvider.h"
 #include "core/support/Debug.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 using namespace Meta;
 

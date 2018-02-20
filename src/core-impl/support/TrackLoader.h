@@ -107,7 +107,6 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
     private Q_SLOTS:
         void processNextSourceUrl();
         void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list );
-        void listJobFinished();
         void processNextResultUrl();
         /**
          * Emits the result and auto-destroys the TrackLoader
@@ -135,8 +134,6 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
         Playlists::PlaylistList m_resultPlaylists;
         /// the tracks found
         Meta::TrackList m_tracks;
-        /// temporary list of results of the list job, to keep right sorting
-        QList<QUrl> m_listJobResults;
         /// set of unresolved MetaProxy::Tracks that we wait for
         QSet<Meta::TrackPtr> m_unresolvedTracks;
         QMutex m_unresolvedTracksMutex;

@@ -23,7 +23,7 @@
 #include "core/capabilities/CollectionImportCapability.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QFile>
 

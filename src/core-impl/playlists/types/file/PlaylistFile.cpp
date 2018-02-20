@@ -23,7 +23,6 @@
 
 #include <QUrl>
 #include <QDir>
-#include <KMimeType>
 
 #include <ThreadWeaver/Queue>
 
@@ -163,14 +162,20 @@ QUrl
 PlaylistFile::getAbsolutePath( const QUrl &url )
 {
     QUrl absUrl = url;
-    if( url.isRelative() )
+
+    if( url.scheme().isEmpty() )
+        absUrl.setScheme( QStringLiteral( "file" ) );
+
+    if( !absUrl.isLocalFile() )
+        return url;
+
+    if( !url.path().startsWith( '/' ) )
     {
         m_relativePaths = true;
-        // example: url = QUrl("../tunes/tune.ogg")
-        const QString relativePath = url.path(); // "../tunes/tune.ogg"
+        // example: url = QUrl( "file://../tunes/tune.ogg" )
         absUrl = m_url.adjusted(QUrl::RemoveFilename); // file:///playlists/
         absUrl = absUrl.adjusted(QUrl::StripTrailingSlash);
-        absUrl.setPath(absUrl.path() + '/' + ( relativePath ));
+        absUrl.setPath( absUrl.path() + '/' + url.path() );
         absUrl.setPath( QDir::cleanPath(absUrl.path()) ); // file:///playlists/tunes/tune.ogg
     }
     return absUrl;

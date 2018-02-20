@@ -16,29 +16,29 @@
 
 #include "HintLineEdit.h"
 
-#include <kvbox.h>
+#include "widgets/BoxWidget.h"
 
 #include <QFont>
 #include <QLabel>
 
 HintLineEdit::HintLineEdit( const QString &hint, const QString &text, QWidget *parent )
-   : KLineEdit( text, 0 )
-   , m_vbox( new KVBox( parent ) )
+   : QLineEdit( text, 0 )
+   , m_vbox( new BoxWidget( true, parent ) )
 {
     init();
     m_hint->setText( hint );
 }
 
 HintLineEdit::HintLineEdit( const QString &text, QWidget *parent )
-   : KLineEdit( text, 0 )
-   , m_vbox( new KVBox( parent ) )
+   : QLineEdit( text, 0 )
+   , m_vbox( new BoxWidget( true, parent ) )
 {
     init();
 }
 
 HintLineEdit::HintLineEdit( QWidget *parent )
-   : KLineEdit( 0 )
-   , m_vbox( new KVBox( parent ) )
+   : QLineEdit( 0 )
+   , m_vbox( new BoxWidget( true, parent ) )
 {
     init();
 }

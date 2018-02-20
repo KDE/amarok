@@ -18,7 +18,7 @@
 
 #include "PlaylistDefines.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 namespace Playlist
 {

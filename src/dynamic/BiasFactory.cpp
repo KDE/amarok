@@ -118,7 +118,7 @@ Dynamic::BiasFactory::instance()
         s_biasFactories.append( new Dynamic::QuizPlayBiasFactory() );
         s_biasFactories.append( new Dynamic::EchoNestBiasFactory() );
 
-        s_instance = new BiasFactory( App::instance() );
+        s_instance = new BiasFactory( pApp );
     }
     return s_instance;
 }

@@ -21,21 +21,22 @@
 #include "core/support/Debug.h"
 #include "widgets/BreadcrumbItemButton.h"
 
-#include <QIcon>
-#include <KLocale>
-
 #include <QDir>
+#include <QHBoxLayout>
+#include <QIcon>
 #include <QMenu>
 
+#include <KLocalizedString>
+
+
 BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget *parent )
-    : KHBox( parent )
+    : BoxWidget( false, parent )
     , m_menuButton( 0 )
 {
     //figure out if we want to add a menu to this item. A menu allows you to select
     //any of the _sibling_ items. (yes, I know, this is different from how Dolphin
     //does it, but I find the Dolphin way amazingly unintuitive and I always get it
     //wrong when using it...)
-
     BrowserCategoryList * parentList = category->parentList();
     if( parentList )
     {
@@ -94,7 +95,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
 
 BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString &callback,
         const BreadcrumbSiblingList &childItems, FileBrowser *handler, QWidget *parent )
-    : KHBox( parent )
+    : BoxWidget( false, parent )
     , m_menuButton( 0 )
     , m_callback( callback )
 {

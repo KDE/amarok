@@ -71,7 +71,7 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         Playlists::PlaylistList m_playlists;
 };
 
-typedef KSharedPtr<SyncedPlaylist> SyncedPlaylistPtr;
+typedef AmarokSharedPointer<SyncedPlaylist> SyncedPlaylistPtr;
 typedef QList<SyncedPlaylistPtr> SyncedPlaylistList;
 
 Q_DECLARE_METATYPE( SyncedPlaylistPtr )

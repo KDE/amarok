@@ -33,14 +33,15 @@
 #include "ui_MusicBrainzTagger.h"
 
 #include <QIcon>
-
 #include <QSortFilterProxyModel>
 #include <QToolBar>
 #include <QToolButton>
 
+#include <KWindowConfig>
+
 MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
                                       QWidget *parent )
-    : KDialog( parent )
+    : QDialog( parent )
     , ui( new Ui::MusicBrainzTagger() )
 {
     DEBUG_BLOCK
@@ -49,8 +50,9 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
         if( !track->playableUrl().toLocalFile().isEmpty() )
             m_tracks << track;
     }
-    ui->setupUi( mainWidget() );
-    restoreDialogSize( Amarok::config( "MusicBrainzTagDialog" ) );
+    ui->setupUi( this );
+    KConfigGroup group = Amarok::config( "MusicBrainzTagDialog" );
+    KWindowConfig::restoreWindowSize( windowHandle(), group );
 
     init();
     search();
@@ -59,7 +61,7 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
 MusicBrainzTagger::~MusicBrainzTagger()
 {
     KConfigGroup group = Amarok::config( "MusicBrainzTagDialog" );
-    saveDialogSize( group );
+    group.writeEntry( "geometry", saveGeometry() );
     delete ui;
 }
 
@@ -67,7 +69,6 @@ void
 MusicBrainzTagger::init()
 {
     DEBUG_BLOCK
-    setButtons( KDialog::None );
     setAttribute( Qt::WA_DeleteOnClose );
     setMinimumSize( 550, 300 );
 

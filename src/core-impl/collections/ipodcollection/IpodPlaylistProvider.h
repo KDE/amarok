@@ -67,7 +67,7 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
          * playlist. The actual call to start copying tracks is deferred to next eventloop
          * iteration to pickup multiple successive addTrack() calls.
          */
-        void scheduleCopyAndInsertToPlaylist( KSharedPtr<IpodPlaylist> playlist );
+        void scheduleCopyAndInsertToPlaylist( AmarokSharedPointer<IpodPlaylist> playlist );
 
         /**
          * Remove this track from all playlists it belongs to, it was removed from the
@@ -106,7 +106,7 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
 
         IpodCollection *m_coll;
         Playlists::PlaylistList m_playlists;
-        QSet< KSharedPtr<IpodPlaylist> > m_copyTracksTo;
+        QSet< AmarokSharedPointer<IpodPlaylist> > m_copyTracksTo;
         Playlists::PlaylistPtr m_stalePlaylist;
         Playlists::PlaylistPtr m_orphanedPlaylist;
 };

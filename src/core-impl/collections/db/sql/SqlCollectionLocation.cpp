@@ -39,13 +39,11 @@
 #include <QFile>
 #include <QFileInfo>
 
-#include <kdiskfreespaceinfo.h>
+#include <KDiskFreeSpaceInfo>
 #include <KFileItem>
-#include <kjob.h>
-#include <KSharedPtr>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <kio/deletejob.h>
+#include <KJob>
+#include <KIO/DeleteJob>
+#include <KIO/Job>
 #include <KConfigGroup>
 #include <KLocalizedString>
 
@@ -151,22 +149,22 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
 }
 
 bool
-SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
+SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &path )
 {
-    if( !QFile::exists( url ) )
+    if( !QFile::exists( path ) )
     {
-        warning() << Q_FUNC_INFO << "file" << url << "does not exist, not inserting into db";
+        warning() << Q_FUNC_INFO << "file" << path << "does not exist, not inserting into db";
         return false;
     }
 
-    // -- the target url
+    // -- the target path
     SqlRegistry *registry = m_collection->registry();
-    int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(url) );
-    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, url );
-    int directoryId = registry->getDirectory( QFileInfo( url ).path() );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile( path ) );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, path );
+    int directoryId = registry->getDirectory( QFileInfo( path ).path() );
 
     // -- the track uid (we can't use the original one from the old collection)
-    Meta::FieldHash fileTags = Meta::Tag::readTags( url );
+    Meta::FieldHash fileTags = Meta::Tag::readTags( path );
     QString uid = fileTags.value( Meta::valUniqueId ).toString();
     uid = m_collection->generateUidUrl( uid ); // add the right prefix
 

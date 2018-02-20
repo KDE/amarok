@@ -20,6 +20,7 @@
 #include <QObject>
 
 class EngineController;
+class QDBusInterface;
 
 /**
  * Handle Amarok behavior on system suspend
@@ -34,7 +35,7 @@ class PowerManager : public QObject
 
     private Q_SLOTS:
         void slotSettingsChanged();
-        void slotResumingFromSuspend();
+        void slotHandleSuspend();
         void slotPlaying();
         void slotNotPlaying();
 
@@ -43,6 +44,7 @@ class PowerManager : public QObject
         void stopInhibitingSuspend();
 
         int m_inhibitionCookie;
+        QDBusInterface *m_interface;
 };
 
 #endif // AMAROK_POWERMANAGER_H

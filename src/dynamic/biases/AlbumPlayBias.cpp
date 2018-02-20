@@ -24,7 +24,7 @@
 #include "core/support/Debug.h"
 #include "dynamic/TrackSet.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QComboBox>
 #include <QFormLayout>

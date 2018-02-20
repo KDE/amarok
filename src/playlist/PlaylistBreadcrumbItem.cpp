@@ -20,7 +20,7 @@
 #include "PlaylistSortWidget.h"
 
 #include <QIcon>
-#include <KLocale>
+#include <KLocalizedString>
 
 namespace Playlist
 {
@@ -62,7 +62,7 @@ BreadcrumbItemMenu::actionTriggered( QAction *action )
 /////// BreadcrumbItem methods begin here
 
 BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
-    : KHBox( parent )
+    : BoxWidget( false, parent )
     , m_name( level->name() )
     , m_prettyName( level->prettyName() )
 {

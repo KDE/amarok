@@ -56,7 +56,7 @@ Base::unsubscribe( Observer *observer )
     m_observers.remove( observer );
 }
 
-QDebug &
+QDebug
 operator<<( QDebug dbg, const Base &base )
 {
     dbg.nospace() << "Meta::Base(" << base.name() << " at " << &base << ")";

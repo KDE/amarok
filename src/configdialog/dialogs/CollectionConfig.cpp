@@ -35,7 +35,6 @@ CollectionConfig::CollectionConfig( Amarok2ConfigDialog* parent )
     KConfigGroup transcodeGroup = Amarok::config( Collections::SQL_TRANSCODING_GROUP_NAME );
     m_collectionSetup->transcodingConfig()->fillInChoices( Transcoding::Configuration::fromConfigGroup( transcodeGroup ) );
 
-
     connect( m_collectionSetup, &CollectionSetup::changed, parent, &Amarok2ConfigDialog::updateButtons );
     connect( m_collectionSetup->transcodingConfig(), QOverload<int>::of(&QComboBox::currentIndexChanged),
              parent, &Amarok2ConfigDialog::updateButtons );

@@ -19,6 +19,7 @@
 #include "MainWindow.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrlHandler.h"
+#include "browsers/BrowserDock.h"
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"

@@ -44,7 +44,7 @@ SqlQueryMakerInternal::run()
     Q_ASSERT( !m_query.isEmpty() );
     if( !m_collection.isNull() )
     {
-        QStringList result = m_collection.data()->sqlStorage()->query( m_query );
+        QStringList result = m_collection->sqlStorage()->query( m_query );
         handleResult( result );
     }
     else
@@ -144,7 +144,7 @@ void
 SqlQueryMakerInternal::handleTracks( const QStringList &result )
 {
     Meta::TrackList tracks;
-    SqlRegistry* reg = m_collection.data()->registry();
+    SqlRegistry* reg = m_collection->registry();
     int returnCount = Meta::SqlTrack::getTrackReturnValueCount();
     int resultRows = result.size() / returnCount;
     for( int i = 0; i < resultRows; i++ )
@@ -159,7 +159,7 @@ void
 SqlQueryMakerInternal::handleArtists( const QStringList &result )
 {
     Meta::ArtistList artists;
-    SqlRegistry* reg = m_collection.data()->registry();
+    SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
         QString name = iter.next();
@@ -174,7 +174,7 @@ void
 SqlQueryMakerInternal::handleAlbums( const QStringList &result )
 {
     Meta::AlbumList albums;
-    SqlRegistry* reg = m_collection.data()->registry();
+    SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
         QString name = iter.next();
@@ -189,7 +189,7 @@ void
 SqlQueryMakerInternal::handleGenres( const QStringList &result )
 {
     Meta::GenreList genres;
-    SqlRegistry* reg = m_collection.data()->registry();
+    SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
         QString name = iter.next();
@@ -203,7 +203,7 @@ void
 SqlQueryMakerInternal::handleComposers( const QStringList &result )
 {
     Meta::ComposerList composers;
-    SqlRegistry* reg = m_collection.data()->registry();
+    SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
         QString name = iter.next();
@@ -217,7 +217,7 @@ void
 SqlQueryMakerInternal::handleYears( const QStringList &result )
 {
     Meta::YearList years;
-    SqlRegistry* reg = m_collection.data()->registry();
+    SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
         QString name = iter.next();
@@ -231,7 +231,7 @@ void
 SqlQueryMakerInternal::handleLabels( const QStringList &result )
 {
     Meta::LabelList labels;
-    SqlRegistry *reg = m_collection.data()->registry();
+    SqlRegistry *reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
         QString label = iter.next();

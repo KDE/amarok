@@ -63,13 +63,13 @@ GrowlInterface::show( Meta::TrackPtr track )
     if( text.isEmpty() ) //still
         text = i18n("No information available for this track");
 
-    if( App::instance()->trayIcon() )
+    if( pApp->trayIcon() )
     {
         if( track && track->album() )
         {
-            App::instance()->trayIcon()->setIconByPixmap( The::svgHandler()->imageWithBorder( track->album(), 100, 5 ) );
+            pApp->trayIcon()->setIconByPixmap( The::svgHandler()->imageWithBorder( track->album(), 100, 5 ) );
         }
-        App::instance()->trayIcon()->showMessage( "Amarok", text, QString() );
+        pApp->trayIcon()->showMessage( "Amarok", text, QString() );
     }
 
 }

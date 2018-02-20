@@ -20,10 +20,11 @@
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
-#include <KStandardDirs>
-#include <KLocalizedString>
-
 #include <QFile>
+#include <QStandardPaths>
+#include <QUrl>
+
+#include <KLocalizedString>
 
 InfoProxy * InfoProxy::m_instance = 0;
 
@@ -134,7 +135,7 @@ InfoProxy::loadHomePage()
 {
     DEBUG_BLOCK
 
-    QUrl dataUrl( KStandardDirs::locate( "data", "amarok/data/" ) );
+    QUrl dataUrl( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/" ) );
     QString dataPath = dataUrl.path();
 
     //load html
@@ -149,15 +150,15 @@ InfoProxy::loadHomePage()
 
     QString html = file.readAll();
 
-    QUrl imageUrl( KStandardDirs::locate( "data", "amarok/images/" ) );
+    QUrl imageUrl( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/" ) );
     QString imagePath = imageUrl.url();
 
     html.replace( "_PATH_", imagePath );
 
-    html.replace( "{background_color}",PaletteHandler::highlightColor().lighter( 150 ).name() );
-    html.replace( "{border_color}", PaletteHandler::highlightColor().lighter( 150 ).name() );
-    html.replace( "{text_color}", App::instance()->palette().brush( QPalette::Text ).color().name() );
-    QColor highlight( App::instance()->palette().highlight().color() );
+    html.replace( "{background_color}", The::paletteHandler()->highlightColor().lighter( 150 ).name() );
+    html.replace( "{border_color}", The::paletteHandler()->highlightColor().lighter( 150 ).name() );
+    html.replace( "{text_color}", pApp->palette().brush( QPalette::Text ).color().name() );
+    QColor highlight( pApp->palette().highlight().color() );
     highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
     html.replace( "{header_background_color}", highlight.name() );
 

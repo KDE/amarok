@@ -47,6 +47,7 @@
 #include "scripting/scriptengine/AmarokStatusbarScript.h"
 #include "scripting/scriptengine/AmarokStreamItemScript.h"
 #include "scripting/scriptengine/AmarokWindowScript.h"
+#include "scripting/scriptengine/AmarokScriptXml.h"
 #include "scripting/scriptengine/exporters/CollectionTypeExporter.h"
 #include "scripting/scriptengine/exporters/MetaTypeExporter.h"
 #include "scripting/scriptengine/exporters/QueryMakerExporter.h"
@@ -55,19 +56,21 @@
 #include "scripting/scriptengine/ScriptingDefines.h"
 #include "ScriptManager.h"
 
-#include <KStandardDirs>
-#include <KPushButton>
-
-#include <QToolTip>
 #include <QFileInfo>
+#include <QLabel>
+#include <QPushButton>
 #include <QScriptEngine>
+#include <QStandardPaths>
+#include <QToolTip>
+
+#include <KStandardGuiItem>
 
 ////////////////////////////////////////////////////////////////////////////////
 // ScriptTerminatorWidget
 ////////////////////////////////////////////////////////////////////////////////
 
 ScriptTerminatorWidget::ScriptTerminatorWidget( const QString &message )
-: PopupWidget( 0 )
+    : PopupWidget( 0 )
 {
     setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
 
@@ -87,10 +90,11 @@ ScriptTerminatorWidget::ScriptTerminatorWidget( const QString &message )
     alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
     alabel->setPalette( p );
 
-    KPushButton *button = new KPushButton( i18n( "Terminate" ), this );
+    QPushButton *button = new QPushButton( i18n( "Terminate" ), this );
     button->setPalette(p);;
     connect( button, &QAbstractButton::clicked, this, &ScriptTerminatorWidget::terminate );
-    button = new KPushButton( KStandardGuiItem::close(), this );
+    auto closeItem = KStandardGuiItem::close();
+    button = new QPushButton( closeItem.icon(), closeItem.text(), this );
     button->setPalette(p);
     connect( button, &QAbstractButton::clicked, this, &ScriptTerminatorWidget::hide );
 
@@ -105,7 +109,7 @@ ScriptTerminatorWidget::ScriptTerminatorWidget( const QString &message )
 ScriptItem::ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginInfo &info )
 : QObject( parent )
 , m_name( name )
-, m_url( path )
+, m_url( QUrl::fromLocalFile( path ) )
 , m_info( info )
 , m_running( false )
 , m_evaluating( false )
@@ -126,13 +130,13 @@ ScriptItem::pause()
     killTimer( m_timerId );
     if( m_popupWidget )
     {
-        m_popupWidget.data()->hide();
-        m_popupWidget.data()->deleteLater();;
+        m_popupWidget->hide();
+        m_popupWidget->deleteLater();;
     }
     //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
-    if( m_engine.data()->isEvaluating() )
+    if( m_engine->isEvaluating() )
     {
-        m_engine.data()->abortEvaluation();
+        m_engine->abortEvaluation();
         m_evaluating = false;
         return;
     }
@@ -163,27 +167,30 @@ void
 ScriptItem::timerEvent( QTimerEvent* event )
 {
     Q_UNUSED( event )
-    if( m_engine && m_engine.data()->isEvaluating() )
+    if( m_engine && m_engine->isEvaluating() )
     {
         m_runningTime += 100;
         if( m_runningTime >= 5000 )
         {
             debug() << "5 seconds passed evaluating" << m_name;
             m_runningTime = 0;
+
             if( !m_popupWidget )
+            {
                 m_popupWidget = new ScriptTerminatorWidget(
                     i18n( "Script %1 has been evaluating for over"
                     " 5 seconds now, terminate?"
                     , m_name ) );
                 connect( m_popupWidget.data(), &ScriptTerminatorWidget::terminate,
                          this, &ScriptItem::stop );
+            }
             m_popupWidget.data()->show();
         }
     }
     else
     {
         if( m_popupWidget )
-            m_popupWidget.data()->deleteLater();
+            m_popupWidget->deleteLater();
         m_runningTime = 0;
     }
 }
@@ -218,7 +225,7 @@ ScriptItem::start( bool silent )
 
     m_timerId = startTimer( 100 );
     Q_ASSERT( m_engine );
-    m_output << m_engine.data()->evaluate( scriptFile.readAll() ).toString();
+    m_output << m_engine->evaluate( scriptFile.readAll() ).toString();
     debug() << "After Evaluation "<< m_name;
     emit evaluated( m_output.join( "\n" ) );
     scriptFile.close();
@@ -226,7 +233,7 @@ ScriptItem::start( bool silent )
     if ( m_evaluating )
     {
         m_evaluating = false;
-        if ( m_engine.data()->hasUncaughtException() )
+        if ( m_engine->hasUncaughtException() )
         {
             m_log << handleError( m_engine.data() );
             if( !silent )
@@ -236,7 +243,7 @@ ScriptItem::start( bool silent )
             return false;
         }
         if( m_info.category() == QLatin1String("Scriptable Service") )
-            m_service.data()->slotCustomize( m_name );
+            m_service->slotCustomize( m_name );
     }
     else
         stop();
@@ -265,6 +272,7 @@ ScriptItem::initializeScriptEngine()
     // common utils
     new AmarokScript::ScriptImporter( m_engine.data(), m_url );
     new AmarokScript::AmarokScriptConfig( m_name, m_engine.data() );
+    new AmarokScript::AmarokScriptXml( m_engine.data() );
     new AmarokScript::InfoScript( m_url, m_engine.data() );
     //new AmarokNetworkScript( m_engine.data() );
     new AmarokScript::Downloader( m_engine.data() );
@@ -303,7 +311,7 @@ void
 ScriptItem::stop()
 {
     pause();
-    m_engine.data()->deleteLater();
+    m_engine->deleteLater();
 }
 
 

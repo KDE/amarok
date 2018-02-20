@@ -28,13 +28,10 @@
 #include <QStack>
 #include <QRegExp>
 
-namespace KIO
-{
-    class Job;
-    class TransferJob;
-}
+#include <KIO/TransferJob>
 
 class QUrl;
+class KJob;
 
 namespace Podcasts {
 

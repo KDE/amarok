@@ -1,10 +1,3 @@
-include_directories(
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/shared
-    
-    
-)
-
 set(libcore_interfaces_SRCS
     interfaces/Logger.cpp
     interfaces/MetaCapability.cpp
@@ -105,16 +98,24 @@ set(libcore_LIB_SRCS
 
 add_library(amarokcore SHARED ${libcore_LIB_SRCS})
 
+target_include_directories( amarokcore PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/support
+    ${CMAKE_CURRENT_SOURCE_DIR}/meta
+)
+
 target_link_libraries(amarokcore
     amarokshared
     ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
+    Qt5::Core
+    Qt5::Network
     KF5::KIOCore
-    ${KDE4_SOLID_LIBRARY}
+    KF5::ConfigCore
     KF5::ThreadWeaver
-    ${QT_CORE_LIBRARY}
-    KF5::KDELibs4Support
     KF5::I18n
+    KF5::XmlGui
 )
 
 if(APPLE)

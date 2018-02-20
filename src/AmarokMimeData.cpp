@@ -16,6 +16,7 @@
 
 #include "AmarokMimeData.h"
 
+#include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
 
 #include <QCoreApplication>

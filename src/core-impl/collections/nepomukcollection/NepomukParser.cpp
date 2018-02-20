@@ -72,7 +72,7 @@ NepomukParser::parseOne( Soprano::QueryResultIterator &queryResult,
     Meta::TrackPtr track( m_collection->cache()->getTrack( resource ) );
     objectList << track;
 
-    KSharedPtr<Meta::NepomukTrack> ntrack( KSharedPtr<Meta::NepomukTrack>::staticCast( track ) );
+    AmarokSharedPointer<Meta::NepomukTrack> ntrack( AmarokSharedPointer<Meta::NepomukTrack>::staticCast( track ) );
     if( !ntrack->isFilled() )
     {
         Meta::ArtistList artist;
@@ -139,7 +139,7 @@ NepomukParser::parseOne( Soprano::QueryResultIterator &queryResult,
     Meta::ArtistPtr artist( m_collection->cache()->getArtist( resource ) );
     objectList << artist;
 
-    KSharedPtr<Meta::NepomukArtist> nartist( KSharedPtr<Meta::NepomukArtist>::staticCast( artist ) );
+    AmarokSharedPointer<Meta::NepomukArtist> nartist( AmarokSharedPointer<Meta::NepomukArtist>::staticCast( artist ) );
     if( !nartist->isFilled() )
         nartist->fill( queryResult.binding( NS_artistName ).literal().toString() );
 
@@ -156,7 +156,7 @@ NepomukParser::parseOne( Soprano::QueryResultIterator &queryResult,
     Meta::AlbumPtr album( m_collection->cache()->getAlbum( resource ) );
     objectList << album;
 
-    KSharedPtr<Meta::NepomukAlbum> nalbum( KSharedPtr<Meta::NepomukAlbum>::staticCast( album ) );
+    AmarokSharedPointer<Meta::NepomukAlbum> nalbum( AmarokSharedPointer<Meta::NepomukAlbum>::staticCast( album ) );
     if( !nalbum->isFilled() )
         nalbum->fill( queryResult.binding( NS_albumTitle ).literal().toString() );
 
@@ -185,7 +185,7 @@ NepomukParser::parseOne( Soprano::QueryResultIterator &queryResult,
     Meta::ComposerPtr composer( m_collection->cache()->getComposer( resource ) );
     objectList << composer;
 
-    KSharedPtr<Meta::NepomukComposer> ncomposer( KSharedPtr<Meta::NepomukComposer>::staticCast( composer ) );
+    AmarokSharedPointer<Meta::NepomukComposer> ncomposer( AmarokSharedPointer<Meta::NepomukComposer>::staticCast( composer ) );
     if( !ncomposer->isFilled() )
         ncomposer->fill( queryResult.binding( NS_composerName ).literal().toString() );
 

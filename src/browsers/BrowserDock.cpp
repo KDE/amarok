@@ -23,13 +23,13 @@
 #include "core/support/Debug.h"
 #include "core-impl/logger/ProxyLogger.h"
 #include "PaletteHandler.h"
+#include "widgets/BoxWidget.h"
 #include "widgets/HorizontalDivider.h"
 
 #include <QAction>
 #include <QIcon>
-#include <KLocale>
 
-#include <QWidget>
+#include <KLocalizedString>
 
 BrowserDock::BrowserDock( QWidget *parent )
     : AmarokDockWidget( i18n( "&Media Sources" ), parent )
@@ -39,7 +39,7 @@ BrowserDock::BrowserDock( QWidget *parent )
 
     //we have to create this here as it is used when setting up the
     //categories (unless of course we move that to polish as well...)
-    m_mainWidget = new KVBox( this );
+    m_mainWidget = new BoxWidget( true, this );
     setWidget( m_mainWidget );
     m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
     m_mainWidget->setFrameShape( QFrame::NoFrame );
@@ -54,6 +54,7 @@ BrowserDock::BrowserDock( QWidget *parent )
 
     m_messageArea = new BrowserMessageArea( m_mainWidget );
     m_messageArea->setAutoFillBackground( true );
+    //TODO: set dynamic height for hidpi displays
     m_messageArea->setFixedHeight( 36 );
 
     Amarok::Logger *logger = Amarok::Components::logger();
@@ -71,9 +72,9 @@ BrowserDock::~BrowserDock()
 
 void BrowserDock::polish()
 {
-    m_categoryList.data()->setIcon( QIcon::fromTheme( "user-home" ) );
+    m_categoryList->setIcon( QIcon::fromTheme( "user-home" ) );
 
-    m_categoryList.data()->setMinimumSize( 100, 300 );
+    m_categoryList->setMinimumSize( 100, 300 );
 
     connect( m_breadcrumbWidget, &BrowserBreadcrumbWidget::toHome, this, &BrowserDock::home );
 
@@ -98,13 +99,13 @@ BrowserCategoryList *BrowserDock::list() const
 void
 BrowserDock::navigate( const QString &target )
 {
-    m_categoryList.data()->navigate( target );
+    m_categoryList->navigate( target );
 }
 
 void
 BrowserDock::home()
 {
-    m_categoryList.data()->home();
+    m_categoryList->home();
 }
 
 void
@@ -115,7 +116,7 @@ BrowserDock::paletteChanged( const QPalette &palette )
                          "background-color: %2; color: %3; border-radius: 3px; }" \
                          "QLabel { color: %3; }" )
                         .arg( palette.color( QPalette::Active, QPalette::Window ).name() )
-                        .arg( The::paletteHandler()->highlightColor().name() )
+                        .arg( palette.color( QPalette::Active, QPalette::Mid ).name() )
                         .arg( palette.color( QPalette::Active, QPalette::HighlightedText ).name() )
                 );
 }

@@ -20,6 +20,7 @@
 #include "amarok_export.h"
 #include "BrowserDefines.h"
 #include "widgets/PrettyTreeView.h"
+#include "browsers/CollectionTreeItem.h"
 #include "core/meta/forward_declarations.h"
 #include "playlist/PlaylistController.h"
 
@@ -31,7 +32,6 @@
 class AmarokMimeData;
 class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
-class CollectionTreeItem;
 class PopupDropper;
 namespace Collections {
     class Collection;
@@ -42,7 +42,7 @@ class QSortFilterProxyModel;
 
 typedef QList<QAction *> QActionList;
 
-class CollectionTreeView: public Amarok::PrettyTreeView
+class AMAROK_EXPORT CollectionTreeView : public Amarok::PrettyTreeView
 {
         Q_OBJECT
 
@@ -52,7 +52,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         QSortFilterProxyModel* filterModel() const;
 
-        AMAROK_EXPORT void setLevels( const QList<CategoryId::CatMenuId> &levels );
+        void setLevels( const QList<CategoryId::CatMenuId> &levels );
         QList<CategoryId::CatMenuId> levels() const;
 
         void setLevel( int level, CategoryId::CatMenuId type );
@@ -69,7 +69,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
          * Copies all selected tracks to the local collection. The user can also
          * choose to do on-the-fly transcoding.
          */
-        AMAROK_EXPORT void copySelectedToLocalCollection();
+        void copySelectedToLocalCollection();
 
     public Q_SLOTS:
         void slotSetFilter( const QString &filter );

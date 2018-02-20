@@ -22,22 +22,20 @@
 #define POPUP_MESSAGE_DURATION 5000
 
 BrowserMessageArea::BrowserMessageArea( QWidget *parent )
-    : QFrame( parent )
+    : BoxWidget( true, parent )
     , m_busy( false )
 {
     setObjectName( "BrowserMessageArea" );
 
-    setLayout( new QVBoxLayout( this ) );
-
     m_progressBar = new CompoundProgressBar( this );
     connect( m_progressBar, &CompoundProgressBar::allDone, this, &BrowserMessageArea::hideProgress );
     layout()->addWidget( m_progressBar );
+
     m_progressBar->hide();
 
     m_messageLabel = new QLabel( this );
     m_messageLabel->setAlignment( Qt::AlignCenter );
     m_messageLabel->setWordWrap( true );
-    layout()->addWidget( m_messageLabel );
     m_messageLabel->hide();
 
     m_shortMessageTimer = new QTimer( this );

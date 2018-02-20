@@ -19,7 +19,7 @@
 
 #include "widgets/Token.h"
 
-#include <QWeakPointer>
+#include <QPointer>
 
 class LayoutEditDialog;
 
@@ -106,7 +106,7 @@ private:
     QString m_prefix, m_suffix;
     Wrench *m_wrench;
     int m_wrenchTimer;
-    static QWeakPointer<LayoutEditDialog> m_dialog;
+    static QPointer<LayoutEditDialog> m_dialog;
 
 };
 

@@ -25,7 +25,7 @@
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 TrackOrganizer::TrackOrganizer( const Meta::TrackList &tracks, QObject* parent )
     : QObject( parent )

@@ -41,37 +41,61 @@ GlobalCollectionActions::~GlobalCollectionActions()
 void
 GlobalCollectionActions::addGenreAction( GlobalCollectionGenreAction * action )
 {
+    if( !action )
+        return;
+
     m_genreActions.append( action );
+    connect( action, &QObject::destroyed, this, [this, action]() { m_genreActions.removeAll( action ); } );
 }
 
 void
 GlobalCollectionActions::addArtistAction( GlobalCollectionArtistAction * action )
 {
+    if( !action )
+        return;
+
     m_artistActions.append( action );
+    connect( action, &QObject::destroyed, this, [this, action]() { m_artistActions.removeAll( action ); } );
 }
 
 void
 GlobalCollectionActions::addAlbumAction( GlobalCollectionAlbumAction * action )
 {
+    if( !action )
+        return;
+
     m_albumActions.append( action );
+    connect( action, &QObject::destroyed, this, [this, action]() { m_albumActions.removeAll( action ); } );
 }
 
 void
 GlobalCollectionActions::addTrackAction( GlobalCollectionTrackAction * action )
 {
+    if( !action )
+        return;
+
     m_trackActions.append( action );
+    connect( action, &QObject::destroyed, this, [this, action]() { m_trackActions.removeAll( action ); } );
 }
 
 void
 GlobalCollectionActions::addYearAction( GlobalCollectionYearAction * action )
 {
+    if( !action )
+        return;
+
     m_yearActions.append( action );
+    connect( action, &QObject::destroyed, this, [this, action]() { m_yearActions.removeAll( action ); } );
 }
 
 void
 GlobalCollectionActions::addComposerAction( GlobalCollectionComposerAction * action )
 {
+    if( !action )
+        return;
+
     m_composerActions.append( action );
+    connect( action, &QObject::destroyed, this, [this, action]() { m_composerActions.removeAll( action ); } );
 }
 
 QList< QAction * > GlobalCollectionActions::actionsFor( Meta::DataPtr item )

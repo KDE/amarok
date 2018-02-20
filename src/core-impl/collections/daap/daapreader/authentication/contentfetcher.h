@@ -19,8 +19,11 @@
 #ifndef DAAPCONTENTFETCHER_H
 #define DAAPCONTENTFETCHER_H
 
-#include <QHttp>
 #include <QByteArray>
+#include <QObject>
+
+class QIODevice;
+class QNetworkReply;
 
 namespace Daap {
 
@@ -29,7 +32,7 @@ namespace Daap {
    that DAAP needs
 	@author Ian Monroe <ian@monroe.nu>
 */
-class ContentFetcher : public QHttp
+class ContentFetcher : public QObject
 {
     Q_OBJECT
 
@@ -41,12 +44,16 @@ class ContentFetcher : public QHttp
         QByteArray results();
 
     private Q_SLOTS:
-        void checkForErrors( int state );
+        void onFinished();
 
     Q_SIGNALS:
         void httpError( const QString& );
+        void finished();
+        void loginRequired();
 
     private:
+        QNetworkReply *m_reply;
+        QByteArray m_lastResult;
         QString m_hostname;
         quint16 m_port;
         QByteArray m_authorize;

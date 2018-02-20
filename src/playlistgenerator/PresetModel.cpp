@@ -28,9 +28,6 @@
 #include "playlistgenerator/Preset.h"
 #include "playlistgenerator/PresetEditDialog.h"
 
-#include <KFileDialog>
-#include <QUrl>
-
 #include <QAbstractItemModel>
 #include <QDesktopServices>
 #include <QDialog>
@@ -38,6 +35,7 @@
 #include <QDomElement>
 #include <QFile>
 #include <QList>
+#include <QUrl>
 #include <QVariant>
 
 APG::PresetModel* APG::PresetModel::s_instance = 0;
@@ -153,10 +151,9 @@ APG::PresetModel::exportActive()
 void
 APG::PresetModel::import()
 {
-    QString filename = KFileDialog::getOpenFileName( QUrl( QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) ),
-                                                     QString("*.xml|" + i18n("Preset files (*.xml)") ),
-                                                     0,
-                                                     i18n("Import preset") );
+    QString filename = QFileDialog::getOpenFileName( Q_NULLPTR, i18n("Import preset"),
+                                                     QStandardPaths::writableLocation( QStandardPaths::MusicLocation ),
+                                                     QString("*.xml|" + i18n("Preset files (*.xml)") ) );
     if( !filename.isEmpty() )
         loadPresetsFromXml( filename );
 }
@@ -274,7 +271,7 @@ APG::PresetModel::insertPreset( APG::PresetPtr ps )
         beginInsertRows( QModelIndex(), row, row );
         m_presetList.append( ps );
         endInsertRows();
-        connect( ps.data(), SIGNAL(lock(bool)), this, SIGNAL(lock(bool)) );
+        connect( ps.data(), &APG::Preset::lock, this, &PresetModel::lock );
     }
 }
 
@@ -297,17 +294,14 @@ APG::PresetModel::parseXmlToPresets( QDomDocument& document )
  * ExportDialog nested class
  */
 APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
-    : KFileDialog( QUrl( QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) ),
-                   QString("*.xml|" + i18n("Preset files (*.xml)") ),
-                   0 )
-
+    : QFileDialog( Q_NULLPTR, i18n( "Export \"%1\" preset", ps->title() ),
+                   QStandardPaths::writableLocation( QStandardPaths::MusicLocation ),
+                   QString("*.xml|" + i18n("Preset files (*.xml)") ) )
 {
     m_presetsToExportList.append( ps );
-    setMode( KFile::File );
-    setSelection( ps->title() + ".xml" );
-    setOperationMode( KFileDialog::Saving );
-    setKeepLocation( true );
-    QWidget::setWindowTitle( i18n( "Export \"%1\" preset", ps->title() ) );
+    setFileMode( QFileDialog::AnyFile );
+    selectFile( ps->title() + ".xml" );
+    setAcceptMode( QFileDialog::AcceptSave );
     connect( this, &ExportDialog::accept, this, &ExportDialog::recvAccept );
 }
 
@@ -316,7 +310,7 @@ APG::PresetModel::ExportDialog::~ExportDialog() {}
 void
 APG::PresetModel::ExportDialog::recvAccept() const
 {
-    emit pleaseExport( selectedFile(), m_presetsToExportList );
+    emit pleaseExport( selectedFiles().first(), m_presetsToExportList );
 }
 
 const QString APG::PresetModel::presetExamples =

@@ -21,7 +21,7 @@
 #include "core-impl/meta/proxy/MetaProxy_p.h"
 #include "core-impl/meta/proxy/MetaProxyWorker.h"
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Job>
 #include <KLocalizedString>

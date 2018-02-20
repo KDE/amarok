@@ -16,9 +16,9 @@
 
 #include "ArtistHelper.h"
 
-#include <KLocalizedString>
-
 #include <QStringList>
+
+#include <KLocalizedString>
 
 QString
 ArtistHelper::bestGuessAlbumArtist( const QString &albumArtist, const QString &trackArtist,

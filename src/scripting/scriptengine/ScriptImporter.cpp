@@ -25,9 +25,10 @@
 #include "AmarokPlaylistManagerScript.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
-#include <QUrl>
+#include <KIO/Global>
 
 #include <QSet>
+#include <QUrl>
 
 using namespace AmarokScript;
 
@@ -51,23 +52,9 @@ ScriptImporter::loadExtension( const QString& src )
 bool
 ScriptImporter::loadQtBinding( const QString& binding )
 {
-    QStringList availableBindings = m_scriptEngine->availableExtensions();
-    if( availableBindings.contains( binding ) )
-    {
-        if( !m_importedBindings.contains( binding ) )
-        {
-            if( m_scriptEngine->importExtension( binding ).isUndefined() )
-            { // undefined indicates success
-                m_importedBindings << binding;
-                return true;
-            }
-            //else fall through and return false
-        }
-        else
-            return true;
-    }
-    else
-        warning() << __PRETTY_FUNCTION__ << "Binding \"" << binding << "\" could not be found!";
+    Q_UNUSED( binding )
+
+    error() << __PRETTY_FUNCTION__ << "Loading Qt bindings in scripts not available in Qt5!";
     return false;
 }
 

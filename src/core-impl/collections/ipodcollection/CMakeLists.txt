@@ -53,9 +53,7 @@ if(IPOD_FOUND AND WITH_IPOD)
     amarokcore
     amaroklib
     amarok-transcoding
-    KF5::KDELibs4Support
     KF5::KIOCore
-    ${KDE4_SOLID_LIBRARY}
     KF5::ThreadWeaver
     Qt5::Gui
     ${GLIB2_LIBRARIES}
@@ -70,12 +68,7 @@ if(IPOD_FOUND AND WITH_IPOD)
     ${PLUGIN_INSTALL_DIR}
   )
 
-  ########### install files ###############
+  kcoreaddons_desktop_to_json(amarok_collection-ipodcollection amarok_collection-ipodcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
 
-  install(FILES
-    amarok_collection-ipodcollection.desktop
-    DESTINATION
-    ${SERVICES_INSTALL_DIR}
-  )
 
 endif()

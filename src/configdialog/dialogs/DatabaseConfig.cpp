@@ -19,6 +19,7 @@
 #include <PluginManager.h>
 #include <core/support/Amarok.h>
 #include <core/support/Debug.h>
+#include "core/support/PluginFactory.h"
 
 #include <KConfigDialogManager>
 #include <KMessageBox>

@@ -21,7 +21,7 @@
 #include "TokenPool.h"
 #include "core/support/Debug.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QDropEvent>
 #include <QPainter>

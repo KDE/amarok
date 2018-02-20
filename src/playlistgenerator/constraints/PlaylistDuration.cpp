@@ -124,7 +124,7 @@ ConstraintTypes::PlaylistDuration::getName() const
     } else {
         v = ki18n( "Playlist duration: unknown");
     }
-    v = v.subs( QTime().addMSecs( m_duration ).toString( "H:mm:ss" ) );
+    v = v.subs( QTime(0, 0, 0).addMSecs( m_duration ).toString( "H:mm:ss" ) );
     return v.toString();
 }
 
@@ -189,7 +189,7 @@ ConstraintTypes::PlaylistDurationEditWidget::PlaylistDurationEditWidget( const i
 {
     ui.setupUi( this );
 
-    ui.timeEdit_Duration->setTime( QTime().addMSecs( duration ) );
+    ui.timeEdit_Duration->setTime( QTime(0, 0, 0).addMSecs( duration ) );
     ui.comboBox_Comparison->setCurrentIndex( comparison );
     ui.slider_Strictness->setValue( strictness );
 }
@@ -197,7 +197,7 @@ ConstraintTypes::PlaylistDurationEditWidget::PlaylistDurationEditWidget( const i
 void
 ConstraintTypes::PlaylistDurationEditWidget::on_timeEdit_Duration_timeChanged( const QTime& t )
 {
-    emit durationChanged( QTime().msecsTo( t ) );
+    emit durationChanged( QTime(0, 0, 0).msecsTo( t ) );
     emit updated();
 }
 

@@ -21,8 +21,9 @@
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
 
-#include <klocale.h>
 #include <QIcon>
+
+#include <KLocalizedString>
 
 class QAction;
 

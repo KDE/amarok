@@ -24,9 +24,8 @@
 #include "widgets/FilenameLayoutWidget.h"
 #include "ui_OrganizeCollectionOptions.h"
 
-#include <KDialog>
-#include <KVBox>
-
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QWidget>
 
 namespace Ui
@@ -34,8 +33,7 @@ namespace Ui
     class OrganizeCollectionDialogBase;
 }
 
-class QFrame;
-class KLineEdit;
+class QLineEdit;
 class TrackOrganizer;
 
 
@@ -81,7 +79,7 @@ class AMAROK_EXPORT OrganizeCollectionWidget : public FilenameLayoutWidget
 };
 
 
-class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
+class AMAROK_EXPORT OrganizeCollectionDialog : public QDialog
 {
     Q_OBJECT
 
@@ -94,7 +92,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
                                            const char *name = 0,
                                            bool modal = true,
                                            const QString &caption = QString(),
-                                           QFlags<KDialog::ButtonCode> buttonMask = Ok|Cancel );
+                                           QFlags<QDialogButtonBox::StandardButton> buttonMask = QDialogButtonBox::Ok|QDialogButtonBox::Cancel );
 
         ~OrganizeCollectionDialog();
 

@@ -29,7 +29,7 @@ class IpodDeleteTracksJob : public QObject, public ThreadWeaver::Job
 
     public:
         explicit IpodDeleteTracksJob( const Meta::TrackList &sources,
-                                      const QWeakPointer<IpodCollection> &collection );
+                                      const QPointer<IpodCollection> &collection );
         void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
@@ -52,7 +52,7 @@ class IpodDeleteTracksJob : public QObject, public ThreadWeaver::Job
 
     private:
         Meta::TrackList m_sources;
-        QWeakPointer<IpodCollection> m_coll;
+        QPointer<IpodCollection> m_coll;
 };
 
 #endif // IPODDELETETRACKSJOB_H

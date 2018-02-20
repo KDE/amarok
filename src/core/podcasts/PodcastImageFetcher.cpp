@@ -18,9 +18,10 @@
 
 #include "core/support/Debug.h"
 
+#include <QCryptographicHash>
+#include <QtNetwork/QNetworkConfigurationManager>
+
 #include <KIO/Job>
-#include <KMD5>
-#include <Solid/Networking>
 
 PodcastImageFetcher::PodcastImageFetcher()
 {
@@ -68,13 +69,14 @@ QUrl
 PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannel *channel )
 {
     QUrl imagePath = channel->saveLocation();
-    if( imagePath.isEmpty() )
-        imagePath = QUrl::fromLocalFile(Amarok::saveLocation( "podcasts" ));
-    KMD5 md5( channel->url().url().toLocal8Bit() );
+    if( imagePath.isEmpty() || !imagePath.isLocalFile() )
+        imagePath = QUrl::fromLocalFile( Amarok::saveLocation( "podcasts" ) );
+    QCryptographicHash md5( QCryptographicHash::Md5 );
+    md5.addData( channel->url().url().toLocal8Bit() );
     QString extension = Amarok::extension( channel->imageUrl().fileName() );
-    imagePath = imagePath.adjusted(QUrl::StripTrailingSlash);
-    imagePath.setPath(imagePath.path() + '/' + ( md5.hexDigest() + '.' + extension ));
-    return QUrl::fromLocalFile(imagePath.toLocalFile());
+    imagePath = imagePath.adjusted( QUrl::StripTrailingSlash );
+    imagePath.setPath( imagePath.path() + '/' + ( md5.result().toHex() + '.' + extension ) );
+    return imagePath;
 }
 
 bool
@@ -96,10 +98,10 @@ PodcastImageFetcher::run()
         return;
     }
 
-    if( Solid::Networking::status() != Solid::Networking::Connected
-        && Solid::Networking::status() != Solid::Networking::Unknown )
+    QNetworkConfigurationManager mgr;
+    if( !mgr.isOnline() )
     {
-        debug() << "Solid reports we are not online, canceling podcast image download";
+        debug() << "QNetworkConfigurationManager reports we are not online, canceling podcast image download";
         emit( done( this ) );
         //TODO: schedule another run after Solid reports we are online again
         return;
@@ -108,7 +110,7 @@ PodcastImageFetcher::run()
     foreach( Podcasts::PodcastChannelPtr channel, m_channels )
     {
         QUrl cachedPath = cachedImagePath( channel );
-        KIO::mkdir( QUrl::fromLocalFile(cachedPath.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash).path()) );
+        KIO::mkdir( cachedPath.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash) );
         KIO::FileCopyJob *job = KIO::file_copy( channel->imageUrl(), cachedPath,
                                 -1, KIO::HideProgressInfo | KIO::Overwrite );
         //remove channel from the todo list

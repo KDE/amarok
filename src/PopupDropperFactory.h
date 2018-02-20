@@ -26,6 +26,7 @@ A central place for creating a Pud that matches system colors
 	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class PopupDropperFactory;
+class PopupDropperItem;
 
 namespace The {
     AMAROK_EXPORT PopupDropperFactory* popupDropperFactory();

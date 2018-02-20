@@ -47,7 +47,7 @@ Playlists::PlaylistPtr
 PlaylistProviderPrototype::addPlaylist(Playlists::PlaylistPtr playlist)
 {
     if( m_provider )
-        return m_provider.data()->addPlaylist( playlist );
+        return m_provider->addPlaylist( playlist );
     return Playlists::PlaylistPtr();
 }
 
@@ -55,21 +55,21 @@ int
 PlaylistProviderPrototype::category() const
 {
     if( m_provider )
-        return m_provider.data()->category();
+        return m_provider->category();
     return -1;
 }
 
 bool
 PlaylistProviderPrototype::deletePlaylists( const Playlists::PlaylistList &playlistlist )
 {
-    return m_provider && m_provider.data()->deletePlaylists( playlistlist );
+    return m_provider && m_provider->deletePlaylists( playlistlist );
 }
 
 Playlists::PlaylistList
 PlaylistProviderPrototype::playlists()
 {
     if( m_provider )
-        return m_provider.data()->playlists();
+        return m_provider->playlists();
     return Playlists::PlaylistList();
 }
 
@@ -77,7 +77,7 @@ void
 PlaylistProviderPrototype::renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName )
 {
     if( m_provider )
-        m_provider.data()->renamePlaylist( playlist, newName );
+        m_provider->renamePlaylist( playlist, newName );
 }
 
 Playlists::PlaylistPtr
@@ -92,7 +92,7 @@ PlaylistProviderPrototype::save( const Meta::TrackList &tracks, const QString &n
 QString PlaylistProviderPrototype::toString() const
 {
     if( m_provider )
-        return m_provider.data()->prettyName();
+        return m_provider->prettyName();
     return QString( "Invalid" );
 }
 
@@ -108,20 +108,20 @@ QIcon
 PlaylistProviderPrototype::icon() const
 {
     if( m_provider )
-        return m_provider.data()->icon();
+        return m_provider->icon();
     return QIcon();
 }
 
 bool
 PlaylistProviderPrototype::isWritable() const
 {
-    return m_provider && m_provider.data()->isWritable();
+    return m_provider && m_provider->isWritable();
 }
 
 int
 PlaylistProviderPrototype::playlistCount() const
 {
     if( m_provider )
-        return m_provider.data()->playlistCount();
+        return m_provider->playlistCount();
     return -1;
 }

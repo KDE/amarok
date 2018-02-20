@@ -156,8 +156,8 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel,
 
 template<typename T>
 int
-multilevelLessThan::compareBySortableName( const KSharedPtr<T> &left,
-                                           const KSharedPtr<T> &right ) const
+multilevelLessThan::compareBySortableName( const AmarokSharedPointer<T> &left,
+                                           const AmarokSharedPointer<T> &right ) const
 {
     if( !left && right )
         return -1;

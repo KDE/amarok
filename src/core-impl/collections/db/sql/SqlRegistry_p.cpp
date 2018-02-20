@@ -270,19 +270,19 @@ TrackTracksTableCommitter::getValues( Meta::SqlTrack *track )
     Q_ASSERT( track->m_urlId > 0 && "refusing to write non-positive urlId to tracks table, please file a bug" );
     result << QString::number( track->m_urlId );
     result << QString::number( track->m_artist ?
-            KSharedPtr<Meta::SqlArtist>::staticCast( track->m_artist )->id() :
+            AmarokSharedPointer<Meta::SqlArtist>::staticCast( track->m_artist )->id() :
             -1 );
     result << QString::number( track->m_album ?
-            KSharedPtr<Meta::SqlAlbum>::staticCast( track->m_album )->id() :
+            AmarokSharedPointer<Meta::SqlAlbum>::staticCast( track->m_album )->id() :
             -1 );
     result << QString::number( track->m_genre ?
-            KSharedPtr<Meta::SqlGenre>::staticCast( track->m_genre )->id() :
+            AmarokSharedPointer<Meta::SqlGenre>::staticCast( track->m_genre )->id() :
             -1 );
     result << QString::number( track->m_composer ?
-            KSharedPtr<Meta::SqlComposer>::staticCast( track->m_composer )->id() :
+            AmarokSharedPointer<Meta::SqlComposer>::staticCast( track->m_composer )->id() :
             -1 );
     result << QString::number( track->m_year ?
-            KSharedPtr<Meta::SqlYear>::staticCast( track->m_year )->id() :
+            AmarokSharedPointer<Meta::SqlYear>::staticCast( track->m_year )->id() :
             -1 );
     result << escape( track->m_title );
     result << escape( track->m_comment );

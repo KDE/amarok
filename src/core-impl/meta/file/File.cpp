@@ -26,6 +26,7 @@
 #include "MainWindow.h"
 #include "amarokurls/BookmarkMetaActions.h"
 #include "amarokurls/PlayUrlRunner.h"
+#include "browsers/BrowserDock.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
@@ -68,7 +69,7 @@ class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
     }
 
     private:
-        KSharedPtr<MetaFile::Track> m_track;
+        AmarokSharedPointer<MetaFile::Track> m_track;
 };
 
 class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
@@ -93,7 +94,7 @@ class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
         }
 
     private:
-        KSharedPtr<MetaFile::Track> m_track;
+        AmarokSharedPointer<MetaFile::Track> m_track;
 };
 
 
@@ -129,7 +130,7 @@ public:
     }
 
 private:
-    KSharedPtr<MetaFile::Track> m_track;
+    AmarokSharedPointer<MetaFile::Track> m_track;
 };
 
 
@@ -197,7 +198,7 @@ Track::notPlayableReason() const
 bool
 Track::isEditable() const
 {
-    QFileInfo info = QFileInfo( playableUrl().toDisplayString() );
+    QFileInfo info = QFileInfo( playableUrl().toLocalFile() );
     return info.isFile() && info.isWritable();
 }
 

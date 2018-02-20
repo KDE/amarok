@@ -32,8 +32,6 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 
-#include <QCryptographicHash>
-
 #include <QUrl>
 
 static QDBusObjectPath mprisTrackId(quint64 playlistTrackId)

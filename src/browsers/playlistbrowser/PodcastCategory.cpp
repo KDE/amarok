@@ -36,10 +36,10 @@
 
 #include <QAction>
 #include <QIcon>
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <KUrlRequesterDialog>
-#include <KGlobal>
-#include <KLocale>
+
+#include <KLocalizedString>
 #include <KToolBar>
 
 namespace The
@@ -87,7 +87,7 @@ PodcastCategory::PodcastCategory( QWidget *parent )
                               "Downloading episodes to the disk is also done here, or you can tell "
                               "Amarok to do this automatically." ) );
 
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_podcasts.png" ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )
@@ -166,13 +166,13 @@ PodcastCategory::showInfo( const QModelIndex &index )
     {
         authorAndPubDate = QString( "<b>%1</b> %2 " )
             .arg( i18n( "By" ) )
-            .arg( Qt::escape( author ) );
+            .arg( author.toHtmlEscaped() );
     }
 
     if( !subtitle.isEmpty() )
     {
         description += QString( "<h1 class=\"subtitle\">%1</h1>" )
-            .arg( Qt::escape( subtitle ) );
+            .arg( subtitle.toHtmlEscaped() );
     }
 
     if( !imageUrl.isEmpty() )
@@ -194,7 +194,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
             " style=\"width: 150px; margin-left: 1em;"
             " margin-right: 0em; cursor: -webkit-zoom-in;\""
             "/></p>" )
-            .arg( Qt::escape( imageUrl.url() ) );
+            .arg( imageUrl.url().toHtmlEscaped() );
     }
 
     if( isEpisode )
@@ -205,7 +205,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
         {
             authorAndPubDate += QString( "<b>%1</b> %2" )
                 .arg( i18nc( "Podcast published on date", "On" ) )
-                .arg( KGlobal::locale()->formatDateTime( pubDate, KLocale::FancyShortDate ) );
+                .arg( QLocale().toString( pubDate, QLocale::ShortFormat ) );
         }
     }
 
@@ -235,7 +235,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
         {
             description += QString( "<p><b>%1</b> %2</p>" )
                 .arg( i18n( "Subscription Date:" ) )
-                .arg( KGlobal::locale()->formatDate( subsDate, KLocale::FancyShortDate ) );
+                .arg( QLocale().toString( subsDate, QLocale::ShortFormat ) );
         }
     }
 
@@ -243,7 +243,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
     {
         description += QString( "<p><b>%1</b> %2</p>" )
             .arg( i18n( "Keywords:" ) )
-            .arg( Qt::escape( keywords.join( ", " ) ) );
+            .arg( keywords.join( ", " ).toHtmlEscaped() );
     }
 
     description += index.data( PrettyTreeRoles::ByLineRole ).toString();
@@ -264,10 +264,10 @@ PodcastCategory::showInfo( const QModelIndex &index )
         "        %2"
         "    </body>"
         "</html>")
-        .arg( Qt::escape( title ) )
+        .arg( title.toHtmlEscaped() )
         .arg( description )
-        .arg( App::instance()->palette().brush( QPalette::Text ).color().name() )
-        .arg( PaletteHandler::highlightColor().name() );
+        .arg( pApp->palette().brush( QPalette::Text ).color().name() )
+        .arg( The::paletteHandler()->highlightColor().name() );
     
     QVariantMap map;
     map["service_name"] = title;

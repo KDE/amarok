@@ -19,8 +19,6 @@
 
 #include "amarok_export.h"
 
-#include <KHBox>
-
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>

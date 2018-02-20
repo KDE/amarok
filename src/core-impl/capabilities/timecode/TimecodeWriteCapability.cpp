@@ -27,7 +27,7 @@
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "widgets/ProgressWidget.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 namespace Capabilities
 {

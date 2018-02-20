@@ -21,7 +21,6 @@ add_library(amarok_collection-daapcollection MODULE ${amarok_collection-daapcoll
 target_link_libraries(amarok_collection-daapcollection
     amarokcore
     amaroklib
-    KF5::KDELibs4Support
     KF5::ThreadWeaver
     KF5::DNSSD
     Qt5::Network
@@ -33,7 +32,4 @@ endif()
 
 install(TARGETS amarok_collection-daapcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-
-########### install files ###############
-
-install( FILES amarok_collection-daapcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+kcoreaddons_desktop_to_json(amarok_collection-daapcollection amarok_collection-daapcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

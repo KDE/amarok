@@ -24,11 +24,10 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <KLocale>
-
-#include <QGraphicsTextItem>
 #include <QXmlStreamReader>
-#include <QTextDocument>
+#include <QTextEdit>
+
+#include <KLocalizedString>
 
 ////////////////////////////////////////////////////////////////
 //// CLASS LyricsObserver
@@ -255,7 +254,7 @@ void LyricsManager::setLyricsForTrack( const QString &trackUrl, const QString &l
 
 bool LyricsManager::isEmpty( const QString &lyrics ) const
 {
-    QGraphicsTextItem testItem;
+    QTextEdit testItem;
 
     // Set the text of the TextItem.
     if( Qt::mightBeRichText( lyrics ) )

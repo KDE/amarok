@@ -41,19 +41,19 @@ CollectionProvider::~CollectionProvider()
 QString
 CollectionProvider::id() const
 {
-    return m_coll ? m_coll.data()->collectionId() : QString();
+    return m_coll ? m_coll->collectionId() : QString();
 }
 
 QString
 CollectionProvider::prettyName() const
 {
-    return m_coll ? m_coll.data()->prettyName() : QString();
+    return m_coll ? m_coll->prettyName() : QString();
 }
 
 QIcon
 CollectionProvider::icon() const
 {
-    return m_coll ? m_coll.data()->icon() : QIcon();
+    return m_coll ? m_coll->icon() : QIcon();
 }
 
 qint64
@@ -128,7 +128,7 @@ CollectionProvider::slotStartArtistSearch()
         return;
     }
 
-    Collections::QueryMaker *qm = m_coll.data()->queryMaker();
+    Collections::QueryMaker *qm = m_coll->queryMaker();
     qm->setAutoDelete( true );
     qm->setQueryType( Collections::QueryMaker::Artist );
     connect( qm, &Collections::QueryMaker::newArtistsReady,
@@ -146,7 +146,7 @@ CollectionProvider::slotStartTrackSearch( QString artistName )
         return;
     }
 
-    Collections::QueryMaker *qm = m_coll.data()->queryMaker();
+    Collections::QueryMaker *qm = m_coll->queryMaker();
     qm->setAutoDelete( true );
     qm->setQueryType( Collections::QueryMaker::Track );
     m_currentArtistName = artistName;

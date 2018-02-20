@@ -491,8 +491,10 @@ void
 BookmarkModel::reloadFromDb()
 {
     DEBUG_BLOCK;
+
+    beginResetModel();
     m_root->clear();
-    reset();
+    endResetModel();
 
 }
 

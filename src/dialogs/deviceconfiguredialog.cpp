@@ -25,8 +25,8 @@
 #include "core/support/PluginManager.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
-#include <KLocale>
-#include <KVBox>
+#include <KLocalizedString>
+#include <QVBoxLayout>
 
 #include <QCheckBox>
 #include <QRadioButton>
@@ -62,7 +62,7 @@ DeviceConfigureDialog::DeviceConfigureDialog( MediaDevice *device )
     setWindowTitle( i18n( "Configure Media Device" ) );
     buttonBox->button(QDialogButtonBox::Apply)->setVisible(false);
 
-    KVBox* vbox = new KVBox( this );
+    QVBoxLayout* vbox = new QVBoxLayout( this );
     mainLayout->addWidget(vbox);
         vbox->setSpacing( QApplication::style()->pixelMetric(QStyle::PM_DefaultLayoutSpacing) );
 //TODO KF5:PM_DefaultLayoutSpacing is obsolete. Look in QStyle docs for correctly replacing it.

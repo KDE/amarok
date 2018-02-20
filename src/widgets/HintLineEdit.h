@@ -17,13 +17,13 @@
 #ifndef HINTLINEEDIT_H
 #define HINTLINEEDIT_H
 
-#include <KLineEdit> //baseclass
+#include <QLineEdit> //baseclass
 
-class KVBox;
+class BoxWidget;
 class QLabel;
 class QWidget;
 
-class HintLineEdit : public KLineEdit
+class HintLineEdit : public QLineEdit
 {
     Q_OBJECT
 
@@ -39,7 +39,7 @@ public:
 private:
     void init();
 
-    KVBox *m_vbox;
+    BoxWidget *m_vbox;
     QLabel *m_hint;
 };
 

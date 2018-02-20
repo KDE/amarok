@@ -323,7 +323,7 @@ AggregateQueryMaker::handleResult()
         {
             QStringList result;
             Meta::TrackList tracks;
-            foreach( KSharedPtr<Meta::AggregateTrack> track, m_tracks )
+            foreach( AmarokSharedPointer<Meta::AggregateTrack> track, m_tracks )
             {
                 tracks.append( Meta::TrackPtr::staticCast( track ) );
             }
@@ -364,7 +364,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Track :
         {
             Meta::TrackList tracks;
-            foreach( KSharedPtr<Meta::AggregateTrack> track, m_tracks )
+            foreach( AmarokSharedPointer<Meta::AggregateTrack> track, m_tracks )
             {
                 tracks.append( Meta::TrackPtr::staticCast( track ) );
             }
@@ -386,7 +386,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Album :
         {
             Meta::AlbumList albums;
-            foreach( KSharedPtr<Meta::AggregateAlbum> album, m_albums )
+            foreach( AmarokSharedPointer<Meta::AggregateAlbum> album, m_albums )
             {
                 albums.append( Meta::AlbumPtr::staticCast( album ) );
             }
@@ -403,7 +403,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::AlbumArtist :
         {
             Meta::ArtistList artists;
-            foreach( KSharedPtr<Meta::AggregateArtist> artist, m_artists )
+            foreach( AmarokSharedPointer<Meta::AggregateArtist> artist, m_artists )
             {
                 artists.append( Meta::ArtistPtr::staticCast( artist ) );
             }
@@ -419,7 +419,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Composer :
         {
             Meta::ComposerList composers;
-            foreach( KSharedPtr<Meta::AggregateComposer> composer, m_composers )
+            foreach( AmarokSharedPointer<Meta::AggregateComposer> composer, m_composers )
             {
                 composers.append( Meta::ComposerPtr::staticCast( composer ) );
             }
@@ -435,7 +435,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Genre :
         {
             Meta::GenreList genres;
-            foreach( KSharedPtr<Meta::AggregateGenre> genre, m_genres )
+            foreach( AmarokSharedPointer<Meta::AggregateGenre> genre, m_genres )
             {
                 genres.append( Meta::GenrePtr::staticCast( genre ) );
             }
@@ -451,7 +451,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Year :
         {
             Meta::YearList years;
-            foreach( KSharedPtr<Meta::AggreagateYear> year, m_years )
+            foreach( AmarokSharedPointer<Meta::AggreagateYear> year, m_years )
             {
                 years.append( Meta::YearPtr::staticCast( year ) );
             }
@@ -471,7 +471,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Label :
         {
             Meta::LabelList labels;
-            foreach( KSharedPtr<Meta::AggregateLabel> label, m_labels )
+            foreach( AmarokSharedPointer<Meta::AggregateLabel> label, m_labels )
             {
                 labels.append( Meta::LabelPtr::staticCast( label ) );
             }
@@ -501,7 +501,7 @@ AggregateQueryMaker::slotNewTracksReady( const Meta::TrackList &tracks )
 {
     foreach( const Meta::TrackPtr &track, tracks )
     {
-        m_tracks.insert( KSharedPtr<Meta::AggregateTrack>( m_collection->getTrack( track ) ) );
+        m_tracks.insert( AmarokSharedPointer<Meta::AggregateTrack>( m_collection->getTrack( track ) ) );
     }
 }
 
@@ -510,7 +510,7 @@ AggregateQueryMaker::slotNewArtistsReady( const Meta::ArtistList &artists )
 {
     foreach( const Meta::ArtistPtr &artist, artists )
     {
-        m_artists.insert( KSharedPtr<Meta::AggregateArtist>( m_collection->getArtist( artist ) ) );
+        m_artists.insert( AmarokSharedPointer<Meta::AggregateArtist>( m_collection->getArtist( artist ) ) );
     }
 }
 
@@ -519,7 +519,7 @@ AggregateQueryMaker::slotNewAlbumsReady( const Meta::AlbumList &albums )
 {
     foreach( const Meta::AlbumPtr &album, albums )
     {
-        m_albums.insert( KSharedPtr<Meta::AggregateAlbum>( m_collection->getAlbum( album ) ) );
+        m_albums.insert( AmarokSharedPointer<Meta::AggregateAlbum>( m_collection->getAlbum( album ) ) );
     }
 }
 
@@ -528,7 +528,7 @@ AggregateQueryMaker::slotNewGenresReady( const Meta::GenreList &genres )
 {
     foreach( const Meta::GenrePtr &genre, genres )
     {
-        m_genres.insert( KSharedPtr<Meta::AggregateGenre>( m_collection->getGenre( genre ) ) );
+        m_genres.insert( AmarokSharedPointer<Meta::AggregateGenre>( m_collection->getGenre( genre ) ) );
     }
 }
 
@@ -537,7 +537,7 @@ AggregateQueryMaker::slotNewComposersReady( const Meta::ComposerList &composers 
 {
     foreach( const Meta::ComposerPtr &composer, composers )
     {
-        m_composers.insert( KSharedPtr<Meta::AggregateComposer>( m_collection->getComposer( composer ) ) );
+        m_composers.insert( AmarokSharedPointer<Meta::AggregateComposer>( m_collection->getComposer( composer ) ) );
     }
 }
 
@@ -546,7 +546,7 @@ AggregateQueryMaker::slotNewYearsReady( const Meta::YearList &years )
 {
     foreach( const Meta::YearPtr &year, years )
     {
-        m_years.insert( KSharedPtr<Meta::AggreagateYear>( m_collection->getYear( year ) ) );
+        m_years.insert( AmarokSharedPointer<Meta::AggreagateYear>( m_collection->getYear( year ) ) );
     }
 }
 
@@ -555,6 +555,6 @@ AggregateQueryMaker::slotNewLabelsReady( const Meta::LabelList &labels )
 {
     foreach( const Meta::LabelPtr &label, labels )
     {
-        m_labels.insert( KSharedPtr<Meta::AggregateLabel>( m_collection->getLabel( label ) ) );
+        m_labels.insert( AmarokSharedPointer<Meta::AggregateLabel>( m_collection->getLabel( label ) ) );
     }
 }

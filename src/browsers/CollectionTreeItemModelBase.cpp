@@ -34,15 +34,13 @@
 #include "core-impl/collections/support/TextualQueryFilter.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KGlobalSettings>
-#include <QIcon>
-#include <KIconLoader>
-#include <KLocale>
-#include <KStandardDirs>
+#include <KLocalizedString>
 
 #include <QApplication>
-#include <QStyle>
+#include <QIcon>
 #include <QPixmap>
+#include <QStandardPaths>
+#include <QStyle>
 #include <QTimeLine>
 #include <QTimer>
 
@@ -65,8 +63,8 @@ CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     : QAbstractItemModel()
     , m_rootItem( 0 )
     , m_animFrame( 0 )
-    , m_loading1( QPixmap( KStandardDirs::locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
+    , m_loading1( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading1.png" ) ) )
+    , m_loading2( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading2.png" ) ) )
     , m_currentAnimPixmap( m_loading1 )
     , m_autoExpand( false )
 {
@@ -579,8 +577,7 @@ CollectionTreeItemModelBase::setLevels( const QList<CategoryId::CatMenuId> &leve
     m_runningQueries.clear();
     m_childQueries.clear();
     m_compilationQueries.clear();
-#pragma message("KF5Port: 1 line here")
-    //filterChildren();
+    filterChildren();
 }
 
 Collections::QueryMaker::QueryType

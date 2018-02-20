@@ -20,14 +20,16 @@
 #include "MediaDeviceMonitor.h"
 
 #include "MediaDeviceCache.h"
+#include "core-impl/collections/mediadevicecollection/support/ConnectionAssistant.h"
+#include "core/support/Debug.h"
 
-#include <solid/devicenotifier.h>
-#include <solid/device.h>
-#include <solid/opticaldisc.h>
-#include <solid/storageaccess.h>
-#include <solid/storagedrive.h>
-#include <solid/portablemediaplayer.h>
-#include <solid/opticaldrive.h>
+#include <Solid/DeviceNotifier>
+#include <Solid/Device>
+#include <Solid/OpticalDisc>
+#include <Solid/StorageAccess>
+#include <Solid/StorageDrive>
+#include <Solid/PortableMediaPlayer>
+#include <Solid/OpticalDrive>
 
 #include <QTimer>
 

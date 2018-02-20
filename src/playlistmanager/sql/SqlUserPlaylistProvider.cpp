@@ -29,17 +29,15 @@
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
-#include <QDialog>
-#include <KGlobal>
-#include <QIcon>
-#include <KInputDialog>
-#include <KLocale>
-#include <KMessageBox>
-#include <QUrl>
-
 #include <QAction>
+#include <QIcon>
+#include <QInputDialog>
 #include <QLabel>
 #include <QMap>
+#include <QUrl>
+
+#include <KLocalizedString>
+#include <KMessageBox>
 #include <KConfigGroup>
 
 static const int USERPLAYLIST_DB_VERSION = 3;
@@ -126,7 +124,7 @@ Playlists::PlaylistPtr
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    QString name = KGlobal::locale()->formatDateTime( QDateTime::currentDateTime(), KLocale::LongDate, true );
+    QString name = QLocale().toString( QDateTime::currentDateTime(), QLocale::LongFormat );
     return save( tracks, name );
 }
 

@@ -25,25 +25,26 @@
 #include "MainWindow.h"
 #include "widgets/BreadcrumbItemButton.h"
 
-#include <KLocale>
-
+#include <QBoxLayout>
 #include <QDir>
 #include <QMenu>
 #include <QResizeEvent>
+#include <QTimer>
+
+#include <KLocalizedString>
+
 
 BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
-    : KHBox( parent)
+    : BoxWidget( false, parent)
     , m_rootList( 0 )
     , m_childMenuButton( 0 )
 {
     setFixedHeight( 28 );
     setContentsMargins( 3, 0, 3, 0 );
-    setSpacing( 0 );
 
-    m_breadcrumbArea = new KHBox( this );
+    m_breadcrumbArea = new BoxWidget( false, this );
     m_breadcrumbArea->setContentsMargins( 0, 0, 0, 0 );
-    m_breadcrumbArea->setSpacing( 0 );
-    setStretchFactor( m_breadcrumbArea, 10 );
+    static_cast<QBoxLayout*>( layout() )->setStretchFactor( m_breadcrumbArea, 10 );
 
     new BreadcrumbUrlMenuButton( "navigate", this );
 
@@ -88,10 +89,10 @@ BrowserBreadcrumbWidget::updateBreadcrumbs()
         return;
 
     clearCrumbs();
-    m_spacer->setParent( 0 );
+    m_spacer->setParent( this );
 
     addLevel( m_rootList );
-    m_spacer->setParent( m_breadcrumbArea );
+    m_breadcrumbArea->layout()->addWidget( m_spacer );
 
     showAsNeeded();
 }
@@ -178,8 +179,8 @@ void
 BrowserBreadcrumbWidget::addBreadCrumbItem( BrowserBreadcrumbItem *item )
 {
     item->hide();
-    item->setParent( 0 ); // may be already shown, we want it to be last, so reparent
-    item->setParent( m_breadcrumbArea );
+    item->setParent( this ); // may be already shown, we want it to be last, so reparent
+    m_breadcrumbArea->layout()->addWidget( item );
 }
 
 void BrowserBreadcrumbWidget::resizeEvent( QResizeEvent *event )
@@ -211,6 +212,9 @@ void BrowserBreadcrumbWidget::showAsNeeded()
         if( it.next()->parent() != m_breadcrumbArea )
             it.remove();
     }
+
+    if( allItems.isEmpty() )
+        return;
 
     int sizeOfFirst = allItems.first()->nominalWidth();
     int sizeOfLast = allItems.last()->nominalWidth();

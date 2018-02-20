@@ -21,14 +21,13 @@
 #include "core/amarokcore_export.h"
 #include "core/interfaces/MetaCapability.h"
 #include "core/support/PluginFactory.h"
-
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 
 #include <QObject>
 
 namespace Meta {
     class Track;
-    typedef KSharedPtr<Track> TrackPtr;
+    typedef AmarokSharedPointer<Track> TrackPtr;
 }
 namespace Playlists {
     class UserPlaylistProvider;

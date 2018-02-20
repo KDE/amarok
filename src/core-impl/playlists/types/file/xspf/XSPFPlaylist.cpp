@@ -484,7 +484,7 @@ XSPFPlaylist::trackList()
             {
                 if( subSubNode.nodeName() == "location" )
                 {
-                    QByteArray path = subSubNode.firstChild().nodeValue().toAscii();
+                    QByteArray path = subSubNode.firstChild().nodeValue().toLatin1();
                     path.replace( '\\', '/' );
 
                     QUrl url = getAbsolutePath( QUrl::fromEncoded( path ) );

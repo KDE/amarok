@@ -36,7 +36,7 @@
 
 #include <QApplication>
 #include <QIcon>
-#include <KLocale>
+#include <KLocalizedString>
 #include <KWindowSystem>
 #include <KIconLoader>
 

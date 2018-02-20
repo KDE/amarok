@@ -23,8 +23,8 @@
 
 #include "folderparser.h"
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
+
 #include <QTimer>
 #include <QDebug>
 

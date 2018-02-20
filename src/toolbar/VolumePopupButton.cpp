@@ -20,10 +20,11 @@
 #include "ActionClasses.h"
 #include "EngineController.h"
 #include "core/support/Amarok.h"
+#include "widgets/BoxWidget.h"
 #include "widgets/SliderWidget.h"
 
-#include <KLocale>
-#include <KVBox>
+#include <KLocalizedString>
+#include <QVBoxLayout>
 
 #include <QAction>
 #include <QLabel>
@@ -39,18 +40,14 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     //create the volume popup
     m_volumeMenu = new QMenu( this );
 
-    KVBox * mainBox = new KVBox( this );
+    BoxWidget * mainBox = new BoxWidget( true, this );
 
     m_volumeLabel= new QLabel( mainBox );
     m_volumeLabel->setAlignment( Qt::AlignHCenter );
 
-    KHBox * sliderBox = new KHBox( mainBox );
+    BoxWidget *sliderBox = new BoxWidget( false, mainBox );
     m_volumeSlider = new Amarok::VolumeSlider( Amarok::VOLUME_MAX, sliderBox, false );
     m_volumeSlider->setFixedHeight( 170 );
-    mainBox->setMargin( 0 );
-    mainBox->setSpacing( 0 );
-    sliderBox->setSpacing( 0 );
-    sliderBox->setMargin( 0 );
     mainBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     sliderBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 

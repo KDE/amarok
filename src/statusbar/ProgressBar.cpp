@@ -22,7 +22,7 @@
 #include <QTimer>
 
 #include <QIcon>
-#include <KLocale>
+#include <KLocalizedString>
 
 ProgressBar::ProgressBar( QWidget *parent )
         : QFrame( parent )

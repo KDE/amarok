@@ -38,8 +38,6 @@ if(NepomukCore_FOUND AND Soprano_FOUND)
         amaroklib
         KF5::ThreadWeaver
         ${NEPOMUK_CORE_LIBRARY}
-        
-        KF5::KDELibs4Support
         ${SOPRANO_LIBRARIES}
     )
 

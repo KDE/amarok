@@ -24,6 +24,7 @@
 #include <ThreadWeaver/Queue>
 
 #include <QNetworkAccessManager>
+#include <QUrlQuery>
 
 MusicDNSFinder::MusicDNSFinder( QObject *parent,
                                 const QString &host, const int port, const QString &pathPrefix,
@@ -189,25 +190,27 @@ QNetworkRequest
 MusicDNSFinder::compileRequest( const QString &fingerprint, const Meta::TrackPtr track )
 {
     QUrl url;
+    QUrlQuery query;
     url.setScheme( "http" );
     url.setHost( mdns_host );
     url.setPort( mdns_port );
     url.setPath( mdns_pathPrefix+"/track/" );
-    url.addQueryItem( "gnr", "" );
-    url.addQueryItem( "art", track->artist().isNull()?"":track->artist()->name() );
-    url.addQueryItem( "rmd", "0" );
-    url.addQueryItem( "cid", mdns_clientId );
-    url.addQueryItem( "alb", track->album().isNull()?"":track->album()->name() );
-    url.addQueryItem( "fmt", "" );
-    url.addQueryItem( "brt", QString::number( track->bitrate() ) );
-    url.addQueryItem( "cvr", mdns_clientVersion );
-    url.addQueryItem( "fpt", fingerprint );
-    url.addQueryItem( "ttl", track->name().isNull()?track->playableUrl().fileName().remove(
+    query.addQueryItem( "gnr", "" );
+    query.addQueryItem( "art", track->artist().isNull()?"":track->artist()->name() );
+    query.addQueryItem( "rmd", "0" );
+    query.addQueryItem( "cid", mdns_clientId );
+    query.addQueryItem( "alb", track->album().isNull()?"":track->album()->name() );
+    query.addQueryItem( "fmt", "" );
+    query.addQueryItem( "brt", QString::number( track->bitrate() ) );
+    query.addQueryItem( "cvr", mdns_clientVersion );
+    query.addQueryItem( "fpt", fingerprint );
+    query.addQueryItem( "ttl", track->name().isNull()?track->playableUrl().fileName().remove(
                              QRegExp( "^.*(\\.+(?:\\w{2,5}))$" ) ):track->name() );
-    url.addQueryItem( "tnm", "" );
-    url.addQueryItem( "lkt", "" );
-    url.addQueryItem( "dur", QString::number( track->length() ) );
-    url.addQueryItem( "yrr", "" );
+    query.addQueryItem( "tnm", "" );
+    query.addQueryItem( "lkt", "" );
+    query.addQueryItem( "dur", QString::number( track->length() ) );
+    query.addQueryItem( "yrr", "" );
+    url.setQuery( query );
 
     QNetworkRequest req( url );
     req.setRawHeader( "User-Agent" , "Amarok" );

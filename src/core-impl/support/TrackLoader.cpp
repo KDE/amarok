@@ -74,13 +74,18 @@ TrackLoader::processNextSourceUrl()
     }
 
     QUrl sourceUrl = m_sourceUrls.takeFirst();
+    if( !sourceUrl.isValid() )
+    {
+        error() << "Url is invalid:" << sourceUrl;
+        QTimer::singleShot( 0, this, &TrackLoader::processNextSourceUrl );
+        return;
+    }
     if( sourceUrl.isLocalFile() && QFileInfo( sourceUrl.toLocalFile() ).isDir() )
     {
         // KJobs delete themselves
-        KIO::ListJob *lister = KIO::listRecursive( sourceUrl, KIO::HideProgressInfo );
-        connect( lister, &KIO::ListJob::finished, this, &TrackLoader::listJobFinished );
+        KIO::ListJob *lister = KIO::listRecursive( sourceUrl );
+        connect( lister, &KIO::ListJob::result, this, &TrackLoader::processNextSourceUrl );
         connect( lister, &KIO::ListJob::entries, this, &TrackLoader::directoryListResults );
-        // listJobFinished() calls processNextSourceUrl() in the end, don't do it here:
         return;
     }
     else
@@ -100,19 +105,11 @@ TrackLoader::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list 
         KFileItem item( entry, dir, true, true );
         QUrl url = item.url();
         if( MetaFile::Track::isTrack( url ) )
-            m_listJobResults << url;
+        {
+            auto insertIter = std::upper_bound( m_resultUrls.begin(), m_resultUrls.end(), url, directorySensitiveLessThan );
+            m_resultUrls.insert( insertIter, url );
+        }
     }
-}
-
-void
-TrackLoader::listJobFinished()
-{
-    qSort( m_listJobResults.begin(), m_listJobResults.end(), directorySensitiveLessThan );
-
-    m_resultUrls << m_listJobResults;
-    m_listJobResults.clear();
-
-    QTimer::singleShot( 0, this, &TrackLoader::processNextSourceUrl );
 }
 
 void

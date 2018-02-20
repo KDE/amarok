@@ -28,16 +28,16 @@
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KDialog>
-#include <KInputDialog>
-#include <KLocale>
-#include <QUrl>
-
 #include <QAction>
 #include <QDir>
+#include <QInputDialog>
 #include <QLabel>
 #include <QString>
 #include <QTimer>
+#include <QUrl>
+
+#include <KIO/Global>
+#include <KLocalizedString>
 
 using Playlist::ModelStack;
 
@@ -136,7 +136,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     DEBUG_BLOCK
 
     QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") : name;
-    filename.replace( QLatin1Char('/'), QLatin1Char('-') );
+    filename.replace( '/', QLatin1Char('-') );
     filename.replace( QLatin1Char('\\'), QLatin1Char('-') );
 
     Playlists::PlaylistFormat format = Playlists::getFormat( QUrl::fromUserInput(filename) );

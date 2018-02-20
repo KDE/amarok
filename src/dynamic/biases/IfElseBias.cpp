@@ -28,7 +28,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 QString
 Dynamic::IfElseBiasFactory::i18nName() const

@@ -21,7 +21,7 @@
 #include "core/meta/forward_declarations.h"
 
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 #include <QString>
 
 namespace Collections {
@@ -61,7 +61,7 @@ private:
     void handleLabels( const QStringList &result );
 
 private:
-    QWeakPointer<SqlCollection> m_collection;
+    QPointer<SqlCollection> m_collection;
     QueryMaker::QueryType m_queryType;
     QString m_query;
 

@@ -27,7 +27,7 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QMenu>
 #include <QPainter>

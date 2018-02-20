@@ -23,7 +23,6 @@
 #include "core/collections/MetaQueryMaker.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core/support/SmartPointerList.h"
 #include "core-impl/meta/file/FileTrackProvider.h"
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
@@ -37,8 +36,6 @@
 #include <QTimer>
 #include <QReadWriteLock>
 
-#include <KConfigGroup>
-#include <KGlobal>
 
 typedef QPair<Collections::Collection*, CollectionManager::CollectionStatus> CollectionPair;
 
@@ -261,7 +258,7 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
 
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "CollectionStatus" ) );
-    const QString &value = KGlobal::config()->group( "CollectionManager" ).readEntry( newCollection->collectionId() );
+    const QString &value = Amarok::config( "CollectionManager" ).readEntry( newCollection->collectionId() );
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
     CollectionStatus status;
     enumValue == -1 ? status = CollectionEnabled : status = (CollectionStatus) enumValue;

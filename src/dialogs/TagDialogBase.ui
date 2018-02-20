@@ -26,7 +26,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <widget class="KTabWidget" name="kTabWidget">
+      <widget class="QTabWidget" name="qTabWidget">
        <property name="currentIndex">
         <number>1</number>
        </property>
@@ -526,7 +526,7 @@
           </widget>
          </item>
          <item row="0" column="1" colspan="5">
-          <widget class="KLineEdit" name="kLineEdit_title">
+          <widget class="QLineEdit" name="kLineEdit_title">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -823,7 +823,7 @@
           </widget>
          </item>
          <item row="6" column="5">
-          <widget class="KLineEdit" name="kLineEdit_Bpm">
+          <widget class="QLineEdit" name="kLineEdit_Bpm">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -1058,7 +1058,7 @@
         </widget>
        </item>
        <item>
-        <widget class="KLineEdit" name="kLineEdit_location">
+        <widget class="QLineEdit" name="kLineEdit_location">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
          </property>
@@ -1175,9 +1175,9 @@
    <header>kcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>KLineEdit</class>
+   <class>QLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
+   <header>qlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>KTextEdit</class>
@@ -1185,9 +1185,9 @@
    <header>ktextedit.h</header>
   </customwidget>
   <customwidget>
-   <class>KTabWidget</class>
+   <class>QTabWidget</class>
    <extends>QTabWidget</extends>
-   <header>ktabwidget.h</header>
+   <header>qtabwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1207,7 +1207,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>kTabWidget</tabstop>
+  <tabstop>qTabWidget</tabstop>
   <tabstop>qSpinBox_score</tabstop>
   <tabstop>kLineEdit_title</tabstop>
   <tabstop>kComboBox_artist</tabstop>
@@ -1236,22 +1236,22 @@
   <tabstop>pushButton_cancel</tabstop>
  </tabstops>
  <includes>
-  <include location="local">klineedit.h</include>
-  <include location="local">ktabwidget.h</include>
+  <include location="local">qlineedit.h</include>
+  <include location="local">qtabwidget.h</include>
   <include location="local">covermanager/CoverFetcher.h</include>
   <include location="local">kcombobox.h</include>
-  <include location="local">klineedit.h</include>
-  <include location="local">klineedit.h</include>
-  <include location="local">knuminput.h</include>
-  <include location="local">knuminput.h</include>
+  <include location="local">qlineedit.h</include>
+  <include location="local">qlineedit.h</include>
+  <include location="local">qspinbox.h</include>
+  <include location="local">qspinbox.h</include>
   <include location="local">kcombobox.h</include>
-  <include location="local">klineedit.h</include>
-  <include location="local">knuminput.h</include>
+  <include location="local">qlineedit.h</include>
+  <include location="local">qspinbox.h</include>
   <include location="local">kcombobox.h</include>
-  <include location="local">klineedit.h</include>
+  <include location="local">qlineedit.h</include>
   <include location="local">kcombobox.h</include>
-  <include location="local">klineedit.h</include>
-  <include location="local">knuminput.h</include>
+  <include location="local">qlineedit.h</include>
+  <include location="local">qspinbox.h</include>
   <include location="local">kcombobox.h</include>
  </includes>
  <resources/>

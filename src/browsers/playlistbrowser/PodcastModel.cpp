@@ -17,8 +17,8 @@
 #include "PodcastModel.h"
 
 #include "AmarokMimeData.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
+// #include "context/popupdropper/libpud/PopupDropper.h"
+// #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "core/podcasts/PodcastImageFetcher.h"
 #include "core/podcasts/PodcastMeta.h"
 #include "core/support/Debug.h"
@@ -28,12 +28,13 @@
 #include "SvgHandler.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <QIcon>
-
 #include <QAction>
+#include <QIcon>
 #include <QInputDialog>
 #include <QListIterator>
-#include <typeinfo>
+#include <QPainter>
+
+#include <KIconEngine>
 
 using namespace Podcasts;
 

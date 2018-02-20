@@ -21,8 +21,6 @@
 #include "widgets/PrettyTreeRoles.h"
 #include "widgets/PrettyTreeDelegate.h"
 
-#include <KGlobalSettings>
-
 #include <QAction>
 #include <QMouseEvent>
 #include <QPainter>
@@ -55,7 +53,7 @@ PrettyTreeView::PrettyTreeView( QWidget *parent )
     setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 #endif
 
-    setAnimated( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects );
+    setAnimated( true );
 }
 
 PrettyTreeView::~PrettyTreeView()
@@ -186,7 +184,7 @@ PrettyTreeView::mouseReleaseEvent( QMouseEvent *event )
         state() == QTreeView::NoState &&
         expandCollapsePressedAt &&
         ( *expandCollapsePressedAt - event->pos() ).manhattanLength() < QApplication::startDragDistance() &&
-        KGlobalSettings::singleClick() &&
+        style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) &&
         model()->hasChildren( index ) )
     {
         setExpanded( index, !isExpanded( index ) );

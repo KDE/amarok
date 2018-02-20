@@ -30,7 +30,7 @@
 
 #include <QMetaMethod>
 #include <QNetworkReply>
-#include <QWeakPointer>
+#include <QPointer>
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;
 
@@ -87,7 +87,7 @@ public:
                 if( cb->receiver )
                 {
                     bool success( false );
-                    const QMetaObject *mo = cb->receiver.data()->metaObject();
+                    const QMetaObject *mo = cb->receiver->metaObject();
                     int methodIndex = mo->indexOfSlot( sig );
                     if( methodIndex != -1 )
                     {
@@ -136,11 +136,11 @@ public:
         ~CallBackData()
         {
             if( reply )
-                reply.data()->deleteLater();
+                reply->deleteLater();
         }
 
-        QWeakPointer<QObject> receiver;
-        QWeakPointer<QNetworkReply> reply;
+        QPointer<QObject> receiver;
+        QPointer<QNetworkReply> reply;
         const char *method;
         Qt::ConnectionType type;
     };
@@ -311,7 +311,6 @@ NetworkAccessManagerProxy::replyFinished()
 {
     d->_replyFinished();
 }
-
 
 namespace The
 {

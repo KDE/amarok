@@ -117,7 +117,7 @@ namespace AmarokScript
             void setMergedView( bool merged );
 
             static QMap<QString, AmarokCollectionViewScript*> s_instances;
-            static QWeakPointer<Selection> s_selection;
+            static QPointer<Selection> s_selection;
             QScriptValue m_actionFunction;
             CollectionWidget *m_collectionWidget;
             AmarokScriptEngine *m_engine;
@@ -139,7 +139,6 @@ namespace AmarokScript
         Q_PROPERTY( QList<CollectionTreeItem*> children READ children )
         Q_PROPERTY( int row READ row )
         Q_PROPERTY( int level READ level )
-        Q_PROPERTY( int childCount READ childCount )
         Q_PROPERTY( Collections::Collection* parentCollection READ parentCollection )
         Q_PROPERTY( bool isCollection READ isCollection )
         Q_PROPERTY( bool isDataItem READ isDataItem )

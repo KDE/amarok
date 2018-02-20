@@ -21,9 +21,6 @@
 #include "SvgHandler.h"
 #include "core/support/Debug.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "context/ContextView.h"
-
-#include <kglobal.h>
 
 #include <QAction>
 
@@ -77,9 +74,9 @@ PopupDropper * PopupDropperFactory::createPopupDropper( QWidget * parent, bool i
     //windowColor.setBlue( 255 - origWindowColor.blue() );
     //windowColor.setGreen( 255 - origWindowColor.green() );
     QColor windowColor( The::paletteHandler()->palette().color( QPalette::Base ) );
-    windowColor.setAlpha( 176 );
+    windowColor.setAlpha( 200 );
     QColor textColor( The::paletteHandler()->palette().color( QPalette::Link ) );
-    QColor highlightedTextColor( The::paletteHandler()->palette().color( QPalette::LinkVisited ) );
+    QColor highlightedTextColor( The::paletteHandler()->palette().color( QPalette::Text ) );
     QColor borderColor( The::paletteHandler()->palette().color( QPalette::Text ) );
     QColor fillColor( borderColor );
     fillColor.setAlpha( 48 );
@@ -116,7 +113,6 @@ void PopupDropperFactory::adjustItem( PopupDropperItem *item )
 
     if( item->isSubmenuTrigger() )
         item->setHoverIndicatorShowStyle( PopupDropperItem::OnHover );
- 
 }
 
 void PopupDropperFactory::adjustItems( PopupDropper* pud )

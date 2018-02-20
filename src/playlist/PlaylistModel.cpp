@@ -45,18 +45,15 @@
 #include "core-impl/support/TrackLoader.h"
 #include "playlist/UndoCommands.h"
 
-#include <KGlobal>
+#include <KLocalizedString>
 #include <KIconLoader>
-#include <KLocale>
-#include <QUrl>
 
 #include <QAction>
 #include <QTimer>
 #include <QDate>
 #include <QStringList>
-#include <QTextDocument>
+#include <QUrl>
 
-#include <typeinfo>
 
 #define TOOLTIP_STATIC_LINEBREAK 50
 
@@ -257,7 +254,6 @@ QString
 Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
 {
     QString text;
-    KLocale *locale = KGlobal::locale();
     // get the shared pointers now to be thread safe
     Meta::ArtistPtr artist = track->artist();
     Meta::AlbumPtr album = track->album();
@@ -329,7 +325,7 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
         text += HTMLLine( Playlist::PlayCount, statistics->playCount(), true );
 
     if( s_tooltipColumns[Playlist::LastPlayed] && statistics->lastPlayed().isValid() )
-        text += HTMLLine( Playlist::LastPlayed, locale->formatDateTime( statistics->lastPlayed() ) );
+        text += HTMLLine( Playlist::LastPlayed, QLocale().toString( statistics->lastPlayed() ) );
 
     if( s_tooltipColumns[Playlist::Bitrate] && track->bitrate() )
         text += HTMLLine( Playlist::Bitrate, i18nc( "%1: bitrate", "%1 kbps", track->bitrate() ) );

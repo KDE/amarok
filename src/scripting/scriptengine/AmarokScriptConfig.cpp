@@ -16,9 +16,10 @@
 
 #include "AmarokScriptConfig.h"
 
+#include "core/support/Amarok.h"
+
 #include <KConfigGroup>
 #include <KSharedConfig>
-#include <KGlobal>
 
 #include <QScriptEngine>
 
@@ -37,11 +38,11 @@ AmarokScriptConfig::AmarokScriptConfig( const QString &name, QScriptEngine *engi
 QVariant
 AmarokScriptConfig::readConfig( const QString &name, const QVariant &defaultValue ) const
 {
-    return KGlobal::config()->group( m_name ).readEntry( name, defaultValue );
+    return Amarok::config( m_name ).readEntry( name, defaultValue );
 }
 
 void
 AmarokScriptConfig::writeConfig( const QString &name, const QVariant &content )
 {
-    KGlobal::config()->group( m_name ).writeEntry( name, content );
+    Amarok::config( m_name ).writeEntry( name, content );
 }

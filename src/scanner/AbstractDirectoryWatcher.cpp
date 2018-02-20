@@ -140,6 +140,8 @@ AbstractDirectoryWatcher::defaultEnd(const ThreadWeaver::JobPointer& self, Threa
 void
 AbstractDirectoryWatcher::abort()
 {
+    DEBUG_BLOCK
+
     m_aborted = true;
     m_waitCondition.wakeAll();
 }

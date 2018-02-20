@@ -20,7 +20,7 @@
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #define NUM_EQ_VALUES 11
 

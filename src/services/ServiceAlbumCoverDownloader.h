@@ -22,7 +22,7 @@
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
-#include <KTempDir>
+#include <QTemporaryDir>
 
 #include <QObject>
 
@@ -32,7 +32,7 @@ namespace Meta
 //forward declaration
 class ServiceAlbumWithCover;
 
-typedef KSharedPtr<ServiceAlbumWithCover> ServiceAlbumWithCoverPtr;
+typedef AmarokSharedPointer<ServiceAlbumWithCover> ServiceAlbumWithCoverPtr;
 
 /**
 A specialized ServiceAlbum that supports fetching its cover from a known url.
@@ -161,7 +161,7 @@ class ServiceAlbumCoverDownloader : public QObject
         Meta::ServiceAlbumWithCoverPtr m_album;
         QString m_coverDownloadPath;
         KIO::FileCopyJob * m_albumDownloadJob;
-        KTempDir * m_tempDir;
+        QTemporaryDir * m_tempDir;
 };
 
 }

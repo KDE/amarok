@@ -148,7 +148,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlRegistry : public QObject
         /** Updates the uid of an already cached track.
             @return true if the update was successful.
         */
-        bool updateCachedUrl( const QString &oldUrl, const QString &newUrl );
+        bool updateCachedUrl( const QString &oldPath, const QString &newPath );
 
         /** Updates the uid of an already cached track.
             @return true if the update was successful.

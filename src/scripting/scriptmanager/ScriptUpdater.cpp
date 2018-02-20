@@ -22,9 +22,9 @@
 
 #include <KIO/Job>
 #include <KPluginInfo>
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <KTar>
-#include <KGlobal>
+
 
 #include <QDir>
 #include <QFileInfo>
@@ -225,9 +225,15 @@ ScriptUpdater::phase4( KJob * job )
         emit finished( m_scriptPath );
         return;
     }
-    const QString relativePath = KGlobal::dirs()->relativeLocation( "data", m_fileName );
+    const QStringList locations = QStandardPaths::standardLocations( QStandardPaths::GenericDataLocation );
+    QString relativePath;
+    for( const auto &location : locations )
+        if( m_fileName.startsWith( location ) )
+            relativePath = m_fileName.remove( location );
+    if( relativePath.startsWith( '/' ) )
+       relativePath.remove( 0, 1 );
     const QFileInfo fileinfo( relativePath );
-    const QString destination = KGlobal::dirs()->saveLocation( "data", fileinfo.path(), false );
+    const QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + '/' + fileinfo.path();
     const QDir dir;
     if( !dir.exists( destination ) )
     {

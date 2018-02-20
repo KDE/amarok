@@ -22,14 +22,14 @@
 #include "core/playlists/Playlist.h"
 #include "core/support/Amarok.h"
 
-#include <KLocale>
-#include <QUrl>
-
 #include <QDateTime>
 #include <QSharedData>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
+#include <QUrl>
+
+#include <KLocalizedString>
 
 namespace Podcasts
 {
@@ -42,8 +42,8 @@ class PodcastComposer;
 class PodcastGenre;
 class PodcastYear;
 
-typedef KSharedPtr<PodcastEpisode> PodcastEpisodePtr;
-typedef KSharedPtr<PodcastChannel> PodcastChannelPtr;
+typedef AmarokSharedPointer<PodcastEpisode> PodcastEpisodePtr;
+typedef AmarokSharedPointer<PodcastChannel> PodcastChannelPtr;
 
 typedef QList<PodcastEpisodePtr> PodcastEpisodeList;
 typedef QList<PodcastChannelPtr> PodcastChannelList;

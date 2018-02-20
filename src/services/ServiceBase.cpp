@@ -24,20 +24,19 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "widgets/SearchWidget.h"
+#include "widgets/BoxWidget.h"
 
-#include <KHBox>
-#include <KMenuBar>
-
-#include <QFrame>
 #include <QLabel>
+#include <QLayout>
+#include <QMenuBar>
 
 
 ServiceFactory::ServiceFactory()
     : Plugins::PluginFactory()
 {
     CollectionManager::instance()->addTrackProvider( this );
-    connect( this, SIGNAL(newService(ServiceBase*)), SLOT(slotNewService(ServiceBase*)) );
-    connect( this, SIGNAL(removeService(ServiceBase*)), SLOT(slotRemoveService(ServiceBase*)) );
+    connect( this, &ServiceFactory::newService, this, &ServiceFactory::slotNewService );
+    connect( this, &ServiceFactory::removeService, this, &ServiceFactory::slotRemoveService );
 }
 
 ServiceFactory::~ServiceFactory()
@@ -96,7 +95,7 @@ void
 ServiceFactory::slotNewService( ServiceBase *newService )
 {
     Q_ASSERT( newService );
-    connect( newService, SIGNAL(ready()), this, SLOT(slotServiceReady()) );
+    connect( newService, &ServiceBase::ready, this, &ServiceFactory::slotServiceReady );
     m_activeServices << newService;
 }
 
@@ -130,9 +129,9 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     else
         setPrettyName( name );
 
-    setSpacing( 1 );
+    layout()->setSpacing( 1 );
 
-    m_topPanel = new KVBox( this );
+    m_topPanel = new BoxWidget( true, this );
 
     if( useCollectionTreeView )
     {
@@ -142,21 +141,22 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
         m_contentView->sortByColumn ( 0, Qt::AscendingOrder );
         m_contentView->setDragEnabled ( true );
         m_contentView->setDragDropMode ( QAbstractItemView::DragOnly );
-        connect( m_contentView, SIGNAL(itemSelected(CollectionTreeItem*)), this, SLOT(itemSelected(CollectionTreeItem*)) );
+        connect( static_cast<ServiceCollectionTreeView*>( m_contentView ), &ServiceCollectionTreeView::itemSelected,
+                 this, &ServiceBase::itemSelected );
     }
 
-    m_bottomPanel = new KVBox( this );
+    m_bottomPanel = new BoxWidget( true, this );
 
     m_bottomPanel->setFrameStyle( QFrame::NoFrame );
     m_bottomPanel->setLineWidth(2);
-    m_bottomPanel->setSpacing( 2 );
-    m_bottomPanel->setMargin( 2 );
+    m_bottomPanel->layout()->setSpacing( 2 );
+    m_bottomPanel->layout()->setMargin( 2 );
 
     m_filterModel = new QSortFilterProxyModel( this );
     m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
 
-    m_menubar = new KMenuBar( m_topPanel );
+    m_menubar = new QMenuBar( m_topPanel );
     // Make sure we do not expose this menubar outside to ensure it does not
     // replace the main menubar when Amarok is used with Plasma Menubar
     m_menubar->setNativeMenuBar( false );
@@ -166,8 +166,8 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
 
     m_searchWidget = new SearchWidget( m_topPanel );
     if( m_contentView )
-        connect( m_searchWidget, SIGNAL(filterChanged(QString)),
-                 m_contentView, SLOT(slotSetFilter(QString)) );
+        connect( m_searchWidget, &SearchWidget::filterChanged,
+                 static_cast<ServiceCollectionTreeView*>( m_contentView ), &ServiceCollectionTreeView::slotSetFilter );
 }
 
 ServiceBase::~ServiceBase()
@@ -251,7 +251,7 @@ ServiceBase::itemSelected( CollectionTreeItem * item )
     Meta::DataPtr ptr = item->data();
     if ( ( ptr.data() == 0 ) || ( m_infoParser == 0 )) return; 
 
-    debug() << "selected item: " << ptr.data()->name();
+    debug() << "selected item: " << ptr->name();
 
     ServiceDisplayInfoProvider * infoProvider = dynamic_cast<ServiceDisplayInfoProvider *>( ptr.data() );
     if (infoProvider == 0 ) return; 
@@ -322,7 +322,7 @@ ServiceBase::setInfoParser(InfoParserBase * infoParser)
 {
     m_infoParser = infoParser;
 
-    connect ( m_infoParser, SIGNAL(info(QString)), this, SLOT(infoChanged(QString)) );
+    connect ( m_infoParser, &InfoParserBase::info, this, &ServiceBase::infoChanged );
 }
 
 InfoParserBase *

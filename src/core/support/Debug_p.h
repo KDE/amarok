@@ -20,6 +20,7 @@
 
 #include "Debug.h"
 
+#include <QIODevice>
 #include <QString>
 
 class IndentPrivate
@@ -32,6 +33,31 @@ public:
     static IndentPrivate* instance();
 
     QString m_string;
+};
+
+class NoDebugStream : public QIODevice
+{
+public:
+    NoDebugStream()
+    {
+        open(WriteOnly);
+    }
+    bool isSequential() const Q_DECL_OVERRIDE
+    {
+        return true;
+    }
+    qint64 readData(char *, qint64) Q_DECL_OVERRIDE
+    {
+        return 0;
+    }
+    qint64 readLineData(char *, qint64) Q_DECL_OVERRIDE
+    {
+        return 0;
+    }
+    qint64 writeData(const char *, qint64 len) Q_DECL_OVERRIDE
+    {
+        return len;
+    }
 };
 
 #endif // DEBUGPRIVATE_H

@@ -18,11 +18,12 @@
 #define QUERYMAKER_EXPORTER_H
 
 #include "amarok_export.h"
+#include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 
 #include <QObject>
+#include <QPointer>
 #include <QString>
-#include <QWeakPointer>
 
 namespace Collections
 {
@@ -57,7 +58,7 @@ namespace AmarokScript
         static void init( QScriptEngine *engine );
         QueryMakerPrototype( Collections::QueryMaker *collection );
         ~QueryMakerPrototype();
-        Collections::QueryMaker *data() const { return m_querymaker.data(); }
+        Collections::QueryMaker *data() const { return m_querymaker; }
 
         /**
          *  Starts the query. This method returns immediately. All processing is done in one or more
@@ -82,7 +83,7 @@ namespace AmarokScript
         Q_INVOKABLE void addFilter( const QString &filter );
 
     private:
-        QWeakPointer<Collections::QueryMaker> m_querymaker;
+        QPointer<Collections::QueryMaker> m_querymaker;
         QString m_filter;
         Meta::TrackList m_result;
 

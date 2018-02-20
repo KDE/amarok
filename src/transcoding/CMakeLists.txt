@@ -24,8 +24,6 @@ ki18n_wrap_ui(amarok_transcoding_SRCS
 add_library(amarok-transcoding SHARED ${amarok_transcoding_SRCS})
 
 target_link_libraries(amarok-transcoding
-    KF5::KDELibs4Support
-    
     KF5::KIOCore
     KF5::ThreadWeaver
     Qt5::Core

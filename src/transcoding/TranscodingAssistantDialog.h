@@ -24,7 +24,6 @@
 #include "core/transcoding/TranscodingFormat.h"
 #include "core/transcoding/TranscodingConfiguration.h"
 
-#include <KDialog>
 #include <KPageDialog>
 
 class QListWidget;
@@ -33,7 +32,7 @@ namespace Transcoding
 {
 
 /**
- * A KDialog for initiating a transcoding operation.
+ * A QDialog for initiating a transcoding operation.
  * @author Téo Mrnjavac <teo@kde.org>
  */
 class AMAROK_TRANSCODING_EXPORT AssistantDialog : public KPageDialog

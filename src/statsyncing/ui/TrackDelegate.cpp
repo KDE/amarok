@@ -20,9 +20,9 @@
 #include "core/support/Debug.h"
 #include "statsyncing/models/CommonModel.h"
 
-#include <KGlobal>
+
 #include <QIcon>
-#include <KLocale>
+#include <KLocalizedString>
 #include <kratingpainter.h>
 
 #include <QApplication>
@@ -88,10 +88,8 @@ TrackDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {
     if( value.type() == QVariant::DateTime )
     {
-        KLocale *klocale = KGlobal::locale();
         QDateTime date = value.toDateTime();
-        return date.isValid() ? klocale->formatDateTime( date, KLocale::FancyShortDate )
-               : QString();
+        return date.isValid() ? QLocale().toString( date, QLocale::ShortFormat ) : QString();
     }
     return QStyledItemDelegate::displayText( value, locale );
 }

@@ -32,6 +32,7 @@
 #include <QAuthenticator>
 #include <QNetworkAccessManager>
 #include <QTimer>
+#include <QUrlQuery>
 
 /*
  * Levenshtein distance algorithm implementation carefully pirated from Wikibooks
@@ -576,7 +577,7 @@ MusicBrainzFinder::guessMetadata( const Meta::TrackPtr &track ) const
 QNetworkRequest
 MusicBrainzFinder::compileTrackRequest( const Meta::TrackPtr &track )
 {
-    QString query;
+    QString queryString;
     QVariantMap metadata = guessMetadata( track );
 
     // These characters are not considered in the query, and some of them can break it.
@@ -599,19 +600,21 @@ MusicBrainzFinder::compileTrackRequest( const Meta::TrackPtr &track )
      */
 #define VALUE( k ) metadata.value( k ).toString().remove( unsafe ).replace( special, escape ).replace( endOfWord, fuzzy )
     if( metadata.contains( Meta::Field::TITLE ) )
-        query += QString( "(\"%1\"^20 %1)" ).arg( VALUE( Meta::Field::TITLE ) );
+        queryString += QString( "(\"%1\"^20 %1)" ).arg( VALUE( Meta::Field::TITLE ) );
     if( metadata.contains( Meta::Field::ARTIST ) )
-        query += QString( " AND artist:(\"%1\"^2 %1)" ).arg( VALUE( Meta::Field::ARTIST ) );
+        queryString += QString( " AND artist:(\"%1\"^2 %1)" ).arg( VALUE( Meta::Field::ARTIST ) );
     if( metadata.contains( Meta::Field::ALBUM ) )
-        query += QString( " AND release:(\"%1\"^7 %1)" ).arg( VALUE( Meta::Field::ALBUM ) );
+        queryString += QString( " AND release:(\"%1\"^7 %1)" ).arg( VALUE( Meta::Field::ALBUM ) );
 #undef VALUE
 
     m_parsedMetadata.insert( track, metadata );
 
     QUrl url;
+    QUrlQuery query;
     url.setPath( mb_pathPrefix + "/recording" );
-    url.addQueryItem( "limit", "10" );
-    url.addQueryItem( "query", query );
+    query.addQueryItem( "limit", "10" );
+    query.addQueryItem( "query", queryString );
+    url.setQuery( query );
 
     return compileRequest( url );
 }
@@ -620,8 +623,10 @@ QNetworkRequest
 MusicBrainzFinder::compilePUIDRequest( const QString &puid )
 {
     QUrl url;
+    QUrlQuery query;
     url.setPath( mb_pathPrefix + "/recording" );
-    url.addQueryItem( "query", "puid:" + puid );
+    query.addQueryItem( "query", "puid:" + puid );
+    url.setQuery( query );
 
     return compileRequest( url );
 }
@@ -630,8 +635,10 @@ QNetworkRequest
 MusicBrainzFinder::compileReleaseGroupRequest( const QString &releaseGroupID )
 {
     QUrl url;
+    QUrlQuery query;
     url.setPath( mb_pathPrefix + "/release-group/" + releaseGroupID );
-    url.addQueryItem( "inc", "artists" );
+    query.addQueryItem( "inc", "artists" );
+    url.setQuery( query );
 
     return compileRequest( url );
 }

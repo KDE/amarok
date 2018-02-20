@@ -18,7 +18,7 @@
 #define PLAYDAR_CONTROLLER_H
 
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 
 class QUrl;
 class KJob;

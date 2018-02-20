@@ -24,7 +24,7 @@
 
 #include <QAction>
 
-#include <kio/netaccess.h>
+#include <KIO/CopyJob>
 
 using namespace Meta;
 
@@ -387,7 +387,7 @@ UpnpAlbum::image( int size ) const
     {
         QString path;
         if( m_albumArtUrl.isValid()
-            && KIO::NetAccess::download( m_albumArtUrl, path, NULL ) )
+            && KIO::copy( m_albumArtUrl, QUrl::fromLocalFile( path ) )->exec() )
         {
             m_image = QImage( path );
             CoverCache::invalidateAlbum( this );

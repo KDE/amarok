@@ -24,7 +24,7 @@
 
 #include <KColorScheme>
 #include <QIcon>
-#include <KLocale>
+#include <KLocalizedString>
 #include <QMenu>
 
 #include <QApplication>

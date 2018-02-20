@@ -33,8 +33,6 @@ target_link_libraries(
     amaroklib
     KF5::ThreadWeaver
     KF5::KIOCore
-    
-    ${KDE4_SOLID_LIBRARY}
 )
 
 if(APPLE)
@@ -43,7 +41,4 @@ endif()
 
 install(TARGETS amarok_collection-audiocdcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-
-########### install files ###############
-
-install( FILES amarok_collection-audiocdcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+kcoreaddons_desktop_to_json(amarok_collection-audiocdcollection amarok_collection-audiocdcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

@@ -21,6 +21,8 @@
 #include "core/support/Debug.h"
 
 #include <QBuffer>
+#include <QFile>
+
 #include <KFilterDev>
 
 SvgTinter * SvgTinter::s_instance = 0;
@@ -77,33 +79,33 @@ SvgTinter::tint( const QString &filename)
 void
 SvgTinter::init()
 {
-    if ( m_lastPalette != App::instance()->palette() || m_firstRun ) {
-        m_tintMap.insert( "#666765", App::instance()->palette().window().color().name() );
+    if ( m_lastPalette != pApp->palette() || m_firstRun ) {
+        m_tintMap.insert( "#666765", pApp->palette().window().color().name() );
         //insert a color for bright ( highlight color )
-        m_tintMap.insert( "#66ffff", App::instance()->palette().highlight().color().name() );
+        m_tintMap.insert( "#66ffff", pApp->palette().highlight().color().name() );
         //a slightly lighter than window color:
-        m_tintMap.insert( "#e8e8e8", blendColors( App::instance()->palette().window().color(), "#ffffff", 90 ).name() );
+        m_tintMap.insert( "#e8e8e8", blendColors( pApp->palette().window().color(), "#ffffff", 90 ).name() );
         //a slightly darker than window color:
-        m_tintMap.insert( "#565755", blendColors( App::instance()->palette().window().color(), "#000000", 90 ).name() );
+        m_tintMap.insert( "#565755", blendColors( pApp->palette().window().color(), "#000000", 90 ).name() );
 
         //list background:
     #ifdef Q_WS_MAC 
-        m_tintMap.insert( "#f0f0f0", blendColors( App::instance()->palette().window().color(), "#000000", 90 ).name() );
-        m_tintMap.insert( "#ffffff", blendColors( App::instance()->palette().window().color(), "#000000", 98 ).name() );
+        m_tintMap.insert( "#f0f0f0", blendColors( pApp->palette().window().color(), "#000000", 90 ).name() );
+        m_tintMap.insert( "#ffffff", blendColors( pApp->palette().window().color(), "#000000", 98 ).name() );
     #else
-       m_tintMap.insert( "#f0f0f0", App::instance()->palette().base().color().name() );
+       m_tintMap.insert( "#f0f0f0", pApp->palette().base().color().name() );
     #endif
 
         //alternate list background:
-        m_tintMap.insert( "#e0e0e0", App::instance()->palette().alternateBase().color().name() );
+        m_tintMap.insert( "#e0e0e0", pApp->palette().alternateBase().color().name() );
 
         //highlight/window mix:
-        m_tintMap.insert( "#123456", blendColors( App::instance()->palette().window().color(), App::instance()->palette().highlight().color().name(), 80 ).name() );
+        m_tintMap.insert( "#123456", blendColors( pApp->palette().window().color(), pApp->palette().highlight().color().name(), 80 ).name() );
 
         //text color, useful for adding contrast
-        m_tintMap.insert( "#010101", App::instance()->palette().text().color().name() );
+        m_tintMap.insert( "#010101", pApp->palette().text().color().name() );
 
-        m_lastPalette = App::instance()->palette();
+        m_lastPalette = pApp->palette();
     }
 }
 

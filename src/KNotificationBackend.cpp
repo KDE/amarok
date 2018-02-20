@@ -61,7 +61,7 @@ KNotificationBackend::KNotificationBackend()
 KNotificationBackend::~KNotificationBackend()
 {
     if( m_notify )
-        m_notify.data()->close();
+        m_notify->close();
 }
 
 void

@@ -111,13 +111,13 @@ namespace Collections
             if( !artist.isEmpty() && !title.isEmpty() )
             {
                 m_activeQueryCount++;
-                m_controller.data()->resolve( artist, album, title );
+                m_controller->resolve( artist, album, title );
             }
         }
 
         m_activeQueryCount++;
         m_memoryQueryIsRunning = true;
-        m_memoryQueryMaker.data()->run();
+        m_memoryQueryMaker->run();
     }
 
     void
@@ -125,9 +125,9 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_memoryQueryMaker.data()->abortQuery();
+        m_memoryQueryMaker->abortQuery();
 
-        m_controller.data()->disconnect( this );
+        m_controller->disconnect( this );
     }
 
     QueryMaker*
@@ -476,7 +476,7 @@ namespace Collections
         return QueryMaker::ValidFilters( ArtistFilter ) |
                QueryMaker::ValidFilters( AlbumFilter ) |
                QueryMaker::ValidFilters( TitleFilter ) |
-               m_memoryQueryMaker.data()->validFilterMask();
+               m_memoryQueryMaker->validFilterMask();
     }
 
     void
@@ -504,7 +504,7 @@ namespace Collections
         DEBUG_BLOCK
         
         track->addToCollection( m_collection.data() );
-        if( m_collection.data()->trackForUrl( QUrl(track->uidUrl()) ) == Meta::TrackPtr::staticCast( track ) )
+        if( m_collection->trackForUrl( QUrl(track->uidUrl()) ) == Meta::TrackPtr::staticCast( track ) )
             m_collectionUpdated = true;
     }
     

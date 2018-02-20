@@ -21,8 +21,8 @@
 #include "playlist/PlaylistActions.h"
 
 #include <QMenu>
-#include <KLocale>
-#include <KStandardDirs>
+#include <KLocalizedString>
+#include <QStandardPaths>
 
 NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     : QAction( parent )

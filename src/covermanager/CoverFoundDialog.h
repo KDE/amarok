@@ -23,29 +23,29 @@
 #include "core/meta/forward_declarations.h"
 #include "covermanager/CoverFetchUnit.h"
 #include "network/NetworkAccessManagerProxy.h"
+#include "widgets/BoxWidget.h"
 
-#include <KProgressDialog>
-#include <KVBox>
+#include <QProgressDialog>
 
 #include <QLabel>
 #include <QList>
 #include <QListWidgetItem>
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 
 class CoverFoundItem;
 class CoverFoundSideBar;
-class KDialog;
+class QDialog;
 class KJob;
 class KJobProgressBar;
 class KComboBox;
-class KListWidget;
-class KPushButton;
-class QFrame;
+class QListWidget;
+class QPushButton;
+class BoxWidget;
 class QGridLayout;
 class QTabWidget;
 
-class CoverFoundDialog : public KDialog
+class CoverFoundDialog : public QDialog
 {
     Q_OBJECT
 
@@ -109,9 +109,9 @@ private:
 
     CoverFoundSideBar *m_sideBar;     //!< View of selected cover and its metadata
     KComboBox *m_search;              //!< Custom search input
-    KListWidget *m_view;              //!< View of retrieved covers
+    QListWidget *m_view;              //!< View of retrieved covers
     QPushButton *m_save;              //!< Save Button
-    KPushButton *m_searchButton;      //!< Button to start search or get more results for last query
+    QPushButton *m_searchButton;      //!< Button to start search or get more results for last query
     Meta::AlbumPtr m_album;           //!< Album associated with @ref m_unit;
     QAction *m_sortAction;            //!< Action to sort covers by size
     QList< int > m_sortSizes;         //!< List of sorted cover sizes used for indexing
@@ -122,12 +122,12 @@ private:
     const CoverFetchUnit::Ptr m_unit; //!< Cover fetch unit that initiated this dialog
     int m_queryPage;                  //!< Cache for the page number associated with @ref m_query
     QHash<QUrl, CoverFoundItem*> m_urls; //!< Urls hash for network access manager proxy
-    QWeakPointer<KProgressDialog> m_dialog;  //!< Progress dialog for fetching big pix
+    QPointer<QProgressDialog> m_dialog;  //!< Progress dialog for fetching big pix
 
     Q_DISABLE_COPY( CoverFoundDialog )
 };
 
-class CoverFoundSideBar : public KVBox
+class CoverFoundSideBar : public BoxWidget
 {
     Q_OBJECT
 

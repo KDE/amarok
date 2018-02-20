@@ -16,10 +16,6 @@
 
 #define DEBUG_PREFIX "APG::ConstraintSolver"
 
-// WORKAROUND for QTBUG-25960. Required for Qt versions < 4.8.5 in combination with libc++.
-#define QT_NO_STL 1
-    #include <qiterator.h>
-#undef QT_NO_STL
 
 #include "ConstraintSolver.h"
 
@@ -33,7 +29,9 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistModel.h"
 
+#include <KLocalizedString>
 #include <KRandom>
+
 #include <QHash>
 #include <QMutexLocker>
 #include <QStringList>
@@ -179,10 +177,14 @@ APG::ConstraintSolver::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *
             break;
         }
     }
-    debug() << "solution at" << (void*)(best);
-    
-    m_solvedPlaylist = best->mid( 0 );
-    m_finalSatisfaction = m_constraintTreeRoot->satisfaction( m_solvedPlaylist );
+
+    if( best )
+    {
+        debug() << "solution at" << (void*)(best);
+
+        m_solvedPlaylist = best->mid( 0 );
+        m_finalSatisfaction = m_constraintTreeRoot->satisfaction( m_solvedPlaylist );
+    }
 
     /* clean up */
     Population::iterator it = population.begin();

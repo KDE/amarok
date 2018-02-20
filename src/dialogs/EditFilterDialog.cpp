@@ -25,11 +25,11 @@
 #include "dialogs/EditFilterDialog.h"
 #include "widgets/TokenDropTarget.h"
 
-#include <KGlobal>
-#include <KLocale>
-#include <klocalizeddate.h>
-#include <KMessageBox>
 #include <QPushButton>
+#include <QDialogButtonBox>
+
+#include <KLocalizedString>
+#include <KMessageBox>
 
 #define OR_TOKEN Meta::valCustom  + 1
 #define AND_TOKEN Meta::valCustom + 2
@@ -39,16 +39,25 @@
 #define SIMPLE_TEXT_CONSTRUCT new Token( i18n( "Simple text" ), "media-track-edit-amarok", 0 )
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
-    : KDialog( parent )
+    : QDialog( parent )
     , m_ui( new Ui::EditFilterDialog )
     , m_curToken( 0 )
     , m_separator( " AND " )
     , m_isUpdating()
 {
-    setCaption( i18n( "Edit Filter" ) );
-    setButtons( KDialog::Reset | KDialog::Ok | KDialog::Cancel );
+    setWindowTitle( i18n( "Edit Filter" ) );
+    setLayout( new QVBoxLayout );
 
-    m_ui->setupUi( mainWidget() );
+    auto mainWidget = new QWidget( this );
+    m_ui->setupUi( mainWidget );
+    layout()->addWidget( mainWidget );
+
+    auto buttonBox = new QDialogButtonBox( QDialogButtonBox::Reset | QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this );
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    auto resetButton = buttonBox->button( QDialogButtonBox::Reset );
+    connect( resetButton, &QPushButton::clicked, this, &EditFilterDialog::slotReset );
+    layout()->addWidget( buttonBox );
 
     m_ui->dropTarget->setRowLimit( 1 );
 
@@ -60,7 +69,6 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
 
     connect( m_ui->mqwAttributeEditor, &MetaQueryWidget::changed,
              this, &EditFilterDialog::slotAttributeChanged );
-    connect( this, &EditFilterDialog::resetClicked, this, &EditFilterDialog::slotReset );
     connect( m_ui->cbInvert, &QCheckBox::toggled,
              this, &EditFilterDialog::slotInvert );
     connect( m_ui->rbAnd, &QCheckBox::toggled,
@@ -227,7 +235,7 @@ void
 EditFilterDialog::accept()
 {
     emit filterChanged( filter() );
-    KDialog::accept();
+    QDialog::accept();
 }
 
 void
@@ -304,16 +312,16 @@ EditFilterDialog::updateDropTarget( const QString &text )
                 QString strTime = elem.text;
 
                 // parse date using local settings
-                KLocalizedDate localizedDate = KLocalizedDate::readDate( strTime, KLocale::ShortFormat );
+                auto date = QLocale().toDate( strTime, QLocale::ShortFormat );
 
                 // parse date using a backup standard independent from local settings
                 QRegExp shortDateReg("(\\d{1,2})[-.](\\d{1,2})");
                 QRegExp longDateReg("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})");
                 // NOTE for absolute time specifications numValue is a unix timestamp,
                 // for relative time specifications numValue is a time difference in seconds 'pointing to the past'
-                if( localizedDate.isValid() )
+                if( date.isValid() )
                 {
-                    filter.filter.numValue = QDateTime( localizedDate.date() ).toTime_t();
+                    filter.filter.numValue = QDateTime( date ).toTime_t();
                     isDateAbsolute = true;
                 }
                 else if( strTime.contains(shortDateReg) )

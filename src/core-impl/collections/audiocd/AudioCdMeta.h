@@ -34,12 +34,12 @@ class AudioCdGenre;
 class AudioCdComposer;
 class AudioCdYear;
 
-typedef KSharedPtr<AudioCdTrack> AudioCdTrackPtr;
-typedef KSharedPtr<AudioCdArtist> AudioCdArtistPtr;
-typedef KSharedPtr<AudioCdAlbum> AudioCdAlbumPtr;
-typedef KSharedPtr<AudioCdGenre> AudioCdGenrePtr;
-typedef KSharedPtr<AudioCdComposer> AudioCdComposerPtr;
-typedef KSharedPtr<AudioCdYear> AudioCdYearPtr;
+typedef AmarokSharedPointer<AudioCdTrack> AudioCdTrackPtr;
+typedef AmarokSharedPointer<AudioCdArtist> AudioCdArtistPtr;
+typedef AmarokSharedPointer<AudioCdAlbum> AudioCdAlbumPtr;
+typedef AmarokSharedPointer<AudioCdGenre> AudioCdGenrePtr;
+typedef AmarokSharedPointer<AudioCdComposer> AudioCdComposerPtr;
+typedef AmarokSharedPointer<AudioCdYear> AudioCdYearPtr;
 
 class AudioCdTrack : public Meta::Track
 {

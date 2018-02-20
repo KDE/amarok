@@ -18,20 +18,19 @@
 #include "SearchWidget.h"
 #include "core/support/Debug.h"
 #include "dialogs/EditFilterDialog.h"
-
-#include <KLocale>
-#include <KGlobalSettings>
+#include "widgets/BoxWidget.h"
 
 #include <QAction>
+#include <QIcon>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QStandardPaths>
 #include <QToolBar>
 #include <QVBoxLayout>
 
-#include <QIcon>
-#include <KLineEdit>
-#include <KHBox>
-#include <KPushButton>
+#include <KLocalizedString>
+#include <KStandardGuiItem>
 
-#include <kstandarddirs.h>
 
 SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     : QWidget( parent )
@@ -41,7 +40,7 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     , m_runningSearches( 0 )
 {
     setContentsMargins( 0, 0, 0, 0 );
-    KHBox *searchBox = new KHBox( this );
+    BoxWidget *searchBox = new BoxWidget( false );
     searchBox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
     m_sw = new Amarok::ComboBox( searchBox );
@@ -181,8 +180,8 @@ SearchWidget::showAdvancedButton( bool show )
 void
 SearchWidget::setClickMessage( const QString &message )
 {
-    KLineEdit *edit = qobject_cast<KLineEdit*>( m_sw->lineEdit() );
-    edit->setClickMessage( message );
+    QLineEdit *edit = qobject_cast<QLineEdit*>( m_sw->lineEdit() );
+    edit->setPlaceholderText( message );
 }
 
 void
@@ -210,7 +209,7 @@ SearchWidget::searchStarted()
     // start the animation
     if( !m_animationTimer.isActive() )
     {
-        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( KStandardDirs::locate( "data", "amarok/images/loading1.png" ) ) );
+        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading1.png" ) ) );
         m_currentFrame = 0;
         m_animationTimer.start();
     }
@@ -253,9 +252,9 @@ SearchWidget::nextAnimationTick()
 
     // switch frames
     if( m_currentFrame == 0 )
-        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( KStandardDirs::locate( "data", "amarok/images/loading2.png" ) ) );
+        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading2.png" ) ) );
     else
-        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( KStandardDirs::locate( "data", "amarok/images/loading1.png" ) ) );
+        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading1.png" ) ) );
 
     restoreLineEditStatus();
     m_currentFrame = !m_currentFrame;

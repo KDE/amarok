@@ -22,11 +22,13 @@
 #include "core/meta/forward_declarations.h"
 #include "core/playlists/Playlist.h"
 #include "core/podcasts/PodcastMeta.h"
-#include "core/collections/QueryMaker.h"
 
 #include <QList>
-#include <QMap>
 #include <QMimeData>
+
+namespace Collections {
+    class QueryMaker;
+}
 
 class AMAROK_EXPORT AmarokMimeData : public QMimeData
 {

@@ -19,7 +19,8 @@
 
 #include "core-impl/playlists/types/file/PlaylistFile.h"
 
-#include <KTemporaryFile>
+#include <QTemporaryFile>
+
 #include <ThreadWeaver/Job>
 
 class KJob;
@@ -60,7 +61,7 @@ namespace Playlists
 
         private:
             PlaylistFilePtr m_playlist;
-            KTemporaryFile m_tempFile;
+            QTemporaryFile m_tempFile;
             QString m_actualPlaylistFile; // path to local playlist file to actually load
             QSemaphore m_downloadSemaphore;
     };

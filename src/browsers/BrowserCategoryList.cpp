@@ -19,7 +19,6 @@
 #include "BrowserCategoryList.h"
 
 #include "App.h"
-#include "context/ContextView.h"
 #include "core/support/Debug.h"
 #include "InfoProxy.h"
 #include "PaletteHandler.h"
@@ -27,14 +26,15 @@
 #include "widgets/PrettyTreeDelegate.h"
 #include "widgets/SearchWidget.h"
 
+#include <QComboBox>
+#include <QFile>
 #include <QStackedWidget>
+#include <QStandardPaths>
 #include <QTreeView>
+#include <QVBoxLayout>
 
-#include <KComboBox>
-#include <KStandardDirs>
 #include <KLocalizedString>
 
-#include <QFile>
 
 BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, bool sort )
     : BrowserCategory( name, parent )
@@ -329,24 +329,23 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
         if ( m_infoHtmlTemplate.isEmpty() )
         {
 
-            QUrl dataUrl( KStandardDirs::locate( "data", "amarok/data/" ) );
-            QString dataPath = dataUrl.path();
+            QString dataPath = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/", QStandardPaths::LocateDirectory );
 
             //load html
-            QString htmlPath = dataPath + "hover_info_template.html";
+            QString htmlPath = dataPath + "/hover_info_template.html";
             QFile file( htmlPath );
             if ( !file.open( QIODevice::ReadOnly | QIODevice::Text) )
             {
-                debug() << "error opening file. Error: " << file.error();
+                debug() << "error opening file:" << file.fileName() << "Error: " << file.error();
                 return;
             }
             m_infoHtmlTemplate = file.readAll();
             file.close();
 
-            m_infoHtmlTemplate.replace( "{background_color}",PaletteHandler::highlightColor().lighter( 150 ).name() );
-            m_infoHtmlTemplate.replace( "{border_color}", PaletteHandler::highlightColor().lighter( 150 ).name() );
-            m_infoHtmlTemplate.replace( "{text_color}", App::instance()->palette().brush( QPalette::Text ).color().name() );
-            QColor highlight( App::instance()->palette().highlight().color() );
+            m_infoHtmlTemplate.replace( "{background_color}", The::paletteHandler()->highlightColor().lighter( 150 ).name() );
+            m_infoHtmlTemplate.replace( "{border_color}", The::paletteHandler()->highlightColor().lighter( 150 ).name() );
+            m_infoHtmlTemplate.replace( "{text_color}", pApp->palette().brush( QPalette::Text ).color().name() );
+            QColor highlight( pApp->palette().highlight().color() );
             highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
             m_infoHtmlTemplate.replace( "{header_background_color}", highlight.name() );
 

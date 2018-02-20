@@ -20,7 +20,7 @@
 #include "PlaylistDefines.h"
 #include "core/meta/support/MetaConstants.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 
 QStringList *Playlist::PlaylistColumnInfos::s_internalNames = 0;

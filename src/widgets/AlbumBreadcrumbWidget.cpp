@@ -19,11 +19,13 @@
 #include "core/meta/Meta.h"
 #include "widgets/BreadcrumbItemButton.h"
 
+#include <QBoxLayout>
 #include <QIcon>
-#include <KLocale>
+
+#include <KLocalizedString>
 
 AlbumBreadcrumbWidget::AlbumBreadcrumbWidget( const Meta::AlbumPtr album, QWidget *parent )
-    : KHBox( parent )
+    : BoxWidget( false, parent )
     , m_album( album )
 {
     const QIcon artistIcon = QIcon::fromTheme( "filename-artist-amarok" );
@@ -35,9 +37,10 @@ AlbumBreadcrumbWidget::AlbumBreadcrumbWidget( const Meta::AlbumPtr album, QWidge
 
     QWidget *spacer = new QWidget( this );
 
-    setStretchFactor( m_artistButton, 1 );
-    setStretchFactor( m_albumButton, 1 );
-    setStretchFactor( spacer, 1 );
+    auto l = static_cast<QBoxLayout*>( layout() );
+    l->setStretchFactor( m_artistButton, 1 );
+    l->setStretchFactor( m_albumButton, 1 );
+    l->setStretchFactor( spacer, 1 );
 
     connect( m_artistButton, &BreadcrumbItemButton::clicked, this, &AlbumBreadcrumbWidget::slotArtistClicked );
     connect( m_albumButton, &BreadcrumbItemButton::clicked, this, &AlbumBreadcrumbWidget::slotAlbumClicked );

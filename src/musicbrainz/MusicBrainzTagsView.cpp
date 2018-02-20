@@ -24,7 +24,7 @@
 
 #include <KActionMenu>
 #include <KLocalizedString>
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 #include <QContextMenuEvent>
 #include <QDesktopServices>
@@ -35,9 +35,9 @@
 MusicBrainzTagsView::MusicBrainzTagsView( QWidget *parent )
     : QTreeView( parent )
 {
-    m_artistIcon = QIcon::fromTheme( KStandardDirs::locate( "data", "amarok/images/mb_aicon.png" ) );
-    m_releaseIcon = QIcon::fromTheme( KStandardDirs::locate( "data", "amarok/images/mb_licon.png" ) );
-    m_trackIcon = QIcon::fromTheme( KStandardDirs::locate( "data", "amarok/images/mb_ticon.png" ) );
+    m_artistIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/mb_aicon.png" ) );
+    m_releaseIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/mb_licon.png" ) );
+    m_trackIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/mb_ticon.png" ) );
 }
 
 MusicBrainzTagsModel *

@@ -22,16 +22,16 @@
 #include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
 
-#include <QReadWriteLock>
-#include <QSvgRenderer>
-#include <KImageCache>
-
 #include <QHash>
 #include <QPixmap>
+#include <QReadWriteLock>
 #include <QString>
 
-class SvgHandler;
+#include <KImageCache>
+
 class QStyleOptionSlider;
+class QSvgRenderer;
+class SvgHandler;
 
 namespace The {
     AMAROK_EXPORT SvgHandler* svgHandler();
@@ -105,12 +105,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
          * The background part before the knob, is painted in a different color than the
          * part after (and under) the knob.
          * @param p The painter to use.
-         * @param x The x position to begin painting at.
-         * @param y The y position to begin painting at.
-         * @param width The width of the slider to paint.
-         * @param height The height of the slider. The background part does not scale in height, it will always be a relatively thin line, but the knob and end markers do.
          * @param percentage The percentange of the slider that the knob is positioned at.
-         * @param active Specifies whether the slider should be painted "active" using the current palettes active colors, to specify that it currently has mouse focus or hover.
          */
         void paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qreal percentage, bool paintMoodbar  = false );
 

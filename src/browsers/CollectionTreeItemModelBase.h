@@ -98,7 +98,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         /**
          * Get a pointer to colleciton tree item given its index. It is not safe to
-         * cache this pointer unless QWeakPointer is used.
+         * cache this pointer unless QPointer is used.
          */
         CollectionTreeItem *treeItem( const QModelIndex &index ) const;
 

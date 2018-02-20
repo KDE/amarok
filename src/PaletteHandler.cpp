@@ -18,8 +18,7 @@
  
 #include "PaletteHandler.h"
 
-#include <kglobal.h>
-
+#include <QAbstractItemView>
 #include <QPainter>
 
 

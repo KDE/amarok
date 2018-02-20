@@ -21,8 +21,7 @@
 #include "PlaylistBreadcrumbItemSortButton.h"
 #include "PlaylistBreadcrumbLevel.h"
 #include "PlaylistDefines.h"
-
-#include <KHBox>
+#include "widgets/BoxWidget.h"
 
 #include <QMenu>
 #include <QStringList>
@@ -75,7 +74,7 @@ private Q_SLOTS:
  *  A single item that represents a level of a general-purpose breadcrumb ribbon.
  *  @author Téo Mrnjavac <teo@kde.org>
  */
-class BreadcrumbItem : public KHBox
+class BreadcrumbItem : public BoxWidget
 {
     Q_OBJECT
 

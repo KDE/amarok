@@ -27,16 +27,17 @@
 #include "core/support/Debug.h"
 #include "widgets/PrettyTreeDelegate.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KSqueezedTextLabel>
-#include <KVBox>
 
 #include <QLabel>
+#include <QVBoxLayout>
 
 TrackSelectWidget::TrackSelectWidget( QWidget* parent )
-    : KVBox( parent )
+    : BoxWidget( true, parent )
 {
     DEBUG_BLOCK
+
     m_label = new KSqueezedTextLabel( this );
     m_label->hide(); // TODO: decide whether the label should be shown or not
     m_label->setTextElideMode( Qt::ElideRight );

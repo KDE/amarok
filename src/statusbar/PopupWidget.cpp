@@ -20,9 +20,11 @@
 
 #include "core/support/Debug.h"
 
+#include <QVBoxLayout>
+
 
 PopupWidget::PopupWidget( QWidget *anchor, const QString &name )
-        : KVBox( The::mainWindow() )
+    : BoxWidget( true, The::mainWindow() )
 {
     Q_UNUSED( name );
     Q_UNUSED( anchor );
@@ -36,7 +38,6 @@ PopupWidget::PopupWidget( QWidget *anchor, const QString &name )
     setMinimumHeight( 26 );
 
     setContentsMargins( 4, 4, 4, 4 );
-    setSpacing( 0 );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     reposition();

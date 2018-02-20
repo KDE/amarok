@@ -1,6 +1,6 @@
 /*
  *  Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>
- *  Qt4QStringToTString and TStringToQString macros Copyright 2002-2008 by Scott Wheeler, wheeler@kde.org, licensed under LGPL 2.1
+ *  QStringToTString and TStringToQString macros Copyright 2002-2008 by Scott Wheeler, wheeler@kde.org, licensed under LGPL 2.1
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,8 +48,8 @@
 
 #include <iostream>
 
-//QT4-happy versions
-#define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
+//QT5-happy versions
+#define Qt5QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
 
 static int s_currentVersion = 1;
 
@@ -78,7 +78,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
     QString terms;
     if( !m_quiet )
     {
-        m_textStream << qPrintable( tr( "TERMS OF USE:\n\n" 
+        m_textStream << qPrintable( tr( "TERMS OF USE:\n\n"
                 "This program has been extensively tested and errs on the side of safety wherever possible.\n\n"
                 "With that being said, since this program can modify thousands or hundreds of thousands of files\n"
                 "at a time, here is the obligatory warning text:\n\n"
@@ -325,7 +325,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
             if( m_verbose )
                 m_textStream << tr( "INFO: Adding new frame and saving file with UID: %1" ).arg( uid ) << endl;
             file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
-                Qt4QStringToTString( ourId ), Qt4QStringToTString( uid ).data( TagLib::String::Latin1 ) ) );
+                Qt5QStringToTString( ourId ), Qt5QStringToTString( uid ).data( TagLib::String::Latin1 ) ) );
             file->save();
             return true;
         }
@@ -475,7 +475,7 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
             uid = createCurrentUID( file );
         if( m_verbose )
             m_textStream << tr( "INFO: Adding new field and saving file with UID: %1" ).arg( uid ) << endl;
-        comment->addField( Qt4QStringToTString( ourId ), Qt4QStringToTString( uid ) );
+        comment->addField( Qt5QStringToTString( ourId ), Qt5QStringToTString( uid ) );
         return true;
     }
     else if( toRemove.size() )
@@ -581,7 +581,7 @@ AFTTagger::handleMPC( TagLib::MPC::File *file )
             uid = createCurrentUID( file );
         if( m_verbose )
             m_textStream << tr( "INFO: Adding new field and saving file with UID: %1" ).arg( uid ) << endl;
-        file->APETag()->addValue( Qt4QStringToTString( ourId.toUpper() ), Qt4QStringToTString( uid ) );
+        file->APETag()->addValue( Qt5QStringToTString( ourId.toUpper() ), Qt5QStringToTString( uid ) );
         file->save();
         return true;
     }
@@ -650,7 +650,7 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
                     {
                         if( m_verbose )
                             m_textStream << tr( "INFO: Upgrading AFT identifier from version %1 to version %2" )
-                            .arg( QString::number( version ), QString::number( s_currentVersion ) ) 
+                            .arg( QString::number( version ), QString::number( s_currentVersion ) )
                             << endl;
                         uid = upgradeUID( version, TStringToQString( itemsMap[ key ].toStringList().toString() ) );
                         if( m_verbose )
@@ -685,8 +685,8 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
             uid = createCurrentUID( file );
         if( m_verbose )
             m_textStream << tr( "INFO: Adding new field and saving file with UID: %1" ).arg( uid ) << endl;
-        itemsMap.insert( Qt4QStringToTString( QString( "----:com.apple.iTunes:" + ourId ) ),
-                         TagLib::StringList( Qt4QStringToTString( uid ) ) );
+        itemsMap.insert( Qt5QStringToTString( QString( "----:com.apple.iTunes:" + ourId ) ),
+                         TagLib::StringList( Qt5QStringToTString( uid ) ) );
         file->save();
         return true;
     }
@@ -713,13 +713,13 @@ AFTTagger::createV1UID( TagLib::File *file )
     QCryptographicHash md5( QCryptographicHash::Md5 );
     QByteArray size;
     md5.addData( size.setNum( (qulonglong)(file->length()) ) );
-    md5.addData( QString::number( m_time.elapsed() ).toAscii() );
-    md5.addData( QString::number( qrand() ).toAscii() );
-    md5.addData( QString::number( qrand() ).toAscii() );
-    md5.addData( QString::number( qrand() ).toAscii() );
-    md5.addData( QString::number( qrand() ).toAscii() );
-    md5.addData( QString::number( qrand() ).toAscii() );
-    md5.addData( QString::number( m_time.elapsed() ).toAscii() );
+    md5.addData( QString::number( m_time.elapsed() ).toUtf8() );
+    md5.addData( QString::number( qrand() ).toUtf8() );
+    md5.addData( QString::number( qrand() ).toUtf8() );
+    md5.addData( QString::number( qrand() ).toUtf8() );
+    md5.addData( QString::number( qrand() ).toUtf8() );
+    md5.addData( QString::number( qrand() ).toUtf8() );
+    md5.addData( QString::number( m_time.elapsed() ).toUtf8() );
     return QString( md5.result().toHex() );
 }
 

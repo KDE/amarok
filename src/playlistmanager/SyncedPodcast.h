@@ -83,7 +83,7 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
         Podcasts::PodcastChannelPtr m_master;
 };
 
-typedef KSharedPtr<SyncedPodcast> SyncedPodcastPtr;
+typedef AmarokSharedPointer<SyncedPodcast> SyncedPodcastPtr;
 typedef QList<SyncedPodcastPtr> SyncedPodcastList;
 
 Q_DECLARE_METATYPE( SyncedPodcastPtr )

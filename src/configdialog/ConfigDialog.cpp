@@ -32,10 +32,7 @@
 #include "core/support/Debug.h"
 
 #include <KLocalizedString>
-#include <KConfigGroup>
-#include <QDialogButtonBox>
-#include <QPushButton>
-#include <QVBoxLayout>
+
 
 QString Amarok2ConfigDialog::s_currentPage = "GeneralConfig";
 
@@ -57,7 +54,6 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase *database = new DatabaseConfig( this, config );
     ConfigDialogBase *plugins = new PluginsConfig( this );
     ConfigDialogBase *scripts = new ScriptsConfig( this );
-
     //ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
     addPage( general, i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
@@ -70,19 +66,9 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( scripts, i18n( "Scripts" ), "preferences-plugin-script", i18n( "Configure Scripts" ) );
     //addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    setLayout(mainLayout);
-
-    // Don't change the used button box, this breaks the button handling inside the KConfigDialog
-    QDialogButtonBox *buttonBox = this->buttonBox();
-
-    // Make the ok button the default button and attach shortcut to it
-    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton *okButton = buttonBox()->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-
-    // Hide the restore defaults button, we don't support it
-    buttonBox->button(QDialogButtonBox::RestoreDefaults)->setVisible(false);
 
     KWindowConfig::restoreWindowSize(windowHandle(), Amarok::config( "ConfigDialog" ));
 }

@@ -20,10 +20,10 @@
 #include "MusicBrainzTagsModel.h"
 
 #include "AmarokMimeData.h"
-#include "core/support/Debug.h"
 #include "MusicBrainzMeta.h"
 #include "MusicBrainzTagsItem.h"
-
+#include "core/support/Debug.h"
+#include "support/MetaConstants.h"
 #include <KLocalizedString>
 
 #include <QFont>

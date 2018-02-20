@@ -151,7 +151,7 @@ AggregateCollection::getYear( Meta::YearPtr year )
     m_yearLock.lockForRead();
     if( m_yearMap.contains( year->name() ) )
     {
-        KSharedPtr<Meta::AggreagateYear> aggregateYear = m_yearMap.value( year->name() );
+        AmarokSharedPointer<Meta::AggreagateYear> aggregateYear = m_yearMap.value( year->name() );
         aggregateYear->add( year );
         m_yearLock.unlock();
         return aggregateYear.data();
@@ -163,7 +163,7 @@ AggregateCollection::getYear( Meta::YearPtr year )
         //we might create two year instances with the same name here,
         //which would show some weird behaviour in other places
         Meta::AggreagateYear *aggregateYear = new Meta::AggreagateYear( this, year );
-        m_yearMap.insert( year->name(), KSharedPtr<Meta::AggreagateYear>( aggregateYear ) );
+        m_yearMap.insert( year->name(), AmarokSharedPointer<Meta::AggreagateYear>( aggregateYear ) );
         m_yearLock.unlock();
         return aggregateYear;
     }
@@ -173,7 +173,7 @@ void
 AggregateCollection::setYear( Meta::AggreagateYear *year )
 {
     m_yearLock.lockForWrite();
-    m_yearMap.insert( year->name(), KSharedPtr<Meta::AggreagateYear>( year ) );
+    m_yearMap.insert( year->name(), AmarokSharedPointer<Meta::AggreagateYear>( year ) );
     m_yearLock.unlock();
 }
 
@@ -198,7 +198,7 @@ AggregateCollection::getGenre( Meta::GenrePtr genre )
     m_genreLock.lockForRead();
     if( m_genreMap.contains( genre->name() ) )
     {
-        KSharedPtr<Meta::AggregateGenre> aggregateGenre = m_genreMap.value( genre->name() );
+        AmarokSharedPointer<Meta::AggregateGenre> aggregateGenre = m_genreMap.value( genre->name() );
         aggregateGenre->add( genre );
         m_genreLock.unlock();
         return aggregateGenre.data();
@@ -210,7 +210,7 @@ AggregateCollection::getGenre( Meta::GenrePtr genre )
         //we might create two instances with the same name here,
         //which would show some weird behaviour in other places
         Meta::AggregateGenre *aggregateGenre = new Meta::AggregateGenre( this, genre );
-        m_genreMap.insert( genre->name(), KSharedPtr<Meta::AggregateGenre>( aggregateGenre ) );
+        m_genreMap.insert( genre->name(), AmarokSharedPointer<Meta::AggregateGenre>( aggregateGenre ) );
         m_genreLock.unlock();
         return aggregateGenre;
     }
@@ -220,7 +220,7 @@ void
 AggregateCollection::setGenre( Meta::AggregateGenre *genre )
 {
     m_genreLock.lockForWrite();
-    m_genreMap.insert( genre->name(), KSharedPtr<Meta::AggregateGenre>( genre ) );
+    m_genreMap.insert( genre->name(), AmarokSharedPointer<Meta::AggregateGenre>( genre ) );
     m_genreLock.unlock();
 }
 
@@ -245,7 +245,7 @@ AggregateCollection::getComposer( Meta::ComposerPtr composer )
     m_composerLock.lockForRead();
     if( m_composerMap.contains( composer->name() ) )
     {
-        KSharedPtr<Meta::AggregateComposer> aggregateComposer = m_composerMap.value( composer->name() );
+        AmarokSharedPointer<Meta::AggregateComposer> aggregateComposer = m_composerMap.value( composer->name() );
         aggregateComposer->add( composer );
         m_composerLock.unlock();
         return aggregateComposer.data();
@@ -257,7 +257,7 @@ AggregateCollection::getComposer( Meta::ComposerPtr composer )
         //we might create two instances with the same name here,
         //which would show some weird behaviour in other places
         Meta::AggregateComposer *aggregateComposer = new Meta::AggregateComposer( this, composer );
-        m_composerMap.insert( composer->name(), KSharedPtr<Meta::AggregateComposer>( aggregateComposer ) );
+        m_composerMap.insert( composer->name(), AmarokSharedPointer<Meta::AggregateComposer>( aggregateComposer ) );
         m_composerLock.unlock();
         return aggregateComposer;
     }
@@ -267,7 +267,7 @@ void
 AggregateCollection::setComposer( Meta::AggregateComposer *composer )
 {
     m_composerLock.lockForWrite();
-    m_composerMap.insert( composer->name(), KSharedPtr<Meta::AggregateComposer>( composer ) );
+    m_composerMap.insert( composer->name(), AmarokSharedPointer<Meta::AggregateComposer>( composer ) );
     m_composerLock.unlock();
 }
 
@@ -292,7 +292,7 @@ AggregateCollection::getArtist( Meta::ArtistPtr artist )
     m_artistLock.lockForRead();
     if( m_artistMap.contains( artist->name() ) )
     {
-        KSharedPtr<Meta::AggregateArtist> aggregateArtist = m_artistMap.value( artist->name() );
+        AmarokSharedPointer<Meta::AggregateArtist> aggregateArtist = m_artistMap.value( artist->name() );
         aggregateArtist->add( artist );
         m_artistLock.unlock();
         return aggregateArtist.data();
@@ -304,7 +304,7 @@ AggregateCollection::getArtist( Meta::ArtistPtr artist )
         //we might create two instances with the same name here,
         //which would show some weird behaviour in other places
         Meta::AggregateArtist *aggregateArtist = new Meta::AggregateArtist( this, artist );
-        m_artistMap.insert( artist->name(), KSharedPtr<Meta::AggregateArtist>( aggregateArtist ) );
+        m_artistMap.insert( artist->name(), AmarokSharedPointer<Meta::AggregateArtist>( aggregateArtist ) );
         m_artistLock.unlock();
         return aggregateArtist;
     }
@@ -314,7 +314,7 @@ void
 AggregateCollection::setArtist( Meta::AggregateArtist *artist )
 {
     m_artistLock.lockForWrite();
-    m_artistMap.insert( artist->name(), KSharedPtr<Meta::AggregateArtist>( artist ) );
+    m_artistMap.insert( artist->name(), AmarokSharedPointer<Meta::AggregateArtist>( artist ) );
     m_artistLock.unlock();
 }
 
@@ -341,7 +341,7 @@ AggregateCollection::getAlbum( Meta::AlbumPtr album )
     m_albumLock.lockForRead();
     if( m_albumMap.contains( key ) )
     {
-        KSharedPtr<Meta::AggregateAlbum> aggregateAlbum = m_albumMap.value( key );
+        AmarokSharedPointer<Meta::AggregateAlbum> aggregateAlbum = m_albumMap.value( key );
         aggregateAlbum->add( album );
         m_albumLock.unlock();
         return aggregateAlbum.data();
@@ -353,7 +353,7 @@ AggregateCollection::getAlbum( Meta::AlbumPtr album )
         //we might create two instances with the same name here,
         //which would show some weird behaviour in other places
         Meta::AggregateAlbum *aggregateAlbum = new Meta::AggregateAlbum( this, album );
-        m_albumMap.insert( key, KSharedPtr<Meta::AggregateAlbum>( aggregateAlbum ) );
+        m_albumMap.insert( key, AmarokSharedPointer<Meta::AggregateAlbum>( aggregateAlbum ) );
         m_albumLock.unlock();
         return aggregateAlbum;
     }
@@ -364,7 +364,7 @@ AggregateCollection::setAlbum( Meta::AggregateAlbum *album )
 {
     m_albumLock.lockForWrite();
     m_albumMap.insert( Meta::AlbumKey( Meta::AlbumPtr( album ) ),
-                       KSharedPtr<Meta::AggregateAlbum>( album ) );
+                       AmarokSharedPointer<Meta::AggregateAlbum>( album ) );
     m_albumLock.unlock();
 }
 
@@ -390,7 +390,7 @@ AggregateCollection::getTrack( Meta::TrackPtr track )
     m_trackLock.lockForRead();
     if( m_trackMap.contains( key ) )
     {
-        KSharedPtr<Meta::AggregateTrack> aggregateTrack = m_trackMap.value( key );
+        AmarokSharedPointer<Meta::AggregateTrack> aggregateTrack = m_trackMap.value( key );
         aggregateTrack->add( track );
         m_trackLock.unlock();
         return aggregateTrack.data();
@@ -402,7 +402,7 @@ AggregateCollection::getTrack( Meta::TrackPtr track )
         //we might create two instances with the same name here,
         //which would show some weird behaviour in other places
         Meta::AggregateTrack *aggregateTrack = new Meta::AggregateTrack( this, track );
-        m_trackMap.insert( key, KSharedPtr<Meta::AggregateTrack>( aggregateTrack ) );
+        m_trackMap.insert( key, AmarokSharedPointer<Meta::AggregateTrack>( aggregateTrack ) );
         m_trackLock.unlock();
         return aggregateTrack;
     }
@@ -414,7 +414,7 @@ AggregateCollection::setTrack( Meta::AggregateTrack *track )
     Meta::TrackPtr ptr( track );
     const Meta::TrackKey key( ptr );
     m_trackLock.lockForWrite();
-    m_trackMap.insert( key, KSharedPtr<Meta::AggregateTrack>( track ) );
+    m_trackMap.insert( key, AmarokSharedPointer<Meta::AggregateTrack>( track ) );
     m_trackLock.unlock();
 }
 
@@ -445,7 +445,7 @@ AggregateCollection::getLabel( Meta::LabelPtr label )
     m_labelLock.lockForRead();
     if( m_labelMap.contains( label->name() ) )
     {
-        KSharedPtr<Meta::AggregateLabel> aggregateLabel = m_labelMap.value( label->name() );
+        AmarokSharedPointer<Meta::AggregateLabel> aggregateLabel = m_labelMap.value( label->name() );
         aggregateLabel->add( label );
         m_labelLock.unlock();
         return aggregateLabel.data();
@@ -457,7 +457,7 @@ AggregateCollection::getLabel( Meta::LabelPtr label )
         //we might create two year instances with the same name here,
         //which would show some weird behaviour in other places
         Meta::AggregateLabel *aggregateLabel = new Meta::AggregateLabel( this, label );
-        m_labelMap.insert( label->name(), KSharedPtr<Meta::AggregateLabel>( aggregateLabel ) );
+        m_labelMap.insert( label->name(), AmarokSharedPointer<Meta::AggregateLabel>( aggregateLabel ) );
         m_labelLock.unlock();
         return aggregateLabel;
     }
@@ -467,7 +467,7 @@ void
 AggregateCollection::setLabel( Meta::AggregateLabel *label )
 {
     QWriteLocker locker( &m_labelLock );
-    m_labelMap.insert( label->name(), KSharedPtr<Meta::AggregateLabel>( label ) );
+    m_labelMap.insert( label->name(), AmarokSharedPointer<Meta::AggregateLabel>( label ) );
 }
 
 void
@@ -503,14 +503,14 @@ AggregateCollection::emptyCache()
                 iter.remove(); \
         }
 
-        foreachCollectGarbage( Meta::TrackKey, KSharedPtr<Meta::AggregateTrack>, 2, m_trackMap )
+        foreachCollectGarbage( Meta::TrackKey, AmarokSharedPointer<Meta::AggregateTrack>, 2, m_trackMap )
         //run before artist so that album artist pointers can be garbage collected
-        foreachCollectGarbage( Meta::AlbumKey, KSharedPtr<Meta::AggregateAlbum>, 2, m_albumMap )
-        foreachCollectGarbage( QString, KSharedPtr<Meta::AggregateArtist>, 2, m_artistMap )
-        foreachCollectGarbage( QString, KSharedPtr<Meta::AggregateGenre>, 2, m_genreMap )
-        foreachCollectGarbage( QString, KSharedPtr<Meta::AggregateComposer>, 2, m_composerMap )
-        foreachCollectGarbage( QString, KSharedPtr<Meta::AggreagateYear>, 2, m_yearMap )
-        foreachCollectGarbage( QString, KSharedPtr<Meta::AggregateLabel>, 2, m_labelMap )
+        foreachCollectGarbage( Meta::AlbumKey, AmarokSharedPointer<Meta::AggregateAlbum>, 2, m_albumMap )
+        foreachCollectGarbage( QString, AmarokSharedPointer<Meta::AggregateArtist>, 2, m_artistMap )
+        foreachCollectGarbage( QString, AmarokSharedPointer<Meta::AggregateGenre>, 2, m_genreMap )
+        foreachCollectGarbage( QString, AmarokSharedPointer<Meta::AggregateComposer>, 2, m_composerMap )
+        foreachCollectGarbage( QString, AmarokSharedPointer<Meta::AggreagateYear>, 2, m_yearMap )
+        foreachCollectGarbage( QString, AmarokSharedPointer<Meta::AggregateLabel>, 2, m_labelMap )
     }
 
     //make sure to unlock all necessary locks

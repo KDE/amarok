@@ -31,6 +31,8 @@ add_library( amarokshared SHARED
     ${amarokshared_collectionscanner_SRCS}
     ${amarokshared_tag_helpers_SRCS} )
 
+target_include_directories( amarokshared PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
+
 include_directories( ${TAGLIB_INCLUDES} )
 add_definitions( ${TAGLIB_CFLAGS} )
 target_link_libraries( amarokshared ${TAGLIB_LIBRARIES} KF5::Codecs)
@@ -41,7 +43,6 @@ if( TAGLIB-EXTRAS_FOUND )
 endif()
 
 target_link_libraries( amarokshared
-    KF5::KDELibs4Support
     Qt5::Core
     Qt5::Gui # for QImage, ...
 )

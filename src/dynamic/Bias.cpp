@@ -27,7 +27,7 @@
 #include "dynamic/DynamicModel.h"
 #include "dynamic/biases/SearchQueryBias.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QPainter>
 #include <QBuffer>

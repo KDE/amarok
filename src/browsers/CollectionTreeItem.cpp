@@ -26,7 +26,7 @@
 #include "widgets/PrettyTreeRoles.h"
 
 #include <QIcon>
-#include <KLocale>
+#include <KLocalizedString>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )

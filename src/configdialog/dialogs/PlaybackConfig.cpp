@@ -24,7 +24,6 @@
 #include "core/support/Debug.h"
 
 #include <KCMultiDialog>
-#include <kmessagebox.h>
 
 
 PlaybackConfig::PlaybackConfig( Amarok2ConfigDialog* parent )

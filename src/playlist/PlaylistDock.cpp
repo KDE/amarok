@@ -41,15 +41,14 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "widgets/HorizontalDivider.h"
-
-#include <KActionMenu>
-#include <KStandardDirs>
-#include <KToolBarSpacerAction>
-#include <KVBox>
+#include "widgets/BoxWidget.h"
 
 #include <QLabel>
+#include <QStandardPaths>
 #include <QToolBar>
-#include <QHBoxLayout>
+
+#include <KActionMenu>
+#include <KToolBarSpacerAction>
 
 static const QString s_dynMode( "dynamic_mode" );
 static const QString s_repopulate( "repopulate" );
@@ -87,7 +86,7 @@ Playlist::Dock::searchWidget()
 void
 Playlist::Dock::polish()
 {
-    m_mainWidget = new KVBox( this );
+    m_mainWidget = new BoxWidget( true, this );
     setWidget( m_mainWidget );
     m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
     m_mainWidget->setFrameShape( QFrame::NoFrame );
@@ -117,7 +116,7 @@ Playlist::Dock::polish()
 
     showDynamicHint();
 
-    paletteChanged( App::instance()->palette() );
+    paletteChanged( pApp->palette() );
     connect( The::paletteHandler(), &PaletteHandler::newPalette,
              this, &Playlist::Dock::paletteChanged );
 
@@ -163,7 +162,7 @@ Playlist::Dock::polish()
 
     { // START: Playlist toolbar
         // action toolbar
-        m_barBox = new KHBox( m_mainWidget );
+        m_barBox = new BoxWidget( false, m_mainWidget );
         m_barBox->setObjectName( "PlaylistBarBox" );
         m_barBox->setContentsMargins( 0, 0, 4, 0 );
         m_barBox->setFixedHeight( 36 );
@@ -233,11 +232,10 @@ Playlist::Dock::sizeHint() const
     return QSize( static_cast<QWidget*>( parent() )->size().width() / 4 , 300 );
 }
 
-
 void
 Playlist::Dock::paletteChanged( const QPalette &palette )
 {
-    const QString backgroundColor = PaletteHandler::highlightColor().name();
+    const QString backgroundColor = palette.color( QPalette::Active, QPalette::Mid ).name();
     const QString textColor = palette.color( QPalette::Active, QPalette::HighlightedText ).name();
     const QString linkColor = palette.color( QPalette::Active, QPalette::Link ).name();
     const QString ridgeColor = palette.color( QPalette::Active, QPalette::Window ).name();
@@ -271,8 +269,7 @@ Playlist::Dock::playlistProviderAdded( Playlists::PlaylistProvider *provider, in
     QAction *action = new QAction( userProvider->icon(),
                                    i18n("&Save playlist to \"%1\"", provider->prettyName() ),
                                    this );
-    action->setData( QVariant::fromValue(
-            QWeakPointer<Playlists::UserPlaylistProvider>( userProvider ) ) );
+    action->setData( QVariant::fromValue( QPointer<Playlists::UserPlaylistProvider>( userProvider ) ) );
     m_saveActions->addAction( QString::number( (qlonglong) userProvider ), action );
 
     // insert the playlist provider actions before "export"
@@ -315,12 +312,12 @@ void
 Playlist::Dock::slotEditQueue()
 {
     if( m_playlistQueueEditor ) {
-        m_playlistQueueEditor.data()->raise();
+        m_playlistQueueEditor->raise();
         return;
     }
     m_playlistQueueEditor = new PlaylistQueueEditor;
-    m_playlistQueueEditor.data()->setAttribute( Qt::WA_DeleteOnClose );
-    m_playlistQueueEditor.data()->show();
+    m_playlistQueueEditor->setAttribute( Qt::WA_DeleteOnClose );
+    m_playlistQueueEditor->show();
 }
 
 void

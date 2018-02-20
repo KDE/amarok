@@ -53,7 +53,7 @@ LastfmReadLabelCapability::fetchLabels()
     query[ "api_key"] = Amarok::lastfmApiKey();
     m_job  = lastfm::ws::post( query );
 
-    connect( m_job, SIGNAL(finished()), SLOT(onTagsFetched()) );
+    connect( m_job, &QNetworkReply::finished, this, &LastfmReadLabelCapability::onTagsFetched );
 }
 
 

@@ -16,7 +16,7 @@
 
 #include "TranscodingVorbisFormat.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 using namespace Transcoding;
 

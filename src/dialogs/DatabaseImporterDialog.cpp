@@ -21,15 +21,16 @@
 #include "databaseimporter/SqlBatchImporter.h"
 #include "databaseimporter/SqlBatchImporterConfig.h"
 
-#include <KLocale>
 #include <KPageWidgetItem>
-#include <KVBox>
-#include <KDialog>
+#include <KLocalizedString>
 
+#include <QBoxLayout>
 #include <QButtonGroup>
+#include <QDialog>
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QRadioButton>
+#include <QStyle>
 
 DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     : KAssistantDialog( parent )
@@ -39,11 +40,11 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     setAttribute( Qt::WA_DeleteOnClose );
     QWidget::setWindowTitle( i18n( "Import Collection" ) );
 
-    KVBox *importerBox = new KVBox( this );
-    importerBox->setSpacing( KDialog::spacingHint() );
+    BoxWidget *importerBox = new BoxWidget( true, this );
+    importerBox->layout()->setSpacing( style()->layoutSpacing( QSizePolicy::DefaultType, QSizePolicy::DefaultType, Qt::Vertical ) );
 
-    m_configBox = new KVBox( this );
-    m_configBox->setSpacing( KDialog::spacingHint() );
+    m_configBox = new BoxWidget( true, this );
+    m_configBox->layout()->setSpacing( style()->layoutSpacing( QSizePolicy::DefaultType, QSizePolicy::DefaultType, Qt::Vertical ) );
 
     m_configPage = addPage( m_configBox, i18n("Import configuration") );
 
@@ -58,8 +59,8 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     connect( m_importer, &SqlBatchImporter::showMessage, this, &DatabaseImporterDialog::showMessage );
     m_importerConfig = m_importer->configWidget( m_configBox );
 
-    KVBox *resultBox = new KVBox( this );
-    resultBox->setSpacing( KDialog::spacingHint() );
+    BoxWidget *resultBox = new BoxWidget( true, this );
+    resultBox->layout()->setSpacing( style()->layoutSpacing( QSizePolicy::DefaultType, QSizePolicy::DefaultType, Qt::Vertical ) );
 
     m_results = new QPlainTextEdit( resultBox );
     m_results->setReadOnly( true );

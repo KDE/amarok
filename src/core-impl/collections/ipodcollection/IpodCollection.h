@@ -232,7 +232,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          * This method adds it to the collection, master playlist (if not already there)
          * etc. The file must be already physically copied to iPod. (Re)Sets track's
          * collection to this collection. Takes ownership of the track (passes it to
-         * KSharedPtr)
+         * AmarokSharedPointer)
          *
          * This method is thread-safe.
          *
@@ -260,7 +260,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          */
         bool writeDatabase();
 
-        KDialog *m_configureDialog;
+        QDialog *m_configureDialog;
         Ui::IpodConfiguration m_configureDialogUi;
         QSharedPointer<Collections::MemoryCollection> m_mc;
         /**
@@ -281,8 +281,8 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         QAction *m_configureAction;
         QAction *m_ejectAction;
         QAction *m_consolidateAction;
-        QWeakPointer<IpodParseTracksJob> m_parseTracksJob;
-        QWeakPointer<IpodWriteDatabaseJob> m_writeDatabaseJob;
+        QPointer<IpodParseTracksJob> m_parseTracksJob;
+        QPointer<IpodWriteDatabaseJob> m_writeDatabaseJob;
 };
 
 #endif // IPODCOLLECTION_H

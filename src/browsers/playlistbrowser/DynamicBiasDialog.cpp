@@ -24,8 +24,8 @@
 #include "dynamic/Bias.h"
 #include "dynamic/BiasFactory.h"
 
-#include <KComboBox>
-#include <KLocale>
+#include <QComboBox>
+#include <KLocalizedString>
 
 #include <QDialogButtonBox>
 #include <QGridLayout>
@@ -47,7 +47,7 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
 
     // -- the bias selection combo
     QLabel* selectionLabel = new QLabel( i18nc("Bias selection label in bias view.", "Match Type:" ) );
-    m_biasSelection = new KComboBox();
+    m_biasSelection = new QComboBox();
     QHBoxLayout *selectionLayout = new QHBoxLayout();
     selectionLabel->setBuddy( m_biasSelection );
     selectionLayout->addWidget( selectionLabel );
@@ -72,7 +72,7 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
 
     connect( Dynamic::BiasFactory::instance(), &Dynamic::BiasFactory::changed,
              this, &PlaylistBrowserNS::BiasDialog::factoriesChanged );
-    connect( m_biasSelection, QOverload<int>::of(&KComboBox::activated),
+    connect( m_biasSelection, QOverload<int>::of(&QComboBox::activated),
              this, &PlaylistBrowserNS::BiasDialog::selectionChanged );
     connect(buttonBox, &QDialogButtonBox::accepted,
             this, &PlaylistBrowserNS::BiasDialog::accept);

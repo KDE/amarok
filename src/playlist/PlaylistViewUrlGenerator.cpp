@@ -23,8 +23,8 @@
 #include "PlaylistSortWidget.h"
 #include "ProgressiveSearchWidget.h"
 
-#include <KLocale>
-#include <KStandardDirs>
+#include <KLocalizedString>
+#include <QStandardPaths>
 
 namespace Playlist
 {
@@ -104,7 +104,7 @@ ViewUrlGenerator::description()
 
 QIcon ViewUrlGenerator::icon()
 {
-    return QIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-bookmark-16.png" ) ) );
+    return QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/playlist-bookmark-16.png" ) ) );
 }
 
 } //namespace Playlist

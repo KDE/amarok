@@ -24,8 +24,9 @@
 #include "core/meta/forward_declarations.h"
 #include "core/support/SmartPointerList.h"
 
-#include <QAction>
-#include <QWeakPointer>
+#include <QPointer>
+
+class QAction;
 
 namespace Amarok {
 
@@ -54,7 +55,7 @@ private:
     Meta::TrackPtr m_track;
 
     SmartPointerList<QAction> m_extraActions;
-    QWeakPointer<QAction> m_separator;
+    QPointer<QAction> m_separator;
 };
 
 }

@@ -24,13 +24,13 @@
 #include "core/support/Debug.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <kstringhandler_deprecated.h>      //TODO KF5: Take care of this when moving to QCollator from KStringHandler::naturalCompare()
-
+#include <QCollator>
 #include <QVariant>
 #include <QString>
 
 CollectionSortFilterProxyModel::CollectionSortFilterProxyModel(  QObject * parent )
     : QSortFilterProxyModel( parent )
+    , m_col( new QCollator )
 {
     setSortLocaleAware( true );
 
@@ -40,11 +40,14 @@ CollectionSortFilterProxyModel::CollectionSortFilterProxyModel(  QObject * paren
     setFilterCaseSensitivity( Qt::CaseInsensitive );
 
     setDynamicSortFilter( true );
+
+    m_col->setCaseSensitivity( Qt::CaseInsensitive );
 }
 
 
 CollectionSortFilterProxyModel::~CollectionSortFilterProxyModel()
 {
+    delete m_col;
 }
 
 bool
@@ -108,7 +111,7 @@ CollectionSortFilterProxyModel::lessThanTrack( const QModelIndex &left, const QM
 
     // compare by name
     {
-        int comp = KStringHandler::naturalCompare( leftTrack->sortableName(), rightTrack->sortableName(), Qt::CaseInsensitive );
+        int comp = m_col->compare( leftTrack->sortableName(), rightTrack->sortableName() );
         if( comp < 0 )
             return true;
         if( comp > 0 )
@@ -146,7 +149,7 @@ CollectionSortFilterProxyModel::lessThanAlbum( const QModelIndex &left, const QM
 
     // compare by name
     {
-        int comp = KStringHandler::naturalCompare( leftAlbum->sortableName(), rightAlbum->sortableName(), Qt::CaseInsensitive );
+        int comp = m_col->compare( leftAlbum->sortableName(), rightAlbum->sortableName() );
         if( comp < 0 )
             return true;
         if( comp > 0 )
@@ -172,7 +175,7 @@ CollectionSortFilterProxyModel::lessThanItem( const QModelIndex &left, const QMo
 
     // compare by name
     {
-        int comp = KStringHandler::naturalCompare( leftData->sortableName(), rightData->sortableName(), Qt::CaseInsensitive );
+        int comp = m_col->compare( leftData->sortableName(), rightData->sortableName() );
         if( comp < 0 )
             return true;
         if( comp > 0 )

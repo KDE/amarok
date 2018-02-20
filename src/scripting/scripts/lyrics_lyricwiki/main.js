@@ -25,10 +25,6 @@
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 **************************************************************************/
 
-Importer.loadQtBinding( "qt.core" );
-Importer.loadQtBinding( "qt.gui" );
-Importer.loadQtBinding( "qt.xml" );
-
 /* GLOBAL VARIABLES */
 // template for the xml object that will be populated and passed to Amarok.Lyrics.showLyrics()
 XML = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>";
@@ -65,20 +61,14 @@ function embed( lyricsXML )
     if( !embedLyrics )
         return;
 
-    var xml = new QXmlStreamReader( lyricsXML );
-    while( xml.readNextStartElement() )
+    Amarok.Xml.setReaderData( lyricsXML );
+    var lyrics = Amarok.Xml.readFirstElementWithName( "lyric" );
+    if( lyrics !== "" )
     {
-        if( xml.name() === "lyric" )
-        {
-            var lyrics = xml.readElementText();
-            if( lyrics !== "" )
-            {
-                Amarok.Engine.currentTrack().changeTags( { "lyrics":lyrics }, false );
-                Amarok.debug( "Writing lyrics to track." );
-                Amarok.debug( lyrics );
-                return;
-            }
-        }
+        Amarok.Engine.currentTrack().changeTags( { "lyrics":lyrics }, false );
+        Amarok.debug( "Writing lyrics to track." );
+        Amarok.debug( lyrics );
+        return;
     }
 }
 
@@ -95,15 +85,14 @@ function onHelpReceived( response )
             Amarok.Lyrics.showLyricsError( ERRORMSG );
         else
         {
-            var doc = new QDomDocument();
-            doc.setContent(response);
-            var urlstr = doc.elementsByTagName( "url" ).at( 0 ).toElement().text();
+            Amarok.Xml.setDomObjectData(response);
+            var urlstr = Amarok.Xml.textOfFirstDomElementWithName( "url" );
             var capture;
             if(capture = /.+\/([^?=:]+:[^?=:]+)$/.exec(urlstr))
             {
                   // matched url is like this one: http://lyrics.wikia.com/Nightwish:Sleepwalker
                   // but not like this: http://lyrics.wikia.com/index.php?title=Nightwish:Sleepwalker&action=edit
-                  var url = QUrl.fromEncoded( new QByteArray( APIURL + capture[1] ), 1);
+                  var url = APIURL + capture[1];
                                                                                        // this zero will not allow to execute this function again
                   new Downloader( url, new Function("response", "onLyricsReceived(response, 0)") );
             }
@@ -129,11 +118,10 @@ function onLyricsReceived( response, redirects )
             Amarok.Lyrics.showLyricsError( "Unable to contact server - no website returned" ); // TODO: this should be i18n able
         else
         {
-            var doc = new QDomDocument();
-            doc.setContent(response);
+            Amarok.Xml.setDomObjectData(response);
 
             var capture;
-            response = doc.elementsByTagName( "rev" ).at( 0 ).toElement().text();
+            response = Amarok.Xml.textOfFirstDomElementWithName( "rev" );
 
             if(capture = /<(lyrics?>)/i.exec(response))
             { // ok, lyrics found
@@ -158,15 +146,14 @@ function onLyricsReceived( response, redirects )
                     return;
                 }
 
-                var url = QUrl.fromEncoded( new QByteArray( APIURL + encodeURIComponent( capture[1] ) ), 1);
+                var url = APIURL + encodeURIComponent( capture[1] );
                 new Downloader( url, new Function("response", "onLyricsReceived(response, " + redirects + ")") );
             }
             else if(redirects < 0)
             { // if we get here after redirect than something go wrong, so checks that redirects < 0
                 // maybe lyricwiki can help us
                 var urlstr = "http://lyrics.wikia.com/api.php?action=lyrics&func=getSong&fmt=xml&artist=" + ARTIST + "&song=" + TITLE;
-                var url = QUrl.fromEncoded( new QByteArray( urlstr ), 1 );
-                new Downloader( url, onHelpReceived );
+                new Downloader( urlstr, onHelpReceived );
             }
             else
             {
@@ -229,10 +216,9 @@ function entityDecode(string)
     try
     {
         var convertxml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><body><entity>" + string + "</entity></body>";
-        var doc = new QDomDocument();
-        if(doc.setContent(convertxml))
+        if(Amarok.Xml.setDomObjectData(convertxml))
         { // xml is valid
-            return doc.elementsByTagName( "entity" ).at( 0 ).toElement().text();
+            return Amarok.Xml.textOfFirstDomElementWithName( "entity" );
         }
 
         return string;
@@ -273,7 +259,7 @@ function getLyrics( artist, title, url, track )
         TITLE  = title  = URLify( entityDecode(title) );
 
         // assemble the (encoded!) URL, build a QUrl out of it and dispatch the download request
-        var url = QUrl.fromEncoded( new QByteArray( APIURL + artist + ":" + title ), 1);
+        var url = APIURL + artist + ":" + title;
         Amarok.debug( "request URL: " + url.toString() );
                                                                           // there was no redirections yet
         new Downloader( url, new Function("response", "onLyricsReceived(response, -1)") );
@@ -285,17 +271,14 @@ function getLyrics( artist, title, url, track )
 }
 
 
-var menu = new QMenu( "LyricWiki", null );
-var embedLyricsAction = menu.addAction( "Embed Lyrics" );
-embedLyricsAction.checkable = true;
-embedLyricsAction.toggled.connect(
-                                    function( checked )
-                                    {
-                                        embedLyrics = checked;
-                                        Amarok.Script.writeConfig( "embedLyrics", embedLyrics );
-                                    }
-                                 );
-embedLyricsAction.checked = embedLyrics;
-Amarok.Window.addSettingsMenu( menu );
+Amarok.Window.addSettingsSeparator();
+Amarok.Window.addSettingsMenu( "LyricWiki" );
+Amarok.Window.addCustomAction( "LyricWiki", "EmbedLyrics", "Embed Lyrics" );
+Amarok.Window.LyricWiki.EmbedLyrics.checkable = true;
+Amarok.Window.LyricWiki.EmbedLyrics.checked = embedLyrics;
+Amarok.Window.LyricWiki.EmbedLyrics.toggled.connect( function( checked ) {
+                                                        embedLyrics = checked;
+                                                        Amarok.Script.writeConfig( "embedLyrics", embedLyrics );
+                                                     } );
 
 Amarok.Lyrics.fetchLyrics.connect( getLyrics );

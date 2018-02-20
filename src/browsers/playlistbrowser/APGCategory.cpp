@@ -22,8 +22,8 @@
 #include "widgets/PrettyTreeView.h"
 
 #include <QIcon>
-#include <KLocale>
-#include <KStandardDirs>
+#include <KLocalizedString>
+#include <QStandardPaths>
 
 #include <QAction>
 #include <QHBoxLayout>
@@ -128,7 +128,7 @@ PlaylistBrowserNS::APGCategory::~APGCategory()
 {
     APG::PresetModel::destroy();
     AmarokConfig::setQualityFactorAPG( m_qualityFactor );
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
 }
 
 void

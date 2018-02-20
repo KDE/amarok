@@ -22,19 +22,17 @@
 #include "core/playlists/PlaylistFormat.h"
 
 #include <KConfigGroup>
-#include <KDirLister>
-#include <KGlobalSettings>
-#include <QIcon>
-#include <KIconEffect>
-#include <KStandardDirs>
-#include <KUniqueApplication>
-#include <KGlobal>
+#include <KLocalizedString>
+#include <KSharedConfig>
 
+#include <QApplication>
 #include <QDateTime>
+#include <QIcon>
+#include <QLocale>
 #include <QPixmapCache>
-#include <QTextDocument>
+#include <QStandardPaths>
 
-QWeakPointer<KActionCollection> Amarok::actionCollectionObject;
+QPointer<KActionCollection> Amarok::actionCollectionObject;
 QMutex Amarok::globalDirsMutex;
 
 namespace Amarok
@@ -161,11 +159,11 @@ namespace Amarok
 
     QString generatePlaylistName( const Meta::TrackList tracks )
     {
-        QString datePart = KGlobal::locale()->formatDateTime( QDateTime::currentDateTime(),
-                                                              KLocale::ShortDate, true );
+        QString datePart = QLocale::system().toString( QDateTime::currentDateTime(),
+                                                       QLocale::ShortFormat );
         if( tracks.count() == 0 )
         {
-            return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
+            return i18nc( "A saved playlist with the current time (KLocalizedString::Shortdate) added between \
                           the parentheses",
                           "Empty Playlist (%1)", datePart );
         }
@@ -193,7 +191,7 @@ namespace Amarok
 
         if( ( !singleArtist && !singleAlbum ) ||
             ( !artist && !album ) )
-            return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
+            return i18nc( "A saved playlist with the current time (KLocalizedString::Shortdate) added between \
                           the parentheses",
                           "Various Tracks (%1)", datePart );
 
@@ -229,12 +227,12 @@ namespace Amarok
                       artistPart, albumPart );
     }
 
-   KActionCollection* actionCollection()  // TODO: constify?
+    KActionCollection* actionCollection()  // TODO: constify?
     {
         if( !actionCollectionObject )
         {
             actionCollectionObject = new KActionCollection( qApp );
-            actionCollectionObject.data()->setObjectName( "Amarok-KActionCollection" );
+            actionCollectionObject->setObjectName( "Amarok-KActionCollection" );
         }
 
         return actionCollectionObject.data();
@@ -243,7 +241,7 @@ namespace Amarok
     KConfigGroup config( const QString &group )
     {
         //Slightly more useful config() that allows setting the group simultaneously
-        return KGlobal::config()->group( group );
+        return KSharedConfig::openConfig()->group( group );
     }
 
     namespace ColorScheme
@@ -270,7 +268,15 @@ namespace Amarok
     QString saveLocation( const QString &directory )
     {
         globalDirsMutex.lock();
-        QString result = KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
+        QString result = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation ) + directory;
+
+        if( !result.endsWith('/') )
+           result.append('/');
+
+        QDir dir(result);
+        if( !dir.exists() )
+            dir.mkpath(".");
+
         globalDirsMutex.unlock();
         return result;
     }
@@ -414,8 +420,15 @@ namespace Amarok
         if( !QPixmapCache::find( AMAROK_LOGO_CACHE_KEY, &logo ) )
         {
             QImage amarokIcon = QIcon::fromTheme( QLatin1String("amarok") ).pixmap( dim, dim ).toImage();
-            KIconEffect::toGray( amarokIcon, 1 );
-            KIconEffect::semiTransparent( amarokIcon );
+            amarokIcon = amarokIcon.convertToFormat( QImage::Format_ARGB32 );
+            QRgb *data = reinterpret_cast<QRgb*>( amarokIcon.bits() );
+            QRgb *end = data + amarokIcon.byteCount() / 4;
+            while(data != end)
+            {
+                unsigned char gray = qGray(*data);
+                *data = qRgba(gray, gray, gray, 127);
+                ++data;
+            }
             logo = QPixmap::fromImage( amarokIcon );
             QPixmapCache::insert( AMAROK_LOGO_CACHE_KEY, logo );
         }

@@ -46,7 +46,7 @@ class IpodCopyTracksJob : public QObject, public ThreadWeaver::Job
          * @param goingToRemoveSources whether this is in fact a move operation
          */
         IpodCopyTracksJob( const QMap<Meta::TrackPtr,QUrl> &sources,
-                           const QWeakPointer<IpodCollection> &collection,
+                           const QPointer<IpodCollection> &collection,
                            const Transcoding::Configuration &configuration,
                            bool goingToRemoveSources );
         void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
@@ -103,7 +103,7 @@ class IpodCopyTracksJob : public QObject, public ThreadWeaver::Job
     private:
         void trackProcessed( CopiedStatus status, Meta::TrackPtr srcTrack, Meta::TrackPtr destTrack = Meta::TrackPtr() );
 
-        QWeakPointer<IpodCollection> m_coll;
+        QPointer<IpodCollection> m_coll;
         Transcoding::Configuration m_transcodingConfig;
         QMap<Meta::TrackPtr,QUrl> m_sources;
         QMultiHash<CopiedStatus, Meta::TrackPtr> m_sourceTrackStatus;

@@ -21,11 +21,11 @@
 #include "CoverFetchUnit.h"
 
 #include <KIO/Job>
-#include <QUrl>
 
 #include <QByteArray>
 #include <QList>
 #include <QObject>
+#include <QUrl>
 
 class CoverFetchPayload;
 

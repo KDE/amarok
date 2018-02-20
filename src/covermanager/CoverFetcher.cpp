@@ -32,12 +32,15 @@
 #include "CoverFoundDialog.h"
 #include "CoverFetchUnit.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <QUrl>
 
 #include <QBuffer>
 #include <QImageReader>
+#include <QUrl>
+
 #include <KConfigGroup>
+#include <KLocalizedString>
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 
@@ -134,7 +137,7 @@ CoverFetcher::queueQueryForAlbum( Meta::AlbumPtr album )
     QString query( album->name() );
     if( album->hasAlbumArtist() )
         query += ' ' + album->albumArtist()->name();
-    queueQuery( album, query, 0 );
+    queueQuery( album, query, 1 );
 }
 
 void
@@ -279,11 +282,11 @@ CoverFetcher::handleCoverPayload( const CoverFetchUnit::Ptr &unit, const QByteAr
 void
 CoverFetcher::slotDialogFinished()
 {
-    const CoverFetchUnit::Ptr unit = m_dialog.data()->unit();
-    switch( m_dialog.data()->result() )
+    const CoverFetchUnit::Ptr unit = m_dialog->unit();
+    switch( m_dialog->result() )
     {
     case QDialog::Accepted:
-        m_selectedImages.insert( unit, m_dialog.data()->image() );
+        m_selectedImages.insert( unit, m_dialog->image() );
         finish( unit );
         break;
 
@@ -307,7 +310,8 @@ CoverFetcher::slotDialogFinished()
             abortFetch( unit );
     }
 
-    m_dialog.data()->delayedDestruct();
+    m_dialog->hide();
+    m_dialog->deleteLater();
 }
 
 void
@@ -360,11 +364,11 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
 
         if( fetchSource() == CoverFetch::LastFm )
             queueQueryForAlbum( album );
-        m_dialog.data()->setQueryPage( 1 );
+        m_dialog->setQueryPage( 1 );
 
-        m_dialog.data()->show();
-        m_dialog.data()->raise();
-        m_dialog.data()->activateWindow();
+        m_dialog->show();
+        m_dialog->raise();
+        m_dialog->activateWindow();
     }
     else
     {
@@ -373,7 +377,7 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
             if( payload )
-                m_dialog.data()->add( cover, data, payload->imageSize() );
+                m_dialog->add( cover, data, payload->imageSize() );
         }
     }
 }
@@ -404,7 +408,8 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
-            Amarok::Components::logger()->shortMessage( text );
+            if( Amarok::Components::logger() )
+                Amarok::Components::logger()->shortMessage( text );
             debug() << "Finished successfully for album" << albumName;
         }
         album->setImage( m_selectedImages.take( unit ) );

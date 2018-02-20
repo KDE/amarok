@@ -64,6 +64,9 @@ class QtGroupingProxy : public QAbstractProxyModel
         virtual void fetchMore( const QModelIndex &parent );
         virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
+    Q_SIGNALS:
+        void renameIndex( const QModelIndex &idx );
+
     protected Q_SLOTS:
         virtual void buildTree();
 

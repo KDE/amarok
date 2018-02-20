@@ -31,8 +31,8 @@ class UmsPodcastChannel;
 class UmsPodcastProvider;
 
 
-typedef KSharedPtr<UmsPodcastEpisode> UmsPodcastEpisodePtr;
-typedef KSharedPtr<UmsPodcastChannel> UmsPodcastChannelPtr;
+typedef AmarokSharedPointer<UmsPodcastEpisode> UmsPodcastEpisodePtr;
+typedef AmarokSharedPointer<UmsPodcastChannel> UmsPodcastChannelPtr;
 
 typedef QList<UmsPodcastEpisodePtr> UmsPodcastEpisodeList;
 typedef QList<UmsPodcastChannelPtr> UmsPodcastChannelList;

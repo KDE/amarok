@@ -115,8 +115,8 @@ private:
     PopupDropper *m_pd;
     QMutex m_dragMutex;
     bool m_ongoingDrag;
-    QWeakPointer<Collections::Collection> m_moveDestinationCollection;
-    QWeakPointer<Collections::Collection> m_copyDestinationCollection;
+    QPointer<Collections::Collection> m_moveDestinationCollection;
+    QPointer<Collections::Collection> m_copyDestinationCollection;
 };
 
 #endif // end include guard

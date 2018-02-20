@@ -19,17 +19,17 @@
 #include "core/support/Debug.h"
 
 #include <QFile>
+#include <QStandardPaths>
 
-#include <KStandardDirs>
 #include <KTextEditor/View>
 #include <KTextEditor/Document>
 
 using namespace ScriptConsoleNS;
 
 AmarokScriptCodeCompletionModel::AmarokScriptCodeCompletionModel( QObject *parent )
-: CodeCompletionModel( parent )
+    : CodeCompletionModel( parent )
 {
-    const QUrl url( KStandardDirs::locate( "data", "amarok/scriptconsole/" ) );
+    const QUrl url( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/scriptconsole/" ) );
     QFile file( url.path() + "AutoComplete.txt" );
     if( file.open( QFile::ReadOnly ) )
     {
@@ -45,6 +45,8 @@ void
 AmarokScriptCodeCompletionModel::completionInvoked( KTextEditor::View *view, const KTextEditor::Range &range, KTextEditor::CodeCompletionModel::InvocationType invocationType )
 {
     Q_UNUSED( invocationType )
+
+    beginResetModel();
     m_completionList.clear();
     const QString &currentText = view->document()->text( range );
     foreach( const QString &completionItem, m_autoCompleteStrings )
@@ -53,8 +55,8 @@ AmarokScriptCodeCompletionModel::completionInvoked( KTextEditor::View *view, con
         if( index != -1 && !QStringRef( &completionItem, index, completionItem.size()-index ).contains( '.' ) && completionItem != currentText )
             m_completionList << completionItem;
     }
-    reset();
     setRowCount( m_completionList.count() );
+    endResetModel();
 }
 
 QVariant

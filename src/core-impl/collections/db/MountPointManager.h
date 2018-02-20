@@ -102,18 +102,18 @@ public:
      * idea by andrewt512: this method would only be called when we actually want to play the file, not when we
      * simply want to show it to the user. It could for example download a file using KIO and return a path to a
      * temporary file. Needs some more thought and is not actually used at the moment.
-     * @param absolutePath
-     * @param relativePath
+     * @param absoluteUrl
+     * @param relativeUrl
      */
-    virtual void getPlayableURL( QUrl &absolutePath, const QUrl &relativePath ) = 0;
+    virtual void getPlayableURL( QUrl &absoluteUrl, const QUrl &relativeUrl ) = 0;
 
     /**
      * builds an absolute path from a relative path and DeviceHandler specific information. The absolute path
      * is not necessarily playable! (based on an idea by andrewt512: allows better handling of files stored in remote  * collections. this method would return a "pretty" URL which might not be playable by amarok's engines.
-     * @param absolutePath the not necessarily playbale absolute path
-     * @param relativePath the device specific relative path
+     * @param absoluteUrl the not necessarily playbale absolute path
+     * @param relativeUrl the device specific relative path
      */
-    virtual void getURL( QUrl &absolutePath, const QUrl &relativePath ) = 0;
+    virtual void getURL( QUrl &absoluteUrl, const QUrl &relativeUrl ) = 0;
 
     /**
      * retrieves the unique database id of a given Medium. Implementations are responsible

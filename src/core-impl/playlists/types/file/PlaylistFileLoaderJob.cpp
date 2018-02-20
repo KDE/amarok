@@ -23,15 +23,15 @@
 #include "core/support/Debug.h"
 #include "core/support/SemaphoreReleaser.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KMessageBox>
-#include <QUrl>
 #include <KIO/Job>
 
 #include <QFile>
 #include <QFileInfo>
 #include <QString>
 #include <QTextStream>
+#include <QUrl>
 
 using namespace Playlists;
 
@@ -51,7 +51,7 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
     }
     else
     {
-        m_tempFile.setSuffix( '.' + Amarok::extension( url.url() ) );
+//         m_tempFile.setFileTemplate( QDir::tempPath() + "/XXXXXX." + Amarok::extension( url.url() ) );
         if( !m_tempFile.open() )
         {
             Amarok::Components::logger()->longMessage(

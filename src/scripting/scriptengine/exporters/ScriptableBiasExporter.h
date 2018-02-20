@@ -21,6 +21,7 @@
 #include "dynamic/BiasFactory.h"
 
 #include <QObject>
+#include <QPointer>
 #include <QScriptValue>
 #include <QString>
 #include <QXmlStreamReader>
@@ -177,7 +178,7 @@ namespace AmarokScript
             void ready( const Dynamic::TrackSet &trackSet );
 
         private:
-            QWeakPointer<ScriptableBiasFactory> m_scriptBias;
+            QPointer<ScriptableBiasFactory> m_scriptBias;
             QScriptEngine *m_engine;
             QScriptValue m_biasObject;
     };

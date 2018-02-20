@@ -25,7 +25,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <KGlobal>
+#include <KFormat>
+
 
 Constraint*
 ConstraintTypes::PlaylistFileSize::createFromXml( QDomElement& xmlelem, ConstraintNode* p )
@@ -127,7 +128,7 @@ ConstraintTypes::PlaylistFileSize::getName() const
     } else {
         v = ki18n( "Total file size of playlist: unknown");
     }
-    v = v.subs( KGlobal::locale()->formatByteSize( (double)getWantedSize(), 1, KLocale::MetricBinaryDialect ) );
+    v = v.subs( KFormat().formatByteSize( getWantedSize(), 1, KFormat::MetricBinaryDialect ) );
     return v.toString();
 }
 

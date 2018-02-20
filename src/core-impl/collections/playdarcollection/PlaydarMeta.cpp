@@ -17,6 +17,7 @@
 #include "PlaydarMeta.h"
 
 #include "amarokconfig.h"
+#include "AmarokSharedPointer.h"
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
 #include "core-impl/support/UrlStatisticsStore.h"
@@ -28,9 +29,8 @@
 #include <QList>
 #include <QPixmap>
 #include <QString>
-
-#include <KSharedPtr>
 #include <QUrl>
+#include <QUrlQuery>
 
 namespace Collections
 {
@@ -70,11 +70,13 @@ Meta::PlaydarTrack::PlaydarTrack( QString &sid,
     , m_comment( QString( "" ) )
     , m_source( source )
 {
+    QUrlQuery query;
     m_uidUrl.setScheme( QString( "playdar" ) );
     m_uidUrl.setPath(m_uidUrl.path() + '/' + source );
-    m_uidUrl.addQueryItem( QString( "artist" ), artist );
-    m_uidUrl.addQueryItem( QString( "album" ), album );
-    m_uidUrl.addQueryItem( QString( "title" ), name );
+    query.addQueryItem( QString( "artist" ), artist );
+    query.addQueryItem( QString( "album" ), album );
+    query.addQueryItem( QString( "title" ), name );
+    m_uidUrl.setQuery( query );
     m_statsStore = new UrlStatisticsStore( this );
 }
 
@@ -308,7 +310,7 @@ Meta::PlaydarTrack::addToCollection( Collections::PlaydarCollection *collection 
     if( m_collection.data() )
     {
         PlaydarTrackPtr sharedThis( this );
-        m_collection.data()->addNewTrack( sharedThis );
+        m_collection->addNewTrack( sharedThis );
     }
 }
 

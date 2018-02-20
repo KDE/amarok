@@ -17,20 +17,20 @@
 #ifndef AMAROK_LINE_EDIT_H
 #define AMAROK_LINE_EDIT_H
 
-#include <KLineEdit> //baseclass
+#include <QLineEdit> //baseclass
 
 class QKeyEvent;
 
 namespace Amarok
 {
     /**
-     * The Amarok::LineEdit class implements a few enhancements to KLineEdit
+     * The Amarok::LineEdit class implements a few enhancements to QLineEdit
      * Namely:
      *   1. Pressing the escape key clears the contents
      *   2. Pressing down emits the downPressed signal
      *   3. Pressing up emits the upPressed signal
      */
-    class LineEdit : public KLineEdit
+    class LineEdit : public QLineEdit
     {
         Q_OBJECT
 

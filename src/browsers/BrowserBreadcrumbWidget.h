@@ -17,11 +17,10 @@
 #ifndef BROWSERBREADCRUMBWIDGET_H
 #define BROWSERBREADCRUMBWIDGET_H
 
-#include <KHBox>
-#include <KLineEdit>
+#include "widgets/BoxWidget.h"
 
-#include <KPushButton>
 #include <QList>
+#include <QPushButton>
 #include <QStackedWidget>
 #include <QStringList>
 
@@ -34,7 +33,7 @@ class BrowserCategoryList;
  *
  *	@author Nikolaj Hald Nielsen <nhn@kde.org>
  */
-class BrowserBreadcrumbWidget : public KHBox
+class BrowserBreadcrumbWidget : public BoxWidget
 {
     Q_OBJECT
 public:
@@ -47,7 +46,6 @@ public:
 
     /**
      * Destructor
-     * @param parent the parent widget
      */
     ~BrowserBreadcrumbWidget();
 
@@ -92,7 +90,7 @@ private:
     /**
      * Recursive function that traverses the tree of BrowserCategoryList's
      * and adds each one as a level in the breadcrumb.
-     * @param level the root level BrowserCategoryList.
+     * @param list the root level BrowserCategoryList.
      */
     void addLevel( BrowserCategoryList *list );
 
@@ -107,7 +105,7 @@ private:
 
     QList<BrowserBreadcrumbItem *> m_items;
     QWidget *m_spacer;
-    KHBox *m_breadcrumbArea;
+    BoxWidget *m_breadcrumbArea;
 
     BreadcrumbItemMenuButton *m_childMenuButton;
 

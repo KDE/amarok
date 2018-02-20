@@ -21,7 +21,7 @@
 #include "amarok_export.h"
 #include "core/transcoding/TranscodingConfiguration.h"
 
-#include <KDialog>
+#include <QDialog>
 
 #include <QString>
 
@@ -57,13 +57,13 @@ namespace IpodDeviceHelper {
     /**
      * Fills in a dialog with iPod configuration.
      *
-     * @param configureDialog KDialog that coutains the ui. Must not be null
+     * @param configureDialog QDialog that coutains the ui. Must not be null
      * @param configureDialogUi ui of the dialog. Must not be null
      * @param itdb itdb of the device or null if could not be parsed
      * @param transcodeConfig current transcoding configuration preference
      * @param errorMessage from parsing/initializing itsb (empty if no error)
      */
-    AMAROK_EXPORT void fillInConfigureDialog( KDialog *configureDialog,
+    AMAROK_EXPORT void fillInConfigureDialog( QDialog *configureDialog,
                                               Ui::IpodConfiguration *configureDialogUi,
                                               const QString &mountPoint,
                                               Itdb_iTunesDB *itdb,

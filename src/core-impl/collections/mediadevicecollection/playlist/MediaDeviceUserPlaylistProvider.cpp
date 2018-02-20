@@ -30,7 +30,7 @@
 #include "playlistmanager/PlaylistManager.h"
 
 #include <QIcon>
-#include <KInputDialog>
+#include <QInputDialog>
 #include <QUrl>
 
 #include <QMap>

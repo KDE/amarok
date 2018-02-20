@@ -17,7 +17,6 @@
 #include "QueryMakerExporter.h"
 
 #include "core-impl/collections/support/TextualQueryFilter.h"
-#include "core/collections/QueryMaker.h"
 #include "scripting/scriptengine/ScriptingDefines.h"
 
 #include <QScriptEngine>
@@ -50,8 +49,8 @@ QueryMakerPrototype::run()
 {
     if( !m_querymaker )
         return;
-    m_querymaker.data()->setQueryType( Collections::QueryMaker::Track );
-    m_querymaker.data()->run();
+    m_querymaker->setQueryType( Collections::QueryMaker::Track );
+    m_querymaker->run();
 }
 
 Meta::TrackList
@@ -71,7 +70,7 @@ void
 QueryMakerPrototype::abort()
 {
     if( m_querymaker )
-        m_querymaker.data()->abortQuery();
+        m_querymaker->abortQuery();
 }
 
 //private
@@ -108,5 +107,5 @@ QueryMakerPrototype::slotResult( const Meta::TrackList &tracks )
 QueryMakerPrototype::~QueryMakerPrototype()
 {
     if( m_querymaker )
-        m_querymaker.data()->deleteLater();
+        m_querymaker->deleteLater();
 }

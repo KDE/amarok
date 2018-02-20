@@ -56,7 +56,7 @@ public:
     virtual int getDeviceID( );
     virtual const QString &getDevicePath() const;
     virtual void getURL( QUrl &absolutePath, const QUrl &relativePath );
-    virtual void getPlayableURL( QUrl &absolutePath, const QUrl &relativePath );
+    virtual void getPlayableURL( QUrl &absoluteUrl, const QUrl &relativeUrl );
     virtual bool deviceMatchesUdi( const QString &udi ) const;
 
 private:

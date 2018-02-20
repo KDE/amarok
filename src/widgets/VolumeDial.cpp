@@ -27,7 +27,7 @@
 #include <QToolTip>
 
 #include <KColorUtils>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <cmath>
 

@@ -31,11 +31,7 @@ IpodCollectionFactory.
 #ifndef AMAROK_MEDIADEVICEMONITOR_H
 #define AMAROK_MEDIADEVICEMONITOR_H
 
-//#include "MediaDeviceInfo.h"
-
 #include "amarok_export.h"
-#include "core-impl/collections/mediadevicecollection/support/ConnectionAssistant.h"
-#include "core/support/Debug.h"
 
 #include <QHash>
 #include <QList>

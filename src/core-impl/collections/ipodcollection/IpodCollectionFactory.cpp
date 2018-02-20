@@ -29,7 +29,9 @@
 
 IpodCollectionFactory::IpodCollectionFactory()
     : CollectionFactory()
-{}
+{
+}
+
 
 IpodCollectionFactory::~IpodCollectionFactory()
 {

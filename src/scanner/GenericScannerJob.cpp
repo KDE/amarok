@@ -56,8 +56,6 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_recursive( recursive )
     , m_charsetDetect( detectCharset )
 {
-    connect( this, &GenericScannerJob::done,
-             this, &GenericScannerJob::deleteLater ); // auto delete
 }
 
 GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
@@ -75,8 +73,6 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_recursive( true )
     , m_charsetDetect( false )
 {
-    connect( this, &GenericScannerJob::done,
-             this, &GenericScannerJob::deleteLater ); // auto delete
 }
 
 

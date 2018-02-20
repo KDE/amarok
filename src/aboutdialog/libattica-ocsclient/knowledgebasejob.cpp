@@ -24,8 +24,8 @@
 
 #include "knowledgebaseparser.h"
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
+
 #include <QDebug>
 #include <QTimer>
 

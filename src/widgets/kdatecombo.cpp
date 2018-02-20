@@ -23,11 +23,11 @@
 #include <QEvent>
 #include <QVBoxLayout>
 
-#include <KGlobal>
-#include <KLocale>
+
+#include <KLocalizedString>
 #include <KDatePicker>
 #include <KPopupFrame>
-#include <KDebug>
+#include <QDebug>
 #include <KConfigGroup>
 
 KDateCombo::KDateCombo(QWidget *parent) : QComboBox(parent)
@@ -70,12 +70,12 @@ KDateCombo::~KDateCombo()
 
 QString KDateCombo::date2String(const QDate & date)
 {
-  return(KGlobal::locale()->formatDate(date, KLocale::ShortDate));
+  return(QLocale().toString(date, QLocale::ShortFormat));
 }
 
 QDate & KDateCombo::string2Date(const QString & str, QDate *qd)
 {
-  return *qd = KGlobal::locale()->readDate(str);
+  return *qd = QLocale().toDate(str, QLocale::ShortFormat);
 }
 
 QDate & KDateCombo::getDate(QDate *currentDate)
@@ -108,7 +108,6 @@ void KDateCombo::nullDateEnteredEvent()
 {
     dateEnteredEvent(QDate());
 }
-
 
 void KDateCombo::mousePressEvent (QMouseEvent * e)
 {

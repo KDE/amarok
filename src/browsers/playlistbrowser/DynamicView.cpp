@@ -30,15 +30,12 @@
 #include "playlist/PlaylistActions.h"
 
 #include "PopupDropperFactory.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
+// #include "context/popupdropper/libpud/PopupDropperItem.h"
+// #include "context/popupdropper/libpud/PopupDropper.h"
 
 #include "PaletteHandler.h"
 
-#include <klocale.h>
-
 #include <QAction>
-#include <KGlobalSettings>
 #include <QMenu>
 
 #include <QAction>

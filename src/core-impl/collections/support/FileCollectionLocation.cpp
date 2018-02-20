@@ -27,7 +27,7 @@
 #include <kio/jobclasses.h>
 #include <kio/deletejob.h>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QDir>
 #include <QFile>

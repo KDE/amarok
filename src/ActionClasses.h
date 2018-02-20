@@ -21,12 +21,10 @@
 
 #include <QAction>
 #include <QMenu>
-#include <KToggleAction>
-#include <KSelectAction>
-#include <KGlobal>
 
-#include <QWeakPointer>
-#include <KAboutData>
+#include <KSelectAction>
+#include <KToggleAction>
+
 #include <Phonon/Global>
 
 class KActionCollection;

@@ -32,7 +32,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QTimer>
 #include <QMap>

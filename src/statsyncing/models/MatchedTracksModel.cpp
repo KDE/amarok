@@ -117,7 +117,7 @@ MatchedTracksModel::data( const QModelIndex &index, int role ) const
             return QVariant();
         return tupleData( tuple, field, role );
     }
-    else if( index.internalId() >= 0 && index.internalId() < m_matchedTuples.count() )
+    else if( index.internalId() < m_matchedTuples.count() )
     {
         TrackTuple tuple = m_matchedTuples.value( index.internalId() );
         ProviderPtr provider = tuple.provider( index.row() );
@@ -131,7 +131,7 @@ MatchedTracksModel::data( const QModelIndex &index, int role ) const
 bool
 MatchedTracksModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
-    if( !idx.isValid() || idx.internalId() < 0 ||
+    if( !idx.isValid() ||
         idx.internalId() >= m_matchedTuples.count() ||
         role != Qt::CheckStateRole )
     {

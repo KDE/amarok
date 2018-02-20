@@ -33,8 +33,7 @@
 #include <QHash>
 #include <QTimer>
 
-#include <KLocale>
-#include <kdemacros.h>
+#include <QtCore/QtGlobal>
 
 class AmarokMimeData;
 class QMimeData;

@@ -344,7 +344,7 @@ void Controller::synchronizeWithMode( int intMode )
     if( m_currentProcess )
     {
         if( mode == StatSyncing::Process::Interactive )
-            m_currentProcess.data()->raise();
+            m_currentProcess->raise();
         return;
     }
 
@@ -383,7 +383,7 @@ void Controller::synchronizeWithMode( int intMode )
     }
 
     m_currentProcess = new Process( m_providers, checkedProviders, fields, mode, this );
-    m_currentProcess.data()->start();
+    m_currentProcess->start();
 }
 
 void
@@ -429,7 +429,7 @@ Controller::findRegisteredProvider( const QString &id ) const
         if( provider->id() == id )
             return provider;
 
-    return ProviderPtr( 0 );
+    return ProviderPtr();
 }
 
 bool

@@ -19,8 +19,12 @@
 #include "UpnpQueryMakerInternal.h"
 
 #include "upnptypes.h"
-#include <kio/scheduler.h>
-#include <kio/jobclasses.h>
+
+#include <QUrlQuery>
+
+#include <KIO/ListJob>
+#include <KIO/Scheduler>
+#include <KIO/StatJob>
 
 #include "UpnpSearchCollection.h"
 #include "UpnpCache.h"
@@ -69,7 +73,9 @@ void UpnpQueryMakerInternal::runQuery( QUrl query, bool filter )
         && remoteCount > 0
         && filter ) {
         debug() << "FILTERING BY CLASS ONLY";
-        query.addQueryItem( "filter", "upnp:class" );
+        QUrlQuery q( query );
+        q.addQueryItem( "filter", "upnp:class" );
+        query.setQuery( q );
     }
 
     KIO::ListJob *job = KIO::listDir( query, KIO::HideProgressInfo );
@@ -82,7 +88,9 @@ void UpnpQueryMakerInternal::runQuery( QUrl query, bool filter )
 void UpnpQueryMakerInternal::runStat( const QString& id )
 {
     QUrl url( m_collection->collectionId() );
-    url.addQueryItem( "id", id );
+    QUrlQuery query( url );
+    query.addQueryItem( "id", id );
+    url.setQuery( query );
     debug() << "STAT URL" << url;
     KIO::StatJob *job = KIO::stat( url, KIO::HideProgressInfo );
     connect( job, &KJob::result, this, &UpnpQueryMakerInternal::slotStatDone );

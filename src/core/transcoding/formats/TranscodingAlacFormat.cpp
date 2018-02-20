@@ -16,7 +16,7 @@
 
 #include "TranscodingAlacFormat.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 using namespace Transcoding;
 

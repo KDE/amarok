@@ -53,7 +53,7 @@ class OrganiseCapabilityImpl : public Capabilities::OrganiseCapability
     virtual void deleteTrack();
 
     private:
-        KSharedPtr<Meta::SqlTrack> m_track;
+        AmarokSharedPointer<Meta::SqlTrack> m_track;
 };
 
 class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
@@ -76,7 +76,7 @@ class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
     }
 
     private:
-        KSharedPtr<Meta::SqlTrack> m_track;
+        AmarokSharedPointer<Meta::SqlTrack> m_track;
 };
 
 class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
@@ -89,10 +89,10 @@ class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
     virtual ~TimecodeLoadCapabilityImpl();
 
     virtual bool hasTimecodes();
-    virtual QList<KSharedPtr<AmarokUrl> > loadTimecodes();
+    virtual QList<AmarokSharedPointer<AmarokUrl> > loadTimecodes();
 
     private:
-        KSharedPtr<Meta::SqlTrack> m_track;
+        AmarokSharedPointer<Meta::SqlTrack> m_track;
 };
 
 
@@ -107,7 +107,7 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
     virtual void findInSource( QFlags<TargetTag> tag );
 
     private:
-        KSharedPtr<Meta::SqlTrack> m_track;
+        AmarokSharedPointer<Meta::SqlTrack> m_track;
 };
 
 

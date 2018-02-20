@@ -21,23 +21,22 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <KConfigGroup>
-#include <solid/device.h>
-#include <solid/deviceinterface.h>
-#include <solid/devicenotifier.h>
-#include <solid/genericinterface.h>
-#include <solid/opticaldisc.h>
-#include <solid/portablemediaplayer.h>
-#include <solid/storageaccess.h>
-#include <solid/storagedrive.h>
-#include <solid/block.h>
-#include <solid/storagevolume.h>
-
-#include <kmountpoint.h>
+#include <Solid/Block>
+#include <Solid/Device>
+#include <Solid/DeviceInterface>
+#include <Solid/DeviceNotifier>
+#include <Solid/GenericInterface>
+#include <Solid/OpticalDisc>
+#include <Solid/PortableMediaPlayer>
+#include <Solid/StorageAccess>
+#include <Solid/StorageDrive>
+#include <Solid/StorageVolume>
 
 #include <QDir>
 #include <QFile>
 #include <QList>
+
+#include <KConfigGroup>
 
 MediaDeviceCache* MediaDeviceCache::s_instance = 0;
 
@@ -350,7 +349,7 @@ MediaDeviceCache::isGenericEnabled( const QString &udi ) const
         debug() << "Could convert parent to PortableMediaPlayer, returning true";
         return true;
     }
-    if( QFile::exists( ssa->filePath() + QDir::separator() + ".is_audio_player" ) )
+    if( QFile::exists( ssa->filePath() + '/' + ".is_audio_player" ) )
     {
         return true;
     }

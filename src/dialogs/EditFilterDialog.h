@@ -23,7 +23,7 @@
 #include "widgets/MetaQueryWidget.h"
 #include "widgets/TokenPool.h"
 
-#include <KDialog>
+#include <QDialog>
 #include <QList>
 
 namespace Ui
@@ -31,7 +31,7 @@ namespace Ui
     class EditFilterDialog;
 }
 
-class EditFilterDialog : public KDialog
+class EditFilterDialog : public QDialog
 {
     Q_OBJECT
 

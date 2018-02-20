@@ -34,6 +34,7 @@
 #include <QObject>
 #include <QString>
 #include <QTimer>
+#include <QUrlQuery>
 
 namespace Collections
 {
@@ -42,7 +43,6 @@ namespace Collections
         , m_controller( 0 )
         , m_collectionIsManaged( false )
     {
-        m_info = KPluginInfo( "amarok_collection-playdarcollection.desktop" );
         DEBUG_BLOCK
     }
 
@@ -198,10 +198,11 @@ namespace Collections
     {
         DEBUG_BLOCK
 
+        QUrlQuery query( url );
         if( url.scheme() == uidUrlProtocol() &&
-            url.hasQueryItem( QString( "artist" ) ) &&
-            url.hasQueryItem( QString( "album" ) ) &&
-            url.hasQueryItem( QString( "title" ) ) )
+            query.hasQueryItem( QString( "artist" ) ) &&
+            query.hasQueryItem( QString( "album" ) ) &&
+            query.hasQueryItem( QString( "title" ) ) )
             return true;
         else
             return false;

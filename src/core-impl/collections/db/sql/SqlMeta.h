@@ -574,12 +574,12 @@ private:
     friend class Meta::SqlTrack; // needs to call notifyObservers
 };
 
-typedef KSharedPtr<SqlTrack> SqlTrackPtr;
-typedef KSharedPtr<SqlArtist> SqlArtistPtr;
-typedef KSharedPtr<SqlAlbum> SqlAlbumPtr;
-typedef KSharedPtr<SqlComposer> SqlComposerPtr;
-typedef KSharedPtr<SqlGenre> SqlGenrePtr;
-typedef KSharedPtr<SqlYear> SqlYearPtr;
+typedef AmarokSharedPointer<SqlTrack> SqlTrackPtr;
+typedef AmarokSharedPointer<SqlArtist> SqlArtistPtr;
+typedef AmarokSharedPointer<SqlAlbum> SqlAlbumPtr;
+typedef AmarokSharedPointer<SqlComposer> SqlComposerPtr;
+typedef AmarokSharedPointer<SqlGenre> SqlGenrePtr;
+typedef AmarokSharedPointer<SqlYear> SqlYearPtr;
 
 }
 

@@ -29,7 +29,7 @@
 
 using namespace ScriptConsoleNS;
 
-QWeakPointer<AmarokScriptCodeCompletionModel> ScriptEditorDocument::s_completionModel;
+QPointer<AmarokScriptCodeCompletionModel> ScriptEditorDocument::s_completionModel;
 
 ScriptEditorDocument::ScriptEditorDocument( QObject *parent, KTextEditor::Document* document )
 : QObject( parent )

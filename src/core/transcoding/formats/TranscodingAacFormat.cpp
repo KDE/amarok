@@ -16,7 +16,7 @@
 
 #include "TranscodingAacFormat.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QVariant>
 

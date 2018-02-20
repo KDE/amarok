@@ -199,7 +199,7 @@ p, li { white-space: pre-wrap; }
  </customwidgets>
  <includes>
   <include location="local">kcombobox.h</include>
-  <include location="local">klineedit.h</include>
+  <include location="local">qlineedit.h</include>
  </includes>
  <resources/>
  <connections/>

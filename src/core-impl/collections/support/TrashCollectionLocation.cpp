@@ -25,7 +25,7 @@
 
 
 #include <KIO/CopyJob>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QFile>
 

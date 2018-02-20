@@ -18,9 +18,8 @@
 
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
-#include "context/ContextView.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 
 ContextUrlGenerator * ContextUrlGenerator::s_instance = 0;

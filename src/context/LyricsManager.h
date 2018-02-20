@@ -19,11 +19,8 @@
 
 #include "amarok_export.h"
 
-#include <QUrl>
-
 #include <QStringList>
-#include <QList>
-#include <QString>
+#include <QUrl>
 #include <QVariant>
 
 class LyricsSubject;

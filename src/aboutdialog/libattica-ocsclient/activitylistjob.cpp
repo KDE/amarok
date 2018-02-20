@@ -26,8 +26,7 @@
 #include <QDebug>
 #include <QTimer>
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
 
 
 using namespace AmarokAttica;
@@ -54,8 +53,6 @@ Activity::List ActivityListJob::ActivityList() const
 
 void ActivityListJob::doWork()
 {
-  qDebug() << m_url;
-
   auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
   connect( job, &KIO::TransferJob::result,
            this, &ActivityListJob::slotJobResult );

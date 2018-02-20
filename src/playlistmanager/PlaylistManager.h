@@ -37,7 +37,7 @@ namespace Playlists {
     class PlaylistFile;
     class PlaylistFileProvider;
     class UserPlaylistProvider;
-    typedef KSharedPtr<PlaylistFile> PlaylistFilePtr;
+    typedef AmarokSharedPointer<PlaylistFile> PlaylistFilePtr;
 }
 
 namespace Podcasts {

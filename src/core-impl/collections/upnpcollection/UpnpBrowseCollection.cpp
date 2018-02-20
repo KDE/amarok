@@ -27,17 +27,16 @@
 #include "UpnpQueryMaker.h"
 #include "UpnpMeta.h"
 #include "UpnpCache.h"
+#include "upnptypes.h"
 
 #include <QDir>
 #include <QFileInfo>
 #include <QStringList>
 #include <QTimer>
 
-#include <KLocale>
-#include <kdatetime.h>
-#include "upnptypes.h"
+#include <KLocalizedString>
 #include <KIO/Scheduler>
-#include <KIO/JobClasses>
+#include <KIO/ListJob>
 
 using namespace Meta;
 

@@ -85,8 +85,6 @@ class AMAROK_EXPORT ScriptManager : public QObject
 
         void ServiceScriptCustomize( const QString &name );
 
-        static bool minimumBindingsAvailable();
-
         typedef QHash<QString, ScriptItem*> ScriptMap;
         ScriptMap      m_scripts;
         QString        m_lyricsScript;

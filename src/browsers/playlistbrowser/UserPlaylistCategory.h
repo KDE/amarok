@@ -19,7 +19,7 @@
 
 #include "PlaylistBrowserCategory.h"
 
-#include <KDialog>
+#include <QDialog>
 
 #include <QModelIndex>
 #include <QPoint>

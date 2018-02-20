@@ -23,14 +23,13 @@
 #include "MemoryCollection.h"
 #include "Reader.h"
 
+#include <QIcon>
 #include <QMap>
 #include <QHash>
 #include <QHostInfo>
-#include <QWeakPointer>
+#include <QPointer>
 #include <QtGlobal>
 #include <QSharedPointer>
-
-#include <QIcon>
 
 #include <DNSSD/RemoteService>
 
@@ -71,7 +70,7 @@ class DaapCollectionFactory : public Collections::CollectionFactory
     private:
         KDNSSD::ServiceBrowser* m_browser;
 
-        QMap<QString, QWeakPointer<DaapCollection> > m_collectionMap;
+        QMap<QString, QPointer<DaapCollection> > m_collectionMap;
 
         QHash<int, quint16> m_lookupHash;
 };

@@ -24,9 +24,8 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <KStandardDirs>
 #include <KIO/Job>
-#include <klocalizedstring.h>
+#include <KLocalizedString>
 
 #include <QDomDocument>
 #include <QDomNode>
@@ -34,7 +33,9 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QRadioButton>
+#include <QStandardPaths>
 #include <QTimer>
+#include <QUrlQuery>
 #include <QVBoxLayout>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -137,7 +138,7 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
     QLabel *imageLabel = new QLabel();
-    imageLabel->setPixmap( QPixmap( KStandardDirs::locate( "data", "amarok/images/echonest.png" ) ) );
+    imageLabel->setPixmap( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/echonest.png" ) ) );
     QLabel *label = new QLabel( i18n( "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is similar to" ) );
 
     QRadioButton *rb1 = new QRadioButton( i18n( "the previous track's artist" ) );
@@ -270,7 +271,7 @@ Dynamic::EchoNestBias::newQuery()
              this, &EchoNestBias::updateFinished );
 
     // - run the query
-    m_qm.data()->run();
+    m_qm->run();
 }
 
 void
@@ -380,6 +381,7 @@ QUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QStri
     params.insert( "format", "xml" );
 
     QUrl url;
+    QUrlQuery query;
     url.setScheme( "http" );
     url.setHost( "developer.echonest.com" );
     url.setPath( "/api/v4/" + method );
@@ -391,8 +393,9 @@ QUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QStri
         i.next();
         QByteArray const key = QUrl::toPercentEncoding( i.key() );
         QByteArray const value = QUrl::toPercentEncoding( i.value() );
-        url.addEncodedQueryItem( key, value );
+        query.addQueryItem( key, value );
     }
+    url.setQuery( query );
 
     return url;
 }

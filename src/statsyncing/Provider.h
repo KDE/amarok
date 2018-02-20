@@ -19,7 +19,6 @@
 
 #include "amarok_export.h"
 #include "statsyncing/Track.h"
-#include "support/QSharedDataPointerMisc.h" // operator<() for ProviderPtr
 
 #include <QIcon>
 #include <QMap>

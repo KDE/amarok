@@ -43,10 +43,11 @@
 #include "ui_TagDialogBase.h" // needs to be after including CoverLabel, silly
 #include "TagGuesserDialog.h"
 
-#include <KLineEdit>
+#include <QLineEdit>
 #include <QMenu>
+#include <QTimer>
+
 #include <KRun>
-#include <KGlobalSettings>
 
 namespace Meta {
 namespace Field {
@@ -59,7 +60,7 @@ namespace Field {
 }
 
 TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
-    : KDialog( parent )
+    : QDialog( parent )
     , m_perTrack( true )
     , m_currentTrackNum( 0 )
     , m_changed( false )
@@ -71,14 +72,14 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     foreach( Meta::TrackPtr track, tracks )
         addTrack( track );
 
-    ui->setupUi( mainWidget() );
+    ui->setupUi( this );
     resize( minimumSizeHint() );
     initUi();
     setCurrentTrack( 0 );
 }
 
 TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
-    : KDialog( parent )
+    : QDialog( parent )
     , m_perTrack( true )
     , m_currentTrackNum( 0 )
     , m_changed( false )
@@ -88,7 +89,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     DEBUG_BLOCK
 
     addTrack( track );
-    ui->setupUi( mainWidget() );
+    ui->setupUi( this );
     resize( minimumSizeHint() );
     initUi();
     setCurrentTrack( 0 );
@@ -97,7 +98,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
 }
 
 TagDialog::TagDialog( Collections::QueryMaker *qm )
-    : KDialog( The::mainWindow() )
+    : QDialog( The::mainWindow() )
     , m_perTrack( true )
     , m_currentTrackNum( 0 )
     , m_changed( false )
@@ -106,7 +107,7 @@ TagDialog::TagDialog( Collections::QueryMaker *qm )
 {
     DEBUG_BLOCK
 
-    ui->setupUi( mainWidget() );
+    ui->setupUi( this );
     resize( minimumSizeHint() );
 
     qm->setQueryType( Collections::QueryMaker::Track );
@@ -124,7 +125,7 @@ TagDialog::~TagDialog()
 {
     DEBUG_BLOCK
 
-    Amarok::config( "TagDialog" ).writeEntry( "CurrentTab", ui->kTabWidget->currentIndex() );
+    Amarok::config( "TagDialog" ).writeEntry( "CurrentTab", ui->qTabWidget->currentIndex() );
 
     if( m_currentTrack && m_currentTrack->album() )
         unsubscribeFrom( m_currentTrack->album() );
@@ -358,7 +359,7 @@ TagDialog::accept() //SLOT
     ui->pushButton_ok->setEnabled( false ); //visual feedback
     saveTags();
 
-    KDialog::accept();
+    QDialog::accept();
 }
 
 
@@ -419,13 +420,13 @@ TagDialog::labelSelected() //SLOT
     ui->removeButton->setEnabled( ui->labelsList->selectionModel()->hasSelection() );
 }
 
-//creates a KDialog and executes the FilenameLayoutWidget. Grabs a filename scheme, extracts tags (via TagGuesser) from filename and fills the appropriate fields on TagDialog.
+//creates a QDialog and executes the FilenameLayoutWidget. Grabs a filename scheme, extracts tags (via TagGuesser) from filename and fills the appropriate fields on TagDialog.
 void
 TagDialog::guessFromFilename() //SLOT
 {
     TagGuesserDialog dialog( m_currentTrack->playableUrl().path(), this );
 
-    if( dialog.exec() == KDialog::Accepted )
+    if( dialog.exec() == QDialog::Accepted )
     {
         dialog.onAccept();
 
@@ -499,14 +500,13 @@ void TagDialog::initUi()
     DEBUG_BLOCK
     // delete itself when closing
     setAttribute( Qt::WA_DeleteOnClose );
-    setButtons( KDialog::None );
 
     KConfigGroup config = Amarok::config( "TagDialog" );
 
-    ui->kTabWidget->addTab( ui->summaryTab   , i18n( "Summary" ) );
-    ui->kTabWidget->addTab( ui->tagsTab      , i18n( "Tags" ) );
-    ui->kTabWidget->addTab( ui->lyricsTab    , i18n( "Lyrics" ) );
-    ui->kTabWidget->addTab( ui->labelsTab , i18n( "Labels" ) );
+    ui->qTabWidget->addTab( ui->summaryTab   , i18n( "Summary" ) );
+    ui->qTabWidget->addTab( ui->tagsTab      , i18n( "Tags" ) );
+    ui->qTabWidget->addTab( ui->lyricsTab    , i18n( "Lyrics" ) );
+    ui->qTabWidget->addTab( ui->labelsTab , i18n( "Labels" ) );
 
     ui->kComboBox_label->completionObject()->setIgnoreCase( true );
     ui->kComboBox_label->setCompletionMode( KCompletion::CompletionPopup );
@@ -515,7 +515,7 @@ void TagDialog::initUi()
     ui->labelsList->setModel( m_labelModel );
     ui->labelsTab->setEnabled( true );
 
-    ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
+    ui->qTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
     ui->kComboBox_artist->completionObject()->setIgnoreCase( true );
     ui->kComboBox_artist->setCompletionMode( KCompletion::CompletionPopup );
@@ -545,17 +545,17 @@ void TagDialog::initUi()
 
     // Connects for modification check
     // only set to overwrite-on-save if the text has changed
-    connect( ui->kLineEdit_title,       &KLineEdit::textChanged, this, &TagDialog::checkChanged );
+    connect( ui->kLineEdit_title,       &QLineEdit::textChanged, this, &TagDialog::checkChanged );
     connect( ui->kComboBox_composer,    QOverload<int>::of(&QComboBox::activated), this, &TagDialog::checkChanged );
-    connect( ui->kComboBox_composer,    &KComboBox::editTextChanged, this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_composer,    &QComboBox::editTextChanged, this, &TagDialog::checkChanged );
     connect( ui->kComboBox_artist,      QOverload<int>::of(&QComboBox::activated), this, &TagDialog::checkChanged );
-    connect( ui->kComboBox_artist,      &KComboBox::editTextChanged, this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_artist,      &QComboBox::editTextChanged, this, &TagDialog::checkChanged );
     connect( ui->kComboBox_album,       QOverload<int>::of(&QComboBox::activated), this, &TagDialog::checkChanged );
-    connect( ui->kComboBox_album,       &KComboBox::editTextChanged, this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_album,       &QComboBox::editTextChanged, this, &TagDialog::checkChanged );
     connect( ui->kComboBox_albumArtist, QOverload<int>::of(&QComboBox::activated), this, &TagDialog::checkChanged );
-    connect( ui->kComboBox_albumArtist, &KComboBox::editTextChanged, this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_albumArtist, &QComboBox::editTextChanged, this, &TagDialog::checkChanged );
     connect( ui->kComboBox_genre,       QOverload<int>::of(&QComboBox::activated), this, &TagDialog::checkChanged );
-    connect( ui->kComboBox_genre,       &KComboBox::editTextChanged, this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_genre,       &QComboBox::editTextChanged, this, &TagDialog::checkChanged );
     connect( ui->kLineEdit_Bpm,         &QLineEdit::textChanged, this, &TagDialog::checkChanged );
     connect( ui->ratingWidget,          QOverload<int>::of(&KRatingWidget::ratingChanged), this, &TagDialog::checkChanged );
     connect( ui->qSpinBox_track,        QOverload<int>::of(&QSpinBox::valueChanged), this, &TagDialog::checkChanged );
@@ -574,8 +574,8 @@ void TagDialog::initUi()
 
     connect( ui->addButton,           &QAbstractButton::clicked, this, &TagDialog::addLabelPressed );
     connect( ui->removeButton,        &QAbstractButton::clicked, this, &TagDialog::removeLabelPressed );
-    connect( ui->kComboBox_label,     QOverload<int>::of(&QComboBox::activated), this, &TagDialog::labelModified );
-    connect( ui->kComboBox_label,     &KComboBox::editTextChanged, this, &TagDialog::labelModified );
+    connect( ui->kComboBox_label,     QOverload<int>::of(&KComboBox::activated), this, &TagDialog::labelModified );
+    connect( ui->kComboBox_label,     &QComboBox::editTextChanged, this, &TagDialog::labelModified );
     connect( ui->kComboBox_label,     QOverload<>::of(&KComboBox::returnPressed), this, &TagDialog::addLabelPressed );
     connect( ui->kComboBox_label,     QOverload<>::of(&KComboBox::returnPressed), this, &TagDialog::checkChanged );
     connect( ui->labelsList,          &QListView::pressed, this, &TagDialog::labelSelected );
@@ -726,13 +726,13 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
         QString curTrackAlbName;
         QString curArtistName;
 
-        QString curTrackName = fnt.elidedText( Qt::escape( m_currentTrack->name() ), Qt::ElideRight, len );
-        QString curTrackPretName = fnt.elidedText( Qt::escape( m_currentTrack->prettyName() ), Qt::ElideRight, len );
+        QString curTrackName = fnt.elidedText( m_currentTrack->name().toHtmlEscaped(), Qt::ElideRight, len );
+        QString curTrackPretName = fnt.elidedText( m_currentTrack->prettyName().toHtmlEscaped(), Qt::ElideRight, len );
 
         if( m_currentTrack->album() )
-            curTrackAlbName = fnt.elidedText( Qt::escape( m_currentTrack->album()->name() ), Qt::ElideRight, len );
+            curTrackAlbName = fnt.elidedText( m_currentTrack->album()->name().toHtmlEscaped(), Qt::ElideRight, len );
         if( m_currentTrack->artist() )
-            curArtistName = fnt.elidedText( Qt::escape( m_currentTrack->artist()->name() ), Qt::ElideRight, len );
+            curArtistName = fnt.elidedText( m_currentTrack->artist()->name().toHtmlEscaped(), Qt::ElideRight, len );
 
 
         if( m_currentTrack->album() && m_currentTrack->album()->name().isEmpty() )
@@ -1251,15 +1251,15 @@ TagDialog::setControlsAccessability()
 {
     bool editable = m_currentTrack ? bool( m_currentTrack->editor() ) : true;
 
-    ui->kTabWidget->setTabEnabled( ui->kTabWidget->indexOf(ui->lyricsTab),
+    ui->qTabWidget->setTabEnabled( ui->qTabWidget->indexOf(ui->lyricsTab),
                                    m_perTrack );
 
     ui->kLineEdit_title->setEnabled( m_perTrack && editable );
-    ui->kLineEdit_title->setClearButtonShown( m_perTrack && editable );
+    ui->kLineEdit_title->setClearButtonEnabled( m_perTrack && editable );
 
 #define enableOrDisable( X ) \
     ui->X->setEnabled( editable ); \
-    qobject_cast<KLineEdit*>(ui->X->lineEdit())->setClearButtonShown( editable )
+    qobject_cast<QLineEdit*>(ui->X->lineEdit())->setClearButtonEnabled( editable )
 
     enableOrDisable( kComboBox_artist );
     enableOrDisable( kComboBox_albumArtist );
@@ -1273,7 +1273,7 @@ TagDialog::setControlsAccessability()
     ui->qSpinBox_discNumber->setEnabled( editable );
     ui->qSpinBox_year->setEnabled( editable );
     ui->kLineEdit_Bpm->setEnabled( editable );
-    ui->kLineEdit_Bpm->setClearButtonShown( editable );
+    ui->kLineEdit_Bpm->setClearButtonEnabled( editable );
 
     ui->qPlainTextEdit_comment->setEnabled( editable );
     ui->pushButton_guessTags->setEnabled( m_perTrack && editable );
@@ -1412,5 +1412,3 @@ TagDialog::musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap> resu
     else
         setTagsToUi( getTagsFromMultipleTracks() );
 }
-
-#include "moc_TagDialog.cpp"

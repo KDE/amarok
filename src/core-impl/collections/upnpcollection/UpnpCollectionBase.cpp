@@ -20,7 +20,6 @@
 
 #include "upnptypes.h"
 #include <KIO/Scheduler>
-#include <KIO/JobClasses>
 #include <KIO/Slave>
 
 #include "core/support/Debug.h"

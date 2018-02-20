@@ -19,10 +19,10 @@
 #include "core/support/Debug.h"
 
 #include <QIcon>
-#include <KLocale>
-
-#include <QLayout>
 #include <QMutexLocker>
+
+#include <KLocalizedString>
+
 
 CompoundProgressBar::CompoundProgressBar( QWidget *parent )
         : ProgressBar( parent )

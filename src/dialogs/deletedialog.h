@@ -20,7 +20,7 @@
 
 #include "ui_deletedialogbase.h"
 
-#include <KDialog>
+#include <QDialog>
 #include <QUrl>
 
 #include <QCheckBox>
@@ -51,7 +51,7 @@ protected Q_SLOTS:
     virtual void slotShouldDelete(bool shouldDelete);
 };
 
-class DeleteDialog : public KDialog
+class DeleteDialog : public QDialog
 {
     Q_OBJECT
 

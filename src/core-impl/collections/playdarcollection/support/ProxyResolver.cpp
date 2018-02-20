@@ -21,9 +21,9 @@
 #include "../PlaydarMeta.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 
-#include <QUrl>
-
 #include <QObject>
+#include <QUrl>
+#include <QUrlQuery>
 
 Playdar::ProxyResolver::ProxyResolver( Collections::PlaydarCollection *collection,
                                        const QUrl &url, MetaProxy::TrackPtr track )

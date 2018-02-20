@@ -26,16 +26,18 @@
 #include "core/support/Debug.h"
 #include "core-impl/meta/file/File.h"
 #include "dialogs/TrackOrganizer.h"
+#include "widgets/BoxWidget.h"
 #include "widgets/TokenPool.h"
 #include "ui_OrganizeCollectionDialogBase.h"
-
-#include <KColorScheme>
-#include <KInputDialog>
 
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDir>
+#include <QPushButton>
 #include <QTimer>
+
+#include <KColorScheme>
+#include <KWindowConfig>
 
 // -------------- OrganizeCollectionOptionWidget ------------
 OrganizeCollectionOptionWidget::OrganizeCollectionOptionWidget( QWidget *parent )
@@ -47,8 +49,8 @@ OrganizeCollectionOptionWidget::OrganizeCollectionOptionWidget( QWidget *parent 
     connect( ignoreTheCheck, &QCheckBox::toggled, this, &OrganizeCollectionOptionWidget::optionsChanged );
     connect( vfatCheck, &QCheckBox::toggled, this, &OrganizeCollectionOptionWidget::optionsChanged );
     connect( asciiCheck, &QCheckBox::toggled, this, &OrganizeCollectionOptionWidget::optionsChanged );
-    connect( regexpEdit, &KLineEdit::editingFinished, this, &OrganizeCollectionOptionWidget::optionsChanged );
-    connect( replaceEdit, &KLineEdit::editingFinished, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( regexpEdit, &QLineEdit::editingFinished, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( replaceEdit, &QLineEdit::editingFinished, this, &OrganizeCollectionOptionWidget::optionsChanged );
 }
 
 // ------------------------- OrganizeCollectionWidget -------------------
@@ -136,25 +138,23 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
                                                     const char *name,
                                                     bool modal,
                                                     const QString &caption,
-                                                    QFlags<KDialog::ButtonCode> buttonMask )
-    : KDialog( parent )
+                                                    QFlags<QDialogButtonBox::StandardButton> buttonMask )
+    : QDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
     , m_conflict( false )
 {
     Q_UNUSED( name )
 
-    setCaption( caption );
+    setWindowTitle( caption );
     setModal( modal );
-    setButtons( buttonMask );
-    showButtonSeparator( true );
     m_targetFileExtension = targetExtension;
 
     if( tracks.size() > 0 )
         m_allTracks = tracks;
 
-    KVBox *mainVBox = new KVBox( this );
-    setMainWidget( mainVBox );
+    BoxWidget *mainVBox = new BoxWidget( true, this );
     QWidget *mainContainer = new QWidget( mainVBox );
+    new QDialogButtonBox( buttonMask, mainVBox );
 
     ui->setupUi( mainContainer );
 
@@ -175,7 +175,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->optionsWidget->setRegexpText( AmarokConfig::replacementRegexp() );
     ui->optionsWidget->setReplaceText( AmarokConfig::replacementString() );
 
-    ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
+    ui->previewTableWidget->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
     ui->conflictLabel->setText("");
     QPalette p = ui->conflictLabel->palette();
     KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
@@ -188,7 +188,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->organizeCollectionWidget->hide();
     ui->optionsWidget->hide();
 
-    connect( ui->folderCombo, QOverload<const QString&>::of(&KComboBox::currentIndexChanged),
+    connect( ui->folderCombo, QOverload<const QString&>::of(&QComboBox::currentIndexChanged),
              this, &OrganizeCollectionDialog::slotUpdatePreview );
     connect( ui->organizeCollectionWidget, &OrganizeCollectionWidget::schemeChanged, this, &OrganizeCollectionDialog::slotUpdatePreview );
     connect( ui->optionsWidget, &OrganizeCollectionOptionWidget::optionsChanged, this, &OrganizeCollectionDialog::slotUpdatePreview);
@@ -197,11 +197,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     connect( this, &OrganizeCollectionDialog::accepted, ui->organizeCollectionWidget, &OrganizeCollectionWidget::onAccept );
     connect( this, &OrganizeCollectionDialog::accepted, this, &OrganizeCollectionDialog::slotDialogAccepted );
-    connect( ui->folderCombo, QOverload<const QString&>::of(&KComboBox::currentIndexChanged),
+    connect( ui->folderCombo, QOverload<const QString&>::of(&QComboBox::currentIndexChanged),
              this, &OrganizeCollectionDialog::slotEnableOk );
 
     slotEnableOk( ui->folderCombo->currentText() );
-    restoreDialogSize( Amarok::config( "OrganizeCollectionDialog" ) );
+    KWindowConfig::restoreWindowSize( windowHandle(), Amarok::config( "OrganizeCollectionDialog" ) );
 
     QTimer::singleShot( 0, this, &OrganizeCollectionDialog::slotUpdatePreview );
 }
@@ -209,7 +209,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
 {
     KConfigGroup group = Amarok::config( "OrganizeCollectionDialog" );
-    saveDialogSize( group );
+    group.writeEntry( "geometry", saveGeometry() );
 
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     delete ui;
@@ -401,8 +401,7 @@ OrganizeCollectionDialog::slotDialogAccepted()
 void
 OrganizeCollectionDialog::slotEnableOk( const QString & currentCollectionRoot )
 {
-    if( currentCollectionRoot == 0 )
-        enableButtonOk( false );
-    else
-        enableButtonOk( true );
+    auto okButton = findChild<QDialogButtonBox*>()->button( QDialogButtonBox::Ok );
+    if( okButton )
+        okButton->setEnabled( !currentCollectionRoot.isEmpty() );
 }

@@ -20,7 +20,7 @@
 #include "widgets/TokenDropTarget.h"
 
 #include <QIcon>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QButtonGroup>
 #include <QComboBox>
@@ -194,18 +194,18 @@ void LayoutEditDialog::apply()
     if( !m_token )
         return;
 
-    m_token.data()->setPrefix( m_prefix->text() );
-    m_token.data()->setSuffix( m_suffix->text() );
-    m_token.data()->setWidth( m_width->value() );
+    m_token->setPrefix( m_prefix->text() );
+    m_token->setSuffix( m_suffix->text() );
+    m_token->setWidth( m_width->value() );
     if ( m_alignLeft->isChecked() )
-        m_token.data()->setAlignment( Qt::AlignLeft );
+        m_token->setAlignment( Qt::AlignLeft );
     else if ( m_alignCenter->isChecked() )
-        m_token.data()->setAlignment( Qt::AlignHCenter );
+        m_token->setAlignment( Qt::AlignHCenter );
     else if ( m_alignRight->isChecked() )
-        m_token.data()->setAlignment( Qt::AlignRight );
-    m_token.data()->setBold( m_bold->isChecked() );
-    m_token.data()->setItalic( m_italic->isChecked() );
-    m_token.data()->setUnderline( m_underline->isChecked() );
+        m_token->setAlignment( Qt::AlignRight );
+    m_token->setBold( m_bold->isChecked() );
+    m_token->setItalic( m_italic->isChecked() );
+    m_token->setUnderline( m_underline->isChecked() );
 
     // we do this here to avoid reliance on the connection order (i.e. prevent close before apply)
     if( sender() )
@@ -242,15 +242,15 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
     m_token = t;
     if ( m_token )
     {
-        m_element->setText( m_token.data()->name() );
-        m_prefix->setText( m_token.data()->prefix() );
-        m_suffix->setText( m_token.data()->suffix() );
+        m_element->setText( m_token->name() );
+        m_prefix->setText( m_token->prefix() );
+        m_suffix->setText( m_token->suffix() );
 
 
         // Compute the remaining space from the tokens on the same line.
         // this should still not be done here as it makes upward assumptions
         // solution(?) token->element->row->elements
-        TokenDropTarget *editWidget = qobject_cast<TokenDropTarget*>( m_token.data()->parentWidget() );
+        TokenDropTarget *editWidget = qobject_cast<TokenDropTarget*>( m_token->parentWidget() );
         if( editWidget )
         {
             qreal spareWidth = 100.0;
@@ -270,29 +270,29 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
 
             int max = qMax( spareWidth, qreal( 0.0 ) );
 
-            if( max >= m_token.data()->width() * 100.0 )
+            if( max >= m_token->width() * 100.0 )
                 m_width->setMaximum( qMax( spareWidth, qreal( 0.0 ) ) );
             else
-                m_width->setMaximum( m_token.data()->width() * 100.0 );
+                m_width->setMaximum( m_token->width() * 100.0 );
         }
-        m_width->setValue( m_token.data()->width() * 100.0 );
+        m_width->setValue( m_token->width() * 100.0 );
         m_previousWidth = m_width->value();
         
-        if ( m_token.data()->width() > 0.0 )
+        if ( m_token->width() > 0.0 )
             m_fixedWidth->setChecked( true );
         else
             m_automaticWidth->setChecked( true );
 
-        if ( m_token.data()->alignment() & Qt::AlignLeft )
+        if ( m_token->alignment() & Qt::AlignLeft )
             m_alignLeft->setChecked(true);
-        else if ( m_token.data()->alignment() & Qt::AlignHCenter )
+        else if ( m_token->alignment() & Qt::AlignHCenter )
             m_alignCenter->setChecked(true);
-        else if ( m_token.data()->alignment() & Qt::AlignRight )
+        else if ( m_token->alignment() & Qt::AlignRight )
             m_alignRight->setChecked(true);
 
-        m_bold->setChecked( m_token.data()->bold() );
-        m_italic->setChecked( m_token.data()->italic() );
-        m_underline->setChecked( m_token.data()->underline() );
+        m_bold->setChecked( m_token->bold() );
+        m_italic->setChecked( m_token->italic() );
+        m_underline->setChecked( m_token->underline() );
     }
 }
 

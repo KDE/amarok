@@ -25,7 +25,6 @@
 #include "../ServiceMetaBase.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 
-#include <KIconLoader>
 
 using namespace Meta;
 

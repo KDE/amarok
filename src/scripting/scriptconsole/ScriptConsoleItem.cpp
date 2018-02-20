@@ -62,7 +62,7 @@ ScriptConsoleItem::~ScriptConsoleItem()
             debug() << "Directory %1 not removed, contains other files";
     }
     if( m_view )
-        m_view.data()->deleteLater();
+        m_view->deleteLater();
 }
 
 KPluginInfo
@@ -88,6 +88,7 @@ ScriptConsoleItem::createSpecFile( const QString &name, const QString &category,
     }
     QTextStream stream( &file );
     stream << specs;
+    file.close();
     return KPluginInfo( specPath );
 }
 
@@ -113,7 +114,7 @@ ScriptConsoleItem::createEditorView( QWidget *parent )
     if( !m_view )
         m_view = m_viewFactory->createView( parent );
     else
-        m_view.data()->setParent( parent );
+        m_view->setParent( parent );
     return m_view.data();
 }
 

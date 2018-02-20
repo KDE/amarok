@@ -24,11 +24,11 @@ namespace Playlists
 {
 class PlaylistProvider;
 class SqlPlaylist;
-typedef KSharedPtr<SqlPlaylist> SqlPlaylistPtr;
+typedef AmarokSharedPointer<SqlPlaylist> SqlPlaylistPtr;
 typedef QList<SqlPlaylistPtr> SqlPlaylistList;
 
 class SqlPlaylistGroup;
-typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
+typedef AmarokSharedPointer<SqlPlaylistGroup> SqlPlaylistGroupPtr;
 typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
 /**

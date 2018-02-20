@@ -401,7 +401,7 @@ ConstraintTypes::CheckpointEditWidget::CheckpointEditWidget( const qint64 length
 {
     ui.setupUi( this );
 
-    ui.timeEdit_Position->setTime( QTime().addMSecs( length ) );
+    ui.timeEdit_Position->setTime( QTime(0, 0, 0).addMSecs( length ) );
     ui.slider_Strictness->setValue( strictness );
     ui.trackSelector->setData( data );
 }
@@ -409,7 +409,7 @@ ConstraintTypes::CheckpointEditWidget::CheckpointEditWidget( const qint64 length
 void
 ConstraintTypes::CheckpointEditWidget::on_timeEdit_Position_timeChanged( const QTime& t )
 {
-    emit positionChanged( QTime().msecsTo( t ) );
+    emit positionChanged( QTime(0, 0, 0).msecsTo( t ) );
     emit updated();
 }
 

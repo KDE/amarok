@@ -21,12 +21,13 @@
 
 #include "postjob.h"
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
 
 #include <QXmlStreamReader>
 #include <QDebug>
 #include <QTimer>
+#include <QUrlQuery>
+
 using namespace AmarokAttica;
 
 PostJob::PostJob()
@@ -64,9 +65,11 @@ void PostJob::doWork()
   QString postData;
 
   const QStringList dataKeys = m_data.keys();
+  QUrlQuery query;
   foreach( const QString &name, dataKeys ) {
-    m_url.addQueryItem( name, m_data.value( name ) );
+    query.addQueryItem( name, m_data.value( name ) );
   }
+  m_url.setQuery( query );
 
   qDebug() << m_url;
 

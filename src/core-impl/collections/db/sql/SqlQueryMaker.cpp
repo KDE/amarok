@@ -478,7 +478,7 @@ SqlQueryMaker::addMatch( const Meta::YearPtr &year )
 QueryMaker*
 SqlQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
-    KSharedPtr<Meta::SqlLabel> sqlLabel = KSharedPtr<Meta::SqlLabel>::dynamicCast( label );
+    AmarokSharedPointer<Meta::SqlLabel> sqlLabel = AmarokSharedPointer<Meta::SqlLabel>::dynamicCast( label );
     QString labelSubQuery;
     if( sqlLabel )
     {

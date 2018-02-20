@@ -19,13 +19,13 @@
 
 #include "amarok_export.h"
 
-#include <KDialog>
+#include <QDialog>
 
 class KAboutData;
 class QPlainTextEdit;
 
 
-class AMAROK_EXPORT DiagnosticDialog : public KDialog
+class AMAROK_EXPORT DiagnosticDialog : public QDialog
 {
     Q_OBJECT
 

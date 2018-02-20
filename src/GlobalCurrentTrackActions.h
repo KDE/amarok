@@ -21,10 +21,8 @@
 #include "core/meta/forward_declarations.h"
 #include "core/support/SmartPointerList.h"
 
-#include <QAction>
-
-
 class GlobalCurrentTrackActions;
+class QAction;
 
 namespace The {
     AMAROK_EXPORT GlobalCurrentTrackActions* globalCurrentTrackActions();

@@ -19,8 +19,6 @@
 
 #include <core/support/Amarok.h>
 
-#include <KConfigGroup>
-
 
 MySqleStorageFactory::MySqleStorageFactory()
     : StorageFactory()

@@ -27,7 +27,7 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QHBoxLayout>
 #include <QMouseEvent>

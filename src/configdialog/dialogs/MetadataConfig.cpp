@@ -176,8 +176,8 @@ MetadataConfig::hasChanged()
         m_writeBackCover->isChecked() != AmarokConfig::writeBackCover() ||
         writeBackCoverDimensions() != AmarokConfig::writeBackCoverDimensions() ||
         m_useCharsetDetector->isChecked() != AmarokConfig::useCharsetDetector() ||
-        ( m_statSyncingConfig.data() ? ( checkedFields() != m_statSyncingConfig.data()->checkedFields() ) : false ) ||
-        ( m_statSyncingConfig.data() ? m_statSyncingConfig.data()->hasChanged() : false );
+        ( m_statSyncingConfig.data() ? ( checkedFields() != m_statSyncingConfig->checkedFields() ) : false ) ||
+        ( m_statSyncingConfig.data() ? m_statSyncingConfig->hasChanged() : false );
 }
 
 void
@@ -191,8 +191,8 @@ MetadataConfig::updateSettings()
     AmarokConfig::setUseCharsetDetector( m_useCharsetDetector->isChecked() );
     if( m_statSyncingConfig )
     {
-        m_statSyncingConfig.data()->setCheckedFields( checkedFields() );
-        m_statSyncingConfig.data()->save();
+        m_statSyncingConfig->setCheckedFields( checkedFields() );
+        m_statSyncingConfig->save();
     }
 }
 
@@ -204,7 +204,7 @@ MetadataConfig::slotForgetCollections()
     foreach( const QModelIndex &idx, m_statSyncingProvidersView->selectionModel()->selectedIndexes() )
     {
         QString id = idx.data( StatSyncing::Config::ProviderIdRole ).toString();
-        m_statSyncingConfig.data()->forgetProvider( id );
+        m_statSyncingConfig->forgetProvider( id );
     }
 }
 
@@ -225,7 +225,7 @@ MetadataConfig::slotUpdateConfigureExcludedLabelsLabel()
         warning() << __PRETTY_FUNCTION__ << "label or m_statSyncingConfig is null!";
         return;
     }
-    int exceptions = m_statSyncingConfig.data()->excludedLabels().count();
+    int exceptions = m_statSyncingConfig->excludedLabels().count();
     QString begin = "<a href='dummy'>";
     QString end = "</a>";
     label->setText( i18np( "(%2one exception%3)", "(%2%1 exceptions%3)", exceptions,

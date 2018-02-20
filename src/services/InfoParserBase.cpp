@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <QUrl>
 
 #include <QFile>
@@ -36,7 +36,7 @@ void InfoParserBase::showLoading( const QString &message )
 
     if( s_loadingBaseHtml.isEmpty() )
     {
-        const QUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
+        const QUrl url( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/" ) );
         QString htmlFile = url.path() + "InfoParserLoading.html";
 
         if( !QFile::exists( htmlFile ) )
@@ -57,7 +57,7 @@ void InfoParserBase::showLoading( const QString &message )
 
     QString currentHtml = s_loadingBaseHtml;
 
-    const QUrl url( KStandardDirs::locate( "data", "amarok/images/" ) );
+    const QUrl url( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/" ) );
     currentHtml = currentHtml.replace( "%%IMAGEPATH%%", url.url() );
     currentHtml = currentHtml.replace( "%%TEXT%%", message );
 

@@ -19,11 +19,8 @@
 #ifndef AMAROK_QSTRINGX_H
 #define AMAROK_QSTRINGX_H
 
-#include <qglobal.h>
-#include <QRegExp>
-#include <QString>
 #include <QStringList>
-#include <qmap.h>
+#include <QMap>
 
 namespace Amarok
 {

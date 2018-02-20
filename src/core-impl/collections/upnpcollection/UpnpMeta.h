@@ -33,12 +33,12 @@ class UpnpGenre;
 class UpnpComposer;
 class UpnpYear;
 
-typedef KSharedPtr<UpnpTrack> UpnpTrackPtr;
-typedef KSharedPtr<UpnpArtist> UpnpArtistPtr;
-typedef KSharedPtr<UpnpAlbum> UpnpAlbumPtr;
-typedef KSharedPtr<UpnpGenre> UpnpGenrePtr;
-typedef KSharedPtr<UpnpComposer> UpnpComposerPtr;
-typedef KSharedPtr<UpnpYear> UpnpYearPtr;
+typedef AmarokSharedPointer<UpnpTrack> UpnpTrackPtr;
+typedef AmarokSharedPointer<UpnpArtist> UpnpArtistPtr;
+typedef AmarokSharedPointer<UpnpAlbum> UpnpAlbumPtr;
+typedef AmarokSharedPointer<UpnpGenre> UpnpGenrePtr;
+typedef AmarokSharedPointer<UpnpComposer> UpnpComposerPtr;
+typedef AmarokSharedPointer<UpnpYear> UpnpYearPtr;
 
 class UpnpTrack : public Meta::Track
 {

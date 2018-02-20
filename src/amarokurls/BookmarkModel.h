@@ -19,7 +19,7 @@
 
 #include "BookmarkViewItem.h"
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
@@ -28,10 +28,10 @@
 
 class BookmarkGroup;
 
-typedef KSharedPtr<BookmarkViewItem> BookmarkViewItemPtr;
+typedef AmarokSharedPointer<BookmarkViewItem> BookmarkViewItemPtr;
 
 class BookmarkGroup;
-typedef KSharedPtr<BookmarkGroup> BookmarkGroupPtr;
+typedef AmarokSharedPointer<BookmarkGroup> BookmarkGroupPtr;
 typedef QList<BookmarkGroupPtr> BookmarkGroupList;
 
 
@@ -127,7 +127,7 @@ private:
     static BookmarkModel * s_instance;
 
     BookmarkGroupPtr m_root;
-    mutable QHash<quint32, BookmarkViewItemPtr> m_viewItems; ///the hash of the pointer mapped to the KSharedPtr
+    mutable QHash<quint32, BookmarkViewItemPtr> m_viewItems; ///the hash of the pointer mapped to the AmarokSharedPointer
 
 };
 

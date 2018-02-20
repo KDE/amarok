@@ -20,7 +20,7 @@
 #include "statsyncing/Provider.h"
 #include "core/support/Components.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QLabel>
 #include <QVBoxLayout>

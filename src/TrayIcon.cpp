@@ -34,13 +34,13 @@
 #include "playlist/PlaylistActions.h"
 
 #include <KLocalizedString>
-#include <KStandardDirs>
 #include <KIconLoader>
 
 #include <QAction>
 #include <QFontMetrics>
 #include <QMenu>
 #include <QPixmap>
+#include <QStandardPaths>
 #include <QToolTip>
 
 #ifdef Q_WS_MAC
@@ -48,8 +48,8 @@
 #endif
 
 Amarok::TrayIcon::TrayIcon( QObject *parent )
-        : KStatusNotifierItem( parent )
-        , m_track( The::engineController()->currentTrack() )
+    : KStatusNotifierItem( parent )
+    , m_track( The::engineController()->currentTrack() )
 {
     PERF_LOG( "Beginning TrayIcon Constructor" );
     KActionCollection* const ac = Amarok::actionCollection();
@@ -170,12 +170,12 @@ Amarok::TrayIcon::updateToolTip()
             QString stars;
             for( int i = 0; i < rating / 2; ++i )
                 stars += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                        .arg( KStandardDirs::locate( "data", "amarok/images/star.png" ) )
+                        .arg( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/star.png" ) )
                         .arg( QFontMetrics( QToolTip::font() ).height() )
                         .arg( QFontMetrics( QToolTip::font() ).height() );
             if( rating % 2 )
                 stars += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                        .arg( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) )
+                        .arg( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/smallstar.png" ) )
                         .arg( QFontMetrics( QToolTip::font() ).height() )
                         .arg( QFontMetrics( QToolTip::font() ).height() );
 

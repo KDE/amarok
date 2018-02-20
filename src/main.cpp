@@ -20,21 +20,18 @@
 #include "aboutdialog/OcsData.h"
 
 #include <KAboutData>
-#include <KCmdLineArgs>
-#include <KDebug>
 #include <KDBusService>
 #include <KLocalizedString>
 
-#include <qglobal.h>
+#include <QCommandLineParser>
+#include <QtGlobal>
 
 #ifdef Q_WS_X11
     #include <X11/Xlib.h>
 #endif
 
 #include <csignal>
-#include <QCommandLineParser>
 
-//#define AMAROK_USE_DRKONQI
 #ifdef Q_OS_WIN
 AMAROK_EXPORT OcsData ocsData;
 #endif

@@ -22,12 +22,12 @@
 #include "SqlPodcastMeta.h"
 
 #include <QIcon>
-#include <KLocale>
-#include <KMD5>
+
+#include <KLocalizedString>
 
 class PodcastImageFetcher;
 
-class KDialog;
+class QDialog;
 class QUrl;
 class PodcastReader;
 class SqlStorage;
@@ -185,7 +185,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
 
         QUrl m_baseDownloadDir;
 
-        KDialog *m_providerSettingsDialog;
+        QDialog *m_providerSettingsDialog;
         Ui::SqlPodcastProviderSettingsWidget *m_providerSettingsWidget;
 
         QList<QAction *> m_providerActions;

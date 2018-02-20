@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QPixmap>
+#include <QPointer>
 
 class KNotification;
 
@@ -65,7 +66,7 @@ private:
     static KNotificationBackend *s_instance;
 
     bool m_enabled;
-    QWeakPointer<KNotification> m_notify;
+    QPointer<KNotification> m_notify;
 };
 
 }

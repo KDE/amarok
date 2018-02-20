@@ -28,20 +28,15 @@
 #include "dynamic/DynamicModel.h"
 #include "dynamic/BiasedPlaylist.h"
 
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QLabel>
-
 #include <QCheckBox>
-#include <QPushButton>
-#include <QToolButton>
-#include <QVBoxLayout>
-#include <QSpinBox>
-
-#include <KHBox>
 #include <QIcon>
-#include <KStandardDirs>
-#include <KSeparator>
+#include <QInputDialog>
+#include <QLabel>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QStandardPaths>
+#include <QToolButton>
+
 #include <KToolBar>
 
 
@@ -54,7 +49,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
 
     setLongDescription( i18n( "With a dynamic playlist, Amarok becomes your own personal dj, automatically selecting tracks for you, based on a number of parameters that you select." ) );
 
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_dynamic_playlists.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_dynamic_playlists.png" ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )
@@ -64,7 +59,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
 
     setContentsMargins( 0, 0, 0, 0 );
 
-    KHBox* controls2Layout = new KHBox( this );
+    BoxWidget* controls2Layout = new BoxWidget( false, this );
 
     QLabel *label;
     label = new QLabel( i18n( "Previous:" ), controls2Layout );
@@ -95,7 +90,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
 
     // -- the tool bar
 
-    KHBox* presetLayout = new KHBox( this );
+    BoxWidget* presetLayout = new BoxWidget( false, this );
     KToolBar* presetToolbar = new KToolBar( presetLayout );
     presetToolbar->setIconSize( QSize( 22, 22 ) );
 
@@ -246,7 +241,7 @@ PlaylistBrowserNS::DynamicCategory::setAllowDuplicates( bool value ) // SLOT
         return;
 
     AmarokConfig::setDynamicDuplicates( value );
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
 
     m_duplicateButton->setChecked( value );
 }

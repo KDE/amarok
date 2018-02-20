@@ -27,8 +27,6 @@
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "widgets/PrettyTreeView.h"
 
-#include <KPluginInfo>
-#include <KVBox>
 #include <KLocalizedString>
 
 #include <QAbstractItemModel>
@@ -37,9 +35,10 @@
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 
+class BoxWidget;
 class ServiceBase;
 class SearchWidget;
-class KMenuBar;
+class QMenuBar;
 /**
 A virtual base class for factories for creating and handling the different types of service plugins
 
@@ -114,7 +113,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          *
          * @param removedService The service that has been removed
          */
-        void removeService( ServiceBase *newService );
+        void removeService( ServiceBase *removedService );
 
     private Q_SLOTS:
         void slotNewService( ServiceBase *newService );
@@ -140,7 +139,7 @@ public:
      /**
       * Constructor.
       */
-    ServiceBase( const QString &name, ServiceFactory* parent, bool useCollectionTreeView = true, const QString &m_prettyName = QString() );
+     ServiceBase( const QString &name, ServiceFactory* parent, bool useCollectionTreeView = true, const QString &m_prettyName = QString() );
 
     /**
      * Destructor.
@@ -238,10 +237,10 @@ public:
      * Returns the service's parent factory.
      * @return the service's Factory
      */
-     ServiceFactory* parent() const;
+    ServiceFactory* parent() const;
 
-     virtual QString filter() const;
-     virtual QList<CategoryId::CatMenuId> levels() const;
+    virtual QString filter() const;
+    virtual QList<CategoryId::CatMenuId> levels() const;
 
 public Q_SLOTS:
     //void treeViewSelectionChanged( const QItemSelection & selected );
@@ -288,7 +287,7 @@ Q_SIGNALS:
      * Signal emitted when the selection in the tree view has changed ( and is only a single item ).
      * @param item The selected item
      */
-    void selectionChanged( CollectionTreeItem * );
+    void selectionChanged( CollectionTreeItem *item );
 
     /**
      * Signal emitted when the service is ready to be used. You don't need to emit this
@@ -326,8 +325,8 @@ protected:
     QTreeView *m_contentView;
     ServiceFactory *m_parentFactory;
 
-    KVBox       *m_topPanel;
-    KVBox       *m_bottomPanel;
+    BoxWidget    *m_topPanel;
+    BoxWidget    *m_bottomPanel;
     bool         m_polished;
 
     bool m_useCollectionTreeView;
@@ -336,7 +335,7 @@ protected:
 
     InfoParserBase * m_infoParser;
 
-    KMenuBar *m_menubar;
+    QMenuBar *m_menubar;
     QMenu *m_filterMenu;
     SearchWidget * m_searchWidget;
 
@@ -349,8 +348,5 @@ private: // need to move stuff here
     QSortFilterProxyModel *m_filterModel;
 };
 
-#define AMAROK_EXPORT_SERVICE_PLUGIN(libname, classname) \
-K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
-K_EXPORT_PLUGIN(factory("amarok_service_" #libname))\
 
 #endif

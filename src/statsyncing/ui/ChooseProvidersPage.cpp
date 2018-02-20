@@ -20,9 +20,8 @@
 #include "core/meta/support/MetaConstants.h"
 #include "statsyncing/models/ProvidersModel.h"
 
-#include <KPushButton>
-
 #include <QCheckBox>
+#include <QPushButton>
 
 using namespace StatSyncing;
 
@@ -31,10 +30,11 @@ ChooseProvidersPage::ChooseProvidersPage( QWidget *parent, Qt::WindowFlags f )
     , m_providersModel( 0 )
 {
     setupUi( this );
-    KGuiItem configure = KStandardGuiItem::configure();
-    configure.setText( i18n( "Configure Synchronization..." ) );
-    buttonBox->addButton( configure, QDialogButtonBox::ActionRole, this, SLOT(openConfiguration()) );
-    buttonBox->addButton( KGuiItem( i18n( "Next" ), "go-next" ), QDialogButtonBox::AcceptRole );
+    QPushButton *configure = buttonBox->addButton( i18n( "Configure Synchronization..." ), QDialogButtonBox::ActionRole );
+    connect( configure, &QPushButton::clicked, this, &ChooseProvidersPage::openConfiguration );
+    QPushButton *next = buttonBox->addButton( i18n( "Next" ), QDialogButtonBox::ActionRole );
+    next->setIcon( QIcon( "go-next" ) );
+    connect( next, &QPushButton::clicked, buttonBox, &QDialogButtonBox::accepted );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &ChooseProvidersPage::accepted );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &ChooseProvidersPage::rejected );
     progressBar->hide();
@@ -180,7 +180,7 @@ ChooseProvidersPage::updateEnabledFields()
 
 void ChooseProvidersPage::openConfiguration()
 {
-    App *app = App::instance();
+    App *app = pApp;
     if( app )
         app->slotConfigAmarok( "MetadataConfig" );
 }

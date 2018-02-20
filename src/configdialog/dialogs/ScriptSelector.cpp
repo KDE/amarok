@@ -19,10 +19,9 @@
 #include "core/support/Debug.h"
 
 #include <KCategorizedView>
-#include <KLocale>
-#include <KLineEdit>
+#include <KLocalizedString>
+#include <QLineEdit>
 #include <KPluginInfo>
-#include <KMessageBox>
 #include <QScrollBar>
 
 // uber-hacky, this whole thing, make our own script selector?
@@ -30,10 +29,10 @@ ScriptSelector::ScriptSelector( QWidget * parent )
     : KPluginSelector( parent )
     , m_scriptCount( 0 )
 {
-    m_lineEdit = this->findChild<KLineEdit*>();
+    m_lineEdit = this->findChild<QLineEdit*>();
     if( m_lineEdit )
     {
-        m_lineEdit->setClickMessage( i18n( "Search Scripts" ) );
+        m_lineEdit->setPlaceholderText( i18n( "Search Scripts" ) );
         connect( m_lineEdit, &QLineEdit::textChanged, this, &ScriptSelector::slotFiltered );
     }
 

@@ -29,7 +29,7 @@
 #include <QPointer>
 #include <QString>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 
 

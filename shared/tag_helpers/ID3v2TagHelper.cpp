@@ -198,7 +198,7 @@ ID3v2TagHelper::setTags( const Meta::FieldHash &changes )
                     continue;
 
                 TagLib::String owner  = uidFieldName( uidPair.first );
-                TagLib::ByteVector uid( uidPair.second.toAscii().data() );
+                TagLib::ByteVector uid( uidPair.second.toLatin1().data() );
                 TagLib::ID3v2::FrameList list = m_tag->frameList();
 
                 for( TagLib::ID3v2::FrameList::ConstIterator it = list.begin(); it != list.end(); ++it )

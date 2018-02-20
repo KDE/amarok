@@ -24,7 +24,7 @@
 
 #include <QList>
 #include <QMultiMap>
-#include <QWeakPointer>
+#include <QPointer>
 
 namespace Collections {
     class MediaDeviceCollection;
@@ -44,12 +44,12 @@ class MediaDeviceGenre;
 class MediaDeviceComposer;
 class MediaDeviceYear;
 
-typedef KSharedPtr<MediaDeviceTrack> MediaDeviceTrackPtr;
-typedef KSharedPtr<MediaDeviceArtist> MediaDeviceArtistPtr;
-typedef KSharedPtr<MediaDeviceAlbum> MediaDeviceAlbumPtr;
-typedef KSharedPtr<MediaDeviceGenre> MediaDeviceGenrePtr;
-typedef KSharedPtr<MediaDeviceComposer> MediaDeviceComposerPtr;
-typedef KSharedPtr<MediaDeviceYear> MediaDeviceYearPtr;
+typedef AmarokSharedPointer<MediaDeviceTrack> MediaDeviceTrackPtr;
+typedef AmarokSharedPointer<MediaDeviceArtist> MediaDeviceArtistPtr;
+typedef AmarokSharedPointer<MediaDeviceAlbum> MediaDeviceAlbumPtr;
+typedef AmarokSharedPointer<MediaDeviceGenre> MediaDeviceGenrePtr;
+typedef AmarokSharedPointer<MediaDeviceComposer> MediaDeviceComposerPtr;
+typedef AmarokSharedPointer<MediaDeviceYear> MediaDeviceYearPtr;
 
 typedef QList<MediaDeviceTrackPtr> MediaDeviceTrackList;
 
@@ -156,7 +156,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
         void commitChanges();
 
     private:
-        QWeakPointer<Collections::MediaDeviceCollection> m_collection;
+        QPointer<Collections::MediaDeviceCollection> m_collection;
 
         MediaDeviceArtistPtr m_artist;
         MediaDeviceAlbumPtr m_album;
@@ -236,8 +236,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         void setAlbumArtist( MediaDeviceArtistPtr artist );
 
     private:
-        QWeakPointer<Collections::MediaDeviceCollection> m_collection;
-        QWeakPointer<Handler::ArtworkCapability> m_artworkCapability;
+        QPointer<Collections::MediaDeviceCollection> m_collection;
+        QPointer<Handler::ArtworkCapability> m_artworkCapability;
 
         QString         m_name;
         TrackList       m_tracks;

@@ -56,7 +56,7 @@ CoverFetchQueue::add( const Meta::AlbumPtr album,
         art->setXml( xml );
         payload = art;
     }
-    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( album, payload, opt ) ) );
+    add( AmarokSharedPointer< CoverFetchUnit >( new CoverFetchUnit( album, payload, opt ) ) );
 }
 
 void
@@ -74,7 +74,7 @@ CoverFetchQueue::add( const CoverFetch::Option opt,
             const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
             CFAP *payload = new CFAP( CoverFetch::ThumbSize, src, wild );
             payload->setXml( xml );
-            add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload, opt ) ) );
+            add( AmarokSharedPointer< CoverFetchUnit >( new CoverFetchUnit( payload, opt ) ) );
         }
         break;
 
@@ -82,7 +82,7 @@ CoverFetchQueue::add( const CoverFetch::Option opt,
         {
             typedef CoverFetchInfoPayload CFIP;
             CFIP *payload = new CFIP( src, xml );
-            add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload, opt ) ) );
+            add( AmarokSharedPointer< CoverFetchUnit >( new CoverFetchUnit( payload, opt ) ) );
         }
         break;
     }
@@ -95,7 +95,7 @@ CoverFetchQueue::addQuery( const QString &query,
                            Meta::AlbumPtr album )
 {
     CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query, src, page, album );
-    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
+    add( AmarokSharedPointer< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
 }
 
 int
@@ -168,6 +168,6 @@ CoverFetchQueue::take( const Meta::AlbumPtr album )
         }
     }
     // need to test if album exists with contains() first
-    return KSharedPtr< CoverFetchUnit >();
+    return AmarokSharedPointer< CoverFetchUnit >();
 }
 

@@ -19,7 +19,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KPushButton>
+#include <QPushButton>
 
 #include <QLabel>
 #include <QLayout>
@@ -47,10 +47,8 @@ LongMessageWidget::LongMessageWidget( QWidget *anchor, const QString &message,
     QPalette p = QToolTip::palette();
     setPalette( p );
 
-    KHBox *hbox = new KHBox( this );
-    layout()->addWidget( hbox );
-
-    hbox->setSpacing( 12 );
+    BoxWidget *hbox = new BoxWidget( false, this );
+    hbox->layout()->setSpacing( 12 );
 
     m_countdownFrame = new CountdownFrame( hbox );
     m_countdownFrame->setObjectName( "counterVisual" );
@@ -69,11 +67,9 @@ LongMessageWidget::LongMessageWidget( QWidget *anchor, const QString &message,
     alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
     alabel->setPalette( p );
 
-    hbox = new KHBox( this );
-    layout()->addWidget( hbox );
+    hbox = new BoxWidget( false, this );
 
-    KPushButton *button = new KPushButton( KStandardGuiItem::close(), hbox );
-    button->setObjectName( "closeButton" );
+    QPushButton *button = new QPushButton( QStringLiteral( "closeButton" ), hbox );
     connect( button, &QAbstractButton::clicked, this, &LongMessageWidget::close );
 
     reposition();

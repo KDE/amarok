@@ -17,10 +17,6 @@
 #define DEBUG_PREFIX "UpnpCollectionFactory"
 #include "UpnpCollectionFactory.h"
 
-#include <KIO/JobClasses>
-#include <KIO/Scheduler>
-#include <KIO/NetAccess>
-#include <kdirlister.h>
 #include <QUrl>
 #include <QDBusMetaType>
 #include <QDBusInterface>
@@ -41,6 +37,7 @@
 #include "dbuscodec.h"
 
 namespace Collections {
+
 
 UpnpCollectionFactory::UpnpCollectionFactory()
     : Collections::CollectionFactory()
@@ -245,11 +242,11 @@ void UpnpCollectionFactory::slotSearchCapabilitiesDone( KJob *job )
             && searchCaps.contains( "dc:title" )
             && searchCaps.contains( "upnp:artist" )
             && searchCaps.contains( "upnp:album" ) ) {
-            kDebug() << "Supports all search meta-data required, using UpnpSearchCollection";
+            qDebug() << "Supports all search meta-data required, using UpnpSearchCollection";
             m_devices[dev.uuid()] = new UpnpSearchCollection( dev, searchCaps );
         }
         else {
-            kDebug() << "Supported Search() meta-data" << searchCaps << "not enough. Using UpnpBrowseCollection";
+            qDebug() << "Supported Search() meta-data" << searchCaps << "not enough. Using UpnpBrowseCollection";
             m_devices[dev.uuid()] = new UpnpBrowseCollection( dev );
         }
         emit newCollection( m_devices[dev.uuid()] );

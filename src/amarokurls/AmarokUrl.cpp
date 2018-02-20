@@ -23,6 +23,7 @@
 #include <core/storage/SqlStorage.h>
 
 #include <QUrl>
+#include <QUrlQuery>
 
 AmarokUrl::AmarokUrl()
     : m_id( -1 )
@@ -127,10 +128,12 @@ QString AmarokUrl::url() const
     url.setScheme( "amarok" );
     url.setHost( m_command );
     url.setPath( '/' + m_path ); // the path must begin by /
+    QUrlQuery query;
 
     foreach( const QString &argName, m_arguments.keys() )
-        url.addQueryItem( argName, m_arguments[argName] );
+        query.addQueryItem( argName, m_arguments[argName] );
 
+    url.setQuery( query );
     return url.toEncoded();
 }
 

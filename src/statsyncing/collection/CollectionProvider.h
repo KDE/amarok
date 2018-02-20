@@ -20,6 +20,7 @@
 #include "core/meta/forward_declarations.h"
 #include "statsyncing/Provider.h"
 
+#include <QPointer>
 #include <QSemaphore>
 
 namespace Collections {
@@ -69,7 +70,7 @@ namespace StatSyncing
             Q_DISABLE_COPY(CollectionProvider)
 
             /// collection can disappear at any time, use weak pointer to notice it
-            QWeakPointer<Collections::Collection> m_coll;
+            QPointer<Collections::Collection> m_coll;
             QSet<QString> m_foundArtists;
             QString m_currentArtistName;
             TrackList m_foundTracks;

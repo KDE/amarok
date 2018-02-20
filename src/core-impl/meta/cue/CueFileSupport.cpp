@@ -43,16 +43,15 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const Meta::Tra
 
 CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &trackUrl, qint64 trackLen )
 {
-
     DEBUG_BLOCK
 
     CueFileItemMap cueItems;
 
     debug() << "CUEFILE: " << cuefile.toDisplayString();
-    if ( QFile::exists ( cuefile.toDisplayString() ) )
+    if ( QFile::exists ( cuefile.toLocalFile() ) )
     {
         debug() << "  EXISTS!";
-        QFile file ( cuefile.toDisplayString() );
+        QFile file ( cuefile.toLocalFile() );
         int trackNr = 0;
         QString defaultArtist;
         QString defaultAlbum;
@@ -245,7 +244,7 @@ QUrl CueFileSupport::locateCueSheet ( const QUrl &trackurl )
     if ( validateCueSheet ( cueFile ) )
     {
         debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly, found and loaded. ";
-        return QUrl ( cueFile );
+        return QUrl::fromLocalFile( cueFile );
     }
     debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly and missed, searching for other cue files.";
 
@@ -293,7 +292,7 @@ QUrl CueFileSupport::locateCueSheet ( const QUrl &trackurl )
         }
 
     if ( foundCueFile )
-        return QUrl ( cueFile );
+        return QUrl::fromLocalFile( cueFile );
     debug() << "[CUEFILE]: - Didn't find any matching cue file." << endl;
     return QUrl();
 }
@@ -449,7 +448,7 @@ CueFileSupport::generateTimeCodeTracks( Meta::TrackPtr baseTrack, CueFileItemMap
     foreach( const CueFileItem &item, itemMap )
     {
         Meta::TimecodeTrack *track = new Meta::TimecodeTrack( item.title(),
-                baseTrack->playableUrl().url(), item.index(), item.index() + item.length() );
+                baseTrack->playableUrl(), item.index(), item.index() + item.length() );
         track->beginUpdate();
         track->setArtist( item.artist() );
         track->setAlbum( item.album() );

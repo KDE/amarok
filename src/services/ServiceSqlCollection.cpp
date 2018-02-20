@@ -21,8 +21,6 @@
 #include <core/storage/SqlStorage.h>
 #include <core-impl/storage/StorageManager.h>
 
-#include <klocale.h>
-
 using namespace Collections;
 
 ServiceSqlCollection::ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry )

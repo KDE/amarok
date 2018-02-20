@@ -26,12 +26,12 @@
 #include "App.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
+#include "MainWindow.h"
 
+#include <QApplication>
 #include <QWidget>
 
-#include <K4AboutData>
-#include <QApplication>
-#include <KCmdLineArgs>
+#include <KAboutData>
 #include <KWindowSystem>
 
 using namespace Amarok;
@@ -52,7 +52,7 @@ bool MediaPlayer2::CanRaise() const
 
 void MediaPlayer2::Raise() const
 {
-    MainWindow *window = App::instance()->mainWindow();
+    MainWindow *window = pApp->mainWindow();
     if( !window )
     {
         warning() << "No window!";
@@ -69,7 +69,7 @@ bool MediaPlayer2::CanQuit() const
 
 void MediaPlayer2::Quit() const
 {
-    App::instance()->quit();
+    pApp->quit();
 }
 
 bool MediaPlayer2::CanSetFullscreen() const

@@ -17,33 +17,12 @@
 
 #include "UserPlaylistCategory.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
-#include "PaletteHandler.h"
-#include "playlist/PlaylistModel.h"
-#include "playlistmanager/PlaylistManager.h"
-#include "PlaylistsInFoldersProxy.h"
-#include "PlaylistsByProviderProxy.h"
-#include "SvgHandler.h"
-
 #include "UserPlaylistModel.h"
 
-#include <QAction>
-#include <KActionMenu>
-#include <KButtonGroup>
-#include <QIcon>
-#include <KLineEdit>
+#include <QStandardPaths>
 
-#include <QButtonGroup>
-#include <QCheckBox>
-#include <QGridLayout>
-#include <QHeaderView>
-#include <QLabel>
-#include <KStandardDirs>
-#include <QToolBar>
-#include <QVBoxLayout>
+#include <KLocalizedString>
 
-#include <typeinfo>
 
 using namespace PlaylistBrowserNS;
 
@@ -62,7 +41,7 @@ UserPlaylistCategory::UserPlaylistCategory( QWidget * parent )
         "Amarok automatically adds any playlists found when scanning your collection, "
         "and any playlists that you save are also shown here." ) );
 
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_user_playlists.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_user_playlists.png" ) );
 }
 
 UserPlaylistCategory::~UserPlaylistCategory()

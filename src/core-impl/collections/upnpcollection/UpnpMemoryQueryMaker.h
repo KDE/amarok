@@ -22,6 +22,8 @@
 #include "MemoryCollection.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
 
+#include <QWeakPointer>
+
 namespace Collections {
 
 class UpnpMemoryQueryMaker : public MemoryQueryMaker

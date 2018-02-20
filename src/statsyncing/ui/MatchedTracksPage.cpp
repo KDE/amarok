@@ -23,11 +23,9 @@
 #include "statsyncing/models/MatchedTracksModel.h"
 #include "statsyncing/ui/TrackDelegate.h"
 
-#include <KStandardGuiItem>
-#include <KPushButton>
-
 #include <QEvent>
 #include <QMenu>
+#include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 
@@ -120,7 +118,7 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     connect( proxyModel, &QSortFilterProxyModel::rowsRemoved, this, &MatchedTracksPage::refresh##Name##StatusText ); \
     name##TreeView->setModel( m_##name##ProxyModel ); \
     name##TreeView->setItemDelegate( new TrackDelegate( name##TreeView ) ); \
-    connect( name##FilterLine, SIGNAL(textChanged(QString)), proxyModel, SLOT(setFilterFixedString(QString)) ); \
+    connect( name##FilterLine, &QLineEdit::textChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString ); \
     name##TreeView->header()->setStretchLastSection( false ); \
     name##TreeView->header()->setDefaultSectionSize( 80 );
 
@@ -134,13 +132,14 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     connect( excludedFilterCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
              this, &MatchedTracksPage::changeExcludedTracksProvider );
 
-    KGuiItem configure = KStandardGuiItem::configure();
-    configure.setText( i18n( "Configure Synchronization..." ) );
-    buttonBox->addButton( configure, QDialogButtonBox::ActionRole, this, SLOT(openConfiguration()) );
-    KPushButton *back = buttonBox->addButton( KStandardGuiItem::back(),
-                                              QDialogButtonBox::ActionRole );
-    buttonBox->addButton( KGuiItem( i18n( "Synchronize" ), "document-save" ),
-                          QDialogButtonBox::AcceptRole );
+    QPushButton *configure = buttonBox->addButton( i18n( "Configure Synchronization..." ), QDialogButtonBox::ActionRole );
+    connect( configure, &QPushButton::clicked, this, &MatchedTracksPage::openConfiguration );
+
+    QPushButton *back = buttonBox->addButton( i18n( "Back" ), QDialogButtonBox::ActionRole );
+
+    QPushButton *synchronize = buttonBox->addButton( i18n( "Synchronize" ), QDialogButtonBox::AcceptRole );
+    synchronize->setIcon( QIcon( "document-save" ) );
+
     connect( back, &QAbstractButton::clicked, this, &MatchedTracksPage::back );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &MatchedTracksPage::accepted );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &MatchedTracksPage::rejected );
@@ -511,7 +510,7 @@ MatchedTracksPage::collapse()
 void
 MatchedTracksPage::openConfiguration()
 {
-    App *app = App::instance();
+    App *app = pApp;
     if( app )
         app->slotConfigAmarok( "MetadataConfig" );
 }
@@ -524,6 +523,6 @@ MatchedTracksPage::setHeaderSizePoliciesFromModel( QHeaderView *header, QAbstrac
         QVariant headerData = model->headerData( column, Qt::Horizontal,
                                                  CommonModel::ResizeModeRole );
         QHeaderView::ResizeMode mode = QHeaderView::ResizeMode( headerData.toInt() );
-        header->setResizeMode( column, mode );
+        header->setSectionResizeMode( column, mode );
     }
 }

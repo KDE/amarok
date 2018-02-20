@@ -27,7 +27,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Collection *collection,
                                                               const QList<CategoryId::CatMenuId> &levelType )

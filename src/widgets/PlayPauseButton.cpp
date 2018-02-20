@@ -18,7 +18,7 @@
 
 #include "SvgHandler.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QMouseEvent>
 #include <QPainter>

@@ -20,8 +20,9 @@
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "MediaDevicePlaylist.h"
 
-#include <klocale.h>
 #include <QIcon>
+
+#include <KLocalizedString>
 
 namespace Collections {
     class MediaDeviceCollection;

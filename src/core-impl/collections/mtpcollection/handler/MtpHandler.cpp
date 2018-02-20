@@ -56,7 +56,7 @@ MtpHandler::MtpHandler( Collections::MtpCollection *mc )
     , m_dbChanged( false )
     , m_trackcounter( 0 )
     , m_copyParentId( 0 )
-    , m_tempDir( new KTempDir() )
+    , m_tempDir( new QTemporaryDir() )
 {
     DEBUG_BLOCK
     m_copyingthreadsafe = true;
@@ -385,7 +385,7 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
 
         QString trackFileName = QString::fromUtf8( m_mtpTrackHash.value( track )->filename );
 
-        QString filename = m_tempDir->name() + trackFileName;
+        QString filename = m_tempDir->path() + '/' + trackFileName;
 
         debug() << "Temp Filename: " << filename;
 
@@ -401,7 +401,7 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
         }
         else
         {
-            urls.insert( trackptr, QUrl(filename) );
+            urls.insert( trackptr, QUrl::fromLocalFile( filename ) );
         }
     }
 
@@ -1301,7 +1301,7 @@ MtpHandler::prepareToPlay( Meta::MediaDeviceTrackPtr &track )
     else
     {
         QString tempPath = setTempFile( track, libGetType( track ) );
-        track->setPlayableUrl( QUrl(tempPath) );
+        track->setPlayableUrl( QUrl::fromLocalFile( tempPath ) );
 
         debug() << "Beginning temporary file copy";
 //        m_tempfile.open();
@@ -1324,8 +1324,8 @@ MtpHandler::prepareToPlay( Meta::MediaDeviceTrackPtr &track )
 QString
 MtpHandler::setTempFile( Meta::MediaDeviceTrackPtr &track, const QString &format )
 {
-    m_cachedTracks[ track ] = new KTemporaryFile();
-    m_cachedTracks.value( track )->setSuffix( ('.' + format) ); // set suffix based on info from libmtp
+    m_cachedTracks[ track ] = new QTemporaryFile();
+    m_cachedTracks.value( track )->setFileTemplate( QDir::tempPath() +  "/XXXXXX." + format ); // set suffix based on info from libmtp
     if (!m_cachedTracks.value( track )->open())
         return QString();
 
@@ -1363,7 +1363,7 @@ MtpHandler::slotDeviceMatchFailed( ThreadWeaver::JobPointer job )
         return;
 
     debug() << "Running slot device match failed";
-    disconnect( job, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(slotDeviceMatchSucceeded(ThreadWeaver::JobPointer)) );
+    disconnect( job.dynamicCast<WorkerThread>().data(), &WorkerThread::done, this, &MtpHandler::slotDeviceMatchSucceeded );
     m_memColl->slotAttemptConnectionDone( false );
 }
 
@@ -1431,9 +1431,9 @@ WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, 
         , m_rawdevices( rawdevices )
         , m_handler( handler )
 {
-    connect( this, SIGNAL(failed(ThreadWeaver::JobPointer)), m_handler, SLOT(slotDeviceMatchFailed(ThreadWeaver::JobPointer)) );
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), m_handler, SLOT(slotDeviceMatchSucceeded(ThreadWeaver::JobPointer)) );
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), this, SLOT(deleteLater()) );
+    connect( this, &WorkerThread::failed, m_handler, &Meta::MtpHandler::slotDeviceMatchFailed );
+    connect( this, &WorkerThread::done, m_handler, &Meta::MtpHandler::slotDeviceMatchSucceeded );
+    connect( this, &WorkerThread::done, this, &WorkerThread::deleteLater );
 }
 
 WorkerThread::~WorkerThread()

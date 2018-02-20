@@ -21,20 +21,20 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "statsyncing/Config.h"
 
-#include <KLineEdit>
+#include <KConfigGroup>
 #include <KLocalizedString>
 
+#include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QListWidget>
-#include <QToolButton>
-#include <KConfigGroup>
-#include <QDialogButtonBox>
 #include <QPushButton>
+#include <QToolButton>
 #include <QVBoxLayout>
 
 ExcludedLabelsDialog::ExcludedLabelsDialog( StatSyncing::Config *config, QWidget *parent,
-                                            Qt::WFlags flags )
+                                            Qt::WindowFlags flags )
     : QDialog( parent, flags )
     , m_statSyncingConfig( config )
 {
@@ -63,7 +63,7 @@ ExcludedLabelsDialog::ExcludedLabelsDialog( StatSyncing::Config *config, QWidget
     qm->run();
 
     connect( addButton, &QAbstractButton::clicked, this, &ExcludedLabelsDialog::slotAddExcludedLabel );
-    connect( addLabelLine, &KLineEdit::returnPressed, this, &ExcludedLabelsDialog::slotAddExcludedLabel );
+    connect( addLabelLine, &QLineEdit::returnPressed, this, &ExcludedLabelsDialog::slotAddExcludedLabel );
     connect( okButton, &QAbstractButton::clicked, this, &ExcludedLabelsDialog::slotSaveToConfig );
 }
 

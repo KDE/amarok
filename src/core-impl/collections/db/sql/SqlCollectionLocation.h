@@ -83,7 +83,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionLocation : public CollectionLocat
         virtual bool isOrganizable() const;
 
         bool remove( const Meta::TrackPtr &track );
-        virtual bool insert( const Meta::TrackPtr &track, const QString &url );
+        virtual bool insert( const Meta::TrackPtr &track, const QString &path );
 
         //dependency injectors
         void setOrganizeCollectionDelegateFactory( OrganizeCollectionDelegateFactory *fac );

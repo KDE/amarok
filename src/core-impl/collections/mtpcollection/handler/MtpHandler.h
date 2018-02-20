@@ -31,8 +31,6 @@
 #include "MediaDeviceHandler.h"
 
 #include <KIO/Job>
-#include <KTempDir>
-#include <KTemporaryFile>
 #include <ThreadWeaver/Job>
 #include <ThreadWeaver/Queue>
 
@@ -41,6 +39,8 @@
 #include <QMultiMap>
 #include <QMutex>
 #include <QSet>
+#include <QTemporaryDir>
+#include <QTemporaryFile>
 
 
 class QString;
@@ -238,7 +238,7 @@ class MtpHandler : public MediaDeviceHandler
 
         // Keeps track of which tracks have been copied/cached for playing
 
-        QHash<Meta::MediaDeviceTrackPtr, KTemporaryFile*> m_cachedTracks;
+        QHash<Meta::MediaDeviceTrackPtr, QTemporaryFile*> m_cachedTracks;
 
         // Maps id's to tracks
 
@@ -250,7 +250,7 @@ class MtpHandler : public MediaDeviceHandler
 
         // Used as temporary location for copying files from mtp
 
-        KTempDir *m_tempDir;
+        QTemporaryDir *m_tempDir;
 };
 
 class WorkerThread : public QObject, public ThreadWeaver::Job
@@ -261,7 +261,7 @@ class WorkerThread : public QObject, public ThreadWeaver::Job
         WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, MtpHandler* handler );
         virtual ~WorkerThread();
 
-        virtual bool success() const;
+        virtual bool success() const Q_DECL_OVERRIDE;
 
     protected:
         virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;

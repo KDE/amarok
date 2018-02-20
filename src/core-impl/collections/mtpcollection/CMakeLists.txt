@@ -37,10 +37,7 @@ add_library(amarok_collection-mtpcollection MODULE ${amarok_collection-mtpcollec
 target_link_libraries(amarok_collection-mtpcollection
     amarokcore
     amaroklib
-    KF5::KDELibs4Support
     KF5::KIOCore
-    
-    ${KDE4_SOLID_LIBRARY}
     KF5::ThreadWeaver
     Qt5::Gui
     ${MTP_LIBRARIES}
@@ -48,9 +45,7 @@ target_link_libraries(amarok_collection-mtpcollection
 
 install(TARGETS amarok_collection-mtpcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
+kcoreaddons_desktop_to_json(amarok_collection-mtpcollection amarok_collection-mtpcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
 
-########### install files ###############
-
-install( FILES amarok_collection-mtpcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
 endif ()

@@ -19,9 +19,8 @@
 
 #include "Preset.h"
 
-#include <KFileDialog>
-
 #include <QAbstractItemModel>
+#include <QFileDialog>
 #include <QList>
 #include <QString>
 
@@ -80,7 +79,7 @@ namespace APG {
             QList<APG::PresetPtr> m_presetList;
     }; // class PresetModel
 
-    class PresetModel::ExportDialog : public KFileDialog {
+    class PresetModel::ExportDialog : public QFileDialog {
         Q_OBJECT
 
         public:

@@ -1442,7 +1442,7 @@ AggreagateYear::metadataChanged( Meta::YearPtr year )
             else
             {
                 // be careful with the ordering of instructions here
-                // AggregateCollection uses KSharedPtr internally
+                // AggregateCollection uses AmarokSharedPointer internally
                 // so we have to make sure that there is more than one pointer
                 // to this instance by registering this instance under the new name
                 // before removing the old one. Otherwise kSharedPtr might delete this

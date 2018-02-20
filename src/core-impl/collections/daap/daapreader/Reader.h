@@ -19,11 +19,12 @@
 #ifndef DAAPREADER_H
 #define DAAPREADER_H
 
+#include <core-impl/collections/support/MemoryCollection.h>
+
 #include <QObject>
 
 #include <QUrl>
 #include <ThreadWeaver/Job>
-#include "MemoryCollection.h"
 
 class QString;
 
@@ -74,13 +75,13 @@ namespace Daap
 
             bool parseSongList( const QByteArray &data, bool set_collection = false);
         public Q_SLOTS:
-            void logoutRequest(int, bool );
-            void contentCodesReceived( int id , bool error );
-            void loginHeaderReceived( const QHttpResponseHeader& resp );
-            void loginFinished( int id , bool error );
-            void updateFinished( int id , bool error );
-            void databaseIdFinished( int id , bool error );
-            void songListFinished( int id, bool error );
+            void logoutRequestFinished();
+            void contentCodesReceived();
+            void loginHeaderReceived();
+            void loginFinished();
+            void updateFinished();
+            void databaseIdFinished();
+            void songListFinished();
             void fetchingError( const QString& error );
 
         Q_SIGNALS:
@@ -92,7 +93,6 @@ namespace Daap
             /**
             * Make a map-vector tree out of the DAAP binary result
             * @param raw stream of DAAP reply
-            * @param containerLength length of the container (or entire result) being analyzed
             */
             Map parse( QDataStream &raw);
             static void addElement( Map &parentMap, char* tag, QVariant element ); //!< supporter function for parse
@@ -126,7 +126,7 @@ namespace Daap
             WorkerThread( const QByteArray &data, Reader* reader, Collections::DaapCollection *coll );
             virtual ~WorkerThread();
 
-            virtual bool success() const;
+            virtual bool success() const Q_DECL_OVERRIDE;
 
         protected:
             void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;

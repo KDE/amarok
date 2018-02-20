@@ -21,7 +21,7 @@
 // for CollectionManager::CollectionStatus that cannont be fwd-declared
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <QWeakPointer>
+#include <QPointer>
 #include <QDateTime>
 #include <QMap>
 
@@ -216,7 +216,7 @@ namespace StatSyncing
 
             // synchronization-related
             ProviderPtrList m_providers;
-            QWeakPointer<Process> m_currentProcess;
+            QPointer<Process> m_currentProcess;
             QTimer *m_startSyncingTimer;
             Config *m_config;
 

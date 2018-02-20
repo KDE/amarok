@@ -29,7 +29,7 @@ class QButtonGroup;
 class QRadioButton;
 class QPlainTextEdit;
 class KPageWidgetItem;
-class KVBox;
+class BoxWidget;
 class SqlBatchImporter;
 class SqlBatchImporterConfig;
 
@@ -56,7 +56,7 @@ class DatabaseImporterDialog : public KAssistantDialog
         SqlBatchImporter *m_importer;
         SqlBatchImporterConfig *m_importerConfig;
 
-        KVBox            *m_configBox;
+        BoxWidget        *m_configBox;
         KPageWidgetItem  *m_selectImporterPage;
         KPageWidgetItem  *m_configPage;
         KPageWidgetItem  *m_resultsPage;

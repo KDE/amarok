@@ -27,9 +27,8 @@
 
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
-#include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
+// #include "context/ContextView.h"
+// #include "context/popupdropper/libpud/PopupDropper.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "dialogs/TagDialog.h"
@@ -51,23 +50,25 @@
 #include "SourceSelectionPopup.h"
 
 #include <QApplication>
-#include <QMenu>
-#include <QUrl>
-#include <KLocale>
-
 #include <QClipboard>
 #include <QContextMenuEvent>
 #include <QDropEvent>
 #include <QItemSelection>
 #include <QKeyEvent>
 #include <QListView>
+#include <QMenu>
 #include <QModelIndex>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPalette>
 #include <QPersistentModelIndex>
 #include <QScrollBar>
+#include <QSvgRenderer>
 #include <QTimer>
+#include <QUrl>
+
+#include <KLocalizedString>
+
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
         : QListView( parent )
@@ -112,13 +113,15 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     connect( selectionModel(), &QItemSelectionModel::selectionChanged,
              this, &Playlist::PrettyListView::slotSelectionChanged );
 
-    connect( LayoutManager::instance(), &LayoutManager::activeLayoutChanged, this, &Playlist::PrettyListView::playlistLayoutChanged );
+    connect( LayoutManager::instance(), &LayoutManager::activeLayoutChanged, this, &PrettyListView::playlistLayoutChanged );
 
     if (auto m = static_cast<Playlist::Model*>(model()))
     {
         connect( m, &Playlist::Model::activeTrackChanged, this, &Playlist::PrettyListView::slotPlaylistActiveTrackChanged );
         connect( m, &Playlist::Model::queueChanged, viewport(), QOverload<>::of(&QWidget::update) );
     }
+    else
+        warning() << "Model is not a Playlist::Model";
 
     //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->bottom()'.
     connect( Playlist::ModelStack::instance()->bottom(), &Playlist::Model::rowsInserted, this, &Playlist::PrettyListView::bottomModelRowsInserted );
@@ -714,10 +717,10 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         return;
     ongoingDrags = true;
 
-/*  FIXME: disabled temporarily for KF5 porting
+/* FIXME: disabled temporarily for KF5 porting
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
-*/
+
     if( m_pd && m_pd->isHidden() )
     {
         m_pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
@@ -731,6 +734,7 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
 
         m_pd->show();
     }
+*/
 
     QListView::startDrag( supportedActions );
     debug() << "After the drag!";

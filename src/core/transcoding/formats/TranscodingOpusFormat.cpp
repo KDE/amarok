@@ -16,7 +16,7 @@
 
 #include "TranscodingOpusFormat.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 using namespace Transcoding;
 

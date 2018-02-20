@@ -21,13 +21,8 @@
 
 #include <QObject>
 #include <QMap>
-#include <QString>
 #include <QStringList>
-#include <QTimer>
 
-namespace Solid {
-    class Device;
-}
 
 class AMAROK_EXPORT MediaDeviceCache : public QObject
 {

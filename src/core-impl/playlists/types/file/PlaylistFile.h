@@ -33,7 +33,7 @@ namespace Playlists
     class PlaylistFile;
     class PlaylistFileLoaderJob;
 
-    typedef KSharedPtr<PlaylistFile> PlaylistFilePtr;
+    typedef AmarokSharedPointer<PlaylistFile> PlaylistFilePtr;
     typedef QList<PlaylistFilePtr> PlaylistFileList;
 
     /**

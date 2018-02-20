@@ -23,7 +23,7 @@
 #include "core/collections/CollectionLocation.h"
 #include "core/playlists/Playlist.h"
 
-#include <QWeakPointer>
+#include <QPointer>
 
 
 class IpodCollectionLocation : public Collections::CollectionLocation
@@ -31,7 +31,7 @@ class IpodCollectionLocation : public Collections::CollectionLocation
     Q_OBJECT
 
     public:
-        IpodCollectionLocation( QWeakPointer<IpodCollection> parentCollection );
+        IpodCollectionLocation( QPointer<IpodCollection> parentCollection );
         virtual ~IpodCollectionLocation();
 
         // CollectionLocation methods:
@@ -46,7 +46,7 @@ class IpodCollectionLocation : public Collections::CollectionLocation
         // IpodCollectionLocation specific methods:
         /**
          * Calling this causes that when the tracks are copied, they are added to iPod
-         * playlist @param playlist
+         * playlist @param destPlaylist
          */
         void setDestinationPlaylist( Playlists::PlaylistPtr destPlaylist,
                                      const QMap<Meta::TrackPtr, int> &trackPlaylistPositions );
@@ -67,7 +67,7 @@ class IpodCollectionLocation : public Collections::CollectionLocation
          */
         void ensureDirectoriesExist();
 
-        QWeakPointer<IpodCollection> m_coll;
+        QPointer<IpodCollection> m_coll;
         QMap<Meta::TrackPtr, int> m_trackPlaylistPositions;
         Playlists::PlaylistPtr m_destPlaylist;
 };

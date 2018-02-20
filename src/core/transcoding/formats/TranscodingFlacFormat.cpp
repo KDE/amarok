@@ -16,7 +16,7 @@
 
 #include "TranscodingFlacFormat.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QVariant>
 

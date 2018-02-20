@@ -22,8 +22,8 @@
 #include "SvgHandler.h"
 #include "QStringx.h"
 #include "browsers/playlistbrowser/PodcastModel.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
+// #include "context/popupdropper/libpud/PopupDropper.h"
+// #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include <core/storage/SqlStorage.h>
 #include "core/interfaces/Logger.h"
 #include "core/podcasts/PodcastImageFetcher.h"
@@ -38,23 +38,25 @@
 #include "ui_SqlPodcastProviderSettingsWidget.h"
 
 #include <KCodecs>
-#include <KFileDialog>
+#include <KFileWidget>
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KIO/Job>
-#include <KIO/NetAccess>
-#include <KLocale>
-#include <KProgressDialog>
-#include <KStandardDirs>
-#include <QUrl>
-#include <Solid/Networking>
+#include <KLocalizedString>
 
 #include <QAction>
 #include <QCheckBox>
+#include <QCryptographicHash>
+#include <QDialog>
 #include <QDir>
 #include <QFile>
 #include <QMap>
+#include <QMessageBox>
+#include <QNetworkConfigurationManager>
+#include <QProgressDialog>
+#include <QStandardPaths>
 #include <QTimer>
+#include <QUrl>
 
 using namespace Podcasts;
 
@@ -586,7 +588,7 @@ SqlPodcastProvider::removeSubscription( Podcasts::SqlPodcastChannelPtr sqlChanne
 void
 SqlPodcastProvider::configureProvider()
 {
-    m_providerSettingsDialog = new KDialog( The::mainWindow() );
+    m_providerSettingsDialog = new QDialog( The::mainWindow() );
     QWidget *settingsWidget = new QWidget( m_providerSettingsDialog );
     m_providerSettingsDialog->setObjectName( "SqlPodcastProviderSettings" );
     Ui::SqlPodcastProviderSettingsWidget settings;
@@ -599,17 +601,16 @@ SqlPodcastProvider::configureProvider()
     settings.m_autoUpdateInterval->setValue( m_autoUpdateInterval );
     settings.m_autoUpdateInterval->setPrefix(
             i18nc( "prefix to 'x minutes'", "every " ) );
-    settings.m_autoUpdateInterval->setSuffix( ki18np( " minute", " minutes" ) );
+    settings.m_autoUpdateInterval->setSuffix( i18np( " minute", " minutes", settings.m_autoUpdateInterval->value() ) );
 
-    m_providerSettingsDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
-    m_providerSettingsDialog->setMainWidget( settingsWidget );
+    auto buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply, m_providerSettingsDialog );
 
     connect( settings.m_baseDirUrl, &KUrlRequester::textChanged, this, &SqlPodcastProvider::slotConfigChanged );
-    connect( settings.m_autoUpdateInterval, QOverload<int>::of(&KIntSpinBox::valueChanged),
+    connect( settings.m_autoUpdateInterval, QOverload<int>::of(&QSpinBox::valueChanged),
              this, &SqlPodcastProvider::slotConfigChanged );
 
     m_providerSettingsDialog->setWindowTitle( i18n( "Configure Local Podcasts" ) );
-    m_providerSettingsDialog->enableButtonApply( false );
+    buttonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
 
     if( m_providerSettingsDialog->exec() == QDialog::Accepted )
     {
@@ -628,21 +629,11 @@ SqlPodcastProvider::configureProvider()
             if( !m_channels.isEmpty() )
             {
                 //TODO: check if there actually are downloaded episodes
-                KDialog moveAllDialog;
-                moveAllDialog.setCaption( i18n( "Move Podcasts" ) );
+                auto button = QMessageBox::question( The::mainWindow(),
+                                                     i18n( "Move Podcasts" ),
+                                                     i18n( "Do you want to move all downloaded episodes to the new location?") );
 
-                KVBox *vbox = new KVBox( &moveAllDialog );
-
-                QString question( i18n( "Do you want to move all downloaded episodes to the "
-                                       "new location?") );
-                QLabel *label = new QLabel( question, vbox );
-                label->setWordWrap( true );
-                label->setMaximumWidth( 400 );
-
-                moveAllDialog.setMainWidget( vbox );
-                moveAllDialog.setButtons( KDialog::Yes | KDialog::No );
-
-                if( moveAllDialog.exec() == KDialog::Yes )
+                if( button == QMessageBox::Yes )
                 {
                     foreach( SqlPodcastChannelPtr sqlChannel, m_channels )
                     {
@@ -677,7 +668,8 @@ SqlPodcastProvider::slotConfigChanged()
     if( m_providerSettingsWidget->m_autoUpdateInterval->value() != m_autoUpdateInterval
         || m_providerSettingsWidget->m_baseDirUrl->url() != m_baseDownloadDir )
     {
-        m_providerSettingsDialog->enableButtonApply( true );
+        auto buttonBox = m_providerSettingsDialog->findChild<QDialogButtonBox*>();
+        buttonBox->button( QDialogButtonBox::Apply )->setEnabled( true );
     }
 }
 
@@ -700,19 +692,23 @@ SqlPodcastProvider::slotExportOpml()
     }
 
     //TODO: add checkbox as widget to filedialog to include podcast settings.
-    KFileDialog fileDialog( QUrl("kfiledialog:///podcast/amarok_podcasts.opml"), "*.opml",
-                            The::mainWindow() );
-    fileDialog.setMode( KFile::File );
+    QFileDialog fileDialog;
+    fileDialog.restoreState( Amarok::config( "amarok-podcast-export-dialog" ).readEntry( "state", QByteArray() ) );
+
+    fileDialog.setMimeTypeFilters( QStringList( QStringLiteral( "*.opml" ) ) );
+    fileDialog.setAcceptMode( QFileDialog::AcceptSave );
+    fileDialog.setFileMode( QFileDialog::AnyFile );
     fileDialog.setWindowTitle( i18n( "Select file for OPML export") );
-    if( fileDialog.exec() != KDialog::Accepted )
+
+    if( fileDialog.exec() != QDialog::Accepted )
         return;
 
-    QUrl filePath = fileDialog.selectedUrl();
+    QString filePath = fileDialog.selectedFiles().value( 0 );
 
-    QFile *opmlFile = new QFile( filePath.toLocalFile(), this );
+    QFile *opmlFile = new QFile( filePath, this );
     if( !opmlFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
-        error() << "could not open OPML file " << filePath.url();
+        error() << "could not open OPML file " << filePath;
         return;
     }
     OpmlWriter *opmlWriter = new OpmlWriter( rootOutlines, headerData, opmlFile );
@@ -805,7 +801,7 @@ SqlPodcastProvider::moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr sqlCh
             KIO::Job *moveJob = KIO::move( episode->localUrl(), newLocation,
                                            KIO::HideProgressInfo );
             //wait until job is finished.
-            if( KIO::NetAccess::synchronousRun( moveJob, The::mainWindow() ) )
+            if( moveJob->exec() )
                 episode->setLocalUrl( newLocation );
         }
     }
@@ -849,22 +845,15 @@ SqlPodcastProvider::slotSetKeep()
 QPair<bool, bool>
 SqlPodcastProvider::confirmUnsubscribe( Podcasts::SqlPodcastChannelPtr channel )
 {
-    KDialog unsubscribeDialog;
-    unsubscribeDialog.setCaption( i18n( "Unsubscribe" ) );
+    QMessageBox unsubscribeDialog;
+    unsubscribeDialog.setText( i18n( "Do you really want to unsubscribe from \"%1\"?", channel->title() ) );
+    unsubscribeDialog.setStandardButtons( QMessageBox::Ok | QMessageBox::Cancel );
 
-    KVBox *vbox = new KVBox( &unsubscribeDialog );
-
-    QString question( i18n( "Do you really want to unsubscribe from \"%1\"?", channel->title() ) );
-    QLabel *label = new QLabel( question, vbox );
-    label->setWordWrap( true );
-    label->setMaximumWidth( 400 );
-
-    QCheckBox *deleteMediaCheckBox = new QCheckBox( i18n( "Delete downloaded episodes" ), vbox );
-    unsubscribeDialog.setMainWidget( vbox );
-    unsubscribeDialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QCheckBox *deleteMediaCheckBox = new QCheckBox( i18n( "Delete downloaded episodes" ), Q_NULLPTR );
+    unsubscribeDialog.setCheckBox( deleteMediaCheckBox );
     
     QPair<bool, bool> result;
-    result.first = unsubscribeDialog.exec() == QDialog::Accepted;
+    result.first = unsubscribeDialog.exec() == QMessageBox::Ok;
     result.second = deleteMediaCheckBox->isChecked();
     return result;
 }
@@ -983,14 +972,13 @@ SqlPodcastProvider::completePodcastDownloads()
     {
         debug() << QString( "There are still %1 podcast download jobs running!" )
                 .arg( m_downloadJobMap.count() );
-        KProgressDialog progressDialog( The::mainWindow(),
-                                i18n( "Waiting for Podcast Downloads to Finish" ),
-                                i18np( "There is still a podcast download in progress",
-                                       "There are still %1 podcast downloads in progress",
-                                       m_downloadJobMap.count() )
+        QProgressDialog progressDialog( i18np( "There is still a podcast download in progress",
+                                        "There are still %1 podcast downloads in progress",
+                                        m_downloadJobMap.count() ),
+                                        i18n("Cancel Download and Quit."),
+                                        0, m_downloadJobMap.size(), The::mainWindow()
                                       );
-        progressDialog.setButtonText( i18n("Cancel Download and Quit.") );
-
+        progressDialog.setValue( 0 );
         m_completedDownloads = 0;
         foreach( KJob *job, m_downloadJobMap.keys() )
         {
@@ -999,7 +987,7 @@ SqlPodcastProvider::completePodcastDownloads()
                    );
         }
         connect( this, &SqlPodcastProvider::totalPodcastDownloadProgress,
-                 progressDialog.progressBar(), &QProgressBar::setValue );
+                 &progressDialog, &QProgressDialog::setValue );
         int result = progressDialog.exec();
         if( result == QDialog::Rejected )
         {
@@ -1014,8 +1002,8 @@ SqlPodcastProvider::completePodcastDownloads()
 void
 SqlPodcastProvider::autoUpdate()
 {
-    if( Solid::Networking::status() != Solid::Networking::Connected
-            && Solid::Networking::status() != Solid::Networking::Unknown )
+    QNetworkConfigurationManager mgr;
+    if( !mgr.isOnline() )
     {
         debug() << "Solid reports we are not online, canceling podcast auto-update";
         return;
@@ -1243,7 +1231,7 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     else
         tempName = QUrl::toPercentEncoding( sqlEpisode->uidUrl() );
 
-    QString tempNameMd5( KMD5( tempName.toUtf8() ).hexDigest() );
+    QString tempNameMd5( QCryptographicHash::hash( tempName.toUtf8(), QCryptographicHash::Md5 ).toHex() );
 
     localUrl = localUrl.adjusted(QUrl::StripTrailingSlash);
     localUrl.setPath(localUrl.path() + '/' + ( tempNameMd5 + PODCAST_TMP_POSTFIX ));

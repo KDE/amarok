@@ -16,7 +16,6 @@
 
 #include "core/support/Components.h"
 
-#include <kglobal.h>
 
 class ComponentsPrivate
 {

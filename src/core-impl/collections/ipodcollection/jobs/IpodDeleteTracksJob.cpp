@@ -25,7 +25,7 @@
 #include <gpod/itdb.h>
 
 IpodDeleteTracksJob::IpodDeleteTracksJob( const Meta::TrackList &sources,
-                                          const QWeakPointer<IpodCollection> &collection )
+                                          const QPointer<IpodCollection> &collection )
     : QObject()
     , ThreadWeaver::Job()
     , m_sources( sources )
@@ -44,7 +44,7 @@ IpodDeleteTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *th
     QString operationText = i18np( "Removing one track from iPod",
                                    "Removing %1 tracks from iPod", trackCount );
     Amarok::Components::logger()->newProgressOperation( this, operationText, trackCount );
-    itdb_start_sync( m_coll.data()->m_itdb );
+    itdb_start_sync( m_coll->m_itdb );
 
     QListIterator<Meta::TrackPtr> it( m_sources );
     while( it.hasNext() )
@@ -60,14 +60,14 @@ IpodDeleteTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *th
         if( file.exists() )
             success = file.remove();
         if( success )
-            m_coll.data()->removeTrack( track );
+            m_coll->removeTrack( track );
 
         incrementProgress();
     }
 
     emit endProgressOperation( this );
     if( m_coll )
-        itdb_stop_sync( m_coll.data()->m_itdb );
+        itdb_stop_sync( m_coll->m_itdb );
 }
 
 void

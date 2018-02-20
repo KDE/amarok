@@ -15,6 +15,7 @@ set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mo
 message(STATUS "${CMAKE_MODULE_PATH}")
 
 ###############
+find_package(PkgConfig REQUIRED)
 find_package(ECM 1.7.0 REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 set(CMAKE_AUTOMOC ON)
@@ -27,9 +28,10 @@ include(ECMInstallIcons)
 include(ECMSetupVersion)
 include(ECMAddTests)
 include(ECMAddAppIcon)
+include(FindPkgConfig)
 
-find_package( Qt5 REQUIRED COMPONENTS Core DBus Widgets Test Gui Svg Xml Script Sql Quick Qml ScriptTools WebKitWidgets)
-find_package( KF5 REQUIRED COMPONENTS CoreAddons Solid KDELibs4Support Codecs I18n ThreadWeaver Plasma PlasmaQuick KCMUtils NewStuff TextEditor GlobalAccel KIO NotifyConfig Archive DNSSD)
+find_package( Qt5 REQUIRED COMPONENTS Core DBus Gui Quick QuickWidgets Qml Script ScriptTools Sql Svg Test Widgets Xml )
+find_package( KF5 REQUIRED COMPONENTS Archive Codecs CoreAddons DBusAddons DNSSD GlobalAccel GuiAddons I18n IconThemes KCMUtils KIO NewStuff Notifications NotifyConfig Plasma PlasmaQuick Solid TextEditor ThreadWeaver )
 
 ###############
 option(WITH_UTILITIES "Enable building of utilities" ON)
@@ -85,8 +87,8 @@ check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 ###############
 
 
-# Needed to conditionally build tests and gui
-if(KDE4_BUILD_TESTS)
+#Needed to conditionally build tests and gui
+if(BUILD_TESTING)
    add_definitions(-DDEBUG)
 endif()
 
@@ -106,9 +108,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/shared
 )
 
-
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")  # Require C++11
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")  # Require C++11
 
 # WORKAROUND for Clang bug: http://llvm.org/bugs/show_bug.cgi?id=15651
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
@@ -116,19 +116,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
 endif ()
 
 
-include( KDE4Defaults )
-include( MacroBoolTo01 )
-include( MacroLibrary )
-add_definitions( ${QT_DEFINITIONS} ${KDE4_DEFINITIONS} )
 add_definitions(-DQT_NO_URL_CAST_FROM_STRING)
-
-#TODO KF5:This is to disable noisy depreciation warnings in initial Qt5/KF5 build porting phase due to the dependency on KF5::KDELibs4Support. Remove this when porting away from KF5::KDELibs4Support
-if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUC)
-    add_definitions(-Wno-deprecated -Wno-deprecated-declarations)
-endif ()
-
-# QCA2 is required for the Script Updater
-find_package(Qca-qt5 2.1.0)
 
 find_package(Phonon4Qt5 4.6.60 REQUIRED NO_MODULE)
 include_directories(BEFORE ${PHONON_INCLUDES})
@@ -140,13 +128,12 @@ if( LIBLASTFM_FOUND )
         set( LIBLASTFM_FOUND TRUE )
     endif()
 endif()
-macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
-find_package( FFmpeg )
-
-if( FFMPEG_FOUND )
-    find_package( LibOFA )
-    macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
+find_package( LibOFA )
+if( LIBOFA_FOUND )
+    PKG_SEARCH_MODULE(AVCODEC libavcodec)
+    PKG_SEARCH_MODULE(AVFORMAT libavformat)
+    PKG_SEARCH_MODULE(AVUTIL libavutil)
 endif()
 
 string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
@@ -179,8 +166,6 @@ if( WITH_PLAYER )
     find_package(ZLIB REQUIRED)
     set_package_properties( ZLIB PROPERTIES DESCRIPTION "zlib" TYPE REQUIRED )
 
-    set_package_properties( QCA2 PROPERTIES DESCRIPTION "Qt Cryptographic Architecture" URL "http://delta.affinix.com/qca/" TYPE OPTIONAL )
-
     # QJson is required for the PlaydarCollection
     find_package(QJSON)
     set_package_properties( QJSON PROPERTIES DESCRIPTION "Qt JSON Parser used for the Playdar Collection" URL "http://qjson.sourceforge.net/" TYPE OPTIONAL )
@@ -191,9 +176,7 @@ if( WITH_PLAYER )
     set( LIBLASTFM_MIN_VERSION "1.0.3" )
     set_package_properties( LIBLASTFM PROPERTIES DESCRIPTION "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" URL "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" TYPE OPTIONAL )
 
-    set_package_properties( FFMPEG PROPERTIES DESCRIPTION "Libraries and tools for handling multimedia data" URL "http://www.ffmpeg.org/" TYPE OPTIONAL )
-
-    if( FFMPEG_FOUND )
+    if( LIBOFA_FOUND )
         set_package_properties(LIBOFA PROPERTIES DESCRIPTION "Enable MusicDNS service" URL "http://code.google.com/p/musicip-libofa/" TYPE OPTIONAL)
     endif()
 
@@ -243,9 +226,9 @@ if( WITH_PLAYER )
     endif()
 
     if( WITH_IPOD OR WITH_MP3Tunes )
-    find_package(GObject)
+    pkg_search_module(GOBJECT REQUIRED gobject-2.0)
     set_package_properties( GOBJECT PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes." URL "http://www.gtk.org" TYPE OPTIONAL )
-    find_package(GLIB2)
+    pkg_search_module(GLIB2 glib-2.0)
     set_package_properties( GLIB2 PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes" URL "http://www.gtk.org" TYPE OPTIONAL )
     endif()
 
@@ -255,10 +238,9 @@ if( WITH_PLAYER )
     find_package(PythonInterp)
     set_package_properties( PYTHON PROPERTIES DESCRIPTION "Required for generating the autocompletion file for the script console" URL "https://www.python.org" TYPE OPTIONAL )
 
-
-    if( KDE4_BUILD_TESTS AND NOT WIN32 )
+    if( BUILD_TESTING AND NOT WIN32 )
         enable_testing()
-        add_subdirectory( tests )
+#        add_subdirectory( tests )
     endif()
 
     add_subdirectory( src )

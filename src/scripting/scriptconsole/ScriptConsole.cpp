@@ -17,32 +17,34 @@
 #include "ScriptConsole.h"
 #define DEBUG_PREFIX "ScriptConsole"
 
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "ScriptEditorDocument.h"
 #include "ScriptConsoleItem.h"
 
+#include <QAction>
 #include <QApplication>
 #include <QFileDialog>
 #include <QListWidget>
+#include <QKeyEvent>
 #include <QMenuBar>
 #include <QScriptEngine>
 #include <QSettings>
+#include <QStandardPaths>
 #include <QTemporaryFile>
 #include <QToolBar>
 
-#include <QAction>
 #include <KMessageBox>
-#include <KStandardDirs>
 #include <KTextEditor/Editor>
 #include <KTextEditor/View>
 #include <KLocalizedString>
-#include <KGlobal>
+
 
 using namespace AmarokScript;
 using namespace ScriptConsoleNS;
 
-QWeakPointer<ScriptConsole> ScriptConsole::s_instance;
+QPointer<ScriptConsole> ScriptConsole::s_instance;
 
 ScriptConsole*
 ScriptConsole::instance()
@@ -156,7 +158,7 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     settings.endGroup();
 
     if( m_savePath.isEmpty() )
-        m_savePath = QUrl( KStandardDirs::locateLocal( "data", "amarok/scriptconsole/" ) ).path();
+        m_savePath = Amarok::saveLocation("scriptconsole");
 
     slotNewScript();
     connect( m_debugger, &QScriptEngineDebugger::evaluationSuspended, this, &ScriptConsole::slotEvaluationSuspended );
@@ -168,10 +170,10 @@ ScriptConsole::ScriptConsole( QWidget *parent )
 void
 ScriptConsole::slotExecuteNewScript()
 {
-    if( m_scriptItem.data()->document()->text().isEmpty() )
+    if( m_scriptItem->document()->text().isEmpty() )
         return;
 
-    QScriptSyntaxCheckResult syntaxResult = m_scriptItem.data()->engine()->checkSyntax( m_scriptItem.data()->document()->text() );
+    QScriptSyntaxCheckResult syntaxResult = m_scriptItem->engine()->checkSyntax( m_scriptItem->document()->text() );
     if( QScriptSyntaxCheckResult::Valid != syntaxResult.state() )
     {
         debug() << "Syntax error: " << syntaxResult.errorLineNumber() << syntaxResult.errorMessage();
@@ -184,15 +186,15 @@ ScriptConsole::slotExecuteNewScript()
             return;
     }
 
-    m_scriptItem.data()->document()->save();
+    m_scriptItem->document()->save();
     m_codeWidget->setWidget( m_debugger->widget( QScriptEngineDebugger::CodeWidget ) );
-    m_scriptItem.data()->start( false );
+    m_scriptItem->start( false );
 }
 
 void
 ScriptConsole::closeEvent( QCloseEvent *event )
 {
-    QSettings settings( "Amarok", "Script Console" );
+    QSettings settings( "KDE", "Amarok" );
     settings.beginGroup( "ScriptConsole" );
     settings.setValue( "geometry", saveGeometry() );
     settings.setValue( "savepath", m_savePath );
@@ -204,7 +206,7 @@ ScriptConsole::closeEvent( QCloseEvent *event )
 void
 ScriptConsole::slotEditScript( ScriptConsoleItem *item )
 {
-    if( m_scriptItem.data()->running() && KMessageBox::warningContinueCancel( this, i18n( "This will stop this script! Continue?" ), QString(), KStandardGuiItem::cont()
+    if( m_scriptItem->running() && KMessageBox::warningContinueCancel( this, i18n( "This will stop this script! Continue?" ), QString(), KStandardGuiItem::cont()
                                         , KStandardGuiItem::cancel(), "stopRunningScriptWarning" ) == KMessageBox::Cancel )
         return;
 
@@ -248,12 +250,12 @@ ScriptConsole::slotEvaluationSuspended()
         slotNewScript();
         return;
     }
-    debug() << "Is Evaluating() " << m_scriptItem.data()->engine()->isEvaluating();
-    debug() << "Exception isValid()" << m_scriptItem.data()->engine()->uncaughtException().isValid();
-    if( m_scriptItem.data()->engine() && m_scriptItem.data()->engine()->uncaughtException().isValid() )
+    debug() << "Is Evaluating() " << m_scriptItem->engine()->isEvaluating();
+    debug() << "Exception isValid()" << m_scriptItem->engine()->uncaughtException().isValid();
+    if( m_scriptItem->engine() && m_scriptItem->engine()->uncaughtException().isValid() )
         return;
 
-    KTextEditor::View *view = m_scriptItem.data()->createEditorView( m_codeWidget );
+    KTextEditor::View *view = m_scriptItem->createEditorView( m_codeWidget );
     view->installEventFilter( this );
     view->document()->installEventFilter( this );
     m_codeWidget->setWidget( view );
@@ -262,12 +264,12 @@ ScriptConsole::slotEvaluationSuspended()
 void
 ScriptConsole::slotEvaluationResumed()
 {
-    debug() << "Is Evaluating() " << m_scriptItem.data()->engine()->isEvaluating();
-    debug() << "Exception isValid()" << m_scriptItem.data()->engine()->uncaughtException().isValid();
-    if( !m_scriptItem.data()->engine() || !m_scriptItem.data()->engine()->isEvaluating() )
+    debug() << "Is Evaluating() " << m_scriptItem->engine()->isEvaluating();
+    debug() << "Exception isValid()" << m_scriptItem->engine()->uncaughtException().isValid();
+    if( !m_scriptItem->engine() || !m_scriptItem->engine()->isEvaluating() )
         return;
 
-    KTextEditor::View *view = m_scriptItem.data()->createEditorView( m_codeWidget );
+    KTextEditor::View *view = m_scriptItem->createEditorView( m_codeWidget );
     view->installEventFilter( this );
     m_codeWidget->setWidget( view );
 }
@@ -275,7 +277,7 @@ ScriptConsole::slotEvaluationResumed()
 void
 ScriptConsole::slotAbortEvaluation()
 {
-    m_scriptItem.data()->pause();
+    m_scriptItem->pause();
 }
 
 QDockWidget*
@@ -338,7 +340,7 @@ ScriptConsole::eventFilter( QObject *watched, QEvent *event )
 ScriptListDockWidget::ScriptListDockWidget( QWidget *parent )
 : QDockWidget( i18n( "Scripts" ), parent )
 {
-    QWidget *widget = new KVBox( this );
+    QWidget *widget = new BoxWidget( true, this );
     setWidget( widget );
     m_scriptListWidget = new QListWidget( widget );
     m_scriptListWidget->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
@@ -351,6 +353,9 @@ ScriptListDockWidget::ScriptListDockWidget( QWidget *parent )
 void
 ScriptListDockWidget::addScript( ScriptConsoleItem *script )
 {
+    if( !script )
+        return;
+
     QListWidgetItem *item = new QListWidgetItem( script->name(), 0 );
     item->setData( ScriptRole, QVariant::fromValue<ScriptConsoleItem*>( script ) );
     m_scriptListWidget->addItem( item );

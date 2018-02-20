@@ -20,10 +20,10 @@
 
 #include <QApplication>
 #include <QDialog>
-#include <KLocale>
-
 #include <QHBoxLayout>
+
 #include <KConfigGroup>
+#include <KLocalizedString>
 
 BookmarkManager * BookmarkManager::s_instance = 0;
 
@@ -40,7 +40,6 @@ BookmarkManager::BookmarkManager( QWidget* parent )
     m_widget = new BookmarkManagerWidget( this );
     layout->addWidget( m_widget );
     layout->setContentsMargins( 0, 0, 0, 0 );
-    setLayout( layout );
 
     const QSize winSize = Amarok::config( "Bookmark Manager" ).readEntry( "Window Size", QSize( 600, 400 ) );
     resize( winSize );

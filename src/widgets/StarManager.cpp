@@ -22,7 +22,7 @@
 #include "MainWindow.h"
 
 #include <KIconEffect>
-#include <KStandardDirs>   //KGlobal::dirs()
+#include <QStandardPaths>   //KGlobal::dirs()
 
 #include <QImage>
 #include <QPixmap>
@@ -69,13 +69,13 @@ StarManager::reinitStars( int height, int margin )
         m_margin = margin;
 
     int hval = m_height + m_margin * 2 - 4 + ( ( m_height % 2 ) ? 1 : 0 );
-    QImage star = QImage( KStandardDirs::locate( "data", "amarok/images/star.png" ) ).scaled( hval, hval, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+    QImage star = QImage( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/star.png" ) ).scaled( hval, hval, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     m_star = star.copy();
     m_starPix = QPixmap::fromImage( star );
     m_greyedStar = star.copy();
     KIconEffect::toGray( m_greyedStar, 1.0 );
     m_greyedStarPix = QPixmap::fromImage( m_greyedStar );
-    QImage half = QImage( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) ).scaled( hval, hval, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+    QImage half = QImage( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/smallstar.png" ) ).scaled( hval, hval, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     m_halfStar = half.copy();
     /*if( AmarokConfig::customRatingsColors() )
         KIconEffect::colorize( m_halfStar, m_halfStarColor, 1.0 );*/

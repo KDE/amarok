@@ -24,7 +24,7 @@
 
 #include "amarok_export.h"
 
-#include <QWeakPointer>
+#include <QPointer>
 
 #include <Phonon/Path>
 #include <Phonon/Effect>
@@ -115,7 +115,7 @@ Q_SIGNALS:
     void presetsChanged( QString name );
 
 private:
-    QWeakPointer<Phonon::Effect>            m_equalizer;
+    QPointer<Phonon::Effect>            m_equalizer;
     Phonon::Path                            m_path;
 };
 

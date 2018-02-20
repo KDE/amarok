@@ -34,7 +34,7 @@
  * change. PersistentStatisticsStore uses some trickery not to hold reference to your
  * track to avoid circular reference counting. PersistentStatisticsStore can even deal
  * with your track being destroyed and is implemented in thread-safe way. You should
- * store is as StatisticsPtr (a KSharedPtr) in your Track class.
+ * store is as StatisticsPtr (a AmarokSharedPointer) in your Track class.
  */
 class AMAROK_EXPORT PersistentStatisticsStore : public Meta::Statistics, private Meta::Observer
 {
@@ -44,7 +44,7 @@ class AMAROK_EXPORT PersistentStatisticsStore : public Meta::Statistics, private
          * not be null.
          *
          * This methods takes plain pointer so that you can call it in the Track
-         * constructor without KSharedPtr deleting it right away.
+         * constructor without AmarokSharedPointer deleting it right away.
          */
         PersistentStatisticsStore( Meta::Track *track );
         virtual ~PersistentStatisticsStore();

@@ -27,7 +27,6 @@ target_link_libraries(amarok_collection-umscollection
   amaroklib
   amarokcore
   amarok-transcoding
-  KF5::KDELibs4Support
   KF5::KIOCore
   
   ${KDE4_SOLID_LIBRARY}
@@ -40,10 +39,4 @@ install(TARGETS
   DESTINATION 
   ${PLUGIN_INSTALL_DIR} )
 
-########### install files ###############
-
-install(FILES 
-  amarok_collection-umscollection.desktop 
-  DESTINATION 
-  ${SERVICES_INSTALL_DIR})
-
+kcoreaddons_desktop_to_json(amarok_collection-umscollection amarok_collection-umscollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

@@ -17,6 +17,8 @@
 #ifndef PLAYLISTBROWSERNSPODCASTMODEL_H
 #define PLAYLISTBROWSERNSPODCASTMODEL_H
 
+#include "amarok_export.h"
+
 #include "core/podcasts/PodcastMeta.h"
 #include "core/podcasts/PodcastProvider.h"
 
@@ -27,7 +29,7 @@
 #include <QModelIndex>
 #include <QPersistentModelIndex>
 #include <QVariant>
-#include <KIconEngine>
+
 namespace PlaylistBrowserNS {
 
 /* TODO: these should be replaced with custom roles for PlaylistColumn so all data of a playlist can
@@ -47,7 +49,7 @@ enum
 /**
  * @author Bart Cerneels
  */
-class PodcastModel : public PlaylistBrowserModel
+class AMAROK_EXPORT PodcastModel : public PlaylistBrowserModel
 {
     Q_OBJECT
 

@@ -19,7 +19,7 @@
 #define LAYOUTCONFIGACTION_H
 
 #include <QAction>
-#include <KPushButton>
+#include <QPushButton>
 #include <QMenu>
 
 class QComboBox;

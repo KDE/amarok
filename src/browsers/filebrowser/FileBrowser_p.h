@@ -26,8 +26,8 @@
 
 #include <KDirModel>
 #include <KFilePlacesModel>
-#include <KGlobalSettings>
 
+#include <QApplication>
 #include <QFontMetrics>
 #include <QStack>
 
@@ -102,8 +102,6 @@ class DirBrowserModel : public KDirModel
 public:
     DirBrowserModel( QObject *parent = 0 ) : KDirModel( parent )
     {
-        updateRowHeight();
-        connect( KGlobalSettings::self(), &KGlobalSettings::appearanceChanged, this, &DirBrowserModel::updateRowHeight );
     }
 
     virtual ~DirBrowserModel() {}
@@ -111,20 +109,10 @@ public:
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const
     {
         if( role == Qt::SizeHintRole )
-            return QSize( 1, rowHeight );
+            return QSize( 1, QFontMetrics( QFont() ).height() + 4 );
         else
             return KDirModel::data( index, role );
     }
-
-private Q_SLOTS:
-    void updateRowHeight()
-    {
-        QFont font;
-        rowHeight = QFontMetrics( font ).height() + 4;
-    }
-
-private:
-    int rowHeight;
 };
 
 class FilePlacesModel : public KFilePlacesModel
@@ -134,8 +122,6 @@ class FilePlacesModel : public KFilePlacesModel
 public:
     FilePlacesModel( QObject *parent = 0 ) : KFilePlacesModel( parent )
     {
-        updateRowHeight();
-        connect( KGlobalSettings::self(), &KGlobalSettings::appearanceChanged, this, &FilePlacesModel::updateRowHeight );
     }
 
     virtual ~FilePlacesModel() {}
@@ -143,20 +129,10 @@ public:
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const
     {
         if( role == Qt::SizeHintRole )
-            return QSize( 1, rowHeight );
+            return QSize( 1, QFontMetrics( QFont() ).height() + 4 );
         else
             return KFilePlacesModel::data( index, role );
     }
-
-private Q_SLOTS:
-    void updateRowHeight()
-    {
-        QFont font;
-        rowHeight = QFontMetrics( font ).height() + 4;
-    }
-
-private:
-    int rowHeight;
 };
 
 #endif /* AMAROK_FILEBROWSER_P_H */

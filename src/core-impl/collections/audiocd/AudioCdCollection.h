@@ -22,10 +22,11 @@
 #include "MemoryCollection.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 
-#include <QUrl>
-
 #include <QAction>
 #include <QObject>
+#include <QUrl>
+
+#include <KIO/UDSEntry>
 
 class MediaDeviceInfo;
 

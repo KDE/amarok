@@ -22,6 +22,7 @@
 #include "core/meta/Statistics.h"
 #include "core/meta/TrackEditor.h"
 
+#include <QPointer>
 #include <QReadWriteLock>
 
 #include <glib.h>
@@ -157,7 +158,7 @@ namespace IpodMeta
              * Set collection this track belongs to. If collection is not null, (re)set
              * the mount point stored in track. (affects playableUrl())
              */
-            void setCollection( QWeakPointer<IpodCollection> collection );
+            void setCollection( QPointer<IpodCollection> collection );
 
             // Methods for copy constructor:
             void setIsCompilation( bool newIsCompilation );
@@ -187,7 +188,7 @@ namespace IpodMeta
              * IpodCollection's memory management is out of our control, therefore the
              * weak pointer.
              */
-            QWeakPointer<IpodCollection> m_coll;
+            QPointer<IpodCollection> m_coll;
 
             /**
              * While mount point is accessible through m_track->itdb-> ..., we want to
@@ -276,7 +277,7 @@ namespace IpodMeta
             virtual void removeImage();
 
         private:
-            KSharedPtr<Track> m_track;
+            AmarokSharedPointer<Track> m_track;
     };
 
     /**

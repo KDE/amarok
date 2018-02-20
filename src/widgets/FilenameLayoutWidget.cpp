@@ -28,8 +28,8 @@
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaConstants.h"
 
-#include <KInputDialog>
-#include <KLineEdit>
+#include <QInputDialog>
+#include <QLineEdit>
 #include <KLocalizedString>
 
 #include <QComboBox>
@@ -137,7 +137,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     m_syntaxLabel = new QLabel( this ); // placeholder for format description
     advancedLayout->addWidget( m_syntaxLabel );
 
-    m_filenameLayoutEdit = new KLineEdit( this );
+    m_filenameLayoutEdit = new QLineEdit( this );
     advancedLayout->addWidget( m_filenameLayoutEdit );
 
     m_schemeStack->addWidget( advancedLayoutWidget );
@@ -166,9 +166,9 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     connect( m_updatePresetButton, &QPushButton::clicked,
              this, &FilenameLayoutWidget::slotUpdateFormat );
 
-    connect( m_filenameLayoutEdit, &KLineEdit::textChanged,
+    connect( m_filenameLayoutEdit, &QLineEdit::textChanged,
              this, &FilenameLayoutWidget::schemeChanged );
-    connect( m_filenameLayoutEdit, &KLineEdit::textChanged,
+    connect( m_filenameLayoutEdit, &QLineEdit::textChanged,
              this, &FilenameLayoutWidget::slotUpdatePresetButton );
 }
 
@@ -431,7 +431,7 @@ void
 FilenameLayoutWidget::slotAddFormat()
 {
     bool ok = false;
-    QString name = KInputDialog::getText( i18n( "New Preset" ), i18n( "Preset Name" ), i18n( "New Preset" ), &ok, this );
+    QString name = QInputDialog::getText( this, i18n( "New Preset" ), i18n( "Preset Name" ), QLineEdit::Normal, i18n( "New Preset" ), &ok );
     if( !ok )
         return; // user canceled.
 

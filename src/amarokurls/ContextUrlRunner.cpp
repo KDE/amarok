@@ -18,9 +18,8 @@
 
 #include "MainWindow.h"
 #include "AmarokUrlHandler.h"
-#include "context/ContextView.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 ContextUrlRunner::ContextUrlRunner()
 {}

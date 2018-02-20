@@ -22,14 +22,14 @@
 #include "core/capabilities/Capability.h"
 #include "amarokurls/AmarokUrl.h"
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 
 #include <QList>
 
 namespace Capabilities {
 
 typedef QList<AmarokUrlPtr> BookmarkList;
-typedef KSharedPtr<AmarokUrl> AmarokUrlPtr;
+typedef AmarokSharedPointer<AmarokUrl> AmarokUrlPtr;
 /**
 * This capability determines whether a track has timecodes
 * that can be loaded from it, and supplies them if it can.

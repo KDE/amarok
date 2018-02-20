@@ -30,7 +30,7 @@
 #include "core/meta/Observer.h"
 #include "core/collections/MetaQueryMaker.h"
 
-#include <KDialog>
+#include <QDialog>
 
 #include <QDateTime>
 #include <QLabel>
@@ -47,7 +47,7 @@ namespace Ui
 
 class QComboBox;
 
-class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
+class AMAROK_EXPORT TagDialog : public QDialog, public Meta::Observer
 {
     Q_OBJECT
 

@@ -164,7 +164,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_slider = new Amarok::TimeSlider( info );
     connect( m_slider, &Amarok::TimeSlider::sliderReleased, The::engineController(), &EngineController::seekTo );
     connect( m_slider, &Amarok::TimeSlider::valueChanged, this, &MainToolbar::setLabelTime );
-    connect( App::instance(), &App::settingsChanged, this, &MainToolbar::layoutProgressBar );
+    connect( pApp, &App::settingsChanged, this, &MainToolbar::layoutProgressBar );
 
     m_remainingTimeLabel = new QLabel( info );
     m_remainingTimeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignLeft );
@@ -893,7 +893,6 @@ MainToolbar::setLabelTime( int ms )
 
         m_lastTime = secs;
         m_lastRemainingTime = remainingSecs;
-
     }
 
     if(relayout)

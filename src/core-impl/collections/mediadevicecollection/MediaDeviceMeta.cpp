@@ -87,7 +87,7 @@ MediaDeviceTrack::prettyUrl() const
     if( m_playableUrl.isLocalFile() )
         return m_playableUrl.toLocalFile();
 
-    QString collName = m_collection ? m_collection.data()->prettyName() : i18n( "Unknown Collection" );
+    QString collName = m_collection ? m_collection->prettyName() : i18n( "Unknown Collection" );
     QString artistName = artist()? artist()->prettyName() : i18n( "Unknown Artist" );
     // Check name() to prevent infinite recursion
     QString trackName = !name().isEmpty()? prettyName() : i18n( "Unknown track" );
@@ -105,7 +105,7 @@ bool
 MediaDeviceTrack::isEditable() const
 {
     if( m_collection )
-        return m_collection.data()->isWritable();
+        return m_collection->isWritable();
     return false;
 }
 
@@ -325,8 +325,8 @@ MediaDeviceTrack::prepareToPlay()
 {
     Meta::MediaDeviceTrackPtr ptr = Meta::MediaDeviceTrackPtr( this );
 
-    if( m_collection && m_collection.data()->handler() )
-        m_collection.data()->handler()->prepareToPlay( ptr );
+    if( m_collection && m_collection->handler() )
+        m_collection->handler()->prepareToPlay( ptr );
 }
 
 // TODO: employ observers (e.g. Handler) to take care of updated
@@ -377,7 +377,7 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
 
     MediaDeviceAlbumPtr albumPtr;
     MediaDeviceTrackPtr track( this );
-    AlbumMap albumMap = m_collection.data()->memoryCollection()->albumMap();
+    AlbumMap albumMap = m_collection->memoryCollection()->albumMap();
 
     // do cleanup of soon to be previous album
 
@@ -417,9 +417,9 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
     // set track's album to the new album
     setAlbum( albumPtr );
 
-    m_collection.data()->memoryCollection()->acquireWriteLock();
-    m_collection.data()->memoryCollection()->setAlbumMap( albumMap );
-    m_collection.data()->memoryCollection()->releaseLock();
+    m_collection->memoryCollection()->acquireWriteLock();
+    m_collection->memoryCollection()->setAlbumMap( albumMap );
+    m_collection->memoryCollection()->releaseLock();
 }
 
 void
@@ -432,7 +432,7 @@ MediaDeviceTrack::setAlbumArtist( const QString &newAlbumArtist )
         return;
 
     MediaDeviceArtistPtr artistPtr;
-    ArtistMap artistMap = m_collection.data()->memoryCollection()->artistMap();
+    ArtistMap artistMap = m_collection->memoryCollection()->artistMap();
 
     if( artistMap.contains( newAlbumArtist ) )
         artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( newAlbumArtist ) );
@@ -444,9 +444,9 @@ MediaDeviceTrack::setAlbumArtist( const QString &newAlbumArtist )
 
     m_album->setAlbumArtist( artistPtr );
 
-    m_collection.data()->memoryCollection()->acquireWriteLock();
-    m_collection.data()->memoryCollection()->setArtistMap( artistMap );
-    m_collection.data()->memoryCollection()->releaseLock();
+    m_collection->memoryCollection()->acquireWriteLock();
+    m_collection->memoryCollection()->setArtistMap( artistMap );
+    m_collection->memoryCollection()->releaseLock();
 }
 
 void
@@ -457,7 +457,7 @@ MediaDeviceTrack::setArtist( const QString &newArtist )
 
     MediaDeviceArtistPtr artistPtr;
     MediaDeviceTrackPtr track( this );
-    ArtistMap artistMap = m_collection.data()->memoryCollection()->artistMap();
+    ArtistMap artistMap = m_collection->memoryCollection()->artistMap();
 
     // do cleanup of soon to be previous artist
 
@@ -491,9 +491,9 @@ MediaDeviceTrack::setArtist( const QString &newArtist )
     // set track's artist to the new artist
     setArtist( artistPtr );
 
-    m_collection.data()->memoryCollection()->acquireWriteLock();
-    m_collection.data()->memoryCollection()->setArtistMap( artistMap );
-    m_collection.data()->memoryCollection()->releaseLock();
+    m_collection->memoryCollection()->acquireWriteLock();
+    m_collection->memoryCollection()->setArtistMap( artistMap );
+    m_collection->memoryCollection()->releaseLock();
 }
 
 void
@@ -504,7 +504,7 @@ MediaDeviceTrack::setGenre( const QString &newGenre )
 
     MediaDeviceGenrePtr genrePtr;
     MediaDeviceTrackPtr track( this );
-    GenreMap genreMap = m_collection.data()->memoryCollection()->genreMap();
+    GenreMap genreMap = m_collection->memoryCollection()->genreMap();
 
     // do cleanup of soon to be previous genre
 
@@ -538,9 +538,9 @@ MediaDeviceTrack::setGenre( const QString &newGenre )
     // set track's genre to the new genre
     setGenre( genrePtr );
 
-    m_collection.data()->memoryCollection()->acquireWriteLock();
-    m_collection.data()->memoryCollection()->setGenreMap( genreMap );
-    m_collection.data()->memoryCollection()->releaseLock();
+    m_collection->memoryCollection()->acquireWriteLock();
+    m_collection->memoryCollection()->setGenreMap( genreMap );
+    m_collection->memoryCollection()->releaseLock();
 }
 
 void
@@ -551,7 +551,7 @@ MediaDeviceTrack::setComposer( const QString &newComposer )
 
     MediaDeviceComposerPtr composerPtr;
     MediaDeviceTrackPtr track( this );
-    ComposerMap composerMap = m_collection.data()->memoryCollection()->composerMap();
+    ComposerMap composerMap = m_collection->memoryCollection()->composerMap();
 
     // do cleanup of soon to be previous composer
 
@@ -585,9 +585,9 @@ MediaDeviceTrack::setComposer( const QString &newComposer )
     // set track's composer to the new composer
     setComposer( composerPtr );
 
-    m_collection.data()->memoryCollection()->acquireWriteLock();
-    m_collection.data()->memoryCollection()->setComposerMap( composerMap );
-    m_collection.data()->memoryCollection()->releaseLock();
+    m_collection->memoryCollection()->acquireWriteLock();
+    m_collection->memoryCollection()->setComposerMap( composerMap );
+    m_collection->memoryCollection()->releaseLock();
 }
 
 void
@@ -598,7 +598,7 @@ MediaDeviceTrack::setYear( int newYear )
 
     MediaDeviceYearPtr yearPtr;
     MediaDeviceTrackPtr track( this );
-    YearMap yearMap = m_collection.data()->memoryCollection()->yearMap();
+    YearMap yearMap = m_collection->memoryCollection()->yearMap();
 
     // do cleanup of soon to be previous year
 
@@ -632,9 +632,9 @@ MediaDeviceTrack::setYear( int newYear )
     // set track's year to the new year
     setYear( yearPtr );
 
-    m_collection.data()->memoryCollection()->acquireWriteLock();
-    m_collection.data()->memoryCollection()->setYearMap( yearMap );
-    m_collection.data()->memoryCollection()->releaseLock();
+    m_collection->memoryCollection()->acquireWriteLock();
+    m_collection->memoryCollection()->setYearMap( yearMap );
+    m_collection->memoryCollection()->releaseLock();
 }
 
 void
@@ -744,7 +744,7 @@ MediaDeviceAlbum::MediaDeviceAlbum( Collections::MediaDeviceCollection *collecti
     , m_image( QImage() )
     , m_albumArtist( 0 )
 {
-    MediaDeviceHandler *handler = m_collection.data()->handler();
+    MediaDeviceHandler *handler = m_collection->handler();
     if( handler && handler->hasCapabilityInterface( Handler::Capability::Artwork ) )
         m_artworkCapability = handler->create<Handler::ArtworkCapability>();
 }
@@ -752,7 +752,7 @@ MediaDeviceAlbum::MediaDeviceAlbum( Collections::MediaDeviceCollection *collecti
 MediaDeviceAlbum::~MediaDeviceAlbum()
 {
     if( m_artworkCapability )
-        m_artworkCapability.data()->deleteLater();
+        m_artworkCapability->deleteLater();
     CoverCache::invalidateAlbum( this );
 }
 
@@ -811,7 +811,7 @@ MediaDeviceAlbum::image( int size ) const
     if( m_image.isNull() && m_artworkCapability )
     {
         MediaDeviceTrackPtr track = MediaDeviceTrackPtr::staticCast( m_tracks.first() );
-        m_image = m_artworkCapability.data()->getCover( track );
+        m_image = m_artworkCapability->getCover( track );
         m_hasImagePossibility = !m_image.isNull();
         m_hasImageChecked = true;
         CoverCache::invalidateAlbum( this );
@@ -830,20 +830,20 @@ bool
 MediaDeviceAlbum::canUpdateImage() const
 {
     if( m_artworkCapability )
-        return m_artworkCapability.data()->canUpdateCover();
+        return m_artworkCapability->canUpdateCover();
     return false;
 }
 
 void
 MediaDeviceAlbum::setImage( const QImage &image )
 {
-    if( m_artworkCapability && m_artworkCapability.data()->canUpdateCover() )
+    if( m_artworkCapability && m_artworkCapability->canUpdateCover() )
     {
         // reset to initial values, let next call to image() re-fetch it
         m_hasImagePossibility = true;
         m_hasImageChecked = false;
 
-        m_artworkCapability.data()->setCover( MediaDeviceAlbumPtr( this ), image );
+        m_artworkCapability->setCover( MediaDeviceAlbumPtr( this ), image );
         CoverCache::invalidateAlbum( this );
     }
 }
@@ -851,13 +851,13 @@ MediaDeviceAlbum::setImage( const QImage &image )
 void
 MediaDeviceAlbum::setImagePath( const QString &path )
 {
-    if( m_artworkCapability && m_artworkCapability.data()->canUpdateCover() )
+    if( m_artworkCapability && m_artworkCapability->canUpdateCover() )
     {
         // reset to initial values, let next call to image() re-fetch it
         m_hasImagePossibility = true;
         m_hasImageChecked = false;
 
-        m_artworkCapability.data()->setCoverPath( MediaDeviceAlbumPtr( this ), path );
+        m_artworkCapability->setCoverPath( MediaDeviceAlbumPtr( this ), path );
         CoverCache::invalidateAlbum( this );
     }
 }

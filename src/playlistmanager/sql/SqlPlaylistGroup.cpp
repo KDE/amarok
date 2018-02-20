@@ -115,7 +115,7 @@ SqlPlaylistGroup::removeFromDb()
 void
 SqlPlaylistGroup::clear()
 {
-    /* m_childPlaylists, m_childGroups are KSharedPtrs, so we should be able to
+    /* m_childPlaylists, m_childGroups are AmarokSharedPointers, so we should be able to
        just clear the list and the playlistptrs will delete themselves
     */
     m_childGroups.clear();

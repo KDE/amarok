@@ -74,8 +74,8 @@ MountPointManager::handleMusicLocation()
     // write the music location as another collection folder in this case
     if( folders.readEntry( entryKey, false ) )
     {
-        const QUrl musicUrl = QUrl::fromLocalFile(QDesktopServices::storageLocation( QDesktopServices::MusicLocation ));
-        const QString musicDir = musicUrl.adjusted(QUrl::StripTrailingSlash).toLocalFile();
+        const QUrl musicUrl = QUrl::fromLocalFile( QStandardPaths::writableLocation( QStandardPaths::MusicLocation ) );
+        const QString musicDir = musicUrl.adjusted( QUrl::StripTrailingSlash ).toLocalFile();
         const QDir dir( musicDir );
         if( dir.exists() && dir.isReadable() )
         {
@@ -184,39 +184,36 @@ MountPointManager::getMountPointForId( const int id ) const
 QString
 MountPointManager::getAbsolutePath( const int deviceId, const QString& relativePath ) const
 {
-    // TODO: someone who clearly understands QUrl should clean this up.
-    QUrl rpath;
-    rpath.setPath( relativePath );
-    QUrl absolutePath;
+    if( QDir( relativePath ).isAbsolute() )
+    {
+        //debug() << "relativePath is already absolute";
+        return relativePath;
+    }
 
-    // debug() << "id is " << deviceId << ", relative path is " << relativePath;
+    QUrl rurl = QUrl::fromLocalFile( relativePath );
+    QUrl absoluteUrl = QUrl::fromLocalFile( QDir::rootPath() );
+
+    //debug() << "id is " << deviceId << ", relative path is " << relativePath;
     if ( deviceId == -1 )
     {
-#ifdef Q_OS_WIN32
-        absolutePath.setPath( rpath.toLocalFile() );
-#else
-        absolutePath.setPath( "/" );
-        absolutePath = absolutePath.adjusted(QUrl::StripTrailingSlash);
-        absolutePath.setPath(absolutePath.path() + '/' + ( rpath.path() ));
-#endif
-        absolutePath.setPath( QDir::cleanPath(absolutePath.path()) );
-        // debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path();
+        absoluteUrl.setPath( QDir::rootPath() + relativePath );
+        absoluteUrl.setPath( QDir::cleanPath( absoluteUrl.path() ) );
+        //debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absoluteUrl.toLocalFile();
     }
     else
     {
         m_handlerMapMutex.lock();
         if ( m_handlerMap.contains( deviceId ) )
         {
-            m_handlerMap[deviceId]->getURL( absolutePath, rpath );
+            m_handlerMap[deviceId]->getURL( absoluteUrl, rurl );
             m_handlerMapMutex.unlock();
         }
         else
         {
             m_handlerMapMutex.unlock();
-            const QStringList lastMountPoint = m_storage->query(
-                                                                QString( "SELECT lastmountpoint FROM devices WHERE id = %1" )
-                                                                .arg( deviceId ) );
-            if ( lastMountPoint.count() == 0 )
+            const QStringList lastMountPoint = m_storage->query( QString( "SELECT lastmountpoint FROM devices WHERE id = %1" )
+                                                                 .arg( deviceId ) );
+            if ( lastMountPoint.isEmpty() )
             {
                 //hmm, no device with that id in the DB...serious problem
                 warning() << "Device " << deviceId << " not in database, this should never happen!";
@@ -224,28 +221,28 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
             }
             else
             {
-                absolutePath.setPath( lastMountPoint.first() );
-                absolutePath = absolutePath.adjusted(QUrl::StripTrailingSlash);
-                absolutePath.setPath(absolutePath.path() + '/' + ( rpath.path() ));
-                absolutePath.setPath( QDir::cleanPath(absolutePath.path()) );
-                //debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path();
+                absoluteUrl = QUrl::fromLocalFile( lastMountPoint.first() );
+                absoluteUrl = absoluteUrl.adjusted(QUrl::StripTrailingSlash);
+                absoluteUrl.setPath( absoluteUrl.path() + '/' + rurl.path() );
+                absoluteUrl.setPath( QDir::cleanPath( absoluteUrl.path() ) );
+                //debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absoluteUrl.toLocalFile();
             }
         }
     }
 
-    if (QFileInfo(absolutePath.path()).isDir())
-        absolutePath.setPath( absolutePath.adjusted(QUrl::StripTrailingSlash).path() + '/' );
+    if( QFileInfo( absoluteUrl.toLocalFile() ).isDir() )
+        absoluteUrl.setPath( absoluteUrl.adjusted( QUrl::StripTrailingSlash ).path() + '/' );
 
-    #ifdef Q_OS_WIN32
-        return absolutePath.toLocalFile();
-    #else
-        return absolutePath.path();
-    #endif
+    return absoluteUrl.toLocalFile();
 }
 
 QString
 MountPointManager::getRelativePath( const int deviceId, const QString& absolutePath ) const
 {
+    DEBUG_BLOCK
+
+    debug() << absolutePath;
+
     QMutexLocker locker(&m_handlerMapMutex);
     if ( deviceId != -1 && m_handlerMap.contains( deviceId ) )
     {
@@ -258,7 +255,7 @@ MountPointManager::getRelativePath( const int deviceId, const QString& absoluteP
 #ifdef Q_OS_WIN32
         return QUrl( absolutePath ).toLocalFile();
 #else
-        return QDir("/").relativeFilePath(absolutePath);
+        return QDir::root().relativeFilePath(absolutePath);
 #endif
     }
 }

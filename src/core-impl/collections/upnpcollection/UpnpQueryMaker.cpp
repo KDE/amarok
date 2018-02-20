@@ -18,10 +18,12 @@
 
 #include "UpnpQueryMaker.h"
 
-#include <kdatetime.h>
 #include "upnptypes.h"
-#include <kio/scheduler.h>
-#include <kio/jobclasses.h>
+
+#include <QUrlQuery>
+
+#include <KIO/Scheduler>
+#include <KIO/UDSEntry>
 
 #include "core/support/Debug.h"
 #include "UpnpSearchCollection.h"
@@ -81,15 +83,21 @@ void UpnpQueryMaker::run()
 DEBUG_BLOCK
 
     QUrl baseUrl( m_collection->collectionId() );
-    baseUrl.addQueryItem( "search", "1" );
+    QUrlQuery query( baseUrl );
+    query.addQueryItem( "search", "1" );
+    baseUrl.setQuery( query );
 
     if( m_queryType == Custom ) {
         switch( m_returnFunction ) {
             case Count:
+            {
                 m_query.reset();
                 m_query.setType( "( upnp:class derivedfrom \"object.item.audioItem\" )" );
-                baseUrl.addQueryItem( "getCount", "1" );
+                QUrlQuery query( baseUrl );
+                query.addQueryItem( "getCount", "1" );
+                baseUrl.setQuery( query );
                 break;
+            }
             case Sum:
             case Max:
             case Min:
@@ -161,7 +169,9 @@ DEBUG_BLOCK
             continue;
 
         QUrl url( baseUrl );
-        url.addQueryItem( "query", queryList[i] );
+        QUrlQuery query( url );
+        query.addQueryItem( "query", queryList[i] );
+        url.setQuery( query );
 
         debug() << this << "Running query" << url;
         m_internalQM->runQuery( url );

@@ -23,11 +23,8 @@
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
 
-#include <kio/job.h>
 #include <QUrl>
-#include <KDateTime>
 
-#include <QTextDocument>
 #include <QDate>
 #include <QSet>
 
@@ -929,7 +926,7 @@ PodcastReader::textToHtml( const QString &text )
 
         if( next != index )
         {
-            buf += Qt::escape( text.mid( index, next - index ) );
+            buf += text.mid( index, next - index ).toHtmlEscaped();
         }
 
         QString s;
@@ -939,18 +936,18 @@ PodcastReader::textToHtml( const QString &text )
             if( s.startsWith( QLatin1String( "javascript:" ), Qt::CaseInsensitive ) ||
                 s.startsWith( QLatin1String( "exec:" ), Qt::CaseInsensitive ) )
             {
-                buf += Qt::escape( s );
+                buf += s.toHtmlEscaped();
             }
             else
             {
                 buf += QString( "<a href=\"%1\">%1</a>" )
-                    .arg( Qt::escape( s ) );
+                    .arg( s.toHtmlEscaped() );
             }
         }
         else if( !(s = re.cap( 2 )).isEmpty() )
         {
             buf += QString( "<a href=\"mailto:%1\">%1</a>" )
-                .arg( Qt::escape( s ) );
+                .arg( s.toHtmlEscaped() );
         }
         else if( !re.cap( 3 ).isEmpty() )
         {
@@ -960,7 +957,7 @@ PodcastReader::textToHtml( const QString &text )
         index = re.pos() + re.matchedLength();
     }
 
-    buf += Qt::escape( text.mid( index ) );
+    buf += text.mid( index ).toHtmlEscaped();
 
     return buf;
 }
@@ -1136,12 +1133,12 @@ PodcastReader::endItem()
             foreach( const Enclosure& enclosure, m_enclosures )
             {
                 description += QString( "<li><a href=\"%1\">%2</a> (%3, %4)</li>" )
-                               .arg( Qt::escape( enclosure.url().url() ) )
-                               .arg( Qt::escape( enclosure.url().fileName() ) )
+                               .arg( enclosure.url().url().toHtmlEscaped() )
+                               .arg( enclosure.url().fileName().toHtmlEscaped() )
                                .arg( Meta::prettyFilesize( enclosure.fileSize() ) )
                                .arg( enclosure.mimeType().isEmpty() ?
                                      i18n( "unknown type" ) :
-                                     Qt::escape( enclosure.mimeType() ) );
+                                     enclosure.mimeType().toHtmlEscaped() );
             }
 
             description += "</ul></p>";
@@ -1153,7 +1150,7 @@ PodcastReader::endItem()
         if( guid.isEmpty() )
         {
              episode = Podcasts::PodcastEpisodePtr::dynamicCast(
-                                              m_podcastProvider->trackForUrl( QUrl::fromUserInput((m_item->uidUrl())) )
+                                              m_podcastProvider->trackForUrl( QUrl::fromUserInput(m_item->uidUrl()) )
                                           );
         }
         else
@@ -1330,7 +1327,7 @@ PodcastReader::beginXml()
     {
         m_buffer += QString( " %1=\"%2\"" )
                     .arg( attr.name().toString() )
-                    .arg( Qt::escape( attr.value().toString() ) );
+                    .arg( attr.value().toString().toHtmlEscaped() );
     }
 
     m_buffer += '>';
@@ -1422,7 +1419,7 @@ PodcastReader::readAtomTextCharacters()
     switch( m_contentType )
     {
     case XHtmlContent:
-        m_buffer += Qt::escape( m_xmlReader.text().toString() );
+        m_buffer += m_xmlReader.text().toString().toHtmlEscaped();
         break;
 
     case HtmlContent:
@@ -1520,7 +1517,7 @@ PodcastReader::endAtomContent()
 void
 PodcastReader::endAtomPublished()
 {
-    QDateTime date( KDateTime::fromString( m_buffer, KDateTime::ISODate ).dateTime() );
+    QDateTime date = QDateTime::fromString( m_buffer, Qt::ISODate );
 
     if( !date.isValid() )
     {
@@ -1537,7 +1534,7 @@ PodcastReader::endAtomPublished()
 void
 PodcastReader::endAtomUpdated()
 {
-    QDateTime date( KDateTime::fromString( m_buffer, KDateTime::ISODate ).dateTime() );
+    QDateTime date = QDateTime::fromString( m_buffer, Qt::ISODate );
 
     if( !date.isValid() )
     {
@@ -1576,7 +1573,7 @@ PodcastReader::readCharacters()
 void
 PodcastReader::readEscapedCharacters()
 {
-    m_buffer += Qt::escape( m_xmlReader.text().toString() );
+    m_buffer += m_xmlReader.text().toString().toHtmlEscaped() ;
 }
 
 QStringRef
@@ -1624,7 +1621,7 @@ PodcastReader::parsePubDate( const QString &dateString )
         parseInput.replace( lowerMonth, upperMonth );
     }
 
-    QDateTime pubDate = KDateTime::fromString( parseInput, KDateTime::RFCDate ).dateTime();
+    QDateTime pubDate = QDateTime::fromString( parseInput, Qt::RFC2822Date );
 
     debug() << "result: " << pubDate.toString();
     return pubDate;

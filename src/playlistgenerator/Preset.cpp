@@ -30,12 +30,11 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistController.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QDomElement>
 
 #include <ThreadWeaver/Queue>
-#include <ThreadWeaver/QObjectDecorator>
 
 APG::PresetPtr
 APG::Preset::createFromXml( QDomElement& xmlelem )

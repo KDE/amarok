@@ -19,6 +19,7 @@
 #include "AudioCdCollection.h"
 
 #include <KCMultiDialog>
+#include <KLocalizedString>
 
 FormatSelectionDialog::FormatSelectionDialog( QWidget *parent )
     : QDialog( parent )

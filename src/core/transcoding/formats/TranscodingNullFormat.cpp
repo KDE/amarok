@@ -16,7 +16,6 @@
 
 #include "TranscodingNullFormat.h"
 
-#include <KLocale>
 
 using namespace Transcoding;
 

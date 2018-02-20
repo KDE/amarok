@@ -25,7 +25,7 @@
 #include <QTimer>
 
 class QToolBar;
-class KPushButton;
+class QPushButton;
 // A Custom Widget that can be used globally to implement
 // searching a treeview.
 
@@ -36,7 +36,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         /** Creates a search widget.
             @param advanced If true generates a button that opens a edit filter dialog.
         */
-        explicit SearchWidget( QWidget *parent, bool advanced = true );
+        explicit SearchWidget( QWidget *parent = Q_NULLPTR, bool advanced = true );
 
         QString currentText() const { return m_sw->currentText(); }
         Amarok::ComboBox *comboBox() { return m_sw; }

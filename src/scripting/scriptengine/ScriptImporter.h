@@ -17,11 +17,11 @@
 #ifndef SCRIPT_IMPORTER_H
 #define SCRIPT_IMPORTER_H
 
-#include <QUrl>
 
 #include <QObject>
 #include <QSet>
 #include <QStringList>
+#include <QUrl>
 
 class QScriptEngine;
 class QStringList;

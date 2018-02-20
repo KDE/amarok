@@ -26,15 +26,15 @@
 #include "ScriptSelector.h"
 #include "ui_ScriptsConfig.h"
 
-#include <KFileDialog>
 #include <KMessageBox>
 #include <KNS3/DownloadDialog>
 #include <KPluginInfo>
 #include <KPluginSelector>
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <KTar>
 #include <KZip>
 
+#include <QFileDialog>
 #include <QTemporaryFile>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -135,7 +135,7 @@ ScriptsConfig::installLocalScript()
     if( response == KMessageBox::Cancel )
         return;
 
-    QString filePath = KFileDialog::getOpenFileName( QUrl(), QString(), this, i18n( "Select Archived Script" ) );
+    QString filePath = QFileDialog::getOpenFileName( this, i18n( "Select Archived Script" ) );
     if( filePath.isEmpty() )
         return;
 
@@ -154,7 +154,7 @@ ScriptsConfig::installLocalScript()
         return;
     }
 
-    QString destination = KGlobal::dirs()->saveLocation( "data", QString("amarok/scripts/") + fileName + "/"  , false );
+    QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + QString("amarok/scripts/") + fileName + "/";
     const KArchiveDirectory* const archiveDir = archive->directory();
     const QDir dir( destination );
     const KArchiveFile *specFile = findSpecFile( archiveDir );
@@ -215,15 +215,13 @@ ScriptsConfig::slotReloadScriptSelector()
                             KPluginSelector::ReadConfigFile, i18n("Scriptable Service"), key );
     connect( m_selector, &ScriptSelector::changed, this, &ScriptsConfig::slotConfigChanged );
     connect( m_selector, &ScriptSelector::filtered, m_uninstallButton, &QPushButton::setDisabled );
-
     connect( m_selector, &ScriptSelector::changed,
              qobject_cast<Amarok2ConfigDialog*>(m_parent), &Amarok2ConfigDialog::updateButtons );
 
     m_verticalLayout->insertWidget( 0, m_selector );
     m_verticalLayout->removeWidget( m_oldSelector );
 
-#pragma message("PORTME KF5:  Line to port here")
-    //m_selector->setFilter( m_oldSelector->filter() );
+    m_selector->setFilter( m_oldSelector->filter() );
     QTimer::singleShot( 0, this, &ScriptsConfig::restoreScrollBar );
 }
 

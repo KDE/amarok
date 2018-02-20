@@ -19,12 +19,13 @@
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModel.h"
 
-#include <QAction>
 #include <KColorScheme>
 #include <KConfigGroup>
-#include <KHBox>
-#include <KLocale>
+#include <KLocalizedString>
 
+#include <QAction>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
@@ -35,18 +36,18 @@ namespace Playlist
 {
 
 ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
-    : KVBox( parent )
+: BoxWidget( true, parent )
 {
     DEBUG_BLOCK
 
     readConfig();
 
-    KHBox *searchBox = new KHBox( this );
+    BoxWidget *searchBox = new BoxWidget( false, this );
 
     m_searchEdit = new Amarok::LineEdit( searchBox );
-    m_searchEdit->setClickMessage( i18n( "Search playlist" ) );
+    m_searchEdit->setPlaceholderText( i18n( "Search playlist" ) );
     m_searchEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    m_searchEdit->setClearButtonShown( true );
+    m_searchEdit->setClearButtonEnabled( true );
     m_searchEdit->setFrame( true );
     m_searchEdit->setToolTip( i18n( "Start typing to progressively search through the playlist" ) );
     m_searchEdit->setFocusPolicy( Qt::ClickFocus ); // Without this, the widget goes into text input mode directly on startup
@@ -368,7 +369,7 @@ ProgressiveSearchWidget::keyPressEvent( QKeyEvent *event )
     else
     {
         event->ignore();
-        KHBox::keyPressEvent( event );
+        BoxWidget::keyPressEvent( event );
     }
 }
 

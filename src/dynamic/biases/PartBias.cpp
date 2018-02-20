@@ -24,7 +24,7 @@
 #include "core/support/Debug.h"
 #include "widgets/SliderWidget.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KRandom>
 
 #include <QtGlobal> // for qRound

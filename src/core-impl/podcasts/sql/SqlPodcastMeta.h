@@ -29,8 +29,8 @@ class SqlPodcastEpisode;
 class SqlPodcastChannel;
 class SqlPodcastProvider;
 
-typedef KSharedPtr<SqlPodcastEpisode> SqlPodcastEpisodePtr;
-typedef KSharedPtr<SqlPodcastChannel> SqlPodcastChannelPtr;
+typedef AmarokSharedPointer<SqlPodcastEpisode> SqlPodcastEpisodePtr;
+typedef AmarokSharedPointer<SqlPodcastChannel> SqlPodcastChannelPtr;
 
 typedef QList<SqlPodcastEpisodePtr> SqlPodcastEpisodeList;
 typedef QList<SqlPodcastChannelPtr> SqlPodcastChannelList;

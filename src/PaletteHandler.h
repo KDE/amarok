@@ -20,8 +20,9 @@
 #include "amarok_export.h"
 
 #include <QObject>
-#include <QTreeView>
+#include <QPalette>
 
+class QAbstractItemView;
 class PaletteHandler;
 
 namespace The {
