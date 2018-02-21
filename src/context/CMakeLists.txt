@@ -1,5 +1,5 @@
-#add_subdirectory( applets )
-#add_subdirectory( tools )
+add_subdirectory( applets )
+add_subdirectory( tools )
 
 
 ########### next target ###############
@@ -27,27 +27,29 @@ target_link_libraries( amarokpud
 install( TARGETS amarokpud ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 
-set(applet_qml_plugin_qml_files
-    applet_qml_plugin/qmldir
-    applet_qml_plugin/Applet.qml
-    applet_qml_plugin/AppletHeader.qml
+set(qml_plugin_qml_files
+    qml_plugin/qmldir
+    qml_plugin/Applet.qml
+    qml_plugin/AppletHeader.qml
 )
 
-set(applet_qml_plugin_SRCS
-    applet_qml_plugin/src/RatingItem.cpp
-    applet_qml_plugin/src/AppletPlugin.cpp
+set(qml_plugin_SRCS
+    qml_plugin/src/RatingItem.cpp
+    qml_plugin/src/Plugin.cpp
+    qml_plugin/src/PixmapItem.cpp
 )
 
-#add_library(applet_qml_plugin SHARED ${applet_qml_plugin_SRCS})
+add_library(qml_plugin SHARED ${qml_plugin_SRCS})
 
-#target_link_libraries(applet_qml_plugin
-#    amarokcore
-#    Qt5::Quick
-#    KF5::WidgetsAddons
-#)
+target_link_libraries(qml_plugin
+    amarokcore
+    Qt5::Quick
+    KF5::QuickAddons
+    KF5::WidgetsAddons
+)
 
-#install( TARGETS applet_qml_plugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/applet )
+install( TARGETS qml_plugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/qml )
 
-#install( FILES ${applet_qml_plugin_qml_files} DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/applet )
+install( FILES ${qml_plugin_qml_files} DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/qml )
 
-#kpackage_install_package( context_qml_package org.kde.amarok.context genericqml )
+kpackage_install_package( context_qml_package org.kde.amarok.context genericqml )

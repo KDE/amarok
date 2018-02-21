@@ -1,22 +1,17 @@
-include_directories(
-    ${Amarok_SOURCE_DIR}/src
-    ${Amarok_SOURCE_DIR}/src/network
+set(photos_SRCS
+    plugin/PhotosPlugin.cpp
+    plugin/PhotosEngine.cpp
 )
 
-set( photos_applet_SRCS
-     DragPixmapItem.cpp
-     PhotosApplet.cpp
-     PhotosScrollWidget.cpp
-)
+add_library(amarok_context_applet_photos SHARED ${photos_SRCS})
 
-ki18n_wrap_ui( photos_applet_SRCS photosSettings.ui )
-
-add_library(amarok_context_applet_photos MODULE ${photos_applet_SRCS})
-target_link_libraries( amarok_context_applet_photos
+target_link_libraries(amarok_context_applet_photos
     amarokcore
     amaroklib
-    KF5::Plasma
+    Qt5::Qml
 )
 
-install( TARGETS amarok_context_applet_photos DESTINATION ${PLUGIN_INSTALL_DIR} )
-install( FILES amarok-context-applet-photos.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+install(TARGETS amarok_context_applet_photos DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/photos)
+install(FILES plugin/qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/photos)
+
+kpackage_install_package(package org.kde.amarok.photos amarok)

@@ -17,7 +17,7 @@
 
 #include "DiagnosticDialog.h"
 
-// #include "context/ContextView.h"
+#include "context/ContextView.h"
 #include "PluginManager.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
@@ -95,7 +95,6 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
         aPluginString += "   " + aInfo.name() + " (" + aInfo.version() + ")\n";
     }
 
-/*  FIXME: disabled temporarily for KF5 porting
     // Get applets
     QString appletString;
     const QStringList appletList = Context::ContextView::self()->currentAppletNames();
@@ -105,7 +104,6 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
         // Currently we cannot extract the applet version number this way
         appletString += "   " + applet + '\n';
     }
-*/
     const KService::Ptr aPhononBackend =
         KServiceTypeTrader::self()->preferredService( "PhononBackend" );
 
@@ -132,7 +130,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
                "Enabled Scripts:\n%1\n"
                "Enabled Plugins:\n%2\n"
                "Enabled Applets:\n%3\n",
-               aScriptString, aPluginString //FIXME: disabled temporarily for KF5 porting: //, appletString
+               aScriptString, aPluginString, appletString
            );
 }
 

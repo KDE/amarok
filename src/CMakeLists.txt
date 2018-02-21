@@ -278,28 +278,12 @@ set( scanner_SRCS
 # CONTEXT
 #####################################################################
 set( libcontextview_SRCS
-#    context/AmarokContextPackageStructure.cpp
-#    context/AppletLoader.cpp
-#    context/AppletModel.cpp
-#    context/ContextDock.cpp
-#    context/ContextView.cpp
+    context/AmarokContextPackageStructure.cpp
+    context/AppletLoader.cpp
+    context/AppletModel.cpp
+    context/ContextDock.cpp
+    context/ContextView.cpp
     context/LyricsManager.cpp
-#    context/ToolbarView.cpp
-#    context/toolbar/AppletItemOverlay.cpp
-#    context/toolbar/AppletToolbarAddItem.cpp
-#    context/toolbar/AppletToolbarAppletItem.cpp
-#    context/toolbar/AppletToolbarBase.cpp
-#    context/toolbar/AppletToolbarConfigItem.cpp
-#    context/widgets/AppletHeader.cpp
-#    context/widgets/RatingWidget.cpp
-#    context/widgets/TextScrollingWidget.cpp
-#    context/widgets/DropPixmapItem.cpp
-#    context/widgets/ToolBoxIcon.cpp
-#    context/widgets/ContainmentArrow.cpp
-#    context/widgets/ContainmentSelectionLayer.cpp
-#    context/widgets/appletexplorer/AppletExplorer.cpp
-#    context/widgets/appletexplorer/AppletIcon.cpp
-#    context/widgets/RecentlyPlayedListWidget.cpp
 )
 
 #####################################################################
@@ -868,6 +852,7 @@ target_link_libraries(amaroklib
     Phonon::phonon4qt5
     KF5::Archive
     KF5::CoreAddons
+    KF5::Declarative
     KF5::GlobalAccel
     KF5::GuiAddons
     KF5::I18n
@@ -881,13 +866,12 @@ target_link_libraries(amaroklib
     KF5::Notifications
     KF5::NotifyConfig
     KF5::Package
-    KF5::Plasma
-    KF5::PlasmaQuick
     KF5::TextEditor
     KF5::ThreadWeaver
     KF5::WindowSystem
     ${QT_QTSCRIPTTOOLS_LIBRARY}
     Qt5::Gui
+    Qt5::Quick
     Qt5::QuickWidgets
     Qt5::Script
     Qt5::ScriptTools
@@ -964,7 +948,7 @@ install(PROGRAMS org.kde.amarok_containers.desktop DESTINATION ${XDG_APPS_INSTAL
 install(FILES org.kde.amarok.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 install(FILES amarok-plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
-# install(FILES amarok-contextapplet.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
+install(FILES amarok-contextapplet.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_codecinstall.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_append.desktop DESTINATION ${SERVICES_INSTALL_DIR}/ServiceMenus)
 install(FILES amarok-play-audiocd.desktop DESTINATION ${DATA_INSTALL_DIR}/solid/actions)

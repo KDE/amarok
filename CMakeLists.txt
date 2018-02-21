@@ -31,7 +31,7 @@ include(ECMAddAppIcon)
 include(FindPkgConfig)
 
 find_package( Qt5 REQUIRED COMPONENTS Core DBus Gui Quick QuickWidgets Qml Script ScriptTools Sql Svg Test Widgets Xml )
-find_package( KF5 REQUIRED COMPONENTS Archive Codecs CoreAddons DBusAddons DNSSD GlobalAccel GuiAddons I18n IconThemes KCMUtils KIO NewStuff Notifications NotifyConfig Plasma PlasmaQuick Solid TextEditor ThreadWeaver )
+find_package( KF5 REQUIRED COMPONENTS Archive Codecs CoreAddons DBusAddons Declarative DNSSD GlobalAccel GuiAddons I18n IconThemes KCMUtils KIO NewStuff Notifications NotifyConfig Package Solid TextEditor ThreadWeaver WindowSystem )
 
 ###############
 option(WITH_UTILITIES "Enable building of utilities" ON)

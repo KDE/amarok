@@ -29,7 +29,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 
 #include <KIO/Job>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QDomDocument>
 

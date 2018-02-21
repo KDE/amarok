@@ -27,7 +27,7 @@
 #include "browsers/playlistbrowser/PlaylistBrowserModel.h"
 #include "browsers/playlistbrowser/PlaylistsByProviderProxy.h"
 #include "browsers/playlistbrowser/PlaylistsInFoldersProxy.h"
-// #include "context/ContextView.h"
+#include "context/ContextView.h"
 #include "core/support/Debug.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistModel.h"
@@ -154,7 +154,6 @@ void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supporte
         return;
     m_ongoingDrag = true;
 
-/*  FIXME: disabled temporarily for KF5 porting
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
@@ -166,7 +165,6 @@ void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supporte
 
         m_pd->show();
     }
-*/
 
     QTreeView::startDrag( supportedActions );
 
@@ -174,13 +172,11 @@ void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supporte
     // Clear the data from all actions now that the PUD has executed.
     resetActionTargets();
 
-/*  FIXME: disabled temporarily for KF5 porting
     if( m_pd )
     {
         connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &PopupDropper::clear );
         m_pd->hide();
     }
-*/
     m_ongoingDrag = false;
 }
 

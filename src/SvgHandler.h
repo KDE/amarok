@@ -64,6 +64,18 @@ class AMAROK_EXPORT SvgHandler : public QObject
         * @return The svg element/file rendered into a pixmap
         */
         QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false, const qreal opacity = 1.0 );
+
+        /**
+         * Another overloaded function that loads a svg file from an url. This function is usable from QML.
+         * @param keyname the name of the key to save in the cache
+         * @param width Width of the resulting pixmap
+         * @param height Height of the resulting pixmap
+         * @param element The theme element to render ( if none the entire svg is rendered )
+         * @param skipCache If true, the pixmap will always get rendered and never fetched from the cache.
+         * @param opacity The opacity used for rendering. Range 0.0 to 1.0.
+         * @return The svg element/file rendered into a pixmap
+         */
+        Q_INVOKABLE QPixmap renderSvg( const QUrl& url, const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false, const qreal opacity = 1.0 );
         
         /**
          * Yet another overloaded function. This one renders the svg element and adds half a divider element to the top and the bottom
@@ -143,7 +155,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
     private:
         SvgHandler( QObject* parent = 0 );
 
-        bool loadSvg( const QString& name );
+        bool loadSvg( const QString& name, bool forceCustomTheme = false );
 
         QPixmap sliderHandle( const QColor &color, bool pressed, int size );
         QColor calcLightColor(const QColor &color) const;

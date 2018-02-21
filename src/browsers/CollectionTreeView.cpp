@@ -27,7 +27,7 @@
 #include "SvgHandler.h"
 #include "browsers/CollectionSortFilterProxyModel.h"
 #include "browsers/CollectionTreeItemModel.h"
-// #include "context/ContextView.h"
+#include "context/ContextView.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/collections/CollectionLocation.h"
@@ -640,7 +640,6 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         return;
     m_ongoingDrag = true;
 
-/* FIXME: disabled temporarily for KF5 porting
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
@@ -702,7 +701,6 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 
         m_pd->show();
     }
-*/
 
     QTreeView::startDrag( supportedActions );
     debug() << "After the drag!";

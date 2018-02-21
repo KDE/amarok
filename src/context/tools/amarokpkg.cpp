@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "../AmarokContextPackageStructure.h"
+
 #include <iostream>
 
 #include <QApplication>
@@ -23,23 +25,20 @@
 #include <QDBusInterface>
 #include <QDir>
 #include <QLocale>
+#include <QStandardPaths>
 #include <QTextStream>
 
 #include <KAboutData>
 #include <KLocalizedString>
-#include <KService>
-#include <KServiceTypeTrader>
 #include <KShell>
-#include <QStandardPaths>
 #include <KProcess>
-#include <KSycoca>
 #include <KConfigGroup>
+#include <KPackage/PackageLoader>
 #include <KPackage/Package>
-#include <KPluginInfo>
 
 
 static const char description[] = "Install, list, remove Amarok applets";
-static const char version[] = "0.1";
+static const char version[] = "0.2";
 
 
 void output(const QString &msg)
@@ -53,19 +52,27 @@ void runKbuildsycoca()
     dbus.call(QDBus::NoBlock, "recreate");
 }
 
-QStringList packages(const QString& type)
+QStringList packages()
 {
+    auto loader = KPackage::PackageLoader::self();
+    auto structure = new AmarokContextPackageStructure;
+    loader->addKnownPackageStructure(QStringLiteral("Amarok/ContextApplet"), structure);
+    auto applets = loader->findPackages(QStringLiteral("Amarok/ContextApplet"),
+                                        QString(),
+                                        [] (const KPluginMetaData &data)
+                                        { return data.serviceTypes().contains(QStringLiteral("Amarok/ContextApplet")); });
+
     QStringList result;
-    KService::List services = KServiceTypeTrader::self()->query("Plasma/" + type, "'amarok' ~ [X-KDE-ParentApp]");
-    foreach(const KService::Ptr &service, services) {
-        result << service->property("X-KDE-PluginInfo-Name", QVariant::String).toString();
-    }
+
+    for (const auto &applet : applets)
+        result << applet.pluginId();
+
     return result;
 }
 
-void listPackages(const QString& type)
+void listPackages()
 {
-    QStringList list = packages(type);
+    QStringList list = packages();
     list.sort();
     foreach(const QString& package, list) {
         output(package);
@@ -97,12 +104,6 @@ int main(int argc, char **argv)
 
     QCommandLineParser parser;
 
-    parser.addVersionOption();
-    parser.addHelpOption();
-    aboutData.setupCommandLine(&parser);
-    parser.process(app);
-    aboutData.processCommandLine(&parser);
-
     parser.addOption(QCommandLineOption(QStringList() << "g" << "global",
                                         i18n("For install or remove, operates on applets installed for all users.")));
     parser.addOption(QCommandLineOption(QStringList() << "s" << "i" << "install <path>",
@@ -116,19 +117,21 @@ int main(int argc, char **argv)
     parser.addOption(QCommandLineOption(QStringList() << "p" << "packageroot <path>",
                                         i18n("Absolute path to the package root. If not supplied, then the standard data directories for this KDE session will be searched instead.")));
 
-    QString packageRoot = "plasma/plasmoids/";
-    QString servicePrefix = "amarok-applet-";
-    QString pluginType = "Applet";
+    parser.addVersionOption();
+    parser.addHelpOption();
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
+
+    QString packageRoot = "kpackage/amarok";
     KPackage::Package *installer = 0;
 
     if (parser.isSet("list")) {
-        listPackages(pluginType);
+        listPackages();
     } else {
         // install, remove or upgrade
-        if (!installer) {
-            installer = new KPackage::Package();
-            installer->setContentsPrefixPaths(QStringList() << servicePrefix);
-        }
+        if (!installer)
+            installer = new KPackage::Package(new AmarokContextPackageStructure);
 
         if (parser.isSet("packageroot")) {
             packageRoot = parser.value("packageroot");
@@ -158,26 +161,26 @@ int main(int argc, char **argv)
             installer->setPath(packageFile);
             KPluginMetaData metadata = installer->metadata();
 
-            QString pluginName;
+            QString pluginId;
             if (metadata.name().isEmpty()) {
                 // plugin name given in command line
-                pluginName = package;
+                pluginId = package;
             } else {
                 // Parameter was a plasma package, get plugin name from the package
-                pluginName = metadata.name();
+                pluginId = metadata.pluginId();
             }
 
-            QStringList installed = packages(pluginType);
-            if (installed.contains(pluginName)) {
-                if (installer->uninstall(pluginName, packageRoot)) {
-                    output(i18n("Successfully removed %1", pluginName));
+            QStringList installed = packages();
+            if (installed.contains(pluginId)) {
+                if (installer->uninstall(pluginId, packageRoot)) {
+                    output(i18n("Successfully removed %1", pluginId));
                 } else if (!parser.isSet("upgrade")) {
-                    output(i18n("Removal of %1 failed.", pluginName));
+                    output(i18n("Removal of %1 failed.", pluginId));
                     delete installer;
                     return 1;
                 }
             } else {
-                output(i18n("Plugin %1 is not installed.", pluginName));
+                output(i18n("Plugin %1 is not installed.", pluginId));
             }
         }
         if (parser.isSet("install") || parser.isSet("upgrade")) {

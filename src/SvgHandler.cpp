@@ -76,9 +76,9 @@ SvgHandler::~SvgHandler()
 }
 
 
-bool SvgHandler::loadSvg( const QString& name )
+bool SvgHandler::loadSvg( const QString& name, bool forceCustomTheme )
 {
-    const QString &svgFilename = !m_customTheme ? QStandardPaths::locate( QStandardPaths::GenericDataLocation, name ) : name;
+    const QString &svgFilename = m_customTheme || forceCustomTheme ? name : QStandardPaths::locate( QStandardPaths::GenericDataLocation, name );
     QSvgRenderer *renderer = new QSvgRenderer( The::svgTinter()->tint( svgFilename ) );
 
     if ( !renderer->isValid() )
@@ -159,6 +159,53 @@ QPixmap SvgHandler::renderSvg( const QString &name,
         else
             m_renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
   
+        if( !skipCache )
+            m_cache->insertPixmap( key, pixmap );
+    }
+
+    return pixmap;
+}
+
+QPixmap SvgHandler::renderSvg( const QUrl& url, const QString& keyname, int width, int height, const QString& element, bool skipCache, const qreal opacity )
+{
+    if( !url.isLocalFile() )
+        return QPixmap();
+
+    QString key;
+    if( !skipCache )
+    {
+        key = QString("%1:%2x%3")
+        .arg( keyname )
+        .arg( width )
+        .arg( height );
+    }
+
+    QPixmap pixmap;
+    if( skipCache || !m_cache->findPixmap( key, &pixmap ) )
+    {
+        pixmap = QPixmap( width, height );
+        pixmap.fill( Qt::transparent );
+
+        QString name = url.toLocalFile();
+        QReadLocker readLocker( &m_lock );
+        if( ! m_renderers[name] )
+        {
+            readLocker.unlock();
+            if( !loadSvg( name, true ) )
+            {
+                return pixmap;
+            }
+            readLocker.relock();
+        }
+
+        QPainter pt( &pixmap );
+        pt.setOpacity( opacity );
+
+        if ( element.isEmpty() )
+            m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
+        else
+            m_renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
+
         if( !skipCache )
             m_cache->insertPixmap( key, pixmap );
     }

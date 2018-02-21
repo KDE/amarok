@@ -23,7 +23,7 @@
 #include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
-// #include "context/ContextView.h"
+#include "context/ContextView.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -484,7 +484,6 @@ FileView::startDrag( Qt::DropActions supportedActions )
     m_ongoingDrag = true;
     m_dragMutex.unlock();
 
-/*  FIXME: disabled temporarily for KF5 porting
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
@@ -503,7 +502,6 @@ FileView::startDrag( Qt::DropActions supportedActions )
 
         m_pd->show();
     }
-*/
 
     QTreeView::startDrag( supportedActions );
 

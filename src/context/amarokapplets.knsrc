@@ -1,5 +1,0 @@
-[KNewStuff2]
-ProvidersUrl=http://download.kde.org/khotnewstuff/amarokapplets-providers.xml
-StandardResource=tmp
-InstallationCommand=amarokpkg -i %f
-UninstallCommand=amarokpkg -r %f

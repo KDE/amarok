@@ -27,8 +27,8 @@
 
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
-// #include "context/ContextView.h"
-// #include "context/popupdropper/libpud/PopupDropper.h"
+#include "context/ContextView.h"
+#include "context/popupdropper/libpud/PopupDropper.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "dialogs/TagDialog.h"
@@ -717,7 +717,6 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         return;
     ongoingDrags = true;
 
-/* FIXME: disabled temporarily for KF5 porting
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
@@ -734,7 +733,6 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
 
         m_pd->show();
     }
-*/
 
     QListView::startDrag( supportedActions );
     debug() << "After the drag!";

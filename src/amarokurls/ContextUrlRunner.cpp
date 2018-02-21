@@ -18,6 +18,8 @@
 
 #include "MainWindow.h"
 #include "AmarokUrlHandler.h"
+#include "context/ContextView.h"
+#include "context/AppletModel.h"
 
 #include <KLocalizedString>
 
@@ -48,18 +50,15 @@ bool ContextUrlRunner::run( AmarokUrl url )
     QString appletsString = url.args().value( "applets" );
     debug() << "applet string: " << appletsString;
     QStringList appletList = appletsString.split( ',' );
-
-/*  FIXME: disabled temporarily for KF5 porting
-    Context::ContextView::self()->clearNoSave();
-    Context::Containment* cont = dynamic_cast< Context::Containment* >( Context::ContextView::self()->containment() );
-    if( cont )
+    auto model = Context::ContextView::self()->appletModel();
+    if( model )
     {
+        model->clear();
         foreach( const QString &appletPluginName, appletList )
         {
-            cont->addApplet( appletPluginName, -1 );
+            model->setAppletEnabled( appletPluginName, true );
         }
     }
-*/
     The::mainWindow()->showDock( MainWindow::AmarokDockContext );
 
     return true;

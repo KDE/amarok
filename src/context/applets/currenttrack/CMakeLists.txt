@@ -1,28 +1,18 @@
-project(context-currenttrack)
+set(current_SRCS
+    plugin/CurrentPlugin.cpp
+    plugin/CurrentEngine.cpp
+)
 
-include_directories(
-    ${Amarok_SOURCE_DIR}/src/context/widgets
-    ${Amarok_SOURCE_DIR}/src/core-impl/collections/support
-    ${Amarok_SOURCE_DIR}/src
-    )
+add_library(amarok_context_applet_currenttrack SHARED ${current_SRCS})
 
-set( currenttrack_SRCS
-     CurrentTrack.cpp
-     ${Amarok_SOURCE_DIR}/src/context/widgets/RecentlyPlayedListWidget.cpp
-     ${Amarok_SOURCE_DIR}/src/widgets/PixmapViewer.cpp
-     )
-
-ki18n_wrap_ui( currenttrack_SRCS currentTrackSettings.ui )
-add_library(amarok_context_applet_currenttrack MODULE ${currenttrack_SRCS})
-if(APPLE)
-   set_target_properties(amarok_context_applet_currenttrack PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif()
 target_link_libraries(amarok_context_applet_currenttrack
     amarokcore
     amaroklib
-    KF5::Plasma
+    Qt5::Qml
+    KF5::CoreAddons
 )
 
-install(TARGETS amarok_context_applet_currenttrack DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES amarok-context-applet-currenttrack.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(FILES amarok-currenttrack.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/default/widgets/ )
+install(TARGETS amarok_context_applet_currenttrack DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/currenttrack)
+install(FILES plugin/qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/currenttrack)
+
+kpackage_install_package(package org.kde.amarok.currenttrack amarok)

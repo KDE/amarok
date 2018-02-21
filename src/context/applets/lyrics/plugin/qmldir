@@ -1,0 +1,2 @@
+module org.kde.amarok.lyrics
+plugin amarok_context_applet_lyrics

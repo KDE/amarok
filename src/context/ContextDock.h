@@ -19,18 +19,8 @@
 
 #include "widgets/AmarokDockWidget.h"
 
-#include <QWeakPointer>
+#include <QPointer>
 
-class KVBox;
-class QResizeEvent;
-
-namespace Context {
-    class ContextScene;
-    class ContextView;
-    class ToolbarView;
-}
-
-namespace Plasma { class Containment; }
 
 class ContextDock : public AmarokDockWidget
 {
@@ -42,14 +32,7 @@ public:
     void polish();
 
 protected Q_SLOTS:
-    void createContextView( Plasma::Containment *containment );
-
-private:
-    KVBox * m_mainWidget;
-
-    QWeakPointer<Context::ContextScene> m_corona;
-    QWeakPointer<Context::ContextView>  m_contextView;
-    QWeakPointer<Context::ToolbarView>  m_contextToolbarView;
+     void createContextView();
 };
 
 #endif // CONTEXTDOCK_H

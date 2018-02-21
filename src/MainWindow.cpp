@@ -40,7 +40,7 @@
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/playlistbrowser/PodcastCategory.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
-// #include "context/ContextDock.h"
+#include "context/ContextDock.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
@@ -229,10 +229,10 @@ MainWindow::init()
              &QAction::triggered, m_playlistDock.data(), &Playlist::Dock::slotEditQueue );
     PERF_LOG( "Playlist created" )
 
-//     PERF_LOG( "Creating ContextWidget" )
-//     m_contextDock = new ContextDock( this );
-//     m_contextDock->installEventFilter( this );
-//     PERF_LOG( "ContextScene created" )
+    PERF_LOG( "Creating ContextWidget" )
+    m_contextDock = new ContextDock( this );
+    m_contextDock->installEventFilter( this );
+    PERF_LOG( "ContextScene created" )
     //END Creating Widgets
 
     createMenus();
@@ -241,7 +241,7 @@ MainWindow::init()
                     | QMainWindow::AnimatedDocks | QMainWindow::VerticalTabs );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
-//     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
+    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
     addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock.data(), Qt::Horizontal );
 
     setLayoutLocked( AmarokConfig::lockLayout() );
@@ -387,7 +387,7 @@ MainWindow::showDock( AmarokDockId dockId )
             name = m_browserDock->windowTitle();
             break;
         case AmarokDockContext:
-//             name = m_contextDock->windowTitle();
+            name = m_contextDock->windowTitle();
             break;
         case AmarokDockPlaylist:
             name = m_playlistDock->windowTitle();
@@ -1250,8 +1250,8 @@ MainWindow::setLayoutLocked( bool locked )
     if( m_browserDock )
         m_browserDock.data()->setMovable( !locked );
 
-//     if( m_contextDock )
-//         m_contextDock.data()->setMovable( !locked );
+    if( m_contextDock )
+        m_contextDock.data()->setMovable( !locked );
 
     if( m_playlistDock )
         m_playlistDock.data()->setMovable( !locked );
@@ -1280,19 +1280,19 @@ MainWindow::resetLayout()
 
     // Remove all dock widgets, then add them again. This resets their state completely.
     removeDockWidget( m_browserDock.data() );
-//     removeDockWidget( m_contextDock.data() );
+    removeDockWidget( m_contextDock.data() );
     removeDockWidget( m_playlistDock.data() );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
-//     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
+    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
     addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock.data(), Qt::Horizontal );
 
     m_browserDock->setFloating( false );
-//     m_contextDock->setFloating( false );
+    m_contextDock->setFloating( false );
     m_playlistDock->setFloating( false );
 
     m_browserDock->show();
-//     m_contextDock->show();
+    m_contextDock->show();
     m_playlistDock->show();
 
     // Now set Amarok's default dockwidget sizes
@@ -1315,7 +1315,6 @@ MainWindow::setDefaultDockSizes() // SLOT
     const int widgetWidth = totalWidgetWidth / 3;
     const int leftover = totalWidgetWidth - 3 * widgetWidth;
 
-    #pragma message("PORTME KF5")/*
     //We need to set fixed widths initially, just until the main window has been properly laid out. As soon as this has
     //happened, we will unlock these sizes again so that the elements can be resized by the user.
     const int mins[3] = { m_browserDock->minimumWidth(), m_contextDock->minimumWidth(), m_playlistDock->minimumWidth() };
@@ -1331,7 +1330,6 @@ MainWindow::setDefaultDockSizes() // SLOT
     m_browserDock->setMinimumWidth( mins[0] ); m_browserDock->setMaximumWidth( maxs[0] );
     m_contextDock->setMinimumWidth( mins[1] ); m_contextDock->setMaximumWidth( maxs[1] );
     m_playlistDock->setMinimumWidth( mins[2] ); m_playlistDock->setMaximumWidth( maxs[2] );
-    */
 }
 
 bool
