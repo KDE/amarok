@@ -6,6 +6,7 @@ Doxyfile
 *.patch
 *.rej
 *.orig
+!.arcconfig
 
 # CMake
 CMakeLists.txt.user

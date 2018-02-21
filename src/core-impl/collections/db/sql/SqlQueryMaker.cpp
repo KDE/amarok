@@ -338,6 +338,7 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->queryReturnValues = "labels.label,labels.id";
             d->linkedTables |= Private::LABELS_TAB;
         }
+        return this;
 
     case QueryMaker::None:
         return this;

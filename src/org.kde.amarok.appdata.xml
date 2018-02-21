@@ -42,7 +42,9 @@
   <summary xml:lang="cs">Zvukový přehrávač</summary>
   <summary xml:lang="de">Audio-Wiedergabeprogramm</summary>
   <summary xml:lang="el">Αναπαραγωγέας ήχου</summary>
+  <summary xml:lang="en-GB">Audio Player</summary>
   <summary xml:lang="es">Reproductor de sonido</summary>
+  <summary xml:lang="id">Pemain Audio</summary>
   <summary xml:lang="it">Lettore audio</summary>
   <summary xml:lang="nl">Audiospeler</summary>
   <summary xml:lang="pt">Leitor de Áudio</summary>
@@ -71,7 +73,7 @@
     <p xml:lang="fr">Amarok est un lecteur de musique libre, polyvalent et puissant.</p>
     <p xml:lang="gl">Amarok é un reprodutor de música libre, versátil e potente.</p>
     <p xml:lang="ia">Amarok es un libere, versatile e potente reproductor musical</p>
-    <p xml:lang="id">Amarok adalah bebas, serbaguna dan pemutar musik perkasa.</p>
+    <p xml:lang="id">Amarok adalah pemain musik yang bebas, serbaguna dan hebat.</p>
     <p xml:lang="it">Amarok è un lettore musicale libero, versatile e potente.</p>
     <p xml:lang="ko">Amarok은 강력한 자유 소프트웨어 음악 재생기입니다.</p>
     <p xml:lang="nl">Amarok is een vrije, veelzijdige en krachtige muziekspeler.</p>
@@ -137,7 +139,7 @@
       <li xml:lang="fi">Eri ehtoja vastaavat dynaamiset soittolistat</li>
       <li xml:lang="fr">Listes de lectures dynamiques selon différents critères</li>
       <li xml:lang="gl">Listas de reprodución dinámicas que se axeitan a distintos criterios.</li>
-      <li xml:lang="id">Daftar putar dinamis menyesuaikan kriteria yang berbeda</li>
+      <li xml:lang="id">Playlist dinamis menyesuaikan kriteria yang berbeda</li>
       <li xml:lang="it">Scalette dinamiche che verificano diversi criteri</li>
       <li xml:lang="ko">조건에 따른 동적 재생 목록</li>
       <li xml:lang="nl">Dynamische afspeellijsten die voldoen aan verschillende criteria</li>
@@ -167,7 +169,7 @@
       <li xml:lang="es">Gestión de colección con uso de puntuaciones</li>
       <li xml:lang="fi">Kokoelmanhallinta arviointituella</li>
       <li xml:lang="fr">Gestion de collection avec prise en charge des évaluations</li>
-      <li xml:lang="gl">Xestión da colección cun sistema de puntuación.</li>
+      <li xml:lang="gl">Xestión de coleccións que permite puntuacións.</li>
       <li xml:lang="id">Mengelola koleksi dengan dukungan peringkat</li>
       <li xml:lang="it">Gestione della collezione con supporto per la valutazione</li>
       <li xml:lang="ko">별점 기능이 있는 모음집 관리</li>
@@ -199,7 +201,7 @@
       <li xml:lang="fi">Tuki tavallisille iPod-, MTP- ja UMS-musiikkisoitinlaitteille</li>
       <li xml:lang="fr">Prise en charge basique des iPod et des lecteurs de musique conformes à MTP et UMS</li>
       <li xml:lang="gl">Compatíbel con dispositivos de reprodución de música básicos: iPod, MTP e UMS.</li>
-      <li xml:lang="id">Terutama mendukung perangkat pemutar musik iPod, MTP dan UMS</li>
+      <li xml:lang="id">Terutama mendukung peranti pemain musik iPod, MTP dan UMS</li>
       <li xml:lang="it">Supporto per i lettori musicali iPod, MTP e UMS</li>
       <li xml:lang="ko">iPod, MTP, UMS 음악 재생기 장치 지원</li>
       <li xml:lang="nl">Ondersteuning voor basis iPod, MTP en UMS muziekspelerapparaten</li>
@@ -291,7 +293,7 @@
       <li xml:lang="fi">Kansikuvien hallinta</li>
       <li xml:lang="fr">Gestionnaire de pochettes</li>
       <li xml:lang="gl">Xestor de portadas.</li>
-      <li xml:lang="id">Manajer sampul</li>
+      <li xml:lang="id">Pengelola sampul</li>
       <li xml:lang="it">Gestore delle copertine</li>
       <li xml:lang="ko">커버 관리자</li>
       <li xml:lang="nl">Hoesbeheerder</li>
@@ -321,7 +323,7 @@
       <li xml:lang="fi">Voimakkuudentasauksen tuki</li>
       <li xml:lang="fr">Prise en charge de Replay Gain</li>
       <li xml:lang="gl">Permite normalizar o volume.</li>
-      <li xml:lang="id">Dukungan gain putar lagi</li>
+      <li xml:lang="id">Dukungan gain mainkan ulang</li>
       <li xml:lang="it">Supporto del guadagno di riproduzione</li>
       <li xml:lang="ko">리플레이게인 지원</li>
       <li xml:lang="nl">Ondersteuning van Replay gain</li>

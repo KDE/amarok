@@ -120,7 +120,7 @@ LabelsApplet::init()
 
     m_addLabelProxy = new QGraphicsProxyWidget( this );
     m_addLabelProxy.data()->setAttribute( Qt::WA_NoSystemBackground );
-    m_addLabel = new KComboBox( this );
+    m_addLabel = new KComboBox( true );
     m_addLabel.data()->setAttribute( Qt::WA_NoSystemBackground );
     m_addLabel.data()->setAutoFillBackground( false );
     QPalette p = m_addLabel.data()->palette();

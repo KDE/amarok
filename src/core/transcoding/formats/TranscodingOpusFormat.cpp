@@ -101,10 +101,10 @@ OpusFormat::ffmpegParameters( const Configuration &configuration ) const
             {
                 int ffmpegBitrate = toFfmpegBitrate( configuration.property( "bitrate" ).toInt() );
                 parameters << "-ab" << QString::number( ffmpegBitrate );
-                parameters << "-vn"; // -vn == no video stream
             }
         }
     }
+    parameters << "-vn"; // no video stream or album art
     return parameters;
 }
 
@@ -117,5 +117,5 @@ OpusFormat::toFfmpegBitrate( int setting ) const
 bool
 OpusFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA....*libopus" ) );
+    return ffmpegOutput.contains( QRegExp( "^ .EA... opus +.*libopus" ) );
 }

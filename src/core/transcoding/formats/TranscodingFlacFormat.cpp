@@ -83,11 +83,12 @@ FlacFormat::ffmpegParameters( const Configuration &configuration ) const
             }
         }
     }
+    parameters << "-vn"; // no album art, writing it to flac is not supported by ffmpeg
     return parameters;
 }
 
 bool
 FlacFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA....*flac" ) );
+    return ffmpegOutput.contains( QRegExp( "^ .EA... flac +" ) );
 }

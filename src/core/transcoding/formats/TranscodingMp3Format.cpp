@@ -93,16 +93,16 @@ Mp3Format::ffmpegParameters( const Configuration &configuration ) const
             if( property.name() == "quality" )
             {
                 int ffmpegQuality = qAbs( configuration.property( "quality" ).toInt() - 9 );
-                parameters << "-aq"
-                           << QString::number( ffmpegQuality );
+                parameters << "-aq" << QString::number( ffmpegQuality );
             }
         }
     }
+    parameters << "-vcodec" << "copy"; // keep album art unchanged
     return parameters;
 }
 
 bool
 Mp3Format::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA....*libmp3lame" ) );
+    return ffmpegOutput.contains( QRegExp( "^ .EA... mp3 +.*libmp3lame" ) );
 }

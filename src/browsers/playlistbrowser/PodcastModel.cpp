@@ -183,7 +183,7 @@ PlaylistBrowserNS::PodcastModel::channelData( const PodcastChannelPtr &channel,
                     return imageUrl;
                 }
                 case DateColumn:
-                    channel->subscribeDate();
+                    return channel->subscribeDate();
                 case IsEpisodeColumn:
                     return false;
             }

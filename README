@@ -115,9 +115,10 @@ Optional
       * FFmpeg 0.7.0 (or newer) - http://ffmpeg.org/
       * For all supported encoders to be available in Amarok, FFmpeg needs to
         support the following codecs:
-        * libfaac (NOT just "aac")
+        * aac (introduced in 3.0, https://www.ffmpeg.org/index.html#aac_encoder_stable)
         * alac
         * flac
+        * opus
         * libmp3lame (NOT just "mp3")
         * libvorbis (NOT just "vorbis")
         * wmav2
@@ -162,7 +163,7 @@ and stutter!" please visit:
 If you wish to contribute to Amarok, you should build it from Git and subscribe
 to the amarok AT kde.org mailing list. The IRC channel is also a place where
 it's nice to be. There you can talk to other developers easily, and you can see
-instant notifications of commits to the Git master repository. For instant email 
+instant notifications of commits to the Git master repository. For instant email
 notification of commits, visit http://commitfilter.kde.org/ , and http://amarok.be/fisheye
 provides a slightly-less-instant overview.
 

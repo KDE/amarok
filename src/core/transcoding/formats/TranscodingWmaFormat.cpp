@@ -97,11 +97,11 @@ WmaFormat::ffmpegParameters( const Configuration &configuration ) const
             if( property.name() == "bitrate" )
             {
                 int ffmpegBitrate = toFfmpegBitrate( configuration.property( "bitrate" ).toInt() );
-                parameters << "-ab"
-                           << QString::number( ffmpegBitrate );
+                parameters << "-ab" << QString::number( ffmpegBitrate );
             }
         }
     }
+    parameters << "-vn"; // no video stream or album art
     return parameters;
 }
 
@@ -115,5 +115,5 @@ WmaFormat::toFfmpegBitrate( int setting ) const
 bool
 WmaFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA....*wmav2" ) );
+    return ffmpegOutput.contains( QRegExp( "^ .EA... wmav2 +" ) );
 }
