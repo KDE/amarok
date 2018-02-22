@@ -26,6 +26,7 @@
 #include <QtCore/QDateTime>
 
 #include <qtest_kde.h>
+#include <iostream>
 
 QTEST_KDEMAIN_CORE( TestAmarok )
 
@@ -243,17 +244,48 @@ void TestAmarok::testVfatPath()
     QCOMPARE( Amarok::vfatPath( "test   .ext   " ), QString( "test  _.ext  _" ) );
     QCOMPARE( Amarok::vfatPath( "   test   .ext   " ), QString( "   test  _.ext  _" ) ); // yes, really!
 
-#ifdef Q_WS_WIN // interpret / as part of the name, not directory separator
-    QCOMPARE( Amarok::vfatPath( "\\some\\folder   \\" ), QString( "\\some\\folder  _\\" ) );
-    QCOMPARE( Amarok::vfatPath( "\\some   \\folder   \\" ), QString( "\\some  _\\folder  _\\" ) );
-    QCOMPARE( Amarok::vfatPath( "\\...some   \\ev  il   \\folders...\\" ), QString( "\\...some  _\\ev  il  _\\folders...\\" ) );
-    QCOMPARE( Amarok::vfatPath( "\\some\\fol/der   \\" ), QString( "\\some\\fol_der  _\\" ) );
-#else // interpret \ as part of the name, not directory separator
-    QCOMPARE( Amarok::vfatPath( "/some/folder   /" ), QString( "/some/folder  _/" ) );
-    QCOMPARE( Amarok::vfatPath( "/some   /folder   /" ), QString( "/some  _/folder  _/" ) );
-    QCOMPARE( Amarok::vfatPath( "/...some   /ev  il   /folders.../" ), QString( "/...some  _/ev  il  _/folders.../" ) );
-    QCOMPARE( Amarok::vfatPath( "/some/fol\\der   /" ), QString( "/some/fol_der  _/" ) );
-#endif
+    /* trailing dot in directory and file names are unsupported are being ignored (!) */
+    QCOMPARE( Amarok::vfatPath( "test..." ), QString( "test.._" ) );
+    QCOMPARE( Amarok::vfatPath( "...test..." ), QString( "...test.._" ) );
+    QCOMPARE( Amarok::vfatPath( "test.ext..." ), QString( "test.ext.._" ) );
+    QCOMPARE( Amarok::vfatPath( "test....ext..." ), QString( "test....ext.._" ) );
+    QCOMPARE( Amarok::vfatPath( "...test....ext..." ), QString( "...test....ext.._" ) );
+
+    /* more tests of trailing spaces and dot in directory names for Windows */
+    QCOMPARE( Amarok::vfatPath( "\\some\\folder   \\", Amarok::WindowsBehaviour ), QString( "\\some\\folder  _\\" ) );
+    QCOMPARE( Amarok::vfatPath( "\\some   \\folder   \\", Amarok::WindowsBehaviour ), QString( "\\some  _\\folder  _\\" ) );
+    QCOMPARE( Amarok::vfatPath( "\\...some   \\ev  il   \\folders...\\", Amarok::WindowsBehaviour ), QString( "\\...some  _\\ev  il  _\\folders.._\\" ) );
+    QCOMPARE( Amarok::vfatPath( "\\some\\fol/der   \\", Amarok::WindowsBehaviour ), QString( "\\some\\fol_der  _\\" ) );
+    QCOMPARE( Amarok::vfatPath( "\\some...\\folder...\\", Amarok::WindowsBehaviour ), QString( "\\some.._\\folder.._\\" ) );
+    QCOMPARE( Amarok::vfatPath( "\\some\\fol/der...\\", Amarok::WindowsBehaviour ), QString( "\\some\\fol_der.._\\" ) );
+    QCOMPARE( Amarok::vfatPath( "\\so..me.\\folder  .\\", Amarok::WindowsBehaviour ), QString( "\\so..me_\\folder  _\\" ) );
+    QCOMPARE( Amarok::vfatPath( ".\\any", Amarok::WindowsBehaviour ), QString( ".\\any" ) );
+    QCOMPARE( Amarok::vfatPath( "..\\any", Amarok::WindowsBehaviour ), QString( "..\\any" ) );
+    QCOMPARE( Amarok::vfatPath( "...\\any", Amarok::WindowsBehaviour ), QString( ".._\\any" ) );
+    QCOMPARE( Amarok::vfatPath( "a..\\any", Amarok::WindowsBehaviour ), QString( "a._\\any" ) );
+    QCOMPARE( Amarok::vfatPath( "any\\.\\any.", Amarok::WindowsBehaviour ), QString( "any\\.\\any_" ) );
+    QCOMPARE( Amarok::vfatPath( "any\\..\\any ", Amarok::WindowsBehaviour ), QString( "any\\..\\any_" ) );
+    QCOMPARE( Amarok::vfatPath( "any.\\...\\any", Amarok::WindowsBehaviour ), QString( "any_\\.._\\any" ) );
+    QCOMPARE( Amarok::vfatPath( "any \\a..\\any", Amarok::WindowsBehaviour ), QString( "any_\\a._\\any" ) );
+    QCOMPARE( Amarok::vfatPath( "Music\\R.E.M.\\Automatic for the people", Amarok::WindowsBehaviour ), QString( "Music\\R.E.M_\\Automatic for the people" ) );
+
+    /* more tests of trailing spaces and dot in directory names for Unix */
+    QCOMPARE( Amarok::vfatPath( "/some/folder   /", Amarok::UnixBehaviour ), QString( "/some/folder  _/" ) );
+    QCOMPARE( Amarok::vfatPath( "/some   /folder   /", Amarok::UnixBehaviour ), QString( "/some  _/folder  _/" ) );
+    QCOMPARE( Amarok::vfatPath( "/...some   /ev  il   /folders.../", Amarok::UnixBehaviour ), QString( "/...some  _/ev  il  _/folders.._/" ) );
+    QCOMPARE( Amarok::vfatPath( "/some/fol\\der   /", Amarok::UnixBehaviour ), QString( "/some/fol_der  _/" ) );
+    QCOMPARE( Amarok::vfatPath( "/some.../folder.../", Amarok::UnixBehaviour ), QString( "/some.._/folder.._/" ) );
+    QCOMPARE( Amarok::vfatPath( "/some/fol\\der.../", Amarok::UnixBehaviour ), QString( "/some/fol_der.._/" ) );
+    QCOMPARE( Amarok::vfatPath( "/so..me./folder  ./", Amarok::UnixBehaviour ), QString( "/so..me_/folder  _/" ) );
+    QCOMPARE( Amarok::vfatPath( "./any", Amarok::UnixBehaviour ), QString( "./any" ) );
+    QCOMPARE( Amarok::vfatPath( "../any", Amarok::UnixBehaviour ), QString( "../any" ) );
+    QCOMPARE( Amarok::vfatPath( ".../any", Amarok::UnixBehaviour ), QString( ".._/any" ) );
+    QCOMPARE( Amarok::vfatPath( "a../any", Amarok::UnixBehaviour ), QString( "a._/any" ) );
+    QCOMPARE( Amarok::vfatPath( "any/./any.", Amarok::UnixBehaviour ), QString( "any/./any_" ) );
+    QCOMPARE( Amarok::vfatPath( "any/../any ", Amarok::UnixBehaviour ), QString( "any/../any_" ) );
+    QCOMPARE( Amarok::vfatPath( "any./.../any", Amarok::UnixBehaviour ), QString( "any_/.._/any" ) );
+    QCOMPARE( Amarok::vfatPath( "any /a../any", Amarok::UnixBehaviour ), QString( "any_/a._/any" ) );
+    QCOMPARE( Amarok::vfatPath( "Music/R.E.M./Automatic for the people", Amarok::UnixBehaviour ), QString( "Music/R.E.M_/Automatic for the people" ) );
 
     /* Stepping deeper into M$ hell: reserved device names
      * See http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx */

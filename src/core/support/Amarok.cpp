@@ -335,8 +335,7 @@ namespace Amarok
     {
         QString s = path;
 
-        if( behaviour == AutoBehaviour )
-            behaviour = ( QDir::separator() == '/' ) ? UnixBehaviour : WindowsBehaviour;
+        QChar separator = ( behaviour == AutoBehaviour ) ? QDir::separator() : ( behaviour == UnixBehaviour ) ? '/' : '\\';
 
         if( behaviour == UnixBehaviour ) // we are on *nix, \ is a valid character in file or directory names, NOT the dir separator
             s.replace( '\\', '_' );
@@ -390,21 +389,34 @@ namespace Amarok
         /* max path length of Windows API */
         s = s.left(255);
 
-        /* whitespace at the end of folder/file names or extensions are bad */
+        /* whitespace or dot at the end of folder/file names or extensions are bad */
         len = s.length();
-        if( s[len-1] == ' ' )
-            s[len-1] = '_';
-
-        int extensionIndex = s.lastIndexOf( '.' ); // correct trailing spaces in file name itself
-        if( ( s.length() > 1 ) &&  ( extensionIndex > 0 ) )
-            if( s.at( extensionIndex - 1 ) == ' ' )
-                s[extensionIndex - 1] = '_';
+        if( s.at(len - 1) == ' ' || s.at(len - 1) == '.' )
+            s[len - 1] = '_';
 
         for( int i = 1; i < s.length(); i++ ) // correct trailing whitespace in folder names
         {
-            if( ( s.at( i ) == QDir::separator() ) && ( s.at( i - 1 ) == ' ' ) )
+            if( s.at(i) == separator && s.at(i - 1) == ' ' )
                 s[i - 1] = '_';
         }
+
+        for( int i = 1; i < s.length(); i++ ) // correct trailing dot in folder names, excluding . and ..
+        {
+            if( s.at(i) == separator
+                    && s.at(i - 1) == '.'
+                    && !( i == 1 // ./any
+                        || ( i == 2 && s.at(i - 2) == '.' ) // ../any
+                        || ( i >= 2 && s.at(i - 2) == separator ) // any/./any
+                        || ( i >= 3 && s.at(i - 3) == separator && s.at(i - 2) == '.' ) // any/../any
+                    ) )
+                s[i - 1] = '_';
+        }
+
+        /* correct trailing spaces in file name itself, not needed for dots */
+        int extensionIndex = s.lastIndexOf( '.' );
+        if( ( s.length() > 1 ) &&  ( extensionIndex > 0 ) )
+            if( s.at(extensionIndex - 1) == ' ' )
+                s[extensionIndex - 1] = '_';
 
         return s;
     }
