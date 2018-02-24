@@ -413,10 +413,8 @@ ArtistWidget::clear()
 void
 ArtistWidget::openArtistUrl()
 {
-    // somehow Last.fm decides to supply this url without the scheme
-    KUrl artistUrl = QString( "http://%1" ).arg( m_artist->url().url() );
-    if( artistUrl.isValid() )
-        QDesktopServices::openUrl( artistUrl );
+    if( m_artist->url().isValid() )
+        QDesktopServices::openUrl( m_artist->url() );
 }
 
 void
