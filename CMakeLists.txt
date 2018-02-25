@@ -122,13 +122,6 @@ if( LIBLASTFM_FOUND )
     endif()
 endif()
 
-find_package( LibOFA )
-if( LIBOFA_FOUND )
-    PKG_SEARCH_MODULE(AVCODEC libavcodec)
-    PKG_SEARCH_MODULE(AVFORMAT libavformat)
-    PKG_SEARCH_MODULE(AVUTIL libavutil)
-endif()
-
 string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
 if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
     set( DEBUG_BUILD_TYPE ON )
@@ -169,9 +162,21 @@ if( WITH_PLAYER )
     set( LIBLASTFM_MIN_VERSION "1.0.3" )
     set_package_properties( LibLastFm PROPERTIES DESCRIPTION "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" URL "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" TYPE OPTIONAL )
 
-    if( LIBOFA_FOUND )
-        set_package_properties(LibOFA PROPERTIES DESCRIPTION "Enable MusicDNS service" URL "http://code.google.com/p/musicip-libofa/" TYPE OPTIONAL)
-    endif()
+    find_package(FFmpeg)
+    set_package_properties(FFmpeg PROPERTIES
+        DESCRIPTION "Libraries and tools for handling multimedia data"
+        URL "https://www.ffmpeg.org/"
+        TYPE OPTIONAL
+        PURPOSE "Enable MusicDNS service"
+    )
+
+    find_package(LibOFA)
+    set_package_properties(LibOFA PROPERTIES
+        DESCRIPTION "Open-source audio fingerprint by MusicIP"
+        URL "http://code.google.com/p/musicip-libofa/"
+        TYPE OPTIONAL
+        PURPOSE "Enable MusicDNS service"
+    )
 
     ## gpodder Service
     find_package( Mygpo-qt5 )
