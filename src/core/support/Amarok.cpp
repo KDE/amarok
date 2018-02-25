@@ -268,14 +268,14 @@ namespace Amarok
     QString saveLocation( const QString &directory )
     {
         globalDirsMutex.lock();
-        QString result = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation ) + directory;
+        QString result = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation ) + QDir::separator() + directory;
 
-        if( !result.endsWith('/') )
-           result.append('/');
+        if( !result.endsWith( QDir::separator() ) )
+            result.append( QDir::separator() );
 
-        QDir dir(result);
+        QDir dir( result );
         if( !dir.exists() )
-            dir.mkpath(".");
+            dir.mkpath( QStringLiteral( "." ) );
 
         globalDirsMutex.unlock();
         return result;
