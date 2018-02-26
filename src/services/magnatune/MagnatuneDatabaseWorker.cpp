@@ -24,7 +24,7 @@ MagnatuneDatabaseWorker::MagnatuneDatabaseWorker()
     , ThreadWeaver::Job()
     , m_registry( 0 )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
+    connect( this, &MagnatuneDatabaseWorker::done, this, &MagnatuneDatabaseWorker::completeJob );
 }
 
 

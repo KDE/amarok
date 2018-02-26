@@ -1,6 +1,5 @@
 [Desktop Entry]
 Type=Service
-ServiceTypes=KPluginInfo
 Icon=view-services-magnatune-amarok
 Name=Magnatune Store
 Name[bg]=Магазин Magnatune
@@ -113,7 +112,6 @@ Comment[zh_TW]=從標為 non-evil 的 Magnatune 唱片標籤的音樂中，預�
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=amarok_service_magnatunestore
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com

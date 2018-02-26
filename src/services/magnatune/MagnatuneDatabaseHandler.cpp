@@ -205,9 +205,9 @@ MagnatuneDatabaseHandler::insertArtist( ServiceArtist *artist )
     queryString = "INSERT INTO magnatune_artists ( name, artist_page, description, "
                   "photo_url ) VALUES ( '"
                   + sqlDb->escape( mArtist->name() ) + "', '"
-                  + sqlDb->escape( mArtist->magnatuneUrl()) + "', '"
+                  + sqlDb->escape( mArtist->magnatuneUrl().url() ) + "', '"
                   + sqlDb->escape( mArtist->description() ) + "', '"
-                  + sqlDb->escape( mArtist->photoUrl() ) + "' );";
+                  + sqlDb->escape( mArtist->photoUrl().url() ) + "' );";
 
     //debug() << "Adding Magnatune artist " << queryString;
 

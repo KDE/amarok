@@ -116,7 +116,7 @@ namespace LastFm
             ~LastFmProviderCapability();
     };
 
-    typedef KSharedPtr<Track> TrackPtr;
+    typedef AmarokSharedPointer<Track> TrackPtr;
 }
 
 #endif

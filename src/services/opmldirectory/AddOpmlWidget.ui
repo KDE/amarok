@@ -83,8 +83,8 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="KLineEdit" name="titleEdit">
-     <property name="clickMessage">
+    <widget class="QLineEdit" name="titleEdit">
+     <property name="placeholderText">
       <string>If left blank the title from the OPML will be used.</string>
      </property>
     </widget>
@@ -99,9 +99,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>KLineEdit</class>
+   <class>QLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
+   <header>qlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

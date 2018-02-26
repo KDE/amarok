@@ -19,22 +19,20 @@
 
 #include "ui_Mp3tunesConfigWidget.h"
 
-#include <kgenericfactory.h>
+#include <KPluginFactory>
 
-K_PLUGIN_FACTORY( Mp3tunesSettingsFactory, registerPlugin<Mp3tunesSettingsModule>(); )
-K_EXPORT_PLUGIN( Mp3tunesSettingsFactory( "kcm_amarok_mp3tunes" ) )
+K_PLUGIN_FACTORY_WITH_JSON( Mp3tunesSettingsFactory, "amarok_service_mp3tunes_config.json", registerPlugin<Mp3tunesSettingsModule>(); )
 
 Mp3tunesSettingsModule::Mp3tunesSettingsModule( QWidget *parent, const QVariantList &args )
-    : KCModule( Mp3tunesSettingsFactory::componentData(), parent, args )
+    : KCModule( parent, args )
 {
     m_configDialog = new Ui::Mp3tunesConfigWidget;
     m_configDialog->setupUi( this );
     //m_configDialog->pinEdit->setReadOnly( true );
 
     m_configDialog->passwordEdit->setEchoMode( QLineEdit::Password );
-    connect ( m_configDialog->emailEdit, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
-    connect ( m_configDialog->passwordEdit, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
-    //connect ( m_configDialog->enableHarmony, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
+    connect ( m_configDialog->emailEdit, &QLineEdit::textChanged, this, &Mp3tunesSettingsModule::settingsChanged );
+    connect ( m_configDialog->passwordEdit, &QLineEdit::textChanged, this, &Mp3tunesSettingsModule::settingsChanged );
 
     load();
 }

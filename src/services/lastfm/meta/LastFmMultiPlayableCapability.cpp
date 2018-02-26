@@ -24,16 +24,16 @@ LastFmMultiPlayableCapability::LastFmMultiPlayableCapability( LastFm::Track *tra
     , m_url( track->internalUrl() )
     , m_track( track )
 {
-    connect( track, SIGNAL(skipTrack()), this, SLOT(skip()) );
+    connect( track, &LastFm::Track::skipTrack, this, &LastFmMultiPlayableCapability::skip );
 
     Q_ASSERT( The::mainWindow() );
-    connect( The::mainWindow(), SIGNAL(skipTrack()), SLOT(skip()) );
+    connect( The::mainWindow(), &MainWindow::skipTrack, this, &LastFmMultiPlayableCapability::skip );
 
     // we only update underlying Last.fm metadata once it starts playing, prevent wrong
     // metadata Last.fm submissions etc.
     Q_ASSERT( EngineController::instance() );
-    connect( EngineController::instance(), SIGNAL(trackPlaying(Meta::TrackPtr)),
-                                           SLOT(slotTrackPlaying(Meta::TrackPtr)) );
+    connect( EngineController::instance(), &EngineController::trackPlaying,
+             this, &LastFmMultiPlayableCapability::slotTrackPlaying );
 }
 
 LastFmMultiPlayableCapability::~LastFmMultiPlayableCapability()
@@ -47,9 +47,8 @@ LastFmMultiPlayableCapability::fetchFirst()
     m_tuner = new lastfm::RadioTuner( lastfm::RadioStation( m_track->uidUrl() ) );
     m_tuner->setParent( this ); // memory management
 
-    connect( m_tuner, SIGNAL(trackAvailable()), SLOT(slotNewTrackAvailable()) );
-    connect( m_tuner, SIGNAL(error(lastfm::ws::Error,QString)),
-                      SLOT(error(lastfm::ws::Error)) );
+    connect( m_tuner, &lastfm::RadioTuner::trackAvailable, this, &LastFmMultiPlayableCapability::slotNewTrackAvailable );
+    connect( m_tuner, &lastfm::RadioTuner::error, this, &LastFmMultiPlayableCapability::error );
 }
 
 void

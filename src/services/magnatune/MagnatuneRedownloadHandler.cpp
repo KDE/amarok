@@ -22,7 +22,7 @@
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KMessageBox>
 
 #include "QDir"
@@ -84,13 +84,14 @@ void MagnatuneRedownloadHandler::redownload( MagnatuneDownloadInfo info )
     if ( m_albumDownloader == 0 )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
-        connect( m_albumDownloader, SIGNAL(downloadComplete(bool)), this, SLOT(albumDownloadComplete(bool)) );
+        connect( m_albumDownloader, &MagnatuneAlbumDownloader::downloadComplete, this, &MagnatuneRedownloadHandler::albumDownloadComplete );
     }
 
 
-    if (m_downloadDialog == 0) {
+    if ( m_downloadDialog == 0 )
+    {
         m_downloadDialog = new MagnatuneDownloadDialog(m_parent);
-         connect( m_downloadDialog, SIGNAL(downloadAlbum(MagnatuneDownloadInfo)), m_albumDownloader, SLOT(downloadAlbum(MagnatuneDownloadInfo)) );
+        connect( m_downloadDialog, &MagnatuneDownloadDialog::downloadAlbum, m_albumDownloader, &MagnatuneAlbumDownloader::downloadAlbum );
     }
 
     debug() << "Showing download dialog";
@@ -142,20 +143,20 @@ MagnatuneRedownloadHandler::fetchServerSideRedownloadList()
         return;
     }
 
-    QString redownloadApiUrl = "http://magnatune.com/buy/redownload_xml?email=" + email;
+    QUrl redownloadApiUrl = QUrl::fromUserInput( "http://magnatune.com/buy/redownload_xml?email=" + email );
 
-    m_redownloadApiJob = KIO::storedGet( QUrl( redownloadApiUrl ), KIO::NoReload, KIO::HideProgressInfo );
+    m_redownloadApiJob = KIO::storedGet( redownloadApiUrl, KIO::NoReload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_redownloadApiJob, i18n( "Getting list of previous Magnatune.com purchases" ) );
-    connect( m_redownloadApiJob, SIGNAL(result(KJob*)), SLOT(redownloadApiResult(KJob*)) );
+    connect( m_redownloadApiJob, &KIO::TransferJob::result, this, &MagnatuneRedownloadHandler::redownloadApiResult );
 
 }
 
 void MagnatuneRedownloadHandler::redownloadApiResult( KJob* job )
 {
 
-DEBUG_BLOCK
+    DEBUG_BLOCK
 
- if ( !job->error() == 0 )
+    if ( job->error() != 0 )
     {
         //TODO: error handling here
         debug() << "Job error... " << job->error();
@@ -187,11 +188,11 @@ DEBUG_BLOCK
     }
 
 
-    if (m_redownloadDialog == 0) {
+    if (m_redownloadDialog == 0)
+    {
         m_redownloadDialog = new MagnatuneRedownloadDialog( m_parent );
-        //connect( m_redownloadDialog, SIGNAL(redownload(QString)), this, SLOT(redownload(QString)) );
-        connect( m_redownloadDialog, SIGNAL(redownload(MagnatuneDownloadInfo)), this, SLOT(redownload(MagnatuneDownloadInfo)) );
-        connect( m_redownloadDialog, SIGNAL(cancelled()), this, SLOT(selectionDialogCancelled()) );
+        connect( m_redownloadDialog, &MagnatuneRedownloadDialog::redownload, this, &MagnatuneRedownloadHandler::redownload );
+        connect( m_redownloadDialog, &MagnatuneRedownloadDialog::cancelled, this, &MagnatuneRedownloadHandler::selectionDialogCancelled );
     }
 
     m_redownloadDialog->setRedownloadItems( previousPurchasesInfoList );

@@ -39,7 +39,7 @@ class AmpacheServiceQueryMaker : public DynamicServiceQueryMaker
     Q_OBJECT
 
 public:
-    AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QString &server, const QString &sessionId );
+    AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QUrl &server, const QString &sessionId );
     ~AmpacheServiceQueryMaker();
 
     virtual void run();

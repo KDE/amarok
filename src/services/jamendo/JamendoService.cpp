@@ -29,18 +29,15 @@
 #include "widgets/SearchWidget.h"
 
 #include <QAction>
-#include <KFileDialog>
-#include <KMenuBar>
-#include <KRun>
-#include <KShell>
-#include <KStandardDirs>
-#include <KTemporaryFile>
-#include <ThreadWeaver/ThreadWeaver>
-
 #include <QDesktopServices>
+#include <QHBoxLayout>
+#include <QMenuBar>
+#include <QStandardPaths>
+#include <QTemporaryFile>
 #include <QToolBar>
 #include <QToolButton>
 
+#include <KPluginFactory>
 #include <KShell>
 #include <ThreadWeaver/ThreadWeaver>
 
@@ -50,9 +47,6 @@ using namespace Meta;
 JamendoServiceFactory::JamendoServiceFactory()
     : ServiceFactory()
 {
-    KPluginInfo pluginInfo(  "amarok_service_jamendo.desktop" );
-    pluginInfo.setConfig( config() );
-    m_info = pluginInfo;
 }
 
 void JamendoServiceFactory::init()
@@ -79,12 +73,12 @@ JamendoService::JamendoService( JamendoServiceFactory* parent, const QString & n
     , m_currentAlbum( 0 )
     , m_xmlParser( 0 )
 {
-    setShortDescription(  i18n( "A archive of free, Creative Commons licensed music" ) );
+    setShortDescription(  i18n( "An archive of free, Creative Commons licensed music" ) );
     setIcon( QIcon::fromTheme( "view-services-jamendo-amarok" ) );
 
     setLongDescription( i18n( "Jamendo.com puts artists and music lovers in touch with each other. The site allows artists to upload their own albums to share them with the world and users to download all of them for free. Listen to and download all Jamendo.com contents from within Amarok." ) );
 
-setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_jamendo.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_jamendo.png" ) );
 
     ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo", this );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
@@ -119,8 +113,7 @@ JamendoService::polish()
     if ( m_polished )
         return;
 
-    KHBox * bottomPanelLayout = new KHBox;
-    bottomPanelLayout->setParent( m_bottomPanel );
+    BoxWidget *bottomPanelLayout = new BoxWidget( false, m_bottomPanel );
 
     m_updateListButton = new QPushButton;
     m_updateListButton->setParent( bottomPanelLayout );
@@ -135,8 +128,8 @@ JamendoService::polish()
     m_downloadButton->setIcon( QIcon::fromTheme( "download-amarok" ) );
     m_downloadButton->setEnabled( false );
 
-    connect( m_updateListButton, SIGNAL(clicked()), this, SLOT(updateButtonClicked()) );
-    connect( m_downloadButton, SIGNAL(clicked()), this, SLOT(download()) );
+    connect( m_updateListButton, &QPushButton::clicked, this, &JamendoService::updateButtonClicked );
+    connect( m_downloadButton, &QPushButton::clicked, this, &JamendoService::download );
 
     setInfoParser( new JamendoInfoParser() );
 
@@ -145,7 +138,8 @@ JamendoService::polish()
 
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
-    connect( m_contentView, SIGNAL(itemSelected(CollectionTreeItem*)), this, SLOT(itemSelected(CollectionTreeItem*)) );
+    connect( static_cast<ServiceCollectionTreeView*>( m_contentView ), &ServiceCollectionTreeView::itemSelected,
+             this, &JamendoService::itemSelected );
 
     QMenu *filterMenu = new QMenu( 0 );
 
@@ -159,10 +153,10 @@ JamendoService::polish()
 //     connect( action, SIGNAL(triggered(bool)), SLOT(sortByAlbum()) );
 
     QAction *action = filterMenu->addAction( i18n( "Genre / Artist" ) );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtist()) );
+    connect( action, &QAction::triggered, this, &JamendoService::sortByGenreArtist );
 
     action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum()) );
+    connect( action, &QAction::triggered, this, &JamendoService::sortByGenreArtistAlbum );
 
     QAction *filterMenuAction = new QAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
     filterMenuAction->setMenu( filterMenu );
@@ -186,20 +180,20 @@ JamendoService::updateButtonClicked()
 
     debug() << "JamendoService: start downloading xml file";
 
-    KTemporaryFile tempFile;
-    tempFile.setSuffix( ".gz" );
+    QTemporaryFile tempFile;
+//     tempFile.setSuffix( ".gz" );
     tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
     if( !tempFile.open() )
         return; //error
     m_tempFileName = tempFile.fileName();
     m_listDownloadJob = KIO::file_copy(
                 /* Deprecated */ QUrl("http://imgjam.com/data/dbdump_artistalbumtrack.xml.gz"),
-                QUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
+                QUrl::fromLocalFile( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
     Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com database..." ), this, SLOT(listDownloadCancelled()) );
 
-    connect( m_listDownloadJob, SIGNAL(result(KJob*)),
-            this, SLOT(listDownloadComplete(KJob*)) );
+    connect( m_listDownloadJob, &KJob::result,
+            this, &JamendoService::listDownloadComplete );
 }
 
 void
@@ -223,7 +217,7 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
 
     if( m_xmlParser == 0 )
         m_xmlParser = new JamendoXmlParser( m_tempFileName );
-    connect( m_xmlParser, SIGNAL(doneParsing()), SLOT(doneParsing()) );
+    connect( m_xmlParser, &JamendoXmlParser::doneParsing, this, &JamendoService::doneParsing );
 
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_xmlParser) );
     downloadJob->deleteLater();

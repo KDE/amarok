@@ -24,7 +24,7 @@
 #include <QFile>
 
 #include <KFilterDev>
-#include <KLocale>
+#include <KLocalizedString>
 
 using namespace Meta;
 
@@ -33,6 +33,7 @@ static const QString COVERURL_BASE = "http://api.jamendo.com/get2/image/album/re
 JamendoXmlParser::JamendoXmlParser( const QString &filename )
     : QObject()
     , ThreadWeaver::Job()
+    , m_sFileName( filename )
     , n_numberOfTransactions ( 0 )
     , n_maxNumberOfTransactions ( 5000 )
     , m_aborted( false )
@@ -121,10 +122,9 @@ JamendoXmlParser::JamendoXmlParser( const QString &filename )
     m_id3GenreHash.insert( 78, "Rock & Roll"       );
     m_id3GenreHash.insert( 79, "Hard Rock"         );
 
-    m_sFileName = filename;
     albumTags.clear();
     m_dbHandler = new JamendoDatabaseHandler();
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
+    connect( this, &JamendoXmlParser::done, this, &JamendoXmlParser::completeJob );
 }
 
 JamendoXmlParser::~JamendoXmlParser()
@@ -196,9 +196,9 @@ JamendoXmlParser::readConfigFile( const QString &filename )
         return;
     }
 
-    QIODevice *file = KFilterDev::deviceForFile( filename, "application/x-gzip", true );
+    KFilterDev *file = new KFilterDev( filename );
 
-    if( !file || !file->open( QIODevice::ReadOnly ) )
+    if( !file->open( QIODevice::ReadOnly ) )
     {
         debug() << "JamendoXmlParser::readConfigFile error reading file";
         return;

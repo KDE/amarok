@@ -35,8 +35,7 @@
 
 #include <XmlQuery.h>
 
-K_PLUGIN_FACTORY( LastFmServiceSettingsFactory, registerPlugin<LastFmServiceSettings>(); )
-K_EXPORT_PLUGIN( LastFmServiceSettingsFactory( "kcm_amarok_lastfm" ) )
+K_PLUGIN_FACTORY_WITH_JSON( LastFmServiceSettingsFactory, "amarok_service_lastfm_config.json", registerPlugin<LastFmServiceSettings>(); )
 
 QString md5( const QByteArray& src )
 {
@@ -46,30 +45,30 @@ QString md5( const QByteArray& src )
 
 
 LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantList &args )
-    : KCModule( LastFmServiceSettingsFactory::componentData(), parent, args )
+    : KCModule( parent, args )
     , m_config( LastFmServiceConfig::instance() )
 {
     m_configDialog = new Ui::LastFmConfigWidget;
     m_configDialog->setupUi( this );
 
-    connect( m_config.data(), SIGNAL(updated()), SLOT(onConfigUpdated()) );
+    connect( m_config.data(), &LastFmServiceConfig::updated, this, &LastFmServiceSettings::onConfigUpdated );
 
-    connect( m_configDialog->kcfg_ScrobblerUsername, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
-    connect( m_configDialog->kcfg_ScrobblerPassword, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
-    connect( m_configDialog->kcfg_SubmitPlayedSongs, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
-    connect( m_configDialog->kcfg_RetrieveSimilarArtists, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
-    connect( m_configDialog->kcfg_ScrobbleComposer, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()));
-    connect( m_configDialog->kcfg_UseFancyRatingTags, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()));
-    connect( m_configDialog->kcfg_AnnounceCorrections, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
-    connect( m_configDialog->kcfg_FilterByLabel, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
-    connect( m_configDialog->kcfg_FilteredLabel, SIGNAL(currentIndexChanged(QString)), this, SLOT(settingsChanged()) );
-    connect( m_configDialog->testLogin, SIGNAL(clicked()), this, SLOT(testLogin()) );
+    connect( m_configDialog->kcfg_ScrobblerUsername, &QLineEdit::textChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_ScrobblerPassword, &QLineEdit::textChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_SubmitPlayedSongs, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_RetrieveSimilarArtists, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_ScrobbleComposer, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_UseFancyRatingTags, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_AnnounceCorrections, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_FilterByLabel, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_FilteredLabel, QOverload<const QString&>::of( &QComboBox::currentIndexChanged ), this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->testLogin, &QPushButton::clicked, this, &LastFmServiceSettings::testLogin );
 
     using namespace Collections;
 
     QueryMaker *query = CollectionManager::instance()->queryMaker();
     query->setQueryType( QueryMaker::Label );
-    connect( query, SIGNAL(newResultReady(Meta::LabelList)), this, SLOT(addNewLabels(Meta::LabelList)) );
+    connect( query, &QueryMaker::newLabelsReady, this, &LastFmServiceSettings::addNewLabels );
     query->setAutoDelete( true );
     query->run();
 }
@@ -127,8 +126,9 @@ LastFmServiceSettings::testLogin()
     query[ "authToken" ] = authToken;
     m_authQuery = lastfm::ws::post( query );
 
-    connect( m_authQuery, SIGNAL(finished()), SLOT(onAuthenticated()) );
-    connect( m_authQuery, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(onError(QNetworkReply::NetworkError)) );
+    connect( m_authQuery, &QNetworkReply::finished, this, &LastFmServiceSettings::onAuthenticated );
+    connect( m_authQuery, QOverload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ),
+             this, &LastFmServiceSettings::onError );
 }
 
 void
@@ -256,3 +256,5 @@ LastFmServiceSettings::filteredLabelComboIndex( const QString &label )
     else
         return index;
 }
+
+#include "LastFmServiceSettings.moc"

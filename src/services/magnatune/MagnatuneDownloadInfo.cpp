@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QFile>
 #include <QTextStream>

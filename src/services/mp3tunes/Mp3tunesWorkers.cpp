@@ -21,7 +21,7 @@
 #include "core/support/Debug.h"
 #include "Mp3tunesMeta.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <QStringList>
 
 Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker,
@@ -34,7 +34,7 @@ Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker,
     , m_username( username )
     , m_password( password )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesLoginWorker::done, this, &Mp3tunesLoginWorker::completeJob );
 }
 
 Mp3tunesLoginWorker::~Mp3tunesLoginWorker()
@@ -79,7 +79,7 @@ void Mp3tunesLoginWorker::completeJob()
 /* ARTIST FETCHER */
 Mp3tunesArtistFetcher::Mp3tunesArtistFetcher( Mp3tunesLocker * locker )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesArtistFetcher::done, this, &Mp3tunesArtistFetcher::completeJob );
     m_locker = locker;
 }
 
@@ -126,7 +126,7 @@ void Mp3tunesArtistFetcher::defaultEnd(const ThreadWeaver::JobPointer& self, Thr
 /*  ALBUM w/ Artist Id FETCHER */
 Mp3tunesAlbumWithArtistIdFetcher::Mp3tunesAlbumWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesAlbumWithArtistIdFetcher::done, this, &Mp3tunesAlbumWithArtistIdFetcher::completeJob );
     m_locker = locker;
     m_artistId = artistId;
 }
@@ -176,7 +176,7 @@ void Mp3tunesAlbumWithArtistIdFetcher::defaultEnd(const ThreadWeaver::JobPointer
 Mp3tunesTrackWithAlbumIdFetcher::Mp3tunesTrackWithAlbumIdFetcher( Mp3tunesLocker * locker, int albumId )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesTrackWithAlbumIdFetcher::done, this, &Mp3tunesTrackWithAlbumIdFetcher::completeJob );
     m_locker = locker;
     debug() << "Constructor albumId: " << albumId;
     m_albumId = albumId;
@@ -228,7 +228,7 @@ void Mp3tunesTrackWithAlbumIdFetcher::defaultEnd(const ThreadWeaver::JobPointer&
 Mp3tunesTrackWithArtistIdFetcher::Mp3tunesTrackWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesTrackWithArtistIdFetcher::done, this, &Mp3tunesTrackWithArtistIdFetcher::completeJob );
     m_locker = locker;
     debug() << "Constructor artistId: " << artistId;
     m_artistId = artistId;
@@ -279,7 +279,7 @@ void Mp3tunesTrackWithArtistIdFetcher::defaultEnd(const ThreadWeaver::JobPointer
 Mp3tunesSearchMonkey::Mp3tunesSearchMonkey( Mp3tunesLocker * locker, QString query, int searchFor )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesSearchMonkey::done, this, &Mp3tunesSearchMonkey::completeJob );
     m_locker = locker;
     m_searchFor = searchFor;
     m_query = query;
@@ -311,9 +311,9 @@ void Mp3tunesSearchMonkey::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thre
 void Mp3tunesSearchMonkey::completeJob()
 {
     DEBUG_BLOCK
-    emit( searchComplete( m_result.artistList ) );
-    emit( searchComplete( m_result.albumList ) );
-    emit( searchComplete( m_result.trackList ) );
+    emit( searchArtistComplete( m_result.artistList ) );
+    emit( searchAlbumComplete( m_result.albumList ) );
+    emit( searchTrackComplete( m_result.trackList ) );
     deleteLater();
 }
 void Mp3tunesSearchMonkey::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
@@ -336,7 +336,7 @@ void Mp3tunesSearchMonkey::defaultEnd(const ThreadWeaver::JobPointer& self, Thre
 Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStringList tracklist )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesSimpleUploader::done, this, &Mp3tunesSimpleUploader::completeJob );
 
     m_locker = locker;
     m_tracklist = tracklist;
@@ -421,7 +421,7 @@ void Mp3tunesSimpleUploader::defaultEnd(const ThreadWeaver::JobPointer& self, Th
 Mp3tunesTrackFromFileKeyFetcher::Mp3tunesTrackFromFileKeyFetcher( Mp3tunesLocker * locker, QString filekey )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesTrackFromFileKeyFetcher::done, this, &Mp3tunesTrackFromFileKeyFetcher::completeJob );
     m_locker = locker;
     debug() << "Constructor filekey: " << filekey;
     m_filekey = filekey;

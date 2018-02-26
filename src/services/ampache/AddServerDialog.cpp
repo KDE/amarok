@@ -21,24 +21,34 @@
 #include "AmpacheAccountLogin.h"
 #include "ui_NewServerWidget.h"
 
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
+
 AddServerDialog::AddServerDialog()
-    : KDialog()
+    : QDialog()
     , m_widgets( new Ui::NewServerWidget )
 {
     QWidget* widget = new QWidget();
     m_widgets->setupUi(widget);
-    setMainWidget(widget);
+
+    setLayout(new QVBoxLayout);
+    layout()->addWidget(widget);
+
+    auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+    layout()->addWidget(buttonBox);
     
     m_widgets->verifyButton->setEnabled(false);
-    setCaption(i18n("Add new Ampache server"));
-    enableButtonOk(false);
+    setWindowTitle(i18n("Add new Ampache server"));
     
-    connect( m_widgets->verifyButton, SIGNAL(released()), this, SLOT(verifyData()));
-    QList<QObject*> inputs;
+    connect( m_widgets->verifyButton, &QPushButton::released, this, &AddServerDialog::verifyData);
+    QList<QLineEdit*> inputs;
     inputs << m_widgets->nameLineEdit << m_widgets->serverAddressLineEdit
            << m_widgets->userNameLineEdit << m_widgets-> passwordLineEdit;
-    foreach(QObject* line, inputs)
-        connect( line, SIGNAL(textEdited(QString)), this, SLOT(anyTextEdited()));
+    foreach(QLineEdit* line, inputs)
+        connect( line, &QLineEdit::textEdited, this, &AddServerDialog::anyTextEdited);
 }
 
 AddServerDialog::~AddServerDialog()
@@ -52,7 +62,7 @@ AddServerDialog::anyTextEdited()
    bool minimumData = (!(name().isEmpty() || url().isEmpty()
                                       || password().isEmpty()
                                       || username().isEmpty() ));
-   enableButtonOk(minimumData);
+   findChild<QDialogButtonBox*>()->button(QDialogButtonBox::Ok)->setEnabled(minimumData);
    m_widgets->verifyButton->setEnabled(minimumData);
 }
 
@@ -61,7 +71,7 @@ void AddServerDialog::verifyData()
     m_widgets->verifyButton->setEnabled(false);
     delete m_login; //should always be null at this point.
     m_login = new AmpacheAccountLogin( url(), username(), password(), this );
-    connect(m_login, SIGNAL(finished()), this, SLOT(loginResult()));
+    connect(m_login, &AmpacheAccountLogin::finished, this, &AddServerDialog::loginResult);
 }
 
 void AddServerDialog::loginResult()
@@ -89,10 +99,10 @@ AddServerDialog::name()
     return m_widgets->nameLineEdit->text();
 }
 
-QString
+QUrl
 AddServerDialog::url()
 {
-    return m_widgets->serverAddressLineEdit->text();
+    return QUrl::fromUserInput( m_widgets->serverAddressLineEdit->text() );
 }
 
 QString

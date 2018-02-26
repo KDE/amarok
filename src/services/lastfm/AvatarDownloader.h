@@ -21,6 +21,7 @@
 
 #include <QHash>
 #include <QObject>
+#include <QPixmap>
 
 class AvatarDownloader : public QObject
 {
@@ -56,4 +57,5 @@ class AvatarDownloader : public QObject
     private:
         QHash<QUrl, QString> m_userAvatarUrls;
 };
+
 #endif

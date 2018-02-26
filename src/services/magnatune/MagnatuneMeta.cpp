@@ -24,10 +24,10 @@
 #include "MagnatuneConfig.h"
 #include "SvgHandler.h"
 
-#include <KLocale>
-#include <KStandardDirs>
-
 #include <QObject>
+#include <QStandardPaths>
+
+#include <KLocalizedString>
 
 using namespace Meta;
 
@@ -217,7 +217,7 @@ QString Meta::MagnatuneTrack::sourceDescription()
 
 QPixmap Meta::MagnatuneTrack::emblem()
 {
-    return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-magnatune.png" ) );
+    return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-magnatune.png" ) );
 }
 
 
@@ -236,7 +236,7 @@ void Meta::MagnatuneTrack::download()
     DEBUG_BLOCK
     MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
     if ( mAlbum )
-        mAlbum->store()->download( this );
+        mAlbum->store()->downloadTrack( this );
 }
 
 void Meta::MagnatuneTrack::setAlbumPtr( Meta::AlbumPtr album )
@@ -264,26 +264,31 @@ MagnatuneArtist::MagnatuneArtist( const QString &name )
 MagnatuneArtist::MagnatuneArtist(const QStringList & resultRow)
     : ServiceArtist( resultRow )
 {
-    m_photoUrl = resultRow[3];
-    m_magnatuneUrl = resultRow[4];
+    auto list = QUrl::fromStringList( resultRow );
+
+    if( list.size() < 5 )
+        return;
+
+    m_photoUrl = list.at(3);
+    m_magnatuneUrl = list.at(4);
 }
 
-void MagnatuneArtist::setPhotoUrl( const QString &photoUrl )
+void MagnatuneArtist::setPhotoUrl( const QUrl &photoUrl )
 {
     m_photoUrl = photoUrl;
 }
 
-QString MagnatuneArtist::photoUrl( ) const
+QUrl MagnatuneArtist::photoUrl( ) const
 {
     return m_photoUrl;
 }
 
-void MagnatuneArtist::setMagnatuneUrl( const QString & magnatuneUrl )
+void MagnatuneArtist::setMagnatuneUrl( const QUrl & magnatuneUrl )
 {
     m_magnatuneUrl = magnatuneUrl;
 }
 
-QString MagnatuneArtist::magnatuneUrl() const
+QUrl MagnatuneArtist::magnatuneUrl() const
 {
     return m_magnatuneUrl;
 }
@@ -369,7 +374,7 @@ void Meta::MagnatuneAlbum::download()
 {
     DEBUG_BLOCK
     if ( store() )
-        store()->download( this );
+        store()->downloadAlbum( this );
 }
 
 void Meta::MagnatuneAlbum::addToFavorites()

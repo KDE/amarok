@@ -27,7 +27,7 @@
 namespace KWallet {
     class Wallet;
 }
-class KDialog;
+class QMessageBox;
 class LastFmServiceConfig;
 typedef QSharedPointer<LastFmServiceConfig> LastFmServiceConfigPtr;
 
@@ -134,7 +134,7 @@ private:
     QString m_filteredLabel;
     KWalletUsage m_kWalletUsage;
 
-    KDialog* m_askDiag;
+    QMessageBox* m_askDiag;
     KWallet::Wallet* m_wallet;
 
     static QWeakPointer<LastFmServiceConfig> s_instance;

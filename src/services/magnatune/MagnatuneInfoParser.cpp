@@ -20,7 +20,7 @@
 #include "core/interfaces/Logger.h"
 #include "MagnatuneConfig.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 
 using namespace Meta;
@@ -39,7 +39,7 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
 
     m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl(), KIO::Reload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_infoDownloadJob, i18n( "Fetching %1 Artist Info", magnatuneArtist->prettyName() ) );
-    connect( m_infoDownloadJob, SIGNAL(result(KJob*)), SLOT(artistInfoDownloadComplete(KJob*)) );
+    connect( m_infoDownloadJob, &KJob::result, this, &MagnatuneInfoParser::artistInfoDownloadComplete );
 
 }
 
@@ -97,7 +97,7 @@ void
 MagnatuneInfoParser::artistInfoDownloadComplete( KJob *downLoadJob )
 {
 
-    if ( !downLoadJob->error() == 0 )
+    if ( downLoadJob->error() != 0 )
     {
         //TODO: error handling here
         return ;
@@ -164,7 +164,7 @@ void MagnatuneInfoParser::getFrontPage()
     
     m_pageDownloadJob = KIO::storedGet( QUrl("http://magnatune.com/amarok_frontpage.html"), KIO::Reload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
-    connect( m_pageDownloadJob, SIGNAL(result(KJob*)), SLOT(frontpageDownloadComplete(KJob*)) );
+    connect( m_pageDownloadJob, &KJob::result, this, &MagnatuneInfoParser::frontpageDownloadComplete );
 }
 
 void MagnatuneInfoParser::getFavoritesPage()
@@ -185,11 +185,11 @@ void MagnatuneInfoParser::getFavoritesPage()
     QString user = config.username();
     QString password = config.password();
 
-    QString url = "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_favorites.php";
+    QUrl url = QUrl::fromUserInput( "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_favorites.php" );
 
-    m_pageDownloadJob = KIO::storedGet( QUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    m_pageDownloadJob = KIO::storedGet( url, KIO::Reload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
-    connect( m_pageDownloadJob, SIGNAL(result(KJob*)), SLOT(userPageDownloadComplete(KJob*)) );
+    connect( m_pageDownloadJob, &KJob::result, this, &MagnatuneInfoParser::userPageDownloadComplete );
 }
 
 void MagnatuneInfoParser::getRecommendationsPage()
@@ -210,16 +210,16 @@ void MagnatuneInfoParser::getRecommendationsPage()
     QString user = config.username();
     QString password = config.password();
 
-    QString url = "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_recommendations.php";
+    QUrl url = QUrl::fromUserInput( "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_recommendations.php" );
 
-    m_pageDownloadJob = KIO::storedGet( QUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    m_pageDownloadJob = KIO::storedGet( url, KIO::Reload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com recommendations page..." ) );
-    connect( m_pageDownloadJob, SIGNAL(result(KJob*)), SLOT(userPageDownloadComplete(KJob*)) );
+    connect( m_pageDownloadJob, &KJob::result, this, &MagnatuneInfoParser::userPageDownloadComplete );
 }
 
 void MagnatuneInfoParser::frontpageDownloadComplete( KJob * downLoadJob )
 {
-    if ( !downLoadJob->error() == 0 )
+    if ( downLoadJob->error() != 0 )
     {
         //TODO: error handling here
         return ;

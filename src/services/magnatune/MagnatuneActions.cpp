@@ -24,7 +24,7 @@ MagnatuneDownloadAction::MagnatuneDownloadAction( const QString &text, Meta::Mag
     , m_album( album )
 {
     setProperty( "popupdropper_svg_id", "append" );
-    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
+    connect( this, &QAction::triggered, this, &MagnatuneDownloadAction::slotTriggered );
 }
 
 
@@ -44,7 +44,7 @@ MagnatuneAddToFavoritesAction::MagnatuneAddToFavoritesAction( const QString &tex
     , m_album( album )
 {
     setProperty( "popupdropper_svg_id", "append" );
-    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
+    connect( this, &QAction::triggered, this, &MagnatuneAddToFavoritesAction::slotTriggered );
 }
 
 

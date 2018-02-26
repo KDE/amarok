@@ -42,16 +42,16 @@ LastFmTreeModel::LastFmTreeModel( QObject *parent )
 
     QNetworkReply *reply;
     reply = m_user.getNeighbours();
-    connect(reply, SIGNAL(finished()), this, SLOT(slotAddNeighbors()) );
+    connect(reply, &QNetworkReply::finished, this, &LastFmTreeModel::slotAddNeighbors );
 
     reply = m_user.getFriends();
-    connect( reply, SIGNAL(finished()), this, SLOT(slotAddFriends()) );
+    connect( reply, &QNetworkReply::finished, this, &LastFmTreeModel::slotAddFriends );
 
     reply = m_user.getTopTags();
-    connect( reply, SIGNAL(finished()), this, SLOT(slotAddTags()) );
+    connect( reply, &QNetworkReply::finished, this, &LastFmTreeModel::slotAddTags );
 
     reply = m_user.getTopArtists();
-    connect( reply, SIGNAL(finished()), this, SLOT(slotAddTopArtists()) );
+    connect( reply, &QNetworkReply::finished, this, &LastFmTreeModel::slotAddTopArtists );
 }
 
 LastFmTreeModel::~LastFmTreeModel()
@@ -325,8 +325,8 @@ LastFmTreeModel::avatar( const QString &username, const QUrl &avatarUrl ) const
     const_cast<LastFmTreeModel *>( this )->m_avatars.insert( username, defaultIcon );
     AvatarDownloader* downloader = new AvatarDownloader();
     downloader->downloadAvatar( username, avatarUrl );
-    connect( downloader, SIGNAL(avatarDownloaded(QString,QPixmap)),
-                         SLOT(onAvatarDownloaded(QString,QPixmap)) );
+    connect( downloader, &AvatarDownloader::avatarDownloaded,
+             this, &LastFmTreeModel::onAvatarDownloaded );
     return defaultIcon;
 }
 
@@ -390,6 +390,7 @@ LastFmTreeModel::data( const QModelIndex &index, int role ) const
         }
 
     if( role == Qt::DecorationRole )
+    {
         switch( i->type() )
         {
         case MyRecommendations:
@@ -434,25 +435,27 @@ LastFmTreeModel::data( const QModelIndex &index, int role ) const
         default:
             break;
         }
+    }
 
     if( role == LastFm::TrackRole )
+    {
         switch( i->type() )
         {
-        case LastFm::MyRecommendations:
-        case LastFm::PersonalRadio:
-        case LastFm::MixRadio:
-        case LastFm::NeighborhoodRadio:
-        case LastFm::FriendsChild:
-        case LastFm::NeighborsChild:
-        case LastFm::MyTagsChild:
-        case LastFm::ArtistsChild:
-        case LastFm::UserChildPersonal:
-        case LastFm::UserChildNeighborhood:
-            return QVariant::fromValue( i->track() );
-        default:
-            break;
+            case LastFm::MyRecommendations:
+            case LastFm::PersonalRadio:
+            case LastFm::MixRadio:
+            case LastFm::NeighborhoodRadio:
+            case LastFm::FriendsChild:
+            case LastFm::NeighborsChild:
+            case LastFm::MyTagsChild:
+            case LastFm::ArtistsChild:
+            case LastFm::UserChildPersonal:
+            case LastFm::UserChildNeighborhood:
+                return QVariant::fromValue( i->track() );
+            default:
+                break;
         }
-
+    }
     if( role == LastFm::TypeRole )
         return i->type();
 

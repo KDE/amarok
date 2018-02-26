@@ -26,10 +26,10 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
     Q_OBJECT
     public:
         AmpacheTrackForUrlWorker( const QUrl &url, MetaProxy::TrackPtr track,
-                                  const QString &server, const QString &sessionId,
+                                  const QUrl &server, const QString &sessionId,
                                   ServiceBase *service);
         ~AmpacheTrackForUrlWorker();
-        virtual void run();
+        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0);
         void parseTrack( const QString &xml );
     Q_SIGNALS:
         void authenticationNeeded();
@@ -43,7 +43,7 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
         Meta::AmpacheAlbum *m_urlAlbum;
         Meta::ServiceArtist *m_urlArtist;
 
-        QString m_server;
+        QUrl m_server;
         QString m_sessionId;
 
         ServiceBase *m_service;
@@ -61,7 +61,7 @@ class AmpacheServiceCollection : public ServiceCollection
     Q_OBJECT
 
 public:
-    AmpacheServiceCollection( ServiceBase *service, const QString &server,
+    AmpacheServiceCollection( ServiceBase *service, const QUrl &server,
                               const QString &sessionId );
 
     virtual ~AmpacheServiceCollection();
@@ -82,7 +82,7 @@ public Q_SLOTS:
     void slotLookupComplete( const Meta::TrackPtr & );
 
 private:
-    QString m_server;
+    QUrl m_server;
     QString m_sessionId;
 
     AmpacheTrackForUrlWorker *m_trackForUrlWorker;

@@ -6,16 +6,20 @@ add_subdirectory( images )
 
 ########### next target ###############
 
-set( amarok_service_lastfm_shared_SRCS
+find_package( KF5 COMPONENTS Wallet REQUIRED )
+
+set( amarok_service_lastfm_config_SRCS
     LastFmServiceConfig.cpp
 )
-add_library( amarok_service_lastfm_shared SHARED ${amarok_service_lastfm_shared_SRCS} )
-target_link_libraries( amarok_service_lastfm_shared
+
+add_library( amarok_service_lastfm_config SHARED ${amarok_service_lastfm_config_SRCS} )
+
+target_link_libraries( amarok_service_lastfm_config
     amarokcore
-    KF5::KDELibs4Support
-    
+    KF5::Wallet
 )
-install( TARGETS amarok_service_lastfm_shared ${INSTALL_TARGETS_DEFAULT_ARGS} )
+
+install( TARGETS amarok_service_lastfm_config ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 ########### next target ###############
 
@@ -39,42 +43,51 @@ set( amarok_service_lastfm_PART_SRCS
     SimilarArtistsAction.cpp
     LoveTrackAction.cpp
 )
+
 add_library(amarok_service_lastfm MODULE ${amarok_service_lastfm_PART_SRCS} )
+
 target_link_libraries( amarok_service_lastfm
-    amarok_service_lastfm_shared
+    amarok_service_lastfm_config
     amarokcore
     amaroklib
     amarokpud
     ${LIBLASTFM_LIBRARY}
-    KF5::KDELibs4Support
-    
     KF5::KIOCore
-    ${KDE4_SOLID_LIBRARY}
     KF5::ThreadWeaver
+    KF5::Wallet
     Qt5::Network
 )
+
 install( TARGETS amarok_service_lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
+
+kcoreaddons_desktop_to_json( amarok_service_lastfm amarok_service_lastfm.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop )
 
 ########### next target ###############
 
 set(kcm_amarok_service_lastfm_PART_SRCS
     LastFmServiceSettings.cpp
 )
+
 ki18n_wrap_ui( kcm_amarok_service_lastfm_PART_SRCS LastFmConfigWidget.ui )
+
 add_library(kcm_amarok_service_lastfm MODULE ${kcm_amarok_service_lastfm_PART_SRCS} )
+
 target_link_libraries( kcm_amarok_service_lastfm
-    amarok_service_lastfm_shared
+    amarok_service_lastfm_config
     amarokcore
     amaroklib
     ${LIBLASTFM_LIBRARY}
     
-    
     KF5::KIOCore
-    Qt5::Network )
+    Qt5::Network
+)
+
 install( TARGETS kcm_amarok_service_lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
+
+kcoreaddons_desktop_to_json( kcm_amarok_service_lastfm amarok_service_lastfm_config.desktop SERVICE_TYPES kcmodule.desktop )
 
 ########### install files ###############
 
-install( FILES amarok_service_lastfm.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
-install( FILES amarok_service_lastfm_config.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
-install( FILES amaroklastfm.protocol DESTINATION ${SERVICES_INSTALL_DIR} )
+install( FILES amarok_service_lastfm.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )
+install( FILES amarok_service_lastfm_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )
+install( FILES amaroklastfm.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )

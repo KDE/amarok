@@ -26,9 +26,15 @@
 
 namespace KWallet { class Wallet; }
 
-class KDialog;
+class QMessageBox;
 
-class GpodderServiceConfig : public QObject
+#ifdef MAKE_GPODDER_SERVICE_CONFIG_LIB
+#define GPODDER_CONFIG_EXPORT Q_DECL_EXPORT
+#else
+#define GPODDER_CONFIG_EXPORT Q_DECL_IMPORT
+#endif
+
+class GPODDER_CONFIG_EXPORT GpodderServiceConfig : public QObject
 {
     Q_OBJECT
 
@@ -70,7 +76,7 @@ private:
     bool m_ignoreWallet;
     bool m_isDataLoaded;
 
-    KDialog *m_askDiag;
+    QMessageBox *m_askDiag;
     KWallet::Wallet *m_wallet;
 };
 

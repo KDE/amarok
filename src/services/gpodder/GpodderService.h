@@ -37,12 +37,11 @@ class GpodderServiceFactory : public ServiceFactory
     Q_OBJECT
 
 public:
-    GpodderServiceFactory( QObject *parent, const QVariantList &args );
-    virtual ~GpodderServiceFactory() {}
+    GpodderServiceFactory();
+    virtual ~GpodderServiceFactory();
 
     virtual void init();
     virtual QString name();
-    virtual KPluginInfo info();
     virtual KConfigGroup config();
 
 private Q_SLOTS:

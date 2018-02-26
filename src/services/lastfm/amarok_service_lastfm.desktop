@@ -1,6 +1,5 @@
 [Desktop Entry]
 Type=Service
-ServiceTypes=KPluginInfo
 Icon=view-services-lastfm-amarok
 Name=Last.fm
 Name[bg]=Last.fm

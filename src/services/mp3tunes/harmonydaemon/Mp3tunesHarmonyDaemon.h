@@ -19,8 +19,8 @@
 
 #include "Mp3tunesHarmonyDownload.h"
 #include "Mp3tunesHarmonyClient.h"
-#include <QCoreApplication>
 
+#include <QCoreApplication>
 #include <QObject>
 #include <QString>
 
@@ -56,11 +56,11 @@ class Mp3tunesHarmonyDaemon : public QCoreApplication
     /**
      * For the first time run, before we have an email and pin to authenticate
      */
-    Mp3tunesHarmonyDaemon( QString identifier );
+    Mp3tunesHarmonyDaemon( QString identifier, int argc, char *argv[] );
     /**
      * For subsequent logins
      */
-    Mp3tunesHarmonyDaemon( QString identifier, QString email, QString pin );
+    Mp3tunesHarmonyDaemon( QString identifier, QString email, QString pin, int argc, char *argv[] );
     ~Mp3tunesHarmonyDaemon();
 
     /**

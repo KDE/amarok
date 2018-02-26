@@ -19,7 +19,7 @@
 #include "core/support/Debug.h"
 #include "JamendoMeta.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 using namespace Meta;
 

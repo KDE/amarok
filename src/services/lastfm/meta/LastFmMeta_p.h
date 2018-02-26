@@ -25,14 +25,13 @@
 #include "core/support/Amarok.h"
 #include "core-impl/support/TagStatisticsStore.h"
 
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <KStandardDirs>
+#include <KIO/Job>
 
 #include <QDir>
 #include <QImage>
 #include <QList>
 #include <QPixmap>
+#include <QStandardPaths>
 #include <QStringList>
 
 #include <Track.h>
@@ -263,7 +262,7 @@ public:
                 image = QImage( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ) );
             else
             {
-                QImage orgImage = QImage( KStandardDirs::locate( "data", "amarok/images/lastfm-default-cover.png" ) ); //optimize this!
+                QImage orgImage = QImage( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/lastfm-default-cover.png" ) ); //optimize this!
                 //scaled() does not change the original image but returns a scaled copy
                 image = orgImage.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
                 image.save( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ), "PNG" );

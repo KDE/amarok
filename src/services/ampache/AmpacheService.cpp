@@ -33,7 +33,7 @@
   #include "LastfmInfoParser.h"
 #endif
 
-#include <KLocale>
+#include <QStandardPaths>
 
 
 AmpacheServiceFactory::AmpacheServiceFactory()
@@ -73,15 +73,14 @@ AmpacheServiceFactory::possiblyContainsTrack(const QUrl &url) const
     AmpacheConfig config;
     foreach( const AmpacheServerEntry &server, config.servers() )
     {
-        if ( url.url().contains( server.url, Qt::CaseInsensitive ) )
+        if ( server.url.isParentOf( url ) )
             return true;
     }
 
     return false;
 }
 
-
-AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & name, const QString &url, const QString &username, const QString &password )
+AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & name, const QUrl &url, const QString &username, const QString &password )
     : ServiceBase( name,  parent )
     , m_infoParser( 0 )
     , m_collection( 0 )
@@ -92,7 +91,7 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
     setShortDescription( i18n( "Amarok frontend for your Ampache server" ) );
     setIcon( QIcon::fromTheme( "view-services-ampache-amarok" ) );
     setLongDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server. This lets you browse and play all the Ampache contents from within Amarok." ) );
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_ampache.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_ampache.png" ) );
 #ifdef HAVE_LIBLASTFM
     m_infoParser = new LastfmInfoParser();
 #endif
@@ -122,7 +121,6 @@ AmpacheService::reauthenticate()
     // it would make sense here to clean the complete cache
     // information from a server might get outdated.
 }
-
 
 void
 AmpacheService::onLoginSuccessful()

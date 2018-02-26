@@ -24,8 +24,7 @@
 #include "ServiceSqlCollection.h"
 
 #include "core/support/Amarok.h"
-#include <kio/job.h>
-#include <kio/jobclasses.h>
+#include <KIO/Job>
 
 class OpmlOutline;
 

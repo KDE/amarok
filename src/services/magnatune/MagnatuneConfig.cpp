@@ -18,11 +18,9 @@
  
 #include "MagnatuneConfig.h"
 #include "MagnatuneMeta.h"
+#include "core/support/Amarok.h"
 
-#include <kdebug.h>
-#include <KConfig>
 #include <KConfigGroup>
-#include <KGlobal>
 
 MagnatuneConfig::MagnatuneConfig()
 {
@@ -39,8 +37,9 @@ MagnatuneConfig::load()
 {
     m_hasChanged = false;
 
-    kDebug() << "load";
-    KConfigGroup config = KGlobal::config()->group( "Service_Magnatune" );
+//     qDebug() << "load";
+
+    KConfigGroup config = Amarok::config( "Service_Magnatune" );
 
     m_isMember = config.readEntry( "isMember", false );
 
@@ -85,9 +84,9 @@ MagnatuneConfig::load()
 void
 MagnatuneConfig::save()
 {
-    kDebug() << "save";
+    qDebug() << "save";
     if ( m_hasChanged ) {
-        KConfigGroup config = KGlobal::config()->group( "Service_Magnatune" );
+        KConfigGroup config = Amarok::config( "Service_Magnatune" );
 
         config.writeEntry( "isMember", m_isMember );
         config.writeEntry( "autoUpdateDatabase", m_autoUpdate );

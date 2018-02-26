@@ -90,8 +90,5 @@ private:
     QAction *m_addFolderAction;
 };
 
-Q_DECLARE_METATYPE(QActionList)
-//we store these in a QVariant for the addFolder and addOpml actions
-Q_DECLARE_METATYPE( QModelIndex )
 
 #endif // OPMLDIRECTORYMODEL_H

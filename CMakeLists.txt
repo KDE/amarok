@@ -36,6 +36,7 @@ option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNI
 ############### Taglib
 set(TAGLIB_MIN_VERSION "1.7")
 find_package(Taglib REQUIRED)
+set_package_properties( Taglib PROPERTIES DESCRIPTION "Support for Audio metadata." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE REQUIRED PURPOSE "Required for tag reading" )
 
 # Check if TagLib is built with ASF and MP4 support
 include(CheckCXXSourceCompiles)
@@ -143,8 +144,6 @@ add_subdirectory( images )
 add_subdirectory( shared )
 
 if( WITH_PLAYER )
-    set_package_properties( QTOPENGL PROPERTIES DESCRIPTION "Required for the spectrum analyzer" URL "http://qt-project.org" TYPE OPTIONAL )
-
     find_package(X11)
 
     find_package(MySQLAmarok REQUIRED)
@@ -168,17 +167,15 @@ if( WITH_PLAYER )
     # upstream forgot to update version in lastfm/global.h, so it looks like 1.0.2. :-(
     # will be fixed in liblastfm-1.0.4
     set( LIBLASTFM_MIN_VERSION "1.0.3" )
-    set_package_properties( LIBLASTFM PROPERTIES DESCRIPTION "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" URL "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" TYPE OPTIONAL )
+    set_package_properties( LibLastFm PROPERTIES DESCRIPTION "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" URL "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" TYPE OPTIONAL )
 
     if( LIBOFA_FOUND )
-        set_package_properties(LIBOFA PROPERTIES DESCRIPTION "Enable MusicDNS service" URL "http://code.google.com/p/musicip-libofa/" TYPE OPTIONAL)
+        set_package_properties(LibOFA PROPERTIES DESCRIPTION "Enable MusicDNS service" URL "http://code.google.com/p/musicip-libofa/" TYPE OPTIONAL)
     endif()
 
     ## gpodder Service
-    ## Currently disabled as it can crash Amarok on startup, during dynamic linking phase, before main() is reached.
-    #    find_package( Mygpo-qt 1.0.7 QUIET )
-    #    set_package_properties( LIBMYGPO_QT PROPERTIES DESCRIPTION "Enable gpodder.net service" URL "http://wiki.gpodder.org/wiki/Libmygpo-qt" TYPE OPTIONAL )
-    #    macro_bool_to_01( LIBMYGPO_QT_FOUND HAVE_LIBMYGPOQT )
+    find_package( Mygpo-qt5 )
+    set_package_properties( Mygpo-qt5 PROPERTIES DESCRIPTION "Enable gpodder.net service" URL "http://wiki.gpodder.org/wiki/Libmygpo-qt" TYPE OPTIONAL )
 
     if( WITH_IPOD )
         find_package(Ipod)
@@ -188,20 +185,20 @@ if( WITH_PLAYER )
                 set( IPOD_FOUND TRUE )
             endif()
         endif()
-        set_package_properties( IPOD PROPERTIES DESCRIPTION "Support Apple iPod/iPad/iPhone audio devices" URL "http://sourceforge.net/projects/gtkpod/" TYPE OPTIONAL )
+        set_package_properties( Ipod PROPERTIES DESCRIPTION "Support Apple iPod/iPad/iPhone audio devices" URL "http://sourceforge.net/projects/gtkpod/" TYPE OPTIONAL )
         find_package(GDKPixBuf)
-        set_package_properties( GDKPIXBUF PROPERTIES DESCRIPTION "Support for artwork on iPod audio devices via GDK-PixBuf" URL "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" TYPE OPTIONAL )
+        set_package_properties( GDKPixBuf PROPERTIES DESCRIPTION "Support for artwork on iPod audio devices via GDK-PixBuf" URL "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" TYPE OPTIONAL )
     endif()
 
     find_package(Mtp)
-    set_package_properties(MTP PROPERTIES DESCRIPTION "Enable Support for portable media devices that use the media transfer protocol" URL "http://libmtp.sourceforge.net/" TYPE OPTIONAL )
+    set_package_properties( Mtp PROPERTIES DESCRIPTION "Enable Support for portable media devices that use the media transfer protocol" URL "http://libmtp.sourceforge.net/" TYPE OPTIONAL )
 
     if( WITH_MP3Tunes )
         find_package(CURL)
-        set_package_properties( MTP PROPERTIES DESCRIPTION "Enable Support for portable media devices that use the media transfer protocol" URL "http://libmtp.sourceforge.net/" TYPE OPTIONAL )
+        set_package_properties( CURL PROPERTIES DESCRIPTION "Used to transfer data with URLs" URL "https://curl.haxx.se/" TYPE OPTIONAL )
 
         find_package(LibXml2)
-        set_package_properties( LIBXML2 PROPERTIES DESCRIPTION "LibXML2 is an XML parser required by mp3tunes." URL "http://www.xmlsoft.org" TYPE OPTIONAL )
+        set_package_properties( LibXml2 PROPERTIES DESCRIPTION "LibXML2 is an XML parser required by mp3tunes." URL "http://www.xmlsoft.org" TYPE OPTIONAL )
 
         find_package(OpenSSL)
         find_package(Libgcrypt)
@@ -210,20 +207,21 @@ if( WITH_PLAYER )
         else ()
             message( SEND_ERROR "Building with mp3tunes support REQUIRES either OpenSSL or GNU Libgcrypt" )
         endif ()
-        set_package_properties( OPENSSL_OR_LIBGCRYPT PROPERTIES DESCRIPTION "OpenSSL or GNU Libgcrypt provides cryptographic functions required by mp3tunes." URL "http://www.openssl.org/ or http://www.gnupg.org/download/#libgcrypt" TYPE OPTIONAL )
+        set_package_properties( OpenSSL PROPERTIES DESCRIPTION "OpenSSL or GNU Libgcrypt provides cryptographic functions required by mp3tunes." URL "http://www.openssl.org/ or http://www.gnupg.org/download/#libgcrypt" TYPE OPTIONAL )
+        set_package_properties( Libgcrypt PROPERTIES DESCRIPTION "OpenSSL or GNU Libgcrypt provides cryptographic functions required by mp3tunes." URL "http://www.openssl.org/ or http://www.gnupg.org/download/#libgcrypt" TYPE OPTIONAL )
 
         find_package(Loudmouth)
-        set_package_properties( LOUDMOUTH PROPERTIES DESCRIPTION "Loudmouth is the communication backend needed by mp3tunes for syncing." URL "http://www.loudmouth-project.org" TYPE OPTIONAL )
+        set_package_properties( Loudmouth PROPERTIES DESCRIPTION "Loudmouth is the communication backend needed by mp3tunes for syncing." URL "http://www.loudmouth-project.org" TYPE OPTIONAL )
 
         include(CheckQtGlib)
         set_package_properties( QT5_GLIB PROPERTIES DESCRIPTION "Qt5 must be compiled with glib support for mp3tunes" URL "http://www.trolltech.com" TYPE OPTIONAL )
     endif()
 
     if( WITH_IPOD OR WITH_MP3Tunes )
-    pkg_search_module(GOBJECT REQUIRED gobject-2.0)
-    set_package_properties( GOBJECT PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes." URL "http://www.gtk.org" TYPE OPTIONAL )
-    pkg_search_module(GLIB2 glib-2.0)
-    set_package_properties( GLIB2 PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes" URL "http://www.gtk.org" TYPE OPTIONAL )
+        pkg_search_module( GOBJECT REQUIRED gobject-2.0 )
+        set_package_properties( GOBJECT PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes." URL "http://www.gtk.org" TYPE OPTIONAL )
+        pkg_search_module( GLIB2 glib-2.0 )
+        set_package_properties( GLIB2 PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes" URL "http://www.gtk.org" TYPE OPTIONAL )
     endif()
 
     find_program( CLAMZ_FOUND clamz PATH )
@@ -238,12 +236,6 @@ if( WITH_PLAYER )
     endif()
 
     add_subdirectory( src )
-
-    # Also display taglib in the feature log
-    set_package_properties( TAGLIB PROPERTIES DESCRIPTION "Support for Audio metadata." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE REQUIRED PURPOSE "Required for tag reading" )
-    # following line is here (and not near TAGLIB_MOD_FOUND) because there may be no MacroLogFeature without kdelibs
-    set_package_properties( TAGLIB_MOD PROPERTIES DESCRIPTION "Additional support for Audio metadata of mod, s3m, it and xm files." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE OPTIONAL )
-    set_package_properties( TAGLIB_OPUS PROPERTIES DESCRIPTION "Additional support for Audio metadata of opus files." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE OPTIONAL )
 
     feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 

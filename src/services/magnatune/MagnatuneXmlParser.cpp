@@ -22,7 +22,7 @@
 #include "core/interfaces/Logger.h"
 
 #include <KFilterDev>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QDomDocument>
 #include <QFile>
@@ -34,7 +34,7 @@ MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
         , ThreadWeaver::Job()
 {
     m_sFileName = filename;
-    connect( this, SIGNAL(done(ThreadWeaver::JobPointer)), SLOT(completeJob()) );
+    connect( this, &MagnatuneXmlParser::done, this, &MagnatuneXmlParser::completeJob );
 }
 
 
@@ -173,9 +173,9 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
     QString description;
     QString artistName;
     QString artistDescription;
-    QString artistPhotoUrl;
+    QUrl artistPhotoUrl;
     QString mp3Genre;
-    QString artistPageUrl;
+    QUrl artistPageUrl;
 
 
     QDomNode n = e.firstChild();
@@ -191,7 +191,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
 
             if ( sElementName == "albumname" )
-                //printf(("|--+" + childElement.text() + "\n").toAscii());
+                //printf(("|--+" + childElement.text() + "\n").toLatin1());
                 //m_currentAlbumItem = new MagnatuneListViewAlbumItem( m_currentArtistItem);
                 name = childElement.text();
 
@@ -219,13 +219,13 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
                 artistDescription =  childElement.text();
 
             else if ( sElementName == "artistphoto" )
-                artistPhotoUrl =  childElement.text() ;
+                artistPhotoUrl =  QUrl( childElement.text() );
 
             else if ( sElementName == "mp3genre" )
                 mp3Genre = childElement.text();
 
             else if ( sElementName == "home" )
-                artistPageUrl =  childElement.text();
+                artistPageUrl = QUrl( childElement.text() );
 
             else if ( sElementName == "Track" )
                 parseTrack( childElement );

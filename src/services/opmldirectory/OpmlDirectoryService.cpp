@@ -30,10 +30,10 @@
 #include "ServiceSqlRegistry.h"
 #include "widgets/SearchWidget.h"
 
-#include <KStandardDirs>
-#include <KTemporaryFile>
+#include <QStandardPaths>
 
-#include <typeinfo>
+#include <KIconThemes/KIconLoader>
+
 
 using namespace Meta;
 
@@ -106,26 +106,22 @@ void OpmlDirectoryService::polish()
     opmlView->setDragDropMode ( QAbstractItemView::DragOnly );
     opmlView->setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
     setView( opmlView );
-    QUrl opmlLocation( Amarok::saveLocation() );
-    opmlLocation = opmlLocation.adjusted(QUrl::StripTrailingSlash);
-    opmlLocation.setPath(opmlLocation.path() + '/' + ( "podcast_directory.opml" ));
+    QString opmlLocation = Amarok::saveLocation() + "podcast_directory.opml";
 
-    if( !QFile::exists( opmlLocation.toLocalFile() ) )
+    if( !QFile::exists( opmlLocation ) )
     {
         //copy from the standard data dir
-        QUrl schippedOpmlLocation( KStandardDirs::locate( "data", "amarok/data/" ) );
-        schippedOpmlLocation = schippedOpmlLocation.adjusted(QUrl::StripTrailingSlash);
-        schippedOpmlLocation.setPath(schippedOpmlLocation.path() + '/' + ( "podcast_directory.opml" ));
-        if( !QFile::copy( schippedOpmlLocation.toLocalFile(), opmlLocation.toLocalFile() ) )
+        QString schippedOpmlLocation = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/podcast_directory.opml" );
+        if( !QFile::copy( schippedOpmlLocation, opmlLocation ) )
         {
             debug() << QString( "Failed to copy from %1 to %2" )
-            .arg( schippedOpmlLocation.toLocalFile(), opmlLocation.toLocalFile() );
+            .arg( schippedOpmlLocation, opmlLocation );
             //TODO: error box drawn in the view's area.
             return;
         }
     }
 
-    setModel( new OpmlDirectoryModel( opmlLocation, this ) );
+    setModel( new OpmlDirectoryModel( QUrl::fromLocalFile( opmlLocation ), this ) );
 
     m_subscribeButton = new QPushButton( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
@@ -134,19 +130,18 @@ void OpmlDirectoryService::polish()
 
     m_subscribeButton->setEnabled( false );
 
-    connect( m_subscribeButton, SIGNAL(clicked()), this, SLOT(subscribe()) );
+    connect( m_subscribeButton, &QPushButton::clicked, this, &OpmlDirectoryService::subscribe );
 
     m_addOpmlButton = new QPushButton( m_bottomPanel );
     m_addOpmlButton->setText( i18n( "Add OPML" ) );
     m_addOpmlButton->setObjectName( "addOpmlButton" );
     m_addOpmlButton->setIcon( QIcon::fromTheme( "list-add-amarok" ) );
 
-    connect( m_addOpmlButton, SIGNAL(clicked()), model(), SLOT(slotAddOpmlAction()) );
+    connect( m_addOpmlButton, &QPushButton::clicked,
+             dynamic_cast<OpmlDirectoryModel*>( model() ), &OpmlDirectoryModel::slotAddOpmlAction );
 
-    connect( view()->selectionModel(),
-             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-             SLOT(slotSelectionChanged(QItemSelection,QItemSelection))
-           );
+    connect( view()->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &OpmlDirectoryService::slotSelectionChanged );
 
     setInfoParser( new OpmlDirectoryInfoParser() );
 

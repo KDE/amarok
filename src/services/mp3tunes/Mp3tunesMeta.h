@@ -21,12 +21,10 @@
 #include "../ServiceMetaBase.h"
 #include "../ServiceAlbumCoverDownloader.h"
 
-#include <KStandardDirs>
-
 #include <QDateTime>
+#include <QList>
 #include <QString>
 #include <QStringList>
-#include <QList>
 
 
 namespace Meta

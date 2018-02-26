@@ -20,31 +20,27 @@
 #ifndef GPODDERSERVICESETTINGS_H
 #define GPODDERSERVICESETTINGS_H
 
-#include "core/podcasts/PodcastMeta.h"
 #include "GpodderServiceConfig.h"
-#include <mygpo-qt/ApiRequest.h>
+#include <mygpo-qt5/ApiRequest.h>
 
-#include <kcmodule.h>
+#include <KConfigWidgets/KCModule>
 
 #include <QNetworkReply>
 
 namespace Ui { class GpodderConfigWidget; }
-
-class QListWidgetItem;
 
 class GpodderServiceSettings : public KCModule
 {
     Q_OBJECT
 
 public:
-    explicit GpodderServiceSettings( QWidget *parent = 0,
-                                     const QVariantList &args = QVariantList() );
+    GpodderServiceSettings( QWidget *parent, const QVariantList &args );
 
     virtual ~GpodderServiceSettings();
 
-    virtual void save();
-    virtual void load();
-    virtual void defaults();
+    void save() Q_DECL_OVERRIDE;
+    void load() Q_DECL_OVERRIDE;
+    void defaults() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void testLogin();

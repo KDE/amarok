@@ -41,20 +41,17 @@ public:
     /**
      * Constructor
      * @param fileName The file to parse 
-     * @return Pointer to new object
      */
     JamendoXmlParser( const QString &fileName );
 
     /**
      * The function that starts the actual work. Inherited from ThreadWeaver::Job 
      * Note the work is performed in a separate thread
-     * @return Returns true on success and false on failure
      */
     void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     /**
      * Destructor
-     * @return none
      */
     ~JamendoXmlParser();
 

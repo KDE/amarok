@@ -23,13 +23,13 @@
 #include "core/podcasts/PodcastProvider.h"
 #include "core/podcasts/PodcastReader.h"
 #include "GpodderPodcastMeta.h"
-#include <mygpo-qt/ApiRequest.h>
-#include <mygpo-qt/EpisodeActionList.h>
+#include <mygpo-qt5/ApiRequest.h>
+#include <mygpo-qt5/EpisodeActionList.h>
 #include "playlistmanager/file/KConfigSyncRelStore.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KDialog>
-#include <KLocale>
+#include <QDialog>
+#include <KIO/Job>
 
 #include <QCheckBox>
 #include <QPair>

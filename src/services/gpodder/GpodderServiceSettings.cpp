@@ -28,7 +28,6 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "ui_GpodderConfigWidget.h"
 
-#include <KLocale>
 #include <KMessageBox>
 #include <KPluginFactory>
 
@@ -36,13 +35,12 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QRegExpValidator>
-#include <QVBoxLayout>
 
-K_PLUGIN_FACTORY( GpodderServiceSettingsFactory, registerPlugin<GpodderServiceSettings>(); )
-K_EXPORT_PLUGIN( GpodderServiceSettingsFactory( "kcm_amarok_gpodder" ) )
+
+K_PLUGIN_FACTORY_WITH_JSON( GpodderServiceSettingsFactory, "amarok_service_gpodder_config.json", registerPlugin<GpodderServiceSettings>(); )
 
 GpodderServiceSettings::GpodderServiceSettings( QWidget *parent, const QVariantList &args )
-        : KCModule( GpodderServiceSettingsFactory::componentData(), parent, args )
+        : KCModule( parent, args )
         , m_enableProvider( false )
         , m_createDevice( 0 )
 {
@@ -51,14 +49,12 @@ GpodderServiceSettings::GpodderServiceSettings( QWidget *parent, const QVariantL
     m_configDialog = new Ui::GpodderConfigWidget;
     m_configDialog->setupUi( this );
 
-    connect( m_configDialog->kcfg_GpodderUsername,
-             SIGNAL(textChanged(QString)), this,
-             SLOT(settingsChanged()) );
-    connect( m_configDialog->kcfg_GpodderPassword,
-             SIGNAL(textChanged(QString)), this,
-             SLOT(settingsChanged()) );
-    connect( m_configDialog->testLogin, SIGNAL(clicked()), this,
-             SLOT(testLogin()) );
+    connect( m_configDialog->kcfg_GpodderUsername, &QLineEdit::textChanged,
+             this, &GpodderServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_GpodderPassword, &QLineEdit::textChanged,
+             this, &GpodderServiceSettings::settingsChanged );
+    connect( m_configDialog->testLogin, &QPushButton::clicked,
+             this, &GpodderServiceSettings::testLogin );
 
     load();
 }
@@ -103,11 +99,12 @@ GpodderServiceSettings::testLogin()
                                The::networkAccessManager() );
         m_devices = api.listDevices( m_configDialog->kcfg_GpodderUsername->text() );
 
-        connect( m_devices.data(), SIGNAL(finished()), SLOT(finished()) );
-        connect( m_devices.data(),
-                 SIGNAL(requestError(QNetworkReply::NetworkError)),
-                 SLOT(onError(QNetworkReply::NetworkError)) );
-        connect( m_devices.data(), SIGNAL(parseError()), SLOT(onParseError()) );
+        connect( m_devices.data(), &mygpo::DeviceList::finished,
+                 this, &GpodderServiceSettings::finished );
+        connect( m_devices.data(), &mygpo::DeviceList::requestError,
+                 this, &GpodderServiceSettings::onError );
+        connect( m_devices.data(), &mygpo::DeviceList::parseError,
+                 this, &GpodderServiceSettings::onParseError );
     }
     else
     {
@@ -155,10 +152,10 @@ GpodderServiceSettings::finished()
                                            QLatin1String( "Amarok on " ) % hostname,
                                            mygpo::Device::OTHER );
 
-        connect( m_createDevice, SIGNAL(finished()),
-                 SLOT(deviceCreationFinished()) );
-        connect( m_createDevice, SIGNAL(error(QNetworkReply::NetworkError)),
-                 SLOT(deviceCreationError(QNetworkReply::NetworkError)) );
+        connect( m_createDevice, &QNetworkReply::finished,
+                 this, &GpodderServiceSettings::deviceCreationFinished );
+        connect( m_createDevice, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+                 this, &GpodderServiceSettings::deviceCreationError );
     }
     else
     {
@@ -255,3 +252,5 @@ GpodderServiceSettings::settingsChanged()
     m_enableProvider = true;
     emit changed( true );
 }
+
+#include "GpodderServiceSettings.moc"

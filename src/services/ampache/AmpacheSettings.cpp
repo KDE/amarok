@@ -21,26 +21,27 @@
 
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QDebug>
 
 #include <KPluginFactory>
 
 K_PLUGIN_FACTORY_WITH_JSON( ampachesettings, "amarok_service_ampache_config.json", registerPlugin<AmpacheSettings>(); )
 
-AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
-    : KCModule( AmpacheSettingsFactory::componentData(), parent, args )
+AmpacheSettings::AmpacheSettings( QWidget *parent, const QVariantList &args )
+    : KCModule( parent, args )
+    , m_configDialog(new Ui::AmpacheConfigWidget)
     , m_lastRowEdited(-1)
     , m_lastColumnEdited(-1)
 {
-    m_configDialog = new Ui::AmpacheConfigWidget;
     m_configDialog->setupUi( this );
     m_configDialog->serverList->setMinimumWidth(700);
     m_configDialog->serverList->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
     m_configDialog->serverList->verticalHeader()->hide();
 
-    connect ( m_configDialog->serverList, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(onCellDoubleClicked(int,int)));
-    connect ( m_configDialog->serverList, SIGNAL(cellChanged(int,int)), this, SLOT(saveCellEdit(int,int)));
-    connect ( m_configDialog->addButton, SIGNAL(clicked()), this, SLOT(add()) );
-    connect ( m_configDialog->removeButton, SIGNAL(clicked()), this, SLOT(remove()) );
+    connect ( m_configDialog->serverList, &QTableWidget::cellDoubleClicked, this, &AmpacheSettings::onCellDoubleClicked );
+    connect ( m_configDialog->serverList, &QTableWidget::cellChanged, this, &AmpacheSettings::saveCellEdit );
+    connect ( m_configDialog->addButton, &QPushButton::clicked, this, &AmpacheSettings::add );
+    connect ( m_configDialog->removeButton, &QPushButton::clicked, this, &AmpacheSettings::remove );
 }
 
 AmpacheSettings::~AmpacheSettings()
@@ -78,7 +79,7 @@ AmpacheSettings::loadList()
         AmpacheServerEntry entry = m_config.servers().at( i );
 
         serverList->setItem(i, 0, new QTableWidgetItem(entry.name));
-        serverList->setItem(i, 1, new QTableWidgetItem(entry.url));
+        serverList->setItem(i, 1, new QTableWidgetItem(entry.url.url()));
         serverList->setItem(i, 2, new QTableWidgetItem(entry.username));
         QString starPassword = entry.password;
         starPassword.fill('*');
@@ -107,7 +108,8 @@ AmpacheSettings::add()
         server.name = dialog.name();
         server.url = dialog.url();
         server.username = dialog.username();
-        server.password =dialog.password();
+        server.password = dialog.password();
+        server.addToCollection = false;
         if( server.name.isEmpty())
             return;
         m_config.addServer( server );
@@ -140,7 +142,7 @@ AmpacheSettings::saveCellEdit(int row, int column)
 {
     if(m_lastRowEdited != row || m_lastColumnEdited != column) //only worry about user edits
         return;
-    kDebug( 14310 ) << Q_FUNC_INFO << row << column;
+//     kDebug( 14310 ) << Q_FUNC_INFO << row << column;
     QString newValue = m_configDialog->serverList->item(row, column)->text();
     AmpacheServerEntry server = m_config.servers().at(row);
     switch(column)
@@ -149,7 +151,7 @@ AmpacheSettings::saveCellEdit(int row, int column)
             server.name = newValue;
             break;
         case 1:
-            server.url = newValue;
+            server.url = QUrl( newValue );
             break;
         case 2:
             server.username = newValue;
@@ -167,5 +169,6 @@ AmpacheSettings::saveCellEdit(int row, int column)
 }
 
 
+#include "moc_AmpacheSettings.cpp"
 #include "AmpacheSettings.moc"
 

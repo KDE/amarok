@@ -1,6 +1,5 @@
 [Desktop Entry]
 Type=Service
-ServiceTypes=KPluginInfo
 Icon=view-services-opml-amarok
 Name=Podcast Directory
 Name[bg]=Подкастове

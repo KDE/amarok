@@ -220,9 +220,9 @@ class Mp3tunesSearchMonkey : public QObject, public ThreadWeaver::Job
          * This signal is emitted when success() returns false after the job is executed. */
         void failed(ThreadWeaver::JobPointer);
 
-        void searchComplete( QList<Mp3tunesLockerArtist> );
-        void searchComplete( QList<Mp3tunesLockerAlbum> );
-        void searchComplete( QList<Mp3tunesLockerTrack> );
+        void searchArtistComplete( QList<Mp3tunesLockerArtist> );
+        void searchAlbumComplete( QList<Mp3tunesLockerAlbum> );
+        void searchTrackComplete( QList<Mp3tunesLockerTrack> );
 
     private Q_SLOTS:
         void completeJob();

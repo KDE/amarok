@@ -82,6 +82,6 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
     if( !error.isEmpty() )
         Amarok::Components::logger()->longMessage( error );
     Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader( m_collection->locker(), urls );
-    connect( uploadWorker, SIGNAL(uploadComplete()), this, SLOT(slotCopyOperationFinished()) );
+    connect( uploadWorker, &Mp3tunesSimpleUploader::uploadComplete, this, &Mp3tunesServiceCollectionLocation::slotCopyOperationFinished );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(uploadWorker) );
 }

@@ -60,5 +60,7 @@ Podcasts::GpodderPodcastChannel::provider() const
 QUrl
 Podcasts::GpodderPodcastChannel::uidUrl() const
 {
-    return QString( "amarok-gpodder://%1" ).arg( url().url() );
+    QUrl u = url();
+    u.setScheme( QStringLiteral( "amarok-gpodder" ) );
+    return u;
 }

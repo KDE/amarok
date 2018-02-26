@@ -29,7 +29,7 @@ add_subdirectory( core )
 add_subdirectory( core-impl/collections )
 add_subdirectory( core-impl/storage/sql )
 add_subdirectory( context )
-#add_subdirectory( services )  #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
+add_subdirectory( services )
 add_subdirectory( scripting/scripts )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )

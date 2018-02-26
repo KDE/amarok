@@ -22,22 +22,23 @@
 #include "core/interfaces/Logger.h"
 #include "MagnatuneMeta.h"
 
+#include <QTemporaryDir>
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KZip>
 
 MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
     : QObject()
-    , m_albumDownloadJob( )
+    , m_albumDownloadJob( Q_NULLPTR )
+    , m_coverDownloadJob( Q_NULLPTR )
     , m_currentAlbumFileName()
 {
-    m_tempDir = new KTempDir();
+    m_tempDir = new QTemporaryDir();
 }
 
 MagnatuneAlbumDownloader::~MagnatuneAlbumDownloader()
 {
     delete m_tempDir;
-    m_tempDir = 0;
 }
 
 void
@@ -54,11 +55,11 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
 
     m_currentAlbumFileName = info.albumCode() + ".zip";
 
-    debug() << "Using temporary location: " << m_tempDir->name() + m_currentAlbumFileName;
+    debug() << "Using temporary location: " << m_tempDir->path() + '/' + m_currentAlbumFileName;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, QUrl( m_tempDir->name() + m_currentAlbumFileName ), -1, KIO::Overwrite | KIO::HideProgressInfo );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, QUrl::fromLocalFile( m_tempDir->path() + '/' + m_currentAlbumFileName ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
-    connect( m_albumDownloadJob, SIGNAL(result(KJob*)), SLOT(albumDownloadComplete(KJob*)) );
+    connect( m_albumDownloadJob, &KJob::result, this, &MagnatuneAlbumDownloader::albumDownloadComplete );
 
     QString msgText;
     if( !info.albumName().isEmpty() && !info.artistName().isEmpty() )
@@ -73,9 +74,6 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
     Amarok::Components::logger()->newProgressOperation( m_albumDownloadJob, msgText, this, SLOT(albumDownloadAborted()) );
 }
 
-
-
-
 void
 MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 {
@@ -83,7 +81,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     debug() << "album download complete";
 
-    if ( !downloadJob->error() == 0 )
+    if ( downloadJob->error() )
     {
         //TODO: error handling here
         return ;
@@ -95,7 +93,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     //ok, now we have the .zip file downloaded. All we need is to unpack it to the desired location and add it to the collection.
 
-    KZip kzip( m_tempDir->name() + m_currentAlbumFileName );
+    KZip kzip( m_tempDir->path() + '/' + m_currentAlbumFileName );
 
     if ( !kzip.open( QIODevice::ReadOnly ) )
     {
@@ -104,7 +102,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
         return;
     }
 
-    debug() << m_tempDir->name() + m_currentAlbumFileName << " opened for decompression";
+    debug() << m_tempDir->path() + '/' + m_currentAlbumFileName << " opened for decompression";
 
     const KArchiveDirectory * directory = kzip.directory();
 
@@ -128,15 +126,31 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     debug() << "Adding cover " << downloadUrl.url() << " to collection at " << finalAlbumPath;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, QUrl( finalAlbumPath + "/cover.jpg" ), -1, KIO::Overwrite | KIO::HideProgressInfo );
+    m_coverDownloadJob = KIO::file_copy( downloadUrl, QUrl::fromLocalFile( finalAlbumPath + "/cover.jpg" ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
-    connect( m_albumDownloadJob, SIGNAL(result(KJob*)), SLOT(coverAddComplete(KJob*)) );
+    connect( m_coverDownloadJob, &KJob::result, this, &MagnatuneAlbumDownloader::coverDownloadComplete );
 
-    Amarok::Components::logger()->newProgressOperation( m_albumDownloadJob, i18n( "Adding album cover to collection" ), this, SLOT(coverAddAborted()) );
+    Amarok::Components::logger()->newProgressOperation( m_coverDownloadJob, i18n( "Adding album cover to collection" ), this, SLOT(coverAddAborted()) );
 
     emit( downloadComplete( true ) );
+}
 
+void
+MagnatuneAlbumDownloader::coverDownloadComplete(KJob* downloadJob)
+{
+    DEBUG_BLOCK
 
+    debug() << "cover download complete";
+
+    if ( downloadJob->error() )
+    {
+        //TODO: error handling here
+        return ;
+    }
+    if ( downloadJob != m_coverDownloadJob )
+        return ; //not the right job, so let's ignore it
+
+    //TODO: storing of cover here
 }
 
 void
@@ -145,10 +159,21 @@ MagnatuneAlbumDownloader::albumDownloadAborted( )
     DEBUG_BLOCK
     
     m_albumDownloadJob->kill();
-    m_albumDownloadJob = 0;
+    m_albumDownloadJob = Q_NULLPTR;
     debug() << "Aborted album download";
 
     emit( downloadComplete( false ) );
+}
 
+void
+MagnatuneAlbumDownloader::coverAddAborted()
+{
+    DEBUG_BLOCK
+
+    m_coverDownloadJob->kill();
+    m_coverDownloadJob = Q_NULLPTR;
+    debug() << "Aborted cover download";
+
+    emit( downloadComplete( false ) );
 }
 

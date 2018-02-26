@@ -28,7 +28,7 @@ class MagnatuneRedownloadDialog : public QDialog, public Ui::magnatuneReDownload
     Q_OBJECT
 
 public:
-    explicit MagnatuneRedownloadDialog( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    explicit MagnatuneRedownloadDialog( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     ~MagnatuneRedownloadDialog();
     /*$PUBLIC_FUNCTIONS$*/
 
@@ -37,7 +37,7 @@ public:
 
 Q_SIGNALS:
 
-    void redownload( const QString &downloadInfoFileName );
+//     void redownload( const QString &downloadInfoFileName );
     void redownload( MagnatuneDownloadInfo info );
     void cancelled();
 
@@ -49,7 +49,7 @@ protected:
 
 protected Q_SLOTS:
     /*$PROTECTED_SLOTS$*/
-    void redownload();
+    void slotRedownload();
     void selectionChanged();
     void reject();
 

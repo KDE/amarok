@@ -22,14 +22,14 @@
 
 #include "core/playlists/PlaylistProvider.h"
 #include "core/podcasts/PodcastMeta.h"
-#include <mygpo-qt/ApiRequest.h>
+#include <mygpo-qt5/ApiRequest.h>
 
 namespace Podcasts {
 
 class GpodderPodcastChannel;
 class GpodderProvider;
 
-typedef KSharedPtr<GpodderPodcastChannel> GpodderPodcastChannelPtr;
+typedef AmarokSharedPointer<GpodderPodcastChannel> GpodderPodcastChannelPtr;
 typedef QList<GpodderPodcastChannelPtr> GpodderPodcastChannelList;
 
 class GpodderPodcastChannel : public PodcastChannel

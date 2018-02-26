@@ -20,7 +20,7 @@
 #define GPODDERPODCASTREQUESTHANDLER_H_
 
 #include "GpodderServiceModel.h"
-#include <mygpo-qt/PodcastList.h>
+#include <mygpo-qt5/PodcastList.h>
 
 #include <QModelIndex>
 

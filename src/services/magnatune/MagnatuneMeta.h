@@ -75,18 +75,18 @@ class MagnatuneArtist : public ServiceArtist
 {
 private:
 
-    QString m_photoUrl;
-    QString m_magnatuneUrl;
+    QUrl m_photoUrl;
+    QUrl m_magnatuneUrl;
 
 public:
     MagnatuneArtist( const QString &name );
     MagnatuneArtist( const QStringList &resultRow );
 
-    void setPhotoUrl( const QString &photoUrl );
-    QString photoUrl() const;
+    void setPhotoUrl( const QUrl &photoUrl );
+    QUrl photoUrl() const;
 
-    void setMagnatuneUrl( const QString &url );
-    QString magnatuneUrl() const;
+    void setMagnatuneUrl( const QUrl &url );
+    QUrl magnatuneUrl() const;
 
     virtual bool isBookmarkable() const { return true; }
     virtual QString collectionName() const { return "Magnatune.com"; }

@@ -16,7 +16,7 @@
  
 #include "MagnatuneUrlRunner.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 MagnatuneUrlRunner::MagnatuneUrlRunner()
  : QObject()

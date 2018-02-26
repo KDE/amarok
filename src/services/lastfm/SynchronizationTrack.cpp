@@ -38,10 +38,10 @@ SynchronizationTrack::SynchronizationTrack( QString artist, QString album, QStri
     // ensure this object is created in a main thread
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
 
-    connect( this, SIGNAL(startTagAddition(QStringList)),
-             SLOT(slotStartTagAddition(QStringList)) );
-    connect( this, SIGNAL(startTagRemoval()),
-             SLOT(slotStartTagRemoval()) );
+    connect( this, &SynchronizationTrack::startTagAddition,
+             this, &SynchronizationTrack::slotStartTagAddition );
+    connect( this, &SynchronizationTrack::startTagRemoval,
+             this, &SynchronizationTrack::slotStartTagRemoval );
 }
 
 QString
@@ -191,7 +191,7 @@ SynchronizationTrack::slotStartTagAddition( QStringList tags )
     if( tags.count() > 10 )
         tags = tags.mid( 0, 10 ); // Last.fm says 10 tags is max
     QNetworkReply *reply = track.addTags( tags );
-    connect( reply, SIGNAL(finished()), SLOT(slotTagsAdded()) );
+    connect( reply, &QNetworkReply::finished, this, &SynchronizationTrack::slotTagsAdded );
 }
 
 void
@@ -204,7 +204,7 @@ SynchronizationTrack::slotStartTagRemoval()
     track.setTitle( m_name );
 
     QNetworkReply *reply = track.removeTag( m_tagsToRemove.takeFirst() );
-    connect( reply, SIGNAL(finished()), SLOT(slotTagRemoved()) );
+    connect( reply, &QNetworkReply::finished, this, &SynchronizationTrack::slotTagRemoved );
 }
 
 void

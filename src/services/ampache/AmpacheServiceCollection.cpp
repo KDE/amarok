@@ -19,17 +19,18 @@
 #include "AmpacheServiceQueryMaker.h"
 #include "NetworkAccessManagerProxy.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <ThreadWeaver/ThreadWeaver>
 #include <ThreadWeaver/Queue>
 
 #include <QDomDocument>
 #include <QNetworkReply>
+#include <QUrlQuery>
 
 using namespace Collections;
 
 AmpacheServiceCollection::AmpacheServiceCollection( ServiceBase *service,
-                                                    const QString &server,
+                                                    const QUrl &server,
                                                     const QString &sessionId )
     : ServiceCollection( service, "AmpacheCollection", "AmpacheCollection" )
     , m_server( server )
@@ -51,19 +52,19 @@ AmpacheServiceCollection::queryMaker()
 QString
 AmpacheServiceCollection::collectionId() const
 {
-    return "Ampache: " + m_server;
+    return "Ampache: " + m_server.url();
 }
 
 QString
 AmpacheServiceCollection::prettyName() const
 {
-    return i18n( "Ampache Server %1", m_server );
+    return i18n( "Ampache Server %1", m_server.url() );
 }
 
 bool
 AmpacheServiceCollection::possiblyContainsTrack( const QUrl &url ) const
 {
-    return url.url().contains( m_server );
+    return m_server.isParentOf( url );
 }
 
 void
@@ -75,10 +76,11 @@ AmpacheServiceCollection::slotAuthenticationNeeded()
 Meta::TrackPtr
 AmpacheServiceCollection::trackForUrl( const QUrl &url )
 {
-    MetaProxy::TrackPtr trackptr( new MetaProxy::Track( url.url(), MetaProxy::Track::ManualLookup ) );
+    MetaProxy::TrackPtr trackptr( new MetaProxy::Track( url, MetaProxy::Track::ManualLookup ) );
     AmpacheTrackForUrlWorker *worker = new AmpacheTrackForUrlWorker( url, trackptr,
         m_server, m_sessionId, service() );
-    connect( worker, SIGNAL(authenticationNeeded()), SLOT(slotAuthenticationNeeded()) );
+    connect( worker, &AmpacheTrackForUrlWorker::authenticationNeeded,
+             this, &AmpacheServiceCollection::slotAuthenticationNeeded );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(worker) );
 
     return Meta::TrackPtr::staticCast( trackptr );
@@ -138,7 +140,7 @@ void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
 
 AmpacheTrackForUrlWorker::AmpacheTrackForUrlWorker( const QUrl &url,
                                                     MetaProxy::TrackPtr track,
-                                                    const QString &server,
+                                                    const QUrl &server,
                                                     const QString &sessionId,
                                                     ServiceBase *service )
     : Amarok::TrackForUrlWorker( url )
@@ -153,8 +155,11 @@ AmpacheTrackForUrlWorker::~AmpacheTrackForUrlWorker()
 {}
 
 void
-AmpacheTrackForUrlWorker::run()
+AmpacheTrackForUrlWorker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED( self )
+    Q_UNUSED( thread )
+
     m_urlTrack = 0;
     m_urlAlbum = 0;
     m_urlArtist = 0;
@@ -165,9 +170,13 @@ AmpacheTrackForUrlWorker::run()
 
     //send url_to_song to Ampache
 
-    QString requestUrl =
-            QString( "%1/server/xml.server.php?action=url_to_song&auth=%2&url=%3" )
-                    .arg( m_server, m_sessionId, QUrl::toPercentEncoding( m_url.url() ) );
+    QUrl requestUrl = m_server;
+    requestUrl.setPath( m_server.path() + "/server/xml.server.php" );
+    QUrlQuery query;
+    query.addQueryItem( "action", "url_to_song" );
+    query.addQueryItem( "auth", m_sessionId );
+    query.addQueryItem( "url", m_url.toEncoded() );
+    requestUrl.setQuery( query );
 
     QNetworkRequest req( requestUrl );
     QNetworkReply *reply = The::networkAccessManager()->get( req );

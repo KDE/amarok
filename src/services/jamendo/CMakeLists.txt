@@ -24,8 +24,6 @@ add_subdirectory( images )
             amarokcore
             amaroklib
             amarokpud
-            KF5::KDELibs4Support
-            
             KF5::KIOCore
             KF5::ThreadWeaver
         )
@@ -33,7 +31,4 @@ add_subdirectory( images )
 
         install(TARGETS amarok_service_jamendo DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-
-########### install files ###############
-
-        install( FILES amarok_service_jamendo.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        kcoreaddons_desktop_to_json(amarok_service_jamendo amarok_service_jamendo.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

@@ -19,17 +19,15 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <kfiledialog.h>
-#include <kurlrequester.h>
+#include <KConfigGroup>
+#include <KIOWidgets/KUrlRequester>
 
 
-
-
-MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, Qt::WFlags fl )
+MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
     setupUi(this);
-    downloadTargetURLRequester->fileDialog()->setMode( KFile::Directory );
+    downloadTargetURLRequester->setMode( KFile::Directory );
 
 }
 
@@ -54,8 +52,7 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
     m_currentDownloadInfo.setFormatSelection( format );
 
     QUrl unpackLocation = downloadTargetURLRequester->url();
-    unpackLocation.adjustPath( QUrl::AddTrailingSlash );
-    m_currentDownloadInfo.setUnpackUrl( unpackLocation.directory( QUrl::ObeyTrailingSlash ) );
+    m_currentDownloadInfo.setUnpackUrl( unpackLocation.path() );
 
     emit( downloadAlbum( m_currentDownloadInfo ) );
 
@@ -91,7 +88,7 @@ void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo info )
     }
 
     if ( !path.isEmpty() ) {
-        downloadTargetURLRequester->setUrl( QUrl(path) );
+        downloadTargetURLRequester->setUrl( QUrl::fromLocalFile(path) );
     }
 
 }

@@ -27,14 +27,11 @@
 
 #include "../ServiceBase.h"
 
-#include <kio/job.h>
-#include <kio/jobclasses.h>
+#include <KJob>
 
 #include <QCheckBox>
 #include <QComboBox>
-#include <khbox.h>
 #include <QPushButton>
-#include <kvbox.h>
 
 
 class MagnatuneInfoParser;
@@ -102,9 +99,9 @@ public Q_SLOTS:
     */
     void listDownloadCancelled();
 
-    void download( Meta::MagnatuneTrack * track );
+    void downloadTrack( Meta::MagnatuneTrack * track );
 
-    void download( Meta::MagnatuneAlbum * album );
+    void downloadAlbum( Meta::MagnatuneAlbum * album );
 
     void showFavoritesPage();
     void showHomePage();
@@ -119,7 +116,7 @@ private Q_SLOTS:
      */
     void download();
 
-    void download( const QString &sku );
+    void downloadSku( const QString &sku );
 
     /**
      * Slot for recieving notification that the update button has been clicked.
@@ -162,8 +159,7 @@ private Q_SLOTS:
 
      /**
      * Checks if download button should be enabled
-     * @param selection the new selection
-     * @param deseleted items that were previously selected but have been deselected
+     * @param selectedItem the new selected item
      */
     void itemSelected( CollectionTreeItem * selectedItem );
 
@@ -213,7 +209,7 @@ private:
 
     QAction * m_updateAction;
 
-    bool         m_downloadInProgress;
+    bool m_downloadInProgress;
 
     Meta::MagnatuneAlbum * m_currentAlbum;
 

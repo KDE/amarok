@@ -49,6 +49,18 @@ PodcastImageFetcher::addChannel( Podcasts::PodcastChannelPtr channel )
         return;
     }
 
+    if( m_channels.contains( channel ) )
+    {
+        debug() << "Channel already queued:" << channel->title();
+        return;
+    }
+
+    if( m_jobChannelMap.values().contains( channel ) )
+    {
+        debug() << "Copy job already running for channel:" << channel->title();
+        return;
+    }
+
     debug() << "Adding " << channel->title() << " to fetch queue";
     m_channels.append( channel );
 }

@@ -41,7 +41,7 @@ JamendoDatabaseHandler::createDatabase( )
 
     // create table containing tracks
     QString queryString = "CREATE TABLE jamendo_tracks ("
-            "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
+                          "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                           "name " + db->textColumnType() + ',' +
                           "track_number INTEGER,"
                           "length INTEGER,"

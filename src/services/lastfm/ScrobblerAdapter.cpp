@@ -52,15 +52,15 @@ ScrobblerAdapter::ScrobblerAdapter( const QString &clientId, const LastFmService
         }
     }
 
-    connect( The::mainWindow(), SIGNAL(loveTrack(Meta::TrackPtr)),
-             SLOT(loveTrack(Meta::TrackPtr)) );
-    connect( The::mainWindow(), SIGNAL(banTrack(Meta::TrackPtr)),
-             SLOT(banTrack(Meta::TrackPtr)) );
+    connect( The::mainWindow(), &MainWindow::loveTrack,
+             this, &ScrobblerAdapter::loveTrack );
+    connect( The::mainWindow(), &MainWindow::banTrack,
+             this, &ScrobblerAdapter::banTrack );
 
-    connect( &m_scrobbler, SIGNAL(scrobblesSubmitted(QList<lastfm::Track>)),
-             SLOT(slotScrobblesSubmitted(QList<lastfm::Track>)) );
-    connect( &m_scrobbler, SIGNAL(nowPlayingError(int,QString)),
-             SLOT(slotNowPlayingError(int,QString)));
+    connect( &m_scrobbler, &lastfm::Audioscrobbler::scrobblesSubmitted,
+             this, &ScrobblerAdapter::slotScrobblesSubmitted );
+    connect( &m_scrobbler, &lastfm::Audioscrobbler::nowPlayingError,
+             this, &ScrobblerAdapter::slotNowPlayingError );
 }
 
 ScrobblerAdapter::~ScrobblerAdapter()
@@ -142,7 +142,7 @@ ScrobblerAdapter::updateNowPlaying( const Meta::TrackPtr &track )
     {
         debug() << "removeNowPlaying";
         QNetworkReply *reply = lfmTrack.removeNowPlaying(); // works even with empty lfmTrack
-        connect( reply, SIGNAL(finished()), reply, SLOT(deleteLater()) ); // don't leak
+        connect( reply, &QNetworkReply::finished, reply, &QNetworkReply::deleteLater ); // don't leak
     }
 }
 

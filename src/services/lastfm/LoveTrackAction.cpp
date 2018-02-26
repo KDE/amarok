@@ -27,7 +27,7 @@ LoveTrackAction::LoveTrackAction( LastFmService * service )
     setIcon( QIcon::fromTheme( "love-amarok") );
     setProperty( "popupdropper_svg_id", "lastfm" );
 
-    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
+    connect( this, &LoveTrackAction::triggered, this, &LoveTrackAction::slotTriggered );
 }
 
 void LoveTrackAction::slotTriggered()

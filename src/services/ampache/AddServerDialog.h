@@ -19,7 +19,7 @@
 #ifndef ADDSERVERDIALOG_H
 #define ADDSERVERDIALOG_H
 
-#include <KDialog>
+#include <QDialog>
 #include <QPointer>
 
 namespace Ui
@@ -29,7 +29,7 @@ namespace Ui
 
 class AmpacheAccountLogin;
 
-class AddServerDialog : public KDialog
+class AddServerDialog : public QDialog
 {
     Q_OBJECT
     public:
@@ -38,7 +38,7 @@ class AddServerDialog : public KDialog
         QString name();
         QString password();
         QString username();
-        QString url();
+        QUrl url();
     private Q_SLOTS:
         void anyTextEdited();
         void verifyData();

@@ -25,7 +25,7 @@
 #include "core/meta/forward_declarations.h"
 #include "core/capabilities/MultiPlayableCapability.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <Track.h>
 #include <RadioStation.h>

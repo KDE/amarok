@@ -19,7 +19,7 @@
 
 #include "AmpacheConfig.h"
 
-#include <kcmodule.h>
+#include <KConfigWidgets/KCModule>
 
 namespace Ui { class AmpacheConfigWidget; }
 
@@ -32,13 +32,13 @@ class AmpacheSettings : public KCModule
 {
     Q_OBJECT
 public:
-    explicit AmpacheSettings( QWidget *parent = 0, const QVariantList &args = QVariantList() );
+    explicit AmpacheSettings( QWidget *parent, const QVariantList &args );
 
-    ~AmpacheSettings();
+    virtual ~AmpacheSettings();
 
-    virtual void save();
-    virtual void load();
-    virtual void defaults();
+    virtual void save() Q_DECL_OVERRIDE;
+    virtual void load() Q_DECL_OVERRIDE;
+    virtual void defaults() Q_DECL_OVERRIDE;
 
 private:
 

@@ -24,26 +24,25 @@
 
 #include "NetworkAccessManagerProxy.h"
 
-#include <QUrl>
-#include <kdemacros.h>
-
-#include <QObject>
 #include <QDomDocument>
+#include <QObject>
+#include <QUrl>
+
 class QNetworkReply;
 
 #ifdef MAKE_AMPACHE_ACCOUNT_LOGIN_LIB
-#define AMPACHE_ACCOUNT_EXPORT KDE_EXPORT
+#define AMPACHE_ACCOUNT_EXPORT Q_DECL_EXPORT
 #else
-#define AMPACHE_ACCOUNT_EXPORT KDE_IMPORT
+#define AMPACHE_ACCOUNT_EXPORT Q_DECL_IMPORT
 #endif
 
 class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
 {
     Q_OBJECT
     public:
-        AmpacheAccountLogin ( const QString& url, const QString& username, const QString& password, QWidget* parent = 0 );
+        AmpacheAccountLogin ( const QUrl& url, const QString& username, const QString& password, QWidget* parent = 0 );
         ~AmpacheAccountLogin();
-        QString server() const { return m_server; } 
+        QUrl server() const { return m_server; }
         QString sessionId() const { return m_sessionId; }
         bool authenticated() const { return m_authenticated; }
         void reauthenticate();
@@ -63,19 +62,20 @@ class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
             Emits finished if something is fishy.
             @returns true if the check was successful.
         */
-        bool generalVerify( const QDomDocument& doc, NetworkAccessManagerProxy::Error e );
+        bool generalVerify( QNetworkReply *reply, const QDomDocument& doc, NetworkAccessManagerProxy::Error e );
 
         /** Returns the base url.
             You would need to add query items to use it. */
         QUrl getRequestUrl( const QString &action = QString() ) const;
 
         bool m_authenticated;
-        QString m_server;
+        QUrl m_server;
         QString m_username;
         QString m_password;
         QString m_sessionId;
 
-        QNetworkReply* m_lastRequest;
+        QNetworkReply *m_authRequest;
+        QNetworkReply *m_pingRequest;
 };
 
 #endif // AMPACHEACCOUNTLOGIN_H

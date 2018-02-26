@@ -21,11 +21,12 @@
 #define statfs statvfs
 #endif
 
-#include <kcmdlineargs.h>
-#include <QtDebug>
+#include <QDebug>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
 
-Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier )
-   : QCoreApplication( KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() )
+Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier, int argc, char *argv[] )
+   : QCoreApplication( argc, argv )
    , m_identifier( identifier )
    , m_email( QString() )
    , m_pin( QString() )
@@ -39,8 +40,8 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier )
     init();
 }
 
-Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier, QString email, QString pin )
-   : QCoreApplication( KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() )
+Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier, QString email, QString pin, int argc, char *argv[] )
+   : QCoreApplication( argc, argv )
    , m_identifier( identifier )
    , m_email( email )
    , m_pin( pin )
@@ -66,18 +67,18 @@ void
 Mp3tunesHarmonyDaemon::setClient( Mp3tunesHarmonyClient *client )
 {
     m_client = client;
-    connect( this, SIGNAL(disconnected()),
-            m_client, SLOT(harmonyDisconnected()));
-    connect( this, SIGNAL(waitingForEmail(QString)),
-            m_client, SLOT(harmonyWaitingForEmail(QString)) );
-    connect( this, SIGNAL(connected()),
-            m_client, SLOT(harmonyConnected()) );
-    connect( this, SIGNAL(errorSignal(QString)),
-            m_client, SLOT(harmonyError(QString)) );
-    connect( this, SIGNAL(downloadReady(Mp3tunesHarmonyDownload)),
-            m_client, SLOT(harmonyDownloadReady(Mp3tunesHarmonyDownload)) );
-    connect( this, SIGNAL(downloadPending(Mp3tunesHarmonyDownload)),
-            m_client, SLOT(harmonyDownloadPending(Mp3tunesHarmonyDownload)) );
+    connect( this, &Mp3tunesHarmonyDaemon::disconnected,
+             m_client, &Mp3tunesHarmonyClient::harmonyDisconnected );
+    connect( this, &Mp3tunesHarmonyDaemon::waitingForEmail,
+             m_client, &Mp3tunesHarmonyClient::harmonyWaitingForEmail );
+    connect( this, &Mp3tunesHarmonyDaemon::connected,
+             m_client, &Mp3tunesHarmonyClient::harmonyConnected );
+    connect( this, &Mp3tunesHarmonyDaemon::errorSignal,
+             m_client, &Mp3tunesHarmonyClient::harmonyError );
+    connect( this, &Mp3tunesHarmonyDaemon::downloadReady,
+             m_client, &Mp3tunesHarmonyClient::harmonyDownloadReady );
+    connect( this, &Mp3tunesHarmonyDaemon::downloadPending,
+             m_client, &Mp3tunesHarmonyClient::harmonyDownloadPending );
 }
 
 bool
@@ -403,7 +404,7 @@ Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony,
 char *
 Mp3tunesHarmonyDaemon::convertToChar ( const QString &source ) const
 {
-    QByteArray b = source.toAscii();
+    QByteArray b = source.toLatin1();
     const char *c_tok = b.constData();
     char * ret = ( char * ) malloc ( strlen ( c_tok ) + 1 );
     strcpy ( ret, c_tok );

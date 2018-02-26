@@ -23,16 +23,15 @@
         target_link_libraries(amarok_service_opmldirectory
             amarokcore
             amaroklib
-            KF5::KDELibs4Support
-            
+            KF5::IconThemes
             KF5::KIOCore
             KF5::ThreadWeaver
         )
 
         install(TARGETS amarok_service_opmldirectory DESTINATION ${PLUGIN_INSTALL_DIR} )
 
+        kcoreaddons_desktop_to_json(amarok_service_opmldirectory amarok_service_opmldirectory.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
 
 ########### install files ###############
 
-        install( FILES amarok_service_opmldirectory.desktop DESTINATION ${SERVICES_INSTALL_DIR})
         install( FILES podcast_directory.opml DESTINATION ${DATA_INSTALL_DIR}/amarok/data)

@@ -36,11 +36,9 @@ public:
     /**
      * Overridden constructor.
      * @param parent Pointer to the parent QWidget.
-     * @param name Name of this widget.
-     * @param modal Sets modal state.
      * @param fl Additional dialog flags.
      */
-    explicit MagnatuneDownloadDialog( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    explicit MagnatuneDownloadDialog( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
 
     /**
      * Destructor
@@ -50,7 +48,7 @@ public:
 
     /**
      * Sets the current download info 
-     * @param  the MagnatuneDownloadInfo class containing the information abut the 
+     * @param info The MagnatuneDownloadInfo class containing the information abut the
      * download to display
      */
     void setDownloadInfo( MagnatuneDownloadInfo info );

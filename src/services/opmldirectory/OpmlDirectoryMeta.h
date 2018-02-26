@@ -43,8 +43,8 @@ namespace Meta
 class OpmlDirectoryFeed;
 class OpmlDirectoryCategory;
 
-typedef KSharedPtr<OpmlDirectoryFeed> OpmlDirectoryFeedPtr;
-typedef KSharedPtr<OpmlDirectoryCategory> OpmlDirectoryCategoryPtr;
+typedef AmarokSharedPointer<OpmlDirectoryFeed> OpmlDirectoryFeedPtr;
+typedef AmarokSharedPointer<OpmlDirectoryCategory> OpmlDirectoryCategoryPtr;
 class OpmlDirectoryFeed  : public ServiceTrack
 {
 

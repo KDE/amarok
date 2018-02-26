@@ -20,13 +20,13 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistController.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <QIcon>
 
 SimilarArtistsAction::SimilarArtistsAction( QObject *parent )
     : GlobalCollectionArtistAction( i18n( "Play Similar Artists from Last.fm" ), parent )
 {
-    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
+    connect( this, &SimilarArtistsAction::triggered, this, &SimilarArtistsAction::slotTriggered );
 
     setIcon( QIcon::fromTheme("view-services-lastfm-amarok") );
     setProperty( "popupdropper_svg_id", "lastfm" );

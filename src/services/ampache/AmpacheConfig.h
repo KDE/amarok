@@ -19,12 +19,13 @@
 
 #include <QMap>
 #include <QStringList>
+#include <QUrl>
 
 class AmpacheServerEntry {
 
 public:
     QString name;
-    QString url;
+    QUrl url;
     QString username;
     QString password;
     bool addToCollection;

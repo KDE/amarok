@@ -22,6 +22,7 @@
 #include "services/lastfm/LastFmServiceConfig.h"
 #include "statsyncing/Provider.h"
 
+#include <QSharedPointer>
 
 namespace Collections {
     class LastFmServiceCollection;
@@ -30,10 +31,11 @@ namespace Dynamic {
     class AbstractBiasFactory;
 }
 class ScrobblerAdapter;
-class KLineEdit;
+class QLineEdit;
 class QComboBox;
 class QLabel;
 class QNetworkReply;
+class QPixmap;
 
 class LastFmServiceFactory : public ServiceFactory
 {
@@ -66,7 +68,7 @@ public:
     void love( Meta::TrackPtr track );
 
 private Q_SLOTS:
-    void love();
+    void loveCurrentTrack();
 
     void playCustomStation();
     void updateEditHint( int index );
@@ -92,7 +94,7 @@ private:
     QLabel *m_profile;
     QLabel *m_userinfo;
     QComboBox *m_globalComboBox;
-    KLineEdit *m_customStationEdit;
+    QLineEdit *m_customStationEdit;
     QPushButton *m_customStationButton;
     QComboBox *m_customStationCombo;
 

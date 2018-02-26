@@ -92,7 +92,7 @@ Mp3tunesServiceCollection::trackForUrl( const QUrl &url )
 
     Mp3tunesTrackFromFileKeyFetcher* trackFetcher = new Mp3tunesTrackFromFileKeyFetcher( m_locker, filekey );
     m_tracksFetching[filekey] = serviceTrack;
-    connect( trackFetcher, SIGNAL(trackFetched(Mp3tunesLockerTrack&)), this, SLOT(trackForUrlComplete(Mp3tunesLockerTrack&)) );
+    connect( trackFetcher, &Mp3tunesTrackFromFileKeyFetcher::trackFetched, this, &Mp3tunesServiceCollection::trackForUrlComplete );
     //debug() << "Connection complete. Enqueueing..";
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(trackFetcher) );
     //debug() << "m_trackFetcher queue";

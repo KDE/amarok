@@ -172,9 +172,9 @@ void Mp3tunesServiceQueryMaker::handleResult( const Meta::ArtistList & artists )
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && artists.count() > d->maxsize ) {
-        emit newResultReady( artists.mid( 0, d->maxsize ) );
+        emit newArtistsReady( artists.mid( 0, d->maxsize ) );
     } else {
-        emit newResultReady( artists );
+        emit newArtistsReady( artists );
     }
 }
 
@@ -183,9 +183,9 @@ void Mp3tunesServiceQueryMaker::handleResult( const Meta::AlbumList &albums )
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && albums.count() > d->maxsize ) {
-        emit newResultReady( albums.mid( 0, d->maxsize ) );
+        emit newAlbumsReady( albums.mid( 0, d->maxsize ) );
     } else {
-        emit newResultReady( albums );
+        emit newAlbumsReady( albums );
     }
 }
 
@@ -194,9 +194,9 @@ void Mp3tunesServiceQueryMaker::handleResult(const Meta::TrackList & tracks)
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && tracks.count() > d->maxsize ) {
-        emit newResultReady( tracks.mid( 0, d->maxsize ) );
+        emit newTracksReady( tracks.mid( 0, d->maxsize ) );
     } else {
-        emit newResultReady( tracks );
+        emit newTracksReady( tracks );
     }
 }
 
@@ -208,13 +208,13 @@ void Mp3tunesServiceQueryMaker::fetchArtists()
     {
         debug() << "Artist Filtering";
         Mp3tunesSearchMonkey * searchMonkey = new Mp3tunesSearchMonkey( m_locker, m_artistFilter, Mp3tunesSearchResult::ArtistQuery );
-        connect( searchMonkey, SIGNAL(searchComplete(QList<Mp3tunesLockerArtist>)), this, SLOT(artistDownloadComplete(QList<Mp3tunesLockerArtist>)) );
+        connect( searchMonkey, &Mp3tunesSearchMonkey::searchArtistComplete, this, &Mp3tunesServiceQueryMaker::artistDownloadComplete );
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(searchMonkey) ); //Go!
     } else if( m_locker->sessionValid() )
     {
         debug() << "Artist Fetching";
         Mp3tunesArtistFetcher * artistFetcher = new Mp3tunesArtistFetcher( m_locker );
-        connect( artistFetcher, SIGNAL(artistsFetched(QList<Mp3tunesLockerArtist>)), this, SLOT(artistDownloadComplete(QList<Mp3tunesLockerArtist>)) );
+        connect( artistFetcher, &Mp3tunesArtistFetcher::artistsFetched, this, &Mp3tunesServiceQueryMaker::artistDownloadComplete );
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(artistFetcher) );
     }
 }
@@ -238,7 +238,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
         handleResult( albums );
     } else if ( m_locker->sessionValid() ) {
         Mp3tunesAlbumWithArtistIdFetcher * albumFetcher = new Mp3tunesAlbumWithArtistIdFetcher( m_locker, m_parentArtistId.toInt() );
-        connect( albumFetcher, SIGNAL(albumsFetched(QList<Mp3tunesLockerAlbum>)), this, SLOT(albumDownloadComplete(QList<Mp3tunesLockerAlbum>)) );
+        connect( albumFetcher, &Mp3tunesAlbumWithArtistIdFetcher::albumsFetched, this, &Mp3tunesServiceQueryMaker::albumDownloadComplete );
 
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(albumFetcher) );
     } else {
@@ -275,12 +275,12 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
         if( !m_parentArtistId.isEmpty() ) {
             debug() << "Creating track w/ artist id Fetch Worker";
             Mp3tunesTrackWithArtistIdFetcher * trackFetcher = new Mp3tunesTrackWithArtistIdFetcher( m_locker, m_parentArtistId.toInt() );
-            connect( trackFetcher, SIGNAL(tracksFetched(QList<Mp3tunesLockerTrack>)), this, SLOT(trackDownloadComplete(QList<Mp3tunesLockerTrack>)) );
+            connect( trackFetcher, &Mp3tunesTrackWithArtistIdFetcher::tracksFetched, this, &Mp3tunesServiceQueryMaker::trackDownloadComplete );
             ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(trackFetcher) ); //Go!
         } else if ( !m_parentAlbumId.isEmpty() ) {
             debug() << "Creating track w/ album id Fetch Worker";
             Mp3tunesTrackWithAlbumIdFetcher * trackFetcher = new Mp3tunesTrackWithAlbumIdFetcher( m_locker, m_parentAlbumId.toInt() );
-            connect( trackFetcher, SIGNAL(tracksFetched(QList<Mp3tunesLockerTrack>)), this, SLOT(trackDownloadComplete(QList<Mp3tunesLockerTrack>)) );
+            connect( trackFetcher, &Mp3tunesTrackWithAlbumIdFetcher::tracksFetched, this, &Mp3tunesServiceQueryMaker::trackDownloadComplete );
             ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(trackFetcher) ); //Go!
         }
     } else {

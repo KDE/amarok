@@ -40,14 +40,15 @@
 #include "statsyncing/Controller.h"
 #include "widgets/SearchWidget.h"
 
-#include <KLineEdit>
-#include <KStandardDirs>
+#include <QLineEdit>
+#include <KPluginFactory>
 
 #include <QCryptographicHash>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QTextDocument>        //Qt::escape
+#include <QPixmap>
+#include <QStandardPaths>
 #include <QTimer>
 
 #include <XmlQuery.h>
@@ -105,7 +106,7 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     setShortDescription( i18n( "Last.fm: The social music revolution" ) );
     setIcon( QIcon::fromTheme( "view-services-lastfm-amarok" ) );
     setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends or that Last.fm considers your musical \"neighbors\"" ) );
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_lastfm.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_lastfm.png" ) );
 
     //We have no use for searching currently..
     m_searchWidget->setVisible( false );
@@ -129,12 +130,12 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     The::globalCollectionActions()->addTrackAction( new LoveTrackAction( this ) );
 
     QAction *loveAction = new QAction( QIcon::fromTheme( "love-amarok" ), i18n( "Last.fm: Love" ), this );
-    connect( loveAction, SIGNAL(triggered()), this, SLOT(love()) );
+    connect( loveAction, &QAction::triggered, this, &LastFmService::loveCurrentTrack );
     loveAction->setShortcut( i18n( "Ctrl+L" ) );
     The::globalCurrentTrackActions()->addAction( loveAction );
 
-    connect( m_config.data(), SIGNAL(updated()), this, SLOT(slotReconfigure()) );
-    QTimer::singleShot(0, this, SLOT(slotReconfigure())); // call reconfigure but only after constructor is finished (because it might call virtual methods)
+    connect( m_config.data(), &LastFmServiceConfig::updated, this, &LastFmService::slotReconfigure );
+    QTimer::singleShot(0, this, &LastFmService::slotReconfigure); // call reconfigure but only after constructor is finished (because it might call virtual methods)
 }
 
 LastFmService::~LastFmService()
@@ -200,7 +201,7 @@ LastFmService::slotReconfigure()
         // discard any possible ongoing auth connections
         if( m_authenticateReply )
         {
-            disconnect( m_authenticateReply, SIGNAL(finished()), this, SLOT(onAuthenticated()) );
+            disconnect( m_authenticateReply, &QNetworkReply::finished, this, &LastFmService::onAuthenticated );
             m_authenticateReply->abort();
             m_authenticateReply->deleteLater();
             m_authenticateReply = 0;
@@ -213,7 +214,7 @@ LastFmService::slotReconfigure()
         query[ "username" ] = m_config->username();
         query[ "authToken" ] = authToken;
         m_authenticateReply = lastfm::ws::post( query );
-        connect( m_authenticateReply, SIGNAL(finished()), this, SLOT(onAuthenticated()) ); // calls continueReconfiguring()
+        connect( m_authenticateReply, &QNetworkReply::finished, this, &LastFmService::onAuthenticated ); // calls continueReconfiguring()
     }
     else
     {
@@ -260,7 +261,7 @@ LastFmService::continueReconfiguring()
 
     // update possibly changed user info
     QNetworkReply *reply = lastfm::User::getInfo();
-    connect( reply, SIGNAL(finished()), SLOT(onGetUserInfo()) );
+    connect( reply, &QNetworkReply::finished, this, &LastFmService::onGetUserInfo );
 }
 
 void
@@ -273,7 +274,7 @@ LastFmService::onAuthenticated()
 
     /* temporarily disconnect form config updates to prevent calling
      * slotReconfigure() for the second time. */
-    disconnect( m_config.data(), SIGNAL(updated()), this, SLOT(slotReconfigure()) );
+    disconnect( m_config.data(), &LastFmServiceConfig::updated, this, &LastFmService::slotReconfigure );
 
     switch( m_authenticateReply ? m_authenticateReply->error() : QNetworkReply::UnknownNetworkError )
     {
@@ -305,7 +306,7 @@ LastFmService::onAuthenticated()
     m_authenticateReply = 0;
 
     // connect back to config updates
-    connect( m_config.data(), SIGNAL(updated()), this, SLOT(slotReconfigure()) );
+    connect( m_config.data(), &LastFmServiceConfig::updated, this, &LastFmService::slotReconfigure );
     continueReconfiguring();
 }
 
@@ -337,8 +338,8 @@ LastFmService::onGetUserInfo()
                     AvatarDownloader* downloader = new AvatarDownloader();
                     QUrl url( lfm["user"][ "image" ].text() );
                     downloader->downloadAvatar( m_config->username(),  url);
-                    connect( downloader, SIGNAL(avatarDownloaded(QString,QPixmap)),
-                                         SLOT(onAvatarDownloaded(QString,QPixmap)) );
+                    connect( downloader, &AvatarDownloader::avatarDownloaded,
+                             this, &LastFmService::onAvatarDownloaded );
                 }
                 updateProfileInfo();
             }
@@ -395,7 +396,7 @@ LastFmService::updateEditHint( int index )
         default:
             return;
     }
-    m_customStationEdit->setClickMessage( hint );
+    m_customStationEdit->setPlaceholderText( hint );
 }
 
 void
@@ -403,7 +404,7 @@ LastFmService::updateProfileInfo()
 {
     if( m_userinfo )
     {
-        m_userinfo->setText( i18n( "Username: %1", Qt::escape( m_config->username() ) ) );
+        m_userinfo->setText( i18n( "Username: %1", m_config->username().toHtmlEscaped() ) );
     }
 
     if( m_profile && !m_playcount.isEmpty() )
@@ -428,9 +429,8 @@ LastFmService::polish()
         m_bottomPanel->hide();
 
         m_topPanel->setMaximumHeight( 300 );
-        KHBox * outerProfilebox = new KHBox( m_topPanel );
-        outerProfilebox->setSpacing(1);
-        outerProfilebox->setMargin(0);
+        BoxWidget * outerProfilebox = new BoxWidget( false, m_topPanel );
+        outerProfilebox->layout()->setSpacing(1);
 
         m_avatarLabel = new QLabel(outerProfilebox);
         if( !m_avatar )
@@ -446,8 +446,7 @@ LastFmService::polish()
             m_avatarLabel->setMargin( 5 );
         }
 
-        KVBox * innerProfilebox = new KVBox( outerProfilebox );
-        innerProfilebox->setSpacing(0);
+        BoxWidget * innerProfilebox = new BoxWidget( true, outerProfilebox );
         innerProfilebox->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
         m_userinfo = new QLabel(innerProfilebox);
         m_userinfo->setText( m_config->username() );
@@ -461,8 +460,8 @@ LastFmService::polish()
         QStringList choices;
         choices << i18n( "Artist" ) << i18n( "Tag" ) << i18n( "User" );
         m_customStationCombo->insertItems(0, choices);
-        m_customStationEdit = new KLineEdit;
-        m_customStationEdit->setClearButtonShown( true );
+        m_customStationEdit = new QLineEdit;
+        m_customStationEdit->setClearButtonEnabled( true );
         updateEditHint( m_customStationCombo->currentIndex() );
         m_customStationButton = new QPushButton;
         m_customStationButton->setObjectName( "customButton" );
@@ -473,9 +472,10 @@ LastFmService::polish()
         hbox->addWidget(m_customStationButton);
         customStation->setLayout(hbox);
 
-        connect( m_customStationEdit, SIGNAL(returnPressed()), this, SLOT(playCustomStation()) );
-        connect( m_customStationButton, SIGNAL(clicked()), this, SLOT(playCustomStation()) );
-        connect( m_customStationCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateEditHint(int)));
+        connect( m_customStationEdit, &QLineEdit::returnPressed, this, &LastFmService::playCustomStation );
+        connect( m_customStationButton, &QPushButton::clicked, this, &LastFmService::playCustomStation );
+        connect( m_customStationCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+                 this, &LastFmService::updateEditHint);
 
         QList<int> levels;
         levels << CategoryId::Genre << CategoryId::Album;
@@ -484,7 +484,7 @@ LastFmService::polish()
 }
 
 void
-LastFmService::love()
+LastFmService::loveCurrentTrack()
 {
     love( The::engineController()->currentTrack() );
 }
@@ -517,7 +517,7 @@ void LastFmService::playCustomStation()
     }
 
     if ( !station.isEmpty() ) {
-        playLastFmStation( station );
+        playLastFmStation( QUrl( station ) );
     }
 }
 

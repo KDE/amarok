@@ -30,7 +30,8 @@ This class handles the redownloading of previously downloaded albums
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 
-class MagnatuneRedownloadHandler : public QObject {
+class MagnatuneRedownloadHandler : public QObject
+{
 Q_OBJECT
 public:
     MagnatuneRedownloadHandler(QWidget * parent);
@@ -70,9 +71,6 @@ protected Q_SLOTS:
     void selectionDialogCancelled();
     void albumDownloadComplete( bool success );
     void redownloadApiResult( KJob* job );
-
-
-
 };
 
 #endif
