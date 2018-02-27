@@ -94,7 +94,7 @@ namespace AmarokScript
             Q_INVOKABLE void playTrack( Meta::TrackPtr track );
 
             /**
-             * Prepend the the tracks represented by the passed urls and start playing them.
+             * Prepend the tracks represented by the passed urls and start playing them.
              */
             Q_INVOKABLE void playMediaList( const QList<QUrl> &urls );
 

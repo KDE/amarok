@@ -67,7 +67,7 @@ class MySqlStorage: public SqlStorage
     protected:
         /** Adds an error message to the m_lastErrors.
          *
-         *  Adds a message including the mysql error number and mesage
+         *  Adds a message including the mysql error number and message
          *  to the last error messages.
          *  @param message Usually the query statement being executed.
          */

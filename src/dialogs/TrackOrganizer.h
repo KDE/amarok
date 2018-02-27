@@ -49,7 +49,7 @@ public:
     void setFolderPrefix( const QString &prefix );
 
     /**
-     * Sets whether to move the the in an artist name to the end of the name.
+     * Sets whether to move the "the" in an artist name to the end of the name.
      * Default value is false.
      * @param flag turns the option on
      */

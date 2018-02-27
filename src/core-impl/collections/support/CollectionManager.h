@@ -41,7 +41,7 @@ namespace Collections {
 /** Class managing the different collections.
  *
  *  This singleton class is the main repository for all current collections.
- *  The most usefull functions are probably queryMaker and
+ *  The most useful functions are probably queryMaker and
  *  viewableCollections
  */
 class AMAROK_EXPORT CollectionManager : public QObject

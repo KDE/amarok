@@ -223,7 +223,7 @@ void LayoutEditDialog::setAutomaticWidth( bool automatic )
     if( automatic )
     {
         m_previousWidth = m_width->value();
-        m_width->setMinimum( 0 ); // without setting the minumum we can't set the value..
+        m_width->setMinimum( 0 ); // without setting the minimum we can't set the value..
         m_width->setValue( 0 ); // automatic width is represented by width == 0
     }
     else

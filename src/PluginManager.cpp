@@ -145,7 +145,7 @@ Plugins::PluginManager::checkPluginEnabledStates()
     }
 
     // the setFactories functions should:
-    // - filter out factories not usefull (e.g. services when setting collections)
+    // - filter out factories not useful (e.g. services when setting collections)
     // - handle the new list of factories, disabling old ones and enabling new ones.
 
     PERF_LOG( "Loading storage plugins" )

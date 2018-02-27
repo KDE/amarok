@@ -216,7 +216,7 @@ namespace AmarokScript
            void updated();
 
             /**
-             * Emited when this collection is removed.
+             * Emitted when this collection is removed.
              */
             void removed();
 

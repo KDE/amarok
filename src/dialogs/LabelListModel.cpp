@@ -83,7 +83,7 @@ void LabelListModel::addLabel( const QString label )
     }
 }
 
-//Checks if a label is alread present
+//Checks if a label is already present
 bool LabelListModel::isPresent( const QString label )
 {
     if ( m_labels.indexOf( label ) > -1 )

@@ -36,7 +36,7 @@ namespace LastFm
             class Private;
 
             Track( const QString &lastFmUri );
-            Track( lastfm::Track track ); //Convienience Constructor to allow constructing a Meta::LastFmTrack from a LastFmTrack (confusing?)
+            Track( lastfm::Track track ); //Convenience Constructor to allow constructing a Meta::LastFmTrack from a LastFmTrack (confusing?)
             virtual ~Track();
 
         // methods inherited from Meta::Base

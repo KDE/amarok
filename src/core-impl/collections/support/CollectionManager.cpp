@@ -119,7 +119,7 @@ CollectionManager::init()
     d->timecodeTrackProvider = new TimecodeTrackProvider();
     addTrackProvider( d->timecodeTrackProvider );
 
-    // addint fileTrackProvider second since local tracks should be preferred even if the url matchs two tracks
+    // addint fileTrackProvider second since local tracks should be preferred even if the url matches two tracks
     d->fileTrackProvider = new FileTrackProvider();
     addTrackProvider( d->fileTrackProvider );
 }
