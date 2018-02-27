@@ -92,7 +92,7 @@ X-KDE-Library=amarok_service_amazonstore
 
 X-KDE-Amarok-authors=Sven Krohlas
 X-KDE-Amarok-email=sven@asbest-online.de
-X-KDE-Amarok-framework-version=72
+X-KDE-Amarok-framework-version=73
 X-KDE-Amarok-name=AmazonStore
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

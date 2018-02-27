@@ -65,7 +65,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Ralf Engels
 X-KDE-Amarok-email=ralf-engels@gmx.de
-X-KDE-Amarok-framework-version=72
+X-KDE-Amarok-framework-version=73
 X-KDE-Amarok-name=mysqlserver-storage
 X-KDE-Amarok-plugintype=storage
 X-KDE-Amarok-rank=100

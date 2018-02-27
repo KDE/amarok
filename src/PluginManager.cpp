@@ -41,7 +41,7 @@
  *
  *  This must match the desktop files.
  */
-const int Plugins::PluginManager::s_pluginFrameworkVersion = 72;
+const int Plugins::PluginManager::s_pluginFrameworkVersion = 73;
 Plugins::PluginManager* Plugins::PluginManager::s_instance = 0;
 
 Plugins::PluginManager*
