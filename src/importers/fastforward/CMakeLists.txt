@@ -1,8 +1,3 @@
-include_directories(
-    
-    
-)
-
 set( amarok_importer-fastforward_PART_SRCS
     FastForwardConfigWidget.cpp
     FastForwardManager.cpp
@@ -23,4 +18,4 @@ target_link_libraries( amarok_importer-fastforward
 
 install( TARGETS amarok_importer-fastforward DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-install( FILES amarok_importer-fastforward.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+kcoreaddons_desktop_to_json(amarok_importer-fastforward amarok_importer-fastforward.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

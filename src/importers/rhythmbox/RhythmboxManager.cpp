@@ -21,10 +21,13 @@
 
 #include <KLocalizedString>
 
-AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( rhythmbox,
+AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( RhythmboxImporterFactory,
+                                      "amarok_importer-rhythmbox.json",
                                       "RhythmboxImporter",
                                       i18n( "Rhythmbox" ),
                                       i18n( "Rhythmbox Statistics Importer" ),
                                       QIcon::fromTheme( "view-importers-rhythmbox-amarok" ),
                                       StatSyncing::RhythmboxConfigWidget,
                                       StatSyncing::RhythmboxProvider )
+
+#include <RhythmboxManager.moc>

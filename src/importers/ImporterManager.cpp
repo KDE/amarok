@@ -43,8 +43,6 @@ ImporterManager::~ImporterManager()
 void
 ImporterManager::init()
 {
-    m_info = pluginInfo();
-
     foreach( const QString &providerId, managerConfig().groupList() )
     {
         KConfigGroup group = providerConfig( providerId );

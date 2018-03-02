@@ -161,8 +161,8 @@ RhythmboxProvider::readSong( QXmlStreamReader &xml, const QString &byArtist )
     if( !byArtist.isEmpty() && currentArtist == byArtist )
     {
         RhythmboxTrack *track = new RhythmboxTrack( location, metadata );
-        connect( track, SIGNAL(commitCalled(QString,Meta::FieldHash)),
-                 SLOT(trackUpdated(QString,Meta::FieldHash)), Qt::DirectConnection );
+        connect( track, &RhythmboxTrack::commitCalled,
+                 this, &RhythmboxProvider::trackUpdated, Qt::DirectConnection );
         m_artistTracks << TrackPtr( track );
     }
     else if( byArtist.isEmpty() )

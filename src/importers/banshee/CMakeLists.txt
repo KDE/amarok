@@ -1,8 +1,3 @@
-include_directories(
-    
-    
-)
-
 set( amarok_importer-banshee_PART_SRCS
     BansheeConfigWidget.cpp
     BansheeManager.cpp
@@ -21,4 +16,4 @@ target_link_libraries( amarok_importer-banshee
 
 install( TARGETS amarok_importer-banshee DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-install( FILES amarok_importer-banshee.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+kcoreaddons_desktop_to_json(amarok_importer-banshee amarok_importer-banshee.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

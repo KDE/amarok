@@ -24,13 +24,12 @@ namespace StatSyncing
 
 class AmarokManager : public ImporterManager
 {
-    Q_PLUGIN_METADATA(IID KPluginFactory_iid FILE "amarok_importer-amarok.json")
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_importer-amarok.json")
     Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
 public:
     AmarokManager();
-    ~AmarokManager();
 
     QString type() const;
     QString prettyName() const;
@@ -39,7 +38,6 @@ public:
     ProviderConfigWidget *configWidget( const QVariantMap &config );
 
 protected:
-    KPluginInfo pluginInfo() const;
     virtual ImporterProviderPtr newInstance( const QVariantMap &config );
 };
 

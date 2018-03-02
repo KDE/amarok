@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KLineEdit>
+#include <QLineEdit>
 #include <KLocalizedString>
 
 #include <QBoxLayout>
@@ -47,7 +47,7 @@ SimpleImporterConfigWidget::SimpleImporterConfigWidget( const QString &targetNam
     setLayout( mainLayout );
 
     addField( "name", i18nc( "Name of the synchronization target", "Target name" ),
-              new KLineEdit( targetName ),  "text" );
+              new QLineEdit( targetName ),  "text" );
 }
 
 SimpleImporterConfigWidget::~SimpleImporterConfigWidget()

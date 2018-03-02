@@ -34,7 +34,8 @@ AmarokEmbeddedSqlConnection::AmarokEmbeddedSqlConnection( const QFileInfo &mysql
     , m_mysqld( mysqld )
     , m_datadir( datadir )
 {
-    connect( &m_shutdownTimer, &QTimer::timeout, SLOT(stopServer()) );
+    connect( &m_shutdownTimer, &QTimer::timeout,
+             this, &AmarokEmbeddedSqlConnection::stopServer );
     m_shutdownTimer.setSingleShot( true );
 }
 
@@ -115,12 +116,12 @@ AmarokEmbeddedSqlConnection::startServer( const int port, const QString &socketP
     QTimer timer;
 
     // Set conditions on which we stop waiting for the startup
-    connect( &timer,   SIGNAL(timeout()),
-             &loop,    SLOT(quit()), Qt::QueuedConnection );
-    connect( &watcher, SIGNAL(fileChanged(QString)),
-             &loop,    SLOT(quit()), Qt::QueuedConnection );
-    connect( &m_srv,   SIGNAL(error(QProcess::ProcessError)),
-             &loop,    SLOT(quit()), Qt::QueuedConnection );
+    connect( &timer,   &QTimer::timeout,
+             &loop,    &QEventLoop::quit, Qt::QueuedConnection );
+    connect( &watcher, &QFileSystemWatcher::fileChanged,
+             &loop,    &QEventLoop::quit, Qt::QueuedConnection );
+    connect( &m_srv,   QOverload<QProcess::ProcessError>::of( &QProcess::error ),
+             &loop,    &QEventLoop::quit, Qt::QueuedConnection );
 
     // Important: we use modification of pidfile as a cue that the server is ready
     // This is consistent with behavior of mysqld startup scripts

@@ -19,10 +19,13 @@
 #include "FastForwardConfigWidget.h"
 #include "FastForwardProvider.h"
 
-AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( fastforward,
+AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( FastForwardImporterFactory,
+                                      "amarok_importer-fastforward.json",
                                       "FastForwardImporter",
                                       i18n( "Amarok 1.4 (FastForward)" ),
                                       i18n( "Amarok 1.4 Statistics Importer" ),
                                       QIcon::fromTheme( "amarok" ),
                                       StatSyncing::FastForwardConfigWidget,
                                       StatSyncing::FastForwardProvider )
+
+#include <FastForwardManager.moc>

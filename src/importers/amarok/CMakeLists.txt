@@ -1,8 +1,3 @@
-include_directories(
-    
-    
-)
-
 set( amarok_importer-amarok_PART_SRCS
     AmarokConfigWidget.cpp
     AmarokManager.cpp
@@ -24,4 +19,4 @@ target_link_libraries( amarok_importer-amarok
 
 install( TARGETS amarok_importer-amarok DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-install( FILES amarok_importer-amarok.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+kcoreaddons_desktop_to_json(amarok_importer-amarok amarok_importer-amarok.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

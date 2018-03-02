@@ -27,20 +27,10 @@ AmarokManager::AmarokManager()
 {
 }
 
-AmarokManager::~AmarokManager()
-{
-}
-
 QString
 AmarokManager::type() const
 {
     return "AmarokImporter";
-}
-
-KPluginInfo
-AmarokManager::pluginInfo() const
-{
-    return KPluginInfo( "amarok_importer-amarok.desktop" );
 }
 
 QString
@@ -70,5 +60,5 @@ AmarokManager::configWidget( const QVariantMap &config )
 ImporterProviderPtr
 AmarokManager::newInstance( const QVariantMap &config )
 {
-    return ProviderPtr( new AmarokProvider( config, this ) );
+    return ImporterProviderPtr( new AmarokProvider( config, this ) );
 }

@@ -1,8 +1,3 @@
-include_directories(
-    
-    
-)
-
 set( amarok_importer-clementine_PART_SRCS
     ClementineConfigWidget.cpp
     ClementineManager.cpp
@@ -21,4 +16,4 @@ target_link_libraries( amarok_importer-clementine
 
 install( TARGETS amarok_importer-clementine DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-install( FILES amarok_importer-clementine.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+kcoreaddons_desktop_to_json(amarok_importer-clementine amarok_importer-clementine.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

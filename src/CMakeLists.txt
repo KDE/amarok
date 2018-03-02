@@ -34,7 +34,7 @@ add_subdirectory( scripting/scripts )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
-#add_subdirectory( importers )  #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
+add_subdirectory( importers )
 
 #####################################################################
 # PROXYCOLLECTION
@@ -611,7 +611,7 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
     ${statsyncing_SRCS}
-#    ${importers_SRCS}      #FIXME: disabled temporarily for KF5 porting: Port this to KF5::Plasma after the rest of the code has been ported to the other KF5 components.
+    ${importers_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp

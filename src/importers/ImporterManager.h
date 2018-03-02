@@ -21,14 +21,9 @@
 
 #include "amarok_export.h"
 
-/**
-  * This macro needs to be expanded exactly once for a single importer. The best practice
-  * is to put it at the beginning of the .cpp file of concrete ImporterManager
-  * implementation.
-  */
-#define AMAROK_EXPORT_IMPORTER_PLUGIN( libname, FactoryClass ) \
-    K_PLUGIN_FACTORY( factory, registerPlugin<FactoryClass>(); ) \
-    K_EXPORT_PLUGIN( factory( "amarok_importer-" #libname ) )
+#include <KConfigGroup>
+#include <KPluginInfo>
+
 
 namespace StatSyncing
 {
@@ -103,13 +98,6 @@ protected:
      * Overload of @see ImporterManager::providerConfig( const QString ) .
      */
     KConfigGroup providerConfig( const ProviderPtr &provider ) const;
-
-    /**
-     * Return the KPluginInfo for this importer. The KPluginInfo should contain the
-     * name of this importer's .desktop file and plugin's type (typically "services").
-     * This function's return value will initialize m_info variable of PluginFactory.
-     */
-    virtual KPluginInfo pluginInfo() const = 0;
 
     /**
      * Return a new provider instance.

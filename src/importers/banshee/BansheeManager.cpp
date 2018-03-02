@@ -21,10 +21,13 @@
 
 #include <KLocalizedString>
 
-AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( banshee,
+AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( BansheeImporterFactory,
+                                      "amarok_importer-banshee.json",
                                       "BansheeImporter",
                                       i18n( "Banshee" ),
                                       i18n( "Banshee Statistics Importer" ),
                                       QIcon::fromTheme( "view-importers-banshee-amarok" ),
                                       StatSyncing::BansheeConfigWidget,
                                       StatSyncing::BansheeProvider )
+
+#include <BansheeManager.moc>
