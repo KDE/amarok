@@ -184,67 +184,70 @@ void Analyzer::Worker::makeScope()
     }
 
     // monotone cubic interpolation
-    QVector<QPointF> data;
-    for( uint k = 0; k < m_size / 2 + 1 && k <= m_interpolatedScopeBands.last().midK; k++ )
+    if( !m_interpolatedScopeBands.isEmpty() )
     {
-        data << QPointF( k, std::abs( m_out[k] ) * sqrt( k ) / m_size * 2 );
-    }
-    // Get consecutive differences and slopes
-    QVector<double> dys, dxs, ms;
-    for( int i = 0; i < data.size() - 1; i++ )
-    {
-        double dx = data[i + 1].x() - data[i].x();
-        double dy = data[i + 1].y() - data[i].y();
-        dxs << dx;
-        dys << dy;
-        ms << dy / dx;
-    }
-    // Get degree-1 coefficients
-    QVector<double> c1s = QVector<double>() << ms[0];
-    for( int i = 0; i < dxs.size() - 1; i++)
-    {
-        double m = ms[i], mNext = ms[i + 1];
-        if( m * mNext <= 0 )
-            c1s << 0.0;
-        else
+        QVector<QPointF> data;
+        for( uint k = 0; k < m_size / 2 + 1 && k <= m_interpolatedScopeBands.last().midK; k++ )
         {
-            double dx_ = dxs[i], dxNext = dxs[i + 1], common = dx_ + dxNext;
-            c1s << ( 3 * common / ( ( common + dxNext ) / m + ( common + dx_ ) / mNext ) );
+            data << QPointF( k, std::abs( m_out[k] ) * sqrt( k ) / m_size * 2 );
         }
-    }
-    c1s << ms.last();
-    // Get degree-2 and degree-3 coefficients
-    QVector<double> c2s, c3s;
-    for( int i = 0; i < c1s.size() - 1; i++ )
-    {
-        double c1 = c1s[i], m_ = ms[i], invDx = 1 / dxs[i], common_ = c1 + c1s[i + 1] - m_ - m_;
-        c2s << ( m_ - c1 - common_ ) * invDx;
-        c3s << common_ * invDx * invDx;
-    }
-    // write interpolated data to scope
-    for( auto &band : m_interpolatedScopeBands )
-    {
-        const double x = band.midK;
-        auto &scope = m_currentScope[band.scopeIndex];
-
-        // Search for the interval x is in, returning the corresponding y if x is one of the original xs
-        int low = 0, mid, high = c3s.size() - 1;
-        while ( low <= high )
+        // Get consecutive differences and slopes
+        QVector<double> dys, dxs, ms;
+        for( int i = 0; i < data.size() - 1; i++ )
         {
-            mid = std::floor( 0.5 * ( low + high ) );
-            double xHere = data[mid].x();
-            if( xHere < x )
-                low = mid + 1;
-            else if( xHere > x )
-                high = mid - 1;
+            double dx = data[i + 1].x() - data[i].x();
+            double dy = data[i + 1].y() - data[i].y();
+            dxs << dx;
+            dys << dy;
+            ms << dy / dx;
+        }
+        // Get degree-1 coefficients
+        QVector<double> c1s = QVector<double>() << ms[0];
+        for( int i = 0; i < dxs.size() - 1; i++)
+        {
+            double m = ms[i], mNext = ms[i + 1];
+            if( m * mNext <= 0 )
+                c1s << 0.0;
             else
-                scope = data[mid].y();
+            {
+                double dx_ = dxs[i], dxNext = dxs[i + 1], common = dx_ + dxNext;
+                c1s << ( 3 * common / ( ( common + dxNext ) / m + ( common + dx_ ) / mNext ) );
+            }
         }
-        int i = qMax( 0, high );
+        c1s << ms.last();
+        // Get degree-2 and degree-3 coefficients
+        QVector<double> c2s, c3s;
+        for( int i = 0; i < c1s.size() - 1; i++ )
+        {
+            double c1 = c1s[i], m_ = ms[i], invDx = 1 / dxs[i], common_ = c1 + c1s[i + 1] - m_ - m_;
+            c2s << ( m_ - c1 - common_ ) * invDx;
+            c3s << common_ * invDx * invDx;
+        }
+        // write interpolated data to scope
+        for( auto &band : m_interpolatedScopeBands )
+        {
+            const double x = band.midK;
+            auto &scope = m_currentScope[band.scopeIndex];
 
-        // Interpolate
-        double diff = x - data[i].x(), diffSq = diff * diff;
-        scope = qMax( 0.0, data[i].y() + c1s[i] * diff + c2s[i] * diffSq + c3s[i] * diff * diffSq );
+            // Search for the interval x is in, returning the corresponding y if x is one of the original xs
+            int low = 0, mid, high = c3s.size() - 1;
+            while ( low <= high )
+            {
+                mid = std::floor( 0.5 * ( low + high ) );
+                double xHere = data[mid].x();
+                if( xHere < x )
+                    low = mid + 1;
+                else if( xHere > x )
+                    high = mid - 1;
+                else
+                    scope = data[mid].y();
+            }
+            int i = qMax( 0, high );
+
+            // Interpolate
+            double diff = x - data[i].x(), diffSq = diff * diff;
+            scope = qMax( 0.0, data[i].y() + c1s[i] * diff + c2s[i] * diffSq + c3s[i] * diff * diffSq );
+        }
     }
 
     analyze();
@@ -283,10 +286,22 @@ void Analyzer::Worker::calculateExpFactor( qreal minFreq, qreal maxFreq, int sam
 {
     DEBUG_BLOCK
 
+    if( minFreq <= 0.0 )
+    {
+        warning() << "Minimum frequency must be greater than zero!";
+        minFreq = 1.0;
+    }
+
     if( minFreq >= maxFreq )
     {
         warning() << "Minimum frequency must be smaller than maximum frequency!";
-        return;
+        maxFreq = minFreq + 1.0;
+    }
+
+    if( sampleRate == 0 )
+    {
+        debug() << "Reported impossible sample rate of zero. Assuming 44.1KHz.";
+        sampleRate = 44100;
     }
 
     m_expFactor = pow( maxFreq / minFreq, 1.0 / m_currentScope.size() );
