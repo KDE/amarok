@@ -95,7 +95,9 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel,
                         return ( compareResult < 0 ) != inverted;
 
                     // Fall through to sorting by album artist if albums have same name
-                    __attribute__ ((fallthrough));
+                    #if defined(__has_cpp_attribute) && __has_cpp_attribute(fallthrough)
+                    [[fallthrough]]
+                    #endif
                 }
                 case Playlist::AlbumArtist:
                 {
