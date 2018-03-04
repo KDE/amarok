@@ -22,7 +22,7 @@
 #include "config-amarok-test.h"
 #include "amarokconfig.h"
 
-#include <KTempDir>
+#include <QTemporaryDir>
 
 #include <QTest>
 #include <QFile>
@@ -30,9 +30,8 @@
 #include <QDateTime>
 #include <QFileInfo>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestMetaFileTrack )
+QTEST_MAIN( TestMetaFileTrack )
 
 TestMetaFileTrack::TestMetaFileTrack()
     : m_tmpDir( 0 )
@@ -40,9 +39,10 @@ TestMetaFileTrack::TestMetaFileTrack()
 
 void TestMetaFileTrack::initTestCase()
 {
-    m_tmpDir = new KTempDir();
-    QVERIFY( m_tmpDir->exists() );
+    AmarokConfig::instance("amarokrc");
 
+    m_tmpDir = new QTemporaryDir();
+    QVERIFY( m_tmpDir->isValid() );
     m_origTrackPath = QString( AMAROK_TEST_DIR ) + "/data/audio/Platz 01.mp3";
     QVERIFY( QFile::exists( m_origTrackPath ) );
 }
@@ -57,7 +57,7 @@ void TestMetaFileTrack::init()
     static const QString tmpFileNameBase( "tempfile.mp3" );
     static int i = 0;
     // create new file name for every test: we need to start with clean statistics
-    m_tmpFileName = QString( "%1%2-%3" ).arg( m_tmpDir->name() ).arg( i++ ).arg( tmpFileNameBase );
+    m_tmpFileName = QString( "%1%2-%3" ).arg( m_tmpDir->path() ).arg( i++ ).arg( tmpFileNameBase );
     QVERIFY( QFile::copy( m_origTrackPath, m_tmpFileName ) );
     m_track = new MetaFile::Track( QUrl::fromLocalFile(m_tmpFileName) );
     QVERIFY( m_track );
@@ -165,24 +165,24 @@ void TestMetaFileTrack::testIsEditable()
 
 void TestMetaFileTrack::testSetGetAlbum()
 {
-    QCOMPARE( m_track->album().data()->name(), QString( "" ) );
+    QCOMPARE( m_track->album()->name(), QString( "" ) );
 
     m_track->setAlbum( "test" );
-    QCOMPARE( m_track->album().data()->name(), QString( "test" ) );
+    QCOMPARE( m_track->album()->name(), QString( "test" ) );
 
     m_track->setAlbum( "Another Test" );
-    QCOMPARE( m_track->album().data()->name(), QString( "Another Test" ) );
+    QCOMPARE( m_track->album()->name(), QString( "Another Test" ) );
 
     m_track->setAlbum( "Some Umlauts: äöü" );
-    QCOMPARE( m_track->album().data()->name(), QString( "Some Umlauts: äöü" ) );
+    QCOMPARE( m_track->album()->name(), QString( "Some Umlauts: äöü" ) );
 
     m_track->setAlbum( "" );
-    QCOMPARE( m_track->album().data()->name(), QString( "" ) );
+    QCOMPARE( m_track->album()->name(), QString( "" ) );
 }
 
 void TestMetaFileTrack::testSetGetArtist()
 {
-    QCOMPARE( m_track->artist().data()->name(), QString( "Free Music Charts" ) );
+    QCOMPARE( m_track->artist()->name(), QString( "Free Music Charts" ) );
 
     m_track->setArtist( "" );
     QCOMPARE( m_track->artist()->name(), QString( "" ) );
@@ -197,67 +197,67 @@ void TestMetaFileTrack::testSetGetArtist()
     QCOMPARE( m_track->artist()->name(), QString( "Some Umlauts: äöü" ) );
 
     m_track->setArtist( "Free Music Charts" );
-    QCOMPARE( m_track->artist().data()->name(), QString( "Free Music Charts" ) );
+    QCOMPARE( m_track->artist()->name(), QString( "Free Music Charts" ) );
 }
 
 void TestMetaFileTrack::testSetGetGenre()
 {
-    QCOMPARE( m_track->genre().data()->name(), QString( "Vocal" ) );
+    QCOMPARE( m_track->genre()->name(), QString( "Vocal" ) );
 
     m_track->setGenre( "rock" );
-    QCOMPARE( m_track->genre().data()->name(), QString( "rock" ) );
+    QCOMPARE( m_track->genre()->name(), QString( "rock" ) );
 
     m_track->setGenre( "rock / pop" );
-    QCOMPARE( m_track->genre().data()->name(), QString( "rock / pop" ) );
+    QCOMPARE( m_track->genre()->name(), QString( "rock / pop" ) );
 
     m_track->setGenre( "Some Umlauts: äöü" );
-    QCOMPARE( m_track->genre().data()->name(), QString( "Some Umlauts: äöü" ) );
+    QCOMPARE( m_track->genre()->name(), QString( "Some Umlauts: äöü" ) );
 
     m_track->setGenre( "" );
-    QCOMPARE( m_track->genre().data()->name(), QString( "" ) );
+    QCOMPARE( m_track->genre()->name(), QString( "" ) );
 
     m_track->setGenre( "28 Vocal" );
-    QCOMPARE( m_track->genre().data()->name(), QString( "28 Vocal" ) );
+    QCOMPARE( m_track->genre()->name(), QString( "28 Vocal" ) );
 }
 
 void TestMetaFileTrack::testSetGetComposer()
 {
-    QCOMPARE( m_track->composer().data()->name(), QString( "" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "" ) );
 
     m_track->setComposer( "test" );
-    QCOMPARE( m_track->composer().data()->name(), QString( "test" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "test" ) );
 
     m_track->setComposer( "Ludwig Van Beethoven" );
-    QCOMPARE( m_track->composer().data()->name(), QString( "Ludwig Van Beethoven" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "Ludwig Van Beethoven" ) );
 
     m_track->setComposer( "Georg Friedrich Händel" );
-    QCOMPARE( m_track->composer().data()->name(), QString( "Georg Friedrich Händel" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "Georg Friedrich Händel" ) );
 
     m_track->setComposer( "" );
-    QCOMPARE( m_track->composer().data()->name(), QString( "" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "" ) );
 }
 
 void TestMetaFileTrack::testSetGetYear()
 {
-    QCOMPARE( m_track->composer().data()->name(), QString( "" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "" ) );
 
     m_track->setComposer( "test" );
-    QCOMPARE( m_track->composer().data()->name(), QString( "test" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "test" ) );
 
     m_track->setComposer( "2009" );
-    QCOMPARE( m_track->composer().data()->name(), QString( "2009" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "2009" ) );
 
     m_track->setComposer( "1" );
-    QCOMPARE( m_track->composer().data()->name(), QString( "1" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "1" ) );
 
     m_track->setComposer( "0" );
-    QCOMPARE( m_track->composer().data()->name(), QString( "0" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "0" ) );
 
     m_track->setComposer( "-1" );
-    QCOMPARE( m_track->composer().data()->name(), QString( "-1" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "-1" ) );
 
     m_track->setComposer( "" );
-    QCOMPARE( m_track->composer().data()->name(), QString( "" ) );
+    QCOMPARE( m_track->composer()->name(), QString( "" ) );
 }
 
 void TestMetaFileTrack::testSetGetComment()
@@ -389,7 +389,7 @@ void TestMetaFileTrack::testSampleRate()
 
 void TestMetaFileTrack::testBitrate()
 {
-    QCOMPARE( m_track->bitrate(), 256 );
+    QCOMPARE( m_track->bitrate(), 257 );
 }
 
 void TestMetaFileTrack::testSetGetLastPlayed()
@@ -450,5 +450,7 @@ void TestMetaFileTrack::testCreateDate()
 {
     QFileInfo fi( m_tmpFileName );
     QDateTime created = fi.created();
-    QCOMPARE( m_track->createDate(), created );
+    // m_track->createDate() is rounded to full second because it is created from full seconds
+    // created therefore also needs to be rounded
+    QCOMPARE( m_track->createDate().toSecsSinceEpoch(), created.toSecsSinceEpoch() );
 }

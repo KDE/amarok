@@ -23,9 +23,8 @@
 #include "UpcomingEventsEngine.h"
 
 #include <QTest>
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestUpcomingEventsEngine )
+QTEST_MAIN( TestUpcomingEventsEngine )
 
 
 TestUpcomingEventsEngine::TestUpcomingEventsEngine(QObject* parent)

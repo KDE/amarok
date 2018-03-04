@@ -19,12 +19,13 @@
 #include "EngineController.h"
 #include "core/support/Components.h"
 
-#include <qtest_kde.h>
-#include <ThreadWeaver/Queue>
+#include <QTest>
+#include <QSignalSpy>
 #include <ThreadWeaver/Job>
-#include <QtTest>
+#include <ThreadWeaver/Queue>
 
-QTEST_KDEMAIN_CORE( TestEngineController )
+
+QTEST_MAIN( TestEngineController )
 
 class CallSupportedMimeTypesJob : public QObject, public ThreadWeaver::Job
 {
@@ -79,9 +80,10 @@ void
 TestEngineController::cleanup()
 {
     // we cannot simply call WeaverInterface::finish(), it stops event loop
+    QSignalSpy spy( ThreadWeaver::Queue::instance(), &ThreadWeaver::Queue::finished );
     if( !ThreadWeaver::Queue::instance()->isIdle() )
-        QVERIFY2( QTest::kWaitForSignal( ThreadWeaver::Queue::instance(),
-                SIGNAL(finished()), 5000 ), "threads did not finish in timeout" );
+        QVERIFY2( spy.wait( 5000 ), "threads did not finish in timeout" );
+
     delete Amarok::Components::setEngineController( 0 );
 }
 

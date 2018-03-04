@@ -26,22 +26,19 @@
 #include <QSharedPointer>
 #include <QSignalSpy>
 
-#include <KCmdLineArgs>
-#include <KGlobal>
-
-#include <qtest_kde.h>
-
 #include <gmock/gmock.h>
 
 using ::testing::AnyNumber;
 using ::testing::Return;
 
-QTEST_KDEMAIN_CORE( TestMemoryQueryMaker )
+QTEST_MAIN( TestMemoryQueryMaker )
 
 TestMemoryQueryMaker::TestMemoryQueryMaker()
 {
-    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
-    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
+    int argc = 1;
+    char **argv = (char **) malloc(sizeof(char *));
+    argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
+    ::testing::InitGoogleMock( &argc, argv );
     qRegisterMetaType<Meta::TrackList>();
     qRegisterMetaType<Meta::AlbumList>();
     qRegisterMetaType<Meta::ArtistList>();
@@ -194,7 +191,7 @@ Meta::TrackList
 TestMemoryQueryMaker::executeQueryMaker( Collections::QueryMaker *qm )
 {
     QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newTracksReady );
 
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();

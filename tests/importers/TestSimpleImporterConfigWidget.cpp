@@ -22,10 +22,10 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QTest>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN( TestSimpleImporterConfigWidget, GUI )
+QTEST_MAIN( TestSimpleImporterConfigWidget )
 
 using namespace StatSyncing;
 

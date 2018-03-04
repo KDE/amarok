@@ -21,18 +21,14 @@
 
 #include "mocks/MockLogger.h"
 
-#include <KCmdLineArgs>
-#include <KGlobal>
 #include <ThreadWeaver/ThreadWeaver>
 #include <ThreadWeaver/Job>
 
 #include <QCoreApplication>
 
-#include <qtest_kde.h>
-
 #include <gmock/gmock.h>
 
-QTEST_KDEMAIN_CORE( TestProxyLogger )
+QTEST_MAIN( TestProxyLogger )
 
 using ::testing::Return;
 using ::testing::AnyNumber;
@@ -49,8 +45,11 @@ public:
 
 TestProxyLogger::TestProxyLogger()
 {
-    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
-    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
+    int argc = 1;
+    char **argv = (char **) malloc(sizeof(char *));
+    argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
+    ::testing::InitGoogleMock( &argc, argv );
+    delete[] argv;
 }
 
 void

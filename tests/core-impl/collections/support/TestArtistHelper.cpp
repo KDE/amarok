@@ -18,9 +18,8 @@
 
 #include <core-impl/collections/support/ArtistHelper.h>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestArtistHelper )
+QTEST_MAIN( TestArtistHelper )
 
 TestArtistHelper::TestArtistHelper() : QObject()
 {

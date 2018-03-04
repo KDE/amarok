@@ -24,7 +24,6 @@ class TestImporterManager : public ImporterMocks
     Q_OBJECT
 
 private Q_SLOTS:
-    void initShouldSetInfo();
     void initShouldLoadSettings();
     void creatingProviderShouldSetConfigAndParent();
     void creatingProviderShouldSaveSettings();

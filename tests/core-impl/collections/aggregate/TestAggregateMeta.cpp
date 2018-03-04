@@ -29,19 +29,16 @@
 #include <QMap>
 #include <QSignalSpy>
 
-#include <KCmdLineArgs>
-#include <KGlobal>
-
-#include <qtest_kde.h>
-
 #include <gmock/gmock.h>
 
-QTEST_KDEMAIN_CORE( TestAggregateMeta )
+QTEST_MAIN( TestAggregateMeta )
 
 TestAggregateMeta::TestAggregateMeta()
 {
-    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
-    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
+    int argc = 1;
+    char **argv = (char **) malloc(sizeof(char *));
+    argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
+    ::testing::InitGoogleMock( &argc, argv );
 }
 
 class MyTrackMock : public MetaMock
@@ -462,8 +459,8 @@ TestAggregateMeta::testEditableCapabilityOnMultipleTracks()
 {
     MyTrackMock *mock1 = new MyTrackMock();
     MyTrackMock *mock2 = new MyTrackMock();
-    KSharedPtr<MyTrackEditor> cap1 ( new MyTrackEditor() );
-    KSharedPtr<MyTrackEditor> cap2 ( new MyTrackEditor() );
+    AmarokSharedPointer<MyTrackEditor> cap1 ( new MyTrackEditor() );
+    AmarokSharedPointer<MyTrackEditor> cap2 ( new MyTrackEditor() );
     mock1->trackEditors << Meta::TrackEditorPtr( cap1.data() );
     mock2->trackEditors << Meta::TrackEditorPtr( cap2.data() );
 

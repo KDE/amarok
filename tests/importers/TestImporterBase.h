@@ -24,7 +24,7 @@
 namespace StatSyncing
 {
     class Provider;
-    typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
+    typedef QSharedPointer<Provider> ProviderPtr;
 }
 
 /**

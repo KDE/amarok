@@ -17,14 +17,12 @@
 
 #include "core/playlists/PlaylistFormat.h"
 
-#include <qtest_kde.h>
-
 #include <QString>
 
 // so that PlaylistFormat can be used in QTest::addColumn()
 Q_DECLARE_METATYPE( Playlists::PlaylistFormat )
 
-QTEST_KDEMAIN_CORE( TestPlaylistFormat )
+QTEST_MAIN( TestPlaylistFormat )
 
 TestPlaylistFormat::TestPlaylistFormat()
 {

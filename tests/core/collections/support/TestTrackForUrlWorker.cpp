@@ -15,20 +15,19 @@
 
 #include "TestTrackForUrlWorker.h"
 
+#include "amarokconfig.h"
 #include "config-amarok-test.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "mocks/MockTrackForUrlWorker.h"
 
-#include <QUrl>
-#include <ThreadWeaver/Job>
-#include <ThreadWeaver/Queue>
-#include <qtest_kde.h>
-#include <KSharedPtr>
-
 #include <QMetaType>
 #include <QSignalSpy>
+#include <QUrl>
 
-QTEST_KDEMAIN_CORE( TestTrackForUrlWorker )
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/Queue>
+
+QTEST_MAIN( TestTrackForUrlWorker )
 
 void
 TestTrackForUrlWorker::initTestCase()
@@ -36,6 +35,7 @@ TestTrackForUrlWorker::initTestCase()
     // To make queued signals/slots work with custom payload
     qRegisterMetaType<Meta::TrackPtr>( "Meta::TrackPtr" );
     qRegisterMetaType<ThreadWeaver::Job*>( "ThreadWeaver::Job*" );
+    AmarokConfig::instance("amarokrc");
 }
 
 QString
@@ -96,7 +96,7 @@ TestTrackForUrlWorker::testCompleteJobInternal( MockTrackForUrlWorker *trackForU
 
     QSignalSpy spyFinishedLookup( trackForUrlWorker, &MockTrackForUrlWorker::finishedLookup );
     QSignalSpy spyDone( trackForUrlWorker, &MockTrackForUrlWorker::done );
-    
+
     // Enqueue the job for execution and verify that it emits done when finished, which triggers completeJob
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>( trackForUrlWorker ) );
     bool receivedDone = spyDone.wait( 1000 );

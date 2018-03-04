@@ -20,7 +20,7 @@
 #include <QSharedPointer>
 #include <QtTest>
 
-#include <KTempDir>
+#include <QTemporaryDir>
 
 class SqlMountPointManagerMock;
 class MySqlEmbeddedStorage;
@@ -49,7 +49,7 @@ private:
     Collections::SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpmMock;
     QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    KTempDir *m_tmpDir;
+    QTemporaryDir *m_tmpDir;
 };
 
 #endif // TESTSQLCOLLECTION_H

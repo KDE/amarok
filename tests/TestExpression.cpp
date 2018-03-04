@@ -24,9 +24,7 @@
 
 #include <QTest>
 
-#include <qtest_kde.h>
-
-QTEST_KDEMAIN_CORE( TestExpression )
+QTEST_MAIN( TestExpression )
 
 //required for Debug.h
 QMutex Debug::mutex;

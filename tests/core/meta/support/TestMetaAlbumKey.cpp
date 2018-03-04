@@ -15,14 +15,14 @@
 
 #include "TestMetaAlbumKey.h"
 
+#include "amarokconfig.h"
 #include "config-amarok-test.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestMetaAlbumKey )
+QTEST_MAIN( TestMetaAlbumKey )
 
 TestMetaAlbumKey::~TestMetaAlbumKey()
 {
@@ -31,6 +31,8 @@ TestMetaAlbumKey::~TestMetaAlbumKey()
 void
 TestMetaAlbumKey::initTestCase()
 {
+    AmarokConfig::instance("amarokrc");
+
     // Artist Name - Amarok    Album Name - Amarok Test Album
     m_track1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
 

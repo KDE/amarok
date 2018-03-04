@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QString>
 
+class QTemporaryDir;
+
 namespace Playlists {
     class XSPFPlaylist;
 }
@@ -58,6 +60,7 @@ private Q_SLOTS:
 
 private:
     Playlists::XSPFPlaylist *m_testPlaylist1;
+    QTemporaryDir *m_tempDir;
     QString dataPath( const QString &relPath );
 };
 

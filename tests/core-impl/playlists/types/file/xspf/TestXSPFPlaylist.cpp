@@ -25,16 +25,16 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 
-#include <KStandardDirs>
-#include <qtest_kde.h>
 #include <ThreadWeaver/Queue>
 
 #include <QDebug>
-#include <QTest>
 #include <QDir>
 #include <QFile>
+#include <QStandardPaths>
+#include <QTest>
 
-QTEST_KDEMAIN_CORE( TestXSPFPlaylist )
+
+QTEST_MAIN( TestXSPFPlaylist )
 
 TestXSPFPlaylist::TestXSPFPlaylist()
 {}
@@ -71,10 +71,11 @@ void TestXSPFPlaylist::initTestCase()
 
     qDebug() << "got playlist path: " << url.url();
 
-    //we need to copy this laylist file to a temp dir as some of the tests we do will delete/overwrite it
-    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.xspf" );
+    //we need to copy this playlist file to a temp dir as some of the tests we do will delete/overwrite it
+    m_tempDir = new QTemporaryDir;;
+    QVERIFY( m_tempDir->isValid() );
+    QString tempPath = m_tempDir->path() + "/test.xspf";
     qDebug() << "got temp path: " << tempPath;
-    QFile::remove( tempPath );
     QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
     QVERIFY( QFile::exists( tempPath ) );
 
@@ -85,11 +86,12 @@ void TestXSPFPlaylist::initTestCase()
 
 void TestXSPFPlaylist::cleanupTestCase()
 {
-    QFile::remove( KStandardDirs::locateLocal( "tmp", "test.xspf" ) );
+    QFile::remove( QStandardPaths::locate( QStandardPaths::TempLocation, "test.xspf" ) );
     // Wait for other jobs, like MetaProxys fetching meta data, to finish
     ThreadWeaver::Queue::instance()->finish();
 
     delete m_testPlaylist1;
+    delete m_tempDir;
     delete Amarok::Components::setEngineController( 0 );
 }
 
@@ -117,11 +119,11 @@ void TestXSPFPlaylist::testSetAndGetTracks()
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
 
     QCOMPARE( tracklist.size(), 23 );
-    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( "Sunset" ) );
-    QCOMPARE( tracklist.at( 1 ).data()->name(), QString( "Heaven" ) );
-    QCOMPARE( tracklist.at( 2 ).data()->name(), QString( "Liquid Sun" ) );
-    QCOMPARE( tracklist.at( 3 ).data()->name(), QString( "Restrained Mind" ) );
-    QCOMPARE( tracklist.at( 22 ).data()->name(), QString( "Trash Bag" ) );
+    QCOMPARE( tracklist.at( 0 )->name(), QString( "Sunset" ) );
+    QCOMPARE( tracklist.at( 1 )->name(), QString( "Heaven" ) );
+    QCOMPARE( tracklist.at( 2 )->name(), QString( "Liquid Sun" ) );
+    QCOMPARE( tracklist.at( 3 )->name(), QString( "Restrained Mind" ) );
+    QCOMPARE( tracklist.at( 22 )->name(), QString( "Trash Bag" ) );
 }
 
 void TestXSPFPlaylist::testSetAndGetTitle()
@@ -318,8 +320,8 @@ void TestXSPFPlaylist::testSetAndGetLink()
 
 void TestXSPFPlaylist::testUidUrl()
 {
-    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.xspf" );
-    
+    QString tempPath = m_tempDir->path() + "/test.xspf";
+
     //we have chaged the name around so much, better reset it
     m_testPlaylist1->setName( "test" );
     QCOMPARE( m_testPlaylist1->uidUrl().toLocalFile(), tempPath );

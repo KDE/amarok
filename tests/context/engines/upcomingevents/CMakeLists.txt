@@ -6,8 +6,8 @@ include_directories(
   ${AMAROK_SOURCE_TREE}/context
   ${AMAROK_TEST_TREE}/context/engines
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  
-  
+
+
 )
 
 
@@ -27,4 +27,4 @@ ecm_mark_as_test(testupcomingeventsengine)
 
 add_dependencies( testupcomingeventsengine amaroklib)
 
-target_link_libraries( testupcomingeventsengine amarokcore amaroklib KF5::KDELibs4Support KF5::Plasma  KF5::KIOCore Qt5::Test)
+target_link_libraries( testupcomingeventsengine amarokcore amaroklib KF5::Plasma  KF5::KIOCore Qt5::Test)

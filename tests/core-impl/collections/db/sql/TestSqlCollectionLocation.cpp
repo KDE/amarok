@@ -35,11 +35,6 @@
 #include <QProcess>
 #include <QTimer>
 
-#include <KCmdLineArgs>
-#include <KGlobal>
-
-#include <qtest_kde.h>
-
 #include <gmock/gmock.h>
 #include <KConfigGroup>
 
@@ -99,7 +94,7 @@ public:
 
 
 
-QTEST_KDEMAIN_CORE( TestSqlCollectionLocation )
+QTEST_MAIN( TestSqlCollectionLocation )
 
 TestSqlCollectionLocation::TestSqlCollectionLocation()
     : QObject()
@@ -107,20 +102,22 @@ TestSqlCollectionLocation::TestSqlCollectionLocation()
     , m_storage( 0 )
     , m_tmpDir( 0 )
 {
-    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
-    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
+    int argc = 1;
+    char **argv = (char **) malloc(sizeof(char *));
+    argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
+    ::testing::InitGoogleMock( &argc, argv );
 }
 
 void
 TestSqlCollectionLocation::initTestCase()
 {
     Amarok::Components::setLogger( new ProxyLogger() );
-    m_tmpDir = new KTempDir();
+    m_tmpDir = new QTemporaryDir();
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDir->name() ) );
+    QVERIFY( m_storage->init( m_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
-    mock->setCollectionFolders( QStringList() << m_tmpDir->name() ); // the target folder needs to have enough space and be writable
+    mock->setCollectionFolders( QStringList() << m_tmpDir->path() ); // the target folder needs to have enough space and be writable
     m_collection->setMountPointManager( mock );
 
     // I just need the table and not the whole playlist manager
@@ -161,9 +158,9 @@ TestSqlCollectionLocation::init()
     m_storage->query( "INSERT INTO genres(id, name) VALUES (1, 'genre1');" );
     m_storage->query( "INSERT INTO years(id, name) VALUES (1, '1');" );
 
-    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (1, -1, '." + m_tmpDir->name() + "ab/')");
-    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (2, -1, '." + m_tmpDir->name() + "b/')");
-    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (3, -1, '." + m_tmpDir->name() + "c/')");
+    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (1, -1, '." + m_tmpDir->path() + "/ab/')");
+    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (2, -1, '." + m_tmpDir->path() + "/b/')");
+    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (3, -1, '." + m_tmpDir->path() + "/c/')");
 
     m_storage->query( QString( "INSERT INTO urls(id, deviceid, rpath, uniqueid, directory ) VALUES (1, -1, '%1', 'uid://1', 1);" ).arg( setupFileInTempDir( "ab/IDoNotExist.mp3" ) ) );
     m_storage->query( QString( "INSERT INTO urls(id, deviceid, rpath, uniqueid, directory ) VALUES (2, -1, '%1', 'uid://2', 2);" ).arg( setupFileInTempDir( "b/IDoNotExistAsWell.mp3") ) );
@@ -217,18 +214,19 @@ TestSqlCollectionLocation::testOrganizingCopiesLabels()
 
         Collections::SqlCollectionLocation *source = new MySqlCollectionLocation( m_collection );
         Collections::SqlCollectionLocation *dest = new MySqlCollectionLocation( m_collection );
+        QSignalSpy spy( source, &Collections::SqlCollectionLocation::destroyed );
 
         {
             MyOrganizeCollectionDelegate *delegate = new MyOrganizeCollectionDelegate();
             delegate->overwrite = true;
             delegate->migrate = true;
-            delegate->dests.insert( track, m_tmpDir->name() + "b/IDoNotExist.mp3" );
+            delegate->dests.insert( track, m_tmpDir->path() + "b/IDoNotExist.mp3" );
             dest->setOrganizeCollectionDelegateFactory( new MyOrganizeCollectionDelegateFactory( delegate ) );
         }
 
         source->prepareMove( track, dest );
 
-        QTest::kWaitForSignal( source, SIGNAL(destroyed(QObject*)), 1000 );
+        spy.wait( 1000 );
 
         QCOMPARE( track->labels().count(), 1 );
         QVERIFY( track->playableUrl().path().endsWith( "b/IDoNotExist.mp3" ) );
@@ -238,7 +236,7 @@ TestSqlCollectionLocation::testOrganizingCopiesLabels()
     m_collection->registry()->emptyCache();
 
     {
-        // Meta::TrackPtr track = m_collection->registry()->getTrack( m_tmpDir->name() + "b/IDoNotExist.mp3" );
+        // Meta::TrackPtr track = m_collection->registry()->getTrack( m_tmpDir->path() + "/b/IDoNotExist.mp3" );
         Meta::TrackPtr track = m_collection->registry()->getTrack(1);
         QVERIFY( track );
         QVERIFY( track->playableUrl().path().endsWith( "b/IDoNotExist.mp3" ) );
@@ -262,11 +260,11 @@ TestSqlCollectionLocation::testCopyTrackToDirectoryWithExistingTracks()
 QString
 TestSqlCollectionLocation::setupFileInTempDir( const QString &relativeName )
 {
-    QString absoluteName = m_tmpDir->name() + relativeName;
+    QString absoluteName = m_tmpDir->path() + '/' + relativeName;
 
     //TODO: unix specific
     //create directory where necessary
-    int index = absoluteName.lastIndexOf( QDir::separator() );
+    int index = absoluteName.lastIndexOf( '/' );
     if(index > 0 )
     {
         QString dir = absoluteName.left( index );
@@ -274,7 +272,7 @@ TestSqlCollectionLocation::setupFileInTempDir( const QString &relativeName )
     }
     else
     {
-        qDebug() << "huh? index was " << index << " relative name was " << relativeName << " tmpDir " << m_tmpDir->name();
+        qDebug() << "huh? index was " << index << " relative name was " << relativeName << " tmpDir " << m_tmpDir->path();
     }
 
     QProcess::execute( "touch", QStringList() << absoluteName );

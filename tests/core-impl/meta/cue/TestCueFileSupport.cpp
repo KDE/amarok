@@ -23,9 +23,8 @@
 
 #include <QTest>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestCueFileSupport )
+QTEST_MAIN( TestCueFileSupport )
 
 using namespace MetaCue;
 

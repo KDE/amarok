@@ -5,8 +5,8 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  
-  
+
+
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
@@ -42,11 +42,9 @@ add_dependencies( testplaylistmodels amaroklib )
 target_link_libraries( testplaylistmodels
     amarokcore
     amaroklib
-    KF5::KDELibs4Support
-    
     KF5::KIOCore
     Phonon::phonon4qt5
-    
+
     Qt5::Test
     Qt5::Core
     ${GOOGLEMOCK_LIBRARIES}

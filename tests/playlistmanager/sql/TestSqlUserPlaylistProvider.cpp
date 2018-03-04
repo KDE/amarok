@@ -29,7 +29,6 @@
 #include <QTest>
 #include <QDir>
 
-#include <qtest_kde.h>
 
 QTEST_KDEMAIN( TestSqlUserPlaylistProvider, GUI )
 

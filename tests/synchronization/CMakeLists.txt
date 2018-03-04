@@ -4,8 +4,8 @@ include_directories(
   ${AMAROK_SOURCE_TREE}
   ${CMAKE_BINARY_DIR}/src
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  
-  
+
+
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
@@ -28,7 +28,6 @@ add_dependencies( testmasterslavesynchronizationjob amaroklib )
 target_link_libraries(testmasterslavesynchronizationjob
                         amarokcore
                         amaroklib
-                        KF5::KDELibs4Support
                         KF5::KIOCore
                         ${KDE4_SOLID_LIBRARY}
                         Qt5::Gui
@@ -55,9 +54,8 @@ add_dependencies( testunionjob amaroklib )
 target_link_libraries(testunionjob
                         amarokcore
                         amaroklib
-                        KF5::KDELibs4Support
                         KF5::KIOCore
-                        
+
                         ${KDE4_SOLID_LIBRARY}
                         Qt5::Gui
                         KF5::ThreadWeaver
@@ -83,9 +81,8 @@ add_dependencies( testonewaysynchronizationjob amaroklib )
 target_link_libraries(testonewaysynchronizationjob
                         amarokcore
                         amaroklib
-                        KF5::KDELibs4Support
                         KF5::KIOCore
-                        
+
                         ${KDE4_SOLID_LIBRARY}
                         Qt5::Gui
                         KF5::ThreadWeaver

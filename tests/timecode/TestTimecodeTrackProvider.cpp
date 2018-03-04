@@ -23,11 +23,9 @@
 #include "core/meta/Meta.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
 
-#include <qtest_kde.h>
-
 #include <QTest>
 
-QTEST_KDEMAIN_CORE( TestTimecodeTrackProvider )
+QTEST_MAIN( TestTimecodeTrackProvider )
 
 TestTimecodeTrackProvider::TestTimecodeTrackProvider()
 {}

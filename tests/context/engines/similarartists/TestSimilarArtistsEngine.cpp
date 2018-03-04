@@ -21,11 +21,9 @@
 #include "core/support/Components.h"
 #include "EngineController.h"
 
-#include <qtest_kde.h>
-
 #include <QTest>
 
-QTEST_KDEMAIN_CORE( TestSimilarArtistsEngine )
+QTEST_MAIN( TestSimilarArtistsEngine )
 
 TestSimilarArtistsEngine::TestSimilarArtistsEngine(QObject* parent)
     : QObject(parent)

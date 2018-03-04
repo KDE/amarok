@@ -25,15 +25,14 @@
 #include <QDir>
 #include <QEventLoop>
 #include <QFile>
+#include <QSignalSpy>
 #include <QTemporaryFile>
 #include <QTest>
 #include <QTimer>
 
 #include <ThreadWeaver/Queue>
 
-#include <qtest_kde.h>
-
-QTEST_KDEMAIN_CORE( TestPlaylistObserver )
+QTEST_MAIN( TestPlaylistObserver )
 
 TestPlaylistObserver::TestPlaylistObserver()
     : m_observer( 0 )
@@ -49,7 +48,6 @@ TestPlaylistObserver::dataPath( const QString &relPath )
 void
 TestPlaylistObserver::initTestCase()
 {
-    KGlobal::locale();
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );
     CollectionManager::instance();
@@ -110,7 +108,7 @@ TestPlaylistObserver::testTracksLoaded()
     m_testPlaylist->triggerTrackLoad();
     QSignalSpy spyTracksLoaded(m_observer, &Observer::tracksLoadedSignal);
     QVERIFY( spyTracksLoaded.wait( 10000 ) );
-    
+
     QCOMPARE( m_testPlaylist->trackCount(), 23 );
 }
 
@@ -121,7 +119,6 @@ TestPlaylistObserver::testTrackAdded( )
     m_testPlaylist->triggerTrackLoad();
     QSignalSpy spyTracksLoaded(m_observer, &Observer::tracksLoadedSignal);
     QVERIFY( spyTracksLoaded.wait( 10000 ) );
-    
     QCOMPARE( spy.count(), 23 );
 }
 
@@ -129,7 +126,6 @@ void
 TestPlaylistObserver::testTrackRemoved()
 {
     m_testPlaylist->triggerTrackLoad();
-    
     QSignalSpy spyTracksLoaded( m_observer, &Observer::tracksLoadedSignal );
     QVERIFY( spyTracksLoaded.wait( 10000 ) );
 

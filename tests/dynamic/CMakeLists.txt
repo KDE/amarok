@@ -13,7 +13,6 @@ macro(link_database_test test_target)
     target_link_libraries(${test_target}
         amarokcore
         amaroklib
-        KF5::KDELibs4Support
         KF5::KIOCore
         KF5::ThreadWeaver
         Qt5::Test
@@ -36,8 +35,8 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/dynamic
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  
-  
+
+
   ${MYSQL_INCLUDE_DIR}
   )
 

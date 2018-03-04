@@ -26,14 +26,15 @@
 #include "core-impl/meta/multi/MultiTrack.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
-#include <QTest>
 #include <QDir>
 #include <QFileInfo>
+#include <QSignalSpy>
+#include <QTest>
+#include <QTimer>
 
-#include <qtest_kde.h>
 #include <ThreadWeaver/Queue>
 
-QTEST_KDEMAIN( TestMetaMultiTrack, GUI )
+QTEST_MAIN( TestMetaMultiTrack )
 
 TestMetaMultiTrack::TestMetaMultiTrack()
     : m_testMultiTrack( 0 )
@@ -67,15 +68,17 @@ void TestMetaMultiTrack::initTestCase()
     QVERIFY( m_playlist ); // no playlist -> no test. that's life ;)
     subscribeTo( m_playlist );
     m_playlist->triggerTrackLoad();
+    QSignalSpy spy( this, &TestMetaMultiTrack::tracksLoadedSignal );
     if( m_playlist->trackCount() < 0 )
-        QVERIFY( QTest::kWaitForSignal( this, SIGNAL(tracksLoadedSignal(Playlists::PlaylistPtr)), 5000 ) );
+        QVERIFY( spy.wait( 5000 ) );
 
     QCOMPARE( m_playlist->name(), QString("test.pls") );
     QCOMPARE( m_playlist->trackCount(), 4 );
 
     // now wait for all MetaProxy::Tracks to actually load their real tracks:
     NotifyObserversWaiter wainter( m_playlist->tracks().toSet() );
-    QVERIFY( QTest::kWaitForSignal( &wainter, SIGNAL(done()), 5000 ) );
+    QSignalSpy spyDone( &wainter, &NotifyObserversWaiter::done );
+    QVERIFY( spyDone.wait( 5000 ) );
 }
 
 void

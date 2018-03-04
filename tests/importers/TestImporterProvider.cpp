@@ -19,9 +19,11 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 
-#include <qtest_kde.h>
+#include <QSignalSpy>
+#include <QTest>
 
-QTEST_KDEMAIN_CORE( TestImporterProvider )
+
+QTEST_MAIN( TestImporterProvider )
 
 using namespace ::testing;
 

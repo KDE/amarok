@@ -21,7 +21,8 @@
 #include "statsyncing/Provider.h"
 #include "statsyncing/Track.h"
 
-#include <qtest_kde.h>
+#include <QTest>
+
 
 using namespace StatSyncing;
 

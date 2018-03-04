@@ -20,12 +20,12 @@ include_directories(
 
 add_subdirectory( amarokurls )
 add_subdirectory( browsers )
-#add_subdirectory( context )
+add_subdirectory( context )
 add_subdirectory( core )
 add_subdirectory( core-impl )
 add_subdirectory( dynamic )
 if( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
-#add_subdirectory( importers )
+add_subdirectory( importers )
 endif()
 add_subdirectory( playlist )
 add_subdirectory( playlistmanager )
@@ -45,8 +45,6 @@ add_test(NAME testamarok COMMAND $<TARGET_FILE:testamarok>)
 ecm_mark_as_test(testamarok)
 
 target_link_libraries( testamarok
-    KF5::KDELibs4Support
-    
     KF5::KIOCore
     Qt5::Test
     amarokcore
@@ -64,7 +62,7 @@ add_executable( testcaseconverter  ${testcaseconverter_SRCS} )
 add_test(NAME testcaseconverter COMMAND $<TARGET_FILE:testcaseconverter>)
 ecm_mark_as_test(testcaseconverter)
 
-target_link_libraries(testcaseconverter KF5::KDELibs4Support Qt5::Test amarokcore)
+target_link_libraries(testcaseconverter Qt5::Test amarokcore)
 
 #------------------------ Test Debug -----------------------------
 
@@ -77,7 +75,7 @@ set( testdebug_SRCS
 add_executable( testdebug ${testdebug_SRCS} )
 add_test(NAME testdebug COMMAND $<TARGET_FILE:testdebug>)
 ecm_mark_as_test(testdebug)
-target_link_libraries(testdebug KF5::KDELibs4Support Qt5::Test amarokcore )
+target_link_libraries(testdebug Qt5::Test amarokcore )
 
 #------------------------ Test EngineController -----------------------------
 
@@ -85,7 +83,7 @@ set( testenginecontroller_SRCS TestEngineController.cpp )
 add_executable( testenginecontroller ${testenginecontroller_SRCS} )
 add_test(NAME testenginecontroller COMMAND $<TARGET_FILE:testenginecontroller>)
 ecm_mark_as_test(testenginecontroller)
-target_link_libraries( testenginecontroller KF5::ThreadWeaver KF5::KDELibs4Support Qt5::Test amaroklib amarokcore )
+target_link_libraries( testenginecontroller KF5::ThreadWeaver Qt5::Test amaroklib amarokcore )
 
 #------------------------ Test Expression -----------------------------
 
@@ -98,7 +96,7 @@ add_executable( testexpression  ${testexpression_SRCS} )
 add_test(NAME testexpression COMMAND $<TARGET_FILE:testexpression>)
 ecm_mark_as_test(testexpression)
 
-target_link_libraries(testexpression KF5::KDELibs4Support Qt5::Test)
+target_link_libraries(testexpression Qt5::Test)
 
 #------------------------ Test QStringx -----------------------------
 
@@ -111,7 +109,7 @@ add_executable( testqstringx  ${testqstringx_SRCS} )
 add_test(NAME testqstringx COMMAND $<TARGET_FILE:testqstringx>)
 ecm_mark_as_test(testqstringx)
 
-target_link_libraries(testqstringx KF5::KDELibs4Support Qt5::Test)
+target_link_libraries(testqstringx Qt5::Test)
 
 #------------------------ Test SmartPointerList -----------------------------
 
@@ -124,7 +122,7 @@ add_executable( testsmartpointerlist  ${testsmartpointerlist_SRCS} )
 add_test(NAME testsmartpointerlist COMMAND $<TARGET_FILE:testsmartpointerlist>)
 ecm_mark_as_test(testsmartpointerlist)
 
-target_link_libraries(testsmartpointerlist KF5::KDELibs4Support Qt5::Test)
+target_link_libraries(testsmartpointerlist Qt5::Test)
 
 #------------------------ Test TagGuesser -----------------------------
 
@@ -138,7 +136,7 @@ add_executable( testtagguesser  ${testtagguesser_SRCS} )
 add_test(NAME testtagguesser COMMAND $<TARGET_FILE:testtagguesser>)
 ecm_mark_as_test(testtagguesser)
 
-target_link_libraries(testtagguesser KF5::KDELibs4Support  Qt5::Test amarokcore)
+target_link_libraries(testtagguesser Qt5::Test amarokcore)
 
 #------------------------ Test TrackOrganizer -----------------------------
 
@@ -164,4 +162,4 @@ endif()
 add_dependencies( testtrackorganizer amarokcore )
 add_dependencies( testtrackorganizer amaroklib )
 
-target_link_libraries( testtrackorganizer amarokcore amaroklib KF5::KDELibs4Support  ${KDE4_SOLID_LIBRARY} Qt5::Test Qt5::Core Qt5::Gui ${GOOGLEMOCK_LIBRARIES})
+target_link_libraries( testtrackorganizer amarokcore amaroklib ${KDE4_SOLID_LIBRARY} Qt5::Test Qt5::Core Qt5::Gui ${GOOGLEMOCK_LIBRARIES})

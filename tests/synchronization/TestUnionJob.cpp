@@ -25,16 +25,12 @@
 #include "mocks/MockAlbum.h"
 #include "mocks/MockArtist.h"
 
-#include <KCmdLineArgs>
-#include <KGlobal>
-
 #include <QList>
-
-#include <qtest_kde.h>
+#include <QSignalSpy>
 
 #include <gmock/gmock.h>
 
-QTEST_KDEMAIN_CORE( TestUnionJob )
+QTEST_MAIN( TestUnionJob )
 
 using ::testing::Return;
 using ::testing::AnyNumber;
@@ -152,8 +148,10 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
 
 TestUnionJob::TestUnionJob() : QObject()
 {
-    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
-    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
+    int argc = 1;
+    char **argv = (char **) malloc(sizeof(char *));
+    argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
+    ::testing::InitGoogleMock( &argc, argv );
     qRegisterMetaType<Meta::TrackList>();
     qRegisterMetaType<Meta::AlbumList>();
     qRegisterMetaType<Meta::ArtistList>();
@@ -177,8 +175,9 @@ TestUnionJob::testEmptyA()
     QVERIFY( trackCopyCount.isEmpty() );
 
     UnionJob *job = new UnionJob( collA, collB );
+    QSignalSpy spy( job, &UnionJob::destroyed );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount.size(), 1 );
     QVERIFY( trackCopyCount.contains( 1 ) );
@@ -201,8 +200,9 @@ TestUnionJob::testEmptyB()
     QVERIFY( trackCopyCount.isEmpty() );
 
     UnionJob *job = new UnionJob( collA, collB );
+    QSignalSpy spy( job, &UnionJob::destroyed );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount.size(), 1 );
     QVERIFY( trackCopyCount.contains( 1 ) );
@@ -226,8 +226,9 @@ TestUnionJob::testAddTrackToBoth()
     QVERIFY( trackCopyCount.isEmpty() );
 
     UnionJob *job = new UnionJob( collA, collB );
+    QSignalSpy spy( job, &UnionJob::destroyed );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount.size(), 2 );
     QCOMPARE( trackCopyCount.at( 0 ), 1 );
@@ -253,8 +254,9 @@ TestUnionJob::testTrackAlreadyInBoth()
     QVERIFY( trackCopyCount.isEmpty() );
 
     UnionJob *job = new UnionJob( collA, collB );
+    QSignalSpy spy( job, &UnionJob::destroyed );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount.size(), 1 );
     QVERIFY( trackCopyCount.contains( 1 ) );

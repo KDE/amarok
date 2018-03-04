@@ -25,15 +25,15 @@
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "EngineController.h"
 
-#include <QTest>
 #include <QFile>
 #include <QDir>
+#include <QStandardPaths>
+#include <QTemporaryDir>
+#include <QTest>
 
-#include <KStandardDirs>
-#include <qtest_kde.h>
 #include <ThreadWeaver/Queue>
 
-QTEST_KDEMAIN_CORE( TestPLSPlaylist )
+QTEST_MAIN( TestPLSPlaylist )
 
 TestPLSPlaylist::TestPLSPlaylist()
 {}
@@ -46,6 +46,9 @@ TestPLSPlaylist::dataPath( const QString &relPath )
 
 void TestPLSPlaylist::initTestCase()
 {
+    m_tempDir = new QTemporaryDir;
+    QVERIFY( m_tempDir->isValid() );
+
     // EngineController is used in a connection in MetaProxy::Track; avoid null sender
     // warning
     EngineController *controller = new EngineController();
@@ -63,8 +66,7 @@ void TestPLSPlaylist::initTestCase()
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
-    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.pls" );
-    QFile::remove( tempPath );
+    QString tempPath = m_tempDir->path() + "/test.pls";
     QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
     QVERIFY( QFile::exists( tempPath ) );
 
@@ -85,6 +87,7 @@ void TestPLSPlaylist::cleanupTestCase()
     ThreadWeaver::Queue::instance()->finish();
 
     delete m_testPlaylist1;
+    delete m_tempDir;
     delete Amarok::Components::setEngineController( 0 );
 }
 
@@ -112,15 +115,15 @@ void TestPLSPlaylist::testTracks()
 {
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
 
-    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
-    QCOMPARE( tracklist.at( 1 ).data()->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
-    QCOMPARE( tracklist.at( 2 ).data()->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
-    QCOMPARE( tracklist.at( 3 ).data()->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 0 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 1 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 2 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 3 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
 }
 
 void TestPLSPlaylist::testUidUrl()
 {
-    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.pls" );
+    QString tempPath = m_tempDir->path() + "/test.pls";
     m_testPlaylist1->setName( "test" );
     QCOMPARE( m_testPlaylist1->uidUrl().toLocalFile(), tempPath );
 }

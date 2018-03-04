@@ -24,12 +24,12 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
 
-#include <KConfigGroup>
-#include <qtest_kde.h>
-
 #include <QTest>
 #include <QDir>
 #include <QFile>
+
+#include <KConfigGroup>
+
 
 QTEST_KDEMAIN( TestPlaylistFileProvider, GUI )
 
@@ -99,10 +99,10 @@ void TestPlaylistFileProvider::testImportAndDeletePlaylists()
     QCOMPARE( tempList.size(), 0 );
 
     QVERIFY( QFile::exists( dataPath( "data/playlists/test.m3u" ) ) );
-    QFile::copy( dataPath( "data/playlists/test.m3u" ), QDir::tempPath() + QDir::separator() + "test.m3u" );
-    QVERIFY( QFile::exists( QDir::tempPath() + QDir::separator() + "test.m3u" ) );
+    QFile::copy( dataPath( "data/playlists/test.m3u" ), QDir::tempPath() + "/test.m3u" );
+    QVERIFY( QFile::exists( QDir::tempPath() + "/test.m3u" ) );
 
-    QVERIFY( m_testPlaylistFileProvider->import( QUrl::fromLocalFile( QDir::tempPath() + QDir::separator() + "test.m3u") ) );
+    QVERIFY( m_testPlaylistFileProvider->import( QUrl::fromLocalFile( QDir::tempPath() + "/test.m3u") ) );
     tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 );
 
@@ -118,10 +118,10 @@ void TestPlaylistFileProvider::testRename()
     QCOMPARE( tempList.size(), 0 );
 
     QVERIFY( QFile::exists( dataPath( "data/playlists/test.m3u" ) ) );
-    QFile::copy( dataPath( "data/playlists/test.m3u" ), QDir::tempPath() + QDir::separator() + "test.m3u" );
-    QVERIFY( QFile::exists( QDir::tempPath() + QDir::separator() + "test.m3u" ) );
+    QFile::copy( dataPath( "data/playlists/test.m3u" ), QDir::tempPath() + "/test.m3u" );
+    QVERIFY( QFile::exists( QDir::tempPath() + "/test.m3u" ) );
 
-    QVERIFY( m_testPlaylistFileProvider->import( QUrl::fromLocalFile( QDir::tempPath() + QDir::separator() + "test.m3u") ) );
+    QVERIFY( m_testPlaylistFileProvider->import( QUrl::fromLocalFile( QDir::tempPath() + "/test.m3u") ) );
     tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 );
 

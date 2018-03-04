@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QString>
 
+class QTemporaryDir;
+
 namespace Playlists {
 class PLSPlaylist;
 }
@@ -48,6 +50,7 @@ private Q_SLOTS:
 private:
     Playlists::PLSPlaylist *m_testPlaylist1;
     QString dataPath( const QString &relPath );
+    QTemporaryDir *m_tempDir;
 };
 
 #endif // TESTPLSPLAYLIST_H

@@ -32,8 +32,6 @@ endif()
 target_link_libraries(testcollectionlocation
                         amarokcore
                         amaroklib
-                        KF5::KDELibs4Support
-                        
                         KF5::KIOCore
                         Qt5::Test
                         ${GOOGLEMOCK_LIBRARIES})
@@ -44,7 +42,7 @@ set( testcollection_SRCS TestCollection.cpp )
 add_executable( testcollection ${testcollection_SRCS} )
 add_test(NAME testcollection COMMAND $<TARGET_FILE:testcollection>)
 ecm_mark_as_test(testcollection)
-target_link_libraries( testcollection KF5::KDELibs4Support  Qt5::Test amarokcore )
+target_link_libraries( testcollection  Qt5::Test amarokcore )
 
 #------------------------ Test QueryMaker -----------------------------
 
@@ -52,4 +50,4 @@ set( testquerymaker_SRCS TestQueryMaker.cpp ../../mocks/MockQueryMaker.cpp )
 add_executable( testquerymaker ${testquerymaker_SRCS} )
 add_test(NAME testquerymaker COMMAND $<TARGET_FILE:testquerymaker>)
 ecm_mark_as_test(testquerymaker)
-target_link_libraries( testquerymaker KF5::KDELibs4Support Qt5::Gui Qt5::Test amarokcore )
+target_link_libraries( testquerymaker Qt5::Gui Qt5::Test amarokcore )

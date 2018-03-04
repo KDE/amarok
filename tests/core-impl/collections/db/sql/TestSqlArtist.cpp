@@ -22,9 +22,8 @@
 #include "SqlCollection.h"
 #include "SqlMountPointManagerMock.h"
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestSqlArtist )
+QTEST_MAIN( TestSqlArtist )
 
 TestSqlArtist::TestSqlArtist()
     : QObject()
@@ -37,9 +36,9 @@ TestSqlArtist::TestSqlArtist()
 void
 TestSqlArtist::initTestCase()
 {
-    m_tmpDir = new KTempDir();
+    m_tmpDir = new QTemporaryDir();
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDir->name() ) );
+    QVERIFY( m_storage->init( m_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
 }

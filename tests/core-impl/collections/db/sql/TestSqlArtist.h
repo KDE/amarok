@@ -19,7 +19,7 @@
 
 #include <QSharedPointer>
 #include <QtTest>
-#include <KTempDir>
+#include <QTemporaryDir>
 
 class MySqlEmbeddedStorage;
 
@@ -45,7 +45,7 @@ private Q_SLOTS:
 private:
     Collections::SqlCollection *m_collection;
     QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    KTempDir *m_tmpDir;
+    QTemporaryDir *m_tmpDir;
 
     public:
 };

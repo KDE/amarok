@@ -16,6 +16,7 @@
 
 #include "TestSqlTrack.h"
 
+#include "amarokconfig.h"
 #include "DefaultSqlQueryMakerFactory.h"
 #include "core/meta/Meta.h"
 #include "core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.h"
@@ -30,9 +31,8 @@
 #include <QDateTime>
 #include <QSignalSpy>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestSqlTrack )
+QTEST_MAIN( TestSqlTrack )
 
 TestSqlTrack::TestSqlTrack()
     : QObject()
@@ -45,9 +45,11 @@ TestSqlTrack::TestSqlTrack()
 void
 TestSqlTrack::initTestCase()
 {
-    m_tmpDir = new KTempDir();
+    AmarokConfig::instance("amarokrc");
+
+    m_tmpDir = new QTemporaryDir();
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDir->name() ) );
+    QVERIFY( m_storage->init( m_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
 

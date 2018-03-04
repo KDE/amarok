@@ -25,9 +25,8 @@
 #include <QTest>
 #include <QDir>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestPlaylistFileSupport )
+QTEST_MAIN( TestPlaylistFileSupport )
 
 TestPlaylistFileSupport::TestPlaylistFileSupport()
 {}

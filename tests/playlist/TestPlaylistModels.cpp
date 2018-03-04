@@ -16,6 +16,7 @@
 
 #include "TestPlaylistModels.h"
 
+#include "amarokconfig.h"
 #include "core/support/Components.h"
 #include "EngineController.h"
 
@@ -28,15 +29,13 @@
 #include "mocks/MetaMock.h"
 #include "mocks/MockTrack.h"
 
-#include <KStandardDirs>
-
 #include <QtDebug>
 #include <QTest>
-#include <qtest_kde.h>
+
 
 using namespace Playlist;
 
-QTEST_KDEMAIN( TestPlaylistModels, GUI )
+QTEST_MAIN( TestPlaylistModels )
 
 
 TestPlaylistModels::TestPlaylistModels()
@@ -46,6 +45,8 @@ TestPlaylistModels::TestPlaylistModels()
 
 void TestPlaylistModels::initTestCase()
 {
+    AmarokConfig::instance("amarokrc");
+
     //apparently the engine controller is needed somewhere, or we will get a crash...
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );

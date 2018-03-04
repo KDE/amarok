@@ -28,11 +28,10 @@
 
 #include <QSignalSpy>
 
-#include <qtest_kde.h>
 
 using namespace Collections;
 
-QTEST_KDEMAIN_CORE( TestSqlQueryMaker )
+QTEST_MAIN( TestSqlQueryMaker )
 
 //required for QTest, this is not done in Querymaker.h
 Q_DECLARE_METATYPE( Collections::QueryMaker::QueryType )
@@ -67,9 +66,9 @@ TestSqlQueryMaker::TestSqlQueryMaker()
 void
 TestSqlQueryMaker::initTestCase()
 {
-    m_tmpDir = new KTempDir();
+    m_tmpDir = new QTemporaryDir();
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDir->name() ) );
+    QVERIFY( m_storage->init( m_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
 
     QMap<int,QString> mountPoints;
@@ -327,7 +326,7 @@ TestSqlQueryMaker::testAsyncAlbumQuery()
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Album );
     QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newAlbumsReady );
 
     qm->run();
 
@@ -343,7 +342,7 @@ TestSqlQueryMaker::testAsyncAlbumQuery()
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Album );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newAlbumsReady );
     qm->addFilter( Meta::valAlbum, "foo" ); //should result in no match
 
     qm->run();
@@ -363,7 +362,7 @@ TestSqlQueryMaker::testAsyncArtistQuery()
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Artist );
     QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newArtistsReady );
 
     qm->run();
 
@@ -379,7 +378,7 @@ TestSqlQueryMaker::testAsyncArtistQuery()
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Artist );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newArtistsReady );
     qm->addFilter( Meta::valArtist, "foo" ); //should result in no match
 
     qm->run();
@@ -399,7 +398,7 @@ TestSqlQueryMaker::testAsyncComposerQuery()
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Composer );
     QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newComposersReady );
 
     qm->run();
 
@@ -416,7 +415,7 @@ TestSqlQueryMaker::testAsyncComposerQuery()
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Composer );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newComposersReady );
     qm->addFilter( Meta::valComposer, "foo" ); //should result in no match
 
     qm->run();
@@ -436,7 +435,7 @@ TestSqlQueryMaker::testAsyncTrackQuery()
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Track );
     QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newTracksReady );
 
     qm->run();
 
@@ -453,7 +452,7 @@ TestSqlQueryMaker::testAsyncTrackQuery()
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Track );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newTracksReady );
     qm->addFilter( Meta::valTitle, "foo" ); //should result in no match
 
     qm->run();
@@ -473,7 +472,7 @@ TestSqlQueryMaker::testAsyncGenreQuery()
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Genre );
     QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newGenresReady );
 
     qm->run();
 
@@ -490,7 +489,7 @@ TestSqlQueryMaker::testAsyncGenreQuery()
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Genre );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newGenresReady );
     qm->addFilter( Meta::valGenre, "foo" ); //should result in no match
 
     qm->run();
@@ -510,7 +509,7 @@ TestSqlQueryMaker::testAsyncYearQuery()
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Year );
     QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newYearsReady );
 
     qm->run();
 
@@ -527,7 +526,7 @@ TestSqlQueryMaker::testAsyncYearQuery()
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Year );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
-    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newResultReady );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newYearsReady );
     qm->addFilter( Meta::valYear, "foo" ); //should result in no match
 
     qm->run();

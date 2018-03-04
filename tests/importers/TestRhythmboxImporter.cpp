@@ -20,9 +20,10 @@
 #include "importers/rhythmbox/RhythmboxConfigWidget.h"
 #include "importers/rhythmbox/RhythmboxProvider.h"
 
-#include <qtest_kde.h>
+#include <QTest>
 
-QTEST_KDEMAIN( TestRhythmboxImporter, GUI )
+
+QTEST_MAIN( TestRhythmboxImporter )
 
 using namespace StatSyncing;
 

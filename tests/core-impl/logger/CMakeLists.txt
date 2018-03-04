@@ -4,8 +4,8 @@ include_directories(
   ${AMAROK_UTILITY_TREE}
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
-  
-  
+
+
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
@@ -26,9 +26,10 @@ add_test(NAME testproxylogger COMMAND $<TARGET_FILE:testproxylogger>)
 ecm_mark_as_test(testproxylogger)
 
 target_link_libraries( testproxylogger
-    KF5::KDELibs4Support
     Qt5::Test
     Qt5::Core
+    Qt5::Network
+    KF5::CoreAddons
     KF5::ThreadWeaver
     ${GOOGLEMOCK_LIBRARIES}
     ${CMAKE_DL_LIBS})

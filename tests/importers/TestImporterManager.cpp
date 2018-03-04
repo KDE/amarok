@@ -20,22 +20,12 @@
 #include "core/support/Components.h"
 
 #include <QStringList>
+#include <QTest>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestImporterManager )
+QTEST_MAIN( TestImporterManager )
 
 using namespace ::testing;
-
-void
-TestImporterManager::initShouldSetInfo()
-{
-    KPluginInfo expectedInfo( "testinfo" );
-    EXPECT_CALL( *m_mockManager, pluginInfo() ).WillOnce( Return( expectedInfo ) );
-
-    m_mockManager->init();
-    QCOMPARE( m_mockManager->info(), expectedInfo );
-}
 
 void
 TestImporterManager::initShouldLoadSettings()
@@ -139,7 +129,7 @@ TestImporterManager::createProviderShouldNotCrashOnNull()
     m_mockManager->init();
 
     EXPECT_CALL( *m_mockManager, newInstance(_) )
-            .WillOnce( Return( StatSyncing::ProviderPtr( 0 ) ) );
+            .WillOnce( Return( QSharedPointer<StatSyncing::ImporterProvider>() ) );
 
     QVERIFY( !m_mockManager->createProvider( QVariantMap() ) );
 }

@@ -40,7 +40,6 @@ MockProvider::manager() const
 }
 
 MockManager::MockManager()
-    : StatSyncing::ImporterManager( 0, QVariantList() )
 {
 }
 

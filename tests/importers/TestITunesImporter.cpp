@@ -20,9 +20,10 @@
 #include "importers/itunes/ITunesConfigWidget.h"
 #include "importers/itunes/ITunesProvider.h"
 
-#include <qtest_kde.h>
+#include <QTest>
 
-QTEST_KDEMAIN( TestITunesImporter, GUI )
+
+QTEST_MAIN( TestITunesImporter )
 
 using namespace StatSyncing;
 

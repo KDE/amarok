@@ -23,9 +23,8 @@
 
 #include <QTest>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestCaseConverter )
+QTEST_MAIN( TestCaseConverter )
 
 TestCaseConverter::TestCaseConverter()
 {

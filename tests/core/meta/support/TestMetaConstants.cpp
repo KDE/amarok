@@ -21,11 +21,13 @@
 #include "FileType.h"
 
 #include <QDateTime>
-#include <qtest_kde.h>
+
+#include <KLocalizedString>
+
 
 using namespace Meta;
 
-QTEST_KDEMAIN_CORE( TestMetaConstants )
+QTEST_MAIN( TestMetaConstants )
 
 /* Just for clarification. This is not how you would normally write an auto test.
    You don't write a switch just to test if the switch returns the correct values.

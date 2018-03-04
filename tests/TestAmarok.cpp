@@ -25,9 +25,8 @@
 #include <QDir>
 #include <QDateTime>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestAmarok )
+QTEST_MAIN( TestAmarok )
 
 TestAmarok::TestAmarok()
 {}

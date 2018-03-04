@@ -23,7 +23,7 @@
 
 #include "core/meta/support/MetaConstants.h"
 
-#include <KTempDir>
+#include <QTemporaryDir>
 
 class MySqlEmbeddedStorage;
 class GenericScanManager;
@@ -171,9 +171,10 @@ private:
     int m_collectionUpdatedCount;
 
     QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    KTempDir *m_tmpDatabaseDir;
-    KTempDir *m_tmpCollectionDir;
+    QTemporaryDir *m_tmpDatabaseDir;
+    QTemporaryDir *m_tmpCollectionDir;
     QString m_sourcePath; // the path to the template .mp3 file
+    bool m_autoGetCoverArt;
 
     Collections::SqlCollection *m_collection;
     GenericScanManager *m_scanManager;

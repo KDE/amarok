@@ -25,7 +25,7 @@
 #include <QObject>
 #include <QString>
 
-class KTempDir;
+class QTemporaryDir;
 
 class TestMetaFileTrack : public QObject
 {
@@ -76,7 +76,7 @@ private Q_SLOTS:
 
 private:
     MetaFile::TrackPtr m_track;
-    KTempDir *m_tmpDir;
+    QTemporaryDir *m_tmpDir;
     QString m_tmpFileName;
     QString m_origTrackPath;
 };

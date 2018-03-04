@@ -27,9 +27,8 @@
 
 #include <QTest>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN( TestMetaTrack, GUI )
+QTEST_MAIN( TestMetaTrack )
 
 TestMetaTrack::TestMetaTrack()
     : m_trackPath( dataPath( "/data/audio/Platz 01.mp3" ) )
@@ -47,6 +46,8 @@ TestMetaTrack::dataPath( const QString &relPath )
 
 void TestMetaTrack::initTestCase()
 {
+    AmarokConfig::instance("amarokrc");
+
     QString oldPath = m_trackPath;
     m_trackPath = m_tempDir.path() + "TestMetaTrack-testTrack.mp3";
     QVERIFY( QFile::copy( oldPath, m_trackPath ) );
@@ -87,27 +88,27 @@ void TestMetaTrack::testIsPlayable()
 
 void TestMetaTrack::testAlbum()
 {
-    QCOMPARE( m_testTrack1->album().data()->name() , QString( "" ) );
+    QCOMPARE( m_testTrack1->album()->name() , QString( "" ) );
 }
 
 void TestMetaTrack::testArtist()
 {
-    QCOMPARE( m_testTrack1->artist().data()->name(), QString( "Free Music Charts" ) );
+    QCOMPARE( m_testTrack1->artist()->name(), QString( "Free Music Charts" ) );
 }
 
 void TestMetaTrack::testComposer()
 {
-    QCOMPARE( m_testTrack1->composer().data()->name(), QString( "" ) );
+    QCOMPARE( m_testTrack1->composer()->name(), QString( "" ) );
 }
 
 void TestMetaTrack::testGenre()
 {
-    QCOMPARE( m_testTrack1->genre().data()->name(), QString( "Vocal" ) );
+    QCOMPARE( m_testTrack1->genre()->name(), QString( "Vocal" ) );
 }
 
 void TestMetaTrack::testYear()
 {
-    QCOMPARE( m_testTrack1->year().data()->name(), QString( "2010" ) );
+    QCOMPARE( m_testTrack1->year()->name(), QString( "2010" ) );
 }
 
 void TestMetaTrack::testComment()

@@ -20,9 +20,10 @@
 #include "importers/clementine/ClementineConfigWidget.h"
 #include "importers/clementine/ClementineProvider.h"
 
-#include <qtest_kde.h>
+#include <QTest>
 
-QTEST_KDEMAIN( TestClementineImporter, GUI )
+
+QTEST_MAIN( TestClementineImporter )
 
 using namespace StatSyncing;
 

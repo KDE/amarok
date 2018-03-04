@@ -1,17 +1,13 @@
 
 # macro function to build a test target.
-#
-# we are linking agains the mysql collection and mysql embedded storage plugin (except on OSX where this is not possible)
 macro(add_database_test test_target test_sources)
     add_definitions(${MYSQL_CFLAGS})
 
-    if(APPLE)
-    #one cannot link to plugins on OS X. As a workaround, add anything relevant that goes into the mysqle plugin to each test
-        set( test_sources_internal
-                ${test_sources}
-                ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/mysql-shared/MySqlStorage.cpp
-                ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.cpp )
-    endif()
+    set( test_sources_internal
+        ${test_sources}
+        ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/mysql-shared/MySqlStorage.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.cpp
+    )
 
     add_executable( ${test_target} ${test_sources} ${test_sources_internal} )
     add_test(NAME ${test_target} COMMAND $<TARGET_FILE:${test_target}>)
@@ -21,50 +17,34 @@ macro(add_database_test test_target test_sources)
         set_target_properties(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif()
 
-    # TODO: I don't think that we need to manually add dependencies here (Ralf)
-    add_dependencies( ${test_target} amarokconfig_h )
-    add_dependencies( ${test_target} amarokcore )
-    add_dependencies( ${test_target} amaroklib)
-    add_dependencies( ${test_target} amarok-sqlcollection)
-    if(NOT APPLE)
-        add_dependencies( ${test_target} amarok_collection-mysqlcollection amarok_storage-mysqlestorage )
-    endif()
-
     target_link_libraries(${test_target}
         amarokshared
         amarokcore
         amaroklib
         amarok-sqlcollection
-        KF5::KDELibs4Support
         KF5::KIOCore
-        KF5::ThreadWeaver      
+        KF5::ThreadWeaver
         Qt5::Test
         Qt5::Core
         ${MYSQL_EMBEDDED_LIBRARIES}
         ${CMAKE_DL_LIBS}
         ${ZLIB_LIBRARIES}
-        ${GOOGLEMOCK_LIBRARIES})
-
-    if(NOT APPLE)
-        target_link_libraries( ${test_target} amarok_collection-mysqlcollection amarok_storage-mysqlestorage )
-    endif()
-
+        ${GOOGLEMOCK_LIBRARIES}
+    )
 endmacro(add_database_test)
 
 
 include_directories(
-  ${AMAROK_TEST_TREE}
-  ${AMAROK_SOURCE_TREE}
-  ${AMAROK_SOURCE_TREE}/core-impl/collections/db/sql
-  ${AMAROK_SOURCE_TREE}/core-impl/logger
-  ${AMAROK_UTILITY_TREE}
-  ${CMAKE_BINARY_DIR}/src
-  ${CMAKE_BINARY_DIR}/tests
-  ${AMAROK_COLLECTION_SUPPORT_DIR}
-  
-  
-  ${MYSQL_INCLUDE_DIR}
-  )
+    ${AMAROK_TEST_TREE}
+    ${AMAROK_SOURCE_TREE}
+    ${AMAROK_SOURCE_TREE}/core-impl/collections/db/sql
+    ${AMAROK_SOURCE_TREE}/core-impl/logger
+    ${AMAROK_UTILITY_TREE}
+    ${CMAKE_BINARY_DIR}/src
+    ${CMAKE_BINARY_DIR}/tests
+    ${AMAROK_COLLECTION_SUPPORT_DIR}
+    ${MYSQL_INCLUDE_DIR}
+)
 
 #------------------------------- DatabaseUpdater Test -------------------------------
 

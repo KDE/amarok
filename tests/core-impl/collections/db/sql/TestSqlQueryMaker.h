@@ -21,7 +21,7 @@
 #include <QTest>
 #include <core/collections/QueryMaker.h>
 
-#include <KTempDir>
+#include <QTemporaryDir>
 
 class MySqlEmbeddedStorage;
 class SqlMountPointManagerMock;
@@ -97,7 +97,7 @@ private:
     Collections::SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpm;
     QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    KTempDir *m_tmpDir;
+    QTemporaryDir *m_tmpDir;
 };
 
 #endif // TESTSQLQUERYMAKER_H

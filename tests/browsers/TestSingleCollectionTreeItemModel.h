@@ -22,9 +22,6 @@
 class TestSingleCollectionTreeItemModel : public QObject
 {
     Q_OBJECT
-public:
-    TestSingleCollectionTreeItemModel();
-    ~TestSingleCollectionTreeItemModel();
 
 private Q_SLOTS:
     void initTestCase();

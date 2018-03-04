@@ -25,9 +25,7 @@
 #include <QTest>
 #include <QTimer>
 
-#include <qtest_kde.h>
-
-QTEST_KDEMAIN_CORE( TestSmartPointerList )
+QTEST_MAIN( TestSmartPointerList )
 
 // use a macro, as we don't want to test copy ctor early
 #define THREE_TIMERS( x ) SmartPointerList<QTimer> x; x << new QTimer << new QTimer << new QTimer
@@ -41,7 +39,7 @@ void TestSmartPointerList::testCount()
     THREE_TIMERS( objects );
     QCOMPARE( objects.count(), 3 );
 }
-    
+
 void TestSmartPointerList::testCopy()
 {
     THREE_TIMERS( objects1 );
@@ -56,7 +54,7 @@ void TestSmartPointerList::testCopy()
     QCOMPARE( objects1.count(), 2 );
     QCOMPARE( objects2.count(), 2 );
 }
-    
+
 void TestSmartPointerList::testCopyAndThenDelete()
 {
     THREE_TIMERS( os1 );
@@ -101,7 +99,7 @@ void TestSmartPointerList::testMultipleOrgasms()
     delete os.last();
     QCOMPARE( os.count(), 2 );
 }
-    
+
 void TestSmartPointerList::testForeach()
 {
     THREE_TIMERS( objects );

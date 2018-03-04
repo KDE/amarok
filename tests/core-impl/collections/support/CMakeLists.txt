@@ -6,8 +6,8 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  
-  
+
+
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
@@ -30,12 +30,12 @@ add_dependencies( testmemoryquerymaker amaroklib )
 target_link_libraries(testmemoryquerymaker
     amarokcore
     amaroklib
-    KF5::KDELibs4Support
     Qt5::Gui
     KF5::ThreadWeaver
     Qt5::Test
     Qt5::Core
-    ${GOOGLEMOCK_LIBRARIES})
+    ${GOOGLEMOCK_LIBRARIES}
+)
 
 #-------------------------------- Test ArtistHelper -----------------------
 
@@ -54,7 +54,8 @@ ecm_mark_as_test(testartisthelper)
     endif()
 
 target_link_libraries( testartisthelper
-                        Qt5::Test
-                        Qt5::Core
-                        KF5::KDELibs4Support)
+    Qt5::Test
+    Qt5::Core
+    KF5::I18n
+)
 

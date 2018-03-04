@@ -28,14 +28,12 @@
 #include "mocks/MockAlbum.h"
 #include "mocks/MockArtist.h"
 
-#include <KCmdLineArgs>
-#include <KGlobal>
-
-#include <qtest_kde.h>
-
 #include <gmock/gmock.h>
 
-QTEST_KDEMAIN_CORE( TestMasterSlaveSynchronizationJob )
+#include <QSignalSpy>
+
+
+QTEST_MAIN( TestMasterSlaveSynchronizationJob )
 
 using ::testing::Return;
 using ::testing::AnyNumber;
@@ -158,8 +156,10 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
 
 TestMasterSlaveSynchronizationJob::TestMasterSlaveSynchronizationJob()
 {
-    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
-    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
+    int argc = 1;
+    char **argv = (char **) malloc(sizeof(char *));
+    argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
+    ::testing::InitGoogleMock( &argc, argv );
     qRegisterMetaType<Meta::TrackList>();
     qRegisterMetaType<Meta::AlbumList>();
     qRegisterMetaType<Meta::ArtistList>();
@@ -186,10 +186,11 @@ TestMasterSlaveSynchronizationJob::testAddTracksToEmptySlave()
     QCOMPARE( trackRemoveCount, 0 );
 
     MasterSlaveSynchronizationJob *job = new MasterSlaveSynchronizationJob();
+    QSignalSpy spy( job, &MasterSlaveSynchronizationJob::destroyed );
     job->setMaster( master );
     job->setSlave( slave );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount, 1 );
     QCOMPARE( trackRemoveCount, 0 );
@@ -217,10 +218,11 @@ TestMasterSlaveSynchronizationJob::testAddSingleTrack()
 
     //test
     MasterSlaveSynchronizationJob *job = new MasterSlaveSynchronizationJob();
+    QSignalSpy spy( job, &MasterSlaveSynchronizationJob::destroyed );
     job->setMaster( master );
     job->setSlave( slave );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     //verify
     QCOMPARE( trackCopyCount, 1 );
@@ -250,10 +252,11 @@ TestMasterSlaveSynchronizationJob::testAddAlbum()
 
     //test
     MasterSlaveSynchronizationJob *job = new MasterSlaveSynchronizationJob();
+    QSignalSpy spy( job, &MasterSlaveSynchronizationJob::destroyed );
     job->setMaster( master );
     job->setSlave( slave );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     //verify
     QCOMPARE( trackCopyCount, 1 );
@@ -283,10 +286,11 @@ TestMasterSlaveSynchronizationJob::testAddArtist()
 
     //test
     MasterSlaveSynchronizationJob *job = new MasterSlaveSynchronizationJob();
+    QSignalSpy spy( job, &MasterSlaveSynchronizationJob::destroyed );
     job->setMaster( master );
     job->setSlave( slave );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     //verify
     QCOMPARE( trackCopyCount, 1 );
@@ -320,10 +324,11 @@ TestMasterSlaveSynchronizationJob::testRemoveSingleTrack()
 
     //test
     MasterSlaveSynchronizationJob *job = new MasterSlaveSynchronizationJob();
+    QSignalSpy spy( job, &MasterSlaveSynchronizationJob::destroyed );
     job->setMaster( master );
     job->setSlave( slave );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     //verify
     QCOMPARE( trackCopyCount, 0 );
@@ -358,10 +363,11 @@ TestMasterSlaveSynchronizationJob::testRemoveAlbum()
 
     //test
     MasterSlaveSynchronizationJob *job = new MasterSlaveSynchronizationJob();
+    QSignalSpy spy( job, &MasterSlaveSynchronizationJob::destroyed );
     job->setMaster( master );
     job->setSlave( slave );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     //verify
     QCOMPARE( trackCopyCount, 0 );
@@ -396,10 +402,11 @@ TestMasterSlaveSynchronizationJob::testRemoveArtist()
 
     //test
     MasterSlaveSynchronizationJob *job = new MasterSlaveSynchronizationJob();
+    QSignalSpy spy( job, &MasterSlaveSynchronizationJob::destroyed );
     job->setMaster( master );
     job->setSlave( slave );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     //verify
     QCOMPARE( trackCopyCount, 0 );
@@ -430,10 +437,11 @@ TestMasterSlaveSynchronizationJob::testEmptyMaster()
     QCOMPARE( trackRemoveCount, 0 );
 
     MasterSlaveSynchronizationJob *job = new MasterSlaveSynchronizationJob();
+    QSignalSpy spy( job, &MasterSlaveSynchronizationJob::destroyed );
     job->setMaster( master );
     job->setSlave( slave );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( trackRemoveCount, 1 );

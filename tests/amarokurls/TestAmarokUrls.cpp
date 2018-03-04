@@ -26,9 +26,7 @@
 
 #include <QTest>
 
-#include <qtest_kde.h>
-
-QTEST_KDEMAIN_CORE( TestAmarokUrls )
+QTEST_MAIN( TestAmarokUrls )
 
 TestAmarokUrls::TestAmarokUrls()
   : QObject()
@@ -38,17 +36,17 @@ TestAmarokUrls::TestAmarokUrls()
     Amarok::Components::setEngineController( controller );
 }
 
-void 
+void
 TestAmarokUrls::testConstructUrl()
 {
-  
+
     AmarokUrl url;
-  
+
     url.setCommand( "navigate" );
     url.setPath( "collections" );
     url.setArg( "filter", "artist:\"Code Monkeys\"" );
     url.setArg( "levels", "artist-album" );
-    
+
     QCOMPARE( url.command(), QString( "navigate" ) );
     QCOMPARE( url.path(), QString( "collections" ) );
     QCOMPARE( url.args().size(), 2 );
@@ -56,19 +54,19 @@ TestAmarokUrls::testConstructUrl()
     QVERIFY( url.args().keys().contains( "levels" ) );
     QCOMPARE( url.args().value( "filter" ), QString( "artist:\"Code Monkeys\"" ) );
     QCOMPARE( url.args().value( "levels" ), QString( "artist-album") );
-    
+
     QCOMPARE( url.prettyCommand(), The::amarokUrlHandler()->prettyCommand( "navigate" ) );
-    
+
 
 }
 
 
-void 
+void
 TestAmarokUrls::testUrlFromString()
 {
-  
+
     AmarokUrl url( "amarok://navigate/collections?filter=artist:\"Code Monkeys\"&levels=artist-album" );
-  
+
     QCOMPARE( url.command(), QString( "navigate" ) );
     QCOMPARE( url.path(), QString( "collections" ) );
     QCOMPARE( url.args().size(), 2 );
@@ -76,24 +74,24 @@ TestAmarokUrls::testUrlFromString()
     QVERIFY( url.args().keys().contains( "levels" ) );
     QCOMPARE( url.args().value( "filter" ), QString( "artist:\"Code Monkeys\"" ) );
     QCOMPARE( url.args().value( "levels" ), QString( "artist-album") );
-    
+
     QCOMPARE( url.prettyCommand(), The::amarokUrlHandler()->prettyCommand( "navigate" ) );
-  
+
 }
 
 void TestAmarokUrls::testEncoding()
 {
     QString urlString( "amarok://navigate/collections?filter=artist:\"Code Monkeys\"&levels=artist-album" );
     AmarokUrl url( urlString );
-    
+
     QUrl qUrl( urlString );
-    
+
     QCOMPARE( url.url(), QString( qUrl.toEncoded() ) );
-    
-    
+
+
     //check that we do  not "double encode" anything
     AmarokUrl url2( "amarok://navigate/collections?filter=artist:%22Code%20Monkeys%22&levels=artist-album" );
     QCOMPARE( url2.url(), QString( qUrl.toEncoded() ) );
 }
 
-  
+

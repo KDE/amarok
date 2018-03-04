@@ -21,9 +21,9 @@
 
 #include <QAction>
 #include <QList>
-#include <QtTest>
+#include <QTemporaryDir>
+#include <QTest>
 
-#include <KTempDir>
 
 class TestActionsCapability : public QObject
 {

@@ -20,9 +20,10 @@
 #include "importers/banshee/BansheeConfigWidget.h"
 #include "importers/banshee/BansheeProvider.h"
 
-#include <qtest_kde.h>
+#include <QTest>
 
-QTEST_KDEMAIN( TestBansheeImporter, GUI )
+
+QTEST_MAIN( TestBansheeImporter )
 
 using namespace StatSyncing;
 

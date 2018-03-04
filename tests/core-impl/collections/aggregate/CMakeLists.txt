@@ -5,8 +5,8 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  
-  
+
+
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
@@ -30,8 +30,6 @@ endif()
 target_link_libraries( testaggregatemeta
     amarokcore
     amaroklib
-    KF5::KDELibs4Support
-    
     Qt5::Test
     Qt5::Core
     ${GOOGLEMOCK_LIBRARIES}

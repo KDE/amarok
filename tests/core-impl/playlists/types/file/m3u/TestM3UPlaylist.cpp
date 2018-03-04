@@ -22,22 +22,19 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 
-#include <KGlobal>
-
 #include <QDir>
 #include <QFile>
-#include <QTemporaryFile>
+#include <QStandardPaths>
+#include <QTemporaryDir>
 #include <QTest>
 
-#include <KStandardDirs>
 #include <ThreadWeaver/ThreadWeaver>
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestM3UPlaylist )
+
+QTEST_MAIN( TestM3UPlaylist )
 
 TestM3UPlaylist::TestM3UPlaylist()
 {
-    KGlobal::locale();
 }
 
 QString
@@ -48,6 +45,9 @@ TestM3UPlaylist::dataPath( const QString &relPath )
 
 void TestM3UPlaylist::initTestCase()
 {
+    m_tempDir = new QTemporaryDir;
+    QVERIFY( m_tempDir->isValid() );
+
     qRegisterMetaType<Meta::TrackPtr>( "Meta::TrackPtr" );
 
     /* Collection manager needs to be instantiated in the main thread, but
@@ -59,8 +59,7 @@ void TestM3UPlaylist::initTestCase()
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
-    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.m3u" );
-    QFile::remove( tempPath );
+    QString tempPath = m_tempDir->path() + "/test.m3u";
     QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
     QVERIFY( QFile::exists( tempPath ) );
 
@@ -81,6 +80,7 @@ void TestM3UPlaylist::cleanupTestCase()
     ThreadWeaver::Queue::instance()->finish();
 
     delete m_testPlaylist;
+    delete m_tempDir;
 }
 
 void TestM3UPlaylist::testSetAndGetName()
@@ -105,15 +105,15 @@ void TestM3UPlaylist::testTracks()
     Meta::TrackList tracklist = m_testPlaylist->tracks();
 
     QCOMPARE( tracklist.size(), 10 );
-    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( "Platz 01" ) );
-    QCOMPARE( tracklist.at( 1 ).data()->name(), QString( "Platz 02" ) );
-    QCOMPARE( tracklist.at( 2 ).data()->name(), QString( "Platz 03" ) );
-    QCOMPARE( tracklist.at( 9 ).data()->name(), QString( "Platz 10" ) );
+    QCOMPARE( tracklist.at( 0 )->name(), QString( "Platz 01" ) );
+    QCOMPARE( tracklist.at( 1 )->name(), QString( "Platz 02" ) );
+    QCOMPARE( tracklist.at( 2 )->name(), QString( "Platz 03" ) );
+    QCOMPARE( tracklist.at( 9 )->name(), QString( "Platz 10" ) );
 }
 
 void TestM3UPlaylist::testUidUrl()
 {
-    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.m3u" );
+    QString tempPath = m_tempDir->path() + "/test.m3u";
     //we have chaged the name around so much, better reset it
     m_testPlaylist->setName( "test" );
     QCOMPARE( m_testPlaylist->uidUrl().toLocalFile(), tempPath );

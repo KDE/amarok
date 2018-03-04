@@ -21,7 +21,7 @@
 #include "core/collections/CollectionLocation.h"
 
 #include <QIcon>
-#include <qtest_kde.h>
+
 
 using namespace Collections;
 
@@ -96,7 +96,7 @@ class TestingCollectionMock : public CollectionMock
 };
 
 
-QTEST_KDEMAIN_CORE( TestCollection )
+QTEST_MAIN( TestCollection )
 
 void
 TestCollection::initTestCase()

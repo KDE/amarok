@@ -16,6 +16,7 @@
 
 #include "TestDynamicModel.h"
 
+#include "amarokconfig.h"
 #include "dynamic/Bias.h"
 #include "dynamic/BiasedPlaylist.h"
 #include "dynamic/DynamicModel.h"
@@ -25,11 +26,10 @@
 
 #include <QByteArray>
 #include <QDataStream>
-
+#include <QMimeData>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 
-#include <qtest_kde.h>
 
 Q_DECLARE_METATYPE(QModelIndex);
 
@@ -41,7 +41,7 @@ QString Amarok::saveLocation( const QString &directory )
     return s_tmpDir->path() + directory;
 }
 
-QTEST_KDEMAIN( TestDynamicModel, GUI )
+QTEST_MAIN( TestDynamicModel )
 
 TestDynamicModel::TestDynamicModel()
 {
@@ -51,7 +51,10 @@ TestDynamicModel::TestDynamicModel()
 void
 TestDynamicModel::init()
 {
+    AmarokConfig::instance("amarokrc");
+
     s_tmpDir = new QTemporaryDir();
+    QVERIFY( s_tmpDir->isValid() );
 }
 
 void

@@ -4,8 +4,8 @@ include_directories(
   ${AMAROK_SOURCE_TREE}/network
   ${AMAROK_TEST_TREE}/context/engines
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  
-  
+
+
 )
 
 
@@ -24,4 +24,4 @@ ecm_mark_as_test(testsimilarartistsengine)
 
 add_dependencies( testsimilarartistsengine amaroklib)
 
-target_link_libraries( testsimilarartistsengine amarokcore amaroklib KF5::KDELibs4Support  KF5::KIOCore KF5::Plasma ${LIBLASTFM_LIBRARY} Qt5::Test)
+target_link_libraries( testsimilarartistsengine amarokcore amaroklib KF5::KIOCore KF5::Plasma ${LIBLASTFM_LIBRARY} Qt5::Test)

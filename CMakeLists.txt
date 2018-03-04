@@ -237,7 +237,7 @@ if( WITH_PLAYER )
 
     if( BUILD_TESTING AND NOT WIN32 )
         enable_testing()
-#        add_subdirectory( tests )
+        add_subdirectory( tests )
     endif()
 
     add_subdirectory( src )
