@@ -188,7 +188,7 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
                     return i18np ( "1 track", "%1 tracks", nonconst_this->groupRowCount( index ) );
             }
 
-            // Fall-through!!
+            Q_FALLTHROUGH();
 
         default:
             // Nothing to do with us: let our QSortFilterProxyModel parent class handle it.

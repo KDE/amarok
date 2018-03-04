@@ -327,7 +327,7 @@ OSDWidget::determineMetrics( const int M )
         case Center:
             newPos.ry() = ( screen.height() - newSize.height() ) / 2;
 
-            //FALL THROUGH
+            Q_FALLTHROUGH();
 
         case Middle:
             newPos.rx() = ( screen.width() - newSize.width() ) / 2;

@@ -412,8 +412,10 @@ LastFmTreeModel::data( const QModelIndex &index, int role ) const
         case Neighbors:
             return QIcon::fromTheme( "lastfm-my-neighbours-amarok" );
 
-        case RecentlyPlayedTrack: //FALL THROUGH
-        case RecentlyLovedTrack:  //FALL THROUGH
+        case RecentlyPlayedTrack:
+            Q_FALLTHROUGH();
+        case RecentlyLovedTrack:
+            Q_FALLTHROUGH();
         case RecentlyBannedTrack:
             return QIcon::fromTheme( "icon_track" );
         case MyTagsChild:
