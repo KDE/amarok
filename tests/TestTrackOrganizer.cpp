@@ -37,7 +37,7 @@
 using ::testing::Return;
 using ::testing::AnyNumber;
 
-QTEST_MAIN( TestTrackOrganizer )
+QTEST_GUILESS_MAIN( TestTrackOrganizer )
 
 namespace Collections {
 

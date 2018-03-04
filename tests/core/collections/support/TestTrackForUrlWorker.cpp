@@ -27,7 +27,7 @@
 #include <ThreadWeaver/Job>
 #include <ThreadWeaver/Queue>
 
-QTEST_MAIN( TestTrackForUrlWorker )
+QTEST_GUILESS_MAIN( TestTrackForUrlWorker )
 
 void
 TestTrackForUrlWorker::initTestCase()

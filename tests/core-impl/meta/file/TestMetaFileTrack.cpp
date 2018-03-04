@@ -31,7 +31,7 @@
 #include <QFileInfo>
 
 
-QTEST_MAIN( TestMetaFileTrack )
+QTEST_GUILESS_MAIN( TestMetaFileTrack )
 
 TestMetaFileTrack::TestMetaFileTrack()
     : m_tmpDir( 0 )

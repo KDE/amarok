@@ -165,6 +165,6 @@ TestDebug::colorize( const QString &string, int colorIndex, bool colorEnabled )
 }
 
 
-QTEST_MAIN( TestDebug )
+QTEST_GUILESS_MAIN( TestDebug )
 
 #include "TestDebug.moc"

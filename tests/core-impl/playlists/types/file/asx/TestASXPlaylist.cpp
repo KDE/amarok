@@ -34,7 +34,7 @@
 #include <ThreadWeaver/Queue>
 
 
-QTEST_MAIN( TestASXPlaylist )
+QTEST_GUILESS_MAIN( TestASXPlaylist )
 
 TestASXPlaylist::TestASXPlaylist()
 {

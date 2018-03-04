@@ -31,7 +31,7 @@
 using ::testing::AnyNumber;
 using ::testing::Return;
 
-QTEST_MAIN( TestMemoryQueryMaker )
+QTEST_GUILESS_MAIN( TestMemoryQueryMaker )
 
 TestMemoryQueryMaker::TestMemoryQueryMaker()
 {

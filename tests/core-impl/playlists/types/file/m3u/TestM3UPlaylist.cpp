@@ -31,7 +31,7 @@
 #include <ThreadWeaver/ThreadWeaver>
 
 
-QTEST_MAIN( TestM3UPlaylist )
+QTEST_GUILESS_MAIN( TestM3UPlaylist )
 
 TestM3UPlaylist::TestM3UPlaylist()
 {

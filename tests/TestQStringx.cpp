@@ -25,7 +25,7 @@
 #include <QString>
 #include <QMap>
 
-QTEST_MAIN( TestQStringx )
+QTEST_GUILESS_MAIN( TestQStringx )
 
 //required for Debug.h
 QMutex Debug::mutex;

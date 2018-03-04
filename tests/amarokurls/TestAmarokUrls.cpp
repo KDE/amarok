@@ -26,7 +26,7 @@
 
 #include <QTest>
 
-QTEST_MAIN( TestAmarokUrls )
+QTEST_GUILESS_MAIN( TestAmarokUrls )
 
 TestAmarokUrls::TestAmarokUrls()
   : QObject()

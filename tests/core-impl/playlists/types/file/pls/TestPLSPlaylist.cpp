@@ -33,7 +33,7 @@
 
 #include <ThreadWeaver/Queue>
 
-QTEST_MAIN( TestPLSPlaylist )
+QTEST_GUILESS_MAIN( TestPLSPlaylist )
 
 TestPLSPlaylist::TestPLSPlaylist()
 {}

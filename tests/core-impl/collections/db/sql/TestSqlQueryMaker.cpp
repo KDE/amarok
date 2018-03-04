@@ -31,7 +31,7 @@
 
 using namespace Collections;
 
-QTEST_MAIN( TestSqlQueryMaker )
+QTEST_GUILESS_MAIN( TestSqlQueryMaker )
 
 //required for QTest, this is not done in Querymaker.h
 Q_DECLARE_METATYPE( Collections::QueryMaker::QueryType )

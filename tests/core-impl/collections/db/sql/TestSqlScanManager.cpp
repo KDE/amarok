@@ -37,7 +37,7 @@
 #include <ThreadWeaver/Queue>
 
 
-QTEST_MAIN( TestSqlScanManager )
+QTEST_GUILESS_MAIN( TestSqlScanManager )
 
 TestSqlScanManager::TestSqlScanManager()
     : QObject()

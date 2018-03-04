@@ -34,7 +34,7 @@
 
 #include <ThreadWeaver/Queue>
 
-QTEST_MAIN( TestMetaMultiTrack )
+QTEST_GUILESS_MAIN( TestMetaMultiTrack )
 
 TestMetaMultiTrack::TestMetaMultiTrack()
     : m_testMultiTrack( 0 )

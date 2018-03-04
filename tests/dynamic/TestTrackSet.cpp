@@ -22,7 +22,7 @@
 #include "core/support/Debug.h"
 
 
-QTEST_MAIN( TestTrackSet )
+QTEST_GUILESS_MAIN( TestTrackSet )
 
 TestTrackSet::TestTrackSet()
 {

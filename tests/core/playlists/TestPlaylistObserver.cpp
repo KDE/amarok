@@ -32,7 +32,7 @@
 
 #include <ThreadWeaver/Queue>
 
-QTEST_MAIN( TestPlaylistObserver )
+QTEST_GUILESS_MAIN( TestPlaylistObserver )
 
 TestPlaylistObserver::TestPlaylistObserver()
     : m_observer( 0 )

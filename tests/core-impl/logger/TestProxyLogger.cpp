@@ -28,7 +28,7 @@
 
 #include <gmock/gmock.h>
 
-QTEST_MAIN( TestProxyLogger )
+QTEST_GUILESS_MAIN( TestProxyLogger )
 
 using ::testing::Return;
 using ::testing::AnyNumber;

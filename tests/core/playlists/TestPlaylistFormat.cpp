@@ -22,7 +22,7 @@
 // so that PlaylistFormat can be used in QTest::addColumn()
 Q_DECLARE_METATYPE( Playlists::PlaylistFormat )
 
-QTEST_MAIN( TestPlaylistFormat )
+QTEST_GUILESS_MAIN( TestPlaylistFormat )
 
 TestPlaylistFormat::TestPlaylistFormat()
 {

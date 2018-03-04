@@ -26,7 +26,7 @@
 #include <QDir>
 
 
-QTEST_MAIN( TestPlaylistFileSupport )
+QTEST_GUILESS_MAIN( TestPlaylistFileSupport )
 
 TestPlaylistFileSupport::TestPlaylistFileSupport()
 {}

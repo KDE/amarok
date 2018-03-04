@@ -26,7 +26,7 @@
 #include <QTest>
 
 
-QTEST_MAIN( TestTagGuesser )
+QTEST_GUILESS_MAIN( TestTagGuesser )
 
 TestTagGuesser::TestTagGuesser()
 {

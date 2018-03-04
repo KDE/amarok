@@ -35,7 +35,7 @@
 
 using namespace Playlist;
 
-QTEST_MAIN( TestPlaylistModels )
+QTEST_GUILESS_MAIN( TestPlaylistModels )
 
 
 TestPlaylistModels::TestPlaylistModels()

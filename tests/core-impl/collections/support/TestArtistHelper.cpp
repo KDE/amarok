@@ -19,7 +19,7 @@
 #include <core-impl/collections/support/ArtistHelper.h>
 
 
-QTEST_MAIN( TestArtistHelper )
+QTEST_GUILESS_MAIN( TestArtistHelper )
 
 TestArtistHelper::TestArtistHelper() : QObject()
 {

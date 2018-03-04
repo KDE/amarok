@@ -23,7 +23,7 @@
 #include <QTest>
 
 
-QTEST_MAIN( TestImporterManager )
+QTEST_GUILESS_MAIN( TestImporterManager )
 
 using namespace ::testing;
 

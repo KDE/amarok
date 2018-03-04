@@ -24,7 +24,7 @@
 #include <QTest>
 
 
-QTEST_MAIN( TestCueFileSupport )
+QTEST_GUILESS_MAIN( TestCueFileSupport )
 
 using namespace MetaCue;
 

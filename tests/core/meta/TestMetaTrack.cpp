@@ -28,7 +28,7 @@
 #include <QTest>
 
 
-QTEST_MAIN( TestMetaTrack )
+QTEST_GUILESS_MAIN( TestMetaTrack )
 
 TestMetaTrack::TestMetaTrack()
     : m_trackPath( dataPath( "/data/audio/Platz 01.mp3" ) )

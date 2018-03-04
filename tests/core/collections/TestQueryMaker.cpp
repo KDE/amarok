@@ -22,7 +22,7 @@
 using namespace Collections;
 
 
-QTEST_MAIN( TestQueryMaker )
+QTEST_GUILESS_MAIN( TestQueryMaker )
 
 void
 TestQueryMaker::initTestCase()

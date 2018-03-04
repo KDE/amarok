@@ -26,7 +26,7 @@
 #include <QSignalSpy>
 
 
-QTEST_MAIN( TestSqlCollection )
+QTEST_GUILESS_MAIN( TestSqlCollection )
 
 TestSqlCollection::TestSqlCollection()
 {

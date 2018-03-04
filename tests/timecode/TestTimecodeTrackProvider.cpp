@@ -25,7 +25,7 @@
 
 #include <QTest>
 
-QTEST_MAIN( TestTimecodeTrackProvider )
+QTEST_GUILESS_MAIN( TestTimecodeTrackProvider )
 
 TestTimecodeTrackProvider::TestTimecodeTrackProvider()
 {}

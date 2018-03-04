@@ -33,7 +33,7 @@
 #include <QSignalSpy>
 
 
-QTEST_MAIN( TestMasterSlaveSynchronizationJob )
+QTEST_GUILESS_MAIN( TestMasterSlaveSynchronizationJob )
 
 using ::testing::Return;
 using ::testing::AnyNumber;

@@ -31,7 +31,7 @@
 
 #include <gmock/gmock.h>
 
-QTEST_MAIN( TestAggregateMeta )
+QTEST_GUILESS_MAIN( TestAggregateMeta )
 
 TestAggregateMeta::TestAggregateMeta()
 {

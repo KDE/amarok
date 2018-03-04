@@ -29,7 +29,7 @@
 
 #include <QSignalSpy>
 
-QTEST_MAIN( TestOneWaySynchronizationJob )
+QTEST_GUILESS_MAIN( TestOneWaySynchronizationJob )
 
 using ::testing::Return;
 using ::testing::AnyNumber;

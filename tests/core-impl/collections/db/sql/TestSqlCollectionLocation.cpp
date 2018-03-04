@@ -94,7 +94,7 @@ public:
 
 
 
-QTEST_MAIN( TestSqlCollectionLocation )
+QTEST_GUILESS_MAIN( TestSqlCollectionLocation )
 
 TestSqlCollectionLocation::TestSqlCollectionLocation()
     : QObject()

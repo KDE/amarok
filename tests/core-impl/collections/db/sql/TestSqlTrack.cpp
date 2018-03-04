@@ -32,7 +32,7 @@
 #include <QSignalSpy>
 
 
-QTEST_MAIN( TestSqlTrack )
+QTEST_GUILESS_MAIN( TestSqlTrack )
 
 TestSqlTrack::TestSqlTrack()
     : QObject()

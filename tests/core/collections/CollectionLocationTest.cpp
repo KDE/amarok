@@ -29,7 +29,7 @@
 
 #include <gmock/gmock.h>
 
-QTEST_MAIN( CollectionLocationTest )
+QTEST_GUILESS_MAIN( CollectionLocationTest )
 
 using ::testing::Return;
 using ::testing::AnyNumber;

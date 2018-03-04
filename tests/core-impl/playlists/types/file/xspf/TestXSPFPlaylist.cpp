@@ -34,7 +34,7 @@
 #include <QTest>
 
 
-QTEST_MAIN( TestXSPFPlaylist )
+QTEST_GUILESS_MAIN( TestXSPFPlaylist )
 
 TestXSPFPlaylist::TestXSPFPlaylist()
 {}

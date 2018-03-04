@@ -30,7 +30,7 @@
 
 #include <gmock/gmock.h>
 
-QTEST_MAIN( TestUnionJob )
+QTEST_GUILESS_MAIN( TestUnionJob )
 
 using ::testing::Return;
 using ::testing::AnyNumber;

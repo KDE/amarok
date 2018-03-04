@@ -24,7 +24,7 @@
 
 #include <QTest>
 
-QTEST_MAIN( TestExpression )
+QTEST_GUILESS_MAIN( TestExpression )
 
 //required for Debug.h
 QMutex Debug::mutex;

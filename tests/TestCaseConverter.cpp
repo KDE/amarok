@@ -24,7 +24,7 @@
 #include <QTest>
 
 
-QTEST_MAIN( TestCaseConverter )
+QTEST_GUILESS_MAIN( TestCaseConverter )
 
 TestCaseConverter::TestCaseConverter()
 {

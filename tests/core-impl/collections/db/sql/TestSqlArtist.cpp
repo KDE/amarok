@@ -23,7 +23,7 @@
 #include "SqlMountPointManagerMock.h"
 
 
-QTEST_MAIN( TestSqlArtist )
+QTEST_GUILESS_MAIN( TestSqlArtist )
 
 TestSqlArtist::TestSqlArtist()
     : QObject()

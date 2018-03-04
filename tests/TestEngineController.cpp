@@ -25,7 +25,7 @@
 #include <ThreadWeaver/Queue>
 
 
-QTEST_MAIN( TestEngineController )
+QTEST_GUILESS_MAIN( TestEngineController )
 
 class CallSupportedMimeTypesJob : public QObject, public ThreadWeaver::Job
 {

@@ -33,7 +33,7 @@
 
 #include <ThreadWeaver/Queue>
 
-QTEST_MAIN( TestTrackLoader )
+QTEST_GUILESS_MAIN( TestTrackLoader )
 
 void
 TestTrackLoader::initTestCase()
