@@ -12,6 +12,7 @@ option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple ex
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recommended" ON)
 option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
+option(WITH_QTWEBKIT "Enables the Info, Wikipedia and Upcoming Events (with LastFM) context applets" ON)
 
 ############### Taglib
 set(TAGLIB_MIN_VERSION "1.7")
@@ -80,7 +81,10 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/shared
 )
 
-find_package( Qt4 4.8.3 COMPONENTS QtCore QtGui QtScript QtSvg QtXml QtWebKit REQUIRED )
+find_package( Qt4 4.8.3 COMPONENTS QtCore QtGui QtScript QtSvg QtXml REQUIRED )
+if(WITH_QTWEBKIT)
+    find_package( Qt4 COMPONENTS QtWebkit REQUIRED)
+endif()
 find_package( KDE4 4.8.4 REQUIRED )
 
 
@@ -133,7 +137,11 @@ if( WITH_PLAYER )
 
     macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE ${KDE_MIN_VERSION} "" )
 
-    macro_log_feature( QT_QTOPENGL_FOUND "QtOpenGL" "Required for the spectrum analyzer" "http://qt-project.org" FALSE "" "" )
+    macro_log_feature( QT_QTOPENGL_FOUND "QtOpenGL" "Required for the spectrum analyzer" "https://www.qt.io/" FALSE "" "" )
+    macro_log_feature( WITH_QTWEBKIT "QtWebkit"
+        "Required for the Info, Wikipedia and Upcoming Events (with LastFM) context applets"
+        "https://www.qt.io/" FALSE "4.8.3" ""
+    )
 
     find_package(MySQLAmarok REQUIRED)
     if( WITH_MYSQL_EMBEDDED )
