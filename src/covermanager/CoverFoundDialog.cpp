@@ -128,6 +128,10 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     QAction *lastFmAct = new QAction( i18n( "Last.fm" ), sourceMenu );
     QAction *googleAct = new QAction( i18n( "Google" ), sourceMenu );
     QAction *discogsAct = new QAction( i18n( "Discogs" ), sourceMenu );
+    // TODO: currently broken, re-enable after adjusting to current API/returned doc
+    googleAct->setEnabled( false );
+    // TODO: currently broken, re-enable after adjusting to current API/returned doc
+    discogsAct->setEnabled( false );
     lastFmAct->setCheckable( true );
     googleAct->setCheckable( true );
     discogsAct->setCheckable( true );
